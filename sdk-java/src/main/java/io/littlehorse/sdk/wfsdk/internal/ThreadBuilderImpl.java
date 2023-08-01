@@ -126,14 +126,11 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             .newBuilder()
             .setUserGroup(curNode.getUserTaskBuilder().getUserGroup())
             .build();
-        UTActionTriggerPb.OnAssignedTaskPb sheduleTime = UTActionTriggerPb.OnAssignedTaskPb
-            .newBuilder()
-            .setDelaySeconds(assignVariable(deadlineSeconds))
-            .build();
         UTActionTriggerPb actionTrigger = UTActionTriggerPb
             .newBuilder()
             .setReassign(reassignPb)
-            .setOnAssignedTask(sheduleTime)
+            .setHook(UTActionTriggerPb.UTHook.DO_ON_TASK_ASSIGNED)
+            .setDelaySeconds(assignVariable(deadlineSeconds))
             .build();
         curNode.getUserTaskBuilder().addActions(actionTrigger);
         spec.putNodes(lastNodeName, curNode.build());
@@ -226,11 +223,12 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         }
 
         NodePb.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        curNode
-            .getUserTaskBuilder()
-            .addActions(
-                UTActionTriggerPb.newBuilder().setTask(utaTask).setDelaySeconds(assn)
-            );
+        UTActionTriggerPb.Builder newUtActionBuilder = UTActionTriggerPb
+            .newBuilder()
+            .setTask(utaTask)
+            .setHook(UTActionTriggerPb.UTHook.DO_ON_ARRIVAL)
+            .setDelaySeconds(assn);
+        curNode.getUserTaskBuilder().addActions(newUtActionBuilder);
         spec.putNodes(lastNodeName, curNode.build());
         // TODO LH-334: return a modified child class of NodeOutput which lets
         // us mutate variables

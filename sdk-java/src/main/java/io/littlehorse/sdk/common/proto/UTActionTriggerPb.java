@@ -16,6 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private UTActionTriggerPb() {
+    hook_ = 0;
   }
 
   @java.lang.Override
@@ -41,6 +42,114 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.sdk.common.proto.UTActionTriggerPb.class, io.littlehorse.sdk.common.proto.UTActionTriggerPb.Builder.class);
+  }
+
+  /**
+   * Protobuf enum {@code littlehorse.UTActionTriggerPb.UTHook}
+   */
+  public enum UTHook
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>DO_ON_ARRIVAL = 0;</code>
+     */
+    DO_ON_ARRIVAL(0),
+    /**
+     * <code>DO_ON_TASK_ASSIGNED = 1;</code>
+     */
+    DO_ON_TASK_ASSIGNED(1),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>DO_ON_ARRIVAL = 0;</code>
+     */
+    public static final int DO_ON_ARRIVAL_VALUE = 0;
+    /**
+     * <code>DO_ON_TASK_ASSIGNED = 1;</code>
+     */
+    public static final int DO_ON_TASK_ASSIGNED_VALUE = 1;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static UTHook valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static UTHook forNumber(int value) {
+      switch (value) {
+        case 0: return DO_ON_ARRIVAL;
+        case 1: return DO_ON_TASK_ASSIGNED;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<UTHook>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        UTHook> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<UTHook>() {
+            public UTHook findValueByNumber(int number) {
+              return UTHook.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.UTActionTriggerPb.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final UTHook[] VALUES = values();
+
+    public static UTHook valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private UTHook(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:littlehorse.UTActionTriggerPb.UTHook)
   }
 
   public interface UTACancelPbOrBuilder extends
@@ -2353,609 +2462,6 @@ private static final long serialVersionUID = 0L;
 
   }
 
-  public interface OnAssignedTaskPbOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.UTActionTriggerPb.OnAssignedTaskPb)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>.littlehorse.VariableAssignmentPb delay_seconds = 1;</code>
-     * @return Whether the delaySeconds field is set.
-     */
-    boolean hasDelaySeconds();
-    /**
-     * <code>.littlehorse.VariableAssignmentPb delay_seconds = 1;</code>
-     * @return The delaySeconds.
-     */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPb getDelaySeconds();
-    /**
-     * <code>.littlehorse.VariableAssignmentPb delay_seconds = 1;</code>
-     */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getDelaySecondsOrBuilder();
-  }
-  /**
-   * Protobuf type {@code littlehorse.UTActionTriggerPb.OnAssignedTaskPb}
-   */
-  public static final class OnAssignedTaskPb extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.UTActionTriggerPb.OnAssignedTaskPb)
-      OnAssignedTaskPbOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use OnAssignedTaskPb.newBuilder() to construct.
-    private OnAssignedTaskPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private OnAssignedTaskPb() {
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new OnAssignedTaskPb();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_OnAssignedTaskPb_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_OnAssignedTaskPb_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.class, io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.Builder.class);
-    }
-
-    public static final int DELAY_SECONDS_FIELD_NUMBER = 1;
-    private io.littlehorse.sdk.common.proto.VariableAssignmentPb delaySeconds_;
-    /**
-     * <code>.littlehorse.VariableAssignmentPb delay_seconds = 1;</code>
-     * @return Whether the delaySeconds field is set.
-     */
-    @java.lang.Override
-    public boolean hasDelaySeconds() {
-      return delaySeconds_ != null;
-    }
-    /**
-     * <code>.littlehorse.VariableAssignmentPb delay_seconds = 1;</code>
-     * @return The delaySeconds.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getDelaySeconds() {
-      return delaySeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
-    }
-    /**
-     * <code>.littlehorse.VariableAssignmentPb delay_seconds = 1;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getDelaySecondsOrBuilder() {
-      return delaySeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (delaySeconds_ != null) {
-        output.writeMessage(1, getDelaySeconds());
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (delaySeconds_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getDelaySeconds());
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb)) {
-        return super.equals(obj);
-      }
-      io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb other = (io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb) obj;
-
-      if (hasDelaySeconds() != other.hasDelaySeconds()) return false;
-      if (hasDelaySeconds()) {
-        if (!getDelaySeconds()
-            .equals(other.getDelaySeconds())) return false;
-      }
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasDelaySeconds()) {
-        hash = (37 * hash) + DELAY_SECONDS_FIELD_NUMBER;
-        hash = (53 * hash) + getDelaySeconds().hashCode();
-      }
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code littlehorse.UTActionTriggerPb.OnAssignedTaskPb}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.UTActionTriggerPb.OnAssignedTaskPb)
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPbOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_OnAssignedTaskPb_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_OnAssignedTaskPb_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.class, io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.Builder.class);
-      }
-
-      // Construct using io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        delaySeconds_ = null;
-        if (delaySecondsBuilder_ != null) {
-          delaySecondsBuilder_.dispose();
-          delaySecondsBuilder_ = null;
-        }
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_OnAssignedTaskPb_descriptor;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb getDefaultInstanceForType() {
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb build() {
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb buildPartial() {
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb result = new io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartial0(io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.delaySeconds_ = delaySecondsBuilder_ == null
-              ? delaySeconds_
-              : delaySecondsBuilder_.build();
-        }
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb) {
-          return mergeFrom((io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb other) {
-        if (other == io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.getDefaultInstance()) return this;
-        if (other.hasDelaySeconds()) {
-          mergeDelaySeconds(other.getDelaySeconds());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                input.readMessage(
-                    getDelaySecondsFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private io.littlehorse.sdk.common.proto.VariableAssignmentPb delaySeconds_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> delaySecondsBuilder_;
-      /**
-       * <code>.littlehorse.VariableAssignmentPb delay_seconds = 1;</code>
-       * @return Whether the delaySeconds field is set.
-       */
-      public boolean hasDelaySeconds() {
-        return ((bitField0_ & 0x00000001) != 0);
-      }
-      /**
-       * <code>.littlehorse.VariableAssignmentPb delay_seconds = 1;</code>
-       * @return The delaySeconds.
-       */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb getDelaySeconds() {
-        if (delaySecondsBuilder_ == null) {
-          return delaySeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
-        } else {
-          return delaySecondsBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.littlehorse.VariableAssignmentPb delay_seconds = 1;</code>
-       */
-      public Builder setDelaySeconds(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
-        if (delaySecondsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          delaySeconds_ = value;
-        } else {
-          delaySecondsBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.littlehorse.VariableAssignmentPb delay_seconds = 1;</code>
-       */
-      public Builder setDelaySeconds(
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
-        if (delaySecondsBuilder_ == null) {
-          delaySeconds_ = builderForValue.build();
-        } else {
-          delaySecondsBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.littlehorse.VariableAssignmentPb delay_seconds = 1;</code>
-       */
-      public Builder mergeDelaySeconds(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
-        if (delaySecondsBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0) &&
-            delaySeconds_ != null &&
-            delaySeconds_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
-            getDelaySecondsBuilder().mergeFrom(value);
-          } else {
-            delaySeconds_ = value;
-          }
-        } else {
-          delaySecondsBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.littlehorse.VariableAssignmentPb delay_seconds = 1;</code>
-       */
-      public Builder clearDelaySeconds() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        delaySeconds_ = null;
-        if (delaySecondsBuilder_ != null) {
-          delaySecondsBuilder_.dispose();
-          delaySecondsBuilder_ = null;
-        }
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.littlehorse.VariableAssignmentPb delay_seconds = 1;</code>
-       */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getDelaySecondsBuilder() {
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return getDelaySecondsFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.littlehorse.VariableAssignmentPb delay_seconds = 1;</code>
-       */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getDelaySecondsOrBuilder() {
-        if (delaySecondsBuilder_ != null) {
-          return delaySecondsBuilder_.getMessageOrBuilder();
-        } else {
-          return delaySeconds_ == null ?
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
-        }
-      }
-      /**
-       * <code>.littlehorse.VariableAssignmentPb delay_seconds = 1;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
-          getDelaySecondsFieldBuilder() {
-        if (delaySecondsBuilder_ == null) {
-          delaySecondsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
-                  getDelaySeconds(),
-                  getParentForChildren(),
-                  isClean());
-          delaySeconds_ = null;
-        }
-        return delaySecondsBuilder_;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:littlehorse.UTActionTriggerPb.OnAssignedTaskPb)
-    }
-
-    // @@protoc_insertion_point(class_scope:littlehorse.UTActionTriggerPb.OnAssignedTaskPb)
-    private static final io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb();
-    }
-
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<OnAssignedTaskPb>
-        PARSER = new com.google.protobuf.AbstractParser<OnAssignedTaskPb>() {
-      @java.lang.Override
-      public OnAssignedTaskPb parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<OnAssignedTaskPb> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<OnAssignedTaskPb> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   private int actionCase_ = 0;
   private java.lang.Object action_;
   public enum ActionCase
@@ -2997,47 +2503,6 @@ private static final long serialVersionUID = 0L;
   getActionCase() {
     return ActionCase.forNumber(
         actionCase_);
-  }
-
-  private int scheduleTimeCase_ = 0;
-  private java.lang.Object scheduleTime_;
-  public enum ScheduleTimeCase
-      implements com.google.protobuf.Internal.EnumLite,
-          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    DELAY_SECONDS(5),
-    ON_ASSIGNED_TASK(6),
-    SCHEDULETIME_NOT_SET(0);
-    private final int value;
-    private ScheduleTimeCase(int value) {
-      this.value = value;
-    }
-    /**
-     * @param value The number of the enum to look for.
-     * @return The enum associated with the given number.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static ScheduleTimeCase valueOf(int value) {
-      return forNumber(value);
-    }
-
-    public static ScheduleTimeCase forNumber(int value) {
-      switch (value) {
-        case 5: return DELAY_SECONDS;
-        case 6: return ON_ASSIGNED_TASK;
-        case 0: return SCHEDULETIME_NOT_SET;
-        default: return null;
-      }
-    }
-    public int getNumber() {
-      return this.value;
-    }
-  };
-
-  public ScheduleTimeCase
-  getScheduleTimeCase() {
-    return ScheduleTimeCase.forNumber(
-        scheduleTimeCase_);
   }
 
   public static final int TASK_FIELD_NUMBER = 1;
@@ -3146,80 +2611,59 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int DELAY_SECONDS_FIELD_NUMBER = 5;
+  private io.littlehorse.sdk.common.proto.VariableAssignmentPb delaySeconds_;
   /**
+   * <pre>
+   *Action's delay
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
    * @return Whether the delaySeconds field is set.
    */
   @java.lang.Override
   public boolean hasDelaySeconds() {
-    return scheduleTimeCase_ == 5;
+    return delaySeconds_ != null;
   }
   /**
+   * <pre>
+   *Action's delay
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
    * @return The delaySeconds.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableAssignmentPb getDelaySeconds() {
-    if (scheduleTimeCase_ == 5) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_;
-    }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return delaySeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
   }
   /**
+   * <pre>
+   *Action's delay
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getDelaySecondsOrBuilder() {
-    if (scheduleTimeCase_ == 5) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_;
-    }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return delaySeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
   }
 
-  public static final int ON_ASSIGNED_TASK_FIELD_NUMBER = 6;
+  public static final int HOOK_FIELD_NUMBER = 6;
+  private int hook_ = 0;
   /**
-   * <pre>
-   * Later on, might add trigger features such as
-   * "schedule this action when task is rescheduled" etc.
-   * </pre>
-   *
-   * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
-   * @return Whether the onAssignedTask field is set.
+   * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+   * @return The enum numeric value on the wire for hook.
    */
-  @java.lang.Override
-  public boolean hasOnAssignedTask() {
-    return scheduleTimeCase_ == 6;
+  @java.lang.Override public int getHookValue() {
+    return hook_;
   }
   /**
-   * <pre>
-   * Later on, might add trigger features such as
-   * "schedule this action when task is rescheduled" etc.
-   * </pre>
-   *
-   * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
-   * @return The onAssignedTask.
+   * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+   * @return The hook.
    */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb getOnAssignedTask() {
-    if (scheduleTimeCase_ == 6) {
-       return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb) scheduleTime_;
-    }
-    return io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.getDefaultInstance();
-  }
-  /**
-   * <pre>
-   * Later on, might add trigger features such as
-   * "schedule this action when task is rescheduled" etc.
-   * </pre>
-   *
-   * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPbOrBuilder getOnAssignedTaskOrBuilder() {
-    if (scheduleTimeCase_ == 6) {
-       return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb) scheduleTime_;
-    }
-    return io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.getDefaultInstance();
+  @java.lang.Override public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook getHook() {
+    io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook result = io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.forNumber(hook_);
+    return result == null ? io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -3245,11 +2689,11 @@ private static final long serialVersionUID = 0L;
     if (actionCase_ == 3) {
       output.writeMessage(3, (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb) action_);
     }
-    if (scheduleTimeCase_ == 5) {
-      output.writeMessage(5, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_);
+    if (delaySeconds_ != null) {
+      output.writeMessage(5, getDelaySeconds());
     }
-    if (scheduleTimeCase_ == 6) {
-      output.writeMessage(6, (io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb) scheduleTime_);
+    if (hook_ != io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.DO_ON_ARRIVAL.getNumber()) {
+      output.writeEnum(6, hook_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -3272,13 +2716,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb) action_);
     }
-    if (scheduleTimeCase_ == 5) {
+    if (delaySeconds_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_);
+        .computeMessageSize(5, getDelaySeconds());
     }
-    if (scheduleTimeCase_ == 6) {
+    if (hook_ != io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.DO_ON_ARRIVAL.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, (io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb) scheduleTime_);
+        .computeEnumSize(6, hook_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -3295,6 +2739,12 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.UTActionTriggerPb other = (io.littlehorse.sdk.common.proto.UTActionTriggerPb) obj;
 
+    if (hasDelaySeconds() != other.hasDelaySeconds()) return false;
+    if (hasDelaySeconds()) {
+      if (!getDelaySeconds()
+          .equals(other.getDelaySeconds())) return false;
+    }
+    if (hook_ != other.hook_) return false;
     if (!getActionCase().equals(other.getActionCase())) return false;
     switch (actionCase_) {
       case 1:
@@ -3312,19 +2762,6 @@ private static final long serialVersionUID = 0L;
       case 0:
       default:
     }
-    if (!getScheduleTimeCase().equals(other.getScheduleTimeCase())) return false;
-    switch (scheduleTimeCase_) {
-      case 5:
-        if (!getDelaySeconds()
-            .equals(other.getDelaySeconds())) return false;
-        break;
-      case 6:
-        if (!getOnAssignedTask()
-            .equals(other.getOnAssignedTask())) return false;
-        break;
-      case 0:
-      default:
-    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -3336,6 +2773,12 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
+    if (hasDelaySeconds()) {
+      hash = (37 * hash) + DELAY_SECONDS_FIELD_NUMBER;
+      hash = (53 * hash) + getDelaySeconds().hashCode();
+    }
+    hash = (37 * hash) + HOOK_FIELD_NUMBER;
+    hash = (53 * hash) + hook_;
     switch (actionCase_) {
       case 1:
         hash = (37 * hash) + TASK_FIELD_NUMBER;
@@ -3348,18 +2791,6 @@ private static final long serialVersionUID = 0L;
       case 3:
         hash = (37 * hash) + REASSIGN_FIELD_NUMBER;
         hash = (53 * hash) + getReassign().hashCode();
-        break;
-      case 0:
-      default:
-    }
-    switch (scheduleTimeCase_) {
-      case 5:
-        hash = (37 * hash) + DELAY_SECONDS_FIELD_NUMBER;
-        hash = (53 * hash) + getDelaySeconds().hashCode();
-        break;
-      case 6:
-        hash = (37 * hash) + ON_ASSIGNED_TASK_FIELD_NUMBER;
-        hash = (53 * hash) + getOnAssignedTask().hashCode();
         break;
       case 0:
       default:
@@ -3502,16 +2933,14 @@ private static final long serialVersionUID = 0L;
       if (reassignBuilder_ != null) {
         reassignBuilder_.clear();
       }
+      delaySeconds_ = null;
       if (delaySecondsBuilder_ != null) {
-        delaySecondsBuilder_.clear();
+        delaySecondsBuilder_.dispose();
+        delaySecondsBuilder_ = null;
       }
-      if (onAssignedTaskBuilder_ != null) {
-        onAssignedTaskBuilder_.clear();
-      }
+      hook_ = 0;
       actionCase_ = 0;
       action_ = null;
-      scheduleTimeCase_ = 0;
-      scheduleTime_ = null;
       return this;
     }
 
@@ -3546,6 +2975,14 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.UTActionTriggerPb result) {
       int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.delaySeconds_ = delaySecondsBuilder_ == null
+            ? delaySeconds_
+            : delaySecondsBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.hook_ = hook_;
+      }
     }
 
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.UTActionTriggerPb result) {
@@ -3562,16 +2999,6 @@ private static final long serialVersionUID = 0L;
       if (actionCase_ == 3 &&
           reassignBuilder_ != null) {
         result.action_ = reassignBuilder_.build();
-      }
-      result.scheduleTimeCase_ = scheduleTimeCase_;
-      result.scheduleTime_ = this.scheduleTime_;
-      if (scheduleTimeCase_ == 5 &&
-          delaySecondsBuilder_ != null) {
-        result.scheduleTime_ = delaySecondsBuilder_.build();
-      }
-      if (scheduleTimeCase_ == 6 &&
-          onAssignedTaskBuilder_ != null) {
-        result.scheduleTime_ = onAssignedTaskBuilder_.build();
       }
     }
 
@@ -3619,6 +3046,12 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.UTActionTriggerPb other) {
       if (other == io.littlehorse.sdk.common.proto.UTActionTriggerPb.getDefaultInstance()) return this;
+      if (other.hasDelaySeconds()) {
+        mergeDelaySeconds(other.getDelaySeconds());
+      }
+      if (other.hook_ != 0) {
+        setHookValue(other.getHookValue());
+      }
       switch (other.getActionCase()) {
         case TASK: {
           mergeTask(other.getTask());
@@ -3633,19 +3066,6 @@ private static final long serialVersionUID = 0L;
           break;
         }
         case ACTION_NOT_SET: {
-          break;
-        }
-      }
-      switch (other.getScheduleTimeCase()) {
-        case DELAY_SECONDS: {
-          mergeDelaySeconds(other.getDelaySeconds());
-          break;
-        }
-        case ON_ASSIGNED_TASK: {
-          mergeOnAssignedTask(other.getOnAssignedTask());
-          break;
-        }
-        case SCHEDULETIME_NOT_SET: {
           break;
         }
       }
@@ -3700,16 +3120,14 @@ private static final long serialVersionUID = 0L;
               input.readMessage(
                   getDelaySecondsFieldBuilder().getBuilder(),
                   extensionRegistry);
-              scheduleTimeCase_ = 5;
+              bitField0_ |= 0x00000008;
               break;
             } // case 42
-            case 50: {
-              input.readMessage(
-                  getOnAssignedTaskFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              scheduleTimeCase_ = 6;
+            case 48: {
+              hook_ = input.readEnum();
+              bitField0_ |= 0x00000010;
               break;
-            } // case 50
+            } // case 48
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3736,21 +3154,6 @@ private static final long serialVersionUID = 0L;
     public Builder clearAction() {
       actionCase_ = 0;
       action_ = null;
-      onChanged();
-      return this;
-    }
-
-    private int scheduleTimeCase_ = 0;
-    private java.lang.Object scheduleTime_;
-    public ScheduleTimeCase
-        getScheduleTimeCase() {
-      return ScheduleTimeCase.forNumber(
-          scheduleTimeCase_);
-    }
-
-    public Builder clearScheduleTime() {
-      scheduleTimeCase_ = 0;
-      scheduleTime_ = null;
       onChanged();
       return this;
     }
@@ -4219,35 +3622,40 @@ private static final long serialVersionUID = 0L;
       return reassignBuilder_;
     }
 
+    private io.littlehorse.sdk.common.proto.VariableAssignmentPb delaySeconds_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> delaySecondsBuilder_;
     /**
+     * <pre>
+     *Action's delay
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
      * @return Whether the delaySeconds field is set.
      */
-    @java.lang.Override
     public boolean hasDelaySeconds() {
-      return scheduleTimeCase_ == 5;
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     *Action's delay
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
      * @return The delaySeconds.
      */
-    @java.lang.Override
     public io.littlehorse.sdk.common.proto.VariableAssignmentPb getDelaySeconds() {
       if (delaySecondsBuilder_ == null) {
-        if (scheduleTimeCase_ == 5) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_;
-        }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return delaySeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
       } else {
-        if (scheduleTimeCase_ == 5) {
-          return delaySecondsBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return delaySecondsBuilder_.getMessage();
       }
     }
     /**
+     * <pre>
+     *Action's delay
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
      */
     public Builder setDelaySeconds(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
@@ -4255,297 +3663,171 @@ private static final long serialVersionUID = 0L;
         if (value == null) {
           throw new NullPointerException();
         }
-        scheduleTime_ = value;
-        onChanged();
+        delaySeconds_ = value;
       } else {
         delaySecondsBuilder_.setMessage(value);
       }
-      scheduleTimeCase_ = 5;
+      bitField0_ |= 0x00000008;
+      onChanged();
       return this;
     }
     /**
+     * <pre>
+     *Action's delay
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
      */
     public Builder setDelaySeconds(
         io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
       if (delaySecondsBuilder_ == null) {
-        scheduleTime_ = builderForValue.build();
-        onChanged();
+        delaySeconds_ = builderForValue.build();
       } else {
         delaySecondsBuilder_.setMessage(builderForValue.build());
       }
-      scheduleTimeCase_ = 5;
+      bitField0_ |= 0x00000008;
+      onChanged();
       return this;
     }
     /**
+     * <pre>
+     *Action's delay
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
      */
     public Builder mergeDelaySeconds(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
       if (delaySecondsBuilder_ == null) {
-        if (scheduleTimeCase_ == 5 &&
-            scheduleTime_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
-          scheduleTime_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_)
-              .mergeFrom(value).buildPartial();
+        if (((bitField0_ & 0x00000008) != 0) &&
+          delaySeconds_ != null &&
+          delaySeconds_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
+          getDelaySecondsBuilder().mergeFrom(value);
         } else {
-          scheduleTime_ = value;
+          delaySeconds_ = value;
         }
-        onChanged();
       } else {
-        if (scheduleTimeCase_ == 5) {
-          delaySecondsBuilder_.mergeFrom(value);
-        } else {
-          delaySecondsBuilder_.setMessage(value);
-        }
+        delaySecondsBuilder_.mergeFrom(value);
       }
-      scheduleTimeCase_ = 5;
+      bitField0_ |= 0x00000008;
+      onChanged();
       return this;
     }
     /**
+     * <pre>
+     *Action's delay
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
      */
     public Builder clearDelaySeconds() {
-      if (delaySecondsBuilder_ == null) {
-        if (scheduleTimeCase_ == 5) {
-          scheduleTimeCase_ = 0;
-          scheduleTime_ = null;
-          onChanged();
-        }
-      } else {
-        if (scheduleTimeCase_ == 5) {
-          scheduleTimeCase_ = 0;
-          scheduleTime_ = null;
-        }
-        delaySecondsBuilder_.clear();
+      bitField0_ = (bitField0_ & ~0x00000008);
+      delaySeconds_ = null;
+      if (delaySecondsBuilder_ != null) {
+        delaySecondsBuilder_.dispose();
+        delaySecondsBuilder_ = null;
       }
+      onChanged();
       return this;
     }
     /**
+     * <pre>
+     *Action's delay
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getDelaySecondsBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
       return getDelaySecondsFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     *Action's delay
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
      */
-    @java.lang.Override
     public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getDelaySecondsOrBuilder() {
-      if ((scheduleTimeCase_ == 5) && (delaySecondsBuilder_ != null)) {
+      if (delaySecondsBuilder_ != null) {
         return delaySecondsBuilder_.getMessageOrBuilder();
       } else {
-        if (scheduleTimeCase_ == 5) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_;
-        }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return delaySeconds_ == null ?
+            io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
       }
     }
     /**
+     * <pre>
+     *Action's delay
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
         getDelaySecondsFieldBuilder() {
       if (delaySecondsBuilder_ == null) {
-        if (!(scheduleTimeCase_ == 5)) {
-          scheduleTime_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
-        }
         delaySecondsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_,
+                getDelaySeconds(),
                 getParentForChildren(),
                 isClean());
-        scheduleTime_ = null;
+        delaySeconds_ = null;
       }
-      scheduleTimeCase_ = 5;
-      onChanged();
       return delaySecondsBuilder_;
     }
 
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb, io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPbOrBuilder> onAssignedTaskBuilder_;
+    private int hook_ = 0;
     /**
-     * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
-     * </pre>
-     *
-     * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
-     * @return Whether the onAssignedTask field is set.
+     * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+     * @return The enum numeric value on the wire for hook.
      */
-    @java.lang.Override
-    public boolean hasOnAssignedTask() {
-      return scheduleTimeCase_ == 6;
+    @java.lang.Override public int getHookValue() {
+      return hook_;
     }
     /**
-     * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
-     * </pre>
-     *
-     * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
-     * @return The onAssignedTask.
+     * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+     * @param value The enum numeric value on the wire for hook to set.
+     * @return This builder for chaining.
      */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb getOnAssignedTask() {
-      if (onAssignedTaskBuilder_ == null) {
-        if (scheduleTimeCase_ == 6) {
-          return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb) scheduleTime_;
-        }
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.getDefaultInstance();
-      } else {
-        if (scheduleTimeCase_ == 6) {
-          return onAssignedTaskBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
-     * </pre>
-     *
-     * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
-     */
-    public Builder setOnAssignedTask(io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb value) {
-      if (onAssignedTaskBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        scheduleTime_ = value;
-        onChanged();
-      } else {
-        onAssignedTaskBuilder_.setMessage(value);
-      }
-      scheduleTimeCase_ = 6;
-      return this;
-    }
-    /**
-     * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
-     * </pre>
-     *
-     * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
-     */
-    public Builder setOnAssignedTask(
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.Builder builderForValue) {
-      if (onAssignedTaskBuilder_ == null) {
-        scheduleTime_ = builderForValue.build();
-        onChanged();
-      } else {
-        onAssignedTaskBuilder_.setMessage(builderForValue.build());
-      }
-      scheduleTimeCase_ = 6;
-      return this;
-    }
-    /**
-     * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
-     * </pre>
-     *
-     * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
-     */
-    public Builder mergeOnAssignedTask(io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb value) {
-      if (onAssignedTaskBuilder_ == null) {
-        if (scheduleTimeCase_ == 6 &&
-            scheduleTime_ != io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.getDefaultInstance()) {
-          scheduleTime_ = io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.newBuilder((io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb) scheduleTime_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          scheduleTime_ = value;
-        }
-        onChanged();
-      } else {
-        if (scheduleTimeCase_ == 6) {
-          onAssignedTaskBuilder_.mergeFrom(value);
-        } else {
-          onAssignedTaskBuilder_.setMessage(value);
-        }
-      }
-      scheduleTimeCase_ = 6;
-      return this;
-    }
-    /**
-     * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
-     * </pre>
-     *
-     * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
-     */
-    public Builder clearOnAssignedTask() {
-      if (onAssignedTaskBuilder_ == null) {
-        if (scheduleTimeCase_ == 6) {
-          scheduleTimeCase_ = 0;
-          scheduleTime_ = null;
-          onChanged();
-        }
-      } else {
-        if (scheduleTimeCase_ == 6) {
-          scheduleTimeCase_ = 0;
-          scheduleTime_ = null;
-        }
-        onAssignedTaskBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
-     * </pre>
-     *
-     * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
-     */
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.Builder getOnAssignedTaskBuilder() {
-      return getOnAssignedTaskFieldBuilder().getBuilder();
-    }
-    /**
-     * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
-     * </pre>
-     *
-     * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPbOrBuilder getOnAssignedTaskOrBuilder() {
-      if ((scheduleTimeCase_ == 6) && (onAssignedTaskBuilder_ != null)) {
-        return onAssignedTaskBuilder_.getMessageOrBuilder();
-      } else {
-        if (scheduleTimeCase_ == 6) {
-          return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb) scheduleTime_;
-        }
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
-     * </pre>
-     *
-     * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb, io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPbOrBuilder> 
-        getOnAssignedTaskFieldBuilder() {
-      if (onAssignedTaskBuilder_ == null) {
-        if (!(scheduleTimeCase_ == 6)) {
-          scheduleTime_ = io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.getDefaultInstance();
-        }
-        onAssignedTaskBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb, io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb) scheduleTime_,
-                getParentForChildren(),
-                isClean());
-        scheduleTime_ = null;
-      }
-      scheduleTimeCase_ = 6;
+    public Builder setHookValue(int value) {
+      hook_ = value;
+      bitField0_ |= 0x00000010;
       onChanged();
-      return onAssignedTaskBuilder_;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+     * @return The hook.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook getHook() {
+      io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook result = io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.forNumber(hook_);
+      return result == null ? io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+     * @param value The hook to set.
+     * @return This builder for chaining.
+     */
+    public Builder setHook(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000010;
+      hook_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearHook() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      hook_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

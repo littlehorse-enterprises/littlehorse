@@ -4,12 +4,10 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.meta.OnAssignedTask;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb.ActionCase;
-import io.littlehorse.sdk.common.proto.UTActionTriggerPb.ScheduleTimeCase;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +20,8 @@ public class UTActionTrigger extends LHSerializable<UTActionTriggerPb> {
     public UTATask task;
     public UTACancelPb cancel;
     public UTAReassign reassign;
-    private OnAssignedTask onAssignedTask;
 
-    public ScheduleTimeCase scheduleTimeType;
+    public UTActionTriggerPb.UTHook hook;
     public VariableAssignment delaySeconds;
 
     @Override
@@ -49,16 +46,8 @@ public class UTActionTrigger extends LHSerializable<UTActionTriggerPb> {
             case ACTION_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
-
-        switch (scheduleTimeType) {
-            case DELAY_SECONDS:
-                out.setDelaySeconds(delaySeconds.toProto());
-                break;
-            case ON_ASSIGNED_TASK:
-                out.setOnAssignedTask(onAssignedTask.toProto());
-            case SCHEDULETIME_NOT_SET:
-            // nothing to do
-        }
+        out.setHook(hook);
+        out.setDelaySeconds(delaySeconds.toProto());
         return out;
     }
 
@@ -81,23 +70,10 @@ public class UTActionTrigger extends LHSerializable<UTActionTriggerPb> {
     @Override
     public void initFrom(Message proto) {
         UTActionTriggerPb p = (UTActionTriggerPb) proto;
-
-        scheduleTimeType = p.getScheduleTimeCase();
-        switch (scheduleTimeType) {
-            case DELAY_SECONDS:
-                delaySeconds = VariableAssignment.fromProto(p.getDelaySeconds());
-                break;
-            case ON_ASSIGNED_TASK:
-                onAssignedTask =
-                    LHSerializable.fromProto(
-                        p.getOnAssignedTask(),
-                        OnAssignedTask.class
-                    );
-            case SCHEDULETIME_NOT_SET:
-            // nothing to do
-        }
-
+        hook = p.getHook();
         actionType = p.getActionCase();
+        delaySeconds =
+            LHSerializable.fromProto(p.getDelaySeconds(), VariableAssignment.class);
         switch (actionType) {
             case TASK:
                 task = LHSerializable.fromProto(p.getTask(), UTATask.class);

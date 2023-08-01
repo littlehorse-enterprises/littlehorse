@@ -26,7 +26,7 @@ import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.UTActionTriggerPb;
+import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskEventPb;
 import io.littlehorse.sdk.common.proto.UserTaskFieldResultPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunPb;
@@ -208,13 +208,10 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
 
             // I don't think there's anything to do other than schedule the timers for
             // the actions which need to occur.
-            for (UTActionTrigger action : node.userTaskNode.getActions()) {
-                if (
-                    action.getScheduleTimeType() ==
-                    UTActionTriggerPb.ScheduleTimeCase.DELAY_SECONDS
-                ) {
-                    scheduleAction(action);
-                }
+            for (UTActionTrigger action : node.userTaskNode.getActions(
+                UTHook.DO_ON_ARRIVAL
+            )) {
+                scheduleAction(action);
             }
             log.info("Arrived at user task!");
         } catch (LHVarSubError exn) {
@@ -347,13 +344,10 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         status = UserTaskRunStatusPb.CLAIMED;
         Node node = getNodeRun().getNode();
         if (triggerAction) {
-            for (UTActionTrigger action : node.getUserTaskNode().getActions()) {
-                if (
-                    action.getScheduleTimeType() ==
-                    UTActionTriggerPb.ScheduleTimeCase.ON_ASSIGNED_TASK
-                ) {
-                    scheduleTaskReassign(action);
-                }
+            for (UTActionTrigger action : node
+                .getUserTaskNode()
+                .getActions(UTHook.DO_ON_TASK_ASSIGNED)) {
+                scheduleTaskReassign(action);
             }
         }
         return ute;

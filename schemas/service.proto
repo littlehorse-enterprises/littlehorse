@@ -1131,10 +1131,6 @@ message UTActionTriggerPb {
     }
   }
 
-  message OnAssignedTaskPb {
-    VariableAssignmentPb delay_seconds = 1;
-  }
-
   oneof action {
     UTATaskPb task = 1;
     UTACancelPb cancel = 2;
@@ -1142,18 +1138,13 @@ message UTActionTriggerPb {
     // later on, might enable scheduling entire ThreadRuns
   }
 
-  // When this action should happen
-  oneof schedule_time {
-    VariableAssignmentPb delay_seconds = 5;
-    OnAssignedTaskPb on_assigned_task = 6;
-    // Later on, might add trigger features such as
-    // "schedule this action when task is rescheduled" etc.
+  enum UTHook {
+    DO_ON_ARRIVAL = 0;
+    DO_ON_TASK_ASSIGNED = 1;
   }
-
-  // Later on, add logic to handle failures, such as:
-  // - couldn't assign to user
-  // - a TaskRun in an Action failed.
-  // Basically, it would take a `FailureHandlerDef`.
+  //Action's delay
+  VariableAssignmentPb delay_seconds = 5;
+  UTHook hook = 6;
 }
 
 message UserTaskNodePb {

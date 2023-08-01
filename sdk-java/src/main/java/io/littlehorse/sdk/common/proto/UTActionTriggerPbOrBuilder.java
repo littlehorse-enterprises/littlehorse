@@ -65,51 +65,42 @@ public interface UTActionTriggerPbOrBuilder extends
   io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPbOrBuilder getReassignOrBuilder();
 
   /**
+   * <pre>
+   *Action's delay
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
    * @return Whether the delaySeconds field is set.
    */
   boolean hasDelaySeconds();
   /**
+   * <pre>
+   *Action's delay
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
    * @return The delaySeconds.
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentPb getDelaySeconds();
   /**
+   * <pre>
+   *Action's delay
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getDelaySecondsOrBuilder();
 
   /**
-   * <pre>
-   * Later on, might add trigger features such as
-   * "schedule this action when task is rescheduled" etc.
-   * </pre>
-   *
-   * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
-   * @return Whether the onAssignedTask field is set.
+   * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+   * @return The enum numeric value on the wire for hook.
    */
-  boolean hasOnAssignedTask();
+  int getHookValue();
   /**
-   * <pre>
-   * Later on, might add trigger features such as
-   * "schedule this action when task is rescheduled" etc.
-   * </pre>
-   *
-   * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
-   * @return The onAssignedTask.
+   * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+   * @return The hook.
    */
-  io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb getOnAssignedTask();
-  /**
-   * <pre>
-   * Later on, might add trigger features such as
-   * "schedule this action when task is rescheduled" etc.
-   * </pre>
-   *
-   * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
-   */
-  io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPbOrBuilder getOnAssignedTaskOrBuilder();
+  io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook getHook();
 
   public io.littlehorse.sdk.common.proto.UTActionTriggerPb.ActionCase getActionCase();
-
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPb.ScheduleTimeCase getScheduleTimeCase();
 }
