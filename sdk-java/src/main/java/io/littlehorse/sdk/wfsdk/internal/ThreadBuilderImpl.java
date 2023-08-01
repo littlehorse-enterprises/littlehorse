@@ -122,19 +122,20 @@ public class ThreadBuilderImpl implements ThreadBuilder {
     public void scheduleReassignmentToGroupOnDeadline(int deadlineSeconds) {
         checkIfIsActive();
         NodePb.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        curNode
-            .getUserTaskBuilder()
-            .addActions(
-                UTActionTriggerPb
-                    .newBuilder()
-                    .setReassign(
-                        UTActionTriggerPb.UTAReassignPb
-                            .newBuilder()
-                            .setUserGroup(assignVariable("finance"))
-                            .build()
-                    )
-                    .build()
-            );
+        UTActionTriggerPb.UTAReassignPb reassignPb = UTActionTriggerPb.UTAReassignPb
+            .newBuilder()
+            .setUserGroup(curNode.getUserTaskBuilder().getUserGroup())
+            .build();
+        UTActionTriggerPb.OnAssignedTaskPb sheduleTime = UTActionTriggerPb.OnAssignedTaskPb
+            .newBuilder()
+            .setDelaySeconds(assignVariable(deadlineSeconds))
+            .build();
+        UTActionTriggerPb actionTrigger = UTActionTriggerPb
+            .newBuilder()
+            .setReassign(reassignPb)
+            .setOnAssignedTask(sheduleTime)
+            .build();
+        curNode.getUserTaskBuilder().addActions(actionTrigger);
         spec.putNodes(lastNodeName, curNode.build());
     }
 

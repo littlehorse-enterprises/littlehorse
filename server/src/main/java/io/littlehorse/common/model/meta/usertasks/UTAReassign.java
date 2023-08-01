@@ -6,8 +6,10 @@ import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class UTAReassign extends LHSerializable<UTAReassignPb> {
 
     private UTAReassignPb.AssignToCase assignToCase;

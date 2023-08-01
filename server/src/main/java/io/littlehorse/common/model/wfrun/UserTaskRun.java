@@ -3,12 +3,14 @@ package io.littlehorse.common.model.wfrun;
 import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.exceptions.LHException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
+import io.littlehorse.common.model.command.subcommand.ReassignedUserTask;
+import io.littlehorse.common.model.command.subcommand.TriggeredTaskRun;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.subnode.UserTaskNode;
 import io.littlehorse.common.model.meta.usertasks.UTAReassign;
@@ -19,10 +21,12 @@ import io.littlehorse.common.model.objectId.UserTaskDefId;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.wfrun.usertaskevent.UTEReassigned;
 import io.littlehorse.common.model.wfrun.usertaskevent.UserTaskEvent;
+import io.littlehorse.common.proto.ReassignedUserTaskPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.UTActionTriggerPb;
 import io.littlehorse.sdk.common.proto.UserTaskEventPb;
 import io.littlehorse.sdk.common.proto.UserTaskFieldResultPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunPb;
@@ -205,7 +209,12 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
             // I don't think there's anything to do other than schedule the timers for
             // the actions which need to occur.
             for (UTActionTrigger action : node.userTaskNode.getActions()) {
-                scheduleAction(action);
+                if (
+                    action.getScheduleTimeType() ==
+                    UTActionTriggerPb.ScheduleTimeCase.DELAY_SECONDS
+                ) {
+                    scheduleAction(action);
+                }
             }
             log.info("Arrived at user task!");
         } catch (LHVarSubError exn) {
@@ -282,7 +291,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                 reassigned = buildUserGroupReassignment(event.getUserGroup());
                 break;
             case USER_ID:
-                reassigned = buildUserReassignment(event.getUserId());
+                reassigned = buildUserReassignment(event.getUserId(), true);
                 break;
             case ASSIGNEE_NOT_SET:
         }
@@ -291,12 +300,14 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         }
     }
 
-    public void reassignTo(UTAReassign reassign) {
+    public void reassignTo(
+        String newOwner,
+        ReassignedUserTaskPb.AssignToCase assignToCase
+    ) {
         UTEReassigned reassigned = null;
-        String newOwner = reassign.getNewOwner().getRhsLiteralValue().getStrVal();
-        switch (reassign.getAssignToCase()) {
+        switch (assignToCase) {
             case USER_ID:
-                reassigned = buildUserReassignment(newOwner);
+                reassigned = buildUserReassignment(newOwner, false);
                 break;
             case USER_GROUP:
                 reassigned = buildUserGroupReassignment(newOwner);
@@ -322,7 +333,10 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         return ute;
     }
 
-    private UTEReassigned buildUserReassignment(String newUserId) {
+    private UTEReassigned buildUserReassignment(
+        String newUserId,
+        boolean triggerAction
+    ) {
         UTEReassigned ute = new UTEReassigned();
         ute.setNewUserId(newUserId);
         ute.setOldUserId(userId);
@@ -331,7 +345,47 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         userId = newUserId;
         specificUserId = newUserId;
         status = UserTaskRunStatusPb.CLAIMED;
+        Node node = getNodeRun().getNode();
+        if (triggerAction) {
+            for (UTActionTrigger action : node.getUserTaskNode().getActions()) {
+                if (
+                    action.getScheduleTimeType() ==
+                    UTActionTriggerPb.ScheduleTimeCase.ON_ASSIGNED_TASK
+                ) {
+                    scheduleTaskReassign(action);
+                }
+            }
+        }
         return ute;
+    }
+
+    private void scheduleTaskReassign(UTActionTrigger action) {
+        Date maturationTime = new Date(System.currentTimeMillis() + (1000 * 5));
+        ReassignedUserTaskPb.AssignToCase assignToCase = null;
+        switch (action.getReassign().getAssignToCase()) {
+            case USER_ID:
+                assignToCase = ReassignedUserTaskPb.AssignToCase.USER_ID;
+                break;
+            case USER_GROUP:
+                assignToCase = ReassignedUserTaskPb.AssignToCase.USER_GROUP;
+                break;
+        }
+        LHTimer timer = new LHTimer(
+            new Command(
+                new ReassignedUserTask(
+                    getNodeRun().getObjectId(),
+                    action
+                        .getReassign()
+                        .getNewOwner()
+                        .getRhsLiteralValue()
+                        .getStrVal(),
+                    assignToCase
+                ),
+                maturationTime
+            ),
+            getDao()
+        );
+        getDao().scheduleTimer(timer);
     }
 
     public void processTaskCompletedEvent(CompleteUserTaskRun event) {

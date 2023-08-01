@@ -65,34 +65,49 @@ public interface UTActionTriggerPbOrBuilder extends
   io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPbOrBuilder getReassignOrBuilder();
 
   /**
-   * <pre>
-   * Later on, might add trigger features such as
-   * "schedule this action when task is rescheduled" etc.
-   * </pre>
-   *
    * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
    * @return Whether the delaySeconds field is set.
    */
   boolean hasDelaySeconds();
   /**
-   * <pre>
-   * Later on, might add trigger features such as
-   * "schedule this action when task is rescheduled" etc.
-   * </pre>
-   *
    * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
    * @return The delaySeconds.
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentPb getDelaySeconds();
+  /**
+   * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getDelaySecondsOrBuilder();
+
   /**
    * <pre>
    * Later on, might add trigger features such as
    * "schedule this action when task is rescheduled" etc.
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
+   * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
+   * @return Whether the onAssignedTask field is set.
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getDelaySecondsOrBuilder();
+  boolean hasOnAssignedTask();
+  /**
+   * <pre>
+   * Later on, might add trigger features such as
+   * "schedule this action when task is rescheduled" etc.
+   * </pre>
+   *
+   * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
+   * @return The onAssignedTask.
+   */
+  io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPb getOnAssignedTask();
+  /**
+   * <pre>
+   * Later on, might add trigger features such as
+   * "schedule this action when task is rescheduled" etc.
+   * </pre>
+   *
+   * <code>.littlehorse.UTActionTriggerPb.OnAssignedTaskPb on_assigned_task = 6;</code>
+   */
+  io.littlehorse.sdk.common.proto.UTActionTriggerPb.OnAssignedTaskPbOrBuilder getOnAssignedTaskOrBuilder();
 
   public io.littlehorse.sdk.common.proto.UTActionTriggerPb.ActionCase getActionCase();
 

@@ -1131,6 +1131,10 @@ message UTActionTriggerPb {
     }
   }
 
+  message OnAssignedTaskPb {
+    VariableAssignmentPb delay_seconds = 1;
+  }
+
   oneof action {
     UTATaskPb task = 1;
     UTACancelPb cancel = 2;
@@ -1141,6 +1145,7 @@ message UTActionTriggerPb {
   // When this action should happen
   oneof schedule_time {
     VariableAssignmentPb delay_seconds = 5;
+    OnAssignedTaskPb on_assigned_task = 6;
     // Later on, might add trigger features such as
     // "schedule this action when task is rescheduled" etc.
   }
