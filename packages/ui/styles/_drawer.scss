@@ -1,5 +1,5 @@
 .drawer {
-  width: 384px;
+  width: 408px;
   height: 953px;
   padding: 16px 8px 16px 16px;
   align-items: flex-start;
@@ -10,10 +10,9 @@
 
   &__header {
     display: flex;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
+    align-items: center;
+    margin-left: 0.5rem;
+    gap: 0.5rem;
 
     &__button {
       margin: 0;
@@ -140,6 +139,12 @@
       &__subheaders {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: center;
+        background: #2d2f36;
+      }
+      &__subheaders-three-columns {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         align-items: center;
         background: #2d2f36;
       }

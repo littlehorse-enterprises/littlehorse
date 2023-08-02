@@ -7,6 +7,7 @@ import { SpawnChildInformation } from "./internals/SpawnChildInformation";
 import { WaitChildInformation } from "./internals/WaitChildInformation";
 import { LH_EXCEPTION } from "./internals/FailureInformation";
 import { parseKey } from "./internals/drawerInternals";
+import WfVariable, { Value } from "./wfVariable";
 
 interface DrawerComponentProps {
   internalComponent?: string | undefined;
@@ -25,13 +26,13 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
   const [rawData, setRawData] = useState<any>();
   const [wfRunRawData, setWfRunRawData] = useState<any>();
   const [selectedNodeData, setSelectedNodeData] = useState<any>();
-  const [mainData, setMainData] = useState<{ name: string; type: string }[]>();
+  const [mainData, setMainData] =
+    useState<{ name: string; type: string; value?: string }[]>();
   const [selectedNode, setSelectedNode] = useState<any>();
   const [wfRunData, setWfRunData] = useState<any>();
   const [errorData, setErrorData] = useState<any>([]);
   const [lastSelectedNode, setLastSelectedNode] = useState<any>();
   const [threadName, setThreadName] = useState<string>();
-
   const changeThread = () => {
     if (props.data.threadSpecs) {
       const keys = Object.keys(props.data.threadSpecs);
@@ -57,7 +58,19 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
       handler(content.data[dataPath]);
     } else console.warn("INVALID RESPONSE FROM API");
   };
-
+  const getVariableData = async (wfRunId, RunNumber, name) => {
+    const res = await fetch("/api/drawer/variable", {
+      method: "POST",
+      body: JSON.stringify({
+        wfRunId,
+        RunNumber,
+        name,
+      }),
+    });
+    if (res.ok) {
+      const content = await res.json();
+    }
+  };
   const getErrorData: any = (node: any, key: string) => {
     if (node) {
       const logs = "task" in node ? node.task.logOutput : null;
@@ -102,6 +115,10 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
         );
       }
 
+      if (props.wfRunId) {
+        getVariableData(props.wfRunId, "0", "customer-id");
+      }
+
       if (props.nodeName !== lastSelectedNode) {
         setLastSelectedNode(props.nodeName);
         setSelectedNodeData(undefined);
@@ -128,6 +145,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 
       const processComplexData = {
         task: () => {
+          console.log('selectedNode',selectedNode)
           if (rawData === undefined)
             getData(
               "../../api/drawer/taskDef/",
@@ -166,7 +184,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
                 const data =
                   wfRunNode[props.internalComponent as keyof typeof wfRunNode];
                 if (data) {
-                  const inputs = (data as any).inputVariables.map(
+                  const inputs = (data as any)?.inputVariables?.map(
                     (element: any, index: number) => {
                       const variableType: string = element.value.type;
                       const correctKey = parseKey(variableType) || "";
@@ -182,7 +200,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
                     }
                   );
 
-                  const outputs = (data as any).inputVariables.map(
+                  const outputs = (data as any)?.inputVariables?.map(
                     (element: any) => {
                       const variableType: string = element.value.type;
                       const correctKey = parseKey(variableType) || "";
@@ -314,8 +332,6 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
                   },
                 };
 
-                console.log("wfRunComplexData", wfRunComplexData);
-
                 setWfRunData(wfRunComplexData);
               }
             }
@@ -385,21 +401,37 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
           </div>
         </div>
         <div className="drawer__mainTable">
-          <div className="drawer__mainTable__header">ThreadRun Variables</div>
-          <div className="drawer__mainTable__header__subheaders">
+          <div className="drawer__mainTable__header">
+            {props.run ? "ThreadRun Variables" : "ThreadSpec Variables"}
+          </div>
+          <div
+            className={`drawer__mainTable__header__subheaders ${
+              props.run
+                ? "drawer__mainTable__header__subheaders-three-columns"
+                : ""
+            }`}
+          >
             <p className="center ">NAME</p>
             <p className="center">TYPE</p>
+            {props.run && <p className="center">VALUE</p>}
           </div>
           {mainData &&
             mainData.map(({ name, type }, index) => {
               return (
-                <div key={index} className="grid-2">
-                  <p className="center">{name}</p>
-                  <p className="center">{type}</p>
+                <div key={index}>
+                  <WfVariable
+                    wfRunId={props.wfRunId}
+                    RunNumber={"0"}
+                    name={name}
+                    index={index}
+                    run={props.run}
+                    type={type}
+                  />
                 </div>
               );
             })}
         </div>
+
         {props.internalComponent === "task" && (
           <TaskDefInformation
             {...{
