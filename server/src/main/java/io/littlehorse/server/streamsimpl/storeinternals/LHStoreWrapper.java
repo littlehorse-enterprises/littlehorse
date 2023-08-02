@@ -9,6 +9,7 @@ import io.littlehorse.common.proto.CommandPb.CommandCase;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
@@ -31,6 +32,11 @@ public class LHStoreWrapper extends LHROStoreWrapper {
 
     public void put(Storeable<?> thing) {
         String storeKey = StoreUtils.getFullStoreKey(thing);
+        put(storeKey, thing);
+    }
+
+    public void pepePut(StoredGetable<?, ?> thing) {
+        String storeKey = StoreUtils.getFullStoreKey(thing.getStoredObject());
         put(storeKey, thing);
     }
 

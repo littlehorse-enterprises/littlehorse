@@ -45,6 +45,24 @@ public class TagStorageManager {
         tagsCache.setTags(cachedTags);
         localStore.putTagsCache(getableId, getableCls, tagsCache);
     }
+    public void pepeStore(
+        Collection<Tag> tags,
+        TagsCache preExistingTags
+    ) {
+        List<String> existingTagIds = preExistingTags.getTagIds();
+        List<CachedTag> cachedTags = tags
+                .stream()
+                .map(tag -> {
+                    CachedTag cachedTag = new CachedTag();
+                    cachedTag.setId(tag.getStoreKey());
+                    cachedTag.setRemote(tag.isRemote());
+                    return cachedTag;
+                })
+                .toList();
+        this.storeLocalOrRemoteTag(tags, existingTagIds);
+        this.removeOldTags(tags, preExistingTags.getTags());
+        preExistingTags.setTags(cachedTags);
+    }
 
     private void removeOldTags(Collection<Tag> newTags, List<CachedTag> cachedTags) {
         List<String> newTagIds = newTags.stream().map(Tag::getStoreKey).toList();

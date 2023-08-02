@@ -38,6 +38,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.HostInfoPb;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
+import io.littlehorse.sdk.common.proto.NodeRunPb;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
@@ -46,9 +47,11 @@ import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repar
 import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
+import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
 import io.littlehorse.server.streamsimpl.util.InternalHosts;
 import io.littlehorse.server.streamsimpl.util.WfSpecCache;
 import java.util.ArrayList;
@@ -68,7 +71,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 @Slf4j
 public class KafkaStreamsLHDAOImpl implements LHDAO {
 
-    private Map<String, NodeRun> nodeRunPuts;
+    private Map<String, StoredGetable<NodeRunPb, NodeRun>> nodeRunPuts;
     private Map<String, Variable> variablePuts;
     private Map<String, ExternalEvent> extEvtPuts;
     private Map<String, WfRun> wfRunPuts;
@@ -169,25 +172,75 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         timersToSchedule = new ArrayList<>();
     }
 
+    public <U extends Message, T extends Getable<U>> void put(
+            T getable,
+            Map<String, StoredGetable<U, T>> uncommittedChanged,
+            Class<T> clazz
+    ) throws IllegalStateException {
+        log.trace(
+                "Putting {} with key {}",
+                getable.getClass(),
+                getable.getStoreKey()
+        );
+
+        StoredGetable<U, T> bufferedResult = uncommittedChanged.get(getable.getStoreKey());
+
+        if (bufferedResult != null) {
+            if (bufferedResult.getStoredObject() != getable) {
+                throw new IllegalStateException(
+                        "Appears that Getable " +
+                                getable.getObjectId() +
+                                " was re-instantiated"
+                );
+            }
+            return;
+        }
+
+        StoredGetable<U, T> previousValue = localStore.getPepe(getable.getStoreKey(), clazz);
+
+        final StoredGetable<U, T> toPut;
+
+        if(previousValue != null) {
+            toPut = new StoredGetable<>(
+                    previousValue.getIndexCache(),
+                    getable,
+                    previousValue.getObjectType()
+            );
+        } else {
+            toPut = new StoredGetable<>(
+                    new TagsCache(),
+                    getable,
+                    Getable.getTypeEnum(clazz)
+            );
+        }
+
+        uncommittedChanged.put(getable.getStoreKey(), toPut);
+    }
+
     @Override
     public void putNodeRun(NodeRun nr) {
-        nodeRunPuts.put(nr.getStoreKey(), nr);
+        put(nr, nodeRunPuts, NodeRun.class);
+    }
+
+    public void get(){
+
     }
 
     @Override
     public NodeRun getNodeRun(String wfRunId, int threadNum, int position) {
         String key = new NodeRunId(wfRunId, threadNum, position).getStoreKey();
         if (nodeRunPuts.containsKey(key)) {
-            return nodeRunPuts.get(key);
+            return nodeRunPuts.get(key).getStoredObject();
         }
-        NodeRun out = localStore.get(key, NodeRun.class);
-
+        StoredGetable<NodeRunPb, NodeRun> storedGetable = localStore.getPepe(key, NodeRun.class);
         // Little trick so that if it gets modified it is automatically saved
-        if (out != null) {
-            nodeRunPuts.put(key, out);
-            out.setDao(this);
+        if (storedGetable != null) {
+            nodeRunPuts.put(key, storedGetable);
+            NodeRun entity = storedGetable.getStoredObject();
+            entity.setDao(this);
+            return entity;
         }
-        return out;
+        return null;
     }
 
     @Override
@@ -651,7 +704,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<NodeRun> next = iter.next();
-                getableStorageManager.delete(next.getKey(), NodeRun.class);
+                getableStorageManager.pepeDelete(next.getKey(), NodeRun.class);
             }
         }
 
@@ -729,8 +782,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     private void flush() {
-        for (Map.Entry<String, NodeRun> e : nodeRunPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), NodeRun.class);
+        for (Map.Entry<String, StoredGetable<NodeRunPb, NodeRun>> e : nodeRunPuts.entrySet()) {
+            pepeSaveOrDeleteGETableFlush(e.getKey(), e.getValue(), NodeRun.class);
         }
         for (Map.Entry<String, ExternalEvent> e : extEvtPuts.entrySet()) {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), ExternalEvent.class);
@@ -977,6 +1030,19 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             getableStorageManager.store(val);
         } else {
             getableStorageManager.delete(key, cls);
+        }
+    }
+
+    private <U extends Message, T extends Getable<U>> void pepeSaveOrDeleteGETableFlush(
+        String key,
+        StoredGetable<U, T> val,
+        Class<T> cls
+    ) {
+        T storedObject = val.getStoredObject();
+        if (storedObject != null) {
+            getableStorageManager.pepeStore(val);
+        } else {
+            getableStorageManager.pepeDelete(key, cls);
         }
     }
 

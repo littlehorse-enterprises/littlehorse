@@ -5,8 +5,11 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
+
+import java.util.List;
 
 @Slf4j
 public class GetableStorageManager {
@@ -40,6 +43,29 @@ public class GetableStorageManager {
             getable.getStoreKey(),
             (Class<? extends Getable<?>>) getable.getClass()
         );
+    }
+    public <U extends Message, T extends Getable<U>> void pepeStore(StoredGetable<U, T> getable) {
+        localStore.pepePut(getable);
+        tagStorageManager.pepeStore(
+            getable.getStoredObject().getIndexEntries(),
+            getable.getIndexCache()
+        );
+    }
+
+    public <U extends Message, T extends Getable<U>> void pepeDelete(
+        String storeKey,
+        Class<T> getableClass
+    ) {
+        StoredGetable<U, T> getable = localStore.getPepe(storeKey, getableClass);
+        if (getable == null) {
+            log.debug(
+                    "Tried to delete a thing that didn't exist! Likely because it " +
+                            "was created and deleted in the same Command Event."
+            );
+            return;
+        }
+        localStore.delete(getable.getStoredObject());
+        tagStorageManager.pepeStore(List.of(), getable.getIndexCache());
     }
 
     public <U extends Message, T extends Getable<U>> void delete(

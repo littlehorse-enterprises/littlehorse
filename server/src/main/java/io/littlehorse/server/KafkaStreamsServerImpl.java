@@ -196,6 +196,7 @@ import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import io.littlehorse.server.streamsimpl.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streamsimpl.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streamsimpl.util.GETStreamObserver;
+import io.littlehorse.server.streamsimpl.util.GETStreamObserverPepe;
 import io.littlehorse.server.streamsimpl.util.POSTStreamObserver;
 import java.io.File;
 import java.io.IOException;
@@ -583,7 +584,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getNodeRun(NodeRunIdPb req, StreamObserver<GetNodeRunReplyPb> ctx) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverPepe<>(
             ctx,
             NodeRun.class,
             GetNodeRunReplyPb.class,
