@@ -107,7 +107,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
         setSelectedNodeData(undefined);
         setWfRunData(undefined);
         setSelectedNode(
-          props.data.threadSpecs.entrypoint.nodes[props.nodeName]
+          props.data.threadSpecs[threadName || 'entrypoint'].nodes[props.nodeName]
         );
         if (props.wfRunId) {
           const wfRunNode = wfRunRawData.find(
@@ -120,7 +120,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
           }
         } else {
           getErrorData(
-            props.data.threadSpecs.entrypoint.nodes[props.nodeName],
+            props.data.threadSpecs[threadName || 'entrypoint'].nodes[props.nodeName],
             "failureHandlers"
           );
         }
