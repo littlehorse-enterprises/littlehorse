@@ -11,6 +11,7 @@ import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.wfrun.subnoderun.UserTaskNodeRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb;
+import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskNodePb;
 import io.littlehorse.sdk.common.proto.UserTaskNodePb.AssignmentCase;
 import java.util.ArrayList;
@@ -98,6 +99,16 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
         if (p.hasNotes()) {
             notes = LHSerializable.fromProto(p.getNotes(), VariableAssignment.class);
         }
+    }
+
+    public List<UTActionTrigger> getActions(UTHook requestedHook) {
+        List<UTActionTrigger> matchingHooks = new ArrayList<>();
+        for (UTActionTrigger action : actions) {
+            if (action.getHook().equals(requestedHook)) {
+                matchingHooks.add(action);
+            }
+        }
+        return matchingHooks;
     }
 
     public UserTaskNodeRun createSubNodeRun(Date time) {

@@ -118,6 +118,63 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         return assignUserTaskHelper(userTaskDefName, userId, null);
     }
 
+    @Override
+    public void scheduleReassignmentToGroupOnDeadline(
+        UserTaskOutput userTaskOutput,
+        int deadlineSeconds
+    ) {
+        checkIfIsActive();
+        NodePb.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
+        UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
+        if (!lastNodeName.equals(utImpl.nodeName)) {
+            throw new IllegalStateException("Tried to edit a stale User Task node!");
+        }
+        VariableAssignmentPb userGroup = curNode.getUserTaskBuilder().getUserGroup();
+        if (userGroup == null) {
+            throw new IllegalStateException(
+                "User task is not assigned to a userGroup"
+            );
+        }
+        UTActionTriggerPb.UTAReassignPb reassignPb = UTActionTriggerPb.UTAReassignPb
+            .newBuilder()
+            .setUserGroup(userGroup)
+            .build();
+        UTActionTriggerPb actionTrigger = UTActionTriggerPb
+            .newBuilder()
+            .setReassign(reassignPb)
+            .setHook(UTActionTriggerPb.UTHook.ON_TASK_ASSIGNED)
+            .setDelaySeconds(assignVariable(deadlineSeconds))
+            .build();
+        curNode.getUserTaskBuilder().addActions(actionTrigger);
+        spec.putNodes(lastNodeName, curNode.build());
+    }
+
+    @Override
+    public void scheduleReassignmentToUserOnDeadline(
+        UserTaskOutput userTaskOutput,
+        String userId,
+        int deadlineSeconds
+    ) {
+        checkIfIsActive();
+        NodePb.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
+        UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
+        if (!lastNodeName.equals(utImpl.nodeName)) {
+            throw new IllegalStateException("Tried to edit a stale User Task node!");
+        }
+        UTActionTriggerPb.UTAReassignPb reassignPb = UTActionTriggerPb.UTAReassignPb
+            .newBuilder()
+            .setUserId(assignVariable(userId))
+            .build();
+        UTActionTriggerPb actionTrigger = UTActionTriggerPb
+            .newBuilder()
+            .setReassign(reassignPb)
+            .setHook(UTActionTriggerPb.UTHook.ON_TASK_ASSIGNED)
+            .setDelaySeconds(assignVariable(deadlineSeconds))
+            .build();
+        curNode.getUserTaskBuilder().addActions(actionTrigger);
+        spec.putNodes(lastNodeName, curNode.build());
+    }
+
     public UserTaskOutputImpl assignUserTaskToUser(
         String userTaskDefName,
         WfRunVariable userId
@@ -205,11 +262,12 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         }
 
         NodePb.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        curNode
-            .getUserTaskBuilder()
-            .addActions(
-                UTActionTriggerPb.newBuilder().setTask(utaTask).setDelaySeconds(assn)
-            );
+        UTActionTriggerPb.Builder newUtActionBuilder = UTActionTriggerPb
+            .newBuilder()
+            .setTask(utaTask)
+            .setHook(UTActionTriggerPb.UTHook.ON_ARRIVAL)
+            .setDelaySeconds(assn);
+        curNode.getUserTaskBuilder().addActions(newUtActionBuilder);
         spec.putNodes(lastNodeName, curNode.build());
         // TODO LH-334: return a modified child class of NodeOutput which lets
         // us mutate variables

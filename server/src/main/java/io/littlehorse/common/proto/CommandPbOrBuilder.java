@@ -355,31 +355,46 @@ public interface CommandPbOrBuilder extends
   io.littlehorse.common.proto.TriggeredTaskRunPbOrBuilder getTriggeredTaskRunOrBuilder();
 
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
    * @return Whether the deleteUserTaskDef field is set.
    */
   boolean hasDeleteUserTaskDef();
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
    * @return The deleteUserTaskDef.
    */
   io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb getDeleteUserTaskDef();
   /**
+   * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+   */
+  io.littlehorse.sdk.common.proto.DeleteUserTaskDefPbOrBuilder getDeleteUserTaskDefOrBuilder();
+
+  /**
    * <pre>
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+   * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
+   * @return Whether the reassignedUserTask field is set.
    */
-  io.littlehorse.sdk.common.proto.DeleteUserTaskDefPbOrBuilder getDeleteUserTaskDefOrBuilder();
+  boolean hasReassignedUserTask();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
+   * @return The reassignedUserTask.
+   */
+  io.littlehorse.common.proto.ReassignedUserTaskPb getReassignedUserTask();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
+   */
+  io.littlehorse.common.proto.ReassignedUserTaskPbOrBuilder getReassignedUserTaskOrBuilder();
 
   public io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
 }

@@ -5,7 +5,10 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
+import io.littlehorse.sdk.common.proto.AssignUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
 import io.littlehorse.sdk.common.proto.NodeRunPb;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunPb;
@@ -56,6 +59,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         return Map.of(USER_TASK_DEF_NAME, new AZUserTaskForm());
     }
 
+    @Override
     public Workflow getWorkflowImpl() {
         return new WorkflowImpl(
             getWorkflowName(),
@@ -65,9 +69,15 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
                     VariableTypePb.JSON_OBJ
                 );
 
-                UserTaskOutput formOutput = thread.assignUserTaskToUser(
+                UserTaskOutput formOutput = thread.assignUserTaskToUserGroup(
                     USER_TASK_DEF_NAME,
-                    "eduwer"
+                    "test-group"
+                );
+
+                thread.scheduleReassignmentToUserOnDeadline(
+                    formOutput,
+                    "available-user",
+                    5
                 );
 
                 thread.scheduleTaskAfter(formOutput, 2, "az-reminder");
@@ -78,6 +88,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         );
     }
 
+    @Override
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new AZSimpleTask());
     }
@@ -122,18 +133,48 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
             );
         }
 
-        // Look for UserTaskRun's with `eduwer` as the user
-        SearchUserTaskRunReplyPb results = client
+        SearchUserTaskRunReplyPb userGroupResult = client
             .getGrpcClient()
             .searchUserTaskRun(
                 SearchUserTaskRunPb
                     .newBuilder()
-                    .setUserId("eduwer")
+                    .setUserGroup("test-group")
                     .setUserTaskDefName(USER_TASK_DEF_NAME)
-                    .setStatus(UserTaskRunStatusPb.CLAIMED)
+                    .setStatus(UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED)
                     .build()
             );
+        UserTaskRunIdPb userTaskRunIdPb = null;
+        for (UserTaskRunIdPb userTaskRunIdResult : userGroupResult.getResultsList()) {
+            if (userTaskRunIdResult.getWfRunId().equals(wfRunId)) {
+                userTaskRunIdPb = userTaskRunIdResult;
+                break;
+            }
+        }
+        AssignUserTaskRunReplyPb assignUserTaskRunReplyPb = client
+            .getGrpcClient()
+            .assignUserTaskRun(
+                AssignUserTaskRunPb
+                    .newBuilder()
+                    .setUserId("unavailable-user")
+                    .setUserTaskRunId(userTaskRunIdPb)
+                    .build()
+            );
+        assertThat(
+            assignUserTaskRunReplyPb.getCode() == LHResponseCodePb.OK,
+            "Unexpected response from user assignment request"
+        );
+        Thread.sleep(1000 * 10);
 
+        // Look for UserTaskRun's with `test-user` as the user
+        SearchUserTaskRunReplyPb results = client
+            .getGrpcClient()
+            .searchUserTaskRun(
+                SearchUserTaskRunPb.newBuilder().setUserId("available-user").build()
+            );
+        assertThat(
+            results.getCode() == LHResponseCodePb.OK,
+            "Unexpected response from search request"
+        );
         UserTaskRunIdPb found = null;
 
         for (UserTaskRunIdPb candidate : results.getResultsList()) {
@@ -144,7 +185,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         }
 
         if (found == null) {
-            throw new TestFailure(this, "Couldn't find Eduwer's task!");
+            throw new TestFailure(this, "Couldn't find available-user's task!");
         }
 
         // Now we execute the task

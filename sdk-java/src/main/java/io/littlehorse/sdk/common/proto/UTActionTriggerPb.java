@@ -16,6 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private UTActionTriggerPb() {
+    hook_ = 0;
   }
 
   @java.lang.Override
@@ -41,6 +42,114 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.sdk.common.proto.UTActionTriggerPb.class, io.littlehorse.sdk.common.proto.UTActionTriggerPb.Builder.class);
+  }
+
+  /**
+   * Protobuf enum {@code littlehorse.UTActionTriggerPb.UTHook}
+   */
+  public enum UTHook
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>ON_ARRIVAL = 0;</code>
+     */
+    ON_ARRIVAL(0),
+    /**
+     * <code>ON_TASK_ASSIGNED = 1;</code>
+     */
+    ON_TASK_ASSIGNED(1),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>ON_ARRIVAL = 0;</code>
+     */
+    public static final int ON_ARRIVAL_VALUE = 0;
+    /**
+     * <code>ON_TASK_ASSIGNED = 1;</code>
+     */
+    public static final int ON_TASK_ASSIGNED_VALUE = 1;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static UTHook valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static UTHook forNumber(int value) {
+      switch (value) {
+        case 0: return ON_ARRIVAL;
+        case 1: return ON_TASK_ASSIGNED;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<UTHook>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        UTHook> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<UTHook>() {
+            public UTHook findValueByNumber(int number) {
+              return UTHook.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.UTActionTriggerPb.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final UTHook[] VALUES = values();
+
+    public static UTHook valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private UTHook(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:littlehorse.UTActionTriggerPb.UTHook)
   }
 
   public interface UTACancelPbOrBuilder extends
@@ -2396,45 +2505,6 @@ private static final long serialVersionUID = 0L;
         actionCase_);
   }
 
-  private int scheduleTimeCase_ = 0;
-  private java.lang.Object scheduleTime_;
-  public enum ScheduleTimeCase
-      implements com.google.protobuf.Internal.EnumLite,
-          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    DELAY_SECONDS(5),
-    SCHEDULETIME_NOT_SET(0);
-    private final int value;
-    private ScheduleTimeCase(int value) {
-      this.value = value;
-    }
-    /**
-     * @param value The number of the enum to look for.
-     * @return The enum associated with the given number.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static ScheduleTimeCase valueOf(int value) {
-      return forNumber(value);
-    }
-
-    public static ScheduleTimeCase forNumber(int value) {
-      switch (value) {
-        case 5: return DELAY_SECONDS;
-        case 0: return SCHEDULETIME_NOT_SET;
-        default: return null;
-      }
-    }
-    public int getNumber() {
-      return this.value;
-    }
-  };
-
-  public ScheduleTimeCase
-  getScheduleTimeCase() {
-    return ScheduleTimeCase.forNumber(
-        scheduleTimeCase_);
-  }
-
   public static final int TASK_FIELD_NUMBER = 1;
   /**
    * <code>.littlehorse.UTActionTriggerPb.UTATaskPb task = 1;</code>
@@ -2541,10 +2611,10 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int DELAY_SECONDS_FIELD_NUMBER = 5;
+  private io.littlehorse.sdk.common.proto.VariableAssignmentPb delaySeconds_;
   /**
    * <pre>
-   * Later on, might add trigger features such as
-   * "schedule this action when task is rescheduled" etc.
+   *Action's delay
    * </pre>
    *
    * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
@@ -2552,12 +2622,11 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasDelaySeconds() {
-    return scheduleTimeCase_ == 5;
+    return delaySeconds_ != null;
   }
   /**
    * <pre>
-   * Later on, might add trigger features such as
-   * "schedule this action when task is rescheduled" etc.
+   *Action's delay
    * </pre>
    *
    * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
@@ -2565,25 +2634,36 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableAssignmentPb getDelaySeconds() {
-    if (scheduleTimeCase_ == 5) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_;
-    }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return delaySeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
   }
   /**
    * <pre>
-   * Later on, might add trigger features such as
-   * "schedule this action when task is rescheduled" etc.
+   *Action's delay
    * </pre>
    *
    * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getDelaySecondsOrBuilder() {
-    if (scheduleTimeCase_ == 5) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_;
-    }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return delaySeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
+  }
+
+  public static final int HOOK_FIELD_NUMBER = 6;
+  private int hook_ = 0;
+  /**
+   * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+   * @return The enum numeric value on the wire for hook.
+   */
+  @java.lang.Override public int getHookValue() {
+    return hook_;
+  }
+  /**
+   * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+   * @return The hook.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook getHook() {
+    io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook result = io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.forNumber(hook_);
+    return result == null ? io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -2609,8 +2689,11 @@ private static final long serialVersionUID = 0L;
     if (actionCase_ == 3) {
       output.writeMessage(3, (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb) action_);
     }
-    if (scheduleTimeCase_ == 5) {
-      output.writeMessage(5, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_);
+    if (delaySeconds_ != null) {
+      output.writeMessage(5, getDelaySeconds());
+    }
+    if (hook_ != io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.ON_ARRIVAL.getNumber()) {
+      output.writeEnum(6, hook_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -2633,9 +2716,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb) action_);
     }
-    if (scheduleTimeCase_ == 5) {
+    if (delaySeconds_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_);
+        .computeMessageSize(5, getDelaySeconds());
+    }
+    if (hook_ != io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.ON_ARRIVAL.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(6, hook_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -2652,6 +2739,12 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.UTActionTriggerPb other = (io.littlehorse.sdk.common.proto.UTActionTriggerPb) obj;
 
+    if (hasDelaySeconds() != other.hasDelaySeconds()) return false;
+    if (hasDelaySeconds()) {
+      if (!getDelaySeconds()
+          .equals(other.getDelaySeconds())) return false;
+    }
+    if (hook_ != other.hook_) return false;
     if (!getActionCase().equals(other.getActionCase())) return false;
     switch (actionCase_) {
       case 1:
@@ -2669,15 +2762,6 @@ private static final long serialVersionUID = 0L;
       case 0:
       default:
     }
-    if (!getScheduleTimeCase().equals(other.getScheduleTimeCase())) return false;
-    switch (scheduleTimeCase_) {
-      case 5:
-        if (!getDelaySeconds()
-            .equals(other.getDelaySeconds())) return false;
-        break;
-      case 0:
-      default:
-    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -2689,6 +2773,12 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
+    if (hasDelaySeconds()) {
+      hash = (37 * hash) + DELAY_SECONDS_FIELD_NUMBER;
+      hash = (53 * hash) + getDelaySeconds().hashCode();
+    }
+    hash = (37 * hash) + HOOK_FIELD_NUMBER;
+    hash = (53 * hash) + hook_;
     switch (actionCase_) {
       case 1:
         hash = (37 * hash) + TASK_FIELD_NUMBER;
@@ -2701,14 +2791,6 @@ private static final long serialVersionUID = 0L;
       case 3:
         hash = (37 * hash) + REASSIGN_FIELD_NUMBER;
         hash = (53 * hash) + getReassign().hashCode();
-        break;
-      case 0:
-      default:
-    }
-    switch (scheduleTimeCase_) {
-      case 5:
-        hash = (37 * hash) + DELAY_SECONDS_FIELD_NUMBER;
-        hash = (53 * hash) + getDelaySeconds().hashCode();
         break;
       case 0:
       default:
@@ -2851,13 +2933,14 @@ private static final long serialVersionUID = 0L;
       if (reassignBuilder_ != null) {
         reassignBuilder_.clear();
       }
+      delaySeconds_ = null;
       if (delaySecondsBuilder_ != null) {
-        delaySecondsBuilder_.clear();
+        delaySecondsBuilder_.dispose();
+        delaySecondsBuilder_ = null;
       }
+      hook_ = 0;
       actionCase_ = 0;
       action_ = null;
-      scheduleTimeCase_ = 0;
-      scheduleTime_ = null;
       return this;
     }
 
@@ -2892,6 +2975,14 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.UTActionTriggerPb result) {
       int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.delaySeconds_ = delaySecondsBuilder_ == null
+            ? delaySeconds_
+            : delaySecondsBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.hook_ = hook_;
+      }
     }
 
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.UTActionTriggerPb result) {
@@ -2908,12 +2999,6 @@ private static final long serialVersionUID = 0L;
       if (actionCase_ == 3 &&
           reassignBuilder_ != null) {
         result.action_ = reassignBuilder_.build();
-      }
-      result.scheduleTimeCase_ = scheduleTimeCase_;
-      result.scheduleTime_ = this.scheduleTime_;
-      if (scheduleTimeCase_ == 5 &&
-          delaySecondsBuilder_ != null) {
-        result.scheduleTime_ = delaySecondsBuilder_.build();
       }
     }
 
@@ -2961,6 +3046,12 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.UTActionTriggerPb other) {
       if (other == io.littlehorse.sdk.common.proto.UTActionTriggerPb.getDefaultInstance()) return this;
+      if (other.hasDelaySeconds()) {
+        mergeDelaySeconds(other.getDelaySeconds());
+      }
+      if (other.hook_ != 0) {
+        setHookValue(other.getHookValue());
+      }
       switch (other.getActionCase()) {
         case TASK: {
           mergeTask(other.getTask());
@@ -2975,15 +3066,6 @@ private static final long serialVersionUID = 0L;
           break;
         }
         case ACTION_NOT_SET: {
-          break;
-        }
-      }
-      switch (other.getScheduleTimeCase()) {
-        case DELAY_SECONDS: {
-          mergeDelaySeconds(other.getDelaySeconds());
-          break;
-        }
-        case SCHEDULETIME_NOT_SET: {
           break;
         }
       }
@@ -3038,9 +3120,14 @@ private static final long serialVersionUID = 0L;
               input.readMessage(
                   getDelaySecondsFieldBuilder().getBuilder(),
                   extensionRegistry);
-              scheduleTimeCase_ = 5;
+              bitField0_ |= 0x00000008;
               break;
             } // case 42
+            case 48: {
+              hook_ = input.readEnum();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 48
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3067,21 +3154,6 @@ private static final long serialVersionUID = 0L;
     public Builder clearAction() {
       actionCase_ = 0;
       action_ = null;
-      onChanged();
-      return this;
-    }
-
-    private int scheduleTimeCase_ = 0;
-    private java.lang.Object scheduleTime_;
-    public ScheduleTimeCase
-        getScheduleTimeCase() {
-      return ScheduleTimeCase.forNumber(
-          scheduleTimeCase_);
-    }
-
-    public Builder clearScheduleTime() {
-      scheduleTimeCase_ = 0;
-      scheduleTime_ = null;
       onChanged();
       return this;
     }
@@ -3550,48 +3622,38 @@ private static final long serialVersionUID = 0L;
       return reassignBuilder_;
     }
 
+    private io.littlehorse.sdk.common.proto.VariableAssignmentPb delaySeconds_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> delaySecondsBuilder_;
     /**
      * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
+     *Action's delay
      * </pre>
      *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
      * @return Whether the delaySeconds field is set.
      */
-    @java.lang.Override
     public boolean hasDelaySeconds() {
-      return scheduleTimeCase_ == 5;
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
+     *Action's delay
      * </pre>
      *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
      * @return The delaySeconds.
      */
-    @java.lang.Override
     public io.littlehorse.sdk.common.proto.VariableAssignmentPb getDelaySeconds() {
       if (delaySecondsBuilder_ == null) {
-        if (scheduleTimeCase_ == 5) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_;
-        }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return delaySeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
       } else {
-        if (scheduleTimeCase_ == 5) {
-          return delaySecondsBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return delaySecondsBuilder_.getMessage();
       }
     }
     /**
      * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
+     *Action's delay
      * </pre>
      *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
@@ -3601,18 +3663,17 @@ private static final long serialVersionUID = 0L;
         if (value == null) {
           throw new NullPointerException();
         }
-        scheduleTime_ = value;
-        onChanged();
+        delaySeconds_ = value;
       } else {
         delaySecondsBuilder_.setMessage(value);
       }
-      scheduleTimeCase_ = 5;
+      bitField0_ |= 0x00000008;
+      onChanged();
       return this;
     }
     /**
      * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
+     *Action's delay
      * </pre>
      *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
@@ -3620,100 +3681,84 @@ private static final long serialVersionUID = 0L;
     public Builder setDelaySeconds(
         io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
       if (delaySecondsBuilder_ == null) {
-        scheduleTime_ = builderForValue.build();
-        onChanged();
+        delaySeconds_ = builderForValue.build();
       } else {
         delaySecondsBuilder_.setMessage(builderForValue.build());
       }
-      scheduleTimeCase_ = 5;
+      bitField0_ |= 0x00000008;
+      onChanged();
       return this;
     }
     /**
      * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
+     *Action's delay
      * </pre>
      *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
      */
     public Builder mergeDelaySeconds(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
       if (delaySecondsBuilder_ == null) {
-        if (scheduleTimeCase_ == 5 &&
-            scheduleTime_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
-          scheduleTime_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_)
-              .mergeFrom(value).buildPartial();
+        if (((bitField0_ & 0x00000008) != 0) &&
+          delaySeconds_ != null &&
+          delaySeconds_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
+          getDelaySecondsBuilder().mergeFrom(value);
         } else {
-          scheduleTime_ = value;
+          delaySeconds_ = value;
         }
-        onChanged();
       } else {
-        if (scheduleTimeCase_ == 5) {
-          delaySecondsBuilder_.mergeFrom(value);
-        } else {
-          delaySecondsBuilder_.setMessage(value);
-        }
+        delaySecondsBuilder_.mergeFrom(value);
       }
-      scheduleTimeCase_ = 5;
+      bitField0_ |= 0x00000008;
+      onChanged();
       return this;
     }
     /**
      * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
+     *Action's delay
      * </pre>
      *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
      */
     public Builder clearDelaySeconds() {
-      if (delaySecondsBuilder_ == null) {
-        if (scheduleTimeCase_ == 5) {
-          scheduleTimeCase_ = 0;
-          scheduleTime_ = null;
-          onChanged();
-        }
-      } else {
-        if (scheduleTimeCase_ == 5) {
-          scheduleTimeCase_ = 0;
-          scheduleTime_ = null;
-        }
-        delaySecondsBuilder_.clear();
+      bitField0_ = (bitField0_ & ~0x00000008);
+      delaySeconds_ = null;
+      if (delaySecondsBuilder_ != null) {
+        delaySecondsBuilder_.dispose();
+        delaySecondsBuilder_ = null;
       }
+      onChanged();
       return this;
     }
     /**
      * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
+     *Action's delay
      * </pre>
      *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getDelaySecondsBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
       return getDelaySecondsFieldBuilder().getBuilder();
     }
     /**
      * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
+     *Action's delay
      * </pre>
      *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
      */
-    @java.lang.Override
     public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getDelaySecondsOrBuilder() {
-      if ((scheduleTimeCase_ == 5) && (delaySecondsBuilder_ != null)) {
+      if (delaySecondsBuilder_ != null) {
         return delaySecondsBuilder_.getMessageOrBuilder();
       } else {
-        if (scheduleTimeCase_ == 5) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_;
-        }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return delaySeconds_ == null ?
+            io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
       }
     }
     /**
      * <pre>
-     * Later on, might add trigger features such as
-     * "schedule this action when task is rescheduled" etc.
+     *Action's delay
      * </pre>
      *
      * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
@@ -3722,19 +3767,67 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
         getDelaySecondsFieldBuilder() {
       if (delaySecondsBuilder_ == null) {
-        if (!(scheduleTimeCase_ == 5)) {
-          scheduleTime_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
-        }
         delaySecondsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.VariableAssignmentPb) scheduleTime_,
+                getDelaySeconds(),
                 getParentForChildren(),
                 isClean());
-        scheduleTime_ = null;
+        delaySeconds_ = null;
       }
-      scheduleTimeCase_ = 5;
-      onChanged();
       return delaySecondsBuilder_;
+    }
+
+    private int hook_ = 0;
+    /**
+     * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+     * @return The enum numeric value on the wire for hook.
+     */
+    @java.lang.Override public int getHookValue() {
+      return hook_;
+    }
+    /**
+     * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+     * @param value The enum numeric value on the wire for hook to set.
+     * @return This builder for chaining.
+     */
+    public Builder setHookValue(int value) {
+      hook_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+     * @return The hook.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook getHook() {
+      io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook result = io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.forNumber(hook_);
+      return result == null ? io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+     * @param value The hook to set.
+     * @return This builder for chaining.
+     */
+    public Builder setHook(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000010;
+      hook_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearHook() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      hook_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

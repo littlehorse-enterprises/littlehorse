@@ -6,8 +6,10 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
+import io.littlehorse.common.model.command.subcommand.ReassignUserTask;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.subnode.UserTaskNode;
 import io.littlehorse.common.model.meta.usertasks.UTActionTrigger;
@@ -17,10 +19,12 @@ import io.littlehorse.common.model.objectId.UserTaskDefId;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.wfrun.usertaskevent.UTEReassigned;
 import io.littlehorse.common.model.wfrun.usertaskevent.UserTaskEvent;
+import io.littlehorse.common.proto.ReassignedUserTaskPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskEventPb;
 import io.littlehorse.sdk.common.proto.UserTaskFieldResultPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunPb;
@@ -29,6 +33,8 @@ import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -55,7 +61,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     private String specificUserId;
     private String userGroup;
 
-    private String userId;
+    private String claimedByUserId;
     private List<UserTaskFieldResultPb> results;
 
     private UserTaskRunStatusPb status;
@@ -104,7 +110,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
             .setScheduledTime(LHUtil.fromDate(scheduledTime))
             .setNodeRunId(nodeRunId.toProto());
 
-        if (userId != null) out.setUserId(userId);
+        if (claimedByUserId != null) out.setClaimedByUserId(claimedByUserId);
         if (notes != null) out.setNotes(notes);
 
         for (UserTaskEvent event : events) {
@@ -141,7 +147,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         scheduledTime = LHLibUtil.fromProtoTs(p.getScheduledTime());
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunId.class);
 
-        if (p.hasUserId()) userId = p.getUserId();
+        if (p.hasClaimedByUserId()) claimedByUserId = p.getClaimedByUserId();
 
         if (p.hasNotes()) notes = p.getNotes();
 
@@ -202,7 +208,9 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
 
             // I don't think there's anything to do other than schedule the timers for
             // the actions which need to occur.
-            for (UTActionTrigger action : node.userTaskNode.getActions()) {
+            for (UTActionTrigger action : node.userTaskNode.getActions(
+                UTHook.ON_ARRIVAL
+            )) {
                 scheduleAction(action);
             }
             log.info("Arrived at user task!");
@@ -236,7 +244,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
 
         specificUserId = userIdVal.strVal;
         status = UserTaskRunStatusPb.CLAIMED;
-        userId = specificUserId;
+        claimedByUserId = specificUserId;
 
         // now add Audit Log Event
         UTEReassigned reassigned = new UTEReassigned();
@@ -261,7 +269,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         userGroup = groupIdVal.strVal;
         status = UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED;
         specificUserId = null;
-        userId = null;
+        claimedByUserId = null;
 
         // now add Audit Log Event
         UTEReassigned reassigned = new UTEReassigned();
@@ -274,34 +282,105 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     }
 
     public void reassignTo(AssignUserTaskRun event) {
-        UTEReassigned ute = new UTEReassigned();
+        UTEReassigned reassigned = null;
         switch (event.getAssigneeType()) {
             case USER_GROUP:
-                ute.setNewUserGroup(event.getUserGroup());
-                ute.setOldUserGroup(userGroup);
-                ute.setNewUserId(null);
-                ute.setOldUserId(userId);
-
-                assignedToType = AssignedToCase.USER_GROUP;
-                userGroup = event.getUserGroup();
-                specificUserId = null;
-                userId = null;
-                status = UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED;
+                reassigned = reassignToUserGroup(event.getUserGroup());
                 break;
             case USER_ID:
-                ute.setNewUserId(event.getUserId());
-                ute.setOldUserId(userId);
-
-                assignedToType = AssignedToCase.SPECIFIC_USER_ID;
-                userId = event.getUserId();
-                specificUserId = event.getUserId();
-                status = UserTaskRunStatusPb.CLAIMED;
+                reassigned = reassignToUser(event.getUserId(), true);
                 break;
             case ASSIGNEE_NOT_SET:
-            // nothing to do, this isn't possible.
         }
+        if (reassigned != null) {
+            events.add(new UserTaskEvent(reassigned, new Date()));
+        }
+    }
 
-        events.add(new UserTaskEvent(ute, new Date()));
+    public void deadlineReassign(
+        String newOwner,
+        ReassignedUserTaskPb.AssignToCase assignToCase
+    ) {
+        UTEReassigned reassigned = null;
+        switch (assignToCase) {
+            case USER_ID:
+                reassigned = reassignToUser(newOwner, false);
+                break;
+            case USER_GROUP:
+                reassigned = reassignToUserGroup(newOwner);
+            case ASSIGNTO_NOT_SET:
+        }
+        if (reassigned != null) {
+            events.add(new UserTaskEvent(reassigned, new Date()));
+        }
+    }
+
+    private UTEReassigned reassignToUserGroup(String newUserGroup) {
+        UTEReassigned ute = new UTEReassigned();
+        ute.setNewUserGroup(newUserGroup);
+        ute.setOldUserGroup(userGroup);
+        ute.setNewUserId(null);
+        ute.setOldUserId(claimedByUserId);
+
+        assignedToType = AssignedToCase.USER_GROUP;
+        userGroup = newUserGroup;
+        specificUserId = null;
+        claimedByUserId = null;
+        status = UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED;
+        return ute;
+    }
+
+    private UTEReassigned reassignToUser(String newUserId, boolean triggerAction) {
+        UTEReassigned ute = new UTEReassigned();
+        ute.setNewUserId(newUserId);
+        ute.setOldUserId(claimedByUserId);
+
+        assignedToType = AssignedToCase.SPECIFIC_USER_ID;
+        claimedByUserId = newUserId;
+        specificUserId = newUserId;
+        status = UserTaskRunStatusPb.CLAIMED;
+        Node node = getNodeRun().getNode();
+        if (triggerAction) {
+            for (UTActionTrigger action : node
+                .getUserTaskNode()
+                .getActions(UTHook.ON_TASK_ASSIGNED)) {
+                scheduleTaskReassign(action);
+            }
+        }
+        return ute;
+    }
+
+    private void scheduleTaskReassign(UTActionTrigger action) {
+        long delayInSeconds = action.getDelaySeconds().getRhsLiteralValue().intVal;
+        LocalDateTime localDateTime = LocalDateTime.now().plusSeconds(delayInSeconds);
+        Date maturationTime = Date.from(
+            localDateTime.atZone(ZoneId.systemDefault()).toInstant()
+        );
+        ReassignedUserTaskPb.AssignToCase assignToCase = null;
+        switch (action.getReassign().getAssignToCase()) {
+            case USER_ID:
+                assignToCase = ReassignedUserTaskPb.AssignToCase.USER_ID;
+                break;
+            case USER_GROUP:
+                assignToCase = ReassignedUserTaskPb.AssignToCase.USER_GROUP;
+                break;
+        }
+        LHTimer timer = new LHTimer(
+            new Command(
+                new ReassignUserTask(
+                    getNodeRun().getObjectId(),
+                    action
+                        .getReassign()
+                        .getNewOwner()
+                        .getRhsLiteralValue()
+                        .getStrVal(),
+                    assignToCase
+                ),
+                maturationTime
+            ),
+            getDao()
+        );
+        getDao().scheduleTimer(timer);
     }
 
     public void processTaskCompletedEvent(CompleteUserTaskRun event) {
@@ -313,7 +392,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
             return;
         }
 
-        userId = event.getUserId();
+        claimedByUserId = event.getUserId();
         status = UserTaskRunStatusPb.DONE;
 
         // Now we need to create an output thing...
@@ -363,7 +442,8 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
             new GetableIndex<UserTaskRun>(
                 List.of(Pair.of("userId", GetableIndex.ValueType.SINGLE)),
                 Optional.of(TagStorageTypePb.REMOTE),
-                userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserId())
+                userTaskRun ->
+                    !Strings.isNullOrEmpty(userTaskRun.getClaimedByUserId())
             ),
             new GetableIndex<UserTaskRun>(
                 List.of(
@@ -371,7 +451,8 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                     Pair.of("userId", GetableIndex.ValueType.SINGLE)
                 ),
                 Optional.of(TagStorageTypePb.LOCAL),
-                userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserId())
+                userTaskRun ->
+                    !Strings.isNullOrEmpty(userTaskRun.getClaimedByUserId())
             ),
             new GetableIndex<UserTaskRun>(
                 List.of(
@@ -380,7 +461,8 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                     Pair.of("userId", GetableIndex.ValueType.SINGLE)
                 ),
                 Optional.of(TagStorageTypePb.LOCAL),
-                userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserId())
+                userTaskRun ->
+                    !Strings.isNullOrEmpty(userTaskRun.getClaimedByUserId())
             ),
             new GetableIndex<UserTaskRun>(
                 List.of(
@@ -439,7 +521,11 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
             }
             case "userId" -> {
                 return List.of(
-                    new IndexedField(key, this.getUserId(), TagStorageTypePb.REMOTE)
+                    new IndexedField(
+                        key,
+                        this.getClaimedByUserId(),
+                        TagStorageTypePb.REMOTE
+                    )
                 );
             }
             case "userGroup" -> {
