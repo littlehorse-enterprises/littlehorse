@@ -11,6 +11,7 @@ import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.proto.ReassignedUserTaskPb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -67,7 +68,9 @@ public class ReassignUserTask extends SubCommand<ReassignedUserTaskPb> {
         UserTaskRun userTaskRun = dao.getUserTaskRun(
             nodeRun.getUserTaskRun().getUserTaskRunId()
         );
-        userTaskRun.deadlineReassign(newOwner, assignToCase);
+        if (userTaskRun.getStatus() == UserTaskRunStatusPb.CLAIMED) {
+            userTaskRun.deadlineReassign(newOwner, assignToCase);
+        }
         return null;
     }
 
