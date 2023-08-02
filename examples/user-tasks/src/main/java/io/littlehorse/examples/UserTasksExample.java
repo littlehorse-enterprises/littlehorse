@@ -24,7 +24,7 @@ public class UserTasksExample {
 
     private static final Logger log = LoggerFactory.getLogger(UserTasksExample.class);
 
-    private static final String WF_NAME = "it-request3";
+    private static final String WF_NAME = "it-request";
     public static final String EMAIL_TASK_NAME = "send-email";
 
     private static final String IT_REQUEST_FORM = "it-request";

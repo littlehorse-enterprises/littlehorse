@@ -349,7 +349,10 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     }
 
     private void scheduleTaskReassign(UTActionTrigger action) {
-        Date maturationTime = new Date(System.currentTimeMillis() + (1000 * 5));
+        long delayInSeconds = action.getDelaySeconds().getRhsLiteralValue().intVal;
+        Date maturationTime = new Date(
+            System.currentTimeMillis() + (1000 * delayInSeconds)
+        );
         ReassignedUserTaskPb.AssignToCase assignToCase = null;
         switch (action.getReassign().getAssignToCase()) {
             case USER_ID:
