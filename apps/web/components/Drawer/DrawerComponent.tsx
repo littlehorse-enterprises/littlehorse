@@ -18,7 +18,8 @@ interface DrawerComponentProps {
   setCode: (code: string) => void;
   setLanguage: (language: string) => void;
   setError: (value: boolean) => void;
-  run: any;
+  setThread: (value: string) => void;
+  run?: any;
 }
 
 export const DrawerComponent = (props: DrawerComponentProps) => {
@@ -35,10 +36,13 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
   const changeThread = () => {
     if (props.data.threadSpecs) {
       const keys = Object.keys(props.data.threadSpecs);
-
-      setThreadName(keys[1]);
+      setThreadName(keys[1])
     }
   };
+  const setThreadHandler = (thread:string) => {
+    setThreadName(thread)
+    props.setThread(thread)
+  }
 
   const getData: any = async (
     url: string,
@@ -98,7 +102,12 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 
         if (threadName === undefined) {
           selectedThread = props.data.entrypointThreadName;
-          setThreadName(selectedThread);
+          
+          
+          
+          
+          
+          (selectedThread);
         }
 
         setMainData(
@@ -115,7 +124,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
         setSelectedNodeData(undefined);
         setWfRunData(undefined);
         setSelectedNode(
-          props.data.threadSpecs.entrypoint.nodes[props.nodeName]
+          props.data.threadSpecs[threadName || 'entrypoint'].nodes[props.nodeName]
         );
         if (props.wfRunId) {
           const wfRunNode = wfRunRawData.find(
@@ -128,7 +137,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
           }
         } else {
           getErrorData(
-            props.data.threadSpecs.entrypoint.nodes[props.nodeName],
+            props.data.threadSpecs[threadName || 'entrypoint'].nodes[props.nodeName],
             "failureHandlers"
           );
         }
@@ -136,6 +145,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 
       const processComplexData = {
         task: () => {
+          console.log('selectedNode',selectedNode)
           if (rawData === undefined)
             getData(
               "../../api/drawer/taskDef/",
@@ -377,7 +387,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
             <select
               className="drawer__threadSelector__container__select"
               value={threadName}
-              onChange={(event) => setThreadName(event.target.value)}
+              onChange={(event) => setThreadHandler(event.target.value)}
             >
               {props.data &&
                 Object.keys(props.data.threadSpecs).map((name, index) => {
@@ -408,7 +418,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
           {mainData &&
             mainData.map(({ name, type }, index) => {
               return (
-                <div>
+                <div key={index}>
                   <WfVariable
                     wfRunId={props.wfRunId}
                     RunNumber={"0"}
