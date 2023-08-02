@@ -78,10 +78,10 @@ public interface UserTaskRunPbOrBuilder extends
    * 2. Not yet claimed.
    * </pre>
    *
-   * <code>optional string user_id = 5;</code>
-   * @return Whether the userId field is set.
+   * <code>optional string claimed_by_user_id = 5;</code>
+   * @return Whether the claimedByUserId field is set.
    */
-  boolean hasUserId();
+  boolean hasClaimedByUserId();
   /**
    * <pre>
    * The task may be in one of two states:
@@ -89,10 +89,10 @@ public interface UserTaskRunPbOrBuilder extends
    * 2. Not yet claimed.
    * </pre>
    *
-   * <code>optional string user_id = 5;</code>
-   * @return The userId.
+   * <code>optional string claimed_by_user_id = 5;</code>
+   * @return The claimedByUserId.
    */
-  java.lang.String getUserId();
+  java.lang.String getClaimedByUserId();
   /**
    * <pre>
    * The task may be in one of two states:
@@ -100,11 +100,11 @@ public interface UserTaskRunPbOrBuilder extends
    * 2. Not yet claimed.
    * </pre>
    *
-   * <code>optional string user_id = 5;</code>
-   * @return The bytes for userId.
+   * <code>optional string claimed_by_user_id = 5;</code>
+   * @return The bytes for claimedByUserId.
    */
   com.google.protobuf.ByteString
-      getUserIdBytes();
+      getClaimedByUserIdBytes();
 
   /**
    * <code>repeated .littlehorse.UserTaskFieldResultPb results = 6;</code>

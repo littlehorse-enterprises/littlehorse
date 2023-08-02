@@ -20,7 +20,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private UserTaskRunPb() {
-    userId_ = "";
+    claimedByUserId_ = "";
     results_ = java.util.Collections.emptyList();
     status_ = 0;
     events_ = java.util.Collections.emptyList();
@@ -250,9 +250,9 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int USER_ID_FIELD_NUMBER = 5;
+  public static final int CLAIMED_BY_USER_ID_FIELD_NUMBER = 5;
   @SuppressWarnings("serial")
-  private volatile java.lang.Object userId_ = "";
+  private volatile java.lang.Object claimedByUserId_ = "";
   /**
    * <pre>
    * The task may be in one of two states:
@@ -260,11 +260,11 @@ private static final long serialVersionUID = 0L;
    * 2. Not yet claimed.
    * </pre>
    *
-   * <code>optional string user_id = 5;</code>
-   * @return Whether the userId field is set.
+   * <code>optional string claimed_by_user_id = 5;</code>
+   * @return Whether the claimedByUserId field is set.
    */
   @java.lang.Override
-  public boolean hasUserId() {
+  public boolean hasClaimedByUserId() {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
@@ -274,19 +274,19 @@ private static final long serialVersionUID = 0L;
    * 2. Not yet claimed.
    * </pre>
    *
-   * <code>optional string user_id = 5;</code>
-   * @return The userId.
+   * <code>optional string claimed_by_user_id = 5;</code>
+   * @return The claimedByUserId.
    */
   @java.lang.Override
-  public java.lang.String getUserId() {
-    java.lang.Object ref = userId_;
+  public java.lang.String getClaimedByUserId() {
+    java.lang.Object ref = claimedByUserId_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      userId_ = s;
+      claimedByUserId_ = s;
       return s;
     }
   }
@@ -297,18 +297,18 @@ private static final long serialVersionUID = 0L;
    * 2. Not yet claimed.
    * </pre>
    *
-   * <code>optional string user_id = 5;</code>
-   * @return The bytes for userId.
+   * <code>optional string claimed_by_user_id = 5;</code>
+   * @return The bytes for claimedByUserId.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getUserIdBytes() {
-    java.lang.Object ref = userId_;
+      getClaimedByUserIdBytes() {
+    java.lang.Object ref = claimedByUserId_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      userId_ = b;
+      claimedByUserId_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -559,7 +559,7 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.GeneratedMessageV3.writeString(output, 4, assignedTo_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, userId_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, claimedByUserId_);
     }
     for (int i = 0; i < results_.size(); i++) {
       output.writeMessage(6, results_.get(i));
@@ -603,7 +603,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, assignedTo_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, userId_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, claimedByUserId_);
     }
     for (int i = 0; i < results_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
@@ -653,10 +653,10 @@ private static final long serialVersionUID = 0L;
       if (!getUserTaskDefId()
           .equals(other.getUserTaskDefId())) return false;
     }
-    if (hasUserId() != other.hasUserId()) return false;
-    if (hasUserId()) {
-      if (!getUserId()
-          .equals(other.getUserId())) return false;
+    if (hasClaimedByUserId() != other.hasClaimedByUserId()) return false;
+    if (hasClaimedByUserId()) {
+      if (!getClaimedByUserId()
+          .equals(other.getClaimedByUserId())) return false;
     }
     if (!getResultsList()
         .equals(other.getResultsList())) return false;
@@ -710,9 +710,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + USER_TASK_DEF_ID_FIELD_NUMBER;
       hash = (53 * hash) + getUserTaskDefId().hashCode();
     }
-    if (hasUserId()) {
-      hash = (37 * hash) + USER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getUserId().hashCode();
+    if (hasClaimedByUserId()) {
+      hash = (37 * hash) + CLAIMED_BY_USER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getClaimedByUserId().hashCode();
     }
     if (getResultsCount() > 0) {
       hash = (37 * hash) + RESULTS_FIELD_NUMBER;
@@ -891,7 +891,7 @@ private static final long serialVersionUID = 0L;
         userTaskDefIdBuilder_.dispose();
         userTaskDefIdBuilder_ = null;
       }
-      userId_ = "";
+      claimedByUserId_ = "";
       if (resultsBuilder_ == null) {
         results_ = java.util.Collections.emptyList();
       } else {
@@ -988,7 +988,7 @@ private static final long serialVersionUID = 0L;
       }
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.userId_ = userId_;
+        result.claimedByUserId_ = claimedByUserId_;
         to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000040) != 0)) {
@@ -1066,8 +1066,8 @@ private static final long serialVersionUID = 0L;
       if (other.hasUserTaskDefId()) {
         mergeUserTaskDefId(other.getUserTaskDefId());
       }
-      if (other.hasUserId()) {
-        userId_ = other.userId_;
+      if (other.hasClaimedByUserId()) {
+        claimedByUserId_ = other.claimedByUserId_;
         bitField0_ |= 0x00000010;
         onChanged();
       }
@@ -1207,7 +1207,7 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 34
             case 42: {
-              userId_ = input.readStringRequireUtf8();
+              claimedByUserId_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000010;
               break;
             } // case 42
@@ -1717,7 +1717,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object userId_ = "";
+    private java.lang.Object claimedByUserId_ = "";
     /**
      * <pre>
      * The task may be in one of two states:
@@ -1725,10 +1725,10 @@ private static final long serialVersionUID = 0L;
      * 2. Not yet claimed.
      * </pre>
      *
-     * <code>optional string user_id = 5;</code>
-     * @return Whether the userId field is set.
+     * <code>optional string claimed_by_user_id = 5;</code>
+     * @return Whether the claimedByUserId field is set.
      */
-    public boolean hasUserId() {
+    public boolean hasClaimedByUserId() {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
@@ -1738,16 +1738,16 @@ private static final long serialVersionUID = 0L;
      * 2. Not yet claimed.
      * </pre>
      *
-     * <code>optional string user_id = 5;</code>
-     * @return The userId.
+     * <code>optional string claimed_by_user_id = 5;</code>
+     * @return The claimedByUserId.
      */
-    public java.lang.String getUserId() {
-      java.lang.Object ref = userId_;
+    public java.lang.String getClaimedByUserId() {
+      java.lang.Object ref = claimedByUserId_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        userId_ = s;
+        claimedByUserId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1760,17 +1760,17 @@ private static final long serialVersionUID = 0L;
      * 2. Not yet claimed.
      * </pre>
      *
-     * <code>optional string user_id = 5;</code>
-     * @return The bytes for userId.
+     * <code>optional string claimed_by_user_id = 5;</code>
+     * @return The bytes for claimedByUserId.
      */
     public com.google.protobuf.ByteString
-        getUserIdBytes() {
-      java.lang.Object ref = userId_;
+        getClaimedByUserIdBytes() {
+      java.lang.Object ref = claimedByUserId_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        userId_ = b;
+        claimedByUserId_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -1783,14 +1783,14 @@ private static final long serialVersionUID = 0L;
      * 2. Not yet claimed.
      * </pre>
      *
-     * <code>optional string user_id = 5;</code>
-     * @param value The userId to set.
+     * <code>optional string claimed_by_user_id = 5;</code>
+     * @param value The claimedByUserId to set.
      * @return This builder for chaining.
      */
-    public Builder setUserId(
+    public Builder setClaimedByUserId(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      userId_ = value;
+      claimedByUserId_ = value;
       bitField0_ |= 0x00000010;
       onChanged();
       return this;
@@ -1802,11 +1802,11 @@ private static final long serialVersionUID = 0L;
      * 2. Not yet claimed.
      * </pre>
      *
-     * <code>optional string user_id = 5;</code>
+     * <code>optional string claimed_by_user_id = 5;</code>
      * @return This builder for chaining.
      */
-    public Builder clearUserId() {
-      userId_ = getDefaultInstance().getUserId();
+    public Builder clearClaimedByUserId() {
+      claimedByUserId_ = getDefaultInstance().getClaimedByUserId();
       bitField0_ = (bitField0_ & ~0x00000010);
       onChanged();
       return this;
@@ -1818,15 +1818,15 @@ private static final long serialVersionUID = 0L;
      * 2. Not yet claimed.
      * </pre>
      *
-     * <code>optional string user_id = 5;</code>
-     * @param value The bytes for userId to set.
+     * <code>optional string claimed_by_user_id = 5;</code>
+     * @param value The bytes for claimedByUserId to set.
      * @return This builder for chaining.
      */
-    public Builder setUserIdBytes(
+    public Builder setClaimedByUserIdBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      userId_ = value;
+      claimedByUserId_ = value;
       bitField0_ |= 0x00000010;
       onChanged();
       return this;

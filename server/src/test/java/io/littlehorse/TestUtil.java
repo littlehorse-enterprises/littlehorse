@@ -85,7 +85,7 @@ public class TestUtil {
         userTaskRun.setUserTaskDefId(new UserTaskDefId("ut-name", 0));
         userTaskRun.setStatus(UserTaskRunStatusPb.CLAIMED);
         userTaskRun.setAssignedToType(UserTaskRunPb.AssignedToCase.USER_GROUP);
-        userTaskRun.setUserId("33333");
+        userTaskRun.setClaimedByUserId("33333");
         userTaskRun.setUserGroup("1234567");
         userTaskRun.setScheduledTime(new Date());
         userTaskRun.setNodeRunId(nodeRun().getObjectId());

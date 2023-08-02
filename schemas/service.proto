@@ -1225,7 +1225,7 @@ message UserTaskRunPb {
   // The task may be in one of two states:
   // 1. Claimed by a specific person.
   // 2. Not yet claimed.
-  optional string user_id = 5;
+  optional string claimed_by_user_id = 5;
   repeated UserTaskFieldResultPb results = 6;
   UserTaskRunStatusPb status = 7;
   repeated UserTaskEventPb events = 8;
