@@ -119,12 +119,45 @@ public class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     @Override
-    public void scheduleReassignmentToGroupOnDeadline(int deadlineSeconds) {
+    public void scheduleReassignmentToGroupOnDeadline(
+        UserTaskOutput userTaskOutput,
+        int deadlineSeconds
+    ) {
         checkIfIsActive();
         NodePb.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
+        UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
+        if (!lastNodeName.equals(utImpl.nodeName)) {
+            throw new RuntimeException("Tried to edit a stale User Task node!");
+        }
         UTActionTriggerPb.UTAReassignPb reassignPb = UTActionTriggerPb.UTAReassignPb
             .newBuilder()
             .setUserGroup(curNode.getUserTaskBuilder().getUserGroup())
+            .build();
+        UTActionTriggerPb actionTrigger = UTActionTriggerPb
+            .newBuilder()
+            .setReassign(reassignPb)
+            .setHook(UTActionTriggerPb.UTHook.DO_ON_TASK_ASSIGNED)
+            .setDelaySeconds(assignVariable(deadlineSeconds))
+            .build();
+        curNode.getUserTaskBuilder().addActions(actionTrigger);
+        spec.putNodes(lastNodeName, curNode.build());
+    }
+
+    @Override
+    public void scheduleReassignmentToUserOnDeadline(
+        UserTaskOutput userTaskOutput,
+        String userId,
+        int deadlineSeconds
+    ) {
+        checkIfIsActive();
+        NodePb.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
+        UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
+        if (!lastNodeName.equals(utImpl.nodeName)) {
+            throw new RuntimeException("Tried to edit a stale User Task node!");
+        }
+        UTActionTriggerPb.UTAReassignPb reassignPb = UTActionTriggerPb.UTAReassignPb
+            .newBuilder()
+            .setUserId(assignVariable(userId))
             .build();
         UTActionTriggerPb actionTrigger = UTActionTriggerPb
             .newBuilder()

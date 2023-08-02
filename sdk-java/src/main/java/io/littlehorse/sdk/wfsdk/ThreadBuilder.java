@@ -35,7 +35,16 @@ public interface ThreadBuilder {
      */
     public UserTaskOutput assignUserTaskToUser(String userTaskDefName, String userId);
 
-    void scheduleReassignmentToGroupOnDeadline(int deadlineSeconds);
+    void scheduleReassignmentToGroupOnDeadline(
+        UserTaskOutput userTaskOutput,
+        int deadlineSeconds
+    );
+
+    void scheduleReassignmentToUserOnDeadline(
+        UserTaskOutput userTaskOutput,
+        String userId,
+        int deadlineSeconds
+    );
 
     /**
      * Adds a User Task Node, and assigns it to a specific user
