@@ -91,9 +91,9 @@ let nodes:any[] = [];
 
 export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any) => void}) => {
     const clickHandler = (_p:any, d:any) => {
-        console.log(_p,d)
+        // console.log(_p,d)
         onClick(d.name)
-        console.log(d.name)
+        // console.log(d.name)
         _d3.select('.selected-node').classed('selected-node',false)
         _d3.select('.c'+d.name).classed('selected-node',true)
        
@@ -206,9 +206,9 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
             .append("path")
             .attr("class", d => d.name)
             .attr("d", (d) => {
-                console.log('CNOP', data.find( dd => dd.name === d.cNOP))
+                // console.log('CNOP', data.find( dd => dd.name === d.cNOP))
                 const cnopl =  data.find( dd => dd.name === d.cNOP).level
-                console.log((cnopl-d.level)*66)
+                // console.log((cnopl-d.level)*66)
                 const condh = d.type === 'NOP' ? 100 : 0
                 if(d.px === 'left'){
                     return lbArrow((width/2)+15, ((d.level-1) * 110)-85 +condh - ((cnopl-d.level)*400), 110, ((cnopl-d.level)*81.5)+54, 12)
