@@ -1139,8 +1139,8 @@ message UTActionTriggerPb {
   }
 
   enum UTHook {
-    DO_ON_ARRIVAL = 0;
-    DO_ON_TASK_ASSIGNED = 1;
+    ON_ARRIVAL = 0;
+    ON_TASK_ASSIGNED = 1;
   }
   //Action's delay
   VariableAssignmentPb delay_seconds = 5;

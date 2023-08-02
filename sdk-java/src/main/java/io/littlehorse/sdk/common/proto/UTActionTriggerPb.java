@@ -50,24 +50,24 @@ private static final long serialVersionUID = 0L;
   public enum UTHook
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>DO_ON_ARRIVAL = 0;</code>
+     * <code>ON_ARRIVAL = 0;</code>
      */
-    DO_ON_ARRIVAL(0),
+    ON_ARRIVAL(0),
     /**
-     * <code>DO_ON_TASK_ASSIGNED = 1;</code>
+     * <code>ON_TASK_ASSIGNED = 1;</code>
      */
-    DO_ON_TASK_ASSIGNED(1),
+    ON_TASK_ASSIGNED(1),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>DO_ON_ARRIVAL = 0;</code>
+     * <code>ON_ARRIVAL = 0;</code>
      */
-    public static final int DO_ON_ARRIVAL_VALUE = 0;
+    public static final int ON_ARRIVAL_VALUE = 0;
     /**
-     * <code>DO_ON_TASK_ASSIGNED = 1;</code>
+     * <code>ON_TASK_ASSIGNED = 1;</code>
      */
-    public static final int DO_ON_TASK_ASSIGNED_VALUE = 1;
+    public static final int ON_TASK_ASSIGNED_VALUE = 1;
 
 
     public final int getNumber() {
@@ -94,8 +94,8 @@ private static final long serialVersionUID = 0L;
      */
     public static UTHook forNumber(int value) {
       switch (value) {
-        case 0: return DO_ON_ARRIVAL;
-        case 1: return DO_ON_TASK_ASSIGNED;
+        case 0: return ON_ARRIVAL;
+        case 1: return ON_TASK_ASSIGNED;
         default: return null;
       }
     }
@@ -2692,7 +2692,7 @@ private static final long serialVersionUID = 0L;
     if (delaySeconds_ != null) {
       output.writeMessage(5, getDelaySeconds());
     }
-    if (hook_ != io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.DO_ON_ARRIVAL.getNumber()) {
+    if (hook_ != io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.ON_ARRIVAL.getNumber()) {
       output.writeEnum(6, hook_);
     }
     getUnknownFields().writeTo(output);
@@ -2720,7 +2720,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, getDelaySeconds());
     }
-    if (hook_ != io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.DO_ON_ARRIVAL.getNumber()) {
+    if (hook_ != io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.ON_ARRIVAL.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(6, hook_);
     }

@@ -127,16 +127,22 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         NodePb.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
         if (!lastNodeName.equals(utImpl.nodeName)) {
-            throw new RuntimeException("Tried to edit a stale User Task node!");
+            throw new IllegalStateException("Tried to edit a stale User Task node!");
+        }
+        VariableAssignmentPb userGroup = curNode.getUserTaskBuilder().getUserGroup();
+        if (userGroup == null) {
+            throw new IllegalStateException(
+                "User task is not assigned to a userGroup"
+            );
         }
         UTActionTriggerPb.UTAReassignPb reassignPb = UTActionTriggerPb.UTAReassignPb
             .newBuilder()
-            .setUserGroup(curNode.getUserTaskBuilder().getUserGroup())
+            .setUserGroup(userGroup)
             .build();
         UTActionTriggerPb actionTrigger = UTActionTriggerPb
             .newBuilder()
             .setReassign(reassignPb)
-            .setHook(UTActionTriggerPb.UTHook.DO_ON_TASK_ASSIGNED)
+            .setHook(UTActionTriggerPb.UTHook.ON_TASK_ASSIGNED)
             .setDelaySeconds(assignVariable(deadlineSeconds))
             .build();
         curNode.getUserTaskBuilder().addActions(actionTrigger);
@@ -153,7 +159,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         NodePb.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
         if (!lastNodeName.equals(utImpl.nodeName)) {
-            throw new RuntimeException("Tried to edit a stale User Task node!");
+            throw new IllegalStateException("Tried to edit a stale User Task node!");
         }
         UTActionTriggerPb.UTAReassignPb reassignPb = UTActionTriggerPb.UTAReassignPb
             .newBuilder()
@@ -162,7 +168,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         UTActionTriggerPb actionTrigger = UTActionTriggerPb
             .newBuilder()
             .setReassign(reassignPb)
-            .setHook(UTActionTriggerPb.UTHook.DO_ON_TASK_ASSIGNED)
+            .setHook(UTActionTriggerPb.UTHook.ON_TASK_ASSIGNED)
             .setDelaySeconds(assignVariable(deadlineSeconds))
             .build();
         curNode.getUserTaskBuilder().addActions(actionTrigger);
@@ -259,7 +265,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         UTActionTriggerPb.Builder newUtActionBuilder = UTActionTriggerPb
             .newBuilder()
             .setTask(utaTask)
-            .setHook(UTActionTriggerPb.UTHook.DO_ON_ARRIVAL)
+            .setHook(UTActionTriggerPb.UTHook.ON_ARRIVAL)
             .setDelaySeconds(assn);
         curNode.getUserTaskBuilder().addActions(newUtActionBuilder);
         spec.putNodes(lastNodeName, curNode.build());

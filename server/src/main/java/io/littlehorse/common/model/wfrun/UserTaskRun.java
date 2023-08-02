@@ -9,7 +9,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
-import io.littlehorse.common.model.command.subcommand.ReassignedUserTask;
+import io.littlehorse.common.model.command.subcommand.ReassignUserTask;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.subnode.UserTaskNode;
 import io.littlehorse.common.model.meta.usertasks.UTActionTrigger;
@@ -33,6 +33,8 @@ import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -207,7 +209,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
             // I don't think there's anything to do other than schedule the timers for
             // the actions which need to occur.
             for (UTActionTrigger action : node.userTaskNode.getActions(
-                UTHook.DO_ON_ARRIVAL
+                UTHook.ON_ARRIVAL
             )) {
                 scheduleAction(action);
             }
@@ -279,7 +281,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         trigger.schedule(getNodeRun().getThreadRun().wfRun.getDao(), this);
     }
 
-    public void deadlineReassignment(AssignUserTaskRun event) {
+    public void reassignTo(AssignUserTaskRun event) {
         UTEReassigned reassigned = null;
         switch (event.getAssigneeType()) {
             case USER_GROUP:
@@ -295,7 +297,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         }
     }
 
-    public void deadlineReassignment(
+    public void deadlineReassign(
         String newOwner,
         ReassignedUserTaskPb.AssignToCase assignToCase
     ) {
@@ -341,7 +343,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         if (triggerAction) {
             for (UTActionTrigger action : node
                 .getUserTaskNode()
-                .getActions(UTHook.DO_ON_TASK_ASSIGNED)) {
+                .getActions(UTHook.ON_TASK_ASSIGNED)) {
                 scheduleTaskReassign(action);
             }
         }
@@ -350,8 +352,9 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
 
     private void scheduleTaskReassign(UTActionTrigger action) {
         long delayInSeconds = action.getDelaySeconds().getRhsLiteralValue().intVal;
-        Date maturationTime = new Date(
-            System.currentTimeMillis() + (1000 * delayInSeconds)
+        LocalDateTime localDateTime = LocalDateTime.now().plusSeconds(delayInSeconds);
+        Date maturationTime = Date.from(
+            localDateTime.atZone(ZoneId.systemDefault()).toInstant()
         );
         ReassignedUserTaskPb.AssignToCase assignToCase = null;
         switch (action.getReassign().getAssignToCase()) {
@@ -364,7 +367,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         }
         LHTimer timer = new LHTimer(
             new Command(
-                new ReassignedUserTask(
+                new ReassignUserTask(
                     getNodeRun().getObjectId(),
                     action
                         .getReassign()

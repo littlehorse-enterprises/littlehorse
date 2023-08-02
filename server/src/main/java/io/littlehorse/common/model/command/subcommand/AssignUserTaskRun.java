@@ -116,7 +116,7 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
 
         // In the future, we could add some verification to make sure that the
         // user actually exists. For now, this is fine.
-        utr.deadlineReassignment(this);
+        utr.reassignTo(this);
         WfRun wfRun = dao.getWfRun(getWfRunId());
         if (wfRun == null) {
             log.error(

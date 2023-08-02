@@ -14,15 +14,15 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ReassignedUserTask extends SubCommand<ReassignedUserTaskPb> {
+public class ReassignUserTask extends SubCommand<ReassignedUserTaskPb> {
 
     private NodeRunId source;
     private String newOwner;
     private ReassignedUserTaskPb.AssignToCase assignToCase;
 
-    public ReassignedUserTask() {}
+    public ReassignUserTask() {}
 
-    public ReassignedUserTask(
+    public ReassignUserTask(
         NodeRunId source,
         String newOwner,
         ReassignedUserTaskPb.AssignToCase assignToCase
@@ -67,7 +67,7 @@ public class ReassignedUserTask extends SubCommand<ReassignedUserTaskPb> {
         UserTaskRun userTaskRun = dao.getUserTaskRun(
             nodeRun.getUserTaskRun().getUserTaskRunId()
         );
-        userTaskRun.deadlineReassignment(newOwner, assignToCase);
+        userTaskRun.deadlineReassign(newOwner, assignToCase);
         return null;
     }
 
