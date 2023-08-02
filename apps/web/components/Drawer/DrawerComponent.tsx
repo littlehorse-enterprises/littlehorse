@@ -17,6 +17,7 @@ interface DrawerComponentProps {
   setCode: (code: string) => void;
   setLanguage: (language: string) => void;
   setError: (value: boolean) => void;
+  setThread: (value: string) => void;
   run?: any;
 }
 
@@ -34,10 +35,13 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
   const changeThread = () => {
     if (props.data.threadSpecs) {
       const keys = Object.keys(props.data.threadSpecs);
-
-      setThreadName(keys[1]);
+      setThreadName(keys[1])
     }
   };
+  const setThreadHandler = (thread:string) => {
+    setThreadName(thread)
+    props.setThread(thread)
+  }
 
   const getData: any = async (
     url: string,
@@ -85,7 +89,12 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 
         if (threadName === undefined) {
           selectedThread = props.data.entrypointThreadName;
-          setThreadName(selectedThread);
+          
+          
+          
+          
+          
+          (selectedThread);
         }
 
         setMainData(
@@ -362,7 +371,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
             <select
               className="drawer__threadSelector__container__select"
               value={threadName}
-              onChange={(event) => setThreadName(event.target.value)}
+              onChange={(event) => setThreadHandler(event.target.value)}
             >
               {props.data &&
                 Object.keys(props.data.threadSpecs).map((name, index) => {

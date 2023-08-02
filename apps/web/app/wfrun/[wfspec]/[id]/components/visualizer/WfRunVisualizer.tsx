@@ -18,6 +18,7 @@ export const WfRunVisualizer = ({
   id: string;
   wfspec: string;
 }) => {
+  const [rawdata, setRawData] = useState<any[]>([])
   const [data, setData] = useState<any[]>([]);
   const [drawerData, setDrawerData] = useState<any>();
   const [selectedNodeName, setSelectedNodeName] = useState<any>();
@@ -65,8 +66,10 @@ export const WfRunVisualizer = ({
     setRun(data.threadRuns[0]);
   };
 
-  const mapData = (data: any) => {
-    const entries = Object.entries(data?.threadSpecs?.entrypoint?.nodes);
+  const mapData = (data: any, thread?: string) => {
+    const threads = Object.keys(data?.threadSpecs)
+		const print_thread = thread || threads[0]
+    const entries = Object.entries(data?.threadSpecs?.[print_thread]?.nodes);
     const mappedData: any = entries.map((e: mapnode) => ({
       name: e[0],
       type: e[0].split("-").pop(),
@@ -89,7 +92,8 @@ export const WfRunVisualizer = ({
     });
     if (res.ok) {
       const content = await res.json();
-      setData(mapData(content.result));
+      setRawData(content.result)
+      setData(mapData(content.result))
     }
   };
   const getData = async () => {
@@ -104,6 +108,10 @@ export const WfRunVisualizer = ({
       setThreads(result);
     }
   };
+
+  const setThread = (thread:string) => {
+		setData(mapData(rawdata,thread))
+	}
 
   useEffect(() => {
     getData();
@@ -129,6 +137,7 @@ export const WfRunVisualizer = ({
       setCode={setSideBarData}
       setLanguage={setLanguage}
       setError={setShowError}
+      setThread={setThread}
       run={run}
     />
   );
