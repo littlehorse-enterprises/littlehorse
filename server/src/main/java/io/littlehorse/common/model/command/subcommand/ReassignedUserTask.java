@@ -67,8 +67,7 @@ public class ReassignedUserTask extends SubCommand<ReassignedUserTaskPb> {
         UserTaskRun userTaskRun = dao.getUserTaskRun(
             nodeRun.getUserTaskRun().getUserTaskRunId()
         );
-        userTaskRun.reassignTo(newOwner, assignToCase);
-        log.debug("processing reassignment");
+        userTaskRun.deadlineReassignment(newOwner, assignToCase);
         return null;
     }
 

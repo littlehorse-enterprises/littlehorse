@@ -279,14 +279,14 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         trigger.schedule(getNodeRun().getThreadRun().wfRun.getDao(), this);
     }
 
-    public void reassignTo(AssignUserTaskRun event) {
+    public void deadlineReassignment(AssignUserTaskRun event) {
         UTEReassigned reassigned = null;
         switch (event.getAssigneeType()) {
             case USER_GROUP:
-                reassigned = buildUserGroupReassignment(event.getUserGroup());
+                reassigned = reassignToUserGroup(event.getUserGroup());
                 break;
             case USER_ID:
-                reassigned = buildUserReassignment(event.getUserId(), true);
+                reassigned = reassignToUser(event.getUserId(), true);
                 break;
             case ASSIGNEE_NOT_SET:
         }
@@ -295,17 +295,17 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         }
     }
 
-    public void reassignTo(
+    public void deadlineReassignment(
         String newOwner,
         ReassignedUserTaskPb.AssignToCase assignToCase
     ) {
         UTEReassigned reassigned = null;
         switch (assignToCase) {
             case USER_ID:
-                reassigned = buildUserReassignment(newOwner, false);
+                reassigned = reassignToUser(newOwner, false);
                 break;
             case USER_GROUP:
-                reassigned = buildUserGroupReassignment(newOwner);
+                reassigned = reassignToUserGroup(newOwner);
             case ASSIGNTO_NOT_SET:
         }
         if (reassigned != null) {
@@ -313,7 +313,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         }
     }
 
-    private UTEReassigned buildUserGroupReassignment(String newUserGroup) {
+    private UTEReassigned reassignToUserGroup(String newUserGroup) {
         UTEReassigned ute = new UTEReassigned();
         ute.setNewUserGroup(newUserGroup);
         ute.setOldUserGroup(userGroup);
@@ -328,10 +328,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         return ute;
     }
 
-    private UTEReassigned buildUserReassignment(
-        String newUserId,
-        boolean triggerAction
-    ) {
+    private UTEReassigned reassignToUser(String newUserId, boolean triggerAction) {
         UTEReassigned ute = new UTEReassigned();
         ute.setNewUserId(newUserId);
         ute.setOldUserId(claimedByUserId);
