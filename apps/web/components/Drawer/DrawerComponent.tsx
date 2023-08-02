@@ -17,6 +17,7 @@ interface DrawerComponentProps {
   setCode: (code: string) => void;
   setLanguage: (language: string) => void;
   setError: (value: boolean) => void;
+  run?: any;
 }
 
 export const DrawerComponent = (props: DrawerComponentProps) => {
