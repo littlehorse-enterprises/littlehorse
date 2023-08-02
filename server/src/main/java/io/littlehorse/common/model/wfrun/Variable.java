@@ -10,7 +10,6 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.IndexTypePb;
 import io.littlehorse.sdk.common.proto.VariablePb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
@@ -153,7 +152,7 @@ public class Variable extends Getable<VariablePb> {
         VariableValue variableValue = getValue();
         Map<String, VariableDef> stringVariableDefMap = variableDefMap();
         VariableDef variableDef = stringVariableDefMap.get(this.getName());
-        TagStorageTypePb tagStorageTypePb = variableDef.getTagStorageTypePb();
+        TagStorageTypePb tagStorageTypePb = variableDef.getTagStorageType();
         if (
             tagStorageTypePb == null &&
             variableDef.getType() != VariableTypePb.JSON_OBJ
@@ -241,12 +240,7 @@ public class Variable extends Getable<VariablePb> {
             .filter(jsonIndex -> {
                 return jsonIndex.getPath().equals(jsonPath);
             })
-            .map(JsonIndex::getIndexTypePb)
-            .map(indexTypePb -> {
-                return indexTypePb == IndexTypePb.REMOTE_INDEX
-                    ? TagStorageTypePb.REMOTE
-                    : TagStorageTypePb.LOCAL;
-            })
+            .map(JsonIndex::getTagStorageType)
             .findFirst();
     }
 
@@ -286,9 +280,9 @@ public class Variable extends Getable<VariablePb> {
                     .orElse(null);
                 return (
                         currentVariableDef != null &&
-                        currentVariableDef.getTagStorageTypePb() != null
+                        currentVariableDef.getTagStorageType() != null
                     )
-                    ? currentVariableDef.getTagStorageTypePb()
+                    ? currentVariableDef.getTagStorageType()
                     : TagStorageTypePb.LOCAL;
             })
             .findFirst()

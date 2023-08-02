@@ -1340,6 +1340,7 @@ message VariableDefPb {
   string name = 2;
   optional IndexTypePb index_type = 3;
   repeated JsonIndexPb json_indexes = 4;
+  VariableValuePb default_value = 5;
 }
 
 message JsonIndexPb {

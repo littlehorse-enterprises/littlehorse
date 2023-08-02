@@ -216,7 +216,7 @@ public class GetableStorageManagerTest {
                 VariableDef variableDef1 = new VariableDef();
                 variableDef1.setName("variableName");
                 variableDef1.setType(VariableTypePb.STR);
-                variableDef1.setTagStorageTypePb(TagStorageTypePb.LOCAL);
+                variableDef1.setIndexType(IndexTypePb.LOCAL_INDEX);
                 VariableDef variableDef2 = new VariableDef();
                 variableDef2.setName("variableName2");
                 variableDef2.setType(VariableTypePb.STR);
@@ -246,7 +246,7 @@ public class GetableStorageManagerTest {
                 VariableDef variableDef1 = new VariableDef();
                 variableDef1.setName("variableName");
                 variableDef1.setType(VariableTypePb.STR);
-                variableDef1.setTagStorageTypePb(TagStorageTypePb.REMOTE);
+                variableDef1.setIndexType(IndexTypePb.REMOTE_INDEX);
                 VariableDef variableDef2 = new VariableDef();
                 variableDef2.setName("variableName2");
                 variableDef2.setType(VariableTypePb.STR);
@@ -286,7 +286,7 @@ public class GetableStorageManagerTest {
                 VariableDef variableDef1 = new VariableDef();
                 variableDef1.setName("variableName");
                 variableDef1.setType(VariableTypePb.INT);
-                variableDef1.setTagStorageTypePb(TagStorageTypePb.LOCAL);
+                variableDef1.setIndexType(IndexTypePb.LOCAL_INDEX);
                 VariableDef variableDef2 = new VariableDef();
                 variableDef2.setName("variableName2");
                 variableDef2.setType(VariableTypePb.STR);
@@ -316,7 +316,7 @@ public class GetableStorageManagerTest {
                 VariableDef variableDef1 = new VariableDef();
                 variableDef1.setName("variableName");
                 variableDef1.setType(VariableTypePb.INT);
-                variableDef1.setTagStorageTypePb(TagStorageTypePb.REMOTE);
+                variableDef1.setIndexType(IndexTypePb.REMOTE_INDEX);
                 VariableDef variableDef2 = new VariableDef();
                 variableDef2.setName("variableName2");
                 variableDef2.setType(VariableTypePb.STR);
@@ -356,7 +356,7 @@ public class GetableStorageManagerTest {
                 VariableDef variableDef1 = new VariableDef();
                 variableDef1.setName("variableName");
                 variableDef1.setType(VariableTypePb.DOUBLE);
-                variableDef1.setTagStorageTypePb(TagStorageTypePb.LOCAL);
+                variableDef1.setIndexType(IndexTypePb.LOCAL_INDEX);
                 VariableDef variableDef2 = new VariableDef();
                 variableDef2.setName("variableName2");
                 variableDef2.setType(VariableTypePb.STR);
@@ -386,7 +386,7 @@ public class GetableStorageManagerTest {
                 VariableDef variableDef1 = new VariableDef();
                 variableDef1.setName("variableName");
                 variableDef1.setType(VariableTypePb.DOUBLE);
-                variableDef1.setTagStorageTypePb(TagStorageTypePb.REMOTE);
+                variableDef1.setIndexType(IndexTypePb.REMOTE_INDEX);
                 VariableDef variableDef2 = new VariableDef();
                 variableDef2.setName("variableName2");
                 variableDef2.setType(VariableTypePb.STR);

@@ -126,7 +126,7 @@ public class SearchVariable
             .filter(variableDef ->
                 variableDef.getType().equals(value.getValue().getType())
             )
-            .map(VariableDef::getTagStorageTypePb)
+            .map(VariableDef::getTagStorageType)
             .findFirst()
             .orElse(null);
     }

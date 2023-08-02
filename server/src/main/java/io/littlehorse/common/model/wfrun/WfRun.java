@@ -268,11 +268,9 @@ public class WfRun extends Getable<WfRunPb> {
 
             if (variables.containsKey(varName)) {
                 val = variables.get(varName);
+            } else if (varDef.getDefaultValue() != null) {
+                val = varDef.getDefaultValue();
             } else {
-                // throw new RuntimeException(
-                //     "Not possible: the call to validateStartVariables should" +
-                //     " have caught this."
-                // );
                 val = new VariableValue();
                 val.type = VariableTypePb.NULL;
             }

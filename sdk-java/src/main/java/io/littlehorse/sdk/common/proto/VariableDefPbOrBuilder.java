@@ -69,4 +69,19 @@ public interface VariableDefPbOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.JsonIndexPbOrBuilder getJsonIndexesOrBuilder(
       int index);
+
+  /**
+   * <code>.littlehorse.VariableValuePb default_value = 5;</code>
+   * @return Whether the defaultValue field is set.
+   */
+  boolean hasDefaultValue();
+  /**
+   * <code>.littlehorse.VariableValuePb default_value = 5;</code>
+   * @return The defaultValue.
+   */
+  io.littlehorse.sdk.common.proto.VariableValuePb getDefaultValue();
+  /**
+   * <code>.littlehorse.VariableValuePb default_value = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getDefaultValueOrBuilder();
 }
