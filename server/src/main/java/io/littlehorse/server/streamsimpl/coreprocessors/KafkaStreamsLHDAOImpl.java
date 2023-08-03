@@ -219,25 +219,27 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         put(nr, nodeRunPuts, NodeRun.class);
     }
 
-    public void get(){
+    private <U extends Message, T extends Getable<U>> T get(String key, Map<String, StoredGetable<U, T>> uncommittedChanges, Class<T> clazz) {
+        if (uncommittedChanges.containsKey(key)) {
+            return uncommittedChanges.get(key).getStoredObject();
+        }
 
+        StoredGetable<U, T> storedGetable = localStore.getPepe(key, clazz);
+
+        if (storedGetable != null) {
+            uncommittedChanges.put(key, storedGetable);
+            T entity = storedGetable.getStoredObject();
+            entity.setDao(this);
+            return entity;
+        }
+
+        return null;
     }
 
     @Override
     public NodeRun getNodeRun(String wfRunId, int threadNum, int position) {
         String key = new NodeRunId(wfRunId, threadNum, position).getStoreKey();
-        if (nodeRunPuts.containsKey(key)) {
-            return nodeRunPuts.get(key).getStoredObject();
-        }
-        StoredGetable<NodeRunPb, NodeRun> storedGetable = localStore.getPepe(key, NodeRun.class);
-        // Little trick so that if it gets modified it is automatically saved
-        if (storedGetable != null) {
-            nodeRunPuts.put(key, storedGetable);
-            NodeRun entity = storedGetable.getStoredObject();
-            entity.setDao(this);
-            return entity;
-        }
-        return null;
+        return get(key, nodeRunPuts, NodeRun.class);
     }
 
     @Override
@@ -248,17 +250,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     @Override
     public TaskRun getTaskRun(TaskRunId taskRunId) {
         String key = taskRunId.getStoreKey();
-        if (taskRunPuts.containsKey(key)) {
-            return taskRunPuts.get(key).getStoredObject();
-        }
-        StoredGetable<TaskRunPb, TaskRun> storedGetable = localStore.getPepe(key, TaskRun.class);
-        if (storedGetable != null) {
-            taskRunPuts.put(key, storedGetable);
-            TaskRun entity = storedGetable.getStoredObject();
-            entity.setDao(this);
-            return entity;
-        }
-        return null;
+        return get(key, taskRunPuts, TaskRun.class);
     }
 
     @Override
