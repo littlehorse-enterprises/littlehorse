@@ -433,7 +433,6 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         // then we need to put a condition on it...
         addNopNode();
         String treeRootNodeName = lastNodeName;
-        NodePb.Builder treeRoot = spec.getNodesOrThrow(treeRootNodeName).toBuilder();
 
         lastNodeCondition = cond.getSpec();
         // execute the tasks
@@ -442,9 +441,9 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         // close off the tree
         addNopNode();
         String treeLastNodeName = lastNodeName;
-        NodePb.Builder treeLast = spec.getNodesOrThrow(treeLastNodeName).toBuilder();
 
         // Now add the sideways path from root directly to last
+        NodePb.Builder treeRoot = spec.getNodesOrThrow(treeRootNodeName).toBuilder();
         treeRoot.addOutgoingEdges(
             EdgePb
                 .newBuilder()
@@ -452,8 +451,10 @@ public class ThreadBuilderImpl implements ThreadBuilder {
                 .setCondition(cond.getReverse())
                 .build()
         );
+        spec.putNodes(treeRootNodeName, treeRoot.build());
 
         // Now add the sideways path from last directly to root
+        NodePb.Builder treeLast = spec.getNodesOrThrow(treeLastNodeName).toBuilder();
         treeLast.addOutgoingEdges(
             EdgePb
                 .newBuilder()
@@ -732,8 +733,10 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             edge.setCondition(lastNodeCondition);
             lastNodeCondition = null;
         }
-        feederNode.addOutgoingEdges(edge);
-        spec.putNodes(lastNodeName, feederNode.build());
+        if (feederNode.getNodeCase() != NodeCase.EXIT) {
+            feederNode.addOutgoingEdges(edge);
+            spec.putNodes(lastNodeName, feederNode.build());
+        }
 
         NodePb.Builder node = NodePb.newBuilder();
         switch (type) {
