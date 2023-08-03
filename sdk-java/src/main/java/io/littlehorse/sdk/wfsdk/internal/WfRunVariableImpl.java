@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.IndexTypePb;
 import io.littlehorse.sdk.common.proto.JsonIndexPb;
+import io.littlehorse.sdk.common.proto.VariableDefPb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.sdk.common.proto.VariableValuePb;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -19,9 +20,10 @@ public class WfRunVariableImpl implements WfRunVariable {
     public String name;
     public VariableTypePb type;
     public String jsonPath;
+    private VariableValuePb defaultValue;
     private Object typeOrDefaultVal;
-    private IndexTypePb indexTypePb;
-    private List<JsonIndexPb> jsonIndexPbs = new ArrayList<>();
+    private IndexTypePb indexType;
+    private List<JsonIndexPb> jsonIndexes = new ArrayList<>();
 
     public WfRunVariableImpl(String name, Object typeOrDefaultVal) {
         this.name = name;
@@ -34,17 +36,22 @@ public class WfRunVariableImpl implements WfRunVariable {
             this.type = (VariableTypePb) typeOrDefaultVal;
         } else {
             try {
-                VariableValuePb defaultVal = LHLibUtil.objToVarVal(typeOrDefaultVal);
-                this.type = defaultVal.getType();
+                this.defaultValue = LHLibUtil.objToVarVal(typeOrDefaultVal);
+                this.type = defaultValue.getType();
             } catch (LHSerdeError e) {
-                throw new RuntimeException(e); //TODO ???
+                throw new IllegalArgumentException(
+                    "Was unable to convert provided default value to LH Variable Type",
+                    e
+                );
             }
         }
     }
 
     public WfRunVariableImpl jsonPath(String path) {
         if (jsonPath != null) {
-            throw new RuntimeException("Cannot use jsonpath() twice on same var!");
+            throw new LHMisconfigurationException(
+                "Cannot use jsonpath() twice on same var!"
+            );
         }
         WfRunVariableImpl out = new WfRunVariableImpl(name, typeOrDefaultVal);
         out.jsonPath = path;
@@ -53,7 +60,7 @@ public class WfRunVariableImpl implements WfRunVariable {
 
     @Override
     public WfRunVariable withIndex(@NonNull IndexTypePb indexType) {
-        this.indexTypePb = indexType;
+        this.indexType = indexType;
         return this;
     }
 
@@ -72,7 +79,7 @@ public class WfRunVariableImpl implements WfRunVariable {
                 String.format("Non-Json %s varibale contains jsonIndex", name)
             );
         }
-        this.jsonIndexPbs.add(
+        this.jsonIndexes.add(
                 JsonIndexPb
                     .newBuilder()
                     .setIndexType(indexType)
@@ -80,5 +87,25 @@ public class WfRunVariableImpl implements WfRunVariable {
                     .build()
             );
         return this;
+    }
+
+    public VariableDefPb getSpec() {
+        VariableDefPb.Builder out = VariableDefPb.newBuilder();
+        out.setType(this.getType());
+        out.setName(this.getName());
+
+        if (this.getIndexType() != null) {
+            out.setIndexType(this.getIndexType());
+        }
+
+        for (JsonIndexPb jsonIndex : this.getJsonIndexes()) {
+            out.addJsonIndexes(jsonIndex);
+        }
+
+        if (this.defaultValue != null) {
+            out.setDefaultValue(defaultValue);
+        }
+
+        return out.build();
     }
 }

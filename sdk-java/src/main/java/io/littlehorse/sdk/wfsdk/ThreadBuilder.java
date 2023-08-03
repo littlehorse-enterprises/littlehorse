@@ -1,7 +1,6 @@
 package io.littlehorse.sdk.wfsdk;
 
 import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.IndexTypePb;
 import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
 import java.util.Map;
 
@@ -230,6 +229,13 @@ public interface ThreadBuilder {
      * @param message is a human-readable message.
      */
     public void fail(Object output, String failureName, String message);
+
+    /**
+     * Adds an EXIT node with no Failure defined. This causes the ThreadRun to complete
+     * gracefully. It is equivalent to putting a call to `return;` early in your
+     * function.
+     */
+    public void complete();
 
     /**
      * Adds an EXIT node with a Failure defined. This causes a ThreadRun to fail, and

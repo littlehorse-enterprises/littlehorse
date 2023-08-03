@@ -171,6 +171,32 @@ private static final long serialVersionUID = 0L;
     return jsonIndexes_.get(index);
   }
 
+  public static final int DEFAULT_VALUE_FIELD_NUMBER = 5;
+  private io.littlehorse.sdk.common.proto.VariableValuePb defaultValue_;
+  /**
+   * <code>.littlehorse.VariableValuePb default_value = 5;</code>
+   * @return Whether the defaultValue field is set.
+   */
+  @java.lang.Override
+  public boolean hasDefaultValue() {
+    return defaultValue_ != null;
+  }
+  /**
+   * <code>.littlehorse.VariableValuePb default_value = 5;</code>
+   * @return The defaultValue.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableValuePb getDefaultValue() {
+    return defaultValue_ == null ? io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance() : defaultValue_;
+  }
+  /**
+   * <code>.littlehorse.VariableValuePb default_value = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getDefaultValueOrBuilder() {
+    return defaultValue_ == null ? io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance() : defaultValue_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -197,6 +223,9 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < jsonIndexes_.size(); i++) {
       output.writeMessage(4, jsonIndexes_.get(i));
     }
+    if (defaultValue_ != null) {
+      output.writeMessage(5, getDefaultValue());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -220,6 +249,10 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < jsonIndexes_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, jsonIndexes_.get(i));
+    }
+    if (defaultValue_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, getDefaultValue());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -245,6 +278,11 @@ private static final long serialVersionUID = 0L;
     }
     if (!getJsonIndexesList()
         .equals(other.getJsonIndexesList())) return false;
+    if (hasDefaultValue() != other.hasDefaultValue()) return false;
+    if (hasDefaultValue()) {
+      if (!getDefaultValue()
+          .equals(other.getDefaultValue())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -267,6 +305,10 @@ private static final long serialVersionUID = 0L;
     if (getJsonIndexesCount() > 0) {
       hash = (37 * hash) + JSON_INDEXES_FIELD_NUMBER;
       hash = (53 * hash) + getJsonIndexesList().hashCode();
+    }
+    if (hasDefaultValue()) {
+      hash = (37 * hash) + DEFAULT_VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getDefaultValue().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -407,6 +449,11 @@ private static final long serialVersionUID = 0L;
         jsonIndexesBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000008);
+      defaultValue_ = null;
+      if (defaultValueBuilder_ != null) {
+        defaultValueBuilder_.dispose();
+        defaultValueBuilder_ = null;
+      }
       return this;
     }
 
@@ -463,6 +510,11 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.indexType_ = indexType_;
         to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.defaultValue_ = defaultValueBuilder_ == null
+            ? defaultValue_
+            : defaultValueBuilder_.build();
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -548,6 +600,9 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
+      if (other.hasDefaultValue()) {
+        mergeDefaultValue(other.getDefaultValue());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -602,6 +657,13 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 34
+            case 42: {
+              input.readMessage(
+                  getDefaultValueFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1042,6 +1104,125 @@ private static final long serialVersionUID = 0L;
         jsonIndexes_ = null;
       }
       return jsonIndexesBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.VariableValuePb defaultValue_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableValuePb, io.littlehorse.sdk.common.proto.VariableValuePb.Builder, io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder> defaultValueBuilder_;
+    /**
+     * <code>.littlehorse.VariableValuePb default_value = 5;</code>
+     * @return Whether the defaultValue field is set.
+     */
+    public boolean hasDefaultValue() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>.littlehorse.VariableValuePb default_value = 5;</code>
+     * @return The defaultValue.
+     */
+    public io.littlehorse.sdk.common.proto.VariableValuePb getDefaultValue() {
+      if (defaultValueBuilder_ == null) {
+        return defaultValue_ == null ? io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance() : defaultValue_;
+      } else {
+        return defaultValueBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.littlehorse.VariableValuePb default_value = 5;</code>
+     */
+    public Builder setDefaultValue(io.littlehorse.sdk.common.proto.VariableValuePb value) {
+      if (defaultValueBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        defaultValue_ = value;
+      } else {
+        defaultValueBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableValuePb default_value = 5;</code>
+     */
+    public Builder setDefaultValue(
+        io.littlehorse.sdk.common.proto.VariableValuePb.Builder builderForValue) {
+      if (defaultValueBuilder_ == null) {
+        defaultValue_ = builderForValue.build();
+      } else {
+        defaultValueBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableValuePb default_value = 5;</code>
+     */
+    public Builder mergeDefaultValue(io.littlehorse.sdk.common.proto.VariableValuePb value) {
+      if (defaultValueBuilder_ == null) {
+        if (((bitField0_ & 0x00000010) != 0) &&
+          defaultValue_ != null &&
+          defaultValue_ != io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance()) {
+          getDefaultValueBuilder().mergeFrom(value);
+        } else {
+          defaultValue_ = value;
+        }
+      } else {
+        defaultValueBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableValuePb default_value = 5;</code>
+     */
+    public Builder clearDefaultValue() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      defaultValue_ = null;
+      if (defaultValueBuilder_ != null) {
+        defaultValueBuilder_.dispose();
+        defaultValueBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableValuePb default_value = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableValuePb.Builder getDefaultValueBuilder() {
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return getDefaultValueFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.VariableValuePb default_value = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getDefaultValueOrBuilder() {
+      if (defaultValueBuilder_ != null) {
+        return defaultValueBuilder_.getMessageOrBuilder();
+      } else {
+        return defaultValue_ == null ?
+            io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance() : defaultValue_;
+      }
+    }
+    /**
+     * <code>.littlehorse.VariableValuePb default_value = 5;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableValuePb, io.littlehorse.sdk.common.proto.VariableValuePb.Builder, io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder> 
+        getDefaultValueFieldBuilder() {
+      if (defaultValueBuilder_ == null) {
+        defaultValueBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.VariableValuePb, io.littlehorse.sdk.common.proto.VariableValuePb.Builder, io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder>(
+                getDefaultValue(),
+                getParentForChildren(),
+                isClean());
+        defaultValue_ = null;
+      }
+      return defaultValueBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

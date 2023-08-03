@@ -12,9 +12,7 @@ import io.littlehorse.sdk.common.proto.ExitNodePb;
 import io.littlehorse.sdk.common.proto.ExternalEventNodePb;
 import io.littlehorse.sdk.common.proto.FailureDefPb;
 import io.littlehorse.sdk.common.proto.FailureHandlerDefPb;
-import io.littlehorse.sdk.common.proto.IndexTypePb;
 import io.littlehorse.sdk.common.proto.InterruptDefPb;
-import io.littlehorse.sdk.common.proto.JsonIndexPb;
 import io.littlehorse.sdk.common.proto.NodePb;
 import io.littlehorse.sdk.common.proto.NodePb.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNodePb;
@@ -88,27 +86,11 @@ public class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     public ThreadSpecPb.Builder getSpec() {
-        List<VariableDefPb> variableDefPbs = new ArrayList<>();
-        for (WfRunVariableImpl wfRunVariable : wfRunVariables) {
-            VariableDefPb variableDefPb = variableDefPb(wfRunVariable);
-            variableDefPbs.add(variableDefPb);
-        }
         spec.clearVariableDefs();
-        spec.addAllVariableDefs(variableDefPbs);
+        for (WfRunVariableImpl wfRunVariable : wfRunVariables) {
+            spec.addVariableDefs(wfRunVariable.getSpec());
+        }
         return spec;
-    }
-
-    private VariableDefPb variableDefPb(WfRunVariableImpl wfRunVariable) {
-        VariableDefPb.Builder varDefBuilder = VariableDefPb.newBuilder();
-        varDefBuilder.setType(wfRunVariable.getType());
-        varDefBuilder.setName(wfRunVariable.getName());
-        if (wfRunVariable.getIndexTypePb() != null) {
-            varDefBuilder.setIndexType(wfRunVariable.getIndexTypePb());
-        }
-        for (JsonIndexPb jsonIndexPb : wfRunVariable.getJsonIndexPbs()) {
-            varDefBuilder.addJsonIndexes(jsonIndexPb);
-        }
-        return varDefBuilder.build();
     }
 
     public UserTaskOutputImpl assignUserTaskToUser(
@@ -656,6 +638,12 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             addNode(externalEventDefName, NodeCase.EXTERNAL_EVENT, waitNode),
             this
         );
+    }
+
+    public void complete() {
+        checkIfIsActive();
+        ExitNodePb exitNode = ExitNodePb.newBuilder().build();
+        addNode("complete", NodeCase.EXIT, exitNode);
     }
 
     public void fail(String failureName, String message) {

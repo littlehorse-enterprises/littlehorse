@@ -2,6 +2,7 @@ package io.littlehorse.common.model.meta;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.sdk.common.proto.IndexTypePb;
 import io.littlehorse.sdk.common.proto.JsonIndexPb;
@@ -20,8 +21,9 @@ public class VariableDef extends LHSerializable<VariableDefPb> {
     public String name;
 
     public ThreadSpec threadSpec;
-    private TagStorageTypePb tagStorageTypePb;
+    private IndexTypePb indexType;
     private List<JsonIndex> jsonIndices = new ArrayList<>();
+    private VariableValue defaultValue;
 
     public Class<VariableDefPb> getProtoBaseClass() {
         return VariableDefPb.class;
@@ -31,49 +33,45 @@ public class VariableDef extends LHSerializable<VariableDefPb> {
         VariableDefPb p = (VariableDefPb) proto;
         type = p.getType();
         name = p.getName();
-        jsonIndices =
-            p
-                .getJsonIndexesList()
-                .stream()
-                .map(jsonIndexPb ->
-                    new JsonIndex(jsonIndexPb.getPath(), jsonIndexPb.getIndexType())
-                )
-                .toList();
-        if (p.hasIndexType()) {
-            if (p.getIndexType() == IndexTypePb.REMOTE_INDEX) {
-                tagStorageTypePb = TagStorageTypePb.REMOTE;
-            } else {
-                tagStorageTypePb = TagStorageTypePb.LOCAL;
-            }
+
+        for (JsonIndexPb idx : p.getJsonIndexesList()) {
+            jsonIndices.add(LHSerializable.fromProto(idx, JsonIndex.class));
+        }
+
+        if (p.hasIndexType()) indexType = p.getIndexType();
+
+        if (p.hasDefaultValue()) {
+            defaultValue = VariableValue.fromProto(p.getDefaultValue());
         }
     }
 
     public VariableDefPb.Builder toProto() {
-        IndexTypePb indexType = IndexTypePb.LOCAL_INDEX;
-        if (tagStorageTypePb == TagStorageTypePb.REMOTE) {
-            indexType = IndexTypePb.REMOTE_INDEX;
-        }
-        List<JsonIndexPb> jsonIndexPbs = jsonIndices
-            .stream()
-            .map(jsonIndex -> {
-                return JsonIndexPb
-                    .newBuilder()
-                    .setPath(jsonIndex.getPath())
-                    .setIndexType(jsonIndex.getIndexTypePb())
-                    .build();
-            })
-            .toList();
-        return VariableDefPb
+        VariableDefPb.Builder out = VariableDefPb
             .newBuilder()
             .setType(type)
-            .setName(name)
-            .addAllJsonIndexes(jsonIndexPbs)
-            .setIndexType(indexType);
+            .setName(name);
+
+        if (defaultValue != null) out.setDefaultValue(defaultValue.toProto());
+        if (indexType != null) out.setIndexType(indexType);
+
+        for (JsonIndex idx : jsonIndices) {
+            out.addJsonIndexes(idx.toProto());
+        }
+
+        return out;
     }
 
     public static VariableDef fromProto(VariableDefPb proto) {
         VariableDef o = new VariableDef();
         o.initFrom(proto);
         return o;
+    }
+
+    public TagStorageTypePb getTagStorageType() {
+        if (indexType == null) return null;
+
+        return indexType == IndexTypePb.LOCAL_INDEX
+            ? TagStorageTypePb.LOCAL
+            : TagStorageTypePb.REMOTE;
     }
 }
