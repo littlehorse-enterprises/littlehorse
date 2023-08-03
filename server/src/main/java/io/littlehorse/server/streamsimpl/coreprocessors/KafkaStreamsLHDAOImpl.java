@@ -179,10 +179,10 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
                 getable.getStoreKey()
         );
 
-        StoredGetable<U, T> bufferedResult = uncommittedChanges.get(getable.getStoreKey());
+        StoredGetable<U, T> uncommittedEntity = uncommittedChanges.get(getable.getStoreKey());
 
-        if (bufferedResult != null) {
-            if (bufferedResult.getStoredObject() != getable) {
+        if (uncommittedEntity != null) {
+            if (uncommittedEntity.getStoredObject() != getable) {
                 throw new IllegalStateException(
                         "Appears that Getable " +
                                 getable.getObjectId() +
