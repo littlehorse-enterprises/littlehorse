@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
@@ -71,7 +72,7 @@ public class ThreadBuilderImplTest {
             .filter(nodePair -> {
                 return (nodePair.getValue().getNodeCase() == NodeCase.EXIT);
             })
-            .toList();
+            .collect(Collectors.toList());
 
         assertEquals(exitNodes.size(), 2);
 
