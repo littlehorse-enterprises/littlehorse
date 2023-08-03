@@ -566,7 +566,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getWfRun(WfRunIdPb req, StreamObserver<GetWfRunReplyPb> ctx) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverPepe<>(
             ctx,
             WfRun.class,
             GetWfRunReplyPb.class,

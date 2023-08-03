@@ -71,7 +71,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private Map<String, StoredGetable<NodeRunPb, NodeRun>> nodeRunPuts;
     private Map<String, Variable> variablePuts;
     private Map<String, ExternalEvent> extEvtPuts;
-    private Map<String, WfRun> wfRunPuts;
+    private Map<String, StoredGetable<WfRunPb, WfRun>> wfRunPuts;
     private Map<String, WfSpec> wfSpecPuts;
     private Map<String, TaskDef> taskDefPuts;
     private Map<String, StoredGetable<TaskRunPb, TaskRun>> taskRunPuts;
@@ -520,21 +520,16 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public WfRun getWfRun(String id) {
-        if (wfRunPuts.containsKey(id)) {
-            return wfRunPuts.get(id);
+        WfRun wfRun = get(id, wfRunPuts, WfRun.class);
+        if (wfRun != null) {
+            wfRun.setWfSpec(getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion));
         }
-        WfRun out = localStore.get(id, WfRun.class);
-        if (out != null) {
-            wfRunPuts.put(id, out);
-            out.setWfSpec(getWfSpec(out.wfSpecName, out.wfSpecVersion));
-            out.setDao(this);
-        }
-        return out;
+        return wfRun;
     }
 
     @Override
     public void saveWfRun(WfRun wfRun) {
-        wfRunPuts.put(wfRun.getStoreKey(), wfRun);
+        put(wfRun, wfRunPuts, WfRun.class);
     }
 
     @Override
@@ -556,22 +551,23 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     // CommandProcessor#process().
     @Override
     public void abortChangesAndMarkWfRunFailed(String message) {
-        for (Map.Entry<String, WfRun> e : wfRunPuts.entrySet()) {
-            WfRun affected = e.getValue();
-            if (e != null) {
-                Failure failure = new Failure(
-                    "Unknown internal error while processing: " + message,
-                    LHConstants.INTERNAL_ERROR
-                );
-                NodeRun currentNodeRun = affected.threadRuns
-                    .get(0)
-                    .getCurrentNodeRun();
-                currentNodeRun.fail(failure, new Date());
-
-                saveOrDeleteGETableFlush(e.getKey(), affected, WfRun.class);
-                saveOrDeleteGETableFlush(e.getKey(), currentNodeRun, NodeRun.class);
-            }
-        }
+        // TODO: Implement this method
+//        for (Map.Entry<String, StoredGetable<WfRunPb, WfRun>> e : wfRunPuts.entrySet()) {
+//            WfRun affected = e.getValue();
+//            if (e != null) {
+//                Failure failure = new Failure(
+//                    "Unknown internal error while processing: " + message,
+//                    LHConstants.INTERNAL_ERROR
+//                );
+//                NodeRun currentNodeRun = affected.threadRuns
+//                    .get(0)
+//                    .getCurrentNodeRun();
+//                currentNodeRun.fail(failure, new Date());
+//
+//                saveOrDeleteGETableFlush(e.getKey(), affected, WfRun.class);
+//                saveOrDeleteGETableFlush(e.getKey(), currentNodeRun, NodeRun.class);
+//            }
+//        }
 
         clearThingsToWrite();
     }
@@ -583,22 +579,24 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public DeleteObjectReply deleteWfRun(String wfRunId) {
-        DeleteObjectReply out = new DeleteObjectReply();
         WfRun wfRun = getWfRun(wfRunId);
+
         if (wfRun == null) {
-            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
-            out.message = "Couldn't find wfRun with provided ID.";
-        } else {
-            if (wfRun.isRunning()) {
-                out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
-                out.message = "Specified wfRun is still RUNNING!";
-            } else {
-                wfRunPuts.put(wfRunId, null);
-                deleteAllChildren(wfRun);
-                out.code = LHResponseCodePb.OK;
-            }
+            return new DeleteObjectReply(LHResponseCodePb.NOT_FOUND_ERROR, "Couldn't find wfRun with provided ID.");
         }
-        return out;
+
+        if (wfRun.isRunning()) {
+            return new DeleteObjectReply(LHResponseCodePb.BAD_REQUEST_ERROR, "Specified wfRun is still RUNNING!");
+        }
+
+        // By this point it's guaranteed that a wfRun exist
+        StoredGetable<WfRunPb, WfRun> storedGetable = wfRunPuts.get(wfRunId);
+
+        wfRunPuts.put(wfRunId, new StoredGetable<>(storedGetable.getIndexCache(), null, storedGetable.getObjectType()));
+
+        deleteAllChildren(wfRun);
+
+        return new DeleteObjectReply(LHResponseCodePb.OK, null);
     }
 
     @Override
@@ -771,8 +769,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         for (Map.Entry<String, ExternalEvent> e : extEvtPuts.entrySet()) {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), ExternalEvent.class);
         }
-        for (Map.Entry<String, WfRun> e : wfRunPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), WfRun.class);
+        for (Map.Entry<String, StoredGetable<WfRunPb, WfRun>> e : wfRunPuts.entrySet()) {
+            pepeSaveOrDeleteGETableFlush(e.getKey(), e.getValue(), WfRun.class);
         }
         for (Map.Entry<String, StoredGetable<TaskRunPb, TaskRun>> e : taskRunPuts.entrySet()) {
             pepeSaveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskRun.class);
