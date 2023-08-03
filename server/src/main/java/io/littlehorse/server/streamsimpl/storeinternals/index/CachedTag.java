@@ -14,6 +14,13 @@ public class CachedTag extends LHSerializable<TagsCachePb.CachedTagPb> {
     private String id;
     private boolean isRemote;
 
+    public CachedTag() {}
+
+    public CachedTag(String id, boolean isRemote) {
+        this.id = id;
+        this.isRemote = isRemote;
+    }
+
     @Override
     public TagsCachePb.CachedTagPb.Builder toProto() {
         return TagsCachePb.CachedTagPb.newBuilder().setId(id).setIsRemote(isRemote);

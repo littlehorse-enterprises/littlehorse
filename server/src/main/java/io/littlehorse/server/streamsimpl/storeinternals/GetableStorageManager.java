@@ -4,6 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
+import io.littlehorse.server.streamsimpl.storeinternals.index.CachedTag;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
 import lombok.extern.slf4j.Slf4j;
@@ -45,11 +47,15 @@ public class GetableStorageManager {
         );
     }
     public <U extends Message, T extends Getable<U>> void pepeStore(StoredGetable<U, T> getable) {
-        localStore.pepePut(getable);
-        tagStorageManager.pepeStore(
-            getable.getStoredObject().getIndexEntries(),
-            getable.getIndexCache()
-        );
+        TagsCache previousTags = getable.getIndexCache();
+        List<Tag> newTags = getable.getStoredObject().getIndexEntries();
+        List<CachedTag> newCachedTags = newTags
+                .stream()
+                .map(tag -> new CachedTag(tag.getStoreKey(), tag.isRemote()))
+                .toList();
+        StoredGetable<U, T> entityToStore = new StoredGetable<>(new TagsCache(newCachedTags), getable.getStoredObject(), getable.getObjectType());
+        localStore.pepePut(entityToStore);
+        tagStorageManager.pepeStore(newTags, previousTags);
     }
 
     public <U extends Message, T extends Getable<U>> void pepeDelete(
