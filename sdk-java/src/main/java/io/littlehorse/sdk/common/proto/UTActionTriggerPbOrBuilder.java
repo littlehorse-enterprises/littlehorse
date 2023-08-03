@@ -66,8 +66,7 @@ public interface UTActionTriggerPbOrBuilder extends
 
   /**
    * <pre>
-   * Later on, might add trigger features such as
-   * "schedule this action when task is rescheduled" etc.
+   *Action's delay
    * </pre>
    *
    * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
@@ -76,8 +75,7 @@ public interface UTActionTriggerPbOrBuilder extends
   boolean hasDelaySeconds();
   /**
    * <pre>
-   * Later on, might add trigger features such as
-   * "schedule this action when task is rescheduled" etc.
+   *Action's delay
    * </pre>
    *
    * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
@@ -86,15 +84,23 @@ public interface UTActionTriggerPbOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableAssignmentPb getDelaySeconds();
   /**
    * <pre>
-   * Later on, might add trigger features such as
-   * "schedule this action when task is rescheduled" etc.
+   *Action's delay
    * </pre>
    *
    * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getDelaySecondsOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPb.ActionCase getActionCase();
+  /**
+   * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+   * @return The enum numeric value on the wire for hook.
+   */
+  int getHookValue();
+  /**
+   * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+   * @return The hook.
+   */
+  io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook getHook();
 
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPb.ScheduleTimeCase getScheduleTimeCase();
+  public io.littlehorse.sdk.common.proto.UTActionTriggerPb.ActionCase getActionCase();
 }

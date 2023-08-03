@@ -67,6 +67,7 @@ public class WfRun extends Getable<WfRunPb> {
         return startTime;
     }
 
+    // K -> V
     @Override
     public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
         return List.of(

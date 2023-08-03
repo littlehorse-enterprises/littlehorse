@@ -314,6 +314,15 @@ message TriggeredTaskRunPb {
     NodeRunIdPb source = 2;
 }
 
+message ReassignedUserTaskPb {
+    oneof assign_to {
+        string user_id = 1;
+        string user_group = 2;
+    }
+    int32 delay_in_seconds = 3;
+    NodeRunIdPb source = 4;
+}
+
 // This is the schema of everything that flows through the Central Command topic.
 message CommandPb {
     google.protobuf.Timestamp time = 1;
@@ -341,6 +350,7 @@ message CommandPb {
         PutUserTaskDefPb put_user_task_def = 23;
         TriggeredTaskRunPb triggered_task_run = 24;
         DeleteUserTaskDefPb delete_user_task_def = 25;
+        ReassignedUserTaskPb reassigned_user_task = 26;
         // TODO: Add SaveUserTask
     }
 }

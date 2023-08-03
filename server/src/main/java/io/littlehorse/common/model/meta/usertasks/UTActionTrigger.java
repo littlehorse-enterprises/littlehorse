@@ -8,26 +8,28 @@ import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb.ActionCase;
-import io.littlehorse.sdk.common.proto.UTActionTriggerPb.ScheduleTimeCase;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb;
-import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
 public class UTActionTrigger extends LHSerializable<UTActionTriggerPb> {
 
     public ActionCase actionType;
     public UTATask task;
     public UTACancelPb cancel;
-    public UTAReassignPb reassign;
+    public UTAReassign reassign;
 
-    public ScheduleTimeCase scheduleTimeType;
+    public UTActionTriggerPb.UTHook hook;
     public VariableAssignment delaySeconds;
 
+    @Override
     public Class<UTActionTriggerPb> getProtoBaseClass() {
         return UTActionTriggerPb.class;
     }
 
+    @Override
     public UTActionTriggerPb.Builder toProto() {
         UTActionTriggerPb.Builder out = UTActionTriggerPb.newBuilder();
 
@@ -39,19 +41,13 @@ public class UTActionTrigger extends LHSerializable<UTActionTriggerPb> {
                 out.setCancel(cancel);
                 break;
             case REASSIGN:
-                out.setReassign(reassign);
+                out.setReassign(reassign.toProto());
                 break;
             case ACTION_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
-
-        switch (scheduleTimeType) {
-            case DELAY_SECONDS:
-                out.setDelaySeconds(delaySeconds.toProto());
-                break;
-            case SCHEDULETIME_NOT_SET:
-            // nothing to do
-        }
+        out.setHook(hook);
+        out.setDelaySeconds(delaySeconds.toProto());
         return out;
     }
 
@@ -61,7 +57,7 @@ public class UTActionTrigger extends LHSerializable<UTActionTriggerPb> {
                 task.schedule(dao, utr, this);
                 break;
             case REASSIGN:
-                log.warn("Unimplemented: Reassignment trigger");
+                log.warn("Unimplemented: Reassign trigger");
                 break;
             case CANCEL:
                 log.warn("Unimplemented: Cancel trigger");
@@ -71,25 +67,20 @@ public class UTActionTrigger extends LHSerializable<UTActionTriggerPb> {
         }
     }
 
+    @Override
     public void initFrom(Message proto) {
         UTActionTriggerPb p = (UTActionTriggerPb) proto;
-
-        scheduleTimeType = p.getScheduleTimeCase();
-        switch (scheduleTimeType) {
-            case DELAY_SECONDS:
-                delaySeconds = VariableAssignment.fromProto(p.getDelaySeconds());
-                break;
-            case SCHEDULETIME_NOT_SET:
-            // nothing to do
-        }
-
+        hook = p.getHook();
         actionType = p.getActionCase();
+        delaySeconds =
+            LHSerializable.fromProto(p.getDelaySeconds(), VariableAssignment.class);
         switch (actionType) {
             case TASK:
                 task = LHSerializable.fromProto(p.getTask(), UTATask.class);
                 break;
             case REASSIGN:
-                reassign = p.getReassign();
+                reassign =
+                    LHSerializable.fromProto(p.getReassign(), UTAReassign.class);
                 break;
             case CANCEL:
                 cancel = p.getCancel();

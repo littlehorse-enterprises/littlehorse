@@ -72,6 +72,11 @@ public class UserTasksExample {
             financeTeamEmail,
             financeTeamEmailBody
         );
+        thread.scheduleReassignmentToUserOnDeadline(
+            financeUserTaskOutput,
+            "test-eduwer",
+            2
+        );
 
         thread.mutate(
             isApproved,

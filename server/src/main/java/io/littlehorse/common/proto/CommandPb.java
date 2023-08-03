@@ -76,6 +76,7 @@ private static final long serialVersionUID = 0L;
     PUT_USER_TASK_DEF(23),
     TRIGGERED_TASK_RUN(24),
     DELETE_USER_TASK_DEF(25),
+    REASSIGNED_USER_TASK(26),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -115,6 +116,7 @@ private static final long serialVersionUID = 0L;
         case 23: return PUT_USER_TASK_DEF;
         case 24: return TRIGGERED_TASK_RUN;
         case 25: return DELETE_USER_TASK_DEF;
+        case 26: return REASSIGNED_USER_TASK;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -856,10 +858,6 @@ private static final long serialVersionUID = 0L;
 
   public static final int DELETE_USER_TASK_DEF_FIELD_NUMBER = 25;
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
    * @return Whether the deleteUserTaskDef field is set.
    */
@@ -868,10 +866,6 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 25;
   }
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
    * @return The deleteUserTaskDef.
    */
@@ -883,10 +877,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.getDefaultInstance();
   }
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
    */
   @java.lang.Override
@@ -895,6 +885,49 @@ private static final long serialVersionUID = 0L;
        return (io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb) command_;
     }
     return io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.getDefaultInstance();
+  }
+
+  public static final int REASSIGNED_USER_TASK_FIELD_NUMBER = 26;
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
+   * @return Whether the reassignedUserTask field is set.
+   */
+  @java.lang.Override
+  public boolean hasReassignedUserTask() {
+    return commandCase_ == 26;
+  }
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
+   * @return The reassignedUserTask.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ReassignedUserTaskPb getReassignedUserTask() {
+    if (commandCase_ == 26) {
+       return (io.littlehorse.common.proto.ReassignedUserTaskPb) command_;
+    }
+    return io.littlehorse.common.proto.ReassignedUserTaskPb.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ReassignedUserTaskPbOrBuilder getReassignedUserTaskOrBuilder() {
+    if (commandCase_ == 26) {
+       return (io.littlehorse.common.proto.ReassignedUserTaskPb) command_;
+    }
+    return io.littlehorse.common.proto.ReassignedUserTaskPb.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -982,6 +1015,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 25) {
       output.writeMessage(25, (io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb) command_);
+    }
+    if (commandCase_ == 26) {
+      output.writeMessage(26, (io.littlehorse.common.proto.ReassignedUserTaskPb) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1086,6 +1122,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 25) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(25, (io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb) command_);
+    }
+    if (commandCase_ == 26) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(26, (io.littlehorse.common.proto.ReassignedUserTaskPb) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1202,6 +1242,10 @@ private static final long serialVersionUID = 0L;
         if (!getDeleteUserTaskDef()
             .equals(other.getDeleteUserTaskDef())) return false;
         break;
+      case 26:
+        if (!getReassignedUserTask()
+            .equals(other.getReassignedUserTask())) return false;
+        break;
       case 0:
       default:
     }
@@ -1312,6 +1356,10 @@ private static final long serialVersionUID = 0L;
       case 25:
         hash = (37 * hash) + DELETE_USER_TASK_DEF_FIELD_NUMBER;
         hash = (53 * hash) + getDeleteUserTaskDef().hashCode();
+        break;
+      case 26:
+        hash = (37 * hash) + REASSIGNED_USER_TASK_FIELD_NUMBER;
+        hash = (53 * hash) + getReassignedUserTask().hashCode();
         break;
       case 0:
       default:
@@ -1521,6 +1569,9 @@ private static final long serialVersionUID = 0L;
       if (deleteUserTaskDefBuilder_ != null) {
         deleteUserTaskDefBuilder_.clear();
       }
+      if (reassignedUserTaskBuilder_ != null) {
+        reassignedUserTaskBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -1660,6 +1711,10 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 25 &&
           deleteUserTaskDefBuilder_ != null) {
         result.command_ = deleteUserTaskDefBuilder_.build();
+      }
+      if (commandCase_ == 26 &&
+          reassignedUserTaskBuilder_ != null) {
+        result.command_ = reassignedUserTaskBuilder_.build();
       }
     }
 
@@ -1802,6 +1857,10 @@ private static final long serialVersionUID = 0L;
         }
         case DELETE_USER_TASK_DEF: {
           mergeDeleteUserTaskDef(other.getDeleteUserTaskDef());
+          break;
+        }
+        case REASSIGNED_USER_TASK: {
+          mergeReassignedUserTask(other.getReassignedUserTask());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -2000,6 +2059,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 25;
               break;
             } // case 202
+            case 210: {
+              input.readMessage(
+                  getReassignedUserTaskFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 26;
+              break;
+            } // case 210
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -5215,10 +5281,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb, io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.Builder, io.littlehorse.sdk.common.proto.DeleteUserTaskDefPbOrBuilder> deleteUserTaskDefBuilder_;
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
      * @return Whether the deleteUserTaskDef field is set.
      */
@@ -5227,10 +5289,6 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 25;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
      * @return The deleteUserTaskDef.
      */
@@ -5249,10 +5307,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
      */
     public Builder setDeleteUserTaskDef(io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb value) {
@@ -5269,10 +5323,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
      */
     public Builder setDeleteUserTaskDef(
@@ -5287,10 +5337,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
      */
     public Builder mergeDeleteUserTaskDef(io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb value) {
@@ -5314,10 +5360,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
      */
     public Builder clearDeleteUserTaskDef() {
@@ -5337,20 +5379,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
      */
     public io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.Builder getDeleteUserTaskDefBuilder() {
       return getDeleteUserTaskDefFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
      */
     @java.lang.Override
@@ -5365,10 +5399,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -5388,6 +5418,184 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 25;
       onChanged();
       return deleteUserTaskDefBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ReassignedUserTaskPb, io.littlehorse.common.proto.ReassignedUserTaskPb.Builder, io.littlehorse.common.proto.ReassignedUserTaskPbOrBuilder> reassignedUserTaskBuilder_;
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
+     * @return Whether the reassignedUserTask field is set.
+     */
+    @java.lang.Override
+    public boolean hasReassignedUserTask() {
+      return commandCase_ == 26;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
+     * @return The reassignedUserTask.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.ReassignedUserTaskPb getReassignedUserTask() {
+      if (reassignedUserTaskBuilder_ == null) {
+        if (commandCase_ == 26) {
+          return (io.littlehorse.common.proto.ReassignedUserTaskPb) command_;
+        }
+        return io.littlehorse.common.proto.ReassignedUserTaskPb.getDefaultInstance();
+      } else {
+        if (commandCase_ == 26) {
+          return reassignedUserTaskBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.ReassignedUserTaskPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
+     */
+    public Builder setReassignedUserTask(io.littlehorse.common.proto.ReassignedUserTaskPb value) {
+      if (reassignedUserTaskBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        reassignedUserTaskBuilder_.setMessage(value);
+      }
+      commandCase_ = 26;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
+     */
+    public Builder setReassignedUserTask(
+        io.littlehorse.common.proto.ReassignedUserTaskPb.Builder builderForValue) {
+      if (reassignedUserTaskBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        reassignedUserTaskBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 26;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
+     */
+    public Builder mergeReassignedUserTask(io.littlehorse.common.proto.ReassignedUserTaskPb value) {
+      if (reassignedUserTaskBuilder_ == null) {
+        if (commandCase_ == 26 &&
+            command_ != io.littlehorse.common.proto.ReassignedUserTaskPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.ReassignedUserTaskPb.newBuilder((io.littlehorse.common.proto.ReassignedUserTaskPb) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 26) {
+          reassignedUserTaskBuilder_.mergeFrom(value);
+        } else {
+          reassignedUserTaskBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 26;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
+     */
+    public Builder clearReassignedUserTask() {
+      if (reassignedUserTaskBuilder_ == null) {
+        if (commandCase_ == 26) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 26) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        reassignedUserTaskBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
+     */
+    public io.littlehorse.common.proto.ReassignedUserTaskPb.Builder getReassignedUserTaskBuilder() {
+      return getReassignedUserTaskFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.ReassignedUserTaskPbOrBuilder getReassignedUserTaskOrBuilder() {
+      if ((commandCase_ == 26) && (reassignedUserTaskBuilder_ != null)) {
+        return reassignedUserTaskBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 26) {
+          return (io.littlehorse.common.proto.ReassignedUserTaskPb) command_;
+        }
+        return io.littlehorse.common.proto.ReassignedUserTaskPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ReassignedUserTaskPb, io.littlehorse.common.proto.ReassignedUserTaskPb.Builder, io.littlehorse.common.proto.ReassignedUserTaskPbOrBuilder> 
+        getReassignedUserTaskFieldBuilder() {
+      if (reassignedUserTaskBuilder_ == null) {
+        if (!(commandCase_ == 26)) {
+          command_ = io.littlehorse.common.proto.ReassignedUserTaskPb.getDefaultInstance();
+        }
+        reassignedUserTaskBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.ReassignedUserTaskPb, io.littlehorse.common.proto.ReassignedUserTaskPb.Builder, io.littlehorse.common.proto.ReassignedUserTaskPbOrBuilder>(
+                (io.littlehorse.common.proto.ReassignedUserTaskPb) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 26;
+      onChanged();
+      return reassignedUserTaskBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -61,10 +61,6 @@ public class UTATask extends LHSerializable<UTATaskPb> {
             .getThreadRun()
             .assignVariable(trigger.delaySeconds);
 
-        Date maturationTime = new Date(
-            System.currentTimeMillis() + (1000 * delaySeconds.intVal)
-        );
-
         if (delaySeconds.getType() != VariableTypePb.INT) {
             throw new LHVarSubError(
                 null,
@@ -72,6 +68,10 @@ public class UTATask extends LHSerializable<UTATaskPb> {
                 delaySeconds.getType()
             );
         }
+
+        Date maturationTime = new Date(
+            System.currentTimeMillis() + (1000 * delaySeconds.intVal)
+        );
 
         LHTimer timer = new LHTimer(
             new Command(

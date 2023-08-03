@@ -17,6 +17,7 @@ import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
 import io.littlehorse.common.model.command.subcommand.PutUserTaskDef;
 import io.littlehorse.common.model.command.subcommand.PutWfSpec;
+import io.littlehorse.common.model.command.subcommand.ReassignUserTask;
 import io.littlehorse.common.model.command.subcommand.ReportTaskRun;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
 import io.littlehorse.common.model.command.subcommand.RunWf;
@@ -63,6 +64,7 @@ public class Command extends LHSerializable<CommandPb> {
     public CompleteUserTaskRun completeUserTaskRun;
     public TriggeredTaskRun triggeredTaskRun;
     public DeleteUserTaskDef deleteUserTaskDef;
+    private ReassignUserTask reassignUserTask;
 
     public Class<CommandPb> getProtoBaseClass() {
         return CommandPb.class;
@@ -156,6 +158,9 @@ public class Command extends LHSerializable<CommandPb> {
                 break;
             case DELETE_USER_TASK_DEF:
                 out.setDeleteUserTaskDef(deleteUserTaskDef.toProto());
+                break;
+            case REASSIGNED_USER_TASK:
+                out.setReassignedUserTask(reassignUserTask.toProto());
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -266,6 +271,13 @@ public class Command extends LHSerializable<CommandPb> {
                         DeleteUserTaskDef.class
                     );
                 break;
+            case REASSIGNED_USER_TASK:
+                reassignUserTask =
+                    LHSerializable.fromProto(
+                        p.getReassignedUserTask(),
+                        ReassignUserTask.class
+                    );
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -317,6 +329,8 @@ public class Command extends LHSerializable<CommandPb> {
                 return triggeredTaskRun;
             case DELETE_USER_TASK_DEF:
                 return deleteUserTaskDef;
+            case REASSIGNED_USER_TASK:
+                return reassignUserTask;
             case COMMAND_NOT_SET:
         }
         throw new RuntimeException("Not possible");
@@ -390,6 +404,9 @@ public class Command extends LHSerializable<CommandPb> {
         } else if (cls.equals(DeleteUserTaskDef.class)) {
             type = CommandCase.DELETE_USER_TASK_DEF;
             deleteUserTaskDef = (DeleteUserTaskDef) cmd;
+        } else if (cls.equals(ReassignUserTask.class)) {
+            type = CommandCase.REASSIGNED_USER_TASK;
+            reassignUserTask = (ReassignUserTask) cmd;
         } else {
             throw new IllegalArgumentException(
                 "Unrecognized SubCommand class: " + cls.getName()

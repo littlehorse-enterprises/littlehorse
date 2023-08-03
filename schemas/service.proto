@@ -1138,17 +1138,13 @@ message UTActionTriggerPb {
     // later on, might enable scheduling entire ThreadRuns
   }
 
-  // When this action should happen
-  oneof schedule_time {
-    VariableAssignmentPb delay_seconds = 5;
-    // Later on, might add trigger features such as
-    // "schedule this action when task is rescheduled" etc.
+  enum UTHook {
+    ON_ARRIVAL = 0;
+    ON_TASK_ASSIGNED = 1;
   }
-
-  // Later on, add logic to handle failures, such as:
-  // - couldn't assign to user
-  // - a TaskRun in an Action failed.
-  // Basically, it would take a `FailureHandlerDef`.
+  //Action's delay
+  VariableAssignmentPb delay_seconds = 5;
+  UTHook hook = 6;
 }
 
 message UserTaskNodePb {
@@ -1229,7 +1225,7 @@ message UserTaskRunPb {
   // The task may be in one of two states:
   // 1. Claimed by a specific person.
   // 2. Not yet claimed.
-  optional string user_id = 5;
+  optional string claimed_by_user_id = 5;
   repeated UserTaskFieldResultPb results = 6;
   UserTaskRunStatusPb status = 7;
   repeated UserTaskEventPb events = 8;

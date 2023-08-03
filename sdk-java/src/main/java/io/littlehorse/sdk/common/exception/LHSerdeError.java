@@ -10,6 +10,10 @@ public class LHSerdeError extends Exception {
         this.message = message;
     }
 
+    public LHSerdeError(String message) {
+        this.message = message;
+    }
+
     public String getMessage() {
         return message;
     }
