@@ -35,10 +35,7 @@ import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.HostInfoPb;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
-import io.littlehorse.sdk.common.proto.NodeRunPb;
+import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
@@ -77,7 +74,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private Map<String, WfRun> wfRunPuts;
     private Map<String, WfSpec> wfSpecPuts;
     private Map<String, TaskDef> taskDefPuts;
-    private Map<String, TaskRun> taskRunPuts;
+    private Map<String, StoredGetable<TaskRunPb, TaskRun>> taskRunPuts;
     private Map<String, UserTaskRun> userTaskRunPuts;
     private Map<String, UserTaskDef> userTaskDefPuts;
     private Map<String, ExternalEventDef> extEvtDefPuts;
@@ -174,7 +171,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     public <U extends Message, T extends Getable<U>> void put(
             T getable,
-            Map<String, StoredGetable<U, T>> uncommittedChanged,
+            Map<String, StoredGetable<U, T>> uncommittedChanges,
             Class<T> clazz
     ) throws IllegalStateException {
         log.trace(
@@ -183,7 +180,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
                 getable.getStoreKey()
         );
 
-        StoredGetable<U, T> bufferedResult = uncommittedChanged.get(getable.getStoreKey());
+        StoredGetable<U, T> bufferedResult = uncommittedChanges.get(getable.getStoreKey());
 
         if (bufferedResult != null) {
             if (bufferedResult.getStoredObject() != getable) {
@@ -214,7 +211,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             );
         }
 
-        uncommittedChanged.put(getable.getStoreKey(), toPut);
+        uncommittedChanges.put(getable.getStoreKey(), toPut);
     }
 
     @Override
@@ -245,21 +242,23 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public void putTaskRun(TaskRun tr) {
-        taskRunPuts.put(tr.getStoreKey(), tr);
+        put(tr, taskRunPuts, TaskRun.class);
     }
 
     @Override
     public TaskRun getTaskRun(TaskRunId taskRunId) {
         String key = taskRunId.getStoreKey();
         if (taskRunPuts.containsKey(key)) {
-            return taskRunPuts.get(key);
+            return taskRunPuts.get(key).getStoredObject();
         }
-        TaskRun out = localStore.get(key, TaskRun.class);
-        if (out != null) {
-            taskRunPuts.put(key, out);
-            out.setDao(this);
+        StoredGetable<TaskRunPb, TaskRun> storedGetable = localStore.getPepe(key, TaskRun.class);
+        if (storedGetable != null) {
+            taskRunPuts.put(key, storedGetable);
+            TaskRun entity = storedGetable.getStoredObject();
+            entity.setDao(this);
+            return entity;
         }
-        return out;
+        return null;
     }
 
     @Override
@@ -740,7 +739,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<TaskRun> next = iter.next();
-                getableStorageManager.delete(next.getKey(), TaskRun.class);
+                getableStorageManager.pepeDelete(next.getKey(), TaskRun.class);
             }
         }
 
@@ -791,8 +790,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         for (Map.Entry<String, WfRun> e : wfRunPuts.entrySet()) {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), WfRun.class);
         }
-        for (Map.Entry<String, TaskRun> e : taskRunPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskRun.class);
+        for (Map.Entry<String, StoredGetable<TaskRunPb, TaskRun>> e : taskRunPuts.entrySet()) {
+            pepeSaveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskRun.class);
         }
         for (Map.Entry<String, UserTaskRun> e : userTaskRunPuts.entrySet()) {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), UserTaskRun.class);
