@@ -75,7 +75,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private Map<String, WfSpec> wfSpecPuts;
     private Map<String, TaskDef> taskDefPuts;
     private Map<String, StoredGetable<TaskRunPb, TaskRun>> taskRunPuts;
-    private Map<String, UserTaskRun> userTaskRunPuts;
+    private Map<String, StoredGetable<UserTaskRunPb, UserTaskRun>> userTaskRunPuts;
     private Map<String, UserTaskDef> userTaskDefPuts;
     private Map<String, ExternalEventDef> extEvtDefPuts;
     private Map<String, ScheduledTask> scheduledTaskPuts;
@@ -255,21 +255,13 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public void putUserTaskRun(UserTaskRun utr) {
-        userTaskRunPuts.put(utr.getStoreKey(), utr);
+        put(utr, userTaskRunPuts, UserTaskRun.class);
     }
 
     @Override
     public UserTaskRun getUserTaskRun(UserTaskRunId userTaskRunId) {
         String key = userTaskRunId.getStoreKey();
-        if (userTaskRunPuts.containsKey(key)) {
-            return userTaskRunPuts.get(key);
-        }
-        UserTaskRun out = localStore.get(key, UserTaskRun.class);
-        if (out != null) {
-            userTaskRunPuts.put(key, out);
-            out.setDao(this);
-        }
-        return out;
+        return get(key, userTaskRunPuts, UserTaskRun.class);
     }
 
     @Override
@@ -719,7 +711,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<UserTaskRun> next = iter.next();
-                getableStorageManager.delete(next.getKey(), UserTaskRun.class);
+                getableStorageManager.pepeDelete(next.getKey(), UserTaskRun.class);
             }
         }
 
@@ -785,8 +777,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         for (Map.Entry<String, StoredGetable<TaskRunPb, TaskRun>> e : taskRunPuts.entrySet()) {
             pepeSaveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskRun.class);
         }
-        for (Map.Entry<String, UserTaskRun> e : userTaskRunPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), UserTaskRun.class);
+        for (Map.Entry<String, StoredGetable<UserTaskRunPb, UserTaskRun>> e : userTaskRunPuts.entrySet()) {
+            pepeSaveOrDeleteGETableFlush(e.getKey(), e.getValue(), UserTaskRun.class);
         }
         // Turns out that we have to save the WfRun's before we save the Variable.
         for (Map.Entry<String, Variable> e : variablePuts.entrySet()) {

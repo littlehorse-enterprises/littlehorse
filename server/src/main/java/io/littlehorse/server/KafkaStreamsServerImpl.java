@@ -630,7 +630,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         UserTaskRunIdPb req,
         StreamObserver<GetUserTaskRunReplyPb> ctx
     ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverPepe<>(
             ctx,
             UserTaskRun.class,
             GetUserTaskRunReplyPb.class,
