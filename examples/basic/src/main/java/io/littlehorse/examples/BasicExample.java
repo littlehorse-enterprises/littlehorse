@@ -1,12 +1,8 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.client.LHClient;
-import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.NodePb;
-import io.littlehorse.sdk.common.proto.PutWfSpecPb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -61,31 +57,6 @@ public class BasicExample {
     }
 
     public static void main(String[] args) throws IOException, LHApiError {
-        WorkflowImpl wf = new WorkflowImpl(
-            "asdf",
-            thread -> {
-                thread.execute("asdf");
-                thread.doWhile(
-                    thread.condition("asf", ComparatorPb.EQUALS, "asf"),
-                    loop -> {
-                        loop.execute("fdsa");
-                    }
-                );
-                thread.execute("done-now");
-            }
-        );
-
-        PutWfSpecPb wfSpec = wf.compileWorkflow();
-        NodePb lastNodeInLoopBody = wfSpec
-            .getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName())
-            .getNodesOrThrow("2-nop-NOP");
-
-        System.out.println(LHLibUtil.protoToJson(lastNodeInLoopBody));
-        System.out.println(lastNodeInLoopBody.getOutgoingEdgesCount());
-        System.out.println(LHLibUtil.protoToJson(wfSpec));
-    }
-
-    public static void mainOld(String[] args) throws IOException, LHApiError {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
