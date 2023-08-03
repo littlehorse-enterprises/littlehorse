@@ -25,7 +25,6 @@ import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
-import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
@@ -79,7 +78,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private Map<String, UserTaskDef> userTaskDefPuts;
     private Map<String, ExternalEventDef> extEvtDefPuts;
     private Map<String, ScheduledTask> scheduledTaskPuts;
-    private Map<String, TaskWorkerGroup> taskWorkerGroupPuts;
+    private Map<String, StoredGetable<TaskWorkerGroupPb, TaskWorkerGroup>> taskWorkerGroupPuts;
     private List<LHTimer> timersToSchedule;
     private Command command;
     private KafkaStreamsServerImpl server;
@@ -790,8 +789,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), Variable.class);
         }
 
-        for (Map.Entry<String, TaskWorkerGroup> e : taskWorkerGroupPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskWorkerGroup.class);
+        for (Map.Entry<String, StoredGetable<TaskWorkerGroupPb, TaskWorkerGroup>> e : taskWorkerGroupPuts.entrySet()) {
+            pepeSaveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskWorkerGroup.class);
         }
 
         for (Map.Entry<String, ExternalEventDef> e : extEvtDefPuts.entrySet()) {
@@ -1175,19 +1174,12 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public TaskWorkerGroup getTaskWorkerGroup(String taskDefName) {
-        if (taskWorkerGroupPuts.containsKey(taskDefName)) {
-            return taskWorkerGroupPuts.get(taskDefName);
-        }
-        TaskWorkerGroup out = localStore.get(taskDefName, TaskWorkerGroup.class);
-        if (out != null) {
-            taskWorkerGroupPuts.put(taskDefName, out);
-        }
-        return out;
+        return get(taskDefName, taskWorkerGroupPuts, TaskWorkerGroup.class);
     }
 
     @Override
     public void putTaskWorkerGroup(TaskWorkerGroup taskWorkerGroup) {
-        taskWorkerGroupPuts.put(taskWorkerGroup.getStoreKey(), taskWorkerGroup);
+        put(taskWorkerGroup, taskWorkerGroupPuts, TaskWorkerGroup.class);
     }
 
     @Override
