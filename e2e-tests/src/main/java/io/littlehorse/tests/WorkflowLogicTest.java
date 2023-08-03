@@ -205,7 +205,7 @@ public abstract class WorkflowLogicTest extends Test {
         Object... expectedPath
     ) throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("input", input));
-        Thread.sleep(4000);
+        Thread.sleep(100 * (expectedPath.length + 1));
         assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
         WfRunPb wfRun = getWfRun(client, wfRunId);
 
