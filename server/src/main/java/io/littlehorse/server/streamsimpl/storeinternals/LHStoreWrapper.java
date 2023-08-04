@@ -35,12 +35,12 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         put(storeKey, thing);
     }
 
-    public void pepePut(StoredGetable<?, ?> thing) {
+    public void put(StoredGetable<?, ?> thing) {
         String storeKey = StoreUtils.getFullStoreKey(thing.getStoredObject());
         put(storeKey, thing);
     }
 
-    public void put(String storeKey, Storeable<?> thing) {
+    private void put(String storeKey, Storeable<?> thing) {
         totalPuts++;
         log.trace("Putting {}", storeKey);
         store.put(storeKey, new Bytes(thing.toBytes(config)));

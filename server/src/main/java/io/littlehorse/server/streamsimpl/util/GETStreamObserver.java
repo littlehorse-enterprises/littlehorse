@@ -9,6 +9,12 @@ import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 
+/**
+ * @deprecated
+ * Should not use this class because it's not using the StoredGetable class. This class will
+ * be removed once all entities are migrated to use the StoredGetable class.
+ */
+@Deprecated(forRemoval = true)
 public class GETStreamObserver<
     U extends Message, T extends Storeable<U>, V extends Message
 >

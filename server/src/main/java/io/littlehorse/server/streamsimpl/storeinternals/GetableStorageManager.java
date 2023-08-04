@@ -50,7 +50,7 @@ public class GetableStorageManager {
             return storedGetable.getStoredObject();
         }
 
-        StoredGetable<U, T> storedGetable = localStore.getPepe(key, clazz);
+        StoredGetable<U, T> storedGetable = localStore.getStoredGetable(key, clazz);
 
         if (storedGetable != null) {
             uncommittedChanges.put(key, storedGetable);
@@ -80,7 +80,7 @@ public class GetableStorageManager {
             return;
         }
 
-        StoredGetable<U, T> previousValue = localStore.getPepe(getable.getStoreKey(), clazz);
+        StoredGetable<U, T> previousValue = localStore.getStoredGetable(getable.getStoreKey(), clazz);
 
         final StoredGetable<U, T> toPut = previousValue != null
             ? new StoredGetable<>(
@@ -98,13 +98,13 @@ public class GetableStorageManager {
     }
 
     @SuppressWarnings("unchecked")
-    public <U extends Message, T extends Getable<U>> void deletep(
+    public <U extends Message, T extends Getable<U>> void delete(
         String key,
         Class<T> clazz
     ) throws IllegalStateException {
         log.trace("Deleting {} with key {}", clazz, key);
 
-        StoredGetable<U, T> entity = localStore.getPepe(key, clazz);
+        StoredGetable<U, T> entity = localStore.getStoredGetable(key, clazz);
 
         if (entity != null) {
             StoredGetable<U, T> toDelete = new StoredGetable<>(
@@ -120,15 +120,15 @@ public class GetableStorageManager {
         for (Map.Entry<String, StoredGetable<? extends Message, ? extends Getable<?>>> entry : uncommittedChanges.entrySet()) {
             StoredGetable<? extends Message, ? extends Getable<?>> storedGetable = entry.getValue();
             if (storedGetable.getStoredObject() != null) {
-                pepeStore(storedGetable);
+                insertIntoStore(storedGetable);
             } else {
-                pepeDelete(entry.getKey(), storedGetable);
+                deleteFromStore(entry.getKey(), storedGetable);
             }
         }
         uncommittedChanges.clear();
     }
 
-    private <U extends Message, T extends Getable<U>> void pepeStore(
+    private <U extends Message, T extends Getable<U>> void insertIntoStore(
         StoredGetable<U, T> getable
     ) {
         TagsCache previousTags = getable.getIndexCache();
@@ -142,39 +142,57 @@ public class GetableStorageManager {
             getable.getStoredObject(),
             getable.getObjectType()
         );
-        localStore.pepePut(entityToStore);
-        tagStorageManager.pepeStore(newTags, previousTags);
+        localStore.put(entityToStore);
+        tagStorageManager.store(newTags, previousTags);
     }
 
-    private <U extends Message, T extends Getable<U>> void pepeDelete(
+    private <U extends Message, T extends Getable<U>> void deleteFromStore(
         String key,
         StoredGetable<U, T> getable
     ) {
         localStore.delete(key, getable.getStoredClass());
-        tagStorageManager.pepeStore(List.of(), getable.getIndexCache());
+        tagStorageManager.store(List.of(), getable.getIndexCache());
     }
 
+    /**
+     * @deprecated
+     * Should not use this method because it's not saving/deleting using the StoredGetable class. This method will
+     * be removed once all entities are migrated to use the StoredGetable class.
+     */
+    @Deprecated(forRemoval = true)
     @SuppressWarnings("unchecked")
     public <T extends Getable<?>> void store(T getable) {
         localStore.put(getable);
-        tagStorageManager.store(
+        tagStorageManager.storeUsingCache(
             getable.getIndexEntries(),
             getable.getStoreKey(),
             (Class<? extends Getable<?>>) getable.getClass()
         );
     }
 
-    public <U extends Message, T extends Getable<U>> void delete(
+    /**
+     * @deprecated
+     * Should not use this method because it's not saving/deleting using the StoredGetable class. This method will
+     * be removed once all entities are migrated to use the StoredGetable class.
+     */
+    @Deprecated(forRemoval = true)
+    public <U extends Message, T extends Getable<U>> void deleteGetable(
         String storeKey,
         Class<T> getableClass
     ) {
         // TODO: I think there might be a cacheing-related bug here.
         T getable = localStore.get(storeKey, getableClass);
-        delete(getable);
+        deleteGetable(getable);
     }
 
+    /**
+     * @deprecated
+     * Should not use this method because it's not saving/deleting using the StoredGetable class. This method will
+     * be removed once all entities are migrated to use the StoredGetable class.
+     */
+    @Deprecated(forRemoval = true)
     @SuppressWarnings("unchecked")
-    public <T extends Getable<?>> void delete(T getable) {
+    public <T extends Getable<?>> void deleteGetable(T getable) {
         if (getable == null) {
             log.debug(
                 "Tried to delete a thing that didn't exist! Likely because it " +

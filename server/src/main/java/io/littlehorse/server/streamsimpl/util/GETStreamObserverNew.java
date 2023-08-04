@@ -10,7 +10,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
 
-public class GETStreamObserverPepe<U extends Message, T extends Getable<U>, V extends Message>
+public class GETStreamObserverNew<U extends Message, T extends Getable<U>, V extends Message>
         implements StreamObserver<CentralStoreQueryReplyPb> {
 
     private StreamObserver<V> ctx;
@@ -19,7 +19,7 @@ public class GETStreamObserverPepe<U extends Message, T extends Getable<U>, V ex
 
     private IntermediateGETResp<U, T, V> out;
 
-    public GETStreamObserverPepe(
+    public GETStreamObserverNew(
         StreamObserver<V> responseObserver,
         Class<T> getableCls,
         Class<V> responseCls,

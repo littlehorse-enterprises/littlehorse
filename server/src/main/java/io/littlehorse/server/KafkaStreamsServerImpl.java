@@ -196,7 +196,7 @@ import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import io.littlehorse.server.streamsimpl.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streamsimpl.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streamsimpl.util.GETStreamObserver;
-import io.littlehorse.server.streamsimpl.util.GETStreamObserverPepe;
+import io.littlehorse.server.streamsimpl.util.GETStreamObserverNew;
 import io.littlehorse.server.streamsimpl.util.POSTStreamObserver;
 import java.io.File;
 import java.io.IOException;
@@ -566,7 +566,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getWfRun(WfRunIdPb req, StreamObserver<GetWfRunReplyPb> ctx) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverPepe<>(
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
             ctx,
             WfRun.class,
             GetWfRunReplyPb.class,
@@ -584,7 +584,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getNodeRun(NodeRunIdPb req, StreamObserver<GetNodeRunReplyPb> ctx) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverPepe<>(
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
             ctx,
             NodeRun.class,
             GetNodeRunReplyPb.class,
@@ -608,7 +608,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getTaskRun(TaskRunIdPb req, StreamObserver<GetTaskRunReplyPb> ctx) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverPepe<>(
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
             ctx,
             TaskRun.class,
             GetTaskRunReplyPb.class,
@@ -630,7 +630,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         UserTaskRunIdPb req,
         StreamObserver<GetUserTaskRunReplyPb> ctx
     ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverPepe<>(
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
             ctx,
             UserTaskRun.class,
             GetUserTaskRunReplyPb.class,

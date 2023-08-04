@@ -115,7 +115,7 @@ public class GetableStorageManagerTest {
             .map(s -> localStoreWrapper.get(s, Tag.class))
             .collect(Collectors.groupingBy(Objects::nonNull));
 
-        geTableStorageManager.delete(wfRun);
+        geTableStorageManager.deleteGetable(wfRun);
         Assertions
             .assertThat(localStoreWrapper.get(wfRun.getStoreKey(), WfRun.class))
             .isNull();

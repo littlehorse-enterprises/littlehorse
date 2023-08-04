@@ -9,7 +9,6 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
-import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -46,7 +45,7 @@ public class LHROStoreWrapper {
         this.config = config;
     }
 
-    public <U extends Message, T extends Getable<U>> StoredGetable<U, T> getPepe(
+    public <U extends Message, T extends Getable<U>> StoredGetable<U, T> getStoredGetable(
             String objectId,
             Class<T> cls
     ) {
@@ -64,6 +63,12 @@ public class LHROStoreWrapper {
         }
     }
 
+    /**
+     * @deprecated
+     * Should not use this method because it's not using the StoredGetable class. This method will
+     * be removed once all entities are migrated to use the StoredGetable class.
+     */
+    @Deprecated(forRemoval = true)
     public <U extends Message, T extends Storeable<U>> T get(
         String objectId,
         Class<T> cls

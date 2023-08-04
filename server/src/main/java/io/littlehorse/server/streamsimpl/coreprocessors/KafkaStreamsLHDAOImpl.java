@@ -535,7 +535,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         }
 
         // By this point it's guaranteed that a wfRun exists
-        storageManager.deletep(wfRunId, WfRun.class);
+        storageManager.delete(wfRunId, WfRun.class);
 
         deleteAllChildren(wfRun);
 
@@ -628,7 +628,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<NodeRun> next = iter.next();
-                storageManager.deletep(next.getKey(), NodeRun.class);
+                storageManager.delete(next.getKey(), NodeRun.class);
             }
         }
 
@@ -640,7 +640,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<Variable> next = iter.next();
-                storageManager.delete(next.getKey(), Variable.class);
+                storageManager.deleteGetable(next.getKey(), Variable.class);
             }
         }
 
@@ -652,7 +652,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<UserTaskRun> next = iter.next();
-                storageManager.deletep(next.getKey(), UserTaskRun.class);
+                storageManager.delete(next.getKey(), UserTaskRun.class);
             }
         }
 
@@ -664,7 +664,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<TaskRun> next = iter.next();
-                storageManager.deletep(next.getKey(), TaskRun.class);
+                storageManager.delete(next.getKey(), TaskRun.class);
             }
         }
 
@@ -676,7 +676,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<ExternalEvent> next = iter.next();
-                storageManager.delete(next.getKey(), ExternalEvent.class);
+                storageManager.deleteGetable(next.getKey(), ExternalEvent.class);
             }
         }
     }
@@ -937,7 +937,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         if (val != null) {
             storageManager.store(val);
         } else {
-            storageManager.delete(key, cls);
+            storageManager.deleteGetable(key, cls);
         }
     }
 
