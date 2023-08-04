@@ -67,18 +67,14 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 @Slf4j
 public class KafkaStreamsLHDAOImpl implements LHDAO {
 
-    private Map<String, StoredGetable<NodeRunPb, NodeRun>> nodeRunPuts;
+    private Map<String, StoredGetable<? extends Message, ? extends Getable<?>>> uncommittedChanges;
     private Map<String, Variable> variablePuts;
     private Map<String, ExternalEvent> extEvtPuts;
-    private Map<String, StoredGetable<WfRunPb, WfRun>> wfRunPuts;
     private Map<String, WfSpec> wfSpecPuts;
     private Map<String, TaskDef> taskDefPuts;
-    private Map<String, StoredGetable<TaskRunPb, TaskRun>> taskRunPuts;
-    private Map<String, StoredGetable<UserTaskRunPb, UserTaskRun>> userTaskRunPuts;
     private Map<String, UserTaskDef> userTaskDefPuts;
     private Map<String, ExternalEventDef> extEvtDefPuts;
     private Map<String, ScheduledTask> scheduledTaskPuts;
-    private Map<String, StoredGetable<TaskWorkerGroupPb, TaskWorkerGroup>> taskWorkerGroupPuts;
     private List<LHTimer> timersToSchedule;
     private Command command;
     private KafkaStreamsServerImpl server;
@@ -133,19 +129,16 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         // At the start, we haven't claimed the partition until the claim event comes
         this.partitionIsClaimed = false;
 
-        nodeRunPuts = new HashMap<>();
+        uncommittedChanges = new HashMap<>();
+
         variablePuts = new HashMap<>();
         extEvtPuts = new HashMap<>();
-        wfRunPuts = new HashMap<>();
         wfSpecPuts = new HashMap<>();
         extEvtDefPuts = new HashMap<>();
         taskDefPuts = new HashMap<>();
         userTaskDefPuts = new HashMap<>();
         taskMetricPuts = new HashMap<>();
         wfMetricPuts = new HashMap<>();
-        taskWorkerGroupPuts = new HashMap<>();
-        taskRunPuts = new HashMap<>();
-        userTaskRunPuts = new HashMap<>();
 
         // TODO: Here is where we want to eventually add some cacheing for GET to
         // the WfSpec and TaskDef etc.
@@ -170,7 +163,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     public <U extends Message, T extends Getable<U>> void put(
             T getable,
-            Map<String, StoredGetable<U, T>> uncommittedChanges,
             Class<T> clazz
     ) throws IllegalStateException {
         log.trace(
@@ -179,7 +171,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
                 getable.getStoreKey()
         );
 
-        StoredGetable<U, T> uncommittedEntity = uncommittedChanges.get(getable.getStoreKey());
+        StoredGetable<U, T> uncommittedEntity = (StoredGetable<U, T>) uncommittedChanges.get(getable.getStoreKey());
 
         if (uncommittedEntity != null) {
             if (uncommittedEntity.getStoredObject() != getable) {
@@ -215,12 +207,12 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public void putNodeRun(NodeRun nr) {
-        put(nr, nodeRunPuts, NodeRun.class);
+        put(nr, NodeRun.class);
     }
 
-    private <U extends Message, T extends Getable<U>> T get(String key, Map<String, StoredGetable<U, T>> uncommittedChanges, Class<T> clazz) {
+    private <U extends Message, T extends Getable<U>> T get(String key, Class<T> clazz) {
         if (uncommittedChanges.containsKey(key)) {
-            return uncommittedChanges.get(key).getStoredObject();
+            return ((StoredGetable<U, T>) uncommittedChanges.get(key)).getStoredObject();
         }
 
         StoredGetable<U, T> storedGetable = localStore.getPepe(key, clazz);
@@ -238,29 +230,29 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     @Override
     public NodeRun getNodeRun(String wfRunId, int threadNum, int position) {
         String key = new NodeRunId(wfRunId, threadNum, position).getStoreKey();
-        return get(key, nodeRunPuts, NodeRun.class);
+        return get(key, NodeRun.class);
     }
 
     @Override
     public void putTaskRun(TaskRun tr) {
-        put(tr, taskRunPuts, TaskRun.class);
+        put(tr, TaskRun.class);
     }
 
     @Override
     public TaskRun getTaskRun(TaskRunId taskRunId) {
         String key = taskRunId.getStoreKey();
-        return get(key, taskRunPuts, TaskRun.class);
+        return get(key, TaskRun.class);
     }
 
     @Override
     public void putUserTaskRun(UserTaskRun utr) {
-        put(utr, userTaskRunPuts, UserTaskRun.class);
+        put(utr, UserTaskRun.class);
     }
 
     @Override
     public UserTaskRun getUserTaskRun(UserTaskRunId userTaskRunId) {
         String key = userTaskRunId.getStoreKey();
-        return get(key, userTaskRunPuts, UserTaskRun.class);
+        return get(key, UserTaskRun.class);
     }
 
     @Override
@@ -519,7 +511,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public WfRun getWfRun(String id) {
-        WfRun wfRun = get(id, wfRunPuts, WfRun.class);
+        WfRun wfRun = get(id, WfRun.class);
         if (wfRun != null) {
             wfRun.setWfSpec(getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion));
         }
@@ -528,7 +520,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public void saveWfRun(WfRun wfRun) {
-        put(wfRun, wfRunPuts, WfRun.class);
+        put(wfRun, WfRun.class);
     }
 
     @Override
@@ -588,10 +580,10 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             return new DeleteObjectReply(LHResponseCodePb.BAD_REQUEST_ERROR, "Specified wfRun is still RUNNING!");
         }
 
-        // By this point it's guaranteed that a wfRun exist
-        StoredGetable<WfRunPb, WfRun> storedGetable = wfRunPuts.get(wfRunId);
+        // By this point it's guaranteed that a wfRun exists
+        StoredGetable<WfRunPb, WfRun> storedGetable = (StoredGetable<WfRunPb, WfRun>) uncommittedChanges.get(wfRunId);
 
-        wfRunPuts.put(wfRunId, new StoredGetable<>(storedGetable.getIndexCache(), null, storedGetable.getObjectType()));
+        uncommittedChanges.put(wfRunId, new StoredGetable<>(storedGetable.getIndexCache(), null, storedGetable.getObjectType()));
 
         deleteAllChildren(wfRun);
 
@@ -762,20 +754,11 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     private void flush() {
-        for (Map.Entry<String, StoredGetable<NodeRunPb, NodeRun>> e : nodeRunPuts.entrySet()) {
-            pepeSaveOrDeleteGETableFlush(e.getKey(), e.getValue(), NodeRun.class);
+        for (Map.Entry<String, StoredGetable<? extends Message, ? extends Getable<?>>> entry : uncommittedChanges.entrySet()) {
+            pepeSaveOrDeleteGETableFlush(entry.getKey(), entry.getValue());
         }
         for (Map.Entry<String, ExternalEvent> e : extEvtPuts.entrySet()) {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), ExternalEvent.class);
-        }
-        for (Map.Entry<String, StoredGetable<WfRunPb, WfRun>> e : wfRunPuts.entrySet()) {
-            pepeSaveOrDeleteGETableFlush(e.getKey(), e.getValue(), WfRun.class);
-        }
-        for (Map.Entry<String, StoredGetable<TaskRunPb, TaskRun>> e : taskRunPuts.entrySet()) {
-            pepeSaveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskRun.class);
-        }
-        for (Map.Entry<String, StoredGetable<UserTaskRunPb, UserTaskRun>> e : userTaskRunPuts.entrySet()) {
-            pepeSaveOrDeleteGETableFlush(e.getKey(), e.getValue(), UserTaskRun.class);
         }
         // Turns out that we have to save the WfRun's before we save the Variable.
         for (Map.Entry<String, Variable> e : variablePuts.entrySet()) {
@@ -787,10 +770,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
                 }
             }
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), Variable.class);
-        }
-
-        for (Map.Entry<String, StoredGetable<TaskWorkerGroupPb, TaskWorkerGroup>> e : taskWorkerGroupPuts.entrySet()) {
-            pepeSaveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskWorkerGroup.class);
         }
 
         for (Map.Entry<String, ExternalEventDef> e : extEvtDefPuts.entrySet()) {
@@ -1015,31 +994,26 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     private <U extends Message, T extends Getable<U>> void pepeSaveOrDeleteGETableFlush(
         String key,
-        StoredGetable<U, T> val,
-        Class<T> cls
+        StoredGetable<U, T> val
     ) {
         T storedObject = val.getStoredObject();
         if (storedObject != null) {
             getableStorageManager.pepeStore(val);
         } else {
-            getableStorageManager.pepeDelete(key, cls);
+            getableStorageManager.pepeDelete(key, val.getStoredClass());
         }
     }
 
     private void clearThingsToWrite() {
-        nodeRunPuts.clear();
+        uncommittedChanges.clear();
         variablePuts.clear();
         extEvtPuts.clear();
         scheduledTaskPuts.clear();
         timersToSchedule.clear();
-        wfRunPuts.clear();
         wfSpecPuts.clear();
         taskDefPuts.clear();
-        taskRunPuts.clear();
         userTaskDefPuts.clear();
         extEvtDefPuts.clear();
-        userTaskRunPuts.clear();
-        taskWorkerGroupPuts.clear();
         taskMetricPuts = new HashMap<>();
         wfMetricPuts = new HashMap<>();
 
@@ -1175,12 +1149,12 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public TaskWorkerGroup getTaskWorkerGroup(String taskDefName) {
-        return get(taskDefName, taskWorkerGroupPuts, TaskWorkerGroup.class);
+        return get(taskDefName, TaskWorkerGroup.class);
     }
 
     @Override
     public void putTaskWorkerGroup(TaskWorkerGroup taskWorkerGroup) {
-        put(taskWorkerGroup, taskWorkerGroupPuts, TaskWorkerGroup.class);
+        put(taskWorkerGroup, TaskWorkerGroup.class);
     }
 
     @Override
