@@ -72,36 +72,6 @@ public interface UserTaskRunPbOrBuilder extends
       getUserGroupBytes();
 
   /**
-   * <code>.littlehorse.UserTaskRunPb.User user = 22;</code>
-   * @return Whether the user field is set.
-   */
-  boolean hasUser();
-  /**
-   * <code>.littlehorse.UserTaskRunPb.User user = 22;</code>
-   * @return The user.
-   */
-  io.littlehorse.sdk.common.proto.UserTaskRunPb.User getUser();
-  /**
-   * <code>.littlehorse.UserTaskRunPb.User user = 22;</code>
-   */
-  io.littlehorse.sdk.common.proto.UserTaskRunPb.UserOrBuilder getUserOrBuilder();
-
-  /**
-   * <code>.littlehorse.UserTaskRunPb.Group group = 23;</code>
-   * @return Whether the group field is set.
-   */
-  boolean hasGroup();
-  /**
-   * <code>.littlehorse.UserTaskRunPb.Group group = 23;</code>
-   * @return The group.
-   */
-  io.littlehorse.sdk.common.proto.UserTaskRunPb.Group getGroup();
-  /**
-   * <code>.littlehorse.UserTaskRunPb.Group group = 23;</code>
-   */
-  io.littlehorse.sdk.common.proto.UserTaskRunPb.GroupOrBuilder getGroupOrBuilder();
-
-  /**
    * <pre>
    * The task may be in one of two states:
    * 1. Claimed by a specific person.
@@ -261,6 +231,4 @@ public interface UserTaskRunPbOrBuilder extends
   io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getNodeRunIdOrBuilder();
 
   public io.littlehorse.sdk.common.proto.UserTaskRunPb.AssignedToCase getAssignedToCase();
-
-  public io.littlehorse.sdk.common.proto.UserTaskRunPb.OwnerCase getOwnerCase();
 }

@@ -1227,20 +1227,6 @@ message UserTaskRunPb {
     string user_group = 4;
   }
 
-  message User {
-    string id = 1;
-    optional Group group = 2;
-  }
-
-  message Group {
-    string id = 1;
-  }
-
-  oneof owner {
-    User user = 22;
-    Group group = 23;
-  }
-
   // The task may be in one of two states:
   // 1. Claimed by a specific person.
   // 2. Not yet claimed.
