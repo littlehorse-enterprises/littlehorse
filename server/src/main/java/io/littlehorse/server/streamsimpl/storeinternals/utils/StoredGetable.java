@@ -17,13 +17,17 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class StoredGetable<U extends Message, T extends Getable<U>>
-        extends Storeable<StoredGetablePb> {
+    extends Storeable<StoredGetablePb> {
 
     private TagsCache indexCache;
     private T storedObject;
     private GetableClassEnumPb objectType;
 
-    public StoredGetable(TagsCache indexCache, T storedObject, GetableClassEnumPb objectType) {
+    public StoredGetable(
+        TagsCache indexCache,
+        T storedObject,
+        GetableClassEnumPb objectType
+    ) {
         this.indexCache = indexCache;
         this.storedObject = storedObject;
         this.objectType = objectType;
@@ -42,22 +46,28 @@ public class StoredGetable<U extends Message, T extends Getable<U>>
         indexCache = LHSerializable.fromProto(p.getIndexCache(), TagsCache.class);
         objectType = p.getType();
         try {
-            storedObject = LHSerializable.fromBytes(
+            storedObject =
+                LHSerializable.fromBytes(
                     p.getGetablePayload().toByteArray(),
                     getStoredClass(),
-                    null);
+                    null
+                );
         } catch (LHSerdeError exception) {
-            log.error("Failed loading from store: {}", exception.getMessage(), exception);
+            log.error(
+                "Failed loading from store: {}",
+                exception.getMessage(),
+                exception
+            );
         }
     }
 
     @Override
     public StoredGetablePb.Builder toProto() {
         return StoredGetablePb
-                .newBuilder()
-                .setType(objectType)
-                .setIndexCache(indexCache.toProto())
-                .setGetablePayload(storedObject.toProto().build().toByteString());
+            .newBuilder()
+            .setType(objectType)
+            .setIndexCache(indexCache.toProto())
+            .setGetablePayload(storedObject.toProto().build().toByteString());
     }
 
     @Override

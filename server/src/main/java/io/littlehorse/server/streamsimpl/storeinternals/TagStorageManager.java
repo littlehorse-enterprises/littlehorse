@@ -45,10 +45,8 @@ public class TagStorageManager {
         tagsCache.setTags(cachedTags);
         localStore.putTagsCache(getableId, getableCls, tagsCache);
     }
-    public void pepeStore(
-        Collection<Tag> newTags,
-        TagsCache preExistingTags
-    ) {
+
+    public void pepeStore(Collection<Tag> newTags, TagsCache preExistingTags) {
         List<String> existingTagIds = preExistingTags.getTagIds();
         this.storeLocalOrRemoteTag(newTags, existingTagIds);
         this.removeOldTags(newTags, preExistingTags.getTags());
