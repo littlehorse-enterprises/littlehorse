@@ -2,10 +2,12 @@ package io.littlehorse.sdk.worker;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.NodeRunIdPb;
+import io.littlehorse.sdk.common.proto.ScheduledTaskContextPb;
 import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunSourcePb;
 import java.util.Date;
+import javax.annotation.Nullable;
 import lombok.Getter;
 
 /**
@@ -16,7 +18,6 @@ import lombok.Getter;
  */
 public class WorkerContext {
 
-    @Getter
     private ScheduledTaskPb scheduledTask;
 
     private Date scheduleTime;
@@ -100,6 +101,17 @@ public class WorkerContext {
 
     public TaskRunIdPb getTaskRunId() {
         return scheduledTask.getTaskRunId();
+    }
+
+    /**
+     * Retrieves the context associated with the currently executing task.
+     * This method returns the ScheduledTaskContextPb object that holds information
+     * about the ongoing task's execution context.
+     * @return The current task context. If there is no context associated to the task,
+     * Null is returned
+     */
+    public ScheduledTaskContextPb getTaskContext() {
+        return this.scheduledTask.getContext();
     }
 
     /**
