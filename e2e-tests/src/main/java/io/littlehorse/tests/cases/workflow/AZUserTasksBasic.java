@@ -23,6 +23,7 @@ import io.littlehorse.sdk.common.proto.UserTaskResultPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
+import io.littlehorse.sdk.common.proto.VarNameAndValPb;
 import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.sdk.usertask.annotations.UserTaskField;
@@ -31,12 +32,14 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.UserTaskWorkflowTest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class AZUserTasksBasic extends UserTaskWorkflowTest {
 
@@ -250,7 +253,20 @@ class AZSimpleTask {
     }
 
     @LHTaskMethod("az-reminder")
-    public String reminder() {
-        return "Hey there dude execute your task!";
+    public String reminder(WorkerContext workerContext) {
+        Predicate<VarNameAndValPb> isUserGroupVariable = candidateVariable -> {
+            return candidateVariable.getVarName().equals("userGroup");
+        };
+        VarNameAndValPb userGroup = workerContext
+            .getTaskContext()
+            .getVariablesList()
+            .stream()
+            .filter(isUserGroupVariable)
+            .findFirst()
+            .get();
+        return String.format(
+            "Hey there %s execute your task!",
+            userGroup.getValue().getStr()
+        );
     }
 }
