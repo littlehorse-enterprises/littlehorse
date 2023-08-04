@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ public class ThreadBuilderImplTest {
             .getThreadSpecsOrThrow("entrypoint")
             .getNodesOrThrow("1-sleep-SLEEP");
 
-        assertThat(sleepNode.getSleep() != null);
+        assertThat(sleepNode.getSleep()).isNotNull();
         assertEquals(
             sleepNode.getSleep().getSleepLengthCase(),
             SleepLengthCase.TIMESTAMP
@@ -71,13 +72,13 @@ public class ThreadBuilderImplTest {
             .filter(nodePair -> {
                 return (nodePair.getValue().getNodeCase() == NodeCase.EXIT);
             })
-            .toList();
+            .collect(Collectors.toList());
 
         assertEquals(exitNodes.size(), 2);
 
         exitNodes.forEach(entry -> {
             NodePb node = entry.getValue();
-            assertThat(node.getOutgoingEdgesCount() == 0);
+            assertThat(node.getOutgoingEdgesCount()).isEqualTo(0);
         });
     }
 
@@ -104,11 +105,34 @@ public class ThreadBuilderImplTest {
             .getVariableDefsList();
 
         VariableDefPb intVar = varDefs.get(0);
-        assertThat(intVar.getDefaultValue() != null);
-        assertThat(intVar.getDefaultValue().getInt() == 123);
+        assertThat(intVar.getDefaultValue()).isNotNull();
+        assertEquals(intVar.getDefaultValue().getInt(), 123);
 
         VariableDefPb objVar = varDefs.get(1);
-        assertThat(objVar.getDefaultValue() != null);
-        assertThat(objVar.getType() == VariableTypePb.JSON_OBJ);
+        assertThat(objVar.getDefaultValue()).isNotEqualTo(null);
+        assertEquals(objVar.getType(), VariableTypePb.JSON_OBJ);
+    }
+
+    @Test
+    void testWhileLoopConditional() {
+        WorkflowImpl wf = new WorkflowImpl(
+            "asdf",
+            thread -> {
+                thread.execute("asdf");
+                thread.doWhile(
+                    thread.condition("asf", ComparatorPb.EQUALS, "asf"),
+                    loop -> {
+                        loop.execute("fdsa");
+                    }
+                );
+            }
+        );
+
+        PutWfSpecPb wfSpec = wf.compileWorkflow();
+        NodePb lastNodeInLoopBody = wfSpec
+            .getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName())
+            .getNodesOrThrow("2-nop-NOP");
+
+        assertThat(lastNodeInLoopBody.getOutgoingEdgesCount()).isEqualTo(2);
     }
 }

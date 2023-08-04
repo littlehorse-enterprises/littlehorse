@@ -56,7 +56,8 @@ public class AXConditionalWhileLogic extends WorkflowLogicTest {
         throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
             runWithInputsAndCheckPath(client, 3, 3, 2, 1),
-            runWithInputsAndCheckPath(client, 2, 2, 1)
+            runWithInputsAndCheckPath(client, 2, 2, 1),
+            runWithInputsAndCheckPath(client, 0)
         );
     }
 }

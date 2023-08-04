@@ -29,6 +29,22 @@ lhctl list nodeRun <wf_run_id>
 lhctl get taskRun <wf_run_id> <task_run_global_id>
 ```
 
+## Getting the WfSpec
+
+You can see the latest version of your `WfSpec` as follows:
+
+```
+lhctl get wfSpec example-wf-versions
+```
+
+You can get a specific version as follows:
+
+```
+lhctl get wfSpec example-wf-versions --v 1
+
+lhctl get wfSpec example-wf-versions --v 0
+```
+
 ## Other considerations
 
 Besides the class `WorkflowImpl` has some utility functions like `doesWfSpecExist` or `registerWfSpec`,
