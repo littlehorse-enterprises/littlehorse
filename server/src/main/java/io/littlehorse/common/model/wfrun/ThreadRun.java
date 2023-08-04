@@ -666,9 +666,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
         cnr.arrivalTime = arrivalTime;
         cnr.wfSpecId = wfRun.getWfSpec().getObjectId();
-        cnr.nodeName = node.name;
-
-        cnr.position = currentNodePosition;
 
         cnr.setSubNodeRun(node.getSubNode().createSubNodeRun(arrivalTime));
 

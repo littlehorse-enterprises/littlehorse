@@ -46,10 +46,12 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
         this.taskToSchedule = taskToSchedule;
     }
 
+    @Override
     public Class<TriggeredTaskRunPb> getProtoBaseClass() {
         return TriggeredTaskRunPb.class;
     }
 
+    @Override
     public TriggeredTaskRunPb.Builder toProto() {
         TriggeredTaskRunPb.Builder out = TriggeredTaskRunPb
             .newBuilder()
@@ -59,6 +61,7 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
         return out;
     }
 
+    @Override
     public void initFrom(Message proto) {
         TriggeredTaskRunPb p = (TriggeredTaskRunPb) proto;
         taskToSchedule =
@@ -66,6 +69,7 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
         source = LHSerializable.fromProto(p.getSource(), NodeRunId.class);
     }
 
+    @Override
     public AbstractResponse<?> process(LHDAO dao, LHConfig config) {
         taskToSchedule.setDao(dao);
         String wfRunId = source.getWfRunId();
@@ -105,10 +109,12 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
         try {
             List<VarNameAndVal> inputVars = taskToSchedule.assignInputVars(thread);
             TaskRunId taskRunId = new TaskRunId(wfRunId);
+
             ScheduledTask toSchedule = new ScheduledTask(
                 taskToSchedule.getTaskDef().getObjectId(),
                 inputVars,
-                userTaskRun
+                userTaskRun,
+                userTaskRun.buildTaskContext()
             );
             toSchedule.setTaskRunId(taskRunId);
 
@@ -137,10 +143,12 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
         return null;
     }
 
+    @Override
     public String getPartitionKey() {
         return source.getWfRunId();
     }
 
+    @Override
     public boolean hasResponse() {
         // Triggered Task Runs are sent by the LHTimer infrastructure, which means
         // there is no actual client waiting for the response.

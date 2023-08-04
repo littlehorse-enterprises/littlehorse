@@ -491,6 +491,10 @@ message PollTaskPb {
   optional string task_worker_version = 3;
 }
 
+message ScheduledTaskContextPb {
+  repeated VarNameAndValPb variables = 1;
+}
+
 message ScheduledTaskPb {
   TaskRunIdPb task_run_id = 1;
   TaskDefIdPb task_def_id = 2;
@@ -500,6 +504,7 @@ message ScheduledTaskPb {
   google.protobuf.Timestamp created_at = 5;
 
   TaskRunSourcePb source = 6;
+  optional ScheduledTaskContextPb context = 7;
 }
 
 message TaskRunSourcePb {
@@ -1220,6 +1225,20 @@ message UserTaskRunPb {
   oneof assigned_to {
     string specific_user_id = 3;
     string user_group = 4;
+  }
+
+  message User {
+    string id = 1;
+    optional Group group = 2;
+  }
+
+  message Group {
+    string id = 1;
+  }
+
+  oneof owner {
+    User user = 22;
+    Group group = 23;
   }
 
   // The task may be in one of two states:

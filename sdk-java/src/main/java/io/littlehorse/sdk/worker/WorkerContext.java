@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunSourcePb;
 import java.util.Date;
+import lombok.Getter;
 
 /**
  * This class contains runtime information about the specific WfRun and NodeRun that
@@ -15,7 +16,9 @@ import java.util.Date;
  */
 public class WorkerContext {
 
+    @Getter
     private ScheduledTaskPb scheduledTask;
+
     private Date scheduleTime;
     private String stderr;
 

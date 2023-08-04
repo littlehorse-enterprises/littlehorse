@@ -44,6 +44,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.ScheduledTaskPb.class, io.littlehorse.sdk.common.proto.ScheduledTaskPb.Builder.class);
   }
 
+  private int bitField0_;
   public static final int TASK_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskRunIdPb taskRunId_;
   /**
@@ -200,6 +201,32 @@ private static final long serialVersionUID = 0L;
     return source_ == null ? io.littlehorse.sdk.common.proto.TaskRunSourcePb.getDefaultInstance() : source_;
   }
 
+  public static final int CONTEXT_FIELD_NUMBER = 7;
+  private io.littlehorse.sdk.common.proto.ScheduledTaskContextPb context_;
+  /**
+   * <code>optional .littlehorse.ScheduledTaskContextPb context = 7;</code>
+   * @return Whether the context field is set.
+   */
+  @java.lang.Override
+  public boolean hasContext() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional .littlehorse.ScheduledTaskContextPb context = 7;</code>
+   * @return The context.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ScheduledTaskContextPb getContext() {
+    return context_ == null ? io.littlehorse.sdk.common.proto.ScheduledTaskContextPb.getDefaultInstance() : context_;
+  }
+  /**
+   * <code>optional .littlehorse.ScheduledTaskContextPb context = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ScheduledTaskContextPbOrBuilder getContextOrBuilder() {
+    return context_ == null ? io.littlehorse.sdk.common.proto.ScheduledTaskContextPb.getDefaultInstance() : context_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -231,6 +258,9 @@ private static final long serialVersionUID = 0L;
     }
     if (source_ != null) {
       output.writeMessage(6, getSource());
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(7, getContext());
     }
     getUnknownFields().writeTo(output);
   }
@@ -264,6 +294,10 @@ private static final long serialVersionUID = 0L;
     if (source_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, getSource());
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, getContext());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -304,6 +338,11 @@ private static final long serialVersionUID = 0L;
       if (!getSource()
           .equals(other.getSource())) return false;
     }
+    if (hasContext() != other.hasContext()) return false;
+    if (hasContext()) {
+      if (!getContext()
+          .equals(other.getContext())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -336,6 +375,10 @@ private static final long serialVersionUID = 0L;
     if (hasSource()) {
       hash = (37 * hash) + SOURCE_FIELD_NUMBER;
       hash = (53 * hash) + getSource().hashCode();
+    }
+    if (hasContext()) {
+      hash = (37 * hash) + CONTEXT_FIELD_NUMBER;
+      hash = (53 * hash) + getContext().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -454,13 +497,24 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.ScheduledTaskPb.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getTaskRunIdFieldBuilder();
+        getTaskDefIdFieldBuilder();
+        getVariablesFieldBuilder();
+        getCreatedAtFieldBuilder();
+        getSourceFieldBuilder();
+        getContextFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -493,6 +547,11 @@ private static final long serialVersionUID = 0L;
       if (sourceBuilder_ != null) {
         sourceBuilder_.dispose();
         sourceBuilder_ = null;
+      }
+      context_ = null;
+      if (contextBuilder_ != null) {
+        contextBuilder_.dispose();
+        contextBuilder_ = null;
       }
       return this;
     }
@@ -563,6 +622,14 @@ private static final long serialVersionUID = 0L;
             ? source_
             : sourceBuilder_.build();
       }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000040) != 0)) {
+        result.context_ = contextBuilder_ == null
+            ? context_
+            : contextBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -650,6 +717,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasSource()) {
         mergeSource(other.getSource());
       }
+      if (other.hasContext()) {
+        mergeContext(other.getContext());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -722,6 +792,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000020;
               break;
             } // case 50
+            case 58: {
+              input.readMessage(
+                  getContextFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000040;
+              break;
+            } // case 58
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1485,6 +1562,125 @@ private static final long serialVersionUID = 0L;
         source_ = null;
       }
       return sourceBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.ScheduledTaskContextPb context_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ScheduledTaskContextPb, io.littlehorse.sdk.common.proto.ScheduledTaskContextPb.Builder, io.littlehorse.sdk.common.proto.ScheduledTaskContextPbOrBuilder> contextBuilder_;
+    /**
+     * <code>optional .littlehorse.ScheduledTaskContextPb context = 7;</code>
+     * @return Whether the context field is set.
+     */
+    public boolean hasContext() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <code>optional .littlehorse.ScheduledTaskContextPb context = 7;</code>
+     * @return The context.
+     */
+    public io.littlehorse.sdk.common.proto.ScheduledTaskContextPb getContext() {
+      if (contextBuilder_ == null) {
+        return context_ == null ? io.littlehorse.sdk.common.proto.ScheduledTaskContextPb.getDefaultInstance() : context_;
+      } else {
+        return contextBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .littlehorse.ScheduledTaskContextPb context = 7;</code>
+     */
+    public Builder setContext(io.littlehorse.sdk.common.proto.ScheduledTaskContextPb value) {
+      if (contextBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        context_ = value;
+      } else {
+        contextBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.ScheduledTaskContextPb context = 7;</code>
+     */
+    public Builder setContext(
+        io.littlehorse.sdk.common.proto.ScheduledTaskContextPb.Builder builderForValue) {
+      if (contextBuilder_ == null) {
+        context_ = builderForValue.build();
+      } else {
+        contextBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.ScheduledTaskContextPb context = 7;</code>
+     */
+    public Builder mergeContext(io.littlehorse.sdk.common.proto.ScheduledTaskContextPb value) {
+      if (contextBuilder_ == null) {
+        if (((bitField0_ & 0x00000040) != 0) &&
+          context_ != null &&
+          context_ != io.littlehorse.sdk.common.proto.ScheduledTaskContextPb.getDefaultInstance()) {
+          getContextBuilder().mergeFrom(value);
+        } else {
+          context_ = value;
+        }
+      } else {
+        contextBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.ScheduledTaskContextPb context = 7;</code>
+     */
+    public Builder clearContext() {
+      bitField0_ = (bitField0_ & ~0x00000040);
+      context_ = null;
+      if (contextBuilder_ != null) {
+        contextBuilder_.dispose();
+        contextBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.ScheduledTaskContextPb context = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ScheduledTaskContextPb.Builder getContextBuilder() {
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return getContextFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .littlehorse.ScheduledTaskContextPb context = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ScheduledTaskContextPbOrBuilder getContextOrBuilder() {
+      if (contextBuilder_ != null) {
+        return contextBuilder_.getMessageOrBuilder();
+      } else {
+        return context_ == null ?
+            io.littlehorse.sdk.common.proto.ScheduledTaskContextPb.getDefaultInstance() : context_;
+      }
+    }
+    /**
+     * <code>optional .littlehorse.ScheduledTaskContextPb context = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ScheduledTaskContextPb, io.littlehorse.sdk.common.proto.ScheduledTaskContextPb.Builder, io.littlehorse.sdk.common.proto.ScheduledTaskContextPbOrBuilder> 
+        getContextFieldBuilder() {
+      if (contextBuilder_ == null) {
+        contextBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ScheduledTaskContextPb, io.littlehorse.sdk.common.proto.ScheduledTaskContextPb.Builder, io.littlehorse.sdk.common.proto.ScheduledTaskContextPbOrBuilder>(
+                getContext(),
+                getParentForChildren(),
+                isClean());
+        context_ = null;
+      }
+      return contextBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

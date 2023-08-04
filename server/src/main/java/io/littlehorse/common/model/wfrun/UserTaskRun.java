@@ -493,6 +493,20 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         return isRemote(this.getStatus());
     }
 
+    public ScheduledTaskContext buildTaskContext() {
+        ScheduledTaskContext context = new ScheduledTaskContext();
+        VarNameAndVal userIdVariable = getVarNameAndValue("userId", claimedByUserId);
+        VarNameAndVal userGroupVariable = getVarNameAndValue("userGroup", userGroup);
+        context.addVariable(userIdVariable);
+        context.addVariable(userGroupVariable);
+        return context;
+    }
+
+    private VarNameAndVal getVarNameAndValue(String varName, String varValue) {
+        VariableValue variableValue = new VariableValue(varValue);
+        return new VarNameAndVal(varName, variableValue);
+    }
+
     public static boolean isRemote(UserTaskRunStatusPb userTaskRunStatusPb) {
         return (
             userTaskRunStatusPb == UserTaskRunStatusPb.CLAIMED ||
