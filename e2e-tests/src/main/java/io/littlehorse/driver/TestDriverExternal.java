@@ -13,7 +13,7 @@ public class TestDriverExternal extends TestDriver {
     }
 
     @Override
-    public void arrange() {
+    public void setup() {
         workerConfig = new LHWorkerConfig();
 
         Path configPath = Path.of(
@@ -27,7 +27,4 @@ public class TestDriverExternal extends TestDriver {
 
         client = new LHClient(workerConfig);
     }
-
-    @Override
-    public void teardown() {}
 }
