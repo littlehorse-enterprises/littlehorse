@@ -64,6 +64,7 @@ public class LHConfig extends ConfigBase {
         "LHS_STREAMS_NUM_STANDBY_REPLICAS";
 
     // General LittleHorse Runtime Behavior Config Env Vars
+    public static final String NUM_NETWORK_THREADS_KEY = "LHS_NUM_NETWORK_THREADS";
     public static final String DEFAULT_WFRUN_RETENTION_HOURS =
         "LHS_DEFAULT_WFRUN_RETENTION_HOURS";
     public static final String DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS =
@@ -822,6 +823,16 @@ public class LHConfig extends ConfigBase {
         addKafkaSecuritySettings(props);
 
         return props;
+    }
+
+    public int getNumNetworkThreads() {
+        int out = Integer.valueOf(getOrSetDefault(NUM_NETWORK_THREADS_KEY, "2"));
+        if (out < 2) {
+            throw new LHMisconfigurationException(
+                "Requires at least 2 network threads"
+            );
+        }
+        return out;
     }
 
     public String getRackId() {
