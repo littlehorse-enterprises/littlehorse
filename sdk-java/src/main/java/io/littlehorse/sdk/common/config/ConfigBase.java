@@ -13,6 +13,7 @@ public abstract class ConfigBase {
     protected Properties props;
 
     public ConfigBase(String propLocation) {
+        log.info("Loading config from {}", propLocation);
         props = new Properties();
         try {
             props.load(new FileInputStream(propLocation));

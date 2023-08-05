@@ -28,10 +28,10 @@ import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
+import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
@@ -498,19 +498,25 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         // Else, do nothing.
         WfRun wfRun = storageManager.get(wfRunId, WfRun.class);
         if (wfRun != null) {
-            log.warn("Marking wfRun {} as failed due to internal LH exception", wfRunId);
+            log.warn(
+                "Marking wfRun {} as failed due to internal LH exception",
+                wfRunId
+            );
             ThreadRun entrypoint = wfRun.getThreadRun(0);
             entrypoint.setStatus(LHStatusPb.ERROR);
 
             String message =
-                    "Had an internal LH failur processing command of type " +
-                            command.getType() +
-                            ": " +
-                            failure.getMessage();
+                "Had an internal LH failur processing command of type " +
+                command.getType() +
+                ": " +
+                failure.getMessage();
             entrypoint.setErrorMessage(message);
             storageManager.abortAndUpdate(wfRun);
         } else {
-            log.warn("Caught internal LH error but found no WfRun with id {}", wfRunId);
+            log.warn(
+                "Caught internal LH error but found no WfRun with id {}",
+                wfRunId
+            );
         }
         clearThingsToWrite();
     }
@@ -1095,7 +1101,10 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public TaskWorkerGroup getTaskWorkerGroup(String taskDefName) {
-        TaskWorkerGroup taskWorkerGroup = storageManager.get(taskDefName, TaskWorkerGroup.class);
+        TaskWorkerGroup taskWorkerGroup = storageManager.get(
+            taskDefName,
+            TaskWorkerGroup.class
+        );
         if (taskWorkerGroup != null) {
             taskWorkerGroup.setDao(this);
         }

@@ -204,6 +204,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
@@ -252,11 +254,13 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             );
 
         prometheusMetricExporter = new PrometheusMetricExporter(config);
+        Executor networkThreadpool = Executors.newFixedThreadPool(16);
 
         listenersManager =
             new ListenersManager(
                 config,
                 this,
+                networkThreadpool,
                 prometheusMetricExporter.getMeterRegistry()
             );
 
@@ -272,7 +276,13 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             updateHealth();
         });
 
-        internalComms = new BackendInternalComms(config, coreStreams, timerStreams);
+        internalComms =
+            new BackendInternalComms(
+                config,
+                coreStreams,
+                timerStreams,
+                networkThreadpool
+            );
 
         prometheusMetricExporter.bind(
             Map.of("core", coreStreams, "timer", timerStreams)

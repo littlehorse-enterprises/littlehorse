@@ -80,9 +80,6 @@ repositories {
     mavenCentral()
 }
 
-def grpcVersion='1.56.1'
-def lombokVersion='1.18.28'
-
 dependencies {
     // Use JUnit Jupiter for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'

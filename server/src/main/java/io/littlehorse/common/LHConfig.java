@@ -64,7 +64,7 @@ public class LHConfig extends ConfigBase {
         "LHS_STREAMS_NUM_STANDBY_REPLICAS";
 
     // General LittleHorse Runtime Behavior Config Env Vars
-    public static final String KAFKA_TOPIC_PREFIX_KEY = "LHS_KAFKA_TOPIC_PREFIX";
+    public static final String NUM_NETWORK_THREADS_KEY = "LHS_NUM_NETWORK_THREADS";
     public static final String DEFAULT_WFRUN_RETENTION_HOURS =
         "LHS_DEFAULT_WFRUN_RETENTION_HOURS";
     public static final String DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS =
@@ -127,87 +127,82 @@ public class LHConfig extends ConfigBase {
         );
     }
 
-    public String getKafkaTopicPrefix() {
-        return getOrSetDefault(
-            LHConfig.KAFKA_TOPIC_PREFIX_KEY,
-            getLHClusterId() + "-"
-        );
-    }
-
+    /*
+     * Kafka Streams does not currently expose any way to control the prefix of
+     * internal Streams topics. The prefixes are automatically set to the
+     * application.id + "-".
+     */
     public String getCoreCmdTopicName() {
-        return getCoreCmdTopicName(getKafkaTopicPrefix());
+        return getCoreCmdTopicName(getLHClusterId());
     }
 
-    public static String getCoreCmdTopicName(String kafkaTopicPrefix) {
-        return kafkaTopicPrefix + "core-cmd";
+    public static String getCoreCmdTopicName(String clusterId) {
+        return clusterId + "-core-cmd";
     }
 
     public String getRepartitionTopicName() {
-        return getRepartitionTopicName(getKafkaTopicPrefix());
+        return getRepartitionTopicName(getLHClusterId());
     }
 
-    public static String getRepartitionTopicName(String kafkaTopicPrefix) {
-        return kafkaTopicPrefix + "core-repartition";
+    public static String getRepartitionTopicName(String clusterId) {
+        return clusterId + "-core-repartition";
     }
 
     public String getObservabilityEventTopicName() {
-        return getObservabilityEventTopicName(getKafkaTopicPrefix());
+        return getObservabilityEventTopicName(getLHClusterId());
     }
 
-    public static String getObservabilityEventTopicName(String kafkaTopicPrefix) {
-        return kafkaTopicPrefix + "observability";
+    public static String getObservabilityEventTopicName(String clusterId) {
+        return clusterId + "-observability";
     }
 
     public String getGlobalMetadataCLTopicName() {
-        return getGlobalMetadataCLTopicName(getKafkaTopicPrefix());
+        return getGlobalMetadataCLTopicName(getLHClusterId());
     }
 
-    public static String getGlobalMetadataCLTopicName(String kafkaTopicPrefix) {
-        return kafkaTopicPrefix + "global-metadata-cl";
+    public static String getGlobalMetadataCLTopicName(String clusterId) {
+        return clusterId + "-global-metadata-cl";
     }
 
     public String getTimerTopic() {
-        return getTimerTopic(getKafkaTopicPrefix());
+        return getTimerTopic(getLHClusterId());
     }
 
-    public static String getTimerTopic(String kafkaTopicPrefix) {
-        return kafkaTopicPrefix + "timers";
+    public static String getTimerTopic(String clusterId) {
+        return clusterId + "-timers";
     }
 
-    public static String getCoreStoreChangelogTopic(String kafkaTopicPrefix) {
-        return kafkaTopicPrefix + "core-" + ServerTopology.CORE_STORE + "-changelog";
+    public static String getCoreStoreChangelogTopic(String clusterId) {
+        return clusterId + "-core-" + ServerTopology.CORE_STORE + "-changelog";
     }
 
     public String getCoreStoreChangelogTopic() {
-        return getCoreStoreChangelogTopic(getKafkaTopicPrefix());
+        return getCoreStoreChangelogTopic(getLHClusterId());
     }
 
-    public static String getTimerStoreChangelogTopic(String kafkaTopicPrefix) {
-        return (
-            kafkaTopicPrefix + "timer-" + ServerTopology.TIMER_STORE + "-changelog"
-        );
+    public static String getTimerStoreChangelogTopic(String clusterId) {
+        return (clusterId + "-timer-" + ServerTopology.TIMER_STORE + "-changelog");
     }
 
     public String getTimerStoreChangelogTopic() {
-        return getTimerStoreChangelogTopic(getKafkaTopicPrefix());
+        return getTimerStoreChangelogTopic(getLHClusterId());
     }
 
-    public static String getRepartitionStoreChangelogTopic(String kafkaTopicPrefix) {
+    public static String getRepartitionStoreChangelogTopic(String clusterId) {
         return (
-            kafkaTopicPrefix +
-            "core-" +
+            clusterId +
+            "-core-" +
             ServerTopology.CORE_REPARTITION_STORE +
             "-changelog"
         );
     }
 
     public String getRepartitionStoreChangelogTopic() {
-        return getRepartitionStoreChangelogTopic(getKafkaTopicPrefix());
+        return getRepartitionStoreChangelogTopic(getLHClusterId());
     }
 
     public List<NewTopic> getAllTopics() {
         return getAllTopics(
-            getKafkaTopicPrefix(),
             getLHClusterId(),
             getReplicationFactor(),
             getClusterPartitions()
@@ -215,7 +210,6 @@ public class LHConfig extends ConfigBase {
     }
 
     public static List<NewTopic> getAllTopics(
-        String kafkaTopicPrefix,
         String clusterId,
         short replicationFactor,
         int clusterPartitions
@@ -225,10 +219,10 @@ public class LHConfig extends ConfigBase {
         // These are non-compacted topics, partitioned with the cluster wide
         // thing.
         List<String> eventTopics = Arrays.asList(
-            getCoreCmdTopicName(kafkaTopicPrefix),
-            getRepartitionTopicName(kafkaTopicPrefix),
-            getObservabilityEventTopicName(kafkaTopicPrefix),
-            getTimerTopic(kafkaTopicPrefix)
+            getCoreCmdTopicName(clusterId),
+            getRepartitionTopicName(clusterId),
+            getObservabilityEventTopicName(clusterId),
+            getTimerTopic(clusterId)
         );
         for (String name : eventTopics) {
             // default config is normal retention policy (not compact)
@@ -237,9 +231,9 @@ public class LHConfig extends ConfigBase {
 
         // These need to be compacted.
         List<String> partitionedChangelogs = Arrays.asList(
-            getCoreStoreChangelogTopic(kafkaTopicPrefix),
-            getRepartitionStoreChangelogTopic(kafkaTopicPrefix),
-            getTimerStoreChangelogTopic(kafkaTopicPrefix)
+            getCoreStoreChangelogTopic(clusterId),
+            getRepartitionStoreChangelogTopic(clusterId),
+            getTimerStoreChangelogTopic(clusterId)
         );
         HashMap<String, String> changelogConfig = new HashMap<String, String>() {
             {
@@ -271,7 +265,7 @@ public class LHConfig extends ConfigBase {
         };
         out.add(
             new NewTopic(
-                getGlobalMetadataCLTopicName(kafkaTopicPrefix),
+                getGlobalMetadataCLTopicName(clusterId),
                 // This topic is input to a global store. Therefore, it doesn't
                 // make sense to have any more than just one partition.
                 1,
@@ -300,7 +294,7 @@ public class LHConfig extends ConfigBase {
     public int getClusterPartitions() {
         return Integer.valueOf(
             String.class.cast(
-                    props.getOrDefault(LHConfig.CLUSTER_PARTITIONS_KEY, "72")
+                    props.getOrDefault(LHConfig.CLUSTER_PARTITIONS_KEY, "12")
                 )
         );
     }
@@ -829,6 +823,16 @@ public class LHConfig extends ConfigBase {
         addKafkaSecuritySettings(props);
 
         return props;
+    }
+
+    public int getNumNetworkThreads() {
+        int out = Integer.valueOf(getOrSetDefault(NUM_NETWORK_THREADS_KEY, "2"));
+        if (out < 2) {
+            throw new LHMisconfigurationException(
+                "Requires at least 2 network threads"
+            );
+        }
+        return out;
     }
 
     public String getRackId() {
