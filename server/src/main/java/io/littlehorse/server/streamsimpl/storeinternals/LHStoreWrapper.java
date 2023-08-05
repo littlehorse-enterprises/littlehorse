@@ -1,5 +1,6 @@
 package io.littlehorse.server.streamsimpl.storeinternals;
 
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
@@ -42,7 +43,6 @@ public class LHStoreWrapper extends LHROStoreWrapper {
 
     private void put(String storeKey, Storeable<?> thing) {
         totalPuts++;
-        log.trace("Putting {}", storeKey);
         store.put(storeKey, new Bytes(thing.toBytes(config)));
     }
 
@@ -63,8 +63,15 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         delete(fullStoreKey);
     }
 
+    @Override
+    public <
+        U extends Message, T extends Getable<U>
+    > StoredGetable<U, T> getStoredGetable(String objectId, Class<T> cls) {
+        totalGets++;
+        return super.getStoredGetable(objectId, cls);
+    }
+
     public void delete(String fullStoreKey) {
-        log.trace("Deleting {}", fullStoreKey);
         totalDeletes++;
         store.delete(fullStoreKey);
     }
