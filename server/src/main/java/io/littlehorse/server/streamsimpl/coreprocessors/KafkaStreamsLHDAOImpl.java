@@ -31,10 +31,14 @@ import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.*;
+import io.littlehorse.sdk.common.proto.HostInfoPb;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
@@ -489,25 +493,25 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     // LittleHorse that causes an unexpected exception to occur while executing
     // CommandProcessor#process().
     @Override
-    public void abortChangesAndMarkWfRunFailed(String message) {
-        // TODO: Implement this method
-//        for (Map.Entry<String, StoredGetable<WfRunPb, WfRun>> e : wfRunPuts.entrySet()) {
-//            WfRun affected = e.getValue();
-//            if (e != null) {
-//                Failure failure = new Failure(
-//                    "Unknown internal error while processing: " + message,
-//                    LHConstants.INTERNAL_ERROR
-//                );
-//                NodeRun currentNodeRun = affected.threadRuns
-//                    .get(0)
-//                    .getCurrentNodeRun();
-//                currentNodeRun.fail(failure, new Date());
-//
-//                saveOrDeleteGETableFlush(e.getKey(), affected, WfRun.class);
-//                saveOrDeleteGETableFlush(e.getKey(), currentNodeRun, NodeRun.class);
-//            }
-//        }
+    public void abortChangesAndMarkWfRunFailed(Throwable failure, String wfRunId) {
+        // if the wfRun exists: we want to mark it as failed with a message.
+        // Else, do nothing.
+        WfRun wfRun = storageManager.get(wfRunId, WfRun.class);
+        if (wfRun != null) {
+            log.warn("Marking wfRun {} as failed due to internal LH exception", wfRunId);
+            ThreadRun entrypoint = wfRun.getThreadRun(0);
+            entrypoint.setStatus(LHStatusPb.ERROR);
 
+            String message =
+                    "Had an internal LH failur processing command of type " +
+                            command.getType() +
+                            ": " +
+                            failure.getMessage();
+            entrypoint.setErrorMessage(message);
+            storageManager.abortAndUpdate(wfRun);
+        } else {
+            log.warn("Caught internal LH error but found no WfRun with id {}", wfRunId);
+        }
         clearThingsToWrite();
     }
 
@@ -929,6 +933,12 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         }
     }
 
+    /**
+     * @deprecated
+     * Should not use this method because it's not saving/deleting using the StoredGetable class. This method will
+     * be removed once all entities are migrated to use the StoredGetable class.
+     */
+    @Deprecated(forRemoval = true)
     private <U extends Message, T extends Getable<U>> void saveOrDeleteGETableFlush(
         String key,
         T val,

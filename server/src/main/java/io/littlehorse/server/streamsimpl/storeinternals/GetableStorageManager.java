@@ -116,6 +116,19 @@ public class GetableStorageManager {
         }
     }
 
+    public <U extends Message, T extends Getable<U>> void abortAndUpdate(T getable) {
+        uncommittedChanges.clear();
+        StoredGetable<U, T> storedGetable = localStore.getStoredGetable(getable.getStoreKey(), getable.getClass());
+        if (storedGetable != null) {
+            StoredGetable<U, T> toUpdate = new StoredGetable<>(
+                    storedGetable.getIndexCache(),
+                    getable,
+                    storedGetable.getObjectType()
+            );
+            insertIntoStore(toUpdate);
+        }
+    }
+
     public void commit() {
         for (Map.Entry<String, StoredGetable<? extends Message, ? extends Getable<?>>> entry : uncommittedChanges.entrySet()) {
             StoredGetable<? extends Message, ? extends Getable<?>> storedGetable = entry.getValue();
