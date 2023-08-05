@@ -64,7 +64,7 @@ public class AJConditionalsLessThanEq extends WorkflowLogicTest {
         Object rhs,
         boolean shouldEqual
     ) throws TestFailure, InterruptedException, LHApiError {
-        InputObj input = new InputObj(lhs, rhs);
+        AJInputObj input = new AJInputObj(lhs, rhs);
 
         if (shouldEqual) {
             return runWithInputsAndCheckPath(client, input, true, true);
