@@ -43,7 +43,6 @@ public class LHStoreWrapper extends LHROStoreWrapper {
 
     private void put(String storeKey, Storeable<?> thing) {
         totalPuts++;
-        log.trace("Putting {}", storeKey);
         store.put(storeKey, new Bytes(thing.toBytes(config)));
     }
 
@@ -73,14 +72,12 @@ public class LHStoreWrapper extends LHROStoreWrapper {
     }
 
     public void delete(String fullStoreKey) {
-        log.trace("Deleting {}", fullStoreKey);
         totalDeletes++;
         store.delete(fullStoreKey);
     }
 
     public Bytes getRaw(String rawKey) {
         totalGets++;
-        log.warn("Getting: {}", rawKey);
         return store.get(rawKey);
     }
 
