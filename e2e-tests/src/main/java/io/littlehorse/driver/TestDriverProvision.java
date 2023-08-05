@@ -8,25 +8,31 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
 public class TestDriverProvision extends TestDriver {
 
-    private static final KafkaContainer kafka = new KafkaContainer(
-        DockerImageName.parse("confluentinc/cp-kafka:7.4.0")
+    private static final Logger log = LoggerFactory.getLogger(
+        TestDriverProvision.class
     );
-    CountDownLatch latch = new CountDownLatch(1);
+
+    private KafkaContainer kafka;
+    private KafkaStreamsServerImpl server;
 
     public TestDriverProvision(Set<Class<?>> tests, int threads) {
         super(tests, threads);
     }
 
     @Override
-    public void arrange() throws Exception {
+    public void setup() throws Exception {
+        kafka =
+            new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.0"));
+        log.info("Starting kafka");
         kafka.start();
         startServer();
         workerConfig = new LHWorkerConfig();
@@ -52,13 +58,14 @@ public class TestDriverProvision extends TestDriver {
         }
 
         // wait until topics are created
-        TimeUnit.SECONDS.sleep(5);
+        TimeUnit.SECONDS.sleep(3);
 
         // run the server in another thread
-        KafkaStreamsServerImpl server = new KafkaStreamsServerImpl(serverConfig);
+        server = new KafkaStreamsServerImpl(serverConfig);
 
         new Thread(() -> {
             try {
+                log.info("Starting server");
                 server.start();
             } catch (IOException exn) {
                 throw new RuntimeException(exn);
@@ -68,12 +75,5 @@ public class TestDriverProvision extends TestDriver {
 
         // wait until the server is up
         TimeUnit.SECONDS.sleep(5);
-    }
-
-    @Override
-    public void teardown() throws Exception {
-        latch.countDown();
-        TimeUnit.SECONDS.sleep(1);
-        kafka.stop();
     }
 }
