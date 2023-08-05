@@ -8,12 +8,14 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb;
+import io.littlehorse.sdk.common.proto.GroupPb;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
 import io.littlehorse.sdk.common.proto.SearchTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskStatusPb;
+import io.littlehorse.sdk.common.proto.UserPb;
 import io.littlehorse.sdk.common.proto.UserTaskFieldResultPb;
 import io.littlehorse.sdk.common.proto.UserTaskResultPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
@@ -163,14 +165,14 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         // Ok, now we look for the UserTaskRuns
         assertContainsWfRun(searchUserTaskRunsUserId("obiwan"), succeedWf);
         assertContainsWfRun(
-            searchUserTaskRunsUserId("obiwan", UserTaskRunStatusPb.CLAIMED),
+            searchUserTaskRunsUserId("obiwan", UserTaskRunStatusPb.ASSIGNED),
             succeedWf
         );
         assertContainsWfRun(
             searchUserTaskRunsUserId(
                 "obiwan",
                 USER_TASK,
-                UserTaskRunStatusPb.CLAIMED
+                UserTaskRunStatusPb.ASSIGNED
             ),
             succeedWf
         );
@@ -187,7 +189,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
             .assignUserTaskRun(
                 AssignUserTaskRunPb
                     .newBuilder()
-                    .setUserId("fdsa")
+                    .setUser(UserPb.newBuilder().setId("fdsa").build())
                     .setOverrideClaim(false)
                     .setUserTaskRunId(userTaskId)
                     .build()
@@ -202,7 +204,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
                 .assignUserTaskRun(
                     AssignUserTaskRunPb
                         .newBuilder()
-                        .setUserId("fdsa")
+                        .setUser(UserPb.newBuilder().setId("fdsa").build())
                         .setOverrideClaim(true)
                         .setUserTaskRunId(userTaskId)
                         .build()
@@ -215,11 +217,11 @@ Tests various aspects of TaskRun and UserTaskRun searc:
 
         // Shouldn't be obiwan's task anymore
         assertNotContainsWfRun(
-            searchUserTaskRunsUserId("obiwan", UserTaskRunStatusPb.CLAIMED),
+            searchUserTaskRunsUserId("obiwan", UserTaskRunStatusPb.ASSIGNED),
             succeedWf
         );
         assertContainsWfRun(
-            searchUserTaskRunsUserId("fdsa", UserTaskRunStatusPb.CLAIMED),
+            searchUserTaskRunsUserId("fdsa", UserTaskRunStatusPb.ASSIGNED),
             succeedWf
         );
 
@@ -228,7 +230,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
             .assignUserTaskRun(
                 AssignUserTaskRunPb
                     .newBuilder()
-                    .setUserGroup("mygroup")
+                    .setGroup(GroupPb.newBuilder().setId("mygroup").build())
                     .setOverrideClaim(true)
                     .setUserTaskRunId(userTaskId)
                     .build()
@@ -240,14 +242,11 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         );
         Thread.sleep(150); //allow remote indexes to propagate
         assertContainsWfRun(
-            searchUserTaskRunsUserGroup(
-                "mygroup",
-                UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED
-            ),
+            searchUserTaskRunsUserGroup("mygroup", UserTaskRunStatusPb.UNASSIGNED),
             succeedWf
         );
         assertNotContainsWfRun(
-            searchUserTaskRunsUserId("fdsa", UserTaskRunStatusPb.CLAIMED),
+            searchUserTaskRunsUserId("fdsa", UserTaskRunStatusPb.ASSIGNED),
             succeedWf
         );
 
@@ -257,7 +256,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
             .assignUserTaskRun(
                 AssignUserTaskRunPb
                     .newBuilder()
-                    .setUserId("yoda")
+                    .setUser(UserPb.newBuilder().setId("yoda").build())
                     .setOverrideClaim(true)
                     .setUserTaskRunId(userTaskId)
                     .build()
@@ -266,14 +265,11 @@ Tests various aspects of TaskRun and UserTaskRun searc:
 
         assertContainsWfRun(searchUserTaskRunsUserId("yoda"), succeedWf);
         assertContainsWfRun(
-            searchUserTaskRunsUserId("yoda", UserTaskRunStatusPb.CLAIMED),
+            searchUserTaskRunsUserId("yoda", UserTaskRunStatusPb.ASSIGNED),
             succeedWf
         );
         assertNotContainsWfRun(
-            searchUserTaskRunsUserGroup(
-                "mygroup",
-                UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED
-            ),
+            searchUserTaskRunsUserGroup("mygroup", UserTaskRunStatusPb.UNASSIGNED),
             succeedWf
         );
 

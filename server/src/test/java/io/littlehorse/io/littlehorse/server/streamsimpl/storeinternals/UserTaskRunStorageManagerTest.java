@@ -128,7 +128,7 @@ public class UserTaskRunStorageManagerTest {
     public void indexByStatusAndUserTaskDefName_CLAIMED() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_CLAIMED__userTaskDefName_ut-name");
+            .contains("12/__status_ASSIGNED__userTaskDefName_ut-name");
     }
 
     @Test
@@ -142,7 +142,7 @@ public class UserTaskRunStorageManagerTest {
     public void indexByStatusAndUserTaskDefName_ASSIGNED_NOT_CLAIMED() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_ASSIGNED_NOT_CLAIMED__userTaskDefName_ut-name");
+            .contains("12/__status_UNASSIGNED__userTaskDefName_ut-name");
     }
 
     @Test
@@ -163,7 +163,7 @@ public class UserTaskRunStorageManagerTest {
     public void indexByStatus() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_CLAIMED");
+            .contains("12/__status_ASSIGNED");
     }
 
     @Test
@@ -177,7 +177,7 @@ public class UserTaskRunStorageManagerTest {
     public void indexByStatusAndUserId() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_CLAIMED__userId_33333");
+            .contains("12/__status_ASSIGNED__userId_33333");
     }
 
     @Test
@@ -191,7 +191,7 @@ public class UserTaskRunStorageManagerTest {
     public void indexByStatusAndTaskDefNameAndUserId() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_CLAIMED__userTaskDefName_ut-name__userId_33333");
+            .contains("12/__status_ASSIGNED__userTaskDefName_ut-name__userId_33333");
     }
 
     @Test
@@ -205,7 +205,7 @@ public class UserTaskRunStorageManagerTest {
     public void indexByStatusAndUserGroup() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_CLAIMED__userGroup_1234567");
+            .contains("12/__status_ASSIGNED__userGroup_1234567");
     }
 
     @Test
@@ -213,7 +213,7 @@ public class UserTaskRunStorageManagerTest {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
             .contains(
-                "12/__status_CLAIMED__userTaskDefName_ut-name__userGroup_1234567"
+                "12/__status_ASSIGNED__userTaskDefName_ut-name__userGroup_1234567"
             );
     }
 

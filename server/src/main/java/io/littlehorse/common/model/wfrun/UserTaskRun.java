@@ -89,13 +89,6 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         this.group = group;
     }
 
-    public UserTaskRun(UserTaskDef utd, NodeRun nodeRun) {
-        this.userTaskDefId = utd.getObjectId();
-        this.nodeRunId = nodeRun.getObjectId();
-        this.id = new UserTaskRunId(nodeRunId.getWfRunId());
-        this.scheduledTime = new Date();
-    }
-
     public Class<UserTaskRunPb> getProtoBaseClass() {
         return UserTaskRunPb.class;
     }

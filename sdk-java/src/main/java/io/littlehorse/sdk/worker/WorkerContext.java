@@ -1,10 +1,12 @@
 package io.littlehorse.sdk.worker;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.proto.GroupPb;
 import io.littlehorse.sdk.common.proto.NodeRunIdPb;
 import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunSourcePb;
+import io.littlehorse.sdk.common.proto.UserPb;
 import java.util.Date;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -100,6 +102,28 @@ public class WorkerContext {
 
     public TaskRunIdPb getTaskRunId() {
         return scheduledTask.getTaskRunId();
+    }
+
+    public UserPb getUser() {
+        if (scheduledTask.getSource().hasUserTaskTrigger()) {
+            return scheduledTask
+                .getSource()
+                .getUserTaskTrigger()
+                .getContext()
+                .getUser();
+        }
+        return null;
+    }
+
+    public GroupPb getGroup() {
+        if (scheduledTask.getSource().hasUserTaskTrigger()) {
+            return scheduledTask
+                .getSource()
+                .getUserTaskTrigger()
+                .getContext()
+                .getGroup();
+        }
+        return null;
     }
 
     /**

@@ -25,7 +25,9 @@ public class User extends LHSerializable<UserPb> {
 
     @Override
     public UserPb.Builder toProto() {
-        return UserPb.newBuilder().setId(id).setGroup(group.toProto());
+        UserPb.Builder builder = UserPb.newBuilder().setId(id);
+        if (group != null) builder.setGroup(group.toProto());
+        return builder;
     }
 
     @Override

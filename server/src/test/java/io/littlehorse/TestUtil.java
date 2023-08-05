@@ -11,6 +11,7 @@ import io.littlehorse.common.model.objectId.UserTaskDefId;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
+import io.littlehorse.common.model.wfrun.Group;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.User;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
@@ -87,6 +88,7 @@ public class TestUtil {
         userTaskRun.setStatus(UserTaskRunStatusPb.ASSIGNED);
         userTaskRun.setOwnerCase(UserTaskRunPb.OwnerCase.USER);
         userTaskRun.setUser(new User("33333"));
+        userTaskRun.setGroup(new Group("1234567"));
         userTaskRun.setScheduledTime(new Date());
         userTaskRun.setNodeRunId(nodeRun().getObjectId());
         return userTaskRun;

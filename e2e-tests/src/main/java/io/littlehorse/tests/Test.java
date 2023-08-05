@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ExternalEventIdPb;
 import io.littlehorse.sdk.common.proto.ExternalEventPb;
+import io.littlehorse.sdk.common.proto.GroupPb;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
 import io.littlehorse.sdk.common.proto.NodeRunPb;
 import io.littlehorse.sdk.common.proto.NodeRunPb.NodeTypeCase;
@@ -20,6 +21,7 @@ import io.littlehorse.sdk.common.proto.SearchUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunPb;
 import io.littlehorse.sdk.common.proto.TaskStatusPb;
+import io.littlehorse.sdk.common.proto.UserPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
@@ -174,7 +176,7 @@ public abstract class Test {
     ) throws LHApiError {
         SearchUserTaskRunPb req = SearchUserTaskRunPb
             .newBuilder()
-            .setUserGroup(userGroup)
+            .setGroup(GroupPb.newBuilder().setId(userGroup).build())
             .setUserTaskDefName(userTaskDefName)
             .setStatus(status)
             .build();
@@ -187,7 +189,7 @@ public abstract class Test {
     ) throws LHApiError {
         SearchUserTaskRunPb req = SearchUserTaskRunPb
             .newBuilder()
-            .setUserGroup(userGroup)
+            .setGroup(GroupPb.newBuilder().setId(userGroup).build())
             .setStatus(status)
             .build();
         return client.getGrpcClient().searchUserTaskRun(req);
@@ -197,7 +199,7 @@ public abstract class Test {
         throws LHApiError {
         SearchUserTaskRunPb req = SearchUserTaskRunPb
             .newBuilder()
-            .setUserGroup(userGroup)
+            .setGroup(GroupPb.newBuilder().setId(userGroup).build())
             .build();
         return client.getGrpcClient().searchUserTaskRun(req);
     }
@@ -209,7 +211,7 @@ public abstract class Test {
     ) throws LHApiError {
         SearchUserTaskRunPb req = SearchUserTaskRunPb
             .newBuilder()
-            .setUserId(userId)
+            .setUser(UserPb.newBuilder().setId(userId).build())
             .setUserTaskDefName(userTaskDefName)
             .setStatus(status)
             .build();
@@ -222,7 +224,7 @@ public abstract class Test {
     ) throws LHApiError {
         SearchUserTaskRunPb req = SearchUserTaskRunPb
             .newBuilder()
-            .setUserId(userId)
+            .setUser(UserPb.newBuilder().setId(userId).build())
             .setStatus(status)
             .build();
         return client.getGrpcClient().searchUserTaskRun(req);
@@ -232,7 +234,7 @@ public abstract class Test {
         throws LHApiError {
         SearchUserTaskRunPb req = SearchUserTaskRunPb
             .newBuilder()
-            .setUserId(userId)
+            .setUser(UserPb.newBuilder().setId(userId).build())
             .build();
         return client.getGrpcClient().searchUserTaskRun(req);
     }

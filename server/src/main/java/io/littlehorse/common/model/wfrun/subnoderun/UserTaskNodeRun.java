@@ -9,7 +9,9 @@ import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
+import io.littlehorse.common.model.wfrun.User;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.sdk.common.proto.UserTaskNodePb;
 import io.littlehorse.sdk.common.proto.UserTaskNodeRunPb;
 import java.util.Date;
 import lombok.Getter;
@@ -69,9 +71,24 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
             );
             return;
         }
-
+        UserTaskRun out;
+        if (utn.getAssignmentType() == UserTaskNodePb.AssignmentCase.USER_ID) {
+            out =
+                new UserTaskRun(
+                    utd,
+                    new User(utn.getUserId().getRhsLiteralValue().getStrVal()),
+                    getNodeRun()
+                );
+        } else {
+            out =
+                new UserTaskRun(
+                    utd,
+                    new User(utn.getUserGroup().getRhsLiteralValue().getStrVal()),
+                    getNodeRun()
+                );
+        }
         // Now we create a new UserTaskRun.
-        UserTaskRun out = new UserTaskRun(utd, getNodeRun());
+
         out.setDao(getDao());
 
         userTaskRunId = out.getObjectId();
