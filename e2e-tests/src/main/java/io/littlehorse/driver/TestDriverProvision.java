@@ -43,7 +43,7 @@ public class TestDriverProvision extends TestDriver {
             LHConfig.KAFKA_STATE_DIR_KEY,
             "/tmp/" + UUID.randomUUID()
         );
-        serverProperties.put(LHConfig.CLUSTER_PARTITIONS_KEY, "6");
+        serverProperties.put(LHConfig.CLUSTER_PARTITIONS_KEY, "3");
 
         LHConfig serverConfig = new LHConfig(serverProperties);
 
