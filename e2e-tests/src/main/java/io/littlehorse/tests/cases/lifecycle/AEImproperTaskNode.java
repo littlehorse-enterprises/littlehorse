@@ -115,7 +115,7 @@ public class AEImproperTaskNode extends Test {
 
         WfRunPb wfRun = client.getWfRun(failWfRun);
         if (wfRun.getStatus() != LHStatusPb.ERROR) {
-            throw new RuntimeException("Wf " + failWfRun + " hould have failed!");
+            throw new RuntimeException("Wf " + failWfRun + " should have failed!");
         }
         NodeRunPb nodeRun = client.getNodeRun(failWfRun, 0, 2);
         FailurePb failure = nodeRun.getFailures(0);

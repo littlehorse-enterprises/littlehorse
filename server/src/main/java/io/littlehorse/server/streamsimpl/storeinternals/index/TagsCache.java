@@ -15,6 +15,12 @@ public class TagsCache extends LHSerializable<TagsCachePb> {
 
     public List<CachedTag> tags = new ArrayList<>();
 
+    public TagsCache() {}
+
+    public TagsCache(List<CachedTag> tags) {
+        this.tags = tags;
+    }
+
     public Class<TagsCachePb> getProtoBaseClass() {
         return TagsCachePb.class;
     }

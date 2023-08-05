@@ -3,22 +3,15 @@ package io.littlehorse.server.streamsimpl.util;
 import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
 
-/**
- * @deprecated
- * Should not use this class because it's not using the StoredGetable class. This class will
- * be removed once all entities are migrated to use the StoredGetable class.
- */
-@Deprecated(forRemoval = true)
-public class GETStreamObserver<
-    U extends Message, T extends Storeable<U>, V extends Message
->
-    implements StreamObserver<CentralStoreQueryReplyPb> {
+public class GETStreamObserverNew<U extends Message, T extends Getable<U>, V extends Message>
+        implements StreamObserver<CentralStoreQueryReplyPb> {
 
     private StreamObserver<V> ctx;
     private LHConfig config;
@@ -26,7 +19,7 @@ public class GETStreamObserver<
 
     private IntermediateGETResp<U, T, V> out;
 
-    public GETStreamObserver(
+    public GETStreamObserverNew(
         StreamObserver<V> responseObserver,
         Class<T> getableCls,
         Class<V> responseCls,
@@ -51,16 +44,15 @@ public class GETStreamObserver<
     public void onCompleted() {}
 
     public void onNext(CentralStoreQueryReplyPb reply) {
-        // TODO
         if (reply.hasResult()) {
             out.code = LHResponseCodePb.OK;
             try {
-                out.result =
-                    LHSerializable.fromBytes(
+                StoredGetable<U, T> entity = (StoredGetable<U, T>) LHSerializable.fromBytes(
                         reply.getResult().toByteArray(),
-                        getableCls,
+                        StoredGetable.class,
                         config
-                    );
+                );
+                out.result = entity.getStoredObject();
             } catch (LHSerdeError exn) {
                 out.code = LHResponseCodePb.CONNECTION_ERROR;
                 out.message =

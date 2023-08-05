@@ -23,7 +23,13 @@ public class TagStorageManager {
     private ProcessorContext<String, CommandProcessorOutput> context;
     private LHConfig lhConfig;
 
-    public void store(
+    /**
+     * @deprecated
+     * Should not use this method because it's making an extra get and put to the database in order to get the tag cache.
+     * This method will be removed once all entities are migrated to use the StoredGetable class.
+     */
+    @Deprecated(forRemoval = true)
+    public void storeUsingCache(
         Collection<Tag> tags,
         String getableId,
         Class<? extends Getable<?>> getableCls
@@ -46,6 +52,12 @@ public class TagStorageManager {
         localStore.putTagsCache(getableId, getableCls, tagsCache);
     }
 
+    public void store(Collection<Tag> newTags, TagsCache preExistingTags) {
+        List<String> existingTagIds = preExistingTags.getTagIds();
+        this.storeLocalOrRemoteTag(newTags, existingTagIds);
+        this.removeOldTags(newTags, preExistingTags.getTags());
+    }
+
     private void removeOldTags(Collection<Tag> newTags, List<CachedTag> cachedTags) {
         List<String> newTagIds = newTags.stream().map(Tag::getStoreKey).toList();
         List<CachedTag> tagsIdsToRemove = cachedTags
@@ -55,6 +67,12 @@ public class TagStorageManager {
         tagsIdsToRemove.forEach(this::removeTag);
     }
 
+    /**
+     * @deprecated
+     * Do not use this method outside the TagStorageManager class. This method will become private once
+     * all entities are migrated to use the StoredGetable class.
+     */
+    @Deprecated
     public void removeTag(CachedTag cachedTag) {
         if (cachedTag.isRemote()) {
             String attributeString = extractAttributeStringFromStoreKey(
