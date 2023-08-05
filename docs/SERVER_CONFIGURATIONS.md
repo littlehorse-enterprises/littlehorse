@@ -415,7 +415,7 @@ The replication factor for change log topics and repartition topics created by t
 The number of partitions in each internal kafka topic. Disabled if `LHS_SHOULD_CREATE_TOPICS=false`.
 
 - **Type:** int
-- **Default:** 72
+- **Default:** 12
 - **Importance:** low
 
 ---

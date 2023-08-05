@@ -46,7 +46,9 @@ public class GetableStorageManager {
         Class<T> clazz
     ) {
         if (uncommittedChanges.containsKey(key)) {
-            StoredGetable<U, T> storedGetable = (StoredGetable<U, T>) uncommittedChanges.get(key);
+            StoredGetable<U, T> storedGetable = (StoredGetable<U, T>) uncommittedChanges.get(
+                key
+            );
             return storedGetable.getStoredObject();
         }
 
@@ -65,9 +67,15 @@ public class GetableStorageManager {
         T getable,
         Class<T> clazz
     ) throws IllegalStateException {
-        log.trace("Putting {} with key {}", getable.getClass(), getable.getStoreKey());
+        log.trace(
+            "Putting {} with key {}",
+            getable.getClass(),
+            getable.getStoreKey()
+        );
 
-        StoredGetable<U, T> uncommittedEntity = (StoredGetable<U, T>) uncommittedChanges.get(getable.getStoreKey());
+        StoredGetable<U, T> uncommittedEntity = (StoredGetable<U, T>) uncommittedChanges.get(
+            getable.getStoreKey()
+        );
 
         if (uncommittedEntity != null) {
             if (uncommittedEntity.getStoredObject() != getable) {
@@ -80,7 +88,10 @@ public class GetableStorageManager {
             return;
         }
 
-        StoredGetable<U, T> previousValue = localStore.getStoredGetable(getable.getStoreKey(), clazz);
+        StoredGetable<U, T> previousValue = localStore.getStoredGetable(
+            getable.getStoreKey(),
+            clazz
+        );
 
         final StoredGetable<U, T> toPut = previousValue != null
             ? new StoredGetable<>(
@@ -118,12 +129,15 @@ public class GetableStorageManager {
 
     public <U extends Message, T extends Getable<U>> void abortAndUpdate(T getable) {
         uncommittedChanges.clear();
-        StoredGetable<U, T> storedGetable = localStore.getStoredGetable(getable.getStoreKey(), getable.getClass());
+        StoredGetable<U, T> storedGetable = localStore.getStoredGetable(
+            getable.getStoreKey(),
+            getable.getClass()
+        );
         if (storedGetable != null) {
             StoredGetable<U, T> toUpdate = new StoredGetable<>(
-                    storedGetable.getIndexCache(),
-                    getable,
-                    storedGetable.getObjectType()
+                storedGetable.getIndexCache(),
+                getable,
+                storedGetable.getObjectType()
             );
             insertIntoStore(toUpdate);
         }

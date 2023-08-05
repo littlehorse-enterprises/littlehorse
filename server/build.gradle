@@ -31,9 +31,6 @@ repositories {
     }
 }
 
-def kafkaVersion='3.5.0'
-def lombokVersion='1.18.28'
-
 dependencies {
     // Use JUnit Jupiter for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'

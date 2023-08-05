@@ -45,20 +45,23 @@ public class LHROStoreWrapper {
         this.config = config;
     }
 
-    public <U extends Message, T extends Getable<U>> StoredGetable<U, T> getStoredGetable(
-            String objectId,
-            Class<T> cls
-    ) {
+    public <
+        U extends Message, T extends Getable<U>
+    > StoredGetable<U, T> getStoredGetable(String objectId, Class<T> cls) {
         Bytes raw = store.get(StoreUtils.getFullStoreKey(objectId, cls));
         if (raw == null) {
             return null;
         }
         try {
-            return (StoredGetable<U, T>) LHSerializable.fromBytes(raw.get(), StoredGetable.class, config);
+            return (StoredGetable<U, T>) LHSerializable.fromBytes(
+                raw.get(),
+                StoredGetable.class,
+                config
+            );
         } catch (LHSerdeError exn) {
             log.error(exn.getMessage(), exn);
             throw new RuntimeException(
-                    "Not possible to have this happen, indicates corrupted store."
+                "Not possible to have this happen, indicates corrupted store."
             );
         }
     }

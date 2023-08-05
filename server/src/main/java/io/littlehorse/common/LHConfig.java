@@ -300,7 +300,7 @@ public class LHConfig extends ConfigBase {
     public int getClusterPartitions() {
         return Integer.valueOf(
             String.class.cast(
-                    props.getOrDefault(LHConfig.CLUSTER_PARTITIONS_KEY, "72")
+                    props.getOrDefault(LHConfig.CLUSTER_PARTITIONS_KEY, "12")
                 )
         );
     }
