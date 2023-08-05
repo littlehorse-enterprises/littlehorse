@@ -71,7 +71,7 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
         }
 
         // Now we create a new UserTaskRun.
-        UserTaskRun out = new UserTaskRun(utd, utn, getNodeRun());
+        UserTaskRun out = new UserTaskRun(utd, getNodeRun());
         out.setDao(getDao());
 
         userTaskRunId = out.getObjectId();

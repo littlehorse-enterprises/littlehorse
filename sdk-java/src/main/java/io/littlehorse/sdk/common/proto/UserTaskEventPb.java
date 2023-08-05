@@ -1051,72 +1051,68 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional string old_user_id = 1;</code>
-     * @return Whether the oldUserId field is set.
+     * <code>.littlehorse.UserPb old_user = 5;</code>
+     * @return Whether the oldUser field is set.
      */
-    boolean hasOldUserId();
+    boolean hasOldUser();
     /**
-     * <code>optional string old_user_id = 1;</code>
-     * @return The oldUserId.
+     * <code>.littlehorse.UserPb old_user = 5;</code>
+     * @return The oldUser.
      */
-    java.lang.String getOldUserId();
+    io.littlehorse.sdk.common.proto.UserPb getOldUser();
     /**
-     * <code>optional string old_user_id = 1;</code>
-     * @return The bytes for oldUserId.
+     * <code>.littlehorse.UserPb old_user = 5;</code>
      */
-    com.google.protobuf.ByteString
-        getOldUserIdBytes();
+    io.littlehorse.sdk.common.proto.UserPbOrBuilder getOldUserOrBuilder();
 
     /**
-     * <code>optional string old_user_group = 2;</code>
-     * @return Whether the oldUserGroup field is set.
+     * <code>.littlehorse.GroupPb old_group = 6;</code>
+     * @return Whether the oldGroup field is set.
      */
-    boolean hasOldUserGroup();
+    boolean hasOldGroup();
     /**
-     * <code>optional string old_user_group = 2;</code>
-     * @return The oldUserGroup.
+     * <code>.littlehorse.GroupPb old_group = 6;</code>
+     * @return The oldGroup.
      */
-    java.lang.String getOldUserGroup();
+    io.littlehorse.sdk.common.proto.GroupPb getOldGroup();
     /**
-     * <code>optional string old_user_group = 2;</code>
-     * @return The bytes for oldUserGroup.
+     * <code>.littlehorse.GroupPb old_group = 6;</code>
      */
-    com.google.protobuf.ByteString
-        getOldUserGroupBytes();
+    io.littlehorse.sdk.common.proto.GroupPbOrBuilder getOldGroupOrBuilder();
 
     /**
-     * <code>optional string new_user_id = 3;</code>
-     * @return Whether the newUserId field is set.
+     * <code>.littlehorse.UserPb new_user = 7;</code>
+     * @return Whether the newUser field is set.
      */
-    boolean hasNewUserId();
+    boolean hasNewUser();
     /**
-     * <code>optional string new_user_id = 3;</code>
-     * @return The newUserId.
+     * <code>.littlehorse.UserPb new_user = 7;</code>
+     * @return The newUser.
      */
-    java.lang.String getNewUserId();
+    io.littlehorse.sdk.common.proto.UserPb getNewUser();
     /**
-     * <code>optional string new_user_id = 3;</code>
-     * @return The bytes for newUserId.
+     * <code>.littlehorse.UserPb new_user = 7;</code>
      */
-    com.google.protobuf.ByteString
-        getNewUserIdBytes();
+    io.littlehorse.sdk.common.proto.UserPbOrBuilder getNewUserOrBuilder();
 
     /**
-     * <code>optional string new_user_group = 4;</code>
-     * @return Whether the newUserGroup field is set.
+     * <code>.littlehorse.GroupPb new_group = 8;</code>
+     * @return Whether the newGroup field is set.
      */
-    boolean hasNewUserGroup();
+    boolean hasNewGroup();
     /**
-     * <code>optional string new_user_group = 4;</code>
-     * @return The newUserGroup.
+     * <code>.littlehorse.GroupPb new_group = 8;</code>
+     * @return The newGroup.
      */
-    java.lang.String getNewUserGroup();
+    io.littlehorse.sdk.common.proto.GroupPb getNewGroup();
     /**
-     * <code>optional string new_user_group = 4;</code>
-     * @return The bytes for newUserGroup.
+     * <code>.littlehorse.GroupPb new_group = 8;</code>
      */
-    com.google.protobuf.ByteString
-        getNewUserGroupBytes();
+    io.littlehorse.sdk.common.proto.GroupPbOrBuilder getNewGroupOrBuilder();
+
+    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.OldOwnerCase getOldOwnerCase();
+
+    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.NewOwnerCase getNewOwnerCase();
   }
   /**
    * Protobuf type {@code littlehorse.UserTaskEventPb.UTEReassignedPb}
@@ -1131,10 +1127,6 @@ private static final long serialVersionUID = 0L;
       super(builder);
     }
     private UTEReassignedPb() {
-      oldUserId_ = "";
-      oldUserGroup_ = "";
-      newUserId_ = "";
-      newUserGroup_ = "";
     }
 
     @java.lang.Override
@@ -1162,193 +1154,210 @@ private static final long serialVersionUID = 0L;
               io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.class, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.Builder.class);
     }
 
-    private int bitField0_;
-    public static final int OLD_USER_ID_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object oldUserId_ = "";
-    /**
-     * <code>optional string old_user_id = 1;</code>
-     * @return Whether the oldUserId field is set.
-     */
-    @java.lang.Override
-    public boolean hasOldUserId() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>optional string old_user_id = 1;</code>
-     * @return The oldUserId.
-     */
-    @java.lang.Override
-    public java.lang.String getOldUserId() {
-      java.lang.Object ref = oldUserId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        oldUserId_ = s;
-        return s;
+    private int oldOwnerCase_ = 0;
+    private java.lang.Object oldOwner_;
+    public enum OldOwnerCase
+        implements com.google.protobuf.Internal.EnumLite,
+            com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+      OLD_USER(5),
+      OLD_GROUP(6),
+      OLDOWNER_NOT_SET(0);
+      private final int value;
+      private OldOwnerCase(int value) {
+        this.value = value;
       }
-    }
-    /**
-     * <code>optional string old_user_id = 1;</code>
-     * @return The bytes for oldUserId.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getOldUserIdBytes() {
-      java.lang.Object ref = oldUserId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        oldUserId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
+      /**
+       * @param value The number of the enum to look for.
+       * @return The enum associated with the given number.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static OldOwnerCase valueOf(int value) {
+        return forNumber(value);
       }
+
+      public static OldOwnerCase forNumber(int value) {
+        switch (value) {
+          case 5: return OLD_USER;
+          case 6: return OLD_GROUP;
+          case 0: return OLDOWNER_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    public OldOwnerCase
+    getOldOwnerCase() {
+      return OldOwnerCase.forNumber(
+          oldOwnerCase_);
     }
 
-    public static final int OLD_USER_GROUP_FIELD_NUMBER = 2;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object oldUserGroup_ = "";
-    /**
-     * <code>optional string old_user_group = 2;</code>
-     * @return Whether the oldUserGroup field is set.
-     */
-    @java.lang.Override
-    public boolean hasOldUserGroup() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>optional string old_user_group = 2;</code>
-     * @return The oldUserGroup.
-     */
-    @java.lang.Override
-    public java.lang.String getOldUserGroup() {
-      java.lang.Object ref = oldUserGroup_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        oldUserGroup_ = s;
-        return s;
+    private int newOwnerCase_ = 0;
+    private java.lang.Object newOwner_;
+    public enum NewOwnerCase
+        implements com.google.protobuf.Internal.EnumLite,
+            com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+      NEW_USER(7),
+      NEW_GROUP(8),
+      NEWOWNER_NOT_SET(0);
+      private final int value;
+      private NewOwnerCase(int value) {
+        this.value = value;
       }
-    }
-    /**
-     * <code>optional string old_user_group = 2;</code>
-     * @return The bytes for oldUserGroup.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getOldUserGroupBytes() {
-      java.lang.Object ref = oldUserGroup_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        oldUserGroup_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
+      /**
+       * @param value The number of the enum to look for.
+       * @return The enum associated with the given number.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static NewOwnerCase valueOf(int value) {
+        return forNumber(value);
       }
+
+      public static NewOwnerCase forNumber(int value) {
+        switch (value) {
+          case 7: return NEW_USER;
+          case 8: return NEW_GROUP;
+          case 0: return NEWOWNER_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    public NewOwnerCase
+    getNewOwnerCase() {
+      return NewOwnerCase.forNumber(
+          newOwnerCase_);
     }
 
-    public static final int NEW_USER_ID_FIELD_NUMBER = 3;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object newUserId_ = "";
+    public static final int OLD_USER_FIELD_NUMBER = 5;
     /**
-     * <code>optional string new_user_id = 3;</code>
-     * @return Whether the newUserId field is set.
+     * <code>.littlehorse.UserPb old_user = 5;</code>
+     * @return Whether the oldUser field is set.
      */
     @java.lang.Override
-    public boolean hasNewUserId() {
-      return ((bitField0_ & 0x00000004) != 0);
+    public boolean hasOldUser() {
+      return oldOwnerCase_ == 5;
     }
     /**
-     * <code>optional string new_user_id = 3;</code>
-     * @return The newUserId.
+     * <code>.littlehorse.UserPb old_user = 5;</code>
+     * @return The oldUser.
      */
     @java.lang.Override
-    public java.lang.String getNewUserId() {
-      java.lang.Object ref = newUserId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        newUserId_ = s;
-        return s;
+    public io.littlehorse.sdk.common.proto.UserPb getOldUser() {
+      if (oldOwnerCase_ == 5) {
+         return (io.littlehorse.sdk.common.proto.UserPb) oldOwner_;
       }
+      return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
     }
     /**
-     * <code>optional string new_user_id = 3;</code>
-     * @return The bytes for newUserId.
+     * <code>.littlehorse.UserPb old_user = 5;</code>
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getNewUserIdBytes() {
-      java.lang.Object ref = newUserId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        newUserId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
+    public io.littlehorse.sdk.common.proto.UserPbOrBuilder getOldUserOrBuilder() {
+      if (oldOwnerCase_ == 5) {
+         return (io.littlehorse.sdk.common.proto.UserPb) oldOwner_;
       }
+      return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
     }
 
-    public static final int NEW_USER_GROUP_FIELD_NUMBER = 4;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object newUserGroup_ = "";
+    public static final int OLD_GROUP_FIELD_NUMBER = 6;
     /**
-     * <code>optional string new_user_group = 4;</code>
-     * @return Whether the newUserGroup field is set.
+     * <code>.littlehorse.GroupPb old_group = 6;</code>
+     * @return Whether the oldGroup field is set.
      */
     @java.lang.Override
-    public boolean hasNewUserGroup() {
-      return ((bitField0_ & 0x00000008) != 0);
+    public boolean hasOldGroup() {
+      return oldOwnerCase_ == 6;
     }
     /**
-     * <code>optional string new_user_group = 4;</code>
-     * @return The newUserGroup.
+     * <code>.littlehorse.GroupPb old_group = 6;</code>
+     * @return The oldGroup.
      */
     @java.lang.Override
-    public java.lang.String getNewUserGroup() {
-      java.lang.Object ref = newUserGroup_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        newUserGroup_ = s;
-        return s;
+    public io.littlehorse.sdk.common.proto.GroupPb getOldGroup() {
+      if (oldOwnerCase_ == 6) {
+         return (io.littlehorse.sdk.common.proto.GroupPb) oldOwner_;
       }
+      return io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
     }
     /**
-     * <code>optional string new_user_group = 4;</code>
-     * @return The bytes for newUserGroup.
+     * <code>.littlehorse.GroupPb old_group = 6;</code>
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getNewUserGroupBytes() {
-      java.lang.Object ref = newUserGroup_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        newUserGroup_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
+    public io.littlehorse.sdk.common.proto.GroupPbOrBuilder getOldGroupOrBuilder() {
+      if (oldOwnerCase_ == 6) {
+         return (io.littlehorse.sdk.common.proto.GroupPb) oldOwner_;
       }
+      return io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
+    }
+
+    public static final int NEW_USER_FIELD_NUMBER = 7;
+    /**
+     * <code>.littlehorse.UserPb new_user = 7;</code>
+     * @return Whether the newUser field is set.
+     */
+    @java.lang.Override
+    public boolean hasNewUser() {
+      return newOwnerCase_ == 7;
+    }
+    /**
+     * <code>.littlehorse.UserPb new_user = 7;</code>
+     * @return The newUser.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserPb getNewUser() {
+      if (newOwnerCase_ == 7) {
+         return (io.littlehorse.sdk.common.proto.UserPb) newOwner_;
+      }
+      return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+    }
+    /**
+     * <code>.littlehorse.UserPb new_user = 7;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserPbOrBuilder getNewUserOrBuilder() {
+      if (newOwnerCase_ == 7) {
+         return (io.littlehorse.sdk.common.proto.UserPb) newOwner_;
+      }
+      return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+    }
+
+    public static final int NEW_GROUP_FIELD_NUMBER = 8;
+    /**
+     * <code>.littlehorse.GroupPb new_group = 8;</code>
+     * @return Whether the newGroup field is set.
+     */
+    @java.lang.Override
+    public boolean hasNewGroup() {
+      return newOwnerCase_ == 8;
+    }
+    /**
+     * <code>.littlehorse.GroupPb new_group = 8;</code>
+     * @return The newGroup.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.GroupPb getNewGroup() {
+      if (newOwnerCase_ == 8) {
+         return (io.littlehorse.sdk.common.proto.GroupPb) newOwner_;
+      }
+      return io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
+    }
+    /**
+     * <code>.littlehorse.GroupPb new_group = 8;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.GroupPbOrBuilder getNewGroupOrBuilder() {
+      if (newOwnerCase_ == 8) {
+         return (io.littlehorse.sdk.common.proto.GroupPb) newOwner_;
+      }
+      return io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1365,17 +1374,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) != 0)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, oldUserId_);
+      if (oldOwnerCase_ == 5) {
+        output.writeMessage(5, (io.littlehorse.sdk.common.proto.UserPb) oldOwner_);
       }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, oldUserGroup_);
+      if (oldOwnerCase_ == 6) {
+        output.writeMessage(6, (io.littlehorse.sdk.common.proto.GroupPb) oldOwner_);
       }
-      if (((bitField0_ & 0x00000004) != 0)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, newUserId_);
+      if (newOwnerCase_ == 7) {
+        output.writeMessage(7, (io.littlehorse.sdk.common.proto.UserPb) newOwner_);
       }
-      if (((bitField0_ & 0x00000008) != 0)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, newUserGroup_);
+      if (newOwnerCase_ == 8) {
+        output.writeMessage(8, (io.littlehorse.sdk.common.proto.GroupPb) newOwner_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1386,17 +1395,21 @@ private static final long serialVersionUID = 0L;
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) != 0)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, oldUserId_);
+      if (oldOwnerCase_ == 5) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, (io.littlehorse.sdk.common.proto.UserPb) oldOwner_);
       }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, oldUserGroup_);
+      if (oldOwnerCase_ == 6) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, (io.littlehorse.sdk.common.proto.GroupPb) oldOwner_);
       }
-      if (((bitField0_ & 0x00000004) != 0)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, newUserId_);
+      if (newOwnerCase_ == 7) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, (io.littlehorse.sdk.common.proto.UserPb) newOwner_);
       }
-      if (((bitField0_ & 0x00000008) != 0)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, newUserGroup_);
+      if (newOwnerCase_ == 8) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(8, (io.littlehorse.sdk.common.proto.GroupPb) newOwner_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1413,25 +1426,31 @@ private static final long serialVersionUID = 0L;
       }
       io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb other = (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb) obj;
 
-      if (hasOldUserId() != other.hasOldUserId()) return false;
-      if (hasOldUserId()) {
-        if (!getOldUserId()
-            .equals(other.getOldUserId())) return false;
+      if (!getOldOwnerCase().equals(other.getOldOwnerCase())) return false;
+      switch (oldOwnerCase_) {
+        case 5:
+          if (!getOldUser()
+              .equals(other.getOldUser())) return false;
+          break;
+        case 6:
+          if (!getOldGroup()
+              .equals(other.getOldGroup())) return false;
+          break;
+        case 0:
+        default:
       }
-      if (hasOldUserGroup() != other.hasOldUserGroup()) return false;
-      if (hasOldUserGroup()) {
-        if (!getOldUserGroup()
-            .equals(other.getOldUserGroup())) return false;
-      }
-      if (hasNewUserId() != other.hasNewUserId()) return false;
-      if (hasNewUserId()) {
-        if (!getNewUserId()
-            .equals(other.getNewUserId())) return false;
-      }
-      if (hasNewUserGroup() != other.hasNewUserGroup()) return false;
-      if (hasNewUserGroup()) {
-        if (!getNewUserGroup()
-            .equals(other.getNewUserGroup())) return false;
+      if (!getNewOwnerCase().equals(other.getNewOwnerCase())) return false;
+      switch (newOwnerCase_) {
+        case 7:
+          if (!getNewUser()
+              .equals(other.getNewUser())) return false;
+          break;
+        case 8:
+          if (!getNewGroup()
+              .equals(other.getNewGroup())) return false;
+          break;
+        case 0:
+        default:
       }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
@@ -1444,21 +1463,29 @@ private static final long serialVersionUID = 0L;
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasOldUserId()) {
-        hash = (37 * hash) + OLD_USER_ID_FIELD_NUMBER;
-        hash = (53 * hash) + getOldUserId().hashCode();
+      switch (oldOwnerCase_) {
+        case 5:
+          hash = (37 * hash) + OLD_USER_FIELD_NUMBER;
+          hash = (53 * hash) + getOldUser().hashCode();
+          break;
+        case 6:
+          hash = (37 * hash) + OLD_GROUP_FIELD_NUMBER;
+          hash = (53 * hash) + getOldGroup().hashCode();
+          break;
+        case 0:
+        default:
       }
-      if (hasOldUserGroup()) {
-        hash = (37 * hash) + OLD_USER_GROUP_FIELD_NUMBER;
-        hash = (53 * hash) + getOldUserGroup().hashCode();
-      }
-      if (hasNewUserId()) {
-        hash = (37 * hash) + NEW_USER_ID_FIELD_NUMBER;
-        hash = (53 * hash) + getNewUserId().hashCode();
-      }
-      if (hasNewUserGroup()) {
-        hash = (37 * hash) + NEW_USER_GROUP_FIELD_NUMBER;
-        hash = (53 * hash) + getNewUserGroup().hashCode();
+      switch (newOwnerCase_) {
+        case 7:
+          hash = (37 * hash) + NEW_USER_FIELD_NUMBER;
+          hash = (53 * hash) + getNewUser().hashCode();
+          break;
+        case 8:
+          hash = (37 * hash) + NEW_GROUP_FIELD_NUMBER;
+          hash = (53 * hash) + getNewGroup().hashCode();
+          break;
+        case 0:
+        default:
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -1589,10 +1616,22 @@ private static final long serialVersionUID = 0L;
       public Builder clear() {
         super.clear();
         bitField0_ = 0;
-        oldUserId_ = "";
-        oldUserGroup_ = "";
-        newUserId_ = "";
-        newUserGroup_ = "";
+        if (oldUserBuilder_ != null) {
+          oldUserBuilder_.clear();
+        }
+        if (oldGroupBuilder_ != null) {
+          oldGroupBuilder_.clear();
+        }
+        if (newUserBuilder_ != null) {
+          newUserBuilder_.clear();
+        }
+        if (newGroupBuilder_ != null) {
+          newGroupBuilder_.clear();
+        }
+        oldOwnerCase_ = 0;
+        oldOwner_ = null;
+        newOwnerCase_ = 0;
+        newOwner_ = null;
         return this;
       }
 
@@ -1620,30 +1659,36 @@ private static final long serialVersionUID = 0L;
       public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb buildPartial() {
         io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb result = new io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb(this);
         if (bitField0_ != 0) { buildPartial0(result); }
+        buildPartialOneofs(result);
         onBuilt();
         return result;
       }
 
       private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb result) {
         int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.oldUserId_ = oldUserId_;
-          to_bitField0_ |= 0x00000001;
+      }
+
+      private void buildPartialOneofs(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb result) {
+        result.oldOwnerCase_ = oldOwnerCase_;
+        result.oldOwner_ = this.oldOwner_;
+        if (oldOwnerCase_ == 5 &&
+            oldUserBuilder_ != null) {
+          result.oldOwner_ = oldUserBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.oldUserGroup_ = oldUserGroup_;
-          to_bitField0_ |= 0x00000002;
+        if (oldOwnerCase_ == 6 &&
+            oldGroupBuilder_ != null) {
+          result.oldOwner_ = oldGroupBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.newUserId_ = newUserId_;
-          to_bitField0_ |= 0x00000004;
+        result.newOwnerCase_ = newOwnerCase_;
+        result.newOwner_ = this.newOwner_;
+        if (newOwnerCase_ == 7 &&
+            newUserBuilder_ != null) {
+          result.newOwner_ = newUserBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.newUserGroup_ = newUserGroup_;
-          to_bitField0_ |= 0x00000008;
+        if (newOwnerCase_ == 8 &&
+            newGroupBuilder_ != null) {
+          result.newOwner_ = newGroupBuilder_.build();
         }
-        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -1690,25 +1735,31 @@ private static final long serialVersionUID = 0L;
 
       public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb other) {
         if (other == io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.getDefaultInstance()) return this;
-        if (other.hasOldUserId()) {
-          oldUserId_ = other.oldUserId_;
-          bitField0_ |= 0x00000001;
-          onChanged();
+        switch (other.getOldOwnerCase()) {
+          case OLD_USER: {
+            mergeOldUser(other.getOldUser());
+            break;
+          }
+          case OLD_GROUP: {
+            mergeOldGroup(other.getOldGroup());
+            break;
+          }
+          case OLDOWNER_NOT_SET: {
+            break;
+          }
         }
-        if (other.hasOldUserGroup()) {
-          oldUserGroup_ = other.oldUserGroup_;
-          bitField0_ |= 0x00000002;
-          onChanged();
-        }
-        if (other.hasNewUserId()) {
-          newUserId_ = other.newUserId_;
-          bitField0_ |= 0x00000004;
-          onChanged();
-        }
-        if (other.hasNewUserGroup()) {
-          newUserGroup_ = other.newUserGroup_;
-          bitField0_ |= 0x00000008;
-          onChanged();
+        switch (other.getNewOwnerCase()) {
+          case NEW_USER: {
+            mergeNewUser(other.getNewUser());
+            break;
+          }
+          case NEW_GROUP: {
+            mergeNewGroup(other.getNewGroup());
+            break;
+          }
+          case NEWOWNER_NOT_SET: {
+            break;
+          }
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -1736,26 +1787,34 @@ private static final long serialVersionUID = 0L;
               case 0:
                 done = true;
                 break;
-              case 10: {
-                oldUserId_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000001;
+              case 42: {
+                input.readMessage(
+                    getOldUserFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                oldOwnerCase_ = 5;
                 break;
-              } // case 10
-              case 18: {
-                oldUserGroup_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000002;
+              } // case 42
+              case 50: {
+                input.readMessage(
+                    getOldGroupFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                oldOwnerCase_ = 6;
                 break;
-              } // case 18
-              case 26: {
-                newUserId_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000004;
+              } // case 50
+              case 58: {
+                input.readMessage(
+                    getNewUserFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                newOwnerCase_ = 7;
                 break;
-              } // case 26
-              case 34: {
-                newUserGroup_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000008;
+              } // case 58
+              case 66: {
+                input.readMessage(
+                    getNewGroupFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                newOwnerCase_ = 8;
                 break;
-              } // case 34
+              } // case 66
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1771,322 +1830,604 @@ private static final long serialVersionUID = 0L;
         } // finally
         return this;
       }
+      private int oldOwnerCase_ = 0;
+      private java.lang.Object oldOwner_;
+      public OldOwnerCase
+          getOldOwnerCase() {
+        return OldOwnerCase.forNumber(
+            oldOwnerCase_);
+      }
+
+      public Builder clearOldOwner() {
+        oldOwnerCase_ = 0;
+        oldOwner_ = null;
+        onChanged();
+        return this;
+      }
+
+      private int newOwnerCase_ = 0;
+      private java.lang.Object newOwner_;
+      public NewOwnerCase
+          getNewOwnerCase() {
+        return NewOwnerCase.forNumber(
+            newOwnerCase_);
+      }
+
+      public Builder clearNewOwner() {
+        newOwnerCase_ = 0;
+        newOwner_ = null;
+        onChanged();
+        return this;
+      }
+
       private int bitField0_;
 
-      private java.lang.Object oldUserId_ = "";
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.UserPb, io.littlehorse.sdk.common.proto.UserPb.Builder, io.littlehorse.sdk.common.proto.UserPbOrBuilder> oldUserBuilder_;
       /**
-       * <code>optional string old_user_id = 1;</code>
-       * @return Whether the oldUserId field is set.
+       * <code>.littlehorse.UserPb old_user = 5;</code>
+       * @return Whether the oldUser field is set.
        */
-      public boolean hasOldUserId() {
-        return ((bitField0_ & 0x00000001) != 0);
+      @java.lang.Override
+      public boolean hasOldUser() {
+        return oldOwnerCase_ == 5;
       }
       /**
-       * <code>optional string old_user_id = 1;</code>
-       * @return The oldUserId.
+       * <code>.littlehorse.UserPb old_user = 5;</code>
+       * @return The oldUser.
        */
-      public java.lang.String getOldUserId() {
-        java.lang.Object ref = oldUserId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          oldUserId_ = s;
-          return s;
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserPb getOldUser() {
+        if (oldUserBuilder_ == null) {
+          if (oldOwnerCase_ == 5) {
+            return (io.littlehorse.sdk.common.proto.UserPb) oldOwner_;
+          }
+          return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
         } else {
-          return (java.lang.String) ref;
+          if (oldOwnerCase_ == 5) {
+            return oldUserBuilder_.getMessage();
+          }
+          return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
         }
       }
       /**
-       * <code>optional string old_user_id = 1;</code>
-       * @return The bytes for oldUserId.
+       * <code>.littlehorse.UserPb old_user = 5;</code>
        */
-      public com.google.protobuf.ByteString
-          getOldUserIdBytes() {
-        java.lang.Object ref = oldUserId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          oldUserId_ = b;
-          return b;
+      public Builder setOldUser(io.littlehorse.sdk.common.proto.UserPb value) {
+        if (oldUserBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          oldOwner_ = value;
+          onChanged();
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          oldUserBuilder_.setMessage(value);
+        }
+        oldOwnerCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>.littlehorse.UserPb old_user = 5;</code>
+       */
+      public Builder setOldUser(
+          io.littlehorse.sdk.common.proto.UserPb.Builder builderForValue) {
+        if (oldUserBuilder_ == null) {
+          oldOwner_ = builderForValue.build();
+          onChanged();
+        } else {
+          oldUserBuilder_.setMessage(builderForValue.build());
+        }
+        oldOwnerCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>.littlehorse.UserPb old_user = 5;</code>
+       */
+      public Builder mergeOldUser(io.littlehorse.sdk.common.proto.UserPb value) {
+        if (oldUserBuilder_ == null) {
+          if (oldOwnerCase_ == 5 &&
+              oldOwner_ != io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance()) {
+            oldOwner_ = io.littlehorse.sdk.common.proto.UserPb.newBuilder((io.littlehorse.sdk.common.proto.UserPb) oldOwner_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            oldOwner_ = value;
+          }
+          onChanged();
+        } else {
+          if (oldOwnerCase_ == 5) {
+            oldUserBuilder_.mergeFrom(value);
+          } else {
+            oldUserBuilder_.setMessage(value);
+          }
+        }
+        oldOwnerCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>.littlehorse.UserPb old_user = 5;</code>
+       */
+      public Builder clearOldUser() {
+        if (oldUserBuilder_ == null) {
+          if (oldOwnerCase_ == 5) {
+            oldOwnerCase_ = 0;
+            oldOwner_ = null;
+            onChanged();
+          }
+        } else {
+          if (oldOwnerCase_ == 5) {
+            oldOwnerCase_ = 0;
+            oldOwner_ = null;
+          }
+          oldUserBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.littlehorse.UserPb old_user = 5;</code>
+       */
+      public io.littlehorse.sdk.common.proto.UserPb.Builder getOldUserBuilder() {
+        return getOldUserFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.littlehorse.UserPb old_user = 5;</code>
+       */
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserPbOrBuilder getOldUserOrBuilder() {
+        if ((oldOwnerCase_ == 5) && (oldUserBuilder_ != null)) {
+          return oldUserBuilder_.getMessageOrBuilder();
+        } else {
+          if (oldOwnerCase_ == 5) {
+            return (io.littlehorse.sdk.common.proto.UserPb) oldOwner_;
+          }
+          return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
         }
       }
       /**
-       * <code>optional string old_user_id = 1;</code>
-       * @param value The oldUserId to set.
-       * @return This builder for chaining.
+       * <code>.littlehorse.UserPb old_user = 5;</code>
        */
-      public Builder setOldUserId(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        oldUserId_ = value;
-        bitField0_ |= 0x00000001;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.UserPb, io.littlehorse.sdk.common.proto.UserPb.Builder, io.littlehorse.sdk.common.proto.UserPbOrBuilder> 
+          getOldUserFieldBuilder() {
+        if (oldUserBuilder_ == null) {
+          if (!(oldOwnerCase_ == 5)) {
+            oldOwner_ = io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+          }
+          oldUserBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.littlehorse.sdk.common.proto.UserPb, io.littlehorse.sdk.common.proto.UserPb.Builder, io.littlehorse.sdk.common.proto.UserPbOrBuilder>(
+                  (io.littlehorse.sdk.common.proto.UserPb) oldOwner_,
+                  getParentForChildren(),
+                  isClean());
+          oldOwner_ = null;
+        }
+        oldOwnerCase_ = 5;
         onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string old_user_id = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearOldUserId() {
-        oldUserId_ = getDefaultInstance().getOldUserId();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string old_user_id = 1;</code>
-       * @param value The bytes for oldUserId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setOldUserIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        oldUserId_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
+        return oldUserBuilder_;
       }
 
-      private java.lang.Object oldUserGroup_ = "";
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.GroupPb, io.littlehorse.sdk.common.proto.GroupPb.Builder, io.littlehorse.sdk.common.proto.GroupPbOrBuilder> oldGroupBuilder_;
       /**
-       * <code>optional string old_user_group = 2;</code>
-       * @return Whether the oldUserGroup field is set.
+       * <code>.littlehorse.GroupPb old_group = 6;</code>
+       * @return Whether the oldGroup field is set.
        */
-      public boolean hasOldUserGroup() {
-        return ((bitField0_ & 0x00000002) != 0);
+      @java.lang.Override
+      public boolean hasOldGroup() {
+        return oldOwnerCase_ == 6;
       }
       /**
-       * <code>optional string old_user_group = 2;</code>
-       * @return The oldUserGroup.
+       * <code>.littlehorse.GroupPb old_group = 6;</code>
+       * @return The oldGroup.
        */
-      public java.lang.String getOldUserGroup() {
-        java.lang.Object ref = oldUserGroup_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          oldUserGroup_ = s;
-          return s;
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.GroupPb getOldGroup() {
+        if (oldGroupBuilder_ == null) {
+          if (oldOwnerCase_ == 6) {
+            return (io.littlehorse.sdk.common.proto.GroupPb) oldOwner_;
+          }
+          return io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
         } else {
-          return (java.lang.String) ref;
+          if (oldOwnerCase_ == 6) {
+            return oldGroupBuilder_.getMessage();
+          }
+          return io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
         }
       }
       /**
-       * <code>optional string old_user_group = 2;</code>
-       * @return The bytes for oldUserGroup.
+       * <code>.littlehorse.GroupPb old_group = 6;</code>
        */
-      public com.google.protobuf.ByteString
-          getOldUserGroupBytes() {
-        java.lang.Object ref = oldUserGroup_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          oldUserGroup_ = b;
-          return b;
+      public Builder setOldGroup(io.littlehorse.sdk.common.proto.GroupPb value) {
+        if (oldGroupBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          oldOwner_ = value;
+          onChanged();
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          oldGroupBuilder_.setMessage(value);
+        }
+        oldOwnerCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>.littlehorse.GroupPb old_group = 6;</code>
+       */
+      public Builder setOldGroup(
+          io.littlehorse.sdk.common.proto.GroupPb.Builder builderForValue) {
+        if (oldGroupBuilder_ == null) {
+          oldOwner_ = builderForValue.build();
+          onChanged();
+        } else {
+          oldGroupBuilder_.setMessage(builderForValue.build());
+        }
+        oldOwnerCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>.littlehorse.GroupPb old_group = 6;</code>
+       */
+      public Builder mergeOldGroup(io.littlehorse.sdk.common.proto.GroupPb value) {
+        if (oldGroupBuilder_ == null) {
+          if (oldOwnerCase_ == 6 &&
+              oldOwner_ != io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance()) {
+            oldOwner_ = io.littlehorse.sdk.common.proto.GroupPb.newBuilder((io.littlehorse.sdk.common.proto.GroupPb) oldOwner_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            oldOwner_ = value;
+          }
+          onChanged();
+        } else {
+          if (oldOwnerCase_ == 6) {
+            oldGroupBuilder_.mergeFrom(value);
+          } else {
+            oldGroupBuilder_.setMessage(value);
+          }
+        }
+        oldOwnerCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>.littlehorse.GroupPb old_group = 6;</code>
+       */
+      public Builder clearOldGroup() {
+        if (oldGroupBuilder_ == null) {
+          if (oldOwnerCase_ == 6) {
+            oldOwnerCase_ = 0;
+            oldOwner_ = null;
+            onChanged();
+          }
+        } else {
+          if (oldOwnerCase_ == 6) {
+            oldOwnerCase_ = 0;
+            oldOwner_ = null;
+          }
+          oldGroupBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.littlehorse.GroupPb old_group = 6;</code>
+       */
+      public io.littlehorse.sdk.common.proto.GroupPb.Builder getOldGroupBuilder() {
+        return getOldGroupFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.littlehorse.GroupPb old_group = 6;</code>
+       */
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.GroupPbOrBuilder getOldGroupOrBuilder() {
+        if ((oldOwnerCase_ == 6) && (oldGroupBuilder_ != null)) {
+          return oldGroupBuilder_.getMessageOrBuilder();
+        } else {
+          if (oldOwnerCase_ == 6) {
+            return (io.littlehorse.sdk.common.proto.GroupPb) oldOwner_;
+          }
+          return io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
         }
       }
       /**
-       * <code>optional string old_user_group = 2;</code>
-       * @param value The oldUserGroup to set.
-       * @return This builder for chaining.
+       * <code>.littlehorse.GroupPb old_group = 6;</code>
        */
-      public Builder setOldUserGroup(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        oldUserGroup_ = value;
-        bitField0_ |= 0x00000002;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.GroupPb, io.littlehorse.sdk.common.proto.GroupPb.Builder, io.littlehorse.sdk.common.proto.GroupPbOrBuilder> 
+          getOldGroupFieldBuilder() {
+        if (oldGroupBuilder_ == null) {
+          if (!(oldOwnerCase_ == 6)) {
+            oldOwner_ = io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
+          }
+          oldGroupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.littlehorse.sdk.common.proto.GroupPb, io.littlehorse.sdk.common.proto.GroupPb.Builder, io.littlehorse.sdk.common.proto.GroupPbOrBuilder>(
+                  (io.littlehorse.sdk.common.proto.GroupPb) oldOwner_,
+                  getParentForChildren(),
+                  isClean());
+          oldOwner_ = null;
+        }
+        oldOwnerCase_ = 6;
         onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string old_user_group = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearOldUserGroup() {
-        oldUserGroup_ = getDefaultInstance().getOldUserGroup();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string old_user_group = 2;</code>
-       * @param value The bytes for oldUserGroup to set.
-       * @return This builder for chaining.
-       */
-      public Builder setOldUserGroupBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        oldUserGroup_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
+        return oldGroupBuilder_;
       }
 
-      private java.lang.Object newUserId_ = "";
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.UserPb, io.littlehorse.sdk.common.proto.UserPb.Builder, io.littlehorse.sdk.common.proto.UserPbOrBuilder> newUserBuilder_;
       /**
-       * <code>optional string new_user_id = 3;</code>
-       * @return Whether the newUserId field is set.
+       * <code>.littlehorse.UserPb new_user = 7;</code>
+       * @return Whether the newUser field is set.
        */
-      public boolean hasNewUserId() {
-        return ((bitField0_ & 0x00000004) != 0);
+      @java.lang.Override
+      public boolean hasNewUser() {
+        return newOwnerCase_ == 7;
       }
       /**
-       * <code>optional string new_user_id = 3;</code>
-       * @return The newUserId.
+       * <code>.littlehorse.UserPb new_user = 7;</code>
+       * @return The newUser.
        */
-      public java.lang.String getNewUserId() {
-        java.lang.Object ref = newUserId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          newUserId_ = s;
-          return s;
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserPb getNewUser() {
+        if (newUserBuilder_ == null) {
+          if (newOwnerCase_ == 7) {
+            return (io.littlehorse.sdk.common.proto.UserPb) newOwner_;
+          }
+          return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
         } else {
-          return (java.lang.String) ref;
+          if (newOwnerCase_ == 7) {
+            return newUserBuilder_.getMessage();
+          }
+          return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
         }
       }
       /**
-       * <code>optional string new_user_id = 3;</code>
-       * @return The bytes for newUserId.
+       * <code>.littlehorse.UserPb new_user = 7;</code>
        */
-      public com.google.protobuf.ByteString
-          getNewUserIdBytes() {
-        java.lang.Object ref = newUserId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          newUserId_ = b;
-          return b;
+      public Builder setNewUser(io.littlehorse.sdk.common.proto.UserPb value) {
+        if (newUserBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          newOwner_ = value;
+          onChanged();
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          newUserBuilder_.setMessage(value);
+        }
+        newOwnerCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>.littlehorse.UserPb new_user = 7;</code>
+       */
+      public Builder setNewUser(
+          io.littlehorse.sdk.common.proto.UserPb.Builder builderForValue) {
+        if (newUserBuilder_ == null) {
+          newOwner_ = builderForValue.build();
+          onChanged();
+        } else {
+          newUserBuilder_.setMessage(builderForValue.build());
+        }
+        newOwnerCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>.littlehorse.UserPb new_user = 7;</code>
+       */
+      public Builder mergeNewUser(io.littlehorse.sdk.common.proto.UserPb value) {
+        if (newUserBuilder_ == null) {
+          if (newOwnerCase_ == 7 &&
+              newOwner_ != io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance()) {
+            newOwner_ = io.littlehorse.sdk.common.proto.UserPb.newBuilder((io.littlehorse.sdk.common.proto.UserPb) newOwner_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            newOwner_ = value;
+          }
+          onChanged();
+        } else {
+          if (newOwnerCase_ == 7) {
+            newUserBuilder_.mergeFrom(value);
+          } else {
+            newUserBuilder_.setMessage(value);
+          }
+        }
+        newOwnerCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>.littlehorse.UserPb new_user = 7;</code>
+       */
+      public Builder clearNewUser() {
+        if (newUserBuilder_ == null) {
+          if (newOwnerCase_ == 7) {
+            newOwnerCase_ = 0;
+            newOwner_ = null;
+            onChanged();
+          }
+        } else {
+          if (newOwnerCase_ == 7) {
+            newOwnerCase_ = 0;
+            newOwner_ = null;
+          }
+          newUserBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.littlehorse.UserPb new_user = 7;</code>
+       */
+      public io.littlehorse.sdk.common.proto.UserPb.Builder getNewUserBuilder() {
+        return getNewUserFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.littlehorse.UserPb new_user = 7;</code>
+       */
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserPbOrBuilder getNewUserOrBuilder() {
+        if ((newOwnerCase_ == 7) && (newUserBuilder_ != null)) {
+          return newUserBuilder_.getMessageOrBuilder();
+        } else {
+          if (newOwnerCase_ == 7) {
+            return (io.littlehorse.sdk.common.proto.UserPb) newOwner_;
+          }
+          return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
         }
       }
       /**
-       * <code>optional string new_user_id = 3;</code>
-       * @param value The newUserId to set.
-       * @return This builder for chaining.
+       * <code>.littlehorse.UserPb new_user = 7;</code>
        */
-      public Builder setNewUserId(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        newUserId_ = value;
-        bitField0_ |= 0x00000004;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.UserPb, io.littlehorse.sdk.common.proto.UserPb.Builder, io.littlehorse.sdk.common.proto.UserPbOrBuilder> 
+          getNewUserFieldBuilder() {
+        if (newUserBuilder_ == null) {
+          if (!(newOwnerCase_ == 7)) {
+            newOwner_ = io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+          }
+          newUserBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.littlehorse.sdk.common.proto.UserPb, io.littlehorse.sdk.common.proto.UserPb.Builder, io.littlehorse.sdk.common.proto.UserPbOrBuilder>(
+                  (io.littlehorse.sdk.common.proto.UserPb) newOwner_,
+                  getParentForChildren(),
+                  isClean());
+          newOwner_ = null;
+        }
+        newOwnerCase_ = 7;
         onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string new_user_id = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearNewUserId() {
-        newUserId_ = getDefaultInstance().getNewUserId();
-        bitField0_ = (bitField0_ & ~0x00000004);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string new_user_id = 3;</code>
-       * @param value The bytes for newUserId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setNewUserIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        newUserId_ = value;
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
+        return newUserBuilder_;
       }
 
-      private java.lang.Object newUserGroup_ = "";
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.GroupPb, io.littlehorse.sdk.common.proto.GroupPb.Builder, io.littlehorse.sdk.common.proto.GroupPbOrBuilder> newGroupBuilder_;
       /**
-       * <code>optional string new_user_group = 4;</code>
-       * @return Whether the newUserGroup field is set.
+       * <code>.littlehorse.GroupPb new_group = 8;</code>
+       * @return Whether the newGroup field is set.
        */
-      public boolean hasNewUserGroup() {
-        return ((bitField0_ & 0x00000008) != 0);
+      @java.lang.Override
+      public boolean hasNewGroup() {
+        return newOwnerCase_ == 8;
       }
       /**
-       * <code>optional string new_user_group = 4;</code>
-       * @return The newUserGroup.
+       * <code>.littlehorse.GroupPb new_group = 8;</code>
+       * @return The newGroup.
        */
-      public java.lang.String getNewUserGroup() {
-        java.lang.Object ref = newUserGroup_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          newUserGroup_ = s;
-          return s;
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.GroupPb getNewGroup() {
+        if (newGroupBuilder_ == null) {
+          if (newOwnerCase_ == 8) {
+            return (io.littlehorse.sdk.common.proto.GroupPb) newOwner_;
+          }
+          return io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
         } else {
-          return (java.lang.String) ref;
+          if (newOwnerCase_ == 8) {
+            return newGroupBuilder_.getMessage();
+          }
+          return io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
         }
       }
       /**
-       * <code>optional string new_user_group = 4;</code>
-       * @return The bytes for newUserGroup.
+       * <code>.littlehorse.GroupPb new_group = 8;</code>
        */
-      public com.google.protobuf.ByteString
-          getNewUserGroupBytes() {
-        java.lang.Object ref = newUserGroup_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          newUserGroup_ = b;
-          return b;
+      public Builder setNewGroup(io.littlehorse.sdk.common.proto.GroupPb value) {
+        if (newGroupBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          newOwner_ = value;
+          onChanged();
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          newGroupBuilder_.setMessage(value);
+        }
+        newOwnerCase_ = 8;
+        return this;
+      }
+      /**
+       * <code>.littlehorse.GroupPb new_group = 8;</code>
+       */
+      public Builder setNewGroup(
+          io.littlehorse.sdk.common.proto.GroupPb.Builder builderForValue) {
+        if (newGroupBuilder_ == null) {
+          newOwner_ = builderForValue.build();
+          onChanged();
+        } else {
+          newGroupBuilder_.setMessage(builderForValue.build());
+        }
+        newOwnerCase_ = 8;
+        return this;
+      }
+      /**
+       * <code>.littlehorse.GroupPb new_group = 8;</code>
+       */
+      public Builder mergeNewGroup(io.littlehorse.sdk.common.proto.GroupPb value) {
+        if (newGroupBuilder_ == null) {
+          if (newOwnerCase_ == 8 &&
+              newOwner_ != io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance()) {
+            newOwner_ = io.littlehorse.sdk.common.proto.GroupPb.newBuilder((io.littlehorse.sdk.common.proto.GroupPb) newOwner_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            newOwner_ = value;
+          }
+          onChanged();
+        } else {
+          if (newOwnerCase_ == 8) {
+            newGroupBuilder_.mergeFrom(value);
+          } else {
+            newGroupBuilder_.setMessage(value);
+          }
+        }
+        newOwnerCase_ = 8;
+        return this;
+      }
+      /**
+       * <code>.littlehorse.GroupPb new_group = 8;</code>
+       */
+      public Builder clearNewGroup() {
+        if (newGroupBuilder_ == null) {
+          if (newOwnerCase_ == 8) {
+            newOwnerCase_ = 0;
+            newOwner_ = null;
+            onChanged();
+          }
+        } else {
+          if (newOwnerCase_ == 8) {
+            newOwnerCase_ = 0;
+            newOwner_ = null;
+          }
+          newGroupBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.littlehorse.GroupPb new_group = 8;</code>
+       */
+      public io.littlehorse.sdk.common.proto.GroupPb.Builder getNewGroupBuilder() {
+        return getNewGroupFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.littlehorse.GroupPb new_group = 8;</code>
+       */
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.GroupPbOrBuilder getNewGroupOrBuilder() {
+        if ((newOwnerCase_ == 8) && (newGroupBuilder_ != null)) {
+          return newGroupBuilder_.getMessageOrBuilder();
+        } else {
+          if (newOwnerCase_ == 8) {
+            return (io.littlehorse.sdk.common.proto.GroupPb) newOwner_;
+          }
+          return io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
         }
       }
       /**
-       * <code>optional string new_user_group = 4;</code>
-       * @param value The newUserGroup to set.
-       * @return This builder for chaining.
+       * <code>.littlehorse.GroupPb new_group = 8;</code>
        */
-      public Builder setNewUserGroup(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        newUserGroup_ = value;
-        bitField0_ |= 0x00000008;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.GroupPb, io.littlehorse.sdk.common.proto.GroupPb.Builder, io.littlehorse.sdk.common.proto.GroupPbOrBuilder> 
+          getNewGroupFieldBuilder() {
+        if (newGroupBuilder_ == null) {
+          if (!(newOwnerCase_ == 8)) {
+            newOwner_ = io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
+          }
+          newGroupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.littlehorse.sdk.common.proto.GroupPb, io.littlehorse.sdk.common.proto.GroupPb.Builder, io.littlehorse.sdk.common.proto.GroupPbOrBuilder>(
+                  (io.littlehorse.sdk.common.proto.GroupPb) newOwner_,
+                  getParentForChildren(),
+                  isClean());
+          newOwner_ = null;
+        }
+        newOwnerCase_ = 8;
         onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string new_user_group = 4;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearNewUserGroup() {
-        newUserGroup_ = getDefaultInstance().getNewUserGroup();
-        bitField0_ = (bitField0_ & ~0x00000008);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string new_user_group = 4;</code>
-       * @param value The bytes for newUserGroup to set.
-       * @return This builder for chaining.
-       */
-      public Builder setNewUserGroupBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        newUserGroup_ = value;
-        bitField0_ |= 0x00000008;
-        onChanged();
-        return this;
+        return newGroupBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(

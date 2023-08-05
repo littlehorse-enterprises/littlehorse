@@ -29,38 +29,34 @@ public interface AssignUserTaskRunPbOrBuilder extends
   boolean getOverrideClaim();
 
   /**
-   * <code>string user_id = 3;</code>
-   * @return Whether the userId field is set.
+   * <code>.littlehorse.UserPb user = 3;</code>
+   * @return Whether the user field is set.
    */
-  boolean hasUserId();
+  boolean hasUser();
   /**
-   * <code>string user_id = 3;</code>
-   * @return The userId.
+   * <code>.littlehorse.UserPb user = 3;</code>
+   * @return The user.
    */
-  java.lang.String getUserId();
+  io.littlehorse.sdk.common.proto.UserPb getUser();
   /**
-   * <code>string user_id = 3;</code>
-   * @return The bytes for userId.
+   * <code>.littlehorse.UserPb user = 3;</code>
    */
-  com.google.protobuf.ByteString
-      getUserIdBytes();
+  io.littlehorse.sdk.common.proto.UserPbOrBuilder getUserOrBuilder();
 
   /**
-   * <code>string user_group = 4;</code>
-   * @return Whether the userGroup field is set.
+   * <code>.littlehorse.GroupPb group = 4;</code>
+   * @return Whether the group field is set.
    */
-  boolean hasUserGroup();
+  boolean hasGroup();
   /**
-   * <code>string user_group = 4;</code>
-   * @return The userGroup.
+   * <code>.littlehorse.GroupPb group = 4;</code>
+   * @return The group.
    */
-  java.lang.String getUserGroup();
+  io.littlehorse.sdk.common.proto.GroupPb getGroup();
   /**
-   * <code>string user_group = 4;</code>
-   * @return The bytes for userGroup.
+   * <code>.littlehorse.GroupPb group = 4;</code>
    */
-  com.google.protobuf.ByteString
-      getUserGroupBytes();
+  io.littlehorse.sdk.common.proto.GroupPbOrBuilder getGroupOrBuilder();
 
   public io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.AssigneeCase getAssigneeCase();
 }

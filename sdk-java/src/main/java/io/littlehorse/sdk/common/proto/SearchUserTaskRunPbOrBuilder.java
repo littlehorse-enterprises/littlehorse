@@ -63,38 +63,34 @@ public interface SearchUserTaskRunPbOrBuilder extends
       getUserTaskDefNameBytes();
 
   /**
-   * <code>string user_id = 5;</code>
-   * @return Whether the userId field is set.
+   * <code>.littlehorse.UserPb user = 5;</code>
+   * @return Whether the user field is set.
    */
-  boolean hasUserId();
+  boolean hasUser();
   /**
-   * <code>string user_id = 5;</code>
-   * @return The userId.
+   * <code>.littlehorse.UserPb user = 5;</code>
+   * @return The user.
    */
-  java.lang.String getUserId();
+  io.littlehorse.sdk.common.proto.UserPb getUser();
   /**
-   * <code>string user_id = 5;</code>
-   * @return The bytes for userId.
+   * <code>.littlehorse.UserPb user = 5;</code>
    */
-  com.google.protobuf.ByteString
-      getUserIdBytes();
+  io.littlehorse.sdk.common.proto.UserPbOrBuilder getUserOrBuilder();
 
   /**
-   * <code>string user_group = 6;</code>
-   * @return Whether the userGroup field is set.
+   * <code>.littlehorse.GroupPb group = 6;</code>
+   * @return Whether the group field is set.
    */
-  boolean hasUserGroup();
+  boolean hasGroup();
   /**
-   * <code>string user_group = 6;</code>
-   * @return The userGroup.
+   * <code>.littlehorse.GroupPb group = 6;</code>
+   * @return The group.
    */
-  java.lang.String getUserGroup();
+  io.littlehorse.sdk.common.proto.GroupPb getGroup();
   /**
-   * <code>string user_group = 6;</code>
-   * @return The bytes for userGroup.
+   * <code>.littlehorse.GroupPb group = 6;</code>
    */
-  com.google.protobuf.ByteString
-      getUserGroupBytes();
+  io.littlehorse.sdk.common.proto.GroupPbOrBuilder getGroupOrBuilder();
 
   /**
    * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>

@@ -42,4 +42,19 @@ public interface UserTaskTriggerReferencePbOrBuilder extends
    * <code>.littlehorse.WfSpecIdPb wf_spec_id = 3;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdPbOrBuilder getWfSpecIdOrBuilder();
+
+  /**
+   * <code>optional .littlehorse.UserTaskTriggerContextPb context = 4;</code>
+   * @return Whether the context field is set.
+   */
+  boolean hasContext();
+  /**
+   * <code>optional .littlehorse.UserTaskTriggerContextPb context = 4;</code>
+   * @return The context.
+   */
+  io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb getContext();
+  /**
+   * <code>optional .littlehorse.UserTaskTriggerContextPb context = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.UserTaskTriggerContextPbOrBuilder getContextOrBuilder();
 }

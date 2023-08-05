@@ -96,19 +96,4 @@ public interface ScheduledTaskPbOrBuilder extends
    * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
    */
   io.littlehorse.sdk.common.proto.TaskRunSourcePbOrBuilder getSourceOrBuilder();
-
-  /**
-   * <code>optional .littlehorse.ScheduledTaskContextPb context = 7;</code>
-   * @return Whether the context field is set.
-   */
-  boolean hasContext();
-  /**
-   * <code>optional .littlehorse.ScheduledTaskContextPb context = 7;</code>
-   * @return The context.
-   */
-  io.littlehorse.sdk.common.proto.ScheduledTaskContextPb getContext();
-  /**
-   * <code>optional .littlehorse.ScheduledTaskContextPb context = 7;</code>
-   */
-  io.littlehorse.sdk.common.proto.ScheduledTaskContextPbOrBuilder getContextOrBuilder();
 }

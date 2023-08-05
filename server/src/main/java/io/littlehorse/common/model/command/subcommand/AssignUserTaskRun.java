@@ -7,6 +7,8 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.AssignUserTaskRunReply;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
+import io.littlehorse.common.model.wfrun.Group;
+import io.littlehorse.common.model.wfrun.User;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
@@ -27,8 +29,8 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
     private boolean overrideClaim;
 
     private AssigneeCase assigneeType;
-    private String userId;
-    private String userGroup;
+    private User user;
+    private Group group;
 
     public Class<AssignUserTaskRunPb> getProtoBaseClass() {
         return AssignUserTaskRunPb.class;
@@ -41,11 +43,11 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
             .setOverrideClaim(overrideClaim);
 
         switch (assigneeType) {
-            case USER_ID:
-                out.setUserId(userId);
+            case USER:
+                out.setUser(user.toProto());
                 break;
-            case USER_GROUP:
-                out.setUserGroup(userGroup);
+            case GROUP:
+                out.setGroup(group.toProto());
                 break;
             case ASSIGNEE_NOT_SET:
                 log.warn(
@@ -64,11 +66,11 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
         overrideClaim = p.getOverrideClaim();
 
         switch (assigneeType) {
-            case USER_ID:
-                userId = p.getUserId();
+            case USER:
+                user = LHSerializable.fromProto(p.getUser(), User.class);
                 break;
-            case USER_GROUP:
-                userGroup = p.getUserGroup();
+            case GROUP:
+                group = LHSerializable.fromProto(p.getGroup(), Group.class);
                 break;
             case ASSIGNEE_NOT_SET:
                 log.warn("Unset assignee. Should this be error?");
@@ -96,16 +98,14 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
             return out;
         }
 
-        if (!overrideClaim && utr.getSpecificUserId() != null) {
+        if (!overrideClaim && utr.getUser() != null) {
             out.code = LHResponseCodePb.ALREADY_EXISTS_ERROR;
-            out.message =
-                "User Task Run already assigned to " + utr.getSpecificUserId();
+            out.message = "User Task Run already assigned to " + utr.getUser();
             return out;
         }
 
         if (
-            utr.getStatus() != UserTaskRunStatusPb.CLAIMED &&
-            utr.getStatus() != UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED &&
+            utr.getStatus() != UserTaskRunStatusPb.ASSIGNED &&
             utr.getStatus() != UserTaskRunStatusPb.UNASSIGNED
         ) {
             out.code = LHResponseCodePb.BAD_REQUEST_ERROR;

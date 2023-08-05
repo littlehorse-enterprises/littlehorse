@@ -28,7 +28,7 @@ public class ScheduledTask extends Storeable<ScheduledTaskPb> {
     private Date createdAt;
 
     private TaskRunSource source;
-    private ScheduledTaskContext context;
+    private UserTaskTriggerContext context;
 
     public ScheduledTask() {
         variables = new ArrayList<>();
@@ -41,7 +41,7 @@ public class ScheduledTask extends Storeable<ScheduledTaskPb> {
         TaskDefId taskDefId,
         List<VarNameAndVal> variables,
         UserTaskRun userTaskRun,
-        ScheduledTaskContext context
+        UserTaskTriggerContext context
     ) {
         this.variables = variables;
         this.createdAt = new Date();
@@ -79,9 +79,6 @@ public class ScheduledTask extends Storeable<ScheduledTaskPb> {
             .setAttemptNumber(attemptNumber)
             .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
             .setSource(source.toProto());
-        if (context != null) {
-            out.setContext(context.toProto());
-        }
         for (VarNameAndVal v : variables) {
             out.addVariables(v.toProto());
         }
@@ -112,10 +109,6 @@ public class ScheduledTask extends Storeable<ScheduledTaskPb> {
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         if (this.createdAt.getTime() == 0) {
             this.createdAt = new Date();
-        }
-        if (p.hasContext()) {
-            this.context =
-                LHSerializable.fromProto(p.getContext(), ScheduledTaskContext.class);
         }
         this.source = LHSerializable.fromProto(p.getSource(), TaskRunSource.class);
     }

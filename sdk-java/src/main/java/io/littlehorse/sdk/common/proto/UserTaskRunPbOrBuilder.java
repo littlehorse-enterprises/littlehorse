@@ -38,75 +38,6 @@ public interface UserTaskRunPbOrBuilder extends
   io.littlehorse.sdk.common.proto.UserTaskDefIdPbOrBuilder getUserTaskDefIdOrBuilder();
 
   /**
-   * <code>string specific_user_id = 3;</code>
-   * @return Whether the specificUserId field is set.
-   */
-  boolean hasSpecificUserId();
-  /**
-   * <code>string specific_user_id = 3;</code>
-   * @return The specificUserId.
-   */
-  java.lang.String getSpecificUserId();
-  /**
-   * <code>string specific_user_id = 3;</code>
-   * @return The bytes for specificUserId.
-   */
-  com.google.protobuf.ByteString
-      getSpecificUserIdBytes();
-
-  /**
-   * <code>string user_group = 4;</code>
-   * @return Whether the userGroup field is set.
-   */
-  boolean hasUserGroup();
-  /**
-   * <code>string user_group = 4;</code>
-   * @return The userGroup.
-   */
-  java.lang.String getUserGroup();
-  /**
-   * <code>string user_group = 4;</code>
-   * @return The bytes for userGroup.
-   */
-  com.google.protobuf.ByteString
-      getUserGroupBytes();
-
-  /**
-   * <pre>
-   * The task may be in one of two states:
-   * 1. Claimed by a specific person.
-   * 2. Not yet claimed.
-   * </pre>
-   *
-   * <code>optional string claimed_by_user_id = 5;</code>
-   * @return Whether the claimedByUserId field is set.
-   */
-  boolean hasClaimedByUserId();
-  /**
-   * <pre>
-   * The task may be in one of two states:
-   * 1. Claimed by a specific person.
-   * 2. Not yet claimed.
-   * </pre>
-   *
-   * <code>optional string claimed_by_user_id = 5;</code>
-   * @return The claimedByUserId.
-   */
-  java.lang.String getClaimedByUserId();
-  /**
-   * <pre>
-   * The task may be in one of two states:
-   * 1. Claimed by a specific person.
-   * 2. Not yet claimed.
-   * </pre>
-   *
-   * <code>optional string claimed_by_user_id = 5;</code>
-   * @return The bytes for claimedByUserId.
-   */
-  com.google.protobuf.ByteString
-      getClaimedByUserIdBytes();
-
-  /**
    * <code>repeated .littlehorse.UserTaskFieldResultPb results = 6;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldResultPb> 
@@ -230,5 +161,35 @@ public interface UserTaskRunPbOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getNodeRunIdOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.UserTaskRunPb.AssignedToCase getAssignedToCase();
+  /**
+   * <code>.littlehorse.GroupPb group = 12;</code>
+   * @return Whether the group field is set.
+   */
+  boolean hasGroup();
+  /**
+   * <code>.littlehorse.GroupPb group = 12;</code>
+   * @return The group.
+   */
+  io.littlehorse.sdk.common.proto.GroupPb getGroup();
+  /**
+   * <code>.littlehorse.GroupPb group = 12;</code>
+   */
+  io.littlehorse.sdk.common.proto.GroupPbOrBuilder getGroupOrBuilder();
+
+  /**
+   * <code>.littlehorse.UserPb user = 13;</code>
+   * @return Whether the user field is set.
+   */
+  boolean hasUser();
+  /**
+   * <code>.littlehorse.UserPb user = 13;</code>
+   * @return The user.
+   */
+  io.littlehorse.sdk.common.proto.UserPb getUser();
+  /**
+   * <code>.littlehorse.UserPb user = 13;</code>
+   */
+  io.littlehorse.sdk.common.proto.UserPbOrBuilder getUserOrBuilder();
+
+  public io.littlehorse.sdk.common.proto.UserTaskRunPb.OwnerCase getOwnerCase();
 }
