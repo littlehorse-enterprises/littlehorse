@@ -4,9 +4,11 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.testcontainers.containers.KafkaContainer;
@@ -17,6 +19,7 @@ public class TestDriverProvision extends TestDriver {
     private static final KafkaContainer kafka = new KafkaContainer(
         DockerImageName.parse("confluentinc/cp-kafka:7.4.0")
     );
+    CountDownLatch latch = new CountDownLatch(1);
 
     public TestDriverProvision(Set<Class<?>> tests, int threads) {
         super(tests, threads);
@@ -40,6 +43,7 @@ public class TestDriverProvision extends TestDriver {
             LHConfig.KAFKA_STATE_DIR_KEY,
             "/tmp/" + UUID.randomUUID()
         );
+        serverProperties.put(LHConfig.CLUSTER_PARTITIONS_KEY, 6);
 
         LHConfig serverConfig = new LHConfig(serverProperties);
 
@@ -51,11 +55,13 @@ public class TestDriverProvision extends TestDriver {
         TimeUnit.SECONDS.sleep(5);
 
         // run the server in another thread
+        KafkaStreamsServerImpl server = new KafkaStreamsServerImpl(serverConfig);
+
         new Thread(() -> {
             try {
-                KafkaStreamsServerImpl.doMain(serverConfig);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+                server.start();
+            } catch (IOException exn) {
+                throw new RuntimeException(exn);
             }
         })
             .start();
@@ -65,7 +71,9 @@ public class TestDriverProvision extends TestDriver {
     }
 
     @Override
-    public void teardown() {
+    public void teardown() throws Exception {
+        latch.countDown();
+        TimeUnit.SECONDS.sleep(1);
         kafka.stop();
     }
 }
