@@ -6,7 +6,6 @@ import io.micrometer.core.instrument.MeterRegistry;
 import java.io.Closeable;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class ListenersManager implements Closeable {
 
@@ -15,15 +14,20 @@ public class ListenersManager implements Closeable {
     public ListenersManager(
         LHConfig config,
         BindableService service,
+        Executor threadpool,
         MeterRegistry meter
     ) {
-        Executor executor = Executors.newFixedThreadPool(16);
         this.servers =
             config
                 .getListeners()
                 .stream()
                 .map(serverListenerConfig ->
-                    new ServerListener(serverListenerConfig, executor, service, meter)
+                    new ServerListener(
+                        serverListenerConfig,
+                        threadpool,
+                        service,
+                        meter
+                    )
                 )
                 .toList();
     }

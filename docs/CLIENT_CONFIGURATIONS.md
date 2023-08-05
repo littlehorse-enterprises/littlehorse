@@ -1,4 +1,19 @@
 # Workers/Clients Configurations
+- [Workers/Clients Configurations](#workersclients-configurations)
+  - [Client](#client)
+    - [`LHC_API_HOST`](#lhc_api_host)
+    - [`LHC_API_PORT`](#lhc_api_port)
+    - [`LHC_CLIENT_ID`](#lhc_client_id)
+    - [`LHC_CA_CERT`](#lhc_ca_cert)
+    - [`LHC_CLIENT_CERT`](#lhc_client_cert)
+    - [`LHC_CLIENT_KEY`](#lhc_client_key)
+    - [`LHC_OAUTH_CLIENT_ID`](#lhc_oauth_client_id)
+    - [`LHC_OAUTH_CLIENT_SECRET`](#lhc_oauth_client_secret)
+    - [`LHC_OAUTH_AUTHORIZATION_SERVER`](#lhc_oauth_authorization_server)
+  - [Worker](#worker)
+    - [`LHW_SERVER_CONNECT_LISTENER`](#lhw_server_connect_listener)
+    - [`LHW_NUM_WORKER_THREADS`](#lhw_num_worker_threads)
+    - [`LHW_TASK_WORKER_VERSION`](#lhw_task_worker_version)
 
 ## Client
 
