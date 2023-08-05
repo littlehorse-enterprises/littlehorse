@@ -1,7 +1,6 @@
 package io.littlehorse.driver;
 
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,9 +24,7 @@ public class TestExecutor {
     }
 
     public void run() throws Exception {
-        driver.arrange();
+        driver.setup();
         driver.run();
-        TimeUnit.SECONDS.sleep(30);
-        driver.teardown();
     }
 }

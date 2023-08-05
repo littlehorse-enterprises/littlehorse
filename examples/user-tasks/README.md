@@ -167,7 +167,7 @@ Now look at the `UserTaskRun` and note its status:
 
 ```
 ->lhctl get userTaskRun <wfRunId> <userTaskGuid>
-->lhctl get userTaskRun 89962fbd15e748358f2df1c130b34403 72819f4892c745ff92905f3a03ba5f83 
+->lhctl get userTaskRun 89962fbd15e748358f2df1c130b34403 72819f4892c745ff92905f3a03ba5f83
 {
   "code": "OK",
   "result": {

@@ -16,15 +16,14 @@ public abstract class TestDriver {
     protected int threads;
     protected LHWorkerConfig workerConfig;
     protected LHClient client;
+    private int executedTest;
 
     public TestDriver(Set<Class<?>> tests, int threads) {
         this.tests = tests;
         this.threads = threads;
     }
 
-    public abstract void arrange() throws Exception;
-
-    public abstract void teardown() throws Exception;
+    public abstract void setup() throws Exception;
 
     public void run() throws Exception {
         ForkJoinPool customThreadPool = new ForkJoinPool(threads);
@@ -39,9 +38,15 @@ public abstract class TestDriver {
             )
             .get();
         customThreadPool.shutdown();
+
+        log.info(
+            "\u001B[32mPlanned tests: {}. Executed tests: {}.\u001B[0m",
+            tests.size(),
+            executedTest
+        );
     }
 
-    private static void execTest(
+    private void execTest(
         LHWorkerConfig workerConfig,
         LHClient client,
         Class<?> testClass
@@ -51,12 +56,13 @@ public abstract class TestDriver {
                 .getDeclaredConstructor(LHClient.class, LHWorkerConfig.class)
                 .newInstance(client, workerConfig);
             log.info(
-                "Starting test {}: {}",
+                "\u001B[32mStarting test:\n\tName:        {}.\n\tDescription: {}.\u001B[0m",
                 testClass.getName(),
                 test.getDescription()
             );
             test.test();
             test.cleanup();
+            executedTest++;
         } catch (Exception exn) {
             String exnMessage = exn.getMessage();
 
@@ -64,7 +70,12 @@ public abstract class TestDriver {
                 exnMessage += " / " + exn.getCause().getMessage();
             }
 
-            log.error("Test {} failed: {}", testClass.getName(), exnMessage, exn);
+            log.error(
+                "\u001B[31mTest {} failed: {}.\u001B[0m",
+                testClass.getName(),
+                exnMessage,
+                exn
+            );
             System.exit(1);
         }
     }
