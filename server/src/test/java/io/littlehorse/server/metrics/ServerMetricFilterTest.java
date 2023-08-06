@@ -17,7 +17,7 @@ public class ServerMetricFilterTest {
         ServerFilterRule mockRule2 = mock(RETURNS_DEEP_STUBS);
         List<ServerFilterRule> rules = List.of(mockRule1, mockRule2);
 
-        new ServerMetricFilter(registry, rules);
+        new ServerMetricFilter(registry, rules).initialize();
 
         verify(registry.config()).meterFilter(mockRule1.getFilter());
         verify(registry.config()).meterFilter(mockRule2.getFilter());

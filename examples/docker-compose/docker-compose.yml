@@ -31,9 +31,10 @@ services:
     environment:
       LHS_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       LHS_SHOULD_CREATE_TOPICS: "true"
+      LHS_HEALTH_SERVICE_PORT: "1822"
     restart: on-failure
     healthcheck:
-      test: cat /tmp/lhHealth
+      test: curl -f localhost:1822/liveness
       interval: 5s
     depends_on:
       kafka:

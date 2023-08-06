@@ -93,10 +93,12 @@ public class LHConfig extends ConfigBase {
     public static final String SHOULD_CREATE_TOPICS_KEY = "LHS_SHOULD_CREATE_TOPICS";
 
     // PROMETHEUS
-    public static final String PROMETHEUS_EXPORTER_PORT_KEY =
-        "LHS_PROMETHEUS_EXPORTER_PORT";
-    public static final String PROMETHEUS_EXPORTER_PATH_KEY =
-        "LHS_PROMETHEUS_EXPORTER_PATH";
+    public static final String HEALTH_SERVICE_PORT_KEY = "LHS_HEALTH_SERVICE_PORT";
+    public static final String HEALTH_PATH_PROMETHEUS_KEY =
+        "LHS_HEALTH_PATH_PROMETHEUS";
+    public static final String HEALTH_PATH_READINESS_KEY =
+        "LHS_HEALTH_PATH_READINESS";
+    public static final String HEALTH_PATH_LIVENESS_KEY = "LHS_HEALTH_PATH_LIVENESS";
 
     // ADVERTISED LISTENERS
     public static final String ADVERTISED_LISTENERS_KEY = "LHS_ADVERTISED_LISTENERS";
@@ -329,14 +331,20 @@ public class LHConfig extends ConfigBase {
         );
     }
 
-    public int getPrometheusExporterPort() {
-        return Integer.parseInt(
-            getOrSetDefault(LHConfig.PROMETHEUS_EXPORTER_PORT_KEY, "1822")
-        );
+    public int getHealthServicePort() {
+        return Integer.parseInt(getOrSetDefault(HEALTH_SERVICE_PORT_KEY, "1822"));
     }
 
     public String getPrometheusExporterPath() {
-        return getOrSetDefault(LHConfig.PROMETHEUS_EXPORTER_PATH_KEY, "/metrics");
+        return getOrSetDefault(LHConfig.HEALTH_PATH_PROMETHEUS_KEY, "/metrics");
+    }
+
+    public String getReadinessPath() {
+        return getOrSetDefault(LHConfig.HEALTH_PATH_READINESS_KEY, "/readiness");
+    }
+
+    public String getLivenessPath() {
+        return getOrSetDefault(LHConfig.HEALTH_PATH_LIVENESS_KEY, "/liveness");
     }
 
     public int getInternalBindPort() {
