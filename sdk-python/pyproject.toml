@@ -13,6 +13,8 @@ keywords = ["littlehorse"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+protobuf = "^4.23.4"
+grpcio = "^1.56.2"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.4.1"
