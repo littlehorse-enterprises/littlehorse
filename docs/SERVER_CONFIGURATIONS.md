@@ -561,9 +561,9 @@ creating the `ExternalEventDef`.
 
 ## Monitoring
 
-### `LHS_PROMETHEUS_EXPORTER_PORT`
+### `LHS_HEALTH_SERVICE_PORT`
 
-The port to scrape metrics from.
+The port that the healthchecks and prometheus metrics are exposed on.
 
 - **Type:** int
 - **Default:** 1822
@@ -571,9 +571,29 @@ The port to scrape metrics from.
 
 ---
 
-### `LHS_PROMETHEUS_EXPORTER_PATH`
+### `LHS_HEALTH_PATH_PROMETHEUS`
 
 The path to scrape metrics from.
+
+- **Type:** string
+- **Default:** /metrics
+- **Importance:** low
+
+---
+
+### `LHS_HEALTH_PATH_READINESSS`
+
+The path upon which application readiness (the ability to serve requests) is exposed.
+
+- **Type:** string
+- **Default:** /readiness
+- **Importance:** low
+
+---
+
+### `LHS_HEALTH_PATH_LIVENESS`
+
+The path upon which application liveness (the ability to ).
 
 - **Type:** string
 - **Default:** /metrics
