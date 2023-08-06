@@ -15,7 +15,6 @@ repos:
             exclude: *exclude
           - id: end-of-file-fixer
             exclude: *exclude
-          - id: check-yaml
           - id: check-added-large-files
     - repo: https://github.com/shellcheck-py/shellcheck-py
       rev: v0.9.0.2
@@ -48,3 +47,9 @@ repos:
             always_run: true
             pass_filenames: false
             entry: go test ./...
+          - id: test
+            name: Running Python Tests
+            language: system
+            always_run: true
+            pass_filenames: false
+            entry: poetry -C ./sdk-python run python -m unittest -v

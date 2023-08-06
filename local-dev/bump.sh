@@ -65,7 +65,7 @@ NEW_VERSION=$(npm run --silent semver -- "$CURRENT_VERSION" "$@")
 # validate action
 read -rp "Do you wish to upgrade to $NEW_VERSION? " yn
 
-if ! cat gradle.properties |  grep "^version=$CURRENT_VERSION$" &>/dev/null
+if ! < gradle.properties grep "^version=$CURRENT_VERSION$" &>/dev/null
 then
     echo "It is not possible to continue. Current version $CURRENT_VERSION does not match with gradle.properties file."
     exit 1

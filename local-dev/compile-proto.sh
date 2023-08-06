@@ -6,13 +6,20 @@ WORK_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 set -e
 
 # First, re-compile the public client proto
-rm -rf ${WORK_DIR}/sdk-java/src/main/java/io/littlehorse/sdk/common/proto/
-rm -rf ${WORK_DIR}/sdk-go/common/model/*.pb.go
+rm -rf "${WORK_DIR}/sdk-java/src/main/java/io/littlehorse/sdk/common/proto/"
+rm -rf "${WORK_DIR}/sdk-go/common/model/*.pb.go"
+rm -rf "${WORK_DIR}/sdk-python/littlehorse/model/*"
 
 protoc --grpc-java_out="${WORK_DIR}/sdk-java/src/main/java/" \
     --java_out="${WORK_DIR}/sdk-java/src/main/java/" \
-    --go-grpc_out=${WORK_DIR}/sdk-go/common/model \
-    --go_out=${WORK_DIR}/sdk-go/common/model \
+    --go-grpc_out="${WORK_DIR}/sdk-go/common/model" \
+    --go_out="${WORK_DIR}/sdk-go/common/model" \
+    -I="$WORK_DIR/schemas/" \
+    "$WORK_DIR/schemas/service.proto"
+
+python3 -m grpc_tools.protoc --python_out="${WORK_DIR}/sdk-python/littlehorse/model" \
+    --pyi_out="${WORK_DIR}/sdk-python/littlehorse/model" \
+    --grpc_python_out="${WORK_DIR}/sdk-python/littlehorse/model" \
     -I="$WORK_DIR/schemas/" \
     "$WORK_DIR/schemas/service.proto"
 
