@@ -37,10 +37,10 @@ public class TestConfig {
         );
         options.addOption(
             Option
-                .builder("p")
-                .longOpt("provision")
+                .builder("s")
+                .longOpt("sandalone")
                 .hasArg(false)
-                .desc("provision with test container")
+                .desc("run a lh server and kafka")
                 .required(false)
                 .build()
         );
@@ -64,8 +64,8 @@ public class TestConfig {
             : DEFAULT_THREADS;
     }
 
-    public boolean shouldProvision() {
-        return cli.hasOption("p");
+    public boolean isStandalone() {
+        return cli.hasOption("s");
     }
 
     public Set<String> getTestToRun() {

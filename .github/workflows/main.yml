@@ -59,4 +59,4 @@ jobs:
           distribution: "corretto"
           java-version: 17
       - name: Tests
-        run: gradle e2e-test:run --args="-p -t 1"
+        run: gradle e2e-test:run --args="-s -t 1"
