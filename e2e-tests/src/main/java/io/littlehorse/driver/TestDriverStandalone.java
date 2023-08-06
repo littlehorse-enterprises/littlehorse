@@ -15,16 +15,16 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
-public class TestDriverProvision extends TestDriver {
+public class TestDriverStandalone extends TestDriver {
 
     private static final Logger log = LoggerFactory.getLogger(
-        TestDriverProvision.class
+        TestDriverStandalone.class
     );
 
     private KafkaContainer kafka;
     private KafkaStreamsServerImpl server;
 
-    public TestDriverProvision(Set<Class<?>> tests, int threads) {
+    public TestDriverStandalone(Set<Class<?>> tests, int threads) {
         super(tests, threads);
     }
 

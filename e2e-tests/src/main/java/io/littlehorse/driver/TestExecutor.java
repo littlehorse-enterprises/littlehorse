@@ -14,9 +14,9 @@ public class TestExecutor {
         Set<Class<?>> tests = TestUtils.getAllTestClasses(testConfig.getTestToRun());
 
         // Set the strategy
-        if (testConfig.shouldProvision()) {
+        if (testConfig.isStandalone()) {
             log.info("Using test container");
-            this.driver = new TestDriverProvision(tests, testConfig.getThreads());
+            this.driver = new TestDriverStandalone(tests, testConfig.getThreads());
         } else {
             log.info("Conecting to external server");
             this.driver = new TestDriverExternal(tests, testConfig.getThreads());
