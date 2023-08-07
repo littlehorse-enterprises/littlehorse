@@ -70,7 +70,6 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     private Map<String, Variable> variablePuts;
-    private Map<String, ExternalEvent> extEvtPuts;
     private Map<String, WfSpec> wfSpecPuts;
     private Map<String, TaskDef> taskDefPuts;
     private Map<String, UserTaskDef> userTaskDefPuts;
@@ -131,7 +130,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         this.partitionIsClaimed = false;
 
         variablePuts = new HashMap<>();
-        extEvtPuts = new HashMap<>();
         wfSpecPuts = new HashMap<>();
         extEvtDefPuts = new HashMap<>();
         taskDefPuts = new HashMap<>();
@@ -367,72 +365,32 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         String wfRunId,
         String externalEventDefName
     ) {
-        // Need to load all of them and then get the least recent that hasn't been
-        // claimed yet.
         String extEvtPrefix = ExternalEvent.getStorePrefix(
             wfRunId,
             externalEventDefName
         );
-
-        for (String extEvtId : extEvtPuts.keySet()) {
-            if (extEvtId.startsWith(extEvtPrefix)) {
-                return extEvtPuts.get(extEvtId);
-            }
-        }
-
-        // TODO: This is O(N) for number of events correlated with the WfRun.
-        // Generally that will only be a small number, but there could be weird
-        // use-cases where this could take a long time (if there's 1000 events or
-        // so then it could take seconds, which holds up the entire scheduling).
-        ExternalEvent out = null;
-        try (
-            LHKeyValueIterator<ExternalEvent> iter = localStore.prefixScan(
-                extEvtPrefix,
-                ExternalEvent.class
-            )
-        ) {
-            while (iter.hasNext()) {
-                LHIterKeyValue<ExternalEvent> kvp = iter.next();
-                ExternalEvent candidate;
-                if (extEvtPuts.containsKey(kvp.getKey())) {
-                    candidate = extEvtPuts.get(kvp.getKey());
-                } else {
-                    candidate = kvp.getValue();
-                    extEvtPuts.put(kvp.getKey(), candidate); // TODO: Is this necessary?
-                }
-
-                if (candidate.claimed) {
-                    continue;
-                }
-
-                if (
-                    out == null ||
-                    out.getCreatedAt().getTime() > candidate.getCreatedAt().getTime()
-                ) {
-                    out = candidate;
-                }
-            }
-        }
-
-        return out;
+        return storageManager.getFirstByCreatedTimeFromPrefix(
+            extEvtPrefix,
+            ExternalEvent.class,
+            externalEvent -> !externalEvent.isClaimed()
+        );
     }
 
     @Override
     public ExternalEvent getExternalEvent(String externalEventId) {
-        if (extEvtPuts.containsKey(externalEventId)) {
-            return extEvtPuts.get(externalEventId);
+        ExternalEvent externalEvent = storageManager.get(
+            externalEventId,
+            ExternalEvent.class
+        );
+        if (externalEvent != null) {
+            externalEvent.setDao(this);
         }
-        ExternalEvent out = localStore.get(externalEventId, ExternalEvent.class);
-        if (out != null) {
-            extEvtPuts.put(externalEventId, out);
-            out.setDao(this);
-        }
-        return out;
+        return externalEvent;
     }
 
     @Override
     public void saveExternalEvent(ExternalEvent evt) {
-        extEvtPuts.put(evt.getStoreKey(), evt);
+        storageManager.put(evt, ExternalEvent.class);
     }
 
     @Override
@@ -611,15 +569,14 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     @Override
     public DeleteObjectReply deleteExternalEvent(String externalEventId) {
         ExternalEvent toDelete = getExternalEvent(externalEventId);
-        DeleteObjectReply out = new DeleteObjectReply();
         if (toDelete == null) {
-            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
-            out.message = "Couldn't find object with provided ID.";
-        } else {
-            extEvtPuts.put(toDelete.getStoreKey(), null);
-            out.code = LHResponseCodePb.OK;
+            return new DeleteObjectReply(
+                LHResponseCodePb.NOT_FOUND_ERROR,
+                "Couldn't find object with provided ID."
+            );
         }
-        return out;
+        storageManager.delete(toDelete.getStoreKey(), ExternalEvent.class);
+        return new DeleteObjectReply(LHResponseCodePb.OK, null);
     }
 
     /*
@@ -686,7 +643,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<ExternalEvent> next = iter.next();
-                storageManager.deleteGetable(next.getKey(), ExternalEvent.class);
+                storageManager.delete(next.getKey(), ExternalEvent.class);
             }
         }
     }
@@ -716,9 +673,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     private void flush() {
-        for (Map.Entry<String, ExternalEvent> e : extEvtPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), ExternalEvent.class);
-        }
         // Turns out that we have to save the WfRun's before we save the Variable.
         for (Map.Entry<String, Variable> e : variablePuts.entrySet()) {
             Variable v = e.getValue();
@@ -959,7 +913,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     private void clearThingsToWrite() {
         variablePuts.clear();
-        extEvtPuts.clear();
         scheduledTaskPuts.clear();
         timersToSchedule.clear();
         wfSpecPuts.clear();
