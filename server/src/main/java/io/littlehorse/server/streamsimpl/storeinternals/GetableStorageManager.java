@@ -16,6 +16,7 @@ import java.util.Map;
 
 import java.util.function.Predicate;
 
+import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -259,9 +260,9 @@ public class GetableStorageManager {
     }
 
     private <U extends Message, T extends Getable<U>> List<StoredGetable<U, T>> getEntityListByPrefix(String prefix, Class<T> cls) {
-        try (final var entityIterator = localStore.prefixScanPepe(prefix, cls)) {
-            final var entityList = new ArrayList<StoredGetable<U, T>>();
-            entityIterator.forEachRemaining(entity -> entityList.add((StoredGetable<U, T>) entity.getValue()));
+        try (LHKeyValueIterator<StoredGetable<U, T>> entityIterator = localStore.prefixScanStoreGetable(prefix, cls)) {
+            ArrayList<StoredGetable<U, T>> entityList = new ArrayList<>();
+            entityIterator.forEachRemaining(entity -> entityList.add(entity.getValue()));
             return entityList;
         }
     }
