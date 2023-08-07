@@ -72,6 +72,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     public UserTaskRun() {}
 
     public UserTaskRun(UserTaskDef utd, User user, NodeRun nodeRun) {
+        if(user == null) throw new IllegalArgumentException("User can't be null");
         this.userTaskDefId = utd.getObjectId();
         this.nodeRunId = nodeRun.getObjectId();
         this.id = new UserTaskRunId(nodeRunId.getWfRunId());
@@ -81,6 +82,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     }
 
     public UserTaskRun(UserTaskDef utd, Group group, NodeRun nodeRun) {
+        if(group == null) throw new IllegalArgumentException("User can't be null");
         this.userTaskDefId = utd.getObjectId();
         this.nodeRunId = nodeRun.getObjectId();
         this.id = new UserTaskRunId(nodeRunId.getWfRunId());
@@ -261,10 +263,10 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         UTEReassigned reassigned = null;
         switch (event.getAssigneeType()) {
             case USER:
-                reassigned = reassignToUserGroup(event.getGroup());
+                reassigned = reassignToUser(event.getUser(), true);
                 break;
             case GROUP:
-                reassigned = reassignToUser(event.getUser(), true);
+                reassigned = reassignToUserGroup(event.getGroup());
                 break;
             case ASSIGNEE_NOT_SET:
         }
@@ -415,7 +417,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
             new GetableIndex<UserTaskRun>(
                 List.of(Pair.of("userId", GetableIndex.ValueType.SINGLE)),
                 Optional.of(TagStorageTypePb.REMOTE),
-                userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUser().getId())
+                userTaskRun -> userTaskRun.getUser() != null
             ),
             new GetableIndex<UserTaskRun>(
                 List.of(
