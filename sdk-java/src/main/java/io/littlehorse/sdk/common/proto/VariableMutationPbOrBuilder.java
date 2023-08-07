@@ -92,5 +92,5 @@ public interface VariableMutationPbOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableMutationPb.NodeOutputSourcePbOrBuilder getNodeOutputOrBuilder();
 
-  io.littlehorse.sdk.common.proto.VariableMutationPb.RhsValueCase getRhsValueCase();
+  public io.littlehorse.sdk.common.proto.VariableMutationPb.RhsValueCase getRhsValueCase();
 }

@@ -80,5 +80,5 @@ public interface SearchWfSpecPbOrBuilder extends
   com.google.protobuf.ByteString
       getTaskDefNameBytes();
 
-  io.littlehorse.sdk.common.proto.SearchWfSpecPb.WfSpecCriteriaCase getWfSpecCriteriaCase();
+  public io.littlehorse.sdk.common.proto.SearchWfSpecPb.WfSpecCriteriaCase getWfSpecCriteriaCase();
 }

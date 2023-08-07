@@ -62,5 +62,5 @@ public interface ReassignedUserTaskPbOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getSourceOrBuilder();
 
-  io.littlehorse.common.proto.ReassignedUserTaskPb.AssignToCase getAssignToCase();
+  public io.littlehorse.common.proto.ReassignedUserTaskPb.AssignToCase getAssignToCase();
 }

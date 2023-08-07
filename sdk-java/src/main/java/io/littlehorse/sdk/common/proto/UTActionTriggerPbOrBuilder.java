@@ -102,5 +102,5 @@ public interface UTActionTriggerPbOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook getHook();
 
-  io.littlehorse.sdk.common.proto.UTActionTriggerPb.ActionCase getActionCase();
+  public io.littlehorse.sdk.common.proto.UTActionTriggerPb.ActionCase getActionCase();
 }

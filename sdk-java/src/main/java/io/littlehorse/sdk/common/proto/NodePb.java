@@ -28,6 +28,11 @@ private static final long serialVersionUID = 0L;
     return new NodePb();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_NodePb_descriptor;
@@ -42,7 +47,6 @@ private static final long serialVersionUID = 0L;
   }
 
   private int nodeCase_ = 0;
-  @SuppressWarnings("serial")
   private java.lang.Object node_;
   public enum NodeCase
       implements com.google.protobuf.Internal.EnumLite,
@@ -780,13 +784,11 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static io.littlehorse.sdk.common.proto.NodePb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static io.littlehorse.sdk.common.proto.NodePb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)

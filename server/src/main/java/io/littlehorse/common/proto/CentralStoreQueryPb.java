@@ -26,6 +26,11 @@ private static final long serialVersionUID = 0L;
     return new CentralStoreQueryPb();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryPb_descriptor;
@@ -77,7 +82,7 @@ private static final long serialVersionUID = 0L;
     com.google.protobuf.ByteString
         getLastFromPrefixBytes();
 
-    io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.QueryCase getQueryCase();
+    public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.QueryCase getQueryCase();
   }
   /**
    * Protobuf type {@code littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb}
@@ -101,6 +106,11 @@ private static final long serialVersionUID = 0L;
       return new CentralStoreSubQueryPb();
     }
 
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryPb_CentralStoreSubQueryPb_descriptor;
@@ -115,7 +125,6 @@ private static final long serialVersionUID = 0L;
     }
 
     private int queryCase_ = 0;
-    @SuppressWarnings("serial")
     private java.lang.Object query_;
     public enum QueryCase
         implements com.google.protobuf.Internal.EnumLite,
@@ -395,13 +404,11 @@ private static final long serialVersionUID = 0L;
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-
     public static io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-
     public static io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1148,13 +1155,11 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static io.littlehorse.common.proto.CentralStoreQueryPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static io.littlehorse.common.proto.CentralStoreQueryPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1428,7 +1433,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setEnableStaleStores(boolean value) {
-
+      
       enableStaleStores_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
@@ -1468,7 +1473,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setSpecificPartition(int value) {
-
+      
       specificPartition_ = value;
       bitField0_ |= 0x00000002;
       onChanged();

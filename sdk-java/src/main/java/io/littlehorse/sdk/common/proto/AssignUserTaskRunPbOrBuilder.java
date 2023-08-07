@@ -62,5 +62,5 @@ public interface AssignUserTaskRunPbOrBuilder extends
   com.google.protobuf.ByteString
       getUserGroupBytes();
 
-  io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.AssigneeCase getAssigneeCase();
+  public io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.AssigneeCase getAssigneeCase();
 }
