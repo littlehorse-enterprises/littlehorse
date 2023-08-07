@@ -26,7 +26,7 @@ public class BasicExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
-            "edu-example-basic2",
+            "example-basic",
             thread -> {
                 WfRunVariable theName = thread.addVariable(
                     "input-name",
