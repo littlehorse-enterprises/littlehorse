@@ -99,5 +99,5 @@ public interface RepartitionCommandPbOrBuilder extends
    */
   io.littlehorse.common.proto.RemoveRemoteTagPbOrBuilder getRemoveRemoteTagOrBuilder();
 
-  public io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase getRepartitionCommandCase();
+  io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase getRepartitionCommandCase();
 }

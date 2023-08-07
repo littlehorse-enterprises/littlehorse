@@ -28,11 +28,6 @@ private static final long serialVersionUID = 0L;
     return new VariableMutationPb();
   }
 
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableMutationPb_descriptor;
@@ -90,11 +85,6 @@ private static final long serialVersionUID = 0L;
       return new NodeOutputSourcePb();
     }
 
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableMutationPb_NodeOutputSourcePb_descriptor;
@@ -269,11 +259,13 @@ private static final long serialVersionUID = 0L;
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static io.littlehorse.sdk.common.proto.VariableMutationPb.NodeOutputSourcePb parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
+
     public static io.littlehorse.sdk.common.proto.VariableMutationPb.NodeOutputSourcePb parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -632,6 +624,7 @@ private static final long serialVersionUID = 0L;
 
   private int bitField0_;
   private int rhsValueCase_ = 0;
+  @SuppressWarnings("serial")
   private java.lang.Object rhsValue_;
   public enum RhsValueCase
       implements com.google.protobuf.Internal.EnumLite,
@@ -1058,11 +1051,13 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
+
   public static io.littlehorse.sdk.common.proto.VariableMutationPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
+
   public static io.littlehorse.sdk.common.proto.VariableMutationPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)

@@ -230,5 +230,5 @@ public interface UserTaskRunPbOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getNodeRunIdOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.UserTaskRunPb.AssignedToCase getAssignedToCase();
+  io.littlehorse.sdk.common.proto.UserTaskRunPb.AssignedToCase getAssignedToCase();
 }

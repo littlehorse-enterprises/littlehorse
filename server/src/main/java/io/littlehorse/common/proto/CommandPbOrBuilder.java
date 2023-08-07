@@ -396,5 +396,5 @@ public interface CommandPbOrBuilder extends
    */
   io.littlehorse.common.proto.ReassignedUserTaskPbOrBuilder getReassignedUserTaskOrBuilder();
 
-  public io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
+  io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
 }

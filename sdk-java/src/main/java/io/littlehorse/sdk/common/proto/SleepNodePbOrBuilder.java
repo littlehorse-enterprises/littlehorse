@@ -52,5 +52,5 @@ public interface SleepNodePbOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getIsoDateOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.SleepNodePb.SleepLengthCase getSleepLengthCase();
+  io.littlehorse.sdk.common.proto.SleepNodePb.SleepLengthCase getSleepLengthCase();
 }

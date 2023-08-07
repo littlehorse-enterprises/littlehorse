@@ -29,11 +29,6 @@ private static final long serialVersionUID = 0L;
     return new InternalScanPb();
   }
 
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_descriptor;
@@ -116,11 +111,6 @@ private static final long serialVersionUID = 0L;
       return new TagScanPb();
     }
 
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_TagScanPb_descriptor;
@@ -366,11 +356,13 @@ private static final long serialVersionUID = 0L;
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static io.littlehorse.common.proto.InternalScanPb.TagScanPb parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
+
     public static io.littlehorse.common.proto.InternalScanPb.TagScanPb parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1063,11 +1055,6 @@ private static final long serialVersionUID = 0L;
       return new BoundedObjectIdScanPb();
     }
 
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_BoundedObjectIdScanPb_descriptor;
@@ -1291,11 +1278,13 @@ private static final long serialVersionUID = 0L;
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
+
     public static io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1740,6 +1729,7 @@ private static final long serialVersionUID = 0L;
 
   private int bitField0_;
   private int scanBoundaryCase_ = 0;
+  @SuppressWarnings("serial")
   private java.lang.Object scanBoundary_;
   public enum ScanBoundaryCase
       implements com.google.protobuf.Internal.EnumLite,
@@ -2225,11 +2215,13 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
+
   public static io.littlehorse.common.proto.InternalScanPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
+
   public static io.littlehorse.common.proto.InternalScanPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -2653,7 +2645,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setLimit(int value) {
-      
+
       limit_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
