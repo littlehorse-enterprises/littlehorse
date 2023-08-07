@@ -241,35 +241,28 @@ public class GetableStorageManager {
             Predicate<T> discriminator
     ) {
 
-
         for (String extEvtId : uncommittedChanges.keySet()) {
             if (extEvtId.startsWith(prefix)) {
                 return (T) uncommittedChanges.get(extEvtId).getStoredObject();
             }
         }
 
-        try (final var entities = localStore.prefixScanPepe(prefix, cls)) {
-            final var pepes = new ArrayList<StoredGetable<U, T>>();
-            while (entities.hasNext()) {
-                final var entity = entities.next();
-                final var value = (StoredGetable<U, T>) entity.getValue();
-                final var pepe = value.getStoredObject();
-                if (discriminator.test(pepe)) {
-                    pepes.add(value);
-                }
-            }
-
-            final var result = pepes
+        return getEntityListByPrefix(prefix, cls)
                 .stream()
-                .min(Comparator.comparing(t -> t.getStoredObject().getCreatedAt()))
+                .filter(entity -> discriminator.test(entity.getStoredObject()))
+                .min(Comparator.comparing(entity -> entity.getStoredObject().getCreatedAt()))
+                .map(entity -> {
+                    uncommittedChanges.put(entity.getStoreKey(), entity);
+                    return entity.getStoredObject();
+                })
                 .orElse(null);
+    }
 
-            if (result != null) {
-                uncommittedChanges.put(result.getStoreKey(), result);
-                return result.getStoredObject();
-            }
-
-            return null;
+    private <U extends Message, T extends Getable<U>> List<StoredGetable<U, T>> getEntityListByPrefix(String prefix, Class<T> cls) {
+        try (final var entityIterator = localStore.prefixScanPepe(prefix, cls)) {
+            final var entityList = new ArrayList<StoredGetable<U, T>>();
+            entityIterator.forEachRemaining(entity -> entityList.add((StoredGetable<U, T>) entity.getValue()));
+            return entityList;
         }
     }
 }
