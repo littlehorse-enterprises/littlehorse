@@ -7,10 +7,14 @@ import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.storeinternals.index.CachedTag;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
@@ -239,5 +243,49 @@ public class GetableStorageManager {
                 tagStorageManager.removeTag(tagStoreKey);
             });
         localStore.deleteTagCache(getable);
+    }
+
+    public <
+        U extends Message, T extends Getable<U>
+    > T getFirstByCreatedTimeFromPrefix(
+        String prefix,
+        Class<T> cls,
+        Predicate<T> discriminator
+    ) {
+        for (String extEvtId : uncommittedChanges.keySet()) {
+            if (extEvtId.startsWith(prefix)) {
+                return (T) uncommittedChanges.get(extEvtId).getStoredObject();
+            }
+        }
+
+        return getEntityListByPrefix(prefix, cls)
+            .stream()
+            .filter(entity -> discriminator.test(entity.getStoredObject()))
+            .min(
+                Comparator.comparing(entity -> entity.getStoredObject().getCreatedAt()
+                )
+            )
+            .map(entity -> {
+                uncommittedChanges.put(entity.getStoreKey(), entity);
+                return entity.getStoredObject();
+            })
+            .orElse(null);
+    }
+
+    private <
+        U extends Message, T extends Getable<U>
+    > List<StoredGetable<U, T>> getEntityListByPrefix(String prefix, Class<T> cls) {
+        try (
+            LHKeyValueIterator<StoredGetable<U, T>> entityIterator = localStore.prefixScanStoredGetable(
+                prefix,
+                cls
+            )
+        ) {
+            ArrayList<StoredGetable<U, T>> entityList = new ArrayList<>();
+            entityIterator.forEachRemaining(entity ->
+                entityList.add(entity.getValue())
+            );
+            return entityList;
+        }
     }
 }
