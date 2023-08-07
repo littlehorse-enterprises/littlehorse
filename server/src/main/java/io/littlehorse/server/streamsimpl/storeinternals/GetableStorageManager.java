@@ -7,10 +7,16 @@ import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.storeinternals.index.CachedTag;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
-import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
+
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import java.util.function.Predicate;
+
+import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
@@ -225,5 +231,45 @@ public class GetableStorageManager {
                 tagStorageManager.removeTag(tagStoreKey);
             });
         localStore.deleteTagCache(getable);
+    }
+
+    public <
+            U extends Message, T extends Getable<U>
+            > T getFirstByCreatedTimeFromPrefix(
+            String prefix,
+            Class<T> cls,
+            Predicate<T> discriminator
+    ) {
+
+
+        for (String extEvtId : uncommittedChanges.keySet()) {
+            if (extEvtId.startsWith(prefix)) {
+                return (T) uncommittedChanges.get(extEvtId).getStoredObject();
+            }
+        }
+
+        try (final var entities = localStore.prefixScanPepe(prefix, cls)) {
+            final var pepes = new ArrayList<StoredGetable<U, T>>();
+            while (entities.hasNext()) {
+                final var entity = entities.next();
+                final var value = (StoredGetable<U, T>) entity.getValue();
+                final var pepe = value.getStoredObject();
+                if (discriminator.test(pepe)) {
+                    pepes.add(value);
+                }
+            }
+
+            final var result = pepes
+                .stream()
+                .min(Comparator.comparing(t -> t.getStoredObject().getCreatedAt()))
+                .orElse(null);
+
+            if (result != null) {
+                uncommittedChanges.put(result.getStoreKey(), result);
+                return result.getStoredObject();
+            }
+
+            return null;
+        }
     }
 }

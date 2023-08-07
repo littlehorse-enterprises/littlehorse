@@ -102,6 +102,21 @@ public class LHROStoreWrapper {
         );
     }
 
+    /*
+     * Make sure to `.close()` the result!
+     */
+    public <U extends Message, T extends Getable<U>> LHKeyValueIterator<?> prefixScanPepe(
+        String prefix,
+        Class<T> cls
+    ) {
+        String compositePrefix = StoreUtils.getFullStoreKey(prefix, cls);
+        return new LHKeyValueIterator<>(
+            store.prefixScan(compositePrefix, Serdes.String().serializer()),
+            StoredGetable.class,
+            config
+        );
+    }
+
     public <T extends Storeable<?>> LHKeyValueIterator<T> prefixTagScan(
         String prefix,
         Class<T> cls

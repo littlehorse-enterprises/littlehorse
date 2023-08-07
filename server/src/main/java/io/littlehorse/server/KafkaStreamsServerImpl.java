@@ -731,7 +731,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         ExternalEventIdPb req,
         StreamObserver<GetExternalEventReplyPb> ctx
     ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
             ctx,
             ExternalEvent.class,
             GetExternalEventReplyPb.class,
