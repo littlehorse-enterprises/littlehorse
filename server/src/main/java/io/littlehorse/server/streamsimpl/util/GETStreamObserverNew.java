@@ -10,8 +10,10 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
 
-public class GETStreamObserverNew<U extends Message, T extends Getable<U>, V extends Message>
-        implements StreamObserver<CentralStoreQueryReplyPb> {
+public class GETStreamObserverNew<
+    U extends Message, T extends Getable<U>, V extends Message
+>
+    implements StreamObserver<CentralStoreQueryReplyPb> {
 
     private StreamObserver<V> ctx;
     private LHConfig config;
@@ -48,9 +50,9 @@ public class GETStreamObserverNew<U extends Message, T extends Getable<U>, V ext
             out.code = LHResponseCodePb.OK;
             try {
                 StoredGetable<U, T> entity = (StoredGetable<U, T>) LHSerializable.fromBytes(
-                        reply.getResult().toByteArray(),
-                        StoredGetable.class,
-                        config
+                    reply.getResult().toByteArray(),
+                    StoredGetable.class,
+                    config
                 );
                 out.result = entity.getStoredObject();
             } catch (LHSerdeError exn) {

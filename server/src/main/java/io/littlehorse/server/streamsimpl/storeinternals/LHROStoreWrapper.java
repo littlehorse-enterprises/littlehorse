@@ -45,20 +45,23 @@ public class LHROStoreWrapper {
         this.config = config;
     }
 
-    public <U extends Message, T extends Getable<U>> StoredGetable<U, T> getStoredGetable(
-            String objectId,
-            Class<T> cls
-    ) {
+    public <
+        U extends Message, T extends Getable<U>
+    > StoredGetable<U, T> getStoredGetable(String objectId, Class<T> cls) {
         Bytes raw = store.get(StoreUtils.getFullStoreKey(objectId, cls));
         if (raw == null) {
             return null;
         }
         try {
-            return (StoredGetable<U, T>) LHSerializable.fromBytes(raw.get(), StoredGetable.class, config);
+            return (StoredGetable<U, T>) LHSerializable.fromBytes(
+                raw.get(),
+                StoredGetable.class,
+                config
+            );
         } catch (LHSerdeError exn) {
             log.error(exn.getMessage(), exn);
             throw new RuntimeException(
-                    "Not possible to have this happen, indicates corrupted store."
+                "Not possible to have this happen, indicates corrupted store."
             );
         }
     }
@@ -106,15 +109,17 @@ public class LHROStoreWrapper {
      * Make sure to `.close()` the result!
      */
     @SuppressWarnings("unchecked")
-    public <U extends Message, T extends Getable<U>> LHKeyValueIterator<StoredGetable<U, T>> prefixScanStoreGetable(
+    public <
+        U extends Message, T extends Getable<U>
+    > LHKeyValueIterator<StoredGetable<U, T>> prefixScanStoreGetable(
         String prefix,
         Class<T> cls
     ) {
         String compositePrefix = StoreUtils.getFullStoreKey(prefix, cls);
         LHKeyValueIterator<?> iterator = new LHKeyValueIterator<>(
-                store.prefixScan(compositePrefix, Serdes.String().serializer()),
-                StoredGetable.class,
-                config
+            store.prefixScan(compositePrefix, Serdes.String().serializer()),
+            StoredGetable.class,
+            config
         );
         return (LHKeyValueIterator<StoredGetable<U, T>>) iterator;
     }

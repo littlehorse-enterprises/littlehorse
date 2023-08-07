@@ -7,17 +7,14 @@ import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.storeinternals.index.CachedTag;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
-
+import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import java.util.function.Predicate;
-
-import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
-import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
@@ -53,7 +50,9 @@ public class GetableStorageManager {
         Class<T> clazz
     ) {
         if (uncommittedChanges.containsKey(key)) {
-            StoredGetable<U, T> storedGetable = (StoredGetable<U, T>) uncommittedChanges.get(key);
+            StoredGetable<U, T> storedGetable = (StoredGetable<U, T>) uncommittedChanges.get(
+                key
+            );
             return storedGetable.getStoredObject();
         }
 
@@ -72,9 +71,15 @@ public class GetableStorageManager {
         T getable,
         Class<T> clazz
     ) throws IllegalStateException {
-        log.trace("Putting {} with key {}", getable.getClass(), getable.getStoreKey());
+        log.trace(
+            "Putting {} with key {}",
+            getable.getClass(),
+            getable.getStoreKey()
+        );
 
-        StoredGetable<U, T> uncommittedEntity = (StoredGetable<U, T>) uncommittedChanges.get(getable.getStoreKey());
+        StoredGetable<U, T> uncommittedEntity = (StoredGetable<U, T>) uncommittedChanges.get(
+            getable.getStoreKey()
+        );
 
         if (uncommittedEntity != null) {
             if (uncommittedEntity.getStoredObject() != getable) {
@@ -87,7 +92,10 @@ public class GetableStorageManager {
             return;
         }
 
-        StoredGetable<U, T> previousValue = localStore.getStoredGetable(getable.getStoreKey(), clazz);
+        StoredGetable<U, T> previousValue = localStore.getStoredGetable(
+            getable.getStoreKey(),
+            clazz
+        );
 
         final StoredGetable<U, T> toPut = previousValue != null
             ? new StoredGetable<>(
@@ -125,12 +133,15 @@ public class GetableStorageManager {
 
     public <U extends Message, T extends Getable<U>> void abortAndUpdate(T getable) {
         uncommittedChanges.clear();
-        StoredGetable<U, T> storedGetable = localStore.getStoredGetable(getable.getStoreKey(), getable.getClass());
+        StoredGetable<U, T> storedGetable = localStore.getStoredGetable(
+            getable.getStoreKey(),
+            getable.getClass()
+        );
         if (storedGetable != null) {
             StoredGetable<U, T> toUpdate = new StoredGetable<>(
-                    storedGetable.getIndexCache(),
-                    getable,
-                    storedGetable.getObjectType()
+                storedGetable.getIndexCache(),
+                getable,
+                storedGetable.getObjectType()
             );
             insertIntoStore(toUpdate);
         }
@@ -235,13 +246,12 @@ public class GetableStorageManager {
     }
 
     public <
-            U extends Message, T extends Getable<U>
-            > T getFirstByCreatedTimeFromPrefix(
-            String prefix,
-            Class<T> cls,
-            Predicate<T> discriminator
+        U extends Message, T extends Getable<U>
+    > T getFirstByCreatedTimeFromPrefix(
+        String prefix,
+        Class<T> cls,
+        Predicate<T> discriminator
     ) {
-
         for (String extEvtId : uncommittedChanges.keySet()) {
             if (extEvtId.startsWith(prefix)) {
                 return (T) uncommittedChanges.get(extEvtId).getStoredObject();
@@ -249,20 +259,32 @@ public class GetableStorageManager {
         }
 
         return getEntityListByPrefix(prefix, cls)
-                .stream()
-                .filter(entity -> discriminator.test(entity.getStoredObject()))
-                .min(Comparator.comparing(entity -> entity.getStoredObject().getCreatedAt()))
-                .map(entity -> {
-                    uncommittedChanges.put(entity.getStoreKey(), entity);
-                    return entity.getStoredObject();
-                })
-                .orElse(null);
+            .stream()
+            .filter(entity -> discriminator.test(entity.getStoredObject()))
+            .min(
+                Comparator.comparing(entity -> entity.getStoredObject().getCreatedAt()
+                )
+            )
+            .map(entity -> {
+                uncommittedChanges.put(entity.getStoreKey(), entity);
+                return entity.getStoredObject();
+            })
+            .orElse(null);
     }
 
-    private <U extends Message, T extends Getable<U>> List<StoredGetable<U, T>> getEntityListByPrefix(String prefix, Class<T> cls) {
-        try (LHKeyValueIterator<StoredGetable<U, T>> entityIterator = localStore.prefixScanStoreGetable(prefix, cls)) {
+    private <
+        U extends Message, T extends Getable<U>
+    > List<StoredGetable<U, T>> getEntityListByPrefix(String prefix, Class<T> cls) {
+        try (
+            LHKeyValueIterator<StoredGetable<U, T>> entityIterator = localStore.prefixScanStoreGetable(
+                prefix,
+                cls
+            )
+        ) {
             ArrayList<StoredGetable<U, T>> entityList = new ArrayList<>();
-            entityIterator.forEachRemaining(entity -> entityList.add(entity.getValue()));
+            entityIterator.forEachRemaining(entity ->
+                entityList.add(entity.getValue())
+            );
             return entityList;
         }
     }
