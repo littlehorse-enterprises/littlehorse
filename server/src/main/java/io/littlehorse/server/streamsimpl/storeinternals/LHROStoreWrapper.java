@@ -111,7 +111,7 @@ public class LHROStoreWrapper {
     @SuppressWarnings("unchecked")
     public <
         U extends Message, T extends Getable<U>
-    > LHKeyValueIterator<StoredGetable<U, T>> prefixScanStoreGetable(
+    > LHKeyValueIterator<StoredGetable<U, T>> prefixScanStoredGetable(
         String prefix,
         Class<T> cls
     ) {

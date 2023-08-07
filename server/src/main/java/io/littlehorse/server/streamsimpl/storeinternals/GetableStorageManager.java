@@ -276,7 +276,7 @@ public class GetableStorageManager {
         U extends Message, T extends Getable<U>
     > List<StoredGetable<U, T>> getEntityListByPrefix(String prefix, Class<T> cls) {
         try (
-            LHKeyValueIterator<StoredGetable<U, T>> entityIterator = localStore.prefixScanStoreGetable(
+            LHKeyValueIterator<StoredGetable<U, T>> entityIterator = localStore.prefixScanStoredGetable(
                 prefix,
                 cls
             )
