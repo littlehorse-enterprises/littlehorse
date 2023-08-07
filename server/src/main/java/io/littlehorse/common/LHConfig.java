@@ -94,8 +94,7 @@ public class LHConfig extends ConfigBase {
 
     // PROMETHEUS
     public static final String HEALTH_SERVICE_PORT_KEY = "LHS_HEALTH_SERVICE_PORT";
-    public static final String HEALTH_PATH_PROMETHEUS_KEY =
-        "LHS_HEALTH_PATH_PROMETHEUS";
+    public static final String HEALTH_PATH_METRICS_KEY = "LHS_HEALTH_PATH_METRICS";
     public static final String HEALTH_PATH_READINESS_KEY =
         "LHS_HEALTH_PATH_READINESS";
     public static final String HEALTH_PATH_LIVENESS_KEY = "LHS_HEALTH_PATH_LIVENESS";
@@ -336,7 +335,7 @@ public class LHConfig extends ConfigBase {
     }
 
     public String getPrometheusExporterPath() {
-        return getOrSetDefault(LHConfig.HEALTH_PATH_PROMETHEUS_KEY, "/metrics");
+        return getOrSetDefault(LHConfig.HEALTH_PATH_METRICS_KEY, "/metrics");
     }
 
     public String getReadinessPath() {

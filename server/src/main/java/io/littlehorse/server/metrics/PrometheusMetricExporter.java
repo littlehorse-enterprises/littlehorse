@@ -64,12 +64,7 @@ public class PrometheusMetricExporter implements Closeable {
 
     public Handler handleRequest() {
         return ctx -> {
-            log.trace(
-                "Metrics Request [from={}, path={}, method={}]",
-                ctx.req().getRemoteHost(),
-                ctx.path(),
-                ctx.method()
-            );
+            log.trace("Processing metrics request");
             ctx.result(prometheusRegistry.scrape());
         };
     }

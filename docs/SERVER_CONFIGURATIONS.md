@@ -45,8 +45,10 @@
     - [`LHS_DEFAULT_WFRUN_RETENTION_HOURS`](#lhs_default_wfrun_retention_hours)
     - [`LHS_DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS`](#lhs_default_external_event_retention_hours)
   - [Monitoring](#monitoring)
-    - [`LHS_PROMETHEUS_EXPORTER_PORT`](#lhs_prometheus_exporter_port)
-    - [`LHS_PROMETHEUS_EXPORTER_PATH`](#lhs_prometheus_exporter_path)
+    - [`LHS_HEALTH_SERVICE_PORT`](#lhs_health_service_port)
+    - [`LHS_HEALTH_PATH_METRICS`](#lhs_health_path_metrics)
+    - [`LHS_HEALTH_PATH_READINESSS`](#lhs_health_path_readinesss)
+    - [`LHS_HEALTH_PATH_LIVENESS`](#lhs_health_path_liveness)
 
 ## Kafka
 
@@ -571,7 +573,7 @@ The port that the healthchecks and prometheus metrics are exposed on.
 
 ---
 
-### `LHS_HEALTH_PATH_PROMETHEUS`
+### `LHS_HEALTH_PATH_METRICS`
 
 The path to scrape metrics from.
 
