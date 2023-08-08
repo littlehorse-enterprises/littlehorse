@@ -4,6 +4,8 @@ import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.model.Getable;
+import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
@@ -18,6 +20,7 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import java.util.List;
 import java.util.Optional;
@@ -109,7 +112,24 @@ public class SearchWfSpec
     @Override
     public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        return null;
+        if (taskDefName != null) {
+            List<String> attributes = getSearchAttributes()
+                .stream()
+                .map(Attribute::getEscapedKey)
+                .toList();
+            for (GetableIndex<? extends Getable<?>> indexConfiguration : new WfSpec()
+                .getIndexConfigurations()) {
+                if (
+                    indexConfiguration.searchAttributesMatch(attributes) &&
+                    indexConfiguration.getTagStorageTypePb().isPresent()
+                ) {
+                    return indexConfiguration.getTagStorageTypePb().get();
+                }
+            }
+            return null;
+        } else {
+            return TagStorageTypePb.LOCAL;
+        }
     }
 
     @Override
@@ -123,11 +143,11 @@ public class SearchWfSpec
                 name + "/",
                 name + "/~"
             );
-        } else if (prefix != null && !prefix.equals("")) {
+        } else if (prefix != null && !prefix.isEmpty()) {
             return new ObjectIdScanBoundaryStrategy(
                 LHConstants.META_PARTITION_KEY,
-                name + "/",
-                name + "/~"
+                prefix,
+                prefix + "~"
             );
         } else if (!Strings.isNullOrEmpty(taskDefName)) {
             return new TagScanBoundaryStrategy(
