@@ -3,6 +3,7 @@ package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
+import io.littlehorse.common.model.wfrun.User;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
@@ -61,6 +62,9 @@ public class UserTaskRunStorageManagerTest {
                 continue;
             }
             UserTaskRun userTaskRun = TestUtil.userTaskRun(wfRunId);
+            userTaskRun.setUser(
+                new User(userTaskRun.getUser().getId(), userTaskRun.getGroup())
+            );
             userTaskRun.setStatus(userTaskRunStatusPb);
             userTaskRun.setId(
                 new UserTaskRunId(wfRunId + "1", UUID.randomUUID().toString())
@@ -143,6 +147,13 @@ public class UserTaskRunStorageManagerTest {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
             .contains("12/__status_UNASSIGNED__userTaskDefName_ut-name");
+    }
+
+    @Test
+    public void indexByUserIdAndUserGroupId() {
+        Assertions
+            .assertThat(storedRemoteTagPrefixStoreKeys())
+            .contains("12/__userId_33333__userGroup_1234567");
     }
 
     @Test

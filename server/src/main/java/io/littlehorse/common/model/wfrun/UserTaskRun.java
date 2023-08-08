@@ -30,6 +30,7 @@ import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -258,11 +259,20 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         trigger.schedule(getNodeRun().getThreadRun().wfRun.getDao(), this);
     }
 
+    protected Group getUserGroup() {
+        if (user != null && user.getGroup() != null) {
+            return user.getGroup();
+        } else {
+            return group;
+        }
+    }
+
     public void reassignTo(AssignUserTaskRun event) {
         UTEReassigned reassigned = null;
+        User user = new User(event.getUser().getId(), this.getUserGroup());
         switch (event.getAssigneeType()) {
             case USER:
-                reassigned = reassignToUser(event.getUser(), true);
+                reassigned = reassignToUser(user, true);
                 break;
             case USER_GROUP:
                 reassigned = reassignToUserGroup(event.getGroup());
@@ -279,9 +289,10 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         ReassignedUserTaskPb.AssignToCase assignToCase
     ) {
         UTEReassigned reassigned = null;
+        User user = new User(newOwner, this.getUserGroup());
         switch (assignToCase) {
             case USER_ID:
-                reassigned = reassignToUser(new User(newOwner), false);
+                reassigned = reassignToUser(user, false);
                 break;
             case USER_GROUP:
                 reassigned = reassignToUserGroup(new Group(newOwner));
@@ -428,6 +439,16 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
             ),
             new GetableIndex<UserTaskRun>(
                 List.of(
+                    Pair.of("userId", GetableIndex.ValueType.SINGLE),
+                    Pair.of("userGroup", GetableIndex.ValueType.SINGLE)
+                ),
+                Optional.of(TagStorageTypePb.LOCAL),
+                userTaskRun ->
+                    userTaskRun.getUser() != null &&
+                    userTaskRun.getUser().getGroup() != null
+            ),
+            new GetableIndex<UserTaskRun>(
+                List.of(
                     Pair.of("status", GetableIndex.ValueType.SINGLE),
                     Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
                     Pair.of("userId", GetableIndex.ValueType.SINGLE)
@@ -511,7 +532,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                 return List.of(
                     new IndexedField(
                         key,
-                        this.getGroup().getId(),
+                        this.getUserGroup().getId(),
                         tagStorageTypePb.get()
                     )
                 );

@@ -178,7 +178,14 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
             .searchUserTaskRun(
                 SearchUserTaskRunPb
                     .newBuilder()
-                    .setUser(UserPb.newBuilder().setId("available-user"))
+                    .setUser(
+                        UserPb
+                            .newBuilder()
+                            .setId("available-user")
+                            .setUserGroup(
+                                UserGroupPb.newBuilder().setId("test-group").build()
+                            )
+                    )
                     .build()
             );
         assertThat(

@@ -165,6 +165,11 @@ public class SearchUserTaskRun
 
         if (user != null) {
             attributes.add(new Attribute("userId", this.getUser().getId()));
+            if (this.getUser().getGroup() != null) {
+                attributes.add(
+                    new Attribute("userGroup", this.getUser().getGroup().getId())
+                );
+            }
         }
 
         if (group != null) {
