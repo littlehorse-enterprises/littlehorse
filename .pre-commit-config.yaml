@@ -23,31 +23,31 @@ repos:
           args: [-x]
     - repo: local
       hooks:
-          - id: prettier
-            name: Prettier
-            language: system
-            always_run: true
-            pass_filenames: false
-            entry: npm run format
           - id: compile-proto
             name: Compile proto files
             language: system
             always_run: true
             pass_filenames: false
             entry: ./local-dev/compile-proto.sh
-          - id: tests
+          - id: format-java
+            name: Format Java Code
+            language: system
+            always_run: true
+            pass_filenames: false
+            entry: npm run format
+          - id: java-tests
             name: Running Java Tests
             language: system
             always_run: true
             pass_filenames: false
             entry: ./gradlew test
-          - id: test
+          - id: go-tests
             name: Running Go Tests
             language: system
             always_run: true
             pass_filenames: false
             entry: go test ./...
-          - id: test
+          - id: python-tests
             name: Running Python Tests
             language: system
             always_run: true
