@@ -30,7 +30,7 @@ jobs:
       - name: Upload Test results
         uses: actions/upload-artifact@master
         with:
-           name: report
+           name: server report
            path: ${{github.workspace}}/reports
   sdk-java-dependency-check:
     runs-on: ubuntu-latest
@@ -56,5 +56,5 @@ jobs:
       - name: Upload Test results
         uses: actions/upload-artifact@master
         with:
-           name: report
+           name: sdk-java report
            path: ${{github.workspace}}/reports
