@@ -7,17 +7,21 @@ import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.storeinternals.index.CachedTag;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 @Slf4j
 public class GetableStorageManager {
 
-    private final Map<String, StoredGetable<? extends Message, ? extends Getable<?>>> uncommittedChanges;
+    private final Map<String, StoredGetable<?, ?>> uncommittedChanges;
 
     private final LHStoreWrapper localStore;
 
@@ -108,7 +112,6 @@ public class GetableStorageManager {
         uncommittedChanges.put(getable.getStoreKey(), toPut);
     }
 
-    @SuppressWarnings("unchecked")
     public <U extends Message, T extends Getable<U>> void delete(
         String key,
         Class<T> clazz
@@ -129,7 +132,9 @@ public class GetableStorageManager {
 
     public <U extends Message, T extends Getable<U>> void abortAndUpdate(T getable) {
         uncommittedChanges.clear();
-        StoredGetable<U, T> storedGetable = localStore.getStoredGetable(
+
+        @SuppressWarnings("unchecked")
+        StoredGetable<U, T> storedGetable = (StoredGetable<U, T>) localStore.getStoredGetable(
             getable.getStoreKey(),
             getable.getClass()
         );
@@ -144,7 +149,7 @@ public class GetableStorageManager {
     }
 
     public void commit() {
-        for (Map.Entry<String, StoredGetable<? extends Message, ? extends Getable<?>>> entry : uncommittedChanges.entrySet()) {
+        for (Map.Entry<String, StoredGetable<?, ?>> entry : uncommittedChanges.entrySet()) {
             StoredGetable<? extends Message, ? extends Getable<?>> storedGetable = entry.getValue();
             if (storedGetable.getStoredObject() != null) {
                 insertIntoStore(storedGetable);
@@ -156,7 +161,7 @@ public class GetableStorageManager {
     }
 
     private <U extends Message, T extends Getable<U>> void insertIntoStore(
-        StoredGetable<U, T> getable
+        StoredGetable<?, ?> getable
     ) {
         TagsCache previousTags = getable.getIndexCache();
         List<Tag> newTags = getable.getStoredObject().getIndexEntries();
@@ -164,7 +169,9 @@ public class GetableStorageManager {
             .stream()
             .map(tag -> new CachedTag(tag.getStoreKey(), tag.isRemote()))
             .toList();
-        StoredGetable<U, T> entityToStore = new StoredGetable<>(
+
+        @SuppressWarnings("unchecked")
+        StoredGetable<U, T> entityToStore = (StoredGetable<U, T>) new StoredGetable<>(
             new TagsCache(newCachedTags),
             getable.getStoredObject(),
             getable.getObjectType()
@@ -175,7 +182,7 @@ public class GetableStorageManager {
 
     private <U extends Message, T extends Getable<U>> void deleteFromStore(
         String key,
-        StoredGetable<U, T> getable
+        StoredGetable<?, ?> getable
     ) {
         localStore.delete(key, getable.getStoredClass());
         tagStorageManager.store(List.of(), getable.getIndexCache());
@@ -239,5 +246,49 @@ public class GetableStorageManager {
                 tagStorageManager.removeTag(tagStoreKey);
             });
         localStore.deleteTagCache(getable);
+    }
+
+    public <
+        U extends Message, T extends Getable<U>
+    > T getFirstByCreatedTimeFromPrefix(
+        String prefix,
+        Class<T> cls,
+        Predicate<T> discriminator
+    ) {
+        for (String extEvtId : uncommittedChanges.keySet()) {
+            if (extEvtId.startsWith(prefix)) {
+                return (T) uncommittedChanges.get(extEvtId).getStoredObject();
+            }
+        }
+
+        return getEntityListByPrefix(prefix, cls)
+            .stream()
+            .filter(entity -> discriminator.test(entity.getStoredObject()))
+            .min(
+                Comparator.comparing(entity -> entity.getStoredObject().getCreatedAt()
+                )
+            )
+            .map(entity -> {
+                uncommittedChanges.put(entity.getStoreKey(), entity);
+                return entity.getStoredObject();
+            })
+            .orElse(null);
+    }
+
+    private <
+        U extends Message, T extends Getable<U>
+    > List<StoredGetable<U, T>> getEntityListByPrefix(String prefix, Class<T> cls) {
+        try (
+            LHKeyValueIterator<StoredGetable<U, T>> entityIterator = localStore.prefixScanStoredGetable(
+                prefix,
+                cls
+            )
+        ) {
+            ArrayList<StoredGetable<U, T>> entityList = new ArrayList<>();
+            entityIterator.forEachRemaining(entity ->
+                entityList.add(entity.getValue())
+            );
+            return entityList;
+        }
     }
 }

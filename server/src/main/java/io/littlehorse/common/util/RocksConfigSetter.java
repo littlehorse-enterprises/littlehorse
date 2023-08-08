@@ -15,7 +15,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         final Options options,
         final Map<String, Object> configs
     ) {
-        log.warn("Overriding rocksdb settings for store {}", storeName);
+        log.info("Overriding rocksdb settings for store {}", storeName);
 
         // This is useful for getting the LOG file in the Kafka Streams
         // State Dir. For example, the folks at Speedb often request that

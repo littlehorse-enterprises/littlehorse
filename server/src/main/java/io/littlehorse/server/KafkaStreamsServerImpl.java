@@ -156,8 +156,6 @@ import io.littlehorse.sdk.common.proto.WfSpecIdPb;
 import io.littlehorse.sdk.common.proto.WfSpecMetricsQueryPb;
 import io.littlehorse.sdk.common.proto.WfSpecMetricsReplyPb;
 import io.littlehorse.server.listener.ListenersManager;
-import io.littlehorse.server.metrics.MetricsCollectorRestoreListener;
-import io.littlehorse.server.metrics.PrometheusMetricExporter;
 import io.littlehorse.server.streamsimpl.BackendInternalComms;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
@@ -197,11 +195,11 @@ import io.littlehorse.server.streamsimpl.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streamsimpl.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streamsimpl.util.GETStreamObserver;
 import io.littlehorse.server.streamsimpl.util.GETStreamObserverNew;
+import io.littlehorse.server.streamsimpl.util.HealthService;
 import io.littlehorse.server.streamsimpl.util.POSTStreamObserver;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
@@ -223,24 +221,20 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     private State timerState;
 
     private BackendInternalComms internalComms;
-    private boolean isHealthy;
-    private PrometheusMetricExporter prometheusMetricExporter;
 
-    private ListenersManager listenersManager;
+    private ListenersManager listenerManager;
+    private HealthService healthService;
 
     public KafkaStreamsServerImpl(LHConfig config) {
         this.config = config;
-
         this.taskQueueManager = new TaskQueueManager(this);
-        isHealthy = false;
-
-        coreStreams =
+        this.coreStreams =
             new KafkaStreams(
                 ServerTopology.initCoreTopology(config, this),
                 // Core topology must be EOS
                 config.getStreamsConfig("core", true)
             );
-        timerStreams =
+        this.timerStreams =
             new KafkaStreams(
                 ServerTopology.initTimerTopology(config),
                 // We don't want the Timer topology to be EOS. The reason for this
@@ -252,87 +246,26 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 //    timer, which means latency will jump from 15ms to >100ms
                 config.getStreamsConfig("timer", false)
             );
+        this.healthService = new HealthService(config, coreStreams, timerStreams);
 
-        prometheusMetricExporter = new PrometheusMetricExporter(config);
-        Executor networkThreadpool = Executors.newFixedThreadPool(16);
-
-        listenersManager =
+        Executor networkThreadpool = Executors.newFixedThreadPool(
+            config.getNumNetworkThreads()
+        );
+        this.listenerManager =
             new ListenersManager(
                 config,
                 this,
                 networkThreadpool,
-                prometheusMetricExporter.getMeterRegistry()
+                healthService.getMeterRegistry()
             );
 
-        coreStreams.setStateListener((newState, oldState) -> {
-            coreState = newState;
-            log.info("New state for core: {}", coreState);
-            updateHealth();
-        });
-
-        timerStreams.setStateListener((newState, oldState) -> {
-            timerState = newState;
-            log.info("New state for timer: {}", timerState);
-            updateHealth();
-        });
-
-        internalComms =
+        this.internalComms =
             new BackendInternalComms(
                 config,
                 coreStreams,
                 timerStreams,
                 networkThreadpool
             );
-
-        prometheusMetricExporter.bind(
-            Map.of("core", coreStreams, "timer", timerStreams)
-        );
-
-        coreStreams.setGlobalStateRestoreListener(
-            new MetricsCollectorRestoreListener(
-                prometheusMetricExporter.getMeterRegistry(),
-                Map.of("topology", "core")
-            )
-        );
-
-        timerStreams.setGlobalStateRestoreListener(
-            new MetricsCollectorRestoreListener(
-                prometheusMetricExporter.getMeterRegistry(),
-                Map.of("topology", "timer")
-            )
-        );
-    }
-
-    private void updateHealth() {
-        if (
-            (coreState == State.RUNNING || coreState == State.REBALANCING) &&
-            (timerState == State.RUNNING || timerState == State.REBALANCING)
-        ) {
-            if (!isHealthy) {
-                File f = new File("/tmp/lhHealth");
-                try {
-                    f.createNewFile();
-                } catch (IOException exn) {
-                    log.error(exn.getMessage(), exn);
-                }
-                isHealthy = true;
-            }
-        }
-
-        if (
-            coreState == State.ERROR ||
-            timerState == State.ERROR ||
-            coreState == State.NOT_RUNNING ||
-            timerState == State.NOT_RUNNING ||
-            coreState == State.PENDING_ERROR ||
-            timerState == State.PENDING_ERROR
-        ) {
-            if (isHealthy) {
-                File f = new File("/tmp/lhHealth");
-                f.delete();
-                isHealthy = false;
-            }
-        }
     }
 
     public String getInstanceId() {
@@ -741,7 +674,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         ExternalEventIdPb req,
         StreamObserver<GetExternalEventReplyPb> ctx
     ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
             ctx,
             ExternalEvent.class,
             GetExternalEventReplyPb.class,
@@ -1156,8 +1089,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         coreStreams.start();
         timerStreams.start();
         internalComms.start();
-        listenersManager.start();
-        prometheusMetricExporter.start();
+        listenerManager.start();
+        healthService.start();
     }
 
     public void close() {
@@ -1185,14 +1118,14 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             .start();
 
         new Thread(() -> {
-            log.info("Closing prometheus exporter");
-            prometheusMetricExporter.close();
+            log.info("Closing health service");
+            healthService.close();
             latch.countDown();
         })
             .start();
 
         log.info("Shutting down main servers");
-        listenersManager.close();
+        listenerManager.close();
 
         try {
             latch.await();

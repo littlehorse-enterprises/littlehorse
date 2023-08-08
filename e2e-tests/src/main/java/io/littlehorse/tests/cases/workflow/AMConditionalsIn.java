@@ -75,7 +75,7 @@ public class AMConditionalsIn extends WorkflowLogicTest {
         Object rhs,
         boolean shouldEqual
     ) throws TestFailure, InterruptedException, LHApiError {
-        InputObj input = new InputObj(lhs, rhs);
+        AMInputObj input = new AMInputObj(lhs, rhs);
 
         if (shouldEqual) {
             return runWithInputsAndCheckPath(client, input, true, true);

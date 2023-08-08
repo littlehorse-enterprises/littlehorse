@@ -14,11 +14,9 @@ public class ServerMetricFilter {
     ) {
         this.meterRegistry = meterRegistry;
         this.rules = rules == null ? List.of() : rules;
-
-        initialize();
     }
 
-    private void initialize() {
+    public void initialize() {
         if (this.meterRegistry != null) {
             this.rules.forEach(rule ->
                     meterRegistry.config().meterFilter(rule.getFilter())
