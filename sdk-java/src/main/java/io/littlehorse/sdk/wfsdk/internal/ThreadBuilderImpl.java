@@ -12,7 +12,6 @@ import io.littlehorse.sdk.common.proto.ExitNodePb;
 import io.littlehorse.sdk.common.proto.ExternalEventNodePb;
 import io.littlehorse.sdk.common.proto.FailureDefPb;
 import io.littlehorse.sdk.common.proto.FailureHandlerDefPb;
-import io.littlehorse.sdk.common.proto.GroupPb;
 import io.littlehorse.sdk.common.proto.InterruptDefPb;
 import io.littlehorse.sdk.common.proto.NodePb;
 import io.littlehorse.sdk.common.proto.NodePb.NodeCase;

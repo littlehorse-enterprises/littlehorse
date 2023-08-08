@@ -26,7 +26,7 @@ public class User extends LHSerializable<UserPb> {
     @Override
     public UserPb.Builder toProto() {
         UserPb.Builder builder = UserPb.newBuilder().setId(id);
-        if (group != null) builder.setGroup(group.toProto());
+        if (group != null) builder.setUserGroup(group.toProto());
         return builder;
     }
 
@@ -34,8 +34,8 @@ public class User extends LHSerializable<UserPb> {
     public void initFrom(Message proto) throws LHSerdeError {
         UserPb userPb = (UserPb) proto;
         this.id = userPb.getId();
-        if (userPb.hasGroup()) {
-            this.group = LHSerializable.fromProto(userPb.getGroup(), Group.class);
+        if (userPb.hasUserGroup()) {
+            this.group = LHSerializable.fromProto(userPb.getUserGroup(), Group.class);
         }
     }
 

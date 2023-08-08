@@ -46,8 +46,8 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
             case USER:
                 out.setUser(user.toProto());
                 break;
-            case GROUP:
-                out.setGroup(group.toProto());
+            case USER_GROUP:
+                out.setUserGroup(group.toProto());
                 break;
             case ASSIGNEE_NOT_SET:
                 log.warn(
@@ -69,8 +69,8 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
             case USER:
                 user = LHSerializable.fromProto(p.getUser(), User.class);
                 break;
-            case GROUP:
-                group = LHSerializable.fromProto(p.getGroup(), Group.class);
+            case USER_GROUP:
+                group = LHSerializable.fromProto(p.getUserGroup(), Group.class);
                 break;
             case ASSIGNEE_NOT_SET:
                 log.warn("Unset assignee. Should this be error?");

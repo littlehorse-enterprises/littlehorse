@@ -8,7 +8,7 @@ import io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb;
 public class UserTaskTriggerContext extends LHSerializable<UserTaskTriggerContextPb> {
 
     private User user;
-    private Group group;
+    private Group userGroup;
 
     public UserTaskTriggerContext() {}
 
@@ -16,20 +16,20 @@ public class UserTaskTriggerContext extends LHSerializable<UserTaskTriggerContex
         this.user = user;
     }
 
-    public UserTaskTriggerContext(Group group) {
-        this.group = group;
+    public UserTaskTriggerContext(Group userGroup) {
+        this.userGroup = userGroup;
     }
 
-    public UserTaskTriggerContext(User user, Group group) {
+    public UserTaskTriggerContext(User user, Group userGroup) {
         this.user = user;
-        this.group = group;
+        this.userGroup = userGroup;
     }
 
     @Override
     public UserTaskTriggerContextPb.Builder toProto() {
         UserTaskTriggerContextPb.Builder builder = UserTaskTriggerContextPb.newBuilder();
         if (user != null) builder.setUser(user.toProto());
-        if (group != null) builder.setGroup(group.toProto());
+        if (userGroup != null) builder.setUserGroup(userGroup.toProto());
         return builder;
     }
 
@@ -39,9 +39,12 @@ public class UserTaskTriggerContext extends LHSerializable<UserTaskTriggerContex
         if (taskTriggerContext.hasUser()) {
             user = LHSerializable.fromProto(taskTriggerContext.getUser(), User.class);
         }
-        if (taskTriggerContext.hasGroup()) {
-            group =
-                LHSerializable.fromProto(taskTriggerContext.getGroup(), Group.class);
+        if (taskTriggerContext.hasUserGroup()) {
+            userGroup =
+                LHSerializable.fromProto(
+                    taskTriggerContext.getUserGroup(),
+                    Group.class
+                );
         }
     }
 

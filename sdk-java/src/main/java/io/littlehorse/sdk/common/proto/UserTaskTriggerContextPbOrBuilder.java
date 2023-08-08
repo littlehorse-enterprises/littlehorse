@@ -8,19 +8,19 @@ public interface UserTaskTriggerContextPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.GroupPb group = 1;</code>
-   * @return Whether the group field is set.
+   * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+   * @return Whether the userGroup field is set.
    */
-  boolean hasGroup();
+  boolean hasUserGroup();
   /**
-   * <code>.littlehorse.GroupPb group = 1;</code>
-   * @return The group.
+   * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+   * @return The userGroup.
    */
-  io.littlehorse.sdk.common.proto.GroupPb getGroup();
+  io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup();
   /**
-   * <code>.littlehorse.GroupPb group = 1;</code>
+   * <code>.littlehorse.UserGroupPb user_group = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.GroupPbOrBuilder getGroupOrBuilder();
+  io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder();
 
   /**
    * <code>.littlehorse.UserPb user = 2;</code>

@@ -57,7 +57,7 @@ private static final long serialVersionUID = 0L;
   public enum OwnerCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    GROUP(12),
+    USER_GROUP(12),
     USER(13),
     OWNER_NOT_SET(0);
     private final int value;
@@ -76,7 +76,7 @@ private static final long serialVersionUID = 0L;
 
     public static OwnerCase forNumber(int value) {
       switch (value) {
-        case 12: return GROUP;
+        case 12: return USER_GROUP;
         case 13: return USER;
         case 0: return OWNER_NOT_SET;
         default: return null;
@@ -362,35 +362,35 @@ private static final long serialVersionUID = 0L;
     return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance() : nodeRunId_;
   }
 
-  public static final int GROUP_FIELD_NUMBER = 12;
+  public static final int USER_GROUP_FIELD_NUMBER = 12;
   /**
-   * <code>.littlehorse.GroupPb group = 12;</code>
-   * @return Whether the group field is set.
+   * <code>.littlehorse.UserGroupPb user_group = 12;</code>
+   * @return Whether the userGroup field is set.
    */
   @java.lang.Override
-  public boolean hasGroup() {
+  public boolean hasUserGroup() {
     return ownerCase_ == 12;
   }
   /**
-   * <code>.littlehorse.GroupPb group = 12;</code>
-   * @return The group.
+   * <code>.littlehorse.UserGroupPb user_group = 12;</code>
+   * @return The userGroup.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.GroupPb getGroup() {
+  public io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup() {
     if (ownerCase_ == 12) {
-       return (io.littlehorse.sdk.common.proto.GroupPb) owner_;
+       return (io.littlehorse.sdk.common.proto.UserGroupPb) owner_;
     }
-    return io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.GroupPb group = 12;</code>
+   * <code>.littlehorse.UserGroupPb user_group = 12;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.GroupPbOrBuilder getGroupOrBuilder() {
+  public io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder() {
     if (ownerCase_ == 12) {
-       return (io.littlehorse.sdk.common.proto.GroupPb) owner_;
+       return (io.littlehorse.sdk.common.proto.UserGroupPb) owner_;
     }
-    return io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
   }
 
   public static final int USER_FIELD_NUMBER = 13;
@@ -463,7 +463,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(11, getNodeRunId());
     }
     if (ownerCase_ == 12) {
-      output.writeMessage(12, (io.littlehorse.sdk.common.proto.GroupPb) owner_);
+      output.writeMessage(12, (io.littlehorse.sdk.common.proto.UserGroupPb) owner_);
     }
     if (ownerCase_ == 13) {
       output.writeMessage(13, (io.littlehorse.sdk.common.proto.UserPb) owner_);
@@ -510,7 +510,7 @@ private static final long serialVersionUID = 0L;
     }
     if (ownerCase_ == 12) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(12, (io.littlehorse.sdk.common.proto.GroupPb) owner_);
+        .computeMessageSize(12, (io.littlehorse.sdk.common.proto.UserGroupPb) owner_);
     }
     if (ownerCase_ == 13) {
       size += com.google.protobuf.CodedOutputStream
@@ -564,8 +564,8 @@ private static final long serialVersionUID = 0L;
     if (!getOwnerCase().equals(other.getOwnerCase())) return false;
     switch (ownerCase_) {
       case 12:
-        if (!getGroup()
-            .equals(other.getGroup())) return false;
+        if (!getUserGroup()
+            .equals(other.getUserGroup())) return false;
         break;
       case 13:
         if (!getUser()
@@ -617,8 +617,8 @@ private static final long serialVersionUID = 0L;
     }
     switch (ownerCase_) {
       case 12:
-        hash = (37 * hash) + GROUP_FIELD_NUMBER;
-        hash = (53 * hash) + getGroup().hashCode();
+        hash = (37 * hash) + USER_GROUP_FIELD_NUMBER;
+        hash = (53 * hash) + getUserGroup().hashCode();
         break;
       case 13:
         hash = (37 * hash) + USER_FIELD_NUMBER;
@@ -796,8 +796,8 @@ private static final long serialVersionUID = 0L;
         nodeRunIdBuilder_.dispose();
         nodeRunIdBuilder_ = null;
       }
-      if (groupBuilder_ != null) {
-        groupBuilder_.clear();
+      if (userGroupBuilder_ != null) {
+        userGroupBuilder_.clear();
       }
       if (userBuilder_ != null) {
         userBuilder_.clear();
@@ -895,8 +895,8 @@ private static final long serialVersionUID = 0L;
       result.ownerCase_ = ownerCase_;
       result.owner_ = this.owner_;
       if (ownerCase_ == 12 &&
-          groupBuilder_ != null) {
-        result.owner_ = groupBuilder_.build();
+          userGroupBuilder_ != null) {
+        result.owner_ = userGroupBuilder_.build();
       }
       if (ownerCase_ == 13 &&
           userBuilder_ != null) {
@@ -1021,8 +1021,8 @@ private static final long serialVersionUID = 0L;
         mergeNodeRunId(other.getNodeRunId());
       }
       switch (other.getOwnerCase()) {
-        case GROUP: {
-          mergeGroup(other.getGroup());
+        case USER_GROUP: {
+          mergeUserGroup(other.getUserGroup());
           break;
         }
         case USER: {
@@ -1125,7 +1125,7 @@ private static final long serialVersionUID = 0L;
             } // case 90
             case 98: {
               input.readMessage(
-                  getGroupFieldBuilder().getBuilder(),
+                  getUserGroupFieldBuilder().getBuilder(),
                   extensionRegistry);
               ownerCase_ = 12;
               break;
@@ -2312,71 +2312,71 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.GroupPb, io.littlehorse.sdk.common.proto.GroupPb.Builder, io.littlehorse.sdk.common.proto.GroupPbOrBuilder> groupBuilder_;
+        io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder> userGroupBuilder_;
     /**
-     * <code>.littlehorse.GroupPb group = 12;</code>
-     * @return Whether the group field is set.
+     * <code>.littlehorse.UserGroupPb user_group = 12;</code>
+     * @return Whether the userGroup field is set.
      */
     @java.lang.Override
-    public boolean hasGroup() {
+    public boolean hasUserGroup() {
       return ownerCase_ == 12;
     }
     /**
-     * <code>.littlehorse.GroupPb group = 12;</code>
-     * @return The group.
+     * <code>.littlehorse.UserGroupPb user_group = 12;</code>
+     * @return The userGroup.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.GroupPb getGroup() {
-      if (groupBuilder_ == null) {
+    public io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup() {
+      if (userGroupBuilder_ == null) {
         if (ownerCase_ == 12) {
-          return (io.littlehorse.sdk.common.proto.GroupPb) owner_;
+          return (io.littlehorse.sdk.common.proto.UserGroupPb) owner_;
         }
-        return io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
       } else {
         if (ownerCase_ == 12) {
-          return groupBuilder_.getMessage();
+          return userGroupBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.GroupPb group = 12;</code>
+     * <code>.littlehorse.UserGroupPb user_group = 12;</code>
      */
-    public Builder setGroup(io.littlehorse.sdk.common.proto.GroupPb value) {
-      if (groupBuilder_ == null) {
+    public Builder setUserGroup(io.littlehorse.sdk.common.proto.UserGroupPb value) {
+      if (userGroupBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         owner_ = value;
         onChanged();
       } else {
-        groupBuilder_.setMessage(value);
+        userGroupBuilder_.setMessage(value);
       }
       ownerCase_ = 12;
       return this;
     }
     /**
-     * <code>.littlehorse.GroupPb group = 12;</code>
+     * <code>.littlehorse.UserGroupPb user_group = 12;</code>
      */
-    public Builder setGroup(
-        io.littlehorse.sdk.common.proto.GroupPb.Builder builderForValue) {
-      if (groupBuilder_ == null) {
+    public Builder setUserGroup(
+        io.littlehorse.sdk.common.proto.UserGroupPb.Builder builderForValue) {
+      if (userGroupBuilder_ == null) {
         owner_ = builderForValue.build();
         onChanged();
       } else {
-        groupBuilder_.setMessage(builderForValue.build());
+        userGroupBuilder_.setMessage(builderForValue.build());
       }
       ownerCase_ = 12;
       return this;
     }
     /**
-     * <code>.littlehorse.GroupPb group = 12;</code>
+     * <code>.littlehorse.UserGroupPb user_group = 12;</code>
      */
-    public Builder mergeGroup(io.littlehorse.sdk.common.proto.GroupPb value) {
-      if (groupBuilder_ == null) {
+    public Builder mergeUserGroup(io.littlehorse.sdk.common.proto.UserGroupPb value) {
+      if (userGroupBuilder_ == null) {
         if (ownerCase_ == 12 &&
-            owner_ != io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance()) {
-          owner_ = io.littlehorse.sdk.common.proto.GroupPb.newBuilder((io.littlehorse.sdk.common.proto.GroupPb) owner_)
+            owner_ != io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance()) {
+          owner_ = io.littlehorse.sdk.common.proto.UserGroupPb.newBuilder((io.littlehorse.sdk.common.proto.UserGroupPb) owner_)
               .mergeFrom(value).buildPartial();
         } else {
           owner_ = value;
@@ -2384,19 +2384,19 @@ private static final long serialVersionUID = 0L;
         onChanged();
       } else {
         if (ownerCase_ == 12) {
-          groupBuilder_.mergeFrom(value);
+          userGroupBuilder_.mergeFrom(value);
         } else {
-          groupBuilder_.setMessage(value);
+          userGroupBuilder_.setMessage(value);
         }
       }
       ownerCase_ = 12;
       return this;
     }
     /**
-     * <code>.littlehorse.GroupPb group = 12;</code>
+     * <code>.littlehorse.UserGroupPb user_group = 12;</code>
      */
-    public Builder clearGroup() {
-      if (groupBuilder_ == null) {
+    public Builder clearUserGroup() {
+      if (userGroupBuilder_ == null) {
         if (ownerCase_ == 12) {
           ownerCase_ = 0;
           owner_ = null;
@@ -2407,50 +2407,50 @@ private static final long serialVersionUID = 0L;
           ownerCase_ = 0;
           owner_ = null;
         }
-        groupBuilder_.clear();
+        userGroupBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>.littlehorse.GroupPb group = 12;</code>
+     * <code>.littlehorse.UserGroupPb user_group = 12;</code>
      */
-    public io.littlehorse.sdk.common.proto.GroupPb.Builder getGroupBuilder() {
-      return getGroupFieldBuilder().getBuilder();
+    public io.littlehorse.sdk.common.proto.UserGroupPb.Builder getUserGroupBuilder() {
+      return getUserGroupFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.GroupPb group = 12;</code>
+     * <code>.littlehorse.UserGroupPb user_group = 12;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.GroupPbOrBuilder getGroupOrBuilder() {
-      if ((ownerCase_ == 12) && (groupBuilder_ != null)) {
-        return groupBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder() {
+      if ((ownerCase_ == 12) && (userGroupBuilder_ != null)) {
+        return userGroupBuilder_.getMessageOrBuilder();
       } else {
         if (ownerCase_ == 12) {
-          return (io.littlehorse.sdk.common.proto.GroupPb) owner_;
+          return (io.littlehorse.sdk.common.proto.UserGroupPb) owner_;
         }
-        return io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.GroupPb group = 12;</code>
+     * <code>.littlehorse.UserGroupPb user_group = 12;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.GroupPb, io.littlehorse.sdk.common.proto.GroupPb.Builder, io.littlehorse.sdk.common.proto.GroupPbOrBuilder> 
-        getGroupFieldBuilder() {
-      if (groupBuilder_ == null) {
+        io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder> 
+        getUserGroupFieldBuilder() {
+      if (userGroupBuilder_ == null) {
         if (!(ownerCase_ == 12)) {
-          owner_ = io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance();
+          owner_ = io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
         }
-        groupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.GroupPb, io.littlehorse.sdk.common.proto.GroupPb.Builder, io.littlehorse.sdk.common.proto.GroupPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.GroupPb) owner_,
+        userGroupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserGroupPb) owner_,
                 getParentForChildren(),
                 isClean());
         owner_ = null;
       }
       ownerCase_ = 12;
       onChanged();
-      return groupBuilder_;
+      return userGroupBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<

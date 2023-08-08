@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface GroupPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.GroupPb)
+public interface UserGroupPbOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.UserGroupPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

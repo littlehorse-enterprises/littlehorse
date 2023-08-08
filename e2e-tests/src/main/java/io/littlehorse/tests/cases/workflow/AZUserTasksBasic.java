@@ -8,7 +8,6 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.GroupPb;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
 import io.littlehorse.sdk.common.proto.NodeRunPb;
@@ -17,6 +16,7 @@ import io.littlehorse.sdk.common.proto.SearchUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunPb;
 import io.littlehorse.sdk.common.proto.TaskStatusPb;
+import io.littlehorse.sdk.common.proto.UserGroupPb;
 import io.littlehorse.sdk.common.proto.UserPb;
 import io.littlehorse.sdk.common.proto.UserTaskEventPb;
 import io.littlehorse.sdk.common.proto.UserTaskEventPb.EventCase;
@@ -143,7 +143,9 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
             .searchUserTaskRun(
                 SearchUserTaskRunPb
                     .newBuilder()
-                    .setGroup(GroupPb.newBuilder().setId("test-group").build())
+                    .setUserGroup(
+                        UserGroupPb.newBuilder().setId("test-group").build()
+                    )
                     .setUserTaskDefName(USER_TASK_DEF_NAME)
                     .setStatus(UserTaskRunStatusPb.UNASSIGNED)
                     .build()

@@ -162,19 +162,19 @@ public interface UserTaskRunPbOrBuilder extends
   io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getNodeRunIdOrBuilder();
 
   /**
-   * <code>.littlehorse.GroupPb group = 12;</code>
-   * @return Whether the group field is set.
+   * <code>.littlehorse.UserGroupPb user_group = 12;</code>
+   * @return Whether the userGroup field is set.
    */
-  boolean hasGroup();
+  boolean hasUserGroup();
   /**
-   * <code>.littlehorse.GroupPb group = 12;</code>
-   * @return The group.
+   * <code>.littlehorse.UserGroupPb user_group = 12;</code>
+   * @return The userGroup.
    */
-  io.littlehorse.sdk.common.proto.GroupPb getGroup();
+  io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup();
   /**
-   * <code>.littlehorse.GroupPb group = 12;</code>
+   * <code>.littlehorse.UserGroupPb user_group = 12;</code>
    */
-  io.littlehorse.sdk.common.proto.GroupPbOrBuilder getGroupOrBuilder();
+  io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder();
 
   /**
    * <code>.littlehorse.UserPb user = 13;</code>

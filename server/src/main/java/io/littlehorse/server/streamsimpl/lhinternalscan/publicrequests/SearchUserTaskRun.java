@@ -76,7 +76,8 @@ public class SearchUserTaskRun
         // dictates that we would search by userGroup (since it has a higher
         // field number) and ignore userId silently. By using the way below,
         // we can throw an LHValidationError when processing the search.
-        if (p.hasGroup()) group = LHSerializable.fromProto(p.getGroup(), Group.class);
+        if (p.hasUserGroup()) group =
+            LHSerializable.fromProto(p.getUserGroup(), Group.class);
         if (p.hasUser()) user = LHSerializable.fromProto(p.getUser(), User.class);
         if (p.hasLatestStart()) {
             latestStart = LHUtil.fromProtoTs(p.getLatestStart());
@@ -99,8 +100,8 @@ public class SearchUserTaskRun
         if (userTaskDefName != null) out.setUserTaskDefName(userTaskDefName);
 
         switch (ownerCase) {
-            case GROUP:
-                out.setGroup(group.toProto());
+            case USER_GROUP:
+                out.setUserGroup(group.toProto());
                 break;
             case USER:
                 out.setUser(user.toProto());

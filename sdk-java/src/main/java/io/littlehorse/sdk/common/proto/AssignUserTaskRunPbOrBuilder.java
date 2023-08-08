@@ -44,19 +44,19 @@ public interface AssignUserTaskRunPbOrBuilder extends
   io.littlehorse.sdk.common.proto.UserPbOrBuilder getUserOrBuilder();
 
   /**
-   * <code>.littlehorse.GroupPb group = 4;</code>
-   * @return Whether the group field is set.
+   * <code>.littlehorse.UserGroupPb user_group = 4;</code>
+   * @return Whether the userGroup field is set.
    */
-  boolean hasGroup();
+  boolean hasUserGroup();
   /**
-   * <code>.littlehorse.GroupPb group = 4;</code>
-   * @return The group.
+   * <code>.littlehorse.UserGroupPb user_group = 4;</code>
+   * @return The userGroup.
    */
-  io.littlehorse.sdk.common.proto.GroupPb getGroup();
+  io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup();
   /**
-   * <code>.littlehorse.GroupPb group = 4;</code>
+   * <code>.littlehorse.UserGroupPb user_group = 4;</code>
    */
-  io.littlehorse.sdk.common.proto.GroupPbOrBuilder getGroupOrBuilder();
+  io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder();
 
   public io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.AssigneeCase getAssigneeCase();
 }

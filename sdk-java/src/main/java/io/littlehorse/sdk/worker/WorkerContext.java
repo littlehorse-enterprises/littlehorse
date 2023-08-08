@@ -1,15 +1,13 @@
 package io.littlehorse.sdk.worker;
 
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.GroupPb;
 import io.littlehorse.sdk.common.proto.NodeRunIdPb;
 import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunSourcePb;
+import io.littlehorse.sdk.common.proto.UserGroupPb;
 import io.littlehorse.sdk.common.proto.UserPb;
 import java.util.Date;
-import javax.annotation.Nullable;
-import lombok.Getter;
 
 /**
  * This class contains runtime information about the specific WfRun and NodeRun that
@@ -115,13 +113,13 @@ public class WorkerContext {
         return null;
     }
 
-    public GroupPb getGroup() {
+    public UserGroupPb getGroup() {
         if (scheduledTask.getSource().hasUserTaskTrigger()) {
             return scheduledTask
                 .getSource()
                 .getUserTaskTrigger()
                 .getContext()
-                .getGroup();
+                .getUserGroup();
         }
         return null;
     }

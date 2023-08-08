@@ -13,9 +13,9 @@ import lombok.EqualsAndHashCode;
 public class UTEReassigned extends LHSerializable<UTEReassignedPb> {
 
     private User oldUser;
-    private Group oldGroup;
+    private Group oldUserGroup;
     private User newUser;
-    private Group newGroup;
+    private Group newUserGroup;
 
     @Override
     public Class<UTEReassignedPb> getProtoBaseClass() {
@@ -25,8 +25,8 @@ public class UTEReassigned extends LHSerializable<UTEReassignedPb> {
     @Override
     public UTEReassignedPb.Builder toProto() {
         UTEReassignedPb.Builder out = UTEReassignedPb.newBuilder();
-        if (oldGroup != null) out.setOldGroup(oldGroup.toProto());
-        if (newGroup != null) out.setNewGroup(newGroup.toProto());
+        if (oldUserGroup != null) out.setOldUserGroup(oldUserGroup.toProto());
+        if (newUserGroup != null) out.setNewUserGroup(newUserGroup.toProto());
         if (oldUser != null) out.setOldUser(oldUser.toProto());
         if (newUser != null) out.setNewUser(newUser.toProto());
         return out;
@@ -35,10 +35,10 @@ public class UTEReassigned extends LHSerializable<UTEReassignedPb> {
     @Override
     public void initFrom(Message proto) {
         UTEReassignedPb p = (UTEReassignedPb) proto;
-        if (p.hasNewGroup()) newGroup =
-            LHSerializable.fromProto(p.getNewGroup(), Group.class);
-        if (p.hasOldGroup()) oldGroup =
-            LHSerializable.fromProto(p.getOldGroup(), Group.class);
+        if (p.hasNewUserGroup()) newUserGroup =
+            LHSerializable.fromProto(p.getNewUserGroup(), Group.class);
+        if (p.hasOldUserGroup()) oldUserGroup =
+            LHSerializable.fromProto(p.getOldUserGroup(), Group.class);
         if (p.hasNewUser()) newUser =
             LHSerializable.fromProto(p.getNewUser(), User.class);
         if (p.hasOldUser()) oldUser =

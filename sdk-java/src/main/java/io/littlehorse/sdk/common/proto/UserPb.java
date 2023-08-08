@@ -84,30 +84,30 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int GROUP_FIELD_NUMBER = 2;
-  private io.littlehorse.sdk.common.proto.GroupPb group_;
+  public static final int USER_GROUP_FIELD_NUMBER = 2;
+  private io.littlehorse.sdk.common.proto.UserGroupPb userGroup_;
   /**
-   * <code>optional .littlehorse.GroupPb group = 2;</code>
-   * @return Whether the group field is set.
+   * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
+   * @return Whether the userGroup field is set.
    */
   @java.lang.Override
-  public boolean hasGroup() {
+  public boolean hasUserGroup() {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>optional .littlehorse.GroupPb group = 2;</code>
-   * @return The group.
+   * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
+   * @return The userGroup.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.GroupPb getGroup() {
-    return group_ == null ? io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance() : group_;
+  public io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup() {
+    return userGroup_ == null ? io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance() : userGroup_;
   }
   /**
-   * <code>optional .littlehorse.GroupPb group = 2;</code>
+   * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.GroupPbOrBuilder getGroupOrBuilder() {
-    return group_ == null ? io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance() : group_;
+  public io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder() {
+    return userGroup_ == null ? io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance() : userGroup_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -128,7 +128,7 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(2, getGroup());
+      output.writeMessage(2, getUserGroup());
     }
     getUnknownFields().writeTo(output);
   }
@@ -144,7 +144,7 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getGroup());
+        .computeMessageSize(2, getUserGroup());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -163,10 +163,10 @@ private static final long serialVersionUID = 0L;
 
     if (!getId()
         .equals(other.getId())) return false;
-    if (hasGroup() != other.hasGroup()) return false;
-    if (hasGroup()) {
-      if (!getGroup()
-          .equals(other.getGroup())) return false;
+    if (hasUserGroup() != other.hasUserGroup()) return false;
+    if (hasUserGroup()) {
+      if (!getUserGroup()
+          .equals(other.getUserGroup())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -181,9 +181,9 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + ID_FIELD_NUMBER;
     hash = (53 * hash) + getId().hashCode();
-    if (hasGroup()) {
-      hash = (37 * hash) + GROUP_FIELD_NUMBER;
-      hash = (53 * hash) + getGroup().hashCode();
+    if (hasUserGroup()) {
+      hash = (37 * hash) + USER_GROUP_FIELD_NUMBER;
+      hash = (53 * hash) + getUserGroup().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -313,7 +313,7 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
-        getGroupFieldBuilder();
+        getUserGroupFieldBuilder();
       }
     }
     @java.lang.Override
@@ -321,10 +321,10 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       id_ = "";
-      group_ = null;
-      if (groupBuilder_ != null) {
-        groupBuilder_.dispose();
-        groupBuilder_ = null;
+      userGroup_ = null;
+      if (userGroupBuilder_ != null) {
+        userGroupBuilder_.dispose();
+        userGroupBuilder_ = null;
       }
       return this;
     }
@@ -364,9 +364,9 @@ private static final long serialVersionUID = 0L;
       }
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.group_ = groupBuilder_ == null
-            ? group_
-            : groupBuilder_.build();
+        result.userGroup_ = userGroupBuilder_ == null
+            ? userGroup_
+            : userGroupBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
       result.bitField0_ |= to_bitField0_;
@@ -421,8 +421,8 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (other.hasGroup()) {
-        mergeGroup(other.getGroup());
+      if (other.hasUserGroup()) {
+        mergeUserGroup(other.getUserGroup());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -457,7 +457,7 @@ private static final long serialVersionUID = 0L;
             } // case 10
             case 18: {
               input.readMessage(
-                  getGroupFieldBuilder().getBuilder(),
+                  getUserGroupFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000002;
               break;
@@ -551,123 +551,123 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.sdk.common.proto.GroupPb group_;
+    private io.littlehorse.sdk.common.proto.UserGroupPb userGroup_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.GroupPb, io.littlehorse.sdk.common.proto.GroupPb.Builder, io.littlehorse.sdk.common.proto.GroupPbOrBuilder> groupBuilder_;
+        io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder> userGroupBuilder_;
     /**
-     * <code>optional .littlehorse.GroupPb group = 2;</code>
-     * @return Whether the group field is set.
+     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
+     * @return Whether the userGroup field is set.
      */
-    public boolean hasGroup() {
+    public boolean hasUserGroup() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>optional .littlehorse.GroupPb group = 2;</code>
-     * @return The group.
+     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
+     * @return The userGroup.
      */
-    public io.littlehorse.sdk.common.proto.GroupPb getGroup() {
-      if (groupBuilder_ == null) {
-        return group_ == null ? io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance() : group_;
+    public io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup() {
+      if (userGroupBuilder_ == null) {
+        return userGroup_ == null ? io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance() : userGroup_;
       } else {
-        return groupBuilder_.getMessage();
+        return userGroupBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .littlehorse.GroupPb group = 2;</code>
+     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
      */
-    public Builder setGroup(io.littlehorse.sdk.common.proto.GroupPb value) {
-      if (groupBuilder_ == null) {
+    public Builder setUserGroup(io.littlehorse.sdk.common.proto.UserGroupPb value) {
+      if (userGroupBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        group_ = value;
+        userGroup_ = value;
       } else {
-        groupBuilder_.setMessage(value);
+        userGroupBuilder_.setMessage(value);
       }
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.GroupPb group = 2;</code>
+     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
      */
-    public Builder setGroup(
-        io.littlehorse.sdk.common.proto.GroupPb.Builder builderForValue) {
-      if (groupBuilder_ == null) {
-        group_ = builderForValue.build();
+    public Builder setUserGroup(
+        io.littlehorse.sdk.common.proto.UserGroupPb.Builder builderForValue) {
+      if (userGroupBuilder_ == null) {
+        userGroup_ = builderForValue.build();
       } else {
-        groupBuilder_.setMessage(builderForValue.build());
+        userGroupBuilder_.setMessage(builderForValue.build());
       }
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.GroupPb group = 2;</code>
+     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
      */
-    public Builder mergeGroup(io.littlehorse.sdk.common.proto.GroupPb value) {
-      if (groupBuilder_ == null) {
+    public Builder mergeUserGroup(io.littlehorse.sdk.common.proto.UserGroupPb value) {
+      if (userGroupBuilder_ == null) {
         if (((bitField0_ & 0x00000002) != 0) &&
-          group_ != null &&
-          group_ != io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance()) {
-          getGroupBuilder().mergeFrom(value);
+          userGroup_ != null &&
+          userGroup_ != io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance()) {
+          getUserGroupBuilder().mergeFrom(value);
         } else {
-          group_ = value;
+          userGroup_ = value;
         }
       } else {
-        groupBuilder_.mergeFrom(value);
+        userGroupBuilder_.mergeFrom(value);
       }
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.GroupPb group = 2;</code>
+     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
      */
-    public Builder clearGroup() {
+    public Builder clearUserGroup() {
       bitField0_ = (bitField0_ & ~0x00000002);
-      group_ = null;
-      if (groupBuilder_ != null) {
-        groupBuilder_.dispose();
-        groupBuilder_ = null;
+      userGroup_ = null;
+      if (userGroupBuilder_ != null) {
+        userGroupBuilder_.dispose();
+        userGroupBuilder_ = null;
       }
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.GroupPb group = 2;</code>
+     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.GroupPb.Builder getGroupBuilder() {
+    public io.littlehorse.sdk.common.proto.UserGroupPb.Builder getUserGroupBuilder() {
       bitField0_ |= 0x00000002;
       onChanged();
-      return getGroupFieldBuilder().getBuilder();
+      return getUserGroupFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.GroupPb group = 2;</code>
+     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.GroupPbOrBuilder getGroupOrBuilder() {
-      if (groupBuilder_ != null) {
-        return groupBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder() {
+      if (userGroupBuilder_ != null) {
+        return userGroupBuilder_.getMessageOrBuilder();
       } else {
-        return group_ == null ?
-            io.littlehorse.sdk.common.proto.GroupPb.getDefaultInstance() : group_;
+        return userGroup_ == null ?
+            io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance() : userGroup_;
       }
     }
     /**
-     * <code>optional .littlehorse.GroupPb group = 2;</code>
+     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.GroupPb, io.littlehorse.sdk.common.proto.GroupPb.Builder, io.littlehorse.sdk.common.proto.GroupPbOrBuilder> 
-        getGroupFieldBuilder() {
-      if (groupBuilder_ == null) {
-        groupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.GroupPb, io.littlehorse.sdk.common.proto.GroupPb.Builder, io.littlehorse.sdk.common.proto.GroupPbOrBuilder>(
-                getGroup(),
+        io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder> 
+        getUserGroupFieldBuilder() {
+      if (userGroupBuilder_ == null) {
+        userGroupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder>(
+                getUserGroup(),
                 getParentForChildren(),
                 isClean());
-        group_ = null;
+        userGroup_ = null;
       }
-      return groupBuilder_;
+      return userGroupBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

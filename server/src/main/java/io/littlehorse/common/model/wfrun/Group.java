@@ -3,11 +3,11 @@ package io.littlehorse.common.model.wfrun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.GroupPb;
+import io.littlehorse.sdk.common.proto.UserGroupPb;
 import lombok.Getter;
 
 @Getter
-public class Group extends LHSerializable<GroupPb> {
+public class Group extends LHSerializable<UserGroupPb> {
 
     private String id;
 
@@ -18,18 +18,18 @@ public class Group extends LHSerializable<GroupPb> {
     }
 
     @Override
-    public GroupPb.Builder toProto() {
-        return GroupPb.newBuilder().setId(id);
+    public UserGroupPb.Builder toProto() {
+        return UserGroupPb.newBuilder().setId(id);
     }
 
     @Override
     public void initFrom(Message proto) throws LHSerdeError {
-        GroupPb groupPb = (GroupPb) proto;
+        UserGroupPb groupPb = (UserGroupPb) proto;
         this.id = groupPb.getId();
     }
 
     @Override
-    public Class<GroupPb> getProtoBaseClass() {
-        return GroupPb.class;
+    public Class<UserGroupPb> getProtoBaseClass() {
+        return UserGroupPb.class;
     }
 }

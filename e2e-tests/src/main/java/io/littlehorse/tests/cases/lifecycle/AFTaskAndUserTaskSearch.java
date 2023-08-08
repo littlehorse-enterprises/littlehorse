@@ -8,13 +8,13 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.GroupPb;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
 import io.littlehorse.sdk.common.proto.SearchTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskStatusPb;
+import io.littlehorse.sdk.common.proto.UserGroupPb;
 import io.littlehorse.sdk.common.proto.UserPb;
 import io.littlehorse.sdk.common.proto.UserTaskFieldResultPb;
 import io.littlehorse.sdk.common.proto.UserTaskResultPb;
@@ -230,7 +230,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
             .assignUserTaskRun(
                 AssignUserTaskRunPb
                     .newBuilder()
-                    .setGroup(GroupPb.newBuilder().setId("mygroup").build())
+                    .setUserGroup(UserGroupPb.newBuilder().setId("mygroup").build())
                     .setOverrideClaim(true)
                     .setUserTaskRunId(userTaskId)
                     .build()

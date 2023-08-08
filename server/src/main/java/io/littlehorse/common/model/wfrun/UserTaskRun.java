@@ -1,6 +1,5 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
@@ -87,7 +86,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         this.nodeRunId = nodeRun.getObjectId();
         this.id = new UserTaskRunId(nodeRunId.getWfRunId());
         this.scheduledTime = new Date();
-        ownerCase = UserTaskRunPb.OwnerCase.GROUP;
+        ownerCase = UserTaskRunPb.OwnerCase.USER_GROUP;
         this.group = group;
     }
 
@@ -106,8 +105,8 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
 
         if (ownerCase.equals(UserTaskRunPb.OwnerCase.USER)) {
             out.setUser(user.toProto());
-        } else if (ownerCase.equals(UserTaskRunPb.OwnerCase.GROUP)) {
-            out.setGroup(group.toProto());
+        } else if (ownerCase.equals(UserTaskRunPb.OwnerCase.USER_GROUP)) {
+            out.setUserGroup(group.toProto());
         } else {
             throw new IllegalArgumentException("Owner case not supported yet");
         }
@@ -139,8 +138,8 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         ownerCase = p.getOwnerCase();
         if (ownerCase.equals(UserTaskRunPb.OwnerCase.USER)) {
             user = LHSerializable.fromProto(p.getUser(), User.class);
-        } else if (ownerCase.equals(UserTaskRunPb.OwnerCase.GROUP)) {
-            group = LHSerializable.fromProto(p.getGroup(), Group.class);
+        } else if (ownerCase.equals(UserTaskRunPb.OwnerCase.USER_GROUP)) {
+            group = LHSerializable.fromProto(p.getUserGroup(), Group.class);
         } else {
             throw new IllegalArgumentException("Owner case not supported yet");
         }
@@ -251,7 +250,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
 
         // now add Audit Log Event
         UTEReassigned reassigned = new UTEReassigned();
-        reassigned.setNewGroup(group);
+        reassigned.setNewUserGroup(group);
         events.add(new UserTaskEvent(reassigned, new Date()));
     }
 
@@ -265,7 +264,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
             case USER:
                 reassigned = reassignToUser(event.getUser(), true);
                 break;
-            case GROUP:
+            case USER_GROUP:
                 reassigned = reassignToUserGroup(event.getGroup());
                 break;
             case ASSIGNEE_NOT_SET:
@@ -295,12 +294,12 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
 
     private UTEReassigned reassignToUserGroup(Group newGroup) {
         UTEReassigned ute = new UTEReassigned();
-        ute.setNewGroup(newGroup);
-        ute.setOldGroup(group);
+        ute.setNewUserGroup(newGroup);
+        ute.setOldUserGroup(group);
         ute.setNewUser(null);
         ute.setOldUser(user);
 
-        ownerCase = UserTaskRunPb.OwnerCase.GROUP;
+        ownerCase = UserTaskRunPb.OwnerCase.USER_GROUP;
         group = newGroup;
         user = null;
         status = UserTaskRunStatusPb.UNASSIGNED;

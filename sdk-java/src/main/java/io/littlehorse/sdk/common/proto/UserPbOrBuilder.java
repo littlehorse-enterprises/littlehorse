@@ -20,17 +20,17 @@ public interface UserPbOrBuilder extends
       getIdBytes();
 
   /**
-   * <code>optional .littlehorse.GroupPb group = 2;</code>
-   * @return Whether the group field is set.
+   * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
+   * @return Whether the userGroup field is set.
    */
-  boolean hasGroup();
+  boolean hasUserGroup();
   /**
-   * <code>optional .littlehorse.GroupPb group = 2;</code>
-   * @return The group.
+   * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
+   * @return The userGroup.
    */
-  io.littlehorse.sdk.common.proto.GroupPb getGroup();
+  io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup();
   /**
-   * <code>optional .littlehorse.GroupPb group = 2;</code>
+   * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.GroupPbOrBuilder getGroupOrBuilder();
+  io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder();
 }

@@ -297,7 +297,7 @@ message SearchUserTaskRunPb {
 
   oneof task_owner {
     UserPb user = 5;
-    GroupPb group = 6;
+    UserGroupPb user_group = 6;
   }
 
   optional google.protobuf.Timestamp earliest_start = 7;
@@ -965,7 +965,7 @@ message TaskNodeReferencePb {
 
 message UserTaskTriggerContextPb {
   oneof owner {
-    GroupPb group = 1;
+    UserGroupPb user_group = 1;
     UserPb user = 2;
   }
 }
@@ -1194,11 +1194,11 @@ message UserTaskEventPb {
   message UTEReassignedPb {
     oneof old_owner {
       UserPb old_user= 5;
-      GroupPb old_group = 6;
+      UserGroupPb old_user_group = 6;
     }
     oneof new_owner {
       UserPb new_user = 7;
-      GroupPb new_group = 8;
+      UserGroupPb new_user_group = 8;
     }
   }
 
@@ -1224,13 +1224,13 @@ message UserTaskRunIdPb {
 }
 
 
-message GroupPb {
+message UserGroupPb {
   string id = 1;
 }
 
 message UserPb {
   string id = 1;
-  optional GroupPb group = 2;
+  optional UserGroupPb user_group = 2;
 }
 
 
@@ -1252,7 +1252,7 @@ message UserTaskRunPb {
   NodeRunIdPb node_run_id = 11;
 
   oneof owner {
-    GroupPb group = 12;
+    UserGroupPb user_group = 12;
     UserPb user = 13;
   }
 }
@@ -1264,7 +1264,7 @@ message AssignUserTaskRunPb {
 
   oneof assignee {
     UserPb user = 3;
-    GroupPb group = 4;
+    UserGroupPb user_group = 4;
   }
 }
 
