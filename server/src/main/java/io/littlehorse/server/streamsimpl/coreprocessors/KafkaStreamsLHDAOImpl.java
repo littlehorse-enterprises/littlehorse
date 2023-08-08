@@ -338,7 +338,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public void putVariable(Variable var) {
-//        System.out.println("-----> Putting variable with Id: " + var.getStoreKey());
         storageManager.put(var, Variable.class);
     }
 
@@ -347,8 +346,10 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         String key = new VariableId(wfRunId, threadNum, name).getStoreKey();
         Variable variable = storageManager.get(key, Variable.class);
         if (variable != null) {
-            WfRun wfRun = getWfRun(wfRunId);
-            variable.setWfSpec(wfRun.getWfSpec());
+            if (variable.getWfSpec() == null) {
+                WfRun wfRun = getWfRun(wfRunId);
+                variable.setWfSpec(wfRun.getWfSpec());
+            }
             variable.setDao(this);
         }
         return variable;
