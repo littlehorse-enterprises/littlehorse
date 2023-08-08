@@ -6,7 +6,7 @@ on:
       - "**"
 
 jobs:
-  dependency-check:
+  server-dependency-check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -17,13 +17,39 @@ jobs:
           distribution: "corretto"
           java-version: 17
       - name: Build
-        run: ./gradlew server:build sdk-java:build -x test
+        run: ./gradlew server:build -x test
       - name: Dependency Check
         uses: dependency-check/Dependency-Check_Action@main
         env:
           JAVA_HOME: /opt/jdk
         with:
           project: 'server'
+          path: '.'
+          format: 'HTML'
+          out: 'reports'
+      - name: Upload Test results
+        uses: actions/upload-artifact@master
+        with:
+           name: report
+           path: ${{github.workspace}}/reports
+  sdk-java-dependency-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "corretto"
+          java-version: 17
+      - name: Build
+        run: ./gradlew sdk-java:build -x test
+      - name: Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        env:
+          JAVA_HOME: /opt/jdk
+        with:
+          project: 'sdk-java'
           path: '.'
           format: 'HTML'
           out: 'reports'
