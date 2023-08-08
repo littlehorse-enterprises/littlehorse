@@ -887,11 +887,13 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
     public void putVariable(String varName, VariableValue var) throws LHVarSubError {
         if (getThreadSpec().localGetVarDef(varName) != null) {
-            Variable toPut = new Variable();
-            toPut.wfRunId = wfRunId;
-            toPut.name = varName;
-            toPut.value = var;
-            toPut.threadRunNumber = this.number;
+            Variable toPut = new Variable(
+                    varName,
+                    var,
+                    wfRunId,
+                    this.number,
+                    wfRun.getWfSpec()
+            );
             wfRun.getDao().putVariable(toPut);
         } else {
             if (getParent() != null) {

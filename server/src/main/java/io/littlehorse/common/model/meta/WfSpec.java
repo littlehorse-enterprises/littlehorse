@@ -282,6 +282,8 @@ public class WfSpec extends Getable<WfSpecPb> {
         out.startTime = getDao().getEventTime();
         out.status = LHStatusPb.RUNNING;
 
+        getDao().saveWfRun(out);
+
         out.startThread(
             entrypointThreadName,
             getDao().getEventTime(),
@@ -290,7 +292,7 @@ public class WfSpec extends Getable<WfSpecPb> {
             ThreadTypePb.ENTRYPOINT
         );
 
-        getDao().saveWfRun(out);
+//        getDao().saveWfRun(out);
 
         return out;
     }

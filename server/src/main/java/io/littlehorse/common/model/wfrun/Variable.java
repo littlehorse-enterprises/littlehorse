@@ -39,6 +39,16 @@ public class Variable extends Getable<VariablePb> {
 
     private WfSpec wfSpec;
 
+    public Variable() {}
+
+    public Variable(String name, VariableValue value, String wfRunId, int threadRunNumber, WfSpec wfSpec) {
+        this.name = name;
+        this.value = value;
+        this.wfRunId = wfRunId;
+        this.wfSpec = wfSpec;
+        this.threadRunNumber = threadRunNumber;
+    }
+
     public Class<VariablePb> getProtoBaseClass() {
         return VariablePb.class;
     }
