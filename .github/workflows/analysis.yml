@@ -6,17 +6,11 @@ on:
       - "**"
 
 jobs:
-  tests-sdk-java:
-    if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
+  dependency-ckeck:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: "corretto"
-          java-version: 17
       - name: Build
         run: ./gradlew server:build sdk-java:build
       - name: Dependency Check
