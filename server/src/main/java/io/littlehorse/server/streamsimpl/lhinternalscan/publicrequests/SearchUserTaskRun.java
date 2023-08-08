@@ -4,8 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
-import io.littlehorse.common.model.wfrun.Group;
 import io.littlehorse.common.model.wfrun.User;
+import io.littlehorse.common.model.wfrun.UserGroup;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
@@ -42,7 +42,7 @@ public class SearchUserTaskRun
 
     private TaskOwnerCase ownerCase;
     private User user;
-    private Group group;
+    private UserGroup userGroup;
 
     private Date latestStart;
     private Date earliestStart;
@@ -76,8 +76,8 @@ public class SearchUserTaskRun
         // dictates that we would search by userGroup (since it has a higher
         // field number) and ignore userId silently. By using the way below,
         // we can throw an LHValidationError when processing the search.
-        if (p.hasUserGroup()) group =
-            LHSerializable.fromProto(p.getUserGroup(), Group.class);
+        if (p.hasUserGroup()) userGroup =
+            LHSerializable.fromProto(p.getUserGroup(), UserGroup.class);
         if (p.hasUser()) user = LHSerializable.fromProto(p.getUser(), User.class);
         if (p.hasLatestStart()) {
             latestStart = LHUtil.fromProtoTs(p.getLatestStart());
@@ -101,7 +101,7 @@ public class SearchUserTaskRun
 
         switch (ownerCase) {
             case USER_GROUP:
-                out.setUserGroup(group.toProto());
+                out.setUserGroup(userGroup.toProto());
                 break;
             case USER:
                 out.setUser(user.toProto());
@@ -127,7 +127,7 @@ public class SearchUserTaskRun
     }
 
     private void validateUserGroupAndUserId() throws LHValidationError {
-        if (group != null && user != null) {
+        if (userGroup != null && user != null) {
             throw new LHValidationError(
                 null,
                 "Cannot specify UserID and User Group in same search!"
@@ -165,15 +165,15 @@ public class SearchUserTaskRun
 
         if (user != null) {
             attributes.add(new Attribute("userId", this.getUser().getId()));
-            if (this.getUser().getGroup() != null) {
+            if (this.getUser().getUserGroup() != null) {
                 attributes.add(
-                    new Attribute("userGroup", this.getUser().getGroup().getId())
+                    new Attribute("userGroup", this.getUser().getUserGroup().getId())
                 );
             }
         }
 
-        if (group != null) {
-            attributes.add(new Attribute("userGroup", this.getGroup().getId()));
+        if (userGroup != null) {
+            attributes.add(new Attribute("userGroup", this.getUserGroup().getId()));
         }
         return attributes;
     }

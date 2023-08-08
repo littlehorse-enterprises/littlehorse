@@ -31,7 +31,7 @@ UserTaskRun. At the end, the UserTaskRun is submitted`,
 
 var assignUserTaskRunCmd = &cobra.Command{
 	Use:   "userTaskRun <wfRunId> <userTaskGuid> [options]",
-	Short: "Reassign a UserTaskRun to a group or specific userId",
+	Short: "Reassign a UserTaskRun to a userGroup or specific userId",
 	Long: `Given a provided wfRunId and UserTaskGuid, this utility allows you
 to reassign the specified UserTaskRun.
 
@@ -40,7 +40,7 @@ is already claimedby a specific UserId.
 
 The following option groups are supported:
 [userId] -> assign to a specific userId.
-[userGroup] -> assign to a group of users
+[userGroup] -> assign to a userGroup of users
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
@@ -135,7 +135,7 @@ Choose one of the following option groups:
 [userTaskDefName, userTaskStatus, userId, userGroup]
 
 * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
-  options with any group except [--wfRunId] to put a time bound on WfRun's
+  options with any userGroup except [--wfRunId] to put a time bound on WfRun's
   which are returned. The time bound applies to the time that the WfRun was
   created.
 `,

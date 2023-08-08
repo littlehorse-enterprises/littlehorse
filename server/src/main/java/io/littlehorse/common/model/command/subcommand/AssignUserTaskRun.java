@@ -7,8 +7,8 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.AssignUserTaskRunReply;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
-import io.littlehorse.common.model.wfrun.Group;
 import io.littlehorse.common.model.wfrun.User;
+import io.littlehorse.common.model.wfrun.UserGroup;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
@@ -30,7 +30,7 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
 
     private AssigneeCase assigneeType;
     private User user;
-    private Group group;
+    private UserGroup userGroup;
 
     public Class<AssignUserTaskRunPb> getProtoBaseClass() {
         return AssignUserTaskRunPb.class;
@@ -47,7 +47,7 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
                 out.setUser(user.toProto());
                 break;
             case USER_GROUP:
-                out.setUserGroup(group.toProto());
+                out.setUserGroup(userGroup.toProto());
                 break;
             case ASSIGNEE_NOT_SET:
                 log.warn(
@@ -70,7 +70,8 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
                 user = LHSerializable.fromProto(p.getUser(), User.class);
                 break;
             case USER_GROUP:
-                group = LHSerializable.fromProto(p.getUserGroup(), Group.class);
+                userGroup =
+                    LHSerializable.fromProto(p.getUserGroup(), UserGroup.class);
                 break;
             case ASSIGNEE_NOT_SET:
                 log.warn("Unset assignee. Should this be error?");

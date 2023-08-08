@@ -2,8 +2,8 @@ package io.littlehorse.common.model.wfrun.usertaskevent;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.wfrun.Group;
 import io.littlehorse.common.model.wfrun.User;
+import io.littlehorse.common.model.wfrun.UserGroup;
 import io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,9 +13,9 @@ import lombok.EqualsAndHashCode;
 public class UTEReassigned extends LHSerializable<UTEReassignedPb> {
 
     private User oldUser;
-    private Group oldUserGroup;
+    private UserGroup oldUserGroup;
     private User newUser;
-    private Group newUserGroup;
+    private UserGroup newUserGroup;
 
     @Override
     public Class<UTEReassignedPb> getProtoBaseClass() {
@@ -36,9 +36,9 @@ public class UTEReassigned extends LHSerializable<UTEReassignedPb> {
     public void initFrom(Message proto) {
         UTEReassignedPb p = (UTEReassignedPb) proto;
         if (p.hasNewUserGroup()) newUserGroup =
-            LHSerializable.fromProto(p.getNewUserGroup(), Group.class);
+            LHSerializable.fromProto(p.getNewUserGroup(), UserGroup.class);
         if (p.hasOldUserGroup()) oldUserGroup =
-            LHSerializable.fromProto(p.getOldUserGroup(), Group.class);
+            LHSerializable.fromProto(p.getOldUserGroup(), UserGroup.class);
         if (p.hasNewUser()) newUser =
             LHSerializable.fromProto(p.getNewUser(), User.class);
         if (p.hasOldUser()) oldUser =

@@ -63,7 +63,7 @@ public class UserTaskRunStorageManagerTest {
             }
             UserTaskRun userTaskRun = TestUtil.userTaskRun(wfRunId);
             userTaskRun.setUser(
-                new User(userTaskRun.getUser().getId(), userTaskRun.getGroup())
+                new User(userTaskRun.getUser().getId(), userTaskRun.getUserGroup())
             );
             userTaskRun.setStatus(userTaskRunStatusPb);
             userTaskRun.setId(

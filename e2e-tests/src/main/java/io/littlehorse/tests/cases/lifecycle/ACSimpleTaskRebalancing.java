@@ -29,7 +29,7 @@ public class ACSimpleTaskRebalancing extends Test {
     public String getDescription() {
         return """
                 Simple test to determine whether the task rebalancing works properly.
-                It creates a task group of four 'task workers' and ensures that they
+                It creates a task userGroup of four 'task workers' and ensures that they
                 are properly balanced. This test is a no-op if it is run against
                 a LittleHorse cluster with only one server.
                 """;

@@ -10,7 +10,7 @@ import lombok.Getter;
 public class User extends LHSerializable<UserPb> {
 
     private String id;
-    private Group group;
+    private UserGroup userGroup;
 
     public User() {}
 
@@ -18,15 +18,15 @@ public class User extends LHSerializable<UserPb> {
         this.id = id;
     }
 
-    public User(String id, Group group) {
+    public User(String id, UserGroup userGroup) {
         this.id = id;
-        this.group = group;
+        this.userGroup = userGroup;
     }
 
     @Override
     public UserPb.Builder toProto() {
         UserPb.Builder builder = UserPb.newBuilder().setId(id);
-        if (group != null) builder.setUserGroup(group.toProto());
+        if (userGroup != null) builder.setUserGroup(userGroup.toProto());
         return builder;
     }
 
@@ -35,7 +35,8 @@ public class User extends LHSerializable<UserPb> {
         UserPb userPb = (UserPb) proto;
         this.id = userPb.getId();
         if (userPb.hasUserGroup()) {
-            this.group = LHSerializable.fromProto(userPb.getUserGroup(), Group.class);
+            this.userGroup =
+                LHSerializable.fromProto(userPb.getUserGroup(), UserGroup.class);
         }
     }
 

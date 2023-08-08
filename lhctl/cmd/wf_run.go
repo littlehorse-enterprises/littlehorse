@@ -40,7 +40,7 @@ Search for WfRuns. You may provide any of the following option groups:
 [wfSpecName]
 
   * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
-    options with this group to put a time bound on WfRun's which are returned.
+    options with this userGroup to put a time bound on WfRun's which are returned.
 	The time bound applies to the time that the WfRun was created.
 
 Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.

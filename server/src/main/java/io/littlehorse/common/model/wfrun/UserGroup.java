@@ -7,13 +7,13 @@ import io.littlehorse.sdk.common.proto.UserGroupPb;
 import lombok.Getter;
 
 @Getter
-public class Group extends LHSerializable<UserGroupPb> {
+public class UserGroup extends LHSerializable<UserGroupPb> {
 
     private String id;
 
-    public Group() {}
+    public UserGroup() {}
 
-    public Group(String id) {
+    public UserGroup(String id) {
         this.id = id;
     }
 

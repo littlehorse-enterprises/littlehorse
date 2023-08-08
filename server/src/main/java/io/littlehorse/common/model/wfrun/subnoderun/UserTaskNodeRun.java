@@ -80,7 +80,9 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
             out =
                 new UserTaskRun(
                     utd,
-                    new Group(utn.getUserGroup().getRhsLiteralValue().getStrVal()),
+                    new UserGroup(
+                        utn.getUserGroup().getRhsLiteralValue().getStrVal()
+                    ),
                     getNodeRun()
                 );
         }

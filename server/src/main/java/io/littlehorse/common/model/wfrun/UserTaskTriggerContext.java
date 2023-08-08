@@ -8,7 +8,7 @@ import io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb;
 public class UserTaskTriggerContext extends LHSerializable<UserTaskTriggerContextPb> {
 
     private User user;
-    private Group userGroup;
+    private UserGroup userGroup;
 
     public UserTaskTriggerContext() {}
 
@@ -16,11 +16,11 @@ public class UserTaskTriggerContext extends LHSerializable<UserTaskTriggerContex
         this.user = user;
     }
 
-    public UserTaskTriggerContext(Group userGroup) {
+    public UserTaskTriggerContext(UserGroup userGroup) {
         this.userGroup = userGroup;
     }
 
-    public UserTaskTriggerContext(User user, Group userGroup) {
+    public UserTaskTriggerContext(User user, UserGroup userGroup) {
         this.user = user;
         this.userGroup = userGroup;
     }
@@ -43,7 +43,7 @@ public class UserTaskTriggerContext extends LHSerializable<UserTaskTriggerContex
             userGroup =
                 LHSerializable.fromProto(
                     taskTriggerContext.getUserGroup(),
-                    Group.class
+                    UserGroup.class
                 );
         }
     }

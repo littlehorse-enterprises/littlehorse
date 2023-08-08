@@ -30,7 +30,6 @@ import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
 
     private UserTaskRunPb.OwnerCase ownerCase;
     private User user;
-    private Group group;
+    private UserGroup userGroup;
     private List<UserTaskFieldResultPb> results = new ArrayList<>();
 
     private UserTaskRunStatusPb status;
@@ -81,14 +80,16 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         this.user = user;
     }
 
-    public UserTaskRun(UserTaskDef utd, Group group, NodeRun nodeRun) {
-        if (group == null) throw new IllegalArgumentException("User can't be null");
+    public UserTaskRun(UserTaskDef utd, UserGroup userGroup, NodeRun nodeRun) {
+        if (userGroup == null) throw new IllegalArgumentException(
+            "User can't be null"
+        );
         this.userTaskDefId = utd.getObjectId();
         this.nodeRunId = nodeRun.getObjectId();
         this.id = new UserTaskRunId(nodeRunId.getWfRunId());
         this.scheduledTime = new Date();
         ownerCase = UserTaskRunPb.OwnerCase.USER_GROUP;
-        this.group = group;
+        this.userGroup = userGroup;
     }
 
     public Class<UserTaskRunPb> getProtoBaseClass() {
@@ -107,7 +108,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         if (ownerCase.equals(UserTaskRunPb.OwnerCase.USER)) {
             out.setUser(user.toProto());
         } else if (ownerCase.equals(UserTaskRunPb.OwnerCase.USER_GROUP)) {
-            out.setUserGroup(group.toProto());
+            out.setUserGroup(userGroup.toProto());
         } else {
             throw new IllegalArgumentException("Owner case not supported yet");
         }
@@ -140,7 +141,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         if (ownerCase.equals(UserTaskRunPb.OwnerCase.USER)) {
             user = LHSerializable.fromProto(p.getUser(), User.class);
         } else if (ownerCase.equals(UserTaskRunPb.OwnerCase.USER_GROUP)) {
-            group = LHSerializable.fromProto(p.getUserGroup(), Group.class);
+            userGroup = LHSerializable.fromProto(p.getUserGroup(), UserGroup.class);
         } else {
             throw new IllegalArgumentException("Owner case not supported yet");
         }
@@ -183,7 +184,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
 
             if (user != null) {
                 assignToSpecificUser(node);
-            } else if (group != null) {
+            } else if (userGroup != null) {
                 assignToGroup(node);
             } else {
                 status = UserTaskRunStatusPb.UNASSIGNED;
@@ -246,12 +247,12 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                 groupIdVal.type
             );
         }
-        group = new Group(groupIdVal.strVal);
+        userGroup = new UserGroup(groupIdVal.strVal);
         status = UserTaskRunStatusPb.UNASSIGNED;
 
         // now add Audit Log Event
         UTEReassigned reassigned = new UTEReassigned();
-        reassigned.setNewUserGroup(group);
+        reassigned.setNewUserGroup(userGroup);
         events.add(new UserTaskEvent(reassigned, new Date()));
     }
 
@@ -259,11 +260,11 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         trigger.schedule(getNodeRun().getThreadRun().wfRun.getDao(), this);
     }
 
-    protected Group getUserGroup() {
-        if (user != null && user.getGroup() != null) {
-            return user.getGroup();
+    protected UserGroup getUserGroup() {
+        if (user != null && user.getUserGroup() != null) {
+            return user.getUserGroup();
         } else {
-            return group;
+            return userGroup;
         }
     }
 
@@ -275,7 +276,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                 reassigned = reassignToUser(user, true);
                 break;
             case USER_GROUP:
-                reassigned = reassignToUserGroup(event.getGroup());
+                reassigned = reassignToUserGroup(event.getUserGroup());
                 break;
             case ASSIGNEE_NOT_SET:
         }
@@ -295,7 +296,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                 reassigned = reassignToUser(user, false);
                 break;
             case USER_GROUP:
-                reassigned = reassignToUserGroup(new Group(newOwner));
+                reassigned = reassignToUserGroup(new UserGroup(newOwner));
             case ASSIGNTO_NOT_SET:
         }
         if (reassigned != null) {
@@ -303,15 +304,15 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         }
     }
 
-    private UTEReassigned reassignToUserGroup(Group newGroup) {
+    private UTEReassigned reassignToUserGroup(UserGroup newUserGroup) {
         UTEReassigned ute = new UTEReassigned();
-        ute.setNewUserGroup(newGroup);
-        ute.setOldUserGroup(group);
+        ute.setNewUserGroup(newUserGroup);
+        ute.setOldUserGroup(userGroup);
         ute.setNewUser(null);
         ute.setOldUser(user);
 
         ownerCase = UserTaskRunPb.OwnerCase.USER_GROUP;
-        group = newGroup;
+        userGroup = newUserGroup;
         user = null;
         status = UserTaskRunStatusPb.UNASSIGNED;
         return ute;
@@ -445,7 +446,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                 Optional.of(TagStorageTypePb.LOCAL),
                 userTaskRun ->
                     userTaskRun.getUser() != null &&
-                    userTaskRun.getUser().getGroup() != null
+                    userTaskRun.getUser().getUserGroup() != null
             ),
             new GetableIndex<UserTaskRun>(
                 List.of(
@@ -463,7 +464,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                     Pair.of("userGroup", GetableIndex.ValueType.SINGLE)
                 ),
                 Optional.of(TagStorageTypePb.LOCAL),
-                userTaskRun -> userTaskRun.getGroup() != null
+                userTaskRun -> userTaskRun.getUserGroup() != null
             ),
             new GetableIndex<UserTaskRun>(
                 List.of(
@@ -471,12 +472,12 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                     Pair.of("userGroup", GetableIndex.ValueType.SINGLE)
                 ),
                 Optional.of(TagStorageTypePb.LOCAL),
-                userTaskRun -> userTaskRun.getGroup() != null
+                userTaskRun -> userTaskRun.getUserGroup() != null
             ),
             new GetableIndex<UserTaskRun>(
                 List.of(Pair.of("userGroup", GetableIndex.ValueType.SINGLE)),
                 Optional.of(TagStorageTypePb.REMOTE),
-                userTaskRun -> userTaskRun.getGroup() != null
+                userTaskRun -> userTaskRun.getUserGroup() != null
             )
         );
     }
@@ -486,7 +487,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     }
 
     public UserTaskTriggerContext buildTaskContext() {
-        return new UserTaskTriggerContext(user, group);
+        return new UserTaskTriggerContext(user, userGroup);
     }
 
     private VarNameAndVal getVarNameAndValue(String varName, String varValue) {
