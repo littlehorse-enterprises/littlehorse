@@ -72,7 +72,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     public UserTaskRun() {}
 
     public UserTaskRun(UserTaskDef utd, User user, NodeRun nodeRun) {
-        if(user == null) throw new IllegalArgumentException("User can't be null");
+        if (user == null) throw new IllegalArgumentException("User can't be null");
         this.userTaskDefId = utd.getObjectId();
         this.nodeRunId = nodeRun.getObjectId();
         this.id = new UserTaskRunId(nodeRunId.getWfRunId());
@@ -82,7 +82,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     }
 
     public UserTaskRun(UserTaskDef utd, Group group, NodeRun nodeRun) {
-        if(group == null) throw new IllegalArgumentException("User can't be null");
+        if (group == null) throw new IllegalArgumentException("User can't be null");
         this.userTaskDefId = utd.getObjectId();
         this.nodeRunId = nodeRun.getObjectId();
         this.id = new UserTaskRunId(nodeRunId.getWfRunId());
@@ -136,7 +136,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         status = p.getStatus();
         scheduledTime = LHLibUtil.fromProtoTs(p.getScheduledTime());
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunId.class);
-
+        ownerCase = p.getOwnerCase();
         if (ownerCase.equals(UserTaskRunPb.OwnerCase.USER)) {
             user = LHSerializable.fromProto(p.getUser(), User.class);
         } else if (ownerCase.equals(UserTaskRunPb.OwnerCase.GROUP)) {

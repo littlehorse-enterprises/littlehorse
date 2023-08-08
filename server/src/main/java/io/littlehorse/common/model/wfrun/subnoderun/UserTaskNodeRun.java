@@ -7,10 +7,7 @@ import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.subnode.UserTaskNode;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
-import io.littlehorse.common.model.wfrun.Failure;
-import io.littlehorse.common.model.wfrun.SubNodeRun;
-import io.littlehorse.common.model.wfrun.User;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.*;
 import io.littlehorse.sdk.common.proto.UserTaskNodePb;
 import io.littlehorse.sdk.common.proto.UserTaskNodeRunPb;
 import java.util.Date;
@@ -83,7 +80,7 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
             out =
                 new UserTaskRun(
                     utd,
-                    new User(utn.getUserGroup().getRhsLiteralValue().getStrVal()),
+                    new Group(utn.getUserGroup().getRhsLiteralValue().getStrVal()),
                     getNodeRun()
                 );
         }
