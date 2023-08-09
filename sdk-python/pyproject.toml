@@ -13,16 +13,16 @@ keywords = ["littlehorse"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-protobuf = "^4.23.4"
-grpcio = "^1.56.2"
-jproperties = "^2.1.1"
+protobuf = "^4.24"
+grpcio = "^1.56"
+jproperties = "^2.1"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "*"
 black = "*"
 ruff = "*"
-grpcio-tools = "^1.56.2"
-types-protobuf = "^4.24.0.0"
+grpcio-tools = "^1.56"
+types-protobuf = "^4.24"
 
 [build-system]
 requires = ["poetry-core"]

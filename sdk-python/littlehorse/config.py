@@ -43,7 +43,3 @@ class Config:
         new_configs.update(self.configs)
 
         self.configs = new_configs
-
-
-if __name__ == "__main__":
-    config = Config()
