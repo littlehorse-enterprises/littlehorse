@@ -22,7 +22,6 @@ import io.littlehorse.sdk.common.proto.TaskNodePb;
 import io.littlehorse.sdk.common.proto.ThreadSpecPb;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb;
-import io.littlehorse.sdk.common.proto.UserPb;
 import io.littlehorse.sdk.common.proto.UserTaskNodePb;
 import io.littlehorse.sdk.common.proto.VariableAssignmentPb;
 import io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb;
