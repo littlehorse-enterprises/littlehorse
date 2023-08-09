@@ -4,7 +4,6 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.VariableModification;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
 import io.littlehorse.common.model.meta.Edge;
@@ -890,15 +889,15 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
      * @throws LHVarSubError when the varName is not found either on the current ThreadRun definition
      * or its parents definition
      */
-    private void applyOnAppropriateThread(
+    private void applyVarMutationOnAppropriateThread(
         String varName,
-        VariableModification function
+        VariableMutator function
     ) throws LHVarSubError {
         if (getThreadSpec().localGetVarDef(varName) != null) {
             function.apply(wfRunId, this.number, wfRun);
         } else {
             if (getParent() != null) {
-                getParent().applyOnAppropriateThread(varName, function);
+                getParent().applyVarMutationOnAppropriateThread(varName, function);
             } else {
                 throw new LHVarSubError(
                     null,
@@ -918,7 +917,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
      */
     public void createVariable(String varName, VariableValue var)
         throws LHVarSubError {
-        VariableModification createVariable = (wfRunId, threadRunNumber, wfRun) -> {
+        VariableMutator createVariable = (wfRunId, threadRunNumber, wfRun) -> {
             Variable variable = new Variable(
                 varName,
                 var,
@@ -928,7 +927,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             );
             wfRun.getDao().putVariable(variable);
         };
-        applyOnAppropriateThread(varName, createVariable);
+        applyVarMutationOnAppropriateThread(varName, createVariable);
     }
 
     /**
@@ -941,14 +940,14 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
      */
     public void mutateVariable(String varName, VariableValue var)
         throws LHVarSubError {
-        VariableModification mutateVariable = (wfRunId, threadRunNumber, wfRun) -> {
+        VariableMutator mutateVariable = (wfRunId, threadRunNumber, wfRun) -> {
             Variable variable = wfRun
                 .getDao()
                 .getVariable(wfRunId, varName, threadRunNumber);
             variable.setValue(var);
             wfRun.getDao().putVariable(variable);
         };
-        applyOnAppropriateThread(varName, mutateVariable);
+        applyVarMutationOnAppropriateThread(varName, mutateVariable);
     }
 
     public Variable getVariable(String varName) {
@@ -963,6 +962,20 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
 
         return null;
+    }
+
+    /**
+     * Allows to apply variable modifications within the context of the ThreadRun that owns it
+     */
+    @FunctionalInterface
+    private interface VariableMutator {
+        /**
+         * Apply a variable modification within the context of the ThreadRun that owns the variable
+         * @param wfRunId the wfRunId of the ThreadRun that owns the variable
+         * @param threadRunNumber the threadRunNumber of the ThreadRun that owns the variable
+         * @param wfRun the wfRun of the ThreadRun that owns the variable
+         */
+        void apply(String wfRunId, int threadRunNumber, WfRun wfRun);
     }
 }
 
