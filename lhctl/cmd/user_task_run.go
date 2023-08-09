@@ -170,16 +170,28 @@ Choose one of the following option groups:
 		}
 
 		userIdStr, _ := cmd.Flags().GetString("userId")
+		userGroupStr, _ := cmd.Flags().GetString("userGroup")
 		if userIdStr != "" {
-			var user = &model.UserPb{
-				Id: userIdStr,
+			if userGroupStr != "" {
+				var userGroup = &model.UserGroupPb{
+					Id: userGroupStr,
+				}
+				search.TaskOwner = &model.SearchUserTaskRunPb_User{
+					User: &model.UserPb{
+						Id:        userIdStr,
+						UserGroup: userGroup,
+					},
+				}
+			} else {
+				search.TaskOwner = &model.SearchUserTaskRunPb_User{
+					User: &model.UserPb{
+						Id: userIdStr,
+					},
+				}
 			}
-			search.TaskOwner = &model.SearchUserTaskRunPb_User{
-				User: user,
-			}
+
 		}
 
-		userGroupStr, _ := cmd.Flags().GetString("userGroup")
 		if userGroupStr != "" {
 			var userGroupPb = &model.UserGroupPb{
 				Id: userGroupStr,
@@ -324,5 +336,4 @@ func init() {
 	searchUserTaskRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for User Task Runs that started no more than this number of minutes ago")
 	searchUserTaskRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for User Task Runs that started at least this number of minutes ago")
 
-	searchUserTaskRunCmd.MarkFlagsMutuallyExclusive("userId", "userGroup")
 }
