@@ -271,7 +271,7 @@ class AZSimpleTask {
         Predicate<VarNameAndValPb> isUserGroupVariable = candidateVariable -> {
             return candidateVariable.getVarName().equals("userGroup");
         };
-        String userGroupId = workerContext.getGroup().getId();
+        String userGroupId = workerContext.getUserGroup().getId();
         return String.format("Hey there %s execute your task!", userGroupId);
     }
 }

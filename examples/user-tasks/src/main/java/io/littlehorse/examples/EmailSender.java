@@ -13,10 +13,14 @@ public class EmailSender {
         String content,
         WorkerContext workerContext
     ) {
-        UserTaskTriggerContextPb taskContext = null;
-        if (taskContext != null) {
-            UserPb user = taskContext.getUser();
-            System.out.println("Received variable by " + user.getId());
+        if (workerContext.getUser() != null) {
+            System.out.println(
+                "Received variable by " + workerContext.getUser().getId()
+            );
+        } else if (workerContext.getUserGroup() != null) {
+            System.out.println(
+                "Received variable by " + workerContext.getUserGroup().getId()
+            );
         }
 
         System.out.println("\n\nSending email to " + address);

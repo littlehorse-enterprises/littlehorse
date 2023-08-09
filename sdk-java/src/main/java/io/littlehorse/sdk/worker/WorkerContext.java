@@ -113,7 +113,7 @@ public class WorkerContext {
         return null;
     }
 
-    public UserGroupPb getGroup() {
+    public UserGroupPb getUserGroup() {
         if (scheduledTask.getSource().hasUserTaskTrigger()) {
             return scheduledTask
                 .getSource()
