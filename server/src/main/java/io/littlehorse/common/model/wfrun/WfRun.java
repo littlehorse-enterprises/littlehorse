@@ -277,7 +277,7 @@ public class WfRun extends Getable<WfRunPb> {
             }
 
             try {
-                thread.putVariable(varName, val);
+                thread.createVariable(varName, val);
             } catch (LHVarSubError exn) {
                 throw new RuntimeException("Not possible");
             }

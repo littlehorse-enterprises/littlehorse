@@ -50,13 +50,13 @@ public class TestUtil {
     }
 
     public static Variable variable(String wfRunId) {
-        Variable variable = new Variable();
-        variable.setWfRunId(wfRunId);
-        variable.setThreadRunNumber(0);
-        variable.setName("test");
-        variable.setValue(variableValue());
-        variable.setWfSpec(wfSpec("testWfSpecName"));
-        return variable;
+        return new Variable(
+            "test",
+            variableValue(),
+            wfRunId,
+            0,
+            wfSpec("testWfSpecName")
+        );
     }
 
     public static NodeRun nodeRun() {

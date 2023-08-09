@@ -69,7 +69,6 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 @Slf4j
 public class KafkaStreamsLHDAOImpl implements LHDAO {
 
-    private Map<String, Variable> variablePuts;
     private Map<String, WfSpec> wfSpecPuts;
     private Map<String, TaskDef> taskDefPuts;
     private Map<String, UserTaskDef> userTaskDefPuts;
@@ -129,7 +128,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         // At the start, we haven't claimed the partition until the claim event comes
         this.partitionIsClaimed = false;
 
-        variablePuts = new HashMap<>();
         wfSpecPuts = new HashMap<>();
         extEvtDefPuts = new HashMap<>();
         taskDefPuts = new HashMap<>();
@@ -340,24 +338,21 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public void putVariable(Variable var) {
-        variablePuts.put(var.getStoreKey(), var);
+        storageManager.put(var, Variable.class);
     }
 
     @Override
     public Variable getVariable(String wfRunId, String name, int threadNum) {
         String key = new VariableId(wfRunId, threadNum, name).getStoreKey();
-        if (variablePuts.containsKey(key)) {
-            return variablePuts.get(key);
+        Variable variable = storageManager.get(key, Variable.class);
+        if (variable != null) {
+            if (variable.getWfSpec() == null) {
+                WfRun wfRun = getWfRun(wfRunId);
+                variable.setWfSpec(wfRun.getWfSpec());
+            }
+            variable.setDao(this);
         }
-        Variable out = localStore.get(key, Variable.class);
-        if (out != null) {
-            variablePuts.put(key, out);
-            // Need to get the WfSpec
-            WfRun wfRun = getWfRun(wfRunId);
-            out.setWfSpec(wfRun.getWfSpec());
-            out.setDao(this);
-        }
-        return out;
+        return variable;
     }
 
     @Override
@@ -607,7 +602,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<Variable> next = iter.next();
-                storageManager.deleteGetable(next.getKey(), Variable.class);
+                storageManager.delete(next.getKey(), Variable.class);
             }
         }
 
@@ -673,18 +668,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     private void flush() {
-        // Turns out that we have to save the WfRun's before we save the Variable.
-        for (Map.Entry<String, Variable> e : variablePuts.entrySet()) {
-            Variable v = e.getValue();
-            if (v != null) {
-                if (v.getWfSpec() == null) {
-                    // that's because otherwise the getWfRun() call might be null
-                    v.setWfSpec(getWfRun(v.wfRunId).getWfSpec());
-                }
-            }
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), Variable.class);
-        }
-
         for (Map.Entry<String, ExternalEventDef> e : extEvtDefPuts.entrySet()) {
             saveOrDeleteGETableFlush(
                 e.getKey(),
@@ -912,7 +895,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     private void clearThingsToWrite() {
-        variablePuts.clear();
         scheduledTaskPuts.clear();
         timersToSchedule.clear();
         wfSpecPuts.clear();
