@@ -1,4 +1,4 @@
-# LittleHorse GoLang SDK
+# LittleHorse Python SDK
 
 For documentation on how to use this library, please go to [the LittleHorse website](https://littlehorse.dev).
 
@@ -23,5 +23,7 @@ poetry install
 ## Run tests
 
 ```
-poetry run python -m unittest -v
+cd sdk-python
+poetry shell
+python -m unittest -v
 ```

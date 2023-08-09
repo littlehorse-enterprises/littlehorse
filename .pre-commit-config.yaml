@@ -1,55 +1,82 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 define: &exclude |
-              (?x)(
-                  ^server/src/main/java/io/littlehorse/common/proto/|
-                  ^sdk-java/src/main/java/io/littlehorse/sdk/common/proto/|
-                  ^sdk-go/common/model/
-              )
+  (?x)(
+      ^server/src/main/java/io/littlehorse/common/proto/|
+      ^sdk-java/src/main/java/io/littlehorse/sdk/common/proto/|
+      ^sdk-go/common/model/|
+      ^sdk-python/littlehorse/model/
+  )
 
 repos:
-    - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v4.4.0
-      hooks:
-          - id: trailing-whitespace
-            exclude: *exclude
-          - id: end-of-file-fixer
-            exclude: *exclude
-          - id: check-added-large-files
-    - repo: https://github.com/shellcheck-py/shellcheck-py
-      rev: v0.9.0.2
-      hooks:
-        - id: shellcheck
-          args: [-x]
-    - repo: local
-      hooks:
-          - id: compile-proto
-            name: Compile proto files
-            language: system
-            always_run: true
-            pass_filenames: false
-            entry: ./local-dev/compile-proto.sh
-          - id: format-java
-            name: Format Java Code
-            language: system
-            always_run: true
-            pass_filenames: false
-            entry: npm run format
-          - id: java-tests
-            name: Running Java Tests
-            language: system
-            always_run: true
-            pass_filenames: false
-            entry: ./gradlew test
-          - id: go-tests
-            name: Running Go Tests
-            language: system
-            always_run: true
-            pass_filenames: false
-            entry: go test ./...
-          - id: python-tests
-            name: Running Python Tests
-            language: system
-            always_run: true
-            pass_filenames: false
-            entry: poetry -C ./sdk-python run python -m unittest -v
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: *exclude
+      - id: end-of-file-fixer
+        exclude: *exclude
+      - id: check-added-large-files
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.2
+    hooks:
+      - id: shellcheck
+        args: [-x]
+  - repo: local
+    hooks:
+      # Dependencies
+
+      - id: compile-proto
+        name: Compile proto files
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: ./local-dev/compile-proto.sh
+
+      # Linters
+
+      - id: lint-python
+        name: Lint Python Code
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python run ruff --fix sdk-python/
+
+      # Formatters
+
+      - id: format-java
+        name: Format Java Code
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: npm run format
+
+      - id: format-python
+        name: Format Python Code
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python run black sdk-python/
+
+      # Tests
+
+      - id: java-tests
+        name: Running Java Tests
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: ./gradlew test
+
+      - id: go-tests
+        name: Running Go Tests
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: go test ./...
+
+      - id: python-tests
+        name: Running Python Tests
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python run python -m unittest -v

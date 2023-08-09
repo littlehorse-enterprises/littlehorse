@@ -26,3 +26,7 @@ lhctl/lhctl
 
 # Others
 local-dev/certs/
+
+# Python
+__pycache__
+.ruff_cache
