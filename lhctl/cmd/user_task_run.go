@@ -141,7 +141,7 @@ Choose one of the following option groups:
 [userTaskDefName, userTaskStatus, userId, userGroup]
 
 * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
-  options with any userGroup except [--wfRunId] to put a time bound on WfRun's
+  options with any group except [--wfRunId] to put a time bound on WfRun's
   which are returned. The time bound applies to the time that the WfRun was
   created.
 `,

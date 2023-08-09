@@ -412,7 +412,7 @@ Examples of legal advertised listener lists: `FOR_WORKERS://localhost:2023,FOR_L
 
 ### `LHS_CLUSTER_ID`
 
-An identifier for the stream processing application. Must be unique within the LittleHorse cluster. It is used as 1) the default `client-id` prefix, 2) the `userGroup-id` for membership management, 3) the changelog topic prefix. [Kafka Official](https://kafka.apache.org/documentation/#streamsconfigs_application.id).
+An identifier for the stream processing application. Must be unique within the LittleHorse cluster. It is used as 1) the default `client-id` prefix, 2) the `group-id` for membership management, 3) the changelog topic prefix. [Kafka Official](https://kafka.apache.org/documentation/#streamsconfigs_application.id).
 
 - **Type:** string
 - **Default:** cluster1
@@ -493,7 +493,7 @@ The size of the shared Threadpool used by the grpc listeners.
 
 ### `LHS_STREAMS_SESSION_TIMEOUT`
 
-The timeout used to detect client failures when using Kafka's userGroup management facility. [Kafka Official](https://kafka.apache.org/documentation/#consumerconfigs_session.timeout.ms).
+The timeout used to detect client failures when using Kafka's group management facility. [Kafka Official](https://kafka.apache.org/documentation/#consumerconfigs_session.timeout.ms).
 
 - **Type:** int
 - **Default:** 30000 (30 seconds)

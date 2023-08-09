@@ -29,7 +29,7 @@ public class ABSimpleDeleteDeadTaskWorker extends Test {
     public String getDescription() {
         return """
                 Simple test to determine whether the delete dead task workers works properly.
-                It creates a task userGroup of five 'task workers' and ensures that they
+                It creates a task group of five 'task workers' and ensures that they
                 are properly deleted. This test is a no-op if it is run against
                 a LittleHorse cluster with only one server.
                 """;

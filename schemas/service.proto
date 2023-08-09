@@ -491,18 +491,13 @@ message PollTaskPb {
   optional string task_worker_version = 3;
 }
 
-
-
 message ScheduledTaskPb {
   TaskRunIdPb task_run_id = 1;
   TaskDefIdPb task_def_id = 2;
   int32 attempt_number = 3;
-
   repeated VarNameAndValPb variables = 4;
   google.protobuf.Timestamp created_at = 5;
-
   TaskRunSourcePb source = 6;
-
 }
 
 message TaskRunSourcePb {
@@ -1223,7 +1218,6 @@ message UserTaskRunIdPb {
   string user_task_guid = 2;
 }
 
-
 message UserGroupPb {
   string id = 1;
 }
@@ -1232,8 +1226,6 @@ message UserPb {
   string id = 1;
   optional UserGroupPb user_group = 2;
 }
-
-
 
 // This is a Getable
 message UserTaskRunPb {

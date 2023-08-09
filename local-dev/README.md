@@ -52,7 +52,7 @@ To "reset" the LittleHorse cluster, you need to delete the data in Kafka and als
 
 LittleHorse is a distributed system in which the different LH Server Instances (Brokers) need to communicate with each other. For example (among many others), all GET requests on the API use Interactive Queries, which involves requests between the different Brokers. Therefore, you'll need to be able to test with multiple brokers running at once.
 
-Running two brokers is slightly tricky as you must configure the ports, advertised hostnames, and Kafka userGroup instance ID's correctly.
+Running two brokers is slightly tricky as you must configure the ports, advertised hostnames, and Kafka group instance ID's correctly.
 
 However, you can start two Brokers in your terminal as follows:
 
