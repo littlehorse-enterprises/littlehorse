@@ -38,7 +38,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -891,14 +890,20 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
      * @throws LHVarSubError when the varName is not found either on the current ThreadRun definition
      * or its parents definition
      */
-    private void applyOnAppropriateThread(String varName, VariableModification function) throws LHVarSubError {
+    private void applyOnAppropriateThread(
+        String varName,
+        VariableModification function
+    ) throws LHVarSubError {
         if (getThreadSpec().localGetVarDef(varName) != null) {
             function.apply(wfRunId, this.number, wfRun);
-        } else  {
+        } else {
             if (getParent() != null) {
                 getParent().applyOnAppropriateThread(varName, function);
             } else {
-                throw new LHVarSubError(null, "Tried to save out-of-scope var " + varName);
+                throw new LHVarSubError(
+                    null,
+                    "Tried to save out-of-scope var " + varName
+                );
             }
         }
     }
@@ -911,14 +916,15 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
      * @throws LHVarSubError when the varName is not found either on the current ThreadRun definition
      * or its parents definition
      */
-    public void createVariable(String varName, VariableValue var) throws LHVarSubError {
+    public void createVariable(String varName, VariableValue var)
+        throws LHVarSubError {
         VariableModification createVariable = (wfRunId, threadRunNumber, wfRun) -> {
             Variable variable = new Variable(
-                    varName,
-                    var,
-                    wfRunId,
-                    threadRunNumber,
-                    wfRun.getWfSpec()
+                varName,
+                var,
+                wfRunId,
+                threadRunNumber,
+                wfRun.getWfSpec()
             );
             wfRun.getDao().putVariable(variable);
         };
@@ -933,9 +939,12 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
      * @throws LHVarSubError when the varName is not found either on the current ThreadRun definition
      * or its parents definition
      */
-    public void mutateVariable(String varName, VariableValue var) throws LHVarSubError {
+    public void mutateVariable(String varName, VariableValue var)
+        throws LHVarSubError {
         VariableModification mutateVariable = (wfRunId, threadRunNumber, wfRun) -> {
-            Variable variable = wfRun.getDao().getVariable(wfRunId, varName, threadRunNumber);
+            Variable variable = wfRun
+                .getDao()
+                .getVariable(wfRunId, varName, threadRunNumber);
             variable.setValue(var);
             wfRun.getDao().putVariable(variable);
         };

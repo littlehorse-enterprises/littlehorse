@@ -49,11 +49,11 @@ public class TestUtil {
 
     public static Variable variable(String wfRunId) {
         return new Variable(
-                "test",
-                variableValue(),
-                wfRunId,
-                0,
-                wfSpec("testWfSpecName")
+            "test",
+            variableValue(),
+            wfRunId,
+            0,
+            wfSpec("testWfSpecName")
         );
     }
 

@@ -41,7 +41,13 @@ public class Variable extends Getable<VariablePb> {
 
     public Variable() {}
 
-    public Variable(String name, VariableValue value, String wfRunId, int threadRunNumber, WfSpec wfSpec) {
+    public Variable(
+        String name,
+        VariableValue value,
+        String wfRunId,
+        int threadRunNumber,
+        WfSpec wfSpec
+    ) {
         this.name = name;
         this.value = value;
         this.wfRunId = wfRunId;
