@@ -31,6 +31,9 @@ The LittleHorse repository contains the following components:
 - [`sdk-go`](sdk-go)
     - Library for creating `WfSpec`'s in GoLang.
     - Library for executing `TaskRun`'s in GoLang.
+- [`sdk-python`](sdk-python)
+    - Library for creating `WfSpec`'s in Python.
+    - Library for executing `TaskRun`'s in Python.
 - [`lhctl`](lhctl)
     - The `lhctl` command line interface.
 - [`e2e-tests`](e2e-tests)
