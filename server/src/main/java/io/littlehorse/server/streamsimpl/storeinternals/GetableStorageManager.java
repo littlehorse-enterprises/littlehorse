@@ -81,16 +81,16 @@ public class GetableStorageManager {
             getable.getStoreKey()
         );
 
-//        if (uncommittedEntity != null) {
-//            if (uncommittedEntity.getStoredObject() != getable) {
-//                throw new IllegalStateException(
-//                    "Appears that Getable " +
-//                    getable.getObjectId() +
-//                    " was re-instantiated"
-//                );
-//            }
-//            return;
-//        }
+        if (uncommittedEntity != null) {
+            if (uncommittedEntity.getStoredObject() != getable) {
+                throw new IllegalStateException(
+                    "Appears that Getable " +
+                    getable.getObjectId() +
+                    " was re-instantiated"
+                );
+            }
+            return;
+        }
 
         StoredGetable<U, T> previousValue = localStore.getStoredGetable(
             getable.getStoreKey(),

@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.VariableModification;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
 import io.littlehorse.common.model.meta.Edge;
@@ -37,6 +38,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +73,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public ThreadTypePb type;
 
     public ThreadRun() {
-        variables = new HashMap<>();
         childThreadIds = new ArrayList<>();
         haltReasons = new ArrayList<>();
         handledFailedChildren = new ArrayList<>();
@@ -177,8 +178,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     // For Scheduler
 
     public WfRun wfRun;
-
-    public Map<String, Variable> variables;
 
     private ThreadSpec threadSpec;
 
@@ -787,7 +786,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             // this method saves the variable into the appropriate ThreadRun,
             // respecting the fact that child ThreadRun's can access their
             // parents' variables.
-            putVariable(entry.getKey(), entry.getValue());
+            mutateVariable(entry.getKey(), entry.getValue());
         }
     }
 
@@ -885,26 +884,62 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         return out;
     }
 
-    public void putVariable(String varName, VariableValue var) throws LHVarSubError {
+    /**
+     * Traverse the current and parent ThreadRun to run the variable modification on the appropriate ThreadRun
+     * @param varName name of the variable
+     * @param function function that executes the variable modification (e.g. creation, mutation, etc.)
+     * @throws LHVarSubError when the varName is not found either on the current ThreadRun definition
+     * or its parents definition
+     */
+    private void applyOnAppropriateThread(String varName, VariableModification function) throws LHVarSubError {
         if (getThreadSpec().localGetVarDef(varName) != null) {
-            Variable toPut = new Variable(
+            function.apply(wfRunId, this.number, wfRun);
+        } else  {
+            if (getParent() != null) {
+                getParent().applyOnAppropriateThread(varName, function);
+            } else {
+                throw new LHVarSubError(null, "Tried to save out-of-scope var " + varName);
+            }
+        }
+    }
+
+    /**
+     * Creates a new variable on the current ThreadRun or any of its parents depending on
+     * who has the variable on its definition
+     * @param varName name of the variable
+     * @param var value of the variable
+     * @throws LHVarSubError when the varName is not found either on the current ThreadRun definition
+     * or its parents definition
+     */
+    public void createVariable(String varName, VariableValue var) throws LHVarSubError {
+        VariableModification createVariable = (wfRunId, threadRunNumber, wfRun) -> {
+            Variable variable = new Variable(
                     varName,
                     var,
                     wfRunId,
-                    this.number,
+                    threadRunNumber,
                     wfRun.getWfSpec()
             );
-            wfRun.getDao().putVariable(toPut);
-        } else {
-            if (getParent() != null) {
-                getParent().putVariable(varName, var);
-            } else {
-                throw new LHVarSubError(
-                    null,
-                    "Tried to save out-of-scope var " + varName
-                );
-            }
-        }
+            wfRun.getDao().putVariable(variable);
+        };
+        applyOnAppropriateThread(varName, createVariable);
+    }
+
+    /**
+     * Mutates an existing variable on the current ThreadRun or any of its parents depending on
+     * who has the variable on its definition
+     * @param varName name of the variable
+     * @param var value of the variable
+     * @throws LHVarSubError when the varName is not found either on the current ThreadRun definition
+     * or its parents definition
+     */
+    public void mutateVariable(String varName, VariableValue var) throws LHVarSubError {
+        VariableModification mutateVariable = (wfRunId, threadRunNumber, wfRun) -> {
+            Variable variable = wfRun.getDao().getVariable(wfRunId, varName, threadRunNumber);
+            variable.setValue(var);
+            wfRun.getDao().putVariable(variable);
+        };
+        applyOnAppropriateThread(varName, mutateVariable);
     }
 
     public Variable getVariable(String varName) {
