@@ -31,7 +31,7 @@ repos:
       # Dependencies
 
       - id: compile-proto
-        name: Compile proto files
+        name: Compile Proto Files
         language: system
         always_run: true
         pass_filenames: false
