@@ -58,6 +58,13 @@ repos:
         pass_filenames: false
         entry: poetry -C ./sdk-python run black sdk-python/
 
+      - id: format-go
+        name: Format Go Code
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: gofmt -s -w ./sdk-go
+
       # Tests
 
       - id: java-tests
