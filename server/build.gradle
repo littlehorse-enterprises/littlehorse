@@ -3,10 +3,6 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'java'
     id 'maven-publish'
-
-    // code analysis
-    id 'org.owasp.dependencycheck' version '8.2.1'
-    id 'org.sonarqube' version '4.2.1.3168'
 }
 
 sourceCompatibility=17

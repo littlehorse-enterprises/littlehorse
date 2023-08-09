@@ -522,7 +522,7 @@ public class LHConfig extends ConfigBase {
         Map<String, ListenerProtocol> protocolMap = getListenersProtocolMap();
         Map<String, AuthorizationProtocol> authMap = getListenersAuthorizationMap();
 
-        if (!rawListenersConfig.matches("([a-zA-Z0-9_]+:\\d+,?)+")) {
+        if (!rawListenersConfig.matches("([a-zA-Z0-9_-]+:\\d+,?)+")) {
             throw new LHMisconfigurationException(
                 "Invalid configuration: " + LHConfig.LISTENERS_KEY
             );
