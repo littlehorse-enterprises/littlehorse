@@ -41,7 +41,6 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
             .newBuilder()
             .setUserTaskRunId(userTaskRunId.toProto())
             .setOverrideClaim(overrideClaim);
-
         switch (assigneeType) {
             case USER:
                 out.setUser(user.toProto());

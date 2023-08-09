@@ -10,6 +10,7 @@ import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.ReassignUserTask;
 import io.littlehorse.common.model.meta.Node;
+import io.littlehorse.common.model.meta.subnode.UserTaskNode;
 import io.littlehorse.common.model.meta.usertasks.UTActionTrigger;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.objectId.NodeRunId;
@@ -57,6 +58,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     private UserTaskRunPb.OwnerCase ownerCase;
     private User user;
     private UserGroup userGroup;
+    private UserTaskNode userTaskNode;
     private List<UserTaskFieldResultPb> results = new ArrayList<>();
 
     private UserTaskRunStatusPb status;
@@ -70,26 +72,20 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
 
     public UserTaskRun() {}
 
-    public UserTaskRun(UserTaskDef utd, User user, NodeRun nodeRun) {
-        if (user == null) throw new IllegalArgumentException("User can't be null");
+    public UserTaskRun(UserTaskDef utd, UserTaskNode userTaskNode, NodeRun nodeRun) {
         this.userTaskDefId = utd.getObjectId();
         this.nodeRunId = nodeRun.getObjectId();
         this.id = new UserTaskRunId(nodeRunId.getWfRunId());
         this.scheduledTime = new Date();
-        ownerCase = UserTaskRunPb.OwnerCase.USER;
-        this.user = user;
-    }
-
-    public UserTaskRun(UserTaskDef utd, UserGroup userGroup, NodeRun nodeRun) {
-        if (userGroup == null) throw new IllegalArgumentException(
-            "User can't be null"
-        );
-        this.userTaskDefId = utd.getObjectId();
-        this.nodeRunId = nodeRun.getObjectId();
-        this.id = new UserTaskRunId(nodeRunId.getWfRunId());
-        this.scheduledTime = new Date();
-        ownerCase = UserTaskRunPb.OwnerCase.USER_GROUP;
-        this.userGroup = userGroup;
+        this.userTaskNode = userTaskNode;
+        ownerCase =
+            switch (userTaskNode.getAssignmentType()) {
+                case USER_ID -> UserTaskRunPb.OwnerCase.USER;
+                case USER_GROUP -> UserTaskRunPb.OwnerCase.USER_GROUP;
+                default -> throw new IllegalArgumentException(
+                    "Assignment Type not supported"
+                );
+            };
     }
 
     public Class<UserTaskRunPb> getProtoBaseClass() {
@@ -106,9 +102,9 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
             .setNodeRunId(nodeRunId.toProto());
 
         if (ownerCase.equals(UserTaskRunPb.OwnerCase.USER)) {
-            out.setUser(user.toProto());
+            if (user != null) out.setUser(user.toProto());
         } else if (ownerCase.equals(UserTaskRunPb.OwnerCase.USER_GROUP)) {
-            out.setUserGroup(userGroup.toProto());
+            if (userGroup != null) out.setUserGroup(userGroup.toProto());
         } else {
             throw new IllegalArgumentException("Owner case not supported yet");
         }
@@ -182,9 +178,9 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                 notes = notesVal.getStrVal();
             }
 
-            if (user != null) {
+            if (ownerCase == UserTaskRunPb.OwnerCase.USER) {
                 assignToSpecificUser(node);
-            } else if (userGroup != null) {
+            } else if (ownerCase == UserTaskRunPb.OwnerCase.USER_GROUP) {
                 assignToGroup(node);
             } else {
                 status = UserTaskRunStatusPb.UNASSIGNED;
@@ -260,7 +256,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         trigger.schedule(getNodeRun().getThreadRun().wfRun.getDao(), this);
     }
 
-    protected UserGroup getUserGroup() {
+    public UserGroup getUserGroup() {
         if (user != null && user.getUserGroup() != null) {
             return user.getUserGroup();
         } else {
@@ -270,9 +266,9 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
 
     public void reassignTo(AssignUserTaskRun event) {
         UTEReassigned reassigned = null;
-        User user = new User(event.getUser().getId(), this.getUserGroup());
         switch (event.getAssigneeType()) {
             case USER:
+                User user = new User(event.getUser().getId(), this.getUserGroup());
                 reassigned = reassignToUser(user, true);
                 break;
             case USER_GROUP:

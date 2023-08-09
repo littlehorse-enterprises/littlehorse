@@ -75,7 +75,7 @@ public class UserTasksExample {
         thread.scheduleReassignmentToUserOnDeadline(
             financeUserTaskOutput,
             "test-eduwer",
-            2
+            60
         );
 
         thread.mutate(

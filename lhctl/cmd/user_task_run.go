@@ -62,12 +62,18 @@ The following option groups are supported:
 		}
 
 		if userId != "" {
-			reassign.Assignee = &model.AssignUserTaskRunPb_UserId{
-				UserId: userId,
+			var user = &model.UserPb{
+				Id: userId,
+			}
+			reassign.Assignee = &model.AssignUserTaskRunPb_User{
+				User: user,
 			}
 		} else if userGroup != "" {
+			var userGroupPb = &model.UserGroupPb{
+				Id: userGroup,
+			}
 			reassign.Assignee = &model.AssignUserTaskRunPb_UserGroup{
-				UserGroup: userGroup,
+				UserGroup: userGroupPb,
 			}
 		} else {
 			log.Fatal("Must specify either --userId or --userGroup")
@@ -165,15 +171,21 @@ Choose one of the following option groups:
 
 		userIdStr, _ := cmd.Flags().GetString("userId")
 		if userIdStr != "" {
-			search.TaskOwner = &model.SearchUserTaskRunPb_UserId{
-				UserId: userIdStr,
+			var user = &model.UserPb{
+				Id: userIdStr,
+			}
+			search.TaskOwner = &model.SearchUserTaskRunPb_User{
+				User: user,
 			}
 		}
 
 		userGroupStr, _ := cmd.Flags().GetString("userGroup")
 		if userGroupStr != "" {
+			var userGroupPb = &model.UserGroupPb{
+				Id: userGroupStr,
+			}
 			search.TaskOwner = &model.SearchUserTaskRunPb_UserGroup{
-				UserGroup: userGroupStr,
+				UserGroup: userGroupPb,
 			}
 		}
 
