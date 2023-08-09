@@ -16,6 +16,8 @@ import io.littlehorse.sdk.common.proto.SearchUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunPb;
 import io.littlehorse.sdk.common.proto.TaskStatusPb;
+import io.littlehorse.sdk.common.proto.UserGroupPb;
+import io.littlehorse.sdk.common.proto.UserPb;
 import io.littlehorse.sdk.common.proto.UserTaskEventPb;
 import io.littlehorse.sdk.common.proto.UserTaskEventPb.EventCase;
 import io.littlehorse.sdk.common.proto.UserTaskFieldResultPb;
@@ -23,6 +25,7 @@ import io.littlehorse.sdk.common.proto.UserTaskResultPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
+import io.littlehorse.sdk.common.proto.VarNameAndValPb;
 import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.sdk.usertask.annotations.UserTaskField;
@@ -31,12 +34,14 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.UserTaskWorkflowTest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class AZUserTasksBasic extends UserTaskWorkflowTest {
 
@@ -138,9 +143,11 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
             .searchUserTaskRun(
                 SearchUserTaskRunPb
                     .newBuilder()
-                    .setUserGroup("test-group")
+                    .setUserGroup(
+                        UserGroupPb.newBuilder().setId("test-group").build()
+                    )
                     .setUserTaskDefName(USER_TASK_DEF_NAME)
-                    .setStatus(UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED)
+                    .setStatus(UserTaskRunStatusPb.UNASSIGNED)
                     .build()
             );
         UserTaskRunIdPb userTaskRunIdPb = null;
@@ -155,7 +162,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
             .assignUserTaskRun(
                 AssignUserTaskRunPb
                     .newBuilder()
-                    .setUserId("unavailable-user")
+                    .setUser(UserPb.newBuilder().setId("unavailable-user").build())
                     .setUserTaskRunId(userTaskRunIdPb)
                     .build()
             );
@@ -169,7 +176,17 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         SearchUserTaskRunReplyPb results = client
             .getGrpcClient()
             .searchUserTaskRun(
-                SearchUserTaskRunPb.newBuilder().setUserId("available-user").build()
+                SearchUserTaskRunPb
+                    .newBuilder()
+                    .setUser(
+                        UserPb
+                            .newBuilder()
+                            .setId("available-user")
+                            .setUserGroup(
+                                UserGroupPb.newBuilder().setId("test-group").build()
+                            )
+                    )
+                    .build()
             );
         assertThat(
             results.getCode() == LHResponseCodePb.OK,
@@ -250,7 +267,11 @@ class AZSimpleTask {
     }
 
     @LHTaskMethod("az-reminder")
-    public String reminder() {
-        return "Hey there dude execute your task!";
+    public String reminder(WorkerContext workerContext) {
+        Predicate<VarNameAndValPb> isUserGroupVariable = candidateVariable -> {
+            return candidateVariable.getVarName().equals("userGroup");
+        };
+        String userGroupId = workerContext.getUserGroup().getId();
+        return String.format("Hey there %s execute your task!", userGroupId);
     }
 }

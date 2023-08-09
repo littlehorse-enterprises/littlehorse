@@ -72,7 +72,6 @@ public class UTATask extends LHSerializable<UTATaskPb> {
         Date maturationTime = new Date(
             System.currentTimeMillis() + (1000 * delaySeconds.intVal)
         );
-
         LHTimer timer = new LHTimer(
             new Command(
                 new TriggeredTaskRun(task, utr.getNodeRun().getObjectId()),

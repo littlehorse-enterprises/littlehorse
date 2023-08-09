@@ -23,10 +23,12 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
 
     public UserTaskNodeRun() {}
 
+    @Override
     public Class<UserTaskNodeRunPb> getProtoBaseClass() {
         return UserTaskNodeRunPb.class;
     }
 
+    @Override
     public void initFrom(Message proto) {
         UserTaskNodeRunPb p = (UserTaskNodeRunPb) proto;
         if (p.hasUserTaskRunId()) {
@@ -35,6 +37,7 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
         }
     }
 
+    @Override
     public UserTaskNodeRunPb.Builder toProto() {
         UserTaskNodeRunPb.Builder out = UserTaskNodeRunPb.newBuilder();
 
@@ -43,12 +46,14 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
         return out;
     }
 
+    @Override
     public boolean advanceIfPossible(Date time) {
         // UserTask Node does not care about other ThreadRuns or ExternalEvents;
         // therefore we only advance the node when the UserTaskRun completes.
         return false;
     }
 
+    @Override
     public void arrive(Date time) {
         // The UserTaskNode arrive() function should create a UserTaskRun.
         Node node = getNodeRun().getNode();
@@ -56,7 +61,6 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
 
         UserTaskDef utd = getDao()
             .getUserTaskDef(utn.getUserTaskDefName(), utn.getUserTaskDefVersion());
-
         if (utd == null) {
             // that means the UserTaskDef was deleted between now and the time that the
             // WfSpec was first created. Yikers!
@@ -69,9 +73,9 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
             );
             return;
         }
-
-        // Now we create a new UserTaskRun.
         UserTaskRun out = new UserTaskRun(utd, utn, getNodeRun());
+        // Now we create a new UserTaskRun.
+
         out.setDao(getDao());
 
         userTaskRunId = out.getObjectId();

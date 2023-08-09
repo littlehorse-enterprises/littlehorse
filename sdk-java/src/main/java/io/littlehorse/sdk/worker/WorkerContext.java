@@ -5,6 +5,8 @@ import io.littlehorse.sdk.common.proto.NodeRunIdPb;
 import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunSourcePb;
+import io.littlehorse.sdk.common.proto.UserGroupPb;
+import io.littlehorse.sdk.common.proto.UserPb;
 import java.util.Date;
 
 /**
@@ -16,6 +18,7 @@ import java.util.Date;
 public class WorkerContext {
 
     private ScheduledTaskPb scheduledTask;
+
     private Date scheduleTime;
     private String stderr;
 
@@ -97,6 +100,28 @@ public class WorkerContext {
 
     public TaskRunIdPb getTaskRunId() {
         return scheduledTask.getTaskRunId();
+    }
+
+    public UserPb getUser() {
+        if (scheduledTask.getSource().hasUserTaskTrigger()) {
+            return scheduledTask
+                .getSource()
+                .getUserTaskTrigger()
+                .getContext()
+                .getUser();
+        }
+        return null;
+    }
+
+    public UserGroupPb getUserGroup() {
+        if (scheduledTask.getSource().hasUserTaskTrigger()) {
+            return scheduledTask
+                .getSource()
+                .getUserTaskTrigger()
+                .getContext()
+                .getUserGroup();
+        }
+        return null;
     }
 
     /**

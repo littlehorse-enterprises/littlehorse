@@ -13,13 +13,9 @@ public enum UserTaskRunStatusPb
    */
   UNASSIGNED(0),
   /**
-   * <code>ASSIGNED_NOT_CLAIMED = 1;</code>
+   * <code>ASSIGNED = 1;</code>
    */
-  ASSIGNED_NOT_CLAIMED(1),
-  /**
-   * <code>CLAIMED = 2;</code>
-   */
-  CLAIMED(2),
+  ASSIGNED(1),
   /**
    * <code>DONE = 3;</code>
    */
@@ -36,13 +32,9 @@ public enum UserTaskRunStatusPb
    */
   public static final int UNASSIGNED_VALUE = 0;
   /**
-   * <code>ASSIGNED_NOT_CLAIMED = 1;</code>
+   * <code>ASSIGNED = 1;</code>
    */
-  public static final int ASSIGNED_NOT_CLAIMED_VALUE = 1;
-  /**
-   * <code>CLAIMED = 2;</code>
-   */
-  public static final int CLAIMED_VALUE = 2;
+  public static final int ASSIGNED_VALUE = 1;
   /**
    * <code>DONE = 3;</code>
    */
@@ -78,8 +70,7 @@ public enum UserTaskRunStatusPb
   public static UserTaskRunStatusPb forNumber(int value) {
     switch (value) {
       case 0: return UNASSIGNED;
-      case 1: return ASSIGNED_NOT_CLAIMED;
-      case 2: return CLAIMED;
+      case 1: return ASSIGNED;
       case 3: return DONE;
       case 4: return CANCELLED;
       default: return null;

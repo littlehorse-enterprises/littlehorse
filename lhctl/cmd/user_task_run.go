@@ -31,7 +31,7 @@ UserTaskRun. At the end, the UserTaskRun is submitted`,
 
 var assignUserTaskRunCmd = &cobra.Command{
 	Use:   "userTaskRun <wfRunId> <userTaskGuid> [options]",
-	Short: "Reassign a UserTaskRun to a group or specific userId",
+	Short: "Reassign a UserTaskRun to a userGroup or specific userId",
 	Long: `Given a provided wfRunId and UserTaskGuid, this utility allows you
 to reassign the specified UserTaskRun.
 
@@ -40,7 +40,7 @@ is already claimedby a specific UserId.
 
 The following option groups are supported:
 [userId] -> assign to a specific userId.
-[userGroup] -> assign to a group of users
+[userGroup] -> assign to a userGroup of users
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
@@ -62,12 +62,18 @@ The following option groups are supported:
 		}
 
 		if userId != "" {
-			reassign.Assignee = &model.AssignUserTaskRunPb_UserId{
-				UserId: userId,
+			var user = &model.UserPb{
+				Id: userId,
+			}
+			reassign.Assignee = &model.AssignUserTaskRunPb_User{
+				User: user,
 			}
 		} else if userGroup != "" {
+			var userGroupPb = &model.UserGroupPb{
+				Id: userGroup,
+			}
 			reassign.Assignee = &model.AssignUserTaskRunPb_UserGroup{
-				UserGroup: userGroup,
+				UserGroup: userGroupPb,
 			}
 		} else {
 			log.Fatal("Must specify either --userId or --userGroup")
@@ -164,16 +170,34 @@ Choose one of the following option groups:
 		}
 
 		userIdStr, _ := cmd.Flags().GetString("userId")
+		userGroupStr, _ := cmd.Flags().GetString("userGroup")
 		if userIdStr != "" {
-			search.TaskOwner = &model.SearchUserTaskRunPb_UserId{
-				UserId: userIdStr,
+			if userGroupStr != "" {
+				var userGroup = &model.UserGroupPb{
+					Id: userGroupStr,
+				}
+				search.TaskOwner = &model.SearchUserTaskRunPb_User{
+					User: &model.UserPb{
+						Id:        userIdStr,
+						UserGroup: userGroup,
+					},
+				}
+			} else {
+				search.TaskOwner = &model.SearchUserTaskRunPb_User{
+					User: &model.UserPb{
+						Id: userIdStr,
+					},
+				}
 			}
+
 		}
 
-		userGroupStr, _ := cmd.Flags().GetString("userGroup")
 		if userGroupStr != "" {
+			var userGroupPb = &model.UserGroupPb{
+				Id: userGroupStr,
+			}
 			search.TaskOwner = &model.SearchUserTaskRunPb_UserGroup{
-				UserGroup: userGroupStr,
+				UserGroup: userGroupPb,
 			}
 		}
 
@@ -312,5 +336,4 @@ func init() {
 	searchUserTaskRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for User Task Runs that started no more than this number of minutes ago")
 	searchUserTaskRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for User Task Runs that started at least this number of minutes ago")
 
-	searchUserTaskRunCmd.MarkFlagsMutuallyExclusive("userId", "userGroup")
 }

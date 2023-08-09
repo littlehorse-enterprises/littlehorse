@@ -2,7 +2,10 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
+import io.littlehorse.common.model.wfrun.User;
+import io.littlehorse.common.model.wfrun.UserGroup;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
@@ -38,8 +41,8 @@ public class SearchUserTaskRun
     private String userTaskDefName;
 
     private TaskOwnerCase ownerCase;
-    private String userId;
-    private String userGroup;
+    private User user;
+    private UserGroup userGroup;
 
     private Date latestStart;
     private Date earliestStart;
@@ -73,8 +76,9 @@ public class SearchUserTaskRun
         // dictates that we would search by userGroup (since it has a higher
         // field number) and ignore userId silently. By using the way below,
         // we can throw an LHValidationError when processing the search.
-        if (p.hasUserGroup()) userGroup = p.getUserGroup();
-        if (p.hasUserId()) userId = p.getUserId();
+        if (p.hasUserGroup()) userGroup =
+            LHSerializable.fromProto(p.getUserGroup(), UserGroup.class);
+        if (p.hasUser()) user = LHSerializable.fromProto(p.getUser(), User.class);
         if (p.hasLatestStart()) {
             latestStart = LHUtil.fromProtoTs(p.getLatestStart());
         }
@@ -97,10 +101,10 @@ public class SearchUserTaskRun
 
         switch (ownerCase) {
             case USER_GROUP:
-                out.setUserGroup(userGroup);
+                out.setUserGroup(userGroup.toProto());
                 break;
-            case USER_ID:
-                out.setUserId(userId);
+            case USER:
+                out.setUser(user.toProto());
                 break;
             case TASKOWNER_NOT_SET:
             // nothing to do
@@ -123,7 +127,7 @@ public class SearchUserTaskRun
     }
 
     private void validateUserGroupAndUserId() throws LHValidationError {
-        if (userGroup != null && userId != null) {
+        if (userGroup != null && user != null) {
             throw new LHValidationError(
                 null,
                 "Cannot specify UserID and User Group in same search!"
@@ -144,7 +148,7 @@ public class SearchUserTaskRun
     }
 
     private Optional<TagStorageTypePb> tagStorageTypePbByUserId() {
-        return Optional.ofNullable(userId).map(userId -> TagStorageTypePb.REMOTE);
+        return Optional.ofNullable(user).map(userId -> TagStorageTypePb.REMOTE);
     }
 
     @Override
@@ -159,12 +163,17 @@ public class SearchUserTaskRun
             );
         }
 
-        if (userId != null) {
-            attributes.add(new Attribute("userId", this.getUserId()));
+        if (user != null) {
+            attributes.add(new Attribute("userId", this.getUser().getId()));
+            if (this.getUser().getUserGroup() != null) {
+                attributes.add(
+                    new Attribute("userGroup", this.getUser().getUserGroup().getId())
+                );
+            }
         }
 
         if (userGroup != null) {
-            attributes.add(new Attribute("userGroup", this.getUserGroup()));
+            attributes.add(new Attribute("userGroup", this.getUserGroup().getId()));
         }
         return attributes;
     }

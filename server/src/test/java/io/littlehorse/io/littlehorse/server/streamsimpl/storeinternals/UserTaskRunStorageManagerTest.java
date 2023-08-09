@@ -3,6 +3,7 @@ package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
+import io.littlehorse.common.model.wfrun.User;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
@@ -61,6 +62,9 @@ public class UserTaskRunStorageManagerTest {
                 continue;
             }
             UserTaskRun userTaskRun = TestUtil.userTaskRun(wfRunId);
+            userTaskRun.setUser(
+                new User(userTaskRun.getUser().getId(), userTaskRun.getUserGroup())
+            );
             userTaskRun.setStatus(userTaskRunStatusPb);
             userTaskRun.setId(
                 new UserTaskRunId(wfRunId + "1", UUID.randomUUID().toString())
@@ -128,7 +132,7 @@ public class UserTaskRunStorageManagerTest {
     public void indexByStatusAndUserTaskDefName_CLAIMED() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_CLAIMED__userTaskDefName_ut-name");
+            .contains("12/__status_ASSIGNED__userTaskDefName_ut-name");
     }
 
     @Test
@@ -142,7 +146,14 @@ public class UserTaskRunStorageManagerTest {
     public void indexByStatusAndUserTaskDefName_ASSIGNED_NOT_CLAIMED() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_ASSIGNED_NOT_CLAIMED__userTaskDefName_ut-name");
+            .contains("12/__status_UNASSIGNED__userTaskDefName_ut-name");
+    }
+
+    @Test
+    public void indexByUserIdAndUserGroupId() {
+        Assertions
+            .assertThat(storedRemoteTagPrefixStoreKeys())
+            .contains("12/__userId_33333__userGroup_1234567");
     }
 
     @Test
@@ -163,7 +174,7 @@ public class UserTaskRunStorageManagerTest {
     public void indexByStatus() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_CLAIMED");
+            .contains("12/__status_ASSIGNED");
     }
 
     @Test
@@ -177,7 +188,7 @@ public class UserTaskRunStorageManagerTest {
     public void indexByStatusAndUserId() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_CLAIMED__userId_33333");
+            .contains("12/__status_ASSIGNED__userId_33333");
     }
 
     @Test
@@ -191,7 +202,7 @@ public class UserTaskRunStorageManagerTest {
     public void indexByStatusAndTaskDefNameAndUserId() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_CLAIMED__userTaskDefName_ut-name__userId_33333");
+            .contains("12/__status_ASSIGNED__userTaskDefName_ut-name__userId_33333");
     }
 
     @Test
@@ -205,7 +216,7 @@ public class UserTaskRunStorageManagerTest {
     public void indexByStatusAndUserGroup() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_CLAIMED__userGroup_1234567");
+            .contains("12/__status_ASSIGNED__userGroup_1234567");
     }
 
     @Test
@@ -213,7 +224,7 @@ public class UserTaskRunStorageManagerTest {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
             .contains(
-                "12/__status_CLAIMED__userTaskDefName_ut-name__userGroup_1234567"
+                "12/__status_ASSIGNED__userTaskDefName_ut-name__userGroup_1234567"
             );
     }
 

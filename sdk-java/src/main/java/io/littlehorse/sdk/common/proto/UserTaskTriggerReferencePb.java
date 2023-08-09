@@ -43,6 +43,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.UserTaskTriggerReferencePb.class, io.littlehorse.sdk.common.proto.UserTaskTriggerReferencePb.Builder.class);
   }
 
+  private int bitField0_;
   public static final int NODE_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.NodeRunIdPb nodeRunId_;
   /**
@@ -106,6 +107,32 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecIdPb.getDefaultInstance() : wfSpecId_;
   }
 
+  public static final int CONTEXT_FIELD_NUMBER = 4;
+  private io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb context_;
+  /**
+   * <code>optional .littlehorse.UserTaskTriggerContextPb context = 4;</code>
+   * @return Whether the context field is set.
+   */
+  @java.lang.Override
+  public boolean hasContext() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional .littlehorse.UserTaskTriggerContextPb context = 4;</code>
+   * @return The context.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb getContext() {
+    return context_ == null ? io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb.getDefaultInstance() : context_;
+  }
+  /**
+   * <code>optional .littlehorse.UserTaskTriggerContextPb context = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskTriggerContextPbOrBuilder getContextOrBuilder() {
+    return context_ == null ? io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb.getDefaultInstance() : context_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -129,6 +156,9 @@ private static final long serialVersionUID = 0L;
     if (wfSpecId_ != null) {
       output.writeMessage(3, getWfSpecId());
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(4, getContext());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -149,6 +179,10 @@ private static final long serialVersionUID = 0L;
     if (wfSpecId_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getWfSpecId());
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, getContext());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -177,6 +211,11 @@ private static final long serialVersionUID = 0L;
       if (!getWfSpecId()
           .equals(other.getWfSpecId())) return false;
     }
+    if (hasContext() != other.hasContext()) return false;
+    if (hasContext()) {
+      if (!getContext()
+          .equals(other.getContext())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -197,6 +236,10 @@ private static final long serialVersionUID = 0L;
     if (hasWfSpecId()) {
       hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
       hash = (53 * hash) + getWfSpecId().hashCode();
+    }
+    if (hasContext()) {
+      hash = (37 * hash) + CONTEXT_FIELD_NUMBER;
+      hash = (53 * hash) + getContext().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -315,13 +358,21 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.UserTaskTriggerReferencePb.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getNodeRunIdFieldBuilder();
+        getWfSpecIdFieldBuilder();
+        getContextFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -337,6 +388,11 @@ private static final long serialVersionUID = 0L;
       if (wfSpecIdBuilder_ != null) {
         wfSpecIdBuilder_.dispose();
         wfSpecIdBuilder_ = null;
+      }
+      context_ = null;
+      if (contextBuilder_ != null) {
+        contextBuilder_.dispose();
+        contextBuilder_ = null;
       }
       return this;
     }
@@ -384,6 +440,14 @@ private static final long serialVersionUID = 0L;
             ? wfSpecId_
             : wfSpecIdBuilder_.build();
       }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.context_ = contextBuilder_ == null
+            ? context_
+            : contextBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -439,6 +503,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasWfSpecId()) {
         mergeWfSpecId(other.getWfSpecId());
       }
+      if (other.hasContext()) {
+        mergeContext(other.getContext());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -484,6 +551,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  getContextFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -769,6 +843,125 @@ private static final long serialVersionUID = 0L;
         wfSpecId_ = null;
       }
       return wfSpecIdBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb context_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb, io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb.Builder, io.littlehorse.sdk.common.proto.UserTaskTriggerContextPbOrBuilder> contextBuilder_;
+    /**
+     * <code>optional .littlehorse.UserTaskTriggerContextPb context = 4;</code>
+     * @return Whether the context field is set.
+     */
+    public boolean hasContext() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional .littlehorse.UserTaskTriggerContextPb context = 4;</code>
+     * @return The context.
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb getContext() {
+      if (contextBuilder_ == null) {
+        return context_ == null ? io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb.getDefaultInstance() : context_;
+      } else {
+        return contextBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .littlehorse.UserTaskTriggerContextPb context = 4;</code>
+     */
+    public Builder setContext(io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb value) {
+      if (contextBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        context_ = value;
+      } else {
+        contextBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.UserTaskTriggerContextPb context = 4;</code>
+     */
+    public Builder setContext(
+        io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb.Builder builderForValue) {
+      if (contextBuilder_ == null) {
+        context_ = builderForValue.build();
+      } else {
+        contextBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.UserTaskTriggerContextPb context = 4;</code>
+     */
+    public Builder mergeContext(io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb value) {
+      if (contextBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0) &&
+          context_ != null &&
+          context_ != io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb.getDefaultInstance()) {
+          getContextBuilder().mergeFrom(value);
+        } else {
+          context_ = value;
+        }
+      } else {
+        contextBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.UserTaskTriggerContextPb context = 4;</code>
+     */
+    public Builder clearContext() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      context_ = null;
+      if (contextBuilder_ != null) {
+        contextBuilder_.dispose();
+        contextBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.UserTaskTriggerContextPb context = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb.Builder getContextBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return getContextFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .littlehorse.UserTaskTriggerContextPb context = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskTriggerContextPbOrBuilder getContextOrBuilder() {
+      if (contextBuilder_ != null) {
+        return contextBuilder_.getMessageOrBuilder();
+      } else {
+        return context_ == null ?
+            io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb.getDefaultInstance() : context_;
+      }
+    }
+    /**
+     * <code>optional .littlehorse.UserTaskTriggerContextPb context = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb, io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb.Builder, io.littlehorse.sdk.common.proto.UserTaskTriggerContextPbOrBuilder> 
+        getContextFieldBuilder() {
+      if (contextBuilder_ == null) {
+        contextBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb, io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb.Builder, io.littlehorse.sdk.common.proto.UserTaskTriggerContextPbOrBuilder>(
+                getContext(),
+                getParentForChildren(),
+                isClean());
+        context_ = null;
+      }
+      return contextBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

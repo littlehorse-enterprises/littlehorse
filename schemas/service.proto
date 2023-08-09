@@ -296,8 +296,8 @@ message SearchUserTaskRunPb {
   optional string user_task_def_name = 4;
 
   oneof task_owner {
-    string user_id = 5;
-    string user_group = 6;
+    UserPb user = 5;
+    UserGroupPb user_group = 6;
   }
 
   optional google.protobuf.Timestamp earliest_start = 7;
@@ -495,10 +495,8 @@ message ScheduledTaskPb {
   TaskRunIdPb task_run_id = 1;
   TaskDefIdPb task_def_id = 2;
   int32 attempt_number = 3;
-
   repeated VarNameAndValPb variables = 4;
   google.protobuf.Timestamp created_at = 5;
-
   TaskRunSourcePb source = 6;
 }
 
@@ -960,10 +958,18 @@ message TaskNodeReferencePb {
   WfSpecIdPb wf_spec_id = 2;
 }
 
+message UserTaskTriggerContextPb {
+  oneof owner {
+    UserGroupPb user_group = 1;
+    UserPb user = 2;
+  }
+}
+
 message UserTaskTriggerReferencePb {
   NodeRunIdPb node_run_id = 1;
   int32 user_task_event_number = 2;
   WfSpecIdPb wf_spec_id = 3;
+  optional UserTaskTriggerContextPb context = 4;
 }
 
 message EntrypointRunPb {
@@ -1181,10 +1187,14 @@ message UserTaskEventPb {
   }
 
   message UTEReassignedPb {
-    optional string old_user_id = 1;
-    optional string old_user_group = 2;
-    optional string new_user_id = 3;
-    optional string new_user_group = 4;
+    oneof old_owner {
+      UserPb old_user= 5;
+      UserGroupPb old_user_group = 6;
+    }
+    oneof new_owner {
+      UserPb new_user = 7;
+      UserGroupPb new_user_group = 8;
+    }
   }
 
   oneof event {
@@ -1198,8 +1208,7 @@ message UserTaskEventPb {
 
 enum UserTaskRunStatusPb {
   UNASSIGNED = 0;
-  ASSIGNED_NOT_CLAIMED = 1;
-  CLAIMED = 2;
+  ASSIGNED = 1;
   DONE = 3;
   CANCELLED = 4;
 }
@@ -1209,23 +1218,20 @@ message UserTaskRunIdPb {
   string user_task_guid = 2;
 }
 
+message UserGroupPb {
+  string id = 1;
+}
+
+message UserPb {
+  string id = 1;
+  optional UserGroupPb user_group = 2;
+}
+
 // This is a Getable
 message UserTaskRunPb {
   UserTaskRunIdPb id = 1;
   UserTaskDefIdPb user_task_def_id = 2;
 
-  // There are two ways the task could have been assigned
-  // 1. The task can be taken by one specific person
-  // 2. The task can be taken by anyone who is a member of a certain set of groups
-  oneof assigned_to {
-    string specific_user_id = 3;
-    string user_group = 4;
-  }
-
-  // The task may be in one of two states:
-  // 1. Claimed by a specific person.
-  // 2. Not yet claimed.
-  optional string claimed_by_user_id = 5;
   repeated UserTaskFieldResultPb results = 6;
   UserTaskRunStatusPb status = 7;
   repeated UserTaskEventPb events = 8;
@@ -1236,6 +1242,11 @@ message UserTaskRunPb {
   // field, or a `oneof user_task_source` field. However, note that such
   // a change would be fine from the API Compatibility perspective.
   NodeRunIdPb node_run_id = 11;
+
+  oneof owner {
+    UserGroupPb user_group = 12;
+    UserPb user = 13;
+  }
 }
 
 message AssignUserTaskRunPb {
@@ -1244,8 +1255,8 @@ message AssignUserTaskRunPb {
   bool override_claim = 2;
 
   oneof assignee {
-    string user_id = 3;
-    string user_group = 4;
+    UserPb user = 3;
+    UserGroupPb user_group = 4;
   }
 }
 
