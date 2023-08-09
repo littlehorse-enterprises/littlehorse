@@ -25,10 +25,10 @@ import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
-import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
+import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
@@ -37,6 +37,7 @@ import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.HostInfoPb;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHStatusPb;
 import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streamsimpl.ServerTopology;
@@ -68,18 +69,12 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 @Slf4j
 public class KafkaStreamsLHDAOImpl implements LHDAO {
 
-    private Map<String, NodeRun> nodeRunPuts;
     private Map<String, Variable> variablePuts;
-    private Map<String, ExternalEvent> extEvtPuts;
-    private Map<String, WfRun> wfRunPuts;
     private Map<String, WfSpec> wfSpecPuts;
     private Map<String, TaskDef> taskDefPuts;
-    private Map<String, TaskRun> taskRunPuts;
-    private Map<String, UserTaskRun> userTaskRunPuts;
     private Map<String, UserTaskDef> userTaskDefPuts;
     private Map<String, ExternalEventDef> extEvtDefPuts;
     private Map<String, ScheduledTask> scheduledTaskPuts;
-    private Map<String, TaskWorkerGroup> taskWorkerGroupPuts;
     private List<LHTimer> timersToSchedule;
     private Command command;
     private KafkaStreamsServerImpl server;
@@ -118,7 +113,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private final WfSpecCache wfSpecCache;
     private boolean partitionIsClaimed;
 
-    private GetableStorageManager getableStorageManager;
+    private GetableStorageManager storageManager;
 
     public KafkaStreamsLHDAOImpl(
         final ProcessorContext<String, CommandProcessorOutput> ctx,
@@ -134,19 +129,13 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         // At the start, we haven't claimed the partition until the claim event comes
         this.partitionIsClaimed = false;
 
-        nodeRunPuts = new HashMap<>();
         variablePuts = new HashMap<>();
-        extEvtPuts = new HashMap<>();
-        wfRunPuts = new HashMap<>();
         wfSpecPuts = new HashMap<>();
         extEvtDefPuts = new HashMap<>();
         taskDefPuts = new HashMap<>();
         userTaskDefPuts = new HashMap<>();
         taskMetricPuts = new HashMap<>();
         wfMetricPuts = new HashMap<>();
-        taskWorkerGroupPuts = new HashMap<>();
-        taskRunPuts = new HashMap<>();
-        userTaskRunPuts = new HashMap<>();
 
         // TODO: Here is where we want to eventually add some cacheing for GET to
         // the WfSpec and TaskDef etc.
@@ -163,7 +152,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         localStore = new LHStoreWrapper(rawLocalStore, config);
         globalStore = new LHROStoreWrapper(rawGlobalStore, config);
 
-        getableStorageManager = new GetableStorageManager(localStore, config, ctx);
+        storageManager = new GetableStorageManager(localStore, config, ctx);
 
         scheduledTaskPuts = new HashMap<>();
         timersToSchedule = new ArrayList<>();
@@ -171,61 +160,47 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public void putNodeRun(NodeRun nr) {
-        nodeRunPuts.put(nr.getStoreKey(), nr);
+        storageManager.put(nr, NodeRun.class);
     }
 
     @Override
     public NodeRun getNodeRun(String wfRunId, int threadNum, int position) {
         String key = new NodeRunId(wfRunId, threadNum, position).getStoreKey();
-        if (nodeRunPuts.containsKey(key)) {
-            return nodeRunPuts.get(key);
+        NodeRun nodeRun = storageManager.get(key, NodeRun.class);
+        if (nodeRun != null) {
+            nodeRun.setDao(this);
         }
-        NodeRun out = localStore.get(key, NodeRun.class);
-
-        // Little trick so that if it gets modified it is automatically saved
-        if (out != null) {
-            nodeRunPuts.put(key, out);
-            out.setDao(this);
-        }
-        return out;
+        return nodeRun;
     }
 
     @Override
     public void putTaskRun(TaskRun tr) {
-        taskRunPuts.put(tr.getStoreKey(), tr);
+        storageManager.put(tr, TaskRun.class);
     }
 
     @Override
     public TaskRun getTaskRun(TaskRunId taskRunId) {
         String key = taskRunId.getStoreKey();
-        if (taskRunPuts.containsKey(key)) {
-            return taskRunPuts.get(key);
+        TaskRun taskRun = storageManager.get(key, TaskRun.class);
+        if (taskRun != null) {
+            taskRun.setDao(this);
         }
-        TaskRun out = localStore.get(key, TaskRun.class);
-        if (out != null) {
-            taskRunPuts.put(key, out);
-            out.setDao(this);
-        }
-        return out;
+        return taskRun;
     }
 
     @Override
     public void putUserTaskRun(UserTaskRun utr) {
-        userTaskRunPuts.put(utr.getStoreKey(), utr);
+        storageManager.put(utr, UserTaskRun.class);
     }
 
     @Override
     public UserTaskRun getUserTaskRun(UserTaskRunId userTaskRunId) {
         String key = userTaskRunId.getStoreKey();
-        if (userTaskRunPuts.containsKey(key)) {
-            return userTaskRunPuts.get(key);
+        UserTaskRun userTaskRun = storageManager.get(key, UserTaskRun.class);
+        if (userTaskRun != null) {
+            userTaskRun.setDao(this);
         }
-        UserTaskRun out = localStore.get(key, UserTaskRun.class);
-        if (out != null) {
-            userTaskRunPuts.put(key, out);
-            out.setDao(this);
-        }
-        return out;
+        return userTaskRun;
     }
 
     @Override
@@ -390,72 +365,32 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         String wfRunId,
         String externalEventDefName
     ) {
-        // Need to load all of them and then get the least recent that hasn't been
-        // claimed yet.
         String extEvtPrefix = ExternalEvent.getStorePrefix(
             wfRunId,
             externalEventDefName
         );
-
-        for (String extEvtId : extEvtPuts.keySet()) {
-            if (extEvtId.startsWith(extEvtPrefix)) {
-                return extEvtPuts.get(extEvtId);
-            }
-        }
-
-        // TODO: This is O(N) for number of events correlated with the WfRun.
-        // Generally that will only be a small number, but there could be weird
-        // use-cases where this could take a long time (if there's 1000 events or
-        // so then it could take seconds, which holds up the entire scheduling).
-        ExternalEvent out = null;
-        try (
-            LHKeyValueIterator<ExternalEvent> iter = localStore.prefixScan(
-                extEvtPrefix,
-                ExternalEvent.class
-            )
-        ) {
-            while (iter.hasNext()) {
-                LHIterKeyValue<ExternalEvent> kvp = iter.next();
-                ExternalEvent candidate;
-                if (extEvtPuts.containsKey(kvp.getKey())) {
-                    candidate = extEvtPuts.get(kvp.getKey());
-                } else {
-                    candidate = kvp.getValue();
-                    extEvtPuts.put(kvp.getKey(), candidate); // TODO: Is this necessary?
-                }
-
-                if (candidate.claimed) {
-                    continue;
-                }
-
-                if (
-                    out == null ||
-                    out.getCreatedAt().getTime() > candidate.getCreatedAt().getTime()
-                ) {
-                    out = candidate;
-                }
-            }
-        }
-
-        return out;
+        return storageManager.getFirstByCreatedTimeFromPrefix(
+            extEvtPrefix,
+            ExternalEvent.class,
+            externalEvent -> !externalEvent.isClaimed()
+        );
     }
 
     @Override
     public ExternalEvent getExternalEvent(String externalEventId) {
-        if (extEvtPuts.containsKey(externalEventId)) {
-            return extEvtPuts.get(externalEventId);
+        ExternalEvent externalEvent = storageManager.get(
+            externalEventId,
+            ExternalEvent.class
+        );
+        if (externalEvent != null) {
+            externalEvent.setDao(this);
         }
-        ExternalEvent out = localStore.get(externalEventId, ExternalEvent.class);
-        if (out != null) {
-            extEvtPuts.put(externalEventId, out);
-            out.setDao(this);
-        }
-        return out;
+        return externalEvent;
     }
 
     @Override
     public void saveExternalEvent(ExternalEvent evt) {
-        extEvtPuts.put(evt.getStoreKey(), evt);
+        storageManager.put(evt, ExternalEvent.class);
     }
 
     @Override
@@ -484,25 +419,22 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public WfRun getWfRun(String id) {
-        if (wfRunPuts.containsKey(id)) {
-            return wfRunPuts.get(id);
+        WfRun wfRun = storageManager.get(id, WfRun.class);
+        if (wfRun != null) {
+            wfRun.setDao(this);
+            wfRun.setWfSpec(getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion));
         }
-        WfRun out = localStore.get(id, WfRun.class);
-        if (out != null) {
-            wfRunPuts.put(id, out);
-            out.setWfSpec(getWfSpec(out.wfSpecName, out.wfSpecVersion));
-            out.setDao(this);
-        }
-        return out;
+        return wfRun;
     }
 
     @Override
     public void saveWfRun(WfRun wfRun) {
-        wfRunPuts.put(wfRun.getStoreKey(), wfRun);
+        storageManager.put(wfRun, WfRun.class);
     }
 
     @Override
     public void commitChanges() {
+        storageManager.commit();
         flush();
         clearThingsToWrite();
     }
@@ -519,24 +451,31 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     // LittleHorse that causes an unexpected exception to occur while executing
     // CommandProcessor#process().
     @Override
-    public void abortChangesAndMarkWfRunFailed(String message) {
-        for (Map.Entry<String, WfRun> e : wfRunPuts.entrySet()) {
-            WfRun affected = e.getValue();
-            if (e != null) {
-                Failure failure = new Failure(
-                    "Unknown internal error while processing: " + message,
-                    LHConstants.INTERNAL_ERROR
-                );
-                NodeRun currentNodeRun = affected.threadRuns
-                    .get(0)
-                    .getCurrentNodeRun();
-                currentNodeRun.fail(failure, new Date());
+    public void abortChangesAndMarkWfRunFailed(Throwable failure, String wfRunId) {
+        // if the wfRun exists: we want to mark it as failed with a message.
+        // Else, do nothing.
+        WfRun wfRun = storageManager.get(wfRunId, WfRun.class);
+        if (wfRun != null) {
+            log.warn(
+                "Marking wfRun {} as failed due to internal LH exception",
+                wfRunId
+            );
+            ThreadRun entrypoint = wfRun.getThreadRun(0);
+            entrypoint.setStatus(LHStatusPb.ERROR);
 
-                saveOrDeleteGETableFlush(e.getKey(), affected, WfRun.class);
-                saveOrDeleteGETableFlush(e.getKey(), currentNodeRun, NodeRun.class);
-            }
+            String message =
+                "Had an internal LH failur processing command of type " +
+                command.getType() +
+                ": " +
+                failure.getMessage();
+            entrypoint.setErrorMessage(message);
+            storageManager.abortAndUpdate(wfRun);
+        } else {
+            log.warn(
+                "Caught internal LH error but found no WfRun with id {}",
+                wfRunId
+            );
         }
-
         clearThingsToWrite();
     }
 
@@ -547,22 +486,28 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public DeleteObjectReply deleteWfRun(String wfRunId) {
-        DeleteObjectReply out = new DeleteObjectReply();
         WfRun wfRun = getWfRun(wfRunId);
+
         if (wfRun == null) {
-            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
-            out.message = "Couldn't find wfRun with provided ID.";
-        } else {
-            if (wfRun.isRunning()) {
-                out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
-                out.message = "Specified wfRun is still RUNNING!";
-            } else {
-                wfRunPuts.put(wfRunId, null);
-                deleteAllChildren(wfRun);
-                out.code = LHResponseCodePb.OK;
-            }
+            return new DeleteObjectReply(
+                LHResponseCodePb.NOT_FOUND_ERROR,
+                "Couldn't find wfRun with provided ID."
+            );
         }
-        return out;
+
+        if (wfRun.isRunning()) {
+            return new DeleteObjectReply(
+                LHResponseCodePb.BAD_REQUEST_ERROR,
+                "Specified wfRun is still RUNNING!"
+            );
+        }
+
+        // By this point it's guaranteed that a wfRun exists
+        storageManager.delete(wfRunId, WfRun.class);
+
+        deleteAllChildren(wfRun);
+
+        return new DeleteObjectReply(LHResponseCodePb.OK, null);
     }
 
     @Override
@@ -624,15 +569,14 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     @Override
     public DeleteObjectReply deleteExternalEvent(String externalEventId) {
         ExternalEvent toDelete = getExternalEvent(externalEventId);
-        DeleteObjectReply out = new DeleteObjectReply();
         if (toDelete == null) {
-            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
-            out.message = "Couldn't find object with provided ID.";
-        } else {
-            extEvtPuts.put(toDelete.getStoreKey(), null);
-            out.code = LHResponseCodePb.OK;
+            return new DeleteObjectReply(
+                LHResponseCodePb.NOT_FOUND_ERROR,
+                "Couldn't find object with provided ID."
+            );
         }
-        return out;
+        storageManager.delete(toDelete.getStoreKey(), ExternalEvent.class);
+        return new DeleteObjectReply(LHResponseCodePb.OK, null);
     }
 
     /*
@@ -651,7 +595,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<NodeRun> next = iter.next();
-                getableStorageManager.delete(next.getKey(), NodeRun.class);
+                storageManager.delete(next.getKey(), NodeRun.class);
             }
         }
 
@@ -663,7 +607,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<Variable> next = iter.next();
-                getableStorageManager.delete(next.getKey(), Variable.class);
+                storageManager.deleteGetable(next.getKey(), Variable.class);
             }
         }
 
@@ -675,7 +619,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<UserTaskRun> next = iter.next();
-                getableStorageManager.delete(next.getKey(), UserTaskRun.class);
+                storageManager.delete(next.getKey(), UserTaskRun.class);
             }
         }
 
@@ -687,7 +631,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<TaskRun> next = iter.next();
-                getableStorageManager.delete(next.getKey(), TaskRun.class);
+                storageManager.delete(next.getKey(), TaskRun.class);
             }
         }
 
@@ -699,7 +643,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<ExternalEvent> next = iter.next();
-                getableStorageManager.delete(next.getKey(), ExternalEvent.class);
+                storageManager.delete(next.getKey(), ExternalEvent.class);
             }
         }
     }
@@ -729,21 +673,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     private void flush() {
-        for (Map.Entry<String, NodeRun> e : nodeRunPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), NodeRun.class);
-        }
-        for (Map.Entry<String, ExternalEvent> e : extEvtPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), ExternalEvent.class);
-        }
-        for (Map.Entry<String, WfRun> e : wfRunPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), WfRun.class);
-        }
-        for (Map.Entry<String, TaskRun> e : taskRunPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskRun.class);
-        }
-        for (Map.Entry<String, UserTaskRun> e : userTaskRunPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), UserTaskRun.class);
-        }
         // Turns out that we have to save the WfRun's before we save the Variable.
         for (Map.Entry<String, Variable> e : variablePuts.entrySet()) {
             Variable v = e.getValue();
@@ -754,10 +683,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
                 }
             }
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), Variable.class);
-        }
-
-        for (Map.Entry<String, TaskWorkerGroup> e : taskWorkerGroupPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskWorkerGroup.class);
         }
 
         for (Map.Entry<String, ExternalEventDef> e : extEvtDefPuts.entrySet()) {
@@ -968,31 +893,32 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         }
     }
 
+    /**
+     * @deprecated
+     * Should not use this method because it's not saving/deleting using the StoredGetable class. This method will
+     * be removed once all entities are migrated to use the StoredGetable class.
+     */
+    @Deprecated(forRemoval = true)
     private <U extends Message, T extends Getable<U>> void saveOrDeleteGETableFlush(
         String key,
         T val,
         Class<T> cls
     ) {
         if (val != null) {
-            getableStorageManager.store(val);
+            storageManager.store(val);
         } else {
-            getableStorageManager.delete(key, cls);
+            storageManager.deleteGetable(key, cls);
         }
     }
 
     private void clearThingsToWrite() {
-        nodeRunPuts.clear();
         variablePuts.clear();
-        extEvtPuts.clear();
         scheduledTaskPuts.clear();
         timersToSchedule.clear();
-        wfRunPuts.clear();
         wfSpecPuts.clear();
         taskDefPuts.clear();
-        taskRunPuts.clear();
         userTaskDefPuts.clear();
         extEvtDefPuts.clear();
-        taskWorkerGroupPuts.clear();
         taskMetricPuts = new HashMap<>();
         wfMetricPuts = new HashMap<>();
 
@@ -1128,19 +1054,19 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public TaskWorkerGroup getTaskWorkerGroup(String taskDefName) {
-        if (taskWorkerGroupPuts.containsKey(taskDefName)) {
-            return taskWorkerGroupPuts.get(taskDefName);
+        TaskWorkerGroup taskWorkerGroup = storageManager.get(
+            taskDefName,
+            TaskWorkerGroup.class
+        );
+        if (taskWorkerGroup != null) {
+            taskWorkerGroup.setDao(this);
         }
-        TaskWorkerGroup out = localStore.get(taskDefName, TaskWorkerGroup.class);
-        if (out != null) {
-            taskWorkerGroupPuts.put(taskDefName, out);
-        }
-        return out;
+        return taskWorkerGroup;
     }
 
     @Override
     public void putTaskWorkerGroup(TaskWorkerGroup taskWorkerGroup) {
-        taskWorkerGroupPuts.put(taskWorkerGroup.getStoreKey(), taskWorkerGroup);
+        storageManager.put(taskWorkerGroup, TaskWorkerGroup.class);
     }
 
     @Override

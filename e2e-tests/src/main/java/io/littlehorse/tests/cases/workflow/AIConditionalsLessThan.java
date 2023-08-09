@@ -64,7 +64,7 @@ public class AIConditionalsLessThan extends WorkflowLogicTest {
         Object rhs,
         boolean shouldEqual
     ) throws TestFailure, InterruptedException, LHApiError {
-        InputObj input = new InputObj(lhs, rhs);
+        AIInputObj input = new AIInputObj(lhs, rhs);
 
         if (shouldEqual) {
             return runWithInputsAndCheckPath(client, input, true, true);

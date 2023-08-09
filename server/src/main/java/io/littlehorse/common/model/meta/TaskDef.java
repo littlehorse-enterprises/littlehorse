@@ -21,7 +21,9 @@ import lombok.Setter;
 @Setter
 public class TaskDef extends Getable<TaskDefPb> {
 
+    @Getter
     public String name;
+
     public Date createdAt;
     public List<VariableDef> inputVars;
 
@@ -37,10 +39,6 @@ public class TaskDef extends Getable<TaskDefPb> {
     @Override
     public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
         return List.of();
-    }
-
-    public String getName() {
-        return name;
     }
 
     public TaskDefId getObjectId() {

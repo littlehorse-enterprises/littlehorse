@@ -73,13 +73,11 @@ public class Command extends LHSerializable<CommandPb> {
     public Command() {}
 
     public Command(SubCommand<?> cmd) {
-        this.commandId = LHUtil.generateGuid();
         this.time = new Date();
         this.setSubCommand(cmd);
     }
 
     public Command(SubCommand<?> cmd, Date time) {
-        this.commandId = LHUtil.generateGuid();
         this.time = time;
         this.setSubCommand(cmd);
     }

@@ -66,7 +66,7 @@ public class SearchTaskDef
     @Override
     public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        return null;
+        return TagStorageTypePb.LOCAL;
     }
 
     @Override

@@ -64,7 +64,7 @@ public class AKConditionalsGreaterThan extends WorkflowLogicTest {
         Object rhs,
         boolean shouldEqual
     ) throws TestFailure, InterruptedException, LHApiError {
-        InputObj input = new InputObj(lhs, rhs);
+        AKInputObj input = new AKInputObj(lhs, rhs);
 
         if (shouldEqual) {
             return runWithInputsAndCheckPath(client, input, true, true);

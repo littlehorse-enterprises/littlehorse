@@ -2,12 +2,13 @@ package io.littlehorse.server.streamsimpl.storeinternals;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
-import java.util.stream.Stream;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -44,6 +45,33 @@ public class LHROStoreWrapper {
         this.config = config;
     }
 
+    public <
+        U extends Message, T extends Getable<U>
+    > StoredGetable<U, T> getStoredGetable(String objectId, Class<T> cls) {
+        Bytes raw = store.get(StoreUtils.getFullStoreKey(objectId, cls));
+        if (raw == null) {
+            return null;
+        }
+        try {
+            return (StoredGetable<U, T>) LHSerializable.fromBytes(
+                raw.get(),
+                StoredGetable.class,
+                config
+            );
+        } catch (LHSerdeError exn) {
+            log.error(exn.getMessage(), exn);
+            throw new RuntimeException(
+                "Not possible to have this happen, indicates corrupted store."
+            );
+        }
+    }
+
+    /**
+     * @deprecated
+     * Should not use this method because it's not using the StoredGetable class. This method will
+     * be removed once all entities are migrated to use the StoredGetable class.
+     */
+    @Deprecated(forRemoval = true)
     public <U extends Message, T extends Storeable<U>> T get(
         String objectId,
         Class<T> cls
@@ -75,6 +103,25 @@ public class LHROStoreWrapper {
             cls,
             config
         );
+    }
+
+    /*
+     * Make sure to `.close()` the result!
+     */
+    @SuppressWarnings("unchecked")
+    public <
+        U extends Message, T extends Getable<U>
+    > LHKeyValueIterator<StoredGetable<U, T>> prefixScanStoredGetable(
+        String prefix,
+        Class<T> cls
+    ) {
+        String compositePrefix = StoreUtils.getFullStoreKey(prefix, cls);
+        LHKeyValueIterator<?> iterator = new LHKeyValueIterator<>(
+            store.prefixScan(compositePrefix, Serdes.String().serializer()),
+            StoredGetable.class,
+            config
+        );
+        return (LHKeyValueIterator<StoredGetable<U, T>>) iterator;
     }
 
     public <T extends Storeable<?>> LHKeyValueIterator<T> prefixTagScan(

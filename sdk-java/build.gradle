@@ -1,13 +1,7 @@
 plugins {
     id 'java-library'
-
-    // publish
     id 'maven-publish'
     id 'signing'
-
-    // code analysis
-    id 'org.owasp.dependencycheck' version '8.2.1'
-    id 'org.sonarqube' version '4.2.1.3168'
 }
 
 sourceCompatibility=11
@@ -79,9 +73,6 @@ repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
-
-def grpcVersion='1.56.1'
-def lombokVersion='1.18.28'
 
 dependencies {
     // Use JUnit Jupiter for testing.

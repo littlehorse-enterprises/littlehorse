@@ -1,4 +1,54 @@
 # Server Configurations
+- [Server Configurations](#server-configurations)
+  - [Kafka](#kafka)
+    - [`LHS_KAFKA_BOOTSTRAP_SERVERS`](#lhs_kafka_bootstrap_servers)
+    - [`LHS_KAFKA_KEYSTORE`](#lhs_kafka_keystore)
+    - [`LHS_KAFKA_KEYSTORE_PASSWORD`](#lhs_kafka_keystore_password)
+    - [`LHS_KAFKA_KEYSTORE_PASSWORD_FILE`](#lhs_kafka_keystore_password_file)
+    - [`LHS_KAFKA_TRUSTSTORE`](#lhs_kafka_truststore)
+    - [`LHS_KAFKA_TRUSTSTORE_PASSWORD`](#lhs_kafka_truststore_password)
+    - [`LHS_KAFKA_TRUSTSTORE_PASSWORD_FILE`](#lhs_kafka_truststore_password_file)
+  - [Server Internal Connections](#server-internal-connections)
+    - [`LHS_INTERNAL_BIND_PORT`](#lhs_internal_bind_port)
+    - [`LHS_INTERNAL_ADVERTISED_HOST`](#lhs_internal_advertised_host)
+    - [`LHS_INTERNAL_ADVERTISED_PORT`](#lhs_internal_advertised_port)
+    - [`LHS_INTERNAL_SERVER_CERT`](#lhs_internal_server_cert)
+    - [`LHS_INTERNAL_SERVER_KEY`](#lhs_internal_server_key)
+    - [`LHS_INTERNAL_CA_CERT`](#lhs_internal_ca_cert)
+  - [Server External Connections](#server-external-connections)
+    - [`LHS_LISTENERS`](#lhs_listeners)
+    - [`LHS_LISTENERS_PROTOCOL_MAP`](#lhs_listeners_protocol_map)
+    - [`LHS_LISTENER_<LISTENER NAME>_CERT`](#lhs_listener_listener-name_cert)
+    - [`LHS_LISTENER_<LISTENER NAME>_KEY`](#lhs_listener_listener-name_key)
+    - [`LHS_LISTENER_<LISTENER NAME>_CA_CERT`](#lhs_listener_listener-name_ca_cert)
+    - [`LHS_LISTENERS_AUTHORIZATION_MAP`](#lhs_listeners_authorization_map)
+    - [`LHS_LISTENER_<LISTENER NAME>_AUTHORIZATION_SERVER`](#lhs_listener_listener-name_authorization_server)
+    - [`LHS_LISTENER_<LISTENER NAME>_CLIENT_ID`](#lhs_listener_listener-name_client_id)
+    - [`LHS_LISTENER_<LISTENER NAME>_CLIENT_ID_FILE`](#lhs_listener_listener-name_client_id_file)
+    - [`LHS_LISTENER_<LISTENER NAME>_CLIENT_SECRET`](#lhs_listener_listener-name_client_secret)
+    - [`LHS_LISTENER_<LISTENER NAME>_CLIENT_SECRET_FILE`](#lhs_listener_listener-name_client_secret_file)
+    - [`LHS_ADVERTISED_LISTENERS`](#lhs_advertised_listeners)
+  - [Server Behavior](#server-behavior)
+    - [`LHS_CLUSTER_ID`](#lhs_cluster_id)
+    - [`LHS_INSTANCE_ID`](#lhs_instance_id)
+    - [`LHS_RACK_ID`](#lhs_rack_id)
+    - [`LHS_SHOULD_CREATE_TOPICS`](#lhs_should_create_topics)
+    - [`LHS_REPLICATION_FACTOR`](#lhs_replication_factor)
+    - [`LHS_CLUSTER_PARTITIONS`](#lhs_cluster_partitions)
+    - [`LHS_STREAMS_NUM_THREADS`](#lhs_streams_num_threads)
+    - [`LHS_NUM_NETWORK_THREADS`](#lhs_num_network_threads)
+    - [`LHS_STREAMS_SESSION_TIMEOUT`](#lhs_streams_session_timeout)
+    - [`LHS_STREAMS_COMMIT_INTERVAL`](#lhs_streams_commit_interval)
+    - [`LHS_STATE_DIR`](#lhs_state_dir)
+    - [`LHS_STREAMS_NUM_STANDBY_REPLICAS`](#lhs_streams_num_standby_replicas)
+    - [`LHS_STREAMS_NUM_WARMUP_REPLICAS`](#lhs_streams_num_warmup_replicas)
+    - [`LHS_DEFAULT_WFRUN_RETENTION_HOURS`](#lhs_default_wfrun_retention_hours)
+    - [`LHS_DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS`](#lhs_default_external_event_retention_hours)
+  - [Monitoring](#monitoring)
+    - [`LHS_HEALTH_SERVICE_PORT`](#lhs_health_service_port)
+    - [`LHS_HEALTH_PATH_METRICS`](#lhs_health_path_metrics)
+    - [`LHS_HEALTH_PATH_READINESSS`](#lhs_health_path_readinesss)
+    - [`LHS_HEALTH_PATH_LIVENESS`](#lhs_health_path_liveness)
 
 ## Kafka
 
@@ -412,21 +462,11 @@ The replication factor for change log topics and repartition topics created by t
 
 ### `LHS_CLUSTER_PARTITIONS`
 
-The number of partitions in each internal kafka topic. Disabled if `LHS_SHOULD_CREATE_TOPICS=false`.
+The number of partitions in each internal kafka topic. Necessary whether or not `LHS_SHOULD_CREATE_TOPICS` is set.
 
 - **Type:** int
-- **Default:** 72
-- **Importance:** low
-
----
-
-### `LHS_KAFKA_TOPIC_PREFIX`
-
-Prefix for each internal topic. Disabled if `LHS_SHOULD_CREATE_TOPICS=false`.
-
-- **Type:** string
-- **Default:** `${LHS_CLUSTER_ID}-`
-- **Importance:** low
+- **Default:** 12
+- **Importance:** high
 
 ---
 
@@ -436,6 +476,17 @@ The number of threads to execute stream processing. [Kafka Official](https://kaf
 
 - **Type:** int
 - **Default:** 1
+- **Importance:** medium
+
+---
+
+### `LHS_NUM_NETWORK_THREADS`
+
+The size of the shared Threadpool used by the grpc listeners.
+
+- **Type:** int
+- **Default:** 2
+- **Minimum:** 2
 - **Importance:** medium
 
 ---
@@ -512,9 +563,9 @@ creating the `ExternalEventDef`.
 
 ## Monitoring
 
-### `LHS_PROMETHEUS_EXPORTER_PORT`
+### `LHS_HEALTH_SERVICE_PORT`
 
-The port to scrape metrics from.
+The port that the healthchecks and prometheus metrics are exposed on.
 
 - **Type:** int
 - **Default:** 1822
@@ -522,9 +573,29 @@ The port to scrape metrics from.
 
 ---
 
-### `LHS_PROMETHEUS_EXPORTER_PATH`
+### `LHS_HEALTH_PATH_METRICS`
 
 The path to scrape metrics from.
+
+- **Type:** string
+- **Default:** /metrics
+- **Importance:** low
+
+---
+
+### `LHS_HEALTH_PATH_READINESSS`
+
+The path upon which application readiness (the ability to serve requests) is exposed.
+
+- **Type:** string
+- **Default:** /readiness
+- **Importance:** low
+
+---
+
+### `LHS_HEALTH_PATH_LIVENESS`
+
+The path upon which application liveness (the ability to ).
 
 - **Type:** string
 - **Default:** /metrics

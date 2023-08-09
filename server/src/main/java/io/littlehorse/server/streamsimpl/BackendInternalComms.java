@@ -77,7 +77,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -114,7 +113,8 @@ public class BackendInternalComms implements Closeable {
     public BackendInternalComms(
         LHConfig config,
         KafkaStreams coreStreams,
-        KafkaStreams timerStreams
+        KafkaStreams timerStreams,
+        Executor executor
     ) {
         this.config = config;
         this.coreStreams = coreStreams;
@@ -123,7 +123,6 @@ public class BackendInternalComms implements Closeable {
         otherHosts = new ConcurrentHashMap<>();
 
         ServerBuilder<?> builder;
-        Executor executor = Executors.newFixedThreadPool(4);
         clientCreds = config.getInternalClientCreds();
 
         ServerCredentials security = config.getInternalServerCreds();
