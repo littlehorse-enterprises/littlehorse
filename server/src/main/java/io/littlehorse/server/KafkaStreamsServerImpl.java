@@ -647,7 +647,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         VariableIdPb req,
         StreamObserver<GetVariableReplyPb> ctx
     ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
             ctx,
             Variable.class,
             GetVariableReplyPb.class,
