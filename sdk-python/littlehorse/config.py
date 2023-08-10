@@ -2,7 +2,10 @@ import os
 import uuid
 from pathlib import Path
 from typing import Optional, Union
+from grpc import Channel
+import grpc
 from jproperties import Properties
+from littlehorse.model.service_pb2_grpc import LHPublicApiStub
 from littlehorse.utils import read_binary
 
 PREFIXES = ("LHC_", "LHW_")
@@ -29,6 +32,7 @@ class LHConfig:
             for key, value in os.environ.items()
             if key.startswith(PREFIXES)
         }
+        self.channel: Channel = None
 
     def __str__(self) -> str:
         return "\n".join(
@@ -163,3 +167,48 @@ class LHConfig:
             str: The OAuth2 authorization server endpoint.
         """
         return self.get(OAUTH_AUTHORIZATION_SERVER)
+
+    def establish_channel(self) -> Channel:
+        """Open a RPC channel. Returns a new channel.
+
+        Returns:
+            Channel: A closable channel. Use 'with' or channel.close().
+        """
+        if self.is_secure():
+            tls_credentials = grpc.ssl_channel_credentials(
+                root_certificates=self.ca_cert(),
+                private_key=self.client_key(),
+                certificate_chain=self.client_cert(),
+            )
+            return grpc.secure_channel(self.bootstrap_server(), tls_credentials)
+
+        return grpc.insecure_channel(self.bootstrap_server())
+
+    def blocking_stub(self) -> LHPublicApiStub:
+        """Gets a Blocking gRPC stub for the LH Public API
+        on the configured bootstrap server. It creates a new LHPublicApiStub,
+        but reuse the grpc.Channel. It is assumed that the channel
+        will not be closed until the execution of the main thread ends.
+
+        Returns:
+            LHPublicApiStub: A blocking gRPC stub.
+        """
+        self.channel = self.channel or self.establish_channel()
+        return LHPublicApiStub(self.channel)
+
+
+if __name__ == "__main__":
+    from pathlib import Path
+    from littlehorse.model.service_pb2 import WfSpecIdPb
+
+    config_path = Path.home().joinpath(".config", "littlehorse.config")
+
+    config = LHConfig()
+    config.load(config_path)
+
+    stub = config.blocking_stub()
+
+    id = WfSpecIdPb(name="example-basic")
+    reply = stub.GetWfSpec(id)
+
+    print(reply.result.name)
