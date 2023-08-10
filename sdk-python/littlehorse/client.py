@@ -1,5 +1,5 @@
 from typing import Optional
-from littlehorse.config import Config
+from littlehorse.config import LHConfig
 import grpc
 from grpc import Channel
 from littlehorse.model.service_pb2 import (
@@ -12,7 +12,7 @@ from littlehorse.model.service_pb2_grpc import LHPublicApiStub
 
 
 class Client:
-    def __init__(self, config: Config) -> None:
+    def __init__(self, config: LHConfig) -> None:
         """
         Args:
             config (Config): Client configuration.
@@ -63,7 +63,7 @@ class Client:
 if __name__ == "__main__":
     from pathlib import Path
 
-    config = Config()
+    config = LHConfig()
     config.load(Path.home().joinpath(".config", "littlehorse.config"))
 
     client = Client(config)

@@ -1,4 +1,5 @@
 import os
+import uuid
 from pathlib import Path
 from typing import Optional, Union
 from jproperties import Properties
@@ -16,7 +17,7 @@ OAUTH_CLIENT_SECRET = "LHC_OAUTH_CLIENT_SECRET"
 OAUTH_AUTHORIZATION_SERVER = "LHC_OAUTH_AUTHORIZATION_SERVER"
 
 
-class Config:
+class LHConfig:
     """Littlehorse Client/Worker configuration.
     A property configured using an environment property
     overrides the value provided using a worker.config file.
@@ -56,18 +57,24 @@ class Config:
         self.configs = new_configs
 
     def get(self, key: str, default: Optional[str] = None) -> Optional[str]:
-        """Gets a configuration or return a default instead.
+        """Gets a configuration, or return a default instead. If a default value is
+        passed and the configuration is None, then the default value will be set.
 
         Args:
-            key (str): COnfiguration key.
+            key (str): Configuration key.
             default (Optional[str], optional): Default value in case the configuration
             does not exist. Defaults to None.
 
         Returns:
-            Optional[str]: The con configuration's value or the given default value.
+            Optional[str]: The configuration's value, or the given default value.
         """
         value = self.configs.get(key)
-        return value if value else default
+
+        if not value and default:
+            self.configs[key] = default
+            return default
+
+        return value
 
     def bootstrap_server(self) -> str:
         """Returns the LH Bootstrap server address.
@@ -108,9 +115,51 @@ class Config:
         return read_binary(client_cert_path) if client_cert_path else None
 
     def is_secure(self) -> bool:
-        """Returns True is a secure connection is configured.
+        """Returns True if a secure connection is configured.
 
         Returns:
             bool: True if a secure connection is expected.
         """
         return bool(self.get(CA_CERT))
+
+    def client_id(self) -> str:
+        """Returns a client id to identify an instance.
+
+        Returns:
+            str: A configured client id or a random string otherwise.
+        """
+        random_id = f"client-{str(uuid.uuid4()).replace('-', '')}"
+        return str(self.get(CLIENT_ID, random_id))
+
+    def oauth_client_id(self) -> Optional[str]:
+        """Returns the configured OAuth2 client id. Used for OIDC authorization.
+
+        Returns:
+            str: The OAuth client id.
+        """
+        return self.get(OAUTH_CLIENT_ID)
+
+    def needs_credentials(self) -> bool:
+        """Returns True if OAuth is configured.
+
+        Returns:
+            bool: True if OAuth is configured.
+        """
+        return bool(self.get(OAUTH_CLIENT_ID))
+
+    def oauth_client_secret(self) -> Optional[str]:
+        """Returns the configured OAuth2 client secret. Used for OIDC authorization.
+
+        Returns:
+            str: The OAuth client secret.
+        """
+        return self.get(OAUTH_CLIENT_SECRET)
+
+    def oauth_authorization_server(self) -> Optional[str]:
+        """Returns the OAuth2 authorization server endpoint.
+        Used for OIDC authorization.
+
+        Returns:
+            str: The OAuth2 authorization server endpoint.
+        """
+        return self.get(OAUTH_AUTHORIZATION_SERVER)

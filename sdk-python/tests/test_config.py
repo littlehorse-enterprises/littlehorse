@@ -2,7 +2,7 @@ import unittest
 import os
 import uuid
 
-from littlehorse.config import Config
+from littlehorse.config import LHConfig
 
 
 class TestConfig(unittest.TestCase):
@@ -13,7 +13,7 @@ class TestConfig(unittest.TestCase):
         os.environ["LHC_VARIABLE"] = "my-lhc-variable"
         os.environ["LHW_VARIABLE"] = "my-lhw-variable"
 
-        config = Config()
+        config = LHConfig()
 
         self.assertEqual(
             str(config), "LHC_VARIABLE=my-lhc-variable\nLHW_VARIABLE=my-lhw-variable"
@@ -23,7 +23,7 @@ class TestConfig(unittest.TestCase):
         os.environ["LHC_SECRET"] = "my-secret"
         os.environ["LHW_PASSWORD"] = "my-password"
 
-        config = Config()
+        config = LHConfig()
 
         self.assertEqual(str(config), "LHC_SECRET=******\nLHW_PASSWORD=******")
 
@@ -32,7 +32,7 @@ class TestConfig(unittest.TestCase):
         os.environ["LHC_VARIABLE"] = "my-lhc-variable"
         os.environ["LHW_VARIABLE"] = "my-lhw-variable"
 
-        config = Config()
+        config = LHConfig()
 
         self.assertDictEqual(
             config.configs,
@@ -55,7 +55,7 @@ class TestConfig(unittest.TestCase):
 
         print("\n\tTemporary config file:", temp_config_file_path)
 
-        config = Config()
+        config = LHConfig()
         config.load(temp_config_file_path)
 
         self.assertDictEqual(
@@ -71,33 +71,43 @@ class TestConfig(unittest.TestCase):
 
     def test_get_or_default(self):
         os.environ["LHC_VARIABLE"] = "my-lhc-variable"
-        config = Config()
+        config = LHConfig()
 
         self.assertEqual(config.get("LHC_VARIABLE"), "my-lhc-variable")
         self.assertEqual(
-            config.get("LHC_UNSET_VARIABLE", "my-default-value"), "my-default-value"
+            config.get("LHC_DEFAULT_VARIABLE", "my-default-value"), "my-default-value"
         )
+        self.assertEqual(config.get("LHC_DEFAULT_VARIABLE"), "my-default-value")
         self.assertIsNone(config.get("LHC_UNSET_VARIABLE"))
 
     def test_get_bootstrap_server(self):
-        config = Config()
+        config = LHConfig()
         self.assertEqual(config.bootstrap_server(), "localhost:2023")
 
     def test_get_bootstrap_server_with_dns(self):
         os.environ["LHC_API_HOST"] = "my-dns"
-        config = Config()
+        config = LHConfig()
         self.assertEqual(config.bootstrap_server(), "my-dns:2023")
 
     def test_get_bootstrap_server_with_port(self):
         os.environ["LHC_API_PORT"] = "5050"
-        config = Config()
+        config = LHConfig()
         self.assertEqual(config.bootstrap_server(), "localhost:5050")
 
     def test_is_secure(self):
         os.environ["LHC_CA_CERT"] = "my-path"
-        config = Config()
+        config = LHConfig()
         self.assertTrue(config.is_secure())
 
     def test_is_not_secure(self):
-        config = Config()
+        config = LHConfig()
         self.assertFalse(config.is_secure())
+
+    def test_needs_credentials(self):
+        os.environ["LHC_OAUTH_CLIENT_ID"] = "my-client_id"
+        config = LHConfig()
+        self.assertTrue(config.needs_credentials())
+
+    def test_does_not_need_credentials(self):
+        config = LHConfig()
+        self.assertFalse(config.needs_credentials())
