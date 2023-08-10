@@ -5,6 +5,7 @@ from typing import Optional, Union
 from grpc import Channel
 import grpc
 from jproperties import Properties
+from littlehorse.auth import GrpcAuth
 from littlehorse.model.service_pb2_grpc import LHPublicApiStub
 from littlehorse.utils import read_binary
 
@@ -174,12 +175,26 @@ class LHConfig:
         Returns:
             Channel: A closable channel. Use 'with' or channel.close().
         """
+
         if self.is_secure():
             tls_credentials = grpc.ssl_channel_credentials(
                 root_certificates=self.ca_cert(),
                 private_key=self.client_key(),
                 certificate_chain=self.client_cert(),
             )
+            if self.needs_credentials():
+                oauth_authorizer = grpc.metadata_call_credentials(
+                    GrpcAuth(
+                        client_id=self.oauth_client_id(),
+                        client_secret=self.oauth_client_secret(),
+                        authorization_server=self.oauth_authorization_server(),
+                    )
+                )
+
+                tls_credentials = grpc.composite_channel_credentials(
+                    tls_credentials, oauth_authorizer
+                )
+                # TODO TRY TO SIMPLIFY THIS FUNCTION
             return grpc.secure_channel(self.bootstrap_server(), tls_credentials)
 
         return grpc.insecure_channel(self.bootstrap_server())
@@ -198,8 +213,11 @@ class LHConfig:
 
 
 if __name__ == "__main__":
+    import logging
     from pathlib import Path
     from littlehorse.model.service_pb2 import WfSpecIdPb
+
+    logging.basicConfig(level=logging.DEBUG)
 
     config_path = Path.home().joinpath(".config", "littlehorse.config")
 
