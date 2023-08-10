@@ -47,7 +47,7 @@ repos:
         entry: poetry -C ./sdk-python run ruff --fix sdk-python/
 
       - id: mypy
-        name: Lint Python Code
+        name: Validating Python Types
         language: system
         always_run: true
         pass_filenames: false

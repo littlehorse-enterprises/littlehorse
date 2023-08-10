@@ -68,3 +68,27 @@ class TestConfig(unittest.TestCase):
                 "LHW_VARIABLE_FROM_FILE": "my-lhw-variable-from-file",
             },
         )
+
+    def test_get_or_default(self):
+        os.environ["LHC_VARIABLE"] = "my-lhc-variable"
+        config = Config()
+
+        self.assertEqual(config.get("LHC_VARIABLE"), "my-lhc-variable")
+        self.assertEqual(
+            config.get("LHC_UNSET_VARIABLE", "my-default-value"), "my-default-value"
+        )
+        self.assertIsNone(config.get("LHC_UNSET_VARIABLE"))
+
+    def test_get_bootstrap_server(self):
+        config = Config()
+        self.assertEqual(config.bootstrap_server(), "localhost:2023")
+
+    def test_get_bootstrap_server_with_dns(self):
+        os.environ["LHC_API_HOST"] = "my-dns"
+        config = Config()
+        self.assertEqual(config.bootstrap_server(), "my-dns:2023")
+
+    def test_get_bootstrap_server_with_port(self):
+        os.environ["LHC_API_PORT"] = "5050"
+        config = Config()
+        self.assertEqual(config.bootstrap_server(), "localhost:5050")

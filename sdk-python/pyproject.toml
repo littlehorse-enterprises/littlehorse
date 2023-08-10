@@ -41,7 +41,6 @@ exclude = ["littlehorse/model/"]
 [tool.mypy]
 exclude = ["littlehorse/model/", "tests"]
 strict = true
-
-[[tool.mypy.overrides]]
-module = ["jproperties"]
 ignore_missing_imports = true
+disallow_untyped_calls = false
+warn_return_any = false

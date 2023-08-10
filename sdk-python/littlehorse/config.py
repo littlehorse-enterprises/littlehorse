@@ -1,7 +1,10 @@
 import os
+from pathlib import Path
 from jproperties import Properties
 
 PREFIXES = ("LHC_", "LHW_")
+API_HOST = "LHC_API_HOST"
+API_PORT = "LHC_API_PORT"
 
 
 class Config:
@@ -25,7 +28,7 @@ class Config:
             ]
         )
 
-    def load(self, file_path: str) -> None:
+    def load(self, file_path: str | Path) -> None:
         """Load configurations from properties file.
 
         Args:
@@ -43,3 +46,12 @@ class Config:
         new_configs.update(self.configs)
 
         self.configs = new_configs
+
+    def get(self, key: str, default: str | None = None) -> str | None:
+        value = self.configs.get(key)
+        return value if value else default
+
+    def bootstrap_server(self) -> str:
+        host = self.get(API_HOST, "localhost")
+        port = self.get(API_PORT, "2023")
+        return f"{host}:{port}"
