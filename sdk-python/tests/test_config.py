@@ -92,3 +92,12 @@ class TestConfig(unittest.TestCase):
         os.environ["LHC_API_PORT"] = "5050"
         config = Config()
         self.assertEqual(config.bootstrap_server(), "localhost:5050")
+
+    def test_is_secure(self):
+        os.environ["LHC_CA_CERT"] = "my-path"
+        config = Config()
+        self.assertTrue(config.is_secure())
+
+    def test_is_not_secure(self):
+        config = Config()
+        self.assertFalse(config.is_secure())

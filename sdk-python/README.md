@@ -27,3 +27,11 @@ cd sdk-python
 poetry shell
 python -m unittest -v
 ```
+
+## Useful Commands
+
+Set python version:
+
+```
+poetry env use python3.9
+```
