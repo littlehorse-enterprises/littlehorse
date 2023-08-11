@@ -57,9 +57,8 @@ class LHConfig:
             for key, value in properties.items()
             if key.startswith(PREFIXES)
         }
-        new_configs.update(self.configs)
 
-        self.configs = new_configs
+        self.configs = new_configs | self.configs
 
     def get(self, key: str, default: Optional[str] = None) -> Optional[str]:
         """Gets a configuration, or return a default instead. If a default value is
@@ -194,7 +193,6 @@ class LHConfig:
                 tls_credentials = grpc.composite_channel_credentials(
                     tls_credentials, oauth_authorizer
                 )
-                # TODO TRY TO SIMPLIFY THIS FUNCTION
             return grpc.secure_channel(self.bootstrap_server(), tls_credentials)
 
         return grpc.insecure_channel(self.bootstrap_server())

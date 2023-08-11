@@ -16,6 +16,8 @@ python = "^3.9"
 protobuf = "^4.24"
 grpcio = "^1.56"
 jproperties = "^2.1"
+authlib = "^1.2"
+requests = "^2.31"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "*"
@@ -23,6 +25,7 @@ black = "*"
 ruff = "*"
 grpcio-tools = "^1.56"
 types-protobuf = "^4.24"
+types-requests = "^2.31.0.2"
 
 [build-system]
 requires = ["poetry-core"]
