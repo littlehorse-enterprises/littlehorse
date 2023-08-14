@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.Node;
-import io.littlehorse.common.model.meta.subnode.UserTaskNode;
+import io.littlehorse.common.model.meta.UserTaskNode;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.wfrun.Failure;
