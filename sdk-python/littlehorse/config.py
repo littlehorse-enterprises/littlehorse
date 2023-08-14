@@ -207,6 +207,7 @@ class LHConfig:
             LHPublicApiStub: A blocking gRPC stub.
         """
         self.channel = self.channel or self.establish_channel()
+
         return LHPublicApiStub(self.channel)
 
 
@@ -223,7 +224,6 @@ if __name__ == "__main__":
     config.load(config_path)
 
     stub = config.blocking_stub()
-
     id = WfSpecIdPb(name="example-basic")
     reply = stub.GetWfSpec(id)
 

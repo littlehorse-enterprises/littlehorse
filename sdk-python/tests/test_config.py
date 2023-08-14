@@ -1,5 +1,6 @@
 import unittest
 import os
+from unittest.mock import ANY, mock_open, patch
 import uuid
 
 from littlehorse.config import LHConfig
@@ -111,3 +112,36 @@ class TestConfig(unittest.TestCase):
     def test_does_not_need_credentials(self):
         config = LHConfig()
         self.assertFalse(config.needs_credentials())
+
+    @patch("littlehorse.config.grpc")
+    def test_establish_insecure_channel(self, grpc_package_mock):
+        config = LHConfig()
+        config.establish_channel()
+        grpc_package_mock.insecure_channel.assert_called_once_with("localhost:2023")
+
+    @patch("builtins.open", new_callable=mock_open, read_data="data")
+    @patch("littlehorse.config.grpc")
+    def test_establish_secure_channel(self, grpc_package_mock, mock_file):
+        os.environ["LHC_CA_CERT"] = "my-path"
+        config = LHConfig()
+        config.establish_channel()
+        grpc_package_mock.secure_channel.assert_called_once_with(
+            "localhost:2023", ANY
+        )
+
+    @patch("builtins.open", new_callable=mock_open, read_data="data")
+    @patch("littlehorse.config.GrpcAuth")
+    @patch("littlehorse.config.grpc")
+    def test_establish_secure_channel_and_oauth(
+        self, grpc_package_mock, grpc_auth_class_mock, mock_file
+    ):
+        os.environ["LHC_CA_CERT"] = "my-path"
+        os.environ["LHC_OAUTH_CLIENT_ID"] = "my-client_id"
+        config = LHConfig()
+        config.establish_channel()
+        grpc_package_mock.metadata_call_credentials.assert_called_once_with(
+            grpc_auth_class_mock.return_value
+        )
+        grpc_package_mock.secure_channel.assert_called_once_with(
+            "localhost:2023", ANY
+        )

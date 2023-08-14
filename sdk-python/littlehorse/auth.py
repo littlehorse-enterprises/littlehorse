@@ -6,7 +6,7 @@ import grpc
 import requests
 
 
-class IssuerConfig:
+class Issuer:
     def __init__(self, data: dict[str, str]) -> None:
         self.data = data
 
@@ -53,13 +53,13 @@ class GrpcAuth(grpc.AuthMetadataPlugin):
         self.authorization_server = authorization_server
 
         self.token: Optional[AccessToken] = None
-        self.issuer_config: Optional[IssuerConfig] = None
+        self.issuer_config: Optional[Issuer] = None
 
     def __call__(self, context: Any, callback: Any) -> None:
         access_token = self.access_token()
         callback((("authorization", access_token.token()),), None)
 
-    def discover(self) -> IssuerConfig:
+    def issuer(self) -> Issuer:
         if self.authorization_server is None:
             raise OAuthException("LHC_OAUTH_AUTHORIZATION_SERVER required")
 
@@ -67,14 +67,14 @@ class GrpcAuth(grpc.AuthMetadataPlugin):
             well_known_response = requests.get(
                 f"{self.authorization_server.rstrip('/')}/.well-known/openid-configuration"
             )
-            self.issuer_config = IssuerConfig(well_known_response.json())
+            self.issuer_config = Issuer(well_known_response.json())
 
         return self.issuer_config
 
     def access_token(self) -> AccessToken:
         if self.token is None or self.token.is_expired():
-            self.log.debug("Obtaining new access token")
-            issuer = self.discover()
+            self.log.debug("Obtaining a new access token")
+            issuer = self.issuer()
 
             client = OAuth2Session(
                 client_id=self.client_id,
@@ -99,7 +99,7 @@ if __name__ == "__main__":
 
     grpc_auth = GrpcAuth(client_id, client_secret, "http://localhost:8888/realms/lh")
 
-    issuer = grpc_auth.discover()
+    issuer = grpc_auth.issuer()
     print("Issuer:", issuer)
 
     access_token = grpc_auth.access_token()
