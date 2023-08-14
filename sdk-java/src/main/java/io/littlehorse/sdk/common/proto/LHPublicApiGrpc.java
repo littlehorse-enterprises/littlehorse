@@ -1348,6 +1348,37 @@ public final class LHPublicApiGrpc {
     return getDeleteExternalEventDefMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CancelUserTaskRunPb,
+      io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb> getCancelUserTaskRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "CancelUserTaskRun",
+      requestType = io.littlehorse.sdk.common.proto.CancelUserTaskRunPb.class,
+      responseType = io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CancelUserTaskRunPb,
+      io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb> getCancelUserTaskRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CancelUserTaskRunPb, io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb> getCancelUserTaskRunMethod;
+    if ((getCancelUserTaskRunMethod = LHPublicApiGrpc.getCancelUserTaskRunMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getCancelUserTaskRunMethod = LHPublicApiGrpc.getCancelUserTaskRunMethod) == null) {
+          LHPublicApiGrpc.getCancelUserTaskRunMethod = getCancelUserTaskRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.CancelUserTaskRunPb, io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "CancelUserTaskRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CancelUserTaskRunPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("CancelUserTaskRun"))
+              .build();
+        }
+      }
+    }
+    return getCancelUserTaskRunMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.HealthCheckPb,
       io.littlehorse.sdk.common.proto.HealthCheckReplyPb> getHealthCheckMethod;
 
@@ -1854,6 +1885,13 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    default void cancelUserTaskRun(io.littlehorse.sdk.common.proto.CancelUserTaskRunPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCancelUserTaskRunMethod(), responseObserver);
+    }
+
+    /**
+     */
     default void healthCheck(io.littlehorse.sdk.common.proto.HealthCheckPb request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.HealthCheckReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getHealthCheckMethod(), responseObserver);
@@ -2261,6 +2299,14 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    public void cancelUserTaskRun(io.littlehorse.sdk.common.proto.CancelUserTaskRunPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getCancelUserTaskRunMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
     public void healthCheck(io.littlehorse.sdk.common.proto.HealthCheckPb request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.HealthCheckReplyPb> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
@@ -2608,6 +2654,13 @@ public final class LHPublicApiGrpc {
     public io.littlehorse.sdk.common.proto.DeleteObjectReplyPb deleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteExternalEventDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb cancelUserTaskRun(io.littlehorse.sdk.common.proto.CancelUserTaskRunPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getCancelUserTaskRunMethod(), getCallOptions(), request);
     }
 
     /**
@@ -3000,6 +3053,14 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb> cancelUserTaskRun(
+        io.littlehorse.sdk.common.proto.CancelUserTaskRunPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getCancelUserTaskRunMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.HealthCheckReplyPb> healthCheck(
         io.littlehorse.sdk.common.proto.HealthCheckPb request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
@@ -3081,12 +3142,13 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_DELETE_WF_SPEC = 39;
   private static final int METHODID_DELETE_USER_TASK_DEF = 40;
   private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 41;
-  private static final int METHODID_HEALTH_CHECK = 42;
-  private static final int METHODID_TASK_DEF_METRICS = 43;
-  private static final int METHODID_WF_SPEC_METRICS = 44;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 45;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 46;
-  private static final int METHODID_POLL_TASK = 47;
+  private static final int METHODID_CANCEL_USER_TASK_RUN = 42;
+  private static final int METHODID_HEALTH_CHECK = 43;
+  private static final int METHODID_TASK_DEF_METRICS = 44;
+  private static final int METHODID_WF_SPEC_METRICS = 45;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 46;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 47;
+  private static final int METHODID_POLL_TASK = 48;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -3272,6 +3334,10 @@ public final class LHPublicApiGrpc {
         case METHODID_DELETE_EXTERNAL_EVENT_DEF:
           serviceImpl.deleteExternalEventDef((io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.DeleteObjectReplyPb>) responseObserver);
+          break;
+        case METHODID_CANCEL_USER_TASK_RUN:
+          serviceImpl.cancelUserTaskRun((io.littlehorse.sdk.common.proto.CancelUserTaskRunPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb>) responseObserver);
           break;
         case METHODID_HEALTH_CHECK:
           serviceImpl.healthCheck((io.littlehorse.sdk.common.proto.HealthCheckPb) request,
@@ -3616,6 +3682,13 @@ public final class LHPublicApiGrpc {
               io.littlehorse.sdk.common.proto.DeleteObjectReplyPb>(
                 service, METHODID_DELETE_EXTERNAL_EVENT_DEF)))
         .addMethod(
+          getCancelUserTaskRunMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.CancelUserTaskRunPb,
+              io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb>(
+                service, METHODID_CANCEL_USER_TASK_RUN)))
+        .addMethod(
           getHealthCheckMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -3741,6 +3814,7 @@ public final class LHPublicApiGrpc {
               .addMethod(getDeleteWfSpecMethod())
               .addMethod(getDeleteUserTaskDefMethod())
               .addMethod(getDeleteExternalEventDefMethod())
+              .addMethod(getCancelUserTaskRunMethod())
               .addMethod(getHealthCheckMethod())
               .addMethod(getTaskDefMetricsMethod())
               .addMethod(getWfSpecMetricsMethod())

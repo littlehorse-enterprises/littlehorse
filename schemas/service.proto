@@ -95,6 +95,11 @@ message PutTaskDefReplyPb {
   optional TaskDefPb result = 3;
 }
 
+message CancelUserTaskRunReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+}
+
 message PutUserTaskDefPb {
   string name = 1;
   repeated UserTaskFieldPb fields = 2;
@@ -696,6 +701,7 @@ service LHPublicApi {
   rpc DeleteWfSpec(DeleteWfSpecPb) returns (DeleteObjectReplyPb) {}
   rpc DeleteUserTaskDef(DeleteUserTaskDefPb) returns (DeleteObjectReplyPb) {}
   rpc DeleteExternalEventDef(DeleteExternalEventDefPb) returns (DeleteObjectReplyPb) {}
+  rpc CancelUserTaskRun(CancelUserTaskRunPb) returns (CancelUserTaskRunReplyPb) {}
 
   rpc HealthCheck(HealthCheckPb) returns (HealthCheckReplyPb) {}
 
@@ -859,6 +865,10 @@ message ManualHaltPb {
   bool meaning_of_life = 137;
 }
 
+message UserTaskHaltPb {
+  UserTaskRunIdPb user_task_run_id = 1;
+}
+
 message ThreadHaltReasonPb {
   oneof reason {
     ParentHaltedPb parent_halted = 1;
@@ -867,6 +877,7 @@ message ThreadHaltReasonPb {
     PendingFailureHandlerHaltReasonPb pending_failure = 4;
     HandlingFailureHaltReasonPb handling_failure = 5;
     ManualHaltPb manual_halt = 6;
+    UserTaskHaltPb user_task_cancelled = 7;
   }
 }
 
@@ -1292,6 +1303,10 @@ message CompleteUserTaskRunPb {
 
   UserTaskResultPb result = 2;
   string user_id = 3;
+}
+
+message CancelUserTaskRunPb {
+  UserTaskRunIdPb user_task_run_id = 1;
 }
 
 message StartThreadNodePb {

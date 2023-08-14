@@ -54,6 +54,7 @@ private static final long serialVersionUID = 0L;
     PENDING_FAILURE(4),
     HANDLING_FAILURE(5),
     MANUAL_HALT(6),
+    USER_TASK_CANCELLED(7),
     REASON_NOT_SET(0);
     private final int value;
     private ReasonCase(int value) {
@@ -77,6 +78,7 @@ private static final long serialVersionUID = 0L;
         case 4: return PENDING_FAILURE;
         case 5: return HANDLING_FAILURE;
         case 6: return MANUAL_HALT;
+        case 7: return USER_TASK_CANCELLED;
         case 0: return REASON_NOT_SET;
         default: return null;
       }
@@ -278,6 +280,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.ManualHaltPb.getDefaultInstance();
   }
 
+  public static final int USER_TASK_CANCELLED_FIELD_NUMBER = 7;
+  /**
+   * <code>.littlehorse.UserTaskHaltPb user_task_cancelled = 7;</code>
+   * @return Whether the userTaskCancelled field is set.
+   */
+  @java.lang.Override
+  public boolean hasUserTaskCancelled() {
+    return reasonCase_ == 7;
+  }
+  /**
+   * <code>.littlehorse.UserTaskHaltPb user_task_cancelled = 7;</code>
+   * @return The userTaskCancelled.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskHaltPb getUserTaskCancelled() {
+    if (reasonCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.UserTaskHaltPb) reason_;
+    }
+    return io.littlehorse.sdk.common.proto.UserTaskHaltPb.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.UserTaskHaltPb user_task_cancelled = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskHaltPbOrBuilder getUserTaskCancelledOrBuilder() {
+    if (reasonCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.UserTaskHaltPb) reason_;
+    }
+    return io.littlehorse.sdk.common.proto.UserTaskHaltPb.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -309,6 +342,9 @@ private static final long serialVersionUID = 0L;
     }
     if (reasonCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.sdk.common.proto.ManualHaltPb) reason_);
+    }
+    if (reasonCase_ == 7) {
+      output.writeMessage(7, (io.littlehorse.sdk.common.proto.UserTaskHaltPb) reason_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -342,6 +378,10 @@ private static final long serialVersionUID = 0L;
     if (reasonCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, (io.littlehorse.sdk.common.proto.ManualHaltPb) reason_);
+    }
+    if (reasonCase_ == 7) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, (io.littlehorse.sdk.common.proto.UserTaskHaltPb) reason_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -384,6 +424,10 @@ private static final long serialVersionUID = 0L;
         if (!getManualHalt()
             .equals(other.getManualHalt())) return false;
         break;
+      case 7:
+        if (!getUserTaskCancelled()
+            .equals(other.getUserTaskCancelled())) return false;
+        break;
       case 0:
       default:
     }
@@ -422,6 +466,10 @@ private static final long serialVersionUID = 0L;
       case 6:
         hash = (37 * hash) + MANUAL_HALT_FIELD_NUMBER;
         hash = (53 * hash) + getManualHalt().hashCode();
+        break;
+      case 7:
+        hash = (37 * hash) + USER_TASK_CANCELLED_FIELD_NUMBER;
+        hash = (53 * hash) + getUserTaskCancelled().hashCode();
         break;
       case 0:
       default:
@@ -573,6 +621,9 @@ private static final long serialVersionUID = 0L;
       if (manualHaltBuilder_ != null) {
         manualHaltBuilder_.clear();
       }
+      if (userTaskCancelledBuilder_ != null) {
+        userTaskCancelledBuilder_.clear();
+      }
       reasonCase_ = 0;
       reason_ = null;
       return this;
@@ -637,6 +688,10 @@ private static final long serialVersionUID = 0L;
       if (reasonCase_ == 6 &&
           manualHaltBuilder_ != null) {
         result.reason_ = manualHaltBuilder_.build();
+      }
+      if (reasonCase_ == 7 &&
+          userTaskCancelledBuilder_ != null) {
+        result.reason_ = userTaskCancelledBuilder_.build();
       }
     }
 
@@ -707,6 +762,10 @@ private static final long serialVersionUID = 0L;
         }
         case MANUAL_HALT: {
           mergeManualHalt(other.getManualHalt());
+          break;
+        }
+        case USER_TASK_CANCELLED: {
+          mergeUserTaskCancelled(other.getUserTaskCancelled());
           break;
         }
         case REASON_NOT_SET: {
@@ -781,6 +840,13 @@ private static final long serialVersionUID = 0L;
               reasonCase_ = 6;
               break;
             } // case 50
+            case 58: {
+              input.readMessage(
+                  getUserTaskCancelledFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              reasonCase_ = 7;
+              break;
+            } // case 58
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1663,6 +1729,148 @@ private static final long serialVersionUID = 0L;
       reasonCase_ = 6;
       onChanged();
       return manualHaltBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskHaltPb, io.littlehorse.sdk.common.proto.UserTaskHaltPb.Builder, io.littlehorse.sdk.common.proto.UserTaskHaltPbOrBuilder> userTaskCancelledBuilder_;
+    /**
+     * <code>.littlehorse.UserTaskHaltPb user_task_cancelled = 7;</code>
+     * @return Whether the userTaskCancelled field is set.
+     */
+    @java.lang.Override
+    public boolean hasUserTaskCancelled() {
+      return reasonCase_ == 7;
+    }
+    /**
+     * <code>.littlehorse.UserTaskHaltPb user_task_cancelled = 7;</code>
+     * @return The userTaskCancelled.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskHaltPb getUserTaskCancelled() {
+      if (userTaskCancelledBuilder_ == null) {
+        if (reasonCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.UserTaskHaltPb) reason_;
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskHaltPb.getDefaultInstance();
+      } else {
+        if (reasonCase_ == 7) {
+          return userTaskCancelledBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskHaltPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.UserTaskHaltPb user_task_cancelled = 7;</code>
+     */
+    public Builder setUserTaskCancelled(io.littlehorse.sdk.common.proto.UserTaskHaltPb value) {
+      if (userTaskCancelledBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        reason_ = value;
+        onChanged();
+      } else {
+        userTaskCancelledBuilder_.setMessage(value);
+      }
+      reasonCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UserTaskHaltPb user_task_cancelled = 7;</code>
+     */
+    public Builder setUserTaskCancelled(
+        io.littlehorse.sdk.common.proto.UserTaskHaltPb.Builder builderForValue) {
+      if (userTaskCancelledBuilder_ == null) {
+        reason_ = builderForValue.build();
+        onChanged();
+      } else {
+        userTaskCancelledBuilder_.setMessage(builderForValue.build());
+      }
+      reasonCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UserTaskHaltPb user_task_cancelled = 7;</code>
+     */
+    public Builder mergeUserTaskCancelled(io.littlehorse.sdk.common.proto.UserTaskHaltPb value) {
+      if (userTaskCancelledBuilder_ == null) {
+        if (reasonCase_ == 7 &&
+            reason_ != io.littlehorse.sdk.common.proto.UserTaskHaltPb.getDefaultInstance()) {
+          reason_ = io.littlehorse.sdk.common.proto.UserTaskHaltPb.newBuilder((io.littlehorse.sdk.common.proto.UserTaskHaltPb) reason_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          reason_ = value;
+        }
+        onChanged();
+      } else {
+        if (reasonCase_ == 7) {
+          userTaskCancelledBuilder_.mergeFrom(value);
+        } else {
+          userTaskCancelledBuilder_.setMessage(value);
+        }
+      }
+      reasonCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UserTaskHaltPb user_task_cancelled = 7;</code>
+     */
+    public Builder clearUserTaskCancelled() {
+      if (userTaskCancelledBuilder_ == null) {
+        if (reasonCase_ == 7) {
+          reasonCase_ = 0;
+          reason_ = null;
+          onChanged();
+        }
+      } else {
+        if (reasonCase_ == 7) {
+          reasonCase_ = 0;
+          reason_ = null;
+        }
+        userTaskCancelledBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UserTaskHaltPb user_task_cancelled = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskHaltPb.Builder getUserTaskCancelledBuilder() {
+      return getUserTaskCancelledFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.UserTaskHaltPb user_task_cancelled = 7;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskHaltPbOrBuilder getUserTaskCancelledOrBuilder() {
+      if ((reasonCase_ == 7) && (userTaskCancelledBuilder_ != null)) {
+        return userTaskCancelledBuilder_.getMessageOrBuilder();
+      } else {
+        if (reasonCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.UserTaskHaltPb) reason_;
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskHaltPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.UserTaskHaltPb user_task_cancelled = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskHaltPb, io.littlehorse.sdk.common.proto.UserTaskHaltPb.Builder, io.littlehorse.sdk.common.proto.UserTaskHaltPbOrBuilder> 
+        getUserTaskCancelledFieldBuilder() {
+      if (userTaskCancelledBuilder_ == null) {
+        if (!(reasonCase_ == 7)) {
+          reason_ = io.littlehorse.sdk.common.proto.UserTaskHaltPb.getDefaultInstance();
+        }
+        userTaskCancelledBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.UserTaskHaltPb, io.littlehorse.sdk.common.proto.UserTaskHaltPb.Builder, io.littlehorse.sdk.common.proto.UserTaskHaltPbOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserTaskHaltPb) reason_,
+                getParentForChildren(),
+                isClean());
+        reason_ = null;
+      }
+      reasonCase_ = 7;
+      onChanged();
+      return userTaskCancelledBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

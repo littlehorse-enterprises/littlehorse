@@ -332,6 +332,10 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         return ute;
     }
 
+    public void cancel() {
+        status = UserTaskRunStatusPb.CANCELLED;
+    }
+
     private void scheduleTaskReassign(UTActionTrigger action) {
         long delayInSeconds = action.getDelaySeconds().getRhsLiteralValue().intVal;
         LocalDateTime localDateTime = LocalDateTime.now().plusSeconds(delayInSeconds);

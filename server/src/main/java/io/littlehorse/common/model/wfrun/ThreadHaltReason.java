@@ -9,6 +9,7 @@ import io.littlehorse.common.model.wfrun.haltreason.ParentHalted;
 import io.littlehorse.common.model.wfrun.haltreason.PendingFailureHandlerHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.PendingInterruptHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.SubHaltReason;
+import io.littlehorse.common.model.wfrun.haltreason.UserTaskHalt;
 import io.littlehorse.sdk.common.proto.ThreadHaltReasonPb;
 import io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.ReasonCase;
 import lombok.Getter;
@@ -31,6 +32,8 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
 
     public WfRun wfRun;
 
+    private UserTaskHalt userTaskHalt;
+
     public Class<ThreadHaltReasonPb> getProtoBaseClass() {
         return ThreadHaltReasonPb.class;
     }
@@ -49,6 +52,8 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
                 return handlingFailure;
             case MANUAL_HALT:
                 return manualHalt;
+            case USER_TASK_CANCELLED:
+                return userTaskHalt;
             case REASON_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -80,6 +85,9 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
                 break;
             case MANUAL_HALT:
                 out.setManualHalt(manualHalt.toProto());
+                break;
+            case USER_TASK_CANCELLED:
+                out.setUserTaskCancelled(userTaskHalt.toProto());
                 break;
             case REASON_NOT_SET:
                 throw new RuntimeException("not possible");
@@ -113,6 +121,13 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
                 break;
             case MANUAL_HALT:
                 manualHalt = ManualHalt.fromProto(p.getManualHalt());
+                break;
+            case USER_TASK_CANCELLED:
+                userTaskHalt =
+                    LHSerializable.fromProto(
+                        p.getUserTaskCancelled(),
+                        UserTaskHalt.class
+                    );
                 break;
             case REASON_NOT_SET:
                 throw new RuntimeException("not possible");

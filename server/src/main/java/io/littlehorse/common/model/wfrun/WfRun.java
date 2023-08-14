@@ -16,6 +16,7 @@ import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.wfrun.haltreason.ManualHalt;
+import io.littlehorse.common.model.wfrun.haltreason.SubHaltReason;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
@@ -491,18 +492,20 @@ public class WfRun extends Getable<WfRunPb> {
         }
 
         ThreadRun thread = threadRuns.get(req.threadRunNumber);
+        ThreadHaltReason haltReason = new ThreadHaltReason();
+        haltReason.type = ReasonCase.MANUAL_HALT;
+        haltReason.manualHalt = new ManualHalt();
+        stop(thread, haltReason);
+    }
 
+    public void stop(ThreadRun thread, ThreadHaltReason threadHaltReason) {
         // need to see if thread already is halted. If so, don't double halt it.
         for (ThreadHaltReason reason : thread.haltReasons) {
             if (reason.type == ReasonCase.MANUAL_HALT) {
                 return;
             }
         }
-
-        ThreadHaltReason haltReason = new ThreadHaltReason();
-        haltReason.type = ReasonCase.MANUAL_HALT;
-        haltReason.manualHalt = new ManualHalt();
-        thread.halt(haltReason);
+        thread.halt(threadHaltReason);
         this.advance(new Date()); // Seems like a good idea, why not?
     }
 
