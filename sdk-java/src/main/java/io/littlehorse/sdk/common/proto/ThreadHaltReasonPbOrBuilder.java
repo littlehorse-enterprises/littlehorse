@@ -97,20 +97,5 @@ public interface ThreadHaltReasonPbOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.ManualHaltPbOrBuilder getManualHaltOrBuilder();
 
-  /**
-   * <code>.littlehorse.UserTaskHaltPb user_task_cancelled = 7;</code>
-   * @return Whether the userTaskCancelled field is set.
-   */
-  boolean hasUserTaskCancelled();
-  /**
-   * <code>.littlehorse.UserTaskHaltPb user_task_cancelled = 7;</code>
-   * @return The userTaskCancelled.
-   */
-  io.littlehorse.sdk.common.proto.UserTaskHaltPb getUserTaskCancelled();
-  /**
-   * <code>.littlehorse.UserTaskHaltPb user_task_cancelled = 7;</code>
-   */
-  io.littlehorse.sdk.common.proto.UserTaskHaltPbOrBuilder getUserTaskCancelledOrBuilder();
-
   public io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.ReasonCase getReasonCase();
 }
