@@ -37,6 +37,20 @@ repos:
         pass_filenames: false
         entry: ./local-dev/compile-proto.sh
 
+      - id: install-python
+        name: Install Python Dependencies
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python install
+
+      - id: install-npm
+        name: Install Node Dependencies
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: npm install
+
       # Linters
 
       - id: lint-python
