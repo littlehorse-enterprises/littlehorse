@@ -1,35 +1,15 @@
 package io.littlehorse.tests.cases.workflow;
 
 import io.littlehorse.sdk.client.LHClient;
-import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.AssignUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
 import io.littlehorse.sdk.common.proto.NodeRunPb;
-import io.littlehorse.sdk.common.proto.SearchUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.SearchUserTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.TaskRunIdPb;
-import io.littlehorse.sdk.common.proto.TaskRunPb;
-import io.littlehorse.sdk.common.proto.TaskStatusPb;
-import io.littlehorse.sdk.common.proto.UserGroupPb;
-import io.littlehorse.sdk.common.proto.UserPb;
-import io.littlehorse.sdk.common.proto.UserTaskEventPb;
-import io.littlehorse.sdk.common.proto.UserTaskEventPb.EventCase;
-import io.littlehorse.sdk.common.proto.UserTaskFieldResultPb;
-import io.littlehorse.sdk.common.proto.UserTaskResultPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
-import io.littlehorse.sdk.wfsdk.UserTaskOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -50,11 +30,7 @@ public class AZUserTaskCancel extends UserTaskWorkflowTest {
     }
 
     public String getDescription() {
-        return (
-            "Test for basic User Task assigned to specific user id, and tests " +
-            " that we can schedule 'reminder tasks' which run X seconds after " +
-            " the UserTaskRun is scheduled. "
-        );
+        return ("Test for cancelling a UserTaskRun");
     }
 
     @Override
