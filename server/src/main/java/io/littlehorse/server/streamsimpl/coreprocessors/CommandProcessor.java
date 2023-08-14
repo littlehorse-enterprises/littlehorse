@@ -14,12 +14,10 @@ import io.littlehorse.server.streamsimpl.util.WfSpecCache;
 import java.time.Duration;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
-import org.apache.kafka.streams.state.KeyValueStore;
 
 @Slf4j
 public class CommandProcessor
@@ -33,16 +31,20 @@ public class CommandProcessor
 
     private final String storeName;
 
+    private final boolean isMetadataProcessorInstance;
+
     public CommandProcessor(
         LHConfig config,
         KafkaStreamsServerImpl server,
         WfSpecCache wfSpecCache,
-        String storeName
+        String storeName,
+        boolean isMetadataProcessorInstance
     ) {
         this.config = config;
         this.server = server;
         this.wfSpecCache = wfSpecCache;
         this.storeName = storeName;
+        this.isMetadataProcessorInstance = isMetadataProcessorInstance;
     }
 
     @Override
@@ -50,14 +52,18 @@ public class CommandProcessor
         // temporary hack
 
         this.ctx = ctx;
-        KeyValueStore<String, Bytes> rawLocalStore = ctx.getStateStore(storeName);
+        final LHStoreWrapper localStore = new LHStoreWrapper(
+            ctx.getStateStore(storeName),
+            config
+        );
         dao =
             new KafkaStreamsLHDAOImpl(
                 this.ctx,
                 config,
                 server,
                 wfSpecCache,
-                new LHStoreWrapper(rawLocalStore, config)
+                localStore,
+                isMetadataProcessorInstance
             );
         dao.onPartitionClaimed();
 

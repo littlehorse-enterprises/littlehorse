@@ -101,7 +101,7 @@ public class ServerTopology {
 
         topo.addProcessor(
             PEPE_PROCESSOR,
-            () -> new CommandProcessor(config, server, wfSpecCache, PEPE_STORE),
+            () -> new CommandProcessor(config, server, wfSpecCache, PEPE_STORE, true),
             PEPE_SOURCE
         );
 
@@ -123,9 +123,8 @@ public class ServerTopology {
 
         topo.addProcessor(
             CORE_PROCESSOR,
-            () -> {
-                return new CommandProcessor(config, server, wfSpecCache, CORE_STORE);
-            },
+            () ->
+                new CommandProcessor(config, server, wfSpecCache, CORE_STORE, false),
             CORE_SOURCE
         );
 
