@@ -27,7 +27,9 @@ public class UserAssignment extends LHSerializable<UserAssignmentPb> {
     public void initFrom(Message proto) throws LHSerdeError {
         UserAssignmentPb userAssignmentPb = (UserAssignmentPb) proto;
         userId = VariableAssignment.fromProto(userAssignmentPb.getUserId());
-        userGroup = VariableAssignment.fromProto(userAssignmentPb.getUserGroup());
+        if (userAssignmentPb.hasUserGroup()) {
+            userGroup = VariableAssignment.fromProto(userAssignmentPb.getUserGroup());
+        }
     }
 
     @Override
