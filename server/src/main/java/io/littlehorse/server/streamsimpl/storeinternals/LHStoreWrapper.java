@@ -136,8 +136,4 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         totalPuts = 0;
         totalDeletes = 0;
     }
-
-    public String getName() {
-        return store.name();
-    }
 }
