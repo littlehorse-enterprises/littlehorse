@@ -28,7 +28,10 @@ class AccessToken:
         return self.token()
 
     def is_expired(self) -> bool:
-        return datetime.fromtimestamp(float(self.data["expires_at"])) < datetime.now()
+        return self.expiration() < datetime.now()
+
+    def expiration(self) -> datetime:
+        return datetime.fromtimestamp(float(self.data["expires_at"]))
 
 
 class OAuthException(Exception):
@@ -88,6 +91,7 @@ class GrpcAuth(grpc.AuthMetadataPlugin):
             )
 
             self._token = AccessToken(token_data)
+            self._log.debug("New token expires at: %s", self._token.expiration())
 
         return self._token
 

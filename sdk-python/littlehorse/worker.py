@@ -70,7 +70,7 @@ if __name__ == "__main__":
     loop = asyncio.get_event_loop()
 
     async def wait_until_stop() -> None:  # this is not needed in production
-        await asyncio.sleep(60)
+        await asyncio.sleep(60 * 5)
         await worker.stop()
         loop.stop()
 
