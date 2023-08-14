@@ -35,19 +35,19 @@ public interface UserTaskNodePbOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserGroupOrBuilder();
 
   /**
-   * <code>.littlehorse.VariableAssignmentPb user_id = 3;</code>
-   * @return Whether the userId field is set.
+   * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
+   * @return Whether the user field is set.
    */
-  boolean hasUserId();
+  boolean hasUser();
   /**
-   * <code>.littlehorse.VariableAssignmentPb user_id = 3;</code>
-   * @return The userId.
+   * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
+   * @return The user.
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserId();
+  io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb getUser();
   /**
-   * <code>.littlehorse.VariableAssignmentPb user_id = 3;</code>
+   * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserIdOrBuilder();
+  io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPbOrBuilder getUserOrBuilder();
 
   /**
    * <pre>

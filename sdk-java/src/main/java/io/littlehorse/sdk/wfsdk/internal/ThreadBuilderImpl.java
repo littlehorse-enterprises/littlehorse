@@ -101,6 +101,15 @@ public class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     @Override
+    public UserTaskOutput assignUserTaskToUser(
+        String userTaskDefName,
+        String userId,
+        String userGroup
+    ) {
+        return assignUserTaskHelper(userTaskDefName, userId, userGroup);
+    }
+
+    @Override
     public void scheduleReassignmentToGroupOnDeadline(
         UserTaskOutput userTaskOutput,
         int deadlineSeconds
@@ -164,6 +173,24 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         return assignUserTaskHelper(userTaskDefName, userId, null);
     }
 
+    @Override
+    public UserTaskOutput assignUserTaskToUser(
+        String userTaskDefName,
+        WfRunVariable userId,
+        String userGroup
+    ) {
+        return assignUserTaskHelper(userTaskDefName, userId, userGroup);
+    }
+
+    @Override
+    public UserTaskOutput assignUserTaskToUser(
+        String userTaskDefName,
+        WfRunVariable userId,
+        WfRunVariable userGroup
+    ) {
+        return assignUserTaskHelper(userTaskDefName, userId, userGroup);
+    }
+
     public UserTaskOutputImpl assignUserTaskToUserGroup(
         String userTaskDefName,
         String userGroup
@@ -191,9 +218,16 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
         if (userId != null) {
             VariableAssignmentPb userIdAssn = assignVariable(userId);
-            utNode.setUserId(userIdAssn);
+            VariableAssignmentPb userGroupAssn = userGroups != null
+                ? assignVariable(userGroups)
+                : null;
+            UserTaskNodePb.UserAssignmentPb.Builder userAssignmentBuilder = UserTaskNodePb.UserAssignmentPb.newBuilder();
+            userAssignmentBuilder.setUserId(userIdAssn);
+            if (userGroupAssn != null) {
+                userAssignmentBuilder.setUserGroup(userGroupAssn);
+            }
+            utNode.setUser(userAssignmentBuilder);
         } else {
-            // guaranteed userGroup != null
             VariableAssignmentPb userIdAssn = assignVariable(userGroups);
             utNode.setUserGroup(userIdAssn);
         }

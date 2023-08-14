@@ -1156,10 +1156,15 @@ message UTActionTriggerPb {
 message UserTaskNodePb {
   string user_task_def_name = 1;
 
+  message UserAssignmentPb {
+    VariableAssignmentPb user_id = 1;
+    optional VariableAssignmentPb user_group = 2;
+  }
+
   // to whom should the Node be assigned?
   oneof assignment {
     VariableAssignmentPb user_group = 2;
-    VariableAssignmentPb user_id = 3;
+    UserAssignmentPb user = 3;
   }
 
   // This is used to, for example, send a push notification to a mobile app
