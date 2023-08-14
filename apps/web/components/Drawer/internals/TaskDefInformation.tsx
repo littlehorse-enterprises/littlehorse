@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import linkSvg from "./link.svg";
 import correctArrowSvg from "./correct-arrow.svg";
@@ -6,6 +6,7 @@ import { FailureInformation, LH_EXCEPTION } from "./FailureInformation";
 import { NodeData, NodeDataProps } from "./NodeData";
 import { parseKey } from "./drawerInternals";
 import Link from "next/link";
+import { Value } from "../wfVariable";
 
 interface TaskDefInformationProps {
   linkedThread: () => void;
@@ -81,18 +82,18 @@ export const TaskDefInformation = (props: TaskDefInformationProps) => {
             props.wfRunData ? "grid-3" : "grid-3"
           }`}
         >
-          <p className="center">
+          <p className="drawer__task__table__header__subheaders center">
             TaskDef
             <br />
             Variable Name
           </p>
-          <p className="center">
+          <p className="drawer__task__table__header__subheaders center">
             TaskDef
             <br />
             Variable Type
           </p>
           {!props.wfRunData && (
-            <p className="center">
+            <p className="drawer__task__table__header__subheaders center">
               Workflow
               <br />
               Variable
