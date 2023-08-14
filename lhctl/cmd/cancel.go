@@ -7,7 +7,7 @@ import (
 // executeCmd represents the run command
 var cancelUserTaskCmd = &cobra.Command{
 	Use:   "cancel",
-	Short: "Cancel",
+	Short: "Cancel a LH object. Generally a UserTaskRun.",
 }
 
 func init() {

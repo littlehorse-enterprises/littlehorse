@@ -32,7 +32,8 @@ UserTaskRun. At the end, the UserTaskRun is submitted`,
 var cancelUserTaskRunCmd = &cobra.Command{
 	Use:   "userTaskRun <wfRunId> <userTaskGuid>",
 	Short: "Cancel a UserTaskRun",
-	Long:  `Cancel`,
+	Long: `Given a provided wfRunId and UserTaskGuid, this command allows you to
+	cancel the specified UserTaskRun. Cancelling a UserTaskRun will halt the entire WfRun execution.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
 			log.Fatal("You must provide the wfRunId and userTaskGuid")
