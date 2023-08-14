@@ -9,14 +9,17 @@ import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsimpl.util.WfSpecCache;
 import java.time.Duration;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
+import org.apache.kafka.streams.state.KeyValueStore;
 
 @Slf4j
 public class CommandProcessor
@@ -28,14 +31,18 @@ public class CommandProcessor
     private KafkaStreamsServerImpl server;
     private final WfSpecCache wfSpecCache;
 
+    private final String storeName;
+
     public CommandProcessor(
         LHConfig config,
         KafkaStreamsServerImpl server,
-        WfSpecCache wfSpecCache
+        WfSpecCache wfSpecCache,
+        String storeName
     ) {
         this.config = config;
         this.server = server;
         this.wfSpecCache = wfSpecCache;
+        this.storeName = storeName;
     }
 
     @Override
@@ -43,7 +50,15 @@ public class CommandProcessor
         // temporary hack
 
         this.ctx = ctx;
-        dao = new KafkaStreamsLHDAOImpl(this.ctx, config, server, wfSpecCache);
+        KeyValueStore<String, Bytes> rawLocalStore = ctx.getStateStore(storeName);
+        dao =
+            new KafkaStreamsLHDAOImpl(
+                this.ctx,
+                config,
+                server,
+                wfSpecCache,
+                new LHStoreWrapper(rawLocalStore, config)
+            );
         dao.onPartitionClaimed();
 
         ctx.schedule(

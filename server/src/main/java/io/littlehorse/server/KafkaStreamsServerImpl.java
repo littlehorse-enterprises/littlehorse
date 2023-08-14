@@ -207,6 +207,7 @@ import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
+import org.apache.kafka.streams.Topology;
 
 @Slf4j
 public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
@@ -281,7 +282,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             config
         );
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
+            ServerTopology.PEPE_STORE,
             StoreUtils.getFullStoreKey(
                 new WfSpecId(req.getName(), req.getVersion()),
                 WfSpec.class
@@ -306,7 +307,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             StoreUtils.getFullPrefixByName(req.getName(), WfSpec.class),
             LHConstants.META_PARTITION_KEY,
             observer,
-            ServerTopology.CORE_STORE
+            ServerTopology.PEPE_STORE
         );
     }
 
@@ -328,7 +329,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             StoreUtils.getFullPrefixByName(req.getName(), UserTaskDef.class),
             LHConstants.META_PARTITION_KEY,
             observer,
-            ServerTopology.CORE_STORE
+            ServerTopology.PEPE_STORE
         );
     }
 
@@ -345,7 +346,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
+            ServerTopology.PEPE_STORE,
             StoreUtils.getFullStoreKey(
                 new UserTaskDefId(req.getName(), req.getVersion()),
                 UserTaskDef.class
@@ -365,7 +366,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
+            ServerTopology.PEPE_STORE,
             StoreUtils.getFullStoreKey(new TaskDefId(req.getName()), TaskDef.class),
             LHConstants.META_PARTITION_KEY,
             observer
@@ -385,7 +386,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
+            ServerTopology.PEPE_STORE,
             StoreUtils.getFullStoreKey(
                 new ExternalEventDefId(req.getName()),
                 ExternalEventDef.class
@@ -1050,12 +1051,27 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
 
         // Now actually record the command.
+        final String topicName;
+        if (
+            subCmdCls == PutWfSpec.class ||
+            subCmdCls == PutTaskDef.class ||
+            subCmdCls == PutUserTaskDef.class ||
+            subCmdCls == PutExternalEventDef.class ||
+            subCmdCls == DeleteTaskDef.class ||
+            subCmdCls == DeleteExternalEventDef.class ||
+            subCmdCls == DeleteWfSpec.class ||
+            subCmdCls == DeleteUserTaskDef.class
+        ) {
+            topicName = config.getPepeCmdTopicName();
+        } else {
+            topicName = config.getCoreCmdTopicName();
+        }
         internalComms
             .getProducer()
             .send(
                 command.getPartitionKey(), // partition key
                 command, // payload
-                config.getCoreCmdTopicName(), // topic name
+                topicName, // topic name
                 (meta, exn) -> { // callback
                     if (exn != null) {
                         // Then we report back to the observer that we failed to record

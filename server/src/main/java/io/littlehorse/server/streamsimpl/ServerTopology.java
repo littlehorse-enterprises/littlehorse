@@ -71,6 +71,14 @@ public class ServerTopology {
     public static final String GLOBAL_STORE = "global-metadata-store";
     public static final String GLOBAL_META_PROCESSOR = "global-metadata-processor";
 
+    public static final String PEPE_SOURCE = "pepe-source";
+
+    public static final String PEPE_PROCESSOR = "pepe-processor";
+
+    public static final String PEPE_STORE = "pepe-store";
+
+    public static final String GLOBAL_METADATA_SINK = "global-metadata-sink";
+
     public static Topology initCoreTopology(
         LHConfig config,
         KafkaStreamsServerImpl server
@@ -84,10 +92,39 @@ public class ServerTopology {
             config.getCoreCmdTopicName() // source topic
         );
 
+        topo.addSource(
+            PEPE_SOURCE, // source name
+            Serdes.String().deserializer(), // key deserializer
+            new LHDeserializer<>(Command.class, config), // value deserializer
+            config.getPepeCmdTopicName() // source topic
+        );
+
+        topo.addProcessor(
+            PEPE_PROCESSOR,
+            () -> new CommandProcessor(config, server, wfSpecCache, PEPE_STORE),
+            PEPE_SOURCE
+        );
+
+        topo.addSink(
+            GLOBAL_METADATA_SINK,
+            (key, coreServerOutput, ctx) ->
+                ((CommandProcessorOutput) coreServerOutput).topic, // topic extractor
+            Serdes.String().serializer(), // key serializer
+            (topic, output) -> {
+                CommandProcessorOutput cpo = (CommandProcessorOutput) output;
+                if (cpo.payload == null) {
+                    return null;
+                }
+
+                return cpo.payload.toBytes(config);
+            }, // value serializer
+            PEPE_PROCESSOR // parent name
+        );
+
         topo.addProcessor(
             CORE_PROCESSOR,
             () -> {
-                return new CommandProcessor(config, server, wfSpecCache);
+                return new CommandProcessor(config, server, wfSpecCache, CORE_STORE);
             },
             CORE_SOURCE
         );
@@ -137,6 +174,13 @@ public class ServerTopology {
             Serdes.Bytes()
         );
         topo.addStateStore(coreStoreBuilder, CORE_PROCESSOR);
+
+        StoreBuilder<KeyValueStore<String, Bytes>> pepeStoreBuilder = Stores.keyValueStoreBuilder(
+            Stores.persistentKeyValueStore(PEPE_STORE),
+            Serdes.String(),
+            Serdes.Bytes()
+        );
+        topo.addStateStore(pepeStoreBuilder, PEPE_PROCESSOR);
 
         // There's a topic for global communication, which is used for two things:
         // 1. broadcasting global metadata to all instances

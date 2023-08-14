@@ -1,5 +1,7 @@
 package io.littlehorse.server.streamsimpl.coreprocessors;
 
+import static io.littlehorse.server.streamsimpl.ServerTopology.PEPE_STORE;
+
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
@@ -57,13 +59,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
-import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 @Slf4j
@@ -118,7 +120,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         final ProcessorContext<String, CommandProcessorOutput> ctx,
         LHConfig config,
         KafkaStreamsServerImpl server,
-        WfSpecCache wfSpecCache
+        WfSpecCache wfSpecCache,
+        LHStoreWrapper localStore
     ) {
         this.server = server;
         this.ctx = ctx;
@@ -138,16 +141,12 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         // TODO: Here is where we want to eventually add some cacheing for GET to
         // the WfSpec and TaskDef etc.
 
-        isHotMetadataPartition =
-            ctx.taskId().partition() == config.getHotMetadataPartition();
+        isHotMetadataPartition = Objects.equals(localStore.getName(), PEPE_STORE);
 
-        KeyValueStore<String, Bytes> rawLocalStore = ctx.getStateStore(
-            ServerTopology.CORE_STORE
-        );
         ReadOnlyKeyValueStore<String, Bytes> rawGlobalStore = ctx.getStateStore(
             ServerTopology.GLOBAL_STORE
         );
-        localStore = new LHStoreWrapper(rawLocalStore, config);
+        this.localStore = localStore;
         globalStore = new LHROStoreWrapper(rawGlobalStore, config);
 
         storageManager = new GetableStorageManager(localStore, config, ctx);
