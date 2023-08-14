@@ -23,7 +23,7 @@ class LHTaskWorker:
         self._heartbeat_task: Optional[asyncio.Task[None]] = None
 
     async def _heartbeat(self) -> None:
-        with self.config.establish_channel() as channel:
+        async with self.config.establish_channel(async_channel=True) as channel:
             stub = LHPublicApiStub(channel)
             while self.running:
                 self._log.debug("Sending heart beat at %s", datetime.now())
@@ -33,8 +33,9 @@ class LHTaskWorker:
                     listener_name=self.config.server_listener(),
                     task_def_name=self.task_def_name,
                 )
-                stub.RegisterTaskWorker(request)
-                # HERE CHECK THE CONNECTION KEEP THEM OR KILL THEM
+                await stub.RegisterTaskWorker(request)
+                # HERE: CHECK THE OPENED CONNECTIONS,
+                # DEPENDING ON "YOUR HOSTS" KEEP THEM OR KILL THEM
                 await asyncio.sleep(5)
 
     async def start(self) -> None:
