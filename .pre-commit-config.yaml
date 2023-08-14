@@ -51,22 +51,6 @@ repos:
         pass_filenames: false
         entry: npm install
 
-      # Linters
-
-      - id: lint-python
-        name: Lint Python Code
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: poetry -C ./sdk-python run ruff --fix sdk-python/
-
-      - id: mypy
-        name: Validating Python Types
-        language: system
-        always_run: true
-        pass_filenames: false
-        entry: poetry -C ./sdk-python run mypy --config-file sdk-python/pyproject.toml sdk-python/
-
       # Formatters
 
       - id: format-java
@@ -89,6 +73,22 @@ repos:
         always_run: true
         pass_filenames: false
         entry: gofmt -s -w ./sdk-go
+
+      # Linters
+
+      - id: lint-python
+        name: Lint Python Code
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python run ruff --fix sdk-python/
+
+      - id: mypy
+        name: Validating Python Types
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python run mypy --config-file sdk-python/pyproject.toml sdk-python/
 
       # Tests
 

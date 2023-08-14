@@ -40,7 +40,7 @@ class OAuthException(Exception):
 # https://grpc.io/docs/guides/auth/#python
 # https://docs.authlib.org/en/latest/client/oauth2.html#oauth2session-for-client-credentials
 class GrpcAuth(grpc.AuthMetadataPlugin):
-    log = logging.getLogger("GrpcAuth")
+    _log = logging.getLogger("GrpcAuth")
 
     def __init__(
         self,
@@ -52,8 +52,8 @@ class GrpcAuth(grpc.AuthMetadataPlugin):
         self.client_secret = client_secret
         self.authorization_server = authorization_server
 
-        self.token: Optional[AccessToken] = None
-        self.issuer_config: Optional[Issuer] = None
+        self._token: Optional[AccessToken] = None
+        self._issuer: Optional[Issuer] = None
 
     def __call__(self, context: Any, callback: Any) -> None:
         access_token = self.access_token()
@@ -63,17 +63,17 @@ class GrpcAuth(grpc.AuthMetadataPlugin):
         if self.authorization_server is None:
             raise OAuthException("LHC_OAUTH_AUTHORIZATION_SERVER required")
 
-        if self.issuer_config is None:
+        if self._issuer is None:
             well_known_response = requests.get(
                 f"{self.authorization_server.rstrip('/')}/.well-known/openid-configuration"
             )
-            self.issuer_config = Issuer(well_known_response.json())
+            self._issuer = Issuer(well_known_response.json())
 
-        return self.issuer_config
+        return self._issuer
 
     def access_token(self) -> AccessToken:
-        if self.token is None or self.token.is_expired():
-            self.log.debug("Obtaining a new access token")
+        if self._token is None or self._token.is_expired():
+            self._log.debug("Obtaining a new access token")
             issuer = self.issuer()
 
             client = OAuth2Session(
@@ -87,9 +87,9 @@ class GrpcAuth(grpc.AuthMetadataPlugin):
                 grant_type="client_credentials",
             )
 
-            self.token = AccessToken(token_data)
+            self._token = AccessToken(token_data)
 
-        return self.token
+        return self._token
 
 
 if __name__ == "__main__":

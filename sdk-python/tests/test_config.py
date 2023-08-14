@@ -76,7 +76,8 @@ class TestConfig(unittest.TestCase):
 
         self.assertEqual(config.get("LHC_VARIABLE"), "my-lhc-variable")
         self.assertEqual(
-            config.get("LHC_DEFAULT_VARIABLE", "my-default-value"), "my-default-value"
+            config.get_or_set_default("LHC_DEFAULT_VARIABLE", "my-default-value"),
+            "my-default-value",
         )
         self.assertEqual(config.get("LHC_DEFAULT_VARIABLE"), "my-default-value")
         self.assertIsNone(config.get("LHC_UNSET_VARIABLE"))
