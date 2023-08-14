@@ -396,7 +396,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void putTaskDef(PutTaskDefPb req, StreamObserver<PutTaskDefReplyPb> ctx) {
-        processCommand(req, ctx, PutTaskDef.class, PutTaskDefReplyPb.class);
+        processMetadataCommand(req, ctx, PutTaskDef.class, PutTaskDefReplyPb.class);
     }
 
     @Override
@@ -417,7 +417,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         PutExternalEventDefPb req,
         StreamObserver<PutExternalEventDefReplyPb> ctx
     ) {
-        processCommand(
+        processMetadataCommand(
             req,
             ctx,
             PutExternalEventDef.class,
@@ -430,7 +430,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         PutUserTaskDefPb req,
         StreamObserver<PutUserTaskDefReplyPb> ctx
     ) {
-        processCommand(req, ctx, PutUserTaskDef.class, PutUserTaskDefReplyPb.class);
+        processMetadataCommand(
+            req,
+            ctx,
+            PutUserTaskDef.class,
+            PutUserTaskDefReplyPb.class
+        );
     }
 
     @Override
@@ -461,7 +466,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void putWfSpec(PutWfSpecPb req, StreamObserver<PutWfSpecReplyPb> ctx) {
-        processCommand(req, ctx, PutWfSpec.class, PutWfSpecReplyPb.class);
+        processMetadataCommand(req, ctx, PutWfSpec.class, PutWfSpecReplyPb.class);
     }
 
     @Override
@@ -929,7 +934,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         DeleteWfSpecPb req,
         StreamObserver<DeleteObjectReplyPb> ctx
     ) {
-        processCommand(req, ctx, DeleteWfSpec.class, DeleteObjectReplyPb.class);
+        processMetadataCommand(
+            req,
+            ctx,
+            DeleteWfSpec.class,
+            DeleteObjectReplyPb.class
+        );
     }
 
     @Override
@@ -937,7 +947,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         DeleteTaskDefPb req,
         StreamObserver<DeleteObjectReplyPb> ctx
     ) {
-        processCommand(req, ctx, DeleteTaskDef.class, DeleteObjectReplyPb.class);
+        processMetadataCommand(
+            req,
+            ctx,
+            DeleteTaskDef.class,
+            DeleteObjectReplyPb.class
+        );
     }
 
     @Override
@@ -945,7 +960,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         DeleteUserTaskDefPb req,
         StreamObserver<DeleteObjectReplyPb> ctx
     ) {
-        processCommand(req, ctx, DeleteUserTaskDef.class, DeleteObjectReplyPb.class);
+        processMetadataCommand(
+            req,
+            ctx,
+            DeleteUserTaskDef.class,
+            DeleteObjectReplyPb.class
+        );
     }
 
     @Override
@@ -953,7 +973,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         DeleteExternalEventDefPb req,
         StreamObserver<DeleteObjectReplyPb> ctx
     ) {
-        processCommand(
+        processMetadataCommand(
             req,
             ctx,
             DeleteExternalEventDef.class,
@@ -1003,7 +1023,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             client.getResponseObserver(),
             TaskClaimEvent.class,
             PollTaskReplyPb.class,
-            false // it's a stream, so we don't want to complete it.
+            false, // it's a stream, so we don't want to complete it.,
+            config.getCoreCmdTopicName()
         );
     }
 
@@ -1027,7 +1048,32 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         Class<T> subCmdCls,
         Class<V> responseCls
     ) {
-        processCommand(request, responseObserver, subCmdCls, responseCls, true);
+        processCommand(
+            request,
+            responseObserver,
+            subCmdCls,
+            responseCls,
+            true,
+            config.getCoreCmdTopicName()
+        );
+    }
+
+    private <
+        U extends Message, T extends SubCommand<U>, V extends Message
+    > void processMetadataCommand(
+        U request,
+        StreamObserver<V> responseObserver,
+        Class<T> subCmdCls,
+        Class<V> responseCls
+    ) {
+        processCommand(
+            request,
+            responseObserver,
+            subCmdCls,
+            responseCls,
+            true,
+            config.getMetadataCmdTopicName()
+        );
     }
 
     private <
@@ -1037,7 +1083,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         StreamObserver<V> responseObserver,
         Class<T> subCmdCls,
         Class<V> responseCls,
-        boolean shouldComplete // TODO: Document this
+        boolean shouldComplete, // TODO: Document this
+        String topicName
     ) {
         T subCmd = LHSerializable.fromProto(request, subCmdCls);
         Command command = new Command(subCmd);
@@ -1049,21 +1096,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
 
         // Now actually record the command.
-        final String topicName;
-        if (
-            subCmdCls == PutWfSpec.class ||
-            subCmdCls == PutTaskDef.class ||
-            subCmdCls == PutUserTaskDef.class ||
-            subCmdCls == PutExternalEventDef.class ||
-            subCmdCls == DeleteTaskDef.class ||
-            subCmdCls == DeleteExternalEventDef.class ||
-            subCmdCls == DeleteWfSpec.class ||
-            subCmdCls == DeleteUserTaskDef.class
-        ) {
-            topicName = config.getMetadataCmdTopicName();
-        } else {
-            topicName = config.getCoreCmdTopicName();
-        }
         internalComms
             .getProducer()
             .send(
