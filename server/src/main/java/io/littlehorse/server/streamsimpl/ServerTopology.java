@@ -15,8 +15,10 @@ import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.Repar
 import io.littlehorse.server.streamsimpl.util.WfSpecCache;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.processor.TopicNameExtractor;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
 import org.apache.kafka.streams.state.Stores;
@@ -67,15 +69,16 @@ public class ServerTopology {
     public static final String CORE_REPARTITION_PROCESSOR =
         "core-repartition-processor";
 
-    public static final String GLOBAL_META_SOURCE = "global-metadata-cl-source";
+    public static final String GLOBAL_METADATA_SOURCE = "global-metadata-cl-source";
     public static final String GLOBAL_STORE = "global-metadata-store";
-    public static final String GLOBAL_META_PROCESSOR = "global-metadata-processor";
+    public static final String GLOBAL_METADATA_PROCESSOR =
+        "global-metadata-processor";
 
-    public static final String PEPE_SOURCE = "pepe-source";
+    public static final String METADATA_SOURCE = "metadata-source";
 
-    public static final String PEPE_PROCESSOR = "pepe-processor";
+    public static final String METADATA_PROCESSOR = "metadata-processor";
 
-    public static final String PEPE_STORE = "pepe-store";
+    public static final String METADATA_STORE = "metadata-store";
 
     public static final String GLOBAL_METADATA_SINK = "global-metadata-sink";
 
@@ -85,6 +88,22 @@ public class ServerTopology {
     ) {
         Topology topo = new Topology();
         WfSpecCache wfSpecCache = new WfSpecCache();
+        Serializer<Object> sinkValueSerializer = (topic, output) -> {
+            CommandProcessorOutput cpo = (CommandProcessorOutput) output;
+            if (cpo.payload == null) {
+                return null;
+            }
+
+            return cpo.payload.toBytes(config);
+        };
+
+        TopicNameExtractor<String, Object> sinkTopicNameExtractor = (
+                key,
+                coreServerOutput,
+                ctx
+            ) ->
+            ((CommandProcessorOutput) coreServerOutput).topic;
+
         topo.addSource(
             CORE_SOURCE, // source name
             Serdes.String().deserializer(), // key deserializer
@@ -93,32 +112,31 @@ public class ServerTopology {
         );
 
         topo.addSource(
-            PEPE_SOURCE, // source name
+            METADATA_SOURCE, // source name
             Serdes.String().deserializer(), // key deserializer
             new LHDeserializer<>(Command.class, config), // value deserializer
-            config.getPepeCmdTopicName() // source topic
+            config.getMetadataCmdTopicName() // source topic
         );
 
         topo.addProcessor(
-            PEPE_PROCESSOR,
-            () -> new CommandProcessor(config, server, wfSpecCache, PEPE_STORE, true),
-            PEPE_SOURCE
+            METADATA_PROCESSOR,
+            () ->
+                new CommandProcessor(
+                    config,
+                    server,
+                    wfSpecCache,
+                    METADATA_STORE,
+                    true
+                ),
+            METADATA_SOURCE
         );
 
         topo.addSink(
             GLOBAL_METADATA_SINK,
-            (key, coreServerOutput, ctx) ->
-                ((CommandProcessorOutput) coreServerOutput).topic, // topic extractor
+            sinkTopicNameExtractor, // topic extractor
             Serdes.String().serializer(), // key serializer
-            (topic, output) -> {
-                CommandProcessorOutput cpo = (CommandProcessorOutput) output;
-                if (cpo.payload == null) {
-                    return null;
-                }
-
-                return cpo.payload.toBytes(config);
-            }, // value serializer
-            PEPE_PROCESSOR // parent name
+            sinkValueSerializer, // value serializer
+            METADATA_PROCESSOR // parent name
         );
 
         topo.addProcessor(
@@ -130,18 +148,9 @@ public class ServerTopology {
 
         topo.addSink(
             CORE_REPARTITION_SINK,
-            (key, coreServerOutput, ctx) -> {
-                return ((CommandProcessorOutput) coreServerOutput).topic;
-            }, // topic extractor
+            sinkTopicNameExtractor, // topic extractor
             Serdes.String().serializer(), // key serializer
-            (topic, output) -> {
-                CommandProcessorOutput cpo = (CommandProcessorOutput) output;
-                if (cpo.payload == null) {
-                    return null;
-                }
-
-                return cpo.payload.toBytes(config);
-            }, // value serializer
+            sinkValueSerializer, // value serializer
             CORE_PROCESSOR // parent name
         );
 
@@ -154,9 +163,7 @@ public class ServerTopology {
 
         topo.addProcessor(
             CORE_REPARTITION_PROCESSOR,
-            () -> {
-                return new RepartitionCommandProcessor(config);
-            },
+            () -> new RepartitionCommandProcessor(config),
             CORE_REPARTITION_SOURCE
         );
 
@@ -174,12 +181,12 @@ public class ServerTopology {
         );
         topo.addStateStore(coreStoreBuilder, CORE_PROCESSOR);
 
-        StoreBuilder<KeyValueStore<String, Bytes>> pepeStoreBuilder = Stores.keyValueStoreBuilder(
-            Stores.persistentKeyValueStore(PEPE_STORE),
+        StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder = Stores.keyValueStoreBuilder(
+            Stores.persistentKeyValueStore(METADATA_STORE),
             Serdes.String(),
             Serdes.Bytes()
         );
-        topo.addStateStore(pepeStoreBuilder, PEPE_PROCESSOR);
+        topo.addStateStore(metadataStoreBuilder, METADATA_PROCESSOR);
 
         // There's a topic for global communication, which is used for two things:
         // 1. broadcasting global metadata to all instances
@@ -195,17 +202,15 @@ public class ServerTopology {
                 Serdes.Bytes()
             )
             .withLoggingDisabled();
+
         topo.addGlobalStore(
             globalStoreBuilder,
-            GLOBAL_META_SOURCE,
+            GLOBAL_METADATA_SOURCE,
             Serdes.String().deserializer(),
             Serdes.Bytes().deserializer(),
             config.getGlobalMetadataCLTopicName(),
-            GLOBAL_META_PROCESSOR,
-            () -> {
-                return new GlobalMetadataProcessor(wfSpecCache);
-            }
-            // add lambda to return the processor
+            GLOBAL_METADATA_PROCESSOR,
+            () -> new GlobalMetadataProcessor(wfSpecCache)
         );
         return topo;
     }

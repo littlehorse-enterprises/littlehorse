@@ -141,12 +141,12 @@ public class LHConfig extends ConfigBase {
         return clusterId + "-core-cmd";
     }
 
-    public String getPepeCmdTopicName() {
-        return getPepeCmdTopicName(getLHClusterId());
+    public String getMetadataCmdTopicName() {
+        return getMetadataCmdTopicName(getLHClusterId());
     }
 
-    public static String getPepeCmdTopicName(String clusterId) {
-        return clusterId + "-pepe-cmd";
+    public static String getMetadataCmdTopicName(String clusterId) {
+        return clusterId + "-metadata-cmd";
     }
 
     public String getRepartitionTopicName() {
@@ -286,7 +286,7 @@ public class LHConfig extends ConfigBase {
         // TODO: define the appropriate configuration for this topic -> For sure it shouldn't have compaction
         out.add(
             new NewTopic(
-                getPepeCmdTopicName(clusterId),
+                getMetadataCmdTopicName(clusterId),
                 // This topic is input to a global store. Therefore, it doesn't
                 // make sense to have any more than just one partition.
                 1,

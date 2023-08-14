@@ -1,7 +1,5 @@
 package io.littlehorse.server.streamsimpl.coreprocessors;
 
-import static io.littlehorse.server.streamsimpl.ServerTopology.PEPE_STORE;
-
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;

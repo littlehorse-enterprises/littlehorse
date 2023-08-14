@@ -197,7 +197,6 @@ import io.littlehorse.server.streamsimpl.util.GETStreamObserver;
 import io.littlehorse.server.streamsimpl.util.GETStreamObserverNew;
 import io.littlehorse.server.streamsimpl.util.HealthService;
 import io.littlehorse.server.streamsimpl.util.POSTStreamObserver;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
@@ -207,7 +206,6 @@ import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
-import org.apache.kafka.streams.Topology;
 
 @Slf4j
 public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
@@ -282,7 +280,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             config
         );
         internalComms.getStoreBytesAsync(
-            ServerTopology.PEPE_STORE,
+            ServerTopology.METADATA_STORE,
             StoreUtils.getFullStoreKey(
                 new WfSpecId(req.getName(), req.getVersion()),
                 WfSpec.class
@@ -307,7 +305,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             StoreUtils.getFullPrefixByName(req.getName(), WfSpec.class),
             LHConstants.META_PARTITION_KEY,
             observer,
-            ServerTopology.PEPE_STORE
+            ServerTopology.METADATA_STORE
         );
     }
 
@@ -329,7 +327,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             StoreUtils.getFullPrefixByName(req.getName(), UserTaskDef.class),
             LHConstants.META_PARTITION_KEY,
             observer,
-            ServerTopology.PEPE_STORE
+            ServerTopology.METADATA_STORE
         );
     }
 
@@ -346,7 +344,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.PEPE_STORE,
+            ServerTopology.METADATA_STORE,
             StoreUtils.getFullStoreKey(
                 new UserTaskDefId(req.getName(), req.getVersion()),
                 UserTaskDef.class
@@ -366,7 +364,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.PEPE_STORE,
+            ServerTopology.METADATA_STORE,
             StoreUtils.getFullStoreKey(new TaskDefId(req.getName()), TaskDef.class),
             LHConstants.META_PARTITION_KEY,
             observer
@@ -386,7 +384,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.PEPE_STORE,
+            ServerTopology.METADATA_STORE,
             StoreUtils.getFullStoreKey(
                 new ExternalEventDefId(req.getName()),
                 ExternalEventDef.class
@@ -1062,7 +1060,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             subCmdCls == DeleteWfSpec.class ||
             subCmdCls == DeleteUserTaskDef.class
         ) {
-            topicName = config.getPepeCmdTopicName();
+            topicName = config.getMetadataCmdTopicName();
         } else {
             topicName = config.getCoreCmdTopicName();
         }
