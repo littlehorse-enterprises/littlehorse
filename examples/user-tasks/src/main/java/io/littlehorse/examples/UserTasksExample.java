@@ -24,7 +24,7 @@ public class UserTasksExample {
 
     private static final Logger log = LoggerFactory.getLogger(UserTasksExample.class);
 
-    private static final String WF_NAME = "it-request";
+    private static final String WF_NAME = "it-request2";
     public static final String EMAIL_TASK_NAME = "send-email";
 
     private static final String IT_REQUEST_FORM = "it-request";
@@ -49,6 +49,14 @@ public class UserTasksExample {
         UserTaskOutput formOutput = thread.assignUserTaskToUser(
             IT_REQUEST_FORM,
             userId
+        );
+        thread.handleException(
+            formOutput,
+            "USER_TASK_CANCELLED",
+            handler -> {
+                String email = "test-ut-support@gmail.com";
+                handler.execute(EMAIL_TASK_NAME, email, "Task cancelled");
+            }
         );
         thread.mutate(itRequest, VariableMutationTypePb.ASSIGN, formOutput);
 

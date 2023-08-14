@@ -7,14 +7,10 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.CancelUserTaskRunReply;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
-import io.littlehorse.common.model.wfrun.ThreadHaltReason;
-import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
-import io.littlehorse.common.model.wfrun.haltreason.UserTaskHalt;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.ThreadHaltReasonPb;
 
 public class CancelUserTaskRun extends SubCommand<CancelUserTaskRunPb> {
 
@@ -52,11 +48,6 @@ public class CancelUserTaskRun extends SubCommand<CancelUserTaskRunPb> {
             );
         }
         userTaskRun.cancel();
-        ThreadRun threadRun = userTaskRun.getNodeRun().getThreadRun();
-        ThreadHaltReason haltReason = new ThreadHaltReason();
-        haltReason.type = ThreadHaltReasonPb.ReasonCase.USER_TASK_CANCELLED;
-        haltReason.setUserTaskHalt(new UserTaskHalt(userTaskRun.getId()));
-        threadRun.getWfRun().stop(threadRun, haltReason);
         return new CancelUserTaskRunReply(
             userTaskRun.getId().getPartitionKey(),
             LHResponseCodePb.OK

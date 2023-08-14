@@ -334,6 +334,11 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
 
     public void cancel() {
         status = UserTaskRunStatusPb.CANCELLED;
+        Failure failure = new Failure(
+            "User task cancelled",
+            LHConstants.USER_TASK_CANCELLED
+        );
+        getNodeRun().fail(failure, new Date());
     }
 
     private void scheduleTaskReassign(UTActionTrigger action) {

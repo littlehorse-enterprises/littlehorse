@@ -36,6 +36,10 @@ public enum TaskStatusPb
    * <code>TASK_INPUT_VAR_SUB_ERROR = 6;</code>
    */
   TASK_INPUT_VAR_SUB_ERROR(6),
+  /**
+   * <code>TASK_CANCELLED = 7;</code>
+   */
+  TASK_CANCELLED(7),
   UNRECOGNIZED(-1),
   ;
 
@@ -67,6 +71,10 @@ public enum TaskStatusPb
    * <code>TASK_INPUT_VAR_SUB_ERROR = 6;</code>
    */
   public static final int TASK_INPUT_VAR_SUB_ERROR_VALUE = 6;
+  /**
+   * <code>TASK_CANCELLED = 7;</code>
+   */
+  public static final int TASK_CANCELLED_VALUE = 7;
 
 
   public final int getNumber() {
@@ -100,6 +108,7 @@ public enum TaskStatusPb
       case 4: return TASK_TIMEOUT;
       case 5: return TASK_OUTPUT_SERIALIZING_ERROR;
       case 6: return TASK_INPUT_VAR_SUB_ERROR;
+      case 7: return TASK_CANCELLED;
       default: return null;
     }
   }
