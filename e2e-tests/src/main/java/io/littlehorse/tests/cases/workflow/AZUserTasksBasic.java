@@ -228,6 +228,24 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
             completeUserTaskRunReplyPb =
                 client
                     .getGrpcClient()
+                    .completeUserTaskRun(
+                        buildCompleteUserTaskRequestWithMissingField(found)
+                    );
+            assertThat(
+                completeUserTaskRunReplyPb
+                    .getCode()
+                    .equals(LHResponseCodePb.BAD_REQUEST_ERROR),
+                "UserTaskRun mandatory fields validation is not working as expected"
+            );
+            assertThat(
+                completeUserTaskRunReplyPb
+                    .getMessage()
+                    .equals("[myStr] are mandatory fields"),
+                "Actual output message: " + completeUserTaskRunReplyPb.getMessage()
+            );
+            completeUserTaskRunReplyPb =
+                client
+                    .getGrpcClient()
                     .completeUserTaskRun(buildValidCompleteUserTaskRequest(found));
             assertThat(
                 completeUserTaskRunReplyPb.getCode().equals(LHResponseCodePb.OK),
@@ -288,6 +306,25 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
                             .setName("nonExistingStringField")
                             .setValue(LHLibUtil.objToVarVal("asdf"))
                     )
+                    .addFields(
+                        UserTaskFieldResultPb
+                            .newBuilder()
+                            .setName("myInt")
+                            .setValue(LHLibUtil.objToVarVal(123))
+                    )
+            )
+            .build();
+    }
+
+    private CompleteUserTaskRunPb buildCompleteUserTaskRequestWithMissingField(
+        UserTaskRunIdPb userTaskRUnIdToComplete
+    ) throws LHSerdeError {
+        return CompleteUserTaskRunPb
+            .newBuilder()
+            .setUserTaskRunId(userTaskRUnIdToComplete)
+            .setResult(
+                UserTaskResultPb
+                    .newBuilder()
                     .addFields(
                         UserTaskFieldResultPb
                             .newBuilder()

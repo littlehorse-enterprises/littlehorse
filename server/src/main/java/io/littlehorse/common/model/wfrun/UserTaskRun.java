@@ -37,12 +37,14 @@ import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
@@ -416,12 +418,35 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
             VariableValue fieldVal = VariableValue.fromProto(inputField.getValue());
             raw.put(inputField.getName(), fieldVal.getVal());
         }
-
+        validateMandatoryFieldsFromCompletedEvent(
+            userTaskFieldsGroupedByName.values(),
+            raw.keySet()
+        );
         VariableValue output = new VariableValue();
         output.setType(VariableTypePb.JSON_OBJ);
         output.setJsonObjVal(raw);
 
         getNodeRun().complete(output, new Date());
+    }
+
+    private void validateMandatoryFieldsFromCompletedEvent(
+        Collection<UserTaskField> userTaskFieldsFromTaskDef,
+        Collection<String> inputFieldNames
+    ) throws LHValidationError {
+        List<String> mandatoryFieldNames = userTaskFieldsFromTaskDef
+            .stream()
+            .filter(UserTaskField::isRequired)
+            .map(UserTaskField::getName)
+            .toList();
+        String mandatoryFieldsNotFound = mandatoryFieldNames
+            .stream()
+            .filter(Predicate.not(inputFieldNames::contains))
+            .collect(Collectors.joining(","));
+        if (!mandatoryFieldsNotFound.isEmpty()) {
+            throw new LHValidationError(
+                "[%s] are mandatory fields".formatted(mandatoryFieldsNotFound)
+            );
+        }
     }
 
     public NodeRun getNodeRun() {

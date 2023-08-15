@@ -15,6 +15,7 @@ public class UserTaskField extends LHSerializable<UserTaskFieldPb> {
     private VariableTypePb type;
     private String description;
     private String displayName;
+    private boolean required;
 
     public Class<UserTaskFieldPb> getProtoBaseClass() {
         return UserTaskFieldPb.class;
@@ -25,6 +26,7 @@ public class UserTaskField extends LHSerializable<UserTaskFieldPb> {
         name = p.getName();
         type = p.getType();
         displayName = p.getDisplayName();
+        required = p.getRequired();
 
         if (p.hasDescription()) description = p.getDescription();
     }
@@ -34,6 +36,7 @@ public class UserTaskField extends LHSerializable<UserTaskFieldPb> {
             .newBuilder()
             .setName(name)
             .setType(type)
+            .setRequired(required)
             .setDisplayName(displayName);
 
         if (description != null) out.setDescription(description);

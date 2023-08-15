@@ -1100,6 +1100,7 @@ message UserTaskFieldPb {
   VariableTypePb type = 2;
   optional string description = 3;
   string display_name = 4;
+  bool required = 5;
   // Later versions will allow stuff such as:
   // 1. Validation (eg. email address, integer between 1-10, etc)
   // 2. Nested object structures
