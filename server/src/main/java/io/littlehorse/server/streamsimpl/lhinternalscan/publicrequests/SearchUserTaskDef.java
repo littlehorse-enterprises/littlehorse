@@ -107,6 +107,12 @@ public class SearchUserTaskDef
                 prefix,
                 prefix + "~"
             );
+        } else if (name != null && !name.isEmpty()) {
+            return new ObjectIdScanBoundaryStrategy(
+                LHConstants.META_PARTITION_KEY,
+                name,
+                name + "/"
+            );
         } else {
             return new ObjectIdScanBoundaryStrategy(
                 LHConstants.META_PARTITION_KEY,
