@@ -95,6 +95,8 @@ public class TaskNodeReference extends TaskRunSubSource<TaskNodeReferencePb> {
                 return LHConstants.VAR_MUTATION_ERROR;
             case TASK_INPUT_VAR_SUB_ERROR:
                 return LHConstants.VAR_SUB_ERROR;
+            case TASK_CANCELLED:
+                return LHConstants.USER_TASK_CANCELLED;
             case TASK_RUNNING:
             case TASK_SCHEDULED:
             case TASK_SUCCESS:

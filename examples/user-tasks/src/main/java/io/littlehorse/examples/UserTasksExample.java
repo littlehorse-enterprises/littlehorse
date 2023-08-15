@@ -51,6 +51,14 @@ public class UserTasksExample {
             userId,
             "testGroup"
         );
+        thread.handleException(
+            formOutput,
+            "USER_TASK_CANCELLED",
+            handler -> {
+                String email = "test-ut-support@gmail.com";
+                handler.execute(EMAIL_TASK_NAME, email, "Task cancelled");
+            }
+        );
         thread.mutate(itRequest, VariableMutationTypePb.ASSIGN, formOutput);
 
         // Have Finance approve the request

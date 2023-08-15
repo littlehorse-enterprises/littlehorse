@@ -62,6 +62,7 @@ const (
 	LHPublicApi_DeleteWfSpec_FullMethodName           = "/littlehorse.LHPublicApi/DeleteWfSpec"
 	LHPublicApi_DeleteUserTaskDef_FullMethodName      = "/littlehorse.LHPublicApi/DeleteUserTaskDef"
 	LHPublicApi_DeleteExternalEventDef_FullMethodName = "/littlehorse.LHPublicApi/DeleteExternalEventDef"
+	LHPublicApi_CancelUserTaskRun_FullMethodName      = "/littlehorse.LHPublicApi/CancelUserTaskRun"
 	LHPublicApi_HealthCheck_FullMethodName            = "/littlehorse.LHPublicApi/HealthCheck"
 	LHPublicApi_TaskDefMetrics_FullMethodName         = "/littlehorse.LHPublicApi/TaskDefMetrics"
 	LHPublicApi_WfSpecMetrics_FullMethodName          = "/littlehorse.LHPublicApi/WfSpecMetrics"
@@ -116,6 +117,7 @@ type LHPublicApiClient interface {
 	DeleteWfSpec(ctx context.Context, in *DeleteWfSpecPb, opts ...grpc.CallOption) (*DeleteObjectReplyPb, error)
 	DeleteUserTaskDef(ctx context.Context, in *DeleteUserTaskDefPb, opts ...grpc.CallOption) (*DeleteObjectReplyPb, error)
 	DeleteExternalEventDef(ctx context.Context, in *DeleteExternalEventDefPb, opts ...grpc.CallOption) (*DeleteObjectReplyPb, error)
+	CancelUserTaskRun(ctx context.Context, in *CancelUserTaskRunPb, opts ...grpc.CallOption) (*CancelUserTaskRunReplyPb, error)
 	HealthCheck(ctx context.Context, in *HealthCheckPb, opts ...grpc.CallOption) (*HealthCheckReplyPb, error)
 	TaskDefMetrics(ctx context.Context, in *TaskDefMetricsQueryPb, opts ...grpc.CallOption) (*TaskDefMetricsReplyPb, error)
 	WfSpecMetrics(ctx context.Context, in *WfSpecMetricsQueryPb, opts ...grpc.CallOption) (*WfSpecMetricsReplyPb, error)
@@ -540,6 +542,15 @@ func (c *lHPublicApiClient) DeleteExternalEventDef(ctx context.Context, in *Dele
 	return out, nil
 }
 
+func (c *lHPublicApiClient) CancelUserTaskRun(ctx context.Context, in *CancelUserTaskRunPb, opts ...grpc.CallOption) (*CancelUserTaskRunReplyPb, error) {
+	out := new(CancelUserTaskRunReplyPb)
+	err := c.cc.Invoke(ctx, LHPublicApi_CancelUserTaskRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *lHPublicApiClient) HealthCheck(ctx context.Context, in *HealthCheckPb, opts ...grpc.CallOption) (*HealthCheckReplyPb, error) {
 	out := new(HealthCheckReplyPb)
 	err := c.cc.Invoke(ctx, LHPublicApi_HealthCheck_FullMethodName, in, out, opts...)
@@ -632,6 +643,7 @@ type LHPublicApiServer interface {
 	DeleteWfSpec(context.Context, *DeleteWfSpecPb) (*DeleteObjectReplyPb, error)
 	DeleteUserTaskDef(context.Context, *DeleteUserTaskDefPb) (*DeleteObjectReplyPb, error)
 	DeleteExternalEventDef(context.Context, *DeleteExternalEventDefPb) (*DeleteObjectReplyPb, error)
+	CancelUserTaskRun(context.Context, *CancelUserTaskRunPb) (*CancelUserTaskRunReplyPb, error)
 	HealthCheck(context.Context, *HealthCheckPb) (*HealthCheckReplyPb, error)
 	TaskDefMetrics(context.Context, *TaskDefMetricsQueryPb) (*TaskDefMetricsReplyPb, error)
 	WfSpecMetrics(context.Context, *WfSpecMetricsQueryPb) (*WfSpecMetricsReplyPb, error)
@@ -772,6 +784,9 @@ func (UnimplementedLHPublicApiServer) DeleteUserTaskDef(context.Context, *Delete
 }
 func (UnimplementedLHPublicApiServer) DeleteExternalEventDef(context.Context, *DeleteExternalEventDefPb) (*DeleteObjectReplyPb, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteExternalEventDef not implemented")
+}
+func (UnimplementedLHPublicApiServer) CancelUserTaskRun(context.Context, *CancelUserTaskRunPb) (*CancelUserTaskRunReplyPb, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelUserTaskRun not implemented")
 }
 func (UnimplementedLHPublicApiServer) HealthCheck(context.Context, *HealthCheckPb) (*HealthCheckReplyPb, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HealthCheck not implemented")
@@ -1583,6 +1598,24 @@ func _LHPublicApi_DeleteExternalEventDef_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LHPublicApi_CancelUserTaskRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CancelUserTaskRunPb)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LHPublicApiServer).CancelUserTaskRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LHPublicApi_CancelUserTaskRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LHPublicApiServer).CancelUserTaskRun(ctx, req.(*CancelUserTaskRunPb))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LHPublicApi_HealthCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(HealthCheckPb)
 	if err := dec(in); err != nil {
@@ -1847,6 +1880,10 @@ var LHPublicApi_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteExternalEventDef",
 			Handler:    _LHPublicApi_DeleteExternalEventDef_Handler,
+		},
+		{
+			MethodName: "CancelUserTaskRun",
+			Handler:    _LHPublicApi_CancelUserTaskRun_Handler,
 		},
 		{
 			MethodName: "HealthCheck",

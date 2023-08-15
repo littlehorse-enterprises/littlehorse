@@ -12,6 +12,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
+import io.littlehorse.common.model.command.subcommand.CancelUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.DeleteExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.DeleteTaskDef;
@@ -62,6 +63,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunReplyPb;
+import io.littlehorse.sdk.common.proto.CancelUserTaskRunPb;
+import io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb;
@@ -457,6 +460,19 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             ctx,
             CompleteUserTaskRun.class,
             CompleteUserTaskRunReplyPb.class
+        );
+    }
+
+    @Override
+    public void cancelUserTaskRun(
+        CancelUserTaskRunPb req,
+        StreamObserver<CancelUserTaskRunReplyPb> ctx
+    ) {
+        processCommand(
+            req,
+            ctx,
+            CancelUserTaskRun.class,
+            CancelUserTaskRunReplyPb.class
         );
     }
 

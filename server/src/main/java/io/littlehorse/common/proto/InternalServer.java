@@ -355,7 +355,7 @@ public final class InternalServer {
       "nedUserTaskPb\022\021\n\007user_id\030\001 \001(\tH\000\022\024\n\nuser" +
       "_group\030\002 \001(\tH\000\022\030\n\020delay_in_seconds\030\003 \001(\005" +
       "\022(\n\006source\030\004 \001(\0132\030.littlehorse.NodeRunId" +
-      "PbB\013\n\tassign_to\"\341\013\n\tCommandPb\022(\n\004time\030\001 " +
+      "PbB\013\n\tassign_to\"\237\014\n\tCommandPb\022(\n\004time\030\001 " +
       "\001(\0132\032.google.protobuf.Timestamp\022\027\n\ncomma" +
       "nd_id\030\002 \001(\tH\001\210\001\001\0227\n\017report_task_run\030\003 \001(" +
       "\0132\034.littlehorse.ReportTaskRunPbH\000\0229\n\020tas" +
@@ -392,58 +392,60 @@ public final class InternalServer {
       "PbH\000\022@\n\024delete_user_task_def\030\031 \001(\0132 .lit" +
       "tlehorse.DeleteUserTaskDefPbH\000\022A\n\024reassi" +
       "gned_user_task\030\032 \001(\0132!.littlehorse.Reass" +
-      "ignedUserTaskPbH\000B\t\n\007commandB\r\n\013_command" +
-      "_id\"m\n\tLHTimerPb\0223\n\017maturation_time\030\001 \001(" +
-      "\0132\032.google.protobuf.Timestamp\022\013\n\003key\030\002 \001" +
-      "(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007payload\030\004 \001(\014\"\203\001\n\034T" +
-      "opologyInstanceStateReplyPb\0220\n\014servers_c" +
-      "ore\030\001 \003(\0132\032.littlehorse.ServerStatePb\0221\n" +
-      "\rservers_timer\030\002 \003(\0132\032.littlehorse.Serve" +
-      "rStatePb\"\214\002\n\rServerStatePb\022.\n\014active_tas" +
-      "ks\030\001 \003(\0132\030.littlehorse.TaskStatePb\0226\n\rst" +
-      "andby_tasks\030\002 \003(\0132\037.littlehorse.StandByT" +
-      "askStatePb\022\014\n\004host\030\003 \001(\t\022\014\n\004port\030\004 \001(\005\022\025" +
-      "\n\rtopology_name\030\005 \001(\t\0222\n\rserver_status\030\006" +
-      " \001(\0162\033.littlehorse.ServerStatusPb\022\032\n\rerr" +
-      "or_message\030\007 \001(\tH\000\210\001\001B\020\n\016_error_message\"" +
-      "\222\001\n\013TaskStatePb\022\014\n\004host\030\001 \001(\t\022\017\n\007task_id" +
-      "\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\021\n\tpartition\030\004 \001(\005" +
-      "\022\026\n\016current_offset\030\005 \001(\003\022\014\n\004port\030\006 \001(\005\022\013" +
-      "\n\003lag\030\007 \001(\003\022\017\n\007rack_id\030\010 \001(\t\"w\n\022StandByT" +
-      "askStatePb\022\014\n\004host\030\001 \001(\t\022\017\n\007task_id\030\002 \001(" +
-      "\t\022\014\n\004port\030\003 \001(\005\022\026\n\016current_offset\030\004 \001(\003\022" +
-      "\013\n\003lag\030\005 \001(\003\022\017\n\007rack_id\030\006 \001(\t\"\031\n\027Topolog" +
-      "yInstanceStatePb\"\016\n\014LocalTasksPb\"{\n\021Loca" +
-      "lTasksReplyPb\022.\n\014active_tasks\030\001 \003(\0132\030.li" +
-      "ttlehorse.TaskStatePb\0226\n\rstandby_tasks\030\002" +
-      " \003(\0132\037.littlehorse.StandByTaskStatePb*7\n" +
-      "\022StoreQueryStatusPb\022\n\n\006RSQ_OK\020\000\022\025\n\021RSQ_N" +
-      "OT_AVAILABLE\020\002*-\n\020ScanResultTypePb\022\r\n\tOB" +
-      "JECT_ID\020\000\022\n\n\006OBJECT\020\001*\371\001\n\022GetableClassEn" +
-      "umPb\022\014\n\010TASK_DEF\020\000\022\026\n\022EXTERNAL_EVENT_DEF" +
-      "\020\001\022\013\n\007WF_SPEC\020\002\022\n\n\006WF_RUN\020\003\022\014\n\010NODE_RUN\020" +
-      "\004\022\014\n\010VARIABLE\020\005\022\022\n\016EXTERNAL_EVENT\020\006\022\024\n\020T" +
-      "ASK_DEF_METRICS\020\007\022\023\n\017WF_SPEC_METRICS\020\010\022\025" +
-      "\n\021TASK_WORKER_GROUP\020\t\022\021\n\rUSER_TASK_DEF\020\n" +
-      "\022\014\n\010TASK_RUN\020\013\022\021\n\rUSER_TASK_RUN\020\014*)\n\020Tag" +
-      "StorageTypePb\022\t\n\005LOCAL\020\000\022\n\n\006REMOTE\020\001*,\n\016" +
-      "ServerStatusPb\022\013\n\007HOST_UP\020\000\022\r\n\tHOST_DOWN" +
-      "\020\0012\300\004\n\013LHInternals\022^\n\021CentralStoreQuery\022" +
-      " .littlehorse.CentralStoreQueryPb\032%.litt" +
-      "lehorse.CentralStoreQueryReplyPb\"\000\022O\n\014In" +
-      "ternalScan\022\033.littlehorse.InternalScanPb\032" +
-      " .littlehorse.InternalScanReplyPb\"\000\022U\n\016w" +
-      "aitForCommand\022\035.littlehorse.WaitForComma" +
-      "ndPb\032\".littlehorse.WaitForCommandReplyPb" +
-      "\"\000\022q\n\022GetAdvertisedHosts\022).littlehorse.I" +
-      "nternalGetAdvertisedHostsPb\032..littlehors" +
-      "e.InternalGetAdvertisedHostsReplyPb\"\000\022k\n" +
-      "\026TopologyInstancesState\022$.littlehorse.To" +
-      "pologyInstanceStatePb\032).littlehorse.Topo" +
-      "logyInstanceStateReplyPb\"\000\022I\n\nLocalTasks" +
-      "\022\031.littlehorse.LocalTasksPb\032\036.littlehors" +
-      "e.LocalTasksReplyPb\"\000B\037\n\033io.littlehorse." +
-      "common.protoP\001b\006proto3"
+      "ignedUserTaskPbH\000\022<\n\020cancel_user_task\030\033 " +
+      "\001(\0132 .littlehorse.CancelUserTaskRunPbH\000B" +
+      "\t\n\007commandB\r\n\013_command_id\"m\n\tLHTimerPb\0223" +
+      "\n\017maturation_time\030\001 \001(\0132\032.google.protobu" +
+      "f.Timestamp\022\013\n\003key\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022" +
+      "\017\n\007payload\030\004 \001(\014\"\203\001\n\034TopologyInstanceSta" +
+      "teReplyPb\0220\n\014servers_core\030\001 \003(\0132\032.little" +
+      "horse.ServerStatePb\0221\n\rservers_timer\030\002 \003" +
+      "(\0132\032.littlehorse.ServerStatePb\"\214\002\n\rServe" +
+      "rStatePb\022.\n\014active_tasks\030\001 \003(\0132\030.littleh" +
+      "orse.TaskStatePb\0226\n\rstandby_tasks\030\002 \003(\0132" +
+      "\037.littlehorse.StandByTaskStatePb\022\014\n\004host" +
+      "\030\003 \001(\t\022\014\n\004port\030\004 \001(\005\022\025\n\rtopology_name\030\005 " +
+      "\001(\t\0222\n\rserver_status\030\006 \001(\0162\033.littlehorse" +
+      ".ServerStatusPb\022\032\n\rerror_message\030\007 \001(\tH\000" +
+      "\210\001\001B\020\n\016_error_message\"\222\001\n\013TaskStatePb\022\014\n" +
+      "\004host\030\001 \001(\t\022\017\n\007task_id\030\002 \001(\t\022\r\n\005topic\030\003 " +
+      "\001(\t\022\021\n\tpartition\030\004 \001(\005\022\026\n\016current_offset" +
+      "\030\005 \001(\003\022\014\n\004port\030\006 \001(\005\022\013\n\003lag\030\007 \001(\003\022\017\n\007rac" +
+      "k_id\030\010 \001(\t\"w\n\022StandByTaskStatePb\022\014\n\004host" +
+      "\030\001 \001(\t\022\017\n\007task_id\030\002 \001(\t\022\014\n\004port\030\003 \001(\005\022\026\n" +
+      "\016current_offset\030\004 \001(\003\022\013\n\003lag\030\005 \001(\003\022\017\n\007ra" +
+      "ck_id\030\006 \001(\t\"\031\n\027TopologyInstanceStatePb\"\016" +
+      "\n\014LocalTasksPb\"{\n\021LocalTasksReplyPb\022.\n\014a" +
+      "ctive_tasks\030\001 \003(\0132\030.littlehorse.TaskStat" +
+      "ePb\0226\n\rstandby_tasks\030\002 \003(\0132\037.littlehorse" +
+      ".StandByTaskStatePb*7\n\022StoreQueryStatusP" +
+      "b\022\n\n\006RSQ_OK\020\000\022\025\n\021RSQ_NOT_AVAILABLE\020\002*-\n\020" +
+      "ScanResultTypePb\022\r\n\tOBJECT_ID\020\000\022\n\n\006OBJEC" +
+      "T\020\001*\371\001\n\022GetableClassEnumPb\022\014\n\010TASK_DEF\020\000" +
+      "\022\026\n\022EXTERNAL_EVENT_DEF\020\001\022\013\n\007WF_SPEC\020\002\022\n\n" +
+      "\006WF_RUN\020\003\022\014\n\010NODE_RUN\020\004\022\014\n\010VARIABLE\020\005\022\022\n" +
+      "\016EXTERNAL_EVENT\020\006\022\024\n\020TASK_DEF_METRICS\020\007\022" +
+      "\023\n\017WF_SPEC_METRICS\020\010\022\025\n\021TASK_WORKER_GROU" +
+      "P\020\t\022\021\n\rUSER_TASK_DEF\020\n\022\014\n\010TASK_RUN\020\013\022\021\n\r" +
+      "USER_TASK_RUN\020\014*)\n\020TagStorageTypePb\022\t\n\005L" +
+      "OCAL\020\000\022\n\n\006REMOTE\020\001*,\n\016ServerStatusPb\022\013\n\007" +
+      "HOST_UP\020\000\022\r\n\tHOST_DOWN\020\0012\300\004\n\013LHInternals" +
+      "\022^\n\021CentralStoreQuery\022 .littlehorse.Cent" +
+      "ralStoreQueryPb\032%.littlehorse.CentralSto" +
+      "reQueryReplyPb\"\000\022O\n\014InternalScan\022\033.littl" +
+      "ehorse.InternalScanPb\032 .littlehorse.Inte" +
+      "rnalScanReplyPb\"\000\022U\n\016waitForCommand\022\035.li" +
+      "ttlehorse.WaitForCommandPb\032\".littlehorse" +
+      ".WaitForCommandReplyPb\"\000\022q\n\022GetAdvertise" +
+      "dHosts\022).littlehorse.InternalGetAdvertis" +
+      "edHostsPb\032..littlehorse.InternalGetAdver" +
+      "tisedHostsReplyPb\"\000\022k\n\026TopologyInstances" +
+      "State\022$.littlehorse.TopologyInstanceStat" +
+      "ePb\032).littlehorse.TopologyInstanceStateR" +
+      "eplyPb\"\000\022I\n\nLocalTasks\022\031.littlehorse.Loc" +
+      "alTasksPb\032\036.littlehorse.LocalTasksReplyP" +
+      "b\"\000B\037\n\033io.littlehorse.common.protoP\001b\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -654,7 +656,7 @@ public final class InternalServer {
     internal_static_littlehorse_CommandPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_CommandPb_descriptor,
-        new java.lang.String[] { "Time", "CommandId", "ReportTaskRun", "TaskClaimEvent", "PutWfSpec", "PutTaskDef", "PutExternalEventDef", "RunWf", "PutExternalEvent", "StopWfRun", "ResumeWfRun", "SleepNodeMatured", "DeleteWfRun", "DeleteWfSpec", "DeleteTaskDef", "DeleteExternalEventDef", "ExternalEventTimeout", "TaskWorkerHeartBeat", "DeleteExternalEvent", "AssignUserTaskRun", "CompleteUserTaskRun", "PutUserTaskDef", "TriggeredTaskRun", "DeleteUserTaskDef", "ReassignedUserTask", "Command", "CommandId", });
+        new java.lang.String[] { "Time", "CommandId", "ReportTaskRun", "TaskClaimEvent", "PutWfSpec", "PutTaskDef", "PutExternalEventDef", "RunWf", "PutExternalEvent", "StopWfRun", "ResumeWfRun", "SleepNodeMatured", "DeleteWfRun", "DeleteWfSpec", "DeleteTaskDef", "DeleteExternalEventDef", "ExternalEventTimeout", "TaskWorkerHeartBeat", "DeleteExternalEvent", "AssignUserTaskRun", "CompleteUserTaskRun", "PutUserTaskDef", "TriggeredTaskRun", "DeleteUserTaskDef", "ReassignedUserTask", "CancelUserTask", "Command", "CommandId", });
     internal_static_littlehorse_LHTimerPb_descriptor =
       getDescriptor().getMessageTypes().get(27);
     internal_static_littlehorse_LHTimerPb_fieldAccessorTable = new
