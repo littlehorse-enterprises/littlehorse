@@ -48,7 +48,16 @@ public class UserTasksExample {
         // Get the IT Request
         UserTaskOutput formOutput = thread.assignUserTaskToUser(
             IT_REQUEST_FORM,
-            userId
+            userId,
+            "testGroup"
+        );
+        thread.handleException(
+            formOutput,
+            "USER_TASK_CANCELLED",
+            handler -> {
+                String email = "test-ut-support@gmail.com";
+                handler.execute(EMAIL_TASK_NAME, email, "Task cancelled");
+            }
         );
         thread.mutate(itRequest, VariableMutationTypePb.ASSIGN, formOutput);
 

@@ -22,6 +22,7 @@ public class LHConstants {
     public static final String CHILD_FAILURE = "CHILD_FAILURE";
     public static final String VAR_SUB_ERROR = "VAR_SUB_ERROR";
     public static final String VAR_MUTATION_ERROR = "VAR_MUTATION_ERROR";
+    public static final String USER_TASK_CANCELLED = "USER_TASK_CANCELLED";
     public static final String TIMEOUT = "TIMEOUT";
     public static final String TASK_FAILURE = "TASK_FAILURE";
     public static final String VAR_ERROR = "VAR_ERROR";
@@ -36,7 +37,8 @@ public class LHConstants {
             TIMEOUT,
             VAR_ERROR,
             TASK_ERROR,
-            INTERNAL_ERROR
+            INTERNAL_ERROR,
+            USER_TASK_CANCELLED
         )
     );
 

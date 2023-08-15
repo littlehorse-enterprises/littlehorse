@@ -351,6 +351,7 @@ message CommandPb {
         TriggeredTaskRunPb triggered_task_run = 24;
         DeleteUserTaskDefPb delete_user_task_def = 25;
         ReassignedUserTaskPb reassigned_user_task = 26;
+        CancelUserTaskRunPb cancel_user_task = 27;
         // TODO: Add SaveUserTask
     }
 }

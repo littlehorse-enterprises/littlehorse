@@ -29,6 +29,20 @@ UserTaskRun. At the end, the UserTaskRun is submitted`,
 	},
 }
 
+var cancelUserTaskRunCmd = &cobra.Command{
+	Use:   "userTaskRun <wfRunId> <userTaskGuid>",
+	Short: "Cancel a UserTaskRun",
+	Long: `Given a provided wfRunId and UserTaskGuid, this command allows you to
+	cancel the specified UserTaskRun. Cancelling a UserTaskRun will halt the entire WfRun execution.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) != 2 {
+			log.Fatal("You must provide the wfRunId and userTaskGuid")
+		}
+		client := getGlobalClient(cmd)
+		cancelUserTask(args[0], args[1], &client)
+	},
+}
+
 var assignUserTaskRunCmd = &cobra.Command{
 	Use:   "userTaskRun <wfRunId> <userTaskGuid> [options]",
 	Short: "Reassign a UserTaskRun to a userGroup or specific userId",
@@ -278,6 +292,16 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LHPublic
 	)
 }
 
+func cancelUserTask(wfRunId string, userTaskGuid string, client *model.LHPublicApiClient) {
+	cancelUserTask := &model.CancelUserTaskRunPb{
+		UserTaskRunId: &model.UserTaskRunIdPb{
+			WfRunId:      wfRunId,
+			UserTaskGuid: userTaskGuid,
+		},
+	}
+	(*client).CancelUserTaskRun(context.Background(), cancelUserTask)
+}
+
 func promptFor(prompt string, varType model.VariableTypePb) (*model.VariableValuePb, error) {
 	fmt.Print(prompt + ": ")
 	// Create a new buffered reader to read from standard input
@@ -323,6 +347,7 @@ func init() {
 	searchCmd.AddCommand(searchUserTaskRunCmd)
 	executeCmd.AddCommand(executeUserTaskRunCmd)
 	assignCmd.AddCommand(assignUserTaskRunCmd)
+	cancelUserTaskCmd.AddCommand(cancelUserTaskRunCmd)
 
 	assignUserTaskRunCmd.Flags().String("userId", "", "User Id to assign to.")
 	assignUserTaskRunCmd.Flags().String("userGroup", "", "User Group to assign to.")

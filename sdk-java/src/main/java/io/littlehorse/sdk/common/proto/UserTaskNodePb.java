@@ -45,6 +45,816 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.UserTaskNodePb.class, io.littlehorse.sdk.common.proto.UserTaskNodePb.Builder.class);
   }
 
+  public interface UserAssignmentPbOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskNodePb.UserAssignmentPb)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * @return Whether the userId field is set.
+     */
+    boolean hasUserId();
+    /**
+     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * @return The userId.
+     */
+    io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserId();
+    /**
+     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     */
+    io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserIdOrBuilder();
+
+    /**
+     * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * @return Whether the userGroup field is set.
+     */
+    boolean hasUserGroup();
+    /**
+     * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * @return The userGroup.
+     */
+    io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserGroup();
+    /**
+     * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+     */
+    io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserGroupOrBuilder();
+  }
+  /**
+   * Protobuf type {@code littlehorse.UserTaskNodePb.UserAssignmentPb}
+   */
+  public static final class UserAssignmentPb extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:littlehorse.UserTaskNodePb.UserAssignmentPb)
+      UserAssignmentPbOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use UserAssignmentPb.newBuilder() to construct.
+    private UserAssignmentPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private UserAssignmentPb() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new UserAssignmentPb();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskNodePb_UserAssignmentPb_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskNodePb_UserAssignmentPb_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.class, io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int USER_ID_FIELD_NUMBER = 1;
+    private io.littlehorse.sdk.common.proto.VariableAssignmentPb userId_;
+    /**
+     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * @return Whether the userId field is set.
+     */
+    @java.lang.Override
+    public boolean hasUserId() {
+      return userId_ != null;
+    }
+    /**
+     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * @return The userId.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserId() {
+      return userId_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userId_;
+    }
+    /**
+     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserIdOrBuilder() {
+      return userId_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userId_;
+    }
+
+    public static final int USER_GROUP_FIELD_NUMBER = 2;
+    private io.littlehorse.sdk.common.proto.VariableAssignmentPb userGroup_;
+    /**
+     * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * @return Whether the userGroup field is set.
+     */
+    @java.lang.Override
+    public boolean hasUserGroup() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * @return The userGroup.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserGroup() {
+      return userGroup_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userGroup_;
+    }
+    /**
+     * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserGroupOrBuilder() {
+      return userGroup_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userGroup_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (userId_ != null) {
+        output.writeMessage(1, getUserId());
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(2, getUserGroup());
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (userId_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getUserId());
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getUserGroup());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb other = (io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb) obj;
+
+      if (hasUserId() != other.hasUserId()) return false;
+      if (hasUserId()) {
+        if (!getUserId()
+            .equals(other.getUserId())) return false;
+      }
+      if (hasUserGroup() != other.hasUserGroup()) return false;
+      if (hasUserGroup()) {
+        if (!getUserGroup()
+            .equals(other.getUserGroup())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasUserId()) {
+        hash = (37 * hash) + USER_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getUserId().hashCode();
+      }
+      if (hasUserGroup()) {
+        hash = (37 * hash) + USER_GROUP_FIELD_NUMBER;
+        hash = (53 * hash) + getUserGroup().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code littlehorse.UserTaskNodePb.UserAssignmentPb}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskNodePb.UserAssignmentPb)
+        io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPbOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskNodePb_UserAssignmentPb_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskNodePb_UserAssignmentPb_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.class, io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.Builder.class);
+      }
+
+      // Construct using io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getUserIdFieldBuilder();
+          getUserGroupFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        userId_ = null;
+        if (userIdBuilder_ != null) {
+          userIdBuilder_.dispose();
+          userIdBuilder_ = null;
+        }
+        userGroup_ = null;
+        if (userGroupBuilder_ != null) {
+          userGroupBuilder_.dispose();
+          userGroupBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskNodePb_UserAssignmentPb_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb build() {
+        io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb buildPartial() {
+        io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb result = new io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.userId_ = userIdBuilder_ == null
+              ? userId_
+              : userIdBuilder_.build();
+        }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.userGroup_ = userGroupBuilder_ == null
+              ? userGroup_
+              : userGroupBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb other) {
+        if (other == io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.getDefaultInstance()) return this;
+        if (other.hasUserId()) {
+          mergeUserId(other.getUserId());
+        }
+        if (other.hasUserGroup()) {
+          mergeUserGroup(other.getUserGroup());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                input.readMessage(
+                    getUserIdFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                input.readMessage(
+                    getUserGroupFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private io.littlehorse.sdk.common.proto.VariableAssignmentPb userId_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> userIdBuilder_;
+      /**
+       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * @return Whether the userId field is set.
+       */
+      public boolean hasUserId() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * @return The userId.
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserId() {
+        if (userIdBuilder_ == null) {
+          return userId_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userId_;
+        } else {
+          return userIdBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       */
+      public Builder setUserId(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+        if (userIdBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          userId_ = value;
+        } else {
+          userIdBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       */
+      public Builder setUserId(
+          io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        if (userIdBuilder_ == null) {
+          userId_ = builderForValue.build();
+        } else {
+          userIdBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       */
+      public Builder mergeUserId(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+        if (userIdBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0) &&
+            userId_ != null &&
+            userId_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
+            getUserIdBuilder().mergeFrom(value);
+          } else {
+            userId_ = value;
+          }
+        } else {
+          userIdBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       */
+      public Builder clearUserId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        userId_ = null;
+        if (userIdBuilder_ != null) {
+          userIdBuilder_.dispose();
+          userIdBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getUserIdBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getUserIdFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserIdOrBuilder() {
+        if (userIdBuilder_ != null) {
+          return userIdBuilder_.getMessageOrBuilder();
+        } else {
+          return userId_ == null ?
+              io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userId_;
+        }
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+          getUserIdFieldBuilder() {
+        if (userIdBuilder_ == null) {
+          userIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
+                  getUserId(),
+                  getParentForChildren(),
+                  isClean());
+          userId_ = null;
+        }
+        return userIdBuilder_;
+      }
+
+      private io.littlehorse.sdk.common.proto.VariableAssignmentPb userGroup_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> userGroupBuilder_;
+      /**
+       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * @return Whether the userGroup field is set.
+       */
+      public boolean hasUserGroup() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * @return The userGroup.
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserGroup() {
+        if (userGroupBuilder_ == null) {
+          return userGroup_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userGroup_;
+        } else {
+          return userGroupBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       */
+      public Builder setUserGroup(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+        if (userGroupBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          userGroup_ = value;
+        } else {
+          userGroupBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       */
+      public Builder setUserGroup(
+          io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        if (userGroupBuilder_ == null) {
+          userGroup_ = builderForValue.build();
+        } else {
+          userGroupBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       */
+      public Builder mergeUserGroup(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+        if (userGroupBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0) &&
+            userGroup_ != null &&
+            userGroup_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
+            getUserGroupBuilder().mergeFrom(value);
+          } else {
+            userGroup_ = value;
+          }
+        } else {
+          userGroupBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       */
+      public Builder clearUserGroup() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        userGroup_ = null;
+        if (userGroupBuilder_ != null) {
+          userGroupBuilder_.dispose();
+          userGroupBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getUserGroupBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getUserGroupFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserGroupOrBuilder() {
+        if (userGroupBuilder_ != null) {
+          return userGroupBuilder_.getMessageOrBuilder();
+        } else {
+          return userGroup_ == null ?
+              io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userGroup_;
+        }
+      }
+      /**
+       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+          getUserGroupFieldBuilder() {
+        if (userGroupBuilder_ == null) {
+          userGroupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
+                  getUserGroup(),
+                  getParentForChildren(),
+                  isClean());
+          userGroup_ = null;
+        }
+        return userGroupBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskNodePb.UserAssignmentPb)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.UserTaskNodePb.UserAssignmentPb)
+    private static final io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb();
+    }
+
+    public static io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<UserAssignmentPb>
+        PARSER = new com.google.protobuf.AbstractParser<UserAssignmentPb>() {
+      @java.lang.Override
+      public UserAssignmentPb parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<UserAssignmentPb> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<UserAssignmentPb> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private int bitField0_;
   private int assignmentCase_ = 0;
   private java.lang.Object assignment_;
@@ -52,7 +862,7 @@ private static final long serialVersionUID = 0L;
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     USER_GROUP(2),
-    USER_ID(3),
+    USER(3),
     ASSIGNMENT_NOT_SET(0);
     private final int value;
     private AssignmentCase(int value) {
@@ -71,7 +881,7 @@ private static final long serialVersionUID = 0L;
     public static AssignmentCase forNumber(int value) {
       switch (value) {
         case 2: return USER_GROUP;
-        case 3: return USER_ID;
+        case 3: return USER;
         case 0: return ASSIGNMENT_NOT_SET;
         default: return null;
       }
@@ -157,35 +967,35 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
   }
 
-  public static final int USER_ID_FIELD_NUMBER = 3;
+  public static final int USER_FIELD_NUMBER = 3;
   /**
-   * <code>.littlehorse.VariableAssignmentPb user_id = 3;</code>
-   * @return Whether the userId field is set.
+   * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
+   * @return Whether the user field is set.
    */
   @java.lang.Override
-  public boolean hasUserId() {
+  public boolean hasUser() {
     return assignmentCase_ == 3;
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb user_id = 3;</code>
-   * @return The userId.
+   * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
+   * @return The user.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserId() {
+  public io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb getUser() {
     if (assignmentCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_;
+       return (io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb) assignment_;
     }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb user_id = 3;</code>
+   * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserIdOrBuilder() {
+  public io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPbOrBuilder getUserOrBuilder() {
     if (assignmentCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_;
+       return (io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb) assignment_;
     }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.getDefaultInstance();
   }
 
   public static final int ACTIONS_FIELD_NUMBER = 4;
@@ -349,7 +1159,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(2, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_);
     }
     if (assignmentCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_);
+      output.writeMessage(3, (io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb) assignment_);
     }
     for (int i = 0; i < actions_.size(); i++) {
       output.writeMessage(4, actions_.get(i));
@@ -378,7 +1188,7 @@ private static final long serialVersionUID = 0L;
     }
     if (assignmentCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_);
+        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb) assignment_);
     }
     for (int i = 0; i < actions_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
@@ -428,8 +1238,8 @@ private static final long serialVersionUID = 0L;
             .equals(other.getUserGroup())) return false;
         break;
       case 3:
-        if (!getUserId()
-            .equals(other.getUserId())) return false;
+        if (!getUser()
+            .equals(other.getUser())) return false;
         break;
       case 0:
       default:
@@ -465,8 +1275,8 @@ private static final long serialVersionUID = 0L;
         hash = (53 * hash) + getUserGroup().hashCode();
         break;
       case 3:
-        hash = (37 * hash) + USER_ID_FIELD_NUMBER;
-        hash = (53 * hash) + getUserId().hashCode();
+        hash = (37 * hash) + USER_FIELD_NUMBER;
+        hash = (53 * hash) + getUser().hashCode();
         break;
       case 0:
       default:
@@ -611,8 +1421,8 @@ private static final long serialVersionUID = 0L;
       if (userGroupBuilder_ != null) {
         userGroupBuilder_.clear();
       }
-      if (userIdBuilder_ != null) {
-        userIdBuilder_.clear();
+      if (userBuilder_ != null) {
+        userBuilder_.clear();
       }
       if (actionsBuilder_ == null) {
         actions_ = java.util.Collections.emptyList();
@@ -701,8 +1511,8 @@ private static final long serialVersionUID = 0L;
         result.assignment_ = userGroupBuilder_.build();
       }
       if (assignmentCase_ == 3 &&
-          userIdBuilder_ != null) {
-        result.assignment_ = userIdBuilder_.build();
+          userBuilder_ != null) {
+        result.assignment_ = userBuilder_.build();
       }
     }
 
@@ -792,8 +1602,8 @@ private static final long serialVersionUID = 0L;
           mergeUserGroup(other.getUserGroup());
           break;
         }
-        case USER_ID: {
-          mergeUserId(other.getUserId());
+        case USER: {
+          mergeUser(other.getUser());
           break;
         }
         case ASSIGNMENT_NOT_SET: {
@@ -840,7 +1650,7 @@ private static final long serialVersionUID = 0L;
             } // case 18
             case 26: {
               input.readMessage(
-                  getUserIdFieldBuilder().getBuilder(),
+                  getUserFieldBuilder().getBuilder(),
                   extensionRegistry);
               assignmentCase_ = 3;
               break;
@@ -1117,71 +1927,71 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> userIdBuilder_;
+        io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb, io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.Builder, io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPbOrBuilder> userBuilder_;
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 3;</code>
-     * @return Whether the userId field is set.
+     * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
+     * @return Whether the user field is set.
      */
     @java.lang.Override
-    public boolean hasUserId() {
+    public boolean hasUser() {
       return assignmentCase_ == 3;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 3;</code>
-     * @return The userId.
+     * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
+     * @return The user.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserId() {
-      if (userIdBuilder_ == null) {
+    public io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb getUser() {
+      if (userBuilder_ == null) {
         if (assignmentCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_;
+          return (io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb) assignment_;
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.getDefaultInstance();
       } else {
         if (assignmentCase_ == 3) {
-          return userIdBuilder_.getMessage();
+          return userBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 3;</code>
+     * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
      */
-    public Builder setUserId(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
-      if (userIdBuilder_ == null) {
+    public Builder setUser(io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb value) {
+      if (userBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         assignment_ = value;
         onChanged();
       } else {
-        userIdBuilder_.setMessage(value);
+        userBuilder_.setMessage(value);
       }
       assignmentCase_ = 3;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 3;</code>
+     * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
      */
-    public Builder setUserId(
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
-      if (userIdBuilder_ == null) {
+    public Builder setUser(
+        io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.Builder builderForValue) {
+      if (userBuilder_ == null) {
         assignment_ = builderForValue.build();
         onChanged();
       } else {
-        userIdBuilder_.setMessage(builderForValue.build());
+        userBuilder_.setMessage(builderForValue.build());
       }
       assignmentCase_ = 3;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 3;</code>
+     * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
      */
-    public Builder mergeUserId(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
-      if (userIdBuilder_ == null) {
+    public Builder mergeUser(io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb value) {
+      if (userBuilder_ == null) {
         if (assignmentCase_ == 3 &&
-            assignment_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
-          assignment_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_)
+            assignment_ != io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.getDefaultInstance()) {
+          assignment_ = io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.newBuilder((io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb) assignment_)
               .mergeFrom(value).buildPartial();
         } else {
           assignment_ = value;
@@ -1189,19 +1999,19 @@ private static final long serialVersionUID = 0L;
         onChanged();
       } else {
         if (assignmentCase_ == 3) {
-          userIdBuilder_.mergeFrom(value);
+          userBuilder_.mergeFrom(value);
         } else {
-          userIdBuilder_.setMessage(value);
+          userBuilder_.setMessage(value);
         }
       }
       assignmentCase_ = 3;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 3;</code>
+     * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
      */
-    public Builder clearUserId() {
-      if (userIdBuilder_ == null) {
+    public Builder clearUser() {
+      if (userBuilder_ == null) {
         if (assignmentCase_ == 3) {
           assignmentCase_ = 0;
           assignment_ = null;
@@ -1212,50 +2022,50 @@ private static final long serialVersionUID = 0L;
           assignmentCase_ = 0;
           assignment_ = null;
         }
-        userIdBuilder_.clear();
+        userBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 3;</code>
+     * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getUserIdBuilder() {
-      return getUserIdFieldBuilder().getBuilder();
+    public io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.Builder getUserBuilder() {
+      return getUserFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 3;</code>
+     * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserIdOrBuilder() {
-      if ((assignmentCase_ == 3) && (userIdBuilder_ != null)) {
-        return userIdBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPbOrBuilder getUserOrBuilder() {
+      if ((assignmentCase_ == 3) && (userBuilder_ != null)) {
+        return userBuilder_.getMessageOrBuilder();
       } else {
         if (assignmentCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_;
+          return (io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb) assignment_;
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 3;</code>
+     * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
-        getUserIdFieldBuilder() {
-      if (userIdBuilder_ == null) {
+        io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb, io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.Builder, io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPbOrBuilder> 
+        getUserFieldBuilder() {
+      if (userBuilder_ == null) {
         if (!(assignmentCase_ == 3)) {
-          assignment_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+          assignment_ = io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.getDefaultInstance();
         }
-        userIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_,
+        userBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb, io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb.Builder, io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPbOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb) assignment_,
                 getParentForChildren(),
                 isClean());
         assignment_ = null;
       }
       assignmentCase_ = 3;
       onChanged();
-      return userIdBuilder_;
+      return userBuilder_;
     }
 
     private java.util.List<io.littlehorse.sdk.common.proto.UTActionTriggerPb> actions_ =
