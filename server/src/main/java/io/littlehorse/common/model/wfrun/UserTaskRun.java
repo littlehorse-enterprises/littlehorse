@@ -10,7 +10,7 @@ import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.ReassignUserTask;
 import io.littlehorse.common.model.meta.Node;
-import io.littlehorse.common.model.meta.subnode.UserTaskNode;
+import io.littlehorse.common.model.meta.UserTaskNode;
 import io.littlehorse.common.model.meta.usertasks.UTActionTrigger;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.objectId.NodeRunId;
@@ -80,7 +80,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         this.userTaskNode = userTaskNode;
         ownerCase =
             switch (userTaskNode.getAssignmentType()) {
-                case USER_ID -> UserTaskRunPb.OwnerCase.USER;
+                case USER -> UserTaskRunPb.OwnerCase.USER;
                 case USER_GROUP -> UserTaskRunPb.OwnerCase.USER_GROUP;
                 default -> throw new IllegalArgumentException(
                     "Assignment Type not supported"
@@ -209,10 +209,14 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     }
 
     private void assignToSpecificUser(Node node) throws LHVarSubError {
-        VariableValue userIdVal = getNodeRun()
-            .getThreadRun()
-            .assignVariable(node.userTaskNode.getUserId());
-
+        ThreadRun threadRun = getNodeRun().getThreadRun();
+        VariableValue userIdVal = threadRun.assignVariable(
+            node.userTaskNode.getUser().getUserId()
+        );
+        VariableValue userGroupVal = node.userTaskNode.getUser().getUserGroup() !=
+            null
+            ? threadRun.assignVariable(node.userTaskNode.getUser().getUserGroup())
+            : null;
         if (userIdVal.type != VariableTypePb.STR) {
             throw new LHVarSubError(
                 null,
@@ -221,7 +225,11 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                 userIdVal.type
             );
         }
-        user = new User(userIdVal.strVal);
+        if (userGroupVal != null) {
+            user = new User(userIdVal.strVal, new UserGroup(userGroupVal.strVal));
+        } else {
+            user = new User(userIdVal.strVal);
+        }
         status = UserTaskRunStatusPb.ASSIGNED;
 
         // now add Audit Log Event

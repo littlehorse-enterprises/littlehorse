@@ -48,7 +48,8 @@ public class UserTasksExample {
         // Get the IT Request
         UserTaskOutput formOutput = thread.assignUserTaskToUser(
             IT_REQUEST_FORM,
-            userId
+            userId,
+            "testGroup"
         );
         thread.mutate(itRequest, VariableMutationTypePb.ASSIGN, formOutput);
 

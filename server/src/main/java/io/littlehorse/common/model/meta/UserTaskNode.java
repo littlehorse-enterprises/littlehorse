@@ -1,11 +1,10 @@
-package io.littlehorse.common.model.meta.subnode;
+package io.littlehorse.common.model.meta;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.meta.SubNode;
-import io.littlehorse.common.model.meta.VariableAssignment;
+import io.littlehorse.common.model.meta.subnode.UserAssignment;
 import io.littlehorse.common.model.meta.usertasks.UTActionTrigger;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.wfrun.subnoderun.UserTaskNodeRun;
@@ -29,7 +28,7 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
     private String userTaskDefName;
     private AssignmentCase assignmentType;
     private VariableAssignment userGroup;
-    private VariableAssignment userId;
+    private UserAssignment user;
     private List<UTActionTrigger> actions;
     private Integer userTaskDefVersion;
     private VariableAssignment notes;
@@ -51,8 +50,8 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
             case USER_GROUP:
                 out.setUserGroup(userGroup.toProto());
                 break;
-            case USER_ID:
-                out.setUserId(userId.toProto());
+            case USER:
+                out.setUser(user.toProto());
                 break;
             case ASSIGNMENT_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -81,8 +80,8 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
             case USER_GROUP:
                 userGroup = VariableAssignment.fromProto(p.getUserGroup());
                 break;
-            case USER_ID:
-                userId = VariableAssignment.fromProto(p.getUserId());
+            case USER:
+                user = LHSerializable.fromProto(p.getUser(), UserAssignment.class);
                 break;
             case ASSIGNMENT_NOT_SET:
                 throw new RuntimeException("not possible");

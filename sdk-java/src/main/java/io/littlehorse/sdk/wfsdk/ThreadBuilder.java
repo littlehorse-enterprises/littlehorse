@@ -32,7 +32,20 @@ public interface ThreadBuilder {
      * @param userId is the user id to assign it to.
      * @return a NodeOutput.
      */
-    public UserTaskOutput assignUserTaskToUser(String userTaskDefName, String userId);
+    UserTaskOutput assignUserTaskToUser(String userTaskDefName, String userId);
+
+    /**
+     * Adds a User Task Node, and assigns it to a specific user
+     * @param userTaskDefName is the UserTaskDef to assign.
+     * @param userId is the user id to assign it to.
+     * @param userGroup is the User's group
+     * @return a NodeOutput.
+     */
+    UserTaskOutput assignUserTaskToUser(
+        String userTaskDefName,
+        String userId,
+        String userGroup
+    );
 
     /**
      * Schedule Reassignment of a UserTask to a userGroup upon reaching the Deadline.
@@ -70,9 +83,32 @@ public interface ThreadBuilder {
      * @param userId is the user id to assign it to.
      * @return a NodeOutput.
      */
-    public UserTaskOutput assignUserTaskToUser(
+    UserTaskOutput assignUserTaskToUser(String userTaskDefName, WfRunVariable userId);
+
+    /**
+     * Adds a User Task Node, and assigns it to a specific user
+     * @param userTaskDefName is the UserTaskDef to assign.
+     * @param userId is the user id to assign it to.
+     * @param userGroup  is the User's group
+     * @return a NodeOutput.
+     */
+    UserTaskOutput assignUserTaskToUser(
         String userTaskDefName,
-        WfRunVariable userId
+        WfRunVariable userId,
+        String userGroup
+    );
+
+    /**
+     * Adds a User Task Node, and assigns it to a specific user
+     * @param userTaskDefName is the UserTaskDef to assign.
+     * @param userId is the user id to assign it to.
+     * @param userGroup is the User's group
+     * @return a NodeOutput.
+     */
+    UserTaskOutput assignUserTaskToUser(
+        String userTaskDefName,
+        WfRunVariable userId,
+        WfRunVariable userGroup
     );
 
     /**
