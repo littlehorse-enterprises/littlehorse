@@ -93,7 +93,7 @@ public class SearchUserTaskDef
     @Override
     public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        return null;
+        return TagStorageTypePb.LOCAL;
     }
 
     @Override
@@ -101,16 +101,10 @@ public class SearchUserTaskDef
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        if (name != null && !name.equals("")) {
+        if (prefix != null && !prefix.equals("")) {
             return new ObjectIdScanBoundaryStrategy(
                 LHConstants.META_PARTITION_KEY,
-                name + "/",
-                name + "/~"
-            );
-        } else if (prefix != null && !prefix.equals("")) {
-            return new ObjectIdScanBoundaryStrategy(
-                LHConstants.META_PARTITION_KEY,
-                prefix + "/",
+                prefix,
                 prefix + "~"
             );
         } else {
