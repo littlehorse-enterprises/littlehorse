@@ -11,7 +11,6 @@ import io.littlehorse.common.model.meta.subnode.NopNode;
 import io.littlehorse.common.model.meta.subnode.SleepNode;
 import io.littlehorse.common.model.meta.subnode.StartThreadNode;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
-import io.littlehorse.common.model.meta.subnode.UserTaskNode;
 import io.littlehorse.common.model.meta.subnode.WaitForThreadsNode;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.EdgePb;
@@ -45,7 +44,6 @@ public class Node extends LHSerializable<NodePb> {
     public UserTaskNode userTaskNode;
 
     public List<VariableMutation> variableMutations;
-    // public OutputSchema outputSchema;
 
     public List<FailureHandlerDef> failureHandlers;
 
