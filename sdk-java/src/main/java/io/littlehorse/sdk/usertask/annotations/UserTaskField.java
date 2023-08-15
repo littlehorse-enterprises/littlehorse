@@ -13,4 +13,6 @@ public @interface UserTaskField {
     String description() default "";
 
     String displayName() default "";
+
+    boolean required() default true;
 }

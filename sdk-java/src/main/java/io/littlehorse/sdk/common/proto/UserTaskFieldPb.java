@@ -156,15 +156,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object displayName_ = "";
   /**
-   * <pre>
-   * Later versions will allow stuff such as:
-   * 1. Validation (eg. email address, integer between 1-10, etc)
-   * 2. Nested object structures
-   * 3. Multi-Page forms (survey-js style)
-   * 4. Conditional rendering of forms based on input (surveyjs style)
-   * 5. Default values and optional fields
-   * </pre>
-   *
    * <code>string display_name = 4;</code>
    * @return The displayName.
    */
@@ -182,15 +173,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * Later versions will allow stuff such as:
-   * 1. Validation (eg. email address, integer between 1-10, etc)
-   * 2. Nested object structures
-   * 3. Multi-Page forms (survey-js style)
-   * 4. Conditional rendering of forms based on input (surveyjs style)
-   * 5. Default values and optional fields
-   * </pre>
-   *
    * <code>string display_name = 4;</code>
    * @return The bytes for displayName.
    */
@@ -207,6 +189,26 @@ private static final long serialVersionUID = 0L;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
+  }
+
+  public static final int REQUIRED_FIELD_NUMBER = 5;
+  private boolean required_ = false;
+  /**
+   * <pre>
+   * Later versions will allow stuff such as:
+   * 1. Validation (eg. email address, integer between 1-10, etc)
+   * 2. Nested object structures
+   * 3. Multi-Page forms (survey-js style)
+   * 4. Conditional rendering of forms based on input (surveyjs style)
+   * 5. Default values and optional fields
+   * </pre>
+   *
+   * <code>bool required = 5;</code>
+   * @return The required.
+   */
+  @java.lang.Override
+  public boolean getRequired() {
+    return required_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -235,6 +237,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(displayName_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 4, displayName_);
     }
+    if (required_ != false) {
+      output.writeBool(5, required_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -256,6 +261,10 @@ private static final long serialVersionUID = 0L;
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(displayName_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, displayName_);
+    }
+    if (required_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(5, required_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -282,6 +291,8 @@ private static final long serialVersionUID = 0L;
     }
     if (!getDisplayName()
         .equals(other.getDisplayName())) return false;
+    if (getRequired()
+        != other.getRequired()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -303,6 +314,9 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + DISPLAY_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getDisplayName().hashCode();
+    hash = (37 * hash) + REQUIRED_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getRequired());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -436,6 +450,7 @@ private static final long serialVersionUID = 0L;
       type_ = 0;
       description_ = "";
       displayName_ = "";
+      required_ = false;
       return this;
     }
 
@@ -482,6 +497,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.displayName_ = displayName_;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.required_ = required_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -548,6 +566,9 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000008;
         onChanged();
       }
+      if (other.getRequired() != false) {
+        setRequired(other.getRequired());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -594,6 +615,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 34
+            case 40: {
+              required_ = input.readBool();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -817,15 +843,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object displayName_ = "";
     /**
-     * <pre>
-     * Later versions will allow stuff such as:
-     * 1. Validation (eg. email address, integer between 1-10, etc)
-     * 2. Nested object structures
-     * 3. Multi-Page forms (survey-js style)
-     * 4. Conditional rendering of forms based on input (surveyjs style)
-     * 5. Default values and optional fields
-     * </pre>
-     *
      * <code>string display_name = 4;</code>
      * @return The displayName.
      */
@@ -842,15 +859,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Later versions will allow stuff such as:
-     * 1. Validation (eg. email address, integer between 1-10, etc)
-     * 2. Nested object structures
-     * 3. Multi-Page forms (survey-js style)
-     * 4. Conditional rendering of forms based on input (surveyjs style)
-     * 5. Default values and optional fields
-     * </pre>
-     *
      * <code>string display_name = 4;</code>
      * @return The bytes for displayName.
      */
@@ -868,15 +876,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Later versions will allow stuff such as:
-     * 1. Validation (eg. email address, integer between 1-10, etc)
-     * 2. Nested object structures
-     * 3. Multi-Page forms (survey-js style)
-     * 4. Conditional rendering of forms based on input (surveyjs style)
-     * 5. Default values and optional fields
-     * </pre>
-     *
      * <code>string display_name = 4;</code>
      * @param value The displayName to set.
      * @return This builder for chaining.
@@ -890,6 +889,32 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <code>string display_name = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearDisplayName() {
+      displayName_ = getDefaultInstance().getDisplayName();
+      bitField0_ = (bitField0_ & ~0x00000008);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string display_name = 4;</code>
+     * @param value The bytes for displayName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setDisplayNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      displayName_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+
+    private boolean required_ ;
+    /**
      * <pre>
      * Later versions will allow stuff such as:
      * 1. Validation (eg. email address, integer between 1-10, etc)
@@ -899,12 +924,31 @@ private static final long serialVersionUID = 0L;
      * 5. Default values and optional fields
      * </pre>
      *
-     * <code>string display_name = 4;</code>
+     * <code>bool required = 5;</code>
+     * @return The required.
+     */
+    @java.lang.Override
+    public boolean getRequired() {
+      return required_;
+    }
+    /**
+     * <pre>
+     * Later versions will allow stuff such as:
+     * 1. Validation (eg. email address, integer between 1-10, etc)
+     * 2. Nested object structures
+     * 3. Multi-Page forms (survey-js style)
+     * 4. Conditional rendering of forms based on input (surveyjs style)
+     * 5. Default values and optional fields
+     * </pre>
+     *
+     * <code>bool required = 5;</code>
+     * @param value The required to set.
      * @return This builder for chaining.
      */
-    public Builder clearDisplayName() {
-      displayName_ = getDefaultInstance().getDisplayName();
-      bitField0_ = (bitField0_ & ~0x00000008);
+    public Builder setRequired(boolean value) {
+      
+      required_ = value;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -918,16 +962,12 @@ private static final long serialVersionUID = 0L;
      * 5. Default values and optional fields
      * </pre>
      *
-     * <code>string display_name = 4;</code>
-     * @param value The bytes for displayName to set.
+     * <code>bool required = 5;</code>
      * @return This builder for chaining.
      */
-    public Builder setDisplayNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      displayName_ = value;
-      bitField0_ |= 0x00000008;
+    public Builder clearRequired() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      required_ = false;
       onChanged();
       return this;
     }

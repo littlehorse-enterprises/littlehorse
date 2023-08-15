@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb;
+import io.littlehorse.sdk.common.proto.CompleteUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
 import io.littlehorse.sdk.common.proto.NodeRunPb;
@@ -207,30 +208,49 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
 
         // Now we execute the task
         try {
-            client
+            CompleteUserTaskRunReplyPb completeUserTaskRunReplyPb = client
                 .getGrpcClient()
-                .completeUserTaskRun(
-                    CompleteUserTaskRunPb
-                        .newBuilder()
-                        .setUserTaskRunId(found)
-                        .setResult(
-                            UserTaskResultPb
-                                .newBuilder()
-                                .addFields(
-                                    UserTaskFieldResultPb
-                                        .newBuilder()
-                                        .setName("myStr")
-                                        .setValue(LHLibUtil.objToVarVal("asdf"))
-                                )
-                                .addFields(
-                                    UserTaskFieldResultPb
-                                        .newBuilder()
-                                        .setName("myInt")
-                                        .setValue(LHLibUtil.objToVarVal(123))
-                                )
-                        )
-                        .build()
-                );
+                .completeUserTaskRun(buildInvalidCompleteUserTaskRequest(found));
+            assertThat(
+                completeUserTaskRunReplyPb
+                    .getCode()
+                    .equals(LHResponseCodePb.BAD_REQUEST_ERROR),
+                "UserTaskRun Fields validation not working as expected"
+            );
+            assertThat(
+                completeUserTaskRunReplyPb
+                    .getMessage()
+                    .equals(
+                        "Field [name = nonExistingStringField, type = STR] is not defined in UserTask schema"
+                    ),
+                "Actual output message: " + completeUserTaskRunReplyPb.getMessage()
+            );
+            completeUserTaskRunReplyPb =
+                client
+                    .getGrpcClient()
+                    .completeUserTaskRun(
+                        buildCompleteUserTaskRequestWithMissingField(found)
+                    );
+            assertThat(
+                completeUserTaskRunReplyPb
+                    .getCode()
+                    .equals(LHResponseCodePb.BAD_REQUEST_ERROR),
+                "UserTaskRun mandatory fields validation is not working as expected"
+            );
+            assertThat(
+                completeUserTaskRunReplyPb
+                    .getMessage()
+                    .equals("[myStr] are mandatory fields"),
+                "Actual output message: " + completeUserTaskRunReplyPb.getMessage()
+            );
+            completeUserTaskRunReplyPb =
+                client
+                    .getGrpcClient()
+                    .completeUserTaskRun(buildValidCompleteUserTaskRequest(found));
+            assertThat(
+                completeUserTaskRunReplyPb.getCode().equals(LHResponseCodePb.OK),
+                "Failed processing complete user task request"
+            );
         } catch (LHSerdeError exn) {
             throw new RuntimeException(exn);
         }
@@ -244,6 +264,75 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
 
         out.add(wfRunId);
         return out;
+    }
+
+    private CompleteUserTaskRunPb buildValidCompleteUserTaskRequest(
+        UserTaskRunIdPb userTaskRUnIdToComplete
+    ) throws LHSerdeError {
+        return CompleteUserTaskRunPb
+            .newBuilder()
+            .setUserTaskRunId(userTaskRUnIdToComplete)
+            .setResult(
+                UserTaskResultPb
+                    .newBuilder()
+                    .addFields(
+                        UserTaskFieldResultPb
+                            .newBuilder()
+                            .setName("myStr")
+                            .setValue(LHLibUtil.objToVarVal("asdf"))
+                    )
+                    .addFields(
+                        UserTaskFieldResultPb
+                            .newBuilder()
+                            .setName("myInt")
+                            .setValue(LHLibUtil.objToVarVal(123))
+                    )
+            )
+            .build();
+    }
+
+    private CompleteUserTaskRunPb buildInvalidCompleteUserTaskRequest(
+        UserTaskRunIdPb userTaskRUnIdToComplete
+    ) throws LHSerdeError {
+        return CompleteUserTaskRunPb
+            .newBuilder()
+            .setUserTaskRunId(userTaskRUnIdToComplete)
+            .setResult(
+                UserTaskResultPb
+                    .newBuilder()
+                    .addFields(
+                        UserTaskFieldResultPb
+                            .newBuilder()
+                            .setName("nonExistingStringField")
+                            .setValue(LHLibUtil.objToVarVal("asdf"))
+                    )
+                    .addFields(
+                        UserTaskFieldResultPb
+                            .newBuilder()
+                            .setName("myInt")
+                            .setValue(LHLibUtil.objToVarVal(123))
+                    )
+            )
+            .build();
+    }
+
+    private CompleteUserTaskRunPb buildCompleteUserTaskRequestWithMissingField(
+        UserTaskRunIdPb userTaskRUnIdToComplete
+    ) throws LHSerdeError {
+        return CompleteUserTaskRunPb
+            .newBuilder()
+            .setUserTaskRunId(userTaskRUnIdToComplete)
+            .setResult(
+                UserTaskResultPb
+                    .newBuilder()
+                    .addFields(
+                        UserTaskFieldResultPb
+                            .newBuilder()
+                            .setName("myInt")
+                            .setValue(LHLibUtil.objToVarVal(123))
+                    )
+            )
+            .build();
     }
 }
 

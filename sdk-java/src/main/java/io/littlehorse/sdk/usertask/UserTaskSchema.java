@@ -55,6 +55,8 @@ public class UserTaskSchema {
                 fieldBuilder.setDescription(utf.description());
             }
 
+            fieldBuilder.setRequired(utf.required());
+
             if (utf.displayName() != null && !utf.displayName().isEmpty()) {
                 fieldBuilder.setDisplayName(utf.displayName());
             } else {

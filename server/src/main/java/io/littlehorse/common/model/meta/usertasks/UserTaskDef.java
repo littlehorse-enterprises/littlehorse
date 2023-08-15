@@ -17,12 +17,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import lombok.Getter;
 
 public class UserTaskDef extends Getable<UserTaskDefPb> {
 
     public String name;
     public Date createdAt;
+
+    @Getter
     public List<UserTaskField> fields;
+
     public String description;
     public int version;
 

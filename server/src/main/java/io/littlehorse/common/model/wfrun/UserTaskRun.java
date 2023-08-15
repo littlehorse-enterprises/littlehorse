@@ -2,6 +2,7 @@ package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
@@ -13,6 +14,7 @@ import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.UserTaskNode;
 import io.littlehorse.common.model.meta.usertasks.UTActionTrigger;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
+import io.littlehorse.common.model.meta.usertasks.UserTaskField;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.UserTaskDefId;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
@@ -34,11 +36,15 @@ import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -382,7 +388,8 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         getDao().scheduleTimer(timer);
     }
 
-    public void processTaskCompletedEvent(CompleteUserTaskRun event) {
+    public void processTaskCompletedEvent(CompleteUserTaskRun event)
+        throws LHValidationError {
         if (
             getNodeRun().getStatus() != LHStatusPb.STARTING &&
             getNodeRun().getStatus() != LHStatusPb.RUNNING
@@ -397,17 +404,65 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         // Now we need to create an output thing...
         // TODO LH-309: Validate this vs the schema
         Map<String, Object> raw = new HashMap<>();
-        for (UserTaskFieldResultPb field : event.getResult().getFieldsList()) {
-            results.add(field);
-            VariableValue fieldVal = VariableValue.fromProto(field.getValue());
-            raw.put(field.getName(), fieldVal.getVal());
+        UserTaskDef userTaskDef = getDao()
+            .getUserTaskDef(
+                getUserTaskDefId().getName(),
+                getUserTaskDefId().getVersion()
+            );
+        Map<String, UserTaskField> userTaskFieldsGroupedByName = userTaskDef
+            .getFields()
+            .stream()
+            .collect(Collectors.toMap(UserTaskField::getName, Function.identity()));
+        for (UserTaskFieldResultPb inputField : event.getResult().getFieldsList()) {
+            UserTaskField userTaskFieldFromTaskDef = userTaskFieldsGroupedByName.get(
+                inputField.getName()
+            );
+            if (
+                userTaskFieldFromTaskDef == null ||
+                !userTaskFieldFromTaskDef
+                    .getType()
+                    .equals(inputField.getValue().getType())
+            ) {
+                throw new LHValidationError(
+                    "Field [name = %s, type = %s] is not defined in UserTask schema".formatted(
+                            inputField.getName(),
+                            inputField.getValue().getType()
+                        )
+                );
+            }
+            results.add(inputField);
+            VariableValue fieldVal = VariableValue.fromProto(inputField.getValue());
+            raw.put(inputField.getName(), fieldVal.getVal());
         }
-
+        validateMandatoryFieldsFromCompletedEvent(
+            userTaskFieldsGroupedByName.values(),
+            raw.keySet()
+        );
         VariableValue output = new VariableValue();
         output.setType(VariableTypePb.JSON_OBJ);
         output.setJsonObjVal(raw);
 
         getNodeRun().complete(output, new Date());
+    }
+
+    private void validateMandatoryFieldsFromCompletedEvent(
+        Collection<UserTaskField> userTaskFieldsFromTaskDef,
+        Collection<String> inputFieldNames
+    ) throws LHValidationError {
+        List<String> mandatoryFieldNames = userTaskFieldsFromTaskDef
+            .stream()
+            .filter(UserTaskField::isRequired)
+            .map(UserTaskField::getName)
+            .toList();
+        String mandatoryFieldsNotFound = mandatoryFieldNames
+            .stream()
+            .filter(Predicate.not(inputFieldNames::contains))
+            .collect(Collectors.joining(","));
+        if (!mandatoryFieldsNotFound.isEmpty()) {
+            throw new LHValidationError(
+                "[%s] are mandatory fields".formatted(mandatoryFieldsNotFound)
+            );
+        }
     }
 
     public NodeRun getNodeRun() {

@@ -48,19 +48,17 @@ public interface UserTaskFieldPbOrBuilder extends
       getDescriptionBytes();
 
   /**
-   * <pre>
-   * Later versions will allow stuff such as:
-   * 1. Validation (eg. email address, integer between 1-10, etc)
-   * 2. Nested object structures
-   * 3. Multi-Page forms (survey-js style)
-   * 4. Conditional rendering of forms based on input (surveyjs style)
-   * 5. Default values and optional fields
-   * </pre>
-   *
    * <code>string display_name = 4;</code>
    * @return The displayName.
    */
   java.lang.String getDisplayName();
+  /**
+   * <code>string display_name = 4;</code>
+   * @return The bytes for displayName.
+   */
+  com.google.protobuf.ByteString
+      getDisplayNameBytes();
+
   /**
    * <pre>
    * Later versions will allow stuff such as:
@@ -71,9 +69,8 @@ public interface UserTaskFieldPbOrBuilder extends
    * 5. Default values and optional fields
    * </pre>
    *
-   * <code>string display_name = 4;</code>
-   * @return The bytes for displayName.
+   * <code>bool required = 5;</code>
+   * @return The required.
    */
-  com.google.protobuf.ByteString
-      getDisplayNameBytes();
+  boolean getRequired();
 }

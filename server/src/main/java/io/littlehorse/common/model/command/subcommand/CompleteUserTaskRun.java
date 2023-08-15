@@ -3,6 +3,7 @@ package io.littlehorse.common.model.command.subcommand;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
+import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.CompleteUserTaskRunReply;
@@ -55,7 +56,13 @@ public class CompleteUserTaskRun extends SubCommand<CompleteUserTaskRunPb> {
             return out;
         }
 
-        utr.processTaskCompletedEvent(this);
+        try {
+            utr.processTaskCompletedEvent(this);
+        } catch (LHValidationError validationError) {
+            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+            out.message = validationError.getMessage();
+            return out;
+        }
 
         out.code = LHResponseCodePb.OK;
         return out;
