@@ -18,6 +18,16 @@ from littlehorse.model.service_pb2 import (
 )
 from littlehorse.model.service_pb2_grpc import LHPublicApiStub
 
+VARIABLE_TYPES_MAP = {
+    VariableTypePb.JSON_OBJ: dict[str, Any],
+    VariableTypePb.JSON_ARR: list[Any],
+    VariableTypePb.DOUBLE: float,
+    VariableTypePb.BOOL: bool,
+    VariableTypePb.STR: str,
+    VariableTypePb.INT: int,
+    VariableTypePb.BYTES: bytes,
+}
+
 
 class LHWorkerContext:
     pass
@@ -38,31 +48,26 @@ class LHTask:
         self._validate_match()
 
     def _validate_match(self) -> None:
-        map_of_type = {
-            VariableTypePb.JSON_OBJ: dict[str, Any],
-            VariableTypePb.JSON_ARR: list[Any],
-            VariableTypePb.DOUBLE: float,
-            VariableTypePb.BOOL: bool,
-            VariableTypePb.STR: str,
-            VariableTypePb.INT: int,
-            VariableTypePb.BYTES: bytes,
-        }
+        task_def_vars = [
+            VARIABLE_TYPES_MAP[var.type] for var in self.task_def.input_vars
+        ]
 
-        task_def_vars = {
-            var.name: map_of_type[var.type] for var in self.task_def.input_vars
-        }
-
-        callable_params = {
-            param.name: param.annotation
+        callable_params = [
+            param.annotation
             for param in self._signature.parameters.values()
             if param.annotation is not LHWorkerContext
-        }
+        ]
 
-        if task_def_vars != callable_params:
+        if len(task_def_vars) != len(callable_params):
             raise TaskSchemaMismatchException(
-                f"Parameters do not match, expected: {task_def_vars}, "
-                + f"and was: {callable_params}"
+                f"Incorrect parameter list, expected: {task_def_vars}"
             )
+
+        for task_def_var, callable_param in zip(task_def_vars, callable_params):
+            if task_def_var != callable_param:
+                raise TaskSchemaMismatchException(
+                    f"Parameter types do not match, expected: {task_def_vars}"
+                )
 
     def _validate_callable(self) -> None:
         def filter(filer: Callable[[Parameter], bool]) -> list[Parameter]:
@@ -127,25 +132,35 @@ class LHTaskWorker:
     def __init__(
         self, callable: Callable[..., Any], task_def_name: str, config: LHConfig
     ) -> None:
-        self.callable = callable
-        self.task_def_name = task_def_name
-        self.config = config
-        self.running = False
-
+        self._config = config
         self._heartbeat_task: Optional[asyncio.Task[None]] = None
 
-        self._is_valid()
+        # get the task definition from the server
+        with self._config.establish_channel() as channel:
+            stub = LHPublicApiStub(channel)
+            reply: GetTaskDefReplyPb = stub.GetTaskDef(
+                TaskDefIdPb(name=task_def_name)
+            )
+
+        if reply.code is not LHResponseCodePb.OK:
+            raise InvalidTaskDefNameException(
+                f"Couldn't find TaskDef: {task_def_name}"
+            )
+
+        # initialize internal task and attributes
+        self.task = LHTask(callable, reply.result)
+        self.running = False
 
     async def _heartbeat(self) -> None:
-        async with self.config.establish_channel(async_channel=True) as channel:
+        async with self._config.establish_channel(async_channel=True) as channel:
             stub = LHPublicApiStub(channel)
             while self.running:
                 self._log.debug("Sending heart beat at %s", datetime.now())
 
                 request = RegisterTaskWorkerPb(
-                    client_id=self.config.client_id(),
-                    listener_name=self.config.server_listener(),
-                    task_def_name=self.task_def_name,
+                    client_id=self._config.client_id(),
+                    listener_name=self._config.server_listener(),
+                    task_def_name=self.task.name(),
                 )
                 await stub.RegisterTaskWorker(request)
                 # HERE: CHECK THE OPENED CONNECTIONS,
@@ -165,21 +180,6 @@ class LHTaskWorker:
         self._log.debug("Cancelling heartbeat task")
         self._heartbeat_task.cancel()
         self.running = False
-
-    def _is_valid(self) -> None:
-        with self.config.establish_channel() as channel:
-            stub = LHPublicApiStub(channel)
-            reply: GetTaskDefReplyPb = stub.GetTaskDef(
-                TaskDefIdPb(name=self.task_def_name)
-            )
-
-        if reply.code is not LHResponseCodePb.OK:
-            raise InvalidTaskDefNameException(
-                f"Couldn't find TaskDef: {self.task_def_name}"
-            )
-
-        task_def = reply.result
-        print(len(task_def.input_vars))
 
 
 if __name__ == "__main__":

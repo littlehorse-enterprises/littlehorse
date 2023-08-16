@@ -103,8 +103,8 @@ class TestLHTask(unittest.TestCase):
 
         task_def = TaskDefPb(
             input_vars=[
-                VariableDefPb(name="param1", type=VariableTypePb.STR),
-                VariableDefPb(name="param2", type=VariableTypePb.INT),
+                VariableDefPb(name="paramA", type=VariableTypePb.STR),
+                VariableDefPb(name="paramB", type=VariableTypePb.INT),
             ]
         )
 
@@ -113,29 +113,43 @@ class TestLHTask(unittest.TestCase):
         except Exception as e:
             self.fail(f"Unexpected exception {e}")
 
-    def test_callable_matches_with_context_and_any_order(self):
-        def my_method(
-            param3: dict[str, Any],
-            param1: str,
-            param2: int,
-            ctx: LHWorkerContext,
-            param4: list[Any],
-        ):
+    def test_raise_error_if_wrong_order(self):
+        def my_method(param1: str, param2: int, ctx: LHWorkerContext):
             pass
 
         task_def = TaskDefPb(
             input_vars=[
                 VariableDefPb(name="param2", type=VariableTypePb.INT),
                 VariableDefPb(name="param1", type=VariableTypePb.STR),
-                VariableDefPb(name="param4", type=VariableTypePb.JSON_ARR),
-                VariableDefPb(name="param3", type=VariableTypePb.JSON_OBJ),
             ]
         )
 
-        try:
+        with self.assertRaises(TaskSchemaMismatchException) as exception_context:
             LHTask(my_method, task_def)
-        except Exception as e:
-            self.fail(f"Unexpected exception {e}")
+
+        self.assertEqual(
+            "Parameter types do not match, expected: [<class 'int'>, <class 'str'>]",
+            str(exception_context.exception),
+        )
+
+    def test_raise_error_if_wrong_callable_order(self):
+        def my_method(param1: int, param2: str, ctx: LHWorkerContext):
+            pass
+
+        task_def = TaskDefPb(
+            input_vars=[
+                VariableDefPb(name="param1", type=VariableTypePb.STR),
+                VariableDefPb(name="param2", type=VariableTypePb.INT),
+            ]
+        )
+
+        with self.assertRaises(TaskSchemaMismatchException) as exception_context:
+            LHTask(my_method, task_def)
+
+        self.assertEqual(
+            "Parameter types do not match, expected: [<class 'str'>, <class 'int'>]",
+            str(exception_context.exception),
+        )
 
     def test_raise_exception_if_callable_does_not_match_with_task_def(self):
         def my_method(param: str):
@@ -152,9 +166,7 @@ class TestLHTask(unittest.TestCase):
             LHTask(my_method, task_def)
 
         self.assertEqual(
-            "Parameters do not match, expected: "
-            + "{'param1': <class 'str'>, 'param2': <class 'int'>}, "
-            + "and was: {'param': <class 'str'>}",
+            "Incorrect parameter list, expected: [<class 'str'>, <class 'int'>]",
             str(exception_context.exception),
         )
 
@@ -171,8 +183,8 @@ class TestLHTask(unittest.TestCase):
                 LHTask(my_method, task_def)
 
         for variable_type, callable_type in {
-            VariableTypePb.JSON_OBJ: str,
-            VariableTypePb.JSON_ARR: str,
+            VariableTypePb.JSON_OBJ: dict,
+            VariableTypePb.JSON_ARR: list,
             VariableTypePb.DOUBLE: str,
             VariableTypePb.BOOL: str,
             VariableTypePb.STR: int,
