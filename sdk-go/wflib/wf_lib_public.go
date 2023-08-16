@@ -32,7 +32,7 @@ type ThreadBuilder struct {
 
 type WfRunVariable struct {
 	Name    string
-	VarType *model.VariableTypePb
+	VarType *model.VariableType
 
 	thread   *ThreadBuilder
 	jsonPath *string
@@ -67,7 +67,7 @@ func (l *LHWorkflow) Compile() (*model.PutWfSpecPb, error) {
 }
 
 func (t *ThreadBuilder) AddVariable(
-	name string, varType model.VariableTypePb,
+	name string, varType model.VariableType,
 ) *WfRunVariable {
 	return t.addVariable(name, varType)
 }

@@ -16,13 +16,13 @@ func ChildFooTask(interruptInput int) string {
 }
 
 func InterruptWorkflow(thread *wflib.ThreadBuilder) {
-	tally := thread.AddVariable("tally", model.VariableTypePb_INT)
+	tally := thread.AddVariable("tally", model.VariableType_INT)
 	thread.Execute("child-foo-task", 5)
 	thread.Mutate(tally, model.VariableMutationTypePb_ASSIGN, 0)
 
 	// The interrupt handler
 	thread.HandleInterrupt("update-tally", func(handler *wflib.ThreadBuilder) {
-		eventContent := handler.AddVariable("INPUT", model.VariableTypePb_INT)
+		eventContent := handler.AddVariable("INPUT", model.VariableType_INT)
 		handler.Execute("child-foo-task", eventContent)
 		handler.Mutate(tally, model.VariableMutationTypePb_ADD, eventContent)
 	})

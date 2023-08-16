@@ -86,7 +86,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRunModel'.
 		if version != -1 && status != "" {
 			search.WfrunCriteria = &model.SearchWfRunPb_StatusAndSpec{
 				StatusAndSpec: &model.SearchWfRunPb_StatusAndSpecPb{
-					Status:        model.LHStatusPb(model.LHStatusPb_value[status]),
+					Status:        model.LHStatus(model.LHStatus_value[status]),
 					WfSpecName:    wfSpecName,
 					WfSpecVersion: version,
 					LatestStart:   latestStartTime,
@@ -98,7 +98,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRunModel'.
 			search.WfrunCriteria = &model.SearchWfRunPb_StatusAndName{
 				StatusAndName: &model.SearchWfRunPb_StatusAndNamePb{
 					WfSpecName: wfSpecName,
-					Status:     model.LHStatusPb(model.LHStatusPb_value[status]),
+					Status:     model.LHStatus(model.LHStatus_value[status]),
 				},
 			}
 		} else {

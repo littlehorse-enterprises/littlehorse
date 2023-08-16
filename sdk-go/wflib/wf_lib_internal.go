@@ -50,7 +50,7 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecPb, error) {
 					spec:     model.ThreadSpecPb{},
 				}
 				thr.spec.InterruptDefs = make([]*model.InterruptDefPb, 0)
-				thr.spec.VariableDefs = make([]*model.VariableDefPb, 0)
+				thr.spec.VariableDefs = make([]*model.VariableDef, 0)
 
 				// Need to add entrypoint node. We have to do this one manually
 				// for now.
@@ -140,7 +140,7 @@ func (t *ThreadBuilder) assignVariable(
 			"cannot use NodeOutput directly as input to task. Save as var first",
 		)
 	default:
-		var tmp *model.VariableValuePb
+		var tmp *model.VariableValue
 		tmp, err = common.InterfaceToVarVal(v)
 		if tmp != nil {
 			out = &model.VariableAssignmentPb{
@@ -202,7 +202,7 @@ func (w *WfRunVariable) jsonPathImpl(path string) WfRunVariable {
 			errors.New("Variable " + w.Name + " was jsonpath'ed twice!"),
 		)
 	}
-	if w.VarType != nil && *w.VarType != model.VariableTypePb_JSON_ARR && *w.VarType != model.VariableTypePb_JSON_OBJ {
+	if w.VarType != nil && *w.VarType != model.VariableType_JSON_ARR && *w.VarType != model.VariableType_JSON_OBJ {
 		w.thread.throwError(errors.New(
 			"Cannot jsonpath on var of type " + w.VarType.String(),
 		))
@@ -304,7 +304,7 @@ func (t *ThreadBuilder) mutate(
 }
 
 func (t *ThreadBuilder) addVariable(
-	name string, varType model.VariableTypePb,
+	name string, varType model.VariableType,
 ) *WfRunVariable {
 	t.checkIfIsActive()
 	varDef := &model.VariableDefPb{
@@ -508,7 +508,7 @@ func (t *ThreadBuilder) spawnThread(
 	threadName = t.wf.addSubThread(threadName, tFunc)
 
 	nodeName, node := t.createBlankNode(threadName, "SPAWN_THREAD")
-	cachedThreadVar := t.addVariable(nodeName, model.VariableTypePb_INT)
+	cachedThreadVar := t.addVariable(nodeName, model.VariableType_INT)
 
 	node.Node = &model.NodePb_StartThread{
 		StartThread: &model.StartThreadNodePb{
@@ -619,8 +619,8 @@ func (t *ThreadBuilder) sleep(sleepSeconds int) {
 			SleepLength: &model.SleepNodePb_RawSeconds{
 				RawSeconds: &model.VariableAssignmentPb{
 					Source: &model.VariableAssignmentPb_LiteralValue{
-						LiteralValue: &model.VariableValuePb{
-							Type: model.VariableTypePb_INT,
+						LiteralValue: &model.VariableValue{
+							Type: model.VariableType_INT,
 							Int:  &sleepSeconds64,
 						},
 					},

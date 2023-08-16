@@ -260,7 +260,7 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LHPublic
 	// Next, prompt for the userId.
 	userIdVarVal, err := promptFor(
 		"Enter the userId of the person completing the task",
-		model.VariableTypePb_STR,
+		model.VariableType_STR,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -302,7 +302,7 @@ func cancelUserTask(wfRunId string, userTaskGuid string, client *model.LHPublicA
 	(*client).CancelUserTaskRun(context.Background(), cancelUserTask)
 }
 
-func promptFor(prompt string, varType model.VariableTypePb) (*model.VariableValuePb, error) {
+func promptFor(prompt string, varType model.VariableType) (*model.VariableValue, error) {
 	fmt.Print(prompt + ": ")
 	// Create a new buffered reader to read from standard input
 	reader := bufio.NewReader(os.Stdin)

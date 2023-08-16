@@ -14,7 +14,7 @@ func Donut(num int) int {
 }
 
 func DonutWorkflow(thread *wflib.ThreadBuilder) {
-	numDonuts := thread.AddVariable("number-of-donuts", model.VariableTypePb_INT)
+	numDonuts := thread.AddVariable("number-of-donuts", model.VariableType_INT)
 
 	thread.DoWhile(
 		thread.Condition(numDonuts, model.ComparatorPb_GREATER_THAN, 0),

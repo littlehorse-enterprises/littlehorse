@@ -37,7 +37,7 @@ taskDefName.
 
 		taskDefName := args[0]
 		windowTypeStr := args[1]
-		windowType, isValid := model.MetricsWindowLengthPb_value[windowTypeStr]
+		windowType, isValid := model.MetricsWindowLength_value[windowTypeStr]
 		if !isValid {
 			log.Fatal("Invalid window type! Supports only 'MINUTES_5', 'HOURS_2', 'DAYS_1'")
 		}
@@ -51,7 +51,7 @@ taskDefName.
 			context.Background(),
 			&model.ListTaskMetricsPb{
 				LastWindowStart: ts,
-				WindowLength:    model.MetricsWindowLengthPb(windowType),
+				WindowLength:    model.MetricsWindowLength(windowType),
 				TaskDefName:     taskDefName,
 				NumWindows:      int32(numWindows),
 			},

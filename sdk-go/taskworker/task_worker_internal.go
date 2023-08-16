@@ -19,7 +19,7 @@ const TOTAL_RETRIES = 5
 func (tw *LHTaskWorker) registerTaskDef(ignoreAlreadyExistsError bool) error {
 	ptd := &model.PutTaskDefPb{
 		Name:      tw.taskDefName,
-		InputVars: make([]*model.VariableDefPb, 0),
+		InputVars: make([]*model.VariableDef, 0),
 	}
 
 	for i, arg := range tw.taskSig.Args {
@@ -329,9 +329,9 @@ func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTaskPb) *mod
 		goValue, err := taskFuncArg.Assign(task, workerContext)
 		if err != nil {
 			msg := "Failed calculating input variable " + taskFuncArg.Name + ": " + err.Error()
-			taskResult.LogOutput = &model.VariableValuePb{
+			taskResult.LogOutput = &model.VariableValue{
 				Str:  &msg,
-				Type: model.VariableTypePb_STR,
+				Type: model.VariableType_STR,
 			}
 			taskResult.Status = model.TaskStatusPb_TASK_INPUT_VAR_SUB_ERROR
 			return taskResult
@@ -356,9 +356,9 @@ func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTaskPb) *mod
 				if workerContext.GetLogOutput() != "" {
 					msg += "\n\n\n\n" + workerContext.GetLogOutput()
 				}
-				taskResult.LogOutput = &model.VariableValuePb{
+				taskResult.LogOutput = &model.VariableValue{
 					Str:  &msg,
-					Type: model.VariableTypePb_STR,
+					Type: model.VariableType_STR,
 				}
 				taskResult.Status = model.TaskStatusPb_TASK_OUTPUT_SERIALIZING_ERROR
 				return taskResult
@@ -366,9 +366,9 @@ func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTaskPb) *mod
 			taskResult.Output = taskOutputVarVal
 			if workerContext.GetLogOutput() != "" {
 				msg := workerContext.GetLogOutput()
-				taskResult.LogOutput = &model.VariableValuePb{
+				taskResult.LogOutput = &model.VariableValue{
 					Str:  &msg,
-					Type: model.VariableTypePb_STR,
+					Type: model.VariableType_STR,
 				}
 			}
 			taskResult.Status = model.TaskStatusPb_TASK_SUCCESS

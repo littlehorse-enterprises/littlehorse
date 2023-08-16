@@ -98,14 +98,14 @@ Choose one of the following option groups:
 				},
 			}
 		} else {
-			varType, validVarType := model.VariableTypePb_value[varTypeStr]
+			varType, validVarType := model.VariableType_value[varTypeStr]
 			if !validVarType {
 				log.Fatal(
 					"Unrecognized varType. Valid options: INT, STR, BYTES, BOOL, JSON_OBJ, JSON_ARR, DOUBLE.",
 				)
 
 			}
-			varTypeEnum := model.VariableTypePb(varType)
+			varTypeEnum := model.VariableType(varType)
 			content, err := common.StrToVarVal(valueStr, varTypeEnum)
 			if err != nil {
 				log.Fatal("Failed deserializing payload: " + err.Error())

@@ -88,7 +88,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			}
 
 			wfSpecModel := wfSpecReply.Result
-			runReq.Variables = make(map[string]*model.VariableValuePb)
+			runReq.Variables = make(map[string]*model.VariableValue)
 			varDefs := common.GetInputVarDefs(wfSpecModel)
 
 			for i := 1; i+1 < len(args); i += 2 {

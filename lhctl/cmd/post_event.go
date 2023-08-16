@@ -33,7 +33,7 @@ lhctl postEvent <wfRunId> <externalEventName> NULL
 		}
 
 		wfRunId, eedName, varTypeStr := args[0], args[1], args[2]
-		varType, validVarType := model.VariableTypePb_value[varTypeStr]
+		varType, validVarType := model.VariableType_value[varTypeStr]
 
 		if !validVarType {
 			log.Fatal(
@@ -41,13 +41,13 @@ lhctl postEvent <wfRunId> <externalEventName> NULL
 			)
 		}
 
-		varTypeEnum := model.VariableTypePb(varType)
+		varTypeEnum := model.VariableType(varType)
 
-		content := &model.VariableValuePb{
-			Type: model.VariableTypePb_NULL,
+		content := &model.VariableValue{
+			Type: model.VariableType_NULL,
 		}
 
-		if len(args) == 3 && varTypeEnum != model.VariableTypePb_NULL {
+		if len(args) == 3 && varTypeEnum != model.VariableType_NULL {
 			log.Fatal(
 				"Payload is required",
 			)

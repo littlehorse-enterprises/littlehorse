@@ -117,7 +117,7 @@ func (l *LHClient) GetWfSpec(name string, version *int32) (*model.WfSpec, error)
 	return nil, nil
 }
 
-func (l *LHClient) GetNodeRun(wfRunId string, threadRunNumber, position int32) (*model.NodeRunPb, error) {
+func (l *LHClient) GetNodeRun(wfRunId string, threadRunNumber, position int32) (*model.NodeRun, error) {
 	reply, err := l.grpcStub.GetNodeRun(
 		context.Background(),
 		&model.NodeRunIdPb{
@@ -208,7 +208,7 @@ func (l *LHClient) GetExternalEvent(
 	return nil, nil
 }
 
-func (l *LHClient) GetWfRun(id string) (*model.WfRunPb, error) {
+func (l *LHClient) GetWfRun(id string) (*model.WfRun, error) {
 	reply, err := l.grpcStub.GetWfRun(
 		context.Background(),
 		&model.WfRunIdPb{
@@ -247,7 +247,7 @@ func (l *LHClient) RunWf(
 		Id:            wfRunId,
 		WfSpecName:    wfSpecName,
 		WfSpecVersion: wfSpecVersion,
-		Variables:     make(map[string]*model.VariableValuePb),
+		Variables:     make(map[string]*model.VariableValue),
 	}
 
 	for _, arg := range args {
@@ -413,7 +413,7 @@ func (l *LHClient) PutTaskDef(
 	return nil, nil
 }
 
-func (l *LHClient) PutWfSpec(request *model.PutWfSpecPb) (*model.WfSpecPb, error) {
+func (l *LHClient) PutWfSpec(request *model.PutWfSpecPb) (*model.WfSpec, error) {
 	reply, err := l.grpcStub.PutWfSpec(
 		context.Background(),
 		request,

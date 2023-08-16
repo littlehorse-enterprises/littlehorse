@@ -109,7 +109,7 @@ func (a *TaskFuncArg) assign(task *model.ScheduledTaskPb, context *WorkerContext
 	isPtr, reflectType := a.getType()
 
 	switch varVal.Type {
-	case model.VariableTypePb_INT:
+	case model.VariableType_INT:
 		switch reflectType {
 		case reflect.Int:
 			if isPtr {
@@ -144,7 +144,7 @@ func (a *TaskFuncArg) assign(task *model.ScheduledTaskPb, context *WorkerContext
 			"task input variable was of type INT but task function needed " + reflectType.String(),
 		)
 
-	case model.VariableTypePb_DOUBLE:
+	case model.VariableType_DOUBLE:
 		switch a.Type.Kind() {
 		case reflect.Float32:
 			if isPtr {
@@ -165,7 +165,7 @@ func (a *TaskFuncArg) assign(task *model.ScheduledTaskPb, context *WorkerContext
 			"task input variable was of type DOUBLE but task function needed " + reflectType.String(),
 		)
 
-	case model.VariableTypePb_BOOL:
+	case model.VariableType_BOOL:
 		if reflectType != reflect.Bool {
 			return nil, errors.New(
 				"task input variable was of type BOOL but task function needed " + reflectType.String(),
@@ -177,7 +177,7 @@ func (a *TaskFuncArg) assign(task *model.ScheduledTaskPb, context *WorkerContext
 			return *varVal.Bool, nil
 		}
 
-	case model.VariableTypePb_STR:
+	case model.VariableType_STR:
 		if reflectType != reflect.String {
 			return nil, errors.New(
 				"task input variable was of type STR but task function needed " + reflectType.String(),
@@ -189,22 +189,22 @@ func (a *TaskFuncArg) assign(task *model.ScheduledTaskPb, context *WorkerContext
 			return *varVal.Str, nil
 		}
 
-	case model.VariableTypePb_BYTES:
+	case model.VariableType_BYTES:
 		return loadByteArr(varVal, a.Type)
 
-	case model.VariableTypePb_JSON_ARR:
+	case model.VariableType_JSON_ARR:
 		if !isPtr {
 			panic("task accepts a slice as an input variable; only pointers to slice are supported")
 		}
 		return loadJsonArr(varVal, a.Type)
 
-	case model.VariableTypePb_JSON_OBJ:
+	case model.VariableType_JSON_OBJ:
 		if !isPtr {
 			panic("task accepts a struct as an input variable; only pointers to struct are supported")
 		}
 		return loadJsonObj(varVal, a.Type)
 
-	case model.VariableTypePb_NULL:
+	case model.VariableType_NULL:
 		if !isPtr {
 			return nil, errors.New("got a NULL assignment for a non-pointer variable")
 		}
@@ -221,7 +221,7 @@ func (a *TaskFuncArg) getType() (bool, reflect.Kind) {
 }
 
 // TODO
-func loadByteArr(varVal *model.VariableValuePb, kind reflect.Type) (interface{}, error) {
+func loadByteArr(varVal *model.VariableValue, kind reflect.Type) (interface{}, error) {
 	switch kind.Kind() {
 	case reflect.Slice, reflect.Array:
 		return []byte(varVal.Bytes), nil
@@ -241,7 +241,7 @@ func loadByteArr(varVal *model.VariableValuePb, kind reflect.Type) (interface{},
 	)
 }
 
-func loadJsonArr(varVal *model.VariableValuePb, kind reflect.Type) (interface{}, error) {
+func loadJsonArr(varVal *model.VariableValue, kind reflect.Type) (interface{}, error) {
 	strPointerValue := derefString(varVal.JsonArr)
 	decoder := json.NewDecoder(strings.NewReader(strPointerValue))
 
@@ -255,7 +255,7 @@ func loadJsonArr(varVal *model.VariableValuePb, kind reflect.Type) (interface{},
 	return objPtr, nil
 }
 
-func loadJsonObj(varVal *model.VariableValuePb, kind reflect.Type) (interface{}, error) {
+func loadJsonObj(varVal *model.VariableValue, kind reflect.Type) (interface{}, error) {
 	strPointerValue := derefString(varVal.JsonObj)
 	decoder := json.NewDecoder(strings.NewReader(strPointerValue))
 

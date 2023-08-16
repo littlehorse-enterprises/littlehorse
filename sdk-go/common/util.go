@@ -12,7 +12,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func GetInputVarDefs(w *model.WfSpecPb) map[string]*model.VariableDefPb {
+func GetInputVarDefs(w *model.WfSpec) map[string]*model.VariableDef {
 	// First, find the entrypoint threadspec
 	tspec := w.ThreadSpecs[w.EntrypointThreadName]
 
@@ -20,7 +20,7 @@ func GetInputVarDefs(w *model.WfSpecPb) map[string]*model.VariableDefPb {
 		panic("Not possible.")
 	}
 
-	out := make(map[string]*model.VariableDefPb)
+	out := make(map[string]*model.VariableDef)
 
 	for _, vd := range tspec.VariableDefs {
 		out[vd.Name] = vd
