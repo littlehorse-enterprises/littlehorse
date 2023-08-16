@@ -41,13 +41,13 @@ public class Edge extends LHSerializable<EdgePb> {
 
     // Implementation details below
 
-    public ThreadSpec threadSpec;
+    public ThreadSpecModel threadSpecModel;
 
-    private Node sinkNode;
+    private NodeModel sinkNode;
 
-    public Node getSinkNode() {
+    public NodeModel getSinkNode() {
         if (sinkNode == null) {
-            sinkNode = threadSpec.nodes.get(sinkNodeName);
+            sinkNode = threadSpecModel.nodes.get(sinkNodeName);
         }
         return sinkNode;
     }

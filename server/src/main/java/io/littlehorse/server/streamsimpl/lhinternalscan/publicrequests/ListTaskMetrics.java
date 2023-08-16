@@ -2,15 +2,15 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.metrics.TaskDefMetrics;
+import io.littlehorse.common.model.metrics.TaskDefMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ListTaskMetricsPb;
 import io.littlehorse.sdk.common.proto.ListTaskMetricsReplyPb;
-import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
-import io.littlehorse.sdk.common.proto.TaskDefMetricsPb;
+import io.littlehorse.sdk.common.proto.MetricsWindowLength;
+import io.littlehorse.sdk.common.proto.TaskDefMetrics;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
@@ -18,12 +18,12 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.List
 import java.util.Date;
 
 public class ListTaskMetrics
-    extends PublicScanRequest<ListTaskMetricsPb, ListTaskMetricsReplyPb, TaskDefMetricsPb, TaskDefMetrics, ListTaskMetricsReply> {
+    extends PublicScanRequest<ListTaskMetricsPb, ListTaskMetricsReplyPb, TaskDefMetrics, TaskDefMetricsModel, ListTaskMetricsReply> {
 
     public Date lastWindowStart;
     public String taskDefName;
     public int numWindows;
-    public MetricsWindowLengthPb windowLength;
+    public MetricsWindowLength windowLength;
 
     public Class<ListTaskMetricsPb> getProtoBaseClass() {
         return ListTaskMetricsPb.class;
@@ -64,12 +64,12 @@ public class ListTaskMetrics
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        String endKey = TaskDefMetrics.getObjectId(
+        String endKey = TaskDefMetricsModel.getObjectId(
             windowLength,
             lastWindowStart,
             taskDefName
         );
-        String startKey = TaskDefMetrics.getObjectId(
+        String startKey = TaskDefMetricsModel.getObjectId(
             windowLength,
             new Date(
                 lastWindowStart.getTime() -

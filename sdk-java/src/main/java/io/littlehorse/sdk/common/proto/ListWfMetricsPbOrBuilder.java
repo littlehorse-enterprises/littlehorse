@@ -47,13 +47,13 @@ public interface ListWfMetricsPbOrBuilder extends
   int getWfSpecVersion();
 
   /**
-   * <code>.littlehorse.MetricsWindowLengthPb window_length = 5;</code>
+   * <code>.littlehorse.MetricsWindowLength window_length = 5;</code>
    * @return The enum numeric value on the wire for windowLength.
    */
   int getWindowLengthValue();
   /**
-   * <code>.littlehorse.MetricsWindowLengthPb window_length = 5;</code>
+   * <code>.littlehorse.MetricsWindowLength window_length = 5;</code>
    * @return The windowLength.
    */
-  io.littlehorse.sdk.common.proto.MetricsWindowLengthPb getWindowLength();
+  io.littlehorse.sdk.common.proto.MetricsWindowLength getWindowLength();
 }

@@ -3,12 +3,12 @@ package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.meta.JsonIndex;
-import io.littlehorse.common.model.meta.VariableDef;
+import io.littlehorse.common.model.meta.JsonIndexModel;
+import io.littlehorse.common.model.meta.VariableDefModel;
 import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.common.model.wfrun.VariableValue;
-import io.littlehorse.sdk.common.proto.IndexTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.common.model.wfrun.VariableValueModel;
+import io.littlehorse.sdk.common.proto.IndexType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
@@ -63,25 +63,25 @@ public class JsonVariableStorageManagerTest {
         );
         Variable variable = TestUtil.variable("wfrun-id");
         variable.setName("testVariable");
-        VariableDef variableDef = TestUtil.variableDef(
+        VariableDefModel variableDef = TestUtil.variableDef(
             "testVariable",
-            VariableTypePb.JSON_OBJ
+            VariableType.JSON_OBJ
         );
-        List<JsonIndex> indices = List.of(
-            new JsonIndex("$.about", IndexTypePb.LOCAL_INDEX),
-            new JsonIndex("$.profile.email", IndexTypePb.LOCAL_INDEX),
-            new JsonIndex("$.tags", IndexTypePb.LOCAL_INDEX),
-            new JsonIndex("$.balance", IndexTypePb.LOCAL_INDEX)
+        List<JsonIndexModel> indices = List.of(
+            new JsonIndexModel("$.about", IndexType.LOCAL_INDEX),
+            new JsonIndexModel("$.profile.email", IndexType.LOCAL_INDEX),
+            new JsonIndexModel("$.tags", IndexType.LOCAL_INDEX),
+            new JsonIndexModel("$.balance", IndexType.LOCAL_INDEX)
         );
         variableDef.setJsonIndices(indices);
         variable
-            .getWfSpec()
+            .getWfSpecModel()
             .getThreadSpecs()
             .forEach((s, threadSpec) -> {
                 threadSpec.setVariableDefs(List.of(variableDef));
             });
-        VariableValue variableValue = new VariableValue();
-        variableValue.setType(VariableTypePb.JSON_OBJ);
+        VariableValueModel variableValue = new VariableValueModel();
+        variableValue.setType(VariableType.JSON_OBJ);
         variableValue.setJsonObjVal(map);
         variable.setValue(variableValue);
         geTableStorageManager.store(variable);

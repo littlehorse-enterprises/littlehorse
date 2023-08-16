@@ -2,10 +2,10 @@ package io.littlehorse.common.model.meta;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.sdk.common.proto.VariableAssignmentPb;
 import io.littlehorse.sdk.common.proto.VariableAssignmentPb.SourceCase;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Data;
@@ -18,7 +18,7 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
     private String jsonPath;
     private SourceCase rhsSourceType;
     private String variableName;
-    private VariableValue rhsLiteralValue;
+    private VariableValueModel rhsLiteralValue;
     private FormatString formatString;
 
     public Class<VariableAssignmentPb> getProtoBaseClass() {
@@ -35,7 +35,7 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
                 variableName = p.getVariableName();
                 break;
             case LITERAL_VALUE:
-                rhsLiteralValue = VariableValue.fromProto(p.getLiteralValue());
+                rhsLiteralValue = VariableValueModel.fromProto(p.getLiteralValue());
                 break;
             case FORMAT_STRING:
                 formatString =
@@ -88,18 +88,18 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
         return out;
     }
 
-    public boolean canBeType(VariableTypePb type, ThreadSpec tspec) {
+    public boolean canBeType(VariableType type, ThreadSpecModel tspec) {
         if (jsonPath != null) return true;
 
-        VariableTypePb baseType;
+        VariableType baseType;
 
         if (rhsSourceType == SourceCase.VARIABLE_NAME) {
-            VariableDef varDef = tspec.getVarDef(variableName);
+            VariableDefModel varDef = tspec.getVarDef(variableName);
             baseType = varDef.type;
         } else if (rhsSourceType == SourceCase.LITERAL_VALUE) {
             baseType = rhsLiteralValue.type;
         } else if (rhsSourceType == SourceCase.FORMAT_STRING) {
-            baseType = VariableTypePb.STR;
+            baseType = VariableType.STR;
         } else {
             throw new RuntimeException("impossible");
         }

@@ -1,6 +1,6 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
-import io.littlehorse.sdk.common.proto.NodePb;
+import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.VariableAssignmentPb;
 import io.littlehorse.sdk.wfsdk.LHFormatString;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
@@ -22,7 +22,7 @@ public class UserTaskOutputImpl extends NodeOutputImpl implements UserTaskOutput
         VariableAssignmentPb assn = parent.assignVariable(notes);
 
         // get the Node
-        NodePb.Builder node = parent.getSpec().getNodesOrThrow(nodeName).toBuilder();
+        Node.Builder node = parent.getSpec().getNodesOrThrow(nodeName).toBuilder();
         node.getUserTaskBuilder().setNotes(assn);
         parent.getSpec().putNodes(nodeName, node.build());
     }

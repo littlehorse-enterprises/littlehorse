@@ -90,19 +90,19 @@ private static final long serialVersionUID = 0L;
   public static final int TYPE_FIELD_NUMBER = 2;
   private int type_ = 0;
   /**
-   * <code>.littlehorse.VariableTypePb type = 2;</code>
+   * <code>.littlehorse.VariableType type = 2;</code>
    * @return The enum numeric value on the wire for type.
    */
   @java.lang.Override public int getTypeValue() {
     return type_;
   }
   /**
-   * <code>.littlehorse.VariableTypePb type = 2;</code>
+   * <code>.littlehorse.VariableType type = 2;</code>
    * @return The type.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableTypePb getType() {
-    io.littlehorse.sdk.common.proto.VariableTypePb result = io.littlehorse.sdk.common.proto.VariableTypePb.forNumber(type_);
-    return result == null ? io.littlehorse.sdk.common.proto.VariableTypePb.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableType getType() {
+    io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
+    return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
   }
 
   public static final int DESCRIPTION_FIELD_NUMBER = 3;
@@ -228,7 +228,7 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
-    if (type_ != io.littlehorse.sdk.common.proto.VariableTypePb.JSON_OBJ.getNumber()) {
+    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
       output.writeEnum(2, type_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
@@ -252,7 +252,7 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
-    if (type_ != io.littlehorse.sdk.common.proto.VariableTypePb.JSON_OBJ.getNumber()) {
+    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(2, type_);
     }
@@ -711,14 +711,14 @@ private static final long serialVersionUID = 0L;
 
     private int type_ = 0;
     /**
-     * <code>.littlehorse.VariableTypePb type = 2;</code>
+     * <code>.littlehorse.VariableType type = 2;</code>
      * @return The enum numeric value on the wire for type.
      */
     @java.lang.Override public int getTypeValue() {
       return type_;
     }
     /**
-     * <code>.littlehorse.VariableTypePb type = 2;</code>
+     * <code>.littlehorse.VariableType type = 2;</code>
      * @param value The enum numeric value on the wire for type to set.
      * @return This builder for chaining.
      */
@@ -729,20 +729,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableTypePb type = 2;</code>
+     * <code>.littlehorse.VariableType type = 2;</code>
      * @return The type.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableTypePb getType() {
-      io.littlehorse.sdk.common.proto.VariableTypePb result = io.littlehorse.sdk.common.proto.VariableTypePb.forNumber(type_);
-      return result == null ? io.littlehorse.sdk.common.proto.VariableTypePb.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.VariableType getType() {
+      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
+      return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.VariableTypePb type = 2;</code>
+     * <code>.littlehorse.VariableType type = 2;</code>
      * @param value The type to set.
      * @return This builder for chaining.
      */
-    public Builder setType(io.littlehorse.sdk.common.proto.VariableTypePb value) {
+    public Builder setType(io.littlehorse.sdk.common.proto.VariableType value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -752,7 +752,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableTypePb type = 2;</code>
+     * <code>.littlehorse.VariableType type = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearType() {

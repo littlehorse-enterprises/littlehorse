@@ -3,12 +3,12 @@ package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repa
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.model.metrics.WfSpecMetrics;
-import io.littlehorse.common.model.objectId.WfSpecMetricsId;
+import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
+import io.littlehorse.common.model.objectId.WfSpecMetricsIdModel;
 import io.littlehorse.common.proto.WfMetricUpdatePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
+import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import java.util.Date;
@@ -21,7 +21,7 @@ public class WfMetricUpdate
     implements RepartitionSubCommand {
 
     public Date windowStart;
-    public MetricsWindowLengthPb type;
+    public MetricsWindowLength type;
     public long numEntries;
     public long startToCompleteMax;
     public long startToCompleteTotal;
@@ -36,7 +36,7 @@ public class WfMetricUpdate
 
     public WfMetricUpdate(
         Date windowStart,
-        MetricsWindowLengthPb type,
+        MetricsWindowLength type,
         String wfSpecName,
         int wfSpecVersion
     ) {
@@ -104,8 +104,8 @@ public class WfMetricUpdate
         totalStarted += o.totalStarted;
     }
 
-    public WfSpecMetrics toResponse() {
-        WfSpecMetrics out = new WfSpecMetrics();
+    public WfSpecMetricsModel toResponse() {
+        WfSpecMetricsModel out = new WfSpecMetricsModel();
         out.startToCompleteAvg =
             totalCompleted > 0 ? startToCompleteTotal / totalCompleted : 0;
         out.startToCompleteMax = startToCompleteMax;
@@ -121,7 +121,7 @@ public class WfMetricUpdate
     }
 
     public String getClusterLevelWindow() {
-        return new WfSpecMetricsId(
+        return new WfSpecMetricsIdModel(
             windowStart,
             type,
             LHConstants.CLUSTER_LEVEL_METRIC,
@@ -149,12 +149,12 @@ public class WfMetricUpdate
     }
 
     public static String getObjectId(
-        MetricsWindowLengthPb type,
+        MetricsWindowLength type,
         Date windowStart,
         String wfSpecName,
         int wfSpecVersion
     ) {
-        return WfSpecMetrics.getObjectId(
+        return WfSpecMetricsModel.getObjectId(
             type,
             windowStart,
             wfSpecName,
@@ -163,7 +163,7 @@ public class WfMetricUpdate
     }
 
     public static String getStoreKey(
-        MetricsWindowLengthPb type,
+        MetricsWindowLength type,
         Date windowStart,
         String wfSpecName,
         int wfSpecVersion

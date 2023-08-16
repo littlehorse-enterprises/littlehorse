@@ -20,7 +20,7 @@ import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskDef;
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.objectId.ExternalEventDefId;
 import io.littlehorse.common.model.objectId.TaskDefId;
@@ -1340,11 +1340,14 @@ class GlobalMetaStoresServerImpl implements LHGlobalMetaStores {
         store = new LHROStoreWrapper(coreStreams.store(params), config);
     }
 
-    public WfSpec getWfSpec(String name, Integer version) {
+    public WfSpecModel getWfSpec(String name, Integer version) {
         if (version != null) {
-            return store.get(new WfSpecId(name, version).toString(), WfSpec.class);
+            return store.get(
+                new WfSpecId(name, version).toString(),
+                WfSpecModel.class
+            );
         } else {
-            return store.getLastFromPrefix(name, WfSpec.class);
+            return store.getLastFromPrefix(name, WfSpecModel.class);
         }
     }
 

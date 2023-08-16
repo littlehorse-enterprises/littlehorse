@@ -2,17 +2,17 @@ package io.littlehorse.common.model.objectId;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.ObjectId;
-import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunIdPb;
-import io.littlehorse.sdk.common.proto.NodeRunPb;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class NodeRunId extends ObjectId<NodeRunIdPb, NodeRunPb, NodeRun> {
+public class NodeRunId extends ObjectId<NodeRunIdPb, NodeRun, NodeRunModel> {
 
     private String wfRunId;
     private int threadRunNumber;

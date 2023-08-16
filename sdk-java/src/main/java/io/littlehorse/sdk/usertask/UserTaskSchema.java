@@ -3,7 +3,7 @@ package io.littlehorse.sdk.usertask;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefPb;
 import io.littlehorse.sdk.common.proto.UserTaskFieldPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.usertask.annotations.UserTaskField;
 import java.lang.reflect.Field;
 
@@ -32,11 +32,11 @@ public class UserTaskSchema {
             if (!field.isAnnotationPresent(UserTaskField.class)) continue;
 
             UserTaskField utf = field.getAnnotation(UserTaskField.class);
-            VariableTypePb type = LHLibUtil.javaClassToLHVarType(field.getType());
+            VariableType type = LHLibUtil.javaClassToLHVarType(field.getType());
             if (
-                type == VariableTypePb.JSON_ARR ||
-                type == VariableTypePb.JSON_OBJ ||
-                type == VariableTypePb.BYTES
+                type == VariableType.JSON_ARR ||
+                type == VariableType.JSON_OBJ ||
+                type == VariableType.BYTES
             ) {
                 throw new IllegalArgumentException(
                     "Only primitive types supported for UserTaskField. Field " +

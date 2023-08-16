@@ -2,7 +2,7 @@ package io.littlehorse.server.streamsimpl.storeinternals;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
@@ -70,10 +70,10 @@ public class TagStorageManagerTest {
 
     @Test
     void saveTagsWithNewTagsCache() {
-        tagStorageManager.storeUsingCache(tags, "123456", WfRun.class);
+        tagStorageManager.storeUsingCache(tags, "123456", WfRunModel.class);
         Tag tagResult1 = localStore.get(tag1.getStoreKey(), Tag.class);
         Tag tagResult2 = localStore.get(tag2.getStoreKey(), Tag.class);
-        TagsCache tagsCache = localStore.getTagsCache("123456", WfRun.class);
+        TagsCache tagsCache = localStore.getTagsCache("123456", WfRunModel.class);
         Assertions.assertThat(tagResult1).isNotNull();
         Assertions.assertThat(tagResult2).isNotNull();
         Assertions.assertThat(tagsCache).isNotNull();
@@ -95,10 +95,13 @@ public class TagStorageManagerTest {
         CachedTag cachedTag = new CachedTag();
         cachedTag.setId(tag1.getStoreKey());
         tagsCache.setTags(List.of(cachedTag));
-        localStore.putTagsCache(wfRunId, WfRun.class, tagsCache);
+        localStore.putTagsCache(wfRunId, WfRunModel.class, tagsCache);
 
-        tagStorageManager.storeUsingCache(tags, wfRunId, WfRun.class);
-        TagsCache tagsCacheResult = localStore.getTagsCache(wfRunId, WfRun.class);
+        tagStorageManager.storeUsingCache(tags, wfRunId, WfRunModel.class);
+        TagsCache tagsCacheResult = localStore.getTagsCache(
+            wfRunId,
+            WfRunModel.class
+        );
         Assertions
             .assertThat(localStore.get(tag2.getStoreKey(), Tag.class))
             .isNotNull();
@@ -117,7 +120,7 @@ public class TagStorageManagerTest {
         String expectedPartitionKey = "3/__wfSpecName_test-name";
         tag1.setTagType(TagStorageTypePb.REMOTE);
         tags = List.of(tag1, tag2);
-        tagStorageManager.storeUsingCache(tags, "test-wfrun-id", WfRun.class);
+        tagStorageManager.storeUsingCache(tags, "test-wfrun-id", WfRunModel.class);
         List<? extends Record<? extends String, ? extends CommandProcessorOutput>> outputs = mockProcessorContext
             .forwarded()
             .stream()
@@ -155,9 +158,9 @@ public class TagStorageManagerTest {
         CachedTag cachedTag2 = new CachedTag();
         cachedTag2.setId(tag2.getStoreKey());
         tagsCache.setTags(List.of(cachedTag1, cachedTag2));
-        localStore.putTagsCache(wfRunId, WfRun.class, tagsCache);
+        localStore.putTagsCache(wfRunId, WfRunModel.class, tagsCache);
 
-        tagStorageManager.storeUsingCache(tags, wfRunId, WfRun.class);
+        tagStorageManager.storeUsingCache(tags, wfRunId, WfRunModel.class);
         List<? extends Record<? extends String, ? extends CommandProcessorOutput>> outputs = mockProcessorContext
             .forwarded()
             .stream()

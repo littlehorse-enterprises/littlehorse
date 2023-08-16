@@ -12,7 +12,7 @@ public class FailureHandlerDef extends LHSerializable<FailureHandlerDefPb> {
     public String specificFailure;
     public String handlerSpecName;
 
-    public Node node;
+    public NodeModel node;
 
     public FailureHandlerDef() {}
 

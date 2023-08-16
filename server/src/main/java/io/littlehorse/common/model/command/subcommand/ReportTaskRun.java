@@ -6,7 +6,7 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.ReportTaskReply;
 import io.littlehorse.common.model.objectId.TaskRunId;
-import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
@@ -23,8 +23,8 @@ public class ReportTaskRun extends SubCommand<ReportTaskRunPb> {
     private TaskRunId taskRunId;
     private Date time;
     private TaskStatusPb status;
-    private VariableValue stdout;
-    private VariableValue stderr;
+    private VariableValueModel stdout;
+    private VariableValueModel stderr;
     private int attemptNumber; // this is CRUCIAL to set properly.
 
     public String getPartitionKey() {
@@ -74,11 +74,11 @@ public class ReportTaskRun extends SubCommand<ReportTaskRunPb> {
         this.attemptNumber = p.getAttemptNumber();
 
         if (p.hasOutput()) {
-            this.stdout = VariableValue.fromProto(p.getOutput());
+            this.stdout = VariableValueModel.fromProto(p.getOutput());
         }
 
         if (p.hasLogOutput()) {
-            this.stderr = VariableValue.fromProto(p.getLogOutput());
+            this.stderr = VariableValueModel.fromProto(p.getLogOutput());
         }
     }
 

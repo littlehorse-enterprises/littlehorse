@@ -64,15 +64,15 @@ private static final long serialVersionUID = 0L;
     com.google.protobuf.TimestampOrBuilder getThreadEndTimeOrBuilder();
 
     /**
-     * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
+     * <code>.littlehorse.LHStatus thread_status = 2;</code>
      * @return The enum numeric value on the wire for threadStatus.
      */
     int getThreadStatusValue();
     /**
-     * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
+     * <code>.littlehorse.LHStatus thread_status = 2;</code>
      * @return The threadStatus.
      */
-    io.littlehorse.sdk.common.proto.LHStatusPb getThreadStatus();
+    io.littlehorse.sdk.common.proto.LHStatus getThreadStatus();
 
     /**
      * <code>int32 thread_run_number = 3;</code>
@@ -151,19 +151,19 @@ private static final long serialVersionUID = 0L;
     public static final int THREAD_STATUS_FIELD_NUMBER = 2;
     private int threadStatus_ = 0;
     /**
-     * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
+     * <code>.littlehorse.LHStatus thread_status = 2;</code>
      * @return The enum numeric value on the wire for threadStatus.
      */
     @java.lang.Override public int getThreadStatusValue() {
       return threadStatus_;
     }
     /**
-     * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
+     * <code>.littlehorse.LHStatus thread_status = 2;</code>
      * @return The threadStatus.
      */
-    @java.lang.Override public io.littlehorse.sdk.common.proto.LHStatusPb getThreadStatus() {
-      io.littlehorse.sdk.common.proto.LHStatusPb result = io.littlehorse.sdk.common.proto.LHStatusPb.forNumber(threadStatus_);
-      return result == null ? io.littlehorse.sdk.common.proto.LHStatusPb.UNRECOGNIZED : result;
+    @java.lang.Override public io.littlehorse.sdk.common.proto.LHStatus getThreadStatus() {
+      io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(threadStatus_);
+      return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
     }
 
     public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 3;
@@ -194,7 +194,7 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeMessage(1, getThreadEndTime());
       }
-      if (threadStatus_ != io.littlehorse.sdk.common.proto.LHStatusPb.STARTING.getNumber()) {
+      if (threadStatus_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
         output.writeEnum(2, threadStatus_);
       }
       if (threadRunNumber_ != 0) {
@@ -213,7 +213,7 @@ private static final long serialVersionUID = 0L;
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getThreadEndTime());
       }
-      if (threadStatus_ != io.littlehorse.sdk.common.proto.LHStatusPb.STARTING.getNumber()) {
+      if (threadStatus_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(2, threadStatus_);
       }
@@ -688,14 +688,14 @@ private static final long serialVersionUID = 0L;
 
       private int threadStatus_ = 0;
       /**
-       * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
+       * <code>.littlehorse.LHStatus thread_status = 2;</code>
        * @return The enum numeric value on the wire for threadStatus.
        */
       @java.lang.Override public int getThreadStatusValue() {
         return threadStatus_;
       }
       /**
-       * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
+       * <code>.littlehorse.LHStatus thread_status = 2;</code>
        * @param value The enum numeric value on the wire for threadStatus to set.
        * @return This builder for chaining.
        */
@@ -706,20 +706,20 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
+       * <code>.littlehorse.LHStatus thread_status = 2;</code>
        * @return The threadStatus.
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.LHStatusPb getThreadStatus() {
-        io.littlehorse.sdk.common.proto.LHStatusPb result = io.littlehorse.sdk.common.proto.LHStatusPb.forNumber(threadStatus_);
-        return result == null ? io.littlehorse.sdk.common.proto.LHStatusPb.UNRECOGNIZED : result;
+      public io.littlehorse.sdk.common.proto.LHStatus getThreadStatus() {
+        io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(threadStatus_);
+        return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
       }
       /**
-       * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
+       * <code>.littlehorse.LHStatus thread_status = 2;</code>
        * @param value The threadStatus to set.
        * @return This builder for chaining.
        */
-      public Builder setThreadStatus(io.littlehorse.sdk.common.proto.LHStatusPb value) {
+      public Builder setThreadStatus(io.littlehorse.sdk.common.proto.LHStatus value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -729,7 +729,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
+       * <code>.littlehorse.LHStatus thread_status = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearThreadStatus() {

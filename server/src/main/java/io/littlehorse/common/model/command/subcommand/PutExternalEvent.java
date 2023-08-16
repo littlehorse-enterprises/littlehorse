@@ -8,12 +8,12 @@ import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
-import io.littlehorse.common.model.wfrun.VariableValue;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.VariableValueModel;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.PutExternalEventPb;
@@ -25,7 +25,7 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
     public String wfRunId;
     public String externalEventDefName;
     public String guid;
-    public VariableValue content;
+    public VariableValueModel content;
     public Integer threadRunNumber;
     public Integer nodeRunPosition;
 
@@ -93,11 +93,14 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
         timer.payload = deleteExtEventCmd.toProto().build().toByteArray();
         dao.scheduleTimer(timer);
 
-        WfRun wfRun = dao.getWfRun(wfRunId);
-        if (wfRun != null) {
-            WfSpec spec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
+        WfRunModel wfRunModel = dao.getWfRun(wfRunId);
+        if (wfRunModel != null) {
+            WfSpecModel spec = dao.getWfSpec(
+                wfRunModel.wfSpecName,
+                wfRunModel.wfSpecVersion
+            );
             if (spec == null) {
-                wfRun.threadRuns
+                wfRunModel.threadRunModels
                     .get(0)
                     .fail(
                         new Failure(
@@ -109,11 +112,11 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
                 out.code = LHResponseCodePb.NOT_FOUND_ERROR;
                 out.message = "Apparently WfSpec was deleted!";
             } else {
-                wfRun.wfSpec = spec;
-                wfRun.processExternalEvent(evt);
+                wfRunModel.wfSpecModel = spec;
+                wfRunModel.processExternalEvent(evt);
                 out.code = LHResponseCodePb.OK;
             }
-            dao.saveWfRun(wfRun);
+            dao.saveWfRun(wfRunModel);
             dao.saveExternalEvent(evt);
         } else {
             // it's a pre-emptive event.
@@ -129,7 +132,7 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
         PutExternalEventPb p = (PutExternalEventPb) proto;
         wfRunId = p.getWfRunId();
         externalEventDefName = p.getExternalEventDefName();
-        content = VariableValue.fromProto(p.getContent());
+        content = VariableValueModel.fromProto(p.getContent());
 
         if (p.hasGuid()) guid = p.getGuid();
         if (p.hasThreadRunNumber()) threadRunNumber = p.getThreadRunNumber();

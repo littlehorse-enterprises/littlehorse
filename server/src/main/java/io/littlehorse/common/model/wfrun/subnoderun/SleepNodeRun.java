@@ -9,10 +9,10 @@ import io.littlehorse.common.model.meta.subnode.SleepNode;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
-import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SleepNodeRunPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.Date;
 
 public class SleepNodeRun extends SubNodeRun<SleepNodeRunPb> {
@@ -56,41 +56,45 @@ public class SleepNodeRun extends SubNodeRun<SleepNodeRunPb> {
         }
 
         try {
-            maturationTime = sn.getMaturationTime(nodeRun.getThreadRun());
+            maturationTime = sn.getMaturationTime(nodeRunModel.getThreadRun());
             Command cmd = new Command();
             cmd.time = maturationTime;
             SleepNodeMatured snm = new SleepNodeMatured();
-            snm.wfRunId = nodeRun.wfRunId;
-            snm.threadRunNumber = nodeRun.threadRunNumber;
-            snm.nodeRunPosition = nodeRun.position;
+            snm.wfRunId = nodeRunModel.wfRunId;
+            snm.threadRunNumber = nodeRunModel.threadRunNumber;
+            snm.nodeRunPosition = nodeRunModel.position;
 
             cmd.setSubCommand(snm);
 
             LHTimer timer = new LHTimer();
             timer.maturationTime = maturationTime;
-            timer.key = nodeRun.wfRunId;
+            timer.key = nodeRunModel.wfRunId;
             timer.topic =
-                nodeRun.getThreadRun().getWfRun().getDao().getCoreCmdTopic();
+                nodeRunModel
+                    .getThreadRun()
+                    .getWfRunModel()
+                    .getDao()
+                    .getCoreCmdTopic();
             timer.payload = cmd.toProto().build().toByteArray();
 
-            nodeRun.getThreadRun().getWfRun().getDao().scheduleTimer(timer);
+            nodeRunModel.getThreadRun().getWfRunModel().getDao().scheduleTimer(timer);
         } catch (LHVarSubError exn) {
             Failure failure = new Failure(
                 "Failed calculating maturation for timer: " + exn.getMessage(),
                 LHConstants.VAR_SUB_ERROR
             );
-            nodeRun.fail(failure, time);
+            nodeRunModel.fail(failure, time);
         }
     }
 
     public void processSleepNodeMatured(SleepNodeMatured evt) {
-        VariableValue nullOutput = new VariableValue();
-        nullOutput.type = VariableTypePb.NULL;
+        VariableValueModel nullOutput = new VariableValueModel();
+        nullOutput.type = VariableType.NULL;
 
         // mark when we actually processed the completion, not when it was "supposed"
         // to come in. In cases where there's a large backlog of scheduler events,
         // this would be useful to help debug what's going on.
-        nodeRun.complete(nullOutput, new Date());
+        nodeRunModel.complete(nullOutput, new Date());
     }
 
     @Override

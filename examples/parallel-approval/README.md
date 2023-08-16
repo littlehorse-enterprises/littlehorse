@@ -18,7 +18,7 @@ In another terminal, use `lhctl` to run the workflow:
 ```
 lhctl run parallel-approval
 
-lhctl get wfRun <id>
+lhctl get wfRunModel <id>
 ```
 
 Note that there are *four* `ThreadRun`s: the Entrypoint (i.e. main) thread, and one child thread for each of the three required approvals.
@@ -28,7 +28,7 @@ Note that there are *four* `ThreadRun`s: the Entrypoint (i.e. main) thread, and 
 Let's first take a look at the main thread. The `currentNodePosition` is `5`. So, we get the `5` `NodeRun` as follows:
 
 ```
--> lhctl get nodeRun <wfRunId> 0 5
+-> lhctl get nodeRunModel <wfRunId> 0 5
 
 {
   "code":  "OK",
@@ -68,10 +68,10 @@ Let's first take a look at the main thread. The `currentNodePosition` is `5`. So
 
 We can see that it's waiting for threads `2`, `3`, and `4`.
 
-Let's look at thread `3` and see what's up. Recall from `lhctl get wfRun` that thread `3` is on node `1`.
+Let's look at thread `3` and see what's up. Recall from `lhctl get wfRunModel` that thread `3` is on node `1`.
 
 ```
--> lhctl get nodeRun <wfRunId> 3 1
+-> lhctl get nodeRunModel <wfRunId> 3 1
 {
   "code":  "OK",
   "result":  {
@@ -106,7 +106,7 @@ lhctl postEvent <wfRunId> person-2-approves NULL
 Now look at the main thread's `WAIT_FOR_THREAD` node:
 
 ```
--> lhctl get nodeRun <wfRunId> 0 5
+-> lhctl get nodeRunModel <wfRunId> 0 5
 {
   "code":  "OK",
   "result":  {

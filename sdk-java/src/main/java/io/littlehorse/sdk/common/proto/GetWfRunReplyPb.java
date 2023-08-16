@@ -112,9 +112,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int RESULT_FIELD_NUMBER = 3;
-  private io.littlehorse.sdk.common.proto.WfRunPb result_;
+  private io.littlehorse.sdk.common.proto.WfRun result_;
   /**
-   * <code>optional .littlehorse.WfRunPb result = 3;</code>
+   * <code>optional .littlehorse.WfRun result = 3;</code>
    * @return Whether the result field is set.
    */
   @java.lang.Override
@@ -122,19 +122,19 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>optional .littlehorse.WfRunPb result = 3;</code>
+   * <code>optional .littlehorse.WfRun result = 3;</code>
    * @return The result.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfRunPb getResult() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.WfRunPb.getDefaultInstance() : result_;
+  public io.littlehorse.sdk.common.proto.WfRun getResult() {
+    return result_ == null ? io.littlehorse.sdk.common.proto.WfRun.getDefaultInstance() : result_;
   }
   /**
-   * <code>optional .littlehorse.WfRunPb result = 3;</code>
+   * <code>optional .littlehorse.WfRun result = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfRunPbOrBuilder getResultOrBuilder() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.WfRunPb.getDefaultInstance() : result_;
+  public io.littlehorse.sdk.common.proto.WfRunOrBuilder getResultOrBuilder() {
+    return result_ == null ? io.littlehorse.sdk.common.proto.WfRun.getDefaultInstance() : result_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -666,31 +666,31 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.sdk.common.proto.WfRunPb result_;
+    private io.littlehorse.sdk.common.proto.WfRun result_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WfRunPb, io.littlehorse.sdk.common.proto.WfRunPb.Builder, io.littlehorse.sdk.common.proto.WfRunPbOrBuilder> resultBuilder_;
+        io.littlehorse.sdk.common.proto.WfRun, io.littlehorse.sdk.common.proto.WfRun.Builder, io.littlehorse.sdk.common.proto.WfRunOrBuilder> resultBuilder_;
     /**
-     * <code>optional .littlehorse.WfRunPb result = 3;</code>
+     * <code>optional .littlehorse.WfRun result = 3;</code>
      * @return Whether the result field is set.
      */
     public boolean hasResult() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>optional .littlehorse.WfRunPb result = 3;</code>
+     * <code>optional .littlehorse.WfRun result = 3;</code>
      * @return The result.
      */
-    public io.littlehorse.sdk.common.proto.WfRunPb getResult() {
+    public io.littlehorse.sdk.common.proto.WfRun getResult() {
       if (resultBuilder_ == null) {
-        return result_ == null ? io.littlehorse.sdk.common.proto.WfRunPb.getDefaultInstance() : result_;
+        return result_ == null ? io.littlehorse.sdk.common.proto.WfRun.getDefaultInstance() : result_;
       } else {
         return resultBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .littlehorse.WfRunPb result = 3;</code>
+     * <code>optional .littlehorse.WfRun result = 3;</code>
      */
-    public Builder setResult(io.littlehorse.sdk.common.proto.WfRunPb value) {
+    public Builder setResult(io.littlehorse.sdk.common.proto.WfRun value) {
       if (resultBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -704,10 +704,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.WfRunPb result = 3;</code>
+     * <code>optional .littlehorse.WfRun result = 3;</code>
      */
     public Builder setResult(
-        io.littlehorse.sdk.common.proto.WfRunPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.WfRun.Builder builderForValue) {
       if (resultBuilder_ == null) {
         result_ = builderForValue.build();
       } else {
@@ -718,13 +718,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.WfRunPb result = 3;</code>
+     * <code>optional .littlehorse.WfRun result = 3;</code>
      */
-    public Builder mergeResult(io.littlehorse.sdk.common.proto.WfRunPb value) {
+    public Builder mergeResult(io.littlehorse.sdk.common.proto.WfRun value) {
       if (resultBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0) &&
           result_ != null &&
-          result_ != io.littlehorse.sdk.common.proto.WfRunPb.getDefaultInstance()) {
+          result_ != io.littlehorse.sdk.common.proto.WfRun.getDefaultInstance()) {
           getResultBuilder().mergeFrom(value);
         } else {
           result_ = value;
@@ -737,7 +737,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.WfRunPb result = 3;</code>
+     * <code>optional .littlehorse.WfRun result = 3;</code>
      */
     public Builder clearResult() {
       bitField0_ = (bitField0_ & ~0x00000004);
@@ -750,33 +750,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.WfRunPb result = 3;</code>
+     * <code>optional .littlehorse.WfRun result = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.WfRunPb.Builder getResultBuilder() {
+    public io.littlehorse.sdk.common.proto.WfRun.Builder getResultBuilder() {
       bitField0_ |= 0x00000004;
       onChanged();
       return getResultFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.WfRunPb result = 3;</code>
+     * <code>optional .littlehorse.WfRun result = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.WfRunPbOrBuilder getResultOrBuilder() {
+    public io.littlehorse.sdk.common.proto.WfRunOrBuilder getResultOrBuilder() {
       if (resultBuilder_ != null) {
         return resultBuilder_.getMessageOrBuilder();
       } else {
         return result_ == null ?
-            io.littlehorse.sdk.common.proto.WfRunPb.getDefaultInstance() : result_;
+            io.littlehorse.sdk.common.proto.WfRun.getDefaultInstance() : result_;
       }
     }
     /**
-     * <code>optional .littlehorse.WfRunPb result = 3;</code>
+     * <code>optional .littlehorse.WfRun result = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WfRunPb, io.littlehorse.sdk.common.proto.WfRunPb.Builder, io.littlehorse.sdk.common.proto.WfRunPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.WfRun, io.littlehorse.sdk.common.proto.WfRun.Builder, io.littlehorse.sdk.common.proto.WfRunOrBuilder> 
         getResultFieldBuilder() {
       if (resultBuilder_ == null) {
         resultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.WfRunPb, io.littlehorse.sdk.common.proto.WfRunPb.Builder, io.littlehorse.sdk.common.proto.WfRunPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.WfRun, io.littlehorse.sdk.common.proto.WfRun.Builder, io.littlehorse.sdk.common.proto.WfRunOrBuilder>(
                 getResult(),
                 getParentForChildren(),
                 isClean());

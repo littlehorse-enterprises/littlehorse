@@ -5,14 +5,14 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.RunWfReply;
-import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.wfrun.VariableValue;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.meta.WfSpecModel;
+import io.littlehorse.common.model.wfrun.VariableValueModel;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.RunWfPb;
-import io.littlehorse.sdk.common.proto.VariableValuePb;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +20,7 @@ public class RunWf extends SubCommand<RunWfPb> {
 
     public String wfSpecName;
     public Integer wfSpecVersion;
-    public Map<String, VariableValue> variables;
+    public Map<String, VariableValueModel> variables;
     public String id;
 
     public String getPartitionKey() {
@@ -43,7 +43,7 @@ public class RunWf extends SubCommand<RunWfPb> {
         if (id != null) out.setId(id);
         if (wfSpecVersion != null) out.setWfSpecVersion(wfSpecVersion);
 
-        for (Map.Entry<String, VariableValue> e : variables.entrySet()) {
+        for (Map.Entry<String, VariableValueModel> e : variables.entrySet()) {
             out.putVariables(e.getKey(), e.getValue().toProto().build());
         }
         return out;
@@ -55,8 +55,8 @@ public class RunWf extends SubCommand<RunWfPb> {
         if (p.hasId()) id = p.getId();
         if (p.hasWfSpecVersion()) wfSpecVersion = p.getWfSpecVersion();
 
-        for (Map.Entry<String, VariableValuePb> e : p.getVariablesMap().entrySet()) {
-            variables.put(e.getKey(), VariableValue.fromProto(e.getValue()));
+        for (Map.Entry<String, VariableValue> e : p.getVariablesMap().entrySet()) {
+            variables.put(e.getKey(), VariableValueModel.fromProto(e.getValue()));
         }
     }
 
@@ -67,7 +67,7 @@ public class RunWf extends SubCommand<RunWfPb> {
     public RunWfReply process(LHDAO dao, LHConfig config) {
         RunWfReply out = new RunWfReply();
 
-        WfSpec spec = dao.getWfSpec(wfSpecName, wfSpecVersion);
+        WfSpecModel spec = dao.getWfSpec(wfSpecName, wfSpecVersion);
         if (spec == null) {
             out.code = LHResponseCodePb.NOT_FOUND_ERROR;
             out.message = "Could not find specified WfSpec.";
@@ -78,8 +78,8 @@ public class RunWf extends SubCommand<RunWfPb> {
         if (id == null) id = LHUtil.generateGuid();
         out.wfRunId = id;
 
-        WfRun oldWfRun = dao.getWfRun(id);
-        if (oldWfRun != null) {
+        WfRunModel oldWfRunModel = dao.getWfRun(id);
+        if (oldWfRunModel != null) {
             out.code = LHResponseCodePb.ALREADY_EXISTS_ERROR;
             out.message = "WfRun with id " + id + " already exists!";
             return out;
@@ -87,12 +87,12 @@ public class RunWf extends SubCommand<RunWfPb> {
 
         // TODO: Add WfRun Start Metrics
 
-        WfRun newRun = spec.startNewRun(this);
+        WfRunModel newRun = spec.startNewRun(this);
         newRun.advance(dao.getEventTime());
 
-        if (newRun.status == LHStatusPb.ERROR) {
+        if (newRun.status == LHStatus.ERROR) {
             out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
-            out.message = newRun.threadRuns.get(0).errorMessage;
+            out.message = newRun.threadRunModels.get(0).errorMessage;
         } else {
             out.code = LHResponseCodePb.OK;
         }

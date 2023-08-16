@@ -2,13 +2,13 @@ package io.littlehorse.common.model.wfrun.haltreason;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.wfrun.NodeRun;
-import io.littlehorse.common.model.wfrun.ThreadRun;
+import io.littlehorse.common.model.wfrun.NodeRunModel;
+import io.littlehorse.common.model.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.wfrun.WaitForThread;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.HandlingFailureHaltReasonPb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.NodeRunPb.NodeTypeCase;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -18,21 +18,23 @@ public class HandlingFailureHaltReason
 
     public int handlerThreadId;
 
-    public boolean isResolved(WfRun wfRun) {
-        ThreadRun handlerThread = wfRun.threadRuns.get(handlerThreadId);
+    public boolean isResolved(WfRunModel wfRunModel) {
+        ThreadRunModel handlerThread = wfRunModel.threadRunModels.get(
+            handlerThreadId
+        );
         log.debug(
             "HandlingFailureHaltReason for failed thread {}: handler thread " +
             "status is {}",
             handlerThread.getFailureBeingHandled().getThreadRunNumber(),
             handlerThread.getStatus()
         );
-        if (handlerThread.status == LHStatusPb.COMPLETED) {
+        if (handlerThread.status == LHStatus.COMPLETED) {
             // Need to figure out if the handler thread was handling another
             // failed thread.
-            ThreadRun originalThatFailed = wfRun.threadRuns.get(
+            ThreadRunModel originalThatFailed = wfRunModel.threadRunModels.get(
                 handlerThread.failureBeingHandled.getThreadRunNumber()
             );
-            NodeRun handledNode = originalThatFailed.getNodeRun(
+            NodeRunModel handledNode = originalThatFailed.getNodeRun(
                 handlerThread.failureBeingHandled.getNodeRunPosition()
             );
 
@@ -44,11 +46,11 @@ public class HandlingFailureHaltReason
                 for (WaitForThread wft : handledNode
                     .getWaitThreadsRun()
                     .getThreads()) {
-                    if (wft.getThreadStatus() == LHStatusPb.ERROR) {
+                    if (wft.getThreadStatus() == LHStatus.ERROR) {
                         originalThatFailed.handledFailedChildren.add(
                             wft.getThreadRunNumber()
                         );
-                    } else if (wft.getThreadStatus() != LHStatusPb.COMPLETED) {
+                    } else if (wft.getThreadStatus() != LHStatus.COMPLETED) {
                         log.warn(
                             "Impossible: handling failure for a WaitThreadNode " +
                             "and found a non-terminated child"

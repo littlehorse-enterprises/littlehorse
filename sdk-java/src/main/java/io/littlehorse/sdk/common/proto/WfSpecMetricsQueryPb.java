@@ -74,19 +74,19 @@ private static final long serialVersionUID = 0L;
   public static final int WINDOW_TYPE_FIELD_NUMBER = 2;
   private int windowType_ = 0;
   /**
-   * <code>.littlehorse.MetricsWindowLengthPb window_type = 2;</code>
+   * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
    * @return The enum numeric value on the wire for windowType.
    */
   @java.lang.Override public int getWindowTypeValue() {
     return windowType_;
   }
   /**
-   * <code>.littlehorse.MetricsWindowLengthPb window_type = 2;</code>
+   * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
    * @return The windowType.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.MetricsWindowLengthPb getWindowType() {
-    io.littlehorse.sdk.common.proto.MetricsWindowLengthPb result = io.littlehorse.sdk.common.proto.MetricsWindowLengthPb.forNumber(windowType_);
-    return result == null ? io.littlehorse.sdk.common.proto.MetricsWindowLengthPb.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.MetricsWindowLength getWindowType() {
+    io.littlehorse.sdk.common.proto.MetricsWindowLength result = io.littlehorse.sdk.common.proto.MetricsWindowLength.forNumber(windowType_);
+    return result == null ? io.littlehorse.sdk.common.proto.MetricsWindowLength.UNRECOGNIZED : result;
   }
 
   public static final int WF_SPEC_NAME_FIELD_NUMBER = 3;
@@ -156,7 +156,7 @@ private static final long serialVersionUID = 0L;
     if (windowStart_ != null) {
       output.writeMessage(1, getWindowStart());
     }
-    if (windowType_ != io.littlehorse.sdk.common.proto.MetricsWindowLengthPb.MINUTES_5.getNumber()) {
+    if (windowType_ != io.littlehorse.sdk.common.proto.MetricsWindowLength.MINUTES_5.getNumber()) {
       output.writeEnum(2, windowType_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
@@ -178,7 +178,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getWindowStart());
     }
-    if (windowType_ != io.littlehorse.sdk.common.proto.MetricsWindowLengthPb.MINUTES_5.getNumber()) {
+    if (windowType_ != io.littlehorse.sdk.common.proto.MetricsWindowLength.MINUTES_5.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(2, windowType_);
     }
@@ -665,14 +665,14 @@ private static final long serialVersionUID = 0L;
 
     private int windowType_ = 0;
     /**
-     * <code>.littlehorse.MetricsWindowLengthPb window_type = 2;</code>
+     * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
      * @return The enum numeric value on the wire for windowType.
      */
     @java.lang.Override public int getWindowTypeValue() {
       return windowType_;
     }
     /**
-     * <code>.littlehorse.MetricsWindowLengthPb window_type = 2;</code>
+     * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
      * @param value The enum numeric value on the wire for windowType to set.
      * @return This builder for chaining.
      */
@@ -683,20 +683,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.MetricsWindowLengthPb window_type = 2;</code>
+     * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
      * @return The windowType.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.MetricsWindowLengthPb getWindowType() {
-      io.littlehorse.sdk.common.proto.MetricsWindowLengthPb result = io.littlehorse.sdk.common.proto.MetricsWindowLengthPb.forNumber(windowType_);
-      return result == null ? io.littlehorse.sdk.common.proto.MetricsWindowLengthPb.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.MetricsWindowLength getWindowType() {
+      io.littlehorse.sdk.common.proto.MetricsWindowLength result = io.littlehorse.sdk.common.proto.MetricsWindowLength.forNumber(windowType_);
+      return result == null ? io.littlehorse.sdk.common.proto.MetricsWindowLength.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.MetricsWindowLengthPb window_type = 2;</code>
+     * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
      * @param value The windowType to set.
      * @return This builder for chaining.
      */
-    public Builder setWindowType(io.littlehorse.sdk.common.proto.MetricsWindowLengthPb value) {
+    public Builder setWindowType(io.littlehorse.sdk.common.proto.MetricsWindowLength value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -706,7 +706,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.MetricsWindowLengthPb window_type = 2;</code>
+     * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearWindowType() {

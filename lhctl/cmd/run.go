@@ -58,7 +58,7 @@ Therefore, you must have an even number of args after the WfSpec Id, for an
 odd total number of args. See 'lhctl run --help' for details.`)
 			}
 
-			// Now, we need to look up the wfSpec and serialize the variables.
+			// Now, we need to look up the wfSpecModel and serialize the variables.
 			var wfSpecReply *model.GetWfSpecReplyPb
 			var err error
 
@@ -87,9 +87,9 @@ odd total number of args. See 'lhctl run --help' for details.`)
 				log.Fatal(msg)
 			}
 
-			wfSpec := wfSpecReply.Result
+			wfSpecModel := wfSpecReply.Result
 			runReq.Variables = make(map[string]*model.VariableValuePb)
-			varDefs := common.GetInputVarDefs(wfSpec)
+			varDefs := common.GetInputVarDefs(wfSpecModel)
 
 			for i := 1; i+1 < len(args); i += 2 {
 				varName := args[i]

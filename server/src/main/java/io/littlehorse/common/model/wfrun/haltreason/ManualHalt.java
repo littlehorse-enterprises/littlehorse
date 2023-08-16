@@ -2,7 +2,7 @@ package io.littlehorse.common.model.wfrun.haltreason;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.ManualHaltPb;
 
 public class ManualHalt
@@ -11,7 +11,7 @@ public class ManualHalt
 
     public boolean meaningOfLife;
 
-    public boolean isResolved(WfRun wfRun) {
+    public boolean isResolved(WfRunModel wfRunModel) {
         // never resolved; only removed.
         return false;
     }

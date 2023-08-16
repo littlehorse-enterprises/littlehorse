@@ -10,7 +10,7 @@ import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.wfrun.User;
 import io.littlehorse.common.model.wfrun.UserGroup;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.AssigneeCase;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
@@ -117,8 +117,8 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
         // In the future, we could add some verification to make sure that the
         // user actually exists. For now, this is fine.
         utr.reassignTo(this);
-        WfRun wfRun = dao.getWfRun(getWfRunId());
-        if (wfRun == null) {
+        WfRunModel wfRunModel = dao.getWfRun(getWfRunId());
+        if (wfRunModel == null) {
             log.error(
                 "Impossible: Got the UserTaskRun but WfRun missing {}",
                 getWfRunId()
@@ -126,7 +126,7 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
             return out;
         }
 
-        wfRun.advance(new Date());
+        wfRunModel.advance(new Date());
 
         out.code = LHResponseCodePb.OK;
         return out;

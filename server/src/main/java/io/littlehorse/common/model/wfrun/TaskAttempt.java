@@ -13,8 +13,8 @@ import lombok.Setter;
 @Setter
 public class TaskAttempt extends LHSerializable<TaskAttemptPb> {
 
-    private VariableValue output;
-    private VariableValue logOutput;
+    private VariableValueModel output;
+    private VariableValueModel logOutput;
 
     private Date scheduleTime;
     private Date startTime;
@@ -35,13 +35,13 @@ public class TaskAttempt extends LHSerializable<TaskAttemptPb> {
     public void initFrom(Message proto) {
         TaskAttemptPb p = (TaskAttemptPb) proto;
         if (p.hasOutput()) {
-            output = VariableValue.fromProto(p.getOutput());
+            output = VariableValueModel.fromProto(p.getOutput());
         }
         if (p.hasScheduleTime()) {
             scheduleTime = LHUtil.fromProtoTs(p.getScheduleTime());
         }
         if (p.hasLogOutput()) {
-            logOutput = VariableValue.fromProto(p.getLogOutput());
+            logOutput = VariableValueModel.fromProto(p.getLogOutput());
         }
         if (p.hasStartTime()) {
             startTime = LHUtil.fromProtoTs(p.getStartTime());

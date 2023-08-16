@@ -3,11 +3,11 @@ package io.littlehorse.common.model.meta;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.sdk.common.proto.OutputSchemaPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 
 public class OutputSchema extends LHSerializable<OutputSchemaPb> {
 
-    public VariableTypePb outputType;
+    public VariableType outputType;
 
     public Class<OutputSchemaPb> getProtoBaseClass() {
         return OutputSchemaPb.class;

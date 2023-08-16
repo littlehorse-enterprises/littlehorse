@@ -11,20 +11,20 @@ import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
-import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.TaskAttempt;
-import io.littlehorse.common.model.wfrun.ThreadRun;
+import io.littlehorse.common.model.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.VarNameAndVal;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRunSource;
 import io.littlehorse.common.model.wfrun.taskrun.UserTaskTriggerReference;
 import io.littlehorse.common.model.wfrun.usertaskevent.UTETaskExecuted;
 import io.littlehorse.common.model.wfrun.usertaskevent.UserTaskEvent;
 import io.littlehorse.common.proto.TriggeredTaskRunPb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import java.util.Date;
 import java.util.List;
 import lombok.Getter;
@@ -78,14 +78,16 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
             "Might schedule a one-off task for wfRun {} due to UserTask",
             wfRunId
         );
-        WfRun wfRun = dao.getWfRun(wfRunId);
-        if (wfRun == null) {
+        WfRunModel wfRunModel = dao.getWfRun(wfRunId);
+        if (wfRunModel == null) {
             log.info("WfRun no longer exists! Skipping the scheduled action trigger");
             return null;
         }
 
         // Now verify that the thing hasn't yet been completed.
-        ThreadRun thread = wfRun.threadRuns.get(source.getThreadRunNumber());
+        ThreadRunModel thread = wfRunModel.threadRunModels.get(
+            source.getThreadRunNumber()
+        );
 
         // Impossible for thread to be null, but check anyways
         if (thread == null) {
@@ -94,11 +96,11 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
         }
 
         // Get the NodeRun
-        NodeRun userTaskNR = dao.getNodeRun(source);
+        NodeRunModel userTaskNR = dao.getNodeRun(source);
         UserTaskRunId userTaskRunId = userTaskNR.getUserTaskRun().getUserTaskRunId();
         UserTaskRun userTaskRun = dao.getUserTaskRun(userTaskRunId);
 
-        if (userTaskNR.status != LHStatusPb.RUNNING) {
+        if (userTaskNR.status != LHStatus.RUNNING) {
             log.info("NodeRun is not RUNNING anymore, so can't take action!");
             return null;
         }

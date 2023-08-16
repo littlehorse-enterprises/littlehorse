@@ -9,12 +9,12 @@ import io.littlehorse.common.model.command.subcommand.TriggeredTaskRun;
 import io.littlehorse.common.model.meta.VariableMutation;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.wfrun.LHTimer;
-import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
-import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb;
 import io.littlehorse.sdk.common.proto.VariableMutationPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,14 +54,14 @@ public class UTATask extends LHSerializable<UTATaskPb> {
     // Like hey both use the same TaskNode
     public void schedule(LHDAO dao, UserTaskRun utr, UTActionTrigger trigger)
         throws LHVarSubError {
-        NodeRun nodeRun = utr.getNodeRun();
+        NodeRunModel nodeRunModel = utr.getNodeRun();
 
         // Next, figure out when the task should be scheduled.
-        VariableValue delaySeconds = nodeRun
+        VariableValueModel delaySeconds = nodeRunModel
             .getThreadRun()
             .assignVariable(trigger.delaySeconds);
 
-        if (delaySeconds.getType() != VariableTypePb.INT) {
+        if (delaySeconds.getType() != VariableType.INT) {
             throw new LHVarSubError(
                 null,
                 "Delay for User Task Action was not an INT, got a " +

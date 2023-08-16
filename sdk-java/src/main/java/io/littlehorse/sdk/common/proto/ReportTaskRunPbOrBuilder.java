@@ -49,34 +49,34 @@ public interface ReportTaskRunPbOrBuilder extends
   io.littlehorse.sdk.common.proto.TaskStatusPb getStatus();
 
   /**
-   * <code>optional .littlehorse.VariableValuePb output = 4;</code>
+   * <code>optional .littlehorse.VariableValue output = 4;</code>
    * @return Whether the output field is set.
    */
   boolean hasOutput();
   /**
-   * <code>optional .littlehorse.VariableValuePb output = 4;</code>
+   * <code>optional .littlehorse.VariableValue output = 4;</code>
    * @return The output.
    */
-  io.littlehorse.sdk.common.proto.VariableValuePb getOutput();
+  io.littlehorse.sdk.common.proto.VariableValue getOutput();
   /**
-   * <code>optional .littlehorse.VariableValuePb output = 4;</code>
+   * <code>optional .littlehorse.VariableValue output = 4;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getOutputOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder();
 
   /**
-   * <code>optional .littlehorse.VariableValuePb log_output = 5;</code>
+   * <code>optional .littlehorse.VariableValue log_output = 5;</code>
    * @return Whether the logOutput field is set.
    */
   boolean hasLogOutput();
   /**
-   * <code>optional .littlehorse.VariableValuePb log_output = 5;</code>
+   * <code>optional .littlehorse.VariableValue log_output = 5;</code>
    * @return The logOutput.
    */
-  io.littlehorse.sdk.common.proto.VariableValuePb getLogOutput();
+  io.littlehorse.sdk.common.proto.VariableValue getLogOutput();
   /**
-   * <code>optional .littlehorse.VariableValuePb log_output = 5;</code>
+   * <code>optional .littlehorse.VariableValue log_output = 5;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getLogOutputOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getLogOutputOrBuilder();
 
   /**
    * <code>int32 attempt_number = 6;</code>

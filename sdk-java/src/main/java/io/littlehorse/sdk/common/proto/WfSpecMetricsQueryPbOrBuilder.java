@@ -23,15 +23,15 @@ public interface WfSpecMetricsQueryPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 
   /**
-   * <code>.littlehorse.MetricsWindowLengthPb window_type = 2;</code>
+   * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
    * @return The enum numeric value on the wire for windowType.
    */
   int getWindowTypeValue();
   /**
-   * <code>.littlehorse.MetricsWindowLengthPb window_type = 2;</code>
+   * <code>.littlehorse.MetricsWindowLength window_type = 2;</code>
    * @return The windowType.
    */
-  io.littlehorse.sdk.common.proto.MetricsWindowLengthPb getWindowType();
+  io.littlehorse.sdk.common.proto.MetricsWindowLength getWindowType();
 
   /**
    * <code>string wf_spec_name = 3;</code>

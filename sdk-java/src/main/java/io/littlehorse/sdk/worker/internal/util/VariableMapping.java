@@ -7,8 +7,8 @@ import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
 import io.littlehorse.sdk.common.proto.TaskDefPb;
 import io.littlehorse.sdk.common.proto.VarNameAndValPb;
-import io.littlehorse.sdk.common.proto.VariableDefPb;
-import io.littlehorse.sdk.common.proto.VariableValuePb;
+import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,7 +36,7 @@ public class VariableMapping {
             );
         }
         this.name = javaParamName;
-        VariableDefPb input = taskDef.getInputVars(position);
+        VariableDef input = taskDef.getInputVars(position);
 
         String msg = null;
 
@@ -93,7 +93,7 @@ public class VariableMapping {
 
         VarNameAndValPb assignment = taskInstance.getVariables(position);
         String taskDefParamName = assignment.getVarName();
-        VariableValuePb val = assignment.getValue();
+        VariableValue val = assignment.getValue();
 
         String jsonStr = null;
 

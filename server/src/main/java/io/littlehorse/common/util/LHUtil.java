@@ -8,7 +8,7 @@ import com.google.common.hash.Hashing;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
+import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
@@ -50,12 +50,12 @@ public class LHUtil {
         return date == null ? "null" : String.format("%012d", date.getTime());
     }
 
-    public static Date getWindowStart(Date time, MetricsWindowLengthPb type) {
+    public static Date getWindowStart(Date time, MetricsWindowLength type) {
         long windowLength = getWindowLengthMillis(type);
         return new Date((time.getTime() / windowLength) * windowLength);
     }
 
-    public static long getWindowLengthMillis(MetricsWindowLengthPb type) {
+    public static long getWindowLengthMillis(MetricsWindowLength type) {
         switch (type) {
             case MINUTES_5:
                 return 1000 * 60 * 5;

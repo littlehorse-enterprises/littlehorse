@@ -27,9 +27,9 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
 
     public ReasonCase type;
 
-    public ThreadRun threadRun;
+    public ThreadRunModel threadRunModel;
 
-    public WfRun wfRun;
+    public WfRunModel wfRunModel;
 
     public Class<ThreadHaltReasonPb> getProtoBaseClass() {
         return ThreadHaltReasonPb.class;
@@ -56,7 +56,7 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
     }
 
     public boolean isResolved() {
-        return getSubHaltReason().isResolved(threadRun.wfRun);
+        return getSubHaltReason().isResolved(threadRunModel.wfRunModel);
     }
 
     public ThreadHaltReasonPb.Builder toProto() {

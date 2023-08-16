@@ -86,41 +86,41 @@ private static final long serialVersionUID = 0L;
 
   public static final int INPUT_VARS_FIELD_NUMBER = 2;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.VariableDefPb> inputVars_;
+  private java.util.List<io.littlehorse.sdk.common.proto.VariableDef> inputVars_;
   /**
-   * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+   * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.VariableDefPb> getInputVarsList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.VariableDef> getInputVarsList() {
     return inputVars_;
   }
   /**
-   * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+   * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableDefPbOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableDefOrBuilder> 
       getInputVarsOrBuilderList() {
     return inputVars_;
   }
   /**
-   * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+   * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   @java.lang.Override
   public int getInputVarsCount() {
     return inputVars_.size();
   }
   /**
-   * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+   * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableDefPb getInputVars(int index) {
+  public io.littlehorse.sdk.common.proto.VariableDef getInputVars(int index) {
     return inputVars_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+   * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableDefPbOrBuilder getInputVarsOrBuilder(
+  public io.littlehorse.sdk.common.proto.VariableDefOrBuilder getInputVarsOrBuilder(
       int index) {
     return inputVars_.get(index);
   }
@@ -547,9 +547,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 18: {
-              io.littlehorse.sdk.common.proto.VariableDefPb m =
+              io.littlehorse.sdk.common.proto.VariableDef m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.VariableDefPb.parser(),
+                      io.littlehorse.sdk.common.proto.VariableDef.parser(),
                       extensionRegistry);
               if (inputVarsBuilder_ == null) {
                 ensureInputVarsIsMutable();
@@ -655,22 +655,22 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.VariableDefPb> inputVars_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.VariableDef> inputVars_ =
       java.util.Collections.emptyList();
     private void ensureInputVarsIsMutable() {
       if (!((bitField0_ & 0x00000002) != 0)) {
-        inputVars_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableDefPb>(inputVars_);
+        inputVars_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableDef>(inputVars_);
         bitField0_ |= 0x00000002;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableDefPb, io.littlehorse.sdk.common.proto.VariableDefPb.Builder, io.littlehorse.sdk.common.proto.VariableDefPbOrBuilder> inputVarsBuilder_;
+        io.littlehorse.sdk.common.proto.VariableDef, io.littlehorse.sdk.common.proto.VariableDef.Builder, io.littlehorse.sdk.common.proto.VariableDefOrBuilder> inputVarsBuilder_;
 
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.VariableDefPb> getInputVarsList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.VariableDef> getInputVarsList() {
       if (inputVarsBuilder_ == null) {
         return java.util.Collections.unmodifiableList(inputVars_);
       } else {
@@ -678,7 +678,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public int getInputVarsCount() {
       if (inputVarsBuilder_ == null) {
@@ -688,9 +688,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableDefPb getInputVars(int index) {
+    public io.littlehorse.sdk.common.proto.VariableDef getInputVars(int index) {
       if (inputVarsBuilder_ == null) {
         return inputVars_.get(index);
       } else {
@@ -698,10 +698,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder setInputVars(
-        int index, io.littlehorse.sdk.common.proto.VariableDefPb value) {
+        int index, io.littlehorse.sdk.common.proto.VariableDef value) {
       if (inputVarsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -715,10 +715,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder setInputVars(
-        int index, io.littlehorse.sdk.common.proto.VariableDefPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.VariableDef.Builder builderForValue) {
       if (inputVarsBuilder_ == null) {
         ensureInputVarsIsMutable();
         inputVars_.set(index, builderForValue.build());
@@ -729,9 +729,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
-    public Builder addInputVars(io.littlehorse.sdk.common.proto.VariableDefPb value) {
+    public Builder addInputVars(io.littlehorse.sdk.common.proto.VariableDef value) {
       if (inputVarsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -745,10 +745,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder addInputVars(
-        int index, io.littlehorse.sdk.common.proto.VariableDefPb value) {
+        int index, io.littlehorse.sdk.common.proto.VariableDef value) {
       if (inputVarsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -762,10 +762,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder addInputVars(
-        io.littlehorse.sdk.common.proto.VariableDefPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableDef.Builder builderForValue) {
       if (inputVarsBuilder_ == null) {
         ensureInputVarsIsMutable();
         inputVars_.add(builderForValue.build());
@@ -776,10 +776,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder addInputVars(
-        int index, io.littlehorse.sdk.common.proto.VariableDefPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.VariableDef.Builder builderForValue) {
       if (inputVarsBuilder_ == null) {
         ensureInputVarsIsMutable();
         inputVars_.add(index, builderForValue.build());
@@ -790,10 +790,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder addAllInputVars(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableDefPb> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableDef> values) {
       if (inputVarsBuilder_ == null) {
         ensureInputVarsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -805,7 +805,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder clearInputVars() {
       if (inputVarsBuilder_ == null) {
@@ -818,7 +818,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
     public Builder removeInputVars(int index) {
       if (inputVarsBuilder_ == null) {
@@ -831,16 +831,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableDefPb.Builder getInputVarsBuilder(
+    public io.littlehorse.sdk.common.proto.VariableDef.Builder getInputVarsBuilder(
         int index) {
       return getInputVarsFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableDefPbOrBuilder getInputVarsOrBuilder(
+    public io.littlehorse.sdk.common.proto.VariableDefOrBuilder getInputVarsOrBuilder(
         int index) {
       if (inputVarsBuilder_ == null) {
         return inputVars_.get(index);  } else {
@@ -848,9 +848,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableDefPbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableDefOrBuilder> 
          getInputVarsOrBuilderList() {
       if (inputVarsBuilder_ != null) {
         return inputVarsBuilder_.getMessageOrBuilderList();
@@ -859,33 +859,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableDefPb.Builder addInputVarsBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableDef.Builder addInputVarsBuilder() {
       return getInputVarsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.VariableDefPb.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.VariableDef.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableDefPb.Builder addInputVarsBuilder(
+    public io.littlehorse.sdk.common.proto.VariableDef.Builder addInputVarsBuilder(
         int index) {
       return getInputVarsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.VariableDefPb.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.VariableDef.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.VariableDefPb.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.VariableDef.Builder> 
          getInputVarsBuilderList() {
       return getInputVarsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableDefPb, io.littlehorse.sdk.common.proto.VariableDefPb.Builder, io.littlehorse.sdk.common.proto.VariableDefPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableDef, io.littlehorse.sdk.common.proto.VariableDef.Builder, io.littlehorse.sdk.common.proto.VariableDefOrBuilder> 
         getInputVarsFieldBuilder() {
       if (inputVarsBuilder_ == null) {
         inputVarsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableDefPb, io.littlehorse.sdk.common.proto.VariableDefPb.Builder, io.littlehorse.sdk.common.proto.VariableDefPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.VariableDef, io.littlehorse.sdk.common.proto.VariableDef.Builder, io.littlehorse.sdk.common.proto.VariableDefOrBuilder>(
                 inputVars_,
                 ((bitField0_ & 0x00000002) != 0),
                 getParentForChildren(),

@@ -18,7 +18,7 @@ enum LHResponseCodePb {
   REPORTED_BUT_NOT_PROCESSED = 6;
 }
 
-enum LHStatusPb {
+enum LHStatus {
   STARTING = 0;
   RUNNING = 1;
   COMPLETED = 2;
@@ -62,13 +62,13 @@ message GetLatestUserTaskDefPb {
 message GetWfSpecReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
-  optional WfSpecPb result = 3;
+  optional WfSpec result = 3;
 }
 
 message PutWfSpecPb {
   string name = 1;
   reserved 2, 3, 4;
-  map<string, ThreadSpecPb> thread_specs = 5;
+  map<string, ThreadSpec> thread_specs = 5;
   string entrypoint_thread_name = 6;
   optional int32 retention_hours = 7;
 }
@@ -76,7 +76,7 @@ message PutWfSpecPb {
 message PutWfSpecReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
-  optional WfSpecPb result = 3;
+  optional WfSpec result = 3;
 }
 
 message GetTaskDefReplyPb {
@@ -87,7 +87,7 @@ message GetTaskDefReplyPb {
 
 message PutTaskDefPb {
   string name = 1;
-  repeated VariableDefPb input_vars = 2;
+  repeated VariableDef input_vars = 2;
 }
 
 message PutTaskDefReplyPb {
@@ -139,13 +139,13 @@ message GetExternalEventDefReplyPb {
 message GetWfRunReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
-  optional WfRunPb result = 3;
+  optional WfRun result = 3;
 }
 
 message GetNodeRunReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
-  optional NodeRunPb result = 3;
+  optional NodeRun result = 3;
 }
 
 message GetTaskRunReplyPb {
@@ -176,7 +176,7 @@ message PutExternalEventPb {
   string wf_run_id = 1;
   string external_event_def_name = 2;
   optional string guid = 3;
-  VariableValuePb content = 5;
+  VariableValue content = 5;
   optional int32 thread_run_number = 6;
   optional int32 node_run_position = 7;
   reserved 4, 8;
@@ -197,7 +197,7 @@ message PutExternalEventReplyPb {
 message RunWfPb {
   string wf_spec_name = 1;
   optional int32 wf_spec_version = 2;
-  map<string, VariableValuePb> variables = 3;
+  map<string, VariableValue> variables = 3;
   optional string id = 4;
 }
 
@@ -214,7 +214,7 @@ message SearchWfRunPb {
 
   message StatusAndSpecPb {
     string wf_spec_name = 1;
-    LHStatusPb status = 2;
+    LHStatus status = 2;
     int32 wf_spec_version = 3;
     optional google.protobuf.Timestamp earliest_start = 4;
     optional google.protobuf.Timestamp latest_start = 5;
@@ -226,7 +226,7 @@ message SearchWfRunPb {
   }
   message StatusAndNamePb {
     string wf_spec_name = 1;
-    LHStatusPb status = 2;
+    LHStatus status = 2;
     optional google.protobuf.Timestamp earliest_start = 3;
     optional google.protobuf.Timestamp latest_start = 4;
   }
@@ -322,7 +322,7 @@ message SearchVariablePb {
   optional int32 limit = 2;
 
   message NameAndValuePb {
-    VariableValuePb value = 1;
+    VariableValue value = 1;
     optional int32 wf_spec_version = 2;
     string var_name = 3;
     string wf_spec_name = 4;
@@ -429,7 +429,7 @@ message ListNodeRunsPb {
 message ListNodeRunsReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
-  repeated NodeRunPb results = 3;
+  repeated NodeRun results = 3;
 }
 
 message ListVariablesPb {
@@ -523,8 +523,8 @@ message ReportTaskRunPb {
   TaskRunIdPb task_run_id = 1;
   google.protobuf.Timestamp time = 2;
   TaskStatusPb status = 3;
-  optional VariableValuePb output = 4;
-  optional VariableValuePb log_output = 5;
+  optional VariableValue output = 4;
+  optional VariableValue log_output = 5;
   int32 attempt_number = 6;
 }
 
@@ -596,32 +596,32 @@ message HealthCheckReplyPb {
 
 message TaskDefMetricsQueryPb {
   google.protobuf.Timestamp window_start = 1;
-  MetricsWindowLengthPb window_type = 2;
+  MetricsWindowLength window_type = 2;
   optional string task_def_name = 3;
 }
 
 message TaskDefMetricsReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
-  optional TaskDefMetricsPb result = 3;
+  optional TaskDefMetrics result = 3;
 }
 
 message ListTaskMetricsPb {
   google.protobuf.Timestamp last_window_start = 1;
   int32 num_windows = 2;
   string task_def_name = 3;
-  MetricsWindowLengthPb window_length = 4;
+  MetricsWindowLength window_length = 4;
 }
 
 message ListTaskMetricsReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
-  repeated TaskDefMetricsPb results = 3;
+  repeated TaskDefMetrics results = 3;
 }
 
 message WfSpecMetricsQueryPb {
   google.protobuf.Timestamp window_start = 1;
-  MetricsWindowLengthPb window_type = 2;
+  MetricsWindowLength window_type = 2;
   string wf_spec_name = 3;
   int32 wf_spec_version = 4;
 }
@@ -629,7 +629,7 @@ message WfSpecMetricsQueryPb {
 message WfSpecMetricsReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
-  optional WfSpecMetricsPb result = 3;
+  optional WfSpecMetrics result = 3;
 }
 
 message ListWfMetricsPb {
@@ -637,13 +637,13 @@ message ListWfMetricsPb {
   int32 num_windows = 2;
   string wf_spec_name = 3;
   int32 wf_spec_version = 4;
-  MetricsWindowLengthPb window_length = 5;
+  MetricsWindowLength window_length = 5;
 }
 
 message ListWfMetricsReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
-  repeated WfSpecMetricsPb results = 3;
+  repeated WfSpecMetrics results = 3;
 }
 
 service LHPublicApi {
@@ -713,7 +713,7 @@ service LHPublicApi {
 }
 
 // Variable
-enum VariableTypePb {
+enum VariableType {
   JSON_OBJ = 0;
   JSON_ARR = 1;
   DOUBLE = 2;
@@ -724,8 +724,8 @@ enum VariableTypePb {
   NULL = 7;
 }
 
-message VariableValuePb {
-  VariableTypePb type = 1;
+message VariableValue {
+  VariableType type = 1;
   optional string json_obj = 2;
   optional string json_arr = 3;
   optional double double = 4;
@@ -742,7 +742,7 @@ message VariableIdPb {
 }
 
 message VariablePb {
-  VariableValuePb value = 1;
+  VariableValue value = 1;
   string wf_run_id = 2;
   int32 thread_run_number = 3;
   string name = 4;
@@ -751,7 +751,7 @@ message VariablePb {
 
 message VarNameAndValPb {
   string var_name = 1;
-  VariableValuePb value = 2;
+  VariableValue value = 2;
 }
 
 // External Event
@@ -766,7 +766,7 @@ message ExternalEventPb {
   string external_event_def_name = 2;
   string guid = 3;
   google.protobuf.Timestamp created_at = 4;
-  VariableValuePb content = 5;
+  VariableValue content = 5;
   optional int32 thread_run_number = 6;
   optional int32 node_run_position = 7;
   bool claimed = 8;
@@ -776,15 +776,15 @@ message WfRunIdPb {
   string id = 1;
 }
 
-message WfRunPb {
+message WfRun {
   string id = 1;
   string wf_spec_name = 2;
   int32 wf_spec_version = 3;
-  LHStatusPb status = 4;
+  LHStatus status = 4;
 
   google.protobuf.Timestamp start_time = 6;
   optional google.protobuf.Timestamp end_time = 7;
-  repeated ThreadRunPb thread_runs = 8;
+  repeated ThreadRun thread_runs = 8;
 
   repeated PendingInterruptPb pending_interrupts = 9;
   repeated PendingFailureHandlerPb pending_failures = 10;
@@ -797,11 +797,11 @@ enum ThreadTypePb {
   FAILURE_HANDLER = 3;
 }
 
-message ThreadRunPb {
+message ThreadRun {
   string wf_run_id = 1;
   int32 number = 2;
 
-  LHStatusPb status = 3;
+  LHStatus status = 3;
   string wf_spec_name = 4;
   int32 wf_spec_version = 5;
   string thread_spec_name = 6;
@@ -891,12 +891,12 @@ message UserTaskNodeRunPb {
   optional UserTaskRunIdPb user_task_run_id = 1;
 }
 
-message NodeRunPb {
+message NodeRun {
   string wf_run_id = 1;
   int32 thread_run_number = 2;
   int32 position = 3;
 
-  LHStatusPb status = 6;
+  LHStatus status = 6;
 
   google.protobuf.Timestamp arrival_time = 7;
   optional google.protobuf.Timestamp end_time = 8;
@@ -924,12 +924,12 @@ message NodeRunPb {
 message FailurePb {
   string failure_name = 1;
   string message = 2;
-  optional VariableValuePb content = 3;
+  optional VariableValue content = 3;
 }
 
 message TaskAttemptPb {
-  optional VariableValuePb output = 1;
-  optional VariableValuePb log_output = 2;
+  optional VariableValue output = 1;
+  optional VariableValue log_output = 2;
 
   optional google.protobuf.Timestamp schedule_time = 3;
   optional google.protobuf.Timestamp start_time = 4;
@@ -993,7 +993,7 @@ message StartThreadRunPb {
 message WaitForThreadsRunPb {
   message WaitForThreadPb {
     optional google.protobuf.Timestamp thread_end_time = 1;
-    LHStatusPb thread_status = 2;
+    LHStatus thread_status = 2;
     int32 thread_run_number = 3;
   }
 
@@ -1055,7 +1055,7 @@ message VariableAssignmentPb {
   optional string json_path = 1;
   oneof source {
     string variable_name = 2;
-    VariableValuePb literal_value = 3;
+    VariableValue literal_value = 3;
     FormatStringPb format_string = 4;
   }
 }
@@ -1069,7 +1069,7 @@ message VariableMutationPb {
   VariableMutationTypePb operation = 3;
   oneof rhs_value {
     VariableAssignmentPb source_variable = 4;
-    VariableValuePb literal_value = 5;
+    VariableValue literal_value = 5;
     NodeOutputSourcePb node_output = 6;
   }
 }
@@ -1085,7 +1085,7 @@ message SleepNodePb {
   }
 }
 
-message NodePb {
+message Node {
   repeated EdgePb outgoing_edges = 1;
   repeated VariableMutationPb variable_mutations = 2;
   repeated FailureHandlerDefPb failure_handlers = 4;
@@ -1104,7 +1104,7 @@ message NodePb {
 
 message UserTaskFieldPb {
   string name = 1;
-  VariableTypePb type = 2;
+  VariableType type = 2;
   optional string description = 3;
   string display_name = 4;
   bool required = 5;
@@ -1287,7 +1287,7 @@ message CompleteUserTaskRunReplyPb {
 
 message UserTaskFieldResultPb {
   string name = 1;
-  optional VariableValuePb value = 2;
+  optional VariableValue value = 2;
 }
 
 message UserTaskResultPb {
@@ -1354,22 +1354,22 @@ message FailureDefPb {
   optional VariableAssignmentPb content = 3;
 }
 
-enum IndexTypePb {
+enum IndexType {
   LOCAL_INDEX = 0;
   REMOTE_INDEX = 1;
 }
 
-message VariableDefPb {
-  VariableTypePb type = 1;
+message VariableDef {
+  VariableType type = 1;
   string name = 2;
-  optional IndexTypePb index_type = 3;
-  repeated JsonIndexPb json_indexes = 4;
-  VariableValuePb default_value = 5;
+  optional IndexType index_type = 3;
+  repeated JsonIndex json_indexes = 4;
+  VariableValue default_value = 5;
 }
 
-message JsonIndexPb {
+message JsonIndex {
   string path = 1;
-  IndexTypePb index_type = 2;
+  IndexType index_type = 2;
 }
 
 message InterruptDefPb {
@@ -1377,31 +1377,31 @@ message InterruptDefPb {
   string handler_spec_name = 2;
 }
 
-message ThreadSpecPb {
-  map<string, NodePb> nodes = 1;
-  repeated VariableDefPb variable_defs = 2;
+message ThreadSpec {
+  map<string, Node> nodes = 1;
+  repeated VariableDef variable_defs = 2;
   repeated InterruptDefPb interrupt_defs = 3;
 }
 
-message WfSpecPb {
+message WfSpec {
   string name = 1;
   int32 version = 2;
   google.protobuf.Timestamp created_at = 3;
-  LHStatusPb status = 4;
+  LHStatus status = 4;
 
-  map<string, ThreadSpecPb> thread_specs = 5;
+  map<string, ThreadSpec> thread_specs = 5;
   string entrypoint_thread_name = 6;
   int32 retention_hours = 7;
 }
 
 // TaskDef
 message OutputSchemaPb {
-  VariableTypePb output_type = 1;
+  VariableType output_type = 1;
 }
 
 message TaskDefPb {
   string name = 1;
-  repeated VariableDefPb input_vars = 2;
+  repeated VariableDef input_vars = 2;
   google.protobuf.Timestamp created_at = 3;
 }
 
@@ -1417,21 +1417,21 @@ message ExternalEventDefPb {
 }
 
 // Metrics
-enum MetricsWindowLengthPb {
+enum MetricsWindowLength {
   MINUTES_5 = 0;
   HOURS_2 = 1;
   DAYS_1 = 2;
 }
 
-message TaskDefMetricsIdPb {
+message TaskDefMetricsId {
   google.protobuf.Timestamp window_start = 1;
-  MetricsWindowLengthPb window_type = 2;
+  MetricsWindowLength window_type = 2;
   string task_def_name = 3;
 }
 
-message TaskDefMetricsPb {
+message TaskDefMetrics {
   google.protobuf.Timestamp window_start = 1;
-  MetricsWindowLengthPb type = 2;
+  MetricsWindowLength type = 2;
   string taskDefName = 3;
   int64 schedule_to_start_max = 4;
   int64 schedule_to_start_avg = 5;
@@ -1443,16 +1443,16 @@ message TaskDefMetricsPb {
   int64 total_scheduled = 11;
 }
 
-message WfSpecMetricsIdPb {
+message WfSpecMetricsId {
   google.protobuf.Timestamp window_start = 1;
-  MetricsWindowLengthPb window_type = 2;
+  MetricsWindowLength window_type = 2;
   string wf_spec_name = 3;
   int32 wf_spec_version = 4;
 }
 
-message WfSpecMetricsPb {
+message WfSpecMetrics {
   google.protobuf.Timestamp window_start = 1;
-  MetricsWindowLengthPb type = 2;
+  MetricsWindowLength type = 2;
   string wfSpecName = 3;
   int32 wfSpecVersion = 4;
   int64 total_started = 5;

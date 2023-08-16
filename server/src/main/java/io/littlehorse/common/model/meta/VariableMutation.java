@@ -3,12 +3,12 @@ package io.littlehorse.common.model.meta;
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.wfrun.ThreadRun;
-import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.model.wfrun.ThreadRunModel;
+import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.sdk.common.proto.VariableMutationPb;
 import io.littlehorse.sdk.common.proto.VariableMutationPb.RhsValueCase;
 import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +23,7 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
 
     public RhsValueCase rhsValueType;
     public VariableAssignment rhsSourceVariable;
-    public VariableValue rhsLiteralValue;
+    public VariableValueModel rhsLiteralValue;
     public NodeOutputSource nodeOutputSource;
 
     public Class<VariableMutationPb> getProtoBaseClass() {
@@ -64,7 +64,7 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         rhsValueType = p.getRhsValueCase();
         switch (rhsValueType) {
             case LITERAL_VALUE:
-                rhsLiteralValue = VariableValue.fromProto(p.getLiteralValue());
+                rhsLiteralValue = VariableValueModel.fromProto(p.getLiteralValue());
                 break;
             case SOURCE_VARIABLE:
                 rhsSourceVariable =
@@ -84,31 +84,31 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         return out;
     }
 
-    public VariableValue getLhsValue(
-        ThreadRun thread,
-        Map<String, VariableValue> txnCache
+    public VariableValueModel getLhsValue(
+        ThreadRunModel thread,
+        Map<String, VariableValueModel> txnCache
     ) throws LHVarSubError {
         return getVarValFromThreadInTxn(this.lhsName, thread, txnCache);
     }
 
-    private VariableValue getVarValFromThreadInTxn(
+    private VariableValueModel getVarValFromThreadInTxn(
         String varName,
-        ThreadRun thread,
-        Map<String, VariableValue> txnCache
+        ThreadRunModel thread,
+        Map<String, VariableValueModel> txnCache
     ) throws LHVarSubError {
-        VariableValue lhsVar = txnCache.get(this.lhsName);
+        VariableValueModel lhsVar = txnCache.get(this.lhsName);
         if (lhsVar == null) {
             lhsVar = thread.getVariable(this.lhsName).value;
         }
         return lhsVar.getCopy();
     }
 
-    public VariableValue getRhsValue(
-        ThreadRun thread,
-        Map<String, VariableValue> txnCache,
-        VariableValue nodeOutput
+    public VariableValueModel getRhsValue(
+        ThreadRunModel thread,
+        Map<String, VariableValueModel> txnCache,
+        VariableValueModel nodeOutput
     ) throws LHVarSubError {
-        VariableValue out = null;
+        VariableValueModel out = null;
 
         if (rhsValueType == RhsValueCase.LITERAL_VALUE) {
             out = rhsLiteralValue;
@@ -126,26 +126,29 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
     }
 
     public void execute(
-        ThreadRun thread,
-        Map<String, VariableValue> txnCache,
-        VariableValue nodeOutput
+        ThreadRunModel thread,
+        Map<String, VariableValueModel> txnCache,
+        VariableValueModel nodeOutput
     ) throws LHVarSubError {
-        VariableValue lhsVal = getLhsValue(thread, txnCache);
-        VariableValue rhsVal = getRhsValue(thread, txnCache, nodeOutput);
-        VariableTypePb lhsRealType = thread.getThreadSpec().getVarDef(lhsName).type;
+        VariableValueModel lhsVal = getLhsValue(thread, txnCache);
+        VariableValueModel rhsVal = getRhsValue(thread, txnCache, nodeOutput);
+        VariableType lhsRealType = thread
+            .getThreadSpecModel()
+            .getVarDef(lhsName)
+            .type;
 
         try {
             // NOTE Part 2: see below
             if (lhsJsonPath != null) {
-                VariableValue lhsJsonPathed = lhsVal.jsonPath(lhsJsonPath);
-                VariableTypePb typeToCoerceTo = lhsJsonPathed.type;
-                VariableValue thingToPut = lhsJsonPathed.operate(
+                VariableValueModel lhsJsonPathed = lhsVal.jsonPath(lhsJsonPath);
+                VariableType typeToCoerceTo = lhsJsonPathed.type;
+                VariableValueModel thingToPut = lhsJsonPathed.operate(
                     operation,
                     rhsVal,
                     typeToCoerceTo
                 );
 
-                VariableValue currentLhs = getVarValFromThreadInTxn(
+                VariableValueModel currentLhs = getVarValFromThreadInTxn(
                     lhsName,
                     thread,
                     txnCache
@@ -154,7 +157,7 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
                 currentLhs.updateJsonViaJsonPath(lhsJsonPath, thingToPut.getVal());
                 txnCache.put(lhsName, currentLhs);
             } else {
-                VariableTypePb typeToCoerceTo = lhsRealType;
+                VariableType typeToCoerceTo = lhsRealType;
                 txnCache.put(
                     lhsName,
                     lhsVal.operate(operation, rhsVal, typeToCoerceTo)

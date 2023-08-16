@@ -20,11 +20,11 @@ public interface PutWfSpecPbOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   int getThreadSpecsCount();
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   boolean containsThreadSpecs(
       java.lang.String key);
@@ -32,25 +32,25 @@ public interface PutWfSpecPbOrBuilder extends
    * Use {@link #getThreadSpecsMap()} instead.
    */
   @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec>
   getThreadSpecs();
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec>
   getThreadSpecsMap();
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   /* nullable */
-io.littlehorse.sdk.common.proto.ThreadSpecPb getThreadSpecsOrDefault(
+io.littlehorse.sdk.common.proto.ThreadSpec getThreadSpecsOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.sdk.common.proto.ThreadSpecPb defaultValue);
+io.littlehorse.sdk.common.proto.ThreadSpec defaultValue);
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
-  io.littlehorse.sdk.common.proto.ThreadSpecPb getThreadSpecsOrThrow(
+  io.littlehorse.sdk.common.proto.ThreadSpec getThreadSpecsOrThrow(
       java.lang.String key);
 
   /**

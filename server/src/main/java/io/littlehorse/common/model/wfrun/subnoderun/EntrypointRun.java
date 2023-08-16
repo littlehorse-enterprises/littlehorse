@@ -2,10 +2,10 @@ package io.littlehorse.common.model.wfrun.subnoderun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
-import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.sdk.common.proto.EntrypointRunPb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.Date;
 
 public class EntrypointRun extends SubNodeRun<EntrypointRunPb> {
@@ -32,9 +32,9 @@ public class EntrypointRun extends SubNodeRun<EntrypointRunPb> {
     }
 
     public void arrive(Date time) {
-        nodeRun.setStatus(LHStatusPb.COMPLETED);
-        VariableValue result = new VariableValue();
-        result.setType(VariableTypePb.NULL);
-        nodeRun.complete(result, time);
+        nodeRunModel.setStatus(LHStatus.COMPLETED);
+        VariableValueModel result = new VariableValueModel();
+        result.setType(VariableType.NULL);
+        nodeRunModel.complete(result, time);
     }
 }

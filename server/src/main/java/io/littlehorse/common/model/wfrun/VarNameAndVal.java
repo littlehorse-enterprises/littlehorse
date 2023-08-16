@@ -7,11 +7,11 @@ import io.littlehorse.sdk.common.proto.VarNameAndValPb;
 public class VarNameAndVal extends LHSerializable<VarNameAndValPb> {
 
     String varName;
-    VariableValue value;
+    VariableValueModel value;
 
     public VarNameAndVal() {}
 
-    public VarNameAndVal(String name, VariableValue val) {
+    public VarNameAndVal(String name, VariableValueModel val) {
         this.varName = name;
         this.value = val;
     }
@@ -31,6 +31,6 @@ public class VarNameAndVal extends LHSerializable<VarNameAndValPb> {
     public void initFrom(Message proto) {
         VarNameAndValPb p = (VarNameAndValPb) proto;
         varName = p.getVarName();
-        value = VariableValue.fromProto(p.getValue());
+        value = VariableValueModel.fromProto(p.getValue());
     }
 }

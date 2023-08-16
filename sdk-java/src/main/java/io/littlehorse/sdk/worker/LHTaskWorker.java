@@ -7,7 +7,7 @@ import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.TaskDefPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
@@ -28,14 +28,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LHTaskWorker implements Closeable {
 
-    public static HashMap<Class<?>, VariableTypePb> javaTypeToLHType = new HashMap<>() {
+    public static HashMap<Class<?>, VariableType> javaTypeToLHType = new HashMap<>() {
         {
-            put(Integer.class, VariableTypePb.INT);
-            put(Long.class, VariableTypePb.INT);
-            put(Boolean.class, VariableTypePb.BOOL);
-            put(Double.class, VariableTypePb.DOUBLE);
-            put(byte[].class, VariableTypePb.BYTES);
-            put(String.class, VariableTypePb.STR);
+            put(Integer.class, VariableType.INT);
+            put(Long.class, VariableType.INT);
+            put(Boolean.class, VariableType.BOOL);
+            put(Double.class, VariableType.DOUBLE);
+            put(byte[].class, VariableType.BYTES);
+            put(String.class, VariableType.STR);
         }
     };
 

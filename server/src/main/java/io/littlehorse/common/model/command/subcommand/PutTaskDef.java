@@ -7,18 +7,18 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefReply;
 import io.littlehorse.common.model.meta.TaskDef;
-import io.littlehorse.common.model.meta.VariableDef;
+import io.littlehorse.common.model.meta.VariableDefModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.PutTaskDefPb;
-import io.littlehorse.sdk.common.proto.VariableDefPb;
+import io.littlehorse.sdk.common.proto.VariableDef;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PutTaskDef extends SubCommand<PutTaskDefPb> {
 
     public String name;
-    public List<VariableDef> inputVars;
+    public List<VariableDefModel> inputVars;
 
     public String getPartitionKey() {
         return LHConstants.META_PARTITION_KEY;
@@ -36,7 +36,7 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
         PutTaskDefPb.Builder out = PutTaskDefPb.newBuilder();
         out.setName(name);
 
-        for (VariableDef entry : inputVars) {
+        for (VariableDefModel entry : inputVars) {
             out.addInputVars(entry.toProto());
         }
 
@@ -46,8 +46,8 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
     public void initFrom(Message proto) {
         PutTaskDefPb p = (PutTaskDefPb) proto;
         name = p.getName();
-        for (VariableDefPb entry : p.getInputVarsList()) {
-            inputVars.add(VariableDef.fromProto(entry));
+        for (VariableDef entry : p.getInputVarsList()) {
+            inputVars.add(VariableDefModel.fromProto(entry));
         }
     }
 

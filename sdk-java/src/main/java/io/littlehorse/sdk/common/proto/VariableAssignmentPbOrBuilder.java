@@ -42,19 +42,19 @@ public interface VariableAssignmentPbOrBuilder extends
       getVariableNameBytes();
 
   /**
-   * <code>.littlehorse.VariableValuePb literal_value = 3;</code>
+   * <code>.littlehorse.VariableValue literal_value = 3;</code>
    * @return Whether the literalValue field is set.
    */
   boolean hasLiteralValue();
   /**
-   * <code>.littlehorse.VariableValuePb literal_value = 3;</code>
+   * <code>.littlehorse.VariableValue literal_value = 3;</code>
    * @return The literalValue.
    */
-  io.littlehorse.sdk.common.proto.VariableValuePb getLiteralValue();
+  io.littlehorse.sdk.common.proto.VariableValue getLiteralValue();
   /**
-   * <code>.littlehorse.VariableValuePb literal_value = 3;</code>
+   * <code>.littlehorse.VariableValue literal_value = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getLiteralValueOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getLiteralValueOrBuilder();
 
   /**
    * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>

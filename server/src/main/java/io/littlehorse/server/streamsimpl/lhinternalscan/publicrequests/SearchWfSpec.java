@@ -5,7 +5,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
@@ -117,7 +117,7 @@ public class SearchWfSpec
                 .stream()
                 .map(Attribute::getEscapedKey)
                 .toList();
-            for (GetableIndex<? extends Getable<?>> indexConfiguration : new WfSpec()
+            for (GetableIndex<? extends Getable<?>> indexConfiguration : new WfSpecModel()
                 .getIndexConfigurations()) {
                 if (
                     indexConfiguration.searchAttributesMatch(attributes) &&

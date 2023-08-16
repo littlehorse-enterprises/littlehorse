@@ -5,7 +5,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.proto.ExternalEventNodeTimeoutPb;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;
@@ -46,15 +46,16 @@ public class ExternalEventTimeout extends SubCommand<ExternalEventNodeTimeoutPb>
     }
 
     public AbstractResponse<?> process(LHDAO dao, LHConfig config) {
-        WfRun wfRun = dao.getWfRun(wfRunId);
+        WfRunModel wfRunModel = dao.getWfRun(wfRunId);
 
-        if (wfRun == null) {
+        if (wfRunModel == null) {
             log.warn("Got an externalEventTimeout for missing wfRun {}", wfRunId);
             return null;
         }
 
-        wfRun.wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
-        wfRun.processExtEvtTimeout(this);
+        wfRunModel.wfSpecModel =
+            dao.getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
+        wfRunModel.processExtEvtTimeout(this);
 
         return null;
     }

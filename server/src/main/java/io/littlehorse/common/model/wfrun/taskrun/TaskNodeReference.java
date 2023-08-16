@@ -7,9 +7,9 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.Failure;
-import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.TaskAttempt;
-import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.sdk.common.proto.TaskNodeReferencePb;
 import io.littlehorse.sdk.common.proto.TaskStatusPb;
 import lombok.Getter;
@@ -49,19 +49,22 @@ public class TaskNodeReference extends TaskRunSubSource<TaskNodeReferencePb> {
     }
 
     public void onCompleted(TaskAttempt successfulAttept, LHDAO dao) {
-        NodeRun nodeRun = dao.getNodeRun(nodeRunId);
-        nodeRun.complete(successfulAttept.getOutput(), successfulAttept.getEndTime());
+        NodeRunModel nodeRunModel = dao.getNodeRun(nodeRunId);
+        nodeRunModel.complete(
+            successfulAttept.getOutput(),
+            successfulAttept.getEndTime()
+        );
     }
 
     public void onFailed(TaskAttempt lastFailure, LHDAO dao) {
-        NodeRun nodeRun = dao.getNodeRun(nodeRunId);
+        NodeRunModel nodeRunModel = dao.getNodeRun(nodeRunId);
 
         String message = getMessageFor(lastFailure.getStatus());
-        VariableValue stderr = lastFailure.getLogOutput();
+        VariableValueModel stderr = lastFailure.getLogOutput();
         if (stderr != null && stderr.getVal() != null) {
             message += ": " + stderr.getVal().toString();
         }
-        nodeRun.fail(
+        nodeRunModel.fail(
             new Failure(message, getFailureCodeFor(lastFailure.getStatus())),
             lastFailure.getEndTime()
         );

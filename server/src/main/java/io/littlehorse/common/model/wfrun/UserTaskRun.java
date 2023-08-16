@@ -10,7 +10,7 @@ import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.ReassignUserTask;
-import io.littlehorse.common.model.meta.Node;
+import io.littlehorse.common.model.meta.NodeModel;
 import io.littlehorse.common.model.meta.UserTaskNode;
 import io.littlehorse.common.model.meta.usertasks.UTActionTrigger;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
@@ -24,13 +24,13 @@ import io.littlehorse.common.proto.ReassignedUserTaskPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskEventPb;
 import io.littlehorse.sdk.common.proto.UserTaskFieldResultPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.time.LocalDateTime;
@@ -78,9 +78,13 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
 
     public UserTaskRun() {}
 
-    public UserTaskRun(UserTaskDef utd, UserTaskNode userTaskNode, NodeRun nodeRun) {
+    public UserTaskRun(
+        UserTaskDef utd,
+        UserTaskNode userTaskNode,
+        NodeRunModel nodeRunModel
+    ) {
         this.userTaskDefId = utd.getObjectId();
-        this.nodeRunId = nodeRun.getObjectId();
+        this.nodeRunId = nodeRunModel.getObjectId();
         this.id = new UserTaskRunId(nodeRunId.getWfRunId());
         this.scheduledTime = new Date();
         this.userTaskNode = userTaskNode;
@@ -169,14 +173,14 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     }
 
     public void onArrival(Date time) {
-        Node node = getNodeRun().getNode();
-        getNodeRun().status = LHStatusPb.RUNNING;
+        NodeModel node = getNodeRun().getNode();
+        getNodeRun().status = LHStatus.RUNNING;
         status = UserTaskRunStatusPb.UNASSIGNED;
 
         // Need to either assign to a user or to a group.
         try {
             if (node.userTaskNode.getNotes() != null) {
-                VariableValue notesVal = getNodeRun()
+                VariableValueModel notesVal = getNodeRun()
                     .getThreadRun()
                     .assignVariable(node.userTaskNode.getNotes())
                     .asStr();
@@ -214,16 +218,20 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         }
     }
 
-    private void assignToSpecificUser(Node node) throws LHVarSubError {
-        ThreadRun threadRun = getNodeRun().getThreadRun();
-        VariableValue userIdVal = threadRun.assignVariable(
+    private void assignToSpecificUser(NodeModel node) throws LHVarSubError {
+        ThreadRunModel threadRunModel = getNodeRun().getThreadRun();
+        VariableValueModel userIdVal = threadRunModel.assignVariable(
             node.userTaskNode.getUser().getUserId()
         );
-        VariableValue userGroupVal = node.userTaskNode.getUser().getUserGroup() !=
+        VariableValueModel userGroupVal = node.userTaskNode
+                .getUser()
+                .getUserGroup() !=
             null
-            ? threadRun.assignVariable(node.userTaskNode.getUser().getUserGroup())
+            ? threadRunModel.assignVariable(
+                node.userTaskNode.getUser().getUserGroup()
+            )
             : null;
-        if (userIdVal.type != VariableTypePb.STR) {
+        if (userIdVal.type != VariableType.STR) {
             throw new LHVarSubError(
                 null,
                 "VariableAssignment for specific user id should be STR!" +
@@ -244,12 +252,12 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         events.add(new UserTaskEvent(reassigned, new Date()));
     }
 
-    private void assignToGroup(Node node) throws LHVarSubError {
-        VariableValue groupIdVal = getNodeRun()
+    private void assignToGroup(NodeModel node) throws LHVarSubError {
+        VariableValueModel groupIdVal = getNodeRun()
             .getThreadRun()
             .assignVariable(node.userTaskNode.getUserGroup());
 
-        if (groupIdVal.type != VariableTypePb.STR) {
+        if (groupIdVal.type != VariableType.STR) {
             throw new LHVarSubError(
                 null,
                 "VariableAssignment for group id should be STR!" +
@@ -267,7 +275,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     }
 
     private void scheduleAction(UTActionTrigger trigger) throws LHVarSubError {
-        trigger.schedule(getNodeRun().getThreadRun().wfRun.getDao(), this);
+        trigger.schedule(getNodeRun().getThreadRun().wfRunModel.getDao(), this);
     }
 
     public UserGroup getUserGroup() {
@@ -335,7 +343,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         ownerCase = UserTaskRunPb.OwnerCase.USER;
         user = newUser;
         status = UserTaskRunStatusPb.ASSIGNED;
-        Node node = getNodeRun().getNode();
+        NodeModel node = getNodeRun().getNode();
         if (triggerAction) {
             for (UTActionTrigger action : node
                 .getUserTaskNode()
@@ -391,8 +399,8 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     public void processTaskCompletedEvent(CompleteUserTaskRun event)
         throws LHValidationError {
         if (
-            getNodeRun().getStatus() != LHStatusPb.STARTING &&
-            getNodeRun().getStatus() != LHStatusPb.RUNNING
+            getNodeRun().getStatus() != LHStatus.STARTING &&
+            getNodeRun().getStatus() != LHStatus.RUNNING
         ) {
             log.warn("Tried to complete a user task that was not running");
             return;
@@ -431,15 +439,17 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                 );
             }
             results.add(inputField);
-            VariableValue fieldVal = VariableValue.fromProto(inputField.getValue());
+            VariableValueModel fieldVal = VariableValueModel.fromProto(
+                inputField.getValue()
+            );
             raw.put(inputField.getName(), fieldVal.getVal());
         }
         validateMandatoryFieldsFromCompletedEvent(
             userTaskFieldsGroupedByName.values(),
             raw.keySet()
         );
-        VariableValue output = new VariableValue();
-        output.setType(VariableTypePb.JSON_OBJ);
+        VariableValueModel output = new VariableValueModel();
+        output.setType(VariableType.JSON_OBJ);
         output.setJsonObjVal(raw);
 
         getNodeRun().complete(output, new Date());
@@ -465,7 +475,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         }
     }
 
-    public NodeRun getNodeRun() {
+    public NodeRunModel getNodeRun() {
         return getDao().getNodeRun(nodeRunId);
     }
 
@@ -559,7 +569,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     }
 
     private VarNameAndVal getVarNameAndValue(String varName, String varValue) {
-        VariableValue variableValue = new VariableValue(varValue);
+        VariableValueModel variableValue = new VariableValueModel(varValue);
         return new VarNameAndVal(varName, variableValue);
     }
 

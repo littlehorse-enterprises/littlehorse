@@ -5,15 +5,15 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
-import io.littlehorse.common.model.metrics.TaskDefMetrics;
-import io.littlehorse.common.model.metrics.WfSpecMetrics;
+import io.littlehorse.common.model.metrics.TaskDefMetricsModel;
+import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
 import io.littlehorse.common.model.objectId.ExternalEventDefId;
 import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskDefId;
-import io.littlehorse.common.model.objectId.TaskDefMetricsId;
+import io.littlehorse.common.model.objectId.TaskDefMetricsIdModel;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.TaskWorkerGroupId;
 import io.littlehorse.common.model.objectId.UserTaskDefId;
@@ -21,12 +21,12 @@ import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
-import io.littlehorse.common.model.objectId.WfSpecMetricsId;
+import io.littlehorse.common.model.objectId.WfSpecMetricsIdModel;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
-import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
@@ -57,11 +57,11 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
     }
 
     public static GetableClassEnumPb getTypeEnum(Class<? extends Getable<?>> cls) {
-        if (cls.equals(WfRun.class)) {
+        if (cls.equals(WfRunModel.class)) {
             return GetableClassEnumPb.WF_RUN;
-        } else if (cls.equals(NodeRun.class)) {
+        } else if (cls.equals(NodeRunModel.class)) {
             return GetableClassEnumPb.NODE_RUN;
-        } else if (cls.equals(WfSpec.class)) {
+        } else if (cls.equals(WfSpecModel.class)) {
             return GetableClassEnumPb.WF_SPEC;
         } else if (cls.equals(TaskDef.class)) {
             return GetableClassEnumPb.TASK_DEF;
@@ -71,9 +71,9 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             return GetableClassEnumPb.EXTERNAL_EVENT_DEF;
         } else if (cls.equals(ExternalEvent.class)) {
             return GetableClassEnumPb.EXTERNAL_EVENT;
-        } else if (cls.equals(TaskDefMetrics.class)) {
+        } else if (cls.equals(TaskDefMetricsModel.class)) {
             return GetableClassEnumPb.TASK_DEF_METRICS;
-        } else if (cls.equals(WfSpecMetrics.class)) {
+        } else if (cls.equals(WfSpecMetricsModel.class)) {
             return GetableClassEnumPb.WF_SPEC_METRICS;
         } else if (cls.equals(TaskWorkerGroup.class)) {
             return GetableClassEnumPb.TASK_WORKER_GROUP;
@@ -93,11 +93,11 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
     public static Class<? extends Getable<?>> getCls(GetableClassEnumPb type) {
         switch (type) {
             case WF_RUN:
-                return WfRun.class;
+                return WfRunModel.class;
             case NODE_RUN:
-                return NodeRun.class;
+                return NodeRunModel.class;
             case WF_SPEC:
-                return WfSpec.class;
+                return WfSpecModel.class;
             case TASK_DEF:
                 return TaskDef.class;
             case VARIABLE:
@@ -107,9 +107,9 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             case EXTERNAL_EVENT:
                 return ExternalEvent.class;
             case TASK_DEF_METRICS:
-                return TaskDefMetrics.class;
+                return TaskDefMetricsModel.class;
             case WF_SPEC_METRICS:
-                return WfSpecMetrics.class;
+                return WfSpecMetricsModel.class;
             case TASK_WORKER_GROUP:
                 return TaskWorkerGroup.class;
             case USER_TASK_DEF:
@@ -145,9 +145,9 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             case EXTERNAL_EVENT:
                 return ExternalEventId.class;
             case TASK_DEF_METRICS:
-                return TaskDefMetricsId.class;
+                return TaskDefMetricsIdModel.class;
             case WF_SPEC_METRICS:
-                return WfSpecMetricsId.class;
+                return WfSpecMetricsIdModel.class;
             case TASK_WORKER_GROUP:
                 return TaskWorkerGroupId.class;
             case USER_TASK_DEF:

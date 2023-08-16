@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.util;
 
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import java.util.function.Supplier;
@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 
 @Slf4j
-public class WfSpecCache extends LHCache<WfSpecId, WfSpec> {
+public class WfSpecCache extends LHCache<WfSpecId, WfSpecModel> {
 
     private static final Pattern WFSPEC_KEY_PATTERN = Pattern.compile(
         "2\\/(?<name>.+)\\/(?<version>\\d+)"
@@ -33,18 +33,22 @@ public class WfSpecCache extends LHCache<WfSpecId, WfSpec> {
                 evictCache(cacheVersionKey);
                 evictCache(cacheLatestKey);
             } else {
-                WfSpec wfSpec = WfSpec.fromBytes(value.get(), WfSpec.class, null);
+                WfSpecModel wfSpecModel = WfSpecModel.fromBytes(
+                    value.get(),
+                    WfSpecModel.class,
+                    null
+                );
                 log.trace("Updating wfSpecCache for {}", cacheVersionKey);
-                updateCache(cacheVersionKey, wfSpec);
-                updateCache(cacheLatestKey, wfSpec);
+                updateCache(cacheVersionKey, wfSpecModel);
+                updateCache(cacheLatestKey, wfSpecModel);
             }
         }
     }
 
-    public WfSpec getOrCache(
+    public WfSpecModel getOrCache(
         String name,
         Integer version,
-        Supplier<WfSpec> cacheable
+        Supplier<WfSpecModel> cacheable
     ) {
         if (version == null) {
             version = LATEST_VERSION;

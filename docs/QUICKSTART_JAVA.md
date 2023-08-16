@@ -46,7 +46,7 @@ LHC_API_PORT=2023
 You can confirm that the Server is running via:
 
 ```
-lhctl search wfSpec
+lhctl search wfSpecModel
 ```
 
 Result:
@@ -77,10 +77,10 @@ Now let's inspect the result:
 
 ```
 # This call shows the result
-lhctl get wfRun <wf run id>
+lhctl get wfRunModel <wf run id>
 
 # Inspect the first NodeRun of the WfRun
-lhctl get nodeRun <wf run id> 0 1
+lhctl get nodeRunModel <wf run id> 0 1
 
 # This shows the task run information
 lhctl get taskRun <wfRunId> <taskGuid>

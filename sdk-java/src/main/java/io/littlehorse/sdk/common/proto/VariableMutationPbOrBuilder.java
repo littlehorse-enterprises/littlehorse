@@ -63,19 +63,19 @@ public interface VariableMutationPbOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getSourceVariableOrBuilder();
 
   /**
-   * <code>.littlehorse.VariableValuePb literal_value = 5;</code>
+   * <code>.littlehorse.VariableValue literal_value = 5;</code>
    * @return Whether the literalValue field is set.
    */
   boolean hasLiteralValue();
   /**
-   * <code>.littlehorse.VariableValuePb literal_value = 5;</code>
+   * <code>.littlehorse.VariableValue literal_value = 5;</code>
    * @return The literalValue.
    */
-  io.littlehorse.sdk.common.proto.VariableValuePb getLiteralValue();
+  io.littlehorse.sdk.common.proto.VariableValue getLiteralValue();
   /**
-   * <code>.littlehorse.VariableValuePb literal_value = 5;</code>
+   * <code>.littlehorse.VariableValue literal_value = 5;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getLiteralValueOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getLiteralValueOrBuilder();
 
   /**
    * <code>.littlehorse.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>

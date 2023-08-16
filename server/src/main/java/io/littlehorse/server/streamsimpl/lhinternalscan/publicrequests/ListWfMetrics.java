@@ -2,15 +2,15 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.metrics.WfSpecMetrics;
+import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ListWfMetricsPb;
 import io.littlehorse.sdk.common.proto.ListWfMetricsReplyPb;
-import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
-import io.littlehorse.sdk.common.proto.WfSpecMetricsPb;
+import io.littlehorse.sdk.common.proto.MetricsWindowLength;
+import io.littlehorse.sdk.common.proto.WfSpecMetrics;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
@@ -18,13 +18,13 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.List
 import java.util.Date;
 
 public class ListWfMetrics
-    extends PublicScanRequest<ListWfMetricsPb, ListWfMetricsReplyPb, WfSpecMetricsPb, WfSpecMetrics, ListWfMetricsReply> {
+    extends PublicScanRequest<ListWfMetricsPb, ListWfMetricsReplyPb, WfSpecMetrics, WfSpecMetricsModel, ListWfMetricsReply> {
 
     public Date lastWindowStart;
     public String wfSpecName;
     public int wfSpecVersion;
     public int numWindows;
-    public MetricsWindowLengthPb windowLength;
+    public MetricsWindowLength windowLength;
 
     public Class<ListWfMetricsPb> getProtoBaseClass() {
         return ListWfMetricsPb.class;
@@ -67,13 +67,13 @@ public class ListWfMetrics
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        String endKey = WfSpecMetrics.getObjectId(
+        String endKey = WfSpecMetricsModel.getObjectId(
             windowLength,
             lastWindowStart,
             wfSpecName,
             wfSpecVersion
         );
-        String startKey = WfSpecMetrics.getObjectId(
+        String startKey = WfSpecMetricsModel.getObjectId(
             windowLength,
             new Date(
                 lastWindowStart.getTime() -

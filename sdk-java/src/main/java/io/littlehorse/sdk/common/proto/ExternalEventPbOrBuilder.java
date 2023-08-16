@@ -59,19 +59,19 @@ public interface ExternalEventPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
-   * <code>.littlehorse.VariableValuePb content = 5;</code>
+   * <code>.littlehorse.VariableValue content = 5;</code>
    * @return Whether the content field is set.
    */
   boolean hasContent();
   /**
-   * <code>.littlehorse.VariableValuePb content = 5;</code>
+   * <code>.littlehorse.VariableValue content = 5;</code>
    * @return The content.
    */
-  io.littlehorse.sdk.common.proto.VariableValuePb getContent();
+  io.littlehorse.sdk.common.proto.VariableValue getContent();
   /**
-   * <code>.littlehorse.VariableValuePb content = 5;</code>
+   * <code>.littlehorse.VariableValue content = 5;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getContentOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getContentOrBuilder();
 
   /**
    * <code>optional int32 thread_run_number = 6;</code>

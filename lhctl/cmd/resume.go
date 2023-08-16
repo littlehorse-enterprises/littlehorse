@@ -12,7 +12,7 @@ var resumeCmd = &cobra.Command{
 	Use:   "resume",
 	Short: "Resume a resource.",
 	Long: `Resume a resource. Supported resources:
-- wfRun
+- wfRunModel
 `,
 }
 

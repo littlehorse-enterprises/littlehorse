@@ -2,12 +2,12 @@ package io.littlehorse.common.model.objectId;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.ObjectId;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunIdPb;
-import io.littlehorse.sdk.common.proto.WfRunPb;
 
-public class WfRunId extends ObjectId<WfRunIdPb, WfRunPb, WfRun> {
+public class WfRunId extends ObjectId<WfRunIdPb, WfRun, WfRunModel> {
 
     public String id;
 

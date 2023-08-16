@@ -8,18 +8,18 @@ import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
-import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.HostInfoPb;
@@ -47,11 +47,11 @@ public interface LHDAO extends LHGlobalMetaStores {
         return getCommand().time;
     }
 
-    public void putNodeRun(NodeRun nr);
+    public void putNodeRun(NodeRunModel nr);
 
-    public NodeRun getNodeRun(String wfRunId, int threadNum, int position);
+    public NodeRunModel getNodeRun(String wfRunId, int threadNum, int position);
 
-    public default NodeRun getNodeRun(NodeRunId id) {
+    public default NodeRunModel getNodeRun(NodeRunId id) {
         return getNodeRun(id.getWfRunId(), id.getThreadRunNumber(), id.getPosition());
     }
 
@@ -72,9 +72,9 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public void scheduleTimer(LHTimer timer);
 
-    public void saveWfRun(WfRun wfRun);
+    public void saveWfRun(WfRunModel wfRunModel);
 
-    public WfRun getWfRun(String id);
+    public WfRunModel getWfRun(String id);
 
     /*
      * Looks up a WfSpec. If in a partitioned environment (eg. KafkaStreams backend),
@@ -83,9 +83,9 @@ public interface LHDAO extends LHGlobalMetaStores {
      * - else, look up from the global store in an eventually-consistent manner.
      * That behavior should be transparent to the caller.
      */
-    public WfSpec getWfSpec(String name, Integer version);
+    public WfSpecModel getWfSpec(String name, Integer version);
 
-    public void putWfSpec(WfSpec spec);
+    public void putWfSpec(WfSpecModel spec);
 
     public TaskDef getTaskDef(String name);
 

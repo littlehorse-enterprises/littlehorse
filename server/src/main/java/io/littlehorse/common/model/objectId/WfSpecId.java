@@ -3,14 +3,14 @@ package io.littlehorse.common.model.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecIdPb;
-import io.littlehorse.sdk.common.proto.WfSpecPb;
 
 // Used by WfSpec, TaskDef, and ExternalEventDef
-public class WfSpecId extends ObjectId<WfSpecIdPb, WfSpecPb, WfSpec> {
+public class WfSpecId extends ObjectId<WfSpecIdPb, WfSpec, WfSpecModel> {
 
     public String name;
     public int version;

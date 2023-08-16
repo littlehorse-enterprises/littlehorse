@@ -100,19 +100,19 @@ private static final long serialVersionUID = 0L;
   public static final int THREAD_SPECS_FIELD_NUMBER = 5;
   private static final class ThreadSpecsDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
-        java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb> defaultEntry =
+        java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> defaultEntry =
             com.google.protobuf.MapEntry
-            .<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb>newDefaultInstance(
+            .<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec>newDefaultInstance(
                 io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutWfSpecPb_ThreadSpecsEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                io.littlehorse.sdk.common.proto.ThreadSpecPb.getDefaultInstance());
+                io.littlehorse.sdk.common.proto.ThreadSpec.getDefaultInstance());
   }
   @SuppressWarnings("serial")
   private com.google.protobuf.MapField<
-      java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb> threadSpecs_;
-  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb>
+      java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> threadSpecs_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec>
   internalGetThreadSpecs() {
     if (threadSpecs_ == null) {
       return com.google.protobuf.MapField.emptyMapField(
@@ -124,7 +124,7 @@ private static final long serialVersionUID = 0L;
     return internalGetThreadSpecs().getMap().size();
   }
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   @java.lang.Override
   public boolean containsThreadSpecs(
@@ -137,38 +137,38 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   @java.lang.Deprecated
-  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb> getThreadSpecs() {
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> getThreadSpecs() {
     return getThreadSpecsMap();
   }
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   @java.lang.Override
-  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb> getThreadSpecsMap() {
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> getThreadSpecsMap() {
     return internalGetThreadSpecs().getMap();
   }
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   @java.lang.Override
   public /* nullable */
-io.littlehorse.sdk.common.proto.ThreadSpecPb getThreadSpecsOrDefault(
+io.littlehorse.sdk.common.proto.ThreadSpec getThreadSpecsOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.sdk.common.proto.ThreadSpecPb defaultValue) {
+io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb> map =
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> map =
         internalGetThreadSpecs().getMap();
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
-   * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ThreadSpecPb getThreadSpecsOrThrow(
+  public io.littlehorse.sdk.common.proto.ThreadSpec getThreadSpecsOrThrow(
       java.lang.String key) {
     if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb> map =
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> map =
         internalGetThreadSpecs().getMap();
     if (!map.containsKey(key)) {
       throw new java.lang.IllegalArgumentException();
@@ -275,9 +275,9 @@ io.littlehorse.sdk.common.proto.ThreadSpecPb defaultValue) {
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
-    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb> entry
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> entry
          : internalGetThreadSpecs().getMap().entrySet()) {
-      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb>
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec>
       threadSpecs__ = ThreadSpecsDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
@@ -639,7 +639,7 @@ io.littlehorse.sdk.common.proto.ThreadSpecPb defaultValue) {
               break;
             } // case 10
             case 42: {
-              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb>
+              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec>
               threadSpecs__ = input.readMessage(
                   ThreadSpecsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               internalGetMutableThreadSpecs().getMutableMap().put(
@@ -747,8 +747,8 @@ io.littlehorse.sdk.common.proto.ThreadSpecPb defaultValue) {
     }
 
     private com.google.protobuf.MapField<
-        java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb> threadSpecs_;
-    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb>
+        java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> threadSpecs_;
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec>
         internalGetThreadSpecs() {
       if (threadSpecs_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
@@ -756,7 +756,7 @@ io.littlehorse.sdk.common.proto.ThreadSpecPb defaultValue) {
       }
       return threadSpecs_;
     }
-    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb>
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec>
         internalGetMutableThreadSpecs() {
       if (threadSpecs_ == null) {
         threadSpecs_ = com.google.protobuf.MapField.newMapField(
@@ -773,7 +773,7 @@ io.littlehorse.sdk.common.proto.ThreadSpecPb defaultValue) {
       return internalGetThreadSpecs().getMap().size();
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+     * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
      */
     @java.lang.Override
     public boolean containsThreadSpecs(
@@ -786,38 +786,38 @@ io.littlehorse.sdk.common.proto.ThreadSpecPb defaultValue) {
      */
     @java.lang.Override
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb> getThreadSpecs() {
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> getThreadSpecs() {
       return getThreadSpecsMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+     * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
      */
     @java.lang.Override
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb> getThreadSpecsMap() {
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> getThreadSpecsMap() {
       return internalGetThreadSpecs().getMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+     * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
      */
     @java.lang.Override
     public /* nullable */
-io.littlehorse.sdk.common.proto.ThreadSpecPb getThreadSpecsOrDefault(
+io.littlehorse.sdk.common.proto.ThreadSpec getThreadSpecsOrDefault(
         java.lang.String key,
         /* nullable */
-io.littlehorse.sdk.common.proto.ThreadSpecPb defaultValue) {
+io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb> map =
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> map =
           internalGetThreadSpecs().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+     * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ThreadSpecPb getThreadSpecsOrThrow(
+    public io.littlehorse.sdk.common.proto.ThreadSpec getThreadSpecsOrThrow(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb> map =
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> map =
           internalGetThreadSpecs().getMap();
       if (!map.containsKey(key)) {
         throw new java.lang.IllegalArgumentException();
@@ -831,7 +831,7 @@ io.littlehorse.sdk.common.proto.ThreadSpecPb defaultValue) {
       return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+     * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
      */
     public Builder removeThreadSpecs(
         java.lang.String key) {
@@ -844,17 +844,17 @@ io.littlehorse.sdk.common.proto.ThreadSpecPb defaultValue) {
      * Use alternate mutation accessors instead.
      */
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb>
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec>
         getMutableThreadSpecs() {
       bitField0_ |= 0x00000002;
       return internalGetMutableThreadSpecs().getMutableMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+     * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
      */
     public Builder putThreadSpecs(
         java.lang.String key,
-        io.littlehorse.sdk.common.proto.ThreadSpecPb value) {
+        io.littlehorse.sdk.common.proto.ThreadSpec value) {
       if (key == null) { throw new NullPointerException("map key"); }
       if (value == null) { throw new NullPointerException("map value"); }
       internalGetMutableThreadSpecs().getMutableMap()
@@ -863,10 +863,10 @@ io.littlehorse.sdk.common.proto.ThreadSpecPb defaultValue) {
       return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadSpecPb&gt; thread_specs = 5;</code>
+     * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
      */
     public Builder putAllThreadSpecs(
-        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecPb> values) {
+        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> values) {
       internalGetMutableThreadSpecs().getMutableMap()
           .putAll(values);
       bitField0_ |= 0x00000002;

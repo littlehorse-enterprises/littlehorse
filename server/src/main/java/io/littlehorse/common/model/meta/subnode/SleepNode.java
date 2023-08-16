@@ -6,7 +6,7 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.meta.VariableAssignment;
-import io.littlehorse.common.model.wfrun.ThreadRun;
+import io.littlehorse.common.model.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.wfrun.subnoderun.SleepNodeRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.SleepNodePb;
@@ -76,7 +76,7 @@ public class SleepNode extends SubNode<SleepNodePb> {
         return new SleepNodeRun();
     }
 
-    public Date getMaturationTime(ThreadRun thread) throws LHVarSubError {
+    public Date getMaturationTime(ThreadRunModel thread) throws LHVarSubError {
         switch (type) {
             case RAW_SECONDS:
                 long timeToSleep = thread.assignVariable(rawSeconds).asInt().intVal;

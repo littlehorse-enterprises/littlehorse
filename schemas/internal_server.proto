@@ -170,7 +170,7 @@ service LHInternals {
 // Stuff for the metrics topology
 message TaskMetricUpdatePb {
     google.protobuf.Timestamp window_start = 1;
-    MetricsWindowLengthPb type = 2;
+    MetricsWindowLength type = 2;
     int64 num_entries = 3;
     int64 schedule_to_start_max = 4;
     int64 schedule_to_start_total = 5;
@@ -196,7 +196,7 @@ message RemoveRemoteTagPb {
 
 message WfMetricUpdatePb {
     google.protobuf.Timestamp window_start = 1;
-    MetricsWindowLengthPb type = 2;
+    MetricsWindowLength type = 2;
     int64 num_entries = 3;
     int64 start_to_complete_max = 6;
     int64 start_to_complete_total = 7;
@@ -281,7 +281,7 @@ message StoredGetablePb {
 message WfRunRequestPb {
     optional string wf_run_id = 1;
     string wf_spec_id = 2;
-    map<string, VariableValuePb> variables = 3;
+    map<string, VariableValue> variables = 3;
 }
 
 message TaskClaimEventPb {

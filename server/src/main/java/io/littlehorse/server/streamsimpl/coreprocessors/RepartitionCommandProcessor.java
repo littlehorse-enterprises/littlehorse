@@ -1,8 +1,8 @@
 package io.littlehorse.server.streamsimpl.coreprocessors;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.metrics.TaskDefMetrics;
-import io.littlehorse.common.model.metrics.WfSpecMetrics;
+import io.littlehorse.common.model.metrics.TaskDefMetricsModel;
+import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
@@ -72,12 +72,12 @@ public class RepartitionCommandProcessor
                 LHIterKeyValue<TaskMetricUpdate> next = iter.next();
                 TaskMetricUpdate metric = next.getValue();
                 store.delete(metric.getStoreKey());
-                String taskDefMetricKey = TaskDefMetrics.getObjectId(
+                String taskDefMetricKey = TaskDefMetricsModel.getObjectId(
                     metric.type,
                     metric.windowStart,
                     metric.taskDefName
                 );
-                store.delete(taskDefMetricKey, TaskDefMetrics.class);
+                store.delete(taskDefMetricKey, TaskDefMetricsModel.class);
             }
         }
     }
@@ -94,13 +94,13 @@ public class RepartitionCommandProcessor
                 LHIterKeyValue<WfMetricUpdate> next = iter.next();
                 WfMetricUpdate metric = next.getValue();
                 store.delete(metric.getStoreKey());
-                String wfSpecMetricKey = WfSpecMetrics.getObjectId(
+                String wfSpecMetricKey = WfSpecMetricsModel.getObjectId(
                     metric.type,
                     metric.windowStart,
                     metric.wfSpecName,
                     metric.wfSpecVersion
                 );
-                store.delete(wfSpecMetricKey, WfSpecMetrics.class);
+                store.delete(wfSpecMetricKey, WfSpecMetricsModel.class);
             }
         }
     }

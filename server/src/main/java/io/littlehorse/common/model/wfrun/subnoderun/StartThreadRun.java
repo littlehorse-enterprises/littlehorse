@@ -7,12 +7,12 @@ import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.meta.subnode.StartThreadNode;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
-import io.littlehorse.common.model.wfrun.ThreadRun;
-import io.littlehorse.common.model.wfrun.VariableValue;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.common.model.wfrun.ThreadRunModel;
+import io.littlehorse.common.model.wfrun.VariableValueModel;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.StartThreadRunPb;
 import io.littlehorse.sdk.common.proto.ThreadTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,13 +57,13 @@ public class StartThreadRun extends SubNodeRun<StartThreadRunPb> {
 
     public void arrive(Date time) {
         StartThreadNode stn = getNode().startThreadNode;
-        Map<String, VariableValue> variables = new HashMap<>();
+        Map<String, VariableValueModel> variables = new HashMap<>();
 
         try {
             for (Map.Entry<String, VariableAssignment> e : stn.variables.entrySet()) {
                 variables.put(
                     e.getKey(),
-                    nodeRun.getThreadRun().assignVariable(e.getValue())
+                    nodeRunModel.getThreadRun().assignVariable(e.getValue())
                 );
             }
         } catch (LHVarSubError exn) {
@@ -72,37 +72,37 @@ public class StartThreadRun extends SubNodeRun<StartThreadRunPb> {
                 "Failed constructing input variables for thread: " + exn.getMessage();
             failure.failureName = LHConstants.VAR_SUB_ERROR;
 
-            nodeRun.fail(failure, time);
+            nodeRunModel.fail(failure, time);
         }
 
-        ThreadRun child = nodeRun
+        ThreadRunModel child = nodeRunModel
             .getThreadRun()
-            .getWfRun()
+            .getWfRunModel()
             .startThread(
-                nodeRun.getNode().startThreadNode.threadSpecName,
+                nodeRunModel.getNode().startThreadNode.threadSpecName,
                 time,
-                nodeRun.threadRunNumber,
+                nodeRunModel.threadRunNumber,
                 variables,
                 ThreadTypePb.CHILD
             );
 
-        nodeRun.getThreadRun().getChildThreadIds().add(child.number);
+        nodeRunModel.getThreadRun().getChildThreadIds().add(child.number);
 
-        if (child.status == LHStatusPb.ERROR) {
+        if (child.status == LHStatus.ERROR) {
             Failure failure = new Failure();
             failure.message =
                 "Failed launching child thread. See child for details, id: " +
                 child.number;
 
             failure.failureName = LHConstants.CHILD_FAILURE;
-            nodeRun.fail(failure, time);
+            nodeRunModel.fail(failure, time);
         } else {
             // Then the variable output of this node is just the int thread id.
-            VariableValue output = new VariableValue();
-            output.type = VariableTypePb.INT;
+            VariableValueModel output = new VariableValueModel();
+            output.type = VariableType.INT;
             output.intVal = Long.valueOf(child.number);
 
-            nodeRun.complete(output, time);
+            nodeRunModel.complete(output, time);
         }
     }
 }

@@ -8,13 +8,13 @@ public interface OutputSchemaPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.VariableTypePb output_type = 1;</code>
+   * <code>.littlehorse.VariableType output_type = 1;</code>
    * @return The enum numeric value on the wire for outputType.
    */
   int getOutputTypeValue();
   /**
-   * <code>.littlehorse.VariableTypePb output_type = 1;</code>
+   * <code>.littlehorse.VariableType output_type = 1;</code>
    * @return The outputType.
    */
-  io.littlehorse.sdk.common.proto.VariableTypePb getOutputType();
+  io.littlehorse.sdk.common.proto.VariableType getOutputType();
 }

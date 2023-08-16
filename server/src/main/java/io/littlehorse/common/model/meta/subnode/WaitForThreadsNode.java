@@ -8,7 +8,7 @@ import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.meta.ThreadToWaitFor;
 import io.littlehorse.common.model.wfrun.subnoderun.WaitForThreadsRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNodePb;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.ThreadToWaitForPb;
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class WaitForThreadsNode extends SubNode<WaitForThreadsNodePb> {
             if (
                 !ttwf
                     .getThreadRunNumber()
-                    .canBeType(VariableTypePb.INT, node.threadSpec)
+                    .canBeType(VariableType.INT, node.threadSpecModel)
             ) {
                 throw new LHValidationError(
                     null,

@@ -30,7 +30,7 @@ go run ./jsonarray/deploy
 That will create the `WfSpec`. You can verify that via:
 
 ```
-lhctl get wfSpec my-workflow
+lhctl get wfSpecModel my-workflow
 ```
 
 ## Run a `WfRun`
@@ -44,5 +44,5 @@ lhctl run my-workflow input '[{"foo": 1, "art":{"id":1,"title": "bugia", "conten
 It will print out an ID. You can view the status of that `WfRun` via:
 
 ```
-lhctl get wfRun <the id from the previous step>
+lhctl get wfRunModel <the id from the previous step>
 ```

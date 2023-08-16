@@ -6,8 +6,8 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.ResumeWfRunReply;
-import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.meta.WfSpecModel;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.ResumeWfRunPb;
 
@@ -39,23 +39,26 @@ public class ResumeWfRun extends SubCommand<ResumeWfRunPb> {
 
     public ResumeWfRunReply process(LHDAO dao, LHConfig config) {
         ResumeWfRunReply out = new ResumeWfRunReply();
-        WfRun wfRun = dao.getWfRun(wfRunId);
-        if (wfRun == null) {
+        WfRunModel wfRunModel = dao.getWfRun(wfRunId);
+        if (wfRunModel == null) {
             out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
             out.message = "Provided invalid wfRunId";
             return out;
         }
 
-        WfSpec wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
-        if (wfSpec == null) {
+        WfSpecModel wfSpecModel = dao.getWfSpec(
+            wfRunModel.wfSpecName,
+            wfRunModel.wfSpecVersion
+        );
+        if (wfSpecModel == null) {
             out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
             out.message = "Somehow missing wfSpec for wfRun";
             return out;
         }
 
-        wfRun.wfSpec = wfSpec;
+        wfRunModel.wfSpecModel = wfSpecModel;
         try {
-            wfRun.processResumeRequest(this);
+            wfRunModel.processResumeRequest(this);
             out.code = LHResponseCodePb.OK;
         } catch (LHValidationError exn) {
             out.code = LHResponseCodePb.BAD_REQUEST_ERROR;

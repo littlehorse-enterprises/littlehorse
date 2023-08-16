@@ -6,8 +6,8 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.StopWfRunReply;
-import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.meta.WfSpecModel;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.StopWfRunPb;
 
@@ -40,23 +40,26 @@ public class StopWfRun extends SubCommand<StopWfRunPb> {
 
     public StopWfRunReply process(LHDAO dao, LHConfig config) {
         StopWfRunReply out = new StopWfRunReply();
-        WfRun wfRun = dao.getWfRun(wfRunId);
-        if (wfRun == null) {
+        WfRunModel wfRunModel = dao.getWfRun(wfRunId);
+        if (wfRunModel == null) {
             out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
             out.message = "Provided invalid wfRunId";
             return out;
         }
 
-        WfSpec wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
-        if (wfSpec == null) {
+        WfSpecModel wfSpecModel = dao.getWfSpec(
+            wfRunModel.wfSpecName,
+            wfRunModel.wfSpecVersion
+        );
+        if (wfSpecModel == null) {
             out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
             out.message = "Somehow missing wfSpec for wfRun";
             return out;
         }
 
-        wfRun.wfSpec = wfSpec;
+        wfRunModel.wfSpecModel = wfSpecModel;
         try {
-            wfRun.processStopRequest(this);
+            wfRunModel.processStopRequest(this);
             out.code = LHResponseCodePb.OK;
         } catch (LHValidationError exn) {
             out.code = LHResponseCodePb.BAD_REQUEST_ERROR;

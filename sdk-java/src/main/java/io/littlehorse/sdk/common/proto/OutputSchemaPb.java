@@ -51,19 +51,19 @@ private static final long serialVersionUID = 0L;
   public static final int OUTPUT_TYPE_FIELD_NUMBER = 1;
   private int outputType_ = 0;
   /**
-   * <code>.littlehorse.VariableTypePb output_type = 1;</code>
+   * <code>.littlehorse.VariableType output_type = 1;</code>
    * @return The enum numeric value on the wire for outputType.
    */
   @java.lang.Override public int getOutputTypeValue() {
     return outputType_;
   }
   /**
-   * <code>.littlehorse.VariableTypePb output_type = 1;</code>
+   * <code>.littlehorse.VariableType output_type = 1;</code>
    * @return The outputType.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableTypePb getOutputType() {
-    io.littlehorse.sdk.common.proto.VariableTypePb result = io.littlehorse.sdk.common.proto.VariableTypePb.forNumber(outputType_);
-    return result == null ? io.littlehorse.sdk.common.proto.VariableTypePb.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableType getOutputType() {
+    io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(outputType_);
+    return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -80,7 +80,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (outputType_ != io.littlehorse.sdk.common.proto.VariableTypePb.JSON_OBJ.getNumber()) {
+    if (outputType_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
       output.writeEnum(1, outputType_);
     }
     getUnknownFields().writeTo(output);
@@ -92,7 +92,7 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (outputType_ != io.littlehorse.sdk.common.proto.VariableTypePb.JSON_OBJ.getNumber()) {
+    if (outputType_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(1, outputType_);
     }
@@ -394,14 +394,14 @@ private static final long serialVersionUID = 0L;
 
     private int outputType_ = 0;
     /**
-     * <code>.littlehorse.VariableTypePb output_type = 1;</code>
+     * <code>.littlehorse.VariableType output_type = 1;</code>
      * @return The enum numeric value on the wire for outputType.
      */
     @java.lang.Override public int getOutputTypeValue() {
       return outputType_;
     }
     /**
-     * <code>.littlehorse.VariableTypePb output_type = 1;</code>
+     * <code>.littlehorse.VariableType output_type = 1;</code>
      * @param value The enum numeric value on the wire for outputType to set.
      * @return This builder for chaining.
      */
@@ -412,20 +412,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableTypePb output_type = 1;</code>
+     * <code>.littlehorse.VariableType output_type = 1;</code>
      * @return The outputType.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableTypePb getOutputType() {
-      io.littlehorse.sdk.common.proto.VariableTypePb result = io.littlehorse.sdk.common.proto.VariableTypePb.forNumber(outputType_);
-      return result == null ? io.littlehorse.sdk.common.proto.VariableTypePb.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.VariableType getOutputType() {
+      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(outputType_);
+      return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.VariableTypePb output_type = 1;</code>
+     * <code>.littlehorse.VariableType output_type = 1;</code>
      * @param value The outputType to set.
      * @return This builder for chaining.
      */
-    public Builder setOutputType(io.littlehorse.sdk.common.proto.VariableTypePb value) {
+    public Builder setOutputType(io.littlehorse.sdk.common.proto.VariableType value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -435,7 +435,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableTypePb output_type = 1;</code>
+     * <code>.littlehorse.VariableType output_type = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearOutputType() {

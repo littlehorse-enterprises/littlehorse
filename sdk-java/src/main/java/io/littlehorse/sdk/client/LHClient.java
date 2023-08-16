@@ -26,9 +26,9 @@ import io.littlehorse.sdk.common.proto.GetWfRunReplyPb;
 import io.littlehorse.sdk.common.proto.GetWfSpecReplyPb;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunIdPb;
-import io.littlehorse.sdk.common.proto.NodeRunPb;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefReplyPb;
 import io.littlehorse.sdk.common.proto.PutExternalEventPb;
@@ -42,7 +42,6 @@ import io.littlehorse.sdk.common.proto.PutWfSpecReplyPb;
 import io.littlehorse.sdk.common.proto.ResumeWfRunPb;
 import io.littlehorse.sdk.common.proto.RunWfPb;
 import io.littlehorse.sdk.common.proto.RunWfReplyPb;
-import io.littlehorse.sdk.common.proto.SearchTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.SearchWfRunPb;
 import io.littlehorse.sdk.common.proto.SearchWfRunPb.StatusAndSpecPb;
 import io.littlehorse.sdk.common.proto.SearchWfRunReplyPb;
@@ -56,10 +55,10 @@ import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunPb;
 import io.littlehorse.sdk.common.proto.VariableIdPb;
 import io.littlehorse.sdk.common.proto.VariablePb;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunIdPb;
-import io.littlehorse.sdk.common.proto.WfRunPb;
+import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecIdPb;
-import io.littlehorse.sdk.common.proto.WfSpecPb;
 import io.littlehorse.sdk.common.util.Arg;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -152,7 +151,7 @@ public class LHClient {
      * @return A workflow specification with the workflow's data and status, or null if the spec does not exist
      * @throws LHApiError if it failed contacting to the API
      */
-    public WfSpecPb getWfSpec(String name) throws LHApiError {
+    public WfSpec getWfSpec(String name) throws LHApiError {
         return getWfSpec(name, null);
     }
 
@@ -163,7 +162,7 @@ public class LHClient {
      * @return A workflow specification with the workflow's data and status, or null if the spec does not exist
      * @throws LHApiError if it failed contacting to the API
      */
-    public WfSpecPb getWfSpec(String name, Integer version) throws LHApiError {
+    public WfSpec getWfSpec(String name, Integer version) throws LHApiError {
         GetWfSpecReplyPb reply = (GetWfSpecReplyPb) doRequest(() -> {
             if (version != null) {
                 return getGrpcClient()
@@ -230,7 +229,7 @@ public class LHClient {
      * @return null if the NodeRun does not exist, or the NodeRun's data otherwise
      * @throws LHApiError if it failed contacting to the API
      */
-    public NodeRunPb getNodeRun(String wfRunId, int threadRunNumber, int position)
+    public NodeRun getNodeRun(String wfRunId, int threadRunNumber, int position)
         throws LHApiError {
         GetNodeRunReplyPb reply = (GetNodeRunReplyPb) doRequest(() -> {
             return getGrpcClient()
@@ -318,7 +317,7 @@ public class LHClient {
      * @return A workflow run if it does exist, null otherwise
      * @throws LHApiError
      */
-    public WfRunPb getWfRun(String id) throws LHApiError {
+    public WfRun getWfRun(String id) throws LHApiError {
         GetWfRunReplyPb reply = (GetWfRunReplyPb) doRequest(() -> {
             return getGrpcClient().getWfRun(WfRunIdPb.newBuilder().setId(id).build());
         });
@@ -343,7 +342,7 @@ public class LHClient {
     public List<WfRunIdPb> searchWfRun(
         String workflowName,
         int version,
-        LHStatusPb status,
+        LHStatus status,
         Date earliestStart,
         Date latestStart
     ) throws LHApiError {
@@ -552,7 +551,7 @@ public class LHClient {
      * @return WfSpec's data
      * @throws LHApiError If there is an error when connecting to the server
      */
-    public WfSpecPb putWfSpec(PutWfSpecPb req) throws LHApiError {
+    public WfSpec putWfSpec(PutWfSpecPb req) throws LHApiError {
         PutWfSpecReplyPb response = (PutWfSpecReplyPb) doRequest(() -> {
             return getGrpcClient().putWfSpec(req);
         });

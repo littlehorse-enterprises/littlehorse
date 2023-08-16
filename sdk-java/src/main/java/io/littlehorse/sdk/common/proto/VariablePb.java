@@ -46,9 +46,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int VALUE_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.VariableValuePb value_;
+  private io.littlehorse.sdk.common.proto.VariableValue value_;
   /**
-   * <code>.littlehorse.VariableValuePb value = 1;</code>
+   * <code>.littlehorse.VariableValue value = 1;</code>
    * @return Whether the value field is set.
    */
   @java.lang.Override
@@ -56,19 +56,19 @@ private static final long serialVersionUID = 0L;
     return value_ != null;
   }
   /**
-   * <code>.littlehorse.VariableValuePb value = 1;</code>
+   * <code>.littlehorse.VariableValue value = 1;</code>
    * @return The value.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableValuePb getValue() {
-    return value_ == null ? io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance() : value_;
+  public io.littlehorse.sdk.common.proto.VariableValue getValue() {
+    return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
   }
   /**
-   * <code>.littlehorse.VariableValuePb value = 1;</code>
+   * <code>.littlehorse.VariableValue value = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getValueOrBuilder() {
-    return value_ == null ? io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance() : value_;
+  public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder() {
+    return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
   }
 
   public static final int WF_RUN_ID_FIELD_NUMBER = 2;
@@ -629,31 +629,31 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.VariableValuePb value_;
+    private io.littlehorse.sdk.common.proto.VariableValue value_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableValuePb, io.littlehorse.sdk.common.proto.VariableValuePb.Builder, io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder> valueBuilder_;
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> valueBuilder_;
     /**
-     * <code>.littlehorse.VariableValuePb value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      * @return Whether the value field is set.
      */
     public boolean hasValue() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.littlehorse.VariableValuePb value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      * @return The value.
      */
-    public io.littlehorse.sdk.common.proto.VariableValuePb getValue() {
+    public io.littlehorse.sdk.common.proto.VariableValue getValue() {
       if (valueBuilder_ == null) {
-        return value_ == null ? io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance() : value_;
+        return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
       } else {
         return valueBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.VariableValuePb value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      */
-    public Builder setValue(io.littlehorse.sdk.common.proto.VariableValuePb value) {
+    public Builder setValue(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (valueBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -667,10 +667,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValuePb value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      */
     public Builder setValue(
-        io.littlehorse.sdk.common.proto.VariableValuePb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
       if (valueBuilder_ == null) {
         value_ = builderForValue.build();
       } else {
@@ -681,13 +681,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValuePb value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      */
-    public Builder mergeValue(io.littlehorse.sdk.common.proto.VariableValuePb value) {
+    public Builder mergeValue(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (valueBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0) &&
           value_ != null &&
-          value_ != io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance()) {
+          value_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
           getValueBuilder().mergeFrom(value);
         } else {
           value_ = value;
@@ -700,7 +700,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValuePb value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      */
     public Builder clearValue() {
       bitField0_ = (bitField0_ & ~0x00000001);
@@ -713,33 +713,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValuePb value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableValuePb.Builder getValueBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableValue.Builder getValueBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
       return getValueFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.VariableValuePb value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getValueOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder() {
       if (valueBuilder_ != null) {
         return valueBuilder_.getMessageOrBuilder();
       } else {
         return value_ == null ?
-            io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance() : value_;
+            io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
       }
     }
     /**
-     * <code>.littlehorse.VariableValuePb value = 1;</code>
+     * <code>.littlehorse.VariableValue value = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableValuePb, io.littlehorse.sdk.common.proto.VariableValuePb.Builder, io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
         getValueFieldBuilder() {
       if (valueBuilder_ == null) {
         valueBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableValuePb, io.littlehorse.sdk.common.proto.VariableValuePb.Builder, io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder>(
+            io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder>(
                 getValue(),
                 getParentForChildren(),
                 isClean());

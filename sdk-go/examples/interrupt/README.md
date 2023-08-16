@@ -35,7 +35,7 @@ lhctl postEvent <wfRunId> update-tally INT 10
 Then you can see all of the `ThreadRuns` in the `WfRun` by:
 
 ```
-lhctl get wfRun <wfRunId>
+lhctl get wfRunModel <wfRunId>
 ```
 
 And you can see the final tally via:

@@ -36,17 +36,17 @@ public interface GetWfSpecReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>optional .littlehorse.WfSpecPb result = 3;</code>
+   * <code>optional .littlehorse.WfSpec result = 3;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>optional .littlehorse.WfSpecPb result = 3;</code>
+   * <code>optional .littlehorse.WfSpec result = 3;</code>
    * @return The result.
    */
-  io.littlehorse.sdk.common.proto.WfSpecPb getResult();
+  io.littlehorse.sdk.common.proto.WfSpec getResult();
   /**
-   * <code>optional .littlehorse.WfSpecPb result = 3;</code>
+   * <code>optional .littlehorse.WfSpec result = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.WfSpecPbOrBuilder getResultOrBuilder();
+  io.littlehorse.sdk.common.proto.WfSpecOrBuilder getResultOrBuilder();
 }

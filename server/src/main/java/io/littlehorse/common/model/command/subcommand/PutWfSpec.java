@@ -7,13 +7,13 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutWfSpecReply;
-import io.littlehorse.common.model.meta.ThreadSpec;
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.ThreadSpecModel;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.PutWfSpecPb;
-import io.littlehorse.sdk.common.proto.ThreadSpecPb;
+import io.littlehorse.sdk.common.proto.ThreadSpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,7 @@ import java.util.Map;
 public class PutWfSpec extends SubCommand<PutWfSpecPb> {
 
     public String name;
-    public Map<String, ThreadSpec> threadSpecs;
+    public Map<String, ThreadSpecModel> threadSpecs;
     public String entrypointThreadName;
     public Integer retentionHours;
 
@@ -46,7 +46,7 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
             out.setRetentionHours(retentionHours);
         }
 
-        for (Map.Entry<String, ThreadSpec> e : threadSpecs.entrySet()) {
+        for (Map.Entry<String, ThreadSpecModel> e : threadSpecs.entrySet()) {
             out.putThreadSpecs(e.getKey(), e.getValue().toProto().build());
         }
         return out;
@@ -57,8 +57,8 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
         name = p.getName();
         entrypointThreadName = p.getEntrypointThreadName();
         if (p.hasRetentionHours()) retentionHours = p.getRetentionHours();
-        for (Map.Entry<String, ThreadSpecPb> e : p.getThreadSpecsMap().entrySet()) {
-            threadSpecs.put(e.getKey(), ThreadSpec.fromProto(e.getValue()));
+        for (Map.Entry<String, ThreadSpec> e : p.getThreadSpecsMap().entrySet()) {
+            threadSpecs.put(e.getKey(), ThreadSpecModel.fromProto(e.getValue()));
         }
     }
 
@@ -75,7 +75,7 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
             return out;
         }
 
-        WfSpec spec = new WfSpec();
+        WfSpecModel spec = new WfSpecModel();
         spec.name = name;
         spec.entrypointThreadName = entrypointThreadName;
         spec.threadSpecs = threadSpecs;
@@ -84,15 +84,15 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
             retentionHours == null
                 ? config.getDefaultWfRunRetentionHours()
                 : retentionHours;
-        spec.status = LHStatusPb.RUNNING;
-        for (Map.Entry<String, ThreadSpec> entry : spec.threadSpecs.entrySet()) {
-            ThreadSpec tspec = entry.getValue();
-            tspec.wfSpec = spec;
+        spec.status = LHStatus.RUNNING;
+        for (Map.Entry<String, ThreadSpecModel> entry : spec.threadSpecs.entrySet()) {
+            ThreadSpecModel tspec = entry.getValue();
+            tspec.wfSpecModel = spec;
             tspec.name = entry.getKey();
         }
 
         try {
-            WfSpec oldVersion = dao.getWfSpec(name, null);
+            WfSpecModel oldVersion = dao.getWfSpec(name, null);
             if (oldVersion != null) {
                 spec.version = oldVersion.version + 1;
             } else {

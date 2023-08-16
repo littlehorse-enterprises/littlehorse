@@ -3,7 +3,7 @@ package io.littlehorse.common.model.wfrun.haltreason;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.objectId.ExternalEventId;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.PendingInterruptHaltReasonPb;
 
 public class PendingInterruptHaltReason
@@ -12,7 +12,7 @@ public class PendingInterruptHaltReason
 
     public ExternalEventId externalEventId;
 
-    public boolean isResolved(WfRun wfRun) {
+    public boolean isResolved(WfRunModel wfRunModel) {
         // Should always return false because this HaltReason is manually
         // removed upon creation of the Interrupt Thread
         return false;

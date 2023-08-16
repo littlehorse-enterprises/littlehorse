@@ -1,23 +1,23 @@
 package io.littlehorse;
 
 import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.meta.Node;
-import io.littlehorse.common.model.meta.ThreadSpec;
-import io.littlehorse.common.model.meta.VariableDef;
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.NodeModel;
+import io.littlehorse.common.model.meta.ThreadSpecModel;
+import io.littlehorse.common.model.meta.VariableDefModel;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.UserTaskDefId;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
-import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.User;
 import io.littlehorse.common.model.wfrun.UserGroup;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.common.model.wfrun.VariableValue;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.VariableValueModel;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRun;
 import io.littlehorse.common.model.wfrun.subnoderun.UserTaskNodeRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskNodeReference;
@@ -25,13 +25,13 @@ import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRunSource;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.NodePb;
-import io.littlehorse.sdk.common.proto.NodeRunPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.Node;
+import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.TaskStatusPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import java.util.Date;
 import java.util.Map;
@@ -39,14 +39,14 @@ import java.util.UUID;
 
 public class TestUtil {
 
-    public static WfRun wfRun(String id) {
-        WfRun wfRun = new WfRun();
-        wfRun.setId(id);
-        wfRun.setWfSpecName("test-spec-name");
-        wfRun.setWfSpecVersion(0);
-        wfRun.status = LHStatusPb.RUNNING;
-        wfRun.setStartTime(new Date());
-        return wfRun;
+    public static WfRunModel wfRun(String id) {
+        WfRunModel wfRunModel = new WfRunModel();
+        wfRunModel.setId(id);
+        wfRunModel.setWfSpecName("test-spec-name");
+        wfRunModel.setWfSpecVersion(0);
+        wfRunModel.status = LHStatus.RUNNING;
+        wfRunModel.setStartTime(new Date());
+        return wfRunModel;
     }
 
     public static Variable variable(String wfRunId) {
@@ -59,19 +59,19 @@ public class TestUtil {
         );
     }
 
-    public static NodeRun nodeRun() {
-        NodeRun nodeRun = new NodeRun();
-        nodeRun.setWfRunId("0000000");
-        nodeRun.setPosition(0);
-        nodeRun.setThreadRunNumber(1);
-        nodeRun.setStatus(LHStatusPb.RUNNING);
-        nodeRun.setType(NodeRunPb.NodeTypeCase.TASK);
-        nodeRun.setArrivalTime(new Date());
-        nodeRun.setWfSpecId(wfSpecId());
-        nodeRun.setThreadSpecName("test-thread");
-        nodeRun.setNodeName("test-node-name");
-        nodeRun.setTaskRun(taskNodeRun());
-        return nodeRun;
+    public static NodeRunModel nodeRun() {
+        NodeRunModel nodeRunModel = new NodeRunModel();
+        nodeRunModel.setWfRunId("0000000");
+        nodeRunModel.setPosition(0);
+        nodeRunModel.setThreadRunNumber(1);
+        nodeRunModel.setStatus(LHStatus.RUNNING);
+        nodeRunModel.setType(NodeRun.NodeTypeCase.TASK);
+        nodeRunModel.setArrivalTime(new Date());
+        nodeRunModel.setWfSpecId(wfSpecId());
+        nodeRunModel.setThreadSpecName("test-thread");
+        nodeRunModel.setNodeName("test-node-name");
+        nodeRunModel.setTaskRun(taskNodeRun());
+        return nodeRunModel;
     }
 
     public static UserTaskNodeRun userTaskNodeRun(String wfRunId) {
@@ -125,34 +125,34 @@ public class TestUtil {
         return taskRunId;
     }
 
-    public static VariableValue variableValue() {
-        VariableValue variableValue = new VariableValue();
+    public static VariableValueModel variableValue() {
+        VariableValueModel variableValue = new VariableValueModel();
         variableValue.setStrVal("testVarValue");
-        variableValue.setType(VariableTypePb.STR);
+        variableValue.setType(VariableType.STR);
         return variableValue;
     }
 
-    public static WfSpec wfSpec(String name) {
-        WfSpec spec = new WfSpec();
+    public static WfSpecModel wfSpec(String name) {
+        WfSpecModel spec = new WfSpecModel();
         spec.setName(name);
         spec.setCreatedAt(new Date());
         spec.setEntrypointThreadName("testEntrypointThreadName");
-        spec.setStatus(LHStatusPb.RUNNING);
+        spec.setStatus(LHStatus.RUNNING);
         spec.setThreadSpecs(Map.of("entrypoint", threadSpec()));
         return spec;
     }
 
-    public static ThreadSpec threadSpec() {
-        ThreadSpec threadSpec = new ThreadSpec();
-        threadSpec.setName("test-name");
-        threadSpec.setNodes(Map.of("node-1", node()));
-        return threadSpec;
+    public static ThreadSpecModel threadSpec() {
+        ThreadSpecModel threadSpecModel = new ThreadSpecModel();
+        threadSpecModel.setName("test-name");
+        threadSpecModel.setNodes(Map.of("node-1", node()));
+        return threadSpecModel;
     }
 
-    public static Node node() {
-        Node node = new Node();
+    public static NodeModel node() {
+        NodeModel node = new NodeModel();
         node.setTaskNode(taskNode());
-        node.setType(NodePb.NodeCase.TASK);
+        node.setType(Node.NodeCase.TASK);
         return node;
     }
 
@@ -163,7 +163,7 @@ public class TestUtil {
     }
 
     public static Getable<?> getable(Class<?> getableClass, String id) {
-        if (getableClass.equals(WfRun.class)) {
+        if (getableClass.equals(WfRunModel.class)) {
             return wfRun(id);
         } else {
             throw new IllegalArgumentException(
@@ -191,11 +191,11 @@ public class TestUtil {
         return externalEvent;
     }
 
-    public static VariableDef variableDef(
+    public static VariableDefModel variableDef(
         String name,
-        VariableTypePb variableTypePb
+        VariableType variableTypePb
     ) {
-        VariableDef variableDef = new VariableDef();
+        VariableDefModel variableDef = new VariableDefModel();
         variableDef.setName(name);
         variableDef.setType(variableTypePb);
         return variableDef;

@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.WfRunId;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
@@ -154,7 +154,7 @@ public class SearchWfRun
             .stream()
             .map(Attribute::getEscapedKey)
             .toList();
-        return new WfRun()
+        return new WfRunModel()
             .getIndexConfigurations()
             .stream()
             .filter(getableIndexConfiguration ->

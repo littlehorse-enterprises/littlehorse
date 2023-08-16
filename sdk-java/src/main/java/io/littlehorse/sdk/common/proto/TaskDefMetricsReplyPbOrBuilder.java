@@ -36,17 +36,17 @@ public interface TaskDefMetricsReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>optional .littlehorse.TaskDefMetricsPb result = 3;</code>
+   * <code>optional .littlehorse.TaskDefMetrics result = 3;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>optional .littlehorse.TaskDefMetricsPb result = 3;</code>
+   * <code>optional .littlehorse.TaskDefMetrics result = 3;</code>
    * @return The result.
    */
-  io.littlehorse.sdk.common.proto.TaskDefMetricsPb getResult();
+  io.littlehorse.sdk.common.proto.TaskDefMetrics getResult();
   /**
-   * <code>optional .littlehorse.TaskDefMetricsPb result = 3;</code>
+   * <code>optional .littlehorse.TaskDefMetrics result = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.TaskDefMetricsPbOrBuilder getResultOrBuilder();
+  io.littlehorse.sdk.common.proto.TaskDefMetricsOrBuilder getResultOrBuilder();
 }

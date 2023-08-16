@@ -25,7 +25,7 @@ public class ExternalEvent extends Getable<ExternalEventPb> {
     public String wfRunId;
     public String externalEventDefName;
     private Date createdAt;
-    public VariableValue content;
+    public VariableValueModel content;
     public Integer threadRunNumber;
     public Integer nodeRunPosition;
     public boolean claimed;
@@ -48,7 +48,7 @@ public class ExternalEvent extends Getable<ExternalEventPb> {
         } else {
             createdAt = new Date();
         }
-        content = VariableValue.fromProto(p.getContent());
+        content = VariableValueModel.fromProto(p.getContent());
         claimed = p.getClaimed();
 
         if (p.hasThreadRunNumber()) {

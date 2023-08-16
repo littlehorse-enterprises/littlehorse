@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.meta.Node;
+import io.littlehorse.common.model.meta.NodeModel;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.wfrun.Failure;
@@ -54,13 +54,13 @@ public class TaskNodeRun extends SubNodeRun<TaskNodeRunPb> {
         // The TaskNode arrive() function should create a TaskRun. Note that
         // creating a TaskRun also causes the first TaskAttempt to be scheduled.
 
-        Node node = nodeRun.getNode();
+        NodeModel node = nodeRunModel.getNode();
 
         TaskDef td = node.getTaskNode().getTaskDef();
         if (td == null) {
             // that means the TaskDef was deleted between now and the time that the
             // WfSpec was first created. Yikers!
-            nodeRun.fail(
+            nodeRunModel.fail(
                 new Failure(
                     "Appears that TaskDef was deleted!",
                     LHConstants.TASK_ERROR
@@ -74,9 +74,9 @@ public class TaskNodeRun extends SubNodeRun<TaskNodeRunPb> {
 
         try {
             inputVariables =
-                node.getTaskNode().assignInputVars(nodeRun.getThreadRun());
+                node.getTaskNode().assignInputVars(nodeRunModel.getThreadRun());
         } catch (LHVarSubError exn) {
-            nodeRun.fail(
+            nodeRunModel.fail(
                 new Failure(
                     "Failed calculating TaskRun Input Vars: " + exn.getMessage(),
                     LHConstants.VAR_SUB_ERROR
@@ -88,8 +88,8 @@ public class TaskNodeRun extends SubNodeRun<TaskNodeRunPb> {
 
         // Create a TaskRun
         TaskNodeReference source = new TaskNodeReference(
-            nodeRun.getObjectId(),
-            nodeRun.getWfSpecId()
+            nodeRunModel.getObjectId(),
+            nodeRunModel.getWfSpecId()
         );
 
         TaskRun task = new TaskRun(
@@ -98,7 +98,7 @@ public class TaskNodeRun extends SubNodeRun<TaskNodeRunPb> {
             new TaskRunSource(source),
             node.getTaskNode()
         );
-        this.taskRunId = new TaskRunId(nodeRun.getPartitionKey());
+        this.taskRunId = new TaskRunId(nodeRunModel.getPartitionKey());
         task.setId(taskRunId);
 
         // When creating a new Getable for the first time, we need to explicitly

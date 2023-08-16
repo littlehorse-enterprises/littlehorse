@@ -3,19 +3,19 @@ package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.meta.JsonIndex;
-import io.littlehorse.common.model.meta.ThreadSpec;
-import io.littlehorse.common.model.meta.VariableDef;
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.JsonIndexModel;
+import io.littlehorse.common.model.meta.ThreadSpecModel;
+import io.littlehorse.common.model.meta.VariableDefModel;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
-import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.proto.TagStorageTypePb;
-import io.littlehorse.sdk.common.proto.IndexTypePb;
-import io.littlehorse.sdk.common.proto.NodeRunPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.IndexType;
+import io.littlehorse.sdk.common.proto.NodeRun;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
@@ -103,11 +103,11 @@ public class GetableStorageManagerTest {
 
     @Test
     void deleteGetableWithTags() {
-        WfRun wfRun = TestUtil.wfRun("0000000");
-        geTableStorageManager.store(wfRun);
+        WfRunModel wfRunModel = TestUtil.wfRun("0000000");
+        geTableStorageManager.store(wfRunModel);
         TagsCache tagsCache = localStoreWrapper.getTagsCache(
-            wfRun.getStoreKey(),
-            WfRun.class
+            wfRunModel.getStoreKey(),
+            WfRunModel.class
         );
         Map<Boolean, List<Tag>> localOrRemoteTags = tagsCache
             .getTagIds()
@@ -115,13 +115,15 @@ public class GetableStorageManagerTest {
             .map(s -> localStoreWrapper.get(s, Tag.class))
             .collect(Collectors.groupingBy(Objects::nonNull));
 
-        geTableStorageManager.deleteGetable(wfRun);
+        geTableStorageManager.deleteGetable(wfRunModel);
         Assertions
-            .assertThat(localStoreWrapper.get(wfRun.getStoreKey(), WfRun.class))
+            .assertThat(
+                localStoreWrapper.get(wfRunModel.getStoreKey(), WfRunModel.class)
+            )
             .isNull();
         TagsCache tagsCacheResult = localStoreWrapper.getTagsCache(
-            wfRun.getStoreKey(),
-            WfRun.class
+            wfRunModel.getStoreKey(),
+            WfRunModel.class
         );
         List<Tag> localTagsToBeRemoved = localOrRemoteTags.get(true);
 
@@ -140,32 +142,32 @@ public class GetableStorageManagerTest {
 
     @Test
     void storeWfSpecWithBooleanVariables() {
-        WfSpec wfSpec = TestUtil.wfSpec("test-name");
+        WfSpecModel wfSpecModel = TestUtil.wfSpec("test-name");
         String expectedStoreKey = "test-name/00000";
         String expectedTagId1 = "2/__taskDef_input-name1/";
         String expectedTagId2 = "2/__taskDef_input-name2/";
-        ThreadSpec threadSpec1 = TestUtil.threadSpec();
-        threadSpec1
+        ThreadSpecModel threadSpecModel1 = TestUtil.threadSpec();
+        threadSpecModel1
             .getNodes()
             .forEach((s, node) -> {
                 node.getTaskNode().setTaskDefName("input-name1");
             });
-        ThreadSpec threadSpec2 = TestUtil.threadSpec();
-        threadSpec2
+        ThreadSpecModel threadSpecModel2 = TestUtil.threadSpec();
+        threadSpecModel2
             .getNodes()
             .forEach((s, node) -> {
                 node.getTaskNode().setTaskDefName("input-name2");
             });
-        wfSpec.setThreadSpecs(
-            Map.of("thread-1", threadSpec1, "thread-2", threadSpec2)
+        wfSpecModel.setThreadSpecs(
+            Map.of("thread-1", threadSpecModel1, "thread-2", threadSpecModel2)
         );
-        geTableStorageManager.store(wfSpec);
+        geTableStorageManager.store(wfSpecModel);
         Assertions
-            .assertThat(localStoreWrapper.get(expectedStoreKey, WfSpec.class))
+            .assertThat(localStoreWrapper.get(expectedStoreKey, WfSpecModel.class))
             .isNotNull();
         TagsCache tagsCacheResult = localStoreWrapper.getTagsCache(
-            wfSpec.getStoreKey(),
-            WfSpec.class
+            wfSpecModel.getStoreKey(),
+            WfSpecModel.class
         );
         Assertions.assertThat(tagsCacheResult.getTagIds()).hasSize(2);
         for (String tagId : tagsCacheResult.getTagIds()) {
@@ -179,18 +181,18 @@ public class GetableStorageManagerTest {
     void storeBooleanVariableWithUserDefinedStorageType() {
         Variable variable = TestUtil.variable("test-id");
         variable.setName("variableName");
-        variable.getValue().setType(VariableTypePb.BOOL);
+        variable.getValue().setType(VariableType.BOOL);
         variable.getValue().setBoolVal(true);
         variable
-            .getWfSpec()
+            .getWfSpecModel()
             .getThreadSpecs()
             .forEach((s, threadSpec) -> {
-                VariableDef variableDef1 = new VariableDef();
+                VariableDefModel variableDef1 = new VariableDefModel();
                 variableDef1.setName("variableName");
-                variableDef1.setType(VariableTypePb.BOOL);
-                VariableDef variableDef2 = new VariableDef();
+                variableDef1.setType(VariableType.BOOL);
+                VariableDefModel variableDef2 = new VariableDefModel();
                 variableDef2.setName("variableName2");
-                variableDef2.setType(VariableTypePb.BOOL);
+                variableDef2.setType(VariableType.BOOL);
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey = "";
@@ -207,19 +209,19 @@ public class GetableStorageManagerTest {
     void storeLocalStringVariableWithUserDefinedStorageType() {
         Variable variable = TestUtil.variable("test-id");
         variable.setName("variableName");
-        variable.getValue().setType(VariableTypePb.STR);
+        variable.getValue().setType(VariableType.STR);
         variable.getValue().setStrVal("ThisShouldBeLocal");
         variable
-            .getWfSpec()
+            .getWfSpecModel()
             .getThreadSpecs()
             .forEach((s, threadSpec) -> {
-                VariableDef variableDef1 = new VariableDef();
+                VariableDefModel variableDef1 = new VariableDefModel();
                 variableDef1.setName("variableName");
-                variableDef1.setType(VariableTypePb.STR);
-                variableDef1.setIndexType(IndexTypePb.LOCAL_INDEX);
-                VariableDef variableDef2 = new VariableDef();
+                variableDef1.setType(VariableType.STR);
+                variableDef1.setIndexType(IndexType.LOCAL_INDEX);
+                VariableDefModel variableDef2 = new VariableDefModel();
                 variableDef2.setName("variableName2");
-                variableDef2.setType(VariableTypePb.STR);
+                variableDef2.setType(VariableType.STR);
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey =
@@ -237,19 +239,19 @@ public class GetableStorageManagerTest {
     void storeRemoteStringVariableWithUserDefinedStorageType() {
         Variable variable = TestUtil.variable("test-id");
         variable.setName("variableName");
-        variable.getValue().setType(VariableTypePb.STR);
+        variable.getValue().setType(VariableType.STR);
         variable.getValue().setStrVal("ThisShouldBeRemote");
         variable
-            .getWfSpec()
+            .getWfSpecModel()
             .getThreadSpecs()
             .forEach((s, threadSpec) -> {
-                VariableDef variableDef1 = new VariableDef();
+                VariableDefModel variableDef1 = new VariableDefModel();
                 variableDef1.setName("variableName");
-                variableDef1.setType(VariableTypePb.STR);
-                variableDef1.setIndexType(IndexTypePb.REMOTE_INDEX);
-                VariableDef variableDef2 = new VariableDef();
+                variableDef1.setType(VariableType.STR);
+                variableDef1.setIndexType(IndexType.REMOTE_INDEX);
+                VariableDefModel variableDef2 = new VariableDefModel();
                 variableDef2.setName("variableName2");
-                variableDef2.setType(VariableTypePb.STR);
+                variableDef2.setType(VariableType.STR);
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey =
@@ -277,19 +279,19 @@ public class GetableStorageManagerTest {
     void storeLocalIntVariableWithUserDefinedStorageType() {
         Variable variable = TestUtil.variable("test-id");
         variable.setName("variableName");
-        variable.getValue().setType(VariableTypePb.INT);
+        variable.getValue().setType(VariableType.INT);
         variable.getValue().setIntVal(20L);
         variable
-            .getWfSpec()
+            .getWfSpecModel()
             .getThreadSpecs()
             .forEach((s, threadSpec) -> {
-                VariableDef variableDef1 = new VariableDef();
+                VariableDefModel variableDef1 = new VariableDefModel();
                 variableDef1.setName("variableName");
-                variableDef1.setType(VariableTypePb.INT);
-                variableDef1.setIndexType(IndexTypePb.LOCAL_INDEX);
-                VariableDef variableDef2 = new VariableDef();
+                variableDef1.setType(VariableType.INT);
+                variableDef1.setIndexType(IndexType.LOCAL_INDEX);
+                VariableDefModel variableDef2 = new VariableDefModel();
                 variableDef2.setName("variableName2");
-                variableDef2.setType(VariableTypePb.STR);
+                variableDef2.setType(VariableType.STR);
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey =
@@ -307,19 +309,19 @@ public class GetableStorageManagerTest {
     void storeRemoteIntVariableWithUserDefinedStorageType() {
         Variable variable = TestUtil.variable("test-id");
         variable.setName("variableName");
-        variable.getValue().setType(VariableTypePb.INT);
+        variable.getValue().setType(VariableType.INT);
         variable.getValue().setIntVal(20L);
         variable
-            .getWfSpec()
+            .getWfSpecModel()
             .getThreadSpecs()
             .forEach((s, threadSpec) -> {
-                VariableDef variableDef1 = new VariableDef();
+                VariableDefModel variableDef1 = new VariableDefModel();
                 variableDef1.setName("variableName");
-                variableDef1.setType(VariableTypePb.INT);
-                variableDef1.setIndexType(IndexTypePb.REMOTE_INDEX);
-                VariableDef variableDef2 = new VariableDef();
+                variableDef1.setType(VariableType.INT);
+                variableDef1.setIndexType(IndexType.REMOTE_INDEX);
+                VariableDefModel variableDef2 = new VariableDefModel();
                 variableDef2.setName("variableName2");
-                variableDef2.setType(VariableTypePb.STR);
+                variableDef2.setType(VariableType.STR);
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey =
@@ -347,19 +349,19 @@ public class GetableStorageManagerTest {
     void storeLocalDoubleVariableWithUserDefinedStorageType() {
         Variable variable = TestUtil.variable("test-id");
         variable.setName("variableName");
-        variable.getValue().setType(VariableTypePb.DOUBLE);
+        variable.getValue().setType(VariableType.DOUBLE);
         variable.getValue().setDoubleVal(21.0);
         variable
-            .getWfSpec()
+            .getWfSpecModel()
             .getThreadSpecs()
             .forEach((s, threadSpec) -> {
-                VariableDef variableDef1 = new VariableDef();
+                VariableDefModel variableDef1 = new VariableDefModel();
                 variableDef1.setName("variableName");
-                variableDef1.setType(VariableTypePb.DOUBLE);
-                variableDef1.setIndexType(IndexTypePb.LOCAL_INDEX);
-                VariableDef variableDef2 = new VariableDef();
+                variableDef1.setType(VariableType.DOUBLE);
+                variableDef1.setIndexType(IndexType.LOCAL_INDEX);
+                VariableDefModel variableDef2 = new VariableDefModel();
                 variableDef2.setName("variableName2");
-                variableDef2.setType(VariableTypePb.STR);
+                variableDef2.setType(VariableType.STR);
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey =
@@ -377,19 +379,19 @@ public class GetableStorageManagerTest {
     void storeRemoteDoubleVariableWithUserDefinedStorageType() {
         Variable variable = TestUtil.variable("test-id");
         variable.setName("variableName");
-        variable.getValue().setType(VariableTypePb.DOUBLE);
+        variable.getValue().setType(VariableType.DOUBLE);
         variable.getValue().setDoubleVal(21.0);
         variable
-            .getWfSpec()
+            .getWfSpecModel()
             .getThreadSpecs()
             .forEach((s, threadSpec) -> {
-                VariableDef variableDef1 = new VariableDef();
+                VariableDefModel variableDef1 = new VariableDefModel();
                 variableDef1.setName("variableName");
-                variableDef1.setType(VariableTypePb.DOUBLE);
-                variableDef1.setIndexType(IndexTypePb.REMOTE_INDEX);
-                VariableDef variableDef2 = new VariableDef();
+                variableDef1.setType(VariableType.DOUBLE);
+                variableDef1.setIndexType(IndexType.REMOTE_INDEX);
+                VariableDefModel variableDef2 = new VariableDefModel();
                 variableDef2.setName("variableName2");
-                variableDef2.setType(VariableTypePb.STR);
+                variableDef2.setType(VariableType.STR);
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey =
@@ -431,7 +433,7 @@ public class GetableStorageManagerTest {
     void storeLocalJsonVariablesWithUserDefinedStorageType() {
         Variable variable = TestUtil.variable("test-id");
         variable.setName("variableName");
-        variable.getValue().setType(VariableTypePb.JSON_OBJ);
+        variable.getValue().setType(VariableType.JSON_OBJ);
         variable
             .getValue()
             .setJsonObjVal(
@@ -445,22 +447,22 @@ public class GetableStorageManagerTest {
                 )
             );
         variable
-            .getWfSpec()
+            .getWfSpecModel()
             .getThreadSpecs()
             .forEach((s, threadSpec) -> {
-                VariableDef variableDef1 = new VariableDef();
+                VariableDefModel variableDef1 = new VariableDefModel();
                 variableDef1.setName("variableName");
-                variableDef1.setType(VariableTypePb.JSON_OBJ);
-                List<JsonIndex> indices = List.of(
-                    new JsonIndex("$.name", IndexTypePb.LOCAL_INDEX),
-                    new JsonIndex("$.age", IndexTypePb.LOCAL_INDEX),
-                    new JsonIndex("$.car.brand", IndexTypePb.LOCAL_INDEX),
-                    new JsonIndex("$.car.model", IndexTypePb.LOCAL_INDEX)
+                variableDef1.setType(VariableType.JSON_OBJ);
+                List<JsonIndexModel> indices = List.of(
+                    new JsonIndexModel("$.name", IndexType.LOCAL_INDEX),
+                    new JsonIndexModel("$.age", IndexType.LOCAL_INDEX),
+                    new JsonIndexModel("$.car.brand", IndexType.LOCAL_INDEX),
+                    new JsonIndexModel("$.car.model", IndexType.LOCAL_INDEX)
                 );
                 variableDef1.setJsonIndices(indices);
-                VariableDef variableDef2 = new VariableDef();
+                VariableDefModel variableDef2 = new VariableDefModel();
                 variableDef2.setName("variableName2");
-                variableDef2.setType(VariableTypePb.STR);
+                variableDef2.setType(VariableType.STR);
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey1 =
@@ -492,7 +494,7 @@ public class GetableStorageManagerTest {
     void storeRemoteJsonVariablesWithUserDefinedStorageType() {
         Variable variable = TestUtil.variable("test-id");
         variable.setName("variableName");
-        variable.getValue().setType(VariableTypePb.JSON_OBJ);
+        variable.getValue().setType(VariableType.JSON_OBJ);
         variable
             .getValue()
             .setJsonObjVal(
@@ -506,22 +508,22 @@ public class GetableStorageManagerTest {
                 )
             );
         variable
-            .getWfSpec()
+            .getWfSpecModel()
             .getThreadSpecs()
             .forEach((s, threadSpec) -> {
-                VariableDef variableDef1 = new VariableDef();
+                VariableDefModel variableDef1 = new VariableDefModel();
                 variableDef1.setName("variableName");
-                variableDef1.setType(VariableTypePb.JSON_OBJ);
-                List<JsonIndex> indices = List.of(
-                    new JsonIndex("$.name", IndexTypePb.LOCAL_INDEX),
-                    new JsonIndex("$.age", IndexTypePb.LOCAL_INDEX),
-                    new JsonIndex("$.car.brand", IndexTypePb.LOCAL_INDEX),
-                    new JsonIndex("$.car.model", IndexTypePb.REMOTE_INDEX)
+                variableDef1.setType(VariableType.JSON_OBJ);
+                List<JsonIndexModel> indices = List.of(
+                    new JsonIndexModel("$.name", IndexType.LOCAL_INDEX),
+                    new JsonIndexModel("$.age", IndexType.LOCAL_INDEX),
+                    new JsonIndexModel("$.car.brand", IndexType.LOCAL_INDEX),
+                    new JsonIndexModel("$.car.model", IndexType.REMOTE_INDEX)
                 );
                 variableDef1.setJsonIndices(indices);
-                VariableDef variableDef2 = new VariableDef();
+                VariableDefModel variableDef2 = new VariableDefModel();
                 variableDef2.setName("variableName2");
-                variableDef2.setType(VariableTypePb.STR);
+                variableDef2.setType(VariableType.STR);
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey1 =
@@ -560,9 +562,9 @@ public class GetableStorageManagerTest {
     @ParameterizedTest
     @MethodSource("provideNodeRunObjects")
     void storeNodeRun(
-        NodeRun nodeRun,
+        NodeRunModel nodeRunModel,
         List<Pair<String, TagStorageTypePb>> expectedStoreKeys,
-        NodeRunPb.NodeTypeCase nodeTypeCase
+        NodeRun.NodeTypeCase nodeTypeCase
     ) {
         List<String> expectedLocalStoreKeys = expectedStoreKeys
             .stream()
@@ -578,8 +580,8 @@ public class GetableStorageManagerTest {
             )
             .map(Pair::getKey)
             .toList();
-        nodeRun.setType(nodeTypeCase);
-        geTableStorageManager.store(nodeRun);
+        nodeRunModel.setType(nodeTypeCase);
+        geTableStorageManager.store(nodeRunModel);
         List<String> localTags = localTagScan("4/")
             .map(LHIterKeyValue::getValue)
             .map(Tag::getStoreKey)
@@ -600,14 +602,14 @@ public class GetableStorageManagerTest {
     }
 
     private static Stream<Arguments> provideNodeRunObjects() {
-        NodeRun nodeRun = TestUtil.nodeRun();
+        NodeRunModel nodeRunModel = TestUtil.nodeRun();
         return Stream.of(
             Arguments.of(
-                nodeRun,
+                nodeRunModel,
                 List.of(
                     Pair.of("4/__status_RUNNING__type_TASK", TagStorageTypePb.LOCAL)
                 ),
-                NodeRunPb.NodeTypeCase.TASK
+                NodeRun.NodeTypeCase.TASK
             )
         );
     }
@@ -623,43 +625,43 @@ public class GetableStorageManagerTest {
     }
 
     private static Stream<Arguments> provideGetableObjectsAndIds() {
-        WfRun wfRun = TestUtil.wfRun("0000000");
+        WfRunModel wfRunModel = TestUtil.wfRun("0000000");
         TaskRun taskRun = TestUtil.taskRun();
         Variable variable = TestUtil.variable("0000000");
         variable.setName("variableName");
-        variable.getValue().setType(VariableTypePb.STR);
+        variable.getValue().setType(VariableType.STR);
         variable.getValue().setStrVal("ThisShouldBeLocal");
         variable
-            .getWfSpec()
+            .getWfSpecModel()
             .getThreadSpecs()
             .forEach((s, threadSpec) -> {
-                VariableDef variableDef1 = new VariableDef();
+                VariableDefModel variableDef1 = new VariableDefModel();
                 variableDef1.setName("variableName");
-                variableDef1.setType(VariableTypePb.STR);
+                variableDef1.setType(VariableType.STR);
                 threadSpec.setVariableDefs(List.of(variableDef1));
             });
         ExternalEvent externalEvent = TestUtil.externalEvent();
-        WfSpec wfSpec = TestUtil.wfSpec("testWfSpecName");
-        ThreadSpec threadSpec1 = TestUtil.threadSpec();
-        threadSpec1
+        WfSpecModel wfSpecModel = TestUtil.wfSpec("testWfSpecName");
+        ThreadSpecModel threadSpecModel1 = TestUtil.threadSpec();
+        threadSpecModel1
             .getNodes()
             .forEach((s, node) -> {
                 node.getTaskNode().setTaskDefName("input-name1");
             });
-        ThreadSpec threadSpec2 = TestUtil.threadSpec();
-        threadSpec2
+        ThreadSpecModel threadSpecModel2 = TestUtil.threadSpec();
+        threadSpecModel2
             .getNodes()
             .forEach((s, node) -> {
                 node.getTaskNode().setTaskDefName("input-name2");
             });
-        wfSpec.setThreadSpecs(
-            Map.of("thread-1", threadSpec1, "thread-2", threadSpec2)
+        wfSpecModel.setThreadSpecs(
+            Map.of("thread-1", threadSpecModel1, "thread-2", threadSpecModel2)
         );
         return Stream.of(
-            Arguments.of(wfRun, wfRun.getObjectId().getStoreKey(), 3),
+            Arguments.of(wfRunModel, wfRunModel.getObjectId().getStoreKey(), 3),
             Arguments.of(taskRun, taskRun.getObjectId().getStoreKey(), 2),
             Arguments.of(variable, variable.getObjectId().getStoreKey(), 1),
-            Arguments.of(wfSpec, wfSpec.getObjectId().getStoreKey(), 2),
+            Arguments.of(wfSpecModel, wfSpecModel.getObjectId().getStoreKey(), 2),
             Arguments.of(externalEvent, externalEvent.getObjectId().getStoreKey(), 2)
         );
     }

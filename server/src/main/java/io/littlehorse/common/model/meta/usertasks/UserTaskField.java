@@ -3,7 +3,7 @@ package io.littlehorse.common.model.meta.usertasks;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.sdk.common.proto.UserTaskFieldPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 public class UserTaskField extends LHSerializable<UserTaskFieldPb> {
 
     private String name;
-    private VariableTypePb type;
+    private VariableType type;
     private String description;
     private String displayName;
     private boolean required;

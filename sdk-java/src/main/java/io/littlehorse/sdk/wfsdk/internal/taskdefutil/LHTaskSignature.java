@@ -2,7 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
 import java.lang.reflect.Method;
@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LHTaskSignature {
 
-    List<VariableTypePb> paramTypes;
+    List<VariableType> paramTypes;
     List<String> varNames;
     Method taskMethod;
     boolean hasWorkerContextAtEnd;
@@ -70,7 +70,7 @@ public class LHTaskSignature {
                     continue; // could also be `break;`
                 }
             }
-            VariableTypePb paramLHType = LHLibUtil.javaClassToLHVarType(
+            VariableType paramLHType = LHLibUtil.javaClassToLHVarType(
                 param.getType()
             );
 
@@ -91,7 +91,7 @@ public class LHTaskSignature {
         return hasWorkerContextAtEnd;
     }
 
-    public List<VariableTypePb> getParamTypes() {
+    public List<VariableType> getParamTypes() {
         return paramTypes;
     }
 
@@ -116,7 +116,7 @@ public class LHTaskSignature {
         if (!(other instanceof LHTaskSignature)) return false;
         LHTaskSignature o = (LHTaskSignature) other;
 
-        List<VariableTypePb> otherTypes = o.getParamTypes();
+        List<VariableType> otherTypes = o.getParamTypes();
         if (otherTypes.size() != paramTypes.size()) return false;
 
         for (int i = 0; i < otherTypes.size(); i++) {

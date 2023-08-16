@@ -4,9 +4,9 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.SubNode;
-import io.littlehorse.common.model.meta.ThreadSpec;
+import io.littlehorse.common.model.meta.ThreadSpecModel;
 import io.littlehorse.common.model.meta.VariableAssignment;
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.wfrun.subnoderun.StartThreadRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.StartThreadNodePb;
@@ -54,21 +54,23 @@ public class StartThreadNode extends SubNode<StartThreadNodePb> {
 
     public void validate(LHGlobalMetaStores stores, LHConfig config)
         throws LHValidationError {
-        WfSpec wfSpec = node.threadSpec.wfSpec;
+        WfSpecModel wfSpecModel = node.threadSpecModel.wfSpecModel;
 
-        if (threadSpecName.equals(node.threadSpec.name)) {
+        if (threadSpecName.equals(node.threadSpecModel.name)) {
             throw new LHValidationError(null, "Tried to start same thread");
         }
 
-        ThreadSpec childThreadSpec = wfSpec.threadSpecs.get(threadSpecName);
-        if (childThreadSpec == null) {
+        ThreadSpecModel childThreadSpecModel = wfSpecModel.threadSpecs.get(
+            threadSpecName
+        );
+        if (childThreadSpecModel == null) {
             throw new LHValidationError(
                 null,
                 "Tried to start nonexistent thread " + threadSpecName
             );
         }
 
-        childThreadSpec.validateStartVariablesByType(variables);
+        childThreadSpecModel.validateStartVariablesByType(variables);
     }
 
     @Override

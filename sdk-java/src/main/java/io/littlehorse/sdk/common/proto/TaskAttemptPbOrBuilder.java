@@ -8,34 +8,34 @@ public interface TaskAttemptPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>optional .littlehorse.VariableValuePb output = 1;</code>
+   * <code>optional .littlehorse.VariableValue output = 1;</code>
    * @return Whether the output field is set.
    */
   boolean hasOutput();
   /**
-   * <code>optional .littlehorse.VariableValuePb output = 1;</code>
+   * <code>optional .littlehorse.VariableValue output = 1;</code>
    * @return The output.
    */
-  io.littlehorse.sdk.common.proto.VariableValuePb getOutput();
+  io.littlehorse.sdk.common.proto.VariableValue getOutput();
   /**
-   * <code>optional .littlehorse.VariableValuePb output = 1;</code>
+   * <code>optional .littlehorse.VariableValue output = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getOutputOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder();
 
   /**
-   * <code>optional .littlehorse.VariableValuePb log_output = 2;</code>
+   * <code>optional .littlehorse.VariableValue log_output = 2;</code>
    * @return Whether the logOutput field is set.
    */
   boolean hasLogOutput();
   /**
-   * <code>optional .littlehorse.VariableValuePb log_output = 2;</code>
+   * <code>optional .littlehorse.VariableValue log_output = 2;</code>
    * @return The logOutput.
    */
-  io.littlehorse.sdk.common.proto.VariableValuePb getLogOutput();
+  io.littlehorse.sdk.common.proto.VariableValue getLogOutput();
   /**
-   * <code>optional .littlehorse.VariableValuePb log_output = 2;</code>
+   * <code>optional .littlehorse.VariableValue log_output = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getLogOutputOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getLogOutputOrBuilder();
 
   /**
    * <code>optional .google.protobuf.Timestamp schedule_time = 3;</code>

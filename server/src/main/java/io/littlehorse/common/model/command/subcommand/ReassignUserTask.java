@@ -7,7 +7,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.objectId.NodeRunId;
-import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.proto.ReassignedUserTaskPb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
@@ -64,9 +64,9 @@ public class ReassignUserTask extends SubCommand<ReassignedUserTaskPb> {
 
     @Override
     public AbstractResponse<?> process(LHDAO dao, LHConfig config) {
-        NodeRun nodeRun = dao.getNodeRun(source);
+        NodeRunModel nodeRunModel = dao.getNodeRun(source);
         UserTaskRun userTaskRun = dao.getUserTaskRun(
-            nodeRun.getUserTaskRun().getUserTaskRunId()
+            nodeRunModel.getUserTaskRun().getUserTaskRunId()
         );
         if (userTaskRun.getStatus() == UserTaskRunStatusPb.ASSIGNED) {
             userTaskRun.deadlineReassign(newOwner, assignToCase);

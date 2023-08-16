@@ -3,15 +3,15 @@ package io.littlehorse.common.model.wfrun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.meta.JsonIndex;
-import io.littlehorse.common.model.meta.ThreadSpec;
-import io.littlehorse.common.model.meta.VariableDef;
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.JsonIndexModel;
+import io.littlehorse.common.model.meta.ThreadSpecModel;
+import io.littlehorse.common.model.meta.VariableDefModel;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.VariablePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.util.Date;
@@ -30,28 +30,28 @@ import org.apache.commons.lang3.tuple.Pair;
 @Slf4j
 public class Variable extends Getable<VariablePb> {
 
-    public VariableValue value;
+    public VariableValueModel value;
     public String wfRunId;
     public int threadRunNumber;
     public String name;
     public String threadSpecName;
     public Date date;
 
-    private WfSpec wfSpec;
+    private WfSpecModel wfSpecModel;
 
     public Variable() {}
 
     public Variable(
         String name,
-        VariableValue value,
+        VariableValueModel value,
         String wfRunId,
         int threadRunNumber,
-        WfSpec wfSpec
+        WfSpecModel wfSpecModel
     ) {
         this.name = name;
         this.value = value;
         this.wfRunId = wfRunId;
-        this.wfSpec = wfSpec;
+        this.wfSpecModel = wfSpecModel;
         this.threadRunNumber = threadRunNumber;
     }
 
@@ -59,17 +59,17 @@ public class Variable extends Getable<VariablePb> {
         return VariablePb.class;
     }
 
-    public WfSpec getWfSpec() {
-        return wfSpec;
+    public WfSpecModel getWfSpecModel() {
+        return wfSpecModel;
     }
 
-    public void setWfSpec(WfSpec spec) {
-        this.wfSpec = spec;
+    public void setWfSpecModel(WfSpecModel spec) {
+        this.wfSpecModel = spec;
     }
 
     public void initFrom(Message proto) {
         VariablePb p = (VariablePb) proto;
-        value = VariableValue.fromProto(p.getValue());
+        value = VariableValueModel.fromProto(p.getValue());
         wfRunId = p.getWfRunId();
         name = p.getName();
         threadRunNumber = p.getThreadRunNumber();
@@ -114,8 +114,7 @@ public class Variable extends Getable<VariablePb> {
                 ),
                 Optional.empty(),
                 variable ->
-                    ((Variable) variable).getValue().getType() !=
-                    VariableTypePb.NULL &&
+                    ((Variable) variable).getValue().getType() != VariableType.NULL &&
                     !((Variable) variable).getName()
                         .equals(LHConstants.EXT_EVT_HANDLER_VAR)
             )
@@ -132,7 +131,7 @@ public class Variable extends Getable<VariablePb> {
                 return List.of(
                     new IndexedField(
                         key,
-                        this.getWfSpec().getName(),
+                        this.getWfSpecModel().getName(),
                         TagStorageTypePb.LOCAL
                     )
                 );
@@ -141,7 +140,7 @@ public class Variable extends Getable<VariablePb> {
                 return List.of(
                     new IndexedField(
                         key,
-                        LHUtil.toLHDbVersionFormat(this.getWfSpec().version),
+                        LHUtil.toLHDbVersionFormat(this.getWfSpecModel().version),
                         TagStorageTypePb.LOCAL
                     )
                 );
@@ -153,10 +152,10 @@ public class Variable extends Getable<VariablePb> {
         return null;
     }
 
-    private Map<String, VariableDef> variableDefMap() {
-        Map<String, VariableDef> out = new HashMap<>();
-        for (ThreadSpec tSpec : getWfSpec().getThreadSpecs().values()) {
-            for (VariableDef varDef : tSpec.getVariableDefs()) {
+    private Map<String, VariableDefModel> variableDefMap() {
+        Map<String, VariableDefModel> out = new HashMap<>();
+        for (ThreadSpecModel tSpec : getWfSpecModel().getThreadSpecs().values()) {
+            for (VariableDefModel varDef : tSpec.getVariableDefs()) {
                 out.put(varDef.getName(), varDef);
             }
         }
@@ -165,13 +164,12 @@ public class Variable extends Getable<VariablePb> {
     }
 
     private List<IndexedField> getDynamicFields() {
-        VariableValue variableValue = getValue();
-        Map<String, VariableDef> stringVariableDefMap = variableDefMap();
-        VariableDef variableDef = stringVariableDefMap.get(this.getName());
+        VariableValueModel variableValue = getValue();
+        Map<String, VariableDefModel> stringVariableDefMap = variableDefMap();
+        VariableDefModel variableDef = stringVariableDefMap.get(this.getName());
         TagStorageTypePb tagStorageTypePb = variableDef.getTagStorageType();
         if (
-            tagStorageTypePb == null &&
-            variableDef.getType() != VariableTypePb.JSON_OBJ
+            tagStorageTypePb == null && variableDef.getType() != VariableType.JSON_OBJ
         ) {
             return List.of();
         }
@@ -247,7 +245,7 @@ public class Variable extends Getable<VariablePb> {
     }
 
     private Optional<TagStorageTypePb> findStorageTypeFromVariableDef(
-        VariableDef variableDef,
+        VariableDefModel variableDef,
         String jsonPath
     ) {
         return variableDef
@@ -256,7 +254,7 @@ public class Variable extends Getable<VariablePb> {
             .filter(jsonIndex -> {
                 return jsonIndex.getPath().equals(jsonPath);
             })
-            .map(JsonIndex::getTagStorageType)
+            .map(JsonIndexModel::getTagStorageType)
             .findFirst();
     }
 
@@ -281,12 +279,12 @@ public class Variable extends Getable<VariablePb> {
 
     @Override
     public TagStorageTypePb tagStorageTypePb() {
-        return getWfSpec()
+        return getWfSpecModel()
             .getThreadSpecs()
             .values()
             .stream()
             .map(threadSpec -> {
-                VariableDef currentVariableDef = threadSpec
+                VariableDefModel currentVariableDef = threadSpec
                     .getVariableDefs()
                     .stream()
                     .filter(variableDef ->

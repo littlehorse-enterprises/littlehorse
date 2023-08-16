@@ -125,9 +125,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int CONTENT_FIELD_NUMBER = 3;
-  private io.littlehorse.sdk.common.proto.VariableValuePb content_;
+  private io.littlehorse.sdk.common.proto.VariableValue content_;
   /**
-   * <code>optional .littlehorse.VariableValuePb content = 3;</code>
+   * <code>optional .littlehorse.VariableValue content = 3;</code>
    * @return Whether the content field is set.
    */
   @java.lang.Override
@@ -135,19 +135,19 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>optional .littlehorse.VariableValuePb content = 3;</code>
+   * <code>optional .littlehorse.VariableValue content = 3;</code>
    * @return The content.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableValuePb getContent() {
-    return content_ == null ? io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance() : content_;
+  public io.littlehorse.sdk.common.proto.VariableValue getContent() {
+    return content_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : content_;
   }
   /**
-   * <code>optional .littlehorse.VariableValuePb content = 3;</code>
+   * <code>optional .littlehorse.VariableValue content = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getContentOrBuilder() {
-    return content_ == null ? io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance() : content_;
+  public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getContentOrBuilder() {
+    return content_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : content_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -687,31 +687,31 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.sdk.common.proto.VariableValuePb content_;
+    private io.littlehorse.sdk.common.proto.VariableValue content_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableValuePb, io.littlehorse.sdk.common.proto.VariableValuePb.Builder, io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder> contentBuilder_;
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> contentBuilder_;
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
+     * <code>optional .littlehorse.VariableValue content = 3;</code>
      * @return Whether the content field is set.
      */
     public boolean hasContent() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
+     * <code>optional .littlehorse.VariableValue content = 3;</code>
      * @return The content.
      */
-    public io.littlehorse.sdk.common.proto.VariableValuePb getContent() {
+    public io.littlehorse.sdk.common.proto.VariableValue getContent() {
       if (contentBuilder_ == null) {
-        return content_ == null ? io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance() : content_;
+        return content_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : content_;
       } else {
         return contentBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
+     * <code>optional .littlehorse.VariableValue content = 3;</code>
      */
-    public Builder setContent(io.littlehorse.sdk.common.proto.VariableValuePb value) {
+    public Builder setContent(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (contentBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -725,10 +725,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
+     * <code>optional .littlehorse.VariableValue content = 3;</code>
      */
     public Builder setContent(
-        io.littlehorse.sdk.common.proto.VariableValuePb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
       if (contentBuilder_ == null) {
         content_ = builderForValue.build();
       } else {
@@ -739,13 +739,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
+     * <code>optional .littlehorse.VariableValue content = 3;</code>
      */
-    public Builder mergeContent(io.littlehorse.sdk.common.proto.VariableValuePb value) {
+    public Builder mergeContent(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (contentBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0) &&
           content_ != null &&
-          content_ != io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance()) {
+          content_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
           getContentBuilder().mergeFrom(value);
         } else {
           content_ = value;
@@ -758,7 +758,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
+     * <code>optional .littlehorse.VariableValue content = 3;</code>
      */
     public Builder clearContent() {
       bitField0_ = (bitField0_ & ~0x00000004);
@@ -771,33 +771,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
+     * <code>optional .littlehorse.VariableValue content = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableValuePb.Builder getContentBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableValue.Builder getContentBuilder() {
       bitField0_ |= 0x00000004;
       onChanged();
       return getContentFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
+     * <code>optional .littlehorse.VariableValue content = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getContentOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getContentOrBuilder() {
       if (contentBuilder_ != null) {
         return contentBuilder_.getMessageOrBuilder();
       } else {
         return content_ == null ?
-            io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance() : content_;
+            io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : content_;
       }
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
+     * <code>optional .littlehorse.VariableValue content = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableValuePb, io.littlehorse.sdk.common.proto.VariableValuePb.Builder, io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
         getContentFieldBuilder() {
       if (contentBuilder_ == null) {
         contentBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableValuePb, io.littlehorse.sdk.common.proto.VariableValuePb.Builder, io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder>(
+            io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder>(
                 getContent(),
                 getParentForChildren(),
                 isClean());

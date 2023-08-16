@@ -2,8 +2,8 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.meta.VariableDef;
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.VariableDefModel;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -16,7 +16,7 @@ import io.littlehorse.sdk.common.proto.SearchVariablePb.NameAndValuePb;
 import io.littlehorse.sdk.common.proto.SearchVariablePb.VariableCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchVariableReplyPb;
 import io.littlehorse.sdk.common.proto.VariableIdPb;
-import io.littlehorse.sdk.common.proto.VariableValuePb;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
@@ -113,7 +113,7 @@ public class SearchVariable
     }
 
     private TagStorageTypePb indexTypeForSearchFromWfSpec(LHGlobalMetaStores stores) {
-        WfSpec spec = stores.getWfSpec(value.getWfSpecName(), null);
+        WfSpecModel spec = stores.getWfSpec(value.getWfSpecName(), null);
 
         return spec
             .getThreadSpecs()
@@ -126,7 +126,7 @@ public class SearchVariable
             .filter(variableDef ->
                 variableDef.getType().equals(value.getValue().getType())
             )
-            .map(VariableDef::getTagStorageType)
+            .map(VariableDefModel::getTagStorageType)
             .findFirst()
             .orElse(null);
     }
@@ -163,7 +163,7 @@ public class SearchVariable
         return null;
     }
 
-    private String getVariableValue(VariableValuePb value) throws LHValidationError {
+    private String getVariableValue(VariableValue value) throws LHValidationError {
         return switch (value.getType()) {
             case STR -> value.getStr();
             case BOOL -> String.valueOf(value.getBool());

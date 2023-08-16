@@ -36,26 +36,26 @@ public interface ListWfMetricsReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>repeated .littlehorse.WfSpecMetricsPb results = 3;</code>
+   * <code>repeated .littlehorse.WfSpecMetrics results = 3;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.WfSpecMetricsPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.WfSpecMetrics> 
       getResultsList();
   /**
-   * <code>repeated .littlehorse.WfSpecMetricsPb results = 3;</code>
+   * <code>repeated .littlehorse.WfSpecMetrics results = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.WfSpecMetricsPb getResults(int index);
+  io.littlehorse.sdk.common.proto.WfSpecMetrics getResults(int index);
   /**
-   * <code>repeated .littlehorse.WfSpecMetricsPb results = 3;</code>
+   * <code>repeated .littlehorse.WfSpecMetrics results = 3;</code>
    */
   int getResultsCount();
   /**
-   * <code>repeated .littlehorse.WfSpecMetricsPb results = 3;</code>
+   * <code>repeated .littlehorse.WfSpecMetrics results = 3;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.WfSpecMetricsPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.WfSpecMetricsOrBuilder> 
       getResultsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.WfSpecMetricsPb results = 3;</code>
+   * <code>repeated .littlehorse.WfSpecMetrics results = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.WfSpecMetricsPbOrBuilder getResultsOrBuilder(
+  io.littlehorse.sdk.common.proto.WfSpecMetricsOrBuilder getResultsOrBuilder(
       int index);
 }

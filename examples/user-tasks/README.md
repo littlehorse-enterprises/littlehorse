@@ -44,7 +44,7 @@ lhctl run it-request user-id anakin
 
 We check the status of the `WfRun` and see that it's running:
 ```
-lhctl get wfRun <wf_run_id>
+lhctl get wfRunModel <wf_run_id>
 ```
 
 Note that there is only one `ThreadRun` in the `WfRun`, and the current `NodeRun` position is `1`. If you recall our `WfSpec`, we've arrived at a User Task Run, and it should be assigned to `anakin`.
@@ -70,8 +70,8 @@ The commands behave roughly like they sound.
 The second option to find the UserTaskRun's ID is to check the `NodeRun`. Recall that there is only one `ThreadRun` (with number `0`), and that `ThreadRun` is on `NodeRun` 1. We can get tne `NodeRun` as follows:
 
 ```
-# provide wfRunId, threadRun number, and nodeRun position
-lhctl get nodeRun <wfRunId> 0 1
+# provide wfRunId, threadRunModel number, and nodeRunModel position
+lhctl get nodeRunModel <wfRunId> 0 1
 ```
 
 <<<<<<< HEAD
@@ -141,7 +141,7 @@ lhctl search userTaskRun --userId anakin --userTaskStatus CLAIMED
 Now let's check back on our `WfRun`.
 
 ```
-lhctl get wfRun <wfRunId>
+lhctl get wfRunModel <wfRunId>
 ```
 
 It's now on `NodeRun` with position `2`! That makes sense. It's that `UserTaskRun` that's assigned to the `finance` department. Let's find the ID:

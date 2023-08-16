@@ -2,10 +2,10 @@ package io.littlehorse.common.model.wfrun.haltreason;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.wfrun.ThreadRun;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.ThreadRunModel;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.InterruptedPb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
 
 public class Interrupted
     extends LHSerializable<InterruptedPb>
@@ -13,9 +13,9 @@ public class Interrupted
 
     public int interruptThreadId;
 
-    public boolean isResolved(WfRun wfRun) {
-        ThreadRun iThread = wfRun.threadRuns.get(interruptThreadId);
-        return iThread.status == LHStatusPb.COMPLETED;
+    public boolean isResolved(WfRunModel wfRunModel) {
+        ThreadRunModel iThread = wfRunModel.threadRunModels.get(interruptThreadId);
+        return iThread.status == LHStatus.COMPLETED;
     }
 
     public Class<InterruptedPb> getProtoBaseClass() {

@@ -36,26 +36,26 @@ public interface ListTaskMetricsReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>repeated .littlehorse.TaskDefMetricsPb results = 3;</code>
+   * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.TaskDefMetricsPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.TaskDefMetrics> 
       getResultsList();
   /**
-   * <code>repeated .littlehorse.TaskDefMetricsPb results = 3;</code>
+   * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.TaskDefMetricsPb getResults(int index);
+  io.littlehorse.sdk.common.proto.TaskDefMetrics getResults(int index);
   /**
-   * <code>repeated .littlehorse.TaskDefMetricsPb results = 3;</code>
+   * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
    */
   int getResultsCount();
   /**
-   * <code>repeated .littlehorse.TaskDefMetricsPb results = 3;</code>
+   * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.TaskDefMetricsPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.TaskDefMetricsOrBuilder> 
       getResultsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.TaskDefMetricsPb results = 3;</code>
+   * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.TaskDefMetricsPbOrBuilder getResultsOrBuilder(
+  io.littlehorse.sdk.common.proto.TaskDefMetricsOrBuilder getResultsOrBuilder(
       int index);
 }

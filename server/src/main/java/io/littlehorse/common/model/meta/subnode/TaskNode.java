@@ -6,19 +6,19 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
-import io.littlehorse.common.model.meta.Node;
+import io.littlehorse.common.model.meta.NodeModel;
 import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.VariableAssignment;
-import io.littlehorse.common.model.meta.VariableDef;
-import io.littlehorse.common.model.wfrun.ThreadRun;
+import io.littlehorse.common.model.meta.VariableDefModel;
+import io.littlehorse.common.model.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.wfrun.VarNameAndVal;
-import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.TaskNodePb;
 import io.littlehorse.sdk.common.proto.VariableAssignmentPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -43,20 +43,20 @@ public class TaskNode extends SubNode<TaskNodePb> {
         if (taskDef == null) {
             if (dao == null && node != null) {
                 // Only works for when this is part of a Node, not a UTATask.
-                dao = node.getThreadSpec().getWfSpec().getDao();
+                dao = node.getThreadSpecModel().getWfSpecModel().getDao();
             }
             taskDef = dao.getTaskDef(taskDefName);
         }
         return taskDef;
     }
 
-    private Node node;
+    private NodeModel node;
 
     public TaskNode() {
         variables = new ArrayList<>();
     }
 
-    public void setNode(Node node) {
+    public void setNode(NodeModel node) {
         this.node = node;
     }
 
@@ -127,9 +127,11 @@ public class TaskNode extends SubNode<TaskNodePb> {
         // typed JSON variables (i.e. those with a schema), we will also validate
         // those as well.
         for (int i = 0; i < variables.size(); i++) {
-            VariableDef taskDefVar = taskDef.getInputVars().get(i);
+            VariableDefModel taskDefVar = taskDef.getInputVars().get(i);
             VariableAssignment assn = variables.get(i);
-            if (!assn.canBeType(taskDefVar.getType(), this.node.getThreadSpec())) {
+            if (
+                !assn.canBeType(taskDefVar.getType(), this.node.getThreadSpecModel())
+            ) {
                 throw new LHValidationError(
                     null,
                     "Input variable " +
@@ -155,7 +157,7 @@ public class TaskNode extends SubNode<TaskNodePb> {
         return out;
     }
 
-    public List<VarNameAndVal> assignInputVars(ThreadRun thread)
+    public List<VarNameAndVal> assignInputVars(ThreadRunModel thread)
         throws LHVarSubError {
         List<VarNameAndVal> out = new ArrayList<>();
         if (getTaskDef().getInputVars().size() != variables.size()) {
@@ -166,10 +168,10 @@ public class TaskNode extends SubNode<TaskNodePb> {
         }
 
         for (int i = 0; i < taskDef.inputVars.size(); i++) {
-            VariableDef requiredVarDef = taskDef.inputVars.get(i);
+            VariableDefModel requiredVarDef = taskDef.inputVars.get(i);
             VariableAssignment assn = variables.get(i);
             String varName = requiredVarDef.name;
-            VariableValue val;
+            VariableValueModel val;
 
             if (assn != null) {
                 val = thread.assignVariable(assn);
@@ -179,7 +181,7 @@ public class TaskNode extends SubNode<TaskNodePb> {
                     "Variable " + varName + " is unassigned."
                 );
             }
-            if (val.type != requiredVarDef.type && val.type != VariableTypePb.NULL) {
+            if (val.type != requiredVarDef.type && val.type != VariableType.NULL) {
                 throw new LHVarSubError(
                     null,
                     "Variable " +

@@ -6,7 +6,7 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.ThreadToWaitFor;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRunPb.WaitForThreadPb;
 import java.util.Date;
 import lombok.Getter;
@@ -17,7 +17,7 @@ import lombok.Setter;
 public class WaitForThread extends LHSerializable<WaitForThreadPb> {
 
     private Date threadEndTime;
-    private LHStatusPb threadStatus;
+    private LHStatus threadStatus;
     private int threadRunNumber;
 
     public Class<WaitForThreadPb> getProtoBaseClass() {
@@ -27,21 +27,21 @@ public class WaitForThread extends LHSerializable<WaitForThreadPb> {
     public WaitForThread() {}
 
     public WaitForThread(
-        NodeRun waitForThreadNodeRun,
+        NodeRunModel waitForThreadNodeRunModel,
         ThreadToWaitFor threadToWaitFor
     ) throws LHVarSubError {
-        ThreadRun parentThreadRun = waitForThreadNodeRun.getThreadRun();
+        ThreadRunModel parentThreadRunModel = waitForThreadNodeRunModel.getThreadRun();
         this.threadRunNumber =
-            parentThreadRun
+            parentThreadRunModel
                 .assignVariable(threadToWaitFor.getThreadRunNumber())
                 .asInt()
                 .intVal.intValue();
 
-        ThreadRun threadRun = parentThreadRun
-            .getWfRun()
+        ThreadRunModel threadRunModel = parentThreadRunModel
+            .getWfRunModel()
             .getThreadRun(threadRunNumber);
 
-        if (threadRun == null) {
+        if (threadRunModel == null) {
             throw new LHVarSubError(
                 null,
                 "Couldn't wait for nonexistent threadRun: " + threadRunNumber
@@ -49,23 +49,23 @@ public class WaitForThread extends LHSerializable<WaitForThreadPb> {
         }
 
         // Make sure we're not waiting for a parent thread or grandparent, etc.
-        ThreadRun potentialParent = parentThreadRun;
+        ThreadRunModel potentialParent = parentThreadRunModel;
         while (potentialParent != null) {
             if (potentialParent.number == this.threadRunNumber) {
-                waitForThreadNodeRun.fail(
+                waitForThreadNodeRunModel.fail(
                     new Failure(
                         "Determined threadrunnumber " +
                         threadRunNumber +
                         " is a parent!",
                         LHConstants.VAR_SUB_ERROR
                     ),
-                    waitForThreadNodeRun.getDao().getEventTime()
+                    waitForThreadNodeRunModel.getDao().getEventTime()
                 );
             }
             potentialParent = potentialParent.getParent();
         }
 
-        this.threadStatus = threadRun.getStatus();
+        this.threadStatus = threadRunModel.getStatus();
     }
 
     public void initFrom(Message proto) {

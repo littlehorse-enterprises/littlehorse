@@ -14,8 +14,8 @@ import io.littlehorse.sdk.common.proto.ReportTaskRunPb;
 import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
 import io.littlehorse.sdk.common.proto.TaskDefPb;
 import io.littlehorse.sdk.common.proto.TaskStatusPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
-import io.littlehorse.sdk.common.proto.VariableValuePb;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.sdk.worker.internal.util.ReportTaskObserver;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
@@ -269,14 +269,14 @@ public class LHServerConnectionManager
 
         try {
             Object rawResult = invoke(scheduledTask, wc);
-            VariableValuePb serialized = LHLibUtil.objToVarVal(rawResult);
+            VariableValue serialized = LHLibUtil.objToVarVal(rawResult);
             taskResult
                 .setOutput(serialized.toBuilder())
                 .setStatus(TaskStatusPb.TASK_SUCCESS);
 
             if (wc.getLogOutput() != null) {
                 taskResult.setLogOutput(
-                    VariableValuePb.newBuilder().setStr(wc.getLogOutput())
+                    VariableValue.newBuilder().setStr(wc.getLogOutput())
                 );
             }
         } catch (InputVarSubstitutionError exn) {
@@ -311,7 +311,7 @@ public class LHServerConnectionManager
         return this.taskMethod.invoke(this.executable, inputs.toArray());
     }
 
-    private VariableValuePb.Builder exnToVarVal(Throwable exn, WorkerContext ctx) {
+    private VariableValue.Builder exnToVarVal(Throwable exn, WorkerContext ctx) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         exn.printStackTrace(pw);
@@ -320,10 +320,7 @@ public class LHServerConnectionManager
             output += "\n\n\n\n" + ctx.getLogOutput();
         }
 
-        return VariableValuePb
-            .newBuilder()
-            .setStr(output)
-            .setType(VariableTypePb.STR);
+        return VariableValue.newBuilder().setStr(output).setType(VariableType.STR);
     }
 
     public int getNumThreads() {

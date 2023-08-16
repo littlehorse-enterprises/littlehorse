@@ -15,7 +15,7 @@ import (
 )
 
 var getWfSpecCmd = &cobra.Command{
-	Use:   "wfSpec <name>",
+	Use:   "wfSpecModel <name>",
 	Short: "Get a WfSpec by Name and optionally Version.",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
@@ -70,8 +70,8 @@ var getWfSpecCmd = &cobra.Command{
 }
 
 var deployWfSpecCmd = &cobra.Command{
-	Use:   "wfSpec <filename>",
-	Short: "Deploy a wfSpec from a JSON or Protobuf file.",
+	Use:   "wfSpecModel <filename>",
+	Short: "Deploy a wfSpecModel from a JSON or Protobuf file.",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
 			log.Fatal("You must provide one argument: the filename to deploy from.")
@@ -102,7 +102,7 @@ var deployWfSpecCmd = &cobra.Command{
 }
 
 var searchWfSpecCmd = &cobra.Command{
-	Use:   "wfSpec",
+	Use:   "wfSpecModel",
 	Short: "Search for WfSpecs",
 	Long: `Search for WfSpecs. You may provide any of the following option groups:
 [name]
@@ -111,7 +111,7 @@ var searchWfSpecCmd = &cobra.Command{
 
 If you provide no optional arguments, searches for all WfSpecs.
 
-Returns a list of ObjectId's that can be passed into 'lhctl get wfSpec'.
+Returns a list of ObjectId's that can be passed into 'lhctl get wfSpecModel'.
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		name, _ := cmd.Flags().GetString("name")
@@ -148,7 +148,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfSpec'.
 }
 
 var deleteWfSpecCmd = &cobra.Command{
-	Use:   "wfSpec <name> <version>",
+	Use:   "wfSpecModel <name> <version>",
 	Short: "Delete a WfSpec.",
 	Long: `Delete a WfSpec. You must provide the name and exact version of the
 WfSpec to delete.

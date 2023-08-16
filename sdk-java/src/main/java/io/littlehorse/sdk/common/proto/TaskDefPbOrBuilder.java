@@ -20,27 +20,27 @@ public interface TaskDefPbOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+   * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.VariableDefPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.VariableDef> 
       getInputVarsList();
   /**
-   * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+   * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableDefPb getInputVars(int index);
+  io.littlehorse.sdk.common.proto.VariableDef getInputVars(int index);
   /**
-   * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+   * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
   int getInputVarsCount();
   /**
-   * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+   * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.VariableDefPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.VariableDefOrBuilder> 
       getInputVarsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.VariableDefPb input_vars = 2;</code>
+   * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableDefPbOrBuilder getInputVarsOrBuilder(
+  io.littlehorse.sdk.common.proto.VariableDefOrBuilder getInputVarsOrBuilder(
       int index);
 
   /**

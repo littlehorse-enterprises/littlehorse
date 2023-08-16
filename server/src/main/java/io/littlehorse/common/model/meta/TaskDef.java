@@ -7,7 +7,7 @@ import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskDefIdPb;
 import io.littlehorse.sdk.common.proto.TaskDefPb;
-import io.littlehorse.sdk.common.proto.VariableDefPb;
+import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class TaskDef extends Getable<TaskDefPb> {
     public String name;
 
     public Date createdAt;
-    public List<VariableDef> inputVars;
+    public List<VariableDefModel> inputVars;
 
     public TaskDef() {
         inputVars = new ArrayList<>();
@@ -62,7 +62,7 @@ public class TaskDef extends Getable<TaskDefPb> {
             .newBuilder()
             .setName(name)
             .setCreatedAt(LHUtil.fromDate(getCreatedAt()));
-        for (VariableDef entry : inputVars) {
+        for (VariableDefModel entry : inputVars) {
             b.addInputVars(entry.toProto());
         }
 
@@ -74,8 +74,8 @@ public class TaskDef extends Getable<TaskDefPb> {
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
 
-        for (VariableDefPb entry : proto.getInputVarsList()) {
-            inputVars.add(VariableDef.fromProto(entry));
+        for (VariableDef entry : proto.getInputVarsList()) {
+            inputVars.add(VariableDefModel.fromProto(entry));
         }
     }
 

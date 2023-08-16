@@ -1,6 +1,6 @@
 package io.littlehorse.sdk.wfsdk;
 
-import io.littlehorse.sdk.common.proto.IndexTypePb;
+import io.littlehorse.sdk.common.proto.IndexType;
 import lombok.NonNull;
 
 /**
@@ -19,30 +19,30 @@ public interface WfRunVariable {
     WfRunVariable jsonPath(String path);
 
     /**
-     * Enables the storage of variables with a Non-null {@link IndexTypePb}.
+     * Enables the storage of variables with a Non-null {@link IndexType}.
      * For enhanced efficiency, it offers two types of indexing:
      * Remote Index and Local Index.
-     * {@link IndexTypePb#REMOTE_INDEX Remote}: This type of indexing is
+     * {@link IndexType#REMOTE_INDEX Remote}: This type of indexing is
      * recommended for variables with low cardinality, which means
      * they have relatively few distinct values. For example,
      * storing userId.
-     * {@link IndexTypePb#LOCAL_INDEX Local}: Local Index is designed for
+     * {@link IndexType#LOCAL_INDEX Local}: Local Index is designed for
      * variables with high cardinality.
      *
      * @param indexType Defines Local or Remote Index
      * @return same {@link WfRunVariable} instance
      */
-    WfRunVariable withIndex(@NonNull IndexTypePb indexType);
+    WfRunVariable withIndex(@NonNull IndexType indexType);
 
     /**
      * Enables the storage of specific attributes inside a Json Variable.
      * For enhanced efficiency, it offers two types of indexing:
      * Remote Index and Local Index.
-     * {@link IndexTypePb#REMOTE_INDEX Remote}: This type of indexing is
+     * {@link IndexType#REMOTE_INDEX Remote}: This type of indexing is
      * recommended for variables with low cardinality, which means
      * they have relatively few distinct values. For example,
      * storing userId.
-     * {@link IndexTypePb#LOCAL_INDEX Local}: Local Index is designed for
+     * {@link IndexType#LOCAL_INDEX Local}: Local Index is designed for
      * variables with high cardinality.
      *
      * @param indexType Defines Local or Remote Index
@@ -53,6 +53,6 @@ public interface WfRunVariable {
      */
     WfRunVariable withJsonIndex(
         @NonNull String jsonPath,
-        @NonNull IndexTypePb indexType
+        @NonNull IndexType indexType
     );
 }

@@ -23,6 +23,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Default().Println("got wfRun Id:", *wfId)
+	log.Default().Println("got wfRunModel Id:", *wfId)
 
 }

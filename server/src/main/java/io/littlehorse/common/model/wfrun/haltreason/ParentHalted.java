@@ -2,9 +2,9 @@ package io.littlehorse.common.model.wfrun.haltreason;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.wfrun.ThreadRun;
-import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.common.model.wfrun.ThreadRunModel;
+import io.littlehorse.common.model.wfrun.WfRunModel;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.ParentHaltedPb;
 
 public class ParentHalted
@@ -13,16 +13,15 @@ public class ParentHalted
 
     public int parentThreadId;
 
-    public boolean isResolved(WfRun wfRun) {
-        ThreadRun parent = wfRun.threadRuns.get(parentThreadId);
-        if (parent.status == LHStatusPb.COMPLETED) {
+    public boolean isResolved(WfRunModel wfRunModel) {
+        ThreadRunModel parent = wfRunModel.threadRunModels.get(parentThreadId);
+        if (parent.status == LHStatus.COMPLETED) {
             throw new RuntimeException("Not possible.");
         }
 
         // If parent status is ERROR, then the thread halt reason is still valid.
         return (
-            parent.status == LHStatusPb.RUNNING ||
-            parent.status == LHStatusPb.STARTING
+            parent.status == LHStatus.RUNNING || parent.status == LHStatus.STARTING
         );
     }
 

@@ -61,15 +61,15 @@ private static final long serialVersionUID = 0L;
         getWfSpecNameBytes();
 
     /**
-     * <code>.littlehorse.LHStatusPb status = 2;</code>
+     * <code>.littlehorse.LHStatus status = 2;</code>
      * @return The enum numeric value on the wire for status.
      */
     int getStatusValue();
     /**
-     * <code>.littlehorse.LHStatusPb status = 2;</code>
+     * <code>.littlehorse.LHStatus status = 2;</code>
      * @return The status.
      */
-    io.littlehorse.sdk.common.proto.LHStatusPb getStatus();
+    io.littlehorse.sdk.common.proto.LHStatus getStatus();
 
     /**
      * <code>int32 wf_spec_version = 3;</code>
@@ -192,19 +192,19 @@ private static final long serialVersionUID = 0L;
     public static final int STATUS_FIELD_NUMBER = 2;
     private int status_ = 0;
     /**
-     * <code>.littlehorse.LHStatusPb status = 2;</code>
+     * <code>.littlehorse.LHStatus status = 2;</code>
      * @return The enum numeric value on the wire for status.
      */
     @java.lang.Override public int getStatusValue() {
       return status_;
     }
     /**
-     * <code>.littlehorse.LHStatusPb status = 2;</code>
+     * <code>.littlehorse.LHStatus status = 2;</code>
      * @return The status.
      */
-    @java.lang.Override public io.littlehorse.sdk.common.proto.LHStatusPb getStatus() {
-      io.littlehorse.sdk.common.proto.LHStatusPb result = io.littlehorse.sdk.common.proto.LHStatusPb.forNumber(status_);
-      return result == null ? io.littlehorse.sdk.common.proto.LHStatusPb.UNRECOGNIZED : result;
+    @java.lang.Override public io.littlehorse.sdk.common.proto.LHStatus getStatus() {
+      io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(status_);
+      return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
     }
 
     public static final int WF_SPEC_VERSION_FIELD_NUMBER = 3;
@@ -287,7 +287,7 @@ private static final long serialVersionUID = 0L;
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfSpecName_);
       }
-      if (status_ != io.littlehorse.sdk.common.proto.LHStatusPb.STARTING.getNumber()) {
+      if (status_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
         output.writeEnum(2, status_);
       }
       if (wfSpecVersion_ != 0) {
@@ -311,7 +311,7 @@ private static final long serialVersionUID = 0L;
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, wfSpecName_);
       }
-      if (status_ != io.littlehorse.sdk.common.proto.LHStatusPb.STARTING.getNumber()) {
+      if (status_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(2, status_);
       }
@@ -796,14 +796,14 @@ private static final long serialVersionUID = 0L;
 
       private int status_ = 0;
       /**
-       * <code>.littlehorse.LHStatusPb status = 2;</code>
+       * <code>.littlehorse.LHStatus status = 2;</code>
        * @return The enum numeric value on the wire for status.
        */
       @java.lang.Override public int getStatusValue() {
         return status_;
       }
       /**
-       * <code>.littlehorse.LHStatusPb status = 2;</code>
+       * <code>.littlehorse.LHStatus status = 2;</code>
        * @param value The enum numeric value on the wire for status to set.
        * @return This builder for chaining.
        */
@@ -814,20 +814,20 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.LHStatusPb status = 2;</code>
+       * <code>.littlehorse.LHStatus status = 2;</code>
        * @return The status.
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.LHStatusPb getStatus() {
-        io.littlehorse.sdk.common.proto.LHStatusPb result = io.littlehorse.sdk.common.proto.LHStatusPb.forNumber(status_);
-        return result == null ? io.littlehorse.sdk.common.proto.LHStatusPb.UNRECOGNIZED : result;
+      public io.littlehorse.sdk.common.proto.LHStatus getStatus() {
+        io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(status_);
+        return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
       }
       /**
-       * <code>.littlehorse.LHStatusPb status = 2;</code>
+       * <code>.littlehorse.LHStatus status = 2;</code>
        * @param value The status to set.
        * @return This builder for chaining.
        */
-      public Builder setStatus(io.littlehorse.sdk.common.proto.LHStatusPb value) {
+      public Builder setStatus(io.littlehorse.sdk.common.proto.LHStatus value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -837,7 +837,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.LHStatusPb status = 2;</code>
+       * <code>.littlehorse.LHStatus status = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearStatus() {
@@ -2156,15 +2156,15 @@ private static final long serialVersionUID = 0L;
         getWfSpecNameBytes();
 
     /**
-     * <code>.littlehorse.LHStatusPb status = 2;</code>
+     * <code>.littlehorse.LHStatus status = 2;</code>
      * @return The enum numeric value on the wire for status.
      */
     int getStatusValue();
     /**
-     * <code>.littlehorse.LHStatusPb status = 2;</code>
+     * <code>.littlehorse.LHStatus status = 2;</code>
      * @return The status.
      */
-    io.littlehorse.sdk.common.proto.LHStatusPb getStatus();
+    io.littlehorse.sdk.common.proto.LHStatus getStatus();
 
     /**
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -2281,19 +2281,19 @@ private static final long serialVersionUID = 0L;
     public static final int STATUS_FIELD_NUMBER = 2;
     private int status_ = 0;
     /**
-     * <code>.littlehorse.LHStatusPb status = 2;</code>
+     * <code>.littlehorse.LHStatus status = 2;</code>
      * @return The enum numeric value on the wire for status.
      */
     @java.lang.Override public int getStatusValue() {
       return status_;
     }
     /**
-     * <code>.littlehorse.LHStatusPb status = 2;</code>
+     * <code>.littlehorse.LHStatus status = 2;</code>
      * @return The status.
      */
-    @java.lang.Override public io.littlehorse.sdk.common.proto.LHStatusPb getStatus() {
-      io.littlehorse.sdk.common.proto.LHStatusPb result = io.littlehorse.sdk.common.proto.LHStatusPb.forNumber(status_);
-      return result == null ? io.littlehorse.sdk.common.proto.LHStatusPb.UNRECOGNIZED : result;
+    @java.lang.Override public io.littlehorse.sdk.common.proto.LHStatus getStatus() {
+      io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(status_);
+      return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
     }
 
     public static final int EARLIEST_START_FIELD_NUMBER = 3;
@@ -2365,7 +2365,7 @@ private static final long serialVersionUID = 0L;
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfSpecName_);
       }
-      if (status_ != io.littlehorse.sdk.common.proto.LHStatusPb.STARTING.getNumber()) {
+      if (status_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
         output.writeEnum(2, status_);
       }
       if (((bitField0_ & 0x00000001) != 0)) {
@@ -2386,7 +2386,7 @@ private static final long serialVersionUID = 0L;
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, wfSpecName_);
       }
-      if (status_ != io.littlehorse.sdk.common.proto.LHStatusPb.STARTING.getNumber()) {
+      if (status_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(2, status_);
       }
@@ -2851,14 +2851,14 @@ private static final long serialVersionUID = 0L;
 
       private int status_ = 0;
       /**
-       * <code>.littlehorse.LHStatusPb status = 2;</code>
+       * <code>.littlehorse.LHStatus status = 2;</code>
        * @return The enum numeric value on the wire for status.
        */
       @java.lang.Override public int getStatusValue() {
         return status_;
       }
       /**
-       * <code>.littlehorse.LHStatusPb status = 2;</code>
+       * <code>.littlehorse.LHStatus status = 2;</code>
        * @param value The enum numeric value on the wire for status to set.
        * @return This builder for chaining.
        */
@@ -2869,20 +2869,20 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.LHStatusPb status = 2;</code>
+       * <code>.littlehorse.LHStatus status = 2;</code>
        * @return The status.
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.LHStatusPb getStatus() {
-        io.littlehorse.sdk.common.proto.LHStatusPb result = io.littlehorse.sdk.common.proto.LHStatusPb.forNumber(status_);
-        return result == null ? io.littlehorse.sdk.common.proto.LHStatusPb.UNRECOGNIZED : result;
+      public io.littlehorse.sdk.common.proto.LHStatus getStatus() {
+        io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(status_);
+        return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
       }
       /**
-       * <code>.littlehorse.LHStatusPb status = 2;</code>
+       * <code>.littlehorse.LHStatus status = 2;</code>
        * @param value The status to set.
        * @return This builder for chaining.
        */
-      public Builder setStatus(io.littlehorse.sdk.common.proto.LHStatusPb value) {
+      public Builder setStatus(io.littlehorse.sdk.common.proto.LHStatus value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -2892,7 +2892,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.LHStatusPb status = 2;</code>
+       * <code>.littlehorse.LHStatus status = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearStatus() {

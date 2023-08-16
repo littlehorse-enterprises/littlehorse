@@ -20,15 +20,15 @@ public interface UserTaskFieldPbOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>.littlehorse.VariableTypePb type = 2;</code>
+   * <code>.littlehorse.VariableType type = 2;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
-   * <code>.littlehorse.VariableTypePb type = 2;</code>
+   * <code>.littlehorse.VariableType type = 2;</code>
    * @return The type.
    */
-  io.littlehorse.sdk.common.proto.VariableTypePb getType();
+  io.littlehorse.sdk.common.proto.VariableType getType();
 
   /**
    * <code>optional string description = 3;</code>

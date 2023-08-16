@@ -36,17 +36,17 @@ public interface WfSpecMetricsReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>optional .littlehorse.WfSpecMetricsPb result = 3;</code>
+   * <code>optional .littlehorse.WfSpecMetrics result = 3;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>optional .littlehorse.WfSpecMetricsPb result = 3;</code>
+   * <code>optional .littlehorse.WfSpecMetrics result = 3;</code>
    * @return The result.
    */
-  io.littlehorse.sdk.common.proto.WfSpecMetricsPb getResult();
+  io.littlehorse.sdk.common.proto.WfSpecMetrics getResult();
   /**
-   * <code>optional .littlehorse.WfSpecMetricsPb result = 3;</code>
+   * <code>optional .littlehorse.WfSpecMetrics result = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.WfSpecMetricsPbOrBuilder getResultOrBuilder();
+  io.littlehorse.sdk.common.proto.WfSpecMetricsOrBuilder getResultOrBuilder();
 }

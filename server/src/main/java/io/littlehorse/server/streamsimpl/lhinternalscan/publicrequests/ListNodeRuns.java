@@ -2,20 +2,20 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.ListNodeRunsPb;
 import io.littlehorse.sdk.common.proto.ListNodeRunsReplyPb;
-import io.littlehorse.sdk.common.proto.NodeRunPb;
+import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListNodeRunsReply;
 
 public class ListNodeRuns
-    extends PublicScanRequest<ListNodeRunsPb, ListNodeRunsReplyPb, NodeRunPb, NodeRun, ListNodeRunsReply> {
+    extends PublicScanRequest<ListNodeRunsPb, ListNodeRunsReplyPb, NodeRun, NodeRunModel, ListNodeRunsReply> {
 
     public String wfRunId;
 

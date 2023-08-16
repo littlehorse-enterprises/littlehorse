@@ -100,7 +100,7 @@ The following option groups are supported:
 	},
 }
 
-// getUserTaskRunCmd represents the nodeRun command
+// getUserTaskRunCmd represents the nodeRunModel command
 var getUserTaskRunCmd = &cobra.Command{
 	Use:   "userTaskRun <wfRunId> <userTaskGuid>",
 	Short: "Get a UserTaskRun by WfRun, ThreadRun, and UserTask Run Position",
@@ -144,7 +144,7 @@ var searchUserTaskRunCmd = &cobra.Command{
 	Long: `
 Search for UserTaskRun's by either the WfRunId or by providing the taskDefName and the Status.
 
-Returns a list of ObjectId's that can be passed into 'lhctl get nodeRun'.
+Returns a list of ObjectId's that can be passed into 'lhctl get nodeRunModel'.
 
 Choose one of the following option groups:
 // Returns all UserTaskRun's from a specified WfRun.

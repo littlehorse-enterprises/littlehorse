@@ -8,7 +8,7 @@ public class Failure extends LHSerializable<FailurePb> {
 
     public String failureName;
     public String message;
-    public VariableValue content;
+    public VariableValueModel content;
 
     public Class<FailurePb> getProtoBaseClass() {
         return FailurePb.class;
@@ -31,7 +31,7 @@ public class Failure extends LHSerializable<FailurePb> {
         message = p.getMessage();
 
         if (p.hasContent()) {
-            content = VariableValue.fromProto(p.getContent());
+            content = VariableValueModel.fromProto(p.getContent());
         }
     }
 
@@ -48,9 +48,9 @@ public class Failure extends LHSerializable<FailurePb> {
         this.failureName = failureName;
     }
 
-    public Failure(String message, String failureName, VariableValue content) {
+    public Failure(String message, String failureName, VariableValueModel content) {
         this.message = message;
         this.failureName = failureName;
-        this.content = new VariableValue();
+        this.content = new VariableValueModel();
     }
 }

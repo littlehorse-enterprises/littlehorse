@@ -107,7 +107,7 @@ func main() {
 		EntrypointThread: simpleConditionals,
 	}
 
-	wfSpec, err := wf.Compile()
+	wfSpecModel, err := wf.Compile()
 
 	if err != nil {
 		log.Fatal(err)
@@ -115,7 +115,7 @@ func main() {
 
 	jsonBytes, err := protojson.MarshalOptions{
 		EmitUnpopulated: true,
-	}.Marshal(wfSpec)
+	}.Marshal(wfSpecModel)
 
 	if err != nil {
 		log.Fatal(err)

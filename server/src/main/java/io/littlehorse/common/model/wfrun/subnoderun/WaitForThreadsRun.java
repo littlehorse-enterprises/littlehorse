@@ -8,11 +8,11 @@ import io.littlehorse.common.model.meta.ThreadToWaitFor;
 import io.littlehorse.common.model.meta.subnode.WaitForThreadsNode;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
-import io.littlehorse.common.model.wfrun.ThreadRun;
-import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.model.wfrun.ThreadRunModel;
+import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.common.model.wfrun.WaitForThread;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRunPb;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRunPb.WaitForThreadPb;
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class WaitForThreadsRun extends SubNodeRun<WaitForThreadsRunPb> {
     // First order of business is to get the status of all threads.
     public boolean advanceIfPossible(Date time) {
         for (WaitForThread wft : threads) {
-            ThreadRun thread = getWfRun().getThreadRun(wft.getThreadRunNumber());
+            ThreadRunModel thread = getWfRun().getThreadRun(wft.getThreadRunNumber());
             wft.setThreadStatus(thread.getStatus());
             if (thread.getEndTime() != null) {
                 wft.setThreadEndTime(thread.getEndTime());
@@ -78,22 +78,22 @@ public class WaitForThreadsRun extends SubNodeRun<WaitForThreadsRunPb> {
                 break;
             }
 
-            if (wft.getThreadStatus() == LHStatusPb.ERROR) {
+            if (wft.getThreadStatus() == LHStatus.ERROR) {
                 failedThreads.add(wft.getThreadRunNumber());
             }
         }
 
         if (allTerminated && failedThreads.isEmpty()) {
-            VariableValue out = new VariableValue();
-            out.type = VariableTypePb.NULL;
-            nodeRun.complete(out, time);
+            VariableValueModel out = new VariableValueModel();
+            out.type = VariableType.NULL;
+            nodeRunModel.complete(out, time);
             return true;
         } else if (allTerminated && !failedThreads.isEmpty()) {
             String message = "Some child threads failed";
             for (Integer threadRunNumber : failedThreads) {
                 message += ", " + threadRunNumber;
             }
-            nodeRun.fail(new Failure(message, LHConstants.CHILD_FAILURE), time);
+            nodeRunModel.fail(new Failure(message, LHConstants.CHILD_FAILURE), time);
             return true;
         } else {
             // nothing to do.
@@ -104,22 +104,22 @@ public class WaitForThreadsRun extends SubNodeRun<WaitForThreadsRunPb> {
 
     private boolean isTerminated(WaitForThread wft) {
         return (
-            (wft.getThreadStatus() == LHStatusPb.COMPLETED) ||
-            (wft.getThreadStatus() == LHStatusPb.ERROR)
+            (wft.getThreadStatus() == LHStatus.COMPLETED) ||
+            (wft.getThreadStatus() == LHStatus.ERROR)
         );
     }
 
     public void arrive(Date time) {
         // Need to initialize all of the threads.
         WaitForThreadsNode wftn = getNode().getWaitForThreadsNode();
-        nodeRun.setStatus(LHStatusPb.RUNNING);
+        nodeRunModel.setStatus(LHStatus.RUNNING);
 
         try {
             for (ThreadToWaitFor ttwf : wftn.getThreads()) {
-                threads.add(new WaitForThread(nodeRun, ttwf));
+                threads.add(new WaitForThread(nodeRunModel, ttwf));
             }
         } catch (LHVarSubError exn) {
-            nodeRun.fail(
+            nodeRunModel.fail(
                 new Failure(
                     "Failed determining thread run number to wait for: " +
                     exn.getMessage(),

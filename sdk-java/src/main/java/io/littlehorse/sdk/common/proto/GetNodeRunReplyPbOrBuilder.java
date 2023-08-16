@@ -36,17 +36,17 @@ public interface GetNodeRunReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>optional .littlehorse.NodeRunPb result = 3;</code>
+   * <code>optional .littlehorse.NodeRun result = 3;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>optional .littlehorse.NodeRunPb result = 3;</code>
+   * <code>optional .littlehorse.NodeRun result = 3;</code>
    * @return The result.
    */
-  io.littlehorse.sdk.common.proto.NodeRunPb getResult();
+  io.littlehorse.sdk.common.proto.NodeRun getResult();
   /**
-   * <code>optional .littlehorse.NodeRunPb result = 3;</code>
+   * <code>optional .littlehorse.NodeRun result = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.NodeRunPbOrBuilder getResultOrBuilder();
+  io.littlehorse.sdk.common.proto.NodeRunOrBuilder getResultOrBuilder();
 }

@@ -13,8 +13,8 @@ import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunSourcePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
-import io.littlehorse.sdk.common.proto.VariableValuePb;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.Date;
@@ -102,32 +102,32 @@ public class LHLibUtil {
         return taskRunId.getWfRunId() + "/" + taskRunId.getTaskGuid();
     }
 
-    public static VariableValuePb objToVarVal(Object o) throws LHSerdeError {
-        if (o instanceof VariableValuePb) return (VariableValuePb) o;
+    public static VariableValue objToVarVal(Object o) throws LHSerdeError {
+        if (o instanceof VariableValue) return (VariableValue) o;
 
-        VariableValuePb.Builder out = VariableValuePb.newBuilder();
+        VariableValue.Builder out = VariableValue.newBuilder();
         if (o == null) {
-            out.setType(VariableTypePb.NULL);
+            out.setType(VariableType.NULL);
         } else if (Long.class.isAssignableFrom(o.getClass())) {
-            out.setType(VariableTypePb.INT);
+            out.setType(VariableType.INT);
             out.setInt((Long) o);
         } else if (Integer.class.isAssignableFrom(o.getClass())) {
-            out.setType(VariableTypePb.INT);
+            out.setType(VariableType.INT);
             out.setInt((Integer) o);
         } else if (Double.class.isAssignableFrom(o.getClass())) {
-            out.setType(VariableTypePb.DOUBLE);
+            out.setType(VariableType.DOUBLE);
             out.setDouble((Double) o);
         } else if (Float.class.isAssignableFrom(o.getClass())) {
-            out.setType(VariableTypePb.DOUBLE);
+            out.setType(VariableType.DOUBLE);
             out.setDouble((Float) o);
         } else if (o instanceof String) {
-            out.setType(VariableTypePb.STR);
+            out.setType(VariableType.STR);
             out.setStr((String) o);
         } else if (o instanceof Boolean) {
-            out.setType(VariableTypePb.BOOL);
+            out.setType(VariableType.BOOL);
             out.setBool((Boolean) o);
         } else if (o instanceof byte[]) {
-            out.setType(VariableTypePb.BYTES);
+            out.setType(VariableType.BYTES);
             out.setBytes(ByteString.copyFrom((byte[]) o));
         } else {
             // At this point, all we can do is try to make it a JSON type.
@@ -140,10 +140,10 @@ public class LHLibUtil {
             }
 
             if (List.class.isAssignableFrom(o.getClass())) {
-                out.setType(VariableTypePb.JSON_ARR);
+                out.setType(VariableType.JSON_ARR);
                 out.setJsonArr(jsonStr);
             } else {
-                out.setType(VariableTypePb.JSON_OBJ);
+                out.setType(VariableType.JSON_OBJ);
                 out.setJsonObj(jsonStr);
             }
         }
@@ -187,26 +187,23 @@ public class LHLibUtil {
         return List.class.isAssignableFrom(cls);
     }
 
-    public static VariableTypePb javaClassToLHVarType(Class<?> cls) {
-        if (isINT(cls)) return VariableTypePb.INT;
+    public static VariableType javaClassToLHVarType(Class<?> cls) {
+        if (isINT(cls)) return VariableType.INT;
 
-        if (isDOUBLE(cls)) return VariableTypePb.DOUBLE;
+        if (isDOUBLE(cls)) return VariableType.DOUBLE;
 
-        if (isSTR(cls)) return VariableTypePb.STR;
+        if (isSTR(cls)) return VariableType.STR;
 
-        if (isBOOL(cls)) return VariableTypePb.BOOL;
+        if (isBOOL(cls)) return VariableType.BOOL;
 
-        if (isBYTES(cls)) return VariableTypePb.BYTES;
+        if (isBYTES(cls)) return VariableType.BYTES;
 
-        if (isJSON_ARR(cls)) return VariableTypePb.JSON_ARR;
+        if (isJSON_ARR(cls)) return VariableType.JSON_ARR;
 
-        return VariableTypePb.JSON_OBJ;
+        return VariableType.JSON_OBJ;
     }
 
-    public static boolean areVariableValuesEqual(
-        VariableValuePb a,
-        VariableValuePb b
-    ) {
+    public static boolean areVariableValuesEqual(VariableValue a, VariableValue b) {
         if (a.getType() != b.getType()) return false;
 
         switch (a.getType()) {

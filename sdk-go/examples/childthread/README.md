@@ -29,5 +29,5 @@ lhctl run child-thread input "this is the input!"
 You can see both `ThreadRun`s when you inspect the `WfRun`:
 
 ```
-lhctl get wfRun <wfRunId>
+lhctl get wfRunModel <wfRunId>
 ```

@@ -4,9 +4,9 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
-import io.littlehorse.common.model.wfrun.ThreadRun;
+import io.littlehorse.common.model.wfrun.ThreadRunModel;
 import io.littlehorse.sdk.common.proto.ExitRunPb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import java.util.Date;
 
 public class ExitRun extends SubNodeRun<ExitRunPb> {
@@ -37,10 +37,10 @@ public class ExitRun extends SubNodeRun<ExitRunPb> {
     public boolean advanceIfPossible(Date time) {
         boolean out;
         // nothing to do
-        if (nodeRun.isInProgress()) {
+        if (nodeRunModel.isInProgress()) {
             arrive(time);
             // Return true if the status changed
-            out = !(nodeRun.getThreadRun().isRunning());
+            out = !(nodeRunModel.getThreadRun().isRunning());
         } else {
             if (alreadyNoticed) {
                 out = false;
@@ -57,15 +57,15 @@ public class ExitRun extends SubNodeRun<ExitRunPb> {
         boolean allComplete = true;
         String failedChildren = "";
 
-        for (int childId : nodeRun.getThreadRun().getChildThreadIds()) {
-            ThreadRun child = getWfRun().getThreadRuns().get(childId);
+        for (int childId : nodeRunModel.getThreadRun().getChildThreadIds()) {
+            ThreadRunModel child = getWfRun().getThreadRunModels().get(childId);
             if (!child.isTerminated()) {
                 // Can't exit yet.
                 return;
             }
-            if (child.status != LHStatusPb.COMPLETED) {
+            if (child.status != LHStatus.COMPLETED) {
                 if (
-                    !nodeRun
+                    !nodeRunModel
                         .getThreadRun()
                         .getHandledFailedChildren()
                         .contains(childId)
@@ -81,18 +81,19 @@ public class ExitRun extends SubNodeRun<ExitRunPb> {
         if (allComplete) {
             if (getNode().exitNode.failureDef == null) {
                 // Then this is just a regular "yay we're done!" node.
-                nodeRun.getThreadRun().complete(time);
-                nodeRun.complete(null, time);
+                nodeRunModel.getThreadRun().complete(time);
+                nodeRunModel.complete(null, time);
             } else {
                 // then this is a "yikes Throw Exception" node.
 
-                nodeRun.fail(
-                    getNode().exitNode.failureDef.getFailure(nodeRun.getThreadRun()),
+                nodeRunModel.fail(
+                    getNode()
+                        .exitNode.failureDef.getFailure(nodeRunModel.getThreadRun()),
                     time
                 );
             }
         } else {
-            nodeRun
+            nodeRunModel
                 .getThreadRun()
                 .fail(
                     new Failure(

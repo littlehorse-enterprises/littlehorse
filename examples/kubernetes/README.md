@@ -32,7 +32,7 @@ LHC_API_PORT=32023 # NodePort
 You can confirm that the Server is running via:
 
 ```
-lhctl search wfSpec
+lhctl search wfSpecModel
 ```
 
 Result:

@@ -14,7 +14,7 @@ import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.objectId.ExternalEventDefId;
 import io.littlehorse.common.model.objectId.NodeRunId;
@@ -26,19 +26,19 @@ import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
-import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
-import io.littlehorse.common.model.wfrun.ThreadRun;
+import io.littlehorse.common.model.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.HostInfoPb;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
@@ -68,7 +68,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 @Slf4j
 public class KafkaStreamsLHDAOImpl implements LHDAO {
 
-    private Map<String, WfSpec> wfSpecPuts;
+    private Map<String, WfSpecModel> wfSpecPuts;
     private Map<String, TaskDef> taskDefPuts;
     private Map<String, UserTaskDef> userTaskDefPuts;
     private Map<String, ExternalEventDef> extEvtDefPuts;
@@ -152,18 +152,18 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public void putNodeRun(NodeRun nr) {
-        storageManager.put(nr, NodeRun.class);
+    public void putNodeRun(NodeRunModel nr) {
+        storageManager.put(nr, NodeRunModel.class);
     }
 
     @Override
-    public NodeRun getNodeRun(String wfRunId, int threadNum, int position) {
+    public NodeRunModel getNodeRun(String wfRunId, int threadNum, int position) {
         String key = new NodeRunId(wfRunId, threadNum, position).getStoreKey();
-        NodeRun nodeRun = storageManager.get(key, NodeRun.class);
-        if (nodeRun != null) {
-            nodeRun.setDao(this);
+        NodeRunModel nodeRunModel = storageManager.get(key, NodeRunModel.class);
+        if (nodeRunModel != null) {
+            nodeRunModel.setDao(this);
         }
-        return nodeRun;
+        return nodeRunModel;
     }
 
     @Override
@@ -207,7 +207,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public void putWfSpec(WfSpec spec) {
+    public void putWfSpec(WfSpecModel spec) {
         if (!isMetadataProcessorInstance) {
             throw new RuntimeException(
                 "Tried to put metadata despite being on the wrong partition!"
@@ -246,22 +246,22 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     // However, that doesn't happen in the code now; we should file a JIRA to
     // take care of it for later.
     @Override
-    public WfSpec getWfSpec(String name, Integer version) {
-        Supplier<WfSpec> findWfSpec = () -> {
+    public WfSpecModel getWfSpec(String name, Integer version) {
+        Supplier<WfSpecModel> findWfSpec = () -> {
             LHROStoreWrapper store = isMetadataProcessorInstance
                 ? localStore
                 : globalStore;
             if (version != null) {
                 return store.get(
                     new WfSpecId(name, version).getStoreKey(),
-                    WfSpec.class
+                    WfSpecModel.class
                 );
             }
-            return store.getLastFromPrefix(name, WfSpec.class);
+            return store.getLastFromPrefix(name, WfSpecModel.class);
         };
-        WfSpec wfSpec = wfSpecCache.getOrCache(name, version, findWfSpec);
-        if (wfSpec != null) wfSpec.setDao(this);
-        return wfSpec;
+        WfSpecModel wfSpecModel = wfSpecCache.getOrCache(name, version, findWfSpec);
+        if (wfSpecModel != null) wfSpecModel.setDao(this);
+        return wfSpecModel;
     }
 
     // TODO: Investigate whether there is a potential issue with
@@ -347,9 +347,9 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         String key = new VariableId(wfRunId, threadNum, name).getStoreKey();
         Variable variable = storageManager.get(key, Variable.class);
         if (variable != null) {
-            if (variable.getWfSpec() == null) {
-                WfRun wfRun = getWfRun(wfRunId);
-                variable.setWfSpec(wfRun.getWfSpec());
+            if (variable.getWfSpecModel() == null) {
+                WfRunModel wfRunModel = getWfRun(wfRunId);
+                variable.setWfSpecModel(wfRunModel.getWfSpecModel());
             }
             variable.setDao(this);
         }
@@ -414,18 +414,20 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public WfRun getWfRun(String id) {
-        WfRun wfRun = storageManager.get(id, WfRun.class);
-        if (wfRun != null) {
-            wfRun.setDao(this);
-            wfRun.setWfSpec(getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion));
+    public WfRunModel getWfRun(String id) {
+        WfRunModel wfRunModel = storageManager.get(id, WfRunModel.class);
+        if (wfRunModel != null) {
+            wfRunModel.setDao(this);
+            wfRunModel.setWfSpecModel(
+                getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion)
+            );
         }
-        return wfRun;
+        return wfRunModel;
     }
 
     @Override
-    public void saveWfRun(WfRun wfRun) {
-        storageManager.put(wfRun, WfRun.class);
+    public void saveWfRun(WfRunModel wfRunModel) {
+        storageManager.put(wfRunModel, WfRunModel.class);
     }
 
     @Override
@@ -450,14 +452,14 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     public void abortChangesAndMarkWfRunFailed(Throwable failure, String wfRunId) {
         // if the wfRun exists: we want to mark it as failed with a message.
         // Else, do nothing.
-        WfRun wfRun = storageManager.get(wfRunId, WfRun.class);
-        if (wfRun != null) {
+        WfRunModel wfRunModel = storageManager.get(wfRunId, WfRunModel.class);
+        if (wfRunModel != null) {
             log.warn(
                 "Marking wfRun {} as failed due to internal LH exception",
                 wfRunId
             );
-            ThreadRun entrypoint = wfRun.getThreadRun(0);
-            entrypoint.setStatus(LHStatusPb.ERROR);
+            ThreadRunModel entrypoint = wfRunModel.getThreadRun(0);
+            entrypoint.setStatus(LHStatus.ERROR);
 
             String message =
                 "Had an internal LH failur processing command of type " +
@@ -465,7 +467,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
                 ": " +
                 failure.getMessage();
             entrypoint.setErrorMessage(message);
-            storageManager.abortAndUpdate(wfRun);
+            storageManager.abortAndUpdate(wfRunModel);
         } else {
             log.warn(
                 "Caught internal LH error but found no WfRun with id {}",
@@ -482,16 +484,16 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public DeleteObjectReply deleteWfRun(String wfRunId) {
-        WfRun wfRun = getWfRun(wfRunId);
+        WfRunModel wfRunModel = getWfRun(wfRunId);
 
-        if (wfRun == null) {
+        if (wfRunModel == null) {
             return new DeleteObjectReply(
                 LHResponseCodePb.NOT_FOUND_ERROR,
                 "Couldn't find wfRun with provided ID."
             );
         }
 
-        if (wfRun.isRunning()) {
+        if (wfRunModel.isRunning()) {
             return new DeleteObjectReply(
                 LHResponseCodePb.BAD_REQUEST_ERROR,
                 "Specified wfRun is still RUNNING!"
@@ -499,9 +501,9 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         }
 
         // By this point it's guaranteed that a wfRun exists
-        storageManager.delete(wfRunId, WfRun.class);
+        storageManager.delete(wfRunId, WfRunModel.class);
 
-        deleteAllChildren(wfRun);
+        deleteAllChildren(wfRunModel);
 
         return new DeleteObjectReply(LHResponseCodePb.OK, null);
     }
@@ -536,7 +538,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public DeleteObjectReply deleteWfSpec(String name, int version) {
-        WfSpec toDelete = getWfSpec(name, version);
+        WfSpecModel toDelete = getWfSpec(name, version);
         DeleteObjectReply out = new DeleteObjectReply();
         if (toDelete == null) {
             out.code = LHResponseCodePb.NOT_FOUND_ERROR;
@@ -581,17 +583,17 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
      * - Variable
      * - ExternalEvent
      */
-    private void deleteAllChildren(WfRun wfRun) {
-        String prefix = wfRun.id;
+    private void deleteAllChildren(WfRunModel wfRunModel) {
+        String prefix = wfRunModel.id;
         try (
-            LHKeyValueIterator<NodeRun> iter = localStore.prefixScan(
+            LHKeyValueIterator<NodeRunModel> iter = localStore.prefixScan(
                 prefix,
-                NodeRun.class
+                NodeRunModel.class
             )
         ) {
             while (iter.hasNext()) {
-                LHIterKeyValue<NodeRun> next = iter.next();
-                storageManager.delete(next.getKey(), NodeRun.class);
+                LHIterKeyValue<NodeRunModel> next = iter.next();
+                storageManager.delete(next.getKey(), NodeRunModel.class);
             }
         }
 
@@ -677,9 +679,9 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             );
             forwardGlobalMeta(e.getKey(), e.getValue(), ExternalEventDef.class);
         }
-        for (Map.Entry<String, WfSpec> e : wfSpecPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), WfSpec.class);
-            forwardGlobalMeta(e.getKey(), e.getValue(), WfSpec.class);
+        for (Map.Entry<String, WfSpecModel> e : wfSpecPuts.entrySet()) {
+            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), WfSpecModel.class);
+            forwardGlobalMeta(e.getKey(), e.getValue(), WfSpecModel.class);
         }
         for (Map.Entry<String, UserTaskDef> e : userTaskDefPuts.entrySet()) {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), UserTaskDef.class);
@@ -725,28 +727,23 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         out.add(
             getWmUpdate(
                 time,
-                MetricsWindowLengthPb.MINUTES_5,
+                MetricsWindowLength.MINUTES_5,
                 wfSpecName,
                 wfSpecVersion
             )
         );
         out.add(
-            getWmUpdate(
-                time,
-                MetricsWindowLengthPb.HOURS_2,
-                wfSpecName,
-                wfSpecVersion
-            )
+            getWmUpdate(time, MetricsWindowLength.HOURS_2, wfSpecName, wfSpecVersion)
         );
         out.add(
-            getWmUpdate(time, MetricsWindowLengthPb.DAYS_1, wfSpecName, wfSpecVersion)
+            getWmUpdate(time, MetricsWindowLength.DAYS_1, wfSpecName, wfSpecVersion)
         );
         return out;
     }
 
     private WfMetricUpdate getWmUpdate(
         Date windowStart,
-        MetricsWindowLengthPb type,
+        MetricsWindowLength type,
         String wfSpecName,
         int wfSpecVersion
     ) {
@@ -779,15 +776,15 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         Date time
     ) {
         List<TaskMetricUpdate> out = new ArrayList<>();
-        out.add(getTmUpdate(time, MetricsWindowLengthPb.MINUTES_5, taskDefName));
-        out.add(getTmUpdate(time, MetricsWindowLengthPb.HOURS_2, taskDefName));
-        out.add(getTmUpdate(time, MetricsWindowLengthPb.DAYS_1, taskDefName));
+        out.add(getTmUpdate(time, MetricsWindowLength.MINUTES_5, taskDefName));
+        out.add(getTmUpdate(time, MetricsWindowLength.HOURS_2, taskDefName));
+        out.add(getTmUpdate(time, MetricsWindowLength.DAYS_1, taskDefName));
         return out;
     }
 
     private TaskMetricUpdate getTmUpdate(
         Date windowStart,
-        MetricsWindowLengthPb type,
+        MetricsWindowLength type,
         String taskDefName
     ) {
         windowStart = LHUtil.getWindowStart(windowStart, type);

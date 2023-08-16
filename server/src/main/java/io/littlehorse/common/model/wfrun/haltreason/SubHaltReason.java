@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.wfrun.haltreason;
 
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 
 public interface SubHaltReason {
-    public boolean isResolved(WfRun wfRun);
+    public boolean isResolved(WfRunModel wfRunModel);
 }

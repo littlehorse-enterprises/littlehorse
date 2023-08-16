@@ -12,7 +12,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-// getTaskRunCmd represents the nodeRun command
+// getTaskRunCmd represents the nodeRunModel command
 var getTaskRunCmd = &cobra.Command{
 	Use:   "taskRun <wfRunId> <taskRunGuid>",
 	Short: "Get a TaskRun by WfRunId and Guid",

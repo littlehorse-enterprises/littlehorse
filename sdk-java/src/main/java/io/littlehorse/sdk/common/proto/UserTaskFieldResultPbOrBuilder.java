@@ -20,17 +20,17 @@ public interface UserTaskFieldResultPbOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>optional .littlehorse.VariableValuePb value = 2;</code>
+   * <code>optional .littlehorse.VariableValue value = 2;</code>
    * @return Whether the value field is set.
    */
   boolean hasValue();
   /**
-   * <code>optional .littlehorse.VariableValuePb value = 2;</code>
+   * <code>optional .littlehorse.VariableValue value = 2;</code>
    * @return The value.
    */
-  io.littlehorse.sdk.common.proto.VariableValuePb getValue();
+  io.littlehorse.sdk.common.proto.VariableValue getValue();
   /**
-   * <code>optional .littlehorse.VariableValuePb value = 2;</code>
+   * <code>optional .littlehorse.VariableValue value = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getValueOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder();
 }

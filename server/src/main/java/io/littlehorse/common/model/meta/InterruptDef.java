@@ -13,9 +13,9 @@ public class InterruptDef extends LHSerializable<InterruptDefPb> {
     public String handlerSpecName;
     public String externalEventDefName;
 
-    public ThreadSpec ownerThreadSpec;
+    public ThreadSpecModel ownerThreadSpecModel;
 
-    public ThreadSpec handler;
+    public ThreadSpecModel handler;
 
     public ExternalEventDef eed;
 
@@ -54,7 +54,7 @@ public class InterruptDef extends LHSerializable<InterruptDefPb> {
             );
         }
 
-        handler = ownerThreadSpec.wfSpec.threadSpecs.get(handlerSpecName);
+        handler = ownerThreadSpecModel.wfSpecModel.threadSpecs.get(handlerSpecName);
         if (handler == null) {
             throw new LHValidationError(
                 null,
@@ -72,7 +72,7 @@ public class InterruptDef extends LHSerializable<InterruptDefPb> {
                 "Handler thread " + handler.name + " should only have 'INPUT' var."
             );
         } else if (handler.variableDefs.size() == 1) {
-            VariableDef theVarDef = handler.variableDefs.get(0);
+            VariableDefModel theVarDef = handler.variableDefs.get(0);
             if (!theVarDef.name.equals(LHConstants.EXT_EVT_HANDLER_VAR)) {
                 throw new LHValidationError(
                     null,

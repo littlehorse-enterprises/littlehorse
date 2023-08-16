@@ -811,7 +811,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int LITERAL_VALUE_FIELD_NUMBER = 5;
   /**
-   * <code>.littlehorse.VariableValuePb literal_value = 5;</code>
+   * <code>.littlehorse.VariableValue literal_value = 5;</code>
    * @return Whether the literalValue field is set.
    */
   @java.lang.Override
@@ -819,25 +819,25 @@ private static final long serialVersionUID = 0L;
     return rhsValueCase_ == 5;
   }
   /**
-   * <code>.littlehorse.VariableValuePb literal_value = 5;</code>
+   * <code>.littlehorse.VariableValue literal_value = 5;</code>
    * @return The literalValue.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableValuePb getLiteralValue() {
+  public io.littlehorse.sdk.common.proto.VariableValue getLiteralValue() {
     if (rhsValueCase_ == 5) {
-       return (io.littlehorse.sdk.common.proto.VariableValuePb) rhsValue_;
+       return (io.littlehorse.sdk.common.proto.VariableValue) rhsValue_;
     }
-    return io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.VariableValuePb literal_value = 5;</code>
+   * <code>.littlehorse.VariableValue literal_value = 5;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getLiteralValueOrBuilder() {
+  public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getLiteralValueOrBuilder() {
     if (rhsValueCase_ == 5) {
-       return (io.littlehorse.sdk.common.proto.VariableValuePb) rhsValue_;
+       return (io.littlehorse.sdk.common.proto.VariableValue) rhsValue_;
     }
-    return io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
   }
 
   public static final int NODE_OUTPUT_FIELD_NUMBER = 6;
@@ -898,7 +898,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(4, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) rhsValue_);
     }
     if (rhsValueCase_ == 5) {
-      output.writeMessage(5, (io.littlehorse.sdk.common.proto.VariableValuePb) rhsValue_);
+      output.writeMessage(5, (io.littlehorse.sdk.common.proto.VariableValue) rhsValue_);
     }
     if (rhsValueCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.sdk.common.proto.VariableMutationPb.NodeOutputSourcePb) rhsValue_);
@@ -928,7 +928,7 @@ private static final long serialVersionUID = 0L;
     }
     if (rhsValueCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, (io.littlehorse.sdk.common.proto.VariableValuePb) rhsValue_);
+        .computeMessageSize(5, (io.littlehorse.sdk.common.proto.VariableValue) rhsValue_);
     }
     if (rhsValueCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
@@ -1732,9 +1732,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableValuePb, io.littlehorse.sdk.common.proto.VariableValuePb.Builder, io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder> literalValueBuilder_;
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> literalValueBuilder_;
     /**
-     * <code>.littlehorse.VariableValuePb literal_value = 5;</code>
+     * <code>.littlehorse.VariableValue literal_value = 5;</code>
      * @return Whether the literalValue field is set.
      */
     @java.lang.Override
@@ -1742,27 +1742,27 @@ private static final long serialVersionUID = 0L;
       return rhsValueCase_ == 5;
     }
     /**
-     * <code>.littlehorse.VariableValuePb literal_value = 5;</code>
+     * <code>.littlehorse.VariableValue literal_value = 5;</code>
      * @return The literalValue.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableValuePb getLiteralValue() {
+    public io.littlehorse.sdk.common.proto.VariableValue getLiteralValue() {
       if (literalValueBuilder_ == null) {
         if (rhsValueCase_ == 5) {
-          return (io.littlehorse.sdk.common.proto.VariableValuePb) rhsValue_;
+          return (io.littlehorse.sdk.common.proto.VariableValue) rhsValue_;
         }
-        return io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
       } else {
         if (rhsValueCase_ == 5) {
           return literalValueBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableValuePb literal_value = 5;</code>
+     * <code>.littlehorse.VariableValue literal_value = 5;</code>
      */
-    public Builder setLiteralValue(io.littlehorse.sdk.common.proto.VariableValuePb value) {
+    public Builder setLiteralValue(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (literalValueBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1776,10 +1776,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValuePb literal_value = 5;</code>
+     * <code>.littlehorse.VariableValue literal_value = 5;</code>
      */
     public Builder setLiteralValue(
-        io.littlehorse.sdk.common.proto.VariableValuePb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
       if (literalValueBuilder_ == null) {
         rhsValue_ = builderForValue.build();
         onChanged();
@@ -1790,13 +1790,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValuePb literal_value = 5;</code>
+     * <code>.littlehorse.VariableValue literal_value = 5;</code>
      */
-    public Builder mergeLiteralValue(io.littlehorse.sdk.common.proto.VariableValuePb value) {
+    public Builder mergeLiteralValue(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (literalValueBuilder_ == null) {
         if (rhsValueCase_ == 5 &&
-            rhsValue_ != io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance()) {
-          rhsValue_ = io.littlehorse.sdk.common.proto.VariableValuePb.newBuilder((io.littlehorse.sdk.common.proto.VariableValuePb) rhsValue_)
+            rhsValue_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
+          rhsValue_ = io.littlehorse.sdk.common.proto.VariableValue.newBuilder((io.littlehorse.sdk.common.proto.VariableValue) rhsValue_)
               .mergeFrom(value).buildPartial();
         } else {
           rhsValue_ = value;
@@ -1813,7 +1813,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValuePb literal_value = 5;</code>
+     * <code>.littlehorse.VariableValue literal_value = 5;</code>
      */
     public Builder clearLiteralValue() {
       if (literalValueBuilder_ == null) {
@@ -1832,38 +1832,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableValuePb literal_value = 5;</code>
+     * <code>.littlehorse.VariableValue literal_value = 5;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableValuePb.Builder getLiteralValueBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableValue.Builder getLiteralValueBuilder() {
       return getLiteralValueFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.VariableValuePb literal_value = 5;</code>
+     * <code>.littlehorse.VariableValue literal_value = 5;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder getLiteralValueOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getLiteralValueOrBuilder() {
       if ((rhsValueCase_ == 5) && (literalValueBuilder_ != null)) {
         return literalValueBuilder_.getMessageOrBuilder();
       } else {
         if (rhsValueCase_ == 5) {
-          return (io.littlehorse.sdk.common.proto.VariableValuePb) rhsValue_;
+          return (io.littlehorse.sdk.common.proto.VariableValue) rhsValue_;
         }
-        return io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableValuePb literal_value = 5;</code>
+     * <code>.littlehorse.VariableValue literal_value = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableValuePb, io.littlehorse.sdk.common.proto.VariableValuePb.Builder, io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
         getLiteralValueFieldBuilder() {
       if (literalValueBuilder_ == null) {
         if (!(rhsValueCase_ == 5)) {
-          rhsValue_ = io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance();
+          rhsValue_ = io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
         }
         literalValueBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableValuePb, io.littlehorse.sdk.common.proto.VariableValuePb.Builder, io.littlehorse.sdk.common.proto.VariableValuePbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.VariableValuePb) rhsValue_,
+            io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableValue) rhsValue_,
                 getParentForChildren(),
                 isClean());
         rhsValue_ = null;

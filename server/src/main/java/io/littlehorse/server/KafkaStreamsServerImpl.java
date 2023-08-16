@@ -33,10 +33,10 @@ import io.littlehorse.common.model.command.subcommand.TaskWorkerHeartBeat;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskDef;
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
-import io.littlehorse.common.model.metrics.TaskDefMetrics;
-import io.littlehorse.common.model.metrics.WfSpecMetrics;
+import io.littlehorse.common.model.metrics.TaskDefMetricsModel;
+import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
 import io.littlehorse.common.model.objectId.ExternalEventDefId;
 import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.objectId.NodeRunId;
@@ -48,11 +48,11 @@ import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
-import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
 import io.littlehorse.common.proto.InternalScanReplyPb;
@@ -278,7 +278,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public void getWfSpec(WfSpecIdPb req, StreamObserver<GetWfSpecReplyPb> ctx) {
         StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
             ctx,
-            WfSpec.class,
+            WfSpecModel.class,
             GetWfSpecReplyPb.class,
             config
         );
@@ -286,7 +286,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             ServerTopology.METADATA_STORE,
             StoreUtils.getFullStoreKey(
                 new WfSpecId(req.getName(), req.getVersion()),
-                WfSpec.class
+                WfSpecModel.class
             ),
             LHConstants.META_PARTITION_KEY,
             observer
@@ -300,12 +300,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     ) {
         StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
             ctx,
-            WfSpec.class,
+            WfSpecModel.class,
             GetWfSpecReplyPb.class,
             config
         );
         internalComms.getLastFromPrefixAsync(
-            StoreUtils.getFullPrefixByName(req.getName(), WfSpec.class),
+            StoreUtils.getFullPrefixByName(req.getName(), WfSpecModel.class),
             LHConstants.META_PARTITION_KEY,
             observer,
             ServerTopology.METADATA_STORE
@@ -531,7 +531,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public void getWfRun(WfRunIdPb req, StreamObserver<GetWfRunReplyPb> ctx) {
         StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
             ctx,
-            WfRun.class,
+            WfRunModel.class,
             GetWfRunReplyPb.class,
             config
         );
@@ -539,7 +539,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         internalComms.getStoreBytesAsync(
             ServerTopology.CORE_STORE,
-            StoreUtils.getFullStoreKey(id, WfRun.class),
+            StoreUtils.getFullStoreKey(id, WfRunModel.class),
             req.getId(),
             observer
         );
@@ -549,7 +549,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public void getNodeRun(NodeRunIdPb req, StreamObserver<GetNodeRunReplyPb> ctx) {
         StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
             ctx,
-            NodeRun.class,
+            NodeRunModel.class,
             GetNodeRunReplyPb.class,
             config
         );
@@ -562,7 +562,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                     req.getThreadRunNumber(),
                     req.getPosition()
                 ),
-                NodeRun.class
+                NodeRunModel.class
             ),
             req.getWfRunId(),
             observer
@@ -623,7 +623,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     ) {
         StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
             ctx,
-            TaskDefMetrics.class,
+            TaskDefMetricsModel.class,
             TaskDefMetricsReplyPb.class,
             config
         );
@@ -631,8 +631,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         internalComms.getStoreBytesAsync(
             ServerTopology.CORE_REPARTITION_STORE,
             StoreUtils.getFullStoreKey(
-                TaskDefMetrics.getObjectId(req),
-                TaskDefMetrics.class
+                TaskDefMetricsModel.getObjectId(req),
+                TaskDefMetricsModel.class
             ),
             req.getTaskDefName(),
             observer
@@ -646,7 +646,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     ) {
         StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
             ctx,
-            WfSpecMetrics.class,
+            WfSpecMetricsModel.class,
             WfSpecMetricsReplyPb.class,
             config
         );
@@ -654,8 +654,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         internalComms.getStoreBytesAsync(
             ServerTopology.CORE_REPARTITION_STORE,
             StoreUtils.getFullStoreKey(
-                WfSpecMetrics.getObjectId(req),
-                WfSpecMetrics.class
+                WfSpecMetricsModel.getObjectId(req),
+                WfSpecMetricsModel.class
             ),
             req.getWfSpecName(),
             observer

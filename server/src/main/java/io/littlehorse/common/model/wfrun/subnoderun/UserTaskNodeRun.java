@@ -3,7 +3,7 @@ package io.littlehorse.common.model.wfrun.subnoderun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.meta.Node;
+import io.littlehorse.common.model.meta.NodeModel;
 import io.littlehorse.common.model.meta.UserTaskNode;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
@@ -56,7 +56,7 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
     @Override
     public void arrive(Date time) {
         // The UserTaskNode arrive() function should create a UserTaskRun.
-        Node node = getNodeRun().getNode();
+        NodeModel node = getNodeRunModel().getNode();
         UserTaskNode utn = node.getUserTaskNode();
 
         UserTaskDef utd = getDao()
@@ -64,7 +64,7 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
         if (utd == null) {
             // that means the UserTaskDef was deleted between now and the time that the
             // WfSpec was first created. Yikers!
-            nodeRun.fail(
+            nodeRunModel.fail(
                 new Failure(
                     "Appears that UserTaskDef was deleted!",
                     LHConstants.TASK_ERROR
@@ -73,7 +73,7 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
             );
             return;
         }
-        UserTaskRun out = new UserTaskRun(utd, utn, getNodeRun());
+        UserTaskRun out = new UserTaskRun(utd, utn, getNodeRunModel());
         // Now we create a new UserTaskRun.
 
         out.setDao(getDao());
