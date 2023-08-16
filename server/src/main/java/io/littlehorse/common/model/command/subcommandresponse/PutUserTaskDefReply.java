@@ -3,12 +3,12 @@ package io.littlehorse.common.model.command.subcommandresponse;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefReplyPb;
 
 public class PutUserTaskDefReply extends AbstractResponse<PutUserTaskDefReplyPb> {
 
-    public UserTaskDef result;
+    public UserTaskDefModel result;
 
     public Class<PutUserTaskDefReplyPb> getProtoBaseClass() {
         return PutUserTaskDefReplyPb.class;
@@ -27,6 +27,6 @@ public class PutUserTaskDefReply extends AbstractResponse<PutUserTaskDefReplyPb>
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();
         if (p.hasResult()) result =
-            LHSerializable.fromProto(p.getResult(), UserTaskDef.class);
+            LHSerializable.fromProto(p.getResult(), UserTaskDefModel.class);
     }
 }

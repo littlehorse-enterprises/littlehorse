@@ -11,8 +11,8 @@ import java.util.Set;
 public class EdgeCondition extends LHSerializable<EdgeConditionPb> {
 
     public ComparatorPb comparator;
-    public VariableAssignment left;
-    public VariableAssignment right;
+    public VariableAssignmentModel left;
+    public VariableAssignmentModel right;
 
     public Class<EdgeConditionPb> getProtoBaseClass() {
         return EdgeConditionPb.class;
@@ -21,8 +21,8 @@ public class EdgeCondition extends LHSerializable<EdgeConditionPb> {
     public void initFrom(Message proto) {
         EdgeConditionPb p = (EdgeConditionPb) proto;
         comparator = p.getComparator();
-        left = VariableAssignment.fromProto(p.getLeft());
-        right = VariableAssignment.fromProto(p.getRight());
+        left = VariableAssignmentModel.fromProto(p.getLeft());
+        right = VariableAssignmentModel.fromProto(p.getRight());
     }
 
     public EdgeConditionPb.Builder toProto() {

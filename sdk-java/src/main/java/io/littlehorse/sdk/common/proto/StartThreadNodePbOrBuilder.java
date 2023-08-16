@@ -20,11 +20,11 @@ public interface StartThreadNodePbOrBuilder extends
       getThreadSpecNameBytes();
 
   /**
-   * <code>map&lt;string, .littlehorse.VariableAssignmentPb&gt; variables = 2;</code>
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   int getVariablesCount();
   /**
-   * <code>map&lt;string, .littlehorse.VariableAssignmentPb&gt; variables = 2;</code>
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   boolean containsVariables(
       java.lang.String key);
@@ -32,24 +32,24 @@ public interface StartThreadNodePbOrBuilder extends
    * Use {@link #getVariablesMap()} instead.
    */
   @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentPb>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
   getVariables();
   /**
-   * <code>map&lt;string, .littlehorse.VariableAssignmentPb&gt; variables = 2;</code>
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentPb>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
   getVariablesMap();
   /**
-   * <code>map&lt;string, .littlehorse.VariableAssignmentPb&gt; variables = 2;</code>
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   /* nullable */
-io.littlehorse.sdk.common.proto.VariableAssignmentPb getVariablesOrDefault(
+io.littlehorse.sdk.common.proto.VariableAssignment getVariablesOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.sdk.common.proto.VariableAssignmentPb defaultValue);
+io.littlehorse.sdk.common.proto.VariableAssignment defaultValue);
   /**
-   * <code>map&lt;string, .littlehorse.VariableAssignmentPb&gt; variables = 2;</code>
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPb getVariablesOrThrow(
+  io.littlehorse.sdk.common.proto.VariableAssignment getVariablesOrThrow(
       java.lang.String key);
 }

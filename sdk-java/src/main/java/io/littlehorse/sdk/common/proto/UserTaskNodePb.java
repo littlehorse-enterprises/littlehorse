@@ -50,34 +50,34 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * <code>.littlehorse.VariableAssignment user_id = 1;</code>
      * @return Whether the userId field is set.
      */
     boolean hasUserId();
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * <code>.littlehorse.VariableAssignment user_id = 1;</code>
      * @return The userId.
      */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserId();
+    io.littlehorse.sdk.common.proto.VariableAssignment getUserId();
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * <code>.littlehorse.VariableAssignment user_id = 1;</code>
      */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserIdOrBuilder();
+    io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserIdOrBuilder();
 
     /**
-     * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
      * @return Whether the userGroup field is set.
      */
     boolean hasUserGroup();
     /**
-     * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
      * @return The userGroup.
      */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserGroup();
+    io.littlehorse.sdk.common.proto.VariableAssignment getUserGroup();
     /**
-     * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
      */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserGroupOrBuilder();
+    io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserGroupOrBuilder();
   }
   /**
    * Protobuf type {@code littlehorse.UserTaskNodePb.UserAssignmentPb}
@@ -121,9 +121,9 @@ private static final long serialVersionUID = 0L;
 
     private int bitField0_;
     public static final int USER_ID_FIELD_NUMBER = 1;
-    private io.littlehorse.sdk.common.proto.VariableAssignmentPb userId_;
+    private io.littlehorse.sdk.common.proto.VariableAssignment userId_;
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * <code>.littlehorse.VariableAssignment user_id = 1;</code>
      * @return Whether the userId field is set.
      */
     @java.lang.Override
@@ -131,25 +131,25 @@ private static final long serialVersionUID = 0L;
       return userId_ != null;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * <code>.littlehorse.VariableAssignment user_id = 1;</code>
      * @return The userId.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserId() {
-      return userId_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userId_;
+    public io.littlehorse.sdk.common.proto.VariableAssignment getUserId() {
+      return userId_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : userId_;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * <code>.littlehorse.VariableAssignment user_id = 1;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserIdOrBuilder() {
-      return userId_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userId_;
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserIdOrBuilder() {
+      return userId_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : userId_;
     }
 
     public static final int USER_GROUP_FIELD_NUMBER = 2;
-    private io.littlehorse.sdk.common.proto.VariableAssignmentPb userGroup_;
+    private io.littlehorse.sdk.common.proto.VariableAssignment userGroup_;
     /**
-     * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
      * @return Whether the userGroup field is set.
      */
     @java.lang.Override
@@ -157,19 +157,19 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
      * @return The userGroup.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserGroup() {
-      return userGroup_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userGroup_;
+    public io.littlehorse.sdk.common.proto.VariableAssignment getUserGroup() {
+      return userGroup_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : userGroup_;
     }
     /**
-     * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserGroupOrBuilder() {
-      return userGroup_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userGroup_;
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserGroupOrBuilder() {
+      return userGroup_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : userGroup_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -554,31 +554,31 @@ private static final long serialVersionUID = 0L;
       }
       private int bitField0_;
 
-      private io.littlehorse.sdk.common.proto.VariableAssignmentPb userId_;
+      private io.littlehorse.sdk.common.proto.VariableAssignment userId_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> userIdBuilder_;
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> userIdBuilder_;
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        * @return Whether the userId field is set.
        */
       public boolean hasUserId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        * @return The userId.
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserId() {
+      public io.littlehorse.sdk.common.proto.VariableAssignment getUserId() {
         if (userIdBuilder_ == null) {
-          return userId_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userId_;
+          return userId_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : userId_;
         } else {
           return userIdBuilder_.getMessage();
         }
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        */
-      public Builder setUserId(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+      public Builder setUserId(io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (userIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -592,10 +592,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        */
       public Builder setUserId(
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+          io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
         if (userIdBuilder_ == null) {
           userId_ = builderForValue.build();
         } else {
@@ -606,13 +606,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        */
-      public Builder mergeUserId(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+      public Builder mergeUserId(io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (userIdBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0) &&
             userId_ != null &&
-            userId_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
+            userId_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
             getUserIdBuilder().mergeFrom(value);
           } else {
             userId_ = value;
@@ -625,7 +625,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        */
       public Builder clearUserId() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -638,33 +638,33 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getUserIdBuilder() {
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getUserIdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getUserIdFieldBuilder().getBuilder();
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserIdOrBuilder() {
+      public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserIdOrBuilder() {
         if (userIdBuilder_ != null) {
           return userIdBuilder_.getMessageOrBuilder();
         } else {
           return userId_ == null ?
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userId_;
+              io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : userId_;
         }
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
           getUserIdFieldBuilder() {
         if (userIdBuilder_ == null) {
           userIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
+              io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
                   getUserId(),
                   getParentForChildren(),
                   isClean());
@@ -673,31 +673,31 @@ private static final long serialVersionUID = 0L;
         return userIdBuilder_;
       }
 
-      private io.littlehorse.sdk.common.proto.VariableAssignmentPb userGroup_;
+      private io.littlehorse.sdk.common.proto.VariableAssignment userGroup_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> userGroupBuilder_;
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> userGroupBuilder_;
       /**
-       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        * @return Whether the userGroup field is set.
        */
       public boolean hasUserGroup() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        * @return The userGroup.
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserGroup() {
+      public io.littlehorse.sdk.common.proto.VariableAssignment getUserGroup() {
         if (userGroupBuilder_ == null) {
-          return userGroup_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userGroup_;
+          return userGroup_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : userGroup_;
         } else {
           return userGroupBuilder_.getMessage();
         }
       }
       /**
-       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        */
-      public Builder setUserGroup(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+      public Builder setUserGroup(io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (userGroupBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -711,10 +711,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        */
       public Builder setUserGroup(
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+          io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
         if (userGroupBuilder_ == null) {
           userGroup_ = builderForValue.build();
         } else {
@@ -725,13 +725,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        */
-      public Builder mergeUserGroup(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+      public Builder mergeUserGroup(io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (userGroupBuilder_ == null) {
           if (((bitField0_ & 0x00000002) != 0) &&
             userGroup_ != null &&
-            userGroup_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
+            userGroup_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
             getUserGroupBuilder().mergeFrom(value);
           } else {
             userGroup_ = value;
@@ -744,7 +744,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        */
       public Builder clearUserGroup() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -757,33 +757,33 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getUserGroupBuilder() {
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getUserGroupBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getUserGroupFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserGroupOrBuilder() {
+      public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserGroupOrBuilder() {
         if (userGroupBuilder_ != null) {
           return userGroupBuilder_.getMessageOrBuilder();
         } else {
           return userGroup_ == null ?
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : userGroup_;
+              io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : userGroup_;
         }
       }
       /**
-       * <code>optional .littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
           getUserGroupFieldBuilder() {
         if (userGroupBuilder_ == null) {
           userGroupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
+              io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
                   getUserGroup(),
                   getParentForChildren(),
                   isClean());
@@ -938,7 +938,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int USER_GROUP_FIELD_NUMBER = 2;
   /**
-   * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+   * <code>.littlehorse.VariableAssignment user_group = 2;</code>
    * @return Whether the userGroup field is set.
    */
   @java.lang.Override
@@ -946,25 +946,25 @@ private static final long serialVersionUID = 0L;
     return assignmentCase_ == 2;
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+   * <code>.littlehorse.VariableAssignment user_group = 2;</code>
    * @return The userGroup.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserGroup() {
+  public io.littlehorse.sdk.common.proto.VariableAssignment getUserGroup() {
     if (assignmentCase_ == 2) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_;
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) assignment_;
     }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+   * <code>.littlehorse.VariableAssignment user_group = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserGroupOrBuilder() {
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserGroupOrBuilder() {
     if (assignmentCase_ == 2) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_;
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) assignment_;
     }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
 
   public static final int USER_FIELD_NUMBER = 3;
@@ -1000,7 +1000,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int ACTIONS_FIELD_NUMBER = 4;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.UTActionTriggerPb> actions_;
+  private java.util.List<io.littlehorse.sdk.common.proto.UTActionTrigger> actions_;
   /**
    * <pre>
    * This is used to, for example, send a push notification to a mobile app
@@ -1008,10 +1008,10 @@ private static final long serialVersionUID = 0L;
    * the task to another group of people
    * </pre>
    *
-   * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+   * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.UTActionTriggerPb> getActionsList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.UTActionTrigger> getActionsList() {
     return actions_;
   }
   /**
@@ -1021,10 +1021,10 @@ private static final long serialVersionUID = 0L;
    * the task to another group of people
    * </pre>
    *
-   * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+   * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.UTActionTriggerPbOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.UTActionTriggerOrBuilder> 
       getActionsOrBuilderList() {
     return actions_;
   }
@@ -1035,7 +1035,7 @@ private static final long serialVersionUID = 0L;
    * the task to another group of people
    * </pre>
    *
-   * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+   * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
    */
   @java.lang.Override
   public int getActionsCount() {
@@ -1048,10 +1048,10 @@ private static final long serialVersionUID = 0L;
    * the task to another group of people
    * </pre>
    *
-   * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+   * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPb getActions(int index) {
+  public io.littlehorse.sdk.common.proto.UTActionTrigger getActions(int index) {
     return actions_.get(index);
   }
   /**
@@ -1061,10 +1061,10 @@ private static final long serialVersionUID = 0L;
    * the task to another group of people
    * </pre>
    *
-   * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+   * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPbOrBuilder getActionsOrBuilder(
+  public io.littlehorse.sdk.common.proto.UTActionTriggerOrBuilder getActionsOrBuilder(
       int index) {
     return actions_.get(index);
   }
@@ -1101,13 +1101,13 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int NOTES_FIELD_NUMBER = 6;
-  private io.littlehorse.sdk.common.proto.VariableAssignmentPb notes_;
+  private io.littlehorse.sdk.common.proto.VariableAssignment notes_;
   /**
    * <pre>
    * Allow WfRun-specific notes for this User Task.
    * </pre>
    *
-   * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+   * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
    * @return Whether the notes field is set.
    */
   @java.lang.Override
@@ -1119,23 +1119,23 @@ private static final long serialVersionUID = 0L;
    * Allow WfRun-specific notes for this User Task.
    * </pre>
    *
-   * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+   * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
    * @return The notes.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb getNotes() {
-    return notes_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : notes_;
+  public io.littlehorse.sdk.common.proto.VariableAssignment getNotes() {
+    return notes_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : notes_;
   }
   /**
    * <pre>
    * Allow WfRun-specific notes for this User Task.
    * </pre>
    *
-   * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+   * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getNotesOrBuilder() {
-    return notes_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : notes_;
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getNotesOrBuilder() {
+    return notes_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : notes_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -1156,7 +1156,7 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, userTaskDefName_);
     }
     if (assignmentCase_ == 2) {
-      output.writeMessage(2, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_);
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.VariableAssignment) assignment_);
     }
     if (assignmentCase_ == 3) {
       output.writeMessage(3, (io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb) assignment_);
@@ -1184,7 +1184,7 @@ private static final long serialVersionUID = 0L;
     }
     if (assignmentCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_);
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.VariableAssignment) assignment_);
     }
     if (assignmentCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
@@ -1656,9 +1656,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 26
             case 34: {
-              io.littlehorse.sdk.common.proto.UTActionTriggerPb m =
+              io.littlehorse.sdk.common.proto.UTActionTrigger m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.UTActionTriggerPb.parser(),
+                      io.littlehorse.sdk.common.proto.UTActionTrigger.parser(),
                       extensionRegistry);
               if (actionsBuilder_ == null) {
                 ensureActionsIsMutable();
@@ -1785,9 +1785,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> userGroupBuilder_;
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> userGroupBuilder_;
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>.littlehorse.VariableAssignment user_group = 2;</code>
      * @return Whether the userGroup field is set.
      */
     @java.lang.Override
@@ -1795,27 +1795,27 @@ private static final long serialVersionUID = 0L;
       return assignmentCase_ == 2;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>.littlehorse.VariableAssignment user_group = 2;</code>
      * @return The userGroup.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserGroup() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment getUserGroup() {
       if (userGroupBuilder_ == null) {
         if (assignmentCase_ == 2) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_;
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) assignment_;
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       } else {
         if (assignmentCase_ == 2) {
           return userGroupBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>.littlehorse.VariableAssignment user_group = 2;</code>
      */
-    public Builder setUserGroup(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder setUserGroup(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (userGroupBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1829,10 +1829,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>.littlehorse.VariableAssignment user_group = 2;</code>
      */
     public Builder setUserGroup(
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
       if (userGroupBuilder_ == null) {
         assignment_ = builderForValue.build();
         onChanged();
@@ -1843,13 +1843,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>.littlehorse.VariableAssignment user_group = 2;</code>
      */
-    public Builder mergeUserGroup(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder mergeUserGroup(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (userGroupBuilder_ == null) {
         if (assignmentCase_ == 2 &&
-            assignment_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
-          assignment_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_)
+            assignment_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+          assignment_ = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment) assignment_)
               .mergeFrom(value).buildPartial();
         } else {
           assignment_ = value;
@@ -1866,7 +1866,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>.littlehorse.VariableAssignment user_group = 2;</code>
      */
     public Builder clearUserGroup() {
       if (userGroupBuilder_ == null) {
@@ -1885,38 +1885,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>.littlehorse.VariableAssignment user_group = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getUserGroupBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getUserGroupBuilder() {
       return getUserGroupFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>.littlehorse.VariableAssignment user_group = 2;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserGroupOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserGroupOrBuilder() {
       if ((assignmentCase_ == 2) && (userGroupBuilder_ != null)) {
         return userGroupBuilder_.getMessageOrBuilder();
       } else {
         if (assignmentCase_ == 2) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_;
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) assignment_;
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>.littlehorse.VariableAssignment user_group = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         getUserGroupFieldBuilder() {
       if (userGroupBuilder_ == null) {
         if (!(assignmentCase_ == 2)) {
-          assignment_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+          assignment_ = io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
         }
         userGroupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignment_,
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableAssignment) assignment_,
                 getParentForChildren(),
                 isClean());
         assignment_ = null;
@@ -2068,17 +2068,17 @@ private static final long serialVersionUID = 0L;
       return userBuilder_;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.UTActionTriggerPb> actions_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.UTActionTrigger> actions_ =
       java.util.Collections.emptyList();
     private void ensureActionsIsMutable() {
       if (!((bitField0_ & 0x00000008) != 0)) {
-        actions_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.UTActionTriggerPb>(actions_);
+        actions_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.UTActionTrigger>(actions_);
         bitField0_ |= 0x00000008;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb, io.littlehorse.sdk.common.proto.UTActionTriggerPb.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerPbOrBuilder> actionsBuilder_;
+        io.littlehorse.sdk.common.proto.UTActionTrigger, io.littlehorse.sdk.common.proto.UTActionTrigger.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerOrBuilder> actionsBuilder_;
 
     /**
      * <pre>
@@ -2087,9 +2087,9 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.UTActionTriggerPb> getActionsList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.UTActionTrigger> getActionsList() {
       if (actionsBuilder_ == null) {
         return java.util.Collections.unmodifiableList(actions_);
       } else {
@@ -2103,7 +2103,7 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
     public int getActionsCount() {
       if (actionsBuilder_ == null) {
@@ -2119,9 +2119,9 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb getActions(int index) {
+    public io.littlehorse.sdk.common.proto.UTActionTrigger getActions(int index) {
       if (actionsBuilder_ == null) {
         return actions_.get(index);
       } else {
@@ -2135,10 +2135,10 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
     public Builder setActions(
-        int index, io.littlehorse.sdk.common.proto.UTActionTriggerPb value) {
+        int index, io.littlehorse.sdk.common.proto.UTActionTrigger value) {
       if (actionsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2158,10 +2158,10 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
     public Builder setActions(
-        int index, io.littlehorse.sdk.common.proto.UTActionTriggerPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.UTActionTrigger.Builder builderForValue) {
       if (actionsBuilder_ == null) {
         ensureActionsIsMutable();
         actions_.set(index, builderForValue.build());
@@ -2178,9 +2178,9 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
-    public Builder addActions(io.littlehorse.sdk.common.proto.UTActionTriggerPb value) {
+    public Builder addActions(io.littlehorse.sdk.common.proto.UTActionTrigger value) {
       if (actionsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2200,10 +2200,10 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
     public Builder addActions(
-        int index, io.littlehorse.sdk.common.proto.UTActionTriggerPb value) {
+        int index, io.littlehorse.sdk.common.proto.UTActionTrigger value) {
       if (actionsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2223,10 +2223,10 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
     public Builder addActions(
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.UTActionTrigger.Builder builderForValue) {
       if (actionsBuilder_ == null) {
         ensureActionsIsMutable();
         actions_.add(builderForValue.build());
@@ -2243,10 +2243,10 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
     public Builder addActions(
-        int index, io.littlehorse.sdk.common.proto.UTActionTriggerPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.UTActionTrigger.Builder builderForValue) {
       if (actionsBuilder_ == null) {
         ensureActionsIsMutable();
         actions_.add(index, builderForValue.build());
@@ -2263,10 +2263,10 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
     public Builder addAllActions(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.UTActionTriggerPb> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.UTActionTrigger> values) {
       if (actionsBuilder_ == null) {
         ensureActionsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -2284,7 +2284,7 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
     public Builder clearActions() {
       if (actionsBuilder_ == null) {
@@ -2303,7 +2303,7 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
     public Builder removeActions(int index) {
       if (actionsBuilder_ == null) {
@@ -2322,9 +2322,9 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.Builder getActionsBuilder(
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.Builder getActionsBuilder(
         int index) {
       return getActionsFieldBuilder().getBuilder(index);
     }
@@ -2335,9 +2335,9 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPbOrBuilder getActionsOrBuilder(
+    public io.littlehorse.sdk.common.proto.UTActionTriggerOrBuilder getActionsOrBuilder(
         int index) {
       if (actionsBuilder_ == null) {
         return actions_.get(index);  } else {
@@ -2351,9 +2351,9 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.UTActionTriggerPbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.UTActionTriggerOrBuilder> 
          getActionsOrBuilderList() {
       if (actionsBuilder_ != null) {
         return actionsBuilder_.getMessageOrBuilderList();
@@ -2368,11 +2368,11 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.Builder addActionsBuilder() {
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.Builder addActionsBuilder() {
       return getActionsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.UTActionTriggerPb.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.UTActionTrigger.getDefaultInstance());
     }
     /**
      * <pre>
@@ -2381,12 +2381,12 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.Builder addActionsBuilder(
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.Builder addActionsBuilder(
         int index) {
       return getActionsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.UTActionTriggerPb.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.UTActionTrigger.getDefaultInstance());
     }
     /**
      * <pre>
@@ -2395,18 +2395,18 @@ private static final long serialVersionUID = 0L;
      * the task to another group of people
      * </pre>
      *
-     * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+     * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.UTActionTriggerPb.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.UTActionTrigger.Builder> 
          getActionsBuilderList() {
       return getActionsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb, io.littlehorse.sdk.common.proto.UTActionTriggerPb.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.UTActionTrigger, io.littlehorse.sdk.common.proto.UTActionTrigger.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerOrBuilder> 
         getActionsFieldBuilder() {
       if (actionsBuilder_ == null) {
         actionsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UTActionTriggerPb, io.littlehorse.sdk.common.proto.UTActionTriggerPb.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.UTActionTrigger, io.littlehorse.sdk.common.proto.UTActionTrigger.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerOrBuilder>(
                 actions_,
                 ((bitField0_ & 0x00000008) != 0),
                 getParentForChildren(),
@@ -2480,15 +2480,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.sdk.common.proto.VariableAssignmentPb notes_;
+    private io.littlehorse.sdk.common.proto.VariableAssignment notes_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> notesBuilder_;
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> notesBuilder_;
     /**
      * <pre>
      * Allow WfRun-specific notes for this User Task.
      * </pre>
      *
-     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
      * @return Whether the notes field is set.
      */
     public boolean hasNotes() {
@@ -2499,12 +2499,12 @@ private static final long serialVersionUID = 0L;
      * Allow WfRun-specific notes for this User Task.
      * </pre>
      *
-     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
      * @return The notes.
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getNotes() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment getNotes() {
       if (notesBuilder_ == null) {
-        return notes_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : notes_;
+        return notes_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : notes_;
       } else {
         return notesBuilder_.getMessage();
       }
@@ -2514,9 +2514,9 @@ private static final long serialVersionUID = 0L;
      * Allow WfRun-specific notes for this User Task.
      * </pre>
      *
-     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
      */
-    public Builder setNotes(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder setNotes(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (notesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2534,10 +2534,10 @@ private static final long serialVersionUID = 0L;
      * Allow WfRun-specific notes for this User Task.
      * </pre>
      *
-     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
      */
     public Builder setNotes(
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
       if (notesBuilder_ == null) {
         notes_ = builderForValue.build();
       } else {
@@ -2552,13 +2552,13 @@ private static final long serialVersionUID = 0L;
      * Allow WfRun-specific notes for this User Task.
      * </pre>
      *
-     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
      */
-    public Builder mergeNotes(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder mergeNotes(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (notesBuilder_ == null) {
         if (((bitField0_ & 0x00000020) != 0) &&
           notes_ != null &&
-          notes_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
+          notes_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
           getNotesBuilder().mergeFrom(value);
         } else {
           notes_ = value;
@@ -2575,7 +2575,7 @@ private static final long serialVersionUID = 0L;
      * Allow WfRun-specific notes for this User Task.
      * </pre>
      *
-     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
      */
     public Builder clearNotes() {
       bitField0_ = (bitField0_ & ~0x00000020);
@@ -2592,9 +2592,9 @@ private static final long serialVersionUID = 0L;
      * Allow WfRun-specific notes for this User Task.
      * </pre>
      *
-     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getNotesBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getNotesBuilder() {
       bitField0_ |= 0x00000020;
       onChanged();
       return getNotesFieldBuilder().getBuilder();
@@ -2604,14 +2604,14 @@ private static final long serialVersionUID = 0L;
      * Allow WfRun-specific notes for this User Task.
      * </pre>
      *
-     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getNotesOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getNotesOrBuilder() {
       if (notesBuilder_ != null) {
         return notesBuilder_.getMessageOrBuilder();
       } else {
         return notes_ == null ?
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : notes_;
+            io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : notes_;
       }
     }
     /**
@@ -2619,14 +2619,14 @@ private static final long serialVersionUID = 0L;
      * Allow WfRun-specific notes for this User Task.
      * </pre>
      *
-     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         getNotesFieldBuilder() {
       if (notesBuilder_ == null) {
         notesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
                 getNotes(),
                 getParentForChildren(),
                 isClean());

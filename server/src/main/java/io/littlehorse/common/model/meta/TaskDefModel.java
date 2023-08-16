@@ -5,8 +5,8 @@ import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefIdPb;
-import io.littlehorse.sdk.common.proto.TaskDefPb;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
@@ -19,7 +19,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TaskDef extends Getable<TaskDefPb> {
+public class TaskDefModel extends Getable<TaskDef> {
 
     @Getter
     public String name;
@@ -27,7 +27,7 @@ public class TaskDef extends Getable<TaskDefPb> {
     public Date createdAt;
     public List<VariableDefModel> inputVars;
 
-    public TaskDef() {
+    public TaskDefModel() {
         inputVars = new ArrayList<>();
     }
 
@@ -53,12 +53,12 @@ public class TaskDef extends Getable<TaskDefPb> {
         return List.of();
     }
 
-    public Class<TaskDefPb> getProtoBaseClass() {
-        return TaskDefPb.class;
+    public Class<TaskDef> getProtoBaseClass() {
+        return TaskDef.class;
     }
 
-    public TaskDefPb.Builder toProto() {
-        TaskDefPb.Builder b = TaskDefPb
+    public TaskDef.Builder toProto() {
+        TaskDef.Builder b = TaskDef
             .newBuilder()
             .setName(name)
             .setCreatedAt(LHUtil.fromDate(getCreatedAt()));
@@ -70,7 +70,7 @@ public class TaskDef extends Getable<TaskDefPb> {
     }
 
     public void initFrom(Message p) {
-        TaskDefPb proto = (TaskDefPb) p;
+        TaskDef proto = (TaskDef) p;
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
 
@@ -79,8 +79,8 @@ public class TaskDef extends Getable<TaskDefPb> {
         }
     }
 
-    public static TaskDef fromProto(TaskDefPb p) {
-        TaskDef out = new TaskDef();
+    public static TaskDefModel fromProto(TaskDef p) {
+        TaskDefModel out = new TaskDefModel();
         out.initFrom(p);
         return out;
     }

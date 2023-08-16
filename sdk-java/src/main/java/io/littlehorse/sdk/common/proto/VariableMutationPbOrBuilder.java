@@ -48,19 +48,19 @@ public interface VariableMutationPbOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableMutationTypePb getOperation();
 
   /**
-   * <code>.littlehorse.VariableAssignmentPb source_variable = 4;</code>
+   * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
    * @return Whether the sourceVariable field is set.
    */
   boolean hasSourceVariable();
   /**
-   * <code>.littlehorse.VariableAssignmentPb source_variable = 4;</code>
+   * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
    * @return The sourceVariable.
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPb getSourceVariable();
+  io.littlehorse.sdk.common.proto.VariableAssignment getSourceVariable();
   /**
-   * <code>.littlehorse.VariableAssignmentPb source_variable = 4;</code>
+   * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getSourceVariableOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getSourceVariableOrBuilder();
 
   /**
    * <code>.littlehorse.VariableValue literal_value = 5;</code>

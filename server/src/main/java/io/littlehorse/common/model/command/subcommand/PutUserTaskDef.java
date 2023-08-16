@@ -8,12 +8,12 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutUserTaskDefReply;
-import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
-import io.littlehorse.common.model.meta.usertasks.UserTaskField;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.meta.usertasks.UserTaskFieldModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefPb;
-import io.littlehorse.sdk.common.proto.UserTaskFieldPb;
+import io.littlehorse.sdk.common.proto.UserTaskField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +22,7 @@ public class PutUserTaskDef extends SubCommand<PutUserTaskDefPb> {
 
     public String name;
     public String description;
-    public List<UserTaskField> fields;
+    public List<UserTaskFieldModel> fields;
 
     public PutUserTaskDef() {
         fields = new ArrayList<>();
@@ -37,7 +37,7 @@ public class PutUserTaskDef extends SubCommand<PutUserTaskDefPb> {
         if (description != null) {
             out.setDescription(description);
         }
-        for (UserTaskField f : fields) {
+        for (UserTaskFieldModel f : fields) {
             out.addFields(f.toProto());
         }
         return out;
@@ -47,8 +47,8 @@ public class PutUserTaskDef extends SubCommand<PutUserTaskDefPb> {
         PutUserTaskDefPb p = (PutUserTaskDefPb) proto;
         name = p.getName();
         if (p.hasDescription()) description = p.getDescription();
-        for (UserTaskFieldPb utfpb : p.getFieldsList()) {
-            fields.add(LHSerializable.fromProto(utfpb, UserTaskField.class));
+        for (UserTaskField utfpb : p.getFieldsList()) {
+            fields.add(LHSerializable.fromProto(utfpb, UserTaskFieldModel.class));
         }
     }
 
@@ -69,13 +69,13 @@ public class PutUserTaskDef extends SubCommand<PutUserTaskDefPb> {
             return out;
         }
 
-        UserTaskDef spec = new UserTaskDef();
+        UserTaskDefModel spec = new UserTaskDefModel();
         spec.name = name;
         spec.description = description;
         spec.fields = fields;
         spec.createdAt = new Date();
 
-        UserTaskDef oldVersion = dao.getUserTaskDef(name, null);
+        UserTaskDefModel oldVersion = dao.getUserTaskDef(name, null);
         if (oldVersion != null) {
             spec.version = oldVersion.version + 1;
         } else {

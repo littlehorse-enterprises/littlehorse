@@ -10,17 +10,17 @@ import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
-import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.ExternalEventDefModel;
 import io.littlehorse.common.model.meta.Host;
-import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.TaskDefModel;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
 import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
-import io.littlehorse.common.model.objectId.ExternalEventDefId;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.model.objectId.TaskRunId;
-import io.littlehorse.common.model.objectId.UserTaskDefId;
+import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfSpecId;
@@ -69,9 +69,9 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     private Map<String, WfSpecModel> wfSpecPuts;
-    private Map<String, TaskDef> taskDefPuts;
-    private Map<String, UserTaskDef> userTaskDefPuts;
-    private Map<String, ExternalEventDef> extEvtDefPuts;
+    private Map<String, TaskDefModel> taskDefPuts;
+    private Map<String, UserTaskDefModel> userTaskDefPuts;
+    private Map<String, ExternalEventDefModel> extEvtDefPuts;
     private Map<String, ScheduledTask> scheduledTaskPuts;
     private List<LHTimer> timersToSchedule;
     private Command command;
@@ -217,7 +217,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public void putExternalEventDef(ExternalEventDef spec) {
+    public void putExternalEventDef(ExternalEventDefModel spec) {
         if (!isMetadataProcessorInstance) {
             throw new RuntimeException(
                 "Tried to put metadata despite being on the wrong partition!"
@@ -227,7 +227,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public void putTaskDef(TaskDef spec) {
+    public void putTaskDef(TaskDefModel spec) {
         if (!isMetadataProcessorInstance) {
             throw new RuntimeException(
                 "Tried to put metadata despite being on the wrong partition!"
@@ -274,20 +274,20 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     // However, that doesn't happen in the code now; we should file a JIRA to
     // take care of it for later.
     @Override
-    public UserTaskDef getUserTaskDef(String name, Integer version) {
+    public UserTaskDefModel getUserTaskDef(String name, Integer version) {
         LHROStoreWrapper store = isMetadataProcessorInstance
             ? localStore
             : globalStore;
-        UserTaskDef out;
+        UserTaskDefModel out;
         if (version != null) {
             // First check the most recent puts
             out =
                 store.get(
-                    new UserTaskDefId(name, version).getStoreKey(),
-                    UserTaskDef.class
+                    new UserTaskDefIdModel(name, version).getStoreKey(),
+                    UserTaskDefModel.class
                 );
         } else {
-            out = store.getLastFromPrefix(name, UserTaskDef.class);
+            out = store.getLastFromPrefix(name, UserTaskDefModel.class);
         }
         if (out != null) out.setDao(this);
         return out;
@@ -295,7 +295,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     // Same R-Y-O-W Issue
     @Override
-    public void putUserTaskDef(UserTaskDef spec) {
+    public void putUserTaskDef(UserTaskDefModel spec) {
         if (!isMetadataProcessorInstance) {
             throw new RuntimeException(
                 "Tried to put metadata despite being on the wrong partition!"
@@ -306,25 +306,25 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     // Same R-Y-O-W issue
     @Override
-    public TaskDef getTaskDef(String name) {
-        TaskDef out = taskDefPuts.get(name);
+    public TaskDefModel getTaskDef(String name) {
+        TaskDefModel out = taskDefPuts.get(name);
         if (out != null) return out;
 
         LHROStoreWrapper store = isMetadataProcessorInstance
             ? localStore
             : globalStore;
-        return store.get(new TaskDefId(name).getStoreKey(), TaskDef.class);
+        return store.get(new TaskDefId(name).getStoreKey(), TaskDefModel.class);
     }
 
     // Same here, same R-Y-O-W issue
     @Override
-    public ExternalEventDef getExternalEventDef(String name) {
+    public ExternalEventDefModel getExternalEventDef(String name) {
         LHROStoreWrapper store = isMetadataProcessorInstance
             ? localStore
             : globalStore;
-        ExternalEventDef out = store.get(
-            new ExternalEventDefId(name).getStoreKey(),
-            ExternalEventDef.class
+        ExternalEventDefModel out = store.get(
+            new ExternalEventDefIdModel(name).getStoreKey(),
+            ExternalEventDefModel.class
         );
         if (out != null) {
             out.setDao(this);
@@ -510,7 +510,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public DeleteObjectReply deleteTaskDef(String name) {
-        TaskDef toDelete = getTaskDef(name);
+        TaskDefModel toDelete = getTaskDef(name);
         DeleteObjectReply out = new DeleteObjectReply();
         if (toDelete == null) {
             out.code = LHResponseCodePb.NOT_FOUND_ERROR;
@@ -524,7 +524,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public DeleteObjectReply deleteUserTaskDef(String name, int version) {
-        UserTaskDef toDelete = getUserTaskDef(name, version);
+        UserTaskDefModel toDelete = getUserTaskDef(name, version);
         DeleteObjectReply out = new DeleteObjectReply();
         if (toDelete == null) {
             out.code = LHResponseCodePb.NOT_FOUND_ERROR;
@@ -552,7 +552,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public DeleteObjectReply deleteExternalEventDef(String name) {
-        ExternalEventDef toDelete = getExternalEventDef(name);
+        ExternalEventDefModel toDelete = getExternalEventDef(name);
         DeleteObjectReply out = new DeleteObjectReply();
         if (toDelete == null) {
             out.code = LHResponseCodePb.NOT_FOUND_ERROR;
@@ -671,25 +671,25 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     private void flush() {
-        for (Map.Entry<String, ExternalEventDef> e : extEvtDefPuts.entrySet()) {
+        for (Map.Entry<String, ExternalEventDefModel> e : extEvtDefPuts.entrySet()) {
             saveOrDeleteGETableFlush(
                 e.getKey(),
                 e.getValue(),
-                ExternalEventDef.class
+                ExternalEventDefModel.class
             );
-            forwardGlobalMeta(e.getKey(), e.getValue(), ExternalEventDef.class);
+            forwardGlobalMeta(e.getKey(), e.getValue(), ExternalEventDefModel.class);
         }
         for (Map.Entry<String, WfSpecModel> e : wfSpecPuts.entrySet()) {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), WfSpecModel.class);
             forwardGlobalMeta(e.getKey(), e.getValue(), WfSpecModel.class);
         }
-        for (Map.Entry<String, UserTaskDef> e : userTaskDefPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), UserTaskDef.class);
-            forwardGlobalMeta(e.getKey(), e.getValue(), UserTaskDef.class);
+        for (Map.Entry<String, UserTaskDefModel> e : userTaskDefPuts.entrySet()) {
+            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), UserTaskDefModel.class);
+            forwardGlobalMeta(e.getKey(), e.getValue(), UserTaskDefModel.class);
         }
-        for (Map.Entry<String, TaskDef> e : taskDefPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskDef.class);
-            forwardGlobalMeta(e.getKey(), e.getValue(), TaskDef.class);
+        for (Map.Entry<String, TaskDefModel> e : taskDefPuts.entrySet()) {
+            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskDefModel.class);
+            forwardGlobalMeta(e.getKey(), e.getValue(), TaskDefModel.class);
         }
 
         for (LHTimer timer : timersToSchedule) {

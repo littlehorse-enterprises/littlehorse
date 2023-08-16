@@ -6,7 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefReply;
-import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.TaskDefModel;
 import io.littlehorse.common.model.meta.VariableDefModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
@@ -64,13 +64,13 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
             return out;
         }
 
-        TaskDef oldVersion = dao.getTaskDef(name);
+        TaskDefModel oldVersion = dao.getTaskDef(name);
         if (oldVersion != null) {
             out.code = LHResponseCodePb.ALREADY_EXISTS_ERROR;
             out.message = "TaskDef already exists and is immutable.";
             out.result = oldVersion;
         } else {
-            TaskDef spec = new TaskDef();
+            TaskDefModel spec = new TaskDefModel();
             spec.name = name;
             spec.inputVars = inputVars;
             dao.putTaskDef(spec);

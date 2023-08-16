@@ -3,8 +3,8 @@ package io.littlehorse.common.model.meta;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.VariableValueModel;
-import io.littlehorse.sdk.common.proto.VariableAssignmentPb;
-import io.littlehorse.sdk.common.proto.VariableAssignmentPb.SourceCase;
+import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,20 +13,20 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
+public class VariableAssignmentModel extends LHSerializable<VariableAssignment> {
 
     private String jsonPath;
     private SourceCase rhsSourceType;
     private String variableName;
     private VariableValueModel rhsLiteralValue;
-    private FormatString formatString;
+    private FormatStringModel formatString;
 
-    public Class<VariableAssignmentPb> getProtoBaseClass() {
-        return VariableAssignmentPb.class;
+    public Class<VariableAssignment> getProtoBaseClass() {
+        return VariableAssignment.class;
     }
 
     public void initFrom(Message proto) {
-        VariableAssignmentPb p = (VariableAssignmentPb) proto;
+        VariableAssignment p = (VariableAssignment) proto;
         if (p.hasJsonPath()) jsonPath = p.getJsonPath();
 
         rhsSourceType = p.getSourceCase();
@@ -39,15 +39,15 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
                 break;
             case FORMAT_STRING:
                 formatString =
-                    LHSerializable.fromProto(p.getFormatString(), FormatString.class);
+                    LHSerializable.fromProto(p.getFormatString(), FormatStringModel.class);
                 break;
             case SOURCE_NOT_SET:
             // nothing to do;
         }
     }
 
-    public VariableAssignmentPb.Builder toProto() {
-        VariableAssignmentPb.Builder out = VariableAssignmentPb.newBuilder();
+    public VariableAssignment.Builder toProto() {
+        VariableAssignment.Builder out = VariableAssignment.newBuilder();
 
         if (jsonPath != null) out.setJsonPath(jsonPath);
 
@@ -68,8 +68,8 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
         return out;
     }
 
-    public static VariableAssignment fromProto(VariableAssignmentPb proto) {
-        VariableAssignment out = new VariableAssignment();
+    public static VariableAssignmentModel fromProto(VariableAssignment proto) {
+        VariableAssignmentModel out = new VariableAssignmentModel();
         out.initFrom(proto);
         return out;
     }
@@ -81,7 +81,7 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
         }
         if (rhsSourceType == SourceCase.FORMAT_STRING) {
             out.addAll(formatString.getFormat().getRequiredWfRunVarNames());
-            for (VariableAssignment arg : formatString.getArgs()) {
+            for (VariableAssignmentModel arg : formatString.getArgs()) {
                 out.addAll(arg.getRequiredWfRunVarNames());
             }
         }

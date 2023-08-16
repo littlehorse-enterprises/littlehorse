@@ -5,12 +5,12 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.objectId.UserTaskDefId;
+import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.UserTaskDefPb;
-import io.littlehorse.sdk.common.proto.UserTaskFieldPb;
+import io.littlehorse.sdk.common.proto.UserTaskDef;
+import io.littlehorse.sdk.common.proto.UserTaskField;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.util.ArrayList;
@@ -19,27 +19,27 @@ import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 
-public class UserTaskDef extends Getable<UserTaskDefPb> {
+public class UserTaskDefModel extends Getable<UserTaskDef> {
 
     public String name;
     public Date createdAt;
 
     @Getter
-    public List<UserTaskField> fields;
+    public List<UserTaskFieldModel> fields;
 
     public String description;
     public int version;
 
-    public UserTaskDef() {
+    public UserTaskDefModel() {
         fields = new ArrayList<>();
     }
 
-    public Class<UserTaskDefPb> getProtoBaseClass() {
-        return UserTaskDefPb.class;
+    public Class<UserTaskDef> getProtoBaseClass() {
+        return UserTaskDef.class;
     }
 
-    public UserTaskDefPb.Builder toProto() {
-        UserTaskDefPb.Builder out = UserTaskDefPb
+    public UserTaskDef.Builder toProto() {
+        UserTaskDef.Builder out = UserTaskDef
             .newBuilder()
             .setName(name)
             .setCreatedAt(LHUtil.fromDate(createdAt))
@@ -47,21 +47,21 @@ public class UserTaskDef extends Getable<UserTaskDefPb> {
 
         if (description != null) out.setDescription(description);
 
-        for (UserTaskField utf : fields) {
+        for (UserTaskFieldModel utf : fields) {
             out.addFields(utf.toProto());
         }
         return out;
     }
 
     public void initFrom(Message proto) {
-        UserTaskDefPb p = (UserTaskDefPb) proto;
+        UserTaskDef p = (UserTaskDef) proto;
         name = p.getName();
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         version = p.getVersion();
         if (p.hasDescription()) description = p.getDescription();
 
-        for (UserTaskFieldPb utf : p.getFieldsList()) {
-            fields.add(LHSerializable.fromProto(utf, UserTaskField.class));
+        for (UserTaskField utf : p.getFieldsList()) {
+            fields.add(LHSerializable.fromProto(utf, UserTaskFieldModel.class));
         }
     }
 
@@ -74,8 +74,8 @@ public class UserTaskDef extends Getable<UserTaskDefPb> {
         return List.of();
     }
 
-    public UserTaskDefId getObjectId() {
-        return new UserTaskDefId(name, version);
+    public UserTaskDefIdModel getObjectId() {
+        return new UserTaskDefIdModel(name, version);
     }
 
     @Override

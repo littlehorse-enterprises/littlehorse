@@ -66,26 +66,26 @@ io.littlehorse.sdk.common.proto.Node defaultValue);
       int index);
 
   /**
-   * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+   * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.InterruptDefPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.InterruptDef> 
       getInterruptDefsList();
   /**
-   * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+   * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.InterruptDefPb getInterruptDefs(int index);
+  io.littlehorse.sdk.common.proto.InterruptDef getInterruptDefs(int index);
   /**
-   * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+   * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
    */
   int getInterruptDefsCount();
   /**
-   * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+   * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.InterruptDefPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.InterruptDefOrBuilder> 
       getInterruptDefsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+   * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.InterruptDefPbOrBuilder getInterruptDefsOrBuilder(
+  io.littlehorse.sdk.common.proto.InterruptDefOrBuilder getInterruptDefsOrBuilder(
       int index);
 }

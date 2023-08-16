@@ -32,17 +32,17 @@ public interface FailureDefPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>optional .littlehorse.VariableAssignmentPb content = 3;</code>
+   * <code>optional .littlehorse.VariableAssignment content = 3;</code>
    * @return Whether the content field is set.
    */
   boolean hasContent();
   /**
-   * <code>optional .littlehorse.VariableAssignmentPb content = 3;</code>
+   * <code>optional .littlehorse.VariableAssignment content = 3;</code>
    * @return The content.
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPb getContent();
+  io.littlehorse.sdk.common.proto.VariableAssignment getContent();
   /**
-   * <code>optional .littlehorse.VariableAssignmentPb content = 3;</code>
+   * <code>optional .littlehorse.VariableAssignment content = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getContentOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getContentOrBuilder();
 }

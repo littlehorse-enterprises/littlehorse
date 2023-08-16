@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface VariableAssignmentPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.VariableAssignmentPb)
+public interface VariableAssignmentOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.VariableAssignment)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -57,19 +57,19 @@ public interface VariableAssignmentPbOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getLiteralValueOrBuilder();
 
   /**
-   * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+   * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
    * @return Whether the formatString field is set.
    */
   boolean hasFormatString();
   /**
-   * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+   * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
    * @return The formatString.
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb getFormatString();
+  io.littlehorse.sdk.common.proto.VariableAssignment.FormatString getFormatString();
   /**
-   * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+   * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPbOrBuilder getFormatStringOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableAssignment.FormatStringOrBuilder getFormatStringOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb.SourceCase getSourceCase();
+  public io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase getSourceCase();
 }

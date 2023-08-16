@@ -780,7 +780,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int SOURCE_VARIABLE_FIELD_NUMBER = 4;
   /**
-   * <code>.littlehorse.VariableAssignmentPb source_variable = 4;</code>
+   * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
    * @return Whether the sourceVariable field is set.
    */
   @java.lang.Override
@@ -788,25 +788,25 @@ private static final long serialVersionUID = 0L;
     return rhsValueCase_ == 4;
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb source_variable = 4;</code>
+   * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
    * @return The sourceVariable.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb getSourceVariable() {
+  public io.littlehorse.sdk.common.proto.VariableAssignment getSourceVariable() {
     if (rhsValueCase_ == 4) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) rhsValue_;
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) rhsValue_;
     }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb source_variable = 4;</code>
+   * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getSourceVariableOrBuilder() {
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getSourceVariableOrBuilder() {
     if (rhsValueCase_ == 4) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) rhsValue_;
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) rhsValue_;
     }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
 
   public static final int LITERAL_VALUE_FIELD_NUMBER = 5;
@@ -895,7 +895,7 @@ private static final long serialVersionUID = 0L;
       output.writeEnum(3, operation_);
     }
     if (rhsValueCase_ == 4) {
-      output.writeMessage(4, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) rhsValue_);
+      output.writeMessage(4, (io.littlehorse.sdk.common.proto.VariableAssignment) rhsValue_);
     }
     if (rhsValueCase_ == 5) {
       output.writeMessage(5, (io.littlehorse.sdk.common.proto.VariableValue) rhsValue_);
@@ -924,7 +924,7 @@ private static final long serialVersionUID = 0L;
     }
     if (rhsValueCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) rhsValue_);
+        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.VariableAssignment) rhsValue_);
     }
     if (rhsValueCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
@@ -1590,9 +1590,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> sourceVariableBuilder_;
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> sourceVariableBuilder_;
     /**
-     * <code>.littlehorse.VariableAssignmentPb source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      * @return Whether the sourceVariable field is set.
      */
     @java.lang.Override
@@ -1600,27 +1600,27 @@ private static final long serialVersionUID = 0L;
       return rhsValueCase_ == 4;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      * @return The sourceVariable.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getSourceVariable() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment getSourceVariable() {
       if (sourceVariableBuilder_ == null) {
         if (rhsValueCase_ == 4) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) rhsValue_;
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) rhsValue_;
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       } else {
         if (rhsValueCase_ == 4) {
           return sourceVariableBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      */
-    public Builder setSourceVariable(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder setSourceVariable(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (sourceVariableBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1634,10 +1634,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      */
     public Builder setSourceVariable(
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
       if (sourceVariableBuilder_ == null) {
         rhsValue_ = builderForValue.build();
         onChanged();
@@ -1648,13 +1648,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      */
-    public Builder mergeSourceVariable(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder mergeSourceVariable(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (sourceVariableBuilder_ == null) {
         if (rhsValueCase_ == 4 &&
-            rhsValue_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
-          rhsValue_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignmentPb) rhsValue_)
+            rhsValue_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+          rhsValue_ = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment) rhsValue_)
               .mergeFrom(value).buildPartial();
         } else {
           rhsValue_ = value;
@@ -1671,7 +1671,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      */
     public Builder clearSourceVariable() {
       if (sourceVariableBuilder_ == null) {
@@ -1690,38 +1690,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getSourceVariableBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getSourceVariableBuilder() {
       return getSourceVariableFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getSourceVariableOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getSourceVariableOrBuilder() {
       if ((rhsValueCase_ == 4) && (sourceVariableBuilder_ != null)) {
         return sourceVariableBuilder_.getMessageOrBuilder();
       } else {
         if (rhsValueCase_ == 4) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) rhsValue_;
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) rhsValue_;
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         getSourceVariableFieldBuilder() {
       if (sourceVariableBuilder_ == null) {
         if (!(rhsValueCase_ == 4)) {
-          rhsValue_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+          rhsValue_ = io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
         }
         sourceVariableBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.VariableAssignmentPb) rhsValue_,
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableAssignment) rhsValue_,
                 getParentForChildren(),
                 isClean());
         rhsValue_ = null;

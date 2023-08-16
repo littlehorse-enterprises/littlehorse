@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.TaskDefPb;
+import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
@@ -41,7 +41,7 @@ public class LHTaskWorker implements Closeable {
 
     private Object executable;
     private LHWorkerConfig config;
-    private TaskDefPb taskDef;
+    private TaskDef taskDef;
     private Method taskMethod;
     private List<VariableMapping> mappings;
     private LHServerConnectionManager manager;

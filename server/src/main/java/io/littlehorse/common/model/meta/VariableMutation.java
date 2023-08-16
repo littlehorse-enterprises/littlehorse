@@ -22,7 +22,7 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
     public VariableMutationTypePb operation;
 
     public RhsValueCase rhsValueType;
-    public VariableAssignment rhsSourceVariable;
+    public VariableAssignmentModel rhsSourceVariable;
     public VariableValueModel rhsLiteralValue;
     public NodeOutputSource nodeOutputSource;
 
@@ -68,7 +68,7 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
                 break;
             case SOURCE_VARIABLE:
                 rhsSourceVariable =
-                    VariableAssignment.fromProto(p.getSourceVariable());
+                    VariableAssignmentModel.fromProto(p.getSourceVariable());
                 break;
             case NODE_OUTPUT:
                 nodeOutputSource = NodeOutputSource.fromProto(p.getNodeOutput());

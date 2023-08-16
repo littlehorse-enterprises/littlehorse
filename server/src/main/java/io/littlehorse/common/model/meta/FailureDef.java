@@ -17,7 +17,7 @@ public class FailureDef extends LHSerializable<FailureDefPb> {
 
     public String failureName;
     public String message;
-    public VariableAssignment content;
+    public VariableAssignmentModel content;
 
     public Class<FailureDefPb> getProtoBaseClass() {
         return FailureDefPb.class;
@@ -41,7 +41,7 @@ public class FailureDef extends LHSerializable<FailureDefPb> {
         message = p.getMessage();
 
         if (p.hasContent()) {
-            content = VariableAssignment.fromProto(p.getContent());
+            content = VariableAssignmentModel.fromProto(p.getContent());
         }
     }
 

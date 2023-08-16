@@ -82,7 +82,7 @@ message PutWfSpecReplyPb {
 message GetTaskDefReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
-  optional TaskDefPb result = 3;
+  optional TaskDef result = 3;
 }
 
 message PutTaskDefPb {
@@ -93,7 +93,7 @@ message PutTaskDefPb {
 message PutTaskDefReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
-  optional TaskDefPb result = 3;
+  optional TaskDef result = 3;
 }
 
 message CancelUserTaskRunReplyPb {
@@ -103,20 +103,20 @@ message CancelUserTaskRunReplyPb {
 
 message PutUserTaskDefPb {
   string name = 1;
-  repeated UserTaskFieldPb fields = 2;
+  repeated UserTaskField fields = 2;
   optional string description = 3;
 }
 
 message PutUserTaskDefReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
-  optional UserTaskDefPb result = 3;
+  optional UserTaskDef result = 3;
 }
 
 message GetUserTaskDefReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
-  optional UserTaskDefPb result = 3;
+  optional UserTaskDef result = 3;
 }
 
 message PutExternalEventDefPb {
@@ -127,13 +127,13 @@ message PutExternalEventDefPb {
 message PutExternalEventDefReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
-  optional ExternalEventDefPb result = 3;
+  optional ExternalEventDef result = 3;
 }
 
 message GetExternalEventDefReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
-  optional ExternalEventDefPb result = 3;
+  optional ExternalEventDef result = 3;
 }
 
 message GetWfRunReplyPb {
@@ -1025,8 +1025,8 @@ enum ComparatorPb {
 
 message EdgeConditionPb {
   ComparatorPb comparator = 1;
-  VariableAssignmentPb left = 2;
-  VariableAssignmentPb right = 3;
+  VariableAssignment left = 2;
+  VariableAssignment right = 3;
 }
 
 message EdgePb {
@@ -1046,17 +1046,17 @@ enum VariableMutationTypePb {
   REMOVE_KEY = 8;
 }
 
-message VariableAssignmentPb {
-  message FormatStringPb {
-    VariableAssignmentPb format = 1;
-    repeated VariableAssignmentPb args = 2;
+message VariableAssignment {
+  message FormatString {
+    VariableAssignment format = 1;
+    repeated VariableAssignment args = 2;
   }
 
   optional string json_path = 1;
   oneof source {
     string variable_name = 2;
     VariableValue literal_value = 3;
-    FormatStringPb format_string = 4;
+    FormatString format_string = 4;
   }
 }
 
@@ -1068,7 +1068,7 @@ message VariableMutationPb {
   optional string lhs_json_path = 2;
   VariableMutationTypePb operation = 3;
   oneof rhs_value {
-    VariableAssignmentPb source_variable = 4;
+    VariableAssignment source_variable = 4;
     VariableValue literal_value = 5;
     NodeOutputSourcePb node_output = 6;
   }
@@ -1079,9 +1079,9 @@ message NopNodePb {
 
 message SleepNodePb {
   oneof sleep_length {
-    VariableAssignmentPb raw_seconds = 1;
-    VariableAssignmentPb timestamp = 2;
-    VariableAssignmentPb iso_date = 3;
+    VariableAssignment raw_seconds = 1;
+    VariableAssignment timestamp = 2;
+    VariableAssignment iso_date = 3;
   }
 }
 
@@ -1102,7 +1102,7 @@ message Node {
   }
 }
 
-message UserTaskFieldPb {
+message UserTaskField {
   string name = 1;
   VariableType type = 2;
   optional string description = 3;
@@ -1121,34 +1121,34 @@ message UserTaskDefIdPb {
   int32 version = 2;
 }
 
-message UserTaskDefPb {
+message UserTaskDef {
   string name = 1;
   int32 version = 2;
   optional string description = 3;
-  repeated UserTaskFieldPb fields = 4;
+  repeated UserTaskField fields = 4;
   google.protobuf.Timestamp created_at = 5;
 }
 
-message UTActionTriggerPb {
-  message UTACancelPb {
+message UTActionTrigger {
+  message UTACancel {
   }
 
-  message UTATaskPb {
+  message UTATask {
     TaskNodePb task = 1;
     repeated VariableMutationPb mutations = 2;
   }
 
-  message UTAReassignPb {
+  message UTAReassign {
     oneof assign_to {
-      VariableAssignmentPb user_id = 1;
-      VariableAssignmentPb user_group = 2;
+      VariableAssignment user_id = 1;
+      VariableAssignment user_group = 2;
     }
   }
 
   oneof action {
-    UTATaskPb task = 1;
-    UTACancelPb cancel = 2;
-    UTAReassignPb reassign = 3;
+    UTATask task = 1;
+    UTACancel cancel = 2;
+    UTAReassign reassign = 3;
     // later on, might enable scheduling entire ThreadRuns
   }
 
@@ -1157,7 +1157,7 @@ message UTActionTriggerPb {
     ON_TASK_ASSIGNED = 1;
   }
   //Action's delay
-  VariableAssignmentPb delay_seconds = 5;
+  VariableAssignment delay_seconds = 5;
   UTHook hook = 6;
 }
 
@@ -1165,20 +1165,20 @@ message UserTaskNodePb {
   string user_task_def_name = 1;
 
   message UserAssignmentPb {
-    VariableAssignmentPb user_id = 1;
-    optional VariableAssignmentPb user_group = 2;
+    VariableAssignment user_id = 1;
+    optional VariableAssignment user_group = 2;
   }
 
   // to whom should the Node be assigned?
   oneof assignment {
-    VariableAssignmentPb user_group = 2;
+    VariableAssignment user_group = 2;
     UserAssignmentPb user = 3;
   }
 
   // This is used to, for example, send a push notification to a mobile app
   // to remind someone that they need to fill out a task, or to re-assign
   // the task to another group of people
-  repeated UTActionTriggerPb actions = 4;
+  repeated UTActionTrigger actions = 4;
 
   // So, once the WfSpec is created, this will be pinned to a version. Customer
   // can optionally specify a specific version or can leave it null, in which
@@ -1186,7 +1186,7 @@ message UserTaskNodePb {
   optional int32 user_task_def_version = 5;
 
   // Allow WfRun-specific notes for this User Task.
-  optional VariableAssignmentPb notes = 6;
+  optional VariableAssignment notes = 6;
 }
 
 message UserTaskEventPb {
@@ -1313,7 +1313,7 @@ message CancelUserTaskRunPb {
 
 message StartThreadNodePb {
   string thread_spec_name = 1;
-  map<string, VariableAssignmentPb> variables = 2;
+  map<string, VariableAssignment> variables = 2;
 }
 
 message FailureHandlerDefPb {
@@ -1323,7 +1323,7 @@ message FailureHandlerDefPb {
 
 message WaitForThreadsNodePb {
   message ThreadToWaitForPb {
-    VariableAssignmentPb thread_run_number = 1;
+    VariableAssignment thread_run_number = 1;
   }
   repeated ThreadToWaitForPb threads = 1;
 }
@@ -1332,12 +1332,12 @@ message TaskNodePb {
   string task_def_name = 1;
   int32 timeout_seconds = 2;
   int32 retries = 3;
-  repeated VariableAssignmentPb variables = 4;
+  repeated VariableAssignment variables = 4;
 }
 
 message ExternalEventNodePb {
   string external_event_def_name = 1;
-  VariableAssignmentPb timeout_seconds = 2;
+  VariableAssignment timeout_seconds = 2;
 }
 
 message EntrypointNodePb {
@@ -1351,7 +1351,7 @@ message ExitNodePb {
 message FailureDefPb {
   string failure_name = 1;
   string message = 2;
-  optional VariableAssignmentPb content = 3;
+  optional VariableAssignment content = 3;
 }
 
 enum IndexType {
@@ -1372,7 +1372,7 @@ message JsonIndex {
   IndexType index_type = 2;
 }
 
-message InterruptDefPb {
+message InterruptDef {
   string external_event_def_name = 1;
   string handler_spec_name = 2;
 }
@@ -1380,7 +1380,7 @@ message InterruptDefPb {
 message ThreadSpec {
   map<string, Node> nodes = 1;
   repeated VariableDef variable_defs = 2;
-  repeated InterruptDefPb interrupt_defs = 3;
+  repeated InterruptDef interrupt_defs = 3;
 }
 
 message WfSpec {
@@ -1395,18 +1395,18 @@ message WfSpec {
 }
 
 // TaskDef
-message OutputSchemaPb {
+message OutputSchema {
   VariableType output_type = 1;
 }
 
-message TaskDefPb {
+message TaskDef {
   string name = 1;
   repeated VariableDef input_vars = 2;
   google.protobuf.Timestamp created_at = 3;
 }
 
 // ExternalEventDef
-message ExternalEventDefPb {
+message ExternalEventDef {
   string name = 1;
   google.protobuf.Timestamp created_at = 2;
   int32 retention_hours = 3;

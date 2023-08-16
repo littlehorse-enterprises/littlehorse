@@ -3,16 +3,16 @@ package io.littlehorse.common.model.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
-import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.TaskDefModel;
 import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefIdPb;
-import io.littlehorse.sdk.common.proto.TaskDefPb;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class TaskDefId extends ObjectId<TaskDefIdPb, TaskDefPb, TaskDef> {
+public class TaskDefId extends ObjectId<TaskDefIdPb, TaskDef, TaskDefModel> {
 
     public String name;
 

@@ -36,17 +36,17 @@ public interface GetExternalEventDefReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>optional .littlehorse.ExternalEventDefPb result = 3;</code>
+   * <code>optional .littlehorse.ExternalEventDef result = 3;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>optional .littlehorse.ExternalEventDefPb result = 3;</code>
+   * <code>optional .littlehorse.ExternalEventDef result = 3;</code>
    * @return The result.
    */
-  io.littlehorse.sdk.common.proto.ExternalEventDefPb getResult();
+  io.littlehorse.sdk.common.proto.ExternalEventDef getResult();
   /**
-   * <code>optional .littlehorse.ExternalEventDefPb result = 3;</code>
+   * <code>optional .littlehorse.ExternalEventDef result = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.ExternalEventDefPbOrBuilder getResultOrBuilder();
+  io.littlehorse.sdk.common.proto.ExternalEventDefOrBuilder getResultOrBuilder();
 }

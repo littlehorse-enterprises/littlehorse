@@ -179,41 +179,41 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
 
   public static final int INTERRUPT_DEFS_FIELD_NUMBER = 3;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.InterruptDefPb> interruptDefs_;
+  private java.util.List<io.littlehorse.sdk.common.proto.InterruptDef> interruptDefs_;
   /**
-   * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+   * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.InterruptDefPb> getInterruptDefsList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.InterruptDef> getInterruptDefsList() {
     return interruptDefs_;
   }
   /**
-   * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+   * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.InterruptDefPbOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.InterruptDefOrBuilder> 
       getInterruptDefsOrBuilderList() {
     return interruptDefs_;
   }
   /**
-   * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+   * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
    */
   @java.lang.Override
   public int getInterruptDefsCount() {
     return interruptDefs_.size();
   }
   /**
-   * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+   * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.InterruptDefPb getInterruptDefs(int index) {
+  public io.littlehorse.sdk.common.proto.InterruptDef getInterruptDefs(int index) {
     return interruptDefs_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+   * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.InterruptDefPbOrBuilder getInterruptDefsOrBuilder(
+  public io.littlehorse.sdk.common.proto.InterruptDefOrBuilder getInterruptDefsOrBuilder(
       int index) {
     return interruptDefs_.get(index);
   }
@@ -690,9 +690,9 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
               break;
             } // case 18
             case 26: {
-              io.littlehorse.sdk.common.proto.InterruptDefPb m =
+              io.littlehorse.sdk.common.proto.InterruptDef m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.InterruptDefPb.parser(),
+                      io.littlehorse.sdk.common.proto.InterruptDef.parser(),
                       extensionRegistry);
               if (interruptDefsBuilder_ == null) {
                 ensureInterruptDefsIsMutable();
@@ -1086,22 +1086,22 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return variableDefsBuilder_;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.InterruptDefPb> interruptDefs_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.InterruptDef> interruptDefs_ =
       java.util.Collections.emptyList();
     private void ensureInterruptDefsIsMutable() {
       if (!((bitField0_ & 0x00000004) != 0)) {
-        interruptDefs_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.InterruptDefPb>(interruptDefs_);
+        interruptDefs_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.InterruptDef>(interruptDefs_);
         bitField0_ |= 0x00000004;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.InterruptDefPb, io.littlehorse.sdk.common.proto.InterruptDefPb.Builder, io.littlehorse.sdk.common.proto.InterruptDefPbOrBuilder> interruptDefsBuilder_;
+        io.littlehorse.sdk.common.proto.InterruptDef, io.littlehorse.sdk.common.proto.InterruptDef.Builder, io.littlehorse.sdk.common.proto.InterruptDefOrBuilder> interruptDefsBuilder_;
 
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.InterruptDefPb> getInterruptDefsList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.InterruptDef> getInterruptDefsList() {
       if (interruptDefsBuilder_ == null) {
         return java.util.Collections.unmodifiableList(interruptDefs_);
       } else {
@@ -1109,7 +1109,7 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public int getInterruptDefsCount() {
       if (interruptDefsBuilder_ == null) {
@@ -1119,9 +1119,9 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.InterruptDefPb getInterruptDefs(int index) {
+    public io.littlehorse.sdk.common.proto.InterruptDef getInterruptDefs(int index) {
       if (interruptDefsBuilder_ == null) {
         return interruptDefs_.get(index);
       } else {
@@ -1129,10 +1129,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder setInterruptDefs(
-        int index, io.littlehorse.sdk.common.proto.InterruptDefPb value) {
+        int index, io.littlehorse.sdk.common.proto.InterruptDef value) {
       if (interruptDefsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1146,10 +1146,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder setInterruptDefs(
-        int index, io.littlehorse.sdk.common.proto.InterruptDefPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.InterruptDef.Builder builderForValue) {
       if (interruptDefsBuilder_ == null) {
         ensureInterruptDefsIsMutable();
         interruptDefs_.set(index, builderForValue.build());
@@ -1160,9 +1160,9 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
-    public Builder addInterruptDefs(io.littlehorse.sdk.common.proto.InterruptDefPb value) {
+    public Builder addInterruptDefs(io.littlehorse.sdk.common.proto.InterruptDef value) {
       if (interruptDefsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1176,10 +1176,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder addInterruptDefs(
-        int index, io.littlehorse.sdk.common.proto.InterruptDefPb value) {
+        int index, io.littlehorse.sdk.common.proto.InterruptDef value) {
       if (interruptDefsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1193,10 +1193,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder addInterruptDefs(
-        io.littlehorse.sdk.common.proto.InterruptDefPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.InterruptDef.Builder builderForValue) {
       if (interruptDefsBuilder_ == null) {
         ensureInterruptDefsIsMutable();
         interruptDefs_.add(builderForValue.build());
@@ -1207,10 +1207,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder addInterruptDefs(
-        int index, io.littlehorse.sdk.common.proto.InterruptDefPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.InterruptDef.Builder builderForValue) {
       if (interruptDefsBuilder_ == null) {
         ensureInterruptDefsIsMutable();
         interruptDefs_.add(index, builderForValue.build());
@@ -1221,10 +1221,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder addAllInterruptDefs(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.InterruptDefPb> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.InterruptDef> values) {
       if (interruptDefsBuilder_ == null) {
         ensureInterruptDefsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -1236,7 +1236,7 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder clearInterruptDefs() {
       if (interruptDefsBuilder_ == null) {
@@ -1249,7 +1249,7 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder removeInterruptDefs(int index) {
       if (interruptDefsBuilder_ == null) {
@@ -1262,16 +1262,16 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.InterruptDefPb.Builder getInterruptDefsBuilder(
+    public io.littlehorse.sdk.common.proto.InterruptDef.Builder getInterruptDefsBuilder(
         int index) {
       return getInterruptDefsFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.InterruptDefPbOrBuilder getInterruptDefsOrBuilder(
+    public io.littlehorse.sdk.common.proto.InterruptDefOrBuilder getInterruptDefsOrBuilder(
         int index) {
       if (interruptDefsBuilder_ == null) {
         return interruptDefs_.get(index);  } else {
@@ -1279,9 +1279,9 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.InterruptDefPbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.InterruptDefOrBuilder> 
          getInterruptDefsOrBuilderList() {
       if (interruptDefsBuilder_ != null) {
         return interruptDefsBuilder_.getMessageOrBuilderList();
@@ -1290,33 +1290,33 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.InterruptDefPb.Builder addInterruptDefsBuilder() {
+    public io.littlehorse.sdk.common.proto.InterruptDef.Builder addInterruptDefsBuilder() {
       return getInterruptDefsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.InterruptDefPb.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.InterruptDef.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.InterruptDefPb.Builder addInterruptDefsBuilder(
+    public io.littlehorse.sdk.common.proto.InterruptDef.Builder addInterruptDefsBuilder(
         int index) {
       return getInterruptDefsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.InterruptDefPb.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.InterruptDef.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.InterruptDefPb interrupt_defs = 3;</code>
+     * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.InterruptDefPb.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.InterruptDef.Builder> 
          getInterruptDefsBuilderList() {
       return getInterruptDefsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.InterruptDefPb, io.littlehorse.sdk.common.proto.InterruptDefPb.Builder, io.littlehorse.sdk.common.proto.InterruptDefPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.InterruptDef, io.littlehorse.sdk.common.proto.InterruptDef.Builder, io.littlehorse.sdk.common.proto.InterruptDefOrBuilder> 
         getInterruptDefsFieldBuilder() {
       if (interruptDefsBuilder_ == null) {
         interruptDefsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.InterruptDefPb, io.littlehorse.sdk.common.proto.InterruptDefPb.Builder, io.littlehorse.sdk.common.proto.InterruptDefPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.InterruptDef, io.littlehorse.sdk.common.proto.InterruptDef.Builder, io.littlehorse.sdk.common.proto.InterruptDefOrBuilder>(
                 interruptDefs_,
                 ((bitField0_ & 0x00000004) != 0),
                 getParentForChildren(),

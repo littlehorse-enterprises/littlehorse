@@ -6,7 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventDefReply;
-import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.ExternalEventDefModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
@@ -52,13 +52,13 @@ public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
             return out;
         }
 
-        ExternalEventDef oldVersion = dao.getExternalEventDef(name);
+        ExternalEventDefModel oldVersion = dao.getExternalEventDef(name);
         if (oldVersion != null) {
             out.code = LHResponseCodePb.ALREADY_EXISTS_ERROR;
             out.message = "ExternalEventDef already exists and is immutable.";
             out.result = oldVersion;
         } else {
-            ExternalEventDef spec = new ExternalEventDef();
+            ExternalEventDefModel spec = new ExternalEventDefModel();
             spec.name = name;
             spec.retentionHours =
                 retentionHours == null

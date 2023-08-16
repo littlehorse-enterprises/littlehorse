@@ -8,8 +8,8 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.meta.NodeModel;
 import io.littlehorse.common.model.meta.SubNode;
-import io.littlehorse.common.model.meta.TaskDef;
-import io.littlehorse.common.model.meta.VariableAssignment;
+import io.littlehorse.common.model.meta.TaskDefModel;
+import io.littlehorse.common.model.meta.VariableAssignmentModel;
 import io.littlehorse.common.model.meta.VariableDefModel;
 import io.littlehorse.common.model.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.wfrun.VarNameAndVal;
@@ -17,7 +17,7 @@ import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.TaskNodePb;
-import io.littlehorse.sdk.common.proto.VariableAssignmentPb;
+import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,13 +33,13 @@ public class TaskNode extends SubNode<TaskNodePb> {
 
     public String taskDefName;
     public int retries;
-    public List<VariableAssignment> variables;
+    public List<VariableAssignmentModel> variables;
     public int timeoutSeconds;
 
-    private TaskDef taskDef;
+    private TaskDefModel taskDef;
     private LHDAO dao;
 
-    public TaskDef getTaskDef() {
+    public TaskDefModel getTaskDef() {
         if (taskDef == null) {
             if (dao == null && node != null) {
                 // Only works for when this is part of a Node, not a UTATask.
@@ -74,8 +74,8 @@ public class TaskNode extends SubNode<TaskNodePb> {
             timeoutSeconds = LHConstants.DEFAULT_TASK_TIMEOUT_SECONDS;
         }
 
-        for (VariableAssignmentPb assn : p.getVariablesList()) {
-            variables.add(VariableAssignment.fromProto(assn));
+        for (VariableAssignment assn : p.getVariablesList()) {
+            variables.add(VariableAssignmentModel.fromProto(assn));
         }
     }
 
@@ -86,7 +86,7 @@ public class TaskNode extends SubNode<TaskNodePb> {
             .setTimeoutSeconds(timeoutSeconds)
             .setRetries(retries);
 
-        for (VariableAssignment va : variables) {
+        for (VariableAssignmentModel va : variables) {
             out.addVariables(va.toProto());
         }
         return out;
@@ -97,7 +97,7 @@ public class TaskNode extends SubNode<TaskNodePb> {
         // Want to be able to release new versions of taskdef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the taskdef to ensure that this isn't an issue.
-        TaskDef taskDef = stores.getTaskDef(taskDefName);
+        TaskDefModel taskDef = stores.getTaskDef(taskDefName);
         if (taskDef == null) {
             throw new LHValidationError(
                 null,
@@ -128,7 +128,7 @@ public class TaskNode extends SubNode<TaskNodePb> {
         // those as well.
         for (int i = 0; i < variables.size(); i++) {
             VariableDefModel taskDefVar = taskDef.getInputVars().get(i);
-            VariableAssignment assn = variables.get(i);
+            VariableAssignmentModel assn = variables.get(i);
             if (
                 !assn.canBeType(taskDefVar.getType(), this.node.getThreadSpecModel())
             ) {
@@ -151,7 +151,7 @@ public class TaskNode extends SubNode<TaskNodePb> {
     @Override
     public Set<String> getNeededVariableNames() {
         Set<String> out = new HashSet<>();
-        for (VariableAssignment assn : variables) {
+        for (VariableAssignmentModel assn : variables) {
             out.addAll(assn.getRequiredWfRunVarNames());
         }
         return out;
@@ -169,7 +169,7 @@ public class TaskNode extends SubNode<TaskNodePb> {
 
         for (int i = 0; i < taskDef.inputVars.size(); i++) {
             VariableDefModel requiredVarDef = taskDef.inputVars.get(i);
-            VariableAssignment assn = variables.get(i);
+            VariableAssignmentModel assn = variables.get(i);
             String varName = requiredVarDef.name;
             VariableValueModel val;
 

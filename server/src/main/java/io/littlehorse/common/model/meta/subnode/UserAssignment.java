@@ -2,7 +2,7 @@ package io.littlehorse.common.model.meta.subnode;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.meta.VariableAssignment;
+import io.littlehorse.common.model.meta.VariableAssignmentModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.UserTaskNodePb.UserAssignmentPb;
 import lombok.Getter;
@@ -10,8 +10,8 @@ import lombok.Getter;
 @Getter
 public class UserAssignment extends LHSerializable<UserAssignmentPb> {
 
-    private VariableAssignment userId;
-    private VariableAssignment userGroup;
+    private VariableAssignmentModel userId;
+    private VariableAssignmentModel userGroup;
 
     @Override
     public UserAssignmentPb.Builder toProto() {
@@ -26,9 +26,9 @@ public class UserAssignment extends LHSerializable<UserAssignmentPb> {
     @Override
     public void initFrom(Message proto) throws LHSerdeError {
         UserAssignmentPb userAssignmentPb = (UserAssignmentPb) proto;
-        userId = VariableAssignment.fromProto(userAssignmentPb.getUserId());
+        userId = VariableAssignmentModel.fromProto(userAssignmentPb.getUserId());
         if (userAssignmentPb.hasUserGroup()) {
-            userGroup = VariableAssignment.fromProto(userAssignmentPb.getUserGroup());
+            userGroup = VariableAssignmentModel.fromProto(userAssignmentPb.getUserGroup());
         }
     }
 

@@ -19,32 +19,32 @@ public interface EdgeConditionPbOrBuilder extends
   io.littlehorse.sdk.common.proto.ComparatorPb getComparator();
 
   /**
-   * <code>.littlehorse.VariableAssignmentPb left = 2;</code>
+   * <code>.littlehorse.VariableAssignment left = 2;</code>
    * @return Whether the left field is set.
    */
   boolean hasLeft();
   /**
-   * <code>.littlehorse.VariableAssignmentPb left = 2;</code>
+   * <code>.littlehorse.VariableAssignment left = 2;</code>
    * @return The left.
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPb getLeft();
+  io.littlehorse.sdk.common.proto.VariableAssignment getLeft();
   /**
-   * <code>.littlehorse.VariableAssignmentPb left = 2;</code>
+   * <code>.littlehorse.VariableAssignment left = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getLeftOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getLeftOrBuilder();
 
   /**
-   * <code>.littlehorse.VariableAssignmentPb right = 3;</code>
+   * <code>.littlehorse.VariableAssignment right = 3;</code>
    * @return Whether the right field is set.
    */
   boolean hasRight();
   /**
-   * <code>.littlehorse.VariableAssignmentPb right = 3;</code>
+   * <code>.littlehorse.VariableAssignment right = 3;</code>
    * @return The right.
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPb getRight();
+  io.littlehorse.sdk.common.proto.VariableAssignment getRight();
   /**
-   * <code>.littlehorse.VariableAssignmentPb right = 3;</code>
+   * <code>.littlehorse.VariableAssignment right = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getRightOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getRightOrBuilder();
 }

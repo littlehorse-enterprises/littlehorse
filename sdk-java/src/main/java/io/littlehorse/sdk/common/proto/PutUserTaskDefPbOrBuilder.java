@@ -20,27 +20,27 @@ public interface PutUserTaskDefPbOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> 
       getFieldsList();
   /**
-   * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskFieldPb getFields(int index);
+  io.littlehorse.sdk.common.proto.UserTaskField getFields(int index);
   /**
-   * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   int getFieldsCount();
   /**
-   * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
       getFieldsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder getFieldsOrBuilder(
+  io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
       int index);
 
   /**

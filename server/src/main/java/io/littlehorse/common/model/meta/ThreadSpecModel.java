@@ -6,11 +6,11 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.sdk.common.proto.InterruptDefPb;
+import io.littlehorse.sdk.common.proto.InterruptDef;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
-import io.littlehorse.sdk.common.proto.VariableAssignmentPb.SourceCase;
+import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
     public Map<String, NodeModel> nodes;
     public List<VariableDefModel> variableDefs;
-    public List<InterruptDef> interruptDefs;
+    public List<InterruptDefModel> interruptDefs;
 
     public ThreadSpecModel() {
         nodes = new HashMap<>();
@@ -56,7 +56,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         for (VariableDefModel vd : variableDefs) {
             out.addVariableDefs(vd.toProto());
         }
-        for (InterruptDef idef : interruptDefs) {
+        for (InterruptDefModel idef : interruptDefs) {
             out.addInterruptDefs(idef.toProto());
         }
         return out;
@@ -82,8 +82,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             variableDefs.add(v);
         }
 
-        for (InterruptDefPb idefpb : proto.getInterruptDefsList()) {
-            InterruptDef idef = InterruptDef.fromProto(idefpb);
+        for (InterruptDef idefpb : proto.getInterruptDefsList()) {
+            InterruptDefModel idef = InterruptDefModel.fromProto(idefpb);
             idef.ownerThreadSpecModel = this;
             interruptDefs.add(idef);
         }
@@ -130,7 +130,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         }
 
         interruptExternalEventDefs = new HashSet<>();
-        for (InterruptDef idef : interruptDefs) {
+        for (InterruptDefModel idef : interruptDefs) {
             interruptExternalEventDefs.add(idef.externalEventDefName);
         }
         return interruptExternalEventDefs;
@@ -211,7 +211,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             }
         }
 
-        for (InterruptDef idef : interruptDefs) {
+        for (InterruptDefModel idef : interruptDefs) {
             try {
                 idef.validate(dbClient, config);
             } catch (LHValidationError exn) {
@@ -237,7 +237,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
      */
     private void validateExternalEventDefUse() throws LHValidationError {
         // Check that interrupts aren't used anywhere else
-        for (InterruptDef idef : interruptDefs) {
+        for (InterruptDefModel idef : interruptDefs) {
             String eedn = idef.externalEventDefName;
             if (wfSpecModel.getNodeExternalEventDefs().contains(eedn)) {
                 throw new LHValidationError(
@@ -300,7 +300,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
     public void validateTimeoutAssignment(
         String nodeName,
-        VariableAssignment timeoutSeconds
+        VariableAssignmentModel timeoutSeconds
     ) throws LHValidationError {
         if (timeoutSeconds.getRhsSourceType() == SourceCase.VARIABLE_NAME) {
             Pair<String, VariableDefModel> defPair = lookupVarDef(
@@ -324,12 +324,12 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         }
     }
 
-    public void validateStartVariablesByType(Map<String, VariableAssignment> vars)
+    public void validateStartVariablesByType(Map<String, VariableAssignmentModel> vars)
         throws LHValidationError {
         Map<String, VariableDefModel> inputVarDefs = getInputVariableDefs();
 
         for (Map.Entry<String, VariableDefModel> e : inputVarDefs.entrySet()) {
-            VariableAssignment assn = vars.get(e.getKey());
+            VariableAssignmentModel assn = vars.get(e.getKey());
             if (assn == null) {
                 // It will be created as NULL for the input.
                 continue;
@@ -343,7 +343,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             }
         }
 
-        for (Map.Entry<String, VariableAssignment> e : vars.entrySet()) {
+        for (Map.Entry<String, VariableAssignmentModel> e : vars.entrySet()) {
             if (localGetVarDef(e.getKey()) == null) {
                 throw new LHValidationError(
                     null,
@@ -356,8 +356,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         }
     }
 
-    public InterruptDef getInterruptDefFor(String externalEventDefName) {
-        for (InterruptDef idef : interruptDefs) {
+    public InterruptDefModel getInterruptDefFor(String externalEventDefName) {
+        for (InterruptDefModel idef : interruptDefs) {
             if (idef.externalEventDefName.equals(externalEventDefName)) {
                 return idef;
             }

@@ -3,7 +3,7 @@ package io.littlehorse.common.model.wfrun.subnoderun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
-import io.littlehorse.common.model.meta.VariableAssignment;
+import io.littlehorse.common.model.meta.VariableAssignmentModel;
 import io.littlehorse.common.model.meta.subnode.StartThreadNode;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
@@ -60,7 +60,7 @@ public class StartThreadRun extends SubNodeRun<StartThreadRunPb> {
         Map<String, VariableValueModel> variables = new HashMap<>();
 
         try {
-            for (Map.Entry<String, VariableAssignment> e : stn.variables.entrySet()) {
+            for (Map.Entry<String, VariableAssignmentModel> e : stn.variables.entrySet()) {
                 variables.put(
                     e.getKey(),
                     nodeRunModel.getThreadRun().assignVariable(e.getValue())

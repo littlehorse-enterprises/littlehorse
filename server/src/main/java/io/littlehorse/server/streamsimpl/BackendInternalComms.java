@@ -17,14 +17,14 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.command.Command;
-import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.ExternalEventDefModel;
 import io.littlehorse.common.model.meta.Host;
-import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.TaskDefModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
-import io.littlehorse.common.model.objectId.ExternalEventDefId;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.objectId.TaskDefId;
-import io.littlehorse.common.model.objectId.UserTaskDefId;
+import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb;
@@ -1351,22 +1351,22 @@ class GlobalMetaStoresServerImpl implements LHGlobalMetaStores {
         }
     }
 
-    public TaskDef getTaskDef(String name) {
-        return store.get(new TaskDefId(name).toString(), TaskDef.class);
+    public TaskDefModel getTaskDef(String name) {
+        return store.get(new TaskDefId(name).toString(), TaskDefModel.class);
     }
 
-    public ExternalEventDef getExternalEventDef(String name) {
+    public ExternalEventDefModel getExternalEventDef(String name) {
         return store.get(
-            new ExternalEventDefId(name).toString(),
-            ExternalEventDef.class
+            new ExternalEventDefIdModel(name).toString(),
+            ExternalEventDefModel.class
         );
     }
 
-    public UserTaskDef getUserTaskDef(String name, Integer version) {
+    public UserTaskDefModel getUserTaskDef(String name, Integer version) {
         return (
             store.get(
-                new UserTaskDefId(name, version).getStoreKey(),
-                UserTaskDef.class
+                new UserTaskDefIdModel(name, version).getStoreKey(),
+                UserTaskDefModel.class
             )
         );
     }

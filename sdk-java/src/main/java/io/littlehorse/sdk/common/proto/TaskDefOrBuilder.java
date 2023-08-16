@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface TaskDefPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.TaskDefPb)
+public interface TaskDefOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.TaskDef)
     com.google.protobuf.MessageOrBuilder {
 
   /**

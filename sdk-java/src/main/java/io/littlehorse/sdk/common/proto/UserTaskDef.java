@@ -4,18 +4,18 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.UserTaskDefPb}
+ * Protobuf type {@code littlehorse.UserTaskDef}
  */
-public final class UserTaskDefPb extends
+public final class UserTaskDef extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.UserTaskDefPb)
-    UserTaskDefPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.UserTaskDef)
+    UserTaskDefOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use UserTaskDefPb.newBuilder() to construct.
-  private UserTaskDefPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use UserTaskDef.newBuilder() to construct.
+  private UserTaskDef(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private UserTaskDefPb() {
+  private UserTaskDef() {
     name_ = "";
     description_ = "";
     fields_ = java.util.Collections.emptyList();
@@ -25,7 +25,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new UserTaskDefPb();
+    return new UserTaskDef();
   }
 
   @java.lang.Override
@@ -35,15 +35,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskDefPb_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskDef_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskDefPb_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskDef_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.UserTaskDefPb.class, io.littlehorse.sdk.common.proto.UserTaskDefPb.Builder.class);
+            io.littlehorse.sdk.common.proto.UserTaskDef.class, io.littlehorse.sdk.common.proto.UserTaskDef.Builder.class);
   }
 
   private int bitField0_;
@@ -146,41 +146,41 @@ private static final long serialVersionUID = 0L;
 
   public static final int FIELDS_FIELD_NUMBER = 4;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldPb> fields_;
+  private java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> fields_;
   /**
-   * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldPb> getFieldsList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> getFieldsList() {
     return fields_;
   }
   /**
-   * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
       getFieldsOrBuilderList() {
     return fields_;
   }
   /**
-   * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
    */
   @java.lang.Override
   public int getFieldsCount() {
     return fields_.size();
   }
   /**
-   * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskFieldPb getFields(int index) {
+  public io.littlehorse.sdk.common.proto.UserTaskField getFields(int index) {
     return fields_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder getFieldsOrBuilder(
+  public io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
       int index) {
     return fields_.get(index);
   }
@@ -277,10 +277,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskDefPb)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskDef)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.UserTaskDefPb other = (io.littlehorse.sdk.common.proto.UserTaskDefPb) obj;
+    io.littlehorse.sdk.common.proto.UserTaskDef other = (io.littlehorse.sdk.common.proto.UserTaskDef) obj;
 
     if (!getName()
         .equals(other.getName())) return false;
@@ -330,69 +330,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.UserTaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDef parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDef parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDef parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDef parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskDefPb parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.UserTaskDef parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDef parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskDefPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.UserTaskDef parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDef parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskDefPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.UserTaskDef parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskDefPb parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDef parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDef parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDef parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -405,7 +405,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskDefPb prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskDef prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -421,26 +421,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.UserTaskDefPb}
+   * Protobuf type {@code littlehorse.UserTaskDef}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskDefPb)
-      io.littlehorse.sdk.common.proto.UserTaskDefPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskDef)
+      io.littlehorse.sdk.common.proto.UserTaskDefOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskDefPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskDef_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskDefPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskDef_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.UserTaskDefPb.class, io.littlehorse.sdk.common.proto.UserTaskDefPb.Builder.class);
+              io.littlehorse.sdk.common.proto.UserTaskDef.class, io.littlehorse.sdk.common.proto.UserTaskDef.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.UserTaskDefPb.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.UserTaskDef.newBuilder()
     private Builder() {
 
     }
@@ -475,17 +475,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskDefPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskDef_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskDefPb getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.UserTaskDefPb.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.UserTaskDef getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.UserTaskDef.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskDefPb build() {
-      io.littlehorse.sdk.common.proto.UserTaskDefPb result = buildPartial();
+    public io.littlehorse.sdk.common.proto.UserTaskDef build() {
+      io.littlehorse.sdk.common.proto.UserTaskDef result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -493,15 +493,15 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskDefPb buildPartial() {
-      io.littlehorse.sdk.common.proto.UserTaskDefPb result = new io.littlehorse.sdk.common.proto.UserTaskDefPb(this);
+    public io.littlehorse.sdk.common.proto.UserTaskDef buildPartial() {
+      io.littlehorse.sdk.common.proto.UserTaskDef result = new io.littlehorse.sdk.common.proto.UserTaskDef(this);
       buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.UserTaskDefPb result) {
+    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.UserTaskDef result) {
       if (fieldsBuilder_ == null) {
         if (((bitField0_ & 0x00000008) != 0)) {
           fields_ = java.util.Collections.unmodifiableList(fields_);
@@ -513,7 +513,7 @@ private static final long serialVersionUID = 0L;
       }
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskDefPb result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskDef result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.name_ = name_;
@@ -568,16 +568,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.UserTaskDefPb) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskDefPb)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.UserTaskDef) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskDef)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskDefPb other) {
-      if (other == io.littlehorse.sdk.common.proto.UserTaskDefPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskDef other) {
+      if (other == io.littlehorse.sdk.common.proto.UserTaskDef.getDefaultInstance()) return this;
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
         bitField0_ |= 0x00000001;
@@ -662,9 +662,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 26
             case 34: {
-              io.littlehorse.sdk.common.proto.UserTaskFieldPb m =
+              io.littlehorse.sdk.common.proto.UserTaskField m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.UserTaskFieldPb.parser(),
+                      io.littlehorse.sdk.common.proto.UserTaskField.parser(),
                       extensionRegistry);
               if (fieldsBuilder_ == null) {
                 ensureFieldsIsMutable();
@@ -881,22 +881,22 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldPb> fields_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> fields_ =
       java.util.Collections.emptyList();
     private void ensureFieldsIsMutable() {
       if (!((bitField0_ & 0x00000008) != 0)) {
-        fields_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.UserTaskFieldPb>(fields_);
+        fields_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.UserTaskField>(fields_);
         bitField0_ |= 0x00000008;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskFieldPb, io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder, io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder> fieldsBuilder_;
+        io.littlehorse.sdk.common.proto.UserTaskField, io.littlehorse.sdk.common.proto.UserTaskField.Builder, io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> fieldsBuilder_;
 
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldPb> getFieldsList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> getFieldsList() {
       if (fieldsBuilder_ == null) {
         return java.util.Collections.unmodifiableList(fields_);
       } else {
@@ -904,7 +904,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public int getFieldsCount() {
       if (fieldsBuilder_ == null) {
@@ -914,9 +914,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskFieldPb getFields(int index) {
+    public io.littlehorse.sdk.common.proto.UserTaskField getFields(int index) {
       if (fieldsBuilder_ == null) {
         return fields_.get(index);
       } else {
@@ -924,10 +924,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder setFields(
-        int index, io.littlehorse.sdk.common.proto.UserTaskFieldPb value) {
+        int index, io.littlehorse.sdk.common.proto.UserTaskField value) {
       if (fieldsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -941,10 +941,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder setFields(
-        int index, io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.UserTaskField.Builder builderForValue) {
       if (fieldsBuilder_ == null) {
         ensureFieldsIsMutable();
         fields_.set(index, builderForValue.build());
@@ -955,9 +955,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
-    public Builder addFields(io.littlehorse.sdk.common.proto.UserTaskFieldPb value) {
+    public Builder addFields(io.littlehorse.sdk.common.proto.UserTaskField value) {
       if (fieldsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -971,10 +971,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder addFields(
-        int index, io.littlehorse.sdk.common.proto.UserTaskFieldPb value) {
+        int index, io.littlehorse.sdk.common.proto.UserTaskField value) {
       if (fieldsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -988,10 +988,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder addFields(
-        io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.UserTaskField.Builder builderForValue) {
       if (fieldsBuilder_ == null) {
         ensureFieldsIsMutable();
         fields_.add(builderForValue.build());
@@ -1002,10 +1002,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder addFields(
-        int index, io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.UserTaskField.Builder builderForValue) {
       if (fieldsBuilder_ == null) {
         ensureFieldsIsMutable();
         fields_.add(index, builderForValue.build());
@@ -1016,10 +1016,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder addAllFields(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.UserTaskFieldPb> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.UserTaskField> values) {
       if (fieldsBuilder_ == null) {
         ensureFieldsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -1031,7 +1031,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder clearFields() {
       if (fieldsBuilder_ == null) {
@@ -1044,7 +1044,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
     public Builder removeFields(int index) {
       if (fieldsBuilder_ == null) {
@@ -1057,16 +1057,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder getFieldsBuilder(
+    public io.littlehorse.sdk.common.proto.UserTaskField.Builder getFieldsBuilder(
         int index) {
       return getFieldsFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder getFieldsOrBuilder(
+    public io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
         int index) {
       if (fieldsBuilder_ == null) {
         return fields_.get(index);  } else {
@@ -1074,9 +1074,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
          getFieldsOrBuilderList() {
       if (fieldsBuilder_ != null) {
         return fieldsBuilder_.getMessageOrBuilderList();
@@ -1085,33 +1085,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder addFieldsBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskField.Builder addFieldsBuilder() {
       return getFieldsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.UserTaskFieldPb.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.UserTaskField.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder addFieldsBuilder(
+    public io.littlehorse.sdk.common.proto.UserTaskField.Builder addFieldsBuilder(
         int index) {
       return getFieldsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.UserTaskFieldPb.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.UserTaskField.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField.Builder> 
          getFieldsBuilderList() {
       return getFieldsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskFieldPb, io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder, io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.UserTaskField, io.littlehorse.sdk.common.proto.UserTaskField.Builder, io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
         getFieldsFieldBuilder() {
       if (fieldsBuilder_ == null) {
         fieldsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UserTaskFieldPb, io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder, io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.UserTaskField, io.littlehorse.sdk.common.proto.UserTaskField.Builder, io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder>(
                 fields_,
                 ((bitField0_ & 0x00000008) != 0),
                 getParentForChildren(),
@@ -1252,23 +1252,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskDefPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskDef)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.UserTaskDefPb)
-  private static final io.littlehorse.sdk.common.proto.UserTaskDefPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.UserTaskDef)
+  private static final io.littlehorse.sdk.common.proto.UserTaskDef DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskDefPb();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskDef();
   }
 
-  public static io.littlehorse.sdk.common.proto.UserTaskDefPb getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.UserTaskDef getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<UserTaskDefPb>
-      PARSER = new com.google.protobuf.AbstractParser<UserTaskDefPb>() {
+  private static final com.google.protobuf.Parser<UserTaskDef>
+      PARSER = new com.google.protobuf.AbstractParser<UserTaskDef>() {
     @java.lang.Override
-    public UserTaskDefPb parsePartialFrom(
+    public UserTaskDef parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1287,17 +1287,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<UserTaskDefPb> parser() {
+  public static com.google.protobuf.Parser<UserTaskDef> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<UserTaskDefPb> getParserForType() {
+  public com.google.protobuf.Parser<UserTaskDef> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskDefPb getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.UserTaskDef getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

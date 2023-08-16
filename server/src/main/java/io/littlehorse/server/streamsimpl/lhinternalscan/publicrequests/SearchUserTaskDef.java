@@ -3,7 +3,7 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.objectId.UserTaskDefId;
+import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class SearchUserTaskDef
-    extends PublicScanRequest<SearchUserTaskDefPb, SearchUserTaskDefReplyPb, UserTaskDefIdPb, UserTaskDefId, SearchUserTaskDefReply> {
+    extends PublicScanRequest<SearchUserTaskDefPb, SearchUserTaskDefReplyPb, UserTaskDefIdPb, UserTaskDefIdModel, SearchUserTaskDefReply> {
 
     private UserTaskDefCriteriaCase type;
     private String name;

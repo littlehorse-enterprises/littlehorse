@@ -4,18 +4,18 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.UserTaskFieldPb}
+ * Protobuf type {@code littlehorse.UserTaskField}
  */
-public final class UserTaskFieldPb extends
+public final class UserTaskField extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.UserTaskFieldPb)
-    UserTaskFieldPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.UserTaskField)
+    UserTaskFieldOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use UserTaskFieldPb.newBuilder() to construct.
-  private UserTaskFieldPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use UserTaskField.newBuilder() to construct.
+  private UserTaskField(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private UserTaskFieldPb() {
+  private UserTaskField() {
     name_ = "";
     type_ = 0;
     description_ = "";
@@ -26,7 +26,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new UserTaskFieldPb();
+    return new UserTaskField();
   }
 
   @java.lang.Override
@@ -36,15 +36,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskFieldPb_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskField_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskFieldPb_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskField_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.UserTaskFieldPb.class, io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder.class);
+            io.littlehorse.sdk.common.proto.UserTaskField.class, io.littlehorse.sdk.common.proto.UserTaskField.Builder.class);
   }
 
   private int bitField0_;
@@ -276,10 +276,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskFieldPb)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskField)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.UserTaskFieldPb other = (io.littlehorse.sdk.common.proto.UserTaskFieldPb) obj;
+    io.littlehorse.sdk.common.proto.UserTaskField other = (io.littlehorse.sdk.common.proto.UserTaskField) obj;
 
     if (!getName()
         .equals(other.getName())) return false;
@@ -322,69 +322,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.UserTaskFieldPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskField parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskFieldPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskField parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskFieldPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskField parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskFieldPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskField parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskFieldPb parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.UserTaskField parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskFieldPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskField parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskFieldPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.UserTaskField parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskFieldPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskField parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskFieldPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.UserTaskField parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskFieldPb parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskField parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskFieldPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskField parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskFieldPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskField parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -397,7 +397,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskFieldPb prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskField prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -413,26 +413,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.UserTaskFieldPb}
+   * Protobuf type {@code littlehorse.UserTaskField}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskFieldPb)
-      io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskField)
+      io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskFieldPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskField_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskFieldPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskField_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.UserTaskFieldPb.class, io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder.class);
+              io.littlehorse.sdk.common.proto.UserTaskField.class, io.littlehorse.sdk.common.proto.UserTaskField.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.UserTaskFieldPb.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.UserTaskField.newBuilder()
     private Builder() {
 
     }
@@ -457,17 +457,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskFieldPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskField_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskFieldPb getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.UserTaskFieldPb.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.UserTaskField getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.UserTaskField.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskFieldPb build() {
-      io.littlehorse.sdk.common.proto.UserTaskFieldPb result = buildPartial();
+    public io.littlehorse.sdk.common.proto.UserTaskField build() {
+      io.littlehorse.sdk.common.proto.UserTaskField result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -475,14 +475,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskFieldPb buildPartial() {
-      io.littlehorse.sdk.common.proto.UserTaskFieldPb result = new io.littlehorse.sdk.common.proto.UserTaskFieldPb(this);
+    public io.littlehorse.sdk.common.proto.UserTaskField buildPartial() {
+      io.littlehorse.sdk.common.proto.UserTaskField result = new io.littlehorse.sdk.common.proto.UserTaskField(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskFieldPb result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskField result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.name_ = name_;
@@ -538,16 +538,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.UserTaskFieldPb) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskFieldPb)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.UserTaskField) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskField)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskFieldPb other) {
-      if (other == io.littlehorse.sdk.common.proto.UserTaskFieldPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskField other) {
+      if (other == io.littlehorse.sdk.common.proto.UserTaskField.getDefaultInstance()) return this;
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
         bitField0_ |= 0x00000001;
@@ -984,23 +984,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskFieldPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskField)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.UserTaskFieldPb)
-  private static final io.littlehorse.sdk.common.proto.UserTaskFieldPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.UserTaskField)
+  private static final io.littlehorse.sdk.common.proto.UserTaskField DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskFieldPb();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskField();
   }
 
-  public static io.littlehorse.sdk.common.proto.UserTaskFieldPb getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.UserTaskField getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<UserTaskFieldPb>
-      PARSER = new com.google.protobuf.AbstractParser<UserTaskFieldPb>() {
+  private static final com.google.protobuf.Parser<UserTaskField>
+      PARSER = new com.google.protobuf.AbstractParser<UserTaskField>() {
     @java.lang.Override
-    public UserTaskFieldPb parsePartialFrom(
+    public UserTaskField parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1019,17 +1019,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<UserTaskFieldPb> parser() {
+  public static com.google.protobuf.Parser<UserTaskField> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<UserTaskFieldPb> getParserForType() {
+  public com.google.protobuf.Parser<UserTaskField> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskFieldPb getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.UserTaskField getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

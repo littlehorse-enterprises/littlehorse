@@ -4,18 +4,18 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.VariableAssignmentPb}
+ * Protobuf type {@code littlehorse.VariableAssignment}
  */
-public final class VariableAssignmentPb extends
+public final class VariableAssignment extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.VariableAssignmentPb)
-    VariableAssignmentPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.VariableAssignment)
+    VariableAssignmentOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use VariableAssignmentPb.newBuilder() to construct.
-  private VariableAssignmentPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use VariableAssignment.newBuilder() to construct.
+  private VariableAssignment(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private VariableAssignmentPb() {
+  private VariableAssignment() {
     jsonPath_ = "";
   }
 
@@ -23,7 +23,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new VariableAssignmentPb();
+    return new VariableAssignment();
   }
 
   @java.lang.Override
@@ -33,73 +33,73 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignmentPb_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignment_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignmentPb_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignment_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb.class, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder.class);
+            io.littlehorse.sdk.common.proto.VariableAssignment.class, io.littlehorse.sdk.common.proto.VariableAssignment.Builder.class);
   }
 
-  public interface FormatStringPbOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.VariableAssignmentPb.FormatStringPb)
+  public interface FormatStringOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.VariableAssignment.FormatString)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+     * <code>.littlehorse.VariableAssignment format = 1;</code>
      * @return Whether the format field is set.
      */
     boolean hasFormat();
     /**
-     * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+     * <code>.littlehorse.VariableAssignment format = 1;</code>
      * @return The format.
      */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPb getFormat();
+    io.littlehorse.sdk.common.proto.VariableAssignment getFormat();
     /**
-     * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+     * <code>.littlehorse.VariableAssignment format = 1;</code>
      */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getFormatOrBuilder();
+    io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getFormatOrBuilder();
 
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
-    java.util.List<io.littlehorse.sdk.common.proto.VariableAssignmentPb> 
+    java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> 
         getArgsList();
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPb getArgs(int index);
+    io.littlehorse.sdk.common.proto.VariableAssignment getArgs(int index);
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     int getArgsCount();
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
-    java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+    java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         getArgsOrBuilderList();
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getArgsOrBuilder(
+    io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getArgsOrBuilder(
         int index);
   }
   /**
-   * Protobuf type {@code littlehorse.VariableAssignmentPb.FormatStringPb}
+   * Protobuf type {@code littlehorse.VariableAssignment.FormatString}
    */
-  public static final class FormatStringPb extends
+  public static final class FormatString extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.VariableAssignmentPb.FormatStringPb)
-      FormatStringPbOrBuilder {
+      // @@protoc_insertion_point(message_implements:littlehorse.VariableAssignment.FormatString)
+      FormatStringOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use FormatStringPb.newBuilder() to construct.
-    private FormatStringPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use FormatString.newBuilder() to construct.
+    private FormatString(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private FormatStringPb() {
+    private FormatString() {
       args_ = java.util.Collections.emptyList();
     }
 
@@ -107,7 +107,7 @@ private static final long serialVersionUID = 0L;
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new FormatStringPb();
+      return new FormatString();
     }
 
     @java.lang.Override
@@ -117,21 +117,21 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignmentPb_FormatStringPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignment_FormatString_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignmentPb_FormatStringPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignment_FormatString_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.class, io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.Builder.class);
+              io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.class, io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.Builder.class);
     }
 
     public static final int FORMAT_FIELD_NUMBER = 1;
-    private io.littlehorse.sdk.common.proto.VariableAssignmentPb format_;
+    private io.littlehorse.sdk.common.proto.VariableAssignment format_;
     /**
-     * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+     * <code>.littlehorse.VariableAssignment format = 1;</code>
      * @return Whether the format field is set.
      */
     @java.lang.Override
@@ -139,58 +139,58 @@ private static final long serialVersionUID = 0L;
       return format_ != null;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+     * <code>.littlehorse.VariableAssignment format = 1;</code>
      * @return The format.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getFormat() {
-      return format_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : format_;
+    public io.littlehorse.sdk.common.proto.VariableAssignment getFormat() {
+      return format_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : format_;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+     * <code>.littlehorse.VariableAssignment format = 1;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getFormatOrBuilder() {
-      return format_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : format_;
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getFormatOrBuilder() {
+      return format_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : format_;
     }
 
     public static final int ARGS_FIELD_NUMBER = 2;
     @SuppressWarnings("serial")
-    private java.util.List<io.littlehorse.sdk.common.proto.VariableAssignmentPb> args_;
+    private java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> args_;
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     @java.lang.Override
-    public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignmentPb> getArgsList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> getArgsList() {
       return args_;
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         getArgsOrBuilderList() {
       return args_;
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     @java.lang.Override
     public int getArgsCount() {
       return args_.size();
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getArgs(int index) {
+    public io.littlehorse.sdk.common.proto.VariableAssignment getArgs(int index) {
       return args_.get(index);
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getArgsOrBuilder(
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getArgsOrBuilder(
         int index) {
       return args_.get(index);
     }
@@ -242,10 +242,10 @@ private static final long serialVersionUID = 0L;
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb)) {
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.VariableAssignment.FormatString)) {
         return super.equals(obj);
       }
-      io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb other = (io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb) obj;
+      io.littlehorse.sdk.common.proto.VariableAssignment.FormatString other = (io.littlehorse.sdk.common.proto.VariableAssignment.FormatString) obj;
 
       if (hasFormat() != other.hasFormat()) return false;
       if (hasFormat()) {
@@ -278,69 +278,69 @@ private static final long serialVersionUID = 0L;
       return hash;
     }
 
-    public static io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.FormatString parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.FormatString parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.FormatString parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.FormatString parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(byte[] data)
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.FormatString parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.FormatString parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(java.io.InputStream input)
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.FormatString parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.FormatString parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb parseDelimitedFrom(java.io.InputStream input)
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.FormatString parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb parseDelimitedFrom(
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.FormatString parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.FormatString parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.FormatString parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -353,7 +353,7 @@ private static final long serialVersionUID = 0L;
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb prototype) {
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.VariableAssignment.FormatString prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -369,26 +369,26 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * Protobuf type {@code littlehorse.VariableAssignmentPb.FormatStringPb}
+     * Protobuf type {@code littlehorse.VariableAssignment.FormatString}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.VariableAssignmentPb.FormatStringPb)
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPbOrBuilder {
+        // @@protoc_insertion_point(builder_implements:littlehorse.VariableAssignment.FormatString)
+        io.littlehorse.sdk.common.proto.VariableAssignment.FormatStringOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignmentPb_FormatStringPb_descriptor;
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignment_FormatString_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignmentPb_FormatStringPb_fieldAccessorTable
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignment_FormatString_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.class, io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.Builder.class);
+                io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.class, io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.Builder.class);
       }
 
-      // Construct using io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.newBuilder()
+      // Construct using io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.newBuilder()
       private Builder() {
 
       }
@@ -420,17 +420,17 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignmentPb_FormatStringPb_descriptor;
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignment_FormatString_descriptor;
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb getDefaultInstanceForType() {
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance();
+      public io.littlehorse.sdk.common.proto.VariableAssignment.FormatString getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.getDefaultInstance();
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb build() {
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb result = buildPartial();
+      public io.littlehorse.sdk.common.proto.VariableAssignment.FormatString build() {
+        io.littlehorse.sdk.common.proto.VariableAssignment.FormatString result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -438,15 +438,15 @@ private static final long serialVersionUID = 0L;
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb buildPartial() {
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb result = new io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb(this);
+      public io.littlehorse.sdk.common.proto.VariableAssignment.FormatString buildPartial() {
+        io.littlehorse.sdk.common.proto.VariableAssignment.FormatString result = new io.littlehorse.sdk.common.proto.VariableAssignment.FormatString(this);
         buildPartialRepeatedFields(result);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb result) {
+      private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.VariableAssignment.FormatString result) {
         if (argsBuilder_ == null) {
           if (((bitField0_ & 0x00000002) != 0)) {
             args_ = java.util.Collections.unmodifiableList(args_);
@@ -458,7 +458,7 @@ private static final long serialVersionUID = 0L;
         }
       }
 
-      private void buildPartial0(io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb result) {
+      private void buildPartial0(io.littlehorse.sdk.common.proto.VariableAssignment.FormatString result) {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.format_ = formatBuilder_ == null
@@ -501,16 +501,16 @@ private static final long serialVersionUID = 0L;
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb) {
-          return mergeFrom((io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb)other);
+        if (other instanceof io.littlehorse.sdk.common.proto.VariableAssignment.FormatString) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.VariableAssignment.FormatString)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb other) {
-        if (other == io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance()) return this;
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.VariableAssignment.FormatString other) {
+        if (other == io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.getDefaultInstance()) return this;
         if (other.hasFormat()) {
           mergeFormat(other.getFormat());
         }
@@ -574,9 +574,9 @@ private static final long serialVersionUID = 0L;
                 break;
               } // case 10
               case 18: {
-                io.littlehorse.sdk.common.proto.VariableAssignmentPb m =
+                io.littlehorse.sdk.common.proto.VariableAssignment m =
                     input.readMessage(
-                        io.littlehorse.sdk.common.proto.VariableAssignmentPb.parser(),
+                        io.littlehorse.sdk.common.proto.VariableAssignment.parser(),
                         extensionRegistry);
                 if (argsBuilder_ == null) {
                   ensureArgsIsMutable();
@@ -603,31 +603,31 @@ private static final long serialVersionUID = 0L;
       }
       private int bitField0_;
 
-      private io.littlehorse.sdk.common.proto.VariableAssignmentPb format_;
+      private io.littlehorse.sdk.common.proto.VariableAssignment format_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> formatBuilder_;
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> formatBuilder_;
       /**
-       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       * <code>.littlehorse.VariableAssignment format = 1;</code>
        * @return Whether the format field is set.
        */
       public boolean hasFormat() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       * <code>.littlehorse.VariableAssignment format = 1;</code>
        * @return The format.
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb getFormat() {
+      public io.littlehorse.sdk.common.proto.VariableAssignment getFormat() {
         if (formatBuilder_ == null) {
-          return format_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : format_;
+          return format_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : format_;
         } else {
           return formatBuilder_.getMessage();
         }
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       * <code>.littlehorse.VariableAssignment format = 1;</code>
        */
-      public Builder setFormat(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+      public Builder setFormat(io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (formatBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -641,10 +641,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       * <code>.littlehorse.VariableAssignment format = 1;</code>
        */
       public Builder setFormat(
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+          io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
         if (formatBuilder_ == null) {
           format_ = builderForValue.build();
         } else {
@@ -655,13 +655,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       * <code>.littlehorse.VariableAssignment format = 1;</code>
        */
-      public Builder mergeFormat(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+      public Builder mergeFormat(io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (formatBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0) &&
             format_ != null &&
-            format_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
+            format_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
             getFormatBuilder().mergeFrom(value);
           } else {
             format_ = value;
@@ -674,7 +674,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       * <code>.littlehorse.VariableAssignment format = 1;</code>
        */
       public Builder clearFormat() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -687,33 +687,33 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       * <code>.littlehorse.VariableAssignment format = 1;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getFormatBuilder() {
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getFormatBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getFormatFieldBuilder().getBuilder();
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       * <code>.littlehorse.VariableAssignment format = 1;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getFormatOrBuilder() {
+      public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getFormatOrBuilder() {
         if (formatBuilder_ != null) {
           return formatBuilder_.getMessageOrBuilder();
         } else {
           return format_ == null ?
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : format_;
+              io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : format_;
         }
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       * <code>.littlehorse.VariableAssignment format = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
           getFormatFieldBuilder() {
         if (formatBuilder_ == null) {
           formatBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
+              io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
                   getFormat(),
                   getParentForChildren(),
                   isClean());
@@ -722,22 +722,22 @@ private static final long serialVersionUID = 0L;
         return formatBuilder_;
       }
 
-      private java.util.List<io.littlehorse.sdk.common.proto.VariableAssignmentPb> args_ =
+      private java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> args_ =
         java.util.Collections.emptyList();
       private void ensureArgsIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
-          args_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableAssignmentPb>(args_);
+          args_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableAssignment>(args_);
           bitField0_ |= 0x00000002;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> argsBuilder_;
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> argsBuilder_;
 
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
-      public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignmentPb> getArgsList() {
+      public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> getArgsList() {
         if (argsBuilder_ == null) {
           return java.util.Collections.unmodifiableList(args_);
         } else {
@@ -745,7 +745,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public int getArgsCount() {
         if (argsBuilder_ == null) {
@@ -755,9 +755,9 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb getArgs(int index) {
+      public io.littlehorse.sdk.common.proto.VariableAssignment getArgs(int index) {
         if (argsBuilder_ == null) {
           return args_.get(index);
         } else {
@@ -765,10 +765,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder setArgs(
-          int index, io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+          int index, io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (argsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -782,10 +782,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder setArgs(
-          int index, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+          int index, io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
         if (argsBuilder_ == null) {
           ensureArgsIsMutable();
           args_.set(index, builderForValue.build());
@@ -796,9 +796,9 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
-      public Builder addArgs(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+      public Builder addArgs(io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (argsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -812,10 +812,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder addArgs(
-          int index, io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+          int index, io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (argsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -829,10 +829,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder addArgs(
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+          io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
         if (argsBuilder_ == null) {
           ensureArgsIsMutable();
           args_.add(builderForValue.build());
@@ -843,10 +843,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder addArgs(
-          int index, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+          int index, io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
         if (argsBuilder_ == null) {
           ensureArgsIsMutable();
           args_.add(index, builderForValue.build());
@@ -857,10 +857,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder addAllArgs(
-          java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableAssignmentPb> values) {
+          java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableAssignment> values) {
         if (argsBuilder_ == null) {
           ensureArgsIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -872,7 +872,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder clearArgs() {
         if (argsBuilder_ == null) {
@@ -885,7 +885,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
       public Builder removeArgs(int index) {
         if (argsBuilder_ == null) {
@@ -898,16 +898,16 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getArgsBuilder(
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getArgsBuilder(
           int index) {
         return getArgsFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getArgsOrBuilder(
+      public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getArgsOrBuilder(
           int index) {
         if (argsBuilder_ == null) {
           return args_.get(index);  } else {
@@ -915,9 +915,9 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
-      public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+      public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
            getArgsOrBuilderList() {
         if (argsBuilder_ != null) {
           return argsBuilder_.getMessageOrBuilderList();
@@ -926,33 +926,33 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder addArgsBuilder() {
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Builder addArgsBuilder() {
         return getArgsFieldBuilder().addBuilder(
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance());
+            io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance());
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder addArgsBuilder(
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Builder addArgsBuilder(
           int index) {
         return getArgsFieldBuilder().addBuilder(
-            index, io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance());
+            index, io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance());
       }
       /**
-       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       * <code>repeated .littlehorse.VariableAssignment args = 2;</code>
        */
-      public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder> 
+      public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment.Builder> 
            getArgsBuilderList() {
         return getArgsFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
           getArgsFieldBuilder() {
         if (argsBuilder_ == null) {
           argsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
+              io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
                   args_,
                   ((bitField0_ & 0x00000002) != 0),
                   getParentForChildren(),
@@ -974,23 +974,23 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:littlehorse.VariableAssignmentPb.FormatStringPb)
+      // @@protoc_insertion_point(builder_scope:littlehorse.VariableAssignment.FormatString)
     }
 
-    // @@protoc_insertion_point(class_scope:littlehorse.VariableAssignmentPb.FormatStringPb)
-    private static final io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:littlehorse.VariableAssignment.FormatString)
+    private static final io.littlehorse.sdk.common.proto.VariableAssignment.FormatString DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb();
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.VariableAssignment.FormatString();
     }
 
-    public static io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb getDefaultInstance() {
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.FormatString getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<FormatStringPb>
-        PARSER = new com.google.protobuf.AbstractParser<FormatStringPb>() {
+    private static final com.google.protobuf.Parser<FormatString>
+        PARSER = new com.google.protobuf.AbstractParser<FormatString>() {
       @java.lang.Override
-      public FormatStringPb parsePartialFrom(
+      public FormatString parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1009,17 +1009,17 @@ private static final long serialVersionUID = 0L;
       }
     };
 
-    public static com.google.protobuf.Parser<FormatStringPb> parser() {
+    public static com.google.protobuf.Parser<FormatString> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<FormatStringPb> getParserForType() {
+    public com.google.protobuf.Parser<FormatString> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb getDefaultInstanceForType() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment.FormatString getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1201,7 +1201,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int FORMAT_STRING_FIELD_NUMBER = 4;
   /**
-   * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+   * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
    * @return Whether the formatString field is set.
    */
   @java.lang.Override
@@ -1209,25 +1209,25 @@ private static final long serialVersionUID = 0L;
     return sourceCase_ == 4;
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+   * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
    * @return The formatString.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb getFormatString() {
+  public io.littlehorse.sdk.common.proto.VariableAssignment.FormatString getFormatString() {
     if (sourceCase_ == 4) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb) source_;
+       return (io.littlehorse.sdk.common.proto.VariableAssignment.FormatString) source_;
     }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+   * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPbOrBuilder getFormatStringOrBuilder() {
+  public io.littlehorse.sdk.common.proto.VariableAssignment.FormatStringOrBuilder getFormatStringOrBuilder() {
     if (sourceCase_ == 4) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb) source_;
+       return (io.littlehorse.sdk.common.proto.VariableAssignment.FormatString) source_;
     }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -1254,7 +1254,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(3, (io.littlehorse.sdk.common.proto.VariableValue) source_);
     }
     if (sourceCase_ == 4) {
-      output.writeMessage(4, (io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb) source_);
+      output.writeMessage(4, (io.littlehorse.sdk.common.proto.VariableAssignment.FormatString) source_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1277,7 +1277,7 @@ private static final long serialVersionUID = 0L;
     }
     if (sourceCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb) source_);
+        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.VariableAssignment.FormatString) source_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1289,10 +1289,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.VariableAssignmentPb)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.VariableAssignment)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.VariableAssignmentPb other = (io.littlehorse.sdk.common.proto.VariableAssignmentPb) obj;
+    io.littlehorse.sdk.common.proto.VariableAssignment other = (io.littlehorse.sdk.common.proto.VariableAssignment) obj;
 
     if (hasJsonPath() != other.hasJsonPath()) return false;
     if (hasJsonPath()) {
@@ -1352,69 +1352,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.VariableAssignmentPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.VariableAssignment parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.VariableAssignmentPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.VariableAssignment parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.VariableAssignmentPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.VariableAssignment parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.VariableAssignmentPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.VariableAssignment parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.VariableAssignmentPb parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.VariableAssignment parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.VariableAssignmentPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.VariableAssignment parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.VariableAssignmentPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.VariableAssignment parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.VariableAssignmentPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.VariableAssignment parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.VariableAssignmentPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.VariableAssignment parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.VariableAssignmentPb parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.VariableAssignment parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.VariableAssignmentPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.VariableAssignment parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.VariableAssignmentPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.VariableAssignment parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -1427,7 +1427,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.VariableAssignmentPb prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.VariableAssignment prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -1443,26 +1443,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.VariableAssignmentPb}
+   * Protobuf type {@code littlehorse.VariableAssignment}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.VariableAssignmentPb)
-      io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.VariableAssignment)
+      io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignmentPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignment_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignmentPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignment_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb.class, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder.class);
+              io.littlehorse.sdk.common.proto.VariableAssignment.class, io.littlehorse.sdk.common.proto.VariableAssignment.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.VariableAssignmentPb.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder()
     private Builder() {
 
     }
@@ -1491,17 +1491,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignmentPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_VariableAssignment_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.VariableAssignment getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb build() {
-      io.littlehorse.sdk.common.proto.VariableAssignmentPb result = buildPartial();
+    public io.littlehorse.sdk.common.proto.VariableAssignment build() {
+      io.littlehorse.sdk.common.proto.VariableAssignment result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -1509,15 +1509,15 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb buildPartial() {
-      io.littlehorse.sdk.common.proto.VariableAssignmentPb result = new io.littlehorse.sdk.common.proto.VariableAssignmentPb(this);
+    public io.littlehorse.sdk.common.proto.VariableAssignment buildPartial() {
+      io.littlehorse.sdk.common.proto.VariableAssignment result = new io.littlehorse.sdk.common.proto.VariableAssignment(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.VariableAssignmentPb result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.VariableAssignment result) {
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -1527,7 +1527,7 @@ private static final long serialVersionUID = 0L;
       result.bitField0_ |= to_bitField0_;
     }
 
-    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.VariableAssignmentPb result) {
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.VariableAssignment result) {
       result.sourceCase_ = sourceCase_;
       result.source_ = this.source_;
       if (sourceCase_ == 3 &&
@@ -1574,16 +1574,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.VariableAssignmentPb) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.VariableAssignmentPb)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.VariableAssignment) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.VariableAssignment)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.VariableAssignmentPb other) {
-      if (other == io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.VariableAssignment other) {
+      if (other == io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) return this;
       if (other.hasJsonPath()) {
         jsonPath_ = other.jsonPath_;
         bitField0_ |= 0x00000001;
@@ -2006,9 +2006,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPbOrBuilder> formatStringBuilder_;
+        io.littlehorse.sdk.common.proto.VariableAssignment.FormatString, io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.Builder, io.littlehorse.sdk.common.proto.VariableAssignment.FormatStringOrBuilder> formatStringBuilder_;
     /**
-     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      * @return Whether the formatString field is set.
      */
     @java.lang.Override
@@ -2016,27 +2016,27 @@ private static final long serialVersionUID = 0L;
       return sourceCase_ == 4;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      * @return The formatString.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb getFormatString() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment.FormatString getFormatString() {
       if (formatStringBuilder_ == null) {
         if (sourceCase_ == 4) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb) source_;
+          return (io.littlehorse.sdk.common.proto.VariableAssignment.FormatString) source_;
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.getDefaultInstance();
       } else {
         if (sourceCase_ == 4) {
           return formatStringBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      */
-    public Builder setFormatString(io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb value) {
+    public Builder setFormatString(io.littlehorse.sdk.common.proto.VariableAssignment.FormatString value) {
       if (formatStringBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2050,10 +2050,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      */
     public Builder setFormatString(
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.Builder builderForValue) {
       if (formatStringBuilder_ == null) {
         source_ = builderForValue.build();
         onChanged();
@@ -2064,13 +2064,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      */
-    public Builder mergeFormatString(io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb value) {
+    public Builder mergeFormatString(io.littlehorse.sdk.common.proto.VariableAssignment.FormatString value) {
       if (formatStringBuilder_ == null) {
         if (sourceCase_ == 4 &&
-            source_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance()) {
-          source_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb) source_)
+            source_ != io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.getDefaultInstance()) {
+          source_ = io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment.FormatString) source_)
               .mergeFrom(value).buildPartial();
         } else {
           source_ = value;
@@ -2087,7 +2087,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      */
     public Builder clearFormatString() {
       if (formatStringBuilder_ == null) {
@@ -2106,38 +2106,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.Builder getFormatStringBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.Builder getFormatStringBuilder() {
       return getFormatStringFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPbOrBuilder getFormatStringOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment.FormatStringOrBuilder getFormatStringOrBuilder() {
       if ((sourceCase_ == 4) && (formatStringBuilder_ != null)) {
         return formatStringBuilder_.getMessageOrBuilder();
       } else {
         if (sourceCase_ == 4) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb) source_;
+          return (io.littlehorse.sdk.common.proto.VariableAssignment.FormatString) source_;
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     * <code>.littlehorse.VariableAssignment.FormatString format_string = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableAssignment.FormatString, io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.Builder, io.littlehorse.sdk.common.proto.VariableAssignment.FormatStringOrBuilder> 
         getFormatStringFieldBuilder() {
       if (formatStringBuilder_ == null) {
         if (!(sourceCase_ == 4)) {
-          source_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance();
+          source_ = io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.getDefaultInstance();
         }
         formatStringBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb) source_,
+            io.littlehorse.sdk.common.proto.VariableAssignment.FormatString, io.littlehorse.sdk.common.proto.VariableAssignment.FormatString.Builder, io.littlehorse.sdk.common.proto.VariableAssignment.FormatStringOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableAssignment.FormatString) source_,
                 getParentForChildren(),
                 isClean());
         source_ = null;
@@ -2159,23 +2159,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.VariableAssignmentPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.VariableAssignment)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.VariableAssignmentPb)
-  private static final io.littlehorse.sdk.common.proto.VariableAssignmentPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.VariableAssignment)
+  private static final io.littlehorse.sdk.common.proto.VariableAssignment DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.VariableAssignmentPb();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.VariableAssignment();
   }
 
-  public static io.littlehorse.sdk.common.proto.VariableAssignmentPb getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.VariableAssignment getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<VariableAssignmentPb>
-      PARSER = new com.google.protobuf.AbstractParser<VariableAssignmentPb>() {
+  private static final com.google.protobuf.Parser<VariableAssignment>
+      PARSER = new com.google.protobuf.AbstractParser<VariableAssignment>() {
     @java.lang.Override
-    public VariableAssignmentPb parsePartialFrom(
+    public VariableAssignment parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2194,17 +2194,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<VariableAssignmentPb> parser() {
+  public static com.google.protobuf.Parser<VariableAssignment> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<VariableAssignmentPb> getParserForType() {
+  public com.google.protobuf.Parser<VariableAssignment> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.VariableAssignment getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

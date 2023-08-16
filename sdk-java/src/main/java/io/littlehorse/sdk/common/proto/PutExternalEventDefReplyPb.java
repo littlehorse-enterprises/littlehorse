@@ -112,9 +112,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int RESULT_FIELD_NUMBER = 3;
-  private io.littlehorse.sdk.common.proto.ExternalEventDefPb result_;
+  private io.littlehorse.sdk.common.proto.ExternalEventDef result_;
   /**
-   * <code>optional .littlehorse.ExternalEventDefPb result = 3;</code>
+   * <code>optional .littlehorse.ExternalEventDef result = 3;</code>
    * @return Whether the result field is set.
    */
   @java.lang.Override
@@ -122,19 +122,19 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>optional .littlehorse.ExternalEventDefPb result = 3;</code>
+   * <code>optional .littlehorse.ExternalEventDef result = 3;</code>
    * @return The result.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ExternalEventDefPb getResult() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDefPb.getDefaultInstance() : result_;
+  public io.littlehorse.sdk.common.proto.ExternalEventDef getResult() {
+    return result_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDef.getDefaultInstance() : result_;
   }
   /**
-   * <code>optional .littlehorse.ExternalEventDefPb result = 3;</code>
+   * <code>optional .littlehorse.ExternalEventDef result = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ExternalEventDefPbOrBuilder getResultOrBuilder() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDefPb.getDefaultInstance() : result_;
+  public io.littlehorse.sdk.common.proto.ExternalEventDefOrBuilder getResultOrBuilder() {
+    return result_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDef.getDefaultInstance() : result_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -666,31 +666,31 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.sdk.common.proto.ExternalEventDefPb result_;
+    private io.littlehorse.sdk.common.proto.ExternalEventDef result_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ExternalEventDefPb, io.littlehorse.sdk.common.proto.ExternalEventDefPb.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefPbOrBuilder> resultBuilder_;
+        io.littlehorse.sdk.common.proto.ExternalEventDef, io.littlehorse.sdk.common.proto.ExternalEventDef.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefOrBuilder> resultBuilder_;
     /**
-     * <code>optional .littlehorse.ExternalEventDefPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEventDef result = 3;</code>
      * @return Whether the result field is set.
      */
     public boolean hasResult() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>optional .littlehorse.ExternalEventDefPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEventDef result = 3;</code>
      * @return The result.
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventDefPb getResult() {
+    public io.littlehorse.sdk.common.proto.ExternalEventDef getResult() {
       if (resultBuilder_ == null) {
-        return result_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDefPb.getDefaultInstance() : result_;
+        return result_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDef.getDefaultInstance() : result_;
       } else {
         return resultBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .littlehorse.ExternalEventDefPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEventDef result = 3;</code>
      */
-    public Builder setResult(io.littlehorse.sdk.common.proto.ExternalEventDefPb value) {
+    public Builder setResult(io.littlehorse.sdk.common.proto.ExternalEventDef value) {
       if (resultBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -704,10 +704,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.ExternalEventDefPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEventDef result = 3;</code>
      */
     public Builder setResult(
-        io.littlehorse.sdk.common.proto.ExternalEventDefPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.ExternalEventDef.Builder builderForValue) {
       if (resultBuilder_ == null) {
         result_ = builderForValue.build();
       } else {
@@ -718,13 +718,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.ExternalEventDefPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEventDef result = 3;</code>
      */
-    public Builder mergeResult(io.littlehorse.sdk.common.proto.ExternalEventDefPb value) {
+    public Builder mergeResult(io.littlehorse.sdk.common.proto.ExternalEventDef value) {
       if (resultBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0) &&
           result_ != null &&
-          result_ != io.littlehorse.sdk.common.proto.ExternalEventDefPb.getDefaultInstance()) {
+          result_ != io.littlehorse.sdk.common.proto.ExternalEventDef.getDefaultInstance()) {
           getResultBuilder().mergeFrom(value);
         } else {
           result_ = value;
@@ -737,7 +737,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.ExternalEventDefPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEventDef result = 3;</code>
      */
     public Builder clearResult() {
       bitField0_ = (bitField0_ & ~0x00000004);
@@ -750,33 +750,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.ExternalEventDefPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEventDef result = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventDefPb.Builder getResultBuilder() {
+    public io.littlehorse.sdk.common.proto.ExternalEventDef.Builder getResultBuilder() {
       bitField0_ |= 0x00000004;
       onChanged();
       return getResultFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.ExternalEventDefPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEventDef result = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventDefPbOrBuilder getResultOrBuilder() {
+    public io.littlehorse.sdk.common.proto.ExternalEventDefOrBuilder getResultOrBuilder() {
       if (resultBuilder_ != null) {
         return resultBuilder_.getMessageOrBuilder();
       } else {
         return result_ == null ?
-            io.littlehorse.sdk.common.proto.ExternalEventDefPb.getDefaultInstance() : result_;
+            io.littlehorse.sdk.common.proto.ExternalEventDef.getDefaultInstance() : result_;
       }
     }
     /**
-     * <code>optional .littlehorse.ExternalEventDefPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEventDef result = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ExternalEventDefPb, io.littlehorse.sdk.common.proto.ExternalEventDefPb.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.ExternalEventDef, io.littlehorse.sdk.common.proto.ExternalEventDef.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefOrBuilder> 
         getResultFieldBuilder() {
       if (resultBuilder_ == null) {
         resultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.ExternalEventDefPb, io.littlehorse.sdk.common.proto.ExternalEventDefPb.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.ExternalEventDef, io.littlehorse.sdk.common.proto.ExternalEventDef.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefOrBuilder>(
                 getResult(),
                 getParentForChildren(),
                 isClean());

@@ -88,41 +88,41 @@ private static final long serialVersionUID = 0L;
 
   public static final int FIELDS_FIELD_NUMBER = 2;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldPb> fields_;
+  private java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> fields_;
   /**
-   * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldPb> getFieldsList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> getFieldsList() {
     return fields_;
   }
   /**
-   * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
       getFieldsOrBuilderList() {
     return fields_;
   }
   /**
-   * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   @java.lang.Override
   public int getFieldsCount() {
     return fields_.size();
   }
   /**
-   * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskFieldPb getFields(int index) {
+  public io.littlehorse.sdk.common.proto.UserTaskField getFields(int index) {
     return fields_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder getFieldsOrBuilder(
+  public io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
       int index) {
     return fields_.get(index);
   }
@@ -568,9 +568,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 18: {
-              io.littlehorse.sdk.common.proto.UserTaskFieldPb m =
+              io.littlehorse.sdk.common.proto.UserTaskField m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.UserTaskFieldPb.parser(),
+                      io.littlehorse.sdk.common.proto.UserTaskField.parser(),
                       extensionRegistry);
               if (fieldsBuilder_ == null) {
                 ensureFieldsIsMutable();
@@ -674,22 +674,22 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldPb> fields_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> fields_ =
       java.util.Collections.emptyList();
     private void ensureFieldsIsMutable() {
       if (!((bitField0_ & 0x00000002) != 0)) {
-        fields_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.UserTaskFieldPb>(fields_);
+        fields_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.UserTaskField>(fields_);
         bitField0_ |= 0x00000002;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskFieldPb, io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder, io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder> fieldsBuilder_;
+        io.littlehorse.sdk.common.proto.UserTaskField, io.littlehorse.sdk.common.proto.UserTaskField.Builder, io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> fieldsBuilder_;
 
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldPb> getFieldsList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> getFieldsList() {
       if (fieldsBuilder_ == null) {
         return java.util.Collections.unmodifiableList(fields_);
       } else {
@@ -697,7 +697,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public int getFieldsCount() {
       if (fieldsBuilder_ == null) {
@@ -707,9 +707,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskFieldPb getFields(int index) {
+    public io.littlehorse.sdk.common.proto.UserTaskField getFields(int index) {
       if (fieldsBuilder_ == null) {
         return fields_.get(index);
       } else {
@@ -717,10 +717,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder setFields(
-        int index, io.littlehorse.sdk.common.proto.UserTaskFieldPb value) {
+        int index, io.littlehorse.sdk.common.proto.UserTaskField value) {
       if (fieldsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -734,10 +734,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder setFields(
-        int index, io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.UserTaskField.Builder builderForValue) {
       if (fieldsBuilder_ == null) {
         ensureFieldsIsMutable();
         fields_.set(index, builderForValue.build());
@@ -748,9 +748,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
-    public Builder addFields(io.littlehorse.sdk.common.proto.UserTaskFieldPb value) {
+    public Builder addFields(io.littlehorse.sdk.common.proto.UserTaskField value) {
       if (fieldsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -764,10 +764,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder addFields(
-        int index, io.littlehorse.sdk.common.proto.UserTaskFieldPb value) {
+        int index, io.littlehorse.sdk.common.proto.UserTaskField value) {
       if (fieldsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -781,10 +781,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder addFields(
-        io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.UserTaskField.Builder builderForValue) {
       if (fieldsBuilder_ == null) {
         ensureFieldsIsMutable();
         fields_.add(builderForValue.build());
@@ -795,10 +795,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder addFields(
-        int index, io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.UserTaskField.Builder builderForValue) {
       if (fieldsBuilder_ == null) {
         ensureFieldsIsMutable();
         fields_.add(index, builderForValue.build());
@@ -809,10 +809,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder addAllFields(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.UserTaskFieldPb> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.UserTaskField> values) {
       if (fieldsBuilder_ == null) {
         ensureFieldsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -824,7 +824,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder clearFields() {
       if (fieldsBuilder_ == null) {
@@ -837,7 +837,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
     public Builder removeFields(int index) {
       if (fieldsBuilder_ == null) {
@@ -850,16 +850,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder getFieldsBuilder(
+    public io.littlehorse.sdk.common.proto.UserTaskField.Builder getFieldsBuilder(
         int index) {
       return getFieldsFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder getFieldsOrBuilder(
+    public io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
         int index) {
       if (fieldsBuilder_ == null) {
         return fields_.get(index);  } else {
@@ -867,9 +867,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
          getFieldsOrBuilderList() {
       if (fieldsBuilder_ != null) {
         return fieldsBuilder_.getMessageOrBuilderList();
@@ -878,33 +878,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder addFieldsBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskField.Builder addFieldsBuilder() {
       return getFieldsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.UserTaskFieldPb.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.UserTaskField.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder addFieldsBuilder(
+    public io.littlehorse.sdk.common.proto.UserTaskField.Builder addFieldsBuilder(
         int index) {
       return getFieldsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.UserTaskFieldPb.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.UserTaskField.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.UserTaskFieldPb fields = 2;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField.Builder> 
          getFieldsBuilderList() {
       return getFieldsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskFieldPb, io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder, io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.UserTaskField, io.littlehorse.sdk.common.proto.UserTaskField.Builder, io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
         getFieldsFieldBuilder() {
       if (fieldsBuilder_ == null) {
         fieldsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UserTaskFieldPb, io.littlehorse.sdk.common.proto.UserTaskFieldPb.Builder, io.littlehorse.sdk.common.proto.UserTaskFieldPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.UserTaskField, io.littlehorse.sdk.common.proto.UserTaskField.Builder, io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder>(
                 fields_,
                 ((bitField0_ & 0x00000002) != 0),
                 getParentForChildren(),

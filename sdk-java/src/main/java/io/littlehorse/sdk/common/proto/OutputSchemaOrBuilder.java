@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface OutputSchemaPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.OutputSchemaPb)
+public interface OutputSchemaOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.OutputSchema)
     com.google.protobuf.MessageOrBuilder {
 
   /**

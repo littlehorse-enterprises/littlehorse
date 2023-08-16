@@ -2,12 +2,12 @@ package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.TaskDefModel;
 import io.littlehorse.sdk.common.proto.PutTaskDefReplyPb;
 
 public class PutTaskDefReply extends AbstractResponse<PutTaskDefReplyPb> {
 
-    public TaskDef result;
+    public TaskDefModel result;
 
     public Class<PutTaskDefReplyPb> getProtoBaseClass() {
         return PutTaskDefReplyPb.class;
@@ -25,6 +25,6 @@ public class PutTaskDefReply extends AbstractResponse<PutTaskDefReplyPb> {
         PutTaskDefReplyPb p = (PutTaskDefReplyPb) proto;
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();
-        if (p.hasResult()) result = TaskDef.fromProto(p.getResult());
+        if (p.hasResult()) result = TaskDefModel.fromProto(p.getResult());
     }
 }

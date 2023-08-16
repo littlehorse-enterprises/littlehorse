@@ -12,7 +12,7 @@ import io.littlehorse.sdk.common.proto.RegisterTaskWorkerPb;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerReplyPb;
 import io.littlehorse.sdk.common.proto.ReportTaskRunPb;
 import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
-import io.littlehorse.sdk.common.proto.TaskDefPb;
+import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskStatusPb;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -41,7 +41,7 @@ public class LHServerConnectionManager
     public Method taskMethod;
     public LHWorkerConfig config;
     public List<VariableMapping> mappings;
-    public TaskDefPb taskDef;
+    public TaskDef taskDef;
 
     private boolean running;
     private List<LHServerConnection> runningConnections;
@@ -54,7 +54,7 @@ public class LHServerConnectionManager
 
     public LHServerConnectionManager(
         Method taskMethod,
-        TaskDefPb taskDef,
+        TaskDef taskDef,
         LHWorkerConfig config,
         List<VariableMapping> mappings,
         Object executable

@@ -5,7 +5,7 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionError;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
-import io.littlehorse.sdk.common.proto.TaskDefPb;
+import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.VarNameAndValPb;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -20,7 +20,7 @@ public class VariableMapping {
     private int position;
 
     public VariableMapping(
-        TaskDefPb taskDef,
+        TaskDef taskDef,
         int position,
         Class<?> type,
         String javaParamName

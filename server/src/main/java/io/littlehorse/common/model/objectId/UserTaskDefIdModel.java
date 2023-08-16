@@ -3,25 +3,25 @@ package io.littlehorse.common.model.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
-import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDefIdPb;
-import io.littlehorse.sdk.common.proto.UserTaskDefPb;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UserTaskDefId
-    extends ObjectId<UserTaskDefIdPb, UserTaskDefPb, UserTaskDef> {
+public class UserTaskDefIdModel
+    extends ObjectId<UserTaskDefIdPb, UserTaskDef, UserTaskDefModel> {
 
     private String name;
     private int version;
 
-    public UserTaskDefId() {}
+    public UserTaskDefIdModel() {}
 
-    public UserTaskDefId(String name, int version) {
+    public UserTaskDefIdModel(String name, int version) {
         this.name = name;
         this.version = version;
     }

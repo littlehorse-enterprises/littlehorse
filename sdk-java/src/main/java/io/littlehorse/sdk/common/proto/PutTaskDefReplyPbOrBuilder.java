@@ -36,17 +36,17 @@ public interface PutTaskDefReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>optional .littlehorse.TaskDefPb result = 3;</code>
+   * <code>optional .littlehorse.TaskDef result = 3;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>optional .littlehorse.TaskDefPb result = 3;</code>
+   * <code>optional .littlehorse.TaskDef result = 3;</code>
    * @return The result.
    */
-  io.littlehorse.sdk.common.proto.TaskDefPb getResult();
+  io.littlehorse.sdk.common.proto.TaskDef getResult();
   /**
-   * <code>optional .littlehorse.TaskDefPb result = 3;</code>
+   * <code>optional .littlehorse.TaskDef result = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.TaskDefPbOrBuilder getResultOrBuilder();
+  io.littlehorse.sdk.common.proto.TaskDefOrBuilder getResultOrBuilder();
 }

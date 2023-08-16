@@ -7,7 +7,7 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventReply;
-import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.ExternalEventDefModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.Failure;
@@ -58,7 +58,7 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
     public PutExternalEventReply process(LHDAO dao, LHConfig config) {
         PutExternalEventReply out = new PutExternalEventReply();
 
-        ExternalEventDef eed = dao.getExternalEventDef(externalEventDefName);
+        ExternalEventDefModel eed = dao.getExternalEventDef(externalEventDefName);
         if (eed == null) {
             out.code = LHResponseCodePb.NOT_FOUND_ERROR;
             out.message = "No ExternalEventDef named " + externalEventDefName;

@@ -108,41 +108,41 @@ private static final long serialVersionUID = 0L;
 
   public static final int VARIABLES_FIELD_NUMBER = 4;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.VariableAssignmentPb> variables_;
+  private java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> variables_;
   /**
-   * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+   * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignmentPb> getVariablesList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> getVariablesList() {
     return variables_;
   }
   /**
-   * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+   * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
       getVariablesOrBuilderList() {
     return variables_;
   }
   /**
-   * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+   * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   @java.lang.Override
   public int getVariablesCount() {
     return variables_.size();
   }
   /**
-   * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+   * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb getVariables(int index) {
+  public io.littlehorse.sdk.common.proto.VariableAssignment getVariables(int index) {
     return variables_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+   * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getVariablesOrBuilder(
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getVariablesOrBuilder(
       int index) {
     return variables_.get(index);
   }
@@ -560,9 +560,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 24
             case 34: {
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb m =
+              io.littlehorse.sdk.common.proto.VariableAssignment m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.VariableAssignmentPb.parser(),
+                      io.littlehorse.sdk.common.proto.VariableAssignment.parser(),
                       extensionRegistry);
               if (variablesBuilder_ == null) {
                 ensureVariablesIsMutable();
@@ -725,22 +725,22 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.VariableAssignmentPb> variables_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> variables_ =
       java.util.Collections.emptyList();
     private void ensureVariablesIsMutable() {
       if (!((bitField0_ & 0x00000008) != 0)) {
-        variables_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableAssignmentPb>(variables_);
+        variables_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableAssignment>(variables_);
         bitField0_ |= 0x00000008;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> variablesBuilder_;
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> variablesBuilder_;
 
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignmentPb> getVariablesList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> getVariablesList() {
       if (variablesBuilder_ == null) {
         return java.util.Collections.unmodifiableList(variables_);
       } else {
@@ -748,7 +748,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public int getVariablesCount() {
       if (variablesBuilder_ == null) {
@@ -758,9 +758,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getVariables(int index) {
+    public io.littlehorse.sdk.common.proto.VariableAssignment getVariables(int index) {
       if (variablesBuilder_ == null) {
         return variables_.get(index);
       } else {
@@ -768,10 +768,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder setVariables(
-        int index, io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+        int index, io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (variablesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -785,10 +785,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder setVariables(
-        int index, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
       if (variablesBuilder_ == null) {
         ensureVariablesIsMutable();
         variables_.set(index, builderForValue.build());
@@ -799,9 +799,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
-    public Builder addVariables(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder addVariables(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (variablesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -815,10 +815,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder addVariables(
-        int index, io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+        int index, io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (variablesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -832,10 +832,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder addVariables(
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
       if (variablesBuilder_ == null) {
         ensureVariablesIsMutable();
         variables_.add(builderForValue.build());
@@ -846,10 +846,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder addVariables(
-        int index, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
       if (variablesBuilder_ == null) {
         ensureVariablesIsMutable();
         variables_.add(index, builderForValue.build());
@@ -860,10 +860,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder addAllVariables(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableAssignmentPb> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableAssignment> values) {
       if (variablesBuilder_ == null) {
         ensureVariablesIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -875,7 +875,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder clearVariables() {
       if (variablesBuilder_ == null) {
@@ -888,7 +888,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
     public Builder removeVariables(int index) {
       if (variablesBuilder_ == null) {
@@ -901,16 +901,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getVariablesBuilder(
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getVariablesBuilder(
         int index) {
       return getVariablesFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getVariablesOrBuilder(
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getVariablesOrBuilder(
         int index) {
       if (variablesBuilder_ == null) {
         return variables_.get(index);  } else {
@@ -918,9 +918,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
          getVariablesOrBuilderList() {
       if (variablesBuilder_ != null) {
         return variablesBuilder_.getMessageOrBuilderList();
@@ -929,33 +929,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder addVariablesBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder addVariablesBuilder() {
       return getVariablesFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder addVariablesBuilder(
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder addVariablesBuilder(
         int index) {
       return getVariablesFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+     * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment.Builder> 
          getVariablesBuilderList() {
       return getVariablesFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         getVariablesFieldBuilder() {
       if (variablesBuilder_ == null) {
         variablesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
                 variables_,
                 ((bitField0_ & 0x00000008) != 0),
                 getParentForChildren(),

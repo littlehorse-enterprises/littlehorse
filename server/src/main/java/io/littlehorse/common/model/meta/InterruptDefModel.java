@@ -6,9 +6,9 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.sdk.common.proto.InterruptDefPb;
+import io.littlehorse.sdk.common.proto.InterruptDef;
 
-public class InterruptDef extends LHSerializable<InterruptDefPb> {
+public class InterruptDefModel extends LHSerializable<InterruptDef> {
 
     public String handlerSpecName;
     public String externalEventDefName;
@@ -17,14 +17,14 @@ public class InterruptDef extends LHSerializable<InterruptDefPb> {
 
     public ThreadSpecModel handler;
 
-    public ExternalEventDef eed;
+    public ExternalEventDefModel eed;
 
-    public Class<InterruptDefPb> getProtoBaseClass() {
-        return InterruptDefPb.class;
+    public Class<InterruptDef> getProtoBaseClass() {
+        return InterruptDef.class;
     }
 
-    public InterruptDefPb.Builder toProto() {
-        InterruptDefPb.Builder out = InterruptDefPb
+    public InterruptDef.Builder toProto() {
+        InterruptDef.Builder out = InterruptDef
             .newBuilder()
             .setExternalEventDefName(externalEventDefName)
             .setHandlerSpecName(handlerSpecName);
@@ -32,13 +32,13 @@ public class InterruptDef extends LHSerializable<InterruptDefPb> {
     }
 
     public void initFrom(Message proto) {
-        InterruptDefPb p = (InterruptDefPb) proto;
+        InterruptDef p = (InterruptDef) proto;
         handlerSpecName = p.getHandlerSpecName();
         externalEventDefName = p.getExternalEventDefName();
     }
 
-    public static InterruptDef fromProto(InterruptDefPb p) {
-        InterruptDef out = new InterruptDef();
+    public static InterruptDefModel fromProto(InterruptDef p) {
+        InterruptDefModel out = new InterruptDefModel();
         out.initFrom(p);
         return out;
     }

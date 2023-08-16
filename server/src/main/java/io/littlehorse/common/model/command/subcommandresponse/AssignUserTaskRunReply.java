@@ -2,13 +2,13 @@ package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.ExternalEventDefModel;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunReplyPb;
 
 public class AssignUserTaskRunReply
     extends AbstractResponse<AssignUserTaskRunReplyPb> {
 
-    public ExternalEventDef result;
+    public ExternalEventDefModel result;
 
     public Class<AssignUserTaskRunReplyPb> getProtoBaseClass() {
         return AssignUserTaskRunReplyPb.class;

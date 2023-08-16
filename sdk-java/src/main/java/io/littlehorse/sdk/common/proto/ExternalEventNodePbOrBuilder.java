@@ -20,17 +20,17 @@ public interface ExternalEventNodePbOrBuilder extends
       getExternalEventDefNameBytes();
 
   /**
-   * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
+   * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
    * @return Whether the timeoutSeconds field is set.
    */
   boolean hasTimeoutSeconds();
   /**
-   * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
+   * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
    * @return The timeoutSeconds.
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPb getTimeoutSeconds();
+  io.littlehorse.sdk.common.proto.VariableAssignment getTimeoutSeconds();
   /**
-   * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
+   * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getTimeoutSecondsOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getTimeoutSecondsOrBuilder();
 }

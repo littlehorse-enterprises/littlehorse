@@ -4,27 +4,30 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.TaskDefPb}
+ * <pre>
+ * ExternalEventDef
+ * </pre>
+ *
+ * Protobuf type {@code littlehorse.ExternalEventDef}
  */
-public final class TaskDefPb extends
+public final class ExternalEventDef extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.TaskDefPb)
-    TaskDefPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.ExternalEventDef)
+    ExternalEventDefOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use TaskDefPb.newBuilder() to construct.
-  private TaskDefPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use ExternalEventDef.newBuilder() to construct.
+  private ExternalEventDef(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private TaskDefPb() {
+  private ExternalEventDef() {
     name_ = "";
-    inputVars_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new TaskDefPb();
+    return new ExternalEventDef();
   }
 
   @java.lang.Override
@@ -34,15 +37,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_TaskDefPb_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ExternalEventDef_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_TaskDefPb_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ExternalEventDef_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.TaskDefPb.class, io.littlehorse.sdk.common.proto.TaskDefPb.Builder.class);
+            io.littlehorse.sdk.common.proto.ExternalEventDef.class, io.littlehorse.sdk.common.proto.ExternalEventDef.Builder.class);
   }
 
   public static final int NAME_FIELD_NUMBER = 1;
@@ -84,51 +87,10 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int INPUT_VARS_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.VariableDef> inputVars_;
-  /**
-   * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-   */
-  @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.VariableDef> getInputVarsList() {
-    return inputVars_;
-  }
-  /**
-   * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-   */
-  @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableDefOrBuilder> 
-      getInputVarsOrBuilderList() {
-    return inputVars_;
-  }
-  /**
-   * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-   */
-  @java.lang.Override
-  public int getInputVarsCount() {
-    return inputVars_.size();
-  }
-  /**
-   * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableDef getInputVars(int index) {
-    return inputVars_.get(index);
-  }
-  /**
-   * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableDefOrBuilder getInputVarsOrBuilder(
-      int index) {
-    return inputVars_.get(index);
-  }
-
-  public static final int CREATED_AT_FIELD_NUMBER = 3;
+  public static final int CREATED_AT_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp createdAt_;
   /**
-   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
   @java.lang.Override
@@ -136,7 +98,7 @@ private static final long serialVersionUID = 0L;
     return createdAt_ != null;
   }
   /**
-   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
   @java.lang.Override
@@ -144,11 +106,22 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
   /**
-   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+  }
+
+  public static final int RETENTION_HOURS_FIELD_NUMBER = 3;
+  private int retentionHours_ = 0;
+  /**
+   * <code>int32 retention_hours = 3;</code>
+   * @return The retentionHours.
+   */
+  @java.lang.Override
+  public int getRetentionHours() {
+    return retentionHours_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -168,11 +141,11 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
-    for (int i = 0; i < inputVars_.size(); i++) {
-      output.writeMessage(2, inputVars_.get(i));
-    }
     if (createdAt_ != null) {
-      output.writeMessage(3, getCreatedAt());
+      output.writeMessage(2, getCreatedAt());
+    }
+    if (retentionHours_ != 0) {
+      output.writeInt32(3, retentionHours_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -186,13 +159,13 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
-    for (int i = 0; i < inputVars_.size(); i++) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, inputVars_.get(i));
-    }
     if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getCreatedAt());
+        .computeMessageSize(2, getCreatedAt());
+    }
+    if (retentionHours_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(3, retentionHours_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -204,20 +177,20 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.TaskDefPb)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.ExternalEventDef)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.TaskDefPb other = (io.littlehorse.sdk.common.proto.TaskDefPb) obj;
+    io.littlehorse.sdk.common.proto.ExternalEventDef other = (io.littlehorse.sdk.common.proto.ExternalEventDef) obj;
 
     if (!getName()
         .equals(other.getName())) return false;
-    if (!getInputVarsList()
-        .equals(other.getInputVarsList())) return false;
     if (hasCreatedAt() != other.hasCreatedAt()) return false;
     if (hasCreatedAt()) {
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
+    if (getRetentionHours()
+        != other.getRetentionHours()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -231,82 +204,80 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
-    if (getInputVarsCount() > 0) {
-      hash = (37 * hash) + INPUT_VARS_FIELD_NUMBER;
-      hash = (53 * hash) + getInputVarsList().hashCode();
-    }
     if (hasCreatedAt()) {
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
     }
+    hash = (37 * hash) + RETENTION_HOURS_FIELD_NUMBER;
+    hash = (53 * hash) + getRetentionHours();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.TaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventDef parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.TaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventDef parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.TaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventDef parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.TaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventDef parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.TaskDefPb parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.ExternalEventDef parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.TaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventDef parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.TaskDefPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.ExternalEventDef parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.TaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventDef parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.TaskDefPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.ExternalEventDef parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.TaskDefPb parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventDef parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.TaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventDef parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.TaskDefPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.ExternalEventDef parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -319,7 +290,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.TaskDefPb prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.ExternalEventDef prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -335,26 +306,30 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.TaskDefPb}
+   * <pre>
+   * ExternalEventDef
+   * </pre>
+   *
+   * Protobuf type {@code littlehorse.ExternalEventDef}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.TaskDefPb)
-      io.littlehorse.sdk.common.proto.TaskDefPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.ExternalEventDef)
+      io.littlehorse.sdk.common.proto.ExternalEventDefOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_TaskDefPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ExternalEventDef_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_TaskDefPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ExternalEventDef_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.TaskDefPb.class, io.littlehorse.sdk.common.proto.TaskDefPb.Builder.class);
+              io.littlehorse.sdk.common.proto.ExternalEventDef.class, io.littlehorse.sdk.common.proto.ExternalEventDef.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.TaskDefPb.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.ExternalEventDef.newBuilder()
     private Builder() {
 
     }
@@ -369,35 +344,29 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       name_ = "";
-      if (inputVarsBuilder_ == null) {
-        inputVars_ = java.util.Collections.emptyList();
-      } else {
-        inputVars_ = null;
-        inputVarsBuilder_.clear();
-      }
-      bitField0_ = (bitField0_ & ~0x00000002);
       createdAt_ = null;
       if (createdAtBuilder_ != null) {
         createdAtBuilder_.dispose();
         createdAtBuilder_ = null;
       }
+      retentionHours_ = 0;
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_TaskDefPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ExternalEventDef_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskDefPb getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.TaskDefPb.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.ExternalEventDef getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.ExternalEventDef.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskDefPb build() {
-      io.littlehorse.sdk.common.proto.TaskDefPb result = buildPartial();
+    public io.littlehorse.sdk.common.proto.ExternalEventDef build() {
+      io.littlehorse.sdk.common.proto.ExternalEventDef result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -405,35 +374,25 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskDefPb buildPartial() {
-      io.littlehorse.sdk.common.proto.TaskDefPb result = new io.littlehorse.sdk.common.proto.TaskDefPb(this);
-      buildPartialRepeatedFields(result);
+    public io.littlehorse.sdk.common.proto.ExternalEventDef buildPartial() {
+      io.littlehorse.sdk.common.proto.ExternalEventDef result = new io.littlehorse.sdk.common.proto.ExternalEventDef(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.TaskDefPb result) {
-      if (inputVarsBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0)) {
-          inputVars_ = java.util.Collections.unmodifiableList(inputVars_);
-          bitField0_ = (bitField0_ & ~0x00000002);
-        }
-        result.inputVars_ = inputVars_;
-      } else {
-        result.inputVars_ = inputVarsBuilder_.build();
-      }
-    }
-
-    private void buildPartial0(io.littlehorse.sdk.common.proto.TaskDefPb result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.ExternalEventDef result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.name_ = name_;
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
+      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.createdAt_ = createdAtBuilder_ == null
             ? createdAt_
             : createdAtBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.retentionHours_ = retentionHours_;
       }
     }
 
@@ -471,49 +430,26 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.TaskDefPb) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.TaskDefPb)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.ExternalEventDef) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.ExternalEventDef)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.TaskDefPb other) {
-      if (other == io.littlehorse.sdk.common.proto.TaskDefPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.ExternalEventDef other) {
+      if (other == io.littlehorse.sdk.common.proto.ExternalEventDef.getDefaultInstance()) return this;
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (inputVarsBuilder_ == null) {
-        if (!other.inputVars_.isEmpty()) {
-          if (inputVars_.isEmpty()) {
-            inputVars_ = other.inputVars_;
-            bitField0_ = (bitField0_ & ~0x00000002);
-          } else {
-            ensureInputVarsIsMutable();
-            inputVars_.addAll(other.inputVars_);
-          }
-          onChanged();
-        }
-      } else {
-        if (!other.inputVars_.isEmpty()) {
-          if (inputVarsBuilder_.isEmpty()) {
-            inputVarsBuilder_.dispose();
-            inputVarsBuilder_ = null;
-            inputVars_ = other.inputVars_;
-            bitField0_ = (bitField0_ & ~0x00000002);
-            inputVarsBuilder_ = 
-              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getInputVarsFieldBuilder() : null;
-          } else {
-            inputVarsBuilder_.addAllMessages(other.inputVars_);
-          }
-        }
-      }
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
+      }
+      if (other.getRetentionHours() != 0) {
+        setRetentionHours(other.getRetentionHours());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -547,25 +483,17 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 18: {
-              io.littlehorse.sdk.common.proto.VariableDef m =
-                  input.readMessage(
-                      io.littlehorse.sdk.common.proto.VariableDef.parser(),
-                      extensionRegistry);
-              if (inputVarsBuilder_ == null) {
-                ensureInputVarsIsMutable();
-                inputVars_.add(m);
-              } else {
-                inputVarsBuilder_.addMessage(m);
-              }
-              break;
-            } // case 18
-            case 26: {
               input.readMessage(
                   getCreatedAtFieldBuilder().getBuilder(),
                   extensionRegistry);
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 18
+            case 24: {
+              retentionHours_ = input.readInt32();
               bitField0_ |= 0x00000004;
               break;
-            } // case 26
+            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -655,258 +583,18 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.VariableDef> inputVars_ =
-      java.util.Collections.emptyList();
-    private void ensureInputVarsIsMutable() {
-      if (!((bitField0_ & 0x00000002) != 0)) {
-        inputVars_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableDef>(inputVars_);
-        bitField0_ |= 0x00000002;
-       }
-    }
-
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableDef, io.littlehorse.sdk.common.proto.VariableDef.Builder, io.littlehorse.sdk.common.proto.VariableDefOrBuilder> inputVarsBuilder_;
-
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public java.util.List<io.littlehorse.sdk.common.proto.VariableDef> getInputVarsList() {
-      if (inputVarsBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(inputVars_);
-      } else {
-        return inputVarsBuilder_.getMessageList();
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public int getInputVarsCount() {
-      if (inputVarsBuilder_ == null) {
-        return inputVars_.size();
-      } else {
-        return inputVarsBuilder_.getCount();
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public io.littlehorse.sdk.common.proto.VariableDef getInputVars(int index) {
-      if (inputVarsBuilder_ == null) {
-        return inputVars_.get(index);
-      } else {
-        return inputVarsBuilder_.getMessage(index);
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public Builder setInputVars(
-        int index, io.littlehorse.sdk.common.proto.VariableDef value) {
-      if (inputVarsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureInputVarsIsMutable();
-        inputVars_.set(index, value);
-        onChanged();
-      } else {
-        inputVarsBuilder_.setMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public Builder setInputVars(
-        int index, io.littlehorse.sdk.common.proto.VariableDef.Builder builderForValue) {
-      if (inputVarsBuilder_ == null) {
-        ensureInputVarsIsMutable();
-        inputVars_.set(index, builderForValue.build());
-        onChanged();
-      } else {
-        inputVarsBuilder_.setMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public Builder addInputVars(io.littlehorse.sdk.common.proto.VariableDef value) {
-      if (inputVarsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureInputVarsIsMutable();
-        inputVars_.add(value);
-        onChanged();
-      } else {
-        inputVarsBuilder_.addMessage(value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public Builder addInputVars(
-        int index, io.littlehorse.sdk.common.proto.VariableDef value) {
-      if (inputVarsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureInputVarsIsMutable();
-        inputVars_.add(index, value);
-        onChanged();
-      } else {
-        inputVarsBuilder_.addMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public Builder addInputVars(
-        io.littlehorse.sdk.common.proto.VariableDef.Builder builderForValue) {
-      if (inputVarsBuilder_ == null) {
-        ensureInputVarsIsMutable();
-        inputVars_.add(builderForValue.build());
-        onChanged();
-      } else {
-        inputVarsBuilder_.addMessage(builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public Builder addInputVars(
-        int index, io.littlehorse.sdk.common.proto.VariableDef.Builder builderForValue) {
-      if (inputVarsBuilder_ == null) {
-        ensureInputVarsIsMutable();
-        inputVars_.add(index, builderForValue.build());
-        onChanged();
-      } else {
-        inputVarsBuilder_.addMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public Builder addAllInputVars(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableDef> values) {
-      if (inputVarsBuilder_ == null) {
-        ensureInputVarsIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, inputVars_);
-        onChanged();
-      } else {
-        inputVarsBuilder_.addAllMessages(values);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public Builder clearInputVars() {
-      if (inputVarsBuilder_ == null) {
-        inputVars_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-      } else {
-        inputVarsBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public Builder removeInputVars(int index) {
-      if (inputVarsBuilder_ == null) {
-        ensureInputVarsIsMutable();
-        inputVars_.remove(index);
-        onChanged();
-      } else {
-        inputVarsBuilder_.remove(index);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public io.littlehorse.sdk.common.proto.VariableDef.Builder getInputVarsBuilder(
-        int index) {
-      return getInputVarsFieldBuilder().getBuilder(index);
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public io.littlehorse.sdk.common.proto.VariableDefOrBuilder getInputVarsOrBuilder(
-        int index) {
-      if (inputVarsBuilder_ == null) {
-        return inputVars_.get(index);  } else {
-        return inputVarsBuilder_.getMessageOrBuilder(index);
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableDefOrBuilder> 
-         getInputVarsOrBuilderList() {
-      if (inputVarsBuilder_ != null) {
-        return inputVarsBuilder_.getMessageOrBuilderList();
-      } else {
-        return java.util.Collections.unmodifiableList(inputVars_);
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public io.littlehorse.sdk.common.proto.VariableDef.Builder addInputVarsBuilder() {
-      return getInputVarsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.VariableDef.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public io.littlehorse.sdk.common.proto.VariableDef.Builder addInputVarsBuilder(
-        int index) {
-      return getInputVarsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.VariableDef.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .littlehorse.VariableDef input_vars = 2;</code>
-     */
-    public java.util.List<io.littlehorse.sdk.common.proto.VariableDef.Builder> 
-         getInputVarsBuilderList() {
-      return getInputVarsFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableDef, io.littlehorse.sdk.common.proto.VariableDef.Builder, io.littlehorse.sdk.common.proto.VariableDefOrBuilder> 
-        getInputVarsFieldBuilder() {
-      if (inputVarsBuilder_ == null) {
-        inputVarsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableDef, io.littlehorse.sdk.common.proto.VariableDef.Builder, io.littlehorse.sdk.common.proto.VariableDefOrBuilder>(
-                inputVars_,
-                ((bitField0_ & 0x00000002) != 0),
-                getParentForChildren(),
-                isClean());
-        inputVars_ = null;
-      }
-      return inputVarsBuilder_;
-    }
-
     private com.google.protobuf.Timestamp createdAt_;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return Whether the createdAt field is set.
      */
     public boolean hasCreatedAt() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return The createdAt.
      */
     public com.google.protobuf.Timestamp getCreatedAt() {
@@ -917,7 +605,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
       if (createdAtBuilder_ == null) {
@@ -928,12 +616,12 @@ private static final long serialVersionUID = 0L;
       } else {
         createdAtBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -942,16 +630,16 @@ private static final long serialVersionUID = 0L;
       } else {
         createdAtBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
       if (createdAtBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
+        if (((bitField0_ & 0x00000002) != 0) &&
           createdAt_ != null &&
           createdAt_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getCreatedAtBuilder().mergeFrom(value);
@@ -961,15 +649,15 @@ private static final long serialVersionUID = 0L;
       } else {
         createdAtBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder clearCreatedAt() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000002);
       createdAt_ = null;
       if (createdAtBuilder_ != null) {
         createdAtBuilder_.dispose();
@@ -979,15 +667,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
       if (createdAtBuilder_ != null) {
@@ -998,7 +686,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
@@ -1013,6 +701,38 @@ private static final long serialVersionUID = 0L;
       }
       return createdAtBuilder_;
     }
+
+    private int retentionHours_ ;
+    /**
+     * <code>int32 retention_hours = 3;</code>
+     * @return The retentionHours.
+     */
+    @java.lang.Override
+    public int getRetentionHours() {
+      return retentionHours_;
+    }
+    /**
+     * <code>int32 retention_hours = 3;</code>
+     * @param value The retentionHours to set.
+     * @return This builder for chaining.
+     */
+    public Builder setRetentionHours(int value) {
+      
+      retentionHours_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 retention_hours = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearRetentionHours() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      retentionHours_ = 0;
+      onChanged();
+      return this;
+    }
     @java.lang.Override
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -1026,23 +746,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.TaskDefPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.ExternalEventDef)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.TaskDefPb)
-  private static final io.littlehorse.sdk.common.proto.TaskDefPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.ExternalEventDef)
+  private static final io.littlehorse.sdk.common.proto.ExternalEventDef DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.TaskDefPb();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.ExternalEventDef();
   }
 
-  public static io.littlehorse.sdk.common.proto.TaskDefPb getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.ExternalEventDef getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<TaskDefPb>
-      PARSER = new com.google.protobuf.AbstractParser<TaskDefPb>() {
+  private static final com.google.protobuf.Parser<ExternalEventDef>
+      PARSER = new com.google.protobuf.AbstractParser<ExternalEventDef>() {
     @java.lang.Override
-    public TaskDefPb parsePartialFrom(
+    public ExternalEventDef parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1061,17 +781,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<TaskDefPb> parser() {
+  public static com.google.protobuf.Parser<ExternalEventDef> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<TaskDefPb> getParserForType() {
+  public com.google.protobuf.Parser<ExternalEventDef> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskDefPb getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.ExternalEventDef getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

@@ -5,7 +5,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.NodeModel;
 import io.littlehorse.common.model.meta.UserTaskNode;
-import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
@@ -59,7 +59,7 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
         NodeModel node = getNodeRunModel().getNode();
         UserTaskNode utn = node.getUserTaskNode();
 
-        UserTaskDef utd = getDao()
+        UserTaskDefModel utd = getDao()
             .getUserTaskDef(utn.getUserTaskDefName(), utn.getUserTaskDefVersion());
         if (utd == null) {
             // that means the UserTaskDef was deleted between now and the time that the

@@ -12,28 +12,28 @@ import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.VariableValueModel;
-import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb;
+import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.VariableMutationPb;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UTATask extends LHSerializable<UTATaskPb> {
+public class UTATaskModel extends LHSerializable<UTATask> {
 
     public TaskNode task;
     public List<VariableMutation> mutations;
 
-    public UTATask() {
+    public UTATaskModel() {
         mutations = new ArrayList<>();
     }
 
-    public Class<UTATaskPb> getProtoBaseClass() {
-        return UTATaskPb.class;
+    public Class<UTATask> getProtoBaseClass() {
+        return UTATask.class;
     }
 
-    public UTATaskPb.Builder toProto() {
-        UTATaskPb.Builder out = UTATaskPb.newBuilder().setTask(task.toProto());
+    public UTATask.Builder toProto() {
+        UTATask.Builder out = UTATask.newBuilder().setTask(task.toProto());
         for (VariableMutation vm : mutations) {
             out.addMutations(vm.toProto());
         }
@@ -42,7 +42,7 @@ public class UTATask extends LHSerializable<UTATaskPb> {
     }
 
     public void initFrom(Message proto) {
-        UTATaskPb p = (UTATaskPb) proto;
+        UTATask p = (UTATask) proto;
         task = LHSerializable.fromProto(p.getTask(), TaskNode.class);
         for (VariableMutationPb vm : p.getMutationsList()) {
             mutations.add(VariableMutation.fromProto(vm));
@@ -52,7 +52,7 @@ public class UTATask extends LHSerializable<UTATaskPb> {
     // TODO: There is a lot of duplicated code between here and in the TaskRun
     // infrastructure. See if possible to combine it.
     // Like hey both use the same TaskNode
-    public void schedule(LHDAO dao, UserTaskRun utr, UTActionTrigger trigger)
+    public void schedule(LHDAO dao, UserTaskRun utr, UTActionTriggerModel trigger)
         throws LHVarSubError {
         NodeRunModel nodeRunModel = utr.getNodeRun();
 

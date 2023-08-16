@@ -2,9 +2,8 @@ package io.littlehorse.sdk.usertask;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefPb;
-import io.littlehorse.sdk.common.proto.UserTaskFieldPb;
+import io.littlehorse.sdk.common.proto.UserTaskField;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.usertask.annotations.UserTaskField;
 import java.lang.reflect.Field;
 
 public class UserTaskSchema {
@@ -29,9 +28,9 @@ public class UserTaskSchema {
         // todo
         Class<?> cls = taskObject.getClass();
         for (Field field : cls.getFields()) {
-            if (!field.isAnnotationPresent(UserTaskField.class)) continue;
+            if (!field.isAnnotationPresent(io.littlehorse.sdk.usertask.annotations.UserTaskField.class)) continue;
 
-            UserTaskField utf = field.getAnnotation(UserTaskField.class);
+            io.littlehorse.sdk.usertask.annotations.UserTaskField utf = field.getAnnotation(io.littlehorse.sdk.usertask.annotations.UserTaskField.class);
             VariableType type = LHLibUtil.javaClassToLHVarType(field.getType());
             if (
                 type == VariableType.JSON_ARR ||
@@ -46,7 +45,7 @@ public class UserTaskSchema {
                 );
             }
 
-            UserTaskFieldPb.Builder fieldBuilder = UserTaskFieldPb
+            UserTaskField.Builder fieldBuilder = UserTaskField
                 .newBuilder()
                 .setName(field.getName())
                 .setType(type);

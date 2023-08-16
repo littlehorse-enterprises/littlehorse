@@ -5,12 +5,12 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.meta.ThreadSpecModel;
-import io.littlehorse.common.model.meta.VariableAssignment;
+import io.littlehorse.common.model.meta.VariableAssignmentModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.wfrun.subnoderun.StartThreadRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.StartThreadNodePb;
-import io.littlehorse.sdk.common.proto.VariableAssignmentPb;
+import io.littlehorse.sdk.common.proto.VariableAssignment;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +20,7 @@ import java.util.Set;
 public class StartThreadNode extends SubNode<StartThreadNodePb> {
 
     public String threadSpecName;
-    public Map<String, VariableAssignment> variables;
+    public Map<String, VariableAssignmentModel> variables;
 
     public StartThreadNode() {
         variables = new HashMap<>();
@@ -33,10 +33,10 @@ public class StartThreadNode extends SubNode<StartThreadNodePb> {
     public void initFrom(Message proto) {
         StartThreadNodePb p = (StartThreadNodePb) proto;
         threadSpecName = p.getThreadSpecName();
-        for (Map.Entry<String, VariableAssignmentPb> e : p
+        for (Map.Entry<String, VariableAssignment> e : p
             .getVariablesMap()
             .entrySet()) {
-            variables.put(e.getKey(), VariableAssignment.fromProto(e.getValue()));
+            variables.put(e.getKey(), VariableAssignmentModel.fromProto(e.getValue()));
         }
     }
 
@@ -45,7 +45,7 @@ public class StartThreadNode extends SubNode<StartThreadNodePb> {
             .newBuilder()
             .setThreadSpecName(threadSpecName);
 
-        for (Map.Entry<String, VariableAssignment> e : variables.entrySet()) {
+        for (Map.Entry<String, VariableAssignmentModel> e : variables.entrySet()) {
             out.putVariables(e.getKey(), e.getValue().toProto().build());
         }
 
@@ -76,7 +76,7 @@ public class StartThreadNode extends SubNode<StartThreadNodePb> {
     @Override
     public Set<String> getNeededVariableNames() {
         Set<String> out = new HashSet<>();
-        for (VariableAssignment assn : variables.values()) {
+        for (VariableAssignmentModel assn : variables.values()) {
             out.addAll(assn.getRequiredWfRunVarNames());
         }
         return out;

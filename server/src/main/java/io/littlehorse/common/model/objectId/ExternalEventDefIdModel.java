@@ -3,20 +3,20 @@ package io.littlehorse.common.model.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
-import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.ExternalEventDefModel;
 import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefIdPb;
-import io.littlehorse.sdk.common.proto.ExternalEventDefPb;
 
 // Used by ExternalEventDef, TaskDef, and ExternalEventDef
-public class ExternalEventDefId
-    extends ObjectId<ExternalEventDefIdPb, ExternalEventDefPb, ExternalEventDef> {
+public class ExternalEventDefIdModel
+    extends ObjectId<ExternalEventDefIdPb, ExternalEventDef, ExternalEventDefModel> {
 
     public String name;
 
-    public ExternalEventDefId() {}
+    public ExternalEventDefIdModel() {}
 
-    public ExternalEventDefId(String name) {
+    public ExternalEventDefIdModel(String name) {
         this.name = name;
     }
 

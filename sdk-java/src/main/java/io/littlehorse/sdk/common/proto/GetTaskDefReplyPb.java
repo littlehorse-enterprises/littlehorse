@@ -112,9 +112,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int RESULT_FIELD_NUMBER = 3;
-  private io.littlehorse.sdk.common.proto.TaskDefPb result_;
+  private io.littlehorse.sdk.common.proto.TaskDef result_;
   /**
-   * <code>optional .littlehorse.TaskDefPb result = 3;</code>
+   * <code>optional .littlehorse.TaskDef result = 3;</code>
    * @return Whether the result field is set.
    */
   @java.lang.Override
@@ -122,19 +122,19 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>optional .littlehorse.TaskDefPb result = 3;</code>
+   * <code>optional .littlehorse.TaskDef result = 3;</code>
    * @return The result.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskDefPb getResult() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.TaskDefPb.getDefaultInstance() : result_;
+  public io.littlehorse.sdk.common.proto.TaskDef getResult() {
+    return result_ == null ? io.littlehorse.sdk.common.proto.TaskDef.getDefaultInstance() : result_;
   }
   /**
-   * <code>optional .littlehorse.TaskDefPb result = 3;</code>
+   * <code>optional .littlehorse.TaskDef result = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskDefPbOrBuilder getResultOrBuilder() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.TaskDefPb.getDefaultInstance() : result_;
+  public io.littlehorse.sdk.common.proto.TaskDefOrBuilder getResultOrBuilder() {
+    return result_ == null ? io.littlehorse.sdk.common.proto.TaskDef.getDefaultInstance() : result_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -666,31 +666,31 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.sdk.common.proto.TaskDefPb result_;
+    private io.littlehorse.sdk.common.proto.TaskDef result_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskDefPb, io.littlehorse.sdk.common.proto.TaskDefPb.Builder, io.littlehorse.sdk.common.proto.TaskDefPbOrBuilder> resultBuilder_;
+        io.littlehorse.sdk.common.proto.TaskDef, io.littlehorse.sdk.common.proto.TaskDef.Builder, io.littlehorse.sdk.common.proto.TaskDefOrBuilder> resultBuilder_;
     /**
-     * <code>optional .littlehorse.TaskDefPb result = 3;</code>
+     * <code>optional .littlehorse.TaskDef result = 3;</code>
      * @return Whether the result field is set.
      */
     public boolean hasResult() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>optional .littlehorse.TaskDefPb result = 3;</code>
+     * <code>optional .littlehorse.TaskDef result = 3;</code>
      * @return The result.
      */
-    public io.littlehorse.sdk.common.proto.TaskDefPb getResult() {
+    public io.littlehorse.sdk.common.proto.TaskDef getResult() {
       if (resultBuilder_ == null) {
-        return result_ == null ? io.littlehorse.sdk.common.proto.TaskDefPb.getDefaultInstance() : result_;
+        return result_ == null ? io.littlehorse.sdk.common.proto.TaskDef.getDefaultInstance() : result_;
       } else {
         return resultBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .littlehorse.TaskDefPb result = 3;</code>
+     * <code>optional .littlehorse.TaskDef result = 3;</code>
      */
-    public Builder setResult(io.littlehorse.sdk.common.proto.TaskDefPb value) {
+    public Builder setResult(io.littlehorse.sdk.common.proto.TaskDef value) {
       if (resultBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -704,10 +704,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.TaskDefPb result = 3;</code>
+     * <code>optional .littlehorse.TaskDef result = 3;</code>
      */
     public Builder setResult(
-        io.littlehorse.sdk.common.proto.TaskDefPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.TaskDef.Builder builderForValue) {
       if (resultBuilder_ == null) {
         result_ = builderForValue.build();
       } else {
@@ -718,13 +718,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.TaskDefPb result = 3;</code>
+     * <code>optional .littlehorse.TaskDef result = 3;</code>
      */
-    public Builder mergeResult(io.littlehorse.sdk.common.proto.TaskDefPb value) {
+    public Builder mergeResult(io.littlehorse.sdk.common.proto.TaskDef value) {
       if (resultBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0) &&
           result_ != null &&
-          result_ != io.littlehorse.sdk.common.proto.TaskDefPb.getDefaultInstance()) {
+          result_ != io.littlehorse.sdk.common.proto.TaskDef.getDefaultInstance()) {
           getResultBuilder().mergeFrom(value);
         } else {
           result_ = value;
@@ -737,7 +737,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.TaskDefPb result = 3;</code>
+     * <code>optional .littlehorse.TaskDef result = 3;</code>
      */
     public Builder clearResult() {
       bitField0_ = (bitField0_ & ~0x00000004);
@@ -750,33 +750,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.TaskDefPb result = 3;</code>
+     * <code>optional .littlehorse.TaskDef result = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskDefPb.Builder getResultBuilder() {
+    public io.littlehorse.sdk.common.proto.TaskDef.Builder getResultBuilder() {
       bitField0_ |= 0x00000004;
       onChanged();
       return getResultFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.TaskDefPb result = 3;</code>
+     * <code>optional .littlehorse.TaskDef result = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskDefPbOrBuilder getResultOrBuilder() {
+    public io.littlehorse.sdk.common.proto.TaskDefOrBuilder getResultOrBuilder() {
       if (resultBuilder_ != null) {
         return resultBuilder_.getMessageOrBuilder();
       } else {
         return result_ == null ?
-            io.littlehorse.sdk.common.proto.TaskDefPb.getDefaultInstance() : result_;
+            io.littlehorse.sdk.common.proto.TaskDef.getDefaultInstance() : result_;
       }
     }
     /**
-     * <code>optional .littlehorse.TaskDefPb result = 3;</code>
+     * <code>optional .littlehorse.TaskDef result = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskDefPb, io.littlehorse.sdk.common.proto.TaskDefPb.Builder, io.littlehorse.sdk.common.proto.TaskDefPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.TaskDef, io.littlehorse.sdk.common.proto.TaskDef.Builder, io.littlehorse.sdk.common.proto.TaskDefOrBuilder> 
         getResultFieldBuilder() {
       if (resultBuilder_ == null) {
         resultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.TaskDefPb, io.littlehorse.sdk.common.proto.TaskDefPb.Builder, io.littlehorse.sdk.common.proto.TaskDefPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.TaskDef, io.littlehorse.sdk.common.proto.TaskDef.Builder, io.littlehorse.sdk.common.proto.TaskDefOrBuilder>(
                 getResult(),
                 getParentForChildren(),
                 isClean());

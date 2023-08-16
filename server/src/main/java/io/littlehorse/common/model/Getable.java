@@ -2,21 +2,21 @@ package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
-import io.littlehorse.common.model.meta.ExternalEventDef;
-import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.ExternalEventDefModel;
+import io.littlehorse.common.model.meta.TaskDefModel;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
 import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.metrics.TaskDefMetricsModel;
 import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
-import io.littlehorse.common.model.objectId.ExternalEventDefId;
+import io.littlehorse.common.model.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.model.objectId.TaskDefMetricsIdModel;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.TaskWorkerGroupId;
-import io.littlehorse.common.model.objectId.UserTaskDefId;
+import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfRunId;
@@ -63,11 +63,11 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             return GetableClassEnumPb.NODE_RUN;
         } else if (cls.equals(WfSpecModel.class)) {
             return GetableClassEnumPb.WF_SPEC;
-        } else if (cls.equals(TaskDef.class)) {
+        } else if (cls.equals(TaskDefModel.class)) {
             return GetableClassEnumPb.TASK_DEF;
         } else if (cls.equals(Variable.class)) {
             return GetableClassEnumPb.VARIABLE;
-        } else if (cls.equals(ExternalEventDef.class)) {
+        } else if (cls.equals(ExternalEventDefModel.class)) {
             return GetableClassEnumPb.EXTERNAL_EVENT_DEF;
         } else if (cls.equals(ExternalEvent.class)) {
             return GetableClassEnumPb.EXTERNAL_EVENT;
@@ -77,7 +77,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             return GetableClassEnumPb.WF_SPEC_METRICS;
         } else if (cls.equals(TaskWorkerGroup.class)) {
             return GetableClassEnumPb.TASK_WORKER_GROUP;
-        } else if (cls.equals(UserTaskDef.class)) {
+        } else if (cls.equals(UserTaskDefModel.class)) {
             return GetableClassEnumPb.USER_TASK_DEF;
         } else if (cls.equals(TaskRun.class)) {
             return GetableClassEnumPb.TASK_RUN;
@@ -99,11 +99,11 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             case WF_SPEC:
                 return WfSpecModel.class;
             case TASK_DEF:
-                return TaskDef.class;
+                return TaskDefModel.class;
             case VARIABLE:
                 return Variable.class;
             case EXTERNAL_EVENT_DEF:
-                return ExternalEventDef.class;
+                return ExternalEventDefModel.class;
             case EXTERNAL_EVENT:
                 return ExternalEvent.class;
             case TASK_DEF_METRICS:
@@ -113,7 +113,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             case TASK_WORKER_GROUP:
                 return TaskWorkerGroup.class;
             case USER_TASK_DEF:
-                return UserTaskDef.class;
+                return UserTaskDefModel.class;
             case TASK_RUN:
                 return TaskRun.class;
             case USER_TASK_RUN:
@@ -141,7 +141,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             case VARIABLE:
                 return VariableId.class;
             case EXTERNAL_EVENT_DEF:
-                return ExternalEventDefId.class;
+                return ExternalEventDefIdModel.class;
             case EXTERNAL_EVENT:
                 return ExternalEventId.class;
             case TASK_DEF_METRICS:
@@ -151,7 +151,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             case TASK_WORKER_GROUP:
                 return TaskWorkerGroupId.class;
             case USER_TASK_DEF:
-                return UserTaskDefId.class;
+                return UserTaskDefIdModel.class;
             case TASK_RUN:
                 return TaskRunId.class;
             case USER_TASK_RUN:

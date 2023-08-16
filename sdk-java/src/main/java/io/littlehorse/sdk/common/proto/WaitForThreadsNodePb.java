@@ -49,19 +49,19 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
+     * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
      * @return Whether the threadRunNumber field is set.
      */
     boolean hasThreadRunNumber();
     /**
-     * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
+     * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
      * @return The threadRunNumber.
      */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPb getThreadRunNumber();
+    io.littlehorse.sdk.common.proto.VariableAssignment getThreadRunNumber();
     /**
-     * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
+     * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
      */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getThreadRunNumberOrBuilder();
+    io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getThreadRunNumberOrBuilder();
   }
   /**
    * Protobuf type {@code littlehorse.WaitForThreadsNodePb.ThreadToWaitForPb}
@@ -104,9 +104,9 @@ private static final long serialVersionUID = 0L;
     }
 
     public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 1;
-    private io.littlehorse.sdk.common.proto.VariableAssignmentPb threadRunNumber_;
+    private io.littlehorse.sdk.common.proto.VariableAssignment threadRunNumber_;
     /**
-     * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
+     * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
      * @return Whether the threadRunNumber field is set.
      */
     @java.lang.Override
@@ -114,19 +114,19 @@ private static final long serialVersionUID = 0L;
       return threadRunNumber_ != null;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
+     * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
      * @return The threadRunNumber.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getThreadRunNumber() {
-      return threadRunNumber_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : threadRunNumber_;
+    public io.littlehorse.sdk.common.proto.VariableAssignment getThreadRunNumber() {
+      return threadRunNumber_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : threadRunNumber_;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
+     * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getThreadRunNumberOrBuilder() {
-      return threadRunNumber_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : threadRunNumber_;
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getThreadRunNumberOrBuilder() {
+      return threadRunNumber_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : threadRunNumber_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -465,31 +465,31 @@ private static final long serialVersionUID = 0L;
       }
       private int bitField0_;
 
-      private io.littlehorse.sdk.common.proto.VariableAssignmentPb threadRunNumber_;
+      private io.littlehorse.sdk.common.proto.VariableAssignment threadRunNumber_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> threadRunNumberBuilder_;
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> threadRunNumberBuilder_;
       /**
-       * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
+       * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        * @return Whether the threadRunNumber field is set.
        */
       public boolean hasThreadRunNumber() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
+       * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        * @return The threadRunNumber.
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb getThreadRunNumber() {
+      public io.littlehorse.sdk.common.proto.VariableAssignment getThreadRunNumber() {
         if (threadRunNumberBuilder_ == null) {
-          return threadRunNumber_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : threadRunNumber_;
+          return threadRunNumber_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : threadRunNumber_;
         } else {
           return threadRunNumberBuilder_.getMessage();
         }
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
+       * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        */
-      public Builder setThreadRunNumber(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+      public Builder setThreadRunNumber(io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (threadRunNumberBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -503,10 +503,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
+       * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        */
       public Builder setThreadRunNumber(
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+          io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
         if (threadRunNumberBuilder_ == null) {
           threadRunNumber_ = builderForValue.build();
         } else {
@@ -517,13 +517,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
+       * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        */
-      public Builder mergeThreadRunNumber(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+      public Builder mergeThreadRunNumber(io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (threadRunNumberBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0) &&
             threadRunNumber_ != null &&
-            threadRunNumber_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
+            threadRunNumber_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
             getThreadRunNumberBuilder().mergeFrom(value);
           } else {
             threadRunNumber_ = value;
@@ -536,7 +536,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
+       * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        */
       public Builder clearThreadRunNumber() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -549,33 +549,33 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
+       * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getThreadRunNumberBuilder() {
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getThreadRunNumberBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getThreadRunNumberFieldBuilder().getBuilder();
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
+       * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getThreadRunNumberOrBuilder() {
+      public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getThreadRunNumberOrBuilder() {
         if (threadRunNumberBuilder_ != null) {
           return threadRunNumberBuilder_.getMessageOrBuilder();
         } else {
           return threadRunNumber_ == null ?
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : threadRunNumber_;
+              io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : threadRunNumber_;
         }
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
+       * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
           getThreadRunNumberFieldBuilder() {
         if (threadRunNumberBuilder_ == null) {
           threadRunNumberBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
+              io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
                   getThreadRunNumber(),
                   getParentForChildren(),
                   isClean());

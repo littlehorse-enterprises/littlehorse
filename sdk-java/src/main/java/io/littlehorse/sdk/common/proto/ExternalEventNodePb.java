@@ -84,9 +84,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TIMEOUT_SECONDS_FIELD_NUMBER = 2;
-  private io.littlehorse.sdk.common.proto.VariableAssignmentPb timeoutSeconds_;
+  private io.littlehorse.sdk.common.proto.VariableAssignment timeoutSeconds_;
   /**
-   * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
+   * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
    * @return Whether the timeoutSeconds field is set.
    */
   @java.lang.Override
@@ -94,19 +94,19 @@ private static final long serialVersionUID = 0L;
     return timeoutSeconds_ != null;
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
+   * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
    * @return The timeoutSeconds.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb getTimeoutSeconds() {
-    return timeoutSeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : timeoutSeconds_;
+  public io.littlehorse.sdk.common.proto.VariableAssignment getTimeoutSeconds() {
+    return timeoutSeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : timeoutSeconds_;
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
+   * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getTimeoutSecondsOrBuilder() {
-    return timeoutSeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : timeoutSeconds_;
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getTimeoutSecondsOrBuilder() {
+    return timeoutSeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : timeoutSeconds_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -541,31 +541,31 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.sdk.common.proto.VariableAssignmentPb timeoutSeconds_;
+    private io.littlehorse.sdk.common.proto.VariableAssignment timeoutSeconds_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> timeoutSecondsBuilder_;
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> timeoutSecondsBuilder_;
     /**
-     * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
+     * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      * @return Whether the timeoutSeconds field is set.
      */
     public boolean hasTimeoutSeconds() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
+     * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      * @return The timeoutSeconds.
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getTimeoutSeconds() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment getTimeoutSeconds() {
       if (timeoutSecondsBuilder_ == null) {
-        return timeoutSeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : timeoutSeconds_;
+        return timeoutSeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : timeoutSeconds_;
       } else {
         return timeoutSecondsBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
+     * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      */
-    public Builder setTimeoutSeconds(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder setTimeoutSeconds(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (timeoutSecondsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -579,10 +579,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
+     * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      */
     public Builder setTimeoutSeconds(
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
       if (timeoutSecondsBuilder_ == null) {
         timeoutSeconds_ = builderForValue.build();
       } else {
@@ -593,13 +593,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
+     * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      */
-    public Builder mergeTimeoutSeconds(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder mergeTimeoutSeconds(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (timeoutSecondsBuilder_ == null) {
         if (((bitField0_ & 0x00000002) != 0) &&
           timeoutSeconds_ != null &&
-          timeoutSeconds_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
+          timeoutSeconds_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
           getTimeoutSecondsBuilder().mergeFrom(value);
         } else {
           timeoutSeconds_ = value;
@@ -612,7 +612,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
+     * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      */
     public Builder clearTimeoutSeconds() {
       bitField0_ = (bitField0_ & ~0x00000002);
@@ -625,33 +625,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
+     * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getTimeoutSecondsBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getTimeoutSecondsBuilder() {
       bitField0_ |= 0x00000002;
       onChanged();
       return getTimeoutSecondsFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
+     * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getTimeoutSecondsOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getTimeoutSecondsOrBuilder() {
       if (timeoutSecondsBuilder_ != null) {
         return timeoutSecondsBuilder_.getMessageOrBuilder();
       } else {
         return timeoutSeconds_ == null ?
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : timeoutSeconds_;
+            io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : timeoutSeconds_;
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
+     * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         getTimeoutSecondsFieldBuilder() {
       if (timeoutSecondsBuilder_ == null) {
         timeoutSecondsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
                 getTimeoutSeconds(),
                 getParentForChildren(),
                 isClean());

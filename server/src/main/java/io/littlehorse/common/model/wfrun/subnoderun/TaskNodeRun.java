@@ -5,7 +5,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.NodeModel;
-import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.TaskDefModel;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
@@ -56,7 +56,7 @@ public class TaskNodeRun extends SubNodeRun<TaskNodeRunPb> {
 
         NodeModel node = nodeRunModel.getNode();
 
-        TaskDef td = node.getTaskNode().getTaskDef();
+        TaskDefModel td = node.getTaskNode().getTaskDef();
         if (td == null) {
             // that means the TaskDef was deleted between now and the time that the
             // WfSpec was first created. Yikers!

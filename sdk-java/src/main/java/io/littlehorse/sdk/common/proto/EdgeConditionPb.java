@@ -63,9 +63,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int LEFT_FIELD_NUMBER = 2;
-  private io.littlehorse.sdk.common.proto.VariableAssignmentPb left_;
+  private io.littlehorse.sdk.common.proto.VariableAssignment left_;
   /**
-   * <code>.littlehorse.VariableAssignmentPb left = 2;</code>
+   * <code>.littlehorse.VariableAssignment left = 2;</code>
    * @return Whether the left field is set.
    */
   @java.lang.Override
@@ -73,25 +73,25 @@ private static final long serialVersionUID = 0L;
     return left_ != null;
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb left = 2;</code>
+   * <code>.littlehorse.VariableAssignment left = 2;</code>
    * @return The left.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb getLeft() {
-    return left_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : left_;
+  public io.littlehorse.sdk.common.proto.VariableAssignment getLeft() {
+    return left_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : left_;
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb left = 2;</code>
+   * <code>.littlehorse.VariableAssignment left = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getLeftOrBuilder() {
-    return left_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : left_;
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getLeftOrBuilder() {
+    return left_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : left_;
   }
 
   public static final int RIGHT_FIELD_NUMBER = 3;
-  private io.littlehorse.sdk.common.proto.VariableAssignmentPb right_;
+  private io.littlehorse.sdk.common.proto.VariableAssignment right_;
   /**
-   * <code>.littlehorse.VariableAssignmentPb right = 3;</code>
+   * <code>.littlehorse.VariableAssignment right = 3;</code>
    * @return Whether the right field is set.
    */
   @java.lang.Override
@@ -99,19 +99,19 @@ private static final long serialVersionUID = 0L;
     return right_ != null;
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb right = 3;</code>
+   * <code>.littlehorse.VariableAssignment right = 3;</code>
    * @return The right.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb getRight() {
-    return right_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : right_;
+  public io.littlehorse.sdk.common.proto.VariableAssignment getRight() {
+    return right_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : right_;
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb right = 3;</code>
+   * <code>.littlehorse.VariableAssignment right = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getRightOrBuilder() {
-    return right_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : right_;
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getRightOrBuilder() {
+    return right_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : right_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -561,31 +561,31 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.sdk.common.proto.VariableAssignmentPb left_;
+    private io.littlehorse.sdk.common.proto.VariableAssignment left_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> leftBuilder_;
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> leftBuilder_;
     /**
-     * <code>.littlehorse.VariableAssignmentPb left = 2;</code>
+     * <code>.littlehorse.VariableAssignment left = 2;</code>
      * @return Whether the left field is set.
      */
     public boolean hasLeft() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb left = 2;</code>
+     * <code>.littlehorse.VariableAssignment left = 2;</code>
      * @return The left.
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getLeft() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment getLeft() {
       if (leftBuilder_ == null) {
-        return left_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : left_;
+        return left_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : left_;
       } else {
         return leftBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb left = 2;</code>
+     * <code>.littlehorse.VariableAssignment left = 2;</code>
      */
-    public Builder setLeft(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder setLeft(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (leftBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -599,10 +599,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb left = 2;</code>
+     * <code>.littlehorse.VariableAssignment left = 2;</code>
      */
     public Builder setLeft(
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
       if (leftBuilder_ == null) {
         left_ = builderForValue.build();
       } else {
@@ -613,13 +613,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb left = 2;</code>
+     * <code>.littlehorse.VariableAssignment left = 2;</code>
      */
-    public Builder mergeLeft(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder mergeLeft(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (leftBuilder_ == null) {
         if (((bitField0_ & 0x00000002) != 0) &&
           left_ != null &&
-          left_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
+          left_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
           getLeftBuilder().mergeFrom(value);
         } else {
           left_ = value;
@@ -632,7 +632,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb left = 2;</code>
+     * <code>.littlehorse.VariableAssignment left = 2;</code>
      */
     public Builder clearLeft() {
       bitField0_ = (bitField0_ & ~0x00000002);
@@ -645,33 +645,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb left = 2;</code>
+     * <code>.littlehorse.VariableAssignment left = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getLeftBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getLeftBuilder() {
       bitField0_ |= 0x00000002;
       onChanged();
       return getLeftFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb left = 2;</code>
+     * <code>.littlehorse.VariableAssignment left = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getLeftOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getLeftOrBuilder() {
       if (leftBuilder_ != null) {
         return leftBuilder_.getMessageOrBuilder();
       } else {
         return left_ == null ?
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : left_;
+            io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : left_;
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb left = 2;</code>
+     * <code>.littlehorse.VariableAssignment left = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         getLeftFieldBuilder() {
       if (leftBuilder_ == null) {
         leftBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
                 getLeft(),
                 getParentForChildren(),
                 isClean());
@@ -680,31 +680,31 @@ private static final long serialVersionUID = 0L;
       return leftBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.VariableAssignmentPb right_;
+    private io.littlehorse.sdk.common.proto.VariableAssignment right_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> rightBuilder_;
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> rightBuilder_;
     /**
-     * <code>.littlehorse.VariableAssignmentPb right = 3;</code>
+     * <code>.littlehorse.VariableAssignment right = 3;</code>
      * @return Whether the right field is set.
      */
     public boolean hasRight() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb right = 3;</code>
+     * <code>.littlehorse.VariableAssignment right = 3;</code>
      * @return The right.
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getRight() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment getRight() {
       if (rightBuilder_ == null) {
-        return right_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : right_;
+        return right_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : right_;
       } else {
         return rightBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb right = 3;</code>
+     * <code>.littlehorse.VariableAssignment right = 3;</code>
      */
-    public Builder setRight(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder setRight(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (rightBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -718,10 +718,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb right = 3;</code>
+     * <code>.littlehorse.VariableAssignment right = 3;</code>
      */
     public Builder setRight(
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
       if (rightBuilder_ == null) {
         right_ = builderForValue.build();
       } else {
@@ -732,13 +732,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb right = 3;</code>
+     * <code>.littlehorse.VariableAssignment right = 3;</code>
      */
-    public Builder mergeRight(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder mergeRight(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (rightBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0) &&
           right_ != null &&
-          right_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
+          right_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
           getRightBuilder().mergeFrom(value);
         } else {
           right_ = value;
@@ -751,7 +751,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb right = 3;</code>
+     * <code>.littlehorse.VariableAssignment right = 3;</code>
      */
     public Builder clearRight() {
       bitField0_ = (bitField0_ & ~0x00000004);
@@ -764,33 +764,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb right = 3;</code>
+     * <code>.littlehorse.VariableAssignment right = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getRightBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getRightBuilder() {
       bitField0_ |= 0x00000004;
       onChanged();
       return getRightFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb right = 3;</code>
+     * <code>.littlehorse.VariableAssignment right = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getRightOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getRightOrBuilder() {
       if (rightBuilder_ != null) {
         return rightBuilder_.getMessageOrBuilder();
       } else {
         return right_ == null ?
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : right_;
+            io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : right_;
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb right = 3;</code>
+     * <code>.littlehorse.VariableAssignment right = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         getRightFieldBuilder() {
       if (rightBuilder_ == null) {
         rightBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
                 getRight(),
                 getParentForChildren(),
                 isClean());

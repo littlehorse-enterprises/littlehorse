@@ -32,26 +32,26 @@ public interface TaskNodePbOrBuilder extends
   int getRetries();
 
   /**
-   * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+   * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.VariableAssignmentPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> 
       getVariablesList();
   /**
-   * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+   * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPb getVariables(int index);
+  io.littlehorse.sdk.common.proto.VariableAssignment getVariables(int index);
   /**
-   * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+   * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
   int getVariablesCount();
   /**
-   * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+   * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
       getVariablesOrBuilderList();
   /**
-   * <code>repeated .littlehorse.VariableAssignmentPb variables = 4;</code>
+   * <code>repeated .littlehorse.VariableAssignment variables = 4;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getVariablesOrBuilder(
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getVariablesOrBuilder(
       int index);
 }

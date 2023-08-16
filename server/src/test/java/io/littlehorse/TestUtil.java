@@ -7,7 +7,7 @@ import io.littlehorse.common.model.meta.VariableDefModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.objectId.TaskRunId;
-import io.littlehorse.common.model.objectId.UserTaskDefId;
+import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
@@ -84,7 +84,7 @@ public class TestUtil {
     public static UserTaskRun userTaskRun(String wfRunId) {
         UserTaskRun userTaskRun = new UserTaskRun();
         userTaskRun.setId(new UserTaskRunId(wfRunId, "fdsa"));
-        userTaskRun.setUserTaskDefId(new UserTaskDefId("ut-name", 0));
+        userTaskRun.setUserTaskDefId(new UserTaskDefIdModel("ut-name", 0));
         userTaskRun.setStatus(UserTaskRunStatusPb.ASSIGNED);
         userTaskRun.setOwnerCase(UserTaskRunPb.OwnerCase.USER);
         userTaskRun.setUser(new User("33333"));

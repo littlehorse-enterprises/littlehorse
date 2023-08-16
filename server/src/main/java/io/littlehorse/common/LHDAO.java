@@ -4,12 +4,12 @@ import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
-import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.ExternalEventDefModel;
 import io.littlehorse.common.model.meta.Host;
-import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.TaskDefModel;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
 import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
@@ -87,19 +87,19 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public void putWfSpec(WfSpecModel spec);
 
-    public TaskDef getTaskDef(String name);
+    public TaskDefModel getTaskDef(String name);
 
-    public void putTaskDef(TaskDef spec);
+    public void putTaskDef(TaskDefModel spec);
 
-    public UserTaskDef getUserTaskDef(String name, Integer version);
+    public UserTaskDefModel getUserTaskDef(String name, Integer version);
 
-    public void putUserTaskDef(UserTaskDef spec);
+    public void putUserTaskDef(UserTaskDefModel spec);
 
-    public ExternalEventDef getExternalEventDef(String name);
+    public ExternalEventDefModel getExternalEventDef(String name);
 
     public ScheduledTask markTaskAsScheduled(TaskRunId taskRunId);
 
-    public void putExternalEventDef(ExternalEventDef eed);
+    public void putExternalEventDef(ExternalEventDefModel eed);
 
     public DeleteObjectReply deleteWfRun(String wfRunId);
 

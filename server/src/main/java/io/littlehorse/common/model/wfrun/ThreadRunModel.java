@@ -8,11 +8,11 @@ import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
 import io.littlehorse.common.model.meta.Edge;
 import io.littlehorse.common.model.meta.FailureHandlerDef;
-import io.littlehorse.common.model.meta.InterruptDef;
+import io.littlehorse.common.model.meta.InterruptDefModel;
 import io.littlehorse.common.model.meta.NodeModel;
-import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.TaskDefModel;
 import io.littlehorse.common.model.meta.ThreadSpecModel;
-import io.littlehorse.common.model.meta.VariableAssignment;
+import io.littlehorse.common.model.meta.VariableAssignmentModel;
 import io.littlehorse.common.model.meta.VariableDefModel;
 import io.littlehorse.common.model.meta.VariableMutation;
 import io.littlehorse.common.model.meta.subnode.ExitNode;
@@ -212,7 +212,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
     public void processExternalEvent(ExternalEvent e) {
         String extEvtName = e.externalEventDefName;
-        InterruptDef idef = getThreadSpecModel().getInterruptDefFor(extEvtName);
+        InterruptDefModel idef = getThreadSpecModel().getInterruptDefFor(extEvtName);
         if (idef != null) {
             // trigger interrupt
             initializeInterrupt(e, idef);
@@ -272,7 +272,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         haltReasons.add(thr);
     }
 
-    private void initializeInterrupt(ExternalEvent trigger, InterruptDef idef) {
+    private void initializeInterrupt(ExternalEvent trigger, InterruptDefModel idef) {
         // First, stop all child threads.
         ThreadHaltReason haltReason = new ThreadHaltReason();
         haltReason.type = ReasonCase.PENDING_INTERRUPT;
@@ -713,7 +713,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public List<VarNameAndVal> assignVarsForNode(TaskNode node) throws LHVarSubError {
         List<VarNameAndVal> out = new ArrayList<>();
-        TaskDef taskDef = node.getTaskDef();
+        TaskDefModel taskDef = node.getTaskDef();
 
         if (taskDef.inputVars.size() != node.variables.size()) {
             throw new LHVarSubError(
@@ -724,7 +724,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         for (int i = 0; i < taskDef.inputVars.size(); i++) {
             VariableDefModel requiredVarDef = taskDef.inputVars.get(i);
-            VariableAssignment assn = node.variables.get(i);
+            VariableAssignmentModel assn = node.variables.get(i);
             String varName = requiredVarDef.name;
             VariableValueModel val;
 
@@ -789,13 +789,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return status == LHStatus.COMPLETED || status == LHStatus.ERROR;
     }
 
-    public VariableValueModel assignVariable(VariableAssignment assn)
+    public VariableValueModel assignVariable(VariableAssignmentModel assn)
         throws LHVarSubError {
         return assignVariable(assn, new HashMap<>());
     }
 
     public VariableValueModel assignVariable(
-        VariableAssignment assn,
+        VariableAssignmentModel assn,
         Map<String, VariableValueModel> txnCache
     ) throws LHVarSubError {
         VariableValueModel val = null;
@@ -835,7 +835,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 List<Object> formatArgs = new ArrayList<>();
 
                 // second, assign the vars
-                for (VariableAssignment argAssn : assn.getFormatString().getArgs()) {
+                for (VariableAssignmentModel argAssn : assn.getFormatString().getArgs()) {
                     VariableValueModel variableValue = assignVariable(
                         argAssn,
                         txnCache

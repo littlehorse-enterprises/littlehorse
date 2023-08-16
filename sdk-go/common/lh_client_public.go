@@ -78,7 +78,7 @@ func (l *LHClient) GetTaskDef(name string) (*model.TaskDefPb, error) {
 	return nil, nil
 }
 
-func (l *LHClient) GetWfSpec(name string, version *int32) (*model.WfSpecPb, error) {
+func (l *LHClient) GetWfSpec(name string, version *int32) (*model.WfSpec, error) {
 	var reply *model.GetWfSpecReplyPb
 	var err error
 	if version == nil {

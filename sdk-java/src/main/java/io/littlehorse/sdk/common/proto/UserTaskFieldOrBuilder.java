@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface UserTaskFieldPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskFieldPb)
+public interface UserTaskFieldOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskField)
     com.google.protobuf.MessageOrBuilder {
 
   /**

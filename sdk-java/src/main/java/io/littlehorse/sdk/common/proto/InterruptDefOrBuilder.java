@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface InterruptDefPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.InterruptDefPb)
+public interface InterruptDefOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.InterruptDef)
     com.google.protobuf.MessageOrBuilder {
 
   /**

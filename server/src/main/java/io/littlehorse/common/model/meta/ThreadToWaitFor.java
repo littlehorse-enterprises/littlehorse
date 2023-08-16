@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class ThreadToWaitFor extends LHSerializable<ThreadToWaitForPb> {
 
-    private VariableAssignment threadRunNumber;
+    private VariableAssignmentModel threadRunNumber;
 
     public Class<ThreadToWaitForPb> getProtoBaseClass() {
         return ThreadToWaitForPb.class;
@@ -18,7 +18,7 @@ public class ThreadToWaitFor extends LHSerializable<ThreadToWaitForPb> {
 
     public void initFrom(Message proto) {
         ThreadToWaitForPb p = (ThreadToWaitForPb) proto;
-        threadRunNumber = VariableAssignment.fromProto(p.getThreadRunNumber());
+        threadRunNumber = VariableAssignmentModel.fromProto(p.getThreadRunNumber());
     }
 
     public ThreadToWaitForPb.Builder toProto() {

@@ -4,18 +4,18 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.UTActionTriggerPb}
+ * Protobuf type {@code littlehorse.UTActionTrigger}
  */
-public final class UTActionTriggerPb extends
+public final class UTActionTrigger extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.UTActionTriggerPb)
-    UTActionTriggerPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.UTActionTrigger)
+    UTActionTriggerOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use UTActionTriggerPb.newBuilder() to construct.
-  private UTActionTriggerPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use UTActionTrigger.newBuilder() to construct.
+  private UTActionTrigger(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private UTActionTriggerPb() {
+  private UTActionTrigger() {
     hook_ = 0;
   }
 
@@ -23,7 +23,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new UTActionTriggerPb();
+    return new UTActionTrigger();
   }
 
   @java.lang.Override
@@ -33,19 +33,19 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.UTActionTriggerPb.class, io.littlehorse.sdk.common.proto.UTActionTriggerPb.Builder.class);
+            io.littlehorse.sdk.common.proto.UTActionTrigger.class, io.littlehorse.sdk.common.proto.UTActionTrigger.Builder.class);
   }
 
   /**
-   * Protobuf enum {@code littlehorse.UTActionTriggerPb.UTHook}
+   * Protobuf enum {@code littlehorse.UTActionTrigger.UTHook}
    */
   public enum UTHook
       implements com.google.protobuf.ProtocolMessageEnum {
@@ -126,7 +126,7 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.UTActionTriggerPb.getDescriptor().getEnumTypes().get(0);
+      return io.littlehorse.sdk.common.proto.UTActionTrigger.getDescriptor().getEnumTypes().get(0);
     }
 
     private static final UTHook[] VALUES = values();
@@ -149,33 +149,33 @@ private static final long serialVersionUID = 0L;
       this.value = value;
     }
 
-    // @@protoc_insertion_point(enum_scope:littlehorse.UTActionTriggerPb.UTHook)
+    // @@protoc_insertion_point(enum_scope:littlehorse.UTActionTrigger.UTHook)
   }
 
-  public interface UTACancelPbOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.UTActionTriggerPb.UTACancelPb)
+  public interface UTACancelOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.UTActionTrigger.UTACancel)
       com.google.protobuf.MessageOrBuilder {
   }
   /**
-   * Protobuf type {@code littlehorse.UTActionTriggerPb.UTACancelPb}
+   * Protobuf type {@code littlehorse.UTActionTrigger.UTACancel}
    */
-  public static final class UTACancelPb extends
+  public static final class UTACancel extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.UTActionTriggerPb.UTACancelPb)
-      UTACancelPbOrBuilder {
+      // @@protoc_insertion_point(message_implements:littlehorse.UTActionTrigger.UTACancel)
+      UTACancelOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use UTACancelPb.newBuilder() to construct.
-    private UTACancelPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use UTACancel.newBuilder() to construct.
+    private UTACancel(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private UTACancelPb() {
+    private UTACancel() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new UTACancelPb();
+      return new UTACancel();
     }
 
     @java.lang.Override
@@ -185,15 +185,15 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_UTACancelPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_UTACancel_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_UTACancelPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_UTACancel_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.class, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.Builder.class);
+              io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.class, io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.Builder.class);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -229,10 +229,10 @@ private static final long serialVersionUID = 0L;
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb)) {
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel)) {
         return super.equals(obj);
       }
-      io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb other = (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb) obj;
+      io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel other = (io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel) obj;
 
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
@@ -250,69 +250,69 @@ private static final long serialVersionUID = 0L;
       return hash;
     }
 
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb parseFrom(byte[] data)
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb parseFrom(java.io.InputStream input)
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb parseDelimitedFrom(java.io.InputStream input)
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb parseDelimitedFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -325,7 +325,7 @@ private static final long serialVersionUID = 0L;
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb prototype) {
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -341,26 +341,26 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * Protobuf type {@code littlehorse.UTActionTriggerPb.UTACancelPb}
+     * Protobuf type {@code littlehorse.UTActionTrigger.UTACancel}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.UTActionTriggerPb.UTACancelPb)
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPbOrBuilder {
+        // @@protoc_insertion_point(builder_implements:littlehorse.UTActionTrigger.UTACancel)
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancelOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_UTACancelPb_descriptor;
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_UTACancel_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_UTACancelPb_fieldAccessorTable
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_UTACancel_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.class, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.Builder.class);
+                io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.class, io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.Builder.class);
       }
 
-      // Construct using io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.newBuilder()
+      // Construct using io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.newBuilder()
       private Builder() {
 
       }
@@ -379,17 +379,17 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_UTACancelPb_descriptor;
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_UTACancel_descriptor;
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb getDefaultInstanceForType() {
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.getDefaultInstance();
+      public io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.getDefaultInstance();
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb build() {
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb result = buildPartial();
+      public io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel build() {
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -397,8 +397,8 @@ private static final long serialVersionUID = 0L;
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb buildPartial() {
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb result = new io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb(this);
+      public io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel buildPartial() {
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel result = new io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel(this);
         onBuilt();
         return result;
       }
@@ -437,16 +437,16 @@ private static final long serialVersionUID = 0L;
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb) {
-          return mergeFrom((io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb)other);
+        if (other instanceof io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb other) {
-        if (other == io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.getDefaultInstance()) return this;
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel other) {
+        if (other == io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.getDefaultInstance()) return this;
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -501,23 +501,23 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:littlehorse.UTActionTriggerPb.UTACancelPb)
+      // @@protoc_insertion_point(builder_scope:littlehorse.UTActionTrigger.UTACancel)
     }
 
-    // @@protoc_insertion_point(class_scope:littlehorse.UTActionTriggerPb.UTACancelPb)
-    private static final io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:littlehorse.UTActionTrigger.UTACancel)
+    private static final io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb();
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel();
     }
 
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb getDefaultInstance() {
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<UTACancelPb>
-        PARSER = new com.google.protobuf.AbstractParser<UTACancelPb>() {
+    private static final com.google.protobuf.Parser<UTACancel>
+        PARSER = new com.google.protobuf.AbstractParser<UTACancel>() {
       @java.lang.Override
-      public UTACancelPb parsePartialFrom(
+      public UTACancel parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -536,24 +536,24 @@ private static final long serialVersionUID = 0L;
       }
     };
 
-    public static com.google.protobuf.Parser<UTACancelPb> parser() {
+    public static com.google.protobuf.Parser<UTACancel> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<UTACancelPb> getParserForType() {
+    public com.google.protobuf.Parser<UTACancel> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb getDefaultInstanceForType() {
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface UTATaskPbOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.UTActionTriggerPb.UTATaskPb)
+  public interface UTATaskOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.UTActionTrigger.UTATask)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -596,18 +596,18 @@ private static final long serialVersionUID = 0L;
         int index);
   }
   /**
-   * Protobuf type {@code littlehorse.UTActionTriggerPb.UTATaskPb}
+   * Protobuf type {@code littlehorse.UTActionTrigger.UTATask}
    */
-  public static final class UTATaskPb extends
+  public static final class UTATask extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.UTActionTriggerPb.UTATaskPb)
-      UTATaskPbOrBuilder {
+      // @@protoc_insertion_point(message_implements:littlehorse.UTActionTrigger.UTATask)
+      UTATaskOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use UTATaskPb.newBuilder() to construct.
-    private UTATaskPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use UTATask.newBuilder() to construct.
+    private UTATask(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private UTATaskPb() {
+    private UTATask() {
       mutations_ = java.util.Collections.emptyList();
     }
 
@@ -615,7 +615,7 @@ private static final long serialVersionUID = 0L;
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new UTATaskPb();
+      return new UTATask();
     }
 
     @java.lang.Override
@@ -625,15 +625,15 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_UTATaskPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_UTATask_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_UTATaskPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_UTATask_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.class, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.Builder.class);
+              io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.class, io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.Builder.class);
     }
 
     public static final int TASK_FIELD_NUMBER = 1;
@@ -750,10 +750,10 @@ private static final long serialVersionUID = 0L;
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb)) {
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask)) {
         return super.equals(obj);
       }
-      io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb other = (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb) obj;
+      io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask other = (io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask) obj;
 
       if (hasTask() != other.hasTask()) return false;
       if (hasTask()) {
@@ -786,69 +786,69 @@ private static final long serialVersionUID = 0L;
       return hash;
     }
 
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb parseFrom(byte[] data)
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb parseFrom(java.io.InputStream input)
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb parseDelimitedFrom(java.io.InputStream input)
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb parseDelimitedFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -861,7 +861,7 @@ private static final long serialVersionUID = 0L;
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb prototype) {
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -877,26 +877,26 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * Protobuf type {@code littlehorse.UTActionTriggerPb.UTATaskPb}
+     * Protobuf type {@code littlehorse.UTActionTrigger.UTATask}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.UTActionTriggerPb.UTATaskPb)
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPbOrBuilder {
+        // @@protoc_insertion_point(builder_implements:littlehorse.UTActionTrigger.UTATask)
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTATaskOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_UTATaskPb_descriptor;
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_UTATask_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_UTATaskPb_fieldAccessorTable
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_UTATask_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.class, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.Builder.class);
+                io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.class, io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.Builder.class);
       }
 
-      // Construct using io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.newBuilder()
+      // Construct using io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.newBuilder()
       private Builder() {
 
       }
@@ -928,17 +928,17 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_UTATaskPb_descriptor;
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_UTATask_descriptor;
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb getDefaultInstanceForType() {
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.getDefaultInstance();
+      public io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.getDefaultInstance();
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb build() {
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb result = buildPartial();
+      public io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask build() {
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -946,15 +946,15 @@ private static final long serialVersionUID = 0L;
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb buildPartial() {
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb result = new io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb(this);
+      public io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask buildPartial() {
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask result = new io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask(this);
         buildPartialRepeatedFields(result);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb result) {
+      private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask result) {
         if (mutationsBuilder_ == null) {
           if (((bitField0_ & 0x00000002) != 0)) {
             mutations_ = java.util.Collections.unmodifiableList(mutations_);
@@ -966,7 +966,7 @@ private static final long serialVersionUID = 0L;
         }
       }
 
-      private void buildPartial0(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb result) {
+      private void buildPartial0(io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask result) {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.task_ = taskBuilder_ == null
@@ -1009,16 +1009,16 @@ private static final long serialVersionUID = 0L;
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb) {
-          return mergeFrom((io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb)other);
+        if (other instanceof io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb other) {
-        if (other == io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.getDefaultInstance()) return this;
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask other) {
+        if (other == io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.getDefaultInstance()) return this;
         if (other.hasTask()) {
           mergeTask(other.getTask());
         }
@@ -1482,23 +1482,23 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:littlehorse.UTActionTriggerPb.UTATaskPb)
+      // @@protoc_insertion_point(builder_scope:littlehorse.UTActionTrigger.UTATask)
     }
 
-    // @@protoc_insertion_point(class_scope:littlehorse.UTActionTriggerPb.UTATaskPb)
-    private static final io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:littlehorse.UTActionTrigger.UTATask)
+    private static final io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb();
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask();
     }
 
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb getDefaultInstance() {
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<UTATaskPb>
-        PARSER = new com.google.protobuf.AbstractParser<UTATaskPb>() {
+    private static final com.google.protobuf.Parser<UTATask>
+        PARSER = new com.google.protobuf.AbstractParser<UTATask>() {
       @java.lang.Override
-      public UTATaskPb parsePartialFrom(
+      public UTATask parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1517,78 +1517,78 @@ private static final long serialVersionUID = 0L;
       }
     };
 
-    public static com.google.protobuf.Parser<UTATaskPb> parser() {
+    public static com.google.protobuf.Parser<UTATask> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<UTATaskPb> getParserForType() {
+    public com.google.protobuf.Parser<UTATask> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb getDefaultInstanceForType() {
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface UTAReassignPbOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.UTActionTriggerPb.UTAReassignPb)
+  public interface UTAReassignOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.UTActionTrigger.UTAReassign)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * <code>.littlehorse.VariableAssignment user_id = 1;</code>
      * @return Whether the userId field is set.
      */
     boolean hasUserId();
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * <code>.littlehorse.VariableAssignment user_id = 1;</code>
      * @return The userId.
      */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserId();
+    io.littlehorse.sdk.common.proto.VariableAssignment getUserId();
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * <code>.littlehorse.VariableAssignment user_id = 1;</code>
      */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserIdOrBuilder();
+    io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserIdOrBuilder();
 
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>.littlehorse.VariableAssignment user_group = 2;</code>
      * @return Whether the userGroup field is set.
      */
     boolean hasUserGroup();
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>.littlehorse.VariableAssignment user_group = 2;</code>
      * @return The userGroup.
      */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserGroup();
+    io.littlehorse.sdk.common.proto.VariableAssignment getUserGroup();
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>.littlehorse.VariableAssignment user_group = 2;</code>
      */
-    io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserGroupOrBuilder();
+    io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserGroupOrBuilder();
 
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.AssignToCase getAssignToCase();
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.AssignToCase getAssignToCase();
   }
   /**
-   * Protobuf type {@code littlehorse.UTActionTriggerPb.UTAReassignPb}
+   * Protobuf type {@code littlehorse.UTActionTrigger.UTAReassign}
    */
-  public static final class UTAReassignPb extends
+  public static final class UTAReassign extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.UTActionTriggerPb.UTAReassignPb)
-      UTAReassignPbOrBuilder {
+      // @@protoc_insertion_point(message_implements:littlehorse.UTActionTrigger.UTAReassign)
+      UTAReassignOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use UTAReassignPb.newBuilder() to construct.
-    private UTAReassignPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use UTAReassign.newBuilder() to construct.
+    private UTAReassign(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private UTAReassignPb() {
+    private UTAReassign() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new UTAReassignPb();
+      return new UTAReassign();
     }
 
     @java.lang.Override
@@ -1598,15 +1598,15 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_UTAReassignPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_UTAReassign_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_UTAReassignPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_UTAReassign_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.class, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.Builder.class);
+              io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.class, io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.Builder.class);
     }
 
     private int assignToCase_ = 0;
@@ -1652,7 +1652,7 @@ private static final long serialVersionUID = 0L;
 
     public static final int USER_ID_FIELD_NUMBER = 1;
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * <code>.littlehorse.VariableAssignment user_id = 1;</code>
      * @return Whether the userId field is set.
      */
     @java.lang.Override
@@ -1660,30 +1660,30 @@ private static final long serialVersionUID = 0L;
       return assignToCase_ == 1;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * <code>.littlehorse.VariableAssignment user_id = 1;</code>
      * @return The userId.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserId() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment getUserId() {
       if (assignToCase_ == 1) {
-         return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_;
+         return (io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_;
       }
-      return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+      return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+     * <code>.littlehorse.VariableAssignment user_id = 1;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserIdOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserIdOrBuilder() {
       if (assignToCase_ == 1) {
-         return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_;
+         return (io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_;
       }
-      return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+      return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
     }
 
     public static final int USER_GROUP_FIELD_NUMBER = 2;
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>.littlehorse.VariableAssignment user_group = 2;</code>
      * @return Whether the userGroup field is set.
      */
     @java.lang.Override
@@ -1691,25 +1691,25 @@ private static final long serialVersionUID = 0L;
       return assignToCase_ == 2;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>.littlehorse.VariableAssignment user_group = 2;</code>
      * @return The userGroup.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserGroup() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment getUserGroup() {
       if (assignToCase_ == 2) {
-         return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_;
+         return (io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_;
       }
-      return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+      return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+     * <code>.littlehorse.VariableAssignment user_group = 2;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserGroupOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserGroupOrBuilder() {
       if (assignToCase_ == 2) {
-         return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_;
+         return (io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_;
       }
-      return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+      return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1727,10 +1727,10 @@ private static final long serialVersionUID = 0L;
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (assignToCase_ == 1) {
-        output.writeMessage(1, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_);
+        output.writeMessage(1, (io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_);
       }
       if (assignToCase_ == 2) {
-        output.writeMessage(2, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_);
+        output.writeMessage(2, (io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1743,11 +1743,11 @@ private static final long serialVersionUID = 0L;
       size = 0;
       if (assignToCase_ == 1) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_);
+          .computeMessageSize(1, (io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_);
       }
       if (assignToCase_ == 2) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_);
+          .computeMessageSize(2, (io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1759,10 +1759,10 @@ private static final long serialVersionUID = 0L;
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb)) {
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign)) {
         return super.equals(obj);
       }
-      io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb other = (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb) obj;
+      io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign other = (io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign) obj;
 
       if (!getAssignToCase().equals(other.getAssignToCase())) return false;
       switch (assignToCase_) {
@@ -1805,69 +1805,69 @@ private static final long serialVersionUID = 0L;
       return hash;
     }
 
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb parseFrom(byte[] data)
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb parseFrom(java.io.InputStream input)
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb parseDelimitedFrom(java.io.InputStream input)
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb parseDelimitedFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1880,7 +1880,7 @@ private static final long serialVersionUID = 0L;
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb prototype) {
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -1896,26 +1896,26 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * Protobuf type {@code littlehorse.UTActionTriggerPb.UTAReassignPb}
+     * Protobuf type {@code littlehorse.UTActionTrigger.UTAReassign}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.UTActionTriggerPb.UTAReassignPb)
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPbOrBuilder {
+        // @@protoc_insertion_point(builder_implements:littlehorse.UTActionTrigger.UTAReassign)
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassignOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_UTAReassignPb_descriptor;
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_UTAReassign_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_UTAReassignPb_fieldAccessorTable
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_UTAReassign_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.class, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.Builder.class);
+                io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.class, io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.Builder.class);
       }
 
-      // Construct using io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.newBuilder()
+      // Construct using io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.newBuilder()
       private Builder() {
 
       }
@@ -1943,17 +1943,17 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_UTAReassignPb_descriptor;
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_UTAReassign_descriptor;
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb getDefaultInstanceForType() {
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.getDefaultInstance();
+      public io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.getDefaultInstance();
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb build() {
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb result = buildPartial();
+      public io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign build() {
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -1961,19 +1961,19 @@ private static final long serialVersionUID = 0L;
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb buildPartial() {
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb result = new io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb(this);
+      public io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign buildPartial() {
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign result = new io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         buildPartialOneofs(result);
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb result) {
+      private void buildPartial0(io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign result) {
         int from_bitField0_ = bitField0_;
       }
 
-      private void buildPartialOneofs(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb result) {
+      private void buildPartialOneofs(io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign result) {
         result.assignToCase_ = assignToCase_;
         result.assignTo_ = this.assignTo_;
         if (assignToCase_ == 1 &&
@@ -2020,16 +2020,16 @@ private static final long serialVersionUID = 0L;
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb) {
-          return mergeFrom((io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb)other);
+        if (other instanceof io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb other) {
-        if (other == io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.getDefaultInstance()) return this;
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign other) {
+        if (other == io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.getDefaultInstance()) return this;
         switch (other.getAssignToCase()) {
           case USER_ID: {
             mergeUserId(other.getUserId());
@@ -2116,9 +2116,9 @@ private static final long serialVersionUID = 0L;
       private int bitField0_;
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> userIdBuilder_;
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> userIdBuilder_;
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        * @return Whether the userId field is set.
        */
       @java.lang.Override
@@ -2126,27 +2126,27 @@ private static final long serialVersionUID = 0L;
         return assignToCase_ == 1;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        * @return The userId.
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserId() {
+      public io.littlehorse.sdk.common.proto.VariableAssignment getUserId() {
         if (userIdBuilder_ == null) {
           if (assignToCase_ == 1) {
-            return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_;
+            return (io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_;
           }
-          return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
         } else {
           if (assignToCase_ == 1) {
             return userIdBuilder_.getMessage();
           }
-          return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
         }
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        */
-      public Builder setUserId(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+      public Builder setUserId(io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (userIdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2160,10 +2160,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        */
       public Builder setUserId(
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+          io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
         if (userIdBuilder_ == null) {
           assignTo_ = builderForValue.build();
           onChanged();
@@ -2174,13 +2174,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        */
-      public Builder mergeUserId(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+      public Builder mergeUserId(io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (userIdBuilder_ == null) {
           if (assignToCase_ == 1 &&
-              assignTo_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
-            assignTo_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_)
+              assignTo_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+            assignTo_ = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_)
                 .mergeFrom(value).buildPartial();
           } else {
             assignTo_ = value;
@@ -2197,7 +2197,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        */
       public Builder clearUserId() {
         if (userIdBuilder_ == null) {
@@ -2216,38 +2216,38 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getUserIdBuilder() {
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getUserIdBuilder() {
         return getUserIdFieldBuilder().getBuilder();
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserIdOrBuilder() {
+      public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserIdOrBuilder() {
         if ((assignToCase_ == 1) && (userIdBuilder_ != null)) {
           return userIdBuilder_.getMessageOrBuilder();
         } else {
           if (assignToCase_ == 1) {
-            return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_;
+            return (io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_;
           }
-          return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
         }
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_id = 1;</code>
+       * <code>.littlehorse.VariableAssignment user_id = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
           getUserIdFieldBuilder() {
         if (userIdBuilder_ == null) {
           if (!(assignToCase_ == 1)) {
-            assignTo_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+            assignTo_ = io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
           }
           userIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
-                  (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_,
+              io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                  (io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_,
                   getParentForChildren(),
                   isClean());
           assignTo_ = null;
@@ -2258,9 +2258,9 @@ private static final long serialVersionUID = 0L;
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> userGroupBuilder_;
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> userGroupBuilder_;
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>.littlehorse.VariableAssignment user_group = 2;</code>
        * @return Whether the userGroup field is set.
        */
       @java.lang.Override
@@ -2268,27 +2268,27 @@ private static final long serialVersionUID = 0L;
         return assignToCase_ == 2;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>.littlehorse.VariableAssignment user_group = 2;</code>
        * @return The userGroup.
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserGroup() {
+      public io.littlehorse.sdk.common.proto.VariableAssignment getUserGroup() {
         if (userGroupBuilder_ == null) {
           if (assignToCase_ == 2) {
-            return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_;
+            return (io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_;
           }
-          return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
         } else {
           if (assignToCase_ == 2) {
             return userGroupBuilder_.getMessage();
           }
-          return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
         }
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>.littlehorse.VariableAssignment user_group = 2;</code>
        */
-      public Builder setUserGroup(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+      public Builder setUserGroup(io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (userGroupBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2302,10 +2302,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>.littlehorse.VariableAssignment user_group = 2;</code>
        */
       public Builder setUserGroup(
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+          io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
         if (userGroupBuilder_ == null) {
           assignTo_ = builderForValue.build();
           onChanged();
@@ -2316,13 +2316,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>.littlehorse.VariableAssignment user_group = 2;</code>
        */
-      public Builder mergeUserGroup(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+      public Builder mergeUserGroup(io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (userGroupBuilder_ == null) {
           if (assignToCase_ == 2 &&
-              assignTo_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
-            assignTo_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_)
+              assignTo_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+            assignTo_ = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_)
                 .mergeFrom(value).buildPartial();
           } else {
             assignTo_ = value;
@@ -2339,7 +2339,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>.littlehorse.VariableAssignment user_group = 2;</code>
        */
       public Builder clearUserGroup() {
         if (userGroupBuilder_ == null) {
@@ -2358,38 +2358,38 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>.littlehorse.VariableAssignment user_group = 2;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getUserGroupBuilder() {
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getUserGroupBuilder() {
         return getUserGroupFieldBuilder().getBuilder();
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>.littlehorse.VariableAssignment user_group = 2;</code>
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserGroupOrBuilder() {
+      public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserGroupOrBuilder() {
         if ((assignToCase_ == 2) && (userGroupBuilder_ != null)) {
           return userGroupBuilder_.getMessageOrBuilder();
         } else {
           if (assignToCase_ == 2) {
-            return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_;
+            return (io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_;
           }
-          return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
         }
       }
       /**
-       * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+       * <code>.littlehorse.VariableAssignment user_group = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
           getUserGroupFieldBuilder() {
         if (userGroupBuilder_ == null) {
           if (!(assignToCase_ == 2)) {
-            assignTo_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+            assignTo_ = io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
           }
           userGroupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
-                  (io.littlehorse.sdk.common.proto.VariableAssignmentPb) assignTo_,
+              io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                  (io.littlehorse.sdk.common.proto.VariableAssignment) assignTo_,
                   getParentForChildren(),
                   isClean());
           assignTo_ = null;
@@ -2411,23 +2411,23 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:littlehorse.UTActionTriggerPb.UTAReassignPb)
+      // @@protoc_insertion_point(builder_scope:littlehorse.UTActionTrigger.UTAReassign)
     }
 
-    // @@protoc_insertion_point(class_scope:littlehorse.UTActionTriggerPb.UTAReassignPb)
-    private static final io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:littlehorse.UTActionTrigger.UTAReassign)
+    private static final io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb();
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign();
     }
 
-    public static io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb getDefaultInstance() {
+    public static io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<UTAReassignPb>
-        PARSER = new com.google.protobuf.AbstractParser<UTAReassignPb>() {
+    private static final com.google.protobuf.Parser<UTAReassign>
+        PARSER = new com.google.protobuf.AbstractParser<UTAReassign>() {
       @java.lang.Override
-      public UTAReassignPb parsePartialFrom(
+      public UTAReassign parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2446,17 +2446,17 @@ private static final long serialVersionUID = 0L;
       }
     };
 
-    public static com.google.protobuf.Parser<UTAReassignPb> parser() {
+    public static com.google.protobuf.Parser<UTAReassign> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<UTAReassignPb> getParserForType() {
+    public com.google.protobuf.Parser<UTAReassign> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb getDefaultInstanceForType() {
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2507,7 +2507,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int TASK_FIELD_NUMBER = 1;
   /**
-   * <code>.littlehorse.UTActionTriggerPb.UTATaskPb task = 1;</code>
+   * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
    * @return Whether the task field is set.
    */
   @java.lang.Override
@@ -2515,30 +2515,30 @@ private static final long serialVersionUID = 0L;
     return actionCase_ == 1;
   }
   /**
-   * <code>.littlehorse.UTActionTriggerPb.UTATaskPb task = 1;</code>
+   * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
    * @return The task.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb getTask() {
+  public io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask getTask() {
     if (actionCase_ == 1) {
-       return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb) action_;
+       return (io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask) action_;
     }
-    return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.UTActionTriggerPb.UTATaskPb task = 1;</code>
+   * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPbOrBuilder getTaskOrBuilder() {
+  public io.littlehorse.sdk.common.proto.UTActionTrigger.UTATaskOrBuilder getTaskOrBuilder() {
     if (actionCase_ == 1) {
-       return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb) action_;
+       return (io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask) action_;
     }
-    return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.getDefaultInstance();
   }
 
   public static final int CANCEL_FIELD_NUMBER = 2;
   /**
-   * <code>.littlehorse.UTActionTriggerPb.UTACancelPb cancel = 2;</code>
+   * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
    * @return Whether the cancel field is set.
    */
   @java.lang.Override
@@ -2546,25 +2546,25 @@ private static final long serialVersionUID = 0L;
     return actionCase_ == 2;
   }
   /**
-   * <code>.littlehorse.UTActionTriggerPb.UTACancelPb cancel = 2;</code>
+   * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
    * @return The cancel.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb getCancel() {
+  public io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel getCancel() {
     if (actionCase_ == 2) {
-       return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb) action_;
+       return (io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel) action_;
     }
-    return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.UTActionTriggerPb.UTACancelPb cancel = 2;</code>
+   * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPbOrBuilder getCancelOrBuilder() {
+  public io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancelOrBuilder getCancelOrBuilder() {
     if (actionCase_ == 2) {
-       return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb) action_;
+       return (io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel) action_;
     }
-    return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.getDefaultInstance();
   }
 
   public static final int REASSIGN_FIELD_NUMBER = 3;
@@ -2573,7 +2573,7 @@ private static final long serialVersionUID = 0L;
    * later on, might enable scheduling entire ThreadRuns
    * </pre>
    *
-   * <code>.littlehorse.UTActionTriggerPb.UTAReassignPb reassign = 3;</code>
+   * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
    * @return Whether the reassign field is set.
    */
   @java.lang.Override
@@ -2585,39 +2585,39 @@ private static final long serialVersionUID = 0L;
    * later on, might enable scheduling entire ThreadRuns
    * </pre>
    *
-   * <code>.littlehorse.UTActionTriggerPb.UTAReassignPb reassign = 3;</code>
+   * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
    * @return The reassign.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb getReassign() {
+  public io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign getReassign() {
     if (actionCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb) action_;
+       return (io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign) action_;
     }
-    return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.getDefaultInstance();
   }
   /**
    * <pre>
    * later on, might enable scheduling entire ThreadRuns
    * </pre>
    *
-   * <code>.littlehorse.UTActionTriggerPb.UTAReassignPb reassign = 3;</code>
+   * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPbOrBuilder getReassignOrBuilder() {
+  public io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassignOrBuilder getReassignOrBuilder() {
     if (actionCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb) action_;
+       return (io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign) action_;
     }
-    return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.getDefaultInstance();
   }
 
   public static final int DELAY_SECONDS_FIELD_NUMBER = 5;
-  private io.littlehorse.sdk.common.proto.VariableAssignmentPb delaySeconds_;
+  private io.littlehorse.sdk.common.proto.VariableAssignment delaySeconds_;
   /**
    * <pre>
    *Action's delay
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
+   * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
    * @return Whether the delaySeconds field is set.
    */
   @java.lang.Override
@@ -2629,41 +2629,41 @@ private static final long serialVersionUID = 0L;
    *Action's delay
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
+   * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
    * @return The delaySeconds.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb getDelaySeconds() {
-    return delaySeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
+  public io.littlehorse.sdk.common.proto.VariableAssignment getDelaySeconds() {
+    return delaySeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : delaySeconds_;
   }
   /**
    * <pre>
    *Action's delay
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
+   * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getDelaySecondsOrBuilder() {
-    return delaySeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getDelaySecondsOrBuilder() {
+    return delaySeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : delaySeconds_;
   }
 
   public static final int HOOK_FIELD_NUMBER = 6;
   private int hook_ = 0;
   /**
-   * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+   * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
    * @return The enum numeric value on the wire for hook.
    */
   @java.lang.Override public int getHookValue() {
     return hook_;
   }
   /**
-   * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+   * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
    * @return The hook.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook getHook() {
-    io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook result = io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.forNumber(hook_);
-    return result == null ? io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook getHook() {
+    io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook result = io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook.forNumber(hook_);
+    return result == null ? io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -2681,18 +2681,18 @@ private static final long serialVersionUID = 0L;
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (actionCase_ == 1) {
-      output.writeMessage(1, (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb) action_);
+      output.writeMessage(1, (io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask) action_);
     }
     if (actionCase_ == 2) {
-      output.writeMessage(2, (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb) action_);
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel) action_);
     }
     if (actionCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb) action_);
+      output.writeMessage(3, (io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign) action_);
     }
     if (delaySeconds_ != null) {
       output.writeMessage(5, getDelaySeconds());
     }
-    if (hook_ != io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.ON_ARRIVAL.getNumber()) {
+    if (hook_ != io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook.ON_ARRIVAL.getNumber()) {
       output.writeEnum(6, hook_);
     }
     getUnknownFields().writeTo(output);
@@ -2706,21 +2706,21 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (actionCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb) action_);
+        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask) action_);
     }
     if (actionCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb) action_);
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel) action_);
     }
     if (actionCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb) action_);
+        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign) action_);
     }
     if (delaySeconds_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, getDelaySeconds());
     }
-    if (hook_ != io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.ON_ARRIVAL.getNumber()) {
+    if (hook_ != io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook.ON_ARRIVAL.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(6, hook_);
     }
@@ -2734,10 +2734,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.UTActionTriggerPb)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.UTActionTrigger)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.UTActionTriggerPb other = (io.littlehorse.sdk.common.proto.UTActionTriggerPb) obj;
+    io.littlehorse.sdk.common.proto.UTActionTrigger other = (io.littlehorse.sdk.common.proto.UTActionTrigger) obj;
 
     if (hasDelaySeconds() != other.hasDelaySeconds()) return false;
     if (hasDelaySeconds()) {
@@ -2800,69 +2800,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.UTActionTriggerPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UTActionTrigger parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UTActionTriggerPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UTActionTrigger parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UTActionTriggerPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UTActionTrigger parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UTActionTriggerPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UTActionTrigger parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UTActionTriggerPb parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.UTActionTrigger parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UTActionTriggerPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UTActionTrigger parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UTActionTriggerPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.UTActionTrigger parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UTActionTriggerPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UTActionTrigger parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UTActionTriggerPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.UTActionTrigger parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UTActionTriggerPb parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.UTActionTrigger parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UTActionTriggerPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UTActionTrigger parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UTActionTriggerPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UTActionTrigger parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -2875,7 +2875,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.UTActionTriggerPb prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.UTActionTrigger prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -2891,26 +2891,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.UTActionTriggerPb}
+   * Protobuf type {@code littlehorse.UTActionTrigger}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.UTActionTriggerPb)
-      io.littlehorse.sdk.common.proto.UTActionTriggerPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.UTActionTrigger)
+      io.littlehorse.sdk.common.proto.UTActionTriggerOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.UTActionTriggerPb.class, io.littlehorse.sdk.common.proto.UTActionTriggerPb.Builder.class);
+              io.littlehorse.sdk.common.proto.UTActionTrigger.class, io.littlehorse.sdk.common.proto.UTActionTrigger.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.UTActionTriggerPb.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.UTActionTrigger.newBuilder()
     private Builder() {
 
     }
@@ -2947,17 +2947,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTriggerPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UTActionTrigger_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.UTActionTriggerPb.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.UTActionTrigger getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.UTActionTrigger.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb build() {
-      io.littlehorse.sdk.common.proto.UTActionTriggerPb result = buildPartial();
+    public io.littlehorse.sdk.common.proto.UTActionTrigger build() {
+      io.littlehorse.sdk.common.proto.UTActionTrigger result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -2965,15 +2965,15 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb buildPartial() {
-      io.littlehorse.sdk.common.proto.UTActionTriggerPb result = new io.littlehorse.sdk.common.proto.UTActionTriggerPb(this);
+    public io.littlehorse.sdk.common.proto.UTActionTrigger buildPartial() {
+      io.littlehorse.sdk.common.proto.UTActionTrigger result = new io.littlehorse.sdk.common.proto.UTActionTrigger(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.UTActionTriggerPb result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.UTActionTrigger result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.delaySeconds_ = delaySecondsBuilder_ == null
@@ -2985,7 +2985,7 @@ private static final long serialVersionUID = 0L;
       }
     }
 
-    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.UTActionTriggerPb result) {
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.UTActionTrigger result) {
       result.actionCase_ = actionCase_;
       result.action_ = this.action_;
       if (actionCase_ == 1 &&
@@ -3036,16 +3036,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.UTActionTriggerPb) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.UTActionTriggerPb)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.UTActionTrigger) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.UTActionTrigger)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.UTActionTriggerPb other) {
-      if (other == io.littlehorse.sdk.common.proto.UTActionTriggerPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.UTActionTrigger other) {
+      if (other == io.littlehorse.sdk.common.proto.UTActionTrigger.getDefaultInstance()) return this;
       if (other.hasDelaySeconds()) {
         mergeDelaySeconds(other.getDelaySeconds());
       }
@@ -3161,9 +3161,9 @@ private static final long serialVersionUID = 0L;
     private int bitField0_;
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPbOrBuilder> taskBuilder_;
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask, io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.Builder, io.littlehorse.sdk.common.proto.UTActionTrigger.UTATaskOrBuilder> taskBuilder_;
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTATaskPb task = 1;</code>
+     * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      * @return Whether the task field is set.
      */
     @java.lang.Override
@@ -3171,27 +3171,27 @@ private static final long serialVersionUID = 0L;
       return actionCase_ == 1;
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTATaskPb task = 1;</code>
+     * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      * @return The task.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb getTask() {
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask getTask() {
       if (taskBuilder_ == null) {
         if (actionCase_ == 1) {
-          return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb) action_;
+          return (io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask) action_;
         }
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.getDefaultInstance();
       } else {
         if (actionCase_ == 1) {
           return taskBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTATaskPb task = 1;</code>
+     * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      */
-    public Builder setTask(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb value) {
+    public Builder setTask(io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask value) {
       if (taskBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3205,10 +3205,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTATaskPb task = 1;</code>
+     * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      */
     public Builder setTask(
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.Builder builderForValue) {
       if (taskBuilder_ == null) {
         action_ = builderForValue.build();
         onChanged();
@@ -3219,13 +3219,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTATaskPb task = 1;</code>
+     * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      */
-    public Builder mergeTask(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb value) {
+    public Builder mergeTask(io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask value) {
       if (taskBuilder_ == null) {
         if (actionCase_ == 1 &&
-            action_ != io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.getDefaultInstance()) {
-          action_ = io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.newBuilder((io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb) action_)
+            action_ != io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.getDefaultInstance()) {
+          action_ = io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.newBuilder((io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask) action_)
               .mergeFrom(value).buildPartial();
         } else {
           action_ = value;
@@ -3242,7 +3242,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTATaskPb task = 1;</code>
+     * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      */
     public Builder clearTask() {
       if (taskBuilder_ == null) {
@@ -3261,38 +3261,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTATaskPb task = 1;</code>
+     * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.Builder getTaskBuilder() {
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.Builder getTaskBuilder() {
       return getTaskFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTATaskPb task = 1;</code>
+     * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPbOrBuilder getTaskOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.UTATaskOrBuilder getTaskOrBuilder() {
       if ((actionCase_ == 1) && (taskBuilder_ != null)) {
         return taskBuilder_.getMessageOrBuilder();
       } else {
         if (actionCase_ == 1) {
-          return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb) action_;
+          return (io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask) action_;
         }
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTATaskPb task = 1;</code>
+     * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask, io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.Builder, io.littlehorse.sdk.common.proto.UTActionTrigger.UTATaskOrBuilder> 
         getTaskFieldBuilder() {
       if (taskBuilder_ == null) {
         if (!(actionCase_ == 1)) {
-          action_ = io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.getDefaultInstance();
+          action_ = io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.getDefaultInstance();
         }
         taskBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb) action_,
+            io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask, io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.Builder, io.littlehorse.sdk.common.proto.UTActionTrigger.UTATaskOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask) action_,
                 getParentForChildren(),
                 isClean());
         action_ = null;
@@ -3303,9 +3303,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPbOrBuilder> cancelBuilder_;
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel, io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.Builder, io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancelOrBuilder> cancelBuilder_;
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTACancelPb cancel = 2;</code>
+     * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      * @return Whether the cancel field is set.
      */
     @java.lang.Override
@@ -3313,27 +3313,27 @@ private static final long serialVersionUID = 0L;
       return actionCase_ == 2;
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTACancelPb cancel = 2;</code>
+     * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      * @return The cancel.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb getCancel() {
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel getCancel() {
       if (cancelBuilder_ == null) {
         if (actionCase_ == 2) {
-          return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb) action_;
+          return (io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel) action_;
         }
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.getDefaultInstance();
       } else {
         if (actionCase_ == 2) {
           return cancelBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTACancelPb cancel = 2;</code>
+     * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      */
-    public Builder setCancel(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb value) {
+    public Builder setCancel(io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel value) {
       if (cancelBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3347,10 +3347,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTACancelPb cancel = 2;</code>
+     * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      */
     public Builder setCancel(
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.Builder builderForValue) {
       if (cancelBuilder_ == null) {
         action_ = builderForValue.build();
         onChanged();
@@ -3361,13 +3361,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTACancelPb cancel = 2;</code>
+     * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      */
-    public Builder mergeCancel(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb value) {
+    public Builder mergeCancel(io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel value) {
       if (cancelBuilder_ == null) {
         if (actionCase_ == 2 &&
-            action_ != io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.getDefaultInstance()) {
-          action_ = io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.newBuilder((io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb) action_)
+            action_ != io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.getDefaultInstance()) {
+          action_ = io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.newBuilder((io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel) action_)
               .mergeFrom(value).buildPartial();
         } else {
           action_ = value;
@@ -3384,7 +3384,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTACancelPb cancel = 2;</code>
+     * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      */
     public Builder clearCancel() {
       if (cancelBuilder_ == null) {
@@ -3403,38 +3403,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTACancelPb cancel = 2;</code>
+     * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.Builder getCancelBuilder() {
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.Builder getCancelBuilder() {
       return getCancelFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTACancelPb cancel = 2;</code>
+     * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPbOrBuilder getCancelOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancelOrBuilder getCancelOrBuilder() {
       if ((actionCase_ == 2) && (cancelBuilder_ != null)) {
         return cancelBuilder_.getMessageOrBuilder();
       } else {
         if (actionCase_ == 2) {
-          return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb) action_;
+          return (io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel) action_;
         }
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTACancelPb cancel = 2;</code>
+     * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel, io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.Builder, io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancelOrBuilder> 
         getCancelFieldBuilder() {
       if (cancelBuilder_ == null) {
         if (!(actionCase_ == 2)) {
-          action_ = io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.getDefaultInstance();
+          action_ = io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.getDefaultInstance();
         }
         cancelBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb) action_,
+            io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel, io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.Builder, io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancelOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel) action_,
                 getParentForChildren(),
                 isClean());
         action_ = null;
@@ -3445,13 +3445,13 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPbOrBuilder> reassignBuilder_;
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign, io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.Builder, io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassignOrBuilder> reassignBuilder_;
     /**
      * <pre>
      * later on, might enable scheduling entire ThreadRuns
      * </pre>
      *
-     * <code>.littlehorse.UTActionTriggerPb.UTAReassignPb reassign = 3;</code>
+     * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
      * @return Whether the reassign field is set.
      */
     @java.lang.Override
@@ -3463,21 +3463,21 @@ private static final long serialVersionUID = 0L;
      * later on, might enable scheduling entire ThreadRuns
      * </pre>
      *
-     * <code>.littlehorse.UTActionTriggerPb.UTAReassignPb reassign = 3;</code>
+     * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
      * @return The reassign.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb getReassign() {
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign getReassign() {
       if (reassignBuilder_ == null) {
         if (actionCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb) action_;
+          return (io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign) action_;
         }
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.getDefaultInstance();
       } else {
         if (actionCase_ == 3) {
           return reassignBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.getDefaultInstance();
       }
     }
     /**
@@ -3485,9 +3485,9 @@ private static final long serialVersionUID = 0L;
      * later on, might enable scheduling entire ThreadRuns
      * </pre>
      *
-     * <code>.littlehorse.UTActionTriggerPb.UTAReassignPb reassign = 3;</code>
+     * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
      */
-    public Builder setReassign(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb value) {
+    public Builder setReassign(io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign value) {
       if (reassignBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3505,10 +3505,10 @@ private static final long serialVersionUID = 0L;
      * later on, might enable scheduling entire ThreadRuns
      * </pre>
      *
-     * <code>.littlehorse.UTActionTriggerPb.UTAReassignPb reassign = 3;</code>
+     * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
      */
     public Builder setReassign(
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.Builder builderForValue) {
       if (reassignBuilder_ == null) {
         action_ = builderForValue.build();
         onChanged();
@@ -3523,13 +3523,13 @@ private static final long serialVersionUID = 0L;
      * later on, might enable scheduling entire ThreadRuns
      * </pre>
      *
-     * <code>.littlehorse.UTActionTriggerPb.UTAReassignPb reassign = 3;</code>
+     * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
      */
-    public Builder mergeReassign(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb value) {
+    public Builder mergeReassign(io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign value) {
       if (reassignBuilder_ == null) {
         if (actionCase_ == 3 &&
-            action_ != io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.getDefaultInstance()) {
-          action_ = io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.newBuilder((io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb) action_)
+            action_ != io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.getDefaultInstance()) {
+          action_ = io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.newBuilder((io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign) action_)
               .mergeFrom(value).buildPartial();
         } else {
           action_ = value;
@@ -3550,7 +3550,7 @@ private static final long serialVersionUID = 0L;
      * later on, might enable scheduling entire ThreadRuns
      * </pre>
      *
-     * <code>.littlehorse.UTActionTriggerPb.UTAReassignPb reassign = 3;</code>
+     * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
      */
     public Builder clearReassign() {
       if (reassignBuilder_ == null) {
@@ -3573,9 +3573,9 @@ private static final long serialVersionUID = 0L;
      * later on, might enable scheduling entire ThreadRuns
      * </pre>
      *
-     * <code>.littlehorse.UTActionTriggerPb.UTAReassignPb reassign = 3;</code>
+     * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.Builder getReassignBuilder() {
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.Builder getReassignBuilder() {
       return getReassignFieldBuilder().getBuilder();
     }
     /**
@@ -3583,17 +3583,17 @@ private static final long serialVersionUID = 0L;
      * later on, might enable scheduling entire ThreadRuns
      * </pre>
      *
-     * <code>.littlehorse.UTActionTriggerPb.UTAReassignPb reassign = 3;</code>
+     * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPbOrBuilder getReassignOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassignOrBuilder getReassignOrBuilder() {
       if ((actionCase_ == 3) && (reassignBuilder_ != null)) {
         return reassignBuilder_.getMessageOrBuilder();
       } else {
         if (actionCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb) action_;
+          return (io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign) action_;
         }
-        return io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.getDefaultInstance();
       }
     }
     /**
@@ -3601,18 +3601,18 @@ private static final long serialVersionUID = 0L;
      * later on, might enable scheduling entire ThreadRuns
      * </pre>
      *
-     * <code>.littlehorse.UTActionTriggerPb.UTAReassignPb reassign = 3;</code>
+     * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign, io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.Builder, io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassignOrBuilder> 
         getReassignFieldBuilder() {
       if (reassignBuilder_ == null) {
         if (!(actionCase_ == 3)) {
-          action_ = io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.getDefaultInstance();
+          action_ = io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.getDefaultInstance();
         }
         reassignBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb.Builder, io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb) action_,
+            io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign, io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.Builder, io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassignOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign) action_,
                 getParentForChildren(),
                 isClean());
         action_ = null;
@@ -3622,15 +3622,15 @@ private static final long serialVersionUID = 0L;
       return reassignBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.VariableAssignmentPb delaySeconds_;
+    private io.littlehorse.sdk.common.proto.VariableAssignment delaySeconds_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> delaySecondsBuilder_;
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> delaySecondsBuilder_;
     /**
      * <pre>
      *Action's delay
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
+     * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
      * @return Whether the delaySeconds field is set.
      */
     public boolean hasDelaySeconds() {
@@ -3641,12 +3641,12 @@ private static final long serialVersionUID = 0L;
      *Action's delay
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
+     * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
      * @return The delaySeconds.
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getDelaySeconds() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment getDelaySeconds() {
       if (delaySecondsBuilder_ == null) {
-        return delaySeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
+        return delaySeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : delaySeconds_;
       } else {
         return delaySecondsBuilder_.getMessage();
       }
@@ -3656,9 +3656,9 @@ private static final long serialVersionUID = 0L;
      *Action's delay
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
+     * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
      */
-    public Builder setDelaySeconds(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder setDelaySeconds(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (delaySecondsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3676,10 +3676,10 @@ private static final long serialVersionUID = 0L;
      *Action's delay
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
+     * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
      */
     public Builder setDelaySeconds(
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
       if (delaySecondsBuilder_ == null) {
         delaySeconds_ = builderForValue.build();
       } else {
@@ -3694,13 +3694,13 @@ private static final long serialVersionUID = 0L;
      *Action's delay
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
+     * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
      */
-    public Builder mergeDelaySeconds(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder mergeDelaySeconds(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (delaySecondsBuilder_ == null) {
         if (((bitField0_ & 0x00000008) != 0) &&
           delaySeconds_ != null &&
-          delaySeconds_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
+          delaySeconds_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
           getDelaySecondsBuilder().mergeFrom(value);
         } else {
           delaySeconds_ = value;
@@ -3717,7 +3717,7 @@ private static final long serialVersionUID = 0L;
      *Action's delay
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
+     * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
      */
     public Builder clearDelaySeconds() {
       bitField0_ = (bitField0_ & ~0x00000008);
@@ -3734,9 +3734,9 @@ private static final long serialVersionUID = 0L;
      *Action's delay
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
+     * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getDelaySecondsBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getDelaySecondsBuilder() {
       bitField0_ |= 0x00000008;
       onChanged();
       return getDelaySecondsFieldBuilder().getBuilder();
@@ -3746,14 +3746,14 @@ private static final long serialVersionUID = 0L;
      *Action's delay
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
+     * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getDelaySecondsOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getDelaySecondsOrBuilder() {
       if (delaySecondsBuilder_ != null) {
         return delaySecondsBuilder_.getMessageOrBuilder();
       } else {
         return delaySeconds_ == null ?
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance() : delaySeconds_;
+            io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : delaySeconds_;
       }
     }
     /**
@@ -3761,14 +3761,14 @@ private static final long serialVersionUID = 0L;
      *Action's delay
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignmentPb delay_seconds = 5;</code>
+     * <code>.littlehorse.VariableAssignment delay_seconds = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         getDelaySecondsFieldBuilder() {
       if (delaySecondsBuilder_ == null) {
         delaySecondsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
                 getDelaySeconds(),
                 getParentForChildren(),
                 isClean());
@@ -3779,14 +3779,14 @@ private static final long serialVersionUID = 0L;
 
     private int hook_ = 0;
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+     * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
      * @return The enum numeric value on the wire for hook.
      */
     @java.lang.Override public int getHookValue() {
       return hook_;
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+     * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
      * @param value The enum numeric value on the wire for hook to set.
      * @return This builder for chaining.
      */
@@ -3797,20 +3797,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+     * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
      * @return The hook.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook getHook() {
-      io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook result = io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.forNumber(hook_);
-      return result == null ? io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook getHook() {
+      io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook result = io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook.forNumber(hook_);
+      return result == null ? io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+     * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
      * @param value The hook to set.
      * @return This builder for chaining.
      */
-    public Builder setHook(io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook value) {
+    public Builder setHook(io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -3820,7 +3820,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UTActionTriggerPb.UTHook hook = 6;</code>
+     * <code>.littlehorse.UTActionTrigger.UTHook hook = 6;</code>
      * @return This builder for chaining.
      */
     public Builder clearHook() {
@@ -3842,23 +3842,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.UTActionTriggerPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.UTActionTrigger)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.UTActionTriggerPb)
-  private static final io.littlehorse.sdk.common.proto.UTActionTriggerPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.UTActionTrigger)
+  private static final io.littlehorse.sdk.common.proto.UTActionTrigger DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UTActionTriggerPb();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UTActionTrigger();
   }
 
-  public static io.littlehorse.sdk.common.proto.UTActionTriggerPb getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.UTActionTrigger getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<UTActionTriggerPb>
-      PARSER = new com.google.protobuf.AbstractParser<UTActionTriggerPb>() {
+  private static final com.google.protobuf.Parser<UTActionTrigger>
+      PARSER = new com.google.protobuf.AbstractParser<UTActionTrigger>() {
     @java.lang.Override
-    public UTActionTriggerPb parsePartialFrom(
+    public UTActionTrigger parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -3877,17 +3877,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<UTActionTriggerPb> parser() {
+  public static com.google.protobuf.Parser<UTActionTrigger> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<UTActionTriggerPb> getParserForType() {
+  public com.google.protobuf.Parser<UTActionTrigger> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPb getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.UTActionTrigger getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

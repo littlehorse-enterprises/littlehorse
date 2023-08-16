@@ -4,34 +4,35 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.meta.VariableAssignment;
+import io.littlehorse.common.model.meta.VariableAssignmentModel;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
-import io.littlehorse.sdk.common.proto.UTActionTriggerPb;
-import io.littlehorse.sdk.common.proto.UTActionTriggerPb.ActionCase;
-import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb;
+import io.littlehorse.sdk.common.proto.UTActionTrigger;
+import io.littlehorse.sdk.common.proto.UTActionTrigger.ActionCase;
+import io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel;
+import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class UTActionTrigger extends LHSerializable<UTActionTriggerPb> {
+public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
 
     public ActionCase actionType;
-    public UTATask task;
-    public UTACancelPb cancel;
-    public UTAReassign reassign;
+    public UTATaskModel task;
+    public UTACancel cancel;
+    public UTAReassignModel reassign;
 
-    public UTActionTriggerPb.UTHook hook;
-    public VariableAssignment delaySeconds;
+    public UTHook hook;
+    public VariableAssignmentModel delaySeconds;
 
     @Override
-    public Class<UTActionTriggerPb> getProtoBaseClass() {
-        return UTActionTriggerPb.class;
+    public Class<UTActionTrigger> getProtoBaseClass() {
+        return UTActionTrigger.class;
     }
 
     @Override
-    public UTActionTriggerPb.Builder toProto() {
-        UTActionTriggerPb.Builder out = UTActionTriggerPb.newBuilder();
+    public UTActionTrigger.Builder toProto() {
+        UTActionTrigger.Builder out = UTActionTrigger.newBuilder();
 
         switch (actionType) {
             case TASK:
@@ -69,18 +70,18 @@ public class UTActionTrigger extends LHSerializable<UTActionTriggerPb> {
 
     @Override
     public void initFrom(Message proto) {
-        UTActionTriggerPb p = (UTActionTriggerPb) proto;
+        UTActionTrigger p = (UTActionTrigger) proto;
         hook = p.getHook();
         actionType = p.getActionCase();
         delaySeconds =
-            LHSerializable.fromProto(p.getDelaySeconds(), VariableAssignment.class);
+            LHSerializable.fromProto(p.getDelaySeconds(), VariableAssignmentModel.class);
         switch (actionType) {
             case TASK:
-                task = LHSerializable.fromProto(p.getTask(), UTATask.class);
+                task = LHSerializable.fromProto(p.getTask(), UTATaskModel.class);
                 break;
             case REASSIGN:
                 reassign =
-                    LHSerializable.fromProto(p.getReassign(), UTAReassign.class);
+                    LHSerializable.fromProto(p.getReassign(), UTAReassignModel.class);
                 break;
             case CANCEL:
                 cancel = p.getCancel();

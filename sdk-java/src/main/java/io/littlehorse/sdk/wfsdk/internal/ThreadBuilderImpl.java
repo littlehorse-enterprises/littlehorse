@@ -12,7 +12,7 @@ import io.littlehorse.sdk.common.proto.ExitNodePb;
 import io.littlehorse.sdk.common.proto.ExternalEventNodePb;
 import io.littlehorse.sdk.common.proto.FailureDefPb;
 import io.littlehorse.sdk.common.proto.FailureHandlerDefPb;
-import io.littlehorse.sdk.common.proto.InterruptDefPb;
+import io.littlehorse.sdk.common.proto.InterruptDef;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNodePb;
@@ -20,11 +20,11 @@ import io.littlehorse.sdk.common.proto.SleepNodePb;
 import io.littlehorse.sdk.common.proto.StartThreadNodePb;
 import io.littlehorse.sdk.common.proto.TaskNodePb;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
-import io.littlehorse.sdk.common.proto.UTActionTriggerPb;
-import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTATaskPb;
+import io.littlehorse.sdk.common.proto.UTActionTrigger;
+import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.UserTaskNodePb;
-import io.littlehorse.sdk.common.proto.VariableAssignmentPb;
-import io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb;
+import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.common.proto.VariableAssignment.FormatString;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableMutationPb;
 import io.littlehorse.sdk.common.proto.VariableMutationPb.NodeOutputSourcePb;
@@ -120,20 +120,20 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         if (!lastNodeName.equals(utImpl.nodeName)) {
             throw new IllegalStateException("Tried to edit a stale User Task node!");
         }
-        VariableAssignmentPb userGroup = curNode.getUserTaskBuilder().getUserGroup();
+        VariableAssignment userGroup = curNode.getUserTaskBuilder().getUserGroup();
         if (userGroup == null) {
             throw new IllegalStateException(
                 "User task is not assigned to a userGroup"
             );
         }
-        UTActionTriggerPb.UTAReassignPb reassignPb = UTActionTriggerPb.UTAReassignPb
+        UTActionTrigger.UTAReassign reassignPb = UTActionTrigger.UTAReassign
             .newBuilder()
             .setUserGroup(userGroup)
             .build();
-        UTActionTriggerPb actionTrigger = UTActionTriggerPb
+        UTActionTrigger actionTrigger = UTActionTrigger
             .newBuilder()
             .setReassign(reassignPb)
-            .setHook(UTActionTriggerPb.UTHook.ON_TASK_ASSIGNED)
+            .setHook(UTActionTrigger.UTHook.ON_TASK_ASSIGNED)
             .setDelaySeconds(assignVariable(deadlineSeconds))
             .build();
         curNode.getUserTaskBuilder().addActions(actionTrigger);
@@ -152,14 +152,14 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         if (!lastNodeName.equals(utImpl.nodeName)) {
             throw new IllegalStateException("Tried to edit a stale User Task node!");
         }
-        UTActionTriggerPb.UTAReassignPb reassignPb = UTActionTriggerPb.UTAReassignPb
+        UTActionTrigger.UTAReassign reassignPb = UTActionTrigger.UTAReassign
             .newBuilder()
             .setUserId(assignVariable(userId))
             .build();
-        UTActionTriggerPb actionTrigger = UTActionTriggerPb
+        UTActionTrigger actionTrigger = UTActionTrigger
             .newBuilder()
             .setReassign(reassignPb)
-            .setHook(UTActionTriggerPb.UTHook.ON_TASK_ASSIGNED)
+            .setHook(UTActionTrigger.UTHook.ON_TASK_ASSIGNED)
             .setDelaySeconds(assignVariable(deadlineSeconds))
             .build();
         curNode.getUserTaskBuilder().addActions(actionTrigger);
@@ -217,8 +217,8 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             .setUserTaskDefName(userTaskDefName);
 
         if (userId != null) {
-            VariableAssignmentPb userIdAssn = assignVariable(userId);
-            VariableAssignmentPb userGroupAssn = userGroups != null
+            VariableAssignment userIdAssn = assignVariable(userId);
+            VariableAssignment userGroupAssn = userGroups != null
                 ? assignVariable(userGroups)
                 : null;
             UserTaskNodePb.UserAssignmentPb.Builder userAssignmentBuilder = UserTaskNodePb.UserAssignmentPb.newBuilder();
@@ -228,7 +228,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             }
             utNode.setUser(userAssignmentBuilder);
         } else {
-            VariableAssignmentPb userIdAssn = assignVariable(userGroups);
+            VariableAssignment userIdAssn = assignVariable(userGroups);
             utNode.setUserGroup(userIdAssn);
         }
 
@@ -268,9 +268,9 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         Object... args
     ) {
         checkIfIsActive();
-        VariableAssignmentPb assn = assignVariable(delaySeconds);
+        VariableAssignment assn = assignVariable(delaySeconds);
         TaskNodePb taskNode = createTaskNode(taskDefName, args);
-        UTATaskPb utaTask = UTATaskPb.newBuilder().setTask(taskNode).build();
+        UTATask utaTask = UTATask.newBuilder().setTask(taskNode).build();
 
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) ut;
         if (!lastNodeName.equals(utImpl.nodeName)) {
@@ -278,10 +278,10 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         }
 
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        UTActionTriggerPb.Builder newUtActionBuilder = UTActionTriggerPb
+        UTActionTrigger.Builder newUtActionBuilder = UTActionTrigger
             .newBuilder()
             .setTask(utaTask)
-            .setHook(UTActionTriggerPb.UTHook.ON_ARRIVAL)
+            .setHook(UTActionTrigger.UTHook.ON_ARRIVAL)
             .setDelaySeconds(assn);
         curNode.getUserTaskBuilder().addActions(newUtActionBuilder);
         spec.putNodes(lastNodeName, curNode.build());
@@ -527,7 +527,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         }
         threadName = parent.addSubThread(threadName, threadFunc);
 
-        Map<String, VariableAssignmentPb> varAssigns = new HashMap<>();
+        Map<String, VariableAssignment> varAssigns = new HashMap<>();
         for (Map.Entry<String, Object> var : inputVars.entrySet()) {
             varAssigns.put(var.getKey(), assignVariable(var.getValue()));
         }
@@ -564,7 +564,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
         ExternalEventNodePb.Builder evt = n.getExternalEventBuilder();
         evt.setTimeoutSeconds(
-            VariableAssignmentPb
+            VariableAssignment
                 .newBuilder()
                 .setLiteralValue(
                     VariableValue
@@ -613,7 +613,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             mutation.setNodeOutput(nodeOutputSource);
         } else if (WfRunVariableImpl.class.isAssignableFrom(rhs.getClass())) {
             WfRunVariableImpl var = (WfRunVariableImpl) rhs;
-            VariableAssignmentPb.Builder varBuilder = VariableAssignmentPb.newBuilder();
+            VariableAssignment.Builder varBuilder = VariableAssignment.newBuilder();
 
             if (var.jsonPath != null) {
                 varBuilder.setJsonPath(var.jsonPath);
@@ -707,7 +707,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         parent.addExternalEventDefName(interruptName);
 
         spec.addInterruptDefs(
-            InterruptDefPb
+            InterruptDef
                 .newBuilder()
                 .setExternalEventDefName(interruptName)
                 .setHandlerSpecName(threadName)
@@ -816,9 +816,9 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         return "" + spec.getNodesCount() + "-" + name + "-" + type;
     }
 
-    public VariableAssignmentPb assignVariable(Object variable) {
+    public VariableAssignment assignVariable(Object variable) {
         checkIfIsActive();
-        VariableAssignmentPb.Builder builder = VariableAssignmentPb.newBuilder();
+        VariableAssignment.Builder builder = VariableAssignment.newBuilder();
 
         if (variable.getClass().equals(WfRunVariableImpl.class)) {
             WfRunVariableImpl wrv = (WfRunVariableImpl) variable;
@@ -834,7 +834,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         } else if (variable.getClass().equals(LHFormatStringImpl.class)) {
             LHFormatStringImpl format = (LHFormatStringImpl) variable;
             builder.setFormatString(
-                FormatStringPb
+                FormatString
                     .newBuilder()
                     .setFormat(assignVariable(format.getFormat()))
                     .addAllArgs(format.getArgs())

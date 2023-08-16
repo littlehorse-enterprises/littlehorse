@@ -8,18 +8,18 @@ package io.littlehorse.sdk.common.proto;
  * TaskDef
  * </pre>
  *
- * Protobuf type {@code littlehorse.OutputSchemaPb}
+ * Protobuf type {@code littlehorse.OutputSchema}
  */
-public final class OutputSchemaPb extends
+public final class OutputSchema extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.OutputSchemaPb)
-    OutputSchemaPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.OutputSchema)
+    OutputSchemaOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use OutputSchemaPb.newBuilder() to construct.
-  private OutputSchemaPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use OutputSchema.newBuilder() to construct.
+  private OutputSchema(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private OutputSchemaPb() {
+  private OutputSchema() {
     outputType_ = 0;
   }
 
@@ -27,7 +27,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new OutputSchemaPb();
+    return new OutputSchema();
   }
 
   @java.lang.Override
@@ -37,15 +37,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_OutputSchemaPb_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_OutputSchema_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_OutputSchemaPb_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_OutputSchema_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.OutputSchemaPb.class, io.littlehorse.sdk.common.proto.OutputSchemaPb.Builder.class);
+            io.littlehorse.sdk.common.proto.OutputSchema.class, io.littlehorse.sdk.common.proto.OutputSchema.Builder.class);
   }
 
   public static final int OUTPUT_TYPE_FIELD_NUMBER = 1;
@@ -106,10 +106,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.OutputSchemaPb)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.OutputSchema)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.OutputSchemaPb other = (io.littlehorse.sdk.common.proto.OutputSchemaPb) obj;
+    io.littlehorse.sdk.common.proto.OutputSchema other = (io.littlehorse.sdk.common.proto.OutputSchema) obj;
 
     if (outputType_ != other.outputType_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -130,69 +130,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.OutputSchemaPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.OutputSchema parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.OutputSchemaPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.OutputSchema parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.OutputSchemaPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.OutputSchema parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.OutputSchemaPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.OutputSchema parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.OutputSchemaPb parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.OutputSchema parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.OutputSchemaPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.OutputSchema parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.OutputSchemaPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.OutputSchema parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.OutputSchemaPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.OutputSchema parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.OutputSchemaPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.OutputSchema parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.OutputSchemaPb parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.OutputSchema parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.OutputSchemaPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.OutputSchema parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.OutputSchemaPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.OutputSchema parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -205,7 +205,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.OutputSchemaPb prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.OutputSchema prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -225,26 +225,26 @@ private static final long serialVersionUID = 0L;
    * TaskDef
    * </pre>
    *
-   * Protobuf type {@code littlehorse.OutputSchemaPb}
+   * Protobuf type {@code littlehorse.OutputSchema}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.OutputSchemaPb)
-      io.littlehorse.sdk.common.proto.OutputSchemaPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.OutputSchema)
+      io.littlehorse.sdk.common.proto.OutputSchemaOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_OutputSchemaPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_OutputSchema_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_OutputSchemaPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_OutputSchema_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.OutputSchemaPb.class, io.littlehorse.sdk.common.proto.OutputSchemaPb.Builder.class);
+              io.littlehorse.sdk.common.proto.OutputSchema.class, io.littlehorse.sdk.common.proto.OutputSchema.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.OutputSchemaPb.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.OutputSchema.newBuilder()
     private Builder() {
 
     }
@@ -265,17 +265,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_OutputSchemaPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_OutputSchema_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.OutputSchemaPb getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.OutputSchemaPb.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.OutputSchema getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.OutputSchema.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.OutputSchemaPb build() {
-      io.littlehorse.sdk.common.proto.OutputSchemaPb result = buildPartial();
+    public io.littlehorse.sdk.common.proto.OutputSchema build() {
+      io.littlehorse.sdk.common.proto.OutputSchema result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -283,14 +283,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.OutputSchemaPb buildPartial() {
-      io.littlehorse.sdk.common.proto.OutputSchemaPb result = new io.littlehorse.sdk.common.proto.OutputSchemaPb(this);
+    public io.littlehorse.sdk.common.proto.OutputSchema buildPartial() {
+      io.littlehorse.sdk.common.proto.OutputSchema result = new io.littlehorse.sdk.common.proto.OutputSchema(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.OutputSchemaPb result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.OutputSchema result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.outputType_ = outputType_;
@@ -331,16 +331,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.OutputSchemaPb) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.OutputSchemaPb)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.OutputSchema) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.OutputSchema)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.OutputSchemaPb other) {
-      if (other == io.littlehorse.sdk.common.proto.OutputSchemaPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.OutputSchema other) {
+      if (other == io.littlehorse.sdk.common.proto.OutputSchema.getDefaultInstance()) return this;
       if (other.outputType_ != 0) {
         setOutputTypeValue(other.getOutputTypeValue());
       }
@@ -457,23 +457,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.OutputSchemaPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.OutputSchema)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.OutputSchemaPb)
-  private static final io.littlehorse.sdk.common.proto.OutputSchemaPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.OutputSchema)
+  private static final io.littlehorse.sdk.common.proto.OutputSchema DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.OutputSchemaPb();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.OutputSchema();
   }
 
-  public static io.littlehorse.sdk.common.proto.OutputSchemaPb getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.OutputSchema getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<OutputSchemaPb>
-      PARSER = new com.google.protobuf.AbstractParser<OutputSchemaPb>() {
+  private static final com.google.protobuf.Parser<OutputSchema>
+      PARSER = new com.google.protobuf.AbstractParser<OutputSchema>() {
     @java.lang.Override
-    public OutputSchemaPb parsePartialFrom(
+    public OutputSchema parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -492,17 +492,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<OutputSchemaPb> parser() {
+  public static com.google.protobuf.Parser<OutputSchema> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<OutputSchemaPb> getParserForType() {
+  public com.google.protobuf.Parser<OutputSchema> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.OutputSchemaPb getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.OutputSchema getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

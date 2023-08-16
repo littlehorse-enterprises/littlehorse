@@ -88,7 +88,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int RAW_SECONDS_FIELD_NUMBER = 1;
   /**
-   * <code>.littlehorse.VariableAssignmentPb raw_seconds = 1;</code>
+   * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
    * @return Whether the rawSeconds field is set.
    */
   @java.lang.Override
@@ -96,30 +96,30 @@ private static final long serialVersionUID = 0L;
     return sleepLengthCase_ == 1;
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb raw_seconds = 1;</code>
+   * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
    * @return The rawSeconds.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb getRawSeconds() {
+  public io.littlehorse.sdk.common.proto.VariableAssignment getRawSeconds() {
     if (sleepLengthCase_ == 1) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_;
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_;
     }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb raw_seconds = 1;</code>
+   * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getRawSecondsOrBuilder() {
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getRawSecondsOrBuilder() {
     if (sleepLengthCase_ == 1) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_;
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_;
     }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
 
   public static final int TIMESTAMP_FIELD_NUMBER = 2;
   /**
-   * <code>.littlehorse.VariableAssignmentPb timestamp = 2;</code>
+   * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
    * @return Whether the timestamp field is set.
    */
   @java.lang.Override
@@ -127,30 +127,30 @@ private static final long serialVersionUID = 0L;
     return sleepLengthCase_ == 2;
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb timestamp = 2;</code>
+   * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
    * @return The timestamp.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb getTimestamp() {
+  public io.littlehorse.sdk.common.proto.VariableAssignment getTimestamp() {
     if (sleepLengthCase_ == 2) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_;
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_;
     }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb timestamp = 2;</code>
+   * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getTimestampOrBuilder() {
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getTimestampOrBuilder() {
     if (sleepLengthCase_ == 2) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_;
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_;
     }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
 
   public static final int ISO_DATE_FIELD_NUMBER = 3;
   /**
-   * <code>.littlehorse.VariableAssignmentPb iso_date = 3;</code>
+   * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
    * @return Whether the isoDate field is set.
    */
   @java.lang.Override
@@ -158,25 +158,25 @@ private static final long serialVersionUID = 0L;
     return sleepLengthCase_ == 3;
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb iso_date = 3;</code>
+   * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
    * @return The isoDate.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb getIsoDate() {
+  public io.littlehorse.sdk.common.proto.VariableAssignment getIsoDate() {
     if (sleepLengthCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_;
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_;
     }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.VariableAssignmentPb iso_date = 3;</code>
+   * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getIsoDateOrBuilder() {
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getIsoDateOrBuilder() {
     if (sleepLengthCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_;
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_;
     }
-    return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -194,13 +194,13 @@ private static final long serialVersionUID = 0L;
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (sleepLengthCase_ == 1) {
-      output.writeMessage(1, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_);
+      output.writeMessage(1, (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_);
     }
     if (sleepLengthCase_ == 2) {
-      output.writeMessage(2, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_);
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_);
     }
     if (sleepLengthCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_);
+      output.writeMessage(3, (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -213,15 +213,15 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (sleepLengthCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_);
+        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_);
     }
     if (sleepLengthCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_);
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_);
     }
     if (sleepLengthCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_);
+        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -616,9 +616,9 @@ private static final long serialVersionUID = 0L;
     private int bitField0_;
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> rawSecondsBuilder_;
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> rawSecondsBuilder_;
     /**
-     * <code>.littlehorse.VariableAssignmentPb raw_seconds = 1;</code>
+     * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      * @return Whether the rawSeconds field is set.
      */
     @java.lang.Override
@@ -626,27 +626,27 @@ private static final long serialVersionUID = 0L;
       return sleepLengthCase_ == 1;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb raw_seconds = 1;</code>
+     * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      * @return The rawSeconds.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getRawSeconds() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment getRawSeconds() {
       if (rawSecondsBuilder_ == null) {
         if (sleepLengthCase_ == 1) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_;
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_;
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       } else {
         if (sleepLengthCase_ == 1) {
           return rawSecondsBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb raw_seconds = 1;</code>
+     * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      */
-    public Builder setRawSeconds(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder setRawSeconds(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (rawSecondsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -660,10 +660,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb raw_seconds = 1;</code>
+     * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      */
     public Builder setRawSeconds(
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
       if (rawSecondsBuilder_ == null) {
         sleepLength_ = builderForValue.build();
         onChanged();
@@ -674,13 +674,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb raw_seconds = 1;</code>
+     * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      */
-    public Builder mergeRawSeconds(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder mergeRawSeconds(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (rawSecondsBuilder_ == null) {
         if (sleepLengthCase_ == 1 &&
-            sleepLength_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
-          sleepLength_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_)
+            sleepLength_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+          sleepLength_ = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_)
               .mergeFrom(value).buildPartial();
         } else {
           sleepLength_ = value;
@@ -697,7 +697,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb raw_seconds = 1;</code>
+     * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      */
     public Builder clearRawSeconds() {
       if (rawSecondsBuilder_ == null) {
@@ -716,38 +716,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb raw_seconds = 1;</code>
+     * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getRawSecondsBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getRawSecondsBuilder() {
       return getRawSecondsFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb raw_seconds = 1;</code>
+     * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getRawSecondsOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getRawSecondsOrBuilder() {
       if ((sleepLengthCase_ == 1) && (rawSecondsBuilder_ != null)) {
         return rawSecondsBuilder_.getMessageOrBuilder();
       } else {
         if (sleepLengthCase_ == 1) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_;
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_;
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb raw_seconds = 1;</code>
+     * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         getRawSecondsFieldBuilder() {
       if (rawSecondsBuilder_ == null) {
         if (!(sleepLengthCase_ == 1)) {
-          sleepLength_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+          sleepLength_ = io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
         }
         rawSecondsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_,
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_,
                 getParentForChildren(),
                 isClean());
         sleepLength_ = null;
@@ -758,9 +758,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> timestampBuilder_;
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> timestampBuilder_;
     /**
-     * <code>.littlehorse.VariableAssignmentPb timestamp = 2;</code>
+     * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      * @return Whether the timestamp field is set.
      */
     @java.lang.Override
@@ -768,27 +768,27 @@ private static final long serialVersionUID = 0L;
       return sleepLengthCase_ == 2;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timestamp = 2;</code>
+     * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      * @return The timestamp.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getTimestamp() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment getTimestamp() {
       if (timestampBuilder_ == null) {
         if (sleepLengthCase_ == 2) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_;
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_;
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       } else {
         if (sleepLengthCase_ == 2) {
           return timestampBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timestamp = 2;</code>
+     * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      */
-    public Builder setTimestamp(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder setTimestamp(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (timestampBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -802,10 +802,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timestamp = 2;</code>
+     * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      */
     public Builder setTimestamp(
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
       if (timestampBuilder_ == null) {
         sleepLength_ = builderForValue.build();
         onChanged();
@@ -816,13 +816,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timestamp = 2;</code>
+     * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      */
-    public Builder mergeTimestamp(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder mergeTimestamp(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (timestampBuilder_ == null) {
         if (sleepLengthCase_ == 2 &&
-            sleepLength_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
-          sleepLength_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_)
+            sleepLength_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+          sleepLength_ = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_)
               .mergeFrom(value).buildPartial();
         } else {
           sleepLength_ = value;
@@ -839,7 +839,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timestamp = 2;</code>
+     * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      */
     public Builder clearTimestamp() {
       if (timestampBuilder_ == null) {
@@ -858,38 +858,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timestamp = 2;</code>
+     * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getTimestampBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getTimestampBuilder() {
       return getTimestampFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timestamp = 2;</code>
+     * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getTimestampOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getTimestampOrBuilder() {
       if ((sleepLengthCase_ == 2) && (timestampBuilder_ != null)) {
         return timestampBuilder_.getMessageOrBuilder();
       } else {
         if (sleepLengthCase_ == 2) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_;
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_;
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb timestamp = 2;</code>
+     * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         getTimestampFieldBuilder() {
       if (timestampBuilder_ == null) {
         if (!(sleepLengthCase_ == 2)) {
-          sleepLength_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+          sleepLength_ = io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
         }
         timestampBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_,
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_,
                 getParentForChildren(),
                 isClean());
         sleepLength_ = null;
@@ -900,9 +900,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> isoDateBuilder_;
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> isoDateBuilder_;
     /**
-     * <code>.littlehorse.VariableAssignmentPb iso_date = 3;</code>
+     * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      * @return Whether the isoDate field is set.
      */
     @java.lang.Override
@@ -910,27 +910,27 @@ private static final long serialVersionUID = 0L;
       return sleepLengthCase_ == 3;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb iso_date = 3;</code>
+     * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      * @return The isoDate.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb getIsoDate() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment getIsoDate() {
       if (isoDateBuilder_ == null) {
         if (sleepLengthCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_;
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_;
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       } else {
         if (sleepLengthCase_ == 3) {
           return isoDateBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb iso_date = 3;</code>
+     * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      */
-    public Builder setIsoDate(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder setIsoDate(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (isoDateBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -944,10 +944,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb iso_date = 3;</code>
+     * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      */
     public Builder setIsoDate(
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
       if (isoDateBuilder_ == null) {
         sleepLength_ = builderForValue.build();
         onChanged();
@@ -958,13 +958,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb iso_date = 3;</code>
+     * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      */
-    public Builder mergeIsoDate(io.littlehorse.sdk.common.proto.VariableAssignmentPb value) {
+    public Builder mergeIsoDate(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (isoDateBuilder_ == null) {
         if (sleepLengthCase_ == 3 &&
-            sleepLength_ != io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance()) {
-          sleepLength_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_)
+            sleepLength_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+          sleepLength_ = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_)
               .mergeFrom(value).buildPartial();
         } else {
           sleepLength_ = value;
@@ -981,7 +981,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb iso_date = 3;</code>
+     * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      */
     public Builder clearIsoDate() {
       if (isoDateBuilder_ == null) {
@@ -1000,38 +1000,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb iso_date = 3;</code>
+     * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder getIsoDateBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getIsoDateBuilder() {
       return getIsoDateFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb iso_date = 3;</code>
+     * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getIsoDateOrBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getIsoDateOrBuilder() {
       if ((sleepLengthCase_ == 3) && (isoDateBuilder_ != null)) {
         return isoDateBuilder_.getMessageOrBuilder();
       } else {
         if (sleepLengthCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_;
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_;
         }
-        return io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.VariableAssignmentPb iso_date = 3;</code>
+     * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         getIsoDateFieldBuilder() {
       if (isoDateBuilder_ == null) {
         if (!(sleepLengthCase_ == 3)) {
-          sleepLength_ = io.littlehorse.sdk.common.proto.VariableAssignmentPb.getDefaultInstance();
+          sleepLength_ = io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
         }
         isoDateBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableAssignmentPb, io.littlehorse.sdk.common.proto.VariableAssignmentPb.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.VariableAssignmentPb) sleepLength_,
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableAssignment) sleepLength_,
                 getParentForChildren(),
                 isClean());
         sleepLength_ = null;

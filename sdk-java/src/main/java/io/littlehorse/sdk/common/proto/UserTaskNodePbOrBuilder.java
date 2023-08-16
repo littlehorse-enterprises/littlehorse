@@ -20,19 +20,19 @@ public interface UserTaskNodePbOrBuilder extends
       getUserTaskDefNameBytes();
 
   /**
-   * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+   * <code>.littlehorse.VariableAssignment user_group = 2;</code>
    * @return Whether the userGroup field is set.
    */
   boolean hasUserGroup();
   /**
-   * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+   * <code>.littlehorse.VariableAssignment user_group = 2;</code>
    * @return The userGroup.
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPb getUserGroup();
+  io.littlehorse.sdk.common.proto.VariableAssignment getUserGroup();
   /**
-   * <code>.littlehorse.VariableAssignmentPb user_group = 2;</code>
+   * <code>.littlehorse.VariableAssignment user_group = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getUserGroupOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserGroupOrBuilder();
 
   /**
    * <code>.littlehorse.UserTaskNodePb.UserAssignmentPb user = 3;</code>
@@ -56,9 +56,9 @@ public interface UserTaskNodePbOrBuilder extends
    * the task to another group of people
    * </pre>
    *
-   * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+   * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.UTActionTriggerPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.UTActionTrigger> 
       getActionsList();
   /**
    * <pre>
@@ -67,9 +67,9 @@ public interface UserTaskNodePbOrBuilder extends
    * the task to another group of people
    * </pre>
    *
-   * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+   * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
    */
-  io.littlehorse.sdk.common.proto.UTActionTriggerPb getActions(int index);
+  io.littlehorse.sdk.common.proto.UTActionTrigger getActions(int index);
   /**
    * <pre>
    * This is used to, for example, send a push notification to a mobile app
@@ -77,7 +77,7 @@ public interface UserTaskNodePbOrBuilder extends
    * the task to another group of people
    * </pre>
    *
-   * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+   * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
    */
   int getActionsCount();
   /**
@@ -87,9 +87,9 @@ public interface UserTaskNodePbOrBuilder extends
    * the task to another group of people
    * </pre>
    *
-   * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+   * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.UTActionTriggerPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.UTActionTriggerOrBuilder> 
       getActionsOrBuilderList();
   /**
    * <pre>
@@ -98,9 +98,9 @@ public interface UserTaskNodePbOrBuilder extends
    * the task to another group of people
    * </pre>
    *
-   * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
+   * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
    */
-  io.littlehorse.sdk.common.proto.UTActionTriggerPbOrBuilder getActionsOrBuilder(
+  io.littlehorse.sdk.common.proto.UTActionTriggerOrBuilder getActionsOrBuilder(
       int index);
 
   /**
@@ -131,7 +131,7 @@ public interface UserTaskNodePbOrBuilder extends
    * Allow WfRun-specific notes for this User Task.
    * </pre>
    *
-   * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+   * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
    * @return Whether the notes field is set.
    */
   boolean hasNotes();
@@ -140,18 +140,18 @@ public interface UserTaskNodePbOrBuilder extends
    * Allow WfRun-specific notes for this User Task.
    * </pre>
    *
-   * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+   * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
    * @return The notes.
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPb getNotes();
+  io.littlehorse.sdk.common.proto.VariableAssignment getNotes();
   /**
    * <pre>
    * Allow WfRun-specific notes for this User Task.
    * </pre>
    *
-   * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+   * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getNotesOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getNotesOrBuilder();
 
   public io.littlehorse.sdk.common.proto.UserTaskNodePb.AssignmentCase getAssignmentCase();
 }

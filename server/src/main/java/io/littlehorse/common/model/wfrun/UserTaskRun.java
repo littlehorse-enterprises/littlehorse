@@ -12,11 +12,11 @@ import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.ReassignUserTask;
 import io.littlehorse.common.model.meta.NodeModel;
 import io.littlehorse.common.model.meta.UserTaskNode;
-import io.littlehorse.common.model.meta.usertasks.UTActionTrigger;
-import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
-import io.littlehorse.common.model.meta.usertasks.UserTaskField;
+import io.littlehorse.common.model.meta.usertasks.UTActionTriggerModel;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.meta.usertasks.UserTaskFieldModel;
 import io.littlehorse.common.model.objectId.NodeRunId;
-import io.littlehorse.common.model.objectId.UserTaskDefId;
+import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.wfrun.usertaskevent.UTEReassigned;
 import io.littlehorse.common.model.wfrun.usertaskevent.UserTaskEvent;
@@ -25,7 +25,7 @@ import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook;
+import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskEventPb;
 import io.littlehorse.sdk.common.proto.UserTaskFieldResultPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunPb;
@@ -57,7 +57,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class UserTaskRun extends Getable<UserTaskRunPb> {
 
     private UserTaskRunId id;
-    private UserTaskDefId userTaskDefId;
+    private UserTaskDefIdModel userTaskDefId;
 
     private List<UserTaskEvent> events = new ArrayList<>();
 
@@ -79,7 +79,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     public UserTaskRun() {}
 
     public UserTaskRun(
-        UserTaskDef utd,
+        UserTaskDefModel utd,
         UserTaskNode userTaskNode,
         NodeRunModel nodeRunModel
     ) {
@@ -139,7 +139,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         UserTaskRunPb p = (UserTaskRunPb) proto;
         id = LHSerializable.fromProto(p.getId(), UserTaskRunId.class);
         userTaskDefId =
-            LHSerializable.fromProto(p.getUserTaskDefId(), UserTaskDefId.class);
+            LHSerializable.fromProto(p.getUserTaskDefId(), UserTaskDefIdModel.class);
         status = p.getStatus();
         scheduledTime = LHLibUtil.fromProtoTs(p.getScheduledTime());
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunId.class);
@@ -198,7 +198,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
 
             // I don't think there's anything to do other than schedule the timers for
             // the actions which need to occur.
-            for (UTActionTrigger action : node.userTaskNode.getActions(
+            for (UTActionTriggerModel action : node.userTaskNode.getActions(
                 UTHook.ON_ARRIVAL
             )) {
                 scheduleAction(action);
@@ -274,7 +274,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         events.add(new UserTaskEvent(reassigned, new Date()));
     }
 
-    private void scheduleAction(UTActionTrigger trigger) throws LHVarSubError {
+    private void scheduleAction(UTActionTriggerModel trigger) throws LHVarSubError {
         trigger.schedule(getNodeRun().getThreadRun().wfRunModel.getDao(), this);
     }
 
@@ -345,7 +345,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         status = UserTaskRunStatusPb.ASSIGNED;
         NodeModel node = getNodeRun().getNode();
         if (triggerAction) {
-            for (UTActionTrigger action : node
+            for (UTActionTriggerModel action : node
                 .getUserTaskNode()
                 .getActions(UTHook.ON_TASK_ASSIGNED)) {
                 scheduleTaskReassign(action);
@@ -363,7 +363,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         getNodeRun().fail(failure, new Date());
     }
 
-    private void scheduleTaskReassign(UTActionTrigger action) {
+    private void scheduleTaskReassign(UTActionTriggerModel action) {
         long delayInSeconds = action.getDelaySeconds().getRhsLiteralValue().intVal;
         LocalDateTime localDateTime = LocalDateTime.now().plusSeconds(delayInSeconds);
         Date maturationTime = Date.from(
@@ -412,17 +412,17 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         // Now we need to create an output thing...
         // TODO LH-309: Validate this vs the schema
         Map<String, Object> raw = new HashMap<>();
-        UserTaskDef userTaskDef = getDao()
+        UserTaskDefModel userTaskDef = getDao()
             .getUserTaskDef(
                 getUserTaskDefId().getName(),
                 getUserTaskDefId().getVersion()
             );
-        Map<String, UserTaskField> userTaskFieldsGroupedByName = userTaskDef
+        Map<String, UserTaskFieldModel> userTaskFieldsGroupedByName = userTaskDef
             .getFields()
             .stream()
-            .collect(Collectors.toMap(UserTaskField::getName, Function.identity()));
+            .collect(Collectors.toMap(UserTaskFieldModel::getName, Function.identity()));
         for (UserTaskFieldResultPb inputField : event.getResult().getFieldsList()) {
-            UserTaskField userTaskFieldFromTaskDef = userTaskFieldsGroupedByName.get(
+            UserTaskFieldModel userTaskFieldFromTaskDef = userTaskFieldsGroupedByName.get(
                 inputField.getName()
             );
             if (
@@ -456,13 +456,13 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     }
 
     private void validateMandatoryFieldsFromCompletedEvent(
-        Collection<UserTaskField> userTaskFieldsFromTaskDef,
+        Collection<UserTaskFieldModel> userTaskFieldsFromTaskDef,
         Collection<String> inputFieldNames
     ) throws LHValidationError {
         List<String> mandatoryFieldNames = userTaskFieldsFromTaskDef
             .stream()
-            .filter(UserTaskField::isRequired)
-            .map(UserTaskField::getName)
+            .filter(UserTaskFieldModel::isRequired)
+            .map(UserTaskFieldModel::getName)
             .toList();
         String mandatoryFieldsNotFound = mandatoryFieldNames
             .stream()

@@ -5,12 +5,12 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.subnode.UserAssignment;
-import io.littlehorse.common.model.meta.usertasks.UTActionTrigger;
-import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
+import io.littlehorse.common.model.meta.usertasks.UTActionTriggerModel;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.wfrun.subnoderun.UserTaskNodeRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.sdk.common.proto.UTActionTriggerPb;
-import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTHook;
+import io.littlehorse.sdk.common.proto.UTActionTrigger;
+import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskNodePb;
 import io.littlehorse.sdk.common.proto.UserTaskNodePb.AssignmentCase;
 import java.util.ArrayList;
@@ -27,11 +27,11 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
 
     private String userTaskDefName;
     private AssignmentCase assignmentType;
-    private VariableAssignment userGroup;
+    private VariableAssignmentModel userGroup;
     private UserAssignment user;
-    private List<UTActionTrigger> actions;
+    private List<UTActionTriggerModel> actions;
     private Integer userTaskDefVersion;
-    private VariableAssignment notes;
+    private VariableAssignmentModel notes;
 
     public UserTaskNode() {
         this.actions = new ArrayList<>();
@@ -57,7 +57,7 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
                 throw new RuntimeException("Not possible");
         }
 
-        for (UTActionTrigger action : actions) {
+        for (UTActionTriggerModel action : actions) {
             out.addActions(action.toProto());
         }
 
@@ -78,7 +78,7 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
         userTaskDefName = p.getUserTaskDefName();
         switch (assignmentType) {
             case USER_GROUP:
-                userGroup = VariableAssignment.fromProto(p.getUserGroup());
+                userGroup = VariableAssignmentModel.fromProto(p.getUserGroup());
                 break;
             case USER:
                 user = LHSerializable.fromProto(p.getUser(), UserAssignment.class);
@@ -91,18 +91,18 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
             userTaskDefVersion = p.getUserTaskDefVersion();
         }
 
-        for (UTActionTriggerPb action : p.getActionsList()) {
-            actions.add(LHSerializable.fromProto(action, UTActionTrigger.class));
+        for (UTActionTrigger action : p.getActionsList()) {
+            actions.add(LHSerializable.fromProto(action, UTActionTriggerModel.class));
         }
 
         if (p.hasNotes()) {
-            notes = LHSerializable.fromProto(p.getNotes(), VariableAssignment.class);
+            notes = LHSerializable.fromProto(p.getNotes(), VariableAssignmentModel.class);
         }
     }
 
-    public List<UTActionTrigger> getActions(UTHook requestedHook) {
-        List<UTActionTrigger> matchingHooks = new ArrayList<>();
-        for (UTActionTrigger action : actions) {
+    public List<UTActionTriggerModel> getActions(UTHook requestedHook) {
+        List<UTActionTriggerModel> matchingHooks = new ArrayList<>();
+        for (UTActionTriggerModel action : actions) {
             if (action.getHook().equals(requestedHook)) {
                 matchingHooks.add(action);
             }
@@ -116,7 +116,7 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
 
     public void validate(LHGlobalMetaStores stores, LHConfig config)
         throws LHValidationError {
-        UserTaskDef utd = stores.getUserTaskDef(userTaskDefName, userTaskDefVersion);
+        UserTaskDefModel utd = stores.getUserTaskDef(userTaskDefName, userTaskDefVersion);
 
         if (utd == null) {
             throw new LHValidationError(
