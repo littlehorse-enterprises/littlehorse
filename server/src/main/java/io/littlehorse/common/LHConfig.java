@@ -310,6 +310,7 @@ public class LHConfig extends ConfigBase {
 
         return List.of(
             coreCommand,
+            metadataCommand,
             repartition,
             observability,
             timer,
@@ -317,8 +318,7 @@ public class LHConfig extends ConfigBase {
             repartitionStoreChangelog,
             timerStoreChangelog,
             metadataStoreChangelog,
-            globalMetadataStoreChangelog,
-            metadataCommand
+            globalMetadataStoreChangelog
         );
     }
 
