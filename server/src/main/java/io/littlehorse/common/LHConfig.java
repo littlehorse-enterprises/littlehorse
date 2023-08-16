@@ -222,88 +222,104 @@ public class LHConfig extends ConfigBase {
         );
     }
 
+    // Internal topics are manually created because:
+    // 1.- It makes it possible to manage/create topics using an external tool (e.g terraform, strimzi, etc.)
+    // 2.- It allows to explicitly manage the configuration of the topics
+    // Note: Kafka streams doesn't support disabling automatic internal topic creation. Thus, internal topics
+    // that are not explicitly created here will be automatically created by Kafka Stream. Please make sure to
+    // manually create all internal topics. Kafka has opened KIP-698 to solve this.
     public static List<NewTopic> getAllTopics(
         String clusterId,
         short replicationFactor,
         int clusterPartitions
     ) {
-        List<NewTopic> out = new ArrayList<>();
+        HashMap<String, String> compactedTopicConfig = new HashMap<>() {
+            {
+                put(
+                    TopicConfig.CLEANUP_POLICY_CONFIG,
+                    TopicConfig.CLEANUP_POLICY_COMPACT
+                );
+            }
+        };
 
-        // These are non-compacted topics, partitioned with the cluster wide
-        // thing.
-        List<String> eventTopics = Arrays.asList(
+        NewTopic coreCommand = new NewTopic(
             getCoreCmdTopicName(clusterId),
+            clusterPartitions,
+            replicationFactor
+        );
+
+        NewTopic repartition = new NewTopic(
             getRepartitionTopicName(clusterId),
+            clusterPartitions,
+            replicationFactor
+        );
+
+        NewTopic observability = new NewTopic(
             getObservabilityEventTopicName(clusterId),
-            getTimerTopic(clusterId)
+            clusterPartitions,
+            replicationFactor
         );
-        for (String name : eventTopics) {
-            // default config is normal retention policy (not compact)
-            out.add(new NewTopic(name, clusterPartitions, replicationFactor));
-        }
 
-        // Internal topics are manually created because:
-        // 1.- It makes it possible to manage/create topics using an external tool (e.g terraform, strimzi, etc.)
-        // 2.- It allows to explicitly manage the configuration of the topics
-        // Note: Kafka streams doesn't support disabling automatic internal topic creation. Thus, internal topics
-        // that are not explicitly created here will be automatically created by Kafka Stream. Please make sure to
-        // manually create all internal topics. Kafka has opened KIP-698 to solve this.
-        List<String> partitionedChangelogs = Arrays.asList(
+        NewTopic timer = new NewTopic(
+            getTimerTopic(clusterId),
+            clusterPartitions,
+            replicationFactor
+        );
+
+        NewTopic coreStoreChangelog = new NewTopic(
             getCoreStoreChangelogTopic(clusterId),
+            clusterPartitions,
+            replicationFactor
+        )
+            .configs(compactedTopicConfig);
+
+        NewTopic repartitionStoreChangelog = new NewTopic(
             getRepartitionStoreChangelogTopic(clusterId),
+            clusterPartitions,
+            replicationFactor
+        )
+            .configs(compactedTopicConfig);
+
+        NewTopic timerStoreChangelog = new NewTopic(
             getTimerStoreChangelogTopic(clusterId),
-            getMetadataStoreChangelogTopic(clusterId)
-        );
-        HashMap<String, String> changelogConfig = new HashMap<String, String>() {
-            {
-                put(
-                    TopicConfig.CLEANUP_POLICY_CONFIG,
-                    TopicConfig.CLEANUP_POLICY_COMPACT
-                );
-            }
-        };
-        for (String name : partitionedChangelogs) {
-            out.add(
-                new NewTopic(name, clusterPartitions, replicationFactor)
-                    .configs(changelogConfig)
-            );
-        }
+            clusterPartitions,
+            replicationFactor
+        )
+            .configs(compactedTopicConfig);
 
-        // Lastly, the global metadata changelog topic.
-        // Inputs to global state store's are always treated
-        // as changelog topics. Therefore, we need it to be
-        // compacted. In order to minimize restore time, we
-        // also want the compaction to be quite aggressive.
-        HashMap<String, String> globalMetaCLConfig = new HashMap<String, String>() {
-            {
-                put(
-                    TopicConfig.CLEANUP_POLICY_CONFIG,
-                    TopicConfig.CLEANUP_POLICY_COMPACT
-                );
-            }
-        };
-        out.add(
-            new NewTopic(
-                getGlobalMetadataCLTopicName(clusterId),
-                // This topic is input to a global store. Therefore, it doesn't
-                // make sense to have any more than just one partition.
-                1,
-                replicationFactor
-            )
-                .configs(globalMetaCLConfig)
-        );
+        NewTopic metadataStoreChangelog = new NewTopic(
+            getMetadataStoreChangelogTopic(clusterId),
+            1,
+            replicationFactor
+        )
+            .configs(compactedTopicConfig);
 
-        out.add(
-            new NewTopic(
-                getMetadataCmdTopicName(clusterId),
-                // All metadata have the same key, thus having more than one partition is
-                // unnecessary.
-                1,
-                replicationFactor
-            )
-        );
+        NewTopic globalMetadataStoreChangelog = new NewTopic(
+            getGlobalMetadataCLTopicName(clusterId),
+            1,
+            replicationFactor
+        )
+            .configs(compactedTopicConfig);
 
-        return out;
+        NewTopic metadataCommand = new NewTopic(
+            getMetadataCmdTopicName(clusterId),
+            1,
+            replicationFactor
+        )
+            .configs(compactedTopicConfig);
+
+        return List.of(
+            coreCommand,
+            repartition,
+            observability,
+            timer,
+            coreStoreChangelog,
+            repartitionStoreChangelog,
+            timerStoreChangelog,
+            metadataStoreChangelog,
+            globalMetadataStoreChangelog,
+            metadataCommand
+        );
     }
 
     // TODO: Determine how and where to set the topic names for TaskDef queues
