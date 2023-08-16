@@ -59,7 +59,7 @@ var getUserTaskDefCmd = &cobra.Command{
 			common.PrintResp(
 				getGlobalClient(cmd).GetUserTaskDef(
 					context.Background(),
-					&model.UserTaskDefIdPb{
+					&model.UserTaskDefId{
 						Name:    name,
 						Version: version,
 					},

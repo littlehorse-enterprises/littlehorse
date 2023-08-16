@@ -53,7 +53,7 @@ var getNodeRunCmd = &cobra.Command{
 
 		common.PrintResp(getGlobalClient(cmd).GetNodeRun(
 			context.Background(),
-			&model.NodeRunIdPb{
+			&model.NodeRunId{
 				WfRunId:         args[0],
 				ThreadRunNumber: int32(trn),
 				Position:        int32(pos),
