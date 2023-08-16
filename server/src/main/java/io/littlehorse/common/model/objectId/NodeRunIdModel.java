@@ -6,28 +6,28 @@ import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.NodeRun;
-import io.littlehorse.sdk.common.proto.NodeRunIdPb;
+import io.littlehorse.sdk.common.proto.NodeRunId;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class NodeRunId extends ObjectId<NodeRunIdPb, NodeRun, NodeRunModel> {
+public class NodeRunIdModel extends ObjectId<NodeRunId, NodeRun, NodeRunModel> {
 
     private String wfRunId;
     private int threadRunNumber;
     private int position;
 
-    public NodeRunId() {}
+    public NodeRunIdModel() {}
 
-    public NodeRunId(String wfRunId, int threadRunNumber, int postion) {
+    public NodeRunIdModel(String wfRunId, int threadRunNumber, int postion) {
         this.wfRunId = wfRunId;
         this.threadRunNumber = threadRunNumber;
         this.position = postion;
     }
 
-    public Class<NodeRunIdPb> getProtoBaseClass() {
-        return NodeRunIdPb.class;
+    public Class<NodeRunId> getProtoBaseClass() {
+        return NodeRunId.class;
     }
 
     public String getPartitionKey() {
@@ -35,14 +35,14 @@ public class NodeRunId extends ObjectId<NodeRunIdPb, NodeRun, NodeRunModel> {
     }
 
     public void initFrom(Message proto) {
-        NodeRunIdPb p = (NodeRunIdPb) proto;
+        NodeRunId p = (NodeRunId) proto;
         wfRunId = p.getWfRunId();
         threadRunNumber = p.getThreadRunNumber();
         position = p.getPosition();
     }
 
-    public NodeRunIdPb.Builder toProto() {
-        NodeRunIdPb.Builder out = NodeRunIdPb
+    public NodeRunId.Builder toProto() {
+        NodeRunId.Builder out = NodeRunId
             .newBuilder()
             .setWfRunId(wfRunId)
             .setThreadRunNumber(threadRunNumber)

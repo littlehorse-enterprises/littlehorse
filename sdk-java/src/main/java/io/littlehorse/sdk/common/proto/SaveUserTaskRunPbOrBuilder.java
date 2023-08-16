@@ -35,26 +35,26 @@ public interface SaveUserTaskRunPbOrBuilder extends
       getUserIdBytes();
 
   /**
-   * <code>repeated .littlehorse.UserTaskFieldResultPb results = 3;</code>
+   * <code>repeated .littlehorse.UserTaskFieldResult results = 3;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldResultPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldResult> 
       getResultsList();
   /**
-   * <code>repeated .littlehorse.UserTaskFieldResultPb results = 3;</code>
+   * <code>repeated .littlehorse.UserTaskFieldResult results = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskFieldResultPb getResults(int index);
+  io.littlehorse.sdk.common.proto.UserTaskFieldResult getResults(int index);
   /**
-   * <code>repeated .littlehorse.UserTaskFieldResultPb results = 3;</code>
+   * <code>repeated .littlehorse.UserTaskFieldResult results = 3;</code>
    */
   int getResultsCount();
   /**
-   * <code>repeated .littlehorse.UserTaskFieldResultPb results = 3;</code>
+   * <code>repeated .littlehorse.UserTaskFieldResult results = 3;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldResultPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldResultOrBuilder> 
       getResultsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.UserTaskFieldResultPb results = 3;</code>
+   * <code>repeated .littlehorse.UserTaskFieldResult results = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskFieldResultPbOrBuilder getResultsOrBuilder(
+  io.littlehorse.sdk.common.proto.UserTaskFieldResultOrBuilder getResultsOrBuilder(
       int index);
 }

@@ -8,34 +8,34 @@ public interface UserTaskTriggerContextPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+   * <code>.littlehorse.UserGroup user_group = 1;</code>
    * @return Whether the userGroup field is set.
    */
   boolean hasUserGroup();
   /**
-   * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+   * <code>.littlehorse.UserGroup user_group = 1;</code>
    * @return The userGroup.
    */
-  io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup();
+  io.littlehorse.sdk.common.proto.UserGroup getUserGroup();
   /**
-   * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+   * <code>.littlehorse.UserGroup user_group = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder();
+  io.littlehorse.sdk.common.proto.UserGroupOrBuilder getUserGroupOrBuilder();
 
   /**
-   * <code>.littlehorse.UserPb user = 2;</code>
+   * <code>.littlehorse.User user = 2;</code>
    * @return Whether the user field is set.
    */
   boolean hasUser();
   /**
-   * <code>.littlehorse.UserPb user = 2;</code>
+   * <code>.littlehorse.User user = 2;</code>
    * @return The user.
    */
-  io.littlehorse.sdk.common.proto.UserPb getUser();
+  io.littlehorse.sdk.common.proto.User getUser();
   /**
-   * <code>.littlehorse.UserPb user = 2;</code>
+   * <code>.littlehorse.User user = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.UserPbOrBuilder getUserOrBuilder();
+  io.littlehorse.sdk.common.proto.UserOrBuilder getUserOrBuilder();
 
   public io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb.OwnerCase getOwnerCase();
 }

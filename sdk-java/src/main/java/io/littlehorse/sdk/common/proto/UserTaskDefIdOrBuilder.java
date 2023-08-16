@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface UserTaskDefIdPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskDefIdPb)
+public interface UserTaskDefIdOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskDefId)
     com.google.protobuf.MessageOrBuilder {
 
   /**

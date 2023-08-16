@@ -6,15 +6,15 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.CancelUserTaskRunReply;
-import io.littlehorse.common.model.objectId.UserTaskRunId;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 
 public class CancelUserTaskRun extends SubCommand<CancelUserTaskRunPb> {
 
-    private UserTaskRunId userTaskRunId;
+    private UserTaskRunIdModel userTaskRunId;
 
     @Override
     public CancelUserTaskRunPb.Builder toProto() {
@@ -29,7 +29,7 @@ public class CancelUserTaskRun extends SubCommand<CancelUserTaskRunPb> {
         userTaskRunId =
             LHSerializable.fromProto(
                 cancelUserTaskRunPb.getUserTaskRunId(),
-                UserTaskRunId.class
+                UserTaskRunIdModel.class
             );
     }
 
@@ -40,7 +40,7 @@ public class CancelUserTaskRun extends SubCommand<CancelUserTaskRunPb> {
 
     @Override
     public CancelUserTaskRunReply process(LHDAO dao, LHConfig config) {
-        UserTaskRun userTaskRun = dao.getUserTaskRun(userTaskRunId);
+        UserTaskRunModel userTaskRun = dao.getUserTaskRun(userTaskRunId);
         if (userTaskRun == null) {
             return new CancelUserTaskRunReply(
                 "Provided invalid wfRunId",

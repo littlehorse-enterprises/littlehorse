@@ -8,21 +8,21 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.meta.subnode.TaskNodeModel;
-import io.littlehorse.common.model.objectId.NodeRunId;
+import io.littlehorse.common.model.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.objectId.TaskRunId;
-import io.littlehorse.common.model.objectId.UserTaskRunId;
+import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.TaskAttempt;
 import io.littlehorse.common.model.wfrun.ThreadRunModel;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.common.model.wfrun.VarNameAndVal;
 import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRunSource;
 import io.littlehorse.common.model.wfrun.taskrun.UserTaskTriggerReference;
-import io.littlehorse.common.model.wfrun.usertaskevent.UTETaskExecuted;
-import io.littlehorse.common.model.wfrun.usertaskevent.UserTaskEvent;
+import io.littlehorse.common.model.wfrun.usertaskevent.UTETaskExecutedModel;
+import io.littlehorse.common.model.wfrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.proto.TriggeredTaskRunPb;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import java.util.Date;
@@ -37,11 +37,11 @@ import lombok.extern.slf4j.Slf4j;
 public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
 
     private TaskNodeModel taskToSchedule;
-    private NodeRunId source;
+    private NodeRunIdModel source;
 
     public TriggeredTaskRun() {}
 
-    public TriggeredTaskRun(TaskNodeModel taskToSchedule, NodeRunId source) {
+    public TriggeredTaskRun(TaskNodeModel taskToSchedule, NodeRunIdModel source) {
         this.source = source;
         this.taskToSchedule = taskToSchedule;
     }
@@ -66,7 +66,7 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
         TriggeredTaskRunPb p = (TriggeredTaskRunPb) proto;
         taskToSchedule =
             LHSerializable.fromProto(p.getTaskToSchedule(), TaskNodeModel.class);
-        source = LHSerializable.fromProto(p.getSource(), NodeRunId.class);
+        source = LHSerializable.fromProto(p.getSource(), NodeRunIdModel.class);
     }
 
     @Override
@@ -97,8 +97,10 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
 
         // Get the NodeRun
         NodeRunModel userTaskNR = dao.getNodeRun(source);
-        UserTaskRunId userTaskRunId = userTaskNR.getUserTaskRun().getUserTaskRunId();
-        UserTaskRun userTaskRun = dao.getUserTaskRun(userTaskRunId);
+        UserTaskRunIdModel userTaskRunId = userTaskNR
+            .getUserTaskRun()
+            .getUserTaskRunId();
+        UserTaskRunModel userTaskRun = dao.getUserTaskRun(userTaskRunId);
 
         if (userTaskNR.status != LHStatus.RUNNING) {
             log.info("NodeRun is not RUNNING anymore, so can't take action!");
@@ -133,7 +135,12 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
 
             userTaskRun
                 .getEvents()
-                .add(new UserTaskEvent(new UTETaskExecuted(taskRunId), new Date()));
+                .add(
+                    new UserTaskEventModel(
+                        new UTETaskExecutedModel(taskRunId),
+                        new Date()
+                    )
+                );
 
             dao.putNodeRun(userTaskNR); // should be unnecessary
         } catch (LHVarSubError exn) {

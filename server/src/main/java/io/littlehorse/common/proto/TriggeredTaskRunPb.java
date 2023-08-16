@@ -75,9 +75,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int SOURCE_FIELD_NUMBER = 2;
-  private io.littlehorse.sdk.common.proto.NodeRunIdPb source_;
+  private io.littlehorse.sdk.common.proto.NodeRunId source_;
   /**
-   * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+   * <code>.littlehorse.NodeRunId source = 2;</code>
    * @return Whether the source field is set.
    */
   @java.lang.Override
@@ -85,19 +85,19 @@ private static final long serialVersionUID = 0L;
     return source_ != null;
   }
   /**
-   * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+   * <code>.littlehorse.NodeRunId source = 2;</code>
    * @return The source.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.NodeRunIdPb getSource() {
-    return source_ == null ? io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance() : source_;
+  public io.littlehorse.sdk.common.proto.NodeRunId getSource() {
+    return source_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : source_;
   }
   /**
-   * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+   * <code>.littlehorse.NodeRunId source = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getSourceOrBuilder() {
-    return source_ == null ? io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance() : source_;
+  public io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getSourceOrBuilder() {
+    return source_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : source_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -596,31 +596,31 @@ private static final long serialVersionUID = 0L;
       return taskToScheduleBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.NodeRunIdPb source_;
+    private io.littlehorse.sdk.common.proto.NodeRunId source_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.NodeRunIdPb, io.littlehorse.sdk.common.proto.NodeRunIdPb.Builder, io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder> sourceBuilder_;
+        io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> sourceBuilder_;
     /**
-     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     * <code>.littlehorse.NodeRunId source = 2;</code>
      * @return Whether the source field is set.
      */
     public boolean hasSource() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     * <code>.littlehorse.NodeRunId source = 2;</code>
      * @return The source.
      */
-    public io.littlehorse.sdk.common.proto.NodeRunIdPb getSource() {
+    public io.littlehorse.sdk.common.proto.NodeRunId getSource() {
       if (sourceBuilder_ == null) {
-        return source_ == null ? io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance() : source_;
+        return source_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : source_;
       } else {
         return sourceBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     * <code>.littlehorse.NodeRunId source = 2;</code>
      */
-    public Builder setSource(io.littlehorse.sdk.common.proto.NodeRunIdPb value) {
+    public Builder setSource(io.littlehorse.sdk.common.proto.NodeRunId value) {
       if (sourceBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -634,10 +634,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     * <code>.littlehorse.NodeRunId source = 2;</code>
      */
     public Builder setSource(
-        io.littlehorse.sdk.common.proto.NodeRunIdPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.NodeRunId.Builder builderForValue) {
       if (sourceBuilder_ == null) {
         source_ = builderForValue.build();
       } else {
@@ -648,13 +648,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     * <code>.littlehorse.NodeRunId source = 2;</code>
      */
-    public Builder mergeSource(io.littlehorse.sdk.common.proto.NodeRunIdPb value) {
+    public Builder mergeSource(io.littlehorse.sdk.common.proto.NodeRunId value) {
       if (sourceBuilder_ == null) {
         if (((bitField0_ & 0x00000002) != 0) &&
           source_ != null &&
-          source_ != io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance()) {
+          source_ != io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance()) {
           getSourceBuilder().mergeFrom(value);
         } else {
           source_ = value;
@@ -667,7 +667,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     * <code>.littlehorse.NodeRunId source = 2;</code>
      */
     public Builder clearSource() {
       bitField0_ = (bitField0_ & ~0x00000002);
@@ -680,33 +680,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     * <code>.littlehorse.NodeRunId source = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.NodeRunIdPb.Builder getSourceBuilder() {
+    public io.littlehorse.sdk.common.proto.NodeRunId.Builder getSourceBuilder() {
       bitField0_ |= 0x00000002;
       onChanged();
       return getSourceFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     * <code>.littlehorse.NodeRunId source = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getSourceOrBuilder() {
+    public io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getSourceOrBuilder() {
       if (sourceBuilder_ != null) {
         return sourceBuilder_.getMessageOrBuilder();
       } else {
         return source_ == null ?
-            io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance() : source_;
+            io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : source_;
       }
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     * <code>.littlehorse.NodeRunId source = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.NodeRunIdPb, io.littlehorse.sdk.common.proto.NodeRunIdPb.Builder, io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> 
         getSourceFieldBuilder() {
       if (sourceBuilder_ == null) {
         sourceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.NodeRunIdPb, io.littlehorse.sdk.common.proto.NodeRunIdPb.Builder, io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder>(
                 getSource(),
                 getParentForChildren(),
                 isClean());

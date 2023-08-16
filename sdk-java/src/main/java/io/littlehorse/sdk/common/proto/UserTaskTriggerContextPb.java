@@ -86,7 +86,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int USER_GROUP_FIELD_NUMBER = 1;
   /**
-   * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+   * <code>.littlehorse.UserGroup user_group = 1;</code>
    * @return Whether the userGroup field is set.
    */
   @java.lang.Override
@@ -94,30 +94,30 @@ private static final long serialVersionUID = 0L;
     return ownerCase_ == 1;
   }
   /**
-   * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+   * <code>.littlehorse.UserGroup user_group = 1;</code>
    * @return The userGroup.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup() {
+  public io.littlehorse.sdk.common.proto.UserGroup getUserGroup() {
     if (ownerCase_ == 1) {
-       return (io.littlehorse.sdk.common.proto.UserGroupPb) owner_;
+       return (io.littlehorse.sdk.common.proto.UserGroup) owner_;
     }
-    return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+   * <code>.littlehorse.UserGroup user_group = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder() {
+  public io.littlehorse.sdk.common.proto.UserGroupOrBuilder getUserGroupOrBuilder() {
     if (ownerCase_ == 1) {
-       return (io.littlehorse.sdk.common.proto.UserGroupPb) owner_;
+       return (io.littlehorse.sdk.common.proto.UserGroup) owner_;
     }
-    return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
   }
 
   public static final int USER_FIELD_NUMBER = 2;
   /**
-   * <code>.littlehorse.UserPb user = 2;</code>
+   * <code>.littlehorse.User user = 2;</code>
    * @return Whether the user field is set.
    */
   @java.lang.Override
@@ -125,25 +125,25 @@ private static final long serialVersionUID = 0L;
     return ownerCase_ == 2;
   }
   /**
-   * <code>.littlehorse.UserPb user = 2;</code>
+   * <code>.littlehorse.User user = 2;</code>
    * @return The user.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserPb getUser() {
+  public io.littlehorse.sdk.common.proto.User getUser() {
     if (ownerCase_ == 2) {
-       return (io.littlehorse.sdk.common.proto.UserPb) owner_;
+       return (io.littlehorse.sdk.common.proto.User) owner_;
     }
-    return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.UserPb user = 2;</code>
+   * <code>.littlehorse.User user = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserPbOrBuilder getUserOrBuilder() {
+  public io.littlehorse.sdk.common.proto.UserOrBuilder getUserOrBuilder() {
     if (ownerCase_ == 2) {
-       return (io.littlehorse.sdk.common.proto.UserPb) owner_;
+       return (io.littlehorse.sdk.common.proto.User) owner_;
     }
-    return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -161,10 +161,10 @@ private static final long serialVersionUID = 0L;
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (ownerCase_ == 1) {
-      output.writeMessage(1, (io.littlehorse.sdk.common.proto.UserGroupPb) owner_);
+      output.writeMessage(1, (io.littlehorse.sdk.common.proto.UserGroup) owner_);
     }
     if (ownerCase_ == 2) {
-      output.writeMessage(2, (io.littlehorse.sdk.common.proto.UserPb) owner_);
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.User) owner_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -177,11 +177,11 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (ownerCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.UserGroupPb) owner_);
+        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.UserGroup) owner_);
     }
     if (ownerCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.UserPb) owner_);
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.User) owner_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -550,9 +550,9 @@ private static final long serialVersionUID = 0L;
     private int bitField0_;
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder> userGroupBuilder_;
+        io.littlehorse.sdk.common.proto.UserGroup, io.littlehorse.sdk.common.proto.UserGroup.Builder, io.littlehorse.sdk.common.proto.UserGroupOrBuilder> userGroupBuilder_;
     /**
-     * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+     * <code>.littlehorse.UserGroup user_group = 1;</code>
      * @return Whether the userGroup field is set.
      */
     @java.lang.Override
@@ -560,27 +560,27 @@ private static final long serialVersionUID = 0L;
       return ownerCase_ == 1;
     }
     /**
-     * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+     * <code>.littlehorse.UserGroup user_group = 1;</code>
      * @return The userGroup.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup() {
+    public io.littlehorse.sdk.common.proto.UserGroup getUserGroup() {
       if (userGroupBuilder_ == null) {
         if (ownerCase_ == 1) {
-          return (io.littlehorse.sdk.common.proto.UserGroupPb) owner_;
+          return (io.littlehorse.sdk.common.proto.UserGroup) owner_;
         }
-        return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
       } else {
         if (ownerCase_ == 1) {
           return userGroupBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+     * <code>.littlehorse.UserGroup user_group = 1;</code>
      */
-    public Builder setUserGroup(io.littlehorse.sdk.common.proto.UserGroupPb value) {
+    public Builder setUserGroup(io.littlehorse.sdk.common.proto.UserGroup value) {
       if (userGroupBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -594,10 +594,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+     * <code>.littlehorse.UserGroup user_group = 1;</code>
      */
     public Builder setUserGroup(
-        io.littlehorse.sdk.common.proto.UserGroupPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.UserGroup.Builder builderForValue) {
       if (userGroupBuilder_ == null) {
         owner_ = builderForValue.build();
         onChanged();
@@ -608,13 +608,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+     * <code>.littlehorse.UserGroup user_group = 1;</code>
      */
-    public Builder mergeUserGroup(io.littlehorse.sdk.common.proto.UserGroupPb value) {
+    public Builder mergeUserGroup(io.littlehorse.sdk.common.proto.UserGroup value) {
       if (userGroupBuilder_ == null) {
         if (ownerCase_ == 1 &&
-            owner_ != io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance()) {
-          owner_ = io.littlehorse.sdk.common.proto.UserGroupPb.newBuilder((io.littlehorse.sdk.common.proto.UserGroupPb) owner_)
+            owner_ != io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance()) {
+          owner_ = io.littlehorse.sdk.common.proto.UserGroup.newBuilder((io.littlehorse.sdk.common.proto.UserGroup) owner_)
               .mergeFrom(value).buildPartial();
         } else {
           owner_ = value;
@@ -631,7 +631,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+     * <code>.littlehorse.UserGroup user_group = 1;</code>
      */
     public Builder clearUserGroup() {
       if (userGroupBuilder_ == null) {
@@ -650,38 +650,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+     * <code>.littlehorse.UserGroup user_group = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserGroupPb.Builder getUserGroupBuilder() {
+    public io.littlehorse.sdk.common.proto.UserGroup.Builder getUserGroupBuilder() {
       return getUserGroupFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+     * <code>.littlehorse.UserGroup user_group = 1;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UserGroupOrBuilder getUserGroupOrBuilder() {
       if ((ownerCase_ == 1) && (userGroupBuilder_ != null)) {
         return userGroupBuilder_.getMessageOrBuilder();
       } else {
         if (ownerCase_ == 1) {
-          return (io.littlehorse.sdk.common.proto.UserGroupPb) owner_;
+          return (io.littlehorse.sdk.common.proto.UserGroup) owner_;
         }
-        return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UserGroupPb user_group = 1;</code>
+     * <code>.littlehorse.UserGroup user_group = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.UserGroup, io.littlehorse.sdk.common.proto.UserGroup.Builder, io.littlehorse.sdk.common.proto.UserGroupOrBuilder> 
         getUserGroupFieldBuilder() {
       if (userGroupBuilder_ == null) {
         if (!(ownerCase_ == 1)) {
-          owner_ = io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+          owner_ = io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
         }
         userGroupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.UserGroupPb) owner_,
+            io.littlehorse.sdk.common.proto.UserGroup, io.littlehorse.sdk.common.proto.UserGroup.Builder, io.littlehorse.sdk.common.proto.UserGroupOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserGroup) owner_,
                 getParentForChildren(),
                 isClean());
         owner_ = null;
@@ -692,9 +692,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserPb, io.littlehorse.sdk.common.proto.UserPb.Builder, io.littlehorse.sdk.common.proto.UserPbOrBuilder> userBuilder_;
+        io.littlehorse.sdk.common.proto.User, io.littlehorse.sdk.common.proto.User.Builder, io.littlehorse.sdk.common.proto.UserOrBuilder> userBuilder_;
     /**
-     * <code>.littlehorse.UserPb user = 2;</code>
+     * <code>.littlehorse.User user = 2;</code>
      * @return Whether the user field is set.
      */
     @java.lang.Override
@@ -702,27 +702,27 @@ private static final long serialVersionUID = 0L;
       return ownerCase_ == 2;
     }
     /**
-     * <code>.littlehorse.UserPb user = 2;</code>
+     * <code>.littlehorse.User user = 2;</code>
      * @return The user.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserPb getUser() {
+    public io.littlehorse.sdk.common.proto.User getUser() {
       if (userBuilder_ == null) {
         if (ownerCase_ == 2) {
-          return (io.littlehorse.sdk.common.proto.UserPb) owner_;
+          return (io.littlehorse.sdk.common.proto.User) owner_;
         }
-        return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
       } else {
         if (ownerCase_ == 2) {
           return userBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UserPb user = 2;</code>
+     * <code>.littlehorse.User user = 2;</code>
      */
-    public Builder setUser(io.littlehorse.sdk.common.proto.UserPb value) {
+    public Builder setUser(io.littlehorse.sdk.common.proto.User value) {
       if (userBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -736,10 +736,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserPb user = 2;</code>
+     * <code>.littlehorse.User user = 2;</code>
      */
     public Builder setUser(
-        io.littlehorse.sdk.common.proto.UserPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.User.Builder builderForValue) {
       if (userBuilder_ == null) {
         owner_ = builderForValue.build();
         onChanged();
@@ -750,13 +750,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserPb user = 2;</code>
+     * <code>.littlehorse.User user = 2;</code>
      */
-    public Builder mergeUser(io.littlehorse.sdk.common.proto.UserPb value) {
+    public Builder mergeUser(io.littlehorse.sdk.common.proto.User value) {
       if (userBuilder_ == null) {
         if (ownerCase_ == 2 &&
-            owner_ != io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance()) {
-          owner_ = io.littlehorse.sdk.common.proto.UserPb.newBuilder((io.littlehorse.sdk.common.proto.UserPb) owner_)
+            owner_ != io.littlehorse.sdk.common.proto.User.getDefaultInstance()) {
+          owner_ = io.littlehorse.sdk.common.proto.User.newBuilder((io.littlehorse.sdk.common.proto.User) owner_)
               .mergeFrom(value).buildPartial();
         } else {
           owner_ = value;
@@ -773,7 +773,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserPb user = 2;</code>
+     * <code>.littlehorse.User user = 2;</code>
      */
     public Builder clearUser() {
       if (userBuilder_ == null) {
@@ -792,38 +792,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserPb user = 2;</code>
+     * <code>.littlehorse.User user = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserPb.Builder getUserBuilder() {
+    public io.littlehorse.sdk.common.proto.User.Builder getUserBuilder() {
       return getUserFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.UserPb user = 2;</code>
+     * <code>.littlehorse.User user = 2;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserPbOrBuilder getUserOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UserOrBuilder getUserOrBuilder() {
       if ((ownerCase_ == 2) && (userBuilder_ != null)) {
         return userBuilder_.getMessageOrBuilder();
       } else {
         if (ownerCase_ == 2) {
-          return (io.littlehorse.sdk.common.proto.UserPb) owner_;
+          return (io.littlehorse.sdk.common.proto.User) owner_;
         }
-        return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UserPb user = 2;</code>
+     * <code>.littlehorse.User user = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserPb, io.littlehorse.sdk.common.proto.UserPb.Builder, io.littlehorse.sdk.common.proto.UserPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.User, io.littlehorse.sdk.common.proto.User.Builder, io.littlehorse.sdk.common.proto.UserOrBuilder> 
         getUserFieldBuilder() {
       if (userBuilder_ == null) {
         if (!(ownerCase_ == 2)) {
-          owner_ = io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+          owner_ = io.littlehorse.sdk.common.proto.User.getDefaultInstance();
         }
         userBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UserPb, io.littlehorse.sdk.common.proto.UserPb.Builder, io.littlehorse.sdk.common.proto.UserPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.UserPb) owner_,
+            io.littlehorse.sdk.common.proto.User, io.littlehorse.sdk.common.proto.User.Builder, io.littlehorse.sdk.common.proto.UserOrBuilder>(
+                (io.littlehorse.sdk.common.proto.User) owner_,
                 getParentForChildren(),
                 isClean());
         owner_ = null;

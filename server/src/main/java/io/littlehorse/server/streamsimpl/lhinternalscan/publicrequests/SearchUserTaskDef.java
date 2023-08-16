@@ -11,7 +11,7 @@ import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefPb.UserTaskDefCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefReplyPb;
-import io.littlehorse.sdk.common.proto.UserTaskDefIdPb;
+import io.littlehorse.sdk.common.proto.UserTaskDefId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class SearchUserTaskDef
-    extends PublicScanRequest<SearchUserTaskDefPb, SearchUserTaskDefReplyPb, UserTaskDefIdPb, UserTaskDefIdModel, SearchUserTaskDefReply> {
+    extends PublicScanRequest<SearchUserTaskDefPb, SearchUserTaskDefReplyPb, UserTaskDefId, UserTaskDefIdModel, SearchUserTaskDefReply> {
 
     private UserTaskDefCriteriaCase type;
     private String name;

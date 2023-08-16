@@ -36,17 +36,17 @@ public interface GetUserTaskRunReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>optional .littlehorse.UserTaskRunPb result = 3;</code>
+   * <code>optional .littlehorse.UserTaskRun result = 3;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>optional .littlehorse.UserTaskRunPb result = 3;</code>
+   * <code>optional .littlehorse.UserTaskRun result = 3;</code>
    * @return The result.
    */
-  io.littlehorse.sdk.common.proto.UserTaskRunPb getResult();
+  io.littlehorse.sdk.common.proto.UserTaskRun getResult();
   /**
-   * <code>optional .littlehorse.UserTaskRunPb result = 3;</code>
+   * <code>optional .littlehorse.UserTaskRun result = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskRunPbOrBuilder getResultOrBuilder();
+  io.littlehorse.sdk.common.proto.UserTaskRunOrBuilder getResultOrBuilder();
 }

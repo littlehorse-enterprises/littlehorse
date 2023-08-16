@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface UserPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.UserPb)
+public interface UserOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.User)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -20,17 +20,17 @@ public interface UserPbOrBuilder extends
       getIdBytes();
 
   /**
-   * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
+   * <code>optional .littlehorse.UserGroup user_group = 2;</code>
    * @return Whether the userGroup field is set.
    */
   boolean hasUserGroup();
   /**
-   * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
+   * <code>optional .littlehorse.UserGroup user_group = 2;</code>
    * @return The userGroup.
    */
-  io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup();
+  io.littlehorse.sdk.common.proto.UserGroup getUserGroup();
   /**
-   * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
+   * <code>optional .littlehorse.UserGroup user_group = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder();
+  io.littlehorse.sdk.common.proto.UserGroupOrBuilder getUserGroupOrBuilder();
 }

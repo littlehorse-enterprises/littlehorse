@@ -2,12 +2,12 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.objectId.NodeRunId;
+import io.littlehorse.common.model.objectId.NodeRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.sdk.common.proto.NodeRunIdPb;
+import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.SearchNodeRunPb;
 import io.littlehorse.sdk.common.proto.SearchNodeRunPb.NoderunCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchNodeRunReplyPb;
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SearchNodeRun
-    extends PublicScanRequest<SearchNodeRunPb, SearchNodeRunReplyPb, NodeRunIdPb, NodeRunId, SearchNodeRunReply> {
+    extends PublicScanRequest<SearchNodeRunPb, SearchNodeRunReplyPb, NodeRunId, NodeRunIdModel, SearchNodeRunReply> {
 
     public NoderunCriteriaCase type;
     public String wfRunId;

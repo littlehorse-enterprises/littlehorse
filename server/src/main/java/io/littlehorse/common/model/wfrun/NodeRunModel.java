@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.NodeModel;
-import io.littlehorse.common.model.objectId.NodeRunId;
+import io.littlehorse.common.model.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.subnoderun.EntrypointRun;
 import io.littlehorse.common.model.wfrun.subnoderun.ExitRun;
@@ -103,8 +103,8 @@ public class NodeRunModel extends Getable<NodeRun> {
         return failures.get(failures.size() - 1);
     }
 
-    public NodeRunId getObjectId() {
-        return new NodeRunId(wfRunId, threadRunNumber, position);
+    public NodeRunIdModel getObjectId() {
+        return new NodeRunIdModel(wfRunId, threadRunNumber, position);
     }
 
     public Class<NodeRun> getProtoBaseClass() {

@@ -2,35 +2,35 @@ package io.littlehorse.common.model.objectId;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.ObjectId;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunPb;
+import io.littlehorse.sdk.common.proto.UserTaskRun;
+import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UserTaskRunId
-    extends ObjectId<UserTaskRunIdPb, UserTaskRunPb, UserTaskRun> {
+public class UserTaskRunIdModel
+    extends ObjectId<UserTaskRunId, UserTaskRun, UserTaskRunModel> {
 
     private String wfRunId;
     private String userTaskGuid;
 
-    public UserTaskRunId() {}
+    public UserTaskRunIdModel() {}
 
-    public UserTaskRunId(String partitionKey, String guid) {
+    public UserTaskRunIdModel(String partitionKey, String guid) {
         this.wfRunId = partitionKey;
         this.userTaskGuid = guid;
     }
 
-    public UserTaskRunId(String partitionKey) {
+    public UserTaskRunIdModel(String partitionKey) {
         this(partitionKey, LHUtil.generateGuid());
     }
 
-    public Class<UserTaskRunIdPb> getProtoBaseClass() {
-        return UserTaskRunIdPb.class;
+    public Class<UserTaskRunId> getProtoBaseClass() {
+        return UserTaskRunId.class;
     }
 
     public String getPartitionKey() {
@@ -38,13 +38,13 @@ public class UserTaskRunId
     }
 
     public void initFrom(Message proto) {
-        UserTaskRunIdPb p = (UserTaskRunIdPb) proto;
+        UserTaskRunId p = (UserTaskRunId) proto;
         wfRunId = p.getWfRunId();
         userTaskGuid = p.getUserTaskGuid();
     }
 
-    public UserTaskRunIdPb.Builder toProto() {
-        UserTaskRunIdPb.Builder out = UserTaskRunIdPb
+    public UserTaskRunId.Builder toProto() {
+        UserTaskRunId.Builder out = UserTaskRunId
             .newBuilder()
             .setWfRunId(wfRunId)
             .setUserTaskGuid(userTaskGuid);

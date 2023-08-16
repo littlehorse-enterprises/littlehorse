@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.objectId.NodeRunId;
+import io.littlehorse.common.model.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.NodeRunModel;
@@ -19,12 +19,12 @@ import lombok.Setter;
 @Setter
 public class TaskNodeReference extends TaskRunSubSource<TaskNodeReferencePb> {
 
-    private NodeRunId nodeRunId;
+    private NodeRunIdModel nodeRunId;
     private WfSpecId wfSpecId;
 
     public TaskNodeReference() {}
 
-    public TaskNodeReference(NodeRunId nodeRunId, WfSpecId wfSpecId) {
+    public TaskNodeReference(NodeRunIdModel nodeRunId, WfSpecId wfSpecId) {
         this.nodeRunId = nodeRunId;
         this.wfSpecId = wfSpecId;
     }
@@ -44,7 +44,7 @@ public class TaskNodeReference extends TaskRunSubSource<TaskNodeReferencePb> {
 
     public void initFrom(Message proto) {
         TaskNodeReferencePb p = (TaskNodeReferencePb) proto;
-        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunId.class);
+        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
         wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecId.class);
     }
 

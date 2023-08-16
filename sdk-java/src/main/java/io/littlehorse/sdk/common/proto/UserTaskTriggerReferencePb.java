@@ -45,9 +45,9 @@ private static final long serialVersionUID = 0L;
 
   private int bitField0_;
   public static final int NODE_RUN_ID_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.NodeRunIdPb nodeRunId_;
+  private io.littlehorse.sdk.common.proto.NodeRunId nodeRunId_;
   /**
-   * <code>.littlehorse.NodeRunIdPb node_run_id = 1;</code>
+   * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    * @return Whether the nodeRunId field is set.
    */
   @java.lang.Override
@@ -55,19 +55,19 @@ private static final long serialVersionUID = 0L;
     return nodeRunId_ != null;
   }
   /**
-   * <code>.littlehorse.NodeRunIdPb node_run_id = 1;</code>
+   * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    * @return The nodeRunId.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.NodeRunIdPb getNodeRunId() {
-    return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance() : nodeRunId_;
+  public io.littlehorse.sdk.common.proto.NodeRunId getNodeRunId() {
+    return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : nodeRunId_;
   }
   /**
-   * <code>.littlehorse.NodeRunIdPb node_run_id = 1;</code>
+   * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getNodeRunIdOrBuilder() {
-    return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance() : nodeRunId_;
+  public io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder() {
+    return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : nodeRunId_;
   }
 
   public static final int USER_TASK_EVENT_NUMBER_FIELD_NUMBER = 2;
@@ -575,31 +575,31 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.NodeRunIdPb nodeRunId_;
+    private io.littlehorse.sdk.common.proto.NodeRunId nodeRunId_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.NodeRunIdPb, io.littlehorse.sdk.common.proto.NodeRunIdPb.Builder, io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder> nodeRunIdBuilder_;
+        io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> nodeRunIdBuilder_;
     /**
-     * <code>.littlehorse.NodeRunIdPb node_run_id = 1;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      * @return Whether the nodeRunId field is set.
      */
     public boolean hasNodeRunId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb node_run_id = 1;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      * @return The nodeRunId.
      */
-    public io.littlehorse.sdk.common.proto.NodeRunIdPb getNodeRunId() {
+    public io.littlehorse.sdk.common.proto.NodeRunId getNodeRunId() {
       if (nodeRunIdBuilder_ == null) {
-        return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance() : nodeRunId_;
+        return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : nodeRunId_;
       } else {
         return nodeRunIdBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb node_run_id = 1;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
-    public Builder setNodeRunId(io.littlehorse.sdk.common.proto.NodeRunIdPb value) {
+    public Builder setNodeRunId(io.littlehorse.sdk.common.proto.NodeRunId value) {
       if (nodeRunIdBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -613,10 +613,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb node_run_id = 1;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     public Builder setNodeRunId(
-        io.littlehorse.sdk.common.proto.NodeRunIdPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.NodeRunId.Builder builderForValue) {
       if (nodeRunIdBuilder_ == null) {
         nodeRunId_ = builderForValue.build();
       } else {
@@ -627,13 +627,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb node_run_id = 1;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
-    public Builder mergeNodeRunId(io.littlehorse.sdk.common.proto.NodeRunIdPb value) {
+    public Builder mergeNodeRunId(io.littlehorse.sdk.common.proto.NodeRunId value) {
       if (nodeRunIdBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0) &&
           nodeRunId_ != null &&
-          nodeRunId_ != io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance()) {
+          nodeRunId_ != io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance()) {
           getNodeRunIdBuilder().mergeFrom(value);
         } else {
           nodeRunId_ = value;
@@ -646,7 +646,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb node_run_id = 1;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     public Builder clearNodeRunId() {
       bitField0_ = (bitField0_ & ~0x00000001);
@@ -659,33 +659,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb node_run_id = 1;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.NodeRunIdPb.Builder getNodeRunIdBuilder() {
+    public io.littlehorse.sdk.common.proto.NodeRunId.Builder getNodeRunIdBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
       return getNodeRunIdFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb node_run_id = 1;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getNodeRunIdOrBuilder() {
+    public io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder() {
       if (nodeRunIdBuilder_ != null) {
         return nodeRunIdBuilder_.getMessageOrBuilder();
       } else {
         return nodeRunId_ == null ?
-            io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance() : nodeRunId_;
+            io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : nodeRunId_;
       }
     }
     /**
-     * <code>.littlehorse.NodeRunIdPb node_run_id = 1;</code>
+     * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.NodeRunIdPb, io.littlehorse.sdk.common.proto.NodeRunIdPb.Builder, io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> 
         getNodeRunIdFieldBuilder() {
       if (nodeRunIdBuilder_ == null) {
         nodeRunIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.NodeRunIdPb, io.littlehorse.sdk.common.proto.NodeRunIdPb.Builder, io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder>(
                 getNodeRunId(),
                 getParentForChildren(),
                 isClean());

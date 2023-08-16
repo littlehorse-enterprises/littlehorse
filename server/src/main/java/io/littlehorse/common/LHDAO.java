@@ -10,14 +10,14 @@ import io.littlehorse.common.model.meta.TaskDefModel;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
 import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
-import io.littlehorse.common.model.objectId.NodeRunId;
+import io.littlehorse.common.model.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.objectId.TaskRunId;
-import io.littlehorse.common.model.objectId.UserTaskRunId;
+import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
@@ -51,7 +51,7 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public NodeRunModel getNodeRun(String wfRunId, int threadNum, int position);
 
-    public default NodeRunModel getNodeRun(NodeRunId id) {
+    public default NodeRunModel getNodeRun(NodeRunIdModel id) {
         return getNodeRun(id.getWfRunId(), id.getThreadRunNumber(), id.getPosition());
     }
 
@@ -117,9 +117,9 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public void putTaskRun(TaskRun taskRun);
 
-    public void putUserTaskRun(UserTaskRun taskRun);
+    public void putUserTaskRun(UserTaskRunModel taskRun);
 
-    public UserTaskRun getUserTaskRun(UserTaskRunId userTaskRunId);
+    public UserTaskRunModel getUserTaskRun(UserTaskRunIdModel userTaskRunId);
 
     /*
      * Clear any dirty cache if necessary

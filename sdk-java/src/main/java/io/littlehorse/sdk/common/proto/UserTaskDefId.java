@@ -4,26 +4,26 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.UserPb}
+ * Protobuf type {@code littlehorse.UserTaskDefId}
  */
-public final class UserPb extends
+public final class UserTaskDefId extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.UserPb)
-    UserPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.UserTaskDefId)
+    UserTaskDefIdOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use UserPb.newBuilder() to construct.
-  private UserPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use UserTaskDefId.newBuilder() to construct.
+  private UserTaskDefId(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private UserPb() {
-    id_ = "";
+  private UserTaskDefId() {
+    name_ = "";
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new UserPb();
+    return new UserTaskDefId();
   }
 
   @java.lang.Override
@@ -33,81 +33,65 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserPb_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskDefId_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserPb_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskDefId_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.UserPb.class, io.littlehorse.sdk.common.proto.UserPb.Builder.class);
+            io.littlehorse.sdk.common.proto.UserTaskDefId.class, io.littlehorse.sdk.common.proto.UserTaskDefId.Builder.class);
   }
 
-  private int bitField0_;
-  public static final int ID_FIELD_NUMBER = 1;
+  public static final int NAME_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
-  private volatile java.lang.Object id_ = "";
+  private volatile java.lang.Object name_ = "";
   /**
-   * <code>string id = 1;</code>
-   * @return The id.
+   * <code>string name = 1;</code>
+   * @return The name.
    */
   @java.lang.Override
-  public java.lang.String getId() {
-    java.lang.Object ref = id_;
+  public java.lang.String getName() {
+    java.lang.Object ref = name_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      id_ = s;
+      name_ = s;
       return s;
     }
   }
   /**
-   * <code>string id = 1;</code>
-   * @return The bytes for id.
+   * <code>string name = 1;</code>
+   * @return The bytes for name.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getIdBytes() {
-    java.lang.Object ref = id_;
+      getNameBytes() {
+    java.lang.Object ref = name_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      id_ = b;
+      name_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
   }
 
-  public static final int USER_GROUP_FIELD_NUMBER = 2;
-  private io.littlehorse.sdk.common.proto.UserGroupPb userGroup_;
+  public static final int VERSION_FIELD_NUMBER = 2;
+  private int version_ = 0;
   /**
-   * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
-   * @return Whether the userGroup field is set.
+   * <code>int32 version = 2;</code>
+   * @return The version.
    */
   @java.lang.Override
-  public boolean hasUserGroup() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
-   * @return The userGroup.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup() {
-    return userGroup_ == null ? io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance() : userGroup_;
-  }
-  /**
-   * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder() {
-    return userGroup_ == null ? io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance() : userGroup_;
+  public int getVersion() {
+    return version_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -124,11 +108,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(2, getUserGroup());
+    if (version_ != 0) {
+      output.writeInt32(2, version_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -139,12 +123,12 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (version_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getUserGroup());
+        .computeInt32Size(2, version_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -156,18 +140,15 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.UserPb)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskDefId)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.UserPb other = (io.littlehorse.sdk.common.proto.UserPb) obj;
+    io.littlehorse.sdk.common.proto.UserTaskDefId other = (io.littlehorse.sdk.common.proto.UserTaskDefId) obj;
 
-    if (!getId()
-        .equals(other.getId())) return false;
-    if (hasUserGroup() != other.hasUserGroup()) return false;
-    if (hasUserGroup()) {
-      if (!getUserGroup()
-          .equals(other.getUserGroup())) return false;
-    }
+    if (!getName()
+        .equals(other.getName())) return false;
+    if (getVersion()
+        != other.getVersion()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -179,80 +160,78 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + ID_FIELD_NUMBER;
-    hash = (53 * hash) + getId().hashCode();
-    if (hasUserGroup()) {
-      hash = (37 * hash) + USER_GROUP_FIELD_NUMBER;
-      hash = (53 * hash) + getUserGroup().hashCode();
-    }
+    hash = (37 * hash) + NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getName().hashCode();
+    hash = (37 * hash) + VERSION_FIELD_NUMBER;
+    hash = (53 * hash) + getVersion();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.UserPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDefId parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UserPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDefId parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDefId parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UserPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDefId parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserPb parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.UserTaskDefId parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UserPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDefId parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.UserTaskDefId parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UserPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDefId parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.UserTaskDefId parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UserPb parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDefId parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDefId parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UserPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskDefId parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -265,7 +244,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserPb prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskDefId prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -281,68 +260,58 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.UserPb}
+   * Protobuf type {@code littlehorse.UserTaskDefId}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.UserPb)
-      io.littlehorse.sdk.common.proto.UserPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskDefId)
+      io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskDefId_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskDefId_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.UserPb.class, io.littlehorse.sdk.common.proto.UserPb.Builder.class);
+              io.littlehorse.sdk.common.proto.UserTaskDefId.class, io.littlehorse.sdk.common.proto.UserTaskDefId.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.UserPb.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.UserTaskDefId.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-        getUserGroupFieldBuilder();
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      id_ = "";
-      userGroup_ = null;
-      if (userGroupBuilder_ != null) {
-        userGroupBuilder_.dispose();
-        userGroupBuilder_ = null;
-      }
+      name_ = "";
+      version_ = 0;
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskDefId_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserPb getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.UserTaskDefId getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.UserTaskDefId.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserPb build() {
-      io.littlehorse.sdk.common.proto.UserPb result = buildPartial();
+    public io.littlehorse.sdk.common.proto.UserTaskDefId build() {
+      io.littlehorse.sdk.common.proto.UserTaskDefId result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -350,26 +319,21 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserPb buildPartial() {
-      io.littlehorse.sdk.common.proto.UserPb result = new io.littlehorse.sdk.common.proto.UserPb(this);
+    public io.littlehorse.sdk.common.proto.UserTaskDefId buildPartial() {
+      io.littlehorse.sdk.common.proto.UserTaskDefId result = new io.littlehorse.sdk.common.proto.UserTaskDefId(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.UserPb result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskDefId result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.id_ = id_;
+        result.name_ = name_;
       }
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.userGroup_ = userGroupBuilder_ == null
-            ? userGroup_
-            : userGroupBuilder_.build();
-        to_bitField0_ |= 0x00000001;
+        result.version_ = version_;
       }
-      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -406,23 +370,23 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.UserPb) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.UserPb)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.UserTaskDefId) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskDefId)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserPb other) {
-      if (other == io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance()) return this;
-      if (!other.getId().isEmpty()) {
-        id_ = other.id_;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskDefId other) {
+      if (other == io.littlehorse.sdk.common.proto.UserTaskDefId.getDefaultInstance()) return this;
+      if (!other.getName().isEmpty()) {
+        name_ = other.name_;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (other.hasUserGroup()) {
-        mergeUserGroup(other.getUserGroup());
+      if (other.getVersion() != 0) {
+        setVersion(other.getVersion());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -451,17 +415,15 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              id_ = input.readStringRequireUtf8();
+              name_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 18: {
-              input.readMessage(
-                  getUserGroupFieldBuilder().getBuilder(),
-                  extensionRegistry);
+            case 16: {
+              version_ = input.readInt32();
               bitField0_ |= 0x00000002;
               break;
-            } // case 18
+            } // case 16
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -479,195 +441,108 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.lang.Object id_ = "";
+    private java.lang.Object name_ = "";
     /**
-     * <code>string id = 1;</code>
-     * @return The id.
+     * <code>string name = 1;</code>
+     * @return The name.
      */
-    public java.lang.String getId() {
-      java.lang.Object ref = id_;
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        id_ = s;
+        name_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string id = 1;</code>
-     * @return The bytes for id.
+     * <code>string name = 1;</code>
+     * @return The bytes for name.
      */
     public com.google.protobuf.ByteString
-        getIdBytes() {
-      java.lang.Object ref = id_;
+        getNameBytes() {
+      java.lang.Object ref = name_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        id_ = b;
+        name_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string id = 1;</code>
-     * @param value The id to set.
+     * <code>string name = 1;</code>
+     * @param value The name to set.
      * @return This builder for chaining.
      */
-    public Builder setId(
+    public Builder setName(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      id_ = value;
+      name_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>string id = 1;</code>
+     * <code>string name = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearId() {
-      id_ = getDefaultInstance().getId();
+    public Builder clearName() {
+      name_ = getDefaultInstance().getName();
       bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
     /**
-     * <code>string id = 1;</code>
-     * @param value The bytes for id to set.
+     * <code>string name = 1;</code>
+     * @param value The bytes for name to set.
      * @return This builder for chaining.
      */
-    public Builder setIdBytes(
+    public Builder setNameBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      id_ = value;
+      name_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
 
-    private io.littlehorse.sdk.common.proto.UserGroupPb userGroup_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder> userGroupBuilder_;
+    private int version_ ;
     /**
-     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
-     * @return Whether the userGroup field is set.
+     * <code>int32 version = 2;</code>
+     * @return The version.
      */
-    public boolean hasUserGroup() {
-      return ((bitField0_ & 0x00000002) != 0);
+    @java.lang.Override
+    public int getVersion() {
+      return version_;
     }
     /**
-     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
-     * @return The userGroup.
+     * <code>int32 version = 2;</code>
+     * @param value The version to set.
+     * @return This builder for chaining.
      */
-    public io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup() {
-      if (userGroupBuilder_ == null) {
-        return userGroup_ == null ? io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance() : userGroup_;
-      } else {
-        return userGroupBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
-     */
-    public Builder setUserGroup(io.littlehorse.sdk.common.proto.UserGroupPb value) {
-      if (userGroupBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        userGroup_ = value;
-      } else {
-        userGroupBuilder_.setMessage(value);
-      }
+    public Builder setVersion(int value) {
+      
+      version_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
+     * <code>int32 version = 2;</code>
+     * @return This builder for chaining.
      */
-    public Builder setUserGroup(
-        io.littlehorse.sdk.common.proto.UserGroupPb.Builder builderForValue) {
-      if (userGroupBuilder_ == null) {
-        userGroup_ = builderForValue.build();
-      } else {
-        userGroupBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
-     */
-    public Builder mergeUserGroup(io.littlehorse.sdk.common.proto.UserGroupPb value) {
-      if (userGroupBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
-          userGroup_ != null &&
-          userGroup_ != io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance()) {
-          getUserGroupBuilder().mergeFrom(value);
-        } else {
-          userGroup_ = value;
-        }
-      } else {
-        userGroupBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
-     */
-    public Builder clearUserGroup() {
+    public Builder clearVersion() {
       bitField0_ = (bitField0_ & ~0x00000002);
-      userGroup_ = null;
-      if (userGroupBuilder_ != null) {
-        userGroupBuilder_.dispose();
-        userGroupBuilder_ = null;
-      }
+      version_ = 0;
       onChanged();
       return this;
-    }
-    /**
-     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
-     */
-    public io.littlehorse.sdk.common.proto.UserGroupPb.Builder getUserGroupBuilder() {
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return getUserGroupFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
-     */
-    public io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder() {
-      if (userGroupBuilder_ != null) {
-        return userGroupBuilder_.getMessageOrBuilder();
-      } else {
-        return userGroup_ == null ?
-            io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance() : userGroup_;
-      }
-    }
-    /**
-     * <code>optional .littlehorse.UserGroupPb user_group = 2;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder> 
-        getUserGroupFieldBuilder() {
-      if (userGroupBuilder_ == null) {
-        userGroupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder>(
-                getUserGroup(),
-                getParentForChildren(),
-                isClean());
-        userGroup_ = null;
-      }
-      return userGroupBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
@@ -682,23 +557,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.UserPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskDefId)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.UserPb)
-  private static final io.littlehorse.sdk.common.proto.UserPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.UserTaskDefId)
+  private static final io.littlehorse.sdk.common.proto.UserTaskDefId DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserPb();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskDefId();
   }
 
-  public static io.littlehorse.sdk.common.proto.UserPb getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.UserTaskDefId getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<UserPb>
-      PARSER = new com.google.protobuf.AbstractParser<UserPb>() {
+  private static final com.google.protobuf.Parser<UserTaskDefId>
+      PARSER = new com.google.protobuf.AbstractParser<UserTaskDefId>() {
     @java.lang.Override
-    public UserPb parsePartialFrom(
+    public UserTaskDefId parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -717,17 +592,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<UserPb> parser() {
+  public static com.google.protobuf.Parser<UserTaskDefId> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<UserPb> getParserForType() {
+  public com.google.protobuf.Parser<UserTaskDefId> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserPb getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.UserTaskDefId getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

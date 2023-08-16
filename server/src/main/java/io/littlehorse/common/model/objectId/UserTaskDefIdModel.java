@@ -7,14 +7,14 @@ import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
-import io.littlehorse.sdk.common.proto.UserTaskDefIdPb;
+import io.littlehorse.sdk.common.proto.UserTaskDefId;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class UserTaskDefIdModel
-    extends ObjectId<UserTaskDefIdPb, UserTaskDef, UserTaskDefModel> {
+    extends ObjectId<UserTaskDefId, UserTaskDef, UserTaskDefModel> {
 
     private String name;
     private int version;
@@ -26,8 +26,8 @@ public class UserTaskDefIdModel
         this.version = version;
     }
 
-    public Class<UserTaskDefIdPb> getProtoBaseClass() {
-        return UserTaskDefIdPb.class;
+    public Class<UserTaskDefId> getProtoBaseClass() {
+        return UserTaskDefId.class;
     }
 
     public String getPartitionKey() {
@@ -35,13 +35,13 @@ public class UserTaskDefIdModel
     }
 
     public void initFrom(Message proto) {
-        UserTaskDefIdPb p = (UserTaskDefIdPb) proto;
+        UserTaskDefId p = (UserTaskDefId) proto;
         name = p.getName();
         version = p.getVersion();
     }
 
-    public UserTaskDefIdPb.Builder toProto() {
-        UserTaskDefIdPb.Builder out = UserTaskDefIdPb
+    public UserTaskDefId.Builder toProto() {
+        UserTaskDefId.Builder out = UserTaskDefId
             .newBuilder()
             .setName(name)
             .setVersion(version);

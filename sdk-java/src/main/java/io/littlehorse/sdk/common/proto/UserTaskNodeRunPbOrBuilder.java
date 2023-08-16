@@ -8,17 +8,17 @@ public interface UserTaskNodeRunPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>optional .littlehorse.UserTaskRunIdPb user_task_run_id = 1;</code>
+   * <code>optional .littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return Whether the userTaskRunId field is set.
    */
   boolean hasUserTaskRunId();
   /**
-   * <code>optional .littlehorse.UserTaskRunIdPb user_task_run_id = 1;</code>
+   * <code>optional .littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return The userTaskRunId.
    */
-  io.littlehorse.sdk.common.proto.UserTaskRunIdPb getUserTaskRunId();
+  io.littlehorse.sdk.common.proto.UserTaskRunId getUserTaskRunId();
   /**
-   * <code>optional .littlehorse.UserTaskRunIdPb user_task_run_id = 1;</code>
+   * <code>optional .littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskRunIdPbOrBuilder getUserTaskRunIdOrBuilder();
+  io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getUserTaskRunIdOrBuilder();
 }

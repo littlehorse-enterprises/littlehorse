@@ -10,7 +10,7 @@ import io.littlehorse.common.model.meta.VariableMutationModel;
 import io.littlehorse.common.model.meta.subnode.TaskNodeModel;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRunModel;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.VariableMutation;
@@ -52,8 +52,11 @@ public class UTATaskModel extends LHSerializable<UTATask> {
     // TODO: There is a lot of duplicated code between here and in the TaskRun
     // infrastructure. See if possible to combine it.
     // Like hey both use the same TaskNode
-    public void schedule(LHDAO dao, UserTaskRun utr, UTActionTriggerModel trigger)
-        throws LHVarSubError {
+    public void schedule(
+        LHDAO dao,
+        UserTaskRunModel utr,
+        UTActionTriggerModel trigger
+    ) throws LHVarSubError {
         NodeRunModel nodeRunModel = utr.getNodeRun();
 
         // Next, figure out when the task should be scheduled.

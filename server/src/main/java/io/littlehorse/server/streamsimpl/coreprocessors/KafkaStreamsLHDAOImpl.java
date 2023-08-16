@@ -17,11 +17,11 @@ import io.littlehorse.common.model.meta.TaskWorkerGroup;
 import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.objectId.ExternalEventDefIdModel;
-import io.littlehorse.common.model.objectId.NodeRunId;
+import io.littlehorse.common.model.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
-import io.littlehorse.common.model.objectId.UserTaskRunId;
+import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
@@ -29,7 +29,7 @@ import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.ThreadRunModel;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
@@ -158,7 +158,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public NodeRunModel getNodeRun(String wfRunId, int threadNum, int position) {
-        String key = new NodeRunId(wfRunId, threadNum, position).getStoreKey();
+        String key = new NodeRunIdModel(wfRunId, threadNum, position).getStoreKey();
         NodeRunModel nodeRunModel = storageManager.get(key, NodeRunModel.class);
         if (nodeRunModel != null) {
             nodeRunModel.setDao(this);
@@ -182,14 +182,17 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public void putUserTaskRun(UserTaskRun utr) {
-        storageManager.put(utr, UserTaskRun.class);
+    public void putUserTaskRun(UserTaskRunModel utr) {
+        storageManager.put(utr, UserTaskRunModel.class);
     }
 
     @Override
-    public UserTaskRun getUserTaskRun(UserTaskRunId userTaskRunId) {
+    public UserTaskRunModel getUserTaskRun(UserTaskRunIdModel userTaskRunId) {
         String key = userTaskRunId.getStoreKey();
-        UserTaskRun userTaskRun = storageManager.get(key, UserTaskRun.class);
+        UserTaskRunModel userTaskRun = storageManager.get(
+            key,
+            UserTaskRunModel.class
+        );
         if (userTaskRun != null) {
             userTaskRun.setDao(this);
         }
@@ -610,14 +613,14 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         }
 
         try (
-            LHKeyValueIterator<UserTaskRun> iter = localStore.prefixScan(
+            LHKeyValueIterator<UserTaskRunModel> iter = localStore.prefixScan(
                 prefix,
-                UserTaskRun.class
+                UserTaskRunModel.class
             )
         ) {
             while (iter.hasNext()) {
-                LHIterKeyValue<UserTaskRun> next = iter.next();
-                storageManager.delete(next.getKey(), UserTaskRun.class);
+                LHIterKeyValue<UserTaskRunModel> next = iter.next();
+                storageManager.delete(next.getKey(), UserTaskRunModel.class);
             }
         }
 

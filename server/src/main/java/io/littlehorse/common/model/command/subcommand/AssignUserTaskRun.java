@@ -6,15 +6,15 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.AssignUserTaskRunReply;
-import io.littlehorse.common.model.objectId.UserTaskRunId;
-import io.littlehorse.common.model.wfrun.User;
-import io.littlehorse.common.model.wfrun.UserGroup;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
+import io.littlehorse.common.model.wfrun.UserGroupModel;
+import io.littlehorse.common.model.wfrun.UserModel;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.AssigneeCase;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
+import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,12 +25,12 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
 
-    private UserTaskRunId userTaskRunId;
+    private UserTaskRunIdModel userTaskRunId;
     private boolean overrideClaim;
 
     private AssigneeCase assigneeType;
-    private User user;
-    private UserGroup userGroup;
+    private UserModel user;
+    private UserGroupModel userGroup;
 
     public Class<AssignUserTaskRunPb> getProtoBaseClass() {
         return AssignUserTaskRunPb.class;
@@ -60,17 +60,17 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
     public void initFrom(Message proto) {
         AssignUserTaskRunPb p = (AssignUserTaskRunPb) proto;
         userTaskRunId =
-            LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunId.class);
+            LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class);
         assigneeType = p.getAssigneeCase();
         overrideClaim = p.getOverrideClaim();
 
         switch (assigneeType) {
             case USER:
-                user = LHSerializable.fromProto(p.getUser(), User.class);
+                user = LHSerializable.fromProto(p.getUser(), UserModel.class);
                 break;
             case USER_GROUP:
                 userGroup =
-                    LHSerializable.fromProto(p.getUserGroup(), UserGroup.class);
+                    LHSerializable.fromProto(p.getUserGroup(), UserGroupModel.class);
                 break;
             case ASSIGNEE_NOT_SET:
                 log.warn("Unset assignee. Should this be error?");
@@ -91,7 +91,7 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
             return out;
         }
 
-        UserTaskRun utr = dao.getUserTaskRun(userTaskRunId);
+        UserTaskRunModel utr = dao.getUserTaskRun(userTaskRunId);
         if (utr == null) {
             out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
             out.message = "Couldn't find userTaskRun " + userTaskRunId;
@@ -105,8 +105,8 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
         }
 
         if (
-            utr.getStatus() != UserTaskRunStatusPb.ASSIGNED &&
-            utr.getStatus() != UserTaskRunStatusPb.UNASSIGNED
+            utr.getStatus() != UserTaskRunStatus.ASSIGNED &&
+            utr.getStatus() != UserTaskRunStatus.UNASSIGNED
         ) {
             out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
             out.message =

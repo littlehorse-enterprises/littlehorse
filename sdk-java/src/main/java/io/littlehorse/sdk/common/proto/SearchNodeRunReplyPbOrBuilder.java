@@ -36,27 +36,27 @@ public interface SearchNodeRunReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>repeated .littlehorse.NodeRunIdPb results = 3;</code>
+   * <code>repeated .littlehorse.NodeRunId results = 3;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.NodeRunIdPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.NodeRunId> 
       getResultsList();
   /**
-   * <code>repeated .littlehorse.NodeRunIdPb results = 3;</code>
+   * <code>repeated .littlehorse.NodeRunId results = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.NodeRunIdPb getResults(int index);
+  io.littlehorse.sdk.common.proto.NodeRunId getResults(int index);
   /**
-   * <code>repeated .littlehorse.NodeRunIdPb results = 3;</code>
+   * <code>repeated .littlehorse.NodeRunId results = 3;</code>
    */
   int getResultsCount();
   /**
-   * <code>repeated .littlehorse.NodeRunIdPb results = 3;</code>
+   * <code>repeated .littlehorse.NodeRunId results = 3;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> 
       getResultsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.NodeRunIdPb results = 3;</code>
+   * <code>repeated .littlehorse.NodeRunId results = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getResultsOrBuilder(
+  io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getResultsOrBuilder(
       int index);
 
   /**

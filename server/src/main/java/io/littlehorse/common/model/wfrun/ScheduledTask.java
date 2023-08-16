@@ -40,7 +40,7 @@ public class ScheduledTask extends Storeable<ScheduledTaskPb> {
     public ScheduledTask(
         TaskDefId taskDefId,
         List<VarNameAndVal> variables,
-        UserTaskRun userTaskRun,
+        UserTaskRunModel userTaskRun,
         UserTaskTriggerContext context
     ) {
         this.variables = variables;

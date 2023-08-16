@@ -3,48 +3,48 @@ package io.littlehorse.common.model.wfrun.usertaskevent;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.UserTaskEventPb;
-import io.littlehorse.sdk.common.proto.UserTaskEventPb.EventCase;
+import io.littlehorse.sdk.common.proto.UserTaskEvent;
+import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
 import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = false)
 @Data
-public class UserTaskEvent extends LHSerializable<UserTaskEventPb> {
+public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
 
     private Date time;
     private EventCase type;
-    private UTETaskExecuted executed;
-    private UTEReassigned reassigned;
-    private UTECancelled cancelled;
+    private UTETaskExecutedModel executed;
+    private UTEReassignedModel reassigned;
+    private UTECancelledModel cancelled;
 
-    public UserTaskEvent() {}
+    public UserTaskEventModel() {}
 
-    public UserTaskEvent(UTETaskExecuted executed, Date time) {
+    public UserTaskEventModel(UTETaskExecutedModel executed, Date time) {
         this.executed = executed;
         this.time = time;
         this.type = EventCase.TASK_EXECUTED;
     }
 
-    public UserTaskEvent(UTECancelled cancelled, Date time) {
+    public UserTaskEventModel(UTECancelledModel cancelled, Date time) {
         this.cancelled = cancelled;
         this.time = time;
         this.type = EventCase.CANCELLED;
     }
 
-    public UserTaskEvent(UTEReassigned reassigned, Date time) {
+    public UserTaskEventModel(UTEReassignedModel reassigned, Date time) {
         this.reassigned = reassigned;
         this.time = time;
         this.type = EventCase.REASSIGNED;
     }
 
-    public Class<UserTaskEventPb> getProtoBaseClass() {
-        return UserTaskEventPb.class;
+    public Class<UserTaskEvent> getProtoBaseClass() {
+        return UserTaskEvent.class;
     }
 
-    public UserTaskEventPb.Builder toProto() {
-        UserTaskEventPb.Builder out = UserTaskEventPb
+    public UserTaskEvent.Builder toProto() {
+        UserTaskEvent.Builder out = UserTaskEvent
             .newBuilder()
             .setTime(LHUtil.fromDate(time));
 
@@ -65,7 +65,7 @@ public class UserTaskEvent extends LHSerializable<UserTaskEventPb> {
     }
 
     public void initFrom(Message proto) {
-        UserTaskEventPb p = (UserTaskEventPb) proto;
+        UserTaskEvent p = (UserTaskEvent) proto;
         time = LHUtil.fromProtoTs(p.getTime());
         type = p.getEventCase();
 
@@ -74,16 +74,22 @@ public class UserTaskEvent extends LHSerializable<UserTaskEventPb> {
                 executed =
                     LHSerializable.fromProto(
                         p.getTaskExecuted(),
-                        UTETaskExecuted.class
+                        UTETaskExecutedModel.class
                     );
                 break;
             case REASSIGNED:
                 reassigned =
-                    LHSerializable.fromProto(p.getReassigned(), UTEReassigned.class);
+                    LHSerializable.fromProto(
+                        p.getReassigned(),
+                        UTEReassignedModel.class
+                    );
                 break;
             case CANCELLED:
                 cancelled =
-                    LHSerializable.fromProto(p.getCancelled(), UTECancelled.class);
+                    LHSerializable.fromProto(
+                        p.getCancelled(),
+                        UTECancelledModel.class
+                    );
                 break;
             case EVENT_NOT_SET:
                 throw new RuntimeException("not possible");

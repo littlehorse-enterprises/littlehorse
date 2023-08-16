@@ -4,25 +4,25 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.UserTaskEventPb}
+ * Protobuf type {@code littlehorse.UserTaskEvent}
  */
-public final class UserTaskEventPb extends
+public final class UserTaskEvent extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.UserTaskEventPb)
-    UserTaskEventPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.UserTaskEvent)
+    UserTaskEventOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use UserTaskEventPb.newBuilder() to construct.
-  private UserTaskEventPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use UserTaskEvent.newBuilder() to construct.
+  private UserTaskEvent(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private UserTaskEventPb() {
+  private UserTaskEvent() {
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new UserTaskEventPb();
+    return new UserTaskEvent();
   }
 
   @java.lang.Override
@@ -32,41 +32,41 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.UserTaskEventPb.class, io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder.class);
+            io.littlehorse.sdk.common.proto.UserTaskEvent.class, io.littlehorse.sdk.common.proto.UserTaskEvent.Builder.class);
   }
 
-  public interface UTECancelledPbOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskEventPb.UTECancelledPb)
+  public interface UTECancelledOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskEvent.UTECancelled)
       com.google.protobuf.MessageOrBuilder {
   }
   /**
-   * Protobuf type {@code littlehorse.UserTaskEventPb.UTECancelledPb}
+   * Protobuf type {@code littlehorse.UserTaskEvent.UTECancelled}
    */
-  public static final class UTECancelledPb extends
+  public static final class UTECancelled extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.UserTaskEventPb.UTECancelledPb)
-      UTECancelledPbOrBuilder {
+      // @@protoc_insertion_point(message_implements:littlehorse.UserTaskEvent.UTECancelled)
+      UTECancelledOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use UTECancelledPb.newBuilder() to construct.
-    private UTECancelledPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use UTECancelled.newBuilder() to construct.
+    private UTECancelled(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private UTECancelledPb() {
+    private UTECancelled() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new UTECancelledPb();
+      return new UTECancelled();
     }
 
     @java.lang.Override
@@ -76,15 +76,15 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTECancelledPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_UTECancelled_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTECancelledPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_UTECancelled_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.class, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.Builder.class);
+              io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.class, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.Builder.class);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -120,10 +120,10 @@ private static final long serialVersionUID = 0L;
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb)) {
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled)) {
         return super.equals(obj);
       }
-      io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb other = (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb) obj;
+      io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled other = (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled) obj;
 
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
@@ -141,69 +141,69 @@ private static final long serialVersionUID = 0L;
       return hash;
     }
 
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb parseFrom(byte[] data)
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb parseFrom(java.io.InputStream input)
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb parseDelimitedFrom(java.io.InputStream input)
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb parseDelimitedFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -216,7 +216,7 @@ private static final long serialVersionUID = 0L;
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb prototype) {
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -232,26 +232,26 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * Protobuf type {@code littlehorse.UserTaskEventPb.UTECancelledPb}
+     * Protobuf type {@code littlehorse.UserTaskEvent.UTECancelled}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskEventPb.UTECancelledPb)
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPbOrBuilder {
+        // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskEvent.UTECancelled)
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelledOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTECancelledPb_descriptor;
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_UTECancelled_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTECancelledPb_fieldAccessorTable
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_UTECancelled_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.class, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.Builder.class);
+                io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.class, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.Builder.class);
       }
 
-      // Construct using io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.newBuilder()
+      // Construct using io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.newBuilder()
       private Builder() {
 
       }
@@ -270,17 +270,17 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTECancelledPb_descriptor;
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_UTECancelled_descriptor;
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb getDefaultInstanceForType() {
-        return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.getDefaultInstance();
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.getDefaultInstance();
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb build() {
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb result = buildPartial();
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled build() {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -288,8 +288,8 @@ private static final long serialVersionUID = 0L;
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb buildPartial() {
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb result = new io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb(this);
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled buildPartial() {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled result = new io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled(this);
         onBuilt();
         return result;
       }
@@ -328,16 +328,16 @@ private static final long serialVersionUID = 0L;
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb) {
-          return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb)other);
+        if (other instanceof io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb other) {
-        if (other == io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.getDefaultInstance()) return this;
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled other) {
+        if (other == io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.getDefaultInstance()) return this;
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -392,23 +392,23 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskEventPb.UTECancelledPb)
+      // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskEvent.UTECancelled)
     }
 
-    // @@protoc_insertion_point(class_scope:littlehorse.UserTaskEventPb.UTECancelledPb)
-    private static final io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:littlehorse.UserTaskEvent.UTECancelled)
+    private static final io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb();
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled();
     }
 
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb getDefaultInstance() {
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<UTECancelledPb>
-        PARSER = new com.google.protobuf.AbstractParser<UTECancelledPb>() {
+    private static final com.google.protobuf.Parser<UTECancelled>
+        PARSER = new com.google.protobuf.AbstractParser<UTECancelled>() {
       @java.lang.Override
-      public UTECancelledPb parsePartialFrom(
+      public UTECancelled parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -427,24 +427,24 @@ private static final long serialVersionUID = 0L;
       }
     };
 
-    public static com.google.protobuf.Parser<UTECancelledPb> parser() {
+    public static com.google.protobuf.Parser<UTECancelled> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<UTECancelledPb> getParserForType() {
+    public com.google.protobuf.Parser<UTECancelled> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb getDefaultInstanceForType() {
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface UTETaskExecutedPbOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskEventPb.UTETaskExecutedPb)
+  public interface UTETaskExecutedOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskEvent.UTETaskExecuted)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -463,25 +463,25 @@ private static final long serialVersionUID = 0L;
     io.littlehorse.sdk.common.proto.TaskRunIdPbOrBuilder getTaskRunOrBuilder();
   }
   /**
-   * Protobuf type {@code littlehorse.UserTaskEventPb.UTETaskExecutedPb}
+   * Protobuf type {@code littlehorse.UserTaskEvent.UTETaskExecuted}
    */
-  public static final class UTETaskExecutedPb extends
+  public static final class UTETaskExecuted extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.UserTaskEventPb.UTETaskExecutedPb)
-      UTETaskExecutedPbOrBuilder {
+      // @@protoc_insertion_point(message_implements:littlehorse.UserTaskEvent.UTETaskExecuted)
+      UTETaskExecutedOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use UTETaskExecutedPb.newBuilder() to construct.
-    private UTETaskExecutedPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use UTETaskExecuted.newBuilder() to construct.
+    private UTETaskExecuted(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private UTETaskExecutedPb() {
+    private UTETaskExecuted() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new UTETaskExecutedPb();
+      return new UTETaskExecuted();
     }
 
     @java.lang.Override
@@ -491,15 +491,15 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTETaskExecutedPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_UTETaskExecuted_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTETaskExecutedPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_UTETaskExecuted_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.class, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.Builder.class);
+              io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.class, io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.Builder.class);
     }
 
     public static final int TASK_RUN_FIELD_NUMBER = 1;
@@ -568,10 +568,10 @@ private static final long serialVersionUID = 0L;
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb)) {
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted)) {
         return super.equals(obj);
       }
-      io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb other = (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb) obj;
+      io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted other = (io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted) obj;
 
       if (hasTaskRun() != other.hasTaskRun()) return false;
       if (hasTaskRun()) {
@@ -598,69 +598,69 @@ private static final long serialVersionUID = 0L;
       return hash;
     }
 
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb parseFrom(byte[] data)
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb parseFrom(java.io.InputStream input)
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb parseDelimitedFrom(java.io.InputStream input)
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb parseDelimitedFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -673,7 +673,7 @@ private static final long serialVersionUID = 0L;
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb prototype) {
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -689,26 +689,26 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * Protobuf type {@code littlehorse.UserTaskEventPb.UTETaskExecutedPb}
+     * Protobuf type {@code littlehorse.UserTaskEvent.UTETaskExecuted}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskEventPb.UTETaskExecutedPb)
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPbOrBuilder {
+        // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskEvent.UTETaskExecuted)
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecutedOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTETaskExecutedPb_descriptor;
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_UTETaskExecuted_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTETaskExecutedPb_fieldAccessorTable
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_UTETaskExecuted_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.class, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.Builder.class);
+                io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.class, io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.Builder.class);
       }
 
-      // Construct using io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.newBuilder()
+      // Construct using io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.newBuilder()
       private Builder() {
 
       }
@@ -733,17 +733,17 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTETaskExecutedPb_descriptor;
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_UTETaskExecuted_descriptor;
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb getDefaultInstanceForType() {
-        return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.getDefaultInstance();
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.getDefaultInstance();
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb build() {
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb result = buildPartial();
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted build() {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -751,14 +751,14 @@ private static final long serialVersionUID = 0L;
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb buildPartial() {
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb result = new io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb(this);
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted buildPartial() {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted result = new io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb result) {
+      private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted result) {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.taskRun_ = taskRunBuilder_ == null
@@ -801,16 +801,16 @@ private static final long serialVersionUID = 0L;
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb) {
-          return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb)other);
+        if (other instanceof io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb other) {
-        if (other == io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.getDefaultInstance()) return this;
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted other) {
+        if (other == io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.getDefaultInstance()) return this;
         if (other.hasTaskRun()) {
           mergeTaskRun(other.getTaskRun());
         }
@@ -995,23 +995,23 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskEventPb.UTETaskExecutedPb)
+      // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskEvent.UTETaskExecuted)
     }
 
-    // @@protoc_insertion_point(class_scope:littlehorse.UserTaskEventPb.UTETaskExecutedPb)
-    private static final io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:littlehorse.UserTaskEvent.UTETaskExecuted)
+    private static final io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb();
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted();
     }
 
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb getDefaultInstance() {
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<UTETaskExecutedPb>
-        PARSER = new com.google.protobuf.AbstractParser<UTETaskExecutedPb>() {
+    private static final com.google.protobuf.Parser<UTETaskExecuted>
+        PARSER = new com.google.protobuf.AbstractParser<UTETaskExecuted>() {
       @java.lang.Override
-      public UTETaskExecutedPb parsePartialFrom(
+      public UTETaskExecuted parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1030,110 +1030,110 @@ private static final long serialVersionUID = 0L;
       }
     };
 
-    public static com.google.protobuf.Parser<UTETaskExecutedPb> parser() {
+    public static com.google.protobuf.Parser<UTETaskExecuted> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<UTETaskExecutedPb> getParserForType() {
+    public com.google.protobuf.Parser<UTETaskExecuted> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb getDefaultInstanceForType() {
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface UTEReassignedPbOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskEventPb.UTEReassignedPb)
+  public interface UTEReassignedOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskEvent.UTEReassigned)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.littlehorse.UserPb old_user = 5;</code>
+     * <code>.littlehorse.User old_user = 5;</code>
      * @return Whether the oldUser field is set.
      */
     boolean hasOldUser();
     /**
-     * <code>.littlehorse.UserPb old_user = 5;</code>
+     * <code>.littlehorse.User old_user = 5;</code>
      * @return The oldUser.
      */
-    io.littlehorse.sdk.common.proto.UserPb getOldUser();
+    io.littlehorse.sdk.common.proto.User getOldUser();
     /**
-     * <code>.littlehorse.UserPb old_user = 5;</code>
+     * <code>.littlehorse.User old_user = 5;</code>
      */
-    io.littlehorse.sdk.common.proto.UserPbOrBuilder getOldUserOrBuilder();
+    io.littlehorse.sdk.common.proto.UserOrBuilder getOldUserOrBuilder();
 
     /**
-     * <code>.littlehorse.UserGroupPb old_user_group = 6;</code>
+     * <code>.littlehorse.UserGroup old_user_group = 6;</code>
      * @return Whether the oldUserGroup field is set.
      */
     boolean hasOldUserGroup();
     /**
-     * <code>.littlehorse.UserGroupPb old_user_group = 6;</code>
+     * <code>.littlehorse.UserGroup old_user_group = 6;</code>
      * @return The oldUserGroup.
      */
-    io.littlehorse.sdk.common.proto.UserGroupPb getOldUserGroup();
+    io.littlehorse.sdk.common.proto.UserGroup getOldUserGroup();
     /**
-     * <code>.littlehorse.UserGroupPb old_user_group = 6;</code>
+     * <code>.littlehorse.UserGroup old_user_group = 6;</code>
      */
-    io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getOldUserGroupOrBuilder();
+    io.littlehorse.sdk.common.proto.UserGroupOrBuilder getOldUserGroupOrBuilder();
 
     /**
-     * <code>.littlehorse.UserPb new_user = 7;</code>
+     * <code>.littlehorse.User new_user = 7;</code>
      * @return Whether the newUser field is set.
      */
     boolean hasNewUser();
     /**
-     * <code>.littlehorse.UserPb new_user = 7;</code>
+     * <code>.littlehorse.User new_user = 7;</code>
      * @return The newUser.
      */
-    io.littlehorse.sdk.common.proto.UserPb getNewUser();
+    io.littlehorse.sdk.common.proto.User getNewUser();
     /**
-     * <code>.littlehorse.UserPb new_user = 7;</code>
+     * <code>.littlehorse.User new_user = 7;</code>
      */
-    io.littlehorse.sdk.common.proto.UserPbOrBuilder getNewUserOrBuilder();
+    io.littlehorse.sdk.common.proto.UserOrBuilder getNewUserOrBuilder();
 
     /**
-     * <code>.littlehorse.UserGroupPb new_user_group = 8;</code>
+     * <code>.littlehorse.UserGroup new_user_group = 8;</code>
      * @return Whether the newUserGroup field is set.
      */
     boolean hasNewUserGroup();
     /**
-     * <code>.littlehorse.UserGroupPb new_user_group = 8;</code>
+     * <code>.littlehorse.UserGroup new_user_group = 8;</code>
      * @return The newUserGroup.
      */
-    io.littlehorse.sdk.common.proto.UserGroupPb getNewUserGroup();
+    io.littlehorse.sdk.common.proto.UserGroup getNewUserGroup();
     /**
-     * <code>.littlehorse.UserGroupPb new_user_group = 8;</code>
+     * <code>.littlehorse.UserGroup new_user_group = 8;</code>
      */
-    io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getNewUserGroupOrBuilder();
+    io.littlehorse.sdk.common.proto.UserGroupOrBuilder getNewUserGroupOrBuilder();
 
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.OldOwnerCase getOldOwnerCase();
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.OldOwnerCase getOldOwnerCase();
 
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.NewOwnerCase getNewOwnerCase();
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.NewOwnerCase getNewOwnerCase();
   }
   /**
-   * Protobuf type {@code littlehorse.UserTaskEventPb.UTEReassignedPb}
+   * Protobuf type {@code littlehorse.UserTaskEvent.UTEReassigned}
    */
-  public static final class UTEReassignedPb extends
+  public static final class UTEReassigned extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.UserTaskEventPb.UTEReassignedPb)
-      UTEReassignedPbOrBuilder {
+      // @@protoc_insertion_point(message_implements:littlehorse.UserTaskEvent.UTEReassigned)
+      UTEReassignedOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use UTEReassignedPb.newBuilder() to construct.
-    private UTEReassignedPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use UTEReassigned.newBuilder() to construct.
+    private UTEReassigned(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private UTEReassignedPb() {
+    private UTEReassigned() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new UTEReassignedPb();
+      return new UTEReassigned();
     }
 
     @java.lang.Override
@@ -1143,15 +1143,15 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTEReassignedPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_UTEReassigned_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTEReassignedPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_UTEReassigned_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.class, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.Builder.class);
+              io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.class, io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.Builder.class);
     }
 
     private int oldOwnerCase_ = 0;
@@ -1238,7 +1238,7 @@ private static final long serialVersionUID = 0L;
 
     public static final int OLD_USER_FIELD_NUMBER = 5;
     /**
-     * <code>.littlehorse.UserPb old_user = 5;</code>
+     * <code>.littlehorse.User old_user = 5;</code>
      * @return Whether the oldUser field is set.
      */
     @java.lang.Override
@@ -1246,30 +1246,30 @@ private static final long serialVersionUID = 0L;
       return oldOwnerCase_ == 5;
     }
     /**
-     * <code>.littlehorse.UserPb old_user = 5;</code>
+     * <code>.littlehorse.User old_user = 5;</code>
      * @return The oldUser.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserPb getOldUser() {
+    public io.littlehorse.sdk.common.proto.User getOldUser() {
       if (oldOwnerCase_ == 5) {
-         return (io.littlehorse.sdk.common.proto.UserPb) oldOwner_;
+         return (io.littlehorse.sdk.common.proto.User) oldOwner_;
       }
-      return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+      return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
     }
     /**
-     * <code>.littlehorse.UserPb old_user = 5;</code>
+     * <code>.littlehorse.User old_user = 5;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserPbOrBuilder getOldUserOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UserOrBuilder getOldUserOrBuilder() {
       if (oldOwnerCase_ == 5) {
-         return (io.littlehorse.sdk.common.proto.UserPb) oldOwner_;
+         return (io.littlehorse.sdk.common.proto.User) oldOwner_;
       }
-      return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+      return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
     }
 
     public static final int OLD_USER_GROUP_FIELD_NUMBER = 6;
     /**
-     * <code>.littlehorse.UserGroupPb old_user_group = 6;</code>
+     * <code>.littlehorse.UserGroup old_user_group = 6;</code>
      * @return Whether the oldUserGroup field is set.
      */
     @java.lang.Override
@@ -1277,30 +1277,30 @@ private static final long serialVersionUID = 0L;
       return oldOwnerCase_ == 6;
     }
     /**
-     * <code>.littlehorse.UserGroupPb old_user_group = 6;</code>
+     * <code>.littlehorse.UserGroup old_user_group = 6;</code>
      * @return The oldUserGroup.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserGroupPb getOldUserGroup() {
+    public io.littlehorse.sdk.common.proto.UserGroup getOldUserGroup() {
       if (oldOwnerCase_ == 6) {
-         return (io.littlehorse.sdk.common.proto.UserGroupPb) oldOwner_;
+         return (io.littlehorse.sdk.common.proto.UserGroup) oldOwner_;
       }
-      return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+      return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
     }
     /**
-     * <code>.littlehorse.UserGroupPb old_user_group = 6;</code>
+     * <code>.littlehorse.UserGroup old_user_group = 6;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getOldUserGroupOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UserGroupOrBuilder getOldUserGroupOrBuilder() {
       if (oldOwnerCase_ == 6) {
-         return (io.littlehorse.sdk.common.proto.UserGroupPb) oldOwner_;
+         return (io.littlehorse.sdk.common.proto.UserGroup) oldOwner_;
       }
-      return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+      return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
     }
 
     public static final int NEW_USER_FIELD_NUMBER = 7;
     /**
-     * <code>.littlehorse.UserPb new_user = 7;</code>
+     * <code>.littlehorse.User new_user = 7;</code>
      * @return Whether the newUser field is set.
      */
     @java.lang.Override
@@ -1308,30 +1308,30 @@ private static final long serialVersionUID = 0L;
       return newOwnerCase_ == 7;
     }
     /**
-     * <code>.littlehorse.UserPb new_user = 7;</code>
+     * <code>.littlehorse.User new_user = 7;</code>
      * @return The newUser.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserPb getNewUser() {
+    public io.littlehorse.sdk.common.proto.User getNewUser() {
       if (newOwnerCase_ == 7) {
-         return (io.littlehorse.sdk.common.proto.UserPb) newOwner_;
+         return (io.littlehorse.sdk.common.proto.User) newOwner_;
       }
-      return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+      return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
     }
     /**
-     * <code>.littlehorse.UserPb new_user = 7;</code>
+     * <code>.littlehorse.User new_user = 7;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserPbOrBuilder getNewUserOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UserOrBuilder getNewUserOrBuilder() {
       if (newOwnerCase_ == 7) {
-         return (io.littlehorse.sdk.common.proto.UserPb) newOwner_;
+         return (io.littlehorse.sdk.common.proto.User) newOwner_;
       }
-      return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+      return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
     }
 
     public static final int NEW_USER_GROUP_FIELD_NUMBER = 8;
     /**
-     * <code>.littlehorse.UserGroupPb new_user_group = 8;</code>
+     * <code>.littlehorse.UserGroup new_user_group = 8;</code>
      * @return Whether the newUserGroup field is set.
      */
     @java.lang.Override
@@ -1339,25 +1339,25 @@ private static final long serialVersionUID = 0L;
       return newOwnerCase_ == 8;
     }
     /**
-     * <code>.littlehorse.UserGroupPb new_user_group = 8;</code>
+     * <code>.littlehorse.UserGroup new_user_group = 8;</code>
      * @return The newUserGroup.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserGroupPb getNewUserGroup() {
+    public io.littlehorse.sdk.common.proto.UserGroup getNewUserGroup() {
       if (newOwnerCase_ == 8) {
-         return (io.littlehorse.sdk.common.proto.UserGroupPb) newOwner_;
+         return (io.littlehorse.sdk.common.proto.UserGroup) newOwner_;
       }
-      return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+      return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
     }
     /**
-     * <code>.littlehorse.UserGroupPb new_user_group = 8;</code>
+     * <code>.littlehorse.UserGroup new_user_group = 8;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getNewUserGroupOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UserGroupOrBuilder getNewUserGroupOrBuilder() {
       if (newOwnerCase_ == 8) {
-         return (io.littlehorse.sdk.common.proto.UserGroupPb) newOwner_;
+         return (io.littlehorse.sdk.common.proto.UserGroup) newOwner_;
       }
-      return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+      return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1375,16 +1375,16 @@ private static final long serialVersionUID = 0L;
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (oldOwnerCase_ == 5) {
-        output.writeMessage(5, (io.littlehorse.sdk.common.proto.UserPb) oldOwner_);
+        output.writeMessage(5, (io.littlehorse.sdk.common.proto.User) oldOwner_);
       }
       if (oldOwnerCase_ == 6) {
-        output.writeMessage(6, (io.littlehorse.sdk.common.proto.UserGroupPb) oldOwner_);
+        output.writeMessage(6, (io.littlehorse.sdk.common.proto.UserGroup) oldOwner_);
       }
       if (newOwnerCase_ == 7) {
-        output.writeMessage(7, (io.littlehorse.sdk.common.proto.UserPb) newOwner_);
+        output.writeMessage(7, (io.littlehorse.sdk.common.proto.User) newOwner_);
       }
       if (newOwnerCase_ == 8) {
-        output.writeMessage(8, (io.littlehorse.sdk.common.proto.UserGroupPb) newOwner_);
+        output.writeMessage(8, (io.littlehorse.sdk.common.proto.UserGroup) newOwner_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1397,19 +1397,19 @@ private static final long serialVersionUID = 0L;
       size = 0;
       if (oldOwnerCase_ == 5) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, (io.littlehorse.sdk.common.proto.UserPb) oldOwner_);
+          .computeMessageSize(5, (io.littlehorse.sdk.common.proto.User) oldOwner_);
       }
       if (oldOwnerCase_ == 6) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, (io.littlehorse.sdk.common.proto.UserGroupPb) oldOwner_);
+          .computeMessageSize(6, (io.littlehorse.sdk.common.proto.UserGroup) oldOwner_);
       }
       if (newOwnerCase_ == 7) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, (io.littlehorse.sdk.common.proto.UserPb) newOwner_);
+          .computeMessageSize(7, (io.littlehorse.sdk.common.proto.User) newOwner_);
       }
       if (newOwnerCase_ == 8) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(8, (io.littlehorse.sdk.common.proto.UserGroupPb) newOwner_);
+          .computeMessageSize(8, (io.littlehorse.sdk.common.proto.UserGroup) newOwner_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1421,10 +1421,10 @@ private static final long serialVersionUID = 0L;
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb)) {
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned)) {
         return super.equals(obj);
       }
-      io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb other = (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb) obj;
+      io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned other = (io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned) obj;
 
       if (!getOldOwnerCase().equals(other.getOldOwnerCase())) return false;
       switch (oldOwnerCase_) {
@@ -1492,69 +1492,69 @@ private static final long serialVersionUID = 0L;
       return hash;
     }
 
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb parseFrom(byte[] data)
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb parseFrom(java.io.InputStream input)
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb parseDelimitedFrom(java.io.InputStream input)
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb parseDelimitedFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb parseFrom(
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1567,7 +1567,7 @@ private static final long serialVersionUID = 0L;
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb prototype) {
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -1583,26 +1583,26 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * Protobuf type {@code littlehorse.UserTaskEventPb.UTEReassignedPb}
+     * Protobuf type {@code littlehorse.UserTaskEvent.UTEReassigned}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskEventPb.UTEReassignedPb)
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPbOrBuilder {
+        // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskEvent.UTEReassigned)
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassignedOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTEReassignedPb_descriptor;
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_UTEReassigned_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTEReassignedPb_fieldAccessorTable
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_UTEReassigned_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.class, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.Builder.class);
+                io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.class, io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.Builder.class);
       }
 
-      // Construct using io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.newBuilder()
+      // Construct using io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.newBuilder()
       private Builder() {
 
       }
@@ -1638,17 +1638,17 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTEReassignedPb_descriptor;
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_UTEReassigned_descriptor;
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb getDefaultInstanceForType() {
-        return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.getDefaultInstance();
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.getDefaultInstance();
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb build() {
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb result = buildPartial();
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned build() {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -1656,19 +1656,19 @@ private static final long serialVersionUID = 0L;
       }
 
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb buildPartial() {
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb result = new io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb(this);
+      public io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned buildPartial() {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned result = new io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         buildPartialOneofs(result);
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb result) {
+      private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned result) {
         int from_bitField0_ = bitField0_;
       }
 
-      private void buildPartialOneofs(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb result) {
+      private void buildPartialOneofs(io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned result) {
         result.oldOwnerCase_ = oldOwnerCase_;
         result.oldOwner_ = this.oldOwner_;
         if (oldOwnerCase_ == 5 &&
@@ -1725,16 +1725,16 @@ private static final long serialVersionUID = 0L;
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb) {
-          return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb)other);
+        if (other instanceof io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb other) {
-        if (other == io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.getDefaultInstance()) return this;
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned other) {
+        if (other == io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.getDefaultInstance()) return this;
         switch (other.getOldOwnerCase()) {
           case OLD_USER: {
             mergeOldUser(other.getOldUser());
@@ -1863,9 +1863,9 @@ private static final long serialVersionUID = 0L;
       private int bitField0_;
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.UserPb, io.littlehorse.sdk.common.proto.UserPb.Builder, io.littlehorse.sdk.common.proto.UserPbOrBuilder> oldUserBuilder_;
+          io.littlehorse.sdk.common.proto.User, io.littlehorse.sdk.common.proto.User.Builder, io.littlehorse.sdk.common.proto.UserOrBuilder> oldUserBuilder_;
       /**
-       * <code>.littlehorse.UserPb old_user = 5;</code>
+       * <code>.littlehorse.User old_user = 5;</code>
        * @return Whether the oldUser field is set.
        */
       @java.lang.Override
@@ -1873,27 +1873,27 @@ private static final long serialVersionUID = 0L;
         return oldOwnerCase_ == 5;
       }
       /**
-       * <code>.littlehorse.UserPb old_user = 5;</code>
+       * <code>.littlehorse.User old_user = 5;</code>
        * @return The oldUser.
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserPb getOldUser() {
+      public io.littlehorse.sdk.common.proto.User getOldUser() {
         if (oldUserBuilder_ == null) {
           if (oldOwnerCase_ == 5) {
-            return (io.littlehorse.sdk.common.proto.UserPb) oldOwner_;
+            return (io.littlehorse.sdk.common.proto.User) oldOwner_;
           }
-          return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
         } else {
           if (oldOwnerCase_ == 5) {
             return oldUserBuilder_.getMessage();
           }
-          return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
         }
       }
       /**
-       * <code>.littlehorse.UserPb old_user = 5;</code>
+       * <code>.littlehorse.User old_user = 5;</code>
        */
-      public Builder setOldUser(io.littlehorse.sdk.common.proto.UserPb value) {
+      public Builder setOldUser(io.littlehorse.sdk.common.proto.User value) {
         if (oldUserBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1907,10 +1907,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserPb old_user = 5;</code>
+       * <code>.littlehorse.User old_user = 5;</code>
        */
       public Builder setOldUser(
-          io.littlehorse.sdk.common.proto.UserPb.Builder builderForValue) {
+          io.littlehorse.sdk.common.proto.User.Builder builderForValue) {
         if (oldUserBuilder_ == null) {
           oldOwner_ = builderForValue.build();
           onChanged();
@@ -1921,13 +1921,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserPb old_user = 5;</code>
+       * <code>.littlehorse.User old_user = 5;</code>
        */
-      public Builder mergeOldUser(io.littlehorse.sdk.common.proto.UserPb value) {
+      public Builder mergeOldUser(io.littlehorse.sdk.common.proto.User value) {
         if (oldUserBuilder_ == null) {
           if (oldOwnerCase_ == 5 &&
-              oldOwner_ != io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance()) {
-            oldOwner_ = io.littlehorse.sdk.common.proto.UserPb.newBuilder((io.littlehorse.sdk.common.proto.UserPb) oldOwner_)
+              oldOwner_ != io.littlehorse.sdk.common.proto.User.getDefaultInstance()) {
+            oldOwner_ = io.littlehorse.sdk.common.proto.User.newBuilder((io.littlehorse.sdk.common.proto.User) oldOwner_)
                 .mergeFrom(value).buildPartial();
           } else {
             oldOwner_ = value;
@@ -1944,7 +1944,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserPb old_user = 5;</code>
+       * <code>.littlehorse.User old_user = 5;</code>
        */
       public Builder clearOldUser() {
         if (oldUserBuilder_ == null) {
@@ -1963,38 +1963,38 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserPb old_user = 5;</code>
+       * <code>.littlehorse.User old_user = 5;</code>
        */
-      public io.littlehorse.sdk.common.proto.UserPb.Builder getOldUserBuilder() {
+      public io.littlehorse.sdk.common.proto.User.Builder getOldUserBuilder() {
         return getOldUserFieldBuilder().getBuilder();
       }
       /**
-       * <code>.littlehorse.UserPb old_user = 5;</code>
+       * <code>.littlehorse.User old_user = 5;</code>
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserPbOrBuilder getOldUserOrBuilder() {
+      public io.littlehorse.sdk.common.proto.UserOrBuilder getOldUserOrBuilder() {
         if ((oldOwnerCase_ == 5) && (oldUserBuilder_ != null)) {
           return oldUserBuilder_.getMessageOrBuilder();
         } else {
           if (oldOwnerCase_ == 5) {
-            return (io.littlehorse.sdk.common.proto.UserPb) oldOwner_;
+            return (io.littlehorse.sdk.common.proto.User) oldOwner_;
           }
-          return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
         }
       }
       /**
-       * <code>.littlehorse.UserPb old_user = 5;</code>
+       * <code>.littlehorse.User old_user = 5;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.UserPb, io.littlehorse.sdk.common.proto.UserPb.Builder, io.littlehorse.sdk.common.proto.UserPbOrBuilder> 
+          io.littlehorse.sdk.common.proto.User, io.littlehorse.sdk.common.proto.User.Builder, io.littlehorse.sdk.common.proto.UserOrBuilder> 
           getOldUserFieldBuilder() {
         if (oldUserBuilder_ == null) {
           if (!(oldOwnerCase_ == 5)) {
-            oldOwner_ = io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+            oldOwner_ = io.littlehorse.sdk.common.proto.User.getDefaultInstance();
           }
           oldUserBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.UserPb, io.littlehorse.sdk.common.proto.UserPb.Builder, io.littlehorse.sdk.common.proto.UserPbOrBuilder>(
-                  (io.littlehorse.sdk.common.proto.UserPb) oldOwner_,
+              io.littlehorse.sdk.common.proto.User, io.littlehorse.sdk.common.proto.User.Builder, io.littlehorse.sdk.common.proto.UserOrBuilder>(
+                  (io.littlehorse.sdk.common.proto.User) oldOwner_,
                   getParentForChildren(),
                   isClean());
           oldOwner_ = null;
@@ -2005,9 +2005,9 @@ private static final long serialVersionUID = 0L;
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder> oldUserGroupBuilder_;
+          io.littlehorse.sdk.common.proto.UserGroup, io.littlehorse.sdk.common.proto.UserGroup.Builder, io.littlehorse.sdk.common.proto.UserGroupOrBuilder> oldUserGroupBuilder_;
       /**
-       * <code>.littlehorse.UserGroupPb old_user_group = 6;</code>
+       * <code>.littlehorse.UserGroup old_user_group = 6;</code>
        * @return Whether the oldUserGroup field is set.
        */
       @java.lang.Override
@@ -2015,27 +2015,27 @@ private static final long serialVersionUID = 0L;
         return oldOwnerCase_ == 6;
       }
       /**
-       * <code>.littlehorse.UserGroupPb old_user_group = 6;</code>
+       * <code>.littlehorse.UserGroup old_user_group = 6;</code>
        * @return The oldUserGroup.
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserGroupPb getOldUserGroup() {
+      public io.littlehorse.sdk.common.proto.UserGroup getOldUserGroup() {
         if (oldUserGroupBuilder_ == null) {
           if (oldOwnerCase_ == 6) {
-            return (io.littlehorse.sdk.common.proto.UserGroupPb) oldOwner_;
+            return (io.littlehorse.sdk.common.proto.UserGroup) oldOwner_;
           }
-          return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
         } else {
           if (oldOwnerCase_ == 6) {
             return oldUserGroupBuilder_.getMessage();
           }
-          return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
         }
       }
       /**
-       * <code>.littlehorse.UserGroupPb old_user_group = 6;</code>
+       * <code>.littlehorse.UserGroup old_user_group = 6;</code>
        */
-      public Builder setOldUserGroup(io.littlehorse.sdk.common.proto.UserGroupPb value) {
+      public Builder setOldUserGroup(io.littlehorse.sdk.common.proto.UserGroup value) {
         if (oldUserGroupBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2049,10 +2049,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserGroupPb old_user_group = 6;</code>
+       * <code>.littlehorse.UserGroup old_user_group = 6;</code>
        */
       public Builder setOldUserGroup(
-          io.littlehorse.sdk.common.proto.UserGroupPb.Builder builderForValue) {
+          io.littlehorse.sdk.common.proto.UserGroup.Builder builderForValue) {
         if (oldUserGroupBuilder_ == null) {
           oldOwner_ = builderForValue.build();
           onChanged();
@@ -2063,13 +2063,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserGroupPb old_user_group = 6;</code>
+       * <code>.littlehorse.UserGroup old_user_group = 6;</code>
        */
-      public Builder mergeOldUserGroup(io.littlehorse.sdk.common.proto.UserGroupPb value) {
+      public Builder mergeOldUserGroup(io.littlehorse.sdk.common.proto.UserGroup value) {
         if (oldUserGroupBuilder_ == null) {
           if (oldOwnerCase_ == 6 &&
-              oldOwner_ != io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance()) {
-            oldOwner_ = io.littlehorse.sdk.common.proto.UserGroupPb.newBuilder((io.littlehorse.sdk.common.proto.UserGroupPb) oldOwner_)
+              oldOwner_ != io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance()) {
+            oldOwner_ = io.littlehorse.sdk.common.proto.UserGroup.newBuilder((io.littlehorse.sdk.common.proto.UserGroup) oldOwner_)
                 .mergeFrom(value).buildPartial();
           } else {
             oldOwner_ = value;
@@ -2086,7 +2086,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserGroupPb old_user_group = 6;</code>
+       * <code>.littlehorse.UserGroup old_user_group = 6;</code>
        */
       public Builder clearOldUserGroup() {
         if (oldUserGroupBuilder_ == null) {
@@ -2105,38 +2105,38 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserGroupPb old_user_group = 6;</code>
+       * <code>.littlehorse.UserGroup old_user_group = 6;</code>
        */
-      public io.littlehorse.sdk.common.proto.UserGroupPb.Builder getOldUserGroupBuilder() {
+      public io.littlehorse.sdk.common.proto.UserGroup.Builder getOldUserGroupBuilder() {
         return getOldUserGroupFieldBuilder().getBuilder();
       }
       /**
-       * <code>.littlehorse.UserGroupPb old_user_group = 6;</code>
+       * <code>.littlehorse.UserGroup old_user_group = 6;</code>
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getOldUserGroupOrBuilder() {
+      public io.littlehorse.sdk.common.proto.UserGroupOrBuilder getOldUserGroupOrBuilder() {
         if ((oldOwnerCase_ == 6) && (oldUserGroupBuilder_ != null)) {
           return oldUserGroupBuilder_.getMessageOrBuilder();
         } else {
           if (oldOwnerCase_ == 6) {
-            return (io.littlehorse.sdk.common.proto.UserGroupPb) oldOwner_;
+            return (io.littlehorse.sdk.common.proto.UserGroup) oldOwner_;
           }
-          return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
         }
       }
       /**
-       * <code>.littlehorse.UserGroupPb old_user_group = 6;</code>
+       * <code>.littlehorse.UserGroup old_user_group = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder> 
+          io.littlehorse.sdk.common.proto.UserGroup, io.littlehorse.sdk.common.proto.UserGroup.Builder, io.littlehorse.sdk.common.proto.UserGroupOrBuilder> 
           getOldUserGroupFieldBuilder() {
         if (oldUserGroupBuilder_ == null) {
           if (!(oldOwnerCase_ == 6)) {
-            oldOwner_ = io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+            oldOwner_ = io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
           }
           oldUserGroupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder>(
-                  (io.littlehorse.sdk.common.proto.UserGroupPb) oldOwner_,
+              io.littlehorse.sdk.common.proto.UserGroup, io.littlehorse.sdk.common.proto.UserGroup.Builder, io.littlehorse.sdk.common.proto.UserGroupOrBuilder>(
+                  (io.littlehorse.sdk.common.proto.UserGroup) oldOwner_,
                   getParentForChildren(),
                   isClean());
           oldOwner_ = null;
@@ -2147,9 +2147,9 @@ private static final long serialVersionUID = 0L;
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.UserPb, io.littlehorse.sdk.common.proto.UserPb.Builder, io.littlehorse.sdk.common.proto.UserPbOrBuilder> newUserBuilder_;
+          io.littlehorse.sdk.common.proto.User, io.littlehorse.sdk.common.proto.User.Builder, io.littlehorse.sdk.common.proto.UserOrBuilder> newUserBuilder_;
       /**
-       * <code>.littlehorse.UserPb new_user = 7;</code>
+       * <code>.littlehorse.User new_user = 7;</code>
        * @return Whether the newUser field is set.
        */
       @java.lang.Override
@@ -2157,27 +2157,27 @@ private static final long serialVersionUID = 0L;
         return newOwnerCase_ == 7;
       }
       /**
-       * <code>.littlehorse.UserPb new_user = 7;</code>
+       * <code>.littlehorse.User new_user = 7;</code>
        * @return The newUser.
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserPb getNewUser() {
+      public io.littlehorse.sdk.common.proto.User getNewUser() {
         if (newUserBuilder_ == null) {
           if (newOwnerCase_ == 7) {
-            return (io.littlehorse.sdk.common.proto.UserPb) newOwner_;
+            return (io.littlehorse.sdk.common.proto.User) newOwner_;
           }
-          return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
         } else {
           if (newOwnerCase_ == 7) {
             return newUserBuilder_.getMessage();
           }
-          return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
         }
       }
       /**
-       * <code>.littlehorse.UserPb new_user = 7;</code>
+       * <code>.littlehorse.User new_user = 7;</code>
        */
-      public Builder setNewUser(io.littlehorse.sdk.common.proto.UserPb value) {
+      public Builder setNewUser(io.littlehorse.sdk.common.proto.User value) {
         if (newUserBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2191,10 +2191,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserPb new_user = 7;</code>
+       * <code>.littlehorse.User new_user = 7;</code>
        */
       public Builder setNewUser(
-          io.littlehorse.sdk.common.proto.UserPb.Builder builderForValue) {
+          io.littlehorse.sdk.common.proto.User.Builder builderForValue) {
         if (newUserBuilder_ == null) {
           newOwner_ = builderForValue.build();
           onChanged();
@@ -2205,13 +2205,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserPb new_user = 7;</code>
+       * <code>.littlehorse.User new_user = 7;</code>
        */
-      public Builder mergeNewUser(io.littlehorse.sdk.common.proto.UserPb value) {
+      public Builder mergeNewUser(io.littlehorse.sdk.common.proto.User value) {
         if (newUserBuilder_ == null) {
           if (newOwnerCase_ == 7 &&
-              newOwner_ != io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance()) {
-            newOwner_ = io.littlehorse.sdk.common.proto.UserPb.newBuilder((io.littlehorse.sdk.common.proto.UserPb) newOwner_)
+              newOwner_ != io.littlehorse.sdk.common.proto.User.getDefaultInstance()) {
+            newOwner_ = io.littlehorse.sdk.common.proto.User.newBuilder((io.littlehorse.sdk.common.proto.User) newOwner_)
                 .mergeFrom(value).buildPartial();
           } else {
             newOwner_ = value;
@@ -2228,7 +2228,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserPb new_user = 7;</code>
+       * <code>.littlehorse.User new_user = 7;</code>
        */
       public Builder clearNewUser() {
         if (newUserBuilder_ == null) {
@@ -2247,38 +2247,38 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserPb new_user = 7;</code>
+       * <code>.littlehorse.User new_user = 7;</code>
        */
-      public io.littlehorse.sdk.common.proto.UserPb.Builder getNewUserBuilder() {
+      public io.littlehorse.sdk.common.proto.User.Builder getNewUserBuilder() {
         return getNewUserFieldBuilder().getBuilder();
       }
       /**
-       * <code>.littlehorse.UserPb new_user = 7;</code>
+       * <code>.littlehorse.User new_user = 7;</code>
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserPbOrBuilder getNewUserOrBuilder() {
+      public io.littlehorse.sdk.common.proto.UserOrBuilder getNewUserOrBuilder() {
         if ((newOwnerCase_ == 7) && (newUserBuilder_ != null)) {
           return newUserBuilder_.getMessageOrBuilder();
         } else {
           if (newOwnerCase_ == 7) {
-            return (io.littlehorse.sdk.common.proto.UserPb) newOwner_;
+            return (io.littlehorse.sdk.common.proto.User) newOwner_;
           }
-          return io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
         }
       }
       /**
-       * <code>.littlehorse.UserPb new_user = 7;</code>
+       * <code>.littlehorse.User new_user = 7;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.UserPb, io.littlehorse.sdk.common.proto.UserPb.Builder, io.littlehorse.sdk.common.proto.UserPbOrBuilder> 
+          io.littlehorse.sdk.common.proto.User, io.littlehorse.sdk.common.proto.User.Builder, io.littlehorse.sdk.common.proto.UserOrBuilder> 
           getNewUserFieldBuilder() {
         if (newUserBuilder_ == null) {
           if (!(newOwnerCase_ == 7)) {
-            newOwner_ = io.littlehorse.sdk.common.proto.UserPb.getDefaultInstance();
+            newOwner_ = io.littlehorse.sdk.common.proto.User.getDefaultInstance();
           }
           newUserBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.UserPb, io.littlehorse.sdk.common.proto.UserPb.Builder, io.littlehorse.sdk.common.proto.UserPbOrBuilder>(
-                  (io.littlehorse.sdk.common.proto.UserPb) newOwner_,
+              io.littlehorse.sdk.common.proto.User, io.littlehorse.sdk.common.proto.User.Builder, io.littlehorse.sdk.common.proto.UserOrBuilder>(
+                  (io.littlehorse.sdk.common.proto.User) newOwner_,
                   getParentForChildren(),
                   isClean());
           newOwner_ = null;
@@ -2289,9 +2289,9 @@ private static final long serialVersionUID = 0L;
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder> newUserGroupBuilder_;
+          io.littlehorse.sdk.common.proto.UserGroup, io.littlehorse.sdk.common.proto.UserGroup.Builder, io.littlehorse.sdk.common.proto.UserGroupOrBuilder> newUserGroupBuilder_;
       /**
-       * <code>.littlehorse.UserGroupPb new_user_group = 8;</code>
+       * <code>.littlehorse.UserGroup new_user_group = 8;</code>
        * @return Whether the newUserGroup field is set.
        */
       @java.lang.Override
@@ -2299,27 +2299,27 @@ private static final long serialVersionUID = 0L;
         return newOwnerCase_ == 8;
       }
       /**
-       * <code>.littlehorse.UserGroupPb new_user_group = 8;</code>
+       * <code>.littlehorse.UserGroup new_user_group = 8;</code>
        * @return The newUserGroup.
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserGroupPb getNewUserGroup() {
+      public io.littlehorse.sdk.common.proto.UserGroup getNewUserGroup() {
         if (newUserGroupBuilder_ == null) {
           if (newOwnerCase_ == 8) {
-            return (io.littlehorse.sdk.common.proto.UserGroupPb) newOwner_;
+            return (io.littlehorse.sdk.common.proto.UserGroup) newOwner_;
           }
-          return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
         } else {
           if (newOwnerCase_ == 8) {
             return newUserGroupBuilder_.getMessage();
           }
-          return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
         }
       }
       /**
-       * <code>.littlehorse.UserGroupPb new_user_group = 8;</code>
+       * <code>.littlehorse.UserGroup new_user_group = 8;</code>
        */
-      public Builder setNewUserGroup(io.littlehorse.sdk.common.proto.UserGroupPb value) {
+      public Builder setNewUserGroup(io.littlehorse.sdk.common.proto.UserGroup value) {
         if (newUserGroupBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2333,10 +2333,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserGroupPb new_user_group = 8;</code>
+       * <code>.littlehorse.UserGroup new_user_group = 8;</code>
        */
       public Builder setNewUserGroup(
-          io.littlehorse.sdk.common.proto.UserGroupPb.Builder builderForValue) {
+          io.littlehorse.sdk.common.proto.UserGroup.Builder builderForValue) {
         if (newUserGroupBuilder_ == null) {
           newOwner_ = builderForValue.build();
           onChanged();
@@ -2347,13 +2347,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserGroupPb new_user_group = 8;</code>
+       * <code>.littlehorse.UserGroup new_user_group = 8;</code>
        */
-      public Builder mergeNewUserGroup(io.littlehorse.sdk.common.proto.UserGroupPb value) {
+      public Builder mergeNewUserGroup(io.littlehorse.sdk.common.proto.UserGroup value) {
         if (newUserGroupBuilder_ == null) {
           if (newOwnerCase_ == 8 &&
-              newOwner_ != io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance()) {
-            newOwner_ = io.littlehorse.sdk.common.proto.UserGroupPb.newBuilder((io.littlehorse.sdk.common.proto.UserGroupPb) newOwner_)
+              newOwner_ != io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance()) {
+            newOwner_ = io.littlehorse.sdk.common.proto.UserGroup.newBuilder((io.littlehorse.sdk.common.proto.UserGroup) newOwner_)
                 .mergeFrom(value).buildPartial();
           } else {
             newOwner_ = value;
@@ -2370,7 +2370,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserGroupPb new_user_group = 8;</code>
+       * <code>.littlehorse.UserGroup new_user_group = 8;</code>
        */
       public Builder clearNewUserGroup() {
         if (newUserGroupBuilder_ == null) {
@@ -2389,38 +2389,38 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.UserGroupPb new_user_group = 8;</code>
+       * <code>.littlehorse.UserGroup new_user_group = 8;</code>
        */
-      public io.littlehorse.sdk.common.proto.UserGroupPb.Builder getNewUserGroupBuilder() {
+      public io.littlehorse.sdk.common.proto.UserGroup.Builder getNewUserGroupBuilder() {
         return getNewUserGroupFieldBuilder().getBuilder();
       }
       /**
-       * <code>.littlehorse.UserGroupPb new_user_group = 8;</code>
+       * <code>.littlehorse.UserGroup new_user_group = 8;</code>
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getNewUserGroupOrBuilder() {
+      public io.littlehorse.sdk.common.proto.UserGroupOrBuilder getNewUserGroupOrBuilder() {
         if ((newOwnerCase_ == 8) && (newUserGroupBuilder_ != null)) {
           return newUserGroupBuilder_.getMessageOrBuilder();
         } else {
           if (newOwnerCase_ == 8) {
-            return (io.littlehorse.sdk.common.proto.UserGroupPb) newOwner_;
+            return (io.littlehorse.sdk.common.proto.UserGroup) newOwner_;
           }
-          return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+          return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
         }
       }
       /**
-       * <code>.littlehorse.UserGroupPb new_user_group = 8;</code>
+       * <code>.littlehorse.UserGroup new_user_group = 8;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder> 
+          io.littlehorse.sdk.common.proto.UserGroup, io.littlehorse.sdk.common.proto.UserGroup.Builder, io.littlehorse.sdk.common.proto.UserGroupOrBuilder> 
           getNewUserGroupFieldBuilder() {
         if (newUserGroupBuilder_ == null) {
           if (!(newOwnerCase_ == 8)) {
-            newOwner_ = io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+            newOwner_ = io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
           }
           newUserGroupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.UserGroupPb, io.littlehorse.sdk.common.proto.UserGroupPb.Builder, io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder>(
-                  (io.littlehorse.sdk.common.proto.UserGroupPb) newOwner_,
+              io.littlehorse.sdk.common.proto.UserGroup, io.littlehorse.sdk.common.proto.UserGroup.Builder, io.littlehorse.sdk.common.proto.UserGroupOrBuilder>(
+                  (io.littlehorse.sdk.common.proto.UserGroup) newOwner_,
                   getParentForChildren(),
                   isClean());
           newOwner_ = null;
@@ -2442,23 +2442,23 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskEventPb.UTEReassignedPb)
+      // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskEvent.UTEReassigned)
     }
 
-    // @@protoc_insertion_point(class_scope:littlehorse.UserTaskEventPb.UTEReassignedPb)
-    private static final io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:littlehorse.UserTaskEvent.UTEReassigned)
+    private static final io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb();
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned();
     }
 
-    public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb getDefaultInstance() {
+    public static io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<UTEReassignedPb>
-        PARSER = new com.google.protobuf.AbstractParser<UTEReassignedPb>() {
+    private static final com.google.protobuf.Parser<UTEReassigned>
+        PARSER = new com.google.protobuf.AbstractParser<UTEReassigned>() {
       @java.lang.Override
-      public UTEReassignedPb parsePartialFrom(
+      public UTEReassigned parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2477,17 +2477,17 @@ private static final long serialVersionUID = 0L;
       }
     };
 
-    public static com.google.protobuf.Parser<UTEReassignedPb> parser() {
+    public static com.google.protobuf.Parser<UTEReassigned> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<UTEReassignedPb> getParserForType() {
+    public com.google.protobuf.Parser<UTEReassigned> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb getDefaultInstanceForType() {
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2564,7 +2564,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int TASK_EXECUTED_FIELD_NUMBER = 2;
   /**
-   * <code>.littlehorse.UserTaskEventPb.UTETaskExecutedPb task_executed = 2;</code>
+   * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
    * @return Whether the taskExecuted field is set.
    */
   @java.lang.Override
@@ -2572,30 +2572,30 @@ private static final long serialVersionUID = 0L;
     return eventCase_ == 2;
   }
   /**
-   * <code>.littlehorse.UserTaskEventPb.UTETaskExecutedPb task_executed = 2;</code>
+   * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
    * @return The taskExecuted.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb getTaskExecuted() {
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted getTaskExecuted() {
     if (eventCase_ == 2) {
-       return (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb) event_;
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted) event_;
     }
-    return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.UserTaskEventPb.UTETaskExecutedPb task_executed = 2;</code>
+   * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPbOrBuilder getTaskExecutedOrBuilder() {
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecutedOrBuilder getTaskExecutedOrBuilder() {
     if (eventCase_ == 2) {
-       return (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb) event_;
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted) event_;
     }
-    return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.getDefaultInstance();
   }
 
   public static final int REASSIGNED_FIELD_NUMBER = 3;
   /**
-   * <code>.littlehorse.UserTaskEventPb.UTEReassignedPb reassigned = 3;</code>
+   * <code>.littlehorse.UserTaskEvent.UTEReassigned reassigned = 3;</code>
    * @return Whether the reassigned field is set.
    */
   @java.lang.Override
@@ -2603,25 +2603,25 @@ private static final long serialVersionUID = 0L;
     return eventCase_ == 3;
   }
   /**
-   * <code>.littlehorse.UserTaskEventPb.UTEReassignedPb reassigned = 3;</code>
+   * <code>.littlehorse.UserTaskEvent.UTEReassigned reassigned = 3;</code>
    * @return The reassigned.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb getReassigned() {
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned getReassigned() {
     if (eventCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb) event_;
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned) event_;
     }
-    return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.UserTaskEventPb.UTEReassignedPb reassigned = 3;</code>
+   * <code>.littlehorse.UserTaskEvent.UTEReassigned reassigned = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPbOrBuilder getReassignedOrBuilder() {
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassignedOrBuilder getReassignedOrBuilder() {
     if (eventCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb) event_;
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned) event_;
     }
-    return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.getDefaultInstance();
   }
 
   public static final int CANCELLED_FIELD_NUMBER = 4;
@@ -2631,7 +2631,7 @@ private static final long serialVersionUID = 0L;
    * audit log
    * </pre>
    *
-   * <code>.littlehorse.UserTaskEventPb.UTECancelledPb cancelled = 4;</code>
+   * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
    * @return Whether the cancelled field is set.
    */
   @java.lang.Override
@@ -2644,15 +2644,15 @@ private static final long serialVersionUID = 0L;
    * audit log
    * </pre>
    *
-   * <code>.littlehorse.UserTaskEventPb.UTECancelledPb cancelled = 4;</code>
+   * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
    * @return The cancelled.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb getCancelled() {
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled getCancelled() {
     if (eventCase_ == 4) {
-       return (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb) event_;
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled) event_;
     }
-    return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.getDefaultInstance();
   }
   /**
    * <pre>
@@ -2660,14 +2660,14 @@ private static final long serialVersionUID = 0L;
    * audit log
    * </pre>
    *
-   * <code>.littlehorse.UserTaskEventPb.UTECancelledPb cancelled = 4;</code>
+   * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPbOrBuilder getCancelledOrBuilder() {
+  public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelledOrBuilder getCancelledOrBuilder() {
     if (eventCase_ == 4) {
-       return (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb) event_;
+       return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled) event_;
     }
-    return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -2688,13 +2688,13 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(1, getTime());
     }
     if (eventCase_ == 2) {
-      output.writeMessage(2, (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb) event_);
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted) event_);
     }
     if (eventCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb) event_);
+      output.writeMessage(3, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned) event_);
     }
     if (eventCase_ == 4) {
-      output.writeMessage(4, (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb) event_);
+      output.writeMessage(4, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled) event_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -2711,15 +2711,15 @@ private static final long serialVersionUID = 0L;
     }
     if (eventCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb) event_);
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted) event_);
     }
     if (eventCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb) event_);
+        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned) event_);
     }
     if (eventCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb) event_);
+        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled) event_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -2731,10 +2731,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskEventPb)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.UserTaskEvent)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.UserTaskEventPb other = (io.littlehorse.sdk.common.proto.UserTaskEventPb) obj;
+    io.littlehorse.sdk.common.proto.UserTaskEvent other = (io.littlehorse.sdk.common.proto.UserTaskEvent) obj;
 
     if (hasTime() != other.hasTime()) return false;
     if (hasTime()) {
@@ -2794,69 +2794,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.UserTaskEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskEvent parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskEvent parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskEvent parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskEvent parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskEventPb parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.UserTaskEvent parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskEvent parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskEventPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.UserTaskEvent parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskEvent parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskEventPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.UserTaskEvent parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskEventPb parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskEvent parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskEvent parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UserTaskEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserTaskEvent parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -2869,7 +2869,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskEventPb prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserTaskEvent prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -2885,26 +2885,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.UserTaskEventPb}
+   * Protobuf type {@code littlehorse.UserTaskEvent}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskEventPb)
-      io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.UserTaskEvent)
+      io.littlehorse.sdk.common.proto.UserTaskEventOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.UserTaskEventPb.class, io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder.class);
+              io.littlehorse.sdk.common.proto.UserTaskEvent.class, io.littlehorse.sdk.common.proto.UserTaskEvent.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.UserTaskEventPb.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.UserTaskEvent.newBuilder()
     private Builder() {
 
     }
@@ -2940,17 +2940,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEvent_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.UserTaskEventPb.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.UserTaskEvent getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.UserTaskEvent.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb build() {
-      io.littlehorse.sdk.common.proto.UserTaskEventPb result = buildPartial();
+    public io.littlehorse.sdk.common.proto.UserTaskEvent build() {
+      io.littlehorse.sdk.common.proto.UserTaskEvent result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -2958,15 +2958,15 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb buildPartial() {
-      io.littlehorse.sdk.common.proto.UserTaskEventPb result = new io.littlehorse.sdk.common.proto.UserTaskEventPb(this);
+    public io.littlehorse.sdk.common.proto.UserTaskEvent buildPartial() {
+      io.littlehorse.sdk.common.proto.UserTaskEvent result = new io.littlehorse.sdk.common.proto.UserTaskEvent(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskEventPb result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskEvent result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.time_ = timeBuilder_ == null
@@ -2975,7 +2975,7 @@ private static final long serialVersionUID = 0L;
       }
     }
 
-    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.UserTaskEventPb result) {
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.UserTaskEvent result) {
       result.eventCase_ = eventCase_;
       result.event_ = this.event_;
       if (eventCase_ == 2 &&
@@ -3026,16 +3026,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.UserTaskEventPb) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskEventPb)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.UserTaskEvent) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.UserTaskEvent)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskEventPb other) {
-      if (other == io.littlehorse.sdk.common.proto.UserTaskEventPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskEvent other) {
+      if (other == io.littlehorse.sdk.common.proto.UserTaskEvent.getDefaultInstance()) return this;
       if (other.hasTime()) {
         mergeTime(other.getTime());
       }
@@ -3262,9 +3262,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.Builder, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPbOrBuilder> taskExecutedBuilder_;
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted, io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecutedOrBuilder> taskExecutedBuilder_;
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTETaskExecutedPb task_executed = 2;</code>
+     * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      * @return Whether the taskExecuted field is set.
      */
     @java.lang.Override
@@ -3272,27 +3272,27 @@ private static final long serialVersionUID = 0L;
       return eventCase_ == 2;
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTETaskExecutedPb task_executed = 2;</code>
+     * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      * @return The taskExecuted.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb getTaskExecuted() {
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted getTaskExecuted() {
       if (taskExecutedBuilder_ == null) {
         if (eventCase_ == 2) {
-          return (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb) event_;
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted) event_;
         }
-        return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.getDefaultInstance();
       } else {
         if (eventCase_ == 2) {
           return taskExecutedBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTETaskExecutedPb task_executed = 2;</code>
+     * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      */
-    public Builder setTaskExecuted(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb value) {
+    public Builder setTaskExecuted(io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted value) {
       if (taskExecutedBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3306,10 +3306,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTETaskExecutedPb task_executed = 2;</code>
+     * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      */
     public Builder setTaskExecuted(
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.Builder builderForValue) {
       if (taskExecutedBuilder_ == null) {
         event_ = builderForValue.build();
         onChanged();
@@ -3320,13 +3320,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTETaskExecutedPb task_executed = 2;</code>
+     * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      */
-    public Builder mergeTaskExecuted(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb value) {
+    public Builder mergeTaskExecuted(io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted value) {
       if (taskExecutedBuilder_ == null) {
         if (eventCase_ == 2 &&
-            event_ != io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.getDefaultInstance()) {
-          event_ = io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.newBuilder((io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb) event_)
+            event_ != io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.getDefaultInstance()) {
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.newBuilder((io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted) event_)
               .mergeFrom(value).buildPartial();
         } else {
           event_ = value;
@@ -3343,7 +3343,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTETaskExecutedPb task_executed = 2;</code>
+     * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      */
     public Builder clearTaskExecuted() {
       if (taskExecutedBuilder_ == null) {
@@ -3362,38 +3362,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTETaskExecutedPb task_executed = 2;</code>
+     * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.Builder getTaskExecutedBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.Builder getTaskExecutedBuilder() {
       return getTaskExecutedFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTETaskExecutedPb task_executed = 2;</code>
+     * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPbOrBuilder getTaskExecutedOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecutedOrBuilder getTaskExecutedOrBuilder() {
       if ((eventCase_ == 2) && (taskExecutedBuilder_ != null)) {
         return taskExecutedBuilder_.getMessageOrBuilder();
       } else {
         if (eventCase_ == 2) {
-          return (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb) event_;
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted) event_;
         }
-        return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTETaskExecutedPb task_executed = 2;</code>
+     * <code>.littlehorse.UserTaskEvent.UTETaskExecuted task_executed = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.Builder, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted, io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecutedOrBuilder> 
         getTaskExecutedFieldBuilder() {
       if (taskExecutedBuilder_ == null) {
         if (!(eventCase_ == 2)) {
-          event_ = io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.getDefaultInstance();
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.getDefaultInstance();
         }
         taskExecutedBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb.Builder, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb) event_,
+            io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted, io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecutedOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted) event_,
                 getParentForChildren(),
                 isClean());
         event_ = null;
@@ -3404,9 +3404,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.Builder, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPbOrBuilder> reassignedBuilder_;
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned, io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassignedOrBuilder> reassignedBuilder_;
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTEReassignedPb reassigned = 3;</code>
+     * <code>.littlehorse.UserTaskEvent.UTEReassigned reassigned = 3;</code>
      * @return Whether the reassigned field is set.
      */
     @java.lang.Override
@@ -3414,27 +3414,27 @@ private static final long serialVersionUID = 0L;
       return eventCase_ == 3;
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTEReassignedPb reassigned = 3;</code>
+     * <code>.littlehorse.UserTaskEvent.UTEReassigned reassigned = 3;</code>
      * @return The reassigned.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb getReassigned() {
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned getReassigned() {
       if (reassignedBuilder_ == null) {
         if (eventCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb) event_;
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned) event_;
         }
-        return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.getDefaultInstance();
       } else {
         if (eventCase_ == 3) {
           return reassignedBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTEReassignedPb reassigned = 3;</code>
+     * <code>.littlehorse.UserTaskEvent.UTEReassigned reassigned = 3;</code>
      */
-    public Builder setReassigned(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb value) {
+    public Builder setReassigned(io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned value) {
       if (reassignedBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3448,10 +3448,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTEReassignedPb reassigned = 3;</code>
+     * <code>.littlehorse.UserTaskEvent.UTEReassigned reassigned = 3;</code>
      */
     public Builder setReassigned(
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.Builder builderForValue) {
       if (reassignedBuilder_ == null) {
         event_ = builderForValue.build();
         onChanged();
@@ -3462,13 +3462,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTEReassignedPb reassigned = 3;</code>
+     * <code>.littlehorse.UserTaskEvent.UTEReassigned reassigned = 3;</code>
      */
-    public Builder mergeReassigned(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb value) {
+    public Builder mergeReassigned(io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned value) {
       if (reassignedBuilder_ == null) {
         if (eventCase_ == 3 &&
-            event_ != io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.getDefaultInstance()) {
-          event_ = io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.newBuilder((io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb) event_)
+            event_ != io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.getDefaultInstance()) {
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.newBuilder((io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned) event_)
               .mergeFrom(value).buildPartial();
         } else {
           event_ = value;
@@ -3485,7 +3485,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTEReassignedPb reassigned = 3;</code>
+     * <code>.littlehorse.UserTaskEvent.UTEReassigned reassigned = 3;</code>
      */
     public Builder clearReassigned() {
       if (reassignedBuilder_ == null) {
@@ -3504,38 +3504,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTEReassignedPb reassigned = 3;</code>
+     * <code>.littlehorse.UserTaskEvent.UTEReassigned reassigned = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.Builder getReassignedBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.Builder getReassignedBuilder() {
       return getReassignedFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTEReassignedPb reassigned = 3;</code>
+     * <code>.littlehorse.UserTaskEvent.UTEReassigned reassigned = 3;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPbOrBuilder getReassignedOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassignedOrBuilder getReassignedOrBuilder() {
       if ((eventCase_ == 3) && (reassignedBuilder_ != null)) {
         return reassignedBuilder_.getMessageOrBuilder();
       } else {
         if (eventCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb) event_;
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned) event_;
         }
-        return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UserTaskEventPb.UTEReassignedPb reassigned = 3;</code>
+     * <code>.littlehorse.UserTaskEvent.UTEReassigned reassigned = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.Builder, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned, io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassignedOrBuilder> 
         getReassignedFieldBuilder() {
       if (reassignedBuilder_ == null) {
         if (!(eventCase_ == 3)) {
-          event_ = io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.getDefaultInstance();
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.getDefaultInstance();
         }
         reassignedBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb.Builder, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb) event_,
+            io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned, io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassignedOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned) event_,
                 getParentForChildren(),
                 isClean());
         event_ = null;
@@ -3546,14 +3546,14 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.Builder, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPbOrBuilder> cancelledBuilder_;
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelledOrBuilder> cancelledBuilder_;
     /**
      * <pre>
      * TODO: Add "save user task" and "complete user task" to the
      * audit log
      * </pre>
      *
-     * <code>.littlehorse.UserTaskEventPb.UTECancelledPb cancelled = 4;</code>
+     * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
      * @return Whether the cancelled field is set.
      */
     @java.lang.Override
@@ -3566,21 +3566,21 @@ private static final long serialVersionUID = 0L;
      * audit log
      * </pre>
      *
-     * <code>.littlehorse.UserTaskEventPb.UTECancelledPb cancelled = 4;</code>
+     * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
      * @return The cancelled.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb getCancelled() {
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled getCancelled() {
       if (cancelledBuilder_ == null) {
         if (eventCase_ == 4) {
-          return (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb) event_;
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled) event_;
         }
-        return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.getDefaultInstance();
       } else {
         if (eventCase_ == 4) {
           return cancelledBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.getDefaultInstance();
       }
     }
     /**
@@ -3589,9 +3589,9 @@ private static final long serialVersionUID = 0L;
      * audit log
      * </pre>
      *
-     * <code>.littlehorse.UserTaskEventPb.UTECancelledPb cancelled = 4;</code>
+     * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
      */
-    public Builder setCancelled(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb value) {
+    public Builder setCancelled(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled value) {
       if (cancelledBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3610,10 +3610,10 @@ private static final long serialVersionUID = 0L;
      * audit log
      * </pre>
      *
-     * <code>.littlehorse.UserTaskEventPb.UTECancelledPb cancelled = 4;</code>
+     * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
      */
     public Builder setCancelled(
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.Builder builderForValue) {
       if (cancelledBuilder_ == null) {
         event_ = builderForValue.build();
         onChanged();
@@ -3629,13 +3629,13 @@ private static final long serialVersionUID = 0L;
      * audit log
      * </pre>
      *
-     * <code>.littlehorse.UserTaskEventPb.UTECancelledPb cancelled = 4;</code>
+     * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
      */
-    public Builder mergeCancelled(io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb value) {
+    public Builder mergeCancelled(io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled value) {
       if (cancelledBuilder_ == null) {
         if (eventCase_ == 4 &&
-            event_ != io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.getDefaultInstance()) {
-          event_ = io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.newBuilder((io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb) event_)
+            event_ != io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.getDefaultInstance()) {
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.newBuilder((io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled) event_)
               .mergeFrom(value).buildPartial();
         } else {
           event_ = value;
@@ -3657,7 +3657,7 @@ private static final long serialVersionUID = 0L;
      * audit log
      * </pre>
      *
-     * <code>.littlehorse.UserTaskEventPb.UTECancelledPb cancelled = 4;</code>
+     * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
      */
     public Builder clearCancelled() {
       if (cancelledBuilder_ == null) {
@@ -3681,9 +3681,9 @@ private static final long serialVersionUID = 0L;
      * audit log
      * </pre>
      *
-     * <code>.littlehorse.UserTaskEventPb.UTECancelledPb cancelled = 4;</code>
+     * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.Builder getCancelledBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.Builder getCancelledBuilder() {
       return getCancelledFieldBuilder().getBuilder();
     }
     /**
@@ -3692,17 +3692,17 @@ private static final long serialVersionUID = 0L;
      * audit log
      * </pre>
      *
-     * <code>.littlehorse.UserTaskEventPb.UTECancelledPb cancelled = 4;</code>
+     * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPbOrBuilder getCancelledOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelledOrBuilder getCancelledOrBuilder() {
       if ((eventCase_ == 4) && (cancelledBuilder_ != null)) {
         return cancelledBuilder_.getMessageOrBuilder();
       } else {
         if (eventCase_ == 4) {
-          return (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb) event_;
+          return (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled) event_;
         }
-        return io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.getDefaultInstance();
       }
     }
     /**
@@ -3711,18 +3711,18 @@ private static final long serialVersionUID = 0L;
      * audit log
      * </pre>
      *
-     * <code>.littlehorse.UserTaskEventPb.UTECancelledPb cancelled = 4;</code>
+     * <code>.littlehorse.UserTaskEvent.UTECancelled cancelled = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.Builder, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelledOrBuilder> 
         getCancelledFieldBuilder() {
       if (cancelledBuilder_ == null) {
         if (!(eventCase_ == 4)) {
-          event_ = io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.getDefaultInstance();
+          event_ = io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.getDefaultInstance();
         }
         cancelledBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb.Builder, io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb) event_,
+            io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled.Builder, io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelledOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled) event_,
                 getParentForChildren(),
                 isClean());
         event_ = null;
@@ -3744,23 +3744,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskEventPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskEvent)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.UserTaskEventPb)
-  private static final io.littlehorse.sdk.common.proto.UserTaskEventPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.UserTaskEvent)
+  private static final io.littlehorse.sdk.common.proto.UserTaskEvent DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskEventPb();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserTaskEvent();
   }
 
-  public static io.littlehorse.sdk.common.proto.UserTaskEventPb getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.UserTaskEvent getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<UserTaskEventPb>
-      PARSER = new com.google.protobuf.AbstractParser<UserTaskEventPb>() {
+  private static final com.google.protobuf.Parser<UserTaskEvent>
+      PARSER = new com.google.protobuf.AbstractParser<UserTaskEvent>() {
     @java.lang.Override
-    public UserTaskEventPb parsePartialFrom(
+    public UserTaskEvent parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -3779,17 +3779,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<UserTaskEventPb> parser() {
+  public static com.google.protobuf.Parser<UserTaskEvent> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<UserTaskEventPb> getParserForType() {
+  public com.google.protobuf.Parser<UserTaskEvent> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskEventPb getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.UserTaskEvent getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

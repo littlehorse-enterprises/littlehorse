@@ -8,26 +8,26 @@ public interface UserTaskResultPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>repeated .littlehorse.UserTaskFieldResultPb fields = 1;</code>
+   * <code>repeated .littlehorse.UserTaskFieldResult fields = 1;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldResultPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldResult> 
       getFieldsList();
   /**
-   * <code>repeated .littlehorse.UserTaskFieldResultPb fields = 1;</code>
+   * <code>repeated .littlehorse.UserTaskFieldResult fields = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskFieldResultPb getFields(int index);
+  io.littlehorse.sdk.common.proto.UserTaskFieldResult getFields(int index);
   /**
-   * <code>repeated .littlehorse.UserTaskFieldResultPb fields = 1;</code>
+   * <code>repeated .littlehorse.UserTaskFieldResult fields = 1;</code>
    */
   int getFieldsCount();
   /**
-   * <code>repeated .littlehorse.UserTaskFieldResultPb fields = 1;</code>
+   * <code>repeated .littlehorse.UserTaskFieldResult fields = 1;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldResultPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldResultOrBuilder> 
       getFieldsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.UserTaskFieldResultPb fields = 1;</code>
+   * <code>repeated .littlehorse.UserTaskFieldResult fields = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskFieldResultPbOrBuilder getFieldsOrBuilder(
+  io.littlehorse.sdk.common.proto.UserTaskFieldResultOrBuilder getFieldsOrBuilder(
       int index);
 }

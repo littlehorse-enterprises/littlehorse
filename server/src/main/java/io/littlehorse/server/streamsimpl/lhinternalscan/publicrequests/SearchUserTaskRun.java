@@ -3,10 +3,10 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.objectId.UserTaskRunId;
-import io.littlehorse.common.model.wfrun.User;
-import io.littlehorse.common.model.wfrun.UserGroup;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
+import io.littlehorse.common.model.wfrun.UserGroupModel;
+import io.littlehorse.common.model.wfrun.UserModel;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
@@ -15,8 +15,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunPb.TaskOwnerCase;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
+import io.littlehorse.sdk.common.proto.UserTaskRunId;
+import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.TagScanBoundaryStrategy;
@@ -35,14 +35,14 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class SearchUserTaskRun
-    extends PublicScanRequest<SearchUserTaskRunPb, SearchUserTaskRunReplyPb, UserTaskRunIdPb, UserTaskRunId, SearchUserTaskRunReply> {
+    extends PublicScanRequest<SearchUserTaskRunPb, SearchUserTaskRunReplyPb, UserTaskRunId, UserTaskRunIdModel, SearchUserTaskRunReply> {
 
-    private UserTaskRunStatusPb status;
+    private UserTaskRunStatus status;
     private String userTaskDefName;
 
     private TaskOwnerCase ownerCase;
-    private User user;
-    private UserGroup userGroup;
+    private UserModel user;
+    private UserGroupModel userGroup;
 
     private Date latestStart;
     private Date earliestStart;
@@ -77,8 +77,9 @@ public class SearchUserTaskRun
         // field number) and ignore userId silently. By using the way below,
         // we can throw an LHValidationError when processing the search.
         if (p.hasUserGroup()) userGroup =
-            LHSerializable.fromProto(p.getUserGroup(), UserGroup.class);
-        if (p.hasUser()) user = LHSerializable.fromProto(p.getUser(), User.class);
+            LHSerializable.fromProto(p.getUserGroup(), UserGroupModel.class);
+        if (p.hasUser()) user =
+            LHSerializable.fromProto(p.getUser(), UserModel.class);
         if (p.hasLatestStart()) {
             latestStart = LHUtil.fromProtoTs(p.getLatestStart());
         }
@@ -139,7 +140,7 @@ public class SearchUserTaskRun
         return Optional
             .ofNullable(status)
             .map(userTaskRunStatusPb -> {
-                if (UserTaskRun.isRemote(userTaskRunStatusPb)) {
+                if (UserTaskRunModel.isRemote(userTaskRunStatusPb)) {
                     return TagStorageTypePb.REMOTE;
                 } else {
                     return TagStorageTypePb.LOCAL;
@@ -224,7 +225,7 @@ public class SearchUserTaskRun
     private Optional<TagStorageTypePb> getStorageTypeForSearchAttributes(
         List<String> attributes
     ) {
-        return new UserTaskRun()
+        return new UserTaskRunModel()
             .getIndexConfigurations()
             .stream()
             .filter(getableIndex -> getableIndex.searchAttributesMatch(attributes))

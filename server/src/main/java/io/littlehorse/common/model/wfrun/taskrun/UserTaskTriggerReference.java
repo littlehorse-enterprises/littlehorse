@@ -3,10 +3,10 @@ package io.littlehorse.common.model.wfrun.taskrun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.objectId.NodeRunId;
+import io.littlehorse.common.model.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.TaskAttempt;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerReferencePb;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,13 +16,13 @@ import lombok.Setter;
 public class UserTaskTriggerReference
     extends TaskRunSubSource<UserTaskTriggerReferencePb> {
 
-    private NodeRunId nodeRunId;
+    private NodeRunIdModel nodeRunId;
     private int userTaskEventNumber;
     private WfSpecId wfSpecId;
 
     public UserTaskTriggerReference() {}
 
-    public UserTaskTriggerReference(UserTaskRun utr) {
+    public UserTaskTriggerReference(UserTaskRunModel utr) {
         nodeRunId = utr.getNodeRunId();
         // Trust in the Force
         userTaskEventNumber = utr.getEvents().size();
@@ -45,7 +45,7 @@ public class UserTaskTriggerReference
 
     public void initFrom(Message proto) {
         UserTaskTriggerReferencePb p = (UserTaskTriggerReferencePb) proto;
-        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunId.class);
+        nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
         wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecId.class);
         userTaskEventNumber = p.getUserTaskEventNumber();
     }

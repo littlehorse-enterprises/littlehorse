@@ -311,7 +311,7 @@ message SleepNodeMaturedPb {
 // extended in the future to allow scheduling one-off tasks.
 message TriggeredTaskRunPb {
     TaskNode task_to_schedule = 1;
-    NodeRunIdPb source = 2;
+    NodeRunId source = 2;
 }
 
 message ReassignedUserTaskPb {
@@ -320,7 +320,7 @@ message ReassignedUserTaskPb {
         string user_group = 2;
     }
     int32 delay_in_seconds = 3;
-    NodeRunIdPb source = 4;
+    NodeRunId source = 4;
 }
 
 // This is the schema of everything that flows through the Central Command topic.

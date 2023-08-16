@@ -3,34 +3,34 @@ package io.littlehorse.common.model.wfrun.usertaskevent;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.objectId.TaskRunId;
-import io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb;
+import io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UTETaskExecuted extends LHSerializable<UTETaskExecutedPb> {
+public class UTETaskExecutedModel extends LHSerializable<UTETaskExecuted> {
 
     private TaskRunId taskRunId;
 
-    public UTETaskExecuted() {}
+    public UTETaskExecutedModel() {}
 
-    public UTETaskExecuted(TaskRunId taskRunId) {
+    public UTETaskExecutedModel(TaskRunId taskRunId) {
         this.taskRunId = taskRunId;
     }
 
-    public Class<UTETaskExecutedPb> getProtoBaseClass() {
-        return UTETaskExecutedPb.class;
+    public Class<UTETaskExecuted> getProtoBaseClass() {
+        return UTETaskExecuted.class;
     }
 
-    public UTETaskExecutedPb.Builder toProto() {
-        UTETaskExecutedPb.Builder out = UTETaskExecutedPb.newBuilder();
+    public UTETaskExecuted.Builder toProto() {
+        UTETaskExecuted.Builder out = UTETaskExecuted.newBuilder();
         out.setTaskRun(taskRunId.toProto());
         return out;
     }
 
     public void initFrom(Message proto) {
-        UTETaskExecutedPb p = (UTETaskExecutedPb) proto;
+        UTETaskExecuted p = (UTETaskExecuted) proto;
         taskRunId = LHSerializable.fromProto(p.getTaskRun(), TaskRunId.class);
     }
 }

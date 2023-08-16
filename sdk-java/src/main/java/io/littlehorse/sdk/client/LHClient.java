@@ -28,7 +28,7 @@ import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
-import io.littlehorse.sdk.common.proto.NodeRunIdPb;
+import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefReplyPb;
 import io.littlehorse.sdk.common.proto.PutExternalEventPb;
@@ -51,8 +51,8 @@ import io.littlehorse.sdk.common.proto.TaskDefIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunPb;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
-import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunPb;
+import io.littlehorse.sdk.common.proto.UserTaskRun;
+import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.VariableIdPb;
 import io.littlehorse.sdk.common.proto.VariablePb;
 import io.littlehorse.sdk.common.proto.WfRun;
@@ -210,7 +210,7 @@ public class LHClient {
      * @return The UserTaskRun if exists, else null.
      * @throws LHApiError if it failed contacting to the API
      */
-    public UserTaskRunPb getUserTaskRun(UserTaskRunIdPb id) throws LHApiError {
+    public UserTaskRun getUserTaskRun(UserTaskRunId id) throws LHApiError {
         GetUserTaskRunReplyPb reply = (GetUserTaskRunReplyPb) doRequest(() -> {
             return getGrpcClient().getUserTaskRun(id);
         });
@@ -234,7 +234,7 @@ public class LHClient {
         GetNodeRunReplyPb reply = (GetNodeRunReplyPb) doRequest(() -> {
             return getGrpcClient()
                 .getNodeRun(
-                    NodeRunIdPb
+                    NodeRunId
                         .newBuilder()
                         .setWfRunId(wfRunId)
                         .setThreadRunNumber(threadRunNumber)

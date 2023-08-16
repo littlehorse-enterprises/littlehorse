@@ -8,19 +8,19 @@ public interface AssignUserTaskRunPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.UserTaskRunIdPb user_task_run_id = 1;</code>
+   * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return Whether the userTaskRunId field is set.
    */
   boolean hasUserTaskRunId();
   /**
-   * <code>.littlehorse.UserTaskRunIdPb user_task_run_id = 1;</code>
+   * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    * @return The userTaskRunId.
    */
-  io.littlehorse.sdk.common.proto.UserTaskRunIdPb getUserTaskRunId();
+  io.littlehorse.sdk.common.proto.UserTaskRunId getUserTaskRunId();
   /**
-   * <code>.littlehorse.UserTaskRunIdPb user_task_run_id = 1;</code>
+   * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskRunIdPbOrBuilder getUserTaskRunIdOrBuilder();
+  io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getUserTaskRunIdOrBuilder();
 
   /**
    * <code>bool override_claim = 2;</code>
@@ -29,34 +29,34 @@ public interface AssignUserTaskRunPbOrBuilder extends
   boolean getOverrideClaim();
 
   /**
-   * <code>.littlehorse.UserPb user = 3;</code>
+   * <code>.littlehorse.User user = 3;</code>
    * @return Whether the user field is set.
    */
   boolean hasUser();
   /**
-   * <code>.littlehorse.UserPb user = 3;</code>
+   * <code>.littlehorse.User user = 3;</code>
    * @return The user.
    */
-  io.littlehorse.sdk.common.proto.UserPb getUser();
+  io.littlehorse.sdk.common.proto.User getUser();
   /**
-   * <code>.littlehorse.UserPb user = 3;</code>
+   * <code>.littlehorse.User user = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.UserPbOrBuilder getUserOrBuilder();
+  io.littlehorse.sdk.common.proto.UserOrBuilder getUserOrBuilder();
 
   /**
-   * <code>.littlehorse.UserGroupPb user_group = 4;</code>
+   * <code>.littlehorse.UserGroup user_group = 4;</code>
    * @return Whether the userGroup field is set.
    */
   boolean hasUserGroup();
   /**
-   * <code>.littlehorse.UserGroupPb user_group = 4;</code>
+   * <code>.littlehorse.UserGroup user_group = 4;</code>
    * @return The userGroup.
    */
-  io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup();
+  io.littlehorse.sdk.common.proto.UserGroup getUserGroup();
   /**
-   * <code>.littlehorse.UserGroupPb user_group = 4;</code>
+   * <code>.littlehorse.UserGroup user_group = 4;</code>
    */
-  io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder();
+  io.littlehorse.sdk.common.proto.UserGroupOrBuilder getUserGroupOrBuilder();
 
   public io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.AssigneeCase getAssigneeCase();
 }

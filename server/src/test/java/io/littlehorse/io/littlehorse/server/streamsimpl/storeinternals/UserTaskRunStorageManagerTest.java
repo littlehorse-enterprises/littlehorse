@@ -2,10 +2,10 @@ package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.objectId.UserTaskRunId;
-import io.littlehorse.common.model.wfrun.User;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
-import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
+import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
+import io.littlehorse.common.model.wfrun.UserModel;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
+import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
@@ -57,17 +57,20 @@ public class UserTaskRunStorageManagerTest {
     @BeforeEach
     void setup() {
         initializeDependencies();
-        for (UserTaskRunStatusPb userTaskRunStatusPb : UserTaskRunStatusPb.values()) {
-            if (userTaskRunStatusPb == UserTaskRunStatusPb.UNRECOGNIZED) {
+        for (UserTaskRunStatus UserTaskRunStatus : UserTaskRunStatus.values()) {
+            if (UserTaskRunStatus == UserTaskRunStatus.UNRECOGNIZED) {
                 continue;
             }
-            UserTaskRun userTaskRun = TestUtil.userTaskRun(wfRunId);
+            UserTaskRunModel userTaskRun = TestUtil.userTaskRun(wfRunId);
             userTaskRun.setUser(
-                new User(userTaskRun.getUser().getId(), userTaskRun.getUserGroup())
+                new UserModel(
+                    userTaskRun.getUser().getId(),
+                    userTaskRun.getUserGroup()
+                )
             );
-            userTaskRun.setStatus(userTaskRunStatusPb);
+            userTaskRun.setStatus(UserTaskRunStatus);
             userTaskRun.setId(
-                new UserTaskRunId(wfRunId + "1", UUID.randomUUID().toString())
+                new UserTaskRunIdModel(wfRunId + "1", UUID.randomUUID().toString())
             );
             geTableStorageManager.store(userTaskRun);
         }

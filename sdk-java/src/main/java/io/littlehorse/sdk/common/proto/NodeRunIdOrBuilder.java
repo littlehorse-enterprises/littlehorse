@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface UserTaskRunIdPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskRunIdPb)
+public interface NodeRunIdOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.NodeRunId)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -20,14 +20,14 @@ public interface UserTaskRunIdPbOrBuilder extends
       getWfRunIdBytes();
 
   /**
-   * <code>string user_task_guid = 2;</code>
-   * @return The userTaskGuid.
+   * <code>int32 thread_run_number = 2;</code>
+   * @return The threadRunNumber.
    */
-  java.lang.String getUserTaskGuid();
+  int getThreadRunNumber();
+
   /**
-   * <code>string user_task_guid = 2;</code>
-   * @return The bytes for userTaskGuid.
+   * <code>int32 position = 3;</code>
+   * @return The position.
    */
-  com.google.protobuf.ByteString
-      getUserTaskGuidBytes();
+  int getPosition();
 }

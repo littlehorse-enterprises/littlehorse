@@ -7,8 +7,8 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.CompleteUserTaskRunReply;
-import io.littlehorse.common.model.objectId.UserTaskRunId;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.UserTaskResultPb;
@@ -20,7 +20,7 @@ import lombok.Setter;
 @Setter
 public class CompleteUserTaskRun extends SubCommand<CompleteUserTaskRunPb> {
 
-    private UserTaskRunId userTaskRunId;
+    private UserTaskRunIdModel userTaskRunId;
     private String userId;
     private UserTaskResultPb result;
     private Date time;
@@ -42,14 +42,14 @@ public class CompleteUserTaskRun extends SubCommand<CompleteUserTaskRunPb> {
         CompleteUserTaskRunPb p = (CompleteUserTaskRunPb) proto;
         userId = p.getUserId();
         userTaskRunId =
-            LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunId.class);
+            LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class);
         result = p.getResult();
     }
 
     public CompleteUserTaskRunReply process(LHDAO dao, LHConfig config) {
         CompleteUserTaskRunReply out = new CompleteUserTaskRunReply();
 
-        UserTaskRun utr = dao.getUserTaskRun(userTaskRunId);
+        UserTaskRunModel utr = dao.getUserTaskRun(userTaskRunId);
         if (utr == null) {
             out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
             out.setMessage("Couldn't find userTaskRun " + userTaskRunId);

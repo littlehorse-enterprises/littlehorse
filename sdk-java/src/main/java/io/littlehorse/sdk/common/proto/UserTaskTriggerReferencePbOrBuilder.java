@@ -8,19 +8,19 @@ public interface UserTaskTriggerReferencePbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.NodeRunIdPb node_run_id = 1;</code>
+   * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    * @return Whether the nodeRunId field is set.
    */
   boolean hasNodeRunId();
   /**
-   * <code>.littlehorse.NodeRunIdPb node_run_id = 1;</code>
+   * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    * @return The nodeRunId.
    */
-  io.littlehorse.sdk.common.proto.NodeRunIdPb getNodeRunId();
+  io.littlehorse.sdk.common.proto.NodeRunId getNodeRunId();
   /**
-   * <code>.littlehorse.NodeRunIdPb node_run_id = 1;</code>
+   * <code>.littlehorse.NodeRunId node_run_id = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getNodeRunIdOrBuilder();
+  io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder();
 
   /**
    * <code>int32 user_task_event_number = 2;</code>

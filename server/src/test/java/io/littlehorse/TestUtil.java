@@ -8,13 +8,13 @@ import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.meta.subnode.TaskNodeModel;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
-import io.littlehorse.common.model.objectId.UserTaskRunId;
+import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRunModel;
-import io.littlehorse.common.model.wfrun.User;
-import io.littlehorse.common.model.wfrun.UserGroup;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.UserGroupModel;
+import io.littlehorse.common.model.wfrun.UserModel;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.common.model.wfrun.WfRunModel;
@@ -29,8 +29,8 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.TaskStatusPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
+import io.littlehorse.sdk.common.proto.UserTaskRun;
+import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import java.util.Date;
@@ -75,20 +75,20 @@ public class TestUtil {
     }
 
     public static UserTaskNodeRun userTaskNodeRun(String wfRunId) {
-        UserTaskRun utr = userTaskRun(wfRunId);
+        UserTaskRunModel utr = userTaskRun(wfRunId);
         UserTaskNodeRun out = new UserTaskNodeRun();
         out.setUserTaskRunId(utr.getObjectId());
         return out;
     }
 
-    public static UserTaskRun userTaskRun(String wfRunId) {
-        UserTaskRun userTaskRun = new UserTaskRun();
-        userTaskRun.setId(new UserTaskRunId(wfRunId, "fdsa"));
+    public static UserTaskRunModel userTaskRun(String wfRunId) {
+        UserTaskRunModel userTaskRun = new UserTaskRunModel();
+        userTaskRun.setId(new UserTaskRunIdModel(wfRunId, "fdsa"));
         userTaskRun.setUserTaskDefId(new UserTaskDefIdModel("ut-name", 0));
-        userTaskRun.setStatus(UserTaskRunStatusPb.ASSIGNED);
-        userTaskRun.setOwnerCase(UserTaskRunPb.OwnerCase.USER);
-        userTaskRun.setUser(new User("33333"));
-        userTaskRun.setUserGroup(new UserGroup("1234567"));
+        userTaskRun.setStatus(UserTaskRunStatus.ASSIGNED);
+        userTaskRun.setOwnerCase(UserTaskRun.OwnerCase.USER);
+        userTaskRun.setUser(new UserModel("33333"));
+        userTaskRun.setUserGroup(new UserGroupModel("1234567"));
         userTaskRun.setScheduledTime(new Date());
         userTaskRun.setNodeRunId(nodeRun().getObjectId());
         return userTaskRun;

@@ -1,12 +1,12 @@
 package io.littlehorse.sdk.worker;
 
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.NodeRunIdPb;
+import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunSourcePb;
-import io.littlehorse.sdk.common.proto.UserGroupPb;
-import io.littlehorse.sdk.common.proto.UserPb;
+import io.littlehorse.sdk.common.proto.User;
+import io.littlehorse.sdk.common.proto.UserGroup;
 import java.util.Date;
 
 /**
@@ -44,7 +44,7 @@ public class WorkerContext {
      * Returns the NodeRun ID for the Task that was just scheduled.
      * @return a `NodeRunIdPb` protobuf class with the ID from the executed NodeRun.
      */
-    public NodeRunIdPb getNodeRunId() {
+    public NodeRunId getNodeRunId() {
         TaskRunSourcePb source = scheduledTask.getSource();
         switch (source.getTaskRunSourceCase()) {
             case TASK_NODE:
@@ -102,7 +102,7 @@ public class WorkerContext {
         return scheduledTask.getTaskRunId();
     }
 
-    public UserPb getUser() {
+    public User getUser() {
         if (scheduledTask.getSource().hasUserTaskTrigger()) {
             return scheduledTask
                 .getSource()
@@ -113,7 +113,7 @@ public class WorkerContext {
         return null;
     }
 
-    public UserGroupPb getUserGroup() {
+    public UserGroup getUserGroup() {
         if (scheduledTask.getSource().hasUserTaskTrigger()) {
             return scheduledTask
                 .getSource()

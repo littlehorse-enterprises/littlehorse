@@ -23,17 +23,17 @@ public interface TriggeredTaskRunPbOrBuilder extends
   io.littlehorse.sdk.common.proto.TaskNodeOrBuilder getTaskToScheduleOrBuilder();
 
   /**
-   * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+   * <code>.littlehorse.NodeRunId source = 2;</code>
    * @return Whether the source field is set.
    */
   boolean hasSource();
   /**
-   * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+   * <code>.littlehorse.NodeRunId source = 2;</code>
    * @return The source.
    */
-  io.littlehorse.sdk.common.proto.NodeRunIdPb getSource();
+  io.littlehorse.sdk.common.proto.NodeRunId getSource();
   /**
-   * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+   * <code>.littlehorse.NodeRunId source = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getSourceOrBuilder();
+  io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getSourceOrBuilder();
 }

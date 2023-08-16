@@ -36,27 +36,27 @@ public interface SearchUserTaskDefReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>repeated .littlehorse.UserTaskDefIdPb results = 3;</code>
+   * <code>repeated .littlehorse.UserTaskDefId results = 3;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.UserTaskDefIdPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.UserTaskDefId> 
       getResultsList();
   /**
-   * <code>repeated .littlehorse.UserTaskDefIdPb results = 3;</code>
+   * <code>repeated .littlehorse.UserTaskDefId results = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskDefIdPb getResults(int index);
+  io.littlehorse.sdk.common.proto.UserTaskDefId getResults(int index);
   /**
-   * <code>repeated .littlehorse.UserTaskDefIdPb results = 3;</code>
+   * <code>repeated .littlehorse.UserTaskDefId results = 3;</code>
    */
   int getResultsCount();
   /**
-   * <code>repeated .littlehorse.UserTaskDefIdPb results = 3;</code>
+   * <code>repeated .littlehorse.UserTaskDefId results = 3;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskDefIdPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder> 
       getResultsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.UserTaskDefIdPb results = 3;</code>
+   * <code>repeated .littlehorse.UserTaskDefId results = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskDefIdPbOrBuilder getResultsOrBuilder(
+  io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder getResultsOrBuilder(
       int index);
 
   /**

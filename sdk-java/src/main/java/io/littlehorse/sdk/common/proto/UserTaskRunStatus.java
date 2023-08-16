@@ -4,9 +4,9 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf enum {@code littlehorse.UserTaskRunStatusPb}
+ * Protobuf enum {@code littlehorse.UserTaskRunStatus}
  */
-public enum UserTaskRunStatusPb
+public enum UserTaskRunStatus
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
    * <code>UNASSIGNED = 0;</code>
@@ -59,7 +59,7 @@ public enum UserTaskRunStatusPb
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static UserTaskRunStatusPb valueOf(int value) {
+  public static UserTaskRunStatus valueOf(int value) {
     return forNumber(value);
   }
 
@@ -67,7 +67,7 @@ public enum UserTaskRunStatusPb
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static UserTaskRunStatusPb forNumber(int value) {
+  public static UserTaskRunStatus forNumber(int value) {
     switch (value) {
       case 0: return UNASSIGNED;
       case 1: return ASSIGNED;
@@ -77,15 +77,15 @@ public enum UserTaskRunStatusPb
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<UserTaskRunStatusPb>
+  public static com.google.protobuf.Internal.EnumLiteMap<UserTaskRunStatus>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      UserTaskRunStatusPb> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<UserTaskRunStatusPb>() {
-          public UserTaskRunStatusPb findValueByNumber(int number) {
-            return UserTaskRunStatusPb.forNumber(number);
+      UserTaskRunStatus> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<UserTaskRunStatus>() {
+          public UserTaskRunStatus findValueByNumber(int number) {
+            return UserTaskRunStatus.forNumber(number);
           }
         };
 
@@ -106,9 +106,9 @@ public enum UserTaskRunStatusPb
     return io.littlehorse.sdk.common.proto.Service.getDescriptor().getEnumTypes().get(8);
   }
 
-  private static final UserTaskRunStatusPb[] VALUES = values();
+  private static final UserTaskRunStatus[] VALUES = values();
 
-  public static UserTaskRunStatusPb valueOf(
+  public static UserTaskRunStatus valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -122,10 +122,10 @@ public enum UserTaskRunStatusPb
 
   private final int value;
 
-  private UserTaskRunStatusPb(int value) {
+  private UserTaskRunStatus(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:littlehorse.UserTaskRunStatusPb)
+  // @@protoc_insertion_point(enum_scope:littlehorse.UserTaskRunStatus)
 }
 

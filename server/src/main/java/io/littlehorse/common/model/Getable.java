@@ -11,20 +11,20 @@ import io.littlehorse.common.model.metrics.TaskDefMetricsModel;
 import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
 import io.littlehorse.common.model.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.objectId.ExternalEventId;
-import io.littlehorse.common.model.objectId.NodeRunId;
+import io.littlehorse.common.model.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.model.objectId.TaskDefMetricsIdModel;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.TaskWorkerGroupId;
 import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
-import io.littlehorse.common.model.objectId.UserTaskRunId;
+import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.objectId.WfSpecMetricsIdModel;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRunModel;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
@@ -81,7 +81,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             return GetableClassEnumPb.USER_TASK_DEF;
         } else if (cls.equals(TaskRun.class)) {
             return GetableClassEnumPb.TASK_RUN;
-        } else if (cls.equals(UserTaskRun.class)) {
+        } else if (cls.equals(UserTaskRunModel.class)) {
             return GetableClassEnumPb.USER_TASK_RUN;
         } else {
             throw new IllegalArgumentException(
@@ -117,7 +117,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             case TASK_RUN:
                 return TaskRun.class;
             case USER_TASK_RUN:
-                return UserTaskRun.class;
+                return UserTaskRunModel.class;
             case UNRECOGNIZED:
             // default:
         }
@@ -133,7 +133,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             case WF_RUN:
                 return WfRunId.class;
             case NODE_RUN:
-                return NodeRunId.class;
+                return NodeRunIdModel.class;
             case WF_SPEC:
                 return WfSpecId.class;
             case TASK_DEF:
@@ -155,7 +155,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             case TASK_RUN:
                 return TaskRunId.class;
             case USER_TASK_RUN:
-                return UserTaskRunId.class;
+                return UserTaskRunIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException(

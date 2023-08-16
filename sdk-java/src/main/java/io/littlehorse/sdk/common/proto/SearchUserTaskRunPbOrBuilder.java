@@ -30,20 +30,20 @@ public interface SearchUserTaskRunPbOrBuilder extends
   int getLimit();
 
   /**
-   * <code>optional .littlehorse.UserTaskRunStatusPb status = 3;</code>
+   * <code>optional .littlehorse.UserTaskRunStatus status = 3;</code>
    * @return Whether the status field is set.
    */
   boolean hasStatus();
   /**
-   * <code>optional .littlehorse.UserTaskRunStatusPb status = 3;</code>
+   * <code>optional .littlehorse.UserTaskRunStatus status = 3;</code>
    * @return The enum numeric value on the wire for status.
    */
   int getStatusValue();
   /**
-   * <code>optional .littlehorse.UserTaskRunStatusPb status = 3;</code>
+   * <code>optional .littlehorse.UserTaskRunStatus status = 3;</code>
    * @return The status.
    */
-  io.littlehorse.sdk.common.proto.UserTaskRunStatusPb getStatus();
+  io.littlehorse.sdk.common.proto.UserTaskRunStatus getStatus();
 
   /**
    * <code>optional string user_task_def_name = 4;</code>
@@ -63,34 +63,34 @@ public interface SearchUserTaskRunPbOrBuilder extends
       getUserTaskDefNameBytes();
 
   /**
-   * <code>.littlehorse.UserPb user = 5;</code>
+   * <code>.littlehorse.User user = 5;</code>
    * @return Whether the user field is set.
    */
   boolean hasUser();
   /**
-   * <code>.littlehorse.UserPb user = 5;</code>
+   * <code>.littlehorse.User user = 5;</code>
    * @return The user.
    */
-  io.littlehorse.sdk.common.proto.UserPb getUser();
+  io.littlehorse.sdk.common.proto.User getUser();
   /**
-   * <code>.littlehorse.UserPb user = 5;</code>
+   * <code>.littlehorse.User user = 5;</code>
    */
-  io.littlehorse.sdk.common.proto.UserPbOrBuilder getUserOrBuilder();
+  io.littlehorse.sdk.common.proto.UserOrBuilder getUserOrBuilder();
 
   /**
-   * <code>.littlehorse.UserGroupPb user_group = 6;</code>
+   * <code>.littlehorse.UserGroup user_group = 6;</code>
    * @return Whether the userGroup field is set.
    */
   boolean hasUserGroup();
   /**
-   * <code>.littlehorse.UserGroupPb user_group = 6;</code>
+   * <code>.littlehorse.UserGroup user_group = 6;</code>
    * @return The userGroup.
    */
-  io.littlehorse.sdk.common.proto.UserGroupPb getUserGroup();
+  io.littlehorse.sdk.common.proto.UserGroup getUserGroup();
   /**
-   * <code>.littlehorse.UserGroupPb user_group = 6;</code>
+   * <code>.littlehorse.UserGroup user_group = 6;</code>
    */
-  io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder getUserGroupOrBuilder();
+  io.littlehorse.sdk.common.proto.UserGroupOrBuilder getUserGroupOrBuilder();
 
   /**
    * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>

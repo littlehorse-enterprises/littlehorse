@@ -39,18 +39,18 @@ import io.littlehorse.common.model.metrics.TaskDefMetricsModel;
 import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
 import io.littlehorse.common.model.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.objectId.ExternalEventId;
-import io.littlehorse.common.model.objectId.NodeRunId;
+import io.littlehorse.common.model.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
-import io.littlehorse.common.model.objectId.UserTaskRunId;
+import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
@@ -103,7 +103,7 @@ import io.littlehorse.sdk.common.proto.ListVariablesPb;
 import io.littlehorse.sdk.common.proto.ListVariablesReplyPb;
 import io.littlehorse.sdk.common.proto.ListWfMetricsPb;
 import io.littlehorse.sdk.common.proto.ListWfMetricsReplyPb;
-import io.littlehorse.sdk.common.proto.NodeRunIdPb;
+import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.PollTaskPb;
 import io.littlehorse.sdk.common.proto.PollTaskReplyPb;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
@@ -151,8 +151,8 @@ import io.littlehorse.sdk.common.proto.TaskDefMetricsQueryPb;
 import io.littlehorse.sdk.common.proto.TaskDefMetricsReplyPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb;
-import io.littlehorse.sdk.common.proto.UserTaskDefIdPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
+import io.littlehorse.sdk.common.proto.UserTaskDefId;
+import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.VariableIdPb;
 import io.littlehorse.sdk.common.proto.WfRunIdPb;
 import io.littlehorse.sdk.common.proto.WfSpecIdPb;
@@ -336,7 +336,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getUserTaskDef(
-        UserTaskDefIdPb req,
+        UserTaskDefId req,
         StreamObserver<GetUserTaskDefReplyPb> ctx
     ) {
         StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
@@ -549,7 +549,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
-    public void getNodeRun(NodeRunIdPb req, StreamObserver<GetNodeRunReplyPb> ctx) {
+    public void getNodeRun(NodeRunId req, StreamObserver<GetNodeRunReplyPb> ctx) {
         StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
             ctx,
             NodeRunModel.class,
@@ -560,7 +560,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         internalComms.getStoreBytesAsync(
             ServerTopology.CORE_STORE,
             StoreUtils.getFullStoreKey(
-                new NodeRunId(
+                new NodeRunIdModel(
                     req.getWfRunId(),
                     req.getThreadRunNumber(),
                     req.getPosition()
@@ -593,26 +593,26 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getUserTaskRun(
-        UserTaskRunIdPb req,
+        UserTaskRunId req,
         StreamObserver<GetUserTaskRunReplyPb> ctx
     ) {
         StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
             ctx,
-            UserTaskRun.class,
+            UserTaskRunModel.class,
             GetUserTaskRunReplyPb.class,
             config
         );
 
-        UserTaskRunId userTaskRunId = LHSerializable.fromProto(
+        UserTaskRunIdModel userTaskRunId = LHSerializable.fromProto(
             req,
-            UserTaskRunId.class
+            UserTaskRunIdModel.class
         );
 
         internalComms.getStoreBytesAsync(
             ServerTopology.CORE_STORE,
             StoreUtils.getFullStoreKey(
                 userTaskRunId.getStoreKey(),
-                UserTaskRun.class
+                UserTaskRunModel.class
             ),
             req.getWfRunId(),
             observer

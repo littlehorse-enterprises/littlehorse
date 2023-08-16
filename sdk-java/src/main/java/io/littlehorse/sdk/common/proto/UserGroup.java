@@ -4,18 +4,18 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.UserGroupPb}
+ * Protobuf type {@code littlehorse.UserGroup}
  */
-public final class UserGroupPb extends
+public final class UserGroup extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.UserGroupPb)
-    UserGroupPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.UserGroup)
+    UserGroupOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use UserGroupPb.newBuilder() to construct.
-  private UserGroupPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use UserGroup.newBuilder() to construct.
+  private UserGroup(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private UserGroupPb() {
+  private UserGroup() {
     id_ = "";
   }
 
@@ -23,7 +23,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new UserGroupPb();
+    return new UserGroup();
   }
 
   @java.lang.Override
@@ -33,15 +33,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserGroupPb_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserGroup_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserGroupPb_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserGroup_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.UserGroupPb.class, io.littlehorse.sdk.common.proto.UserGroupPb.Builder.class);
+            io.littlehorse.sdk.common.proto.UserGroup.class, io.littlehorse.sdk.common.proto.UserGroup.Builder.class);
   }
 
   public static final int ID_FIELD_NUMBER = 1;
@@ -122,10 +122,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.UserGroupPb)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.UserGroup)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.UserGroupPb other = (io.littlehorse.sdk.common.proto.UserGroupPb) obj;
+    io.littlehorse.sdk.common.proto.UserGroup other = (io.littlehorse.sdk.common.proto.UserGroup) obj;
 
     if (!getId()
         .equals(other.getId())) return false;
@@ -147,69 +147,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.UserGroupPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserGroup parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UserGroupPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserGroup parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserGroupPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserGroup parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UserGroupPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserGroup parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserGroupPb parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.UserGroup parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.UserGroupPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserGroup parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserGroupPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.UserGroup parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UserGroupPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserGroup parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserGroupPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.UserGroup parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UserGroupPb parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.UserGroup parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.UserGroupPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserGroup parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.UserGroupPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.UserGroup parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -222,7 +222,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserGroupPb prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.UserGroup prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -238,26 +238,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.UserGroupPb}
+   * Protobuf type {@code littlehorse.UserGroup}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.UserGroupPb)
-      io.littlehorse.sdk.common.proto.UserGroupPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.UserGroup)
+      io.littlehorse.sdk.common.proto.UserGroupOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserGroupPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserGroup_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserGroupPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserGroup_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.UserGroupPb.class, io.littlehorse.sdk.common.proto.UserGroupPb.Builder.class);
+              io.littlehorse.sdk.common.proto.UserGroup.class, io.littlehorse.sdk.common.proto.UserGroup.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.UserGroupPb.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.UserGroup.newBuilder()
     private Builder() {
 
     }
@@ -278,17 +278,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserGroupPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserGroup_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserGroupPb getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.UserGroup getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserGroupPb build() {
-      io.littlehorse.sdk.common.proto.UserGroupPb result = buildPartial();
+    public io.littlehorse.sdk.common.proto.UserGroup build() {
+      io.littlehorse.sdk.common.proto.UserGroup result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -296,14 +296,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserGroupPb buildPartial() {
-      io.littlehorse.sdk.common.proto.UserGroupPb result = new io.littlehorse.sdk.common.proto.UserGroupPb(this);
+    public io.littlehorse.sdk.common.proto.UserGroup buildPartial() {
+      io.littlehorse.sdk.common.proto.UserGroup result = new io.littlehorse.sdk.common.proto.UserGroup(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.UserGroupPb result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.UserGroup result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.id_ = id_;
@@ -344,16 +344,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.UserGroupPb) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.UserGroupPb)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.UserGroup) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.UserGroup)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserGroupPb other) {
-      if (other == io.littlehorse.sdk.common.proto.UserGroupPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserGroup other) {
+      if (other == io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance()) return this;
       if (!other.getId().isEmpty()) {
         id_ = other.id_;
         bitField0_ |= 0x00000001;
@@ -491,23 +491,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.UserGroupPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.UserGroup)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.UserGroupPb)
-  private static final io.littlehorse.sdk.common.proto.UserGroupPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.UserGroup)
+  private static final io.littlehorse.sdk.common.proto.UserGroup DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserGroupPb();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.UserGroup();
   }
 
-  public static io.littlehorse.sdk.common.proto.UserGroupPb getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.UserGroup getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<UserGroupPb>
-      PARSER = new com.google.protobuf.AbstractParser<UserGroupPb>() {
+  private static final com.google.protobuf.Parser<UserGroup>
+      PARSER = new com.google.protobuf.AbstractParser<UserGroup>() {
     @java.lang.Override
-    public UserGroupPb parsePartialFrom(
+    public UserGroup parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -526,17 +526,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<UserGroupPb> parser() {
+  public static com.google.protobuf.Parser<UserGroup> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<UserGroupPb> getParserForType() {
+  public com.google.protobuf.Parser<UserGroup> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserGroupPb getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.UserGroup getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

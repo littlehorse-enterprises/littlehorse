@@ -6,10 +6,10 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.NodeModel;
 import io.littlehorse.common.model.meta.UserTaskNodeModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
-import io.littlehorse.common.model.objectId.UserTaskRunId;
+import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.sdk.common.proto.UserTaskNodeRunPb;
 import java.util.Date;
 import lombok.Getter;
@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
 
-    private UserTaskRunId userTaskRunId;
+    private UserTaskRunIdModel userTaskRunId;
 
     public UserTaskNodeRun() {}
 
@@ -33,7 +33,10 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
         UserTaskNodeRunPb p = (UserTaskNodeRunPb) proto;
         if (p.hasUserTaskRunId()) {
             userTaskRunId =
-                LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunId.class);
+                LHSerializable.fromProto(
+                    p.getUserTaskRunId(),
+                    UserTaskRunIdModel.class
+                );
         }
     }
 
@@ -73,7 +76,7 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
             );
             return;
         }
-        UserTaskRun out = new UserTaskRun(utd, utn, getNodeRunModel());
+        UserTaskRunModel out = new UserTaskRunModel(utd, utn, getNodeRunModel());
         // Now we create a new UserTaskRun.
 
         out.setDao(getDao());

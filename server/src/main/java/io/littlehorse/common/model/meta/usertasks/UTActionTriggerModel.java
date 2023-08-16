@@ -5,7 +5,7 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.VariableAssignmentModel;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.ActionCase;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel;
@@ -52,7 +52,7 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
         return out;
     }
 
-    public void schedule(LHDAO dao, UserTaskRun utr) throws LHVarSubError {
+    public void schedule(LHDAO dao, UserTaskRunModel utr) throws LHVarSubError {
         switch (actionType) {
             case TASK:
                 task.schedule(dao, utr, this);
