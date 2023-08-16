@@ -193,6 +193,10 @@ public class LHConfig extends ConfigBase {
         return (clusterId + "-timer-" + ServerTopology.TIMER_STORE + "-changelog");
     }
 
+    public static String getMetadataStoreChangelogTopic(String clusterId) {
+        return (clusterId + "-core-" + ServerTopology.METADATA_STORE + "-changelog");
+    }
+
     public String getTimerStoreChangelogTopic() {
         return getTimerStoreChangelogTopic(getLHClusterId());
     }
@@ -238,11 +242,17 @@ public class LHConfig extends ConfigBase {
             out.add(new NewTopic(name, clusterPartitions, replicationFactor));
         }
 
-        // These need to be compacted.
+        // Internal topics are manually created because:
+        // 1.- It makes it possible to manage/create topics using an external tool (e.g terraform, strimzi, etc.)
+        // 2.- It allows to explicitly manage the configuration of the topics
+        // Note: Kafka streams doesn't support disabling automatic internal topic creation. Thus, internal topics
+        // that are not explicitly created here will be automatically created by Kafka Stream. Please make sure to
+        // manually create all internal topics. Kafka has opened KIP-698 to solve this.
         List<String> partitionedChangelogs = Arrays.asList(
             getCoreStoreChangelogTopic(clusterId),
             getRepartitionStoreChangelogTopic(clusterId),
-            getTimerStoreChangelogTopic(clusterId)
+            getTimerStoreChangelogTopic(clusterId),
+            getMetadataStoreChangelogTopic(clusterId)
         );
         HashMap<String, String> changelogConfig = new HashMap<String, String>() {
             {
