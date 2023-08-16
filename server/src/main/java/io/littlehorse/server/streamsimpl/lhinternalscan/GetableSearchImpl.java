@@ -9,6 +9,8 @@ import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public class GetableSearchImpl implements GetableSearch {
 

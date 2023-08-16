@@ -19,6 +19,8 @@ dependencies {
     implementation 'org.reflections:reflections:0.10.2' // This reflection API isNOT under active development or maintenance, look for an alternative
     implementation 'commons-cli:commons-cli:1.5.0'
     implementation 'org.testcontainers:kafka:1.18.3'
+    testImplementation project(':lh-test')
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
 }
 
 application {
@@ -31,4 +33,12 @@ application {
 // less descriptive.
 compileJava {
     options.compilerArgs << '-parameters'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
 }
