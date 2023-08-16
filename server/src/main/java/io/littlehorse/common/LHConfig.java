@@ -141,6 +141,14 @@ public class LHConfig extends ConfigBase {
         return clusterId + "-core-cmd";
     }
 
+    public String getMetadataCmdTopicName() {
+        return getMetadataCmdTopicName(getLHClusterId());
+    }
+
+    public static String getMetadataCmdTopicName(String clusterId) {
+        return clusterId + "-metadata-cmd";
+    }
+
     public String getRepartitionTopicName() {
         return getRepartitionTopicName(getLHClusterId());
     }
@@ -273,6 +281,16 @@ public class LHConfig extends ConfigBase {
                 replicationFactor
             )
                 .configs(globalMetaCLConfig)
+        );
+
+        out.add(
+            new NewTopic(
+                getMetadataCmdTopicName(clusterId),
+                // All metadata have the same key, thus having more than one partition is
+                // unnecessary.
+                1,
+                replicationFactor
+            )
         );
 
         return out;

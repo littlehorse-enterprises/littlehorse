@@ -200,7 +200,6 @@ import io.littlehorse.server.streamsimpl.util.GETStreamObserver;
 import io.littlehorse.server.streamsimpl.util.GETStreamObserverNew;
 import io.littlehorse.server.streamsimpl.util.HealthService;
 import io.littlehorse.server.streamsimpl.util.POSTStreamObserver;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
@@ -284,7 +283,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             config
         );
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
+            ServerTopology.METADATA_STORE,
             StoreUtils.getFullStoreKey(
                 new WfSpecId(req.getName(), req.getVersion()),
                 WfSpec.class
@@ -309,7 +308,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             StoreUtils.getFullPrefixByName(req.getName(), WfSpec.class),
             LHConstants.META_PARTITION_KEY,
             observer,
-            ServerTopology.CORE_STORE
+            ServerTopology.METADATA_STORE
         );
     }
 
@@ -331,7 +330,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             StoreUtils.getFullPrefixByName(req.getName(), UserTaskDef.class),
             LHConstants.META_PARTITION_KEY,
             observer,
-            ServerTopology.CORE_STORE
+            ServerTopology.METADATA_STORE
         );
     }
 
@@ -348,7 +347,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
+            ServerTopology.METADATA_STORE,
             StoreUtils.getFullStoreKey(
                 new UserTaskDefId(req.getName(), req.getVersion()),
                 UserTaskDef.class
@@ -368,7 +367,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
+            ServerTopology.METADATA_STORE,
             StoreUtils.getFullStoreKey(new TaskDefId(req.getName()), TaskDef.class),
             LHConstants.META_PARTITION_KEY,
             observer
@@ -388,7 +387,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
+            ServerTopology.METADATA_STORE,
             StoreUtils.getFullStoreKey(
                 new ExternalEventDefId(req.getName()),
                 ExternalEventDef.class
@@ -400,7 +399,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void putTaskDef(PutTaskDefPb req, StreamObserver<PutTaskDefReplyPb> ctx) {
-        processCommand(req, ctx, PutTaskDef.class, PutTaskDefReplyPb.class);
+        processMetadataCommand(req, ctx, PutTaskDef.class, PutTaskDefReplyPb.class);
     }
 
     @Override
@@ -421,7 +420,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         PutExternalEventDefPb req,
         StreamObserver<PutExternalEventDefReplyPb> ctx
     ) {
-        processCommand(
+        processMetadataCommand(
             req,
             ctx,
             PutExternalEventDef.class,
@@ -434,7 +433,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         PutUserTaskDefPb req,
         StreamObserver<PutUserTaskDefReplyPb> ctx
     ) {
-        processCommand(req, ctx, PutUserTaskDef.class, PutUserTaskDefReplyPb.class);
+        processMetadataCommand(
+            req,
+            ctx,
+            PutUserTaskDef.class,
+            PutUserTaskDefReplyPb.class
+        );
     }
 
     @Override
@@ -478,7 +482,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void putWfSpec(PutWfSpecPb req, StreamObserver<PutWfSpecReplyPb> ctx) {
-        processCommand(req, ctx, PutWfSpec.class, PutWfSpecReplyPb.class);
+        processMetadataCommand(req, ctx, PutWfSpec.class, PutWfSpecReplyPb.class);
     }
 
     @Override
@@ -946,7 +950,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         DeleteWfSpecPb req,
         StreamObserver<DeleteObjectReplyPb> ctx
     ) {
-        processCommand(req, ctx, DeleteWfSpec.class, DeleteObjectReplyPb.class);
+        processMetadataCommand(
+            req,
+            ctx,
+            DeleteWfSpec.class,
+            DeleteObjectReplyPb.class
+        );
     }
 
     @Override
@@ -954,7 +963,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         DeleteTaskDefPb req,
         StreamObserver<DeleteObjectReplyPb> ctx
     ) {
-        processCommand(req, ctx, DeleteTaskDef.class, DeleteObjectReplyPb.class);
+        processMetadataCommand(
+            req,
+            ctx,
+            DeleteTaskDef.class,
+            DeleteObjectReplyPb.class
+        );
     }
 
     @Override
@@ -962,7 +976,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         DeleteUserTaskDefPb req,
         StreamObserver<DeleteObjectReplyPb> ctx
     ) {
-        processCommand(req, ctx, DeleteUserTaskDef.class, DeleteObjectReplyPb.class);
+        processMetadataCommand(
+            req,
+            ctx,
+            DeleteUserTaskDef.class,
+            DeleteObjectReplyPb.class
+        );
     }
 
     @Override
@@ -970,7 +989,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         DeleteExternalEventDefPb req,
         StreamObserver<DeleteObjectReplyPb> ctx
     ) {
-        processCommand(
+        processMetadataCommand(
             req,
             ctx,
             DeleteExternalEventDef.class,
@@ -1020,7 +1039,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             client.getResponseObserver(),
             TaskClaimEvent.class,
             PollTaskReplyPb.class,
-            false // it's a stream, so we don't want to complete it.
+            false, // it's a stream, so we don't want to complete it.,
+            config.getCoreCmdTopicName()
         );
     }
 
@@ -1044,7 +1064,32 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         Class<T> subCmdCls,
         Class<V> responseCls
     ) {
-        processCommand(request, responseObserver, subCmdCls, responseCls, true);
+        processCommand(
+            request,
+            responseObserver,
+            subCmdCls,
+            responseCls,
+            true,
+            config.getCoreCmdTopicName()
+        );
+    }
+
+    private <
+        U extends Message, T extends SubCommand<U>, V extends Message
+    > void processMetadataCommand(
+        U request,
+        StreamObserver<V> responseObserver,
+        Class<T> subCmdCls,
+        Class<V> responseCls
+    ) {
+        processCommand(
+            request,
+            responseObserver,
+            subCmdCls,
+            responseCls,
+            true,
+            config.getMetadataCmdTopicName()
+        );
     }
 
     private <
@@ -1054,7 +1099,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         StreamObserver<V> responseObserver,
         Class<T> subCmdCls,
         Class<V> responseCls,
-        boolean shouldComplete // TODO: Document this
+        boolean shouldComplete, // TODO: Document this
+        String topicName
     ) {
         T subCmd = LHSerializable.fromProto(request, subCmdCls);
         Command command = new Command(subCmd);
@@ -1071,7 +1117,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             .send(
                 command.getPartitionKey(), // partition key
                 command, // payload
-                config.getCoreCmdTopicName(), // topic name
+                topicName, // topic name
                 (meta, exn) -> { // callback
                     if (exn != null) {
                         // Then we report back to the observer that we failed to record

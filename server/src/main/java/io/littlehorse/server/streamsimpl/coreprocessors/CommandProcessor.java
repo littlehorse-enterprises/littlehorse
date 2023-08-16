@@ -9,6 +9,7 @@ import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsimpl.util.WfSpecCache;
 import java.time.Duration;
 import java.util.Date;
@@ -28,14 +29,22 @@ public class CommandProcessor
     private KafkaStreamsServerImpl server;
     private final WfSpecCache wfSpecCache;
 
+    private final String storeName;
+
+    private final boolean isMetadataProcessorInstance;
+
     public CommandProcessor(
         LHConfig config,
         KafkaStreamsServerImpl server,
-        WfSpecCache wfSpecCache
+        WfSpecCache wfSpecCache,
+        String storeName,
+        boolean isMetadataProcessorInstance
     ) {
         this.config = config;
         this.server = server;
         this.wfSpecCache = wfSpecCache;
+        this.storeName = storeName;
+        this.isMetadataProcessorInstance = isMetadataProcessorInstance;
     }
 
     @Override
@@ -43,7 +52,19 @@ public class CommandProcessor
         // temporary hack
 
         this.ctx = ctx;
-        dao = new KafkaStreamsLHDAOImpl(this.ctx, config, server, wfSpecCache);
+        final LHStoreWrapper localStore = new LHStoreWrapper(
+            ctx.getStateStore(storeName),
+            config
+        );
+        dao =
+            new KafkaStreamsLHDAOImpl(
+                this.ctx,
+                config,
+                server,
+                wfSpecCache,
+                localStore,
+                isMetadataProcessorInstance
+            );
         dao.onPartitionClaimed();
 
         ctx.schedule(

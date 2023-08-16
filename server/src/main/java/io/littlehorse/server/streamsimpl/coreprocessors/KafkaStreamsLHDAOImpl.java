@@ -63,7 +63,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
-import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 @Slf4j
@@ -103,7 +102,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
      *
      * The boolean below here is true when this processor owns the "hot" partition.
      */
-    private boolean isHotMetadataPartition;
+    private boolean isMetadataProcessorInstance;
 
     private LHStoreWrapper localStore;
     private LHROStoreWrapper globalStore;
@@ -118,7 +117,9 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         final ProcessorContext<String, CommandProcessorOutput> ctx,
         LHConfig config,
         KafkaStreamsServerImpl server,
-        WfSpecCache wfSpecCache
+        WfSpecCache wfSpecCache,
+        LHStoreWrapper localStore,
+        boolean isMetadataProcessorInstance
     ) {
         this.server = server;
         this.ctx = ctx;
@@ -135,19 +136,13 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         taskMetricPuts = new HashMap<>();
         wfMetricPuts = new HashMap<>();
 
-        // TODO: Here is where we want to eventually add some cacheing for GET to
-        // the WfSpec and TaskDef etc.
+        // Determines if this instance should read Metadata from the global store or from the local store
+        this.isMetadataProcessorInstance = isMetadataProcessorInstance;
 
-        isHotMetadataPartition =
-            ctx.taskId().partition() == config.getHotMetadataPartition();
-
-        KeyValueStore<String, Bytes> rawLocalStore = ctx.getStateStore(
-            ServerTopology.CORE_STORE
-        );
         ReadOnlyKeyValueStore<String, Bytes> rawGlobalStore = ctx.getStateStore(
             ServerTopology.GLOBAL_STORE
         );
-        localStore = new LHStoreWrapper(rawLocalStore, config);
+        this.localStore = localStore;
         globalStore = new LHROStoreWrapper(rawGlobalStore, config);
 
         storageManager = new GetableStorageManager(localStore, config, ctx);
@@ -213,7 +208,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public void putWfSpec(WfSpec spec) {
-        if (!isHotMetadataPartition) {
+        if (!isMetadataProcessorInstance) {
             throw new RuntimeException(
                 "Tried to put metadata despite being on the wrong partition!"
             );
@@ -223,7 +218,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public void putExternalEventDef(ExternalEventDef spec) {
-        if (!isHotMetadataPartition) {
+        if (!isMetadataProcessorInstance) {
             throw new RuntimeException(
                 "Tried to put metadata despite being on the wrong partition!"
             );
@@ -233,7 +228,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public void putTaskDef(TaskDef spec) {
-        if (!isHotMetadataPartition) {
+        if (!isMetadataProcessorInstance) {
             throw new RuntimeException(
                 "Tried to put metadata despite being on the wrong partition!"
             );
@@ -253,7 +248,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     @Override
     public WfSpec getWfSpec(String name, Integer version) {
         Supplier<WfSpec> findWfSpec = () -> {
-            LHROStoreWrapper store = isHotMetadataPartition
+            LHROStoreWrapper store = isMetadataProcessorInstance
                 ? localStore
                 : globalStore;
             if (version != null) {
@@ -280,7 +275,9 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     // take care of it for later.
     @Override
     public UserTaskDef getUserTaskDef(String name, Integer version) {
-        LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
+        LHROStoreWrapper store = isMetadataProcessorInstance
+            ? localStore
+            : globalStore;
         UserTaskDef out;
         if (version != null) {
             // First check the most recent puts
@@ -299,7 +296,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     // Same R-Y-O-W Issue
     @Override
     public void putUserTaskDef(UserTaskDef spec) {
-        if (!isHotMetadataPartition) {
+        if (!isMetadataProcessorInstance) {
             throw new RuntimeException(
                 "Tried to put metadata despite being on the wrong partition!"
             );
@@ -313,14 +310,18 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         TaskDef out = taskDefPuts.get(name);
         if (out != null) return out;
 
-        LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
+        LHROStoreWrapper store = isMetadataProcessorInstance
+            ? localStore
+            : globalStore;
         return store.get(new TaskDefId(name).getStoreKey(), TaskDef.class);
     }
 
     // Same here, same R-Y-O-W issue
     @Override
     public ExternalEventDef getExternalEventDef(String name) {
-        LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
+        LHROStoreWrapper store = isMetadataProcessorInstance
+            ? localStore
+            : globalStore;
         ExternalEventDef out = store.get(
             new ExternalEventDefId(name).getStoreKey(),
             ExternalEventDef.class
