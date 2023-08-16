@@ -313,7 +313,7 @@ func promptFor(prompt string, varType model.VariableType) (*model.VariableValue,
 	return common.StrToVarVal(userInput[:len(userInput)-1], varType)
 }
 
-func getUserTaskDef(userTaskRun *model.UserTaskRunPb, client *model.LHPublicApiClient) (*model.UserTaskDefPb, error) {
+func getUserTaskDef(userTaskRun *model.UserTaskRunPb, client *model.LHPublicApiClient) (*model.UserTaskDef, error) {
 	resp, err := (*client).GetUserTaskDef(context.Background(), userTaskRun.UserTaskDefId)
 	if err != nil {
 		return nil, err

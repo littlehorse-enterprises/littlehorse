@@ -24,7 +24,7 @@ func NewLHClient(config *LHConfig) (*LHClient, error) {
 	}, nil
 }
 
-func (l *LHClient) GetExternalEventDef(name string) (*model.ExternalEventDefPb, error) {
+func (l *LHClient) GetExternalEventDef(name string) (*model.ExternalEventDef, error) {
 	reply, err := l.grpcStub.GetExternalEventDef(
 		context.Background(),
 		&model.ExternalEventDefIdPb{
@@ -51,7 +51,7 @@ func (l *LHClient) GetExternalEventDef(name string) (*model.ExternalEventDefPb, 
 	return nil, nil
 }
 
-func (l *LHClient) GetTaskDef(name string) (*model.TaskDefPb, error) {
+func (l *LHClient) GetTaskDef(name string) (*model.TaskDef, error) {
 	reply, err := l.grpcStub.GetTaskDef(
 		context.Background(),
 		&model.TaskDefIdPb{
@@ -337,7 +337,7 @@ func (l *LHClient) PutExternalEvent(
 
 func (l *LHClient) PutExternalEventDef(
 	request *model.PutExternalEventDefPb, swallowAlreadyExistsError bool,
-) (*model.ExternalEventDefPb, error) {
+) (*model.ExternalEventDef, error) {
 	reply, err := l.grpcStub.PutExternalEventDef(
 		context.Background(),
 		request,
@@ -376,7 +376,7 @@ func (l *LHClient) PutExternalEventDef(
 
 func (l *LHClient) PutTaskDef(
 	request *model.PutTaskDefPb, swallowAlreadyExistsError bool,
-) (*model.TaskDefPb, error) {
+) (*model.TaskDef, error) {
 	reply, err := l.grpcStub.PutTaskDef(
 		context.Background(),
 		request,
