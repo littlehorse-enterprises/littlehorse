@@ -1,44 +1,34 @@
+import asyncio
 import logging
 from pathlib import Path
 
 from littlehorse.config import LHConfig
-from littlehorse.model.service_pb2 import (
-    GetTaskDefReplyPb,
-    LHResponseCodePb,
-    TaskDefIdPb,
-)
-from littlehorse.worker import LHTaskWorker
-
+from littlehorse.worker import LHTaskWorker, LHWorkerContext
 
 logging.basicConfig(level=logging.DEBUG)
-config_path = Path.home().joinpath(".config", "littlehorse.config")
 
 
-def my_callable(name: str) -> None:
-    print(f"Hello {name}!")
+def get_config() -> LHConfig:
+    config = LHConfig()
+    config_path = Path.home().joinpath(".config", "littlehorse.config")
+    if config_path.exists():
+        config.load(config_path)
+    return config
 
 
-# Initiate le worker
-task_def_name = "greet"
-config = LHConfig()
-config.load(config_path)
-worker = LHTaskWorker(my_callable, task_def_name, config)
-
-# Register the TaskDef
-stub = config.blocking_stub()
-reply: GetTaskDefReplyPb = stub.GetTaskDef(TaskDefIdPb(name=task_def_name))
-
-if reply.code is LHResponseCodePb.OK:
-    print("Task already exist, skipping creation")
-else:
-    print("Here we should put a task")
+def greeting(name: str, ctx2: LHWorkerContext) -> str:
+    greeting = f"Hello {name}!"
+    print(greeting)
+    return greeting
 
 
-# Start the worker
-# loop = asyncio.get_event_loop()
-# loop.create_task(worker.start())
+config = get_config()
+worker = LHTaskWorker(greeting, "greet", config)
 
-# try:
-#     loop.run_forever()
-# except KeyboardInterrupt:
-#     pass
+loop = asyncio.get_event_loop()
+loop.create_task(worker.start())
+
+try:
+    loop.run_forever()
+except KeyboardInterrupt:
+    pass

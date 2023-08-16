@@ -172,42 +172,8 @@ class LHTaskWorker:
         self._heartbeat_task = asyncio.create_task(self._heartbeat())
 
     def stop(self) -> None:
-        self._log.debug("Stopping worker")
-
-        if self._heartbeat_task is None or not self.running:
-            return
-
-        self._log.debug("Cancelling heartbeat task")
-        self._heartbeat_task.cancel()
+        self._log.info("Stopping worker")
         self.running = False
 
-
-if __name__ == "__main__":
-    from pathlib import Path
-
-    logging.basicConfig(level=logging.DEBUG)
-
-    config_path = Path.home().joinpath(".config", "littlehorse.config")
-
-    def greeting(name: str, ctx2: LHWorkerContext) -> str:
-        greeting = f"Hello {name}!"
-        print(greeting)
-        return greeting
-
-    config = LHConfig()
-    config.load(config_path)
-    worker = LHTaskWorker(greeting, "greet", config)
-
-    loop = asyncio.get_event_loop()
-
-    async def wait_until_stop() -> None:  # this is not needed in production
-        await asyncio.sleep(10)
-        worker.stop()
-        loop.stop()
-
-    try:
-        loop.create_task(worker.start())
-        loop.create_task(wait_until_stop())  # this is not needed in production
-        loop.run_forever()
-    except KeyboardInterrupt:
-        pass
+        if self._heartbeat_task is not None and not self._heartbeat_task.cancelled():
+            self._heartbeat_task.cancel()

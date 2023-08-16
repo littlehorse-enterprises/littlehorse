@@ -87,20 +87,7 @@ class GrpcAuth(grpc.AuthMetadataPlugin):
 
             self._token = AccessToken(token_data)
             self._log.debug("New token expires at: %s", self._token.expiration())
+        else:
+            self._log.debug("Using token from cache")
 
         return self._token
-
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
-    client_id = "worker"
-    client_secret = "40317ab43bd34a9e93499c7ea03ad398"
-
-    grpc_auth = GrpcAuth(client_id, client_secret, "http://localhost:8888/realms/lh")
-
-    issuer = grpc_auth.issuer()
-    print("Issuer:", issuer)
-
-    access_token = grpc_auth.access_token()
-    print("Access token:", access_token)
-    print("Expired:", access_token.is_expired())

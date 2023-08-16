@@ -241,7 +241,7 @@ class LHConfig:
             )
 
         if self.is_secure() and self.needs_credentials():
-            self._log.debug("Using secure channel with OAuth")
+            self._log.info("Using secure channel with OAuth")
             return secure_channel(
                 self.bootstrap_server(),
                 grpc.composite_channel_credentials(
@@ -251,11 +251,14 @@ class LHConfig:
             )
 
         if self.is_secure():
-            self._log.debug("Using secure channel")
+            self._log.info("Using secure channel")
             return secure_channel(
                 self.bootstrap_server(),
                 get_ssl_config(),
             )
+
+        if not self.is_secure():
+            self._log.warn("Opening insecure channel")
 
         return insecure_channel(self.bootstrap_server())
 
@@ -273,21 +276,3 @@ class LHConfig:
         self._channel = self._channel or self.establish_channel()
 
         return LHPublicApiStub(self._channel)
-
-
-if __name__ == "__main__":
-    from pathlib import Path
-    from littlehorse.model.service_pb2 import WfSpecIdPb
-
-    logging.basicConfig(level=logging.DEBUG)
-
-    config_path = Path.home().joinpath(".config", "littlehorse.config")
-
-    config = LHConfig()
-    config.load(config_path)
-
-    stub = config.blocking_stub()
-    id = WfSpecIdPb(name="example-basic")
-    reply = stub.GetWfSpec(id)
-
-    print(reply.result.name)
