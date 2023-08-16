@@ -283,12 +283,11 @@ public class LHConfig extends ConfigBase {
                 .configs(globalMetaCLConfig)
         );
 
-        // TODO: define the appropriate configuration for this topic -> For sure it shouldn't have compaction
         out.add(
             new NewTopic(
                 getMetadataCmdTopicName(clusterId),
-                // This topic is input to a global store. Therefore, it doesn't
-                // make sense to have any more than just one partition.
+                // All metadata have the same key, thus having more than one partition is
+                // unnecessary.
                 1,
                 replicationFactor
             )
