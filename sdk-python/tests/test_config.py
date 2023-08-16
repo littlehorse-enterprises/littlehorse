@@ -6,7 +6,7 @@ import uuid
 from littlehorse.config import LHConfig
 
 
-class TestConfig(unittest.TestCase):
+class TestLHConfig(unittest.TestCase):
     def tearDown(self):
         os.environ.clear()
 

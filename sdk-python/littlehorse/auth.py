@@ -3,6 +3,7 @@ import logging
 from typing import Any, Optional
 from authlib.integrations.requests_client import OAuth2Session
 import grpc
+from littlehorse.exceptions import OAuthException
 import requests
 
 
@@ -32,12 +33,6 @@ class AccessToken:
 
     def expiration(self) -> datetime:
         return datetime.fromtimestamp(float(self.data["expires_at"]))
-
-
-class OAuthException(Exception):
-    def __init__(self, message: str):
-        self.message = message
-        super().__init__(self.message)
 
 
 # https://grpc.io/docs/guides/auth/#python

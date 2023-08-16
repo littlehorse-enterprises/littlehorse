@@ -25,7 +25,7 @@ black = "*"
 ruff = "*"
 grpcio-tools = "^1.56"
 types-protobuf = "^4.24"
-types-requests = "^2.31.0.2"
+types-requests = "^2.31"
 
 [build-system]
 requires = ["poetry-core"]

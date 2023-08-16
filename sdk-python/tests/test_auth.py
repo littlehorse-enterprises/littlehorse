@@ -20,7 +20,12 @@ class TestAccessToken(unittest.TestCase):
 class TestGrpcAuth(unittest.TestCase):
     def test_discover_endpoint_is_not_set(self):
         grpc_auth = GrpcAuth(None, None, None)
-        self.assertRaises(OAuthException, grpc_auth.issuer)
+        with self.assertRaises(OAuthException) as exception_context:
+            grpc_auth.issuer()
+        self.assertEqual(
+            "LHC_OAUTH_AUTHORIZATION_SERVER required",
+            str(exception_context.exception),
+        )
 
     @patch("littlehorse.auth.requests")
     def test_hit_well_known_endpoint(self, requests_package_mock):
