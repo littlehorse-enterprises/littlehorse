@@ -11,7 +11,7 @@ import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.ReassignUserTask;
 import io.littlehorse.common.model.meta.NodeModel;
-import io.littlehorse.common.model.meta.UserTaskNode;
+import io.littlehorse.common.model.meta.UserTaskNodeModel;
 import io.littlehorse.common.model.meta.usertasks.UTActionTriggerModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskFieldModel;
@@ -64,7 +64,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     private UserTaskRunPb.OwnerCase ownerCase;
     private User user;
     private UserGroup userGroup;
-    private UserTaskNode userTaskNode;
+    private UserTaskNodeModel userTaskNode;
     private List<UserTaskFieldResultPb> results = new ArrayList<>();
 
     private UserTaskRunStatusPb status;
@@ -80,7 +80,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
 
     public UserTaskRun(
         UserTaskDefModel utd,
-        UserTaskNode userTaskNode,
+        UserTaskNodeModel userTaskNode,
         NodeRunModel nodeRunModel
     ) {
         this.userTaskDefId = utd.getObjectId();
@@ -420,7 +420,9 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         Map<String, UserTaskFieldModel> userTaskFieldsGroupedByName = userTaskDef
             .getFields()
             .stream()
-            .collect(Collectors.toMap(UserTaskFieldModel::getName, Function.identity()));
+            .collect(
+                Collectors.toMap(UserTaskFieldModel::getName, Function.identity())
+            );
         for (UserTaskFieldResultPb inputField : event.getResult().getFieldsList()) {
             UserTaskFieldModel userTaskFieldFromTaskDef = userTaskFieldsGroupedByName.get(
                 inputField.getName()

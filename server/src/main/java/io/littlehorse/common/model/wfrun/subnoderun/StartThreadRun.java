@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.meta.VariableAssignmentModel;
-import io.littlehorse.common.model.meta.subnode.StartThreadNode;
+import io.littlehorse.common.model.meta.subnode.StartThreadNodeModel;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.ThreadRunModel;
@@ -56,7 +56,7 @@ public class StartThreadRun extends SubNodeRun<StartThreadRunPb> {
     }
 
     public void arrive(Date time) {
-        StartThreadNode stn = getNode().startThreadNode;
+        StartThreadNodeModel stn = getNode().startThreadNode;
         Map<String, VariableValueModel> variables = new HashMap<>();
 
         try {

@@ -74,7 +74,10 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
         hook = p.getHook();
         actionType = p.getActionCase();
         delaySeconds =
-            LHSerializable.fromProto(p.getDelaySeconds(), VariableAssignmentModel.class);
+            LHSerializable.fromProto(
+                p.getDelaySeconds(),
+                VariableAssignmentModel.class
+            );
         switch (actionType) {
             case TASK:
                 task = LHSerializable.fromProto(p.getTask(), UTATaskModel.class);

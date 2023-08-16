@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.NodeModel;
-import io.littlehorse.common.model.meta.UserTaskNode;
+import io.littlehorse.common.model.meta.UserTaskNodeModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.wfrun.Failure;
@@ -57,7 +57,7 @@ public class UserTaskNodeRun extends SubNodeRun<UserTaskNodeRunPb> {
     public void arrive(Date time) {
         // The UserTaskNode arrive() function should create a UserTaskRun.
         NodeModel node = getNodeRunModel().getNode();
-        UserTaskNode utn = node.getUserTaskNode();
+        UserTaskNodeModel utn = node.getUserTaskNode();
 
         UserTaskDefModel utd = getDao()
             .getUserTaskDef(utn.getUserTaskDefName(), utn.getUserTaskDefVersion());

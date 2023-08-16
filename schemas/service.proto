@@ -1023,15 +1023,15 @@ enum ComparatorPb {
   NOT_IN = 7;
 }
 
-message EdgeConditionPb {
+message EdgeCondition {
   ComparatorPb comparator = 1;
   VariableAssignment left = 2;
   VariableAssignment right = 3;
 }
 
-message EdgePb {
+message Edge {
   string sink_node_name = 1;
-  optional EdgeConditionPb condition = 2;
+  optional EdgeCondition condition = 2;
 }
 
 enum VariableMutationTypePb {
@@ -1060,8 +1060,8 @@ message VariableAssignment {
   }
 }
 
-message VariableMutationPb {
-  message NodeOutputSourcePb {
+message VariableMutation {
+  message NodeOutputSource {
     optional string jsonpath = 10;
   }
   string lhs_name = 1;
@@ -1070,14 +1070,14 @@ message VariableMutationPb {
   oneof rhs_value {
     VariableAssignment source_variable = 4;
     VariableValue literal_value = 5;
-    NodeOutputSourcePb node_output = 6;
+    NodeOutputSource node_output = 6;
   }
 }
 
-message NopNodePb {
+message NopNode {
 }
 
-message SleepNodePb {
+message SleepNode {
   oneof sleep_length {
     VariableAssignment raw_seconds = 1;
     VariableAssignment timestamp = 2;
@@ -1086,19 +1086,19 @@ message SleepNodePb {
 }
 
 message Node {
-  repeated EdgePb outgoing_edges = 1;
-  repeated VariableMutationPb variable_mutations = 2;
-  repeated FailureHandlerDefPb failure_handlers = 4;
+  repeated Edge outgoing_edges = 1;
+  repeated VariableMutation variable_mutations = 2;
+  repeated FailureHandlerDef failure_handlers = 4;
   oneof node {
-    EntrypointNodePb entrypoint = 5;
-    ExitNodePb exit = 6;
-    TaskNodePb task = 7;
-    ExternalEventNodePb external_event = 8;
-    StartThreadNodePb start_thread = 9;
-    WaitForThreadsNodePb wait_for_threads = 10;
-    NopNodePb nop = 11;
-    SleepNodePb sleep = 12;
-    UserTaskNodePb user_task = 13;
+    EntrypointNode entrypoint = 5;
+    ExitNode exit = 6;
+    TaskNode task = 7;
+    ExternalEventNode external_event = 8;
+    StartThreadNode start_thread = 9;
+    WaitForThreadsNode wait_for_threads = 10;
+    NopNode nop = 11;
+    SleepNode sleep = 12;
+    UserTaskNode user_task = 13;
   }
 }
 
@@ -1134,8 +1134,8 @@ message UTActionTrigger {
   }
 
   message UTATask {
-    TaskNodePb task = 1;
-    repeated VariableMutationPb mutations = 2;
+    TaskNode task = 1;
+    repeated VariableMutation mutations = 2;
   }
 
   message UTAReassign {
@@ -1161,10 +1161,10 @@ message UTActionTrigger {
   UTHook hook = 6;
 }
 
-message UserTaskNodePb {
+message UserTaskNode {
   string user_task_def_name = 1;
 
-  message UserAssignmentPb {
+  message UserAssignment {
     VariableAssignment user_id = 1;
     optional VariableAssignment user_group = 2;
   }
@@ -1172,7 +1172,7 @@ message UserTaskNodePb {
   // to whom should the Node be assigned?
   oneof assignment {
     VariableAssignment user_group = 2;
-    UserAssignmentPb user = 3;
+    UserAssignment user = 3;
   }
 
   // This is used to, for example, send a push notification to a mobile app
@@ -1311,44 +1311,44 @@ message CancelUserTaskRunPb {
   UserTaskRunIdPb user_task_run_id = 1;
 }
 
-message StartThreadNodePb {
+message StartThreadNode {
   string thread_spec_name = 1;
   map<string, VariableAssignment> variables = 2;
 }
 
-message FailureHandlerDefPb {
+message FailureHandlerDef {
   optional string specific_failure = 1;
   string handler_spec_name = 2;
 }
 
-message WaitForThreadsNodePb {
-  message ThreadToWaitForPb {
+message WaitForThreadsNode {
+  message ThreadToWaitFor {
     VariableAssignment thread_run_number = 1;
   }
-  repeated ThreadToWaitForPb threads = 1;
+  repeated ThreadToWaitFor threads = 1;
 }
 
-message TaskNodePb {
+message TaskNode {
   string task_def_name = 1;
   int32 timeout_seconds = 2;
   int32 retries = 3;
   repeated VariableAssignment variables = 4;
 }
 
-message ExternalEventNodePb {
+message ExternalEventNode {
   string external_event_def_name = 1;
   VariableAssignment timeout_seconds = 2;
 }
 
-message EntrypointNodePb {
+message EntrypointNode {
 
 }
 
-message ExitNodePb {
-  optional FailureDefPb failure_def = 1;
+message ExitNode {
+  optional FailureDef failure_def = 1;
 }
 
-message FailureDefPb {
+message FailureDef {
   string failure_name = 1;
   string message = 2;
   optional VariableAssignment content = 3;

@@ -49,9 +49,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TASK_TO_SCHEDULE_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.TaskNodePb taskToSchedule_;
+  private io.littlehorse.sdk.common.proto.TaskNode taskToSchedule_;
   /**
-   * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
+   * <code>.littlehorse.TaskNode task_to_schedule = 1;</code>
    * @return Whether the taskToSchedule field is set.
    */
   @java.lang.Override
@@ -59,19 +59,19 @@ private static final long serialVersionUID = 0L;
     return taskToSchedule_ != null;
   }
   /**
-   * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
+   * <code>.littlehorse.TaskNode task_to_schedule = 1;</code>
    * @return The taskToSchedule.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskNodePb getTaskToSchedule() {
-    return taskToSchedule_ == null ? io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance() : taskToSchedule_;
+  public io.littlehorse.sdk.common.proto.TaskNode getTaskToSchedule() {
+    return taskToSchedule_ == null ? io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance() : taskToSchedule_;
   }
   /**
-   * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
+   * <code>.littlehorse.TaskNode task_to_schedule = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder getTaskToScheduleOrBuilder() {
-    return taskToSchedule_ == null ? io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance() : taskToSchedule_;
+  public io.littlehorse.sdk.common.proto.TaskNodeOrBuilder getTaskToScheduleOrBuilder() {
+    return taskToSchedule_ == null ? io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance() : taskToSchedule_;
   }
 
   public static final int SOURCE_FIELD_NUMBER = 2;
@@ -477,31 +477,31 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.TaskNodePb taskToSchedule_;
+    private io.littlehorse.sdk.common.proto.TaskNode taskToSchedule_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskNodePb, io.littlehorse.sdk.common.proto.TaskNodePb.Builder, io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder> taskToScheduleBuilder_;
+        io.littlehorse.sdk.common.proto.TaskNode, io.littlehorse.sdk.common.proto.TaskNode.Builder, io.littlehorse.sdk.common.proto.TaskNodeOrBuilder> taskToScheduleBuilder_;
     /**
-     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNode task_to_schedule = 1;</code>
      * @return Whether the taskToSchedule field is set.
      */
     public boolean hasTaskToSchedule() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNode task_to_schedule = 1;</code>
      * @return The taskToSchedule.
      */
-    public io.littlehorse.sdk.common.proto.TaskNodePb getTaskToSchedule() {
+    public io.littlehorse.sdk.common.proto.TaskNode getTaskToSchedule() {
       if (taskToScheduleBuilder_ == null) {
-        return taskToSchedule_ == null ? io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance() : taskToSchedule_;
+        return taskToSchedule_ == null ? io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance() : taskToSchedule_;
       } else {
         return taskToScheduleBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNode task_to_schedule = 1;</code>
      */
-    public Builder setTaskToSchedule(io.littlehorse.sdk.common.proto.TaskNodePb value) {
+    public Builder setTaskToSchedule(io.littlehorse.sdk.common.proto.TaskNode value) {
       if (taskToScheduleBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -515,10 +515,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNode task_to_schedule = 1;</code>
      */
     public Builder setTaskToSchedule(
-        io.littlehorse.sdk.common.proto.TaskNodePb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.TaskNode.Builder builderForValue) {
       if (taskToScheduleBuilder_ == null) {
         taskToSchedule_ = builderForValue.build();
       } else {
@@ -529,13 +529,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNode task_to_schedule = 1;</code>
      */
-    public Builder mergeTaskToSchedule(io.littlehorse.sdk.common.proto.TaskNodePb value) {
+    public Builder mergeTaskToSchedule(io.littlehorse.sdk.common.proto.TaskNode value) {
       if (taskToScheduleBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0) &&
           taskToSchedule_ != null &&
-          taskToSchedule_ != io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance()) {
+          taskToSchedule_ != io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance()) {
           getTaskToScheduleBuilder().mergeFrom(value);
         } else {
           taskToSchedule_ = value;
@@ -548,7 +548,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNode task_to_schedule = 1;</code>
      */
     public Builder clearTaskToSchedule() {
       bitField0_ = (bitField0_ & ~0x00000001);
@@ -561,33 +561,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNode task_to_schedule = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskNodePb.Builder getTaskToScheduleBuilder() {
+    public io.littlehorse.sdk.common.proto.TaskNode.Builder getTaskToScheduleBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
       return getTaskToScheduleFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNode task_to_schedule = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder getTaskToScheduleOrBuilder() {
+    public io.littlehorse.sdk.common.proto.TaskNodeOrBuilder getTaskToScheduleOrBuilder() {
       if (taskToScheduleBuilder_ != null) {
         return taskToScheduleBuilder_.getMessageOrBuilder();
       } else {
         return taskToSchedule_ == null ?
-            io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance() : taskToSchedule_;
+            io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance() : taskToSchedule_;
       }
     }
     /**
-     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNode task_to_schedule = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskNodePb, io.littlehorse.sdk.common.proto.TaskNodePb.Builder, io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder> 
+        io.littlehorse.sdk.common.proto.TaskNode, io.littlehorse.sdk.common.proto.TaskNode.Builder, io.littlehorse.sdk.common.proto.TaskNodeOrBuilder> 
         getTaskToScheduleFieldBuilder() {
       if (taskToScheduleBuilder_ == null) {
         taskToScheduleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.TaskNodePb, io.littlehorse.sdk.common.proto.TaskNodePb.Builder, io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder>(
+            io.littlehorse.sdk.common.proto.TaskNode, io.littlehorse.sdk.common.proto.TaskNode.Builder, io.littlehorse.sdk.common.proto.TaskNodeOrBuilder>(
                 getTaskToSchedule(),
                 getParentForChildren(),
                 isClean());

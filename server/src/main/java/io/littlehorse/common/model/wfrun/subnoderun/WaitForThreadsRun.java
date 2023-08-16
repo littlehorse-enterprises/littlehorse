@@ -4,8 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.meta.ThreadToWaitFor;
-import io.littlehorse.common.model.meta.subnode.WaitForThreadsNode;
+import io.littlehorse.common.model.meta.ThreadToWaitForModel;
+import io.littlehorse.common.model.meta.subnode.WaitForThreadsNodeModel;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.ThreadRunModel;
@@ -111,11 +111,11 @@ public class WaitForThreadsRun extends SubNodeRun<WaitForThreadsRunPb> {
 
     public void arrive(Date time) {
         // Need to initialize all of the threads.
-        WaitForThreadsNode wftn = getNode().getWaitForThreadsNode();
+        WaitForThreadsNodeModel wftn = getNode().getWaitForThreadsNode();
         nodeRunModel.setStatus(LHStatus.RUNNING);
 
         try {
-            for (ThreadToWaitFor ttwf : wftn.getThreads()) {
+            for (ThreadToWaitForModel ttwf : wftn.getThreads()) {
                 threads.add(new WaitForThread(nodeRunModel, ttwf));
             }
         } catch (LHVarSubError exn) {

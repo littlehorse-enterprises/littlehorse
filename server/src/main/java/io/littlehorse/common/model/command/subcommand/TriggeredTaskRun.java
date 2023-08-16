@@ -7,7 +7,7 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.meta.subnode.TaskNode;
+import io.littlehorse.common.model.meta.subnode.TaskNodeModel;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
@@ -36,12 +36,12 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
 
-    private TaskNode taskToSchedule;
+    private TaskNodeModel taskToSchedule;
     private NodeRunId source;
 
     public TriggeredTaskRun() {}
 
-    public TriggeredTaskRun(TaskNode taskToSchedule, NodeRunId source) {
+    public TriggeredTaskRun(TaskNodeModel taskToSchedule, NodeRunId source) {
         this.source = source;
         this.taskToSchedule = taskToSchedule;
     }
@@ -65,7 +65,7 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
     public void initFrom(Message proto) {
         TriggeredTaskRunPb p = (TriggeredTaskRunPb) proto;
         taskToSchedule =
-            LHSerializable.fromProto(p.getTaskToSchedule(), TaskNode.class);
+            LHSerializable.fromProto(p.getTaskToSchedule(), TaskNodeModel.class);
         source = LHSerializable.fromProto(p.getSource(), NodeRunId.class);
     }
 

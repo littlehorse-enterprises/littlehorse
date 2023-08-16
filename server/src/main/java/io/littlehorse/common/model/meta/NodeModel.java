@@ -4,21 +4,21 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.meta.subnode.EntrypointNode;
-import io.littlehorse.common.model.meta.subnode.ExitNode;
-import io.littlehorse.common.model.meta.subnode.ExternalEventNode;
-import io.littlehorse.common.model.meta.subnode.NopNode;
-import io.littlehorse.common.model.meta.subnode.SleepNode;
-import io.littlehorse.common.model.meta.subnode.StartThreadNode;
-import io.littlehorse.common.model.meta.subnode.TaskNode;
-import io.littlehorse.common.model.meta.subnode.WaitForThreadsNode;
+import io.littlehorse.common.model.meta.subnode.EntrypointNodeModel;
+import io.littlehorse.common.model.meta.subnode.ExitNodeModel;
+import io.littlehorse.common.model.meta.subnode.ExternalEventNodeModel;
+import io.littlehorse.common.model.meta.subnode.NopNodeModel;
+import io.littlehorse.common.model.meta.subnode.SleepNodeModel;
+import io.littlehorse.common.model.meta.subnode.StartThreadNodeModel;
+import io.littlehorse.common.model.meta.subnode.TaskNodeModel;
+import io.littlehorse.common.model.meta.subnode.WaitForThreadsNodeModel;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.sdk.common.proto.EdgePb;
-import io.littlehorse.sdk.common.proto.FailureHandlerDefPb;
+import io.littlehorse.sdk.common.proto.Edge;
+import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
-import io.littlehorse.sdk.common.proto.NopNodePb;
-import io.littlehorse.sdk.common.proto.VariableMutationPb;
+import io.littlehorse.sdk.common.proto.NopNode;
+import io.littlehorse.sdk.common.proto.VariableMutation;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,19 +33,19 @@ import lombok.extern.slf4j.Slf4j;
 public class NodeModel extends LHSerializable<Node> {
 
     public NodeCase type;
-    public TaskNode taskNode;
-    public ExternalEventNode externalEventNode;
-    public EntrypointNode entrypointNode;
-    public ExitNode exitNode;
-    public StartThreadNode startThreadNode;
-    public WaitForThreadsNode waitForThreadsNode;
-    public NopNode nop;
-    public SleepNode sleepNode;
-    public UserTaskNode userTaskNode;
+    public TaskNodeModel taskNode;
+    public ExternalEventNodeModel externalEventNode;
+    public EntrypointNodeModel entrypointNode;
+    public ExitNodeModel exitNode;
+    public StartThreadNodeModel startThreadNode;
+    public WaitForThreadsNodeModel waitForThreadsNode;
+    public NopNodeModel nop;
+    public SleepNodeModel sleepNode;
+    public UserTaskNodeModel userTaskNode;
 
-    public List<VariableMutation> variableMutations;
+    public List<VariableMutationModel> variableMutations;
 
-    public List<FailureHandlerDef> failureHandlers;
+    public List<FailureHandlerDefModel> failureHandlers;
 
     public Class<Node> getProtoBaseClass() {
         return Node.class;
@@ -54,15 +54,15 @@ public class NodeModel extends LHSerializable<Node> {
     public Node.Builder toProto() {
         Node.Builder out = Node.newBuilder();
 
-        for (Edge o : outgoingEdges) {
+        for (EdgeModel o : outgoingEdges) {
             out.addOutgoingEdges(o.toProto());
         }
 
-        for (VariableMutation v : variableMutations) {
+        for (VariableMutationModel v : variableMutations) {
             out.addVariableMutations(v.toProto());
         }
 
-        for (FailureHandlerDef eh : failureHandlers) {
+        for (FailureHandlerDefModel eh : failureHandlers) {
             out.addFailureHandlers(eh.toProto());
         }
 
@@ -86,7 +86,7 @@ public class NodeModel extends LHSerializable<Node> {
                 out.setWaitForThreads(waitForThreadsNode.toProto());
                 break;
             case NOP:
-                out.setNop(NopNodePb.newBuilder());
+                out.setNop(NopNode.newBuilder());
                 break;
             case SLEEP:
                 out.setSleep(sleepNode.toProto());
@@ -105,57 +105,60 @@ public class NodeModel extends LHSerializable<Node> {
         Node proto = (Node) p;
         type = proto.getNodeCase();
 
-        for (EdgePb epb : proto.getOutgoingEdgesList()) {
-            Edge edge = Edge.fromProto(epb);
+        for (Edge epb : proto.getOutgoingEdgesList()) {
+            EdgeModel edge = EdgeModel.fromProto(epb);
             edge.threadSpecModel = threadSpecModel;
             outgoingEdges.add(edge);
         }
 
-        for (VariableMutationPb vmpb : proto.getVariableMutationsList()) {
-            VariableMutation vm = new VariableMutation();
+        for (VariableMutation vmpb : proto.getVariableMutationsList()) {
+            VariableMutationModel vm = new VariableMutationModel();
             vm.initFrom(vmpb);
             variableMutations.add(vm);
         }
 
-        for (FailureHandlerDefPb ehpb : proto.getFailureHandlersList()) {
-            failureHandlers.add(FailureHandlerDef.fromProto(ehpb));
+        for (FailureHandlerDef ehpb : proto.getFailureHandlersList()) {
+            failureHandlers.add(FailureHandlerDefModel.fromProto(ehpb));
         }
 
         switch (type) {
             case TASK:
-                taskNode = new TaskNode();
+                taskNode = new TaskNodeModel();
                 taskNode.initFrom(proto.getTask());
                 break;
             case ENTRYPOINT:
-                entrypointNode = new EntrypointNode();
+                entrypointNode = new EntrypointNodeModel();
                 entrypointNode.initFrom(proto.getEntrypoint());
                 break;
             case EXIT:
-                exitNode = new ExitNode();
+                exitNode = new ExitNodeModel();
                 exitNode.initFrom(proto.getExit());
                 break;
             case EXTERNAL_EVENT:
-                externalEventNode = new ExternalEventNode();
+                externalEventNode = new ExternalEventNodeModel();
                 externalEventNode.initFrom(proto.getExternalEvent());
                 break;
             case START_THREAD:
-                startThreadNode = new StartThreadNode();
+                startThreadNode = new StartThreadNodeModel();
                 startThreadNode.initFrom(proto.getStartThread());
                 break;
             case WAIT_FOR_THREADS:
-                waitForThreadsNode = new WaitForThreadsNode();
+                waitForThreadsNode = new WaitForThreadsNodeModel();
                 waitForThreadsNode.initFrom(proto.getWaitForThreads());
                 break;
             case NOP:
-                nop = new NopNode();
+                nop = new NopNodeModel();
                 break;
             case SLEEP:
-                sleepNode = new SleepNode();
+                sleepNode = new SleepNodeModel();
                 sleepNode.initFrom(proto.getSleep());
                 break;
             case USER_TASK:
                 userTaskNode =
-                    LHSerializable.fromProto(proto.getUserTask(), UserTaskNode.class);
+                    LHSerializable.fromProto(
+                        proto.getUserTask(),
+                        UserTaskNodeModel.class
+                    );
                 break;
             case NODE_NOT_SET:
                 throw new RuntimeException(
@@ -177,7 +180,7 @@ public class NodeModel extends LHSerializable<Node> {
         failureHandlers = new ArrayList<>();
     }
 
-    public List<Edge> outgoingEdges;
+    public List<EdgeModel> outgoingEdges;
     public String name;
 
     public ThreadSpecModel threadSpecModel;
@@ -185,7 +188,7 @@ public class NodeModel extends LHSerializable<Node> {
     public Set<String> neededVariableNames() {
         Set<String> out = new HashSet<>();
 
-        for (VariableMutation mut : variableMutations) {
+        for (VariableMutationModel mut : variableMutations) {
             out.add(mut.lhsName);
             if (mut.rhsSourceVariable != null) {
                 if (mut.rhsSourceVariable.getVariableName() != null) {
@@ -201,7 +204,7 @@ public class NodeModel extends LHSerializable<Node> {
 
     public void validate(LHGlobalMetaStores client, LHConfig config)
         throws LHValidationError {
-        for (Edge e : outgoingEdges) {
+        for (EdgeModel e : outgoingEdges) {
             if (e.sinkNodeName.equals(name)) {
                 throw new LHValidationError(null, "Self loop not allowed!");
             }
@@ -233,7 +236,7 @@ public class NodeModel extends LHSerializable<Node> {
         }
 
         if (!outgoingEdges.isEmpty()) {
-            Edge last = outgoingEdges.get(outgoingEdges.size() - 1);
+            EdgeModel last = outgoingEdges.get(outgoingEdges.size() - 1);
             if (last.condition != null) {
                 // throw new LHValidationError(
                 //     null,
@@ -290,11 +293,11 @@ public class NodeModel extends LHSerializable<Node> {
 
     public Set<String> getRequiredVariableNames() {
         Set<String> out = new HashSet<>();
-        for (VariableMutation mut : variableMutations) {
+        for (VariableMutationModel mut : variableMutations) {
             out.addAll(mut.getRequiredVariableNames());
         }
 
-        for (Edge edge : outgoingEdges) {
+        for (EdgeModel edge : outgoingEdges) {
             out.addAll(edge.getRequiredVariableNames());
         }
 

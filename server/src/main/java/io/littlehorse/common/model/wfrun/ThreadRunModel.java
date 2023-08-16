@@ -6,17 +6,17 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
-import io.littlehorse.common.model.meta.Edge;
-import io.littlehorse.common.model.meta.FailureHandlerDef;
+import io.littlehorse.common.model.meta.EdgeModel;
+import io.littlehorse.common.model.meta.FailureHandlerDefModel;
 import io.littlehorse.common.model.meta.InterruptDefModel;
 import io.littlehorse.common.model.meta.NodeModel;
 import io.littlehorse.common.model.meta.TaskDefModel;
 import io.littlehorse.common.model.meta.ThreadSpecModel;
 import io.littlehorse.common.model.meta.VariableAssignmentModel;
 import io.littlehorse.common.model.meta.VariableDefModel;
-import io.littlehorse.common.model.meta.VariableMutation;
-import io.littlehorse.common.model.meta.subnode.ExitNode;
-import io.littlehorse.common.model.meta.subnode.TaskNode;
+import io.littlehorse.common.model.meta.VariableMutationModel;
+import io.littlehorse.common.model.meta.subnode.ExitNodeModel;
+import io.littlehorse.common.model.meta.subnode.TaskNodeModel;
 import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.wfrun.haltreason.HandlingFailureHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.Interrupted;
@@ -466,9 +466,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         // handler attached.
 
         NodeModel curNode = getCurrentNode();
-        FailureHandlerDef handler = null;
+        FailureHandlerDefModel handler = null;
 
-        for (FailureHandlerDef candidate : curNode.failureHandlers) {
+        for (FailureHandlerDefModel candidate : curNode.failureHandlers) {
             if (candidate.doesHandle(failure.failureName)) {
                 handler = candidate;
                 break;
@@ -482,7 +482,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
     }
 
-    private void handleFailure(Failure failure, FailureHandlerDef handler) {
+    private void handleFailure(Failure failure, FailureHandlerDefModel handler) {
         PendingFailureHandler pfh = new PendingFailureHandler();
         pfh.failedThreadRun = this.number;
         pfh.handlerSpecName = handler.handlerSpecName;
@@ -602,11 +602,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     public void advanceFrom(NodeModel curNode) {
-        if (curNode.getSubNode().getClass().equals(ExitNode.class)) {
+        if (curNode.getSubNode().getClass().equals(ExitNodeModel.class)) {
             return;
         }
         NodeModel nextNode = null;
-        for (Edge e : curNode.outgoingEdges) {
+        for (EdgeModel e : curNode.outgoingEdges) {
             try {
                 if (evaluateEdge(e)) {
                     nextNode = e.getSinkNode();
@@ -672,7 +672,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         cnr.getSubNodeRun().advanceIfPossible(arrivalTime);
     }
 
-    private boolean evaluateEdge(Edge e) throws LHVarSubError {
+    private boolean evaluateEdge(EdgeModel e) throws LHVarSubError {
         if (e.condition == null) {
             return true;
         }
@@ -711,7 +711,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return wfRunModel.threadRunModels.get(parentThreadId);
     }
 
-    public List<VarNameAndVal> assignVarsForNode(TaskNode node) throws LHVarSubError {
+    public List<VarNameAndVal> assignVarsForNode(TaskNodeModel node)
+        throws LHVarSubError {
         List<VarNameAndVal> out = new ArrayList<>();
         TaskDefModel taskDef = node.getTaskDef();
 
@@ -760,7 +761,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         // That's why we write to an in-memory Map. If all mutations succeed,
         // then we flush the contents of the Map to the Variables.
         Map<String, VariableValueModel> varCache = new HashMap<>();
-        for (VariableMutation mut : node.variableMutations) {
+        for (VariableMutationModel mut : node.variableMutations) {
             try {
                 mut.execute(this, varCache, nodeOutput);
             } catch (LHVarSubError exn) {
@@ -835,7 +836,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 List<Object> formatArgs = new ArrayList<>();
 
                 // second, assign the vars
-                for (VariableAssignmentModel argAssn : assn.getFormatString().getArgs()) {
+                for (VariableAssignmentModel argAssn : assn
+                    .getFormatString()
+                    .getArgs()) {
                     VariableValueModel variableValue = assignVariable(
                         argAssn,
                         txnCache

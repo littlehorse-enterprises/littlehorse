@@ -28,9 +28,15 @@ public class UserTaskSchema {
         // todo
         Class<?> cls = taskObject.getClass();
         for (Field field : cls.getFields()) {
-            if (!field.isAnnotationPresent(io.littlehorse.sdk.usertask.annotations.UserTaskField.class)) continue;
+            if (
+                !field.isAnnotationPresent(
+                    io.littlehorse.sdk.usertask.annotations.UserTaskField.class
+                )
+            ) continue;
 
-            io.littlehorse.sdk.usertask.annotations.UserTaskField utf = field.getAnnotation(io.littlehorse.sdk.usertask.annotations.UserTaskField.class);
+            io.littlehorse.sdk.usertask.annotations.UserTaskField utf = field.getAnnotation(
+                io.littlehorse.sdk.usertask.annotations.UserTaskField.class
+            );
             VariableType type = LHLibUtil.javaClassToLHVarType(field.getType());
             if (
                 type == VariableType.JSON_ARR ||

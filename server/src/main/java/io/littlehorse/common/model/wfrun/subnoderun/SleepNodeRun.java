@@ -5,7 +5,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
-import io.littlehorse.common.model.meta.subnode.SleepNode;
+import io.littlehorse.common.model.meta.subnode.SleepNodeModel;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
@@ -50,7 +50,7 @@ public class SleepNodeRun extends SubNodeRun<SleepNodeRunPb> {
     public void arrive(Date time) {
         // We need to schedule the timer that says "hey the node is done"
 
-        SleepNode sn = getNode().sleepNode;
+        SleepNodeModel sn = getNode().sleepNode;
         if (sn == null) {
             throw new RuntimeException("not possible to have non-sleep-node here.");
         }

@@ -5,34 +5,34 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.EdgeConditionPb;
-import io.littlehorse.sdk.common.proto.EdgePb;
-import io.littlehorse.sdk.common.proto.EntrypointNodePb;
-import io.littlehorse.sdk.common.proto.ExitNodePb;
-import io.littlehorse.sdk.common.proto.ExternalEventNodePb;
-import io.littlehorse.sdk.common.proto.FailureDefPb;
-import io.littlehorse.sdk.common.proto.FailureHandlerDefPb;
+import io.littlehorse.sdk.common.proto.Edge;
+import io.littlehorse.sdk.common.proto.EdgeCondition;
+import io.littlehorse.sdk.common.proto.EntrypointNode;
+import io.littlehorse.sdk.common.proto.ExitNode;
+import io.littlehorse.sdk.common.proto.ExternalEventNode;
+import io.littlehorse.sdk.common.proto.FailureDef;
+import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.InterruptDef;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
-import io.littlehorse.sdk.common.proto.NopNodePb;
-import io.littlehorse.sdk.common.proto.SleepNodePb;
-import io.littlehorse.sdk.common.proto.StartThreadNodePb;
-import io.littlehorse.sdk.common.proto.TaskNodePb;
+import io.littlehorse.sdk.common.proto.NopNode;
+import io.littlehorse.sdk.common.proto.SleepNode;
+import io.littlehorse.sdk.common.proto.StartThreadNode;
+import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
-import io.littlehorse.sdk.common.proto.UserTaskNodePb;
+import io.littlehorse.sdk.common.proto.UserTaskNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.FormatString;
 import io.littlehorse.sdk.common.proto.VariableDef;
-import io.littlehorse.sdk.common.proto.VariableMutationPb;
-import io.littlehorse.sdk.common.proto.VariableMutationPb.NodeOutputSourcePb;
+import io.littlehorse.sdk.common.proto.VariableMutation;
+import io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource;
 import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import io.littlehorse.sdk.common.proto.WaitForThreadsNodePb;
-import io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.ThreadToWaitForPb;
+import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
+import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
@@ -59,7 +59,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
     private List<WfRunVariableImpl> wfRunVariables = new ArrayList<>();
     public String lastNodeName;
     public String name;
-    private EdgeConditionPb lastNodeCondition;
+    private EdgeCondition lastNodeCondition;
     private boolean isActive;
 
     public ThreadBuilderImpl(String name, WorkflowImpl parent, ThreadFunc func) {
@@ -70,7 +70,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         // For now, the creation of the entrypoint node is manual.
         Node entrypointNode = Node
             .newBuilder()
-            .setEntrypoint(EntrypointNodePb.newBuilder())
+            .setEntrypoint(EntrypointNode.newBuilder())
             .build();
 
         String entrypointNodeName = "0-entrypoint-ENTRYPOINT";
@@ -81,7 +81,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         func.threadFunction(this);
 
         // Now add an exit node.
-        addNode("exit", NodeCase.EXIT, ExitNodePb.newBuilder().build());
+        addNode("exit", NodeCase.EXIT, ExitNode.newBuilder().build());
         isActive = false;
     }
 
@@ -212,7 +212,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
     ) {
         checkIfIsActive();
         // guaranteed that exatly one of userId or userGroup is not null
-        UserTaskNodePb.Builder utNode = UserTaskNodePb
+        UserTaskNode.Builder utNode = UserTaskNode
             .newBuilder()
             .setUserTaskDefName(userTaskDefName);
 
@@ -221,7 +221,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             VariableAssignment userGroupAssn = userGroups != null
                 ? assignVariable(userGroups)
                 : null;
-            UserTaskNodePb.UserAssignmentPb.Builder userAssignmentBuilder = UserTaskNodePb.UserAssignmentPb.newBuilder();
+            UserTaskNode.UserAssignment.Builder userAssignmentBuilder = UserTaskNode.UserAssignment.newBuilder();
             userAssignmentBuilder.setUserId(userIdAssn);
             if (userGroupAssn != null) {
                 userAssignmentBuilder.setUserGroup(userGroupAssn);
@@ -269,7 +269,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
     ) {
         checkIfIsActive();
         VariableAssignment assn = assignVariable(delaySeconds);
-        TaskNodePb taskNode = createTaskNode(taskDefName, args);
+        TaskNode taskNode = createTaskNode(taskDefName, args);
         UTATask utaTask = UTATask.newBuilder().setTask(taskNode).build();
 
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) ut;
@@ -295,15 +295,13 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
     public NodeOutputImpl execute(String taskName, Object... args) {
         checkIfIsActive();
-        TaskNodePb taskNode = createTaskNode(taskName, args);
+        TaskNode taskNode = createTaskNode(taskName, args);
         String nodeName = addNode(taskName, NodeCase.TASK, taskNode);
         return new NodeOutputImpl(nodeName, this);
     }
 
-    private TaskNodePb createTaskNode(String taskName, Object... args) {
-        TaskNodePb.Builder taskNode = TaskNodePb
-            .newBuilder()
-            .setTaskDefName(taskName);
+    private TaskNode createTaskNode(String taskName, Object... args) {
+        TaskNode.Builder taskNode = TaskNode.newBuilder().setTaskDefName(taskName);
         parent.addTaskDefName(taskName);
 
         for (Object var : args) {
@@ -360,7 +358,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         }
     }
 
-    public void addMutationToCurrentNode(VariableMutationPb mutation) {
+    public void addMutationToCurrentNode(VariableMutation mutation) {
         checkIfIsActive();
         Node.Builder builder = spec.getNodesOrThrow(lastNodeName).toBuilder();
         builder.addVariableMutations(mutation);
@@ -395,7 +393,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
         Node.Builder treeRoot = spec.getNodesOrThrow(treeRootNodeName).toBuilder();
         treeRoot.addOutgoingEdges(
-            EdgePb
+            Edge
                 .newBuilder()
                 .setSinkNodeName(lastNodeName)
                 .setCondition(cond.getReverse())
@@ -406,7 +404,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
     private void addNopNode() {
         checkIfIsActive();
-        addNode("nop", NodeCase.NOP, NopNodePb.newBuilder().build());
+        addNode("nop", NodeCase.NOP, NopNode.newBuilder().build());
     }
 
     public void doIfElse(
@@ -445,7 +443,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             .getNodesOrThrow(lastNodeName)
             .toBuilder();
         lastNodeFromElseBlock.addOutgoingEdges(
-            EdgePb
+            Edge
                 .newBuilder()
                 .setSinkNodeName(joinerNodeName)
                 // No condition necessary since we need to just go straight to
@@ -479,7 +477,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         // Now add the sideways path from root directly to last
         Node.Builder treeRoot = spec.getNodesOrThrow(treeRootNodeName).toBuilder();
         treeRoot.addOutgoingEdges(
-            EdgePb
+            Edge
                 .newBuilder()
                 .setSinkNodeName(treeLastNodeName)
                 .setCondition(cond.getReverse())
@@ -490,7 +488,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         // Now add the sideways path from last directly to root
         Node.Builder treeLast = spec.getNodesOrThrow(treeLastNodeName).toBuilder();
         treeLast.addOutgoingEdges(
-            EdgePb
+            Edge
                 .newBuilder()
                 .setSinkNodeName(treeRootNodeName)
                 .setCondition(cond.getSpec())
@@ -502,7 +500,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
     public void sleepSeconds(Object secondsToSleep) {
         checkIfIsActive();
-        SleepNodePb.Builder n = SleepNodePb
+        SleepNode.Builder n = SleepNode
             .newBuilder()
             .setRawSeconds(assignVariable(secondsToSleep));
         addNode("sleep", NodeCase.SLEEP, n.build());
@@ -510,7 +508,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
     public void sleepUntil(WfRunVariable timestamp) {
         checkIfIsActive();
-        SleepNodePb.Builder n = SleepNodePb
+        SleepNode.Builder n = SleepNode
             .newBuilder()
             .setTimestamp(assignVariable(timestamp));
         addNode("sleep", NodeCase.SLEEP, n.build());
@@ -532,7 +530,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             varAssigns.put(var.getKey(), assignVariable(var.getValue()));
         }
 
-        StartThreadNodePb startThread = StartThreadNodePb
+        StartThreadNode startThread = StartThreadNode
             .newBuilder()
             .setThreadSpecName(threadName)
             .putAllVariables(varAssigns)
@@ -562,7 +560,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             throw new RuntimeException("Tried to set timeout on non-ext evt node!");
         }
 
-        ExternalEventNodePb.Builder evt = n.getExternalEventBuilder();
+        ExternalEventNode.Builder evt = n.getExternalEventBuilder();
         evt.setTimeoutSeconds(
             VariableAssignment
                 .newBuilder()
@@ -586,7 +584,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
     ) {
         checkIfIsActive();
         WfRunVariableImpl lhs = (WfRunVariableImpl) lhsVar;
-        VariableMutationPb.Builder mutation = VariableMutationPb
+        VariableMutation.Builder mutation = VariableMutation
             .newBuilder()
             .setLhsName(lhs.name)
             .setOperation(type);
@@ -605,7 +603,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
                 );
             }
 
-            NodeOutputSourcePb.Builder nodeOutputSource = NodeOutputSourcePb.newBuilder();
+            NodeOutputSource.Builder nodeOutputSource = NodeOutputSource.newBuilder();
             if (no.jsonPath != null) {
                 nodeOutputSource.setJsonpath(no.jsonPath);
             }
@@ -640,12 +638,12 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
     public NodeOutputImpl waitForThreads(SpawnedThread... threadsToWaitFor) {
         checkIfIsActive();
-        WaitForThreadsNodePb.Builder waitNode = WaitForThreadsNodePb.newBuilder();
+        WaitForThreadsNode.Builder waitNode = WaitForThreadsNode.newBuilder();
 
         for (int i = 0; i < threadsToWaitFor.length; i++) {
             SpawnedThreadImpl st = (SpawnedThreadImpl) threadsToWaitFor[i];
             waitNode.addThreads(
-                ThreadToWaitForPb
+                ThreadToWaitFor
                     .newBuilder()
                     .setThreadRunNumber(assignVariable(st.internalThreadVar))
             );
@@ -662,7 +660,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
     public NodeOutputImpl waitForEvent(String externalEventDefName) {
         checkIfIsActive();
-        ExternalEventNodePb waitNode = ExternalEventNodePb
+        ExternalEventNode waitNode = ExternalEventNode
             .newBuilder()
             .setExternalEventDefName(externalEventDefName)
             .build();
@@ -677,7 +675,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
     public void complete() {
         checkIfIsActive();
-        ExitNodePb exitNode = ExitNodePb.newBuilder().build();
+        ExitNode exitNode = ExitNode.newBuilder().build();
         addNode("complete", NodeCase.EXIT, exitNode);
     }
 
@@ -687,12 +685,12 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
     public void fail(Object output, String failureName, String message) {
         checkIfIsActive();
-        FailureDefPb.Builder failureBuilder = FailureDefPb.newBuilder();
+        FailureDef.Builder failureBuilder = FailureDef.newBuilder();
         if (output != null) failureBuilder.setContent(assignVariable(output));
         if (message != null) failureBuilder.setMessage(message);
         failureBuilder.setFailureName(failureName);
 
-        ExitNodePb exitNode = ExitNodePb
+        ExitNode exitNode = ExitNode
             .newBuilder()
             .setFailureDef(failureBuilder)
             .build();
@@ -724,7 +722,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         NodeOutputImpl node = (NodeOutputImpl) nodeOutput;
         String threadName = "exn-handler-" + node.nodeName + "-" + exceptionName;
         threadName = parent.addSubThread(threadName, handler);
-        FailureHandlerDefPb.Builder handlerDef = FailureHandlerDefPb
+        FailureHandlerDef.Builder handlerDef = FailureHandlerDef
             .newBuilder()
             .setHandlerSpecName(threadName);
         if (exceptionName != null) {
@@ -745,7 +743,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         ComparatorPb comparator,
         Object rhs
     ) {
-        EdgeConditionPb.Builder edge = EdgeConditionPb
+        EdgeCondition.Builder edge = EdgeCondition
             .newBuilder()
             .setComparator(comparator)
             .setLeft(assignVariable(lhs))
@@ -762,7 +760,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         }
 
         Node.Builder feederNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        EdgePb.Builder edge = EdgePb.newBuilder().setSinkNodeName(nextNodeName);
+        Edge.Builder edge = Edge.newBuilder().setSinkNodeName(nextNodeName);
         if (lastNodeCondition != null) {
             edge.setCondition(lastNodeCondition);
             lastNodeCondition = null;
@@ -775,31 +773,31 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         Node.Builder node = Node.newBuilder();
         switch (type) {
             case TASK:
-                node.setTask((TaskNodePb) subNode);
+                node.setTask((TaskNode) subNode);
                 break;
             case ENTRYPOINT:
-                node.setEntrypoint((EntrypointNodePb) subNode);
+                node.setEntrypoint((EntrypointNode) subNode);
                 break;
             case EXIT:
-                node.setExit((ExitNodePb) subNode);
+                node.setExit((ExitNode) subNode);
                 break;
             case EXTERNAL_EVENT:
-                node.setExternalEvent((ExternalEventNodePb) subNode);
+                node.setExternalEvent((ExternalEventNode) subNode);
                 break;
             case SLEEP:
-                node.setSleep((SleepNodePb) subNode);
+                node.setSleep((SleepNode) subNode);
                 break;
             case START_THREAD:
-                node.setStartThread((StartThreadNodePb) subNode);
+                node.setStartThread((StartThreadNode) subNode);
                 break;
             case WAIT_FOR_THREADS:
-                node.setWaitForThreads((WaitForThreadsNodePb) subNode);
+                node.setWaitForThreads((WaitForThreadsNode) subNode);
                 break;
             case NOP:
-                node.setNop((NopNodePb) subNode);
+                node.setNop((NopNode) subNode);
                 break;
             case USER_TASK:
-                node.setUserTask((UserTaskNodePb) subNode);
+                node.setUserTask((UserTaskNode) subNode);
                 break;
             case NODE_NOT_SET:
                 // not possible

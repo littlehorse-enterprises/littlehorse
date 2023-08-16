@@ -5,7 +5,7 @@ import io.littlehorse.common.model.meta.NodeModel;
 import io.littlehorse.common.model.meta.ThreadSpecModel;
 import io.littlehorse.common.model.meta.VariableDefModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.meta.subnode.TaskNode;
+import io.littlehorse.common.model.meta.subnode.TaskNodeModel;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
@@ -156,8 +156,8 @@ public class TestUtil {
         return node;
     }
 
-    public static TaskNode taskNode() {
-        TaskNode taskNode = new TaskNode();
+    public static TaskNodeModel taskNode() {
+        TaskNodeModel taskNode = new TaskNodeModel();
         taskNode.setTaskDefName("test-task-def-name");
         return taskNode;
     }

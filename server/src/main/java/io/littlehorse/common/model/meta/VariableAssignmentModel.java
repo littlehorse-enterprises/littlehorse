@@ -39,7 +39,10 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case FORMAT_STRING:
                 formatString =
-                    LHSerializable.fromProto(p.getFormatString(), FormatStringModel.class);
+                    LHSerializable.fromProto(
+                        p.getFormatString(),
+                        FormatStringModel.class
+                    );
                 break;
             case SOURCE_NOT_SET:
             // nothing to do;

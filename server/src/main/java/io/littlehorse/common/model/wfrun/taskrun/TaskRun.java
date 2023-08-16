@@ -8,7 +8,7 @@ import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommand.ReportTaskRun;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommandresponse.ReportTaskReply;
-import io.littlehorse.common.model.meta.subnode.TaskNode;
+import io.littlehorse.common.model.meta.subnode.TaskNodeModel;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.wfrun.LHTimer;
@@ -160,7 +160,7 @@ public class TaskRun extends Getable<TaskRunPb> {
         LHDAO dao,
         List<VarNameAndVal> inputVars,
         TaskRunSource source,
-        TaskNode node
+        TaskNodeModel node
     ) {
         this();
         this.inputVariables = inputVars;

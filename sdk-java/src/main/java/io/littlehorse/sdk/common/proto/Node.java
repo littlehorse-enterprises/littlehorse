@@ -103,130 +103,130 @@ private static final long serialVersionUID = 0L;
 
   public static final int OUTGOING_EDGES_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.EdgePb> outgoingEdges_;
+  private java.util.List<io.littlehorse.sdk.common.proto.Edge> outgoingEdges_;
   /**
-   * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+   * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.EdgePb> getOutgoingEdgesList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.Edge> getOutgoingEdgesList() {
     return outgoingEdges_;
   }
   /**
-   * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+   * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.EdgePbOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.EdgeOrBuilder> 
       getOutgoingEdgesOrBuilderList() {
     return outgoingEdges_;
   }
   /**
-   * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+   * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
    */
   @java.lang.Override
   public int getOutgoingEdgesCount() {
     return outgoingEdges_.size();
   }
   /**
-   * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+   * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.EdgePb getOutgoingEdges(int index) {
+  public io.littlehorse.sdk.common.proto.Edge getOutgoingEdges(int index) {
     return outgoingEdges_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+   * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.EdgePbOrBuilder getOutgoingEdgesOrBuilder(
+  public io.littlehorse.sdk.common.proto.EdgeOrBuilder getOutgoingEdgesOrBuilder(
       int index) {
     return outgoingEdges_.get(index);
   }
 
   public static final int VARIABLE_MUTATIONS_FIELD_NUMBER = 2;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.VariableMutationPb> variableMutations_;
+  private java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> variableMutations_;
   /**
-   * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+   * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.VariableMutationPb> getVariableMutationsList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> getVariableMutationsList() {
     return variableMutations_;
   }
   /**
-   * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+   * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> 
       getVariableMutationsOrBuilderList() {
     return variableMutations_;
   }
   /**
-   * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+   * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
    */
   @java.lang.Override
   public int getVariableMutationsCount() {
     return variableMutations_.size();
   }
   /**
-   * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+   * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableMutationPb getVariableMutations(int index) {
+  public io.littlehorse.sdk.common.proto.VariableMutation getVariableMutations(int index) {
     return variableMutations_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+   * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder getVariableMutationsOrBuilder(
+  public io.littlehorse.sdk.common.proto.VariableMutationOrBuilder getVariableMutationsOrBuilder(
       int index) {
     return variableMutations_.get(index);
   }
 
   public static final int FAILURE_HANDLERS_FIELD_NUMBER = 4;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDefPb> failureHandlers_;
+  private java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef> failureHandlers_;
   /**
-   * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+   * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDefPb> getFailureHandlersList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef> getFailureHandlersList() {
     return failureHandlers_;
   }
   /**
-   * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+   * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.FailureHandlerDefPbOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder> 
       getFailureHandlersOrBuilderList() {
     return failureHandlers_;
   }
   /**
-   * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+   * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
    */
   @java.lang.Override
   public int getFailureHandlersCount() {
     return failureHandlers_.size();
   }
   /**
-   * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+   * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.FailureHandlerDefPb getFailureHandlers(int index) {
+  public io.littlehorse.sdk.common.proto.FailureHandlerDef getFailureHandlers(int index) {
     return failureHandlers_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+   * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.FailureHandlerDefPbOrBuilder getFailureHandlersOrBuilder(
+  public io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder getFailureHandlersOrBuilder(
       int index) {
     return failureHandlers_.get(index);
   }
 
   public static final int ENTRYPOINT_FIELD_NUMBER = 5;
   /**
-   * <code>.littlehorse.EntrypointNodePb entrypoint = 5;</code>
+   * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
    * @return Whether the entrypoint field is set.
    */
   @java.lang.Override
@@ -234,30 +234,30 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 5;
   }
   /**
-   * <code>.littlehorse.EntrypointNodePb entrypoint = 5;</code>
+   * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
    * @return The entrypoint.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.EntrypointNodePb getEntrypoint() {
+  public io.littlehorse.sdk.common.proto.EntrypointNode getEntrypoint() {
     if (nodeCase_ == 5) {
-       return (io.littlehorse.sdk.common.proto.EntrypointNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.EntrypointNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.EntrypointNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.EntrypointNode.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.EntrypointNodePb entrypoint = 5;</code>
+   * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.EntrypointNodePbOrBuilder getEntrypointOrBuilder() {
+  public io.littlehorse.sdk.common.proto.EntrypointNodeOrBuilder getEntrypointOrBuilder() {
     if (nodeCase_ == 5) {
-       return (io.littlehorse.sdk.common.proto.EntrypointNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.EntrypointNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.EntrypointNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.EntrypointNode.getDefaultInstance();
   }
 
   public static final int EXIT_FIELD_NUMBER = 6;
   /**
-   * <code>.littlehorse.ExitNodePb exit = 6;</code>
+   * <code>.littlehorse.ExitNode exit = 6;</code>
    * @return Whether the exit field is set.
    */
   @java.lang.Override
@@ -265,30 +265,30 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 6;
   }
   /**
-   * <code>.littlehorse.ExitNodePb exit = 6;</code>
+   * <code>.littlehorse.ExitNode exit = 6;</code>
    * @return The exit.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ExitNodePb getExit() {
+  public io.littlehorse.sdk.common.proto.ExitNode getExit() {
     if (nodeCase_ == 6) {
-       return (io.littlehorse.sdk.common.proto.ExitNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.ExitNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.ExitNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.ExitNode.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.ExitNodePb exit = 6;</code>
+   * <code>.littlehorse.ExitNode exit = 6;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ExitNodePbOrBuilder getExitOrBuilder() {
+  public io.littlehorse.sdk.common.proto.ExitNodeOrBuilder getExitOrBuilder() {
     if (nodeCase_ == 6) {
-       return (io.littlehorse.sdk.common.proto.ExitNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.ExitNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.ExitNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.ExitNode.getDefaultInstance();
   }
 
   public static final int TASK_FIELD_NUMBER = 7;
   /**
-   * <code>.littlehorse.TaskNodePb task = 7;</code>
+   * <code>.littlehorse.TaskNode task = 7;</code>
    * @return Whether the task field is set.
    */
   @java.lang.Override
@@ -296,30 +296,30 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 7;
   }
   /**
-   * <code>.littlehorse.TaskNodePb task = 7;</code>
+   * <code>.littlehorse.TaskNode task = 7;</code>
    * @return The task.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskNodePb getTask() {
+  public io.littlehorse.sdk.common.proto.TaskNode getTask() {
     if (nodeCase_ == 7) {
-       return (io.littlehorse.sdk.common.proto.TaskNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.TaskNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.TaskNodePb task = 7;</code>
+   * <code>.littlehorse.TaskNode task = 7;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder getTaskOrBuilder() {
+  public io.littlehorse.sdk.common.proto.TaskNodeOrBuilder getTaskOrBuilder() {
     if (nodeCase_ == 7) {
-       return (io.littlehorse.sdk.common.proto.TaskNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.TaskNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance();
   }
 
   public static final int EXTERNAL_EVENT_FIELD_NUMBER = 8;
   /**
-   * <code>.littlehorse.ExternalEventNodePb external_event = 8;</code>
+   * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
    * @return Whether the externalEvent field is set.
    */
   @java.lang.Override
@@ -327,30 +327,30 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 8;
   }
   /**
-   * <code>.littlehorse.ExternalEventNodePb external_event = 8;</code>
+   * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
    * @return The externalEvent.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ExternalEventNodePb getExternalEvent() {
+  public io.littlehorse.sdk.common.proto.ExternalEventNode getExternalEvent() {
     if (nodeCase_ == 8) {
-       return (io.littlehorse.sdk.common.proto.ExternalEventNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.ExternalEventNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.ExternalEventNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.ExternalEventNode.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.ExternalEventNodePb external_event = 8;</code>
+   * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ExternalEventNodePbOrBuilder getExternalEventOrBuilder() {
+  public io.littlehorse.sdk.common.proto.ExternalEventNodeOrBuilder getExternalEventOrBuilder() {
     if (nodeCase_ == 8) {
-       return (io.littlehorse.sdk.common.proto.ExternalEventNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.ExternalEventNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.ExternalEventNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.ExternalEventNode.getDefaultInstance();
   }
 
   public static final int START_THREAD_FIELD_NUMBER = 9;
   /**
-   * <code>.littlehorse.StartThreadNodePb start_thread = 9;</code>
+   * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
    * @return Whether the startThread field is set.
    */
   @java.lang.Override
@@ -358,30 +358,30 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 9;
   }
   /**
-   * <code>.littlehorse.StartThreadNodePb start_thread = 9;</code>
+   * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
    * @return The startThread.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.StartThreadNodePb getStartThread() {
+  public io.littlehorse.sdk.common.proto.StartThreadNode getStartThread() {
     if (nodeCase_ == 9) {
-       return (io.littlehorse.sdk.common.proto.StartThreadNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.StartThreadNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.StartThreadNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.StartThreadNode.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.StartThreadNodePb start_thread = 9;</code>
+   * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.StartThreadNodePbOrBuilder getStartThreadOrBuilder() {
+  public io.littlehorse.sdk.common.proto.StartThreadNodeOrBuilder getStartThreadOrBuilder() {
     if (nodeCase_ == 9) {
-       return (io.littlehorse.sdk.common.proto.StartThreadNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.StartThreadNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.StartThreadNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.StartThreadNode.getDefaultInstance();
   }
 
   public static final int WAIT_FOR_THREADS_FIELD_NUMBER = 10;
   /**
-   * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+   * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
    * @return Whether the waitForThreads field is set.
    */
   @java.lang.Override
@@ -389,30 +389,30 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 10;
   }
   /**
-   * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+   * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
    * @return The waitForThreads.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WaitForThreadsNodePb getWaitForThreads() {
+  public io.littlehorse.sdk.common.proto.WaitForThreadsNode getWaitForThreads() {
     if (nodeCase_ == 10) {
-       return (io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.WaitForThreadsNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.WaitForThreadsNode.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+   * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WaitForThreadsNodePbOrBuilder getWaitForThreadsOrBuilder() {
+  public io.littlehorse.sdk.common.proto.WaitForThreadsNodeOrBuilder getWaitForThreadsOrBuilder() {
     if (nodeCase_ == 10) {
-       return (io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.WaitForThreadsNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.WaitForThreadsNode.getDefaultInstance();
   }
 
   public static final int NOP_FIELD_NUMBER = 11;
   /**
-   * <code>.littlehorse.NopNodePb nop = 11;</code>
+   * <code>.littlehorse.NopNode nop = 11;</code>
    * @return Whether the nop field is set.
    */
   @java.lang.Override
@@ -420,30 +420,30 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 11;
   }
   /**
-   * <code>.littlehorse.NopNodePb nop = 11;</code>
+   * <code>.littlehorse.NopNode nop = 11;</code>
    * @return The nop.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.NopNodePb getNop() {
+  public io.littlehorse.sdk.common.proto.NopNode getNop() {
     if (nodeCase_ == 11) {
-       return (io.littlehorse.sdk.common.proto.NopNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.NopNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.NopNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.NopNode.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.NopNodePb nop = 11;</code>
+   * <code>.littlehorse.NopNode nop = 11;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.NopNodePbOrBuilder getNopOrBuilder() {
+  public io.littlehorse.sdk.common.proto.NopNodeOrBuilder getNopOrBuilder() {
     if (nodeCase_ == 11) {
-       return (io.littlehorse.sdk.common.proto.NopNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.NopNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.NopNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.NopNode.getDefaultInstance();
   }
 
   public static final int SLEEP_FIELD_NUMBER = 12;
   /**
-   * <code>.littlehorse.SleepNodePb sleep = 12;</code>
+   * <code>.littlehorse.SleepNode sleep = 12;</code>
    * @return Whether the sleep field is set.
    */
   @java.lang.Override
@@ -451,30 +451,30 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 12;
   }
   /**
-   * <code>.littlehorse.SleepNodePb sleep = 12;</code>
+   * <code>.littlehorse.SleepNode sleep = 12;</code>
    * @return The sleep.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.SleepNodePb getSleep() {
+  public io.littlehorse.sdk.common.proto.SleepNode getSleep() {
     if (nodeCase_ == 12) {
-       return (io.littlehorse.sdk.common.proto.SleepNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.SleepNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.SleepNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.SleepNode.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.SleepNodePb sleep = 12;</code>
+   * <code>.littlehorse.SleepNode sleep = 12;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.SleepNodePbOrBuilder getSleepOrBuilder() {
+  public io.littlehorse.sdk.common.proto.SleepNodeOrBuilder getSleepOrBuilder() {
     if (nodeCase_ == 12) {
-       return (io.littlehorse.sdk.common.proto.SleepNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.SleepNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.SleepNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.SleepNode.getDefaultInstance();
   }
 
   public static final int USER_TASK_FIELD_NUMBER = 13;
   /**
-   * <code>.littlehorse.UserTaskNodePb user_task = 13;</code>
+   * <code>.littlehorse.UserTaskNode user_task = 13;</code>
    * @return Whether the userTask field is set.
    */
   @java.lang.Override
@@ -482,25 +482,25 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 13;
   }
   /**
-   * <code>.littlehorse.UserTaskNodePb user_task = 13;</code>
+   * <code>.littlehorse.UserTaskNode user_task = 13;</code>
    * @return The userTask.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskNodePb getUserTask() {
+  public io.littlehorse.sdk.common.proto.UserTaskNode getUserTask() {
     if (nodeCase_ == 13) {
-       return (io.littlehorse.sdk.common.proto.UserTaskNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.UserTaskNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.UserTaskNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserTaskNode.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.UserTaskNodePb user_task = 13;</code>
+   * <code>.littlehorse.UserTaskNode user_task = 13;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskNodePbOrBuilder getUserTaskOrBuilder() {
+  public io.littlehorse.sdk.common.proto.UserTaskNodeOrBuilder getUserTaskOrBuilder() {
     if (nodeCase_ == 13) {
-       return (io.littlehorse.sdk.common.proto.UserTaskNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.UserTaskNode) node_;
     }
-    return io.littlehorse.sdk.common.proto.UserTaskNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserTaskNode.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -527,31 +527,31 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(4, failureHandlers_.get(i));
     }
     if (nodeCase_ == 5) {
-      output.writeMessage(5, (io.littlehorse.sdk.common.proto.EntrypointNodePb) node_);
+      output.writeMessage(5, (io.littlehorse.sdk.common.proto.EntrypointNode) node_);
     }
     if (nodeCase_ == 6) {
-      output.writeMessage(6, (io.littlehorse.sdk.common.proto.ExitNodePb) node_);
+      output.writeMessage(6, (io.littlehorse.sdk.common.proto.ExitNode) node_);
     }
     if (nodeCase_ == 7) {
-      output.writeMessage(7, (io.littlehorse.sdk.common.proto.TaskNodePb) node_);
+      output.writeMessage(7, (io.littlehorse.sdk.common.proto.TaskNode) node_);
     }
     if (nodeCase_ == 8) {
-      output.writeMessage(8, (io.littlehorse.sdk.common.proto.ExternalEventNodePb) node_);
+      output.writeMessage(8, (io.littlehorse.sdk.common.proto.ExternalEventNode) node_);
     }
     if (nodeCase_ == 9) {
-      output.writeMessage(9, (io.littlehorse.sdk.common.proto.StartThreadNodePb) node_);
+      output.writeMessage(9, (io.littlehorse.sdk.common.proto.StartThreadNode) node_);
     }
     if (nodeCase_ == 10) {
-      output.writeMessage(10, (io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_);
+      output.writeMessage(10, (io.littlehorse.sdk.common.proto.WaitForThreadsNode) node_);
     }
     if (nodeCase_ == 11) {
-      output.writeMessage(11, (io.littlehorse.sdk.common.proto.NopNodePb) node_);
+      output.writeMessage(11, (io.littlehorse.sdk.common.proto.NopNode) node_);
     }
     if (nodeCase_ == 12) {
-      output.writeMessage(12, (io.littlehorse.sdk.common.proto.SleepNodePb) node_);
+      output.writeMessage(12, (io.littlehorse.sdk.common.proto.SleepNode) node_);
     }
     if (nodeCase_ == 13) {
-      output.writeMessage(13, (io.littlehorse.sdk.common.proto.UserTaskNodePb) node_);
+      output.writeMessage(13, (io.littlehorse.sdk.common.proto.UserTaskNode) node_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -576,39 +576,39 @@ private static final long serialVersionUID = 0L;
     }
     if (nodeCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, (io.littlehorse.sdk.common.proto.EntrypointNodePb) node_);
+        .computeMessageSize(5, (io.littlehorse.sdk.common.proto.EntrypointNode) node_);
     }
     if (nodeCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, (io.littlehorse.sdk.common.proto.ExitNodePb) node_);
+        .computeMessageSize(6, (io.littlehorse.sdk.common.proto.ExitNode) node_);
     }
     if (nodeCase_ == 7) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, (io.littlehorse.sdk.common.proto.TaskNodePb) node_);
+        .computeMessageSize(7, (io.littlehorse.sdk.common.proto.TaskNode) node_);
     }
     if (nodeCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(8, (io.littlehorse.sdk.common.proto.ExternalEventNodePb) node_);
+        .computeMessageSize(8, (io.littlehorse.sdk.common.proto.ExternalEventNode) node_);
     }
     if (nodeCase_ == 9) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, (io.littlehorse.sdk.common.proto.StartThreadNodePb) node_);
+        .computeMessageSize(9, (io.littlehorse.sdk.common.proto.StartThreadNode) node_);
     }
     if (nodeCase_ == 10) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(10, (io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_);
+        .computeMessageSize(10, (io.littlehorse.sdk.common.proto.WaitForThreadsNode) node_);
     }
     if (nodeCase_ == 11) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(11, (io.littlehorse.sdk.common.proto.NopNodePb) node_);
+        .computeMessageSize(11, (io.littlehorse.sdk.common.proto.NopNode) node_);
     }
     if (nodeCase_ == 12) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(12, (io.littlehorse.sdk.common.proto.SleepNodePb) node_);
+        .computeMessageSize(12, (io.littlehorse.sdk.common.proto.SleepNode) node_);
     }
     if (nodeCase_ == 13) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(13, (io.littlehorse.sdk.common.proto.UserTaskNodePb) node_);
+        .computeMessageSize(13, (io.littlehorse.sdk.common.proto.UserTaskNode) node_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1212,9 +1212,9 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              io.littlehorse.sdk.common.proto.EdgePb m =
+              io.littlehorse.sdk.common.proto.Edge m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.EdgePb.parser(),
+                      io.littlehorse.sdk.common.proto.Edge.parser(),
                       extensionRegistry);
               if (outgoingEdgesBuilder_ == null) {
                 ensureOutgoingEdgesIsMutable();
@@ -1225,9 +1225,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 18: {
-              io.littlehorse.sdk.common.proto.VariableMutationPb m =
+              io.littlehorse.sdk.common.proto.VariableMutation m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.VariableMutationPb.parser(),
+                      io.littlehorse.sdk.common.proto.VariableMutation.parser(),
                       extensionRegistry);
               if (variableMutationsBuilder_ == null) {
                 ensureVariableMutationsIsMutable();
@@ -1238,9 +1238,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 18
             case 34: {
-              io.littlehorse.sdk.common.proto.FailureHandlerDefPb m =
+              io.littlehorse.sdk.common.proto.FailureHandlerDef m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.FailureHandlerDefPb.parser(),
+                      io.littlehorse.sdk.common.proto.FailureHandlerDef.parser(),
                       extensionRegistry);
               if (failureHandlersBuilder_ == null) {
                 ensureFailureHandlersIsMutable();
@@ -1345,22 +1345,22 @@ private static final long serialVersionUID = 0L;
 
     private int bitField0_;
 
-    private java.util.List<io.littlehorse.sdk.common.proto.EdgePb> outgoingEdges_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.Edge> outgoingEdges_ =
       java.util.Collections.emptyList();
     private void ensureOutgoingEdgesIsMutable() {
       if (!((bitField0_ & 0x00000001) != 0)) {
-        outgoingEdges_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.EdgePb>(outgoingEdges_);
+        outgoingEdges_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.Edge>(outgoingEdges_);
         bitField0_ |= 0x00000001;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.EdgePb, io.littlehorse.sdk.common.proto.EdgePb.Builder, io.littlehorse.sdk.common.proto.EdgePbOrBuilder> outgoingEdgesBuilder_;
+        io.littlehorse.sdk.common.proto.Edge, io.littlehorse.sdk.common.proto.Edge.Builder, io.littlehorse.sdk.common.proto.EdgeOrBuilder> outgoingEdgesBuilder_;
 
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.EdgePb> getOutgoingEdgesList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.Edge> getOutgoingEdgesList() {
       if (outgoingEdgesBuilder_ == null) {
         return java.util.Collections.unmodifiableList(outgoingEdges_);
       } else {
@@ -1368,7 +1368,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public int getOutgoingEdgesCount() {
       if (outgoingEdgesBuilder_ == null) {
@@ -1378,9 +1378,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.EdgePb getOutgoingEdges(int index) {
+    public io.littlehorse.sdk.common.proto.Edge getOutgoingEdges(int index) {
       if (outgoingEdgesBuilder_ == null) {
         return outgoingEdges_.get(index);
       } else {
@@ -1388,10 +1388,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder setOutgoingEdges(
-        int index, io.littlehorse.sdk.common.proto.EdgePb value) {
+        int index, io.littlehorse.sdk.common.proto.Edge value) {
       if (outgoingEdgesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1405,10 +1405,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder setOutgoingEdges(
-        int index, io.littlehorse.sdk.common.proto.EdgePb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.Edge.Builder builderForValue) {
       if (outgoingEdgesBuilder_ == null) {
         ensureOutgoingEdgesIsMutable();
         outgoingEdges_.set(index, builderForValue.build());
@@ -1419,9 +1419,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
-    public Builder addOutgoingEdges(io.littlehorse.sdk.common.proto.EdgePb value) {
+    public Builder addOutgoingEdges(io.littlehorse.sdk.common.proto.Edge value) {
       if (outgoingEdgesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1435,10 +1435,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder addOutgoingEdges(
-        int index, io.littlehorse.sdk.common.proto.EdgePb value) {
+        int index, io.littlehorse.sdk.common.proto.Edge value) {
       if (outgoingEdgesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1452,10 +1452,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder addOutgoingEdges(
-        io.littlehorse.sdk.common.proto.EdgePb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.Edge.Builder builderForValue) {
       if (outgoingEdgesBuilder_ == null) {
         ensureOutgoingEdgesIsMutable();
         outgoingEdges_.add(builderForValue.build());
@@ -1466,10 +1466,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder addOutgoingEdges(
-        int index, io.littlehorse.sdk.common.proto.EdgePb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.Edge.Builder builderForValue) {
       if (outgoingEdgesBuilder_ == null) {
         ensureOutgoingEdgesIsMutable();
         outgoingEdges_.add(index, builderForValue.build());
@@ -1480,10 +1480,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder addAllOutgoingEdges(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.EdgePb> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.Edge> values) {
       if (outgoingEdgesBuilder_ == null) {
         ensureOutgoingEdgesIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -1495,7 +1495,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder clearOutgoingEdges() {
       if (outgoingEdgesBuilder_ == null) {
@@ -1508,7 +1508,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder removeOutgoingEdges(int index) {
       if (outgoingEdgesBuilder_ == null) {
@@ -1521,16 +1521,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.EdgePb.Builder getOutgoingEdgesBuilder(
+    public io.littlehorse.sdk.common.proto.Edge.Builder getOutgoingEdgesBuilder(
         int index) {
       return getOutgoingEdgesFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.EdgePbOrBuilder getOutgoingEdgesOrBuilder(
+    public io.littlehorse.sdk.common.proto.EdgeOrBuilder getOutgoingEdgesOrBuilder(
         int index) {
       if (outgoingEdgesBuilder_ == null) {
         return outgoingEdges_.get(index);  } else {
@@ -1538,9 +1538,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.EdgePbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.EdgeOrBuilder> 
          getOutgoingEdgesOrBuilderList() {
       if (outgoingEdgesBuilder_ != null) {
         return outgoingEdgesBuilder_.getMessageOrBuilderList();
@@ -1549,33 +1549,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.EdgePb.Builder addOutgoingEdgesBuilder() {
+    public io.littlehorse.sdk.common.proto.Edge.Builder addOutgoingEdgesBuilder() {
       return getOutgoingEdgesFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.EdgePb.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.Edge.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.EdgePb.Builder addOutgoingEdgesBuilder(
+    public io.littlehorse.sdk.common.proto.Edge.Builder addOutgoingEdgesBuilder(
         int index) {
       return getOutgoingEdgesFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.EdgePb.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.Edge.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.EdgePb outgoing_edges = 1;</code>
+     * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.EdgePb.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.Edge.Builder> 
          getOutgoingEdgesBuilderList() {
       return getOutgoingEdgesFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.EdgePb, io.littlehorse.sdk.common.proto.EdgePb.Builder, io.littlehorse.sdk.common.proto.EdgePbOrBuilder> 
+        io.littlehorse.sdk.common.proto.Edge, io.littlehorse.sdk.common.proto.Edge.Builder, io.littlehorse.sdk.common.proto.EdgeOrBuilder> 
         getOutgoingEdgesFieldBuilder() {
       if (outgoingEdgesBuilder_ == null) {
         outgoingEdgesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.EdgePb, io.littlehorse.sdk.common.proto.EdgePb.Builder, io.littlehorse.sdk.common.proto.EdgePbOrBuilder>(
+            io.littlehorse.sdk.common.proto.Edge, io.littlehorse.sdk.common.proto.Edge.Builder, io.littlehorse.sdk.common.proto.EdgeOrBuilder>(
                 outgoingEdges_,
                 ((bitField0_ & 0x00000001) != 0),
                 getParentForChildren(),
@@ -1585,22 +1585,22 @@ private static final long serialVersionUID = 0L;
       return outgoingEdgesBuilder_;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.VariableMutationPb> variableMutations_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> variableMutations_ =
       java.util.Collections.emptyList();
     private void ensureVariableMutationsIsMutable() {
       if (!((bitField0_ & 0x00000002) != 0)) {
-        variableMutations_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableMutationPb>(variableMutations_);
+        variableMutations_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableMutation>(variableMutations_);
         bitField0_ |= 0x00000002;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableMutationPb, io.littlehorse.sdk.common.proto.VariableMutationPb.Builder, io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder> variableMutationsBuilder_;
+        io.littlehorse.sdk.common.proto.VariableMutation, io.littlehorse.sdk.common.proto.VariableMutation.Builder, io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> variableMutationsBuilder_;
 
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.VariableMutationPb> getVariableMutationsList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> getVariableMutationsList() {
       if (variableMutationsBuilder_ == null) {
         return java.util.Collections.unmodifiableList(variableMutations_);
       } else {
@@ -1608,7 +1608,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
     public int getVariableMutationsCount() {
       if (variableMutationsBuilder_ == null) {
@@ -1618,9 +1618,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableMutationPb getVariableMutations(int index) {
+    public io.littlehorse.sdk.common.proto.VariableMutation getVariableMutations(int index) {
       if (variableMutationsBuilder_ == null) {
         return variableMutations_.get(index);
       } else {
@@ -1628,10 +1628,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
     public Builder setVariableMutations(
-        int index, io.littlehorse.sdk.common.proto.VariableMutationPb value) {
+        int index, io.littlehorse.sdk.common.proto.VariableMutation value) {
       if (variableMutationsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1645,10 +1645,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
     public Builder setVariableMutations(
-        int index, io.littlehorse.sdk.common.proto.VariableMutationPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.VariableMutation.Builder builderForValue) {
       if (variableMutationsBuilder_ == null) {
         ensureVariableMutationsIsMutable();
         variableMutations_.set(index, builderForValue.build());
@@ -1659,9 +1659,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
-    public Builder addVariableMutations(io.littlehorse.sdk.common.proto.VariableMutationPb value) {
+    public Builder addVariableMutations(io.littlehorse.sdk.common.proto.VariableMutation value) {
       if (variableMutationsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1675,10 +1675,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
     public Builder addVariableMutations(
-        int index, io.littlehorse.sdk.common.proto.VariableMutationPb value) {
+        int index, io.littlehorse.sdk.common.proto.VariableMutation value) {
       if (variableMutationsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1692,10 +1692,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
     public Builder addVariableMutations(
-        io.littlehorse.sdk.common.proto.VariableMutationPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableMutation.Builder builderForValue) {
       if (variableMutationsBuilder_ == null) {
         ensureVariableMutationsIsMutable();
         variableMutations_.add(builderForValue.build());
@@ -1706,10 +1706,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
     public Builder addVariableMutations(
-        int index, io.littlehorse.sdk.common.proto.VariableMutationPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.VariableMutation.Builder builderForValue) {
       if (variableMutationsBuilder_ == null) {
         ensureVariableMutationsIsMutable();
         variableMutations_.add(index, builderForValue.build());
@@ -1720,10 +1720,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
     public Builder addAllVariableMutations(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableMutationPb> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableMutation> values) {
       if (variableMutationsBuilder_ == null) {
         ensureVariableMutationsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -1735,7 +1735,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
     public Builder clearVariableMutations() {
       if (variableMutationsBuilder_ == null) {
@@ -1748,7 +1748,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
     public Builder removeVariableMutations(int index) {
       if (variableMutationsBuilder_ == null) {
@@ -1761,16 +1761,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableMutationPb.Builder getVariableMutationsBuilder(
+    public io.littlehorse.sdk.common.proto.VariableMutation.Builder getVariableMutationsBuilder(
         int index) {
       return getVariableMutationsFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder getVariableMutationsOrBuilder(
+    public io.littlehorse.sdk.common.proto.VariableMutationOrBuilder getVariableMutationsOrBuilder(
         int index) {
       if (variableMutationsBuilder_ == null) {
         return variableMutations_.get(index);  } else {
@@ -1778,9 +1778,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> 
          getVariableMutationsOrBuilderList() {
       if (variableMutationsBuilder_ != null) {
         return variableMutationsBuilder_.getMessageOrBuilderList();
@@ -1789,33 +1789,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableMutationPb.Builder addVariableMutationsBuilder() {
+    public io.littlehorse.sdk.common.proto.VariableMutation.Builder addVariableMutationsBuilder() {
       return getVariableMutationsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.VariableMutationPb.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.VariableMutation.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableMutationPb.Builder addVariableMutationsBuilder(
+    public io.littlehorse.sdk.common.proto.VariableMutation.Builder addVariableMutationsBuilder(
         int index) {
       return getVariableMutationsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.VariableMutationPb.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.VariableMutation.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb variable_mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation variable_mutations = 2;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.VariableMutationPb.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.VariableMutation.Builder> 
          getVariableMutationsBuilderList() {
       return getVariableMutationsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableMutationPb, io.littlehorse.sdk.common.proto.VariableMutationPb.Builder, io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableMutation, io.littlehorse.sdk.common.proto.VariableMutation.Builder, io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> 
         getVariableMutationsFieldBuilder() {
       if (variableMutationsBuilder_ == null) {
         variableMutationsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableMutationPb, io.littlehorse.sdk.common.proto.VariableMutationPb.Builder, io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.VariableMutation, io.littlehorse.sdk.common.proto.VariableMutation.Builder, io.littlehorse.sdk.common.proto.VariableMutationOrBuilder>(
                 variableMutations_,
                 ((bitField0_ & 0x00000002) != 0),
                 getParentForChildren(),
@@ -1825,22 +1825,22 @@ private static final long serialVersionUID = 0L;
       return variableMutationsBuilder_;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDefPb> failureHandlers_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef> failureHandlers_ =
       java.util.Collections.emptyList();
     private void ensureFailureHandlersIsMutable() {
       if (!((bitField0_ & 0x00000004) != 0)) {
-        failureHandlers_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.FailureHandlerDefPb>(failureHandlers_);
+        failureHandlers_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.FailureHandlerDef>(failureHandlers_);
         bitField0_ |= 0x00000004;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.FailureHandlerDefPb, io.littlehorse.sdk.common.proto.FailureHandlerDefPb.Builder, io.littlehorse.sdk.common.proto.FailureHandlerDefPbOrBuilder> failureHandlersBuilder_;
+        io.littlehorse.sdk.common.proto.FailureHandlerDef, io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder, io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder> failureHandlersBuilder_;
 
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDefPb> getFailureHandlersList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef> getFailureHandlersList() {
       if (failureHandlersBuilder_ == null) {
         return java.util.Collections.unmodifiableList(failureHandlers_);
       } else {
@@ -1848,7 +1848,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public int getFailureHandlersCount() {
       if (failureHandlersBuilder_ == null) {
@@ -1858,9 +1858,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.FailureHandlerDefPb getFailureHandlers(int index) {
+    public io.littlehorse.sdk.common.proto.FailureHandlerDef getFailureHandlers(int index) {
       if (failureHandlersBuilder_ == null) {
         return failureHandlers_.get(index);
       } else {
@@ -1868,10 +1868,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder setFailureHandlers(
-        int index, io.littlehorse.sdk.common.proto.FailureHandlerDefPb value) {
+        int index, io.littlehorse.sdk.common.proto.FailureHandlerDef value) {
       if (failureHandlersBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1885,10 +1885,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder setFailureHandlers(
-        int index, io.littlehorse.sdk.common.proto.FailureHandlerDefPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder builderForValue) {
       if (failureHandlersBuilder_ == null) {
         ensureFailureHandlersIsMutable();
         failureHandlers_.set(index, builderForValue.build());
@@ -1899,9 +1899,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
-    public Builder addFailureHandlers(io.littlehorse.sdk.common.proto.FailureHandlerDefPb value) {
+    public Builder addFailureHandlers(io.littlehorse.sdk.common.proto.FailureHandlerDef value) {
       if (failureHandlersBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1915,10 +1915,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder addFailureHandlers(
-        int index, io.littlehorse.sdk.common.proto.FailureHandlerDefPb value) {
+        int index, io.littlehorse.sdk.common.proto.FailureHandlerDef value) {
       if (failureHandlersBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1932,10 +1932,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder addFailureHandlers(
-        io.littlehorse.sdk.common.proto.FailureHandlerDefPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder builderForValue) {
       if (failureHandlersBuilder_ == null) {
         ensureFailureHandlersIsMutable();
         failureHandlers_.add(builderForValue.build());
@@ -1946,10 +1946,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder addFailureHandlers(
-        int index, io.littlehorse.sdk.common.proto.FailureHandlerDefPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder builderForValue) {
       if (failureHandlersBuilder_ == null) {
         ensureFailureHandlersIsMutable();
         failureHandlers_.add(index, builderForValue.build());
@@ -1960,10 +1960,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder addAllFailureHandlers(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.FailureHandlerDefPb> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.FailureHandlerDef> values) {
       if (failureHandlersBuilder_ == null) {
         ensureFailureHandlersIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -1975,7 +1975,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder clearFailureHandlers() {
       if (failureHandlersBuilder_ == null) {
@@ -1988,7 +1988,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder removeFailureHandlers(int index) {
       if (failureHandlersBuilder_ == null) {
@@ -2001,16 +2001,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.FailureHandlerDefPb.Builder getFailureHandlersBuilder(
+    public io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder getFailureHandlersBuilder(
         int index) {
       return getFailureHandlersFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.FailureHandlerDefPbOrBuilder getFailureHandlersOrBuilder(
+    public io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder getFailureHandlersOrBuilder(
         int index) {
       if (failureHandlersBuilder_ == null) {
         return failureHandlers_.get(index);  } else {
@@ -2018,9 +2018,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.FailureHandlerDefPbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder> 
          getFailureHandlersOrBuilderList() {
       if (failureHandlersBuilder_ != null) {
         return failureHandlersBuilder_.getMessageOrBuilderList();
@@ -2029,33 +2029,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.FailureHandlerDefPb.Builder addFailureHandlersBuilder() {
+    public io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder addFailureHandlersBuilder() {
       return getFailureHandlersFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.FailureHandlerDefPb.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.FailureHandlerDef.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.FailureHandlerDefPb.Builder addFailureHandlersBuilder(
+    public io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder addFailureHandlersBuilder(
         int index) {
       return getFailureHandlersFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.FailureHandlerDefPb.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.FailureHandlerDef.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.FailureHandlerDefPb failure_handlers = 4;</code>
+     * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDefPb.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder> 
          getFailureHandlersBuilderList() {
       return getFailureHandlersFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.FailureHandlerDefPb, io.littlehorse.sdk.common.proto.FailureHandlerDefPb.Builder, io.littlehorse.sdk.common.proto.FailureHandlerDefPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.FailureHandlerDef, io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder, io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder> 
         getFailureHandlersFieldBuilder() {
       if (failureHandlersBuilder_ == null) {
         failureHandlersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.FailureHandlerDefPb, io.littlehorse.sdk.common.proto.FailureHandlerDefPb.Builder, io.littlehorse.sdk.common.proto.FailureHandlerDefPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.FailureHandlerDef, io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder, io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder>(
                 failureHandlers_,
                 ((bitField0_ & 0x00000004) != 0),
                 getParentForChildren(),
@@ -2066,9 +2066,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.EntrypointNodePb, io.littlehorse.sdk.common.proto.EntrypointNodePb.Builder, io.littlehorse.sdk.common.proto.EntrypointNodePbOrBuilder> entrypointBuilder_;
+        io.littlehorse.sdk.common.proto.EntrypointNode, io.littlehorse.sdk.common.proto.EntrypointNode.Builder, io.littlehorse.sdk.common.proto.EntrypointNodeOrBuilder> entrypointBuilder_;
     /**
-     * <code>.littlehorse.EntrypointNodePb entrypoint = 5;</code>
+     * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      * @return Whether the entrypoint field is set.
      */
     @java.lang.Override
@@ -2076,27 +2076,27 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 5;
     }
     /**
-     * <code>.littlehorse.EntrypointNodePb entrypoint = 5;</code>
+     * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      * @return The entrypoint.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.EntrypointNodePb getEntrypoint() {
+    public io.littlehorse.sdk.common.proto.EntrypointNode getEntrypoint() {
       if (entrypointBuilder_ == null) {
         if (nodeCase_ == 5) {
-          return (io.littlehorse.sdk.common.proto.EntrypointNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.EntrypointNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.EntrypointNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.EntrypointNode.getDefaultInstance();
       } else {
         if (nodeCase_ == 5) {
           return entrypointBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.EntrypointNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.EntrypointNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.EntrypointNodePb entrypoint = 5;</code>
+     * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      */
-    public Builder setEntrypoint(io.littlehorse.sdk.common.proto.EntrypointNodePb value) {
+    public Builder setEntrypoint(io.littlehorse.sdk.common.proto.EntrypointNode value) {
       if (entrypointBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2110,10 +2110,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.EntrypointNodePb entrypoint = 5;</code>
+     * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      */
     public Builder setEntrypoint(
-        io.littlehorse.sdk.common.proto.EntrypointNodePb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.EntrypointNode.Builder builderForValue) {
       if (entrypointBuilder_ == null) {
         node_ = builderForValue.build();
         onChanged();
@@ -2124,13 +2124,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.EntrypointNodePb entrypoint = 5;</code>
+     * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      */
-    public Builder mergeEntrypoint(io.littlehorse.sdk.common.proto.EntrypointNodePb value) {
+    public Builder mergeEntrypoint(io.littlehorse.sdk.common.proto.EntrypointNode value) {
       if (entrypointBuilder_ == null) {
         if (nodeCase_ == 5 &&
-            node_ != io.littlehorse.sdk.common.proto.EntrypointNodePb.getDefaultInstance()) {
-          node_ = io.littlehorse.sdk.common.proto.EntrypointNodePb.newBuilder((io.littlehorse.sdk.common.proto.EntrypointNodePb) node_)
+            node_ != io.littlehorse.sdk.common.proto.EntrypointNode.getDefaultInstance()) {
+          node_ = io.littlehorse.sdk.common.proto.EntrypointNode.newBuilder((io.littlehorse.sdk.common.proto.EntrypointNode) node_)
               .mergeFrom(value).buildPartial();
         } else {
           node_ = value;
@@ -2147,7 +2147,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.EntrypointNodePb entrypoint = 5;</code>
+     * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      */
     public Builder clearEntrypoint() {
       if (entrypointBuilder_ == null) {
@@ -2166,38 +2166,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.EntrypointNodePb entrypoint = 5;</code>
+     * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      */
-    public io.littlehorse.sdk.common.proto.EntrypointNodePb.Builder getEntrypointBuilder() {
+    public io.littlehorse.sdk.common.proto.EntrypointNode.Builder getEntrypointBuilder() {
       return getEntrypointFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.EntrypointNodePb entrypoint = 5;</code>
+     * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.EntrypointNodePbOrBuilder getEntrypointOrBuilder() {
+    public io.littlehorse.sdk.common.proto.EntrypointNodeOrBuilder getEntrypointOrBuilder() {
       if ((nodeCase_ == 5) && (entrypointBuilder_ != null)) {
         return entrypointBuilder_.getMessageOrBuilder();
       } else {
         if (nodeCase_ == 5) {
-          return (io.littlehorse.sdk.common.proto.EntrypointNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.EntrypointNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.EntrypointNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.EntrypointNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.EntrypointNodePb entrypoint = 5;</code>
+     * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.EntrypointNodePb, io.littlehorse.sdk.common.proto.EntrypointNodePb.Builder, io.littlehorse.sdk.common.proto.EntrypointNodePbOrBuilder> 
+        io.littlehorse.sdk.common.proto.EntrypointNode, io.littlehorse.sdk.common.proto.EntrypointNode.Builder, io.littlehorse.sdk.common.proto.EntrypointNodeOrBuilder> 
         getEntrypointFieldBuilder() {
       if (entrypointBuilder_ == null) {
         if (!(nodeCase_ == 5)) {
-          node_ = io.littlehorse.sdk.common.proto.EntrypointNodePb.getDefaultInstance();
+          node_ = io.littlehorse.sdk.common.proto.EntrypointNode.getDefaultInstance();
         }
         entrypointBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.EntrypointNodePb, io.littlehorse.sdk.common.proto.EntrypointNodePb.Builder, io.littlehorse.sdk.common.proto.EntrypointNodePbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.EntrypointNodePb) node_,
+            io.littlehorse.sdk.common.proto.EntrypointNode, io.littlehorse.sdk.common.proto.EntrypointNode.Builder, io.littlehorse.sdk.common.proto.EntrypointNodeOrBuilder>(
+                (io.littlehorse.sdk.common.proto.EntrypointNode) node_,
                 getParentForChildren(),
                 isClean());
         node_ = null;
@@ -2208,9 +2208,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ExitNodePb, io.littlehorse.sdk.common.proto.ExitNodePb.Builder, io.littlehorse.sdk.common.proto.ExitNodePbOrBuilder> exitBuilder_;
+        io.littlehorse.sdk.common.proto.ExitNode, io.littlehorse.sdk.common.proto.ExitNode.Builder, io.littlehorse.sdk.common.proto.ExitNodeOrBuilder> exitBuilder_;
     /**
-     * <code>.littlehorse.ExitNodePb exit = 6;</code>
+     * <code>.littlehorse.ExitNode exit = 6;</code>
      * @return Whether the exit field is set.
      */
     @java.lang.Override
@@ -2218,27 +2218,27 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 6;
     }
     /**
-     * <code>.littlehorse.ExitNodePb exit = 6;</code>
+     * <code>.littlehorse.ExitNode exit = 6;</code>
      * @return The exit.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ExitNodePb getExit() {
+    public io.littlehorse.sdk.common.proto.ExitNode getExit() {
       if (exitBuilder_ == null) {
         if (nodeCase_ == 6) {
-          return (io.littlehorse.sdk.common.proto.ExitNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.ExitNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.ExitNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ExitNode.getDefaultInstance();
       } else {
         if (nodeCase_ == 6) {
           return exitBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.ExitNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ExitNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.ExitNodePb exit = 6;</code>
+     * <code>.littlehorse.ExitNode exit = 6;</code>
      */
-    public Builder setExit(io.littlehorse.sdk.common.proto.ExitNodePb value) {
+    public Builder setExit(io.littlehorse.sdk.common.proto.ExitNode value) {
       if (exitBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2252,10 +2252,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ExitNodePb exit = 6;</code>
+     * <code>.littlehorse.ExitNode exit = 6;</code>
      */
     public Builder setExit(
-        io.littlehorse.sdk.common.proto.ExitNodePb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.ExitNode.Builder builderForValue) {
       if (exitBuilder_ == null) {
         node_ = builderForValue.build();
         onChanged();
@@ -2266,13 +2266,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ExitNodePb exit = 6;</code>
+     * <code>.littlehorse.ExitNode exit = 6;</code>
      */
-    public Builder mergeExit(io.littlehorse.sdk.common.proto.ExitNodePb value) {
+    public Builder mergeExit(io.littlehorse.sdk.common.proto.ExitNode value) {
       if (exitBuilder_ == null) {
         if (nodeCase_ == 6 &&
-            node_ != io.littlehorse.sdk.common.proto.ExitNodePb.getDefaultInstance()) {
-          node_ = io.littlehorse.sdk.common.proto.ExitNodePb.newBuilder((io.littlehorse.sdk.common.proto.ExitNodePb) node_)
+            node_ != io.littlehorse.sdk.common.proto.ExitNode.getDefaultInstance()) {
+          node_ = io.littlehorse.sdk.common.proto.ExitNode.newBuilder((io.littlehorse.sdk.common.proto.ExitNode) node_)
               .mergeFrom(value).buildPartial();
         } else {
           node_ = value;
@@ -2289,7 +2289,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ExitNodePb exit = 6;</code>
+     * <code>.littlehorse.ExitNode exit = 6;</code>
      */
     public Builder clearExit() {
       if (exitBuilder_ == null) {
@@ -2308,38 +2308,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ExitNodePb exit = 6;</code>
+     * <code>.littlehorse.ExitNode exit = 6;</code>
      */
-    public io.littlehorse.sdk.common.proto.ExitNodePb.Builder getExitBuilder() {
+    public io.littlehorse.sdk.common.proto.ExitNode.Builder getExitBuilder() {
       return getExitFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.ExitNodePb exit = 6;</code>
+     * <code>.littlehorse.ExitNode exit = 6;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ExitNodePbOrBuilder getExitOrBuilder() {
+    public io.littlehorse.sdk.common.proto.ExitNodeOrBuilder getExitOrBuilder() {
       if ((nodeCase_ == 6) && (exitBuilder_ != null)) {
         return exitBuilder_.getMessageOrBuilder();
       } else {
         if (nodeCase_ == 6) {
-          return (io.littlehorse.sdk.common.proto.ExitNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.ExitNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.ExitNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ExitNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.ExitNodePb exit = 6;</code>
+     * <code>.littlehorse.ExitNode exit = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ExitNodePb, io.littlehorse.sdk.common.proto.ExitNodePb.Builder, io.littlehorse.sdk.common.proto.ExitNodePbOrBuilder> 
+        io.littlehorse.sdk.common.proto.ExitNode, io.littlehorse.sdk.common.proto.ExitNode.Builder, io.littlehorse.sdk.common.proto.ExitNodeOrBuilder> 
         getExitFieldBuilder() {
       if (exitBuilder_ == null) {
         if (!(nodeCase_ == 6)) {
-          node_ = io.littlehorse.sdk.common.proto.ExitNodePb.getDefaultInstance();
+          node_ = io.littlehorse.sdk.common.proto.ExitNode.getDefaultInstance();
         }
         exitBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.ExitNodePb, io.littlehorse.sdk.common.proto.ExitNodePb.Builder, io.littlehorse.sdk.common.proto.ExitNodePbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.ExitNodePb) node_,
+            io.littlehorse.sdk.common.proto.ExitNode, io.littlehorse.sdk.common.proto.ExitNode.Builder, io.littlehorse.sdk.common.proto.ExitNodeOrBuilder>(
+                (io.littlehorse.sdk.common.proto.ExitNode) node_,
                 getParentForChildren(),
                 isClean());
         node_ = null;
@@ -2350,9 +2350,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskNodePb, io.littlehorse.sdk.common.proto.TaskNodePb.Builder, io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder> taskBuilder_;
+        io.littlehorse.sdk.common.proto.TaskNode, io.littlehorse.sdk.common.proto.TaskNode.Builder, io.littlehorse.sdk.common.proto.TaskNodeOrBuilder> taskBuilder_;
     /**
-     * <code>.littlehorse.TaskNodePb task = 7;</code>
+     * <code>.littlehorse.TaskNode task = 7;</code>
      * @return Whether the task field is set.
      */
     @java.lang.Override
@@ -2360,27 +2360,27 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 7;
     }
     /**
-     * <code>.littlehorse.TaskNodePb task = 7;</code>
+     * <code>.littlehorse.TaskNode task = 7;</code>
      * @return The task.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskNodePb getTask() {
+    public io.littlehorse.sdk.common.proto.TaskNode getTask() {
       if (taskBuilder_ == null) {
         if (nodeCase_ == 7) {
-          return (io.littlehorse.sdk.common.proto.TaskNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.TaskNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance();
       } else {
         if (nodeCase_ == 7) {
           return taskBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.TaskNodePb task = 7;</code>
+     * <code>.littlehorse.TaskNode task = 7;</code>
      */
-    public Builder setTask(io.littlehorse.sdk.common.proto.TaskNodePb value) {
+    public Builder setTask(io.littlehorse.sdk.common.proto.TaskNode value) {
       if (taskBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2394,10 +2394,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskNodePb task = 7;</code>
+     * <code>.littlehorse.TaskNode task = 7;</code>
      */
     public Builder setTask(
-        io.littlehorse.sdk.common.proto.TaskNodePb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.TaskNode.Builder builderForValue) {
       if (taskBuilder_ == null) {
         node_ = builderForValue.build();
         onChanged();
@@ -2408,13 +2408,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskNodePb task = 7;</code>
+     * <code>.littlehorse.TaskNode task = 7;</code>
      */
-    public Builder mergeTask(io.littlehorse.sdk.common.proto.TaskNodePb value) {
+    public Builder mergeTask(io.littlehorse.sdk.common.proto.TaskNode value) {
       if (taskBuilder_ == null) {
         if (nodeCase_ == 7 &&
-            node_ != io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance()) {
-          node_ = io.littlehorse.sdk.common.proto.TaskNodePb.newBuilder((io.littlehorse.sdk.common.proto.TaskNodePb) node_)
+            node_ != io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance()) {
+          node_ = io.littlehorse.sdk.common.proto.TaskNode.newBuilder((io.littlehorse.sdk.common.proto.TaskNode) node_)
               .mergeFrom(value).buildPartial();
         } else {
           node_ = value;
@@ -2431,7 +2431,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskNodePb task = 7;</code>
+     * <code>.littlehorse.TaskNode task = 7;</code>
      */
     public Builder clearTask() {
       if (taskBuilder_ == null) {
@@ -2450,38 +2450,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskNodePb task = 7;</code>
+     * <code>.littlehorse.TaskNode task = 7;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskNodePb.Builder getTaskBuilder() {
+    public io.littlehorse.sdk.common.proto.TaskNode.Builder getTaskBuilder() {
       return getTaskFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.TaskNodePb task = 7;</code>
+     * <code>.littlehorse.TaskNode task = 7;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder getTaskOrBuilder() {
+    public io.littlehorse.sdk.common.proto.TaskNodeOrBuilder getTaskOrBuilder() {
       if ((nodeCase_ == 7) && (taskBuilder_ != null)) {
         return taskBuilder_.getMessageOrBuilder();
       } else {
         if (nodeCase_ == 7) {
-          return (io.littlehorse.sdk.common.proto.TaskNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.TaskNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.TaskNodePb task = 7;</code>
+     * <code>.littlehorse.TaskNode task = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskNodePb, io.littlehorse.sdk.common.proto.TaskNodePb.Builder, io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder> 
+        io.littlehorse.sdk.common.proto.TaskNode, io.littlehorse.sdk.common.proto.TaskNode.Builder, io.littlehorse.sdk.common.proto.TaskNodeOrBuilder> 
         getTaskFieldBuilder() {
       if (taskBuilder_ == null) {
         if (!(nodeCase_ == 7)) {
-          node_ = io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance();
+          node_ = io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance();
         }
         taskBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.TaskNodePb, io.littlehorse.sdk.common.proto.TaskNodePb.Builder, io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.TaskNodePb) node_,
+            io.littlehorse.sdk.common.proto.TaskNode, io.littlehorse.sdk.common.proto.TaskNode.Builder, io.littlehorse.sdk.common.proto.TaskNodeOrBuilder>(
+                (io.littlehorse.sdk.common.proto.TaskNode) node_,
                 getParentForChildren(),
                 isClean());
         node_ = null;
@@ -2492,9 +2492,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ExternalEventNodePb, io.littlehorse.sdk.common.proto.ExternalEventNodePb.Builder, io.littlehorse.sdk.common.proto.ExternalEventNodePbOrBuilder> externalEventBuilder_;
+        io.littlehorse.sdk.common.proto.ExternalEventNode, io.littlehorse.sdk.common.proto.ExternalEventNode.Builder, io.littlehorse.sdk.common.proto.ExternalEventNodeOrBuilder> externalEventBuilder_;
     /**
-     * <code>.littlehorse.ExternalEventNodePb external_event = 8;</code>
+     * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      * @return Whether the externalEvent field is set.
      */
     @java.lang.Override
@@ -2502,27 +2502,27 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 8;
     }
     /**
-     * <code>.littlehorse.ExternalEventNodePb external_event = 8;</code>
+     * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      * @return The externalEvent.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ExternalEventNodePb getExternalEvent() {
+    public io.littlehorse.sdk.common.proto.ExternalEventNode getExternalEvent() {
       if (externalEventBuilder_ == null) {
         if (nodeCase_ == 8) {
-          return (io.littlehorse.sdk.common.proto.ExternalEventNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.ExternalEventNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.ExternalEventNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ExternalEventNode.getDefaultInstance();
       } else {
         if (nodeCase_ == 8) {
           return externalEventBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.ExternalEventNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ExternalEventNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.ExternalEventNodePb external_event = 8;</code>
+     * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      */
-    public Builder setExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventNodePb value) {
+    public Builder setExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventNode value) {
       if (externalEventBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2536,10 +2536,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ExternalEventNodePb external_event = 8;</code>
+     * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      */
     public Builder setExternalEvent(
-        io.littlehorse.sdk.common.proto.ExternalEventNodePb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.ExternalEventNode.Builder builderForValue) {
       if (externalEventBuilder_ == null) {
         node_ = builderForValue.build();
         onChanged();
@@ -2550,13 +2550,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ExternalEventNodePb external_event = 8;</code>
+     * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      */
-    public Builder mergeExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventNodePb value) {
+    public Builder mergeExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventNode value) {
       if (externalEventBuilder_ == null) {
         if (nodeCase_ == 8 &&
-            node_ != io.littlehorse.sdk.common.proto.ExternalEventNodePb.getDefaultInstance()) {
-          node_ = io.littlehorse.sdk.common.proto.ExternalEventNodePb.newBuilder((io.littlehorse.sdk.common.proto.ExternalEventNodePb) node_)
+            node_ != io.littlehorse.sdk.common.proto.ExternalEventNode.getDefaultInstance()) {
+          node_ = io.littlehorse.sdk.common.proto.ExternalEventNode.newBuilder((io.littlehorse.sdk.common.proto.ExternalEventNode) node_)
               .mergeFrom(value).buildPartial();
         } else {
           node_ = value;
@@ -2573,7 +2573,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ExternalEventNodePb external_event = 8;</code>
+     * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      */
     public Builder clearExternalEvent() {
       if (externalEventBuilder_ == null) {
@@ -2592,38 +2592,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ExternalEventNodePb external_event = 8;</code>
+     * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventNodePb.Builder getExternalEventBuilder() {
+    public io.littlehorse.sdk.common.proto.ExternalEventNode.Builder getExternalEventBuilder() {
       return getExternalEventFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.ExternalEventNodePb external_event = 8;</code>
+     * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ExternalEventNodePbOrBuilder getExternalEventOrBuilder() {
+    public io.littlehorse.sdk.common.proto.ExternalEventNodeOrBuilder getExternalEventOrBuilder() {
       if ((nodeCase_ == 8) && (externalEventBuilder_ != null)) {
         return externalEventBuilder_.getMessageOrBuilder();
       } else {
         if (nodeCase_ == 8) {
-          return (io.littlehorse.sdk.common.proto.ExternalEventNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.ExternalEventNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.ExternalEventNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ExternalEventNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.ExternalEventNodePb external_event = 8;</code>
+     * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ExternalEventNodePb, io.littlehorse.sdk.common.proto.ExternalEventNodePb.Builder, io.littlehorse.sdk.common.proto.ExternalEventNodePbOrBuilder> 
+        io.littlehorse.sdk.common.proto.ExternalEventNode, io.littlehorse.sdk.common.proto.ExternalEventNode.Builder, io.littlehorse.sdk.common.proto.ExternalEventNodeOrBuilder> 
         getExternalEventFieldBuilder() {
       if (externalEventBuilder_ == null) {
         if (!(nodeCase_ == 8)) {
-          node_ = io.littlehorse.sdk.common.proto.ExternalEventNodePb.getDefaultInstance();
+          node_ = io.littlehorse.sdk.common.proto.ExternalEventNode.getDefaultInstance();
         }
         externalEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.ExternalEventNodePb, io.littlehorse.sdk.common.proto.ExternalEventNodePb.Builder, io.littlehorse.sdk.common.proto.ExternalEventNodePbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.ExternalEventNodePb) node_,
+            io.littlehorse.sdk.common.proto.ExternalEventNode, io.littlehorse.sdk.common.proto.ExternalEventNode.Builder, io.littlehorse.sdk.common.proto.ExternalEventNodeOrBuilder>(
+                (io.littlehorse.sdk.common.proto.ExternalEventNode) node_,
                 getParentForChildren(),
                 isClean());
         node_ = null;
@@ -2634,9 +2634,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.StartThreadNodePb, io.littlehorse.sdk.common.proto.StartThreadNodePb.Builder, io.littlehorse.sdk.common.proto.StartThreadNodePbOrBuilder> startThreadBuilder_;
+        io.littlehorse.sdk.common.proto.StartThreadNode, io.littlehorse.sdk.common.proto.StartThreadNode.Builder, io.littlehorse.sdk.common.proto.StartThreadNodeOrBuilder> startThreadBuilder_;
     /**
-     * <code>.littlehorse.StartThreadNodePb start_thread = 9;</code>
+     * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      * @return Whether the startThread field is set.
      */
     @java.lang.Override
@@ -2644,27 +2644,27 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 9;
     }
     /**
-     * <code>.littlehorse.StartThreadNodePb start_thread = 9;</code>
+     * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      * @return The startThread.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.StartThreadNodePb getStartThread() {
+    public io.littlehorse.sdk.common.proto.StartThreadNode getStartThread() {
       if (startThreadBuilder_ == null) {
         if (nodeCase_ == 9) {
-          return (io.littlehorse.sdk.common.proto.StartThreadNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.StartThreadNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.StartThreadNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.StartThreadNode.getDefaultInstance();
       } else {
         if (nodeCase_ == 9) {
           return startThreadBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.StartThreadNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.StartThreadNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.StartThreadNodePb start_thread = 9;</code>
+     * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      */
-    public Builder setStartThread(io.littlehorse.sdk.common.proto.StartThreadNodePb value) {
+    public Builder setStartThread(io.littlehorse.sdk.common.proto.StartThreadNode value) {
       if (startThreadBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2678,10 +2678,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.StartThreadNodePb start_thread = 9;</code>
+     * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      */
     public Builder setStartThread(
-        io.littlehorse.sdk.common.proto.StartThreadNodePb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.StartThreadNode.Builder builderForValue) {
       if (startThreadBuilder_ == null) {
         node_ = builderForValue.build();
         onChanged();
@@ -2692,13 +2692,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.StartThreadNodePb start_thread = 9;</code>
+     * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      */
-    public Builder mergeStartThread(io.littlehorse.sdk.common.proto.StartThreadNodePb value) {
+    public Builder mergeStartThread(io.littlehorse.sdk.common.proto.StartThreadNode value) {
       if (startThreadBuilder_ == null) {
         if (nodeCase_ == 9 &&
-            node_ != io.littlehorse.sdk.common.proto.StartThreadNodePb.getDefaultInstance()) {
-          node_ = io.littlehorse.sdk.common.proto.StartThreadNodePb.newBuilder((io.littlehorse.sdk.common.proto.StartThreadNodePb) node_)
+            node_ != io.littlehorse.sdk.common.proto.StartThreadNode.getDefaultInstance()) {
+          node_ = io.littlehorse.sdk.common.proto.StartThreadNode.newBuilder((io.littlehorse.sdk.common.proto.StartThreadNode) node_)
               .mergeFrom(value).buildPartial();
         } else {
           node_ = value;
@@ -2715,7 +2715,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.StartThreadNodePb start_thread = 9;</code>
+     * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      */
     public Builder clearStartThread() {
       if (startThreadBuilder_ == null) {
@@ -2734,38 +2734,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.StartThreadNodePb start_thread = 9;</code>
+     * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.StartThreadNodePb.Builder getStartThreadBuilder() {
+    public io.littlehorse.sdk.common.proto.StartThreadNode.Builder getStartThreadBuilder() {
       return getStartThreadFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.StartThreadNodePb start_thread = 9;</code>
+     * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.StartThreadNodePbOrBuilder getStartThreadOrBuilder() {
+    public io.littlehorse.sdk.common.proto.StartThreadNodeOrBuilder getStartThreadOrBuilder() {
       if ((nodeCase_ == 9) && (startThreadBuilder_ != null)) {
         return startThreadBuilder_.getMessageOrBuilder();
       } else {
         if (nodeCase_ == 9) {
-          return (io.littlehorse.sdk.common.proto.StartThreadNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.StartThreadNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.StartThreadNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.StartThreadNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.StartThreadNodePb start_thread = 9;</code>
+     * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.StartThreadNodePb, io.littlehorse.sdk.common.proto.StartThreadNodePb.Builder, io.littlehorse.sdk.common.proto.StartThreadNodePbOrBuilder> 
+        io.littlehorse.sdk.common.proto.StartThreadNode, io.littlehorse.sdk.common.proto.StartThreadNode.Builder, io.littlehorse.sdk.common.proto.StartThreadNodeOrBuilder> 
         getStartThreadFieldBuilder() {
       if (startThreadBuilder_ == null) {
         if (!(nodeCase_ == 9)) {
-          node_ = io.littlehorse.sdk.common.proto.StartThreadNodePb.getDefaultInstance();
+          node_ = io.littlehorse.sdk.common.proto.StartThreadNode.getDefaultInstance();
         }
         startThreadBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.StartThreadNodePb, io.littlehorse.sdk.common.proto.StartThreadNodePb.Builder, io.littlehorse.sdk.common.proto.StartThreadNodePbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.StartThreadNodePb) node_,
+            io.littlehorse.sdk.common.proto.StartThreadNode, io.littlehorse.sdk.common.proto.StartThreadNode.Builder, io.littlehorse.sdk.common.proto.StartThreadNodeOrBuilder>(
+                (io.littlehorse.sdk.common.proto.StartThreadNode) node_,
                 getParentForChildren(),
                 isClean());
         node_ = null;
@@ -2776,9 +2776,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WaitForThreadsNodePb, io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNodePbOrBuilder> waitForThreadsBuilder_;
+        io.littlehorse.sdk.common.proto.WaitForThreadsNode, io.littlehorse.sdk.common.proto.WaitForThreadsNode.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNodeOrBuilder> waitForThreadsBuilder_;
     /**
-     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      * @return Whether the waitForThreads field is set.
      */
     @java.lang.Override
@@ -2786,27 +2786,27 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 10;
     }
     /**
-     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      * @return The waitForThreads.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WaitForThreadsNodePb getWaitForThreads() {
+    public io.littlehorse.sdk.common.proto.WaitForThreadsNode getWaitForThreads() {
       if (waitForThreadsBuilder_ == null) {
         if (nodeCase_ == 10) {
-          return (io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.WaitForThreadsNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.WaitForThreadsNode.getDefaultInstance();
       } else {
         if (nodeCase_ == 10) {
           return waitForThreadsBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.WaitForThreadsNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      */
-    public Builder setWaitForThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNodePb value) {
+    public Builder setWaitForThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNode value) {
       if (waitForThreadsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2820,10 +2820,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      */
     public Builder setWaitForThreads(
-        io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.WaitForThreadsNode.Builder builderForValue) {
       if (waitForThreadsBuilder_ == null) {
         node_ = builderForValue.build();
         onChanged();
@@ -2834,13 +2834,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      */
-    public Builder mergeWaitForThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNodePb value) {
+    public Builder mergeWaitForThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNode value) {
       if (waitForThreadsBuilder_ == null) {
         if (nodeCase_ == 10 &&
-            node_ != io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.getDefaultInstance()) {
-          node_ = io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.newBuilder((io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_)
+            node_ != io.littlehorse.sdk.common.proto.WaitForThreadsNode.getDefaultInstance()) {
+          node_ = io.littlehorse.sdk.common.proto.WaitForThreadsNode.newBuilder((io.littlehorse.sdk.common.proto.WaitForThreadsNode) node_)
               .mergeFrom(value).buildPartial();
         } else {
           node_ = value;
@@ -2857,7 +2857,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      */
     public Builder clearWaitForThreads() {
       if (waitForThreadsBuilder_ == null) {
@@ -2876,38 +2876,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      */
-    public io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.Builder getWaitForThreadsBuilder() {
+    public io.littlehorse.sdk.common.proto.WaitForThreadsNode.Builder getWaitForThreadsBuilder() {
       return getWaitForThreadsFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WaitForThreadsNodePbOrBuilder getWaitForThreadsOrBuilder() {
+    public io.littlehorse.sdk.common.proto.WaitForThreadsNodeOrBuilder getWaitForThreadsOrBuilder() {
       if ((nodeCase_ == 10) && (waitForThreadsBuilder_ != null)) {
         return waitForThreadsBuilder_.getMessageOrBuilder();
       } else {
         if (nodeCase_ == 10) {
-          return (io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.WaitForThreadsNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.WaitForThreadsNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WaitForThreadsNodePb, io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNodePbOrBuilder> 
+        io.littlehorse.sdk.common.proto.WaitForThreadsNode, io.littlehorse.sdk.common.proto.WaitForThreadsNode.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNodeOrBuilder> 
         getWaitForThreadsFieldBuilder() {
       if (waitForThreadsBuilder_ == null) {
         if (!(nodeCase_ == 10)) {
-          node_ = io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.getDefaultInstance();
+          node_ = io.littlehorse.sdk.common.proto.WaitForThreadsNode.getDefaultInstance();
         }
         waitForThreadsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.WaitForThreadsNodePb, io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNodePbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_,
+            io.littlehorse.sdk.common.proto.WaitForThreadsNode, io.littlehorse.sdk.common.proto.WaitForThreadsNode.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNodeOrBuilder>(
+                (io.littlehorse.sdk.common.proto.WaitForThreadsNode) node_,
                 getParentForChildren(),
                 isClean());
         node_ = null;
@@ -2918,9 +2918,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.NopNodePb, io.littlehorse.sdk.common.proto.NopNodePb.Builder, io.littlehorse.sdk.common.proto.NopNodePbOrBuilder> nopBuilder_;
+        io.littlehorse.sdk.common.proto.NopNode, io.littlehorse.sdk.common.proto.NopNode.Builder, io.littlehorse.sdk.common.proto.NopNodeOrBuilder> nopBuilder_;
     /**
-     * <code>.littlehorse.NopNodePb nop = 11;</code>
+     * <code>.littlehorse.NopNode nop = 11;</code>
      * @return Whether the nop field is set.
      */
     @java.lang.Override
@@ -2928,27 +2928,27 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 11;
     }
     /**
-     * <code>.littlehorse.NopNodePb nop = 11;</code>
+     * <code>.littlehorse.NopNode nop = 11;</code>
      * @return The nop.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.NopNodePb getNop() {
+    public io.littlehorse.sdk.common.proto.NopNode getNop() {
       if (nopBuilder_ == null) {
         if (nodeCase_ == 11) {
-          return (io.littlehorse.sdk.common.proto.NopNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.NopNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.NopNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.NopNode.getDefaultInstance();
       } else {
         if (nodeCase_ == 11) {
           return nopBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.NopNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.NopNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.NopNodePb nop = 11;</code>
+     * <code>.littlehorse.NopNode nop = 11;</code>
      */
-    public Builder setNop(io.littlehorse.sdk.common.proto.NopNodePb value) {
+    public Builder setNop(io.littlehorse.sdk.common.proto.NopNode value) {
       if (nopBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2962,10 +2962,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.NopNodePb nop = 11;</code>
+     * <code>.littlehorse.NopNode nop = 11;</code>
      */
     public Builder setNop(
-        io.littlehorse.sdk.common.proto.NopNodePb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.NopNode.Builder builderForValue) {
       if (nopBuilder_ == null) {
         node_ = builderForValue.build();
         onChanged();
@@ -2976,13 +2976,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.NopNodePb nop = 11;</code>
+     * <code>.littlehorse.NopNode nop = 11;</code>
      */
-    public Builder mergeNop(io.littlehorse.sdk.common.proto.NopNodePb value) {
+    public Builder mergeNop(io.littlehorse.sdk.common.proto.NopNode value) {
       if (nopBuilder_ == null) {
         if (nodeCase_ == 11 &&
-            node_ != io.littlehorse.sdk.common.proto.NopNodePb.getDefaultInstance()) {
-          node_ = io.littlehorse.sdk.common.proto.NopNodePb.newBuilder((io.littlehorse.sdk.common.proto.NopNodePb) node_)
+            node_ != io.littlehorse.sdk.common.proto.NopNode.getDefaultInstance()) {
+          node_ = io.littlehorse.sdk.common.proto.NopNode.newBuilder((io.littlehorse.sdk.common.proto.NopNode) node_)
               .mergeFrom(value).buildPartial();
         } else {
           node_ = value;
@@ -2999,7 +2999,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.NopNodePb nop = 11;</code>
+     * <code>.littlehorse.NopNode nop = 11;</code>
      */
     public Builder clearNop() {
       if (nopBuilder_ == null) {
@@ -3018,38 +3018,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.NopNodePb nop = 11;</code>
+     * <code>.littlehorse.NopNode nop = 11;</code>
      */
-    public io.littlehorse.sdk.common.proto.NopNodePb.Builder getNopBuilder() {
+    public io.littlehorse.sdk.common.proto.NopNode.Builder getNopBuilder() {
       return getNopFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.NopNodePb nop = 11;</code>
+     * <code>.littlehorse.NopNode nop = 11;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.NopNodePbOrBuilder getNopOrBuilder() {
+    public io.littlehorse.sdk.common.proto.NopNodeOrBuilder getNopOrBuilder() {
       if ((nodeCase_ == 11) && (nopBuilder_ != null)) {
         return nopBuilder_.getMessageOrBuilder();
       } else {
         if (nodeCase_ == 11) {
-          return (io.littlehorse.sdk.common.proto.NopNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.NopNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.NopNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.NopNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.NopNodePb nop = 11;</code>
+     * <code>.littlehorse.NopNode nop = 11;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.NopNodePb, io.littlehorse.sdk.common.proto.NopNodePb.Builder, io.littlehorse.sdk.common.proto.NopNodePbOrBuilder> 
+        io.littlehorse.sdk.common.proto.NopNode, io.littlehorse.sdk.common.proto.NopNode.Builder, io.littlehorse.sdk.common.proto.NopNodeOrBuilder> 
         getNopFieldBuilder() {
       if (nopBuilder_ == null) {
         if (!(nodeCase_ == 11)) {
-          node_ = io.littlehorse.sdk.common.proto.NopNodePb.getDefaultInstance();
+          node_ = io.littlehorse.sdk.common.proto.NopNode.getDefaultInstance();
         }
         nopBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.NopNodePb, io.littlehorse.sdk.common.proto.NopNodePb.Builder, io.littlehorse.sdk.common.proto.NopNodePbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.NopNodePb) node_,
+            io.littlehorse.sdk.common.proto.NopNode, io.littlehorse.sdk.common.proto.NopNode.Builder, io.littlehorse.sdk.common.proto.NopNodeOrBuilder>(
+                (io.littlehorse.sdk.common.proto.NopNode) node_,
                 getParentForChildren(),
                 isClean());
         node_ = null;
@@ -3060,9 +3060,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.SleepNodePb, io.littlehorse.sdk.common.proto.SleepNodePb.Builder, io.littlehorse.sdk.common.proto.SleepNodePbOrBuilder> sleepBuilder_;
+        io.littlehorse.sdk.common.proto.SleepNode, io.littlehorse.sdk.common.proto.SleepNode.Builder, io.littlehorse.sdk.common.proto.SleepNodeOrBuilder> sleepBuilder_;
     /**
-     * <code>.littlehorse.SleepNodePb sleep = 12;</code>
+     * <code>.littlehorse.SleepNode sleep = 12;</code>
      * @return Whether the sleep field is set.
      */
     @java.lang.Override
@@ -3070,27 +3070,27 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 12;
     }
     /**
-     * <code>.littlehorse.SleepNodePb sleep = 12;</code>
+     * <code>.littlehorse.SleepNode sleep = 12;</code>
      * @return The sleep.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.SleepNodePb getSleep() {
+    public io.littlehorse.sdk.common.proto.SleepNode getSleep() {
       if (sleepBuilder_ == null) {
         if (nodeCase_ == 12) {
-          return (io.littlehorse.sdk.common.proto.SleepNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.SleepNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.SleepNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.SleepNode.getDefaultInstance();
       } else {
         if (nodeCase_ == 12) {
           return sleepBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.SleepNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.SleepNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.SleepNodePb sleep = 12;</code>
+     * <code>.littlehorse.SleepNode sleep = 12;</code>
      */
-    public Builder setSleep(io.littlehorse.sdk.common.proto.SleepNodePb value) {
+    public Builder setSleep(io.littlehorse.sdk.common.proto.SleepNode value) {
       if (sleepBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3104,10 +3104,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.SleepNodePb sleep = 12;</code>
+     * <code>.littlehorse.SleepNode sleep = 12;</code>
      */
     public Builder setSleep(
-        io.littlehorse.sdk.common.proto.SleepNodePb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.SleepNode.Builder builderForValue) {
       if (sleepBuilder_ == null) {
         node_ = builderForValue.build();
         onChanged();
@@ -3118,13 +3118,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.SleepNodePb sleep = 12;</code>
+     * <code>.littlehorse.SleepNode sleep = 12;</code>
      */
-    public Builder mergeSleep(io.littlehorse.sdk.common.proto.SleepNodePb value) {
+    public Builder mergeSleep(io.littlehorse.sdk.common.proto.SleepNode value) {
       if (sleepBuilder_ == null) {
         if (nodeCase_ == 12 &&
-            node_ != io.littlehorse.sdk.common.proto.SleepNodePb.getDefaultInstance()) {
-          node_ = io.littlehorse.sdk.common.proto.SleepNodePb.newBuilder((io.littlehorse.sdk.common.proto.SleepNodePb) node_)
+            node_ != io.littlehorse.sdk.common.proto.SleepNode.getDefaultInstance()) {
+          node_ = io.littlehorse.sdk.common.proto.SleepNode.newBuilder((io.littlehorse.sdk.common.proto.SleepNode) node_)
               .mergeFrom(value).buildPartial();
         } else {
           node_ = value;
@@ -3141,7 +3141,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.SleepNodePb sleep = 12;</code>
+     * <code>.littlehorse.SleepNode sleep = 12;</code>
      */
     public Builder clearSleep() {
       if (sleepBuilder_ == null) {
@@ -3160,38 +3160,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.SleepNodePb sleep = 12;</code>
+     * <code>.littlehorse.SleepNode sleep = 12;</code>
      */
-    public io.littlehorse.sdk.common.proto.SleepNodePb.Builder getSleepBuilder() {
+    public io.littlehorse.sdk.common.proto.SleepNode.Builder getSleepBuilder() {
       return getSleepFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.SleepNodePb sleep = 12;</code>
+     * <code>.littlehorse.SleepNode sleep = 12;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.SleepNodePbOrBuilder getSleepOrBuilder() {
+    public io.littlehorse.sdk.common.proto.SleepNodeOrBuilder getSleepOrBuilder() {
       if ((nodeCase_ == 12) && (sleepBuilder_ != null)) {
         return sleepBuilder_.getMessageOrBuilder();
       } else {
         if (nodeCase_ == 12) {
-          return (io.littlehorse.sdk.common.proto.SleepNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.SleepNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.SleepNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.SleepNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.SleepNodePb sleep = 12;</code>
+     * <code>.littlehorse.SleepNode sleep = 12;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.SleepNodePb, io.littlehorse.sdk.common.proto.SleepNodePb.Builder, io.littlehorse.sdk.common.proto.SleepNodePbOrBuilder> 
+        io.littlehorse.sdk.common.proto.SleepNode, io.littlehorse.sdk.common.proto.SleepNode.Builder, io.littlehorse.sdk.common.proto.SleepNodeOrBuilder> 
         getSleepFieldBuilder() {
       if (sleepBuilder_ == null) {
         if (!(nodeCase_ == 12)) {
-          node_ = io.littlehorse.sdk.common.proto.SleepNodePb.getDefaultInstance();
+          node_ = io.littlehorse.sdk.common.proto.SleepNode.getDefaultInstance();
         }
         sleepBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.SleepNodePb, io.littlehorse.sdk.common.proto.SleepNodePb.Builder, io.littlehorse.sdk.common.proto.SleepNodePbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.SleepNodePb) node_,
+            io.littlehorse.sdk.common.proto.SleepNode, io.littlehorse.sdk.common.proto.SleepNode.Builder, io.littlehorse.sdk.common.proto.SleepNodeOrBuilder>(
+                (io.littlehorse.sdk.common.proto.SleepNode) node_,
                 getParentForChildren(),
                 isClean());
         node_ = null;
@@ -3202,9 +3202,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskNodePb, io.littlehorse.sdk.common.proto.UserTaskNodePb.Builder, io.littlehorse.sdk.common.proto.UserTaskNodePbOrBuilder> userTaskBuilder_;
+        io.littlehorse.sdk.common.proto.UserTaskNode, io.littlehorse.sdk.common.proto.UserTaskNode.Builder, io.littlehorse.sdk.common.proto.UserTaskNodeOrBuilder> userTaskBuilder_;
     /**
-     * <code>.littlehorse.UserTaskNodePb user_task = 13;</code>
+     * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      * @return Whether the userTask field is set.
      */
     @java.lang.Override
@@ -3212,27 +3212,27 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 13;
     }
     /**
-     * <code>.littlehorse.UserTaskNodePb user_task = 13;</code>
+     * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      * @return The userTask.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskNodePb getUserTask() {
+    public io.littlehorse.sdk.common.proto.UserTaskNode getUserTask() {
       if (userTaskBuilder_ == null) {
         if (nodeCase_ == 13) {
-          return (io.littlehorse.sdk.common.proto.UserTaskNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.UserTaskNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.UserTaskNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskNode.getDefaultInstance();
       } else {
         if (nodeCase_ == 13) {
           return userTaskBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.UserTaskNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UserTaskNodePb user_task = 13;</code>
+     * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      */
-    public Builder setUserTask(io.littlehorse.sdk.common.proto.UserTaskNodePb value) {
+    public Builder setUserTask(io.littlehorse.sdk.common.proto.UserTaskNode value) {
       if (userTaskBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3246,10 +3246,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskNodePb user_task = 13;</code>
+     * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      */
     public Builder setUserTask(
-        io.littlehorse.sdk.common.proto.UserTaskNodePb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.UserTaskNode.Builder builderForValue) {
       if (userTaskBuilder_ == null) {
         node_ = builderForValue.build();
         onChanged();
@@ -3260,13 +3260,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskNodePb user_task = 13;</code>
+     * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      */
-    public Builder mergeUserTask(io.littlehorse.sdk.common.proto.UserTaskNodePb value) {
+    public Builder mergeUserTask(io.littlehorse.sdk.common.proto.UserTaskNode value) {
       if (userTaskBuilder_ == null) {
         if (nodeCase_ == 13 &&
-            node_ != io.littlehorse.sdk.common.proto.UserTaskNodePb.getDefaultInstance()) {
-          node_ = io.littlehorse.sdk.common.proto.UserTaskNodePb.newBuilder((io.littlehorse.sdk.common.proto.UserTaskNodePb) node_)
+            node_ != io.littlehorse.sdk.common.proto.UserTaskNode.getDefaultInstance()) {
+          node_ = io.littlehorse.sdk.common.proto.UserTaskNode.newBuilder((io.littlehorse.sdk.common.proto.UserTaskNode) node_)
               .mergeFrom(value).buildPartial();
         } else {
           node_ = value;
@@ -3283,7 +3283,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskNodePb user_task = 13;</code>
+     * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      */
     public Builder clearUserTask() {
       if (userTaskBuilder_ == null) {
@@ -3302,38 +3302,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskNodePb user_task = 13;</code>
+     * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskNodePb.Builder getUserTaskBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskNode.Builder getUserTaskBuilder() {
       return getUserTaskFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.UserTaskNodePb user_task = 13;</code>
+     * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskNodePbOrBuilder getUserTaskOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskNodeOrBuilder getUserTaskOrBuilder() {
       if ((nodeCase_ == 13) && (userTaskBuilder_ != null)) {
         return userTaskBuilder_.getMessageOrBuilder();
       } else {
         if (nodeCase_ == 13) {
-          return (io.littlehorse.sdk.common.proto.UserTaskNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.UserTaskNode) node_;
         }
-        return io.littlehorse.sdk.common.proto.UserTaskNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskNode.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UserTaskNodePb user_task = 13;</code>
+     * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskNodePb, io.littlehorse.sdk.common.proto.UserTaskNodePb.Builder, io.littlehorse.sdk.common.proto.UserTaskNodePbOrBuilder> 
+        io.littlehorse.sdk.common.proto.UserTaskNode, io.littlehorse.sdk.common.proto.UserTaskNode.Builder, io.littlehorse.sdk.common.proto.UserTaskNodeOrBuilder> 
         getUserTaskFieldBuilder() {
       if (userTaskBuilder_ == null) {
         if (!(nodeCase_ == 13)) {
-          node_ = io.littlehorse.sdk.common.proto.UserTaskNodePb.getDefaultInstance();
+          node_ = io.littlehorse.sdk.common.proto.UserTaskNode.getDefaultInstance();
         }
         userTaskBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UserTaskNodePb, io.littlehorse.sdk.common.proto.UserTaskNodePb.Builder, io.littlehorse.sdk.common.proto.UserTaskNodePbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.UserTaskNodePb) node_,
+            io.littlehorse.sdk.common.proto.UserTaskNode, io.littlehorse.sdk.common.proto.UserTaskNode.Builder, io.littlehorse.sdk.common.proto.UserTaskNodeOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserTaskNode) node_,
                 getParentForChildren(),
                 isClean());
         node_ = null;

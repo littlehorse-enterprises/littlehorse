@@ -2,8 +2,8 @@ package io.littlehorse.sdk.common.config;
 
 import io.littlehorse.sdk.common.proto.GetTaskDefReplyPb;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.TaskDefIdPb;
 import io.littlehorse.sdk.common.proto.TaskDef;
+import io.littlehorse.sdk.common.proto.TaskDefIdPb;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;

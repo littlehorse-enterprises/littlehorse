@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.meta.ThreadToWaitFor;
+import io.littlehorse.common.model.meta.ThreadToWaitForModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRunPb.WaitForThreadPb;
@@ -28,7 +28,7 @@ public class WaitForThread extends LHSerializable<WaitForThreadPb> {
 
     public WaitForThread(
         NodeRunModel waitForThreadNodeRunModel,
-        ThreadToWaitFor threadToWaitFor
+        ThreadToWaitForModel threadToWaitFor
     ) throws LHVarSubError {
         ThreadRunModel parentThreadRunModel = waitForThreadNodeRunModel.getThreadRun();
         this.threadRunNumber =

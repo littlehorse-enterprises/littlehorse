@@ -310,7 +310,7 @@ message SleepNodeMaturedPb {
 // This is currently used by the UserTaskRun ActionTrigger, it could be potentially
 // extended in the future to allow scheduling one-off tasks.
 message TriggeredTaskRunPb {
-    TaskNodePb task_to_schedule = 1;
+    TaskNode task_to_schedule = 1;
     NodeRunIdPb source = 2;
 }
 

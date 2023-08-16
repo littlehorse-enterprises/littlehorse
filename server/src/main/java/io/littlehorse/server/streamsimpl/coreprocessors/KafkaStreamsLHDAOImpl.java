@@ -684,7 +684,11 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             forwardGlobalMeta(e.getKey(), e.getValue(), WfSpecModel.class);
         }
         for (Map.Entry<String, UserTaskDefModel> e : userTaskDefPuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), UserTaskDefModel.class);
+            saveOrDeleteGETableFlush(
+                e.getKey(),
+                e.getValue(),
+                UserTaskDefModel.class
+            );
             forwardGlobalMeta(e.getKey(), e.getValue(), UserTaskDefModel.class);
         }
         for (Map.Entry<String, TaskDefModel> e : taskDefPuts.entrySet()) {

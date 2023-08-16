@@ -7,7 +7,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.meta.NodeModel;
-import io.littlehorse.common.model.meta.subnode.ExternalEventNode;
+import io.littlehorse.common.model.meta.subnode.ExternalEventNodeModel;
 import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.Failure;
@@ -90,7 +90,7 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
 
     public boolean advanceIfPossible(Date time) {
         NodeModel node = nodeRunModel.getNode();
-        ExternalEventNode eNode = node.externalEventNode;
+        ExternalEventNodeModel eNode = node.externalEventNode;
 
         ExternalEvent evt = nodeRunModel
             .getThreadRun()

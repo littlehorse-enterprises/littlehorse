@@ -557,42 +557,42 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.littlehorse.TaskNodePb task = 1;</code>
+     * <code>.littlehorse.TaskNode task = 1;</code>
      * @return Whether the task field is set.
      */
     boolean hasTask();
     /**
-     * <code>.littlehorse.TaskNodePb task = 1;</code>
+     * <code>.littlehorse.TaskNode task = 1;</code>
      * @return The task.
      */
-    io.littlehorse.sdk.common.proto.TaskNodePb getTask();
+    io.littlehorse.sdk.common.proto.TaskNode getTask();
     /**
-     * <code>.littlehorse.TaskNodePb task = 1;</code>
+     * <code>.littlehorse.TaskNode task = 1;</code>
      */
-    io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder getTaskOrBuilder();
+    io.littlehorse.sdk.common.proto.TaskNodeOrBuilder getTaskOrBuilder();
 
     /**
-     * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
-    java.util.List<io.littlehorse.sdk.common.proto.VariableMutationPb> 
+    java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> 
         getMutationsList();
     /**
-     * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
-    io.littlehorse.sdk.common.proto.VariableMutationPb getMutations(int index);
+    io.littlehorse.sdk.common.proto.VariableMutation getMutations(int index);
     /**
-     * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     int getMutationsCount();
     /**
-     * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
-    java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder> 
+    java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> 
         getMutationsOrBuilderList();
     /**
-     * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
-    io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder getMutationsOrBuilder(
+    io.littlehorse.sdk.common.proto.VariableMutationOrBuilder getMutationsOrBuilder(
         int index);
   }
   /**
@@ -637,9 +637,9 @@ private static final long serialVersionUID = 0L;
     }
 
     public static final int TASK_FIELD_NUMBER = 1;
-    private io.littlehorse.sdk.common.proto.TaskNodePb task_;
+    private io.littlehorse.sdk.common.proto.TaskNode task_;
     /**
-     * <code>.littlehorse.TaskNodePb task = 1;</code>
+     * <code>.littlehorse.TaskNode task = 1;</code>
      * @return Whether the task field is set.
      */
     @java.lang.Override
@@ -647,58 +647,58 @@ private static final long serialVersionUID = 0L;
       return task_ != null;
     }
     /**
-     * <code>.littlehorse.TaskNodePb task = 1;</code>
+     * <code>.littlehorse.TaskNode task = 1;</code>
      * @return The task.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskNodePb getTask() {
-      return task_ == null ? io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance() : task_;
+    public io.littlehorse.sdk.common.proto.TaskNode getTask() {
+      return task_ == null ? io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance() : task_;
     }
     /**
-     * <code>.littlehorse.TaskNodePb task = 1;</code>
+     * <code>.littlehorse.TaskNode task = 1;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder getTaskOrBuilder() {
-      return task_ == null ? io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance() : task_;
+    public io.littlehorse.sdk.common.proto.TaskNodeOrBuilder getTaskOrBuilder() {
+      return task_ == null ? io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance() : task_;
     }
 
     public static final int MUTATIONS_FIELD_NUMBER = 2;
     @SuppressWarnings("serial")
-    private java.util.List<io.littlehorse.sdk.common.proto.VariableMutationPb> mutations_;
+    private java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> mutations_;
     /**
-     * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     @java.lang.Override
-    public java.util.List<io.littlehorse.sdk.common.proto.VariableMutationPb> getMutationsList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> getMutationsList() {
       return mutations_;
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> 
         getMutationsOrBuilderList() {
       return mutations_;
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     @java.lang.Override
     public int getMutationsCount() {
       return mutations_.size();
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableMutationPb getMutations(int index) {
+    public io.littlehorse.sdk.common.proto.VariableMutation getMutations(int index) {
       return mutations_.get(index);
     }
     /**
-     * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+     * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder getMutationsOrBuilder(
+    public io.littlehorse.sdk.common.proto.VariableMutationOrBuilder getMutationsOrBuilder(
         int index) {
       return mutations_.get(index);
     }
@@ -1082,9 +1082,9 @@ private static final long serialVersionUID = 0L;
                 break;
               } // case 10
               case 18: {
-                io.littlehorse.sdk.common.proto.VariableMutationPb m =
+                io.littlehorse.sdk.common.proto.VariableMutation m =
                     input.readMessage(
-                        io.littlehorse.sdk.common.proto.VariableMutationPb.parser(),
+                        io.littlehorse.sdk.common.proto.VariableMutation.parser(),
                         extensionRegistry);
                 if (mutationsBuilder_ == null) {
                   ensureMutationsIsMutable();
@@ -1111,31 +1111,31 @@ private static final long serialVersionUID = 0L;
       }
       private int bitField0_;
 
-      private io.littlehorse.sdk.common.proto.TaskNodePb task_;
+      private io.littlehorse.sdk.common.proto.TaskNode task_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.TaskNodePb, io.littlehorse.sdk.common.proto.TaskNodePb.Builder, io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder> taskBuilder_;
+          io.littlehorse.sdk.common.proto.TaskNode, io.littlehorse.sdk.common.proto.TaskNode.Builder, io.littlehorse.sdk.common.proto.TaskNodeOrBuilder> taskBuilder_;
       /**
-       * <code>.littlehorse.TaskNodePb task = 1;</code>
+       * <code>.littlehorse.TaskNode task = 1;</code>
        * @return Whether the task field is set.
        */
       public boolean hasTask() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>.littlehorse.TaskNodePb task = 1;</code>
+       * <code>.littlehorse.TaskNode task = 1;</code>
        * @return The task.
        */
-      public io.littlehorse.sdk.common.proto.TaskNodePb getTask() {
+      public io.littlehorse.sdk.common.proto.TaskNode getTask() {
         if (taskBuilder_ == null) {
-          return task_ == null ? io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance() : task_;
+          return task_ == null ? io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance() : task_;
         } else {
           return taskBuilder_.getMessage();
         }
       }
       /**
-       * <code>.littlehorse.TaskNodePb task = 1;</code>
+       * <code>.littlehorse.TaskNode task = 1;</code>
        */
-      public Builder setTask(io.littlehorse.sdk.common.proto.TaskNodePb value) {
+      public Builder setTask(io.littlehorse.sdk.common.proto.TaskNode value) {
         if (taskBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1149,10 +1149,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.TaskNodePb task = 1;</code>
+       * <code>.littlehorse.TaskNode task = 1;</code>
        */
       public Builder setTask(
-          io.littlehorse.sdk.common.proto.TaskNodePb.Builder builderForValue) {
+          io.littlehorse.sdk.common.proto.TaskNode.Builder builderForValue) {
         if (taskBuilder_ == null) {
           task_ = builderForValue.build();
         } else {
@@ -1163,13 +1163,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.TaskNodePb task = 1;</code>
+       * <code>.littlehorse.TaskNode task = 1;</code>
        */
-      public Builder mergeTask(io.littlehorse.sdk.common.proto.TaskNodePb value) {
+      public Builder mergeTask(io.littlehorse.sdk.common.proto.TaskNode value) {
         if (taskBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0) &&
             task_ != null &&
-            task_ != io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance()) {
+            task_ != io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance()) {
             getTaskBuilder().mergeFrom(value);
           } else {
             task_ = value;
@@ -1182,7 +1182,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.TaskNodePb task = 1;</code>
+       * <code>.littlehorse.TaskNode task = 1;</code>
        */
       public Builder clearTask() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -1195,33 +1195,33 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.TaskNodePb task = 1;</code>
+       * <code>.littlehorse.TaskNode task = 1;</code>
        */
-      public io.littlehorse.sdk.common.proto.TaskNodePb.Builder getTaskBuilder() {
+      public io.littlehorse.sdk.common.proto.TaskNode.Builder getTaskBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getTaskFieldBuilder().getBuilder();
       }
       /**
-       * <code>.littlehorse.TaskNodePb task = 1;</code>
+       * <code>.littlehorse.TaskNode task = 1;</code>
        */
-      public io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder getTaskOrBuilder() {
+      public io.littlehorse.sdk.common.proto.TaskNodeOrBuilder getTaskOrBuilder() {
         if (taskBuilder_ != null) {
           return taskBuilder_.getMessageOrBuilder();
         } else {
           return task_ == null ?
-              io.littlehorse.sdk.common.proto.TaskNodePb.getDefaultInstance() : task_;
+              io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance() : task_;
         }
       }
       /**
-       * <code>.littlehorse.TaskNodePb task = 1;</code>
+       * <code>.littlehorse.TaskNode task = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.TaskNodePb, io.littlehorse.sdk.common.proto.TaskNodePb.Builder, io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder> 
+          io.littlehorse.sdk.common.proto.TaskNode, io.littlehorse.sdk.common.proto.TaskNode.Builder, io.littlehorse.sdk.common.proto.TaskNodeOrBuilder> 
           getTaskFieldBuilder() {
         if (taskBuilder_ == null) {
           taskBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.TaskNodePb, io.littlehorse.sdk.common.proto.TaskNodePb.Builder, io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder>(
+              io.littlehorse.sdk.common.proto.TaskNode, io.littlehorse.sdk.common.proto.TaskNode.Builder, io.littlehorse.sdk.common.proto.TaskNodeOrBuilder>(
                   getTask(),
                   getParentForChildren(),
                   isClean());
@@ -1230,22 +1230,22 @@ private static final long serialVersionUID = 0L;
         return taskBuilder_;
       }
 
-      private java.util.List<io.littlehorse.sdk.common.proto.VariableMutationPb> mutations_ =
+      private java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> mutations_ =
         java.util.Collections.emptyList();
       private void ensureMutationsIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
-          mutations_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableMutationPb>(mutations_);
+          mutations_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableMutation>(mutations_);
           bitField0_ |= 0x00000002;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableMutationPb, io.littlehorse.sdk.common.proto.VariableMutationPb.Builder, io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder> mutationsBuilder_;
+          io.littlehorse.sdk.common.proto.VariableMutation, io.littlehorse.sdk.common.proto.VariableMutation.Builder, io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> mutationsBuilder_;
 
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
-      public java.util.List<io.littlehorse.sdk.common.proto.VariableMutationPb> getMutationsList() {
+      public java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> getMutationsList() {
         if (mutationsBuilder_ == null) {
           return java.util.Collections.unmodifiableList(mutations_);
         } else {
@@ -1253,7 +1253,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public int getMutationsCount() {
         if (mutationsBuilder_ == null) {
@@ -1263,9 +1263,9 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableMutationPb getMutations(int index) {
+      public io.littlehorse.sdk.common.proto.VariableMutation getMutations(int index) {
         if (mutationsBuilder_ == null) {
           return mutations_.get(index);
         } else {
@@ -1273,10 +1273,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder setMutations(
-          int index, io.littlehorse.sdk.common.proto.VariableMutationPb value) {
+          int index, io.littlehorse.sdk.common.proto.VariableMutation value) {
         if (mutationsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1290,10 +1290,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder setMutations(
-          int index, io.littlehorse.sdk.common.proto.VariableMutationPb.Builder builderForValue) {
+          int index, io.littlehorse.sdk.common.proto.VariableMutation.Builder builderForValue) {
         if (mutationsBuilder_ == null) {
           ensureMutationsIsMutable();
           mutations_.set(index, builderForValue.build());
@@ -1304,9 +1304,9 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
-      public Builder addMutations(io.littlehorse.sdk.common.proto.VariableMutationPb value) {
+      public Builder addMutations(io.littlehorse.sdk.common.proto.VariableMutation value) {
         if (mutationsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1320,10 +1320,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder addMutations(
-          int index, io.littlehorse.sdk.common.proto.VariableMutationPb value) {
+          int index, io.littlehorse.sdk.common.proto.VariableMutation value) {
         if (mutationsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1337,10 +1337,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder addMutations(
-          io.littlehorse.sdk.common.proto.VariableMutationPb.Builder builderForValue) {
+          io.littlehorse.sdk.common.proto.VariableMutation.Builder builderForValue) {
         if (mutationsBuilder_ == null) {
           ensureMutationsIsMutable();
           mutations_.add(builderForValue.build());
@@ -1351,10 +1351,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder addMutations(
-          int index, io.littlehorse.sdk.common.proto.VariableMutationPb.Builder builderForValue) {
+          int index, io.littlehorse.sdk.common.proto.VariableMutation.Builder builderForValue) {
         if (mutationsBuilder_ == null) {
           ensureMutationsIsMutable();
           mutations_.add(index, builderForValue.build());
@@ -1365,10 +1365,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder addAllMutations(
-          java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableMutationPb> values) {
+          java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.VariableMutation> values) {
         if (mutationsBuilder_ == null) {
           ensureMutationsIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -1380,7 +1380,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder clearMutations() {
         if (mutationsBuilder_ == null) {
@@ -1393,7 +1393,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
       public Builder removeMutations(int index) {
         if (mutationsBuilder_ == null) {
@@ -1406,16 +1406,16 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableMutationPb.Builder getMutationsBuilder(
+      public io.littlehorse.sdk.common.proto.VariableMutation.Builder getMutationsBuilder(
           int index) {
         return getMutationsFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder getMutationsOrBuilder(
+      public io.littlehorse.sdk.common.proto.VariableMutationOrBuilder getMutationsOrBuilder(
           int index) {
         if (mutationsBuilder_ == null) {
           return mutations_.get(index);  } else {
@@ -1423,9 +1423,9 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
-      public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder> 
+      public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> 
            getMutationsOrBuilderList() {
         if (mutationsBuilder_ != null) {
           return mutationsBuilder_.getMessageOrBuilderList();
@@ -1434,33 +1434,33 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableMutationPb.Builder addMutationsBuilder() {
+      public io.littlehorse.sdk.common.proto.VariableMutation.Builder addMutationsBuilder() {
         return getMutationsFieldBuilder().addBuilder(
-            io.littlehorse.sdk.common.proto.VariableMutationPb.getDefaultInstance());
+            io.littlehorse.sdk.common.proto.VariableMutation.getDefaultInstance());
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableMutationPb.Builder addMutationsBuilder(
+      public io.littlehorse.sdk.common.proto.VariableMutation.Builder addMutationsBuilder(
           int index) {
         return getMutationsFieldBuilder().addBuilder(
-            index, io.littlehorse.sdk.common.proto.VariableMutationPb.getDefaultInstance());
+            index, io.littlehorse.sdk.common.proto.VariableMutation.getDefaultInstance());
       }
       /**
-       * <code>repeated .littlehorse.VariableMutationPb mutations = 2;</code>
+       * <code>repeated .littlehorse.VariableMutation mutations = 2;</code>
        */
-      public java.util.List<io.littlehorse.sdk.common.proto.VariableMutationPb.Builder> 
+      public java.util.List<io.littlehorse.sdk.common.proto.VariableMutation.Builder> 
            getMutationsBuilderList() {
         return getMutationsFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.VariableMutationPb, io.littlehorse.sdk.common.proto.VariableMutationPb.Builder, io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder> 
+          io.littlehorse.sdk.common.proto.VariableMutation, io.littlehorse.sdk.common.proto.VariableMutation.Builder, io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> 
           getMutationsFieldBuilder() {
         if (mutationsBuilder_ == null) {
           mutationsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.VariableMutationPb, io.littlehorse.sdk.common.proto.VariableMutationPb.Builder, io.littlehorse.sdk.common.proto.VariableMutationPbOrBuilder>(
+              io.littlehorse.sdk.common.proto.VariableMutation, io.littlehorse.sdk.common.proto.VariableMutation.Builder, io.littlehorse.sdk.common.proto.VariableMutationOrBuilder>(
                   mutations_,
                   ((bitField0_ & 0x00000002) != 0),
                   getParentForChildren(),

@@ -37,7 +37,8 @@ public class UTAReassignModel extends LHSerializable<UTAReassign> {
         if (assignToCase.equals(UTAReassign.AssignToCase.USER_ID)) {
             this.newOwner = VariableAssignmentModel.fromProto(reassignPb.getUserId());
         } else if (assignToCase.equals(UTAReassign.AssignToCase.USER_GROUP)) {
-            this.newOwner = VariableAssignmentModel.fromProto(reassignPb.getUserGroup());
+            this.newOwner =
+                VariableAssignmentModel.fromProto(reassignPb.getUserGroup());
         } else {
             throw new LHSerdeError(
                 null,

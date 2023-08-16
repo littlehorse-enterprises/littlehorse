@@ -368,7 +368,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         internalComms.getStoreBytesAsync(
             ServerTopology.METADATA_STORE,
-            StoreUtils.getFullStoreKey(new TaskDefId(req.getName()), TaskDefModel.class),
+            StoreUtils.getFullStoreKey(
+                new TaskDefId(req.getName()),
+                TaskDefModel.class
+            ),
             LHConstants.META_PARTITION_KEY,
             observer
         );

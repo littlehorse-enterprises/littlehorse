@@ -324,8 +324,9 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         }
     }
 
-    public void validateStartVariablesByType(Map<String, VariableAssignmentModel> vars)
-        throws LHValidationError {
+    public void validateStartVariablesByType(
+        Map<String, VariableAssignmentModel> vars
+    ) throws LHValidationError {
         Map<String, VariableDefModel> inputVarDefs = getInputVariableDefs();
 
         for (Map.Entry<String, VariableDefModel> e : inputVarDefs.entrySet()) {
