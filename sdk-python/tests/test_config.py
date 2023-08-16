@@ -54,8 +54,6 @@ class TestLHConfig(unittest.TestCase):
             file_input.write("LHC_VARIABLE_FROM_FILE=my-lhc-variable-from-file\n")
             file_input.write("LHW_VARIABLE_FROM_FILE=my-lhw-variable-from-file\n")
 
-        print("\n\tTemporary config file:", temp_config_file_path)
-
         config = LHConfig()
         config.load(temp_config_file_path)
 
