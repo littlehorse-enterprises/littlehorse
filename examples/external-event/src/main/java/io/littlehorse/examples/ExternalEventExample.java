@@ -3,9 +3,9 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -34,13 +34,13 @@ public class ExternalEventExample {
         return new WorkflowImpl(
             "example-external-event",
             thread -> {
-                WfRunVariable name = thread.addVariable("name", VariableTypePb.STR);
+                WfRunVariable name = thread.addVariable("name", VariableType.STR);
 
                 thread.execute("ask-for-name");
 
                 thread.mutate(
                     name,
-                    VariableMutationTypePb.ASSIGN,
+                    VariableMutationType.ASSIGN,
                     thread.waitForEvent("name-event")
                 );
 
@@ -114,7 +114,7 @@ public class ExternalEventExample {
         for (String externalEventName : externalEventNames) {
             log.debug("Registering external event {}", externalEventName);
             client.putExternalEventDef(
-                PutExternalEventDefPb.newBuilder().setName(externalEventName).build(),
+                PutExternalEventDefRequest.newBuilder().setName(externalEventName).build(),
                 true
             );
         }

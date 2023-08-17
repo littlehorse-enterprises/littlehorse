@@ -3,10 +3,10 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -40,26 +40,26 @@ public class ParallelApprovalExample {
                 // Initialize variables.
                 WfRunVariable person1Approved = thread.addVariable(
                     "person-1-approved",
-                    VariableTypePb.BOOL
+                    VariableType.BOOL
                 );
                 WfRunVariable person2Approved = thread.addVariable(
                     "person-2-approved",
-                    VariableTypePb.BOOL
+                    VariableType.BOOL
                 );
                 WfRunVariable person3Approved = thread.addVariable(
                     "person-3-approved",
-                    VariableTypePb.BOOL
+                    VariableType.BOOL
                 );
                 WfRunVariable allApproved = thread.addVariable(
                     "all-approved",
-                    VariableTypePb.BOOL
+                    VariableType.BOOL
                 );
 
                 // Variables are initialized to NULL. Need to set to a real value.
-                thread.mutate(allApproved, VariableMutationTypePb.ASSIGN, false);
-                thread.mutate(person1Approved, VariableMutationTypePb.ASSIGN, false);
-                thread.mutate(person2Approved, VariableMutationTypePb.ASSIGN, false);
-                thread.mutate(person3Approved, VariableMutationTypePb.ASSIGN, false);
+                thread.mutate(allApproved, VariableMutationType.ASSIGN, false);
+                thread.mutate(person1Approved, VariableMutationType.ASSIGN, false);
+                thread.mutate(person2Approved, VariableMutationType.ASSIGN, false);
+                thread.mutate(person3Approved, VariableMutationType.ASSIGN, false);
 
                 // Kick off the reminder workflow
                 thread.spawnThread(
@@ -88,7 +88,7 @@ public class ParallelApprovalExample {
                 thread.waitForThreads(p1Thread, p2Thread, p3Thread);
 
                 // Tell the reminder workflow to stop
-                thread.mutate(allApproved, VariableMutationTypePb.ASSIGN, true);
+                thread.mutate(allApproved, VariableMutationType.ASSIGN, true);
             }
         );
     }
@@ -98,7 +98,7 @@ public class ParallelApprovalExample {
             approvalThread.waitForEvent("person-3-approves");
             approvalThread.mutate(
                 person3Approved,
-                VariableMutationTypePb.ASSIGN,
+                VariableMutationType.ASSIGN,
                 true
             );
         };
@@ -109,7 +109,7 @@ public class ParallelApprovalExample {
             approvalThread.waitForEvent("person-2-approves");
             approvalThread.mutate(
                 person2Approved,
-                VariableMutationTypePb.ASSIGN,
+                VariableMutationType.ASSIGN,
                 true
             );
         };
@@ -120,7 +120,7 @@ public class ParallelApprovalExample {
             approvalThread.waitForEvent("person-1-approves");
             approvalThread.mutate(
                 person1Approved,
-                VariableMutationTypePb.ASSIGN,
+                VariableMutationType.ASSIGN,
                 true
             );
         };
@@ -130,13 +130,13 @@ public class ParallelApprovalExample {
         return reminderThread -> {
             WfRunVariable nextReminderTime = reminderThread.addVariable(
                 "next-reminder",
-                VariableTypePb.INT
+                VariableType.INT
             );
 
             // Calculate next time to send notification
             reminderThread.mutate(
                 nextReminderTime,
-                VariableMutationTypePb.ASSIGN,
+                VariableMutationType.ASSIGN,
                 reminderThread.execute("calculate-next-notification")
             );
 
@@ -144,14 +144,14 @@ public class ParallelApprovalExample {
 
             // So long as all things haven't been approved yet, continue to send reminders.
             reminderThread.doWhile(
-                reminderThread.condition(allApproved, ComparatorPb.EQUALS, false),
+                reminderThread.condition(allApproved, Comparator.EQUALS, false),
                 loop -> {
                     reminderThread.execute("reminder-task");
 
                     // Calculate next reminder
                     reminderThread.mutate(
                         nextReminderTime,
-                        VariableMutationTypePb.ASSIGN,
+                        VariableMutationType.ASSIGN,
                         reminderThread.execute("calculate-next-notification")
                     );
 
@@ -227,7 +227,7 @@ public class ParallelApprovalExample {
         for (String externalEventName : externalEventNames) {
             log.debug("Registering external event {}", externalEventName);
             client.putExternalEventDef(
-                PutExternalEventDefPb.newBuilder().setName(externalEventName).build(),
+                PutExternalEventDefRequest.newBuilder().setName(externalEventName).build(),
                 true
             );
         }

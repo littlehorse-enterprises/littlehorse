@@ -3,9 +3,9 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -34,14 +34,14 @@ public class ConditionalsWhileExample {
             thread -> {
                 WfRunVariable numDonuts = thread.addVariable(
                     "number-of-donuts",
-                    VariableTypePb.INT
+                    VariableType.INT
                 );
 
                 thread.doWhile(
-                    thread.condition(numDonuts, ComparatorPb.GREATER_THAN, 0),
+                    thread.condition(numDonuts, Comparator.GREATER_THAN, 0),
                     handler -> {
                         handler.execute("eating-donut", numDonuts);
-                        thread.mutate(numDonuts, VariableMutationTypePb.SUBTRACT, 1);
+                        thread.mutate(numDonuts, VariableMutationType.SUBTRACT, 1);
                     }
                 );
             }

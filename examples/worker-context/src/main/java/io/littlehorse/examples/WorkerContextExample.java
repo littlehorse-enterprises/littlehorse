@@ -3,7 +3,7 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -31,7 +31,7 @@ public class WorkerContextExample {
             thread -> {
                 WfRunVariable theName = thread.addVariable(
                     "request-time",
-                    VariableTypePb.INT
+                    VariableType.INT
                 );
                 thread.execute("task", theName);
             }

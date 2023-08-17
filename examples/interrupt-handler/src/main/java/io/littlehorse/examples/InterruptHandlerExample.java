@@ -3,7 +3,7 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
@@ -111,7 +111,7 @@ public class InterruptHandlerExample {
         for (String externalEventName : externalEventNames) {
             log.debug("Registering external event {}", externalEventName);
             client.putExternalEventDef(
-                PutExternalEventDefPb.newBuilder().setName(externalEventName).build(),
+                PutExternalEventDefRequest.newBuilder().setName(externalEventName).build(),
                 true
             );
         }
