@@ -27,7 +27,7 @@ func camelCaseToHostNameCase(s string) string {
 	return result.String()
 }
 
-func (l *LHWorkflow) compile() (*model.PutWfSpecPb, error) {
+func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 	seenThreads := make(map[string]ThreadFunc)
 	l.funcs = make(map[string]ThreadFunc)
 

@@ -24,7 +24,7 @@ var deployExternalEventDefCmd = &cobra.Command{
 			log.Fatal("You must provide one argument: the filename to deploy from.")
 
 		}
-		peed := &model.PutExternalEventDefPb{}
+		peed := &model.PutExternalEventDefRequest{}
 
 		// First, read the file
 		dat, err := os.ReadFile(args[0])
@@ -66,7 +66,7 @@ var getExternalEventDefCmd = &cobra.Command{
 		common.PrintResp(
 			getGlobalClient(cmd).GetExternalEventDef(
 				context.Background(),
-				&model.ExternalEventDefIdPb{
+				&model.ExternalEventDefId{
 					Name: args[0],
 				},
 			),

@@ -63,7 +63,7 @@ lhctl postEvent <wfRunId> <externalEventName> NULL
 			}
 		}
 
-		req := model.PutExternalEventPb{
+		req := model.PutExternalEventRequest{
 			WfRunId:              wfRunId,
 			ExternalEventDefName: eedName,
 			Content:              content,

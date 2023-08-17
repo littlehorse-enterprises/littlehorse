@@ -76,7 +76,7 @@ var deployUserTaskDefCmd = &cobra.Command{
 		if len(args) != 1 {
 			log.Fatal("You must provide one argument: the filename to deploy from.")
 		}
-		pws := &model.PutUserTaskDefPb{}
+		pws := &model.PutUserTaskDefRequest{}
 
 		// First, read the file
 		dat, err := os.ReadFile(args[0])

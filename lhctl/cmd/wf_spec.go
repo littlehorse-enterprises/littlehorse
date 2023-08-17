@@ -59,7 +59,7 @@ var getWfSpecCmd = &cobra.Command{
 			common.PrintResp(
 				getGlobalClient(cmd).GetWfSpec(
 					context.Background(),
-					&model.WfSpecIdPb{
+					&model.WfSpecId{
 						Name:    name,
 						Version: version,
 					},
@@ -76,7 +76,7 @@ var deployWfSpecCmd = &cobra.Command{
 		if len(args) != 1 {
 			log.Fatal("You must provide one argument: the filename to deploy from.")
 		}
-		pws := &model.PutWfSpecPb{}
+		pws := &model.PutWfSpecRequest{}
 
 		// First, read the file
 		dat, err := os.ReadFile(args[0])

@@ -50,7 +50,7 @@ var getVariableCmd = &cobra.Command{
 		common.PrintResp(
 			getGlobalClient(cmd).GetVariable(
 				context.Background(),
-				&model.VariableIdPb{
+				&model.VariableId{
 					WfRunId:         args[0],
 					ThreadRunNumber: int32(threadRunNumber),
 					Name:            args[2],

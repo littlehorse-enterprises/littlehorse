@@ -8,13 +8,13 @@ import (
 )
 
 type WorkerContext struct {
-	ScheduledTask *model.ScheduledTaskPb
+	ScheduledTask *model.ScheduledTask
 	ScheduleTime  *timestamppb.Timestamp
 	stderr        string
 }
 
 func NewWorkerContext(
-	scheduledTask *model.ScheduledTaskPb,
+	scheduledTask *model.ScheduledTask,
 	scheduleTime *timestamppb.Timestamp,
 ) *WorkerContext {
 
@@ -31,9 +31,9 @@ func (wc *WorkerContext) GetWfRunId() *string {
 
 func (wc *WorkerContext) GetNodeRunId() *model.NodeRunId {
 	switch src := wc.ScheduledTask.Source.TaskRunSource.(type) {
-	case *model.TaskRunSourcePb_TaskNode:
+	case *model.TaskRunSource_TaskNode:
 		return src.TaskNode.NodeRunId
-	case *model.TaskRunSourcePb_UserTaskTrigger:
+	case *model.TaskRunSource_UserTaskTrigger:
 		return src.UserTaskTrigger.NodeRunId
 	}
 	return nil

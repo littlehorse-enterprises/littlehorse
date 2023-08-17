@@ -17,7 +17,7 @@ type LHWorkflow struct {
 	EntrypointThread ThreadFunc
 	Name             string
 
-	spec  model.PutWfSpecPb
+	spec  model.PutWfSpecRequest
 	funcs map[string]ThreadFunc
 }
 
@@ -62,7 +62,7 @@ func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
 	return w.jsonPathImpl(path)
 }
 
-func (l *LHWorkflow) Compile() (*model.PutWfSpecPb, error) {
+func (l *LHWorkflow) Compile() (*model.PutWfSpecRequest, error) {
 	return l.compile()
 }
 

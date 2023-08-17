@@ -41,7 +41,7 @@ var getExternalEventCmd = &cobra.Command{
 
 		common.PrintResp(getGlobalClient(cmd).GetExternalEvent(
 			context.Background(),
-			&model.ExternalEventIdPb{
+			&model.ExternalEventId{
 				WfRunId:              args[0],
 				ExternalEventDefName: args[1],
 				Guid:                 args[2],

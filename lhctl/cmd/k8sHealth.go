@@ -35,18 +35,18 @@ to report whether the pod is currently ready to accept requests.`,
 		)
 		common.PrintResp(resp, err)
 
-		if resp.CoreState == *model.LHHealthResultPb_LH_HEALTH_ERROR.Enum() {
+		if resp.CoreState == *model.LHHealthResult_LH_HEALTH_ERROR.Enum() {
 			os.Exit(1)
 		}
-		if resp.TimerState == *model.LHHealthResultPb_LH_HEALTH_ERROR.Enum() {
+		if resp.TimerState == *model.LHHealthResult_LH_HEALTH_ERROR.Enum() {
 			os.Exit(1)
 		}
 
 		if doReadiness {
-			if resp.CoreState != *model.LHHealthResultPb_LH_HEALTH_RUNNING.Enum() {
+			if resp.CoreState != *model.LHHealthResult_LH_HEALTH_RUNNING.Enum() {
 				os.Exit(1)
 			}
-			if resp.TimerState != *model.LHHealthResultPb_LH_HEALTH_RUNNING.Enum() {
+			if resp.TimerState != *model.LHHealthResult_LH_HEALTH_RUNNING.Enum() {
 				os.Exit(1)
 			}
 		}

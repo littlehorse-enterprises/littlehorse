@@ -38,7 +38,7 @@ var getTaskRunCmd = &cobra.Command{
 
 		common.PrintResp(getGlobalClient(cmd).GetTaskRun(
 			context.Background(),
-			&model.TaskRunIdPb{
+			&model.TaskRunId{
 				WfRunId:  args[0],
 				TaskGuid: args[1],
 			},
@@ -86,11 +86,11 @@ Choose one of the following option groups:
 			}
 			earliest, latest := loadEarliestAndLatestStart(cmd)
 
-			statusInt, ok := model.TaskStatusPb_value[statusStr]
+			statusInt, ok := model.TaskStatus_value[statusStr]
 			if !ok {
 				log.Fatal("Invalid status provided. See --help.")
 			}
-			status := model.TaskStatusPb(statusInt)
+			status := model.TaskStatus(statusInt)
 
 			search = &model.SearchTaskRunPb{
 				TaskRunCriteria: &model.SearchTaskRunPb_StatusAndTaskDef{
