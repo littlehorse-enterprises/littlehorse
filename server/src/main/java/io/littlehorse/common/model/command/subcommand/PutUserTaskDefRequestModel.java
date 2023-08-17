@@ -11,7 +11,7 @@ import io.littlehorse.common.model.command.subcommandresponse.PutUserTaskDefResp
 import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskFieldModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.UserTaskField;
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ public class PutUserTaskDefRequestModel extends SubCommand<PutUserTaskDefRequest
         PutUserTaskDefResponseModel out = new PutUserTaskDefResponseModel();
 
         if (!LHUtil.isValidLHName(name)) {
-            out.code = LHResponseCodePb.VALIDATION_ERROR;
+            out.code = LHResponseCode.VALIDATION_ERROR;
             out.message = "UserTaskDef name must be a valid hostname";
             return out;
         }
@@ -86,11 +86,11 @@ public class PutUserTaskDefRequestModel extends SubCommand<PutUserTaskDefRequest
 
         try {
             spec.validate(dao.getGlobalMetaStores(), config);
-            out.code = LHResponseCodePb.OK;
+            out.code = LHResponseCode.OK;
             out.result = spec;
             dao.putUserTaskDef(spec);
         } catch (LHValidationError exn) {
-            out.code = LHResponseCodePb.VALIDATION_ERROR;
+            out.code = LHResponseCode.VALIDATION_ERROR;
             out.message = "Invalid UserTaskDef: " + exn.getMessage();
         }
 

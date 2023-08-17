@@ -51,19 +51,19 @@ private static final long serialVersionUID = 0L;
   public static final int CODE_FIELD_NUMBER = 1;
   private int code_ = 0;
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   @java.lang.Override public int getCodeValue() {
     return code_;
   }
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The code.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.LHResponseCodePb getCode() {
-    io.littlehorse.sdk.common.proto.LHResponseCodePb result = io.littlehorse.sdk.common.proto.LHResponseCodePb.forNumber(code_);
-    return result == null ? io.littlehorse.sdk.common.proto.LHResponseCodePb.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.LHResponseCode getCode() {
+    io.littlehorse.sdk.common.proto.LHResponseCode result = io.littlehorse.sdk.common.proto.LHResponseCode.forNumber(code_);
+    return result == null ? io.littlehorse.sdk.common.proto.LHResponseCode.UNRECOGNIZED : result;
   }
 
   public static final int MESSAGE_FIELD_NUMBER = 2;
@@ -115,41 +115,41 @@ private static final long serialVersionUID = 0L;
 
   public static final int RESULTS_FIELD_NUMBER = 3;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.ExternalEventDefIdPb> results_;
+  private java.util.List<io.littlehorse.sdk.common.proto.ExternalEventDefId> results_;
   /**
-   * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+   * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.ExternalEventDefIdPb> getResultsList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.ExternalEventDefId> getResultsList() {
     return results_;
   }
   /**
-   * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+   * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.ExternalEventDefIdPbOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> 
       getResultsOrBuilderList() {
     return results_;
   }
   /**
-   * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+   * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
    */
   @java.lang.Override
   public int getResultsCount() {
     return results_.size();
   }
   /**
-   * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+   * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ExternalEventDefIdPb getResults(int index) {
+  public io.littlehorse.sdk.common.proto.ExternalEventDefId getResults(int index) {
     return results_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+   * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ExternalEventDefIdPbOrBuilder getResultsOrBuilder(
+  public io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getResultsOrBuilder(
       int index) {
     return results_.get(index);
   }
@@ -187,7 +187,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCodePb.OK.getNumber()) {
+    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCode.OK.getNumber()) {
       output.writeEnum(1, code_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
@@ -208,7 +208,7 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCodePb.OK.getNumber()) {
+    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCode.OK.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(1, code_);
     }
@@ -594,9 +594,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 18
             case 26: {
-              io.littlehorse.sdk.common.proto.ExternalEventDefIdPb m =
+              io.littlehorse.sdk.common.proto.ExternalEventDefId m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.ExternalEventDefIdPb.parser(),
+                      io.littlehorse.sdk.common.proto.ExternalEventDefId.parser(),
                       extensionRegistry);
               if (resultsBuilder_ == null) {
                 ensureResultsIsMutable();
@@ -630,14 +630,14 @@ private static final long serialVersionUID = 0L;
 
     private int code_ = 0;
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @return The enum numeric value on the wire for code.
      */
     @java.lang.Override public int getCodeValue() {
       return code_;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @param value The enum numeric value on the wire for code to set.
      * @return This builder for chaining.
      */
@@ -648,20 +648,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @return The code.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.LHResponseCodePb getCode() {
-      io.littlehorse.sdk.common.proto.LHResponseCodePb result = io.littlehorse.sdk.common.proto.LHResponseCodePb.forNumber(code_);
-      return result == null ? io.littlehorse.sdk.common.proto.LHResponseCodePb.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.LHResponseCode getCode() {
+      io.littlehorse.sdk.common.proto.LHResponseCode result = io.littlehorse.sdk.common.proto.LHResponseCode.forNumber(code_);
+      return result == null ? io.littlehorse.sdk.common.proto.LHResponseCode.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @param value The code to set.
      * @return This builder for chaining.
      */
-    public Builder setCode(io.littlehorse.sdk.common.proto.LHResponseCodePb value) {
+    public Builder setCode(io.littlehorse.sdk.common.proto.LHResponseCode value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -671,7 +671,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearCode() {
@@ -760,22 +760,22 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.ExternalEventDefIdPb> results_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.ExternalEventDefId> results_ =
       java.util.Collections.emptyList();
     private void ensureResultsIsMutable() {
       if (!((bitField0_ & 0x00000004) != 0)) {
-        results_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.ExternalEventDefIdPb>(results_);
+        results_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.ExternalEventDefId>(results_);
         bitField0_ |= 0x00000004;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ExternalEventDefIdPb, io.littlehorse.sdk.common.proto.ExternalEventDefIdPb.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdPbOrBuilder> resultsBuilder_;
+        io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> resultsBuilder_;
 
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.ExternalEventDefIdPb> getResultsList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.ExternalEventDefId> getResultsList() {
       if (resultsBuilder_ == null) {
         return java.util.Collections.unmodifiableList(results_);
       } else {
@@ -783,7 +783,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
     public int getResultsCount() {
       if (resultsBuilder_ == null) {
@@ -793,9 +793,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventDefIdPb getResults(int index) {
+    public io.littlehorse.sdk.common.proto.ExternalEventDefId getResults(int index) {
       if (resultsBuilder_ == null) {
         return results_.get(index);
       } else {
@@ -803,10 +803,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
     public Builder setResults(
-        int index, io.littlehorse.sdk.common.proto.ExternalEventDefIdPb value) {
+        int index, io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
       if (resultsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -820,10 +820,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
     public Builder setResults(
-        int index, io.littlehorse.sdk.common.proto.ExternalEventDefIdPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder builderForValue) {
       if (resultsBuilder_ == null) {
         ensureResultsIsMutable();
         results_.set(index, builderForValue.build());
@@ -834,9 +834,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
-    public Builder addResults(io.littlehorse.sdk.common.proto.ExternalEventDefIdPb value) {
+    public Builder addResults(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
       if (resultsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -850,10 +850,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
     public Builder addResults(
-        int index, io.littlehorse.sdk.common.proto.ExternalEventDefIdPb value) {
+        int index, io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
       if (resultsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -867,10 +867,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
     public Builder addResults(
-        io.littlehorse.sdk.common.proto.ExternalEventDefIdPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder builderForValue) {
       if (resultsBuilder_ == null) {
         ensureResultsIsMutable();
         results_.add(builderForValue.build());
@@ -881,10 +881,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
     public Builder addResults(
-        int index, io.littlehorse.sdk.common.proto.ExternalEventDefIdPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder builderForValue) {
       if (resultsBuilder_ == null) {
         ensureResultsIsMutable();
         results_.add(index, builderForValue.build());
@@ -895,10 +895,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
     public Builder addAllResults(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.ExternalEventDefIdPb> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.ExternalEventDefId> values) {
       if (resultsBuilder_ == null) {
         ensureResultsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -910,7 +910,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
     public Builder clearResults() {
       if (resultsBuilder_ == null) {
@@ -923,7 +923,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
     public Builder removeResults(int index) {
       if (resultsBuilder_ == null) {
@@ -936,16 +936,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventDefIdPb.Builder getResultsBuilder(
+    public io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder getResultsBuilder(
         int index) {
       return getResultsFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventDefIdPbOrBuilder getResultsOrBuilder(
+    public io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getResultsOrBuilder(
         int index) {
       if (resultsBuilder_ == null) {
         return results_.get(index);  } else {
@@ -953,9 +953,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.ExternalEventDefIdPbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> 
          getResultsOrBuilderList() {
       if (resultsBuilder_ != null) {
         return resultsBuilder_.getMessageOrBuilderList();
@@ -964,33 +964,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventDefIdPb.Builder addResultsBuilder() {
+    public io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder addResultsBuilder() {
       return getResultsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.ExternalEventDefIdPb.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventDefIdPb.Builder addResultsBuilder(
+    public io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder addResultsBuilder(
         int index) {
       return getResultsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.ExternalEventDefIdPb.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.ExternalEventDefIdPb results = 3;</code>
+     * <code>repeated .littlehorse.ExternalEventDefId results = 3;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.ExternalEventDefIdPb.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder> 
          getResultsBuilderList() {
       return getResultsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ExternalEventDefIdPb, io.littlehorse.sdk.common.proto.ExternalEventDefIdPb.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> 
         getResultsFieldBuilder() {
       if (resultsBuilder_ == null) {
         resultsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.ExternalEventDefIdPb, io.littlehorse.sdk.common.proto.ExternalEventDefIdPb.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder>(
                 results_,
                 ((bitField0_ & 0x00000004) != 0),
                 getParentForChildren(),

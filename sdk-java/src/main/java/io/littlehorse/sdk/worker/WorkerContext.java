@@ -2,9 +2,9 @@ package io.littlehorse.sdk.worker;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.NodeRunId;
-import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
-import io.littlehorse.sdk.common.proto.TaskRunIdPb;
-import io.littlehorse.sdk.common.proto.TaskRunSourcePb;
+import io.littlehorse.sdk.common.proto.ScheduledTask;
+import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.User;
 import io.littlehorse.sdk.common.proto.UserGroup;
 import java.util.Date;
@@ -17,7 +17,7 @@ import java.util.Date;
  */
 public class WorkerContext {
 
-    private ScheduledTaskPb scheduledTask;
+    private ScheduledTask scheduledTask;
 
     private Date scheduleTime;
     private String stderr;
@@ -27,7 +27,7 @@ public class WorkerContext {
      * @param scheduledTask is the raw payload for the scheduled task.
      * @param scheduleTime is the time that the task was actually scheduled.
      */
-    public WorkerContext(ScheduledTaskPb scheduledTask, Date scheduleTime) {
+    public WorkerContext(ScheduledTask scheduledTask, Date scheduleTime) {
         this.scheduledTask = scheduledTask;
         this.scheduleTime = scheduleTime;
     }
@@ -45,7 +45,7 @@ public class WorkerContext {
      * @return a `NodeRunIdPb` protobuf class with the ID from the executed NodeRun.
      */
     public NodeRunId getNodeRunId() {
-        TaskRunSourcePb source = scheduledTask.getSource();
+        TaskRunSource source = scheduledTask.getSource();
         switch (source.getTaskRunSourceCase()) {
             case TASK_NODE:
                 return source.getTaskNode().getNodeRunId();
@@ -98,7 +98,7 @@ public class WorkerContext {
         return stderr;
     }
 
-    public TaskRunIdPb getTaskRunId() {
+    public TaskRunId getTaskRunId() {
         return scheduledTask.getTaskRunId();
     }
 

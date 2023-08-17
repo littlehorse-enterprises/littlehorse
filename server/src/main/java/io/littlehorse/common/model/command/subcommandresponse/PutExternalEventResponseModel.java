@@ -2,13 +2,13 @@ package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.common.model.wfrun.ExternalEvent;
+import io.littlehorse.common.model.wfrun.ExternalEventModel;
 import io.littlehorse.sdk.common.proto.PutExternalEventResponse;
 
 public class PutExternalEventResponseModel
     extends AbstractResponse<PutExternalEventResponse> {
 
-    public ExternalEvent result;
+    public ExternalEventModel result;
 
     public Class<PutExternalEventResponse> getProtoBaseClass() {
         return PutExternalEventResponse.class;
@@ -28,6 +28,6 @@ public class PutExternalEventResponseModel
         PutExternalEventResponse p = (PutExternalEventResponse) proto;
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();
-        if (p.hasResult()) result = ExternalEvent.fromProto(p.getResult());
+        if (p.hasResult()) result = ExternalEventModel.fromProto(p.getResult());
     }
 }

@@ -3,7 +3,7 @@ package io.littlehorse.server.streamsimpl.storeinternals;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.wfrun.WfRunModel;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
@@ -118,7 +118,7 @@ public class TagStorageManagerTest {
     @Test
     void sendRepartitionCommandForCreateRemoteTagSubCommand() {
         String expectedPartitionKey = "3/__wfSpecName_test-name";
-        tag1.setTagType(TagStorageTypePb.REMOTE);
+        tag1.setTagType(TagStorageType.REMOTE);
         tags = List.of(tag1, tag2);
         tagStorageManager.storeUsingCache(tags, "test-wfrun-id", WfRunModel.class);
         List<? extends Record<? extends String, ? extends CommandProcessorOutput>> outputs = mockProcessorContext
@@ -146,10 +146,10 @@ public class TagStorageManagerTest {
 
     @Test
     void sendRepartitionCommandForRemoveRemoteTagSubCommand() {
-        tag1.setTagType(TagStorageTypePb.REMOTE);
+        tag1.setTagType(TagStorageType.REMOTE);
         String wfRunId = "123456";
         Tag tag3 = TestUtil.tag();
-        tag3.setTagType(TagStorageTypePb.REMOTE);
+        tag3.setTagType(TagStorageType.REMOTE);
         tags = List.of(tag1, tag2);
         TagsCache tagsCache = new TagsCache();
         CachedTag cachedTag1 = new CachedTag();

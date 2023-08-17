@@ -48,37 +48,37 @@ private static final long serialVersionUID = 0L;
   public static final int CORE_STATE_FIELD_NUMBER = 1;
   private int coreState_ = 0;
   /**
-   * <code>.littlehorse.LHHealthResultPb core_state = 1;</code>
+   * <code>.littlehorse.LHHealthResult core_state = 1;</code>
    * @return The enum numeric value on the wire for coreState.
    */
   @java.lang.Override public int getCoreStateValue() {
     return coreState_;
   }
   /**
-   * <code>.littlehorse.LHHealthResultPb core_state = 1;</code>
+   * <code>.littlehorse.LHHealthResult core_state = 1;</code>
    * @return The coreState.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.LHHealthResultPb getCoreState() {
-    io.littlehorse.sdk.common.proto.LHHealthResultPb result = io.littlehorse.sdk.common.proto.LHHealthResultPb.forNumber(coreState_);
-    return result == null ? io.littlehorse.sdk.common.proto.LHHealthResultPb.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.LHHealthResult getCoreState() {
+    io.littlehorse.sdk.common.proto.LHHealthResult result = io.littlehorse.sdk.common.proto.LHHealthResult.forNumber(coreState_);
+    return result == null ? io.littlehorse.sdk.common.proto.LHHealthResult.UNRECOGNIZED : result;
   }
 
   public static final int TIMER_STATE_FIELD_NUMBER = 2;
   private int timerState_ = 0;
   /**
-   * <code>.littlehorse.LHHealthResultPb timer_state = 2;</code>
+   * <code>.littlehorse.LHHealthResult timer_state = 2;</code>
    * @return The enum numeric value on the wire for timerState.
    */
   @java.lang.Override public int getTimerStateValue() {
     return timerState_;
   }
   /**
-   * <code>.littlehorse.LHHealthResultPb timer_state = 2;</code>
+   * <code>.littlehorse.LHHealthResult timer_state = 2;</code>
    * @return The timerState.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.LHHealthResultPb getTimerState() {
-    io.littlehorse.sdk.common.proto.LHHealthResultPb result = io.littlehorse.sdk.common.proto.LHHealthResultPb.forNumber(timerState_);
-    return result == null ? io.littlehorse.sdk.common.proto.LHHealthResultPb.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.LHHealthResult getTimerState() {
+    io.littlehorse.sdk.common.proto.LHHealthResult result = io.littlehorse.sdk.common.proto.LHHealthResult.forNumber(timerState_);
+    return result == null ? io.littlehorse.sdk.common.proto.LHHealthResult.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -95,10 +95,10 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (coreState_ != io.littlehorse.sdk.common.proto.LHHealthResultPb.LH_HEALTH_RUNNING.getNumber()) {
+    if (coreState_ != io.littlehorse.sdk.common.proto.LHHealthResult.LH_HEALTH_RUNNING.getNumber()) {
       output.writeEnum(1, coreState_);
     }
-    if (timerState_ != io.littlehorse.sdk.common.proto.LHHealthResultPb.LH_HEALTH_RUNNING.getNumber()) {
+    if (timerState_ != io.littlehorse.sdk.common.proto.LHHealthResult.LH_HEALTH_RUNNING.getNumber()) {
       output.writeEnum(2, timerState_);
     }
     getUnknownFields().writeTo(output);
@@ -110,11 +110,11 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (coreState_ != io.littlehorse.sdk.common.proto.LHHealthResultPb.LH_HEALTH_RUNNING.getNumber()) {
+    if (coreState_ != io.littlehorse.sdk.common.proto.LHHealthResult.LH_HEALTH_RUNNING.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(1, coreState_);
     }
-    if (timerState_ != io.littlehorse.sdk.common.proto.LHHealthResultPb.LH_HEALTH_RUNNING.getNumber()) {
+    if (timerState_ != io.littlehorse.sdk.common.proto.LHHealthResult.LH_HEALTH_RUNNING.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(2, timerState_);
     }
@@ -427,14 +427,14 @@ private static final long serialVersionUID = 0L;
 
     private int coreState_ = 0;
     /**
-     * <code>.littlehorse.LHHealthResultPb core_state = 1;</code>
+     * <code>.littlehorse.LHHealthResult core_state = 1;</code>
      * @return The enum numeric value on the wire for coreState.
      */
     @java.lang.Override public int getCoreStateValue() {
       return coreState_;
     }
     /**
-     * <code>.littlehorse.LHHealthResultPb core_state = 1;</code>
+     * <code>.littlehorse.LHHealthResult core_state = 1;</code>
      * @param value The enum numeric value on the wire for coreState to set.
      * @return This builder for chaining.
      */
@@ -445,20 +445,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.LHHealthResultPb core_state = 1;</code>
+     * <code>.littlehorse.LHHealthResult core_state = 1;</code>
      * @return The coreState.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.LHHealthResultPb getCoreState() {
-      io.littlehorse.sdk.common.proto.LHHealthResultPb result = io.littlehorse.sdk.common.proto.LHHealthResultPb.forNumber(coreState_);
-      return result == null ? io.littlehorse.sdk.common.proto.LHHealthResultPb.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.LHHealthResult getCoreState() {
+      io.littlehorse.sdk.common.proto.LHHealthResult result = io.littlehorse.sdk.common.proto.LHHealthResult.forNumber(coreState_);
+      return result == null ? io.littlehorse.sdk.common.proto.LHHealthResult.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.LHHealthResultPb core_state = 1;</code>
+     * <code>.littlehorse.LHHealthResult core_state = 1;</code>
      * @param value The coreState to set.
      * @return This builder for chaining.
      */
-    public Builder setCoreState(io.littlehorse.sdk.common.proto.LHHealthResultPb value) {
+    public Builder setCoreState(io.littlehorse.sdk.common.proto.LHHealthResult value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -468,7 +468,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.LHHealthResultPb core_state = 1;</code>
+     * <code>.littlehorse.LHHealthResult core_state = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearCoreState() {
@@ -480,14 +480,14 @@ private static final long serialVersionUID = 0L;
 
     private int timerState_ = 0;
     /**
-     * <code>.littlehorse.LHHealthResultPb timer_state = 2;</code>
+     * <code>.littlehorse.LHHealthResult timer_state = 2;</code>
      * @return The enum numeric value on the wire for timerState.
      */
     @java.lang.Override public int getTimerStateValue() {
       return timerState_;
     }
     /**
-     * <code>.littlehorse.LHHealthResultPb timer_state = 2;</code>
+     * <code>.littlehorse.LHHealthResult timer_state = 2;</code>
      * @param value The enum numeric value on the wire for timerState to set.
      * @return This builder for chaining.
      */
@@ -498,20 +498,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.LHHealthResultPb timer_state = 2;</code>
+     * <code>.littlehorse.LHHealthResult timer_state = 2;</code>
      * @return The timerState.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.LHHealthResultPb getTimerState() {
-      io.littlehorse.sdk.common.proto.LHHealthResultPb result = io.littlehorse.sdk.common.proto.LHHealthResultPb.forNumber(timerState_);
-      return result == null ? io.littlehorse.sdk.common.proto.LHHealthResultPb.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.LHHealthResult getTimerState() {
+      io.littlehorse.sdk.common.proto.LHHealthResult result = io.littlehorse.sdk.common.proto.LHHealthResult.forNumber(timerState_);
+      return result == null ? io.littlehorse.sdk.common.proto.LHHealthResult.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.LHHealthResultPb timer_state = 2;</code>
+     * <code>.littlehorse.LHHealthResult timer_state = 2;</code>
      * @param value The timerState to set.
      * @return This builder for chaining.
      */
-    public Builder setTimerState(io.littlehorse.sdk.common.proto.LHHealthResultPb value) {
+    public Builder setTimerState(io.littlehorse.sdk.common.proto.LHHealthResult value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -521,7 +521,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.LHHealthResultPb timer_state = 2;</code>
+     * <code>.littlehorse.LHHealthResult timer_state = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearTimerState() {

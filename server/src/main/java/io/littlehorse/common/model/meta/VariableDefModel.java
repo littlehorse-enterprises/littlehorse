@@ -3,7 +3,7 @@ package io.littlehorse.common.model.meta;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.VariableValueModel;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.JsonIndex;
 import io.littlehorse.sdk.common.proto.VariableDef;
@@ -67,11 +67,11 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         return o;
     }
 
-    public TagStorageTypePb getTagStorageType() {
+    public TagStorageType getTagStorageType() {
         if (indexType == null) return null;
 
         return indexType == IndexType.LOCAL_INDEX
-            ? TagStorageTypePb.LOCAL
-            : TagStorageTypePb.REMOTE;
+            ? TagStorageType.LOCAL
+            : TagStorageType.REMOTE;
     }
 }

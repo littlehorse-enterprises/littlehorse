@@ -40,19 +40,19 @@ public interface CommandPbOrBuilder extends
       getCommandIdBytes();
 
   /**
-   * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+   * <code>.littlehorse.ReportTaskRun report_task_run = 3;</code>
    * @return Whether the reportTaskRun field is set.
    */
   boolean hasReportTaskRun();
   /**
-   * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+   * <code>.littlehorse.ReportTaskRun report_task_run = 3;</code>
    * @return The reportTaskRun.
    */
-  io.littlehorse.sdk.common.proto.ReportTaskRunPb getReportTaskRun();
+  io.littlehorse.sdk.common.proto.ReportTaskRun getReportTaskRun();
   /**
-   * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+   * <code>.littlehorse.ReportTaskRun report_task_run = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.ReportTaskRunPbOrBuilder getReportTaskRunOrBuilder();
+  io.littlehorse.sdk.common.proto.ReportTaskRunOrBuilder getReportTaskRunOrBuilder();
 
   /**
    * <code>.littlehorse.TaskClaimEventPb task_claim_event = 4;</code>

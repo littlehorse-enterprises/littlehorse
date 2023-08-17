@@ -4,8 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.NodeRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.SearchNodeRunPb;
@@ -24,8 +24,8 @@ public class SearchNodeRun
     public NoderunCriteriaCase type;
     public String wfRunId;
 
-    public GetableClassEnumPb getObjectType() {
-        return GetableClassEnumPb.NODE_RUN;
+    public GetableClassEnum getObjectType() {
+        return GetableClassEnum.NODE_RUN;
     }
 
     public Class<SearchNodeRunPb> getProtoBaseClass() {
@@ -79,9 +79,9 @@ public class SearchNodeRun
     }
 
     @Override
-    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        return TagStorageTypePb.LOCAL;
+        return TagStorageType.LOCAL;
     }
 
     @Override

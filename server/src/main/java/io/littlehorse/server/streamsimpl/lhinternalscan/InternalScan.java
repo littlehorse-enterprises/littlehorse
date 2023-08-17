@@ -3,7 +3,7 @@ package io.littlehorse.server.streamsimpl.lhinternalscan;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
@@ -19,7 +19,7 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
     public ScanResultTypePb resultType;
     public int limit;
     public BookmarkPb bookmark;
-    public GetableClassEnumPb objectType;
+    public GetableClassEnum objectType;
     public String storeName;
 
     public String partitionKey;

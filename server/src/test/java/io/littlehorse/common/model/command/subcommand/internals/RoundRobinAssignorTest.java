@@ -2,8 +2,8 @@ package io.littlehorse.common.model.command.subcommand.internals;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import io.littlehorse.common.model.meta.Host;
-import io.littlehorse.common.model.meta.TaskWorkerMetadata;
+import io.littlehorse.common.model.meta.HostModel;
+import io.littlehorse.common.model.meta.TaskWorkerMetadataModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -17,8 +17,10 @@ public class RoundRobinAssignorTest {
 
     @Test
     void assignWithOneHostAndTwoWorkers() {
-        List<Host> hosts = generateHosts(1);
-        List<TaskWorkerMetadata> taskWorkersMetadata = generateTaskWorkersMetadata(2);
+        List<HostModel> hosts = generateHosts(1);
+        List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(
+            2
+        );
 
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
@@ -28,12 +30,14 @@ public class RoundRobinAssignorTest {
 
     @Test
     void assignWithTwoHostsAndTwoWorkers() {
-        List<Host> hosts = generateHosts(2);
-        List<TaskWorkerMetadata> taskWorkersMetadata = generateTaskWorkersMetadata(2);
+        List<HostModel> hosts = generateHosts(2);
+        List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(
+            2
+        );
 
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
-        for (Host host : hosts) {
+        for (HostModel host : hosts) {
             assertTrue(taskWorkersMetadata.get(0).hosts.contains(host));
             assertTrue(taskWorkersMetadata.get(1).hosts.contains(host));
         }
@@ -41,8 +45,10 @@ public class RoundRobinAssignorTest {
 
     @Test
     void assignWithTwoHostsAndFourWorkers() {
-        List<Host> hosts = generateHosts(2);
-        List<TaskWorkerMetadata> taskWorkersMetadata = generateTaskWorkersMetadata(4);
+        List<HostModel> hosts = generateHosts(2);
+        List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(
+            4
+        );
 
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
@@ -66,8 +72,10 @@ public class RoundRobinAssignorTest {
 
     @Test
     void assignWithTwoHostsAndFiveWorkers() {
-        List<Host> hosts = generateHosts(2);
-        List<TaskWorkerMetadata> taskWorkersMetadata = generateTaskWorkersMetadata(5);
+        List<HostModel> hosts = generateHosts(2);
+        List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(
+            5
+        );
 
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
@@ -80,12 +88,14 @@ public class RoundRobinAssignorTest {
 
     @Test
     void assignWithFiveHostsAndTwoWorkers() {
-        List<Host> hosts = generateHosts(5);
-        List<TaskWorkerMetadata> taskWorkersMetadata = generateTaskWorkersMetadata(2);
+        List<HostModel> hosts = generateHosts(5);
+        List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(
+            2
+        );
 
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
-        for (Host host : hosts) {
+        for (HostModel host : hosts) {
             assertTrue(taskWorkersMetadata.get(0).hosts.contains(host));
             assertTrue(taskWorkersMetadata.get(1).hosts.contains(host));
         }
@@ -93,8 +103,10 @@ public class RoundRobinAssignorTest {
 
     @Test
     void assignWithFiveHostsAndFiveWorkers() {
-        List<Host> hosts = generateHosts(5);
-        List<TaskWorkerMetadata> taskWorkersMetadata = generateTaskWorkersMetadata(5);
+        List<HostModel> hosts = generateHosts(5);
+        List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(
+            5
+        );
 
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
@@ -127,8 +139,10 @@ public class RoundRobinAssignorTest {
 
     @Test
     void assignWithThreeHostsAndFourWorkers() {
-        List<Host> hosts = generateHosts(3);
-        List<TaskWorkerMetadata> taskWorkersMetadata = generateTaskWorkersMetadata(4);
+        List<HostModel> hosts = generateHosts(3);
+        List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(
+            4
+        );
 
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
@@ -156,12 +170,14 @@ public class RoundRobinAssignorTest {
 
     @Test
     void assignWithThreeHostsAndNineWorkers() {
-        List<Host> hosts = generateHosts(3);
-        List<TaskWorkerMetadata> taskWorkersMetadata = generateTaskWorkersMetadata(9);
+        List<HostModel> hosts = generateHosts(3);
+        List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(
+            9
+        );
 
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
-        for (TaskWorkerMetadata var : taskWorkersMetadata) {
+        for (TaskWorkerMetadataModel var : taskWorkersMetadata) {
             System.out.println(var.hosts);
         }
 
@@ -203,10 +219,10 @@ public class RoundRobinAssignorTest {
         );
     }
 
-    public List<Host> generateHosts(int q) {
-        List<Host> hosts = new ArrayList<Host>();
+    public List<HostModel> generateHosts(int q) {
+        List<HostModel> hosts = new ArrayList<HostModel>();
         for (int i = 0; i < q; i++) {
-            Host host = new Host(
+            HostModel host = new HostModel(
                 faker.internet().domainName(),
                 faker.number().numberBetween(5000, 5500)
             );
@@ -215,10 +231,10 @@ public class RoundRobinAssignorTest {
         return hosts;
     }
 
-    public List<TaskWorkerMetadata> generateTaskWorkersMetadata(int q) {
-        List<TaskWorkerMetadata> taskWorkersMetadata = new ArrayList<TaskWorkerMetadata>();
+    public List<TaskWorkerMetadataModel> generateTaskWorkersMetadata(int q) {
+        List<TaskWorkerMetadataModel> taskWorkersMetadata = new ArrayList<TaskWorkerMetadataModel>();
         for (int i = 0; i < q; i++) {
-            TaskWorkerMetadata taskWorker = new TaskWorkerMetadata();
+            TaskWorkerMetadataModel taskWorker = new TaskWorkerMetadataModel();
             taskWorker.clientId = UUID.randomUUID().toString();
             taskWorkersMetadata.add(taskWorker);
         }

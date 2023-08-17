@@ -209,7 +209,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int REPORT_TASK_RUN_FIELD_NUMBER = 3;
   /**
-   * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+   * <code>.littlehorse.ReportTaskRun report_task_run = 3;</code>
    * @return Whether the reportTaskRun field is set.
    */
   @java.lang.Override
@@ -217,25 +217,25 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 3;
   }
   /**
-   * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+   * <code>.littlehorse.ReportTaskRun report_task_run = 3;</code>
    * @return The reportTaskRun.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ReportTaskRunPb getReportTaskRun() {
+  public io.littlehorse.sdk.common.proto.ReportTaskRun getReportTaskRun() {
     if (commandCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.ReportTaskRunPb) command_;
+       return (io.littlehorse.sdk.common.proto.ReportTaskRun) command_;
     }
-    return io.littlehorse.sdk.common.proto.ReportTaskRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.ReportTaskRun.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+   * <code>.littlehorse.ReportTaskRun report_task_run = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ReportTaskRunPbOrBuilder getReportTaskRunOrBuilder() {
+  public io.littlehorse.sdk.common.proto.ReportTaskRunOrBuilder getReportTaskRunOrBuilder() {
     if (commandCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.ReportTaskRunPb) command_;
+       return (io.littlehorse.sdk.common.proto.ReportTaskRun) command_;
     }
-    return io.littlehorse.sdk.common.proto.ReportTaskRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.ReportTaskRun.getDefaultInstance();
   }
 
   public static final int TASK_CLAIM_EVENT_FIELD_NUMBER = 4;
@@ -984,7 +984,7 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, commandId_);
     }
     if (commandCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.sdk.common.proto.ReportTaskRunPb) command_);
+      output.writeMessage(3, (io.littlehorse.sdk.common.proto.ReportTaskRun) command_);
     }
     if (commandCase_ == 4) {
       output.writeMessage(4, (io.littlehorse.common.proto.TaskClaimEventPb) command_);
@@ -1073,7 +1073,7 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.ReportTaskRunPb) command_);
+        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.ReportTaskRun) command_);
     }
     if (commandCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
@@ -2363,9 +2363,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ReportTaskRunPb, io.littlehorse.sdk.common.proto.ReportTaskRunPb.Builder, io.littlehorse.sdk.common.proto.ReportTaskRunPbOrBuilder> reportTaskRunBuilder_;
+        io.littlehorse.sdk.common.proto.ReportTaskRun, io.littlehorse.sdk.common.proto.ReportTaskRun.Builder, io.littlehorse.sdk.common.proto.ReportTaskRunOrBuilder> reportTaskRunBuilder_;
     /**
-     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+     * <code>.littlehorse.ReportTaskRun report_task_run = 3;</code>
      * @return Whether the reportTaskRun field is set.
      */
     @java.lang.Override
@@ -2373,27 +2373,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 3;
     }
     /**
-     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+     * <code>.littlehorse.ReportTaskRun report_task_run = 3;</code>
      * @return The reportTaskRun.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ReportTaskRunPb getReportTaskRun() {
+    public io.littlehorse.sdk.common.proto.ReportTaskRun getReportTaskRun() {
       if (reportTaskRunBuilder_ == null) {
         if (commandCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.ReportTaskRunPb) command_;
+          return (io.littlehorse.sdk.common.proto.ReportTaskRun) command_;
         }
-        return io.littlehorse.sdk.common.proto.ReportTaskRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ReportTaskRun.getDefaultInstance();
       } else {
         if (commandCase_ == 3) {
           return reportTaskRunBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.ReportTaskRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ReportTaskRun.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+     * <code>.littlehorse.ReportTaskRun report_task_run = 3;</code>
      */
-    public Builder setReportTaskRun(io.littlehorse.sdk.common.proto.ReportTaskRunPb value) {
+    public Builder setReportTaskRun(io.littlehorse.sdk.common.proto.ReportTaskRun value) {
       if (reportTaskRunBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2407,10 +2407,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+     * <code>.littlehorse.ReportTaskRun report_task_run = 3;</code>
      */
     public Builder setReportTaskRun(
-        io.littlehorse.sdk.common.proto.ReportTaskRunPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.ReportTaskRun.Builder builderForValue) {
       if (reportTaskRunBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -2421,13 +2421,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+     * <code>.littlehorse.ReportTaskRun report_task_run = 3;</code>
      */
-    public Builder mergeReportTaskRun(io.littlehorse.sdk.common.proto.ReportTaskRunPb value) {
+    public Builder mergeReportTaskRun(io.littlehorse.sdk.common.proto.ReportTaskRun value) {
       if (reportTaskRunBuilder_ == null) {
         if (commandCase_ == 3 &&
-            command_ != io.littlehorse.sdk.common.proto.ReportTaskRunPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.ReportTaskRunPb.newBuilder((io.littlehorse.sdk.common.proto.ReportTaskRunPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.ReportTaskRun.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.ReportTaskRun.newBuilder((io.littlehorse.sdk.common.proto.ReportTaskRun) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -2444,7 +2444,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+     * <code>.littlehorse.ReportTaskRun report_task_run = 3;</code>
      */
     public Builder clearReportTaskRun() {
       if (reportTaskRunBuilder_ == null) {
@@ -2463,38 +2463,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+     * <code>.littlehorse.ReportTaskRun report_task_run = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.ReportTaskRunPb.Builder getReportTaskRunBuilder() {
+    public io.littlehorse.sdk.common.proto.ReportTaskRun.Builder getReportTaskRunBuilder() {
       return getReportTaskRunFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+     * <code>.littlehorse.ReportTaskRun report_task_run = 3;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ReportTaskRunPbOrBuilder getReportTaskRunOrBuilder() {
+    public io.littlehorse.sdk.common.proto.ReportTaskRunOrBuilder getReportTaskRunOrBuilder() {
       if ((commandCase_ == 3) && (reportTaskRunBuilder_ != null)) {
         return reportTaskRunBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.ReportTaskRunPb) command_;
+          return (io.littlehorse.sdk.common.proto.ReportTaskRun) command_;
         }
-        return io.littlehorse.sdk.common.proto.ReportTaskRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ReportTaskRun.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+     * <code>.littlehorse.ReportTaskRun report_task_run = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ReportTaskRunPb, io.littlehorse.sdk.common.proto.ReportTaskRunPb.Builder, io.littlehorse.sdk.common.proto.ReportTaskRunPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.ReportTaskRun, io.littlehorse.sdk.common.proto.ReportTaskRun.Builder, io.littlehorse.sdk.common.proto.ReportTaskRunOrBuilder> 
         getReportTaskRunFieldBuilder() {
       if (reportTaskRunBuilder_ == null) {
         if (!(commandCase_ == 3)) {
-          command_ = io.littlehorse.sdk.common.proto.ReportTaskRunPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.ReportTaskRun.getDefaultInstance();
         }
         reportTaskRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.ReportTaskRunPb, io.littlehorse.sdk.common.proto.ReportTaskRunPb.Builder, io.littlehorse.sdk.common.proto.ReportTaskRunPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.ReportTaskRunPb) command_,
+            io.littlehorse.sdk.common.proto.ReportTaskRun, io.littlehorse.sdk.common.proto.ReportTaskRun.Builder, io.littlehorse.sdk.common.proto.ReportTaskRunOrBuilder>(
+                (io.littlehorse.sdk.common.proto.ReportTaskRun) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;

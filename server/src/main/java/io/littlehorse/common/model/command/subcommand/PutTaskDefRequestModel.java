@@ -9,7 +9,7 @@ import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefResponse
 import io.littlehorse.common.model.meta.TaskDefModel;
 import io.littlehorse.common.model.meta.VariableDefModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,14 +59,14 @@ public class PutTaskDefRequestModel
         PutTaskDefResponseModel out = new PutTaskDefResponseModel();
 
         if (!LHUtil.isValidLHName(name)) {
-            out.code = LHResponseCodePb.VALIDATION_ERROR;
+            out.code = LHResponseCode.VALIDATION_ERROR;
             out.message = "TaskDef name must be a valid hostname";
             return out;
         }
 
         TaskDefModel oldVersion = dao.getTaskDef(name);
         if (oldVersion != null) {
-            out.code = LHResponseCodePb.ALREADY_EXISTS_ERROR;
+            out.code = LHResponseCode.ALREADY_EXISTS_ERROR;
             out.message = "TaskDef already exists and is immutable.";
             out.result = oldVersion;
         } else {
@@ -75,7 +75,7 @@ public class PutTaskDefRequestModel
             spec.inputVars = inputVars;
             dao.putTaskDef(spec);
 
-            out.code = LHResponseCodePb.OK;
+            out.code = LHResponseCode.OK;
             out.result = spec;
         }
 

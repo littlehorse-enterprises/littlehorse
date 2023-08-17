@@ -49,19 +49,19 @@ private static final long serialVersionUID = 0L;
   public static final int CODE_FIELD_NUMBER = 1;
   private int code_ = 0;
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   @java.lang.Override public int getCodeValue() {
     return code_;
   }
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The code.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.LHResponseCodePb getCode() {
-    io.littlehorse.sdk.common.proto.LHResponseCodePb result = io.littlehorse.sdk.common.proto.LHResponseCodePb.forNumber(code_);
-    return result == null ? io.littlehorse.sdk.common.proto.LHResponseCodePb.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.LHResponseCode getCode() {
+    io.littlehorse.sdk.common.proto.LHResponseCode result = io.littlehorse.sdk.common.proto.LHResponseCode.forNumber(code_);
+    return result == null ? io.littlehorse.sdk.common.proto.LHResponseCode.UNRECOGNIZED : result;
   }
 
   public static final int MESSAGE_FIELD_NUMBER = 2;
@@ -112,9 +112,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int RESULT_FIELD_NUMBER = 3;
-  private io.littlehorse.sdk.common.proto.ExternalEventPb result_;
+  private io.littlehorse.sdk.common.proto.ExternalEvent result_;
   /**
-   * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
+   * <code>optional .littlehorse.ExternalEvent result = 3;</code>
    * @return Whether the result field is set.
    */
   @java.lang.Override
@@ -122,19 +122,19 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
+   * <code>optional .littlehorse.ExternalEvent result = 3;</code>
    * @return The result.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ExternalEventPb getResult() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.ExternalEventPb.getDefaultInstance() : result_;
+  public io.littlehorse.sdk.common.proto.ExternalEvent getResult() {
+    return result_ == null ? io.littlehorse.sdk.common.proto.ExternalEvent.getDefaultInstance() : result_;
   }
   /**
-   * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
+   * <code>optional .littlehorse.ExternalEvent result = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ExternalEventPbOrBuilder getResultOrBuilder() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.ExternalEventPb.getDefaultInstance() : result_;
+  public io.littlehorse.sdk.common.proto.ExternalEventOrBuilder getResultOrBuilder() {
+    return result_ == null ? io.littlehorse.sdk.common.proto.ExternalEvent.getDefaultInstance() : result_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -151,7 +151,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCodePb.OK.getNumber()) {
+    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCode.OK.getNumber()) {
       output.writeEnum(1, code_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
@@ -169,7 +169,7 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCodePb.OK.getNumber()) {
+    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCode.OK.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(1, code_);
     }
@@ -536,14 +536,14 @@ private static final long serialVersionUID = 0L;
 
     private int code_ = 0;
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @return The enum numeric value on the wire for code.
      */
     @java.lang.Override public int getCodeValue() {
       return code_;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @param value The enum numeric value on the wire for code to set.
      * @return This builder for chaining.
      */
@@ -554,20 +554,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @return The code.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.LHResponseCodePb getCode() {
-      io.littlehorse.sdk.common.proto.LHResponseCodePb result = io.littlehorse.sdk.common.proto.LHResponseCodePb.forNumber(code_);
-      return result == null ? io.littlehorse.sdk.common.proto.LHResponseCodePb.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.LHResponseCode getCode() {
+      io.littlehorse.sdk.common.proto.LHResponseCode result = io.littlehorse.sdk.common.proto.LHResponseCode.forNumber(code_);
+      return result == null ? io.littlehorse.sdk.common.proto.LHResponseCode.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @param value The code to set.
      * @return This builder for chaining.
      */
-    public Builder setCode(io.littlehorse.sdk.common.proto.LHResponseCodePb value) {
+    public Builder setCode(io.littlehorse.sdk.common.proto.LHResponseCode value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -577,7 +577,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearCode() {
@@ -666,31 +666,31 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.sdk.common.proto.ExternalEventPb result_;
+    private io.littlehorse.sdk.common.proto.ExternalEvent result_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ExternalEventPb, io.littlehorse.sdk.common.proto.ExternalEventPb.Builder, io.littlehorse.sdk.common.proto.ExternalEventPbOrBuilder> resultBuilder_;
+        io.littlehorse.sdk.common.proto.ExternalEvent, io.littlehorse.sdk.common.proto.ExternalEvent.Builder, io.littlehorse.sdk.common.proto.ExternalEventOrBuilder> resultBuilder_;
     /**
-     * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEvent result = 3;</code>
      * @return Whether the result field is set.
      */
     public boolean hasResult() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEvent result = 3;</code>
      * @return The result.
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventPb getResult() {
+    public io.littlehorse.sdk.common.proto.ExternalEvent getResult() {
       if (resultBuilder_ == null) {
-        return result_ == null ? io.littlehorse.sdk.common.proto.ExternalEventPb.getDefaultInstance() : result_;
+        return result_ == null ? io.littlehorse.sdk.common.proto.ExternalEvent.getDefaultInstance() : result_;
       } else {
         return resultBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEvent result = 3;</code>
      */
-    public Builder setResult(io.littlehorse.sdk.common.proto.ExternalEventPb value) {
+    public Builder setResult(io.littlehorse.sdk.common.proto.ExternalEvent value) {
       if (resultBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -704,10 +704,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEvent result = 3;</code>
      */
     public Builder setResult(
-        io.littlehorse.sdk.common.proto.ExternalEventPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.ExternalEvent.Builder builderForValue) {
       if (resultBuilder_ == null) {
         result_ = builderForValue.build();
       } else {
@@ -718,13 +718,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEvent result = 3;</code>
      */
-    public Builder mergeResult(io.littlehorse.sdk.common.proto.ExternalEventPb value) {
+    public Builder mergeResult(io.littlehorse.sdk.common.proto.ExternalEvent value) {
       if (resultBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0) &&
           result_ != null &&
-          result_ != io.littlehorse.sdk.common.proto.ExternalEventPb.getDefaultInstance()) {
+          result_ != io.littlehorse.sdk.common.proto.ExternalEvent.getDefaultInstance()) {
           getResultBuilder().mergeFrom(value);
         } else {
           result_ = value;
@@ -737,7 +737,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEvent result = 3;</code>
      */
     public Builder clearResult() {
       bitField0_ = (bitField0_ & ~0x00000004);
@@ -750,33 +750,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEvent result = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventPb.Builder getResultBuilder() {
+    public io.littlehorse.sdk.common.proto.ExternalEvent.Builder getResultBuilder() {
       bitField0_ |= 0x00000004;
       onChanged();
       return getResultFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEvent result = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventPbOrBuilder getResultOrBuilder() {
+    public io.littlehorse.sdk.common.proto.ExternalEventOrBuilder getResultOrBuilder() {
       if (resultBuilder_ != null) {
         return resultBuilder_.getMessageOrBuilder();
       } else {
         return result_ == null ?
-            io.littlehorse.sdk.common.proto.ExternalEventPb.getDefaultInstance() : result_;
+            io.littlehorse.sdk.common.proto.ExternalEvent.getDefaultInstance() : result_;
       }
     }
     /**
-     * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
+     * <code>optional .littlehorse.ExternalEvent result = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ExternalEventPb, io.littlehorse.sdk.common.proto.ExternalEventPb.Builder, io.littlehorse.sdk.common.proto.ExternalEventPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.ExternalEvent, io.littlehorse.sdk.common.proto.ExternalEvent.Builder, io.littlehorse.sdk.common.proto.ExternalEventOrBuilder> 
         getResultFieldBuilder() {
       if (resultBuilder_ == null) {
         resultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.ExternalEventPb, io.littlehorse.sdk.common.proto.ExternalEventPb.Builder, io.littlehorse.sdk.common.proto.ExternalEventPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.ExternalEvent, io.littlehorse.sdk.common.proto.ExternalEvent.Builder, io.littlehorse.sdk.common.proto.ExternalEventOrBuilder>(
                 getResult(),
                 getParentForChildren(),
                 isClean());

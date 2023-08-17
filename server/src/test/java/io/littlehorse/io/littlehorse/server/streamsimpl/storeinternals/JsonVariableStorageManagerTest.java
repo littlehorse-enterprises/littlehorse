@@ -5,7 +5,7 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.meta.JsonIndexModel;
 import io.littlehorse.common.model.meta.VariableDefModel;
-import io.littlehorse.common.model.wfrun.Variable;
+import io.littlehorse.common.model.wfrun.VariableModel;
 import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -61,7 +61,7 @@ public class JsonVariableStorageManagerTest {
             Paths.get("./src/test/resources/json-variables-example.json").toFile(),
             Map.class
         );
-        Variable variable = TestUtil.variable("wfrun-id");
+        VariableModel variable = TestUtil.variable("wfrun-id");
         variable.setName("testVariable");
         VariableDefModel variableDef = TestUtil.variableDef(
             "testVariable",

@@ -6,17 +6,17 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.command.subcommand.RunWf;
-import io.littlehorse.common.model.objectId.WfSpecId;
+import io.littlehorse.common.model.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.wfrun.WfRunModel;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
-import io.littlehorse.sdk.common.proto.ThreadTypePb;
+import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.WfSpec;
-import io.littlehorse.sdk.common.proto.WfSpecIdPb;
+import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.util.ArrayList;
@@ -50,8 +50,8 @@ public class WfSpecModel extends Getable<WfSpec> {
 
     private boolean initializedVarToThreadSpec;
 
-    public WfSpecId getObjectId() {
-        return new WfSpecId(name, version);
+    public WfSpecIdModel getObjectId() {
+        return new WfSpecIdModel(name, version);
     }
 
     public String getName() {
@@ -71,7 +71,7 @@ public class WfSpecModel extends Getable<WfSpec> {
         return List.of(
             new GetableIndex<>(
                 List.of(Pair.of("taskDef", GetableIndex.ValueType.DYNAMIC)),
-                Optional.of(TagStorageTypePb.REMOTE)
+                Optional.of(TagStorageType.REMOTE)
             )
         );
     }
@@ -79,7 +79,7 @@ public class WfSpecModel extends Getable<WfSpec> {
     @Override
     public List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageTypePb> tagStorageTypePb
+        Optional<TagStorageType> tagStorageTypePb
     ) {
         if (key.equals("taskDef")) {
             return this.taskDefNames()
@@ -285,7 +285,7 @@ public class WfSpecModel extends Getable<WfSpec> {
             getDao().getEventTime(),
             null,
             evt.variables,
-            ThreadTypePb.ENTRYPOINT
+            ThreadType.ENTRYPOINT
         );
 
         getDao().saveWfRun(out);
@@ -293,9 +293,9 @@ public class WfSpecModel extends Getable<WfSpec> {
         return out;
     }
 
-    public static WfSpecIdPb parseId(String fullId) {
+    public static WfSpecId parseId(String fullId) {
         String[] split = fullId.split("/");
-        return WfSpecIdPb
+        return WfSpecId
             .newBuilder()
             .setName(split[0])
             .setVersion(Integer.valueOf(split[1]))

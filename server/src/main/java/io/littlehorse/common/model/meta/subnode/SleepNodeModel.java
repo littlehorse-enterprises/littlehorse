@@ -7,7 +7,7 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.meta.VariableAssignmentModel;
 import io.littlehorse.common.model.wfrun.ThreadRunModel;
-import io.littlehorse.common.model.wfrun.subnoderun.SleepNodeRun;
+import io.littlehorse.common.model.wfrun.subnoderun.SleepNodeRunModel;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.SleepNode;
 import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
@@ -72,8 +72,8 @@ public class SleepNodeModel extends SubNode<SleepNode> {
     }
 
     @Override
-    public SleepNodeRun createSubNodeRun(Date time) {
-        return new SleepNodeRun();
+    public SleepNodeRunModel createSubNodeRun(Date time) {
+        return new SleepNodeRunModel();
     }
 
     public Date getMaturationTime(ThreadRunModel thread) throws LHVarSubError {

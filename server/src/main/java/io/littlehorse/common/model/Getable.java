@@ -4,32 +4,32 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.meta.ExternalEventDefModel;
 import io.littlehorse.common.model.meta.TaskDefModel;
-import io.littlehorse.common.model.meta.TaskWorkerGroup;
+import io.littlehorse.common.model.meta.TaskWorkerGroupModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.metrics.TaskDefMetricsModel;
 import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
 import io.littlehorse.common.model.objectId.ExternalEventDefIdModel;
-import io.littlehorse.common.model.objectId.ExternalEventId;
+import io.littlehorse.common.model.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.objectId.NodeRunIdModel;
-import io.littlehorse.common.model.objectId.TaskDefId;
+import io.littlehorse.common.model.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.objectId.TaskDefMetricsIdModel;
-import io.littlehorse.common.model.objectId.TaskRunId;
-import io.littlehorse.common.model.objectId.TaskWorkerGroupId;
+import io.littlehorse.common.model.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.objectId.TaskWorkerGroupIdModel;
 import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
-import io.littlehorse.common.model.objectId.VariableId;
-import io.littlehorse.common.model.objectId.WfRunId;
-import io.littlehorse.common.model.objectId.WfSpecId;
+import io.littlehorse.common.model.objectId.VariableIdModel;
+import io.littlehorse.common.model.objectId.WfRunIdModel;
+import io.littlehorse.common.model.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.objectId.WfSpecMetricsIdModel;
-import io.littlehorse.common.model.wfrun.ExternalEvent;
+import io.littlehorse.common.model.wfrun.ExternalEventModel;
 import io.littlehorse.common.model.wfrun.NodeRunModel;
 import io.littlehorse.common.model.wfrun.UserTaskRunModel;
-import io.littlehorse.common.model.wfrun.Variable;
+import io.littlehorse.common.model.wfrun.VariableModel;
 import io.littlehorse.common.model.wfrun.WfRunModel;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
-import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRunModel;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
@@ -56,33 +56,33 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
         return getObjectId().getPartitionKey();
     }
 
-    public static GetableClassEnumPb getTypeEnum(Class<? extends Getable<?>> cls) {
+    public static GetableClassEnum getTypeEnum(Class<? extends Getable<?>> cls) {
         if (cls.equals(WfRunModel.class)) {
-            return GetableClassEnumPb.WF_RUN;
+            return GetableClassEnum.WF_RUN;
         } else if (cls.equals(NodeRunModel.class)) {
-            return GetableClassEnumPb.NODE_RUN;
+            return GetableClassEnum.NODE_RUN;
         } else if (cls.equals(WfSpecModel.class)) {
-            return GetableClassEnumPb.WF_SPEC;
+            return GetableClassEnum.WF_SPEC;
         } else if (cls.equals(TaskDefModel.class)) {
-            return GetableClassEnumPb.TASK_DEF;
-        } else if (cls.equals(Variable.class)) {
-            return GetableClassEnumPb.VARIABLE;
+            return GetableClassEnum.TASK_DEF;
+        } else if (cls.equals(VariableModel.class)) {
+            return GetableClassEnum.VARIABLE;
         } else if (cls.equals(ExternalEventDefModel.class)) {
-            return GetableClassEnumPb.EXTERNAL_EVENT_DEF;
-        } else if (cls.equals(ExternalEvent.class)) {
-            return GetableClassEnumPb.EXTERNAL_EVENT;
+            return GetableClassEnum.EXTERNAL_EVENT_DEF;
+        } else if (cls.equals(ExternalEventModel.class)) {
+            return GetableClassEnum.EXTERNAL_EVENT;
         } else if (cls.equals(TaskDefMetricsModel.class)) {
-            return GetableClassEnumPb.TASK_DEF_METRICS;
+            return GetableClassEnum.TASK_DEF_METRICS;
         } else if (cls.equals(WfSpecMetricsModel.class)) {
-            return GetableClassEnumPb.WF_SPEC_METRICS;
-        } else if (cls.equals(TaskWorkerGroup.class)) {
-            return GetableClassEnumPb.TASK_WORKER_GROUP;
+            return GetableClassEnum.WF_SPEC_METRICS;
+        } else if (cls.equals(TaskWorkerGroupModel.class)) {
+            return GetableClassEnum.TASK_WORKER_GROUP;
         } else if (cls.equals(UserTaskDefModel.class)) {
-            return GetableClassEnumPb.USER_TASK_DEF;
-        } else if (cls.equals(TaskRun.class)) {
-            return GetableClassEnumPb.TASK_RUN;
+            return GetableClassEnum.USER_TASK_DEF;
+        } else if (cls.equals(TaskRunModel.class)) {
+            return GetableClassEnum.TASK_RUN;
         } else if (cls.equals(UserTaskRunModel.class)) {
-            return GetableClassEnumPb.USER_TASK_RUN;
+            return GetableClassEnum.USER_TASK_RUN;
         } else {
             throw new IllegalArgumentException(
                 "Uh oh, unrecognized: " + cls.getName()
@@ -90,7 +90,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
         }
     }
 
-    public static Class<? extends Getable<?>> getCls(GetableClassEnumPb type) {
+    public static Class<? extends Getable<?>> getCls(GetableClassEnum type) {
         switch (type) {
             case WF_RUN:
                 return WfRunModel.class;
@@ -101,65 +101,63 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             case TASK_DEF:
                 return TaskDefModel.class;
             case VARIABLE:
-                return Variable.class;
+                return VariableModel.class;
             case EXTERNAL_EVENT_DEF:
                 return ExternalEventDefModel.class;
             case EXTERNAL_EVENT:
-                return ExternalEvent.class;
+                return ExternalEventModel.class;
             case TASK_DEF_METRICS:
                 return TaskDefMetricsModel.class;
             case WF_SPEC_METRICS:
                 return WfSpecMetricsModel.class;
             case TASK_WORKER_GROUP:
-                return TaskWorkerGroup.class;
+                return TaskWorkerGroupModel.class;
             case USER_TASK_DEF:
                 return UserTaskDefModel.class;
             case TASK_RUN:
-                return TaskRun.class;
+                return TaskRunModel.class;
             case USER_TASK_RUN:
                 return UserTaskRunModel.class;
             case UNRECOGNIZED:
             // default:
         }
         throw new IllegalArgumentException(
-            "Unrecognized/unimplemented GetableClassEnumPb"
+            "Unrecognized/unimplemented GetableClassEnum"
         );
     }
 
-    public static Class<? extends ObjectId<?, ?, ?>> getIdCls(
-        GetableClassEnumPb type
-    ) {
+    public static Class<? extends ObjectId<?, ?, ?>> getIdCls(GetableClassEnum type) {
         switch (type) {
             case WF_RUN:
-                return WfRunId.class;
+                return WfRunIdModel.class;
             case NODE_RUN:
                 return NodeRunIdModel.class;
             case WF_SPEC:
-                return WfSpecId.class;
+                return WfSpecIdModel.class;
             case TASK_DEF:
-                return TaskDefId.class;
+                return TaskDefIdModel.class;
             case VARIABLE:
-                return VariableId.class;
+                return VariableIdModel.class;
             case EXTERNAL_EVENT_DEF:
                 return ExternalEventDefIdModel.class;
             case EXTERNAL_EVENT:
-                return ExternalEventId.class;
+                return ExternalEventIdModel.class;
             case TASK_DEF_METRICS:
                 return TaskDefMetricsIdModel.class;
             case WF_SPEC_METRICS:
                 return WfSpecMetricsIdModel.class;
             case TASK_WORKER_GROUP:
-                return TaskWorkerGroupId.class;
+                return TaskWorkerGroupIdModel.class;
             case USER_TASK_DEF:
                 return UserTaskDefIdModel.class;
             case TASK_RUN:
-                return TaskRunId.class;
+                return TaskRunIdModel.class;
             case USER_TASK_RUN:
                 return UserTaskRunIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException(
-            "Unrecognized/unimplemented GetableClassEnumPb"
+            "Unrecognized/unimplemented GetableClassEnum"
         );
     }
 
@@ -173,7 +171,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
 
     public abstract List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageTypePb> tagStorageTypePb
+        Optional<TagStorageType> tagStorageTypePb
     );
 
     public List<Tag> getIndexEntries() {
@@ -182,7 +180,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             if (!indexConfiguration.isValid(this)) {
                 continue;
             }
-            Optional<TagStorageTypePb> tagStorageTypePb = indexConfiguration.getTagStorageTypePb();
+            Optional<TagStorageType> tagStorageTypePb = indexConfiguration.getTagStorageTypePb();
             List<IndexedField> singleIndexedValues = indexConfiguration
                 .getAttributes()
                 .stream()
@@ -220,14 +218,14 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
                 dynamicIndexedFields
             );
             for (List<IndexedField> list : combine) {
-                TagStorageTypePb storageType = list
+                TagStorageType storageType = list
                     .stream()
                     .map(IndexedField::getTagStorageTypePb)
                     .filter(tagStorageTypePb1 ->
-                        tagStorageTypePb1 == TagStorageTypePb.REMOTE
+                        tagStorageTypePb1 == TagStorageType.REMOTE
                     )
                     .findAny()
-                    .orElse(TagStorageTypePb.LOCAL);
+                    .orElse(TagStorageType.LOCAL);
                 List<Pair<String, String>> pairs = list
                     .stream()
                     .map(indexedField ->

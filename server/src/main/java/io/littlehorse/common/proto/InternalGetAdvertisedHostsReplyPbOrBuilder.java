@@ -8,11 +8,11 @@ public interface InternalGetAdvertisedHostsReplyPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
    */
   int getHostsCount();
   /**
-   * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
    */
   boolean containsHosts(
       java.lang.String key);
@@ -20,24 +20,24 @@ public interface InternalGetAdvertisedHostsReplyPbOrBuilder extends
    * Use {@link #getHostsMap()} instead.
    */
   @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfoPb>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo>
   getHosts();
   /**
-   * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
    */
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfoPb>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo>
   getHostsMap();
   /**
-   * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
    */
   /* nullable */
-io.littlehorse.sdk.common.proto.HostInfoPb getHostsOrDefault(
+io.littlehorse.sdk.common.proto.HostInfo getHostsOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.sdk.common.proto.HostInfoPb defaultValue);
+io.littlehorse.sdk.common.proto.HostInfo defaultValue);
   /**
-   * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.HostInfoPb getHostsOrThrow(
+  io.littlehorse.sdk.common.proto.HostInfo getHostsOrThrow(
       java.lang.String key);
 }

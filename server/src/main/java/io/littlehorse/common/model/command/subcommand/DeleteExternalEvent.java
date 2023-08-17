@@ -5,10 +5,10 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
-import io.littlehorse.common.model.objectId.ExternalEventId;
-import io.littlehorse.common.model.wfrun.ExternalEvent;
+import io.littlehorse.common.model.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.wfrun.ExternalEventModel;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventPb;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 
 public class DeleteExternalEvent extends SubCommand<DeleteExternalEventPb> {
 
@@ -39,17 +39,19 @@ public class DeleteExternalEvent extends SubCommand<DeleteExternalEventPb> {
     }
 
     public DeleteObjectReply process(LHDAO dao, LHConfig config) {
-        ExternalEventId eventId = new ExternalEventId(
+        ExternalEventIdModel eventId = new ExternalEventIdModel(
             wfRunId,
             externalEventDefName,
             guid
         );
-        ExternalEvent externalEvent = dao.getExternalEvent(eventId.getStoreKey());
+        ExternalEventModel externalEvent = dao.getExternalEvent(
+            eventId.getStoreKey()
+        );
         if (!externalEvent.claimed) {
             return dao.deleteExternalEvent(eventId.getStoreKey());
         } else {
             DeleteObjectReply response = new DeleteObjectReply();
-            response.code = LHResponseCodePb.VALIDATION_ERROR;
+            response.code = LHResponseCode.VALIDATION_ERROR;
             response.message =
                 "ExternalEvent already claimed by WfRun " + externalEvent.wfRunId;
             return response;

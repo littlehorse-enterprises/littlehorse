@@ -4,15 +4,15 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 
 public class CancelUserTaskRunReply
     extends AbstractResponse<CancelUserTaskRunReplyPb> {
 
     private String message;
-    private LHResponseCodePb lhResponseCodePb;
+    private LHResponseCode lhResponseCodePb;
 
-    public CancelUserTaskRunReply(String message, LHResponseCodePb lhResponseCodePb) {
+    public CancelUserTaskRunReply(String message, LHResponseCode lhResponseCodePb) {
         this.message = message;
         this.lhResponseCodePb = lhResponseCodePb;
     }

@@ -5,7 +5,7 @@ import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
@@ -21,12 +21,12 @@ public class StoredGetable<U extends Message, T extends Getable<U>>
 
     private TagsCache indexCache;
     private T storedObject;
-    private GetableClassEnumPb objectType;
+    private GetableClassEnum objectType;
 
     public StoredGetable(
         TagsCache indexCache,
         T storedObject,
-        GetableClassEnumPb objectType
+        GetableClassEnum objectType
     ) {
         this.indexCache = indexCache;
         this.storedObject = storedObject;

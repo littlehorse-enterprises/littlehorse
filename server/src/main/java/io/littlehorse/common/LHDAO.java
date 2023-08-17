@@ -5,24 +5,24 @@ import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.meta.ExternalEventDefModel;
-import io.littlehorse.common.model.meta.Host;
+import io.littlehorse.common.model.meta.HostModel;
 import io.littlehorse.common.model.meta.TaskDefModel;
-import io.littlehorse.common.model.meta.TaskWorkerGroup;
+import io.littlehorse.common.model.meta.TaskWorkerGroupModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.objectId.NodeRunIdModel;
-import io.littlehorse.common.model.objectId.TaskRunId;
+import io.littlehorse.common.model.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
-import io.littlehorse.common.model.wfrun.ExternalEvent;
+import io.littlehorse.common.model.wfrun.ExternalEventModel;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRunModel;
-import io.littlehorse.common.model.wfrun.ScheduledTask;
+import io.littlehorse.common.model.wfrun.ScheduledTaskModel;
 import io.littlehorse.common.model.wfrun.UserTaskRunModel;
-import io.littlehorse.common.model.wfrun.Variable;
+import io.littlehorse.common.model.wfrun.VariableModel;
 import io.littlehorse.common.model.wfrun.WfRunModel;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRunModel;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.sdk.common.proto.HostInfoPb;
+import io.littlehorse.sdk.common.proto.HostInfo;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
 import io.littlehorse.server.streamsimpl.util.InternalHosts;
@@ -55,20 +55,20 @@ public interface LHDAO extends LHGlobalMetaStores {
         return getNodeRun(id.getWfRunId(), id.getThreadRunNumber(), id.getPosition());
     }
 
-    public void putVariable(Variable var);
+    public void putVariable(VariableModel var);
 
-    public Variable getVariable(String wfRunId, String name, int threadNum);
+    public VariableModel getVariable(String wfRunId, String name, int threadNum);
 
-    public ExternalEvent getUnclaimedEvent(
+    public ExternalEventModel getUnclaimedEvent(
         String wfRunId,
         String externalEventDefName
     );
 
-    public ExternalEvent getExternalEvent(String externalEventId);
+    public ExternalEventModel getExternalEvent(String externalEventId);
 
-    public void saveExternalEvent(ExternalEvent evt);
+    public void saveExternalEvent(ExternalEventModel evt);
 
-    public void scheduleTask(ScheduledTask scheduledTask);
+    public void scheduleTask(ScheduledTaskModel scheduledTask);
 
     public void scheduleTimer(LHTimer timer);
 
@@ -97,7 +97,7 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public ExternalEventDefModel getExternalEventDef(String name);
 
-    public ScheduledTask markTaskAsScheduled(TaskRunId taskRunId);
+    public ScheduledTaskModel markTaskAsScheduled(TaskRunIdModel taskRunId);
 
     public void putExternalEventDef(ExternalEventDefModel eed);
 
@@ -113,9 +113,9 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public DeleteObjectReply deleteExternalEvent(String externalEventId);
 
-    public TaskRun getTaskRun(TaskRunId taskRunId);
+    public TaskRunModel getTaskRun(TaskRunIdModel taskRunId);
 
-    public void putTaskRun(TaskRun taskRun);
+    public void putTaskRun(TaskRunModel taskRun);
 
     public void putUserTaskRun(UserTaskRunModel taskRun);
 
@@ -147,12 +147,12 @@ public interface LHDAO extends LHGlobalMetaStores {
         Date time
     );
 
-    public HostInfoPb getAdvertisedHost(Host host, String listenerName)
+    public HostInfo getAdvertisedHost(HostModel host, String listenerName)
         throws LHBadRequestError, LHConnectionError;
 
     public InternalHosts getInternalHosts();
 
-    public TaskWorkerGroup getTaskWorkerGroup(String taskDefName);
+    public TaskWorkerGroupModel getTaskWorkerGroup(String taskDefName);
 
-    public void putTaskWorkerGroup(TaskWorkerGroup taskWorkerGroup);
+    public void putTaskWorkerGroup(TaskWorkerGroupModel taskWorkerGroup);
 }

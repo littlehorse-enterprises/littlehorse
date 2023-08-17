@@ -3,7 +3,7 @@ package io.littlehorse.common.model.metrics;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.TaskDefMetricsIdModel;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
@@ -86,7 +86,7 @@ public class TaskDefMetricsModel extends Getable<TaskDefMetrics> {
     @Override
     public List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageTypePb> tagStorageTypePb
+        Optional<TagStorageType> tagStorageTypePb
     ) {
         return List.of();
     }

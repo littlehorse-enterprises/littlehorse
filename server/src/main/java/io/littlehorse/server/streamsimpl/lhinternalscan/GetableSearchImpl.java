@@ -1,10 +1,10 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan;
 
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import lombok.Getter;
@@ -12,11 +12,11 @@ import lombok.Getter;
 @Getter
 public class GetableSearchImpl implements GetableSearch {
 
-    private GetableClassEnumPb getableClassEnum;
+    private GetableClassEnum getableClassEnum;
     private SearchScanBoundaryStrategy searchScanBoundary;
 
     public GetableSearchImpl(
-        GetableClassEnumPb getableClassEnum,
+        GetableClassEnum getableClassEnum,
         SearchScanBoundaryStrategy searchScanBoundaryStrategy
     ) {
         this.getableClassEnum = getableClassEnum;
@@ -26,7 +26,7 @@ public class GetableSearchImpl implements GetableSearch {
     @Override
     public InternalScan buildInternalScan(
         LHGlobalMetaStores stores,
-        TagStorageTypePb tagStorageType
+        TagStorageType tagStorageType
     ) throws LHValidationError {
         InternalScan out = new InternalScan();
         out.objectType = getableClassEnum;
@@ -45,11 +45,11 @@ public class GetableSearchImpl implements GetableSearch {
             out.setPartitionKey(searchScanBoundary.getSearchAttributeString());
         }
 
-        if (tagStorageType == TagStorageTypePb.REMOTE) {
+        if (tagStorageType == TagStorageType.REMOTE) {
             out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
             out.setResultType(ScanResultTypePb.OBJECT_ID);
             out.setPartitionKey(searchScanBoundary.getSearchAttributeString());
-        } else if (tagStorageType == TagStorageTypePb.LOCAL) {
+        } else if (tagStorageType == TagStorageType.LOCAL) {
             out.storeName = ServerTopology.CORE_STORE;
             out.resultType = ScanResultTypePb.OBJECT_ID;
         }

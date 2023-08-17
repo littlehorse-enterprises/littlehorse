@@ -49,15 +49,15 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.littlehorse.TaskStatusPb status = 1;</code>
+     * <code>.littlehorse.TaskStatus status = 1;</code>
      * @return The enum numeric value on the wire for status.
      */
     int getStatusValue();
     /**
-     * <code>.littlehorse.TaskStatusPb status = 1;</code>
+     * <code>.littlehorse.TaskStatus status = 1;</code>
      * @return The status.
      */
-    io.littlehorse.sdk.common.proto.TaskStatusPb getStatus();
+    io.littlehorse.sdk.common.proto.TaskStatus getStatus();
 
     /**
      * <code>string task_def_name = 2;</code>
@@ -147,19 +147,19 @@ private static final long serialVersionUID = 0L;
     public static final int STATUS_FIELD_NUMBER = 1;
     private int status_ = 0;
     /**
-     * <code>.littlehorse.TaskStatusPb status = 1;</code>
+     * <code>.littlehorse.TaskStatus status = 1;</code>
      * @return The enum numeric value on the wire for status.
      */
     @java.lang.Override public int getStatusValue() {
       return status_;
     }
     /**
-     * <code>.littlehorse.TaskStatusPb status = 1;</code>
+     * <code>.littlehorse.TaskStatus status = 1;</code>
      * @return The status.
      */
-    @java.lang.Override public io.littlehorse.sdk.common.proto.TaskStatusPb getStatus() {
-      io.littlehorse.sdk.common.proto.TaskStatusPb result = io.littlehorse.sdk.common.proto.TaskStatusPb.forNumber(status_);
-      return result == null ? io.littlehorse.sdk.common.proto.TaskStatusPb.UNRECOGNIZED : result;
+    @java.lang.Override public io.littlehorse.sdk.common.proto.TaskStatus getStatus() {
+      io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(status_);
+      return result == null ? io.littlehorse.sdk.common.proto.TaskStatus.UNRECOGNIZED : result;
     }
 
     public static final int TASK_DEF_NAME_FIELD_NUMBER = 2;
@@ -267,7 +267,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (status_ != io.littlehorse.sdk.common.proto.TaskStatusPb.TASK_SCHEDULED.getNumber()) {
+      if (status_ != io.littlehorse.sdk.common.proto.TaskStatus.TASK_SCHEDULED.getNumber()) {
         output.writeEnum(1, status_);
       }
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
@@ -288,7 +288,7 @@ private static final long serialVersionUID = 0L;
       if (size != -1) return size;
 
       size = 0;
-      if (status_ != io.littlehorse.sdk.common.proto.TaskStatusPb.TASK_SCHEDULED.getNumber()) {
+      if (status_ != io.littlehorse.sdk.common.proto.TaskStatus.TASK_SCHEDULED.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, status_);
       }
@@ -684,14 +684,14 @@ private static final long serialVersionUID = 0L;
 
       private int status_ = 0;
       /**
-       * <code>.littlehorse.TaskStatusPb status = 1;</code>
+       * <code>.littlehorse.TaskStatus status = 1;</code>
        * @return The enum numeric value on the wire for status.
        */
       @java.lang.Override public int getStatusValue() {
         return status_;
       }
       /**
-       * <code>.littlehorse.TaskStatusPb status = 1;</code>
+       * <code>.littlehorse.TaskStatus status = 1;</code>
        * @param value The enum numeric value on the wire for status to set.
        * @return This builder for chaining.
        */
@@ -702,20 +702,20 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.TaskStatusPb status = 1;</code>
+       * <code>.littlehorse.TaskStatus status = 1;</code>
        * @return The status.
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.TaskStatusPb getStatus() {
-        io.littlehorse.sdk.common.proto.TaskStatusPb result = io.littlehorse.sdk.common.proto.TaskStatusPb.forNumber(status_);
-        return result == null ? io.littlehorse.sdk.common.proto.TaskStatusPb.UNRECOGNIZED : result;
+      public io.littlehorse.sdk.common.proto.TaskStatus getStatus() {
+        io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(status_);
+        return result == null ? io.littlehorse.sdk.common.proto.TaskStatus.UNRECOGNIZED : result;
       }
       /**
-       * <code>.littlehorse.TaskStatusPb status = 1;</code>
+       * <code>.littlehorse.TaskStatus status = 1;</code>
        * @param value The status to set.
        * @return This builder for chaining.
        */
-      public Builder setStatus(io.littlehorse.sdk.common.proto.TaskStatusPb value) {
+      public Builder setStatus(io.littlehorse.sdk.common.proto.TaskStatus value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -725,7 +725,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.TaskStatusPb status = 1;</code>
+       * <code>.littlehorse.TaskStatus status = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearStatus() {

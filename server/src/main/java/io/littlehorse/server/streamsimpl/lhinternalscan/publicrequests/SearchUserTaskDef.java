@@ -5,8 +5,8 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefPb.UserTaskDefCriteriaCase;
@@ -35,8 +35,8 @@ public class SearchUserTaskDef
         return SearchUserTaskDefPb.class;
     }
 
-    public GetableClassEnumPb getObjectType() {
-        return GetableClassEnumPb.USER_TASK_DEF;
+    public GetableClassEnum getObjectType() {
+        return GetableClassEnum.USER_TASK_DEF;
     }
 
     public void initFrom(Message proto) {
@@ -91,9 +91,9 @@ public class SearchUserTaskDef
     }
 
     @Override
-    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        return TagStorageTypePb.LOCAL;
+        return TagStorageType.LOCAL;
     }
 
     @Override

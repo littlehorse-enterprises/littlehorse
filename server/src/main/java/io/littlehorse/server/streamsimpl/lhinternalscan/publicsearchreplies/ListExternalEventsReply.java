@@ -1,19 +1,19 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
-import io.littlehorse.common.model.wfrun.ExternalEvent;
-import io.littlehorse.sdk.common.proto.ExternalEventPb;
+import io.littlehorse.common.model.wfrun.ExternalEventModel;
+import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ListExternalEventsReplyPb;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class ListExternalEventsReply
-    extends PublicScanReply<ListExternalEventsReplyPb, ExternalEventPb, ExternalEvent> {
+    extends PublicScanReply<ListExternalEventsReplyPb, ExternalEvent, ExternalEventModel> {
 
-    public Class<ExternalEvent> getResultJavaClass() {
-        return ExternalEvent.class;
+    public Class<ExternalEventModel> getResultJavaClass() {
+        return ExternalEventModel.class;
     }
 
-    public Class<ExternalEventPb> getResultProtoClass() {
-        return ExternalEventPb.class;
+    public Class<ExternalEvent> getResultProtoClass() {
+        return ExternalEvent.class;
     }
 
     public Class<ListExternalEventsReplyPb> getProtoBaseClass() {

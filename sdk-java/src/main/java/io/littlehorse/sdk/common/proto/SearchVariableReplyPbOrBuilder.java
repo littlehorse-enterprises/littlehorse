@@ -8,15 +8,15 @@ public interface SearchVariableReplyPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   int getCodeValue();
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The code.
    */
-  io.littlehorse.sdk.common.proto.LHResponseCodePb getCode();
+  io.littlehorse.sdk.common.proto.LHResponseCode getCode();
 
   /**
    * <code>optional string message = 2;</code>
@@ -36,27 +36,27 @@ public interface SearchVariableReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>repeated .littlehorse.VariableIdPb results = 3;</code>
+   * <code>repeated .littlehorse.VariableId results = 3;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.VariableIdPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.VariableId> 
       getResultsList();
   /**
-   * <code>repeated .littlehorse.VariableIdPb results = 3;</code>
+   * <code>repeated .littlehorse.VariableId results = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableIdPb getResults(int index);
+  io.littlehorse.sdk.common.proto.VariableId getResults(int index);
   /**
-   * <code>repeated .littlehorse.VariableIdPb results = 3;</code>
+   * <code>repeated .littlehorse.VariableId results = 3;</code>
    */
   int getResultsCount();
   /**
-   * <code>repeated .littlehorse.VariableIdPb results = 3;</code>
+   * <code>repeated .littlehorse.VariableId results = 3;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.VariableIdPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.VariableIdOrBuilder> 
       getResultsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.VariableIdPb results = 3;</code>
+   * <code>repeated .littlehorse.VariableId results = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableIdPbOrBuilder getResultsOrBuilder(
+  io.littlehorse.sdk.common.proto.VariableIdOrBuilder getResultsOrBuilder(
       int index);
 
   /**

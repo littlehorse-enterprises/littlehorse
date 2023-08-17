@@ -21,7 +21,7 @@ import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.wfrun.usertaskevent.UTEReassignedModel;
 import io.littlehorse.common.model.wfrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.proto.ReassignedUserTaskPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -209,7 +209,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
             // darnit ):
             getNodeRun()
                 .fail(
-                    new Failure(
+                    new FailureModel(
                         "Invalid variables when creating UserTaskRun: " +
                         exn.getMessage(),
                         LHConstants.VAR_SUB_ERROR
@@ -367,7 +367,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
 
     public void cancel() {
         status = UserTaskRunStatus.CANCELLED;
-        Failure failure = new Failure(
+        FailureModel failure = new FailureModel(
             "User task cancelled",
             LHConstants.USER_TASK_CANCELLED
         );
@@ -501,7 +501,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
         return List.of(
             new GetableIndex<UserTaskRunModel>(
                 List.of(Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageTypePb.LOCAL)
+                Optional.of(TagStorageType.LOCAL)
             ),
             // Future: We will make this LOCAL if it's DONE or CANCELLED, and
             // REMOTE if it's CLAIMED, UNASSIGNED, or ASSIGNED_NOT_CLAIMED.
@@ -510,15 +510,15 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
                     Pair.of("status", GetableIndex.ValueType.SINGLE),
                     Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.LOCAL)
+                Optional.of(TagStorageType.LOCAL)
             ),
             new GetableIndex<UserTaskRunModel>(
                 List.of(Pair.of("status", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageTypePb.LOCAL)
+                Optional.of(TagStorageType.LOCAL)
             ),
             new GetableIndex<UserTaskRunModel>(
                 List.of(Pair.of("userId", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageTypePb.REMOTE),
+                Optional.of(TagStorageType.REMOTE),
                 userTaskRun -> userTaskRun.getUser() != null
             ),
             new GetableIndex<UserTaskRunModel>(
@@ -526,7 +526,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
                     Pair.of("status", GetableIndex.ValueType.SINGLE),
                     Pair.of("userId", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.LOCAL),
+                Optional.of(TagStorageType.LOCAL),
                 userTaskRun -> userTaskRun.getUser() != null
             ),
             new GetableIndex<UserTaskRunModel>(
@@ -534,7 +534,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
                     Pair.of("userId", GetableIndex.ValueType.SINGLE),
                     Pair.of("userGroup", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.LOCAL),
+                Optional.of(TagStorageType.LOCAL),
                 userTaskRun ->
                     userTaskRun.getUser() != null &&
                     userTaskRun.getUser().getUserGroup() != null
@@ -545,7 +545,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
                     Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
                     Pair.of("userId", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.LOCAL),
+                Optional.of(TagStorageType.LOCAL),
                 userTaskRun -> userTaskRun.getUser() != null
             ),
             new GetableIndex<UserTaskRunModel>(
@@ -554,7 +554,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
                     Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
                     Pair.of("userGroup", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.LOCAL),
+                Optional.of(TagStorageType.LOCAL),
                 userTaskRun -> userTaskRun.getUserGroup() != null
             ),
             new GetableIndex<UserTaskRunModel>(
@@ -562,12 +562,12 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
                     Pair.of("status", GetableIndex.ValueType.SINGLE),
                     Pair.of("userGroup", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.LOCAL),
+                Optional.of(TagStorageType.LOCAL),
                 userTaskRun -> userTaskRun.getUserGroup() != null
             ),
             new GetableIndex<UserTaskRunModel>(
                 List.of(Pair.of("userGroup", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageTypePb.REMOTE),
+                Optional.of(TagStorageType.REMOTE),
                 userTaskRun -> userTaskRun.getUserGroup() != null
             )
         );
@@ -577,13 +577,13 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
         return isRemote(this.getStatus());
     }
 
-    public UserTaskTriggerContext buildTaskContext() {
-        return new UserTaskTriggerContext(user, userGroup);
+    public UserTaskTriggerContextModel buildTaskContext() {
+        return new UserTaskTriggerContextModel(user, userGroup);
     }
 
-    private VarNameAndVal getVarNameAndValue(String varName, String varValue) {
+    private VarNameAndValModel getVarNameAndValue(String varName, String varValue) {
         VariableValueModel variableValue = new VariableValueModel(varValue);
-        return new VarNameAndVal(varName, variableValue);
+        return new VarNameAndValModel(varName, variableValue);
     }
 
     public static boolean isRemote(UserTaskRunStatus UserTaskRunStatus) {
@@ -596,7 +596,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
     @Override
     public List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageTypePb> tagStorageTypePb
+        Optional<TagStorageType> tagStorageTypePb
     ) {
         switch (key) {
             case "status" -> {
@@ -616,7 +616,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
                     new IndexedField(
                         key,
                         this.getUser().getId(),
-                        TagStorageTypePb.REMOTE
+                        TagStorageType.REMOTE
                     )
                 );
             }
@@ -636,11 +636,11 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
 
     private IndexedField getIndexedStatusField(
         String key,
-        Optional<TagStorageTypePb> tagStorageTypePbOptional
+        Optional<TagStorageType> tagStorageTypePbOptional
     ) {
-        TagStorageTypePb tagStorageTypePb = tagStorageTypePbOptional.get();
+        TagStorageType tagStorageTypePb = tagStorageTypePbOptional.get();
         if (this.isRemote()) {
-            tagStorageTypePb = TagStorageTypePb.REMOTE;
+            tagStorageTypePb = TagStorageType.REMOTE;
         }
         return new IndexedField(key, this.getStatus().toString(), tagStorageTypePb);
     }

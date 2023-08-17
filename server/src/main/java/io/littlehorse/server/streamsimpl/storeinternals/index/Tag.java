@@ -4,9 +4,9 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.proto.AttributePb;
-import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,8 +20,8 @@ import org.apache.commons.lang3.tuple.Pair;
 @Setter
 public class Tag extends Storeable<TagPb> {
 
-    public TagStorageTypePb tagType;
-    public GetableClassEnumPb objectType;
+    public TagStorageType tagType;
+    public GetableClassEnum objectType;
     public List<Attribute> attributes;
     public Date createdAt;
     public String describedObjectId;
@@ -69,7 +69,7 @@ public class Tag extends Storeable<TagPb> {
     }
 
     public static String getAttributeString(
-        GetableClassEnumPb objectType,
+        GetableClassEnum objectType,
         List<Attribute> attributes
     ) {
         StringBuilder builder = new StringBuilder();
@@ -85,7 +85,7 @@ public class Tag extends Storeable<TagPb> {
     }
 
     public static String getAttributeStringFromPb(
-        GetableClassEnumPb objectType,
+        GetableClassEnum objectType,
         List<AttributePb> attributes
     ) {
         return getAttributeString(
@@ -98,7 +98,7 @@ public class Tag extends Storeable<TagPb> {
     }
 
     public boolean isRemote() {
-        return tagType == TagStorageTypePb.REMOTE;
+        return tagType == TagStorageType.REMOTE;
     }
 
     public String getStoreKey() {
@@ -115,14 +115,14 @@ public class Tag extends Storeable<TagPb> {
         attributes = new ArrayList<>();
     }
 
-    public TagStorageTypePb getTagStorageTypePb() {
+    public TagStorageType getTagStorageTypePb() {
         return this.tagType;
     }
 
     @SafeVarargs
     public Tag(
         Getable<?> getable,
-        TagStorageTypePb type,
+        TagStorageType type,
         Pair<String, String>... atts
     ) {
         this(getable, type, Arrays.asList(atts));
@@ -131,7 +131,7 @@ public class Tag extends Storeable<TagPb> {
     @SuppressWarnings("unchecked")
     public Tag(
         Getable<?> getable,
-        TagStorageTypePb type,
+        TagStorageType type,
         Collection<Pair<String, String>> atts
     ) {
         this();
@@ -147,8 +147,8 @@ public class Tag extends Storeable<TagPb> {
     }
 
     public Tag(
-        TagStorageTypePb type,
-        GetableClassEnumPb objectType,
+        TagStorageType type,
+        GetableClassEnum objectType,
         Collection<Attribute> attributes,
         String describedObjectId,
         Date createAt
@@ -180,7 +180,7 @@ public class Tag extends Storeable<TagPb> {
         return describedObjectId;
     }
 
-    public GetableClassEnumPb getObjectType() {
+    public GetableClassEnum getObjectType() {
         return objectType;
     }
 }

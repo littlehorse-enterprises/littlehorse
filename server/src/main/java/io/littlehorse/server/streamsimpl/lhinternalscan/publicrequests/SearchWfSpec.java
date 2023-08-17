@@ -6,15 +6,15 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.objectId.WfSpecId;
+import io.littlehorse.common.model.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.SearchWfSpecPb;
 import io.littlehorse.sdk.common.proto.SearchWfSpecPb.WfSpecCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchWfSpecReplyPb;
-import io.littlehorse.sdk.common.proto.WfSpecIdPb;
+import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class SearchWfSpec
-    extends PublicScanRequest<SearchWfSpecPb, SearchWfSpecReplyPb, WfSpecIdPb, WfSpecId, SearchWfSpecReply> {
+    extends PublicScanRequest<SearchWfSpecPb, SearchWfSpecReplyPb, WfSpecId, WfSpecIdModel, SearchWfSpecReply> {
 
     private WfSpecCriteriaCase type;
     private String name;
@@ -43,8 +43,8 @@ public class SearchWfSpec
         return SearchWfSpecPb.class;
     }
 
-    public GetableClassEnumPb getObjectType() {
-        return GetableClassEnumPb.WF_SPEC;
+    public GetableClassEnum getObjectType() {
+        return GetableClassEnum.WF_SPEC;
     }
 
     public void initFrom(Message proto) {
@@ -110,7 +110,7 @@ public class SearchWfSpec
     }
 
     @Override
-    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
         if (taskDefName != null) {
             List<String> attributes = getSearchAttributes()
@@ -128,7 +128,7 @@ public class SearchWfSpec
             }
             return null;
         } else {
-            return TagStorageTypePb.LOCAL;
+            return TagStorageType.LOCAL;
         }
     }
 

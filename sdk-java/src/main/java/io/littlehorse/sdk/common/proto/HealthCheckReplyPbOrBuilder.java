@@ -8,24 +8,24 @@ public interface HealthCheckReplyPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.LHHealthResultPb core_state = 1;</code>
+   * <code>.littlehorse.LHHealthResult core_state = 1;</code>
    * @return The enum numeric value on the wire for coreState.
    */
   int getCoreStateValue();
   /**
-   * <code>.littlehorse.LHHealthResultPb core_state = 1;</code>
+   * <code>.littlehorse.LHHealthResult core_state = 1;</code>
    * @return The coreState.
    */
-  io.littlehorse.sdk.common.proto.LHHealthResultPb getCoreState();
+  io.littlehorse.sdk.common.proto.LHHealthResult getCoreState();
 
   /**
-   * <code>.littlehorse.LHHealthResultPb timer_state = 2;</code>
+   * <code>.littlehorse.LHHealthResult timer_state = 2;</code>
    * @return The enum numeric value on the wire for timerState.
    */
   int getTimerStateValue();
   /**
-   * <code>.littlehorse.LHHealthResultPb timer_state = 2;</code>
+   * <code>.littlehorse.LHHealthResult timer_state = 2;</code>
    * @return The timerState.
    */
-  io.littlehorse.sdk.common.proto.LHHealthResultPb getTimerState();
+  io.littlehorse.sdk.common.proto.LHHealthResult getTimerState();
 }

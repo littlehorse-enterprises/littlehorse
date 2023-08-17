@@ -10,10 +10,10 @@ import io.littlehorse.sdk.common.proto.DeleteTaskDefPb;
 import io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb;
 import io.littlehorse.sdk.common.proto.DeleteWfRunPb;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecPb;
+import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
-import io.littlehorse.sdk.common.proto.ExternalEventDefIdPb;
-import io.littlehorse.sdk.common.proto.ExternalEventIdPb;
-import io.littlehorse.sdk.common.proto.ExternalEventPb;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
+import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb;
 import io.littlehorse.sdk.common.proto.GetExternalEventReplyPb;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecPb;
@@ -25,7 +25,7 @@ import io.littlehorse.sdk.common.proto.GetVariableReplyPb;
 import io.littlehorse.sdk.common.proto.GetWfRunReplyPb;
 import io.littlehorse.sdk.common.proto.GetWfSpecReplyPb;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
@@ -47,18 +47,18 @@ import io.littlehorse.sdk.common.proto.SearchWfRunPb.StatusAndSpecPb;
 import io.littlehorse.sdk.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.sdk.common.proto.StopWfRunPb;
 import io.littlehorse.sdk.common.proto.TaskDef;
-import io.littlehorse.sdk.common.proto.TaskDefIdPb;
-import io.littlehorse.sdk.common.proto.TaskRunIdPb;
-import io.littlehorse.sdk.common.proto.TaskRunPb;
+import io.littlehorse.sdk.common.proto.TaskDefId;
+import io.littlehorse.sdk.common.proto.TaskRun;
+import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
-import io.littlehorse.sdk.common.proto.VariableIdPb;
-import io.littlehorse.sdk.common.proto.VariablePb;
+import io.littlehorse.sdk.common.proto.Variable;
+import io.littlehorse.sdk.common.proto.VariableId;
 import io.littlehorse.sdk.common.proto.WfRun;
-import io.littlehorse.sdk.common.proto.WfRunIdPb;
+import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfSpec;
-import io.littlehorse.sdk.common.proto.WfSpecIdPb;
+import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.util.Arg;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -114,7 +114,7 @@ public class LHClient {
         GetExternalEventDefReplyPb reply = (GetExternalEventDefReplyPb) doRequest(() -> {
                 return getGrpcClient()
                     .getExternalEventDef(
-                        ExternalEventDefIdPb.newBuilder().setName(name).build()
+                        ExternalEventDefId.newBuilder().setName(name).build()
                     );
             }
         );
@@ -135,7 +135,7 @@ public class LHClient {
     public TaskDef getTaskDef(String name) throws LHApiError {
         GetTaskDefReplyPb reply = (GetTaskDefReplyPb) doRequest(() -> {
             return getGrpcClient()
-                .getTaskDef(TaskDefIdPb.newBuilder().setName(name).build());
+                .getTaskDef(TaskDefId.newBuilder().setName(name).build());
         });
 
         if (reply.hasResult()) {
@@ -167,7 +167,7 @@ public class LHClient {
             if (version != null) {
                 return getGrpcClient()
                     .getWfSpec(
-                        WfSpecIdPb
+                        WfSpecId
                             .newBuilder()
                             .setName(name)
                             .setVersion(version)
@@ -194,7 +194,7 @@ public class LHClient {
      * @return The TaskRun if it exists, or null if it does not exist.
      * @throws LHApiError if it failed contacting to the API
      */
-    public TaskRunPb getTaskRun(TaskRunIdPb id) throws LHApiError {
+    public TaskRun getTaskRun(TaskRunId id) throws LHApiError {
         GetTaskRunReplyPb reply = (GetTaskRunReplyPb) doRequest(() -> {
             return getGrpcClient().getTaskRun(id);
         });
@@ -258,12 +258,12 @@ public class LHClient {
      * @return The variable's data if it does exist, or null otherwise
      * @throws LHApiError if it failed contacting to the API
      */
-    public VariablePb getVariable(String wfRunId, int threadRunNumber, String name)
+    public Variable getVariable(String wfRunId, int threadRunNumber, String name)
         throws LHApiError {
         GetVariableReplyPb reply = (GetVariableReplyPb) doRequest(() -> {
             return getGrpcClient()
                 .getVariable(
-                    VariableIdPb
+                    VariableId
                         .newBuilder()
                         .setWfRunId(wfRunId)
                         .setThreadRunNumber(threadRunNumber)
@@ -287,7 +287,7 @@ public class LHClient {
      * @return The external event's data if it does exist, or null otherwise
      * @throws LHApiError if it failed contacting to the API
      */
-    public ExternalEventPb getExternalEvent(
+    public ExternalEvent getExternalEvent(
         String wfRunId,
         String externalEventName,
         String guid
@@ -295,7 +295,7 @@ public class LHClient {
         GetExternalEventReplyPb reply = (GetExternalEventReplyPb) doRequest(() -> {
             return getGrpcClient()
                 .getExternalEvent(
-                    ExternalEventIdPb
+                    ExternalEventId
                         .newBuilder()
                         .setWfRunId(wfRunId)
                         .setGuid(guid)
@@ -319,7 +319,7 @@ public class LHClient {
      */
     public WfRun getWfRun(String id) throws LHApiError {
         GetWfRunReplyPb reply = (GetWfRunReplyPb) doRequest(() -> {
-            return getGrpcClient().getWfRun(WfRunIdPb.newBuilder().setId(id).build());
+            return getGrpcClient().getWfRun(WfRunId.newBuilder().setId(id).build());
         });
 
         if (reply.hasResult()) {
@@ -339,7 +339,7 @@ public class LHClient {
      * @return A list of workflow ids
      * @throws LHApiError If there is an error when connecting to the server
      */
-    public List<WfRunIdPb> searchWfRun(
+    public List<WfRunId> searchWfRun(
         String workflowName,
         int version,
         LHStatus status,
@@ -428,7 +428,7 @@ public class LHClient {
      * @return An external event when successful
      * @throws LHApiError If there is an error when connecting to the server
      */
-    public ExternalEventPb putExternalEvent(PutExternalEventRequest req)
+    public ExternalEvent putExternalEvent(PutExternalEventRequest req)
         throws LHApiError {
         PutExternalEventResponse response = (PutExternalEventResponse) doRequest(() -> {
                 return getGrpcClient().putExternalEvent(req);
@@ -689,17 +689,15 @@ public class LHClient {
         } catch (Exception exn) {
             throw new LHApiError(
                 "Failed contacting LH API: " + exn.getMessage(),
-                LHResponseCodePb.CONNECTION_ERROR
+                LHResponseCode.CONNECTION_ERROR
             );
         }
 
         try {
             Method getCodeMethod = response.getClass().getMethod("getCode");
 
-            LHResponseCodePb code = (LHResponseCodePb) getCodeMethod.invoke(response);
-            if (
-                code == LHResponseCodePb.ALREADY_EXISTS_ERROR && swallowAlreadyExists
-            ) {
+            LHResponseCode code = (LHResponseCode) getCodeMethod.invoke(response);
+            if (code == LHResponseCode.ALREADY_EXISTS_ERROR && swallowAlreadyExists) {
                 return response;
             }
 

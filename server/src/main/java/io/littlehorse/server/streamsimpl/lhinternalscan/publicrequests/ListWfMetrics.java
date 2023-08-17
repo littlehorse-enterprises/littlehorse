@@ -3,8 +3,8 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
-import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ListWfMetricsPb;
@@ -52,12 +52,12 @@ public class ListWfMetrics
         limit = numWindows;
     }
 
-    public GetableClassEnumPb getObjectType() {
-        return GetableClassEnumPb.WF_SPEC_METRICS;
+    public GetableClassEnum getObjectType() {
+        return GetableClassEnum.WF_SPEC_METRICS;
     }
 
     @Override
-    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
         return null;
     }

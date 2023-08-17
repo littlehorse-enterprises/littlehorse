@@ -1,6 +1,6 @@
 package io.littlehorse.sdk.wfsdk;
 
-import io.littlehorse.sdk.common.proto.ComparatorPb;
+import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import java.util.Map;
 
@@ -327,17 +327,13 @@ public interface ThreadBuilder {
      * `ThreadBuilder::doElse()`.
      * @param lhs is either a literal value (which the Library casts to a Variable
      * Value) or a `WfRunVariable` representing the LHS of the expression.
-     * @param comparator is a ComparatorPb defining the comparator, for example,
+     * @param comparator is a Comparator defining the comparator, for example,
      * `ComparatorTypePb.EQUALS`.
      * @param rhs is either a literal value (which the Library casts to a Variable
      * Value) or a `WfRunVariable` representing the RHS of the expression.
      * @return a WorkflowCondition.
      */
-    public WorkflowCondition condition(
-        Object lhs,
-        ComparatorPb comparator,
-        Object rhs
-    );
+    public WorkflowCondition condition(Object lhs, Comparator comparator, Object rhs);
 
     /**
      * Adds a VariableMutation to the last Node

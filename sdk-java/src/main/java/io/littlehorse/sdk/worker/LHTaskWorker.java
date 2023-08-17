@@ -5,7 +5,7 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
@@ -92,7 +92,7 @@ public class LHTaskWorker implements Closeable {
             throw new LHApiError(
                 exn,
                 "Provided java method does not match registered task!",
-                LHResponseCodePb.BAD_REQUEST_ERROR
+                LHResponseCode.BAD_REQUEST_ERROR
             );
         } catch (IOException exn) {
             throw new LHApiError(exn, "Couldn't create connection to LH");
@@ -144,7 +144,7 @@ public class LHTaskWorker implements Closeable {
             throw new LHApiError(
                 exn,
                 exn.getMessage(),
-                LHResponseCodePb.VALIDATION_ERROR
+                LHResponseCode.VALIDATION_ERROR
             );
         }
     }
@@ -218,7 +218,7 @@ public class LHTaskWorker implements Closeable {
         if (!doesTaskDefExist()) {
             throw new LHApiError(
                 "Couldn't find TaskDef: " + taskDefName,
-                LHResponseCodePb.NOT_FOUND_ERROR
+                LHResponseCode.NOT_FOUND_ERROR
             );
         }
         createManager();

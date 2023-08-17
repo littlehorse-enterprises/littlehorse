@@ -7,7 +7,7 @@ import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.meta.ThreadSpecModel;
 import io.littlehorse.common.model.meta.VariableAssignmentModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.wfrun.subnoderun.StartThreadRun;
+import io.littlehorse.common.model.wfrun.subnoderun.StartThreadRunModel;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.StartThreadNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
@@ -85,8 +85,8 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
         return out;
     }
 
-    public StartThreadRun createSubNodeRun(Date time) {
-        StartThreadRun out = new StartThreadRun();
+    public StartThreadRunModel createSubNodeRun(Date time) {
+        StartThreadRunModel out = new StartThreadRunModel();
         out.threadSpecName = threadSpecName;
         return out;
     }

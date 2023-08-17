@@ -49,19 +49,19 @@ private static final long serialVersionUID = 0L;
   public static final int CODE_FIELD_NUMBER = 1;
   private int code_ = 0;
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   @java.lang.Override public int getCodeValue() {
     return code_;
   }
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The code.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.LHResponseCodePb getCode() {
-    io.littlehorse.sdk.common.proto.LHResponseCodePb result = io.littlehorse.sdk.common.proto.LHResponseCodePb.forNumber(code_);
-    return result == null ? io.littlehorse.sdk.common.proto.LHResponseCodePb.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.LHResponseCode getCode() {
+    io.littlehorse.sdk.common.proto.LHResponseCode result = io.littlehorse.sdk.common.proto.LHResponseCode.forNumber(code_);
+    return result == null ? io.littlehorse.sdk.common.proto.LHResponseCode.UNRECOGNIZED : result;
   }
 
   public static final int MESSAGE_FIELD_NUMBER = 2;
@@ -112,9 +112,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int RESULT_FIELD_NUMBER = 3;
-  private io.littlehorse.sdk.common.proto.TaskRunPb result_;
+  private io.littlehorse.sdk.common.proto.TaskRun result_;
   /**
-   * <code>optional .littlehorse.TaskRunPb result = 3;</code>
+   * <code>optional .littlehorse.TaskRun result = 3;</code>
    * @return Whether the result field is set.
    */
   @java.lang.Override
@@ -122,19 +122,19 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>optional .littlehorse.TaskRunPb result = 3;</code>
+   * <code>optional .littlehorse.TaskRun result = 3;</code>
    * @return The result.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskRunPb getResult() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.TaskRunPb.getDefaultInstance() : result_;
+  public io.littlehorse.sdk.common.proto.TaskRun getResult() {
+    return result_ == null ? io.littlehorse.sdk.common.proto.TaskRun.getDefaultInstance() : result_;
   }
   /**
-   * <code>optional .littlehorse.TaskRunPb result = 3;</code>
+   * <code>optional .littlehorse.TaskRun result = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskRunPbOrBuilder getResultOrBuilder() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.TaskRunPb.getDefaultInstance() : result_;
+  public io.littlehorse.sdk.common.proto.TaskRunOrBuilder getResultOrBuilder() {
+    return result_ == null ? io.littlehorse.sdk.common.proto.TaskRun.getDefaultInstance() : result_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -151,7 +151,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCodePb.OK.getNumber()) {
+    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCode.OK.getNumber()) {
       output.writeEnum(1, code_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
@@ -169,7 +169,7 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCodePb.OK.getNumber()) {
+    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCode.OK.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(1, code_);
     }
@@ -536,14 +536,14 @@ private static final long serialVersionUID = 0L;
 
     private int code_ = 0;
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @return The enum numeric value on the wire for code.
      */
     @java.lang.Override public int getCodeValue() {
       return code_;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @param value The enum numeric value on the wire for code to set.
      * @return This builder for chaining.
      */
@@ -554,20 +554,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @return The code.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.LHResponseCodePb getCode() {
-      io.littlehorse.sdk.common.proto.LHResponseCodePb result = io.littlehorse.sdk.common.proto.LHResponseCodePb.forNumber(code_);
-      return result == null ? io.littlehorse.sdk.common.proto.LHResponseCodePb.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.LHResponseCode getCode() {
+      io.littlehorse.sdk.common.proto.LHResponseCode result = io.littlehorse.sdk.common.proto.LHResponseCode.forNumber(code_);
+      return result == null ? io.littlehorse.sdk.common.proto.LHResponseCode.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @param value The code to set.
      * @return This builder for chaining.
      */
-    public Builder setCode(io.littlehorse.sdk.common.proto.LHResponseCodePb value) {
+    public Builder setCode(io.littlehorse.sdk.common.proto.LHResponseCode value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -577,7 +577,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearCode() {
@@ -666,31 +666,31 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.sdk.common.proto.TaskRunPb result_;
+    private io.littlehorse.sdk.common.proto.TaskRun result_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskRunPb, io.littlehorse.sdk.common.proto.TaskRunPb.Builder, io.littlehorse.sdk.common.proto.TaskRunPbOrBuilder> resultBuilder_;
+        io.littlehorse.sdk.common.proto.TaskRun, io.littlehorse.sdk.common.proto.TaskRun.Builder, io.littlehorse.sdk.common.proto.TaskRunOrBuilder> resultBuilder_;
     /**
-     * <code>optional .littlehorse.TaskRunPb result = 3;</code>
+     * <code>optional .littlehorse.TaskRun result = 3;</code>
      * @return Whether the result field is set.
      */
     public boolean hasResult() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>optional .littlehorse.TaskRunPb result = 3;</code>
+     * <code>optional .littlehorse.TaskRun result = 3;</code>
      * @return The result.
      */
-    public io.littlehorse.sdk.common.proto.TaskRunPb getResult() {
+    public io.littlehorse.sdk.common.proto.TaskRun getResult() {
       if (resultBuilder_ == null) {
-        return result_ == null ? io.littlehorse.sdk.common.proto.TaskRunPb.getDefaultInstance() : result_;
+        return result_ == null ? io.littlehorse.sdk.common.proto.TaskRun.getDefaultInstance() : result_;
       } else {
         return resultBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .littlehorse.TaskRunPb result = 3;</code>
+     * <code>optional .littlehorse.TaskRun result = 3;</code>
      */
-    public Builder setResult(io.littlehorse.sdk.common.proto.TaskRunPb value) {
+    public Builder setResult(io.littlehorse.sdk.common.proto.TaskRun value) {
       if (resultBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -704,10 +704,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.TaskRunPb result = 3;</code>
+     * <code>optional .littlehorse.TaskRun result = 3;</code>
      */
     public Builder setResult(
-        io.littlehorse.sdk.common.proto.TaskRunPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.TaskRun.Builder builderForValue) {
       if (resultBuilder_ == null) {
         result_ = builderForValue.build();
       } else {
@@ -718,13 +718,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.TaskRunPb result = 3;</code>
+     * <code>optional .littlehorse.TaskRun result = 3;</code>
      */
-    public Builder mergeResult(io.littlehorse.sdk.common.proto.TaskRunPb value) {
+    public Builder mergeResult(io.littlehorse.sdk.common.proto.TaskRun value) {
       if (resultBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0) &&
           result_ != null &&
-          result_ != io.littlehorse.sdk.common.proto.TaskRunPb.getDefaultInstance()) {
+          result_ != io.littlehorse.sdk.common.proto.TaskRun.getDefaultInstance()) {
           getResultBuilder().mergeFrom(value);
         } else {
           result_ = value;
@@ -737,7 +737,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.TaskRunPb result = 3;</code>
+     * <code>optional .littlehorse.TaskRun result = 3;</code>
      */
     public Builder clearResult() {
       bitField0_ = (bitField0_ & ~0x00000004);
@@ -750,33 +750,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.TaskRunPb result = 3;</code>
+     * <code>optional .littlehorse.TaskRun result = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskRunPb.Builder getResultBuilder() {
+    public io.littlehorse.sdk.common.proto.TaskRun.Builder getResultBuilder() {
       bitField0_ |= 0x00000004;
       onChanged();
       return getResultFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.TaskRunPb result = 3;</code>
+     * <code>optional .littlehorse.TaskRun result = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskRunPbOrBuilder getResultOrBuilder() {
+    public io.littlehorse.sdk.common.proto.TaskRunOrBuilder getResultOrBuilder() {
       if (resultBuilder_ != null) {
         return resultBuilder_.getMessageOrBuilder();
       } else {
         return result_ == null ?
-            io.littlehorse.sdk.common.proto.TaskRunPb.getDefaultInstance() : result_;
+            io.littlehorse.sdk.common.proto.TaskRun.getDefaultInstance() : result_;
       }
     }
     /**
-     * <code>optional .littlehorse.TaskRunPb result = 3;</code>
+     * <code>optional .littlehorse.TaskRun result = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskRunPb, io.littlehorse.sdk.common.proto.TaskRunPb.Builder, io.littlehorse.sdk.common.proto.TaskRunPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.TaskRun, io.littlehorse.sdk.common.proto.TaskRun.Builder, io.littlehorse.sdk.common.proto.TaskRunOrBuilder> 
         getResultFieldBuilder() {
       if (resultBuilder_ == null) {
         resultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.TaskRunPb, io.littlehorse.sdk.common.proto.TaskRunPb.Builder, io.littlehorse.sdk.common.proto.TaskRunPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.TaskRun, io.littlehorse.sdk.common.proto.TaskRun.Builder, io.littlehorse.sdk.common.proto.TaskRunOrBuilder>(
                 getResult(),
                 getParentForChildren(),
                 isClean());

@@ -10,7 +10,7 @@ import io.littlehorse.common.model.command.subcommandresponse.CompleteUserTaskRu
 import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.UserTaskResultPb;
 import java.util.Date;
 import lombok.Getter;
@@ -51,7 +51,7 @@ public class CompleteUserTaskRun extends SubCommand<CompleteUserTaskRunPb> {
 
         UserTaskRunModel utr = dao.getUserTaskRun(userTaskRunId);
         if (utr == null) {
-            out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
+            out.setCode(LHResponseCode.NOT_FOUND_ERROR);
             out.setMessage("Couldn't find userTaskRun " + userTaskRunId);
             return out;
         }
@@ -59,12 +59,12 @@ public class CompleteUserTaskRun extends SubCommand<CompleteUserTaskRunPb> {
         try {
             utr.processTaskCompletedEvent(this);
         } catch (LHValidationError validationError) {
-            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+            out.code = LHResponseCode.BAD_REQUEST_ERROR;
             out.message = validationError.getMessage();
             return out;
         }
 
-        out.code = LHResponseCodePb.OK;
+        out.code = LHResponseCode.OK;
         return out;
     }
 

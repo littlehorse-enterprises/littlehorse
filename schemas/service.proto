@@ -8,7 +8,7 @@ option go_package = ".;model";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 
-enum LHResponseCodePb {
+enum LHResponseCode {
   OK = 0;
   CONNECTION_ERROR = 1;
   NOT_FOUND_ERROR = 2;
@@ -27,7 +27,7 @@ enum LHStatus {
   ERROR = 5;
 }
 
-enum TaskStatusPb {
+enum TaskStatus {
   TASK_SCHEDULED = 0;
   TASK_RUNNING = 1;
   TASK_SUCCESS = 2;
@@ -38,16 +38,16 @@ enum TaskStatusPb {
   TASK_CANCELLED = 7;
 }
 
-message WfSpecIdPb {
+message WfSpecId {
   string name = 1;
   int32 version = 2;
 }
 
-message TaskDefIdPb {
+message TaskDefId {
   string name = 1;
 }
 
-message ExternalEventDefIdPb {
+message ExternalEventDefId {
   string name = 1;
 }
 
@@ -60,7 +60,7 @@ message GetLatestUserTaskDefPb {
 }
 
 message GetWfSpecReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   optional WfSpec result = 3;
 }
@@ -74,13 +74,13 @@ message PutWfSpecRequest {
 }
 
 message PutWfSpecResponse {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   optional WfSpec result = 3;
 }
 
 message GetTaskDefReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   optional TaskDef result = 3;
 }
@@ -91,13 +91,13 @@ message PutTaskDefRequest {
 }
 
 message PutTaskDefResponse {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   optional TaskDef result = 3;
 }
 
 message CancelUserTaskRunReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
 }
 
@@ -108,13 +108,13 @@ message PutUserTaskDefRequest {
 }
 
 message PutUserTaskDefResponse {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   optional UserTaskDef result = 3;
 }
 
 message GetUserTaskDefReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   optional UserTaskDef result = 3;
 }
@@ -125,51 +125,51 @@ message PutExternalEventDefRequest {
 }
 
 message PutExternalEventDefResponse {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   optional ExternalEventDef result = 3;
 }
 
 message GetExternalEventDefReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   optional ExternalEventDef result = 3;
 }
 
 message GetWfRunReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   optional WfRun result = 3;
 }
 
 message GetNodeRunReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   optional NodeRun result = 3;
 }
 
 message GetTaskRunReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
-  optional TaskRunPb result = 3;
+  optional TaskRun result = 3;
 }
 
 message GetUserTaskRunReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   optional UserTaskRun result = 3;
 }
 
 message GetVariableReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
-  optional VariablePb result = 3;
+  optional Variable result = 3;
 }
 
 message GetExternalEventReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
-  optional ExternalEventPb result = 3;
+  optional ExternalEvent result = 3;
 }
 
 message PutExternalEventRequest {
@@ -189,9 +189,9 @@ message DeleteExternalEventPb {
 }
 
 message PutExternalEventResponse {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
-  optional ExternalEventPb result = 3;
+  optional ExternalEvent result = 3;
 }
 
 message RunWfPb {
@@ -202,7 +202,7 @@ message RunWfPb {
 }
 
 message RunWfReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   optional int32 wf_spec_version = 3;
   optional string wf_run_id = 4;
@@ -238,9 +238,9 @@ message SearchWfRunPb {
 }
 
 message SearchWfRunReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
-  repeated WfRunIdPb results = 3;
+  repeated WfRunId results = 3;
 
   // The bookmark is used internally by the backend implementation to enable
   // pagination. If you wish to do a multi-part paginated request, you should
@@ -253,7 +253,7 @@ message SearchTaskRunPb {
   optional int32 limit = 2;
 
   message StatusAndTaskDefPb {
-    TaskStatusPb status = 1;
+    TaskStatus status = 1;
     string task_def_name = 2;
     optional google.protobuf.Timestamp earliest_start = 3;
     optional google.protobuf.Timestamp latest_start = 4;
@@ -272,9 +272,9 @@ message SearchTaskRunPb {
 }
 
 message SearchTaskRunReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
-  repeated TaskRunIdPb results = 3;
+  repeated TaskRunId results = 3;
   optional bytes bookmark = 4;
 }
 
@@ -288,7 +288,7 @@ message SearchNodeRunPb {
 }
 
 message SearchNodeRunReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   repeated NodeRunId results = 3;
   optional bytes bookmark = 4;
@@ -311,7 +311,7 @@ message SearchUserTaskRunPb {
 }
 
 message SearchUserTaskRunReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   repeated UserTaskRunId results = 3;
   optional bytes bookmark = 4;
@@ -335,9 +335,9 @@ message SearchVariablePb {
 }
 
 message SearchVariableReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
-  repeated VariableIdPb results = 3;
+  repeated VariableId results = 3;
   optional bytes bookmark = 4;
 }
 
@@ -348,9 +348,9 @@ message SearchTaskDefPb {
 }
 
 message SearchTaskDefReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
-  repeated TaskDefIdPb results = 3;
+  repeated TaskDefId results = 3;
   optional bytes bookmark = 4;
 }
 
@@ -364,7 +364,7 @@ message SearchUserTaskDefPb {
 }
 
 message SearchUserTaskDefReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   repeated UserTaskDefId results = 3;
   optional bytes bookmark = 4;
@@ -381,9 +381,9 @@ message SearchWfSpecPb {
 }
 
 message SearchWfSpecReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
-  repeated WfSpecIdPb results = 3;
+  repeated WfSpecId results = 3;
   optional bytes bookmark = 4;
 }
 
@@ -394,9 +394,9 @@ message SearchExternalEventDefPb {
 }
 
 message SearchExternalEventDefReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
-  repeated ExternalEventDefIdPb results = 3;
+  repeated ExternalEventDefId results = 3;
   optional bytes bookmark = 4;
 }
 
@@ -416,9 +416,9 @@ message SearchExternalEventPb {
 }
 
 message SearchExternalEventReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
-  repeated ExternalEventIdPb results = 3;
+  repeated ExternalEventId results = 3;
   optional bytes bookmark = 4;
 }
 
@@ -427,7 +427,7 @@ message ListNodeRunsPb {
 }
 
 message ListNodeRunsReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   repeated NodeRun results = 3;
 }
@@ -437,9 +437,9 @@ message ListVariablesPb {
 }
 
 message ListVariablesReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
-  repeated VariablePb results = 3;
+  repeated Variable results = 3;
 }
 
 message ListExternalEventsPb {
@@ -447,9 +447,9 @@ message ListExternalEventsPb {
 }
 
 message ListExternalEventsReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
-  repeated ExternalEventPb results = 3;
+  repeated ExternalEvent results = 3;
 }
 
 message RegisterTaskWorkerPb {
@@ -465,71 +465,71 @@ message TaskWorkerHeartBeatPb {
 }
 
 message RegisterTaskWorkerReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
-  repeated HostInfoPb your_hosts = 3;
+  repeated HostInfo your_hosts = 3;
 }
 
-message HostInfoPb {
+message HostInfo {
   string host = 1;
   int32 port = 2;
 }
 
-message TaskWorkerMetadataPb {
+message TaskWorkerMetadata {
   string client_id = 1;
   google.protobuf.Timestamp latest_heartbeat = 2;
-  repeated HostInfoPb hosts = 3;
+  repeated HostInfo hosts = 3;
 }
 
-message TaskWorkerGroupPb {
+message TaskWorkerGroup {
   string task_def_name = 1;
   google.protobuf.Timestamp created_at = 2;
-  map<string, TaskWorkerMetadataPb> task_workers = 3;
+  map<string, TaskWorkerMetadata> task_workers = 3;
 }
 
-message TaskWorkerGroupIdPb {
+message TaskWorkerGroupId {
   string task_def_name = 1;
 }
 
-message PollTaskPb {
+message PollTaskRequest {
   string task_def_name = 1;
   string client_id = 2;
   optional string task_worker_version = 3;
 }
 
-message ScheduledTaskPb {
-  TaskRunIdPb task_run_id = 1;
-  TaskDefIdPb task_def_id = 2;
+message ScheduledTask {
+  TaskRunId task_run_id = 1;
+  TaskDefId task_def_id = 2;
   int32 attempt_number = 3;
-  repeated VarNameAndValPb variables = 4;
+  repeated VarNameAndVal variables = 4;
   google.protobuf.Timestamp created_at = 5;
-  TaskRunSourcePb source = 6;
+  TaskRunSource source = 6;
 }
 
-message TaskRunSourcePb {
+message TaskRunSource {
   oneof task_run_source {
-    TaskNodeReferencePb task_node = 1;
-    UserTaskTriggerReferencePb user_task_trigger = 2;
+    TaskNodeReference task_node = 1;
+    UserTaskTriggerReference user_task_trigger = 2;
   }
 }
 
-message PollTaskReplyPb {
-  LHResponseCodePb code = 1;
+message PollTaskResponse {
+  LHResponseCode code = 1;
   optional string message = 2;
-  optional ScheduledTaskPb result = 3;
+  optional ScheduledTask result = 3;
 }
 
-message ReportTaskRunPb {
-  TaskRunIdPb task_run_id = 1;
+message ReportTaskRun {
+  TaskRunId task_run_id = 1;
   google.protobuf.Timestamp time = 2;
-  TaskStatusPb status = 3;
+  TaskStatus status = 3;
   optional VariableValue output = 4;
   optional VariableValue log_output = 5;
   int32 attempt_number = 6;
 }
 
 message ReportTaskReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
 }
 
@@ -539,7 +539,7 @@ message StopWfRunPb {
 }
 
 message StopWfRunReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
 }
 
@@ -549,7 +549,7 @@ message ResumeWfRunPb {
 }
 
 message ResumeWfRunReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
 }
 
@@ -576,22 +576,22 @@ message DeleteExternalEventDefPb {
 }
 
 message DeleteObjectReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
 }
 
 message HealthCheckPb {
 }
 
-enum LHHealthResultPb {
+enum LHHealthResult {
   LH_HEALTH_RUNNING = 0;
   LH_HEALTH_REBALANCING = 1;
   LH_HEALTH_ERROR = 2;
 }
 
 message HealthCheckReplyPb {
-  LHHealthResultPb core_state = 1;
-  LHHealthResultPb timer_state = 2;
+  LHHealthResult core_state = 1;
+  LHHealthResult timer_state = 2;
 }
 
 message TaskDefMetricsQueryPb {
@@ -601,7 +601,7 @@ message TaskDefMetricsQueryPb {
 }
 
 message TaskDefMetricsReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   optional TaskDefMetrics result = 3;
 }
@@ -614,7 +614,7 @@ message ListTaskMetricsPb {
 }
 
 message ListTaskMetricsReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   repeated TaskDefMetrics results = 3;
 }
@@ -627,7 +627,7 @@ message WfSpecMetricsQueryPb {
 }
 
 message WfSpecMetricsReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   optional WfSpecMetrics result = 3;
 }
@@ -641,20 +641,20 @@ message ListWfMetricsPb {
 }
 
 message ListWfMetricsReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
   repeated WfSpecMetrics results = 3;
 }
 
 service LHPublicApi {
   rpc PutTaskDef(PutTaskDefRequest) returns (PutTaskDefResponse) {}
-  rpc GetTaskDef(TaskDefIdPb) returns (GetTaskDefReplyPb) {}
+  rpc GetTaskDef(TaskDefId) returns (GetTaskDefReplyPb) {}
 
   rpc PutExternalEventDef(PutExternalEventDefRequest) returns (PutExternalEventDefResponse) {}
-  rpc GetExternalEventDef(ExternalEventDefIdPb) returns (GetExternalEventDefReplyPb) {}
+  rpc GetExternalEventDef(ExternalEventDefId) returns (GetExternalEventDefReplyPb) {}
 
   rpc PutWfSpec(PutWfSpecRequest) returns (PutWfSpecResponse) {}
-  rpc GetWfSpec(WfSpecIdPb) returns (GetWfSpecReplyPb) {}
+  rpc GetWfSpec(WfSpecId) returns (GetWfSpecReplyPb) {}
   rpc GetLatestWfSpec(GetLatestWfSpecPb) returns (GetWfSpecReplyPb) {}
 
   rpc PutUserTaskDef(PutUserTaskDefRequest) returns (PutUserTaskDefResponse) {}
@@ -663,7 +663,7 @@ service LHPublicApi {
   rpc GetUserTaskRun(UserTaskRunId) returns (GetUserTaskRunReplyPb) {}
 
   rpc RunWf(RunWfPb) returns (RunWfReplyPb) {}
-  rpc GetWfRun(WfRunIdPb) returns (GetWfRunReplyPb) {}
+  rpc GetWfRun(WfRunId) returns (GetWfRunReplyPb) {}
 
   rpc AssignUserTaskRun(AssignUserTaskRunPb) returns (AssignUserTaskRunReplyPb) {}
   rpc CompleteUserTaskRun(CompleteUserTaskRunPb) returns (CompleteUserTaskRunReplyPb) {}
@@ -671,13 +671,13 @@ service LHPublicApi {
   rpc GetNodeRun(NodeRunId) returns (GetNodeRunReplyPb) {}
   rpc ListNodeRuns(ListNodeRunsPb) returns (ListNodeRunsReplyPb) {}
 
-  rpc GetTaskRun(TaskRunIdPb) returns (GetTaskRunReplyPb) {}
+  rpc GetTaskRun(TaskRunId) returns (GetTaskRunReplyPb) {}
 
-  rpc GetVariable(VariableIdPb) returns (GetVariableReplyPb) {}
+  rpc GetVariable(VariableId) returns (GetVariableReplyPb) {}
   rpc ListVariables(ListVariablesPb) returns (ListVariablesReplyPb) {}
 
   rpc PutExternalEvent(PutExternalEventRequest) returns (PutExternalEventResponse) {}
-  rpc GetExternalEvent(ExternalEventIdPb) returns (GetExternalEventReplyPb) {}
+  rpc GetExternalEvent(ExternalEventId) returns (GetExternalEventReplyPb) {}
   rpc ListExternalEvents(ListExternalEventsPb) returns (ListExternalEventsReplyPb) {}
 
   rpc SearchWfRun(SearchWfRunPb) returns (SearchWfRunReplyPb) {}
@@ -692,8 +692,8 @@ service LHPublicApi {
   rpc SearchExternalEvent(SearchExternalEventPb) returns (SearchExternalEventReplyPb) {}
 
   rpc RegisterTaskWorker(RegisterTaskWorkerPb) returns (RegisterTaskWorkerReplyPb) {}
-  rpc PollTask(stream PollTaskPb) returns (stream PollTaskReplyPb) {}
-  rpc ReportTask(ReportTaskRunPb) returns (ReportTaskReplyPb) {}
+  rpc PollTask(stream PollTaskRequest) returns (stream PollTaskResponse) {}
+  rpc ReportTask(ReportTaskRun) returns (ReportTaskReplyPb) {}
 
   rpc StopWfRun(StopWfRunPb) returns (StopWfRunReplyPb) {}
   rpc ResumeWfRun(ResumeWfRunPb) returns (ResumeWfRunReplyPb) {}
@@ -735,13 +735,13 @@ message VariableValue {
   optional bytes bytes = 8;
 }
 
-message VariableIdPb {
+message VariableId {
   string wf_run_id = 1;
   int32 thread_run_number = 2;
   string name = 3;
 }
 
-message VariablePb {
+message Variable {
   VariableValue value = 1;
   string wf_run_id = 2;
   int32 thread_run_number = 3;
@@ -749,19 +749,19 @@ message VariablePb {
   google.protobuf.Timestamp date = 5;
 }
 
-message VarNameAndValPb {
+message VarNameAndVal {
   string var_name = 1;
   VariableValue value = 2;
 }
 
 // External Event
-message ExternalEventIdPb {
+message ExternalEventId {
   string wf_run_id = 1;
   string external_event_def_name = 2;
   string guid = 3;
 }
 
-message ExternalEventPb {
+message ExternalEvent {
   string wf_run_id = 1;
   string external_event_def_name = 2;
   string guid = 3;
@@ -772,7 +772,7 @@ message ExternalEventPb {
   bool claimed = 8;
 }
 
-message WfRunIdPb {
+message WfRunId {
   string id = 1;
 }
 
@@ -786,11 +786,11 @@ message WfRun {
   optional google.protobuf.Timestamp end_time = 7;
   repeated ThreadRun thread_runs = 8;
 
-  repeated PendingInterruptPb pending_interrupts = 9;
-  repeated PendingFailureHandlerPb pending_failures = 10;
+  repeated PendingInterrupt pending_interrupts = 9;
+  repeated PendingFailureHandler pending_failures = 10;
 }
 
-enum ThreadTypePb {
+enum ThreadType {
   ENTRYPOINT = 0;
   CHILD = 1;
   INTERRUPT = 2;
@@ -814,66 +814,66 @@ message ThreadRun {
   repeated int32 child_thread_ids = 11;
   optional int32 parent_thread_id = 12;
 
-  repeated ThreadHaltReasonPb halt_reasons = 13;
-  optional ExternalEventIdPb interrupt_trigger_id = 14;
-  optional FailureBeingHandledPb failure_being_handled = 15;
+  repeated ThreadHaltReason halt_reasons = 13;
+  optional ExternalEventId interrupt_trigger_id = 14;
+  optional FailureBeingHandled failure_being_handled = 15;
 
   int32 current_node_position = 16;
   repeated int32 handled_failed_children = 17;
 
-  ThreadTypePb type = 18;
+  ThreadType type = 18;
 }
 
-message FailureBeingHandledPb {
+message FailureBeingHandled {
   int32 thread_run_number = 1;
   int32 node_run_position = 2;
   int32 failure_number = 3;
 }
 
-message PendingInterruptPb {
-  ExternalEventIdPb external_event_id = 1;
+message PendingInterrupt {
+  ExternalEventId external_event_id = 1;
   string handler_spec_name = 2;
   int32 interrupted_thread_id = 3;
 }
 
-message PendingFailureHandlerPb {
+message PendingFailureHandler {
   int32 failed_thread_run = 1;
   string handler_spec_name = 2;
 }
 
-message PendingInterruptHaltReasonPb {
-  ExternalEventIdPb external_event_id = 1;
+message PendingInterruptHaltReason {
+  ExternalEventId external_event_id = 1;
 }
 
-message PendingFailureHandlerHaltReasonPb {
+message PendingFailureHandlerHaltReason {
   int32 node_run_position = 1;
 }
 
-message HandlingFailureHaltReasonPb {
+message HandlingFailureHaltReason {
   int32 handler_thread_id = 1;
 }
 
-message ParentHaltedPb {
+message ParentHalted {
   int32 parent_thread_id = 1;
 }
 
-message InterruptedPb {
+message Interrupted {
   int32 interrupt_thread_id = 1;
 }
 
-message ManualHaltPb {
+message ManualHalt {
   // Nothing to store.
   bool meaning_of_life = 137;
 }
 
-message ThreadHaltReasonPb {
+message ThreadHaltReason {
   oneof reason {
-    ParentHaltedPb parent_halted = 1;
-    InterruptedPb interrupted = 2;
-    PendingInterruptHaltReasonPb pending_interrupt = 3;
-    PendingFailureHandlerHaltReasonPb pending_failure = 4;
-    HandlingFailureHaltReasonPb handling_failure = 5;
-    ManualHaltPb manual_halt = 6;
+    ParentHalted parent_halted = 1;
+    Interrupted interrupted = 2;
+    PendingInterruptHaltReason pending_interrupt = 3;
+    PendingFailureHandlerHaltReason pending_failure = 4;
+    HandlingFailureHaltReason handling_failure = 5;
+    ManualHalt manual_halt = 6;
   }
 }
 
@@ -883,11 +883,11 @@ message NodeRunId {
   int32 position = 3;
 }
 
-message TaskNodeRunPb {
-  optional TaskRunIdPb task_run_id = 1;
+message TaskNodeRun {
+  optional TaskRunId task_run_id = 1;
 }
 
-message UserTaskNodeRunPb {
+message UserTaskNodeRun {
   optional UserTaskRunId user_task_run_id = 1;
 }
 
@@ -900,34 +900,34 @@ message NodeRun {
 
   google.protobuf.Timestamp arrival_time = 7;
   optional google.protobuf.Timestamp end_time = 8;
-  WfSpecIdPb wf_spec_id = 9;
+  WfSpecId wf_spec_id = 9;
   string thread_spec_name = 10;
   string node_name = 11;
 
   optional string error_message = 13;
 
-  repeated FailurePb failures = 14;
+  repeated Failure failures = 14;
 
   oneof node_type {
-    TaskNodeRunPb task = 15;
-    ExternalEventRunPb external_event = 16;
-    EntrypointRunPb entrypoint = 17;
-    ExitRunPb exit = 19;
-    StartThreadRunPb start_thread = 20;
-    WaitForThreadsRunPb wait_threads = 21;
-    SleepNodeRunPb sleep = 22;
-    UserTaskNodeRunPb user_task = 24;
+    TaskNodeRun task = 15;
+    ExternalEventRun external_event = 16;
+    EntrypointRun entrypoint = 17;
+    ExitRun exit = 19;
+    StartThreadRun start_thread = 20;
+    WaitForThreadsRun wait_threads = 21;
+    SleepNodeRun sleep = 22;
+    UserTaskNodeRun user_task = 24;
   }
   repeated int32 failure_handler_ids = 23;
 }
 
-message FailurePb {
+message Failure {
   string failure_name = 1;
   string message = 2;
   optional VariableValue content = 3;
 }
 
-message TaskAttemptPb {
+message TaskAttempt {
   optional VariableValue output = 1;
   optional VariableValue log_output = 2;
 
@@ -937,82 +937,82 @@ message TaskAttemptPb {
   string task_worker_id = 7;
   optional string task_worker_version = 8;
 
-  TaskStatusPb status = 9;
+  TaskStatus status = 9;
 }
 
-message TaskRunIdPb {
+message TaskRunId {
   string wf_run_id = 1;
   string task_guid = 2;
 }
 
-message TaskRunPb {
-  TaskRunIdPb id = 1;
-  repeated TaskAttemptPb attempts = 2;
+message TaskRun {
+  TaskRunId id = 1;
+  repeated TaskAttempt attempts = 2;
   int32 max_attempts = 3;
   string task_def_name = 4;
-  repeated VarNameAndValPb input_variables = 5;
+  repeated VarNameAndVal input_variables = 5;
 
-  TaskRunSourcePb source = 6;
+  TaskRunSource source = 6;
   google.protobuf.Timestamp scheduled_at = 7;
 
-  TaskStatusPb status = 8;
+  TaskStatus status = 8;
 
   int32 timeout_seconds = 9;
 }
 
-message TaskNodeReferencePb {
+message TaskNodeReference {
   NodeRunId node_run_id = 1;
-  WfSpecIdPb wf_spec_id = 2;
+  WfSpecId wf_spec_id = 2;
 }
 
-message UserTaskTriggerContextPb {
+message UserTaskTriggerContext {
   oneof owner {
     UserGroup user_group = 1;
     User user = 2;
   }
 }
 
-message UserTaskTriggerReferencePb {
+message UserTaskTriggerReference {
   NodeRunId node_run_id = 1;
   int32 user_task_event_number = 2;
-  WfSpecIdPb wf_spec_id = 3;
-  optional UserTaskTriggerContextPb context = 4;
+  WfSpecId wf_spec_id = 3;
+  optional UserTaskTriggerContext context = 4;
 }
 
-message EntrypointRunPb {
+message EntrypointRun {
 }
 
-message ExitRunPb {
+message ExitRun {
 } // Later will have info once we add threads
 
-message StartThreadRunPb {
+message StartThreadRun {
   optional int32 child_thread_id = 1;
   string thread_spec_name = 2;
 }
 
-message WaitForThreadsRunPb {
-  message WaitForThreadPb {
+message WaitForThreadsRun {
+  message WaitForThread {
     optional google.protobuf.Timestamp thread_end_time = 1;
     LHStatus thread_status = 2;
     int32 thread_run_number = 3;
   }
 
-  repeated WaitForThreadPb threads = 1;
+  repeated WaitForThread threads = 1;
 }
 
-message ExternalEventRunPb {
+message ExternalEventRun {
   string external_event_def_name = 1;
   optional google.protobuf.Timestamp event_time = 2;
-  optional ExternalEventIdPb external_event_id = 3;
+  optional ExternalEventId external_event_id = 3;
 }
 
-message SleepNodeRunPb {
+message SleepNodeRun {
   google.protobuf.Timestamp maturation_time = 1;
 }
 
 // WfSpec stuff
 
-enum ComparatorPb {
+enum Comparator {
   LESS_THAN = 0;
   GREATER_THAN = 1;
   LESS_THAN_EQ = 2;
@@ -1024,7 +1024,7 @@ enum ComparatorPb {
 }
 
 message EdgeCondition {
-  ComparatorPb comparator = 1;
+  Comparator comparator = 1;
   VariableAssignment left = 2;
   VariableAssignment right = 3;
 }
@@ -1196,7 +1196,7 @@ message UserTaskEvent {
   }
 
   message UTETaskExecuted {
-    TaskRunIdPb task_run = 1;
+    TaskRunId task_run = 1;
   }
 
   message UTEReassigned {
@@ -1274,14 +1274,14 @@ message AssignUserTaskRunPb {
 }
 
 message AssignUserTaskRunReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
 
   // TODO: Later on, add info about current assignee/status.
 }
 
 message CompleteUserTaskRunReplyPb {
-  LHResponseCodePb code = 1;
+  LHResponseCode code = 1;
   optional string message = 2;
 }
 
@@ -1294,7 +1294,7 @@ message UserTaskResultPb {
   repeated UserTaskFieldResult fields = 1;
 }
 
-message SaveUserTaskRunPb {
+message SaveUserTaskRun {
   UserTaskResultPb result = 1;
   string user_id = 2;
   repeated UserTaskFieldResult results = 3;

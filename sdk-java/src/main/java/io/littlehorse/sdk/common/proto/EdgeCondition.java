@@ -47,19 +47,19 @@ private static final long serialVersionUID = 0L;
   public static final int COMPARATOR_FIELD_NUMBER = 1;
   private int comparator_ = 0;
   /**
-   * <code>.littlehorse.ComparatorPb comparator = 1;</code>
+   * <code>.littlehorse.Comparator comparator = 1;</code>
    * @return The enum numeric value on the wire for comparator.
    */
   @java.lang.Override public int getComparatorValue() {
     return comparator_;
   }
   /**
-   * <code>.littlehorse.ComparatorPb comparator = 1;</code>
+   * <code>.littlehorse.Comparator comparator = 1;</code>
    * @return The comparator.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.ComparatorPb getComparator() {
-    io.littlehorse.sdk.common.proto.ComparatorPb result = io.littlehorse.sdk.common.proto.ComparatorPb.forNumber(comparator_);
-    return result == null ? io.littlehorse.sdk.common.proto.ComparatorPb.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.Comparator getComparator() {
+    io.littlehorse.sdk.common.proto.Comparator result = io.littlehorse.sdk.common.proto.Comparator.forNumber(comparator_);
+    return result == null ? io.littlehorse.sdk.common.proto.Comparator.UNRECOGNIZED : result;
   }
 
   public static final int LEFT_FIELD_NUMBER = 2;
@@ -128,7 +128,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (comparator_ != io.littlehorse.sdk.common.proto.ComparatorPb.LESS_THAN.getNumber()) {
+    if (comparator_ != io.littlehorse.sdk.common.proto.Comparator.LESS_THAN.getNumber()) {
       output.writeEnum(1, comparator_);
     }
     if (left_ != null) {
@@ -146,7 +146,7 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (comparator_ != io.littlehorse.sdk.common.proto.ComparatorPb.LESS_THAN.getNumber()) {
+    if (comparator_ != io.littlehorse.sdk.common.proto.Comparator.LESS_THAN.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(1, comparator_);
     }
@@ -510,14 +510,14 @@ private static final long serialVersionUID = 0L;
 
     private int comparator_ = 0;
     /**
-     * <code>.littlehorse.ComparatorPb comparator = 1;</code>
+     * <code>.littlehorse.Comparator comparator = 1;</code>
      * @return The enum numeric value on the wire for comparator.
      */
     @java.lang.Override public int getComparatorValue() {
       return comparator_;
     }
     /**
-     * <code>.littlehorse.ComparatorPb comparator = 1;</code>
+     * <code>.littlehorse.Comparator comparator = 1;</code>
      * @param value The enum numeric value on the wire for comparator to set.
      * @return This builder for chaining.
      */
@@ -528,20 +528,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ComparatorPb comparator = 1;</code>
+     * <code>.littlehorse.Comparator comparator = 1;</code>
      * @return The comparator.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ComparatorPb getComparator() {
-      io.littlehorse.sdk.common.proto.ComparatorPb result = io.littlehorse.sdk.common.proto.ComparatorPb.forNumber(comparator_);
-      return result == null ? io.littlehorse.sdk.common.proto.ComparatorPb.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.Comparator getComparator() {
+      io.littlehorse.sdk.common.proto.Comparator result = io.littlehorse.sdk.common.proto.Comparator.forNumber(comparator_);
+      return result == null ? io.littlehorse.sdk.common.proto.Comparator.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.ComparatorPb comparator = 1;</code>
+     * <code>.littlehorse.Comparator comparator = 1;</code>
      * @param value The comparator to set.
      * @return This builder for chaining.
      */
-    public Builder setComparator(io.littlehorse.sdk.common.proto.ComparatorPb value) {
+    public Builder setComparator(io.littlehorse.sdk.common.proto.Comparator value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -551,7 +551,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ComparatorPb comparator = 1;</code>
+     * <code>.littlehorse.Comparator comparator = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearComparator() {

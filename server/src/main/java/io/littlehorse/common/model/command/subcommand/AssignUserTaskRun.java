@@ -13,7 +13,7 @@ import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.AssigneeCase;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import java.util.Date;
 import lombok.Getter;
@@ -86,20 +86,20 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
         AssignUserTaskRunReply out = new AssignUserTaskRunReply();
 
         if (assigneeType == AssigneeCase.ASSIGNEE_NOT_SET) {
-            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+            out.code = LHResponseCode.BAD_REQUEST_ERROR;
             out.message = "Must set either userGroup or userId!";
             return out;
         }
 
         UserTaskRunModel utr = dao.getUserTaskRun(userTaskRunId);
         if (utr == null) {
-            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+            out.code = LHResponseCode.BAD_REQUEST_ERROR;
             out.message = "Couldn't find userTaskRun " + userTaskRunId;
             return out;
         }
 
         if (!overrideClaim && utr.getUser() != null) {
-            out.code = LHResponseCodePb.ALREADY_EXISTS_ERROR;
+            out.code = LHResponseCode.ALREADY_EXISTS_ERROR;
             out.message = "User Task Run already assigned to " + utr.getUser();
             return out;
         }
@@ -108,7 +108,7 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
             utr.getStatus() != UserTaskRunStatus.ASSIGNED &&
             utr.getStatus() != UserTaskRunStatus.UNASSIGNED
         ) {
-            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+            out.code = LHResponseCode.BAD_REQUEST_ERROR;
             out.message =
                 "Couldn't reassign User Task Run since it  is in terminal status " +
                 utr.getStatus();
@@ -128,7 +128,7 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
 
         wfRunModel.advance(new Date());
 
-        out.code = LHResponseCodePb.OK;
+        out.code = LHResponseCode.OK;
         return out;
     }
 

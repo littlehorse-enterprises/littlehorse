@@ -6,12 +6,12 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.TaskClaimReply;
-import io.littlehorse.common.model.objectId.TaskRunId;
-import io.littlehorse.common.model.wfrun.ScheduledTask;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
+import io.littlehorse.common.model.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.wfrun.ScheduledTaskModel;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRunModel;
 import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.server.streamsimpl.taskqueue.PollTaskRequestObserver;
 import java.util.Date;
 import lombok.Getter;
@@ -29,14 +29,17 @@ import lombok.extern.slf4j.Slf4j;
  */
 public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
 
-    private TaskRunId taskRunId;
+    private TaskRunIdModel taskRunId;
     private Date time;
     private String taskWorkerVersion;
     private String taskWorkerId;
 
     public TaskClaimEvent() {}
 
-    public TaskClaimEvent(ScheduledTask task, PollTaskRequestObserver taskClaimer) {
+    public TaskClaimEvent(
+        ScheduledTaskModel task,
+        PollTaskRequestObserver taskClaimer
+    ) {
         this.taskRunId = task.getTaskRunId();
         this.time = new Date();
         this.taskWorkerId = taskClaimer.getClientId();
@@ -69,29 +72,29 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
     public TaskClaimReply process(LHDAO dao, LHConfig config) {
         TaskClaimReply out = new TaskClaimReply();
 
-        TaskRun taskRun = dao.getTaskRun(taskRunId);
+        TaskRunModel taskRun = dao.getTaskRun(taskRunId);
         if (taskRun == null) {
             log.warn("Got claimTask for non-existent taskRun {}", taskRunId);
-            out.setCode(LHResponseCodePb.BAD_REQUEST_ERROR);
+            out.setCode(LHResponseCode.BAD_REQUEST_ERROR);
             out.setMessage("Couldn't find specified TaskRun");
             return out;
         }
 
         // Needs to be done before we process the event, since processing the event
         // will delete the task schedule request.
-        ScheduledTask scheduledTask = dao.markTaskAsScheduled(taskRunId);
+        ScheduledTaskModel scheduledTask = dao.markTaskAsScheduled(taskRunId);
 
         if (scheduledTask == null) {
             // That means the task has been taken already.
             out.setMessage("Unable to claim this task, someone beat you to it");
-            out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
+            out.setCode(LHResponseCode.NOT_FOUND_ERROR);
             return out;
         }
 
         taskRun.processStart(this);
 
         out.result = scheduledTask;
-        out.code = LHResponseCodePb.OK;
+        out.code = LHResponseCode.OK;
 
         // TODO: Task Started Metrics
         return out;
@@ -105,7 +108,8 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
 
     public void initFrom(Message p) {
         TaskClaimEventPb proto = (TaskClaimEventPb) p;
-        taskRunId = LHSerializable.fromProto(proto.getTaskRunId(), TaskRunId.class);
+        taskRunId =
+            LHSerializable.fromProto(proto.getTaskRunId(), TaskRunIdModel.class);
         this.taskWorkerVersion = proto.getTaskWorkerVersion();
         this.taskWorkerId = proto.getTaskWorkerId();
         this.time = LHUtil.fromProtoTs(proto.getTime());

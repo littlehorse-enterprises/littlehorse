@@ -9,7 +9,7 @@ import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.RunWfPb;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -69,7 +69,7 @@ public class RunWf extends SubCommand<RunWfPb> {
 
         WfSpecModel spec = dao.getWfSpec(wfSpecName, wfSpecVersion);
         if (spec == null) {
-            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+            out.code = LHResponseCode.NOT_FOUND_ERROR;
             out.message = "Could not find specified WfSpec.";
             return out;
         }
@@ -80,7 +80,7 @@ public class RunWf extends SubCommand<RunWfPb> {
 
         WfRunModel oldWfRunModel = dao.getWfRun(id);
         if (oldWfRunModel != null) {
-            out.code = LHResponseCodePb.ALREADY_EXISTS_ERROR;
+            out.code = LHResponseCode.ALREADY_EXISTS_ERROR;
             out.message = "WfRun with id " + id + " already exists!";
             return out;
         }
@@ -91,10 +91,10 @@ public class RunWf extends SubCommand<RunWfPb> {
         newRun.advance(dao.getEventTime());
 
         if (newRun.status == LHStatus.ERROR) {
-            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+            out.code = LHResponseCode.BAD_REQUEST_ERROR;
             out.message = newRun.threadRunModels.get(0).errorMessage;
         } else {
-            out.code = LHResponseCodePb.OK;
+            out.code = LHResponseCode.OK;
         }
         return out;
     }

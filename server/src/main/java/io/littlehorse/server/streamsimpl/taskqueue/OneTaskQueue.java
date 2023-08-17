@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
-import io.littlehorse.common.model.wfrun.ScheduledTask;
+import io.littlehorse.common.model.wfrun.ScheduledTaskModel;
 import io.littlehorse.sdk.common.LHLibUtil;
 // import io.littlehorse.common.util.LHUtil;
 import java.util.LinkedList;
@@ -17,7 +17,7 @@ public class OneTaskQueue {
     private Queue<PollTaskRequestObserver> hungryClients;
     private Lock lock;
 
-    private LinkedList<ScheduledTask> pendingTasks;
+    private LinkedList<ScheduledTaskModel> pendingTasks;
     private TaskQueueManager parent;
 
     private String taskDefName;
@@ -73,7 +73,7 @@ public class OneTaskQueue {
      * @param scheduledTaskId is the ::getObjectId() for the TaskScheduleRequest that was
      * just scheduled.
      */
-    public void onTaskScheduled(ScheduledTask scheduledTaskId) {
+    public void onTaskScheduled(ScheduledTaskModel scheduledTaskId) {
         // There's two cases here:
         // 1. There are clients waiting for requests, in which case we know that
         //    the pendingTaskIds queue/list must be empty.
@@ -140,7 +140,7 @@ public class OneTaskQueue {
         // 2. There are no pending Taskid's in the queue, in which case we simply
         //    push the request client observer thing onto the back of the
         //    `hungryClients` list.
-        ScheduledTask nextTask = null;
+        ScheduledTaskModel nextTask = null;
 
         try {
             lock.lock();

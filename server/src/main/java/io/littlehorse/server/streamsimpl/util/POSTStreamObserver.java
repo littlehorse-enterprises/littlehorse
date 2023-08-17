@@ -6,7 +6,7 @@ import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandReplyPb;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -36,7 +36,7 @@ public class POSTStreamObserver<U extends Message>
         );
 
         U response = buildErrorResponse(
-            LHResponseCodePb.REPORTED_BUT_NOT_PROCESSED,
+            LHResponseCode.REPORTED_BUT_NOT_PROCESSED,
             "Recorded request but processing not verified: " + t.getMessage()
         );
 
@@ -44,12 +44,12 @@ public class POSTStreamObserver<U extends Message>
         if (shouldComplete) ctx.onCompleted();
     }
 
-    private U buildErrorResponse(LHResponseCodePb code, String msg) {
+    private U buildErrorResponse(LHResponseCode code, String msg) {
         try {
             GeneratedMessageV3.Builder<?> b = (GeneratedMessageV3.Builder<?>) responseCls
                 .getMethod("newBuilder")
                 .invoke(null);
-            b.getClass().getMethod("setCode", LHResponseCodePb.class).invoke(b, code);
+            b.getClass().getMethod("setCode", LHResponseCode.class).invoke(b, code);
 
             b.getClass().getMethod("setMessage", String.class).invoke(b, msg);
 
@@ -90,7 +90,7 @@ public class POSTStreamObserver<U extends Message>
         } else if (reply.getCode() == StoreQueryStatusPb.RSQ_NOT_AVAILABLE) {
             response =
                 buildErrorResponse(
-                    LHResponseCodePb.CONNECTION_ERROR,
+                    LHResponseCode.CONNECTION_ERROR,
                     "Failed connecting to backend: " +
                     (reply.hasMessage() ? reply.getMessage() : "")
                 );

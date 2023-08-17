@@ -5,7 +5,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.wfrun.Failure;
+import io.littlehorse.common.model.wfrun.FailureModel;
 import io.littlehorse.common.model.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.sdk.common.proto.FailureDef;
@@ -68,8 +68,8 @@ public class FailureDefModel extends LHSerializable<FailureDef> {
         }
     }
 
-    public Failure getFailure(ThreadRunModel thread) {
-        Failure out = new Failure();
+    public FailureModel getFailure(ThreadRunModel thread) {
+        FailureModel out = new FailureModel();
         out.failureName = failureName;
         out.message = message;
 

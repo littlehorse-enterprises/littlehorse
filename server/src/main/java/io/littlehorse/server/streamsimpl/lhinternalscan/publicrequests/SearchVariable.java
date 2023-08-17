@@ -4,18 +4,18 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.VariableDefModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.objectId.VariableId;
-import io.littlehorse.common.model.wfrun.Variable;
+import io.littlehorse.common.model.objectId.VariableIdModel;
+import io.littlehorse.common.model.wfrun.VariableModel;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchVariablePb;
 import io.littlehorse.sdk.common.proto.SearchVariablePb.NameAndValuePb;
 import io.littlehorse.sdk.common.proto.SearchVariablePb.VariableCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchVariableReplyPb;
-import io.littlehorse.sdk.common.proto.VariableIdPb;
+import io.littlehorse.sdk.common.proto.VariableId;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
@@ -30,15 +30,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SearchVariable
-    extends PublicScanRequest<SearchVariablePb, SearchVariableReplyPb, VariableIdPb, VariableId, SearchVariableReply> {
+    extends PublicScanRequest<SearchVariablePb, SearchVariableReplyPb, VariableId, VariableIdModel, SearchVariableReply> {
 
     public VariableCriteriaCase type;
     public NameAndValuePb value;
     public String wfRunId;
     private int wfSpecVersion;
 
-    public GetableClassEnumPb getObjectType() {
-        return GetableClassEnumPb.VARIABLE;
+    public GetableClassEnum getObjectType() {
+        return GetableClassEnum.VARIABLE;
     }
 
     public Class<SearchVariablePb> getProtoBaseClass() {
@@ -96,8 +96,8 @@ public class SearchVariable
         return out;
     }
 
-    private Optional<TagStorageTypePb> getStorageTypeFromVariableIndexConfiguration() {
-        return new Variable()
+    private Optional<TagStorageType> getStorageTypeFromVariableIndexConfiguration() {
+        return new VariableModel()
             .getIndexConfigurations()
             .stream()
             //Filter matching configuration
@@ -112,7 +112,7 @@ public class SearchVariable
             .findFirst();
     }
 
-    private TagStorageTypePb indexTypeForSearchFromWfSpec(LHGlobalMetaStores stores) {
+    private TagStorageType indexTypeForSearchFromWfSpec(LHGlobalMetaStores stores) {
         WfSpecModel spec = stores.getWfSpec(value.getWfSpecName(), null);
 
         return spec
@@ -140,7 +140,7 @@ public class SearchVariable
     }
 
     @Override
-    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
         return getStorageTypeFromVariableIndexConfiguration()
             .orElse(indexTypeForSearchFromWfSpec(stores));

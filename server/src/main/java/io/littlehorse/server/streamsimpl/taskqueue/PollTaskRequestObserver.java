@@ -1,21 +1,21 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.sdk.common.proto.PollTaskPb;
-import io.littlehorse.sdk.common.proto.PollTaskReplyPb;
+import io.littlehorse.sdk.common.proto.PollTaskRequest;
+import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
+public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> {
 
-    private StreamObserver<PollTaskReplyPb> responseObserver;
+    private StreamObserver<PollTaskResponse> responseObserver;
     private TaskQueueManager taskQueueManager;
     private String clientId;
     private String taskDefName;
     private String taskWorkerVersion;
 
     public PollTaskRequestObserver(
-        StreamObserver<PollTaskReplyPb> responseObserver,
+        StreamObserver<PollTaskResponse> responseObserver,
         TaskQueueManager manager
     ) {
         this.responseObserver = responseObserver;
@@ -35,7 +35,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
         return clientId;
     }
 
-    public StreamObserver<PollTaskReplyPb> getResponseObserver() {
+    public StreamObserver<PollTaskResponse> getResponseObserver() {
         return responseObserver;
     }
 
@@ -51,7 +51,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
     }
 
     @Override
-    public void onNext(PollTaskPb req) {
+    public void onNext(PollTaskRequest req) {
         if (clientId == null) {
             clientId = req.getClientId();
         }

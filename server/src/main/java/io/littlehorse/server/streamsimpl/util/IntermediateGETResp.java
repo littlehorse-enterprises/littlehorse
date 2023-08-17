@@ -3,7 +3,7 @@ package io.littlehorse.server.streamsimpl.util;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -12,7 +12,7 @@ public class IntermediateGETResp<
 > {
 
     public String message;
-    public LHResponseCodePb code;
+    public LHResponseCode code;
     public T result;
 
     private Class<V> responseCls;
@@ -31,7 +31,7 @@ public class IntermediateGETResp<
             if (message != null) {
                 b.getClass().getMethod("setMessage", String.class).invoke(b, message);
             }
-            b.getClass().getMethod("setCode", LHResponseCodePb.class).invoke(b, code);
+            b.getClass().getMethod("setCode", LHResponseCode.class).invoke(b, code);
             if (result != null) {
                 U resultProto = (U) result.toProto().build();
                 b

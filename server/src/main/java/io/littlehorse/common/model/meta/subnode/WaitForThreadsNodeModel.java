@@ -6,7 +6,7 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.meta.ThreadToWaitForModel;
-import io.littlehorse.common.model.wfrun.subnoderun.WaitForThreadsRun;
+import io.littlehorse.common.model.wfrun.subnoderun.WaitForThreadsRunModel;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
@@ -49,8 +49,8 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         return out;
     }
 
-    public WaitForThreadsRun createSubNodeRun(Date time) {
-        return new WaitForThreadsRun();
+    public WaitForThreadsRunModel createSubNodeRun(Date time) {
+        return new WaitForThreadsRunModel();
     }
 
     @Override

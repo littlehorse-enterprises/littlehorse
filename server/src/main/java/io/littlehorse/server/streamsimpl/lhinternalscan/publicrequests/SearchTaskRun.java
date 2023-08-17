@@ -3,10 +3,10 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.objectId.TaskRunId;
+import io.littlehorse.common.model.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchTaskRunPb;
@@ -14,7 +14,7 @@ import io.littlehorse.sdk.common.proto.SearchTaskRunPb.ByTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchTaskRunPb.StatusAndTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchTaskRunPb.TaskRunCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.TaskRunIdPb;
+import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.TagScanBoundaryStrategy;
@@ -30,14 +30,14 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class SearchTaskRun
-    extends PublicScanRequest<SearchTaskRunPb, SearchTaskRunReplyPb, TaskRunIdPb, TaskRunId, SearchTaskRunReply> {
+    extends PublicScanRequest<SearchTaskRunPb, SearchTaskRunReplyPb, TaskRunId, TaskRunIdModel, SearchTaskRunReply> {
 
     private TaskRunCriteriaCase type;
     private ByTaskDefPb taskDef;
     private StatusAndTaskDefPb statusAndTaskDef;
 
-    public GetableClassEnumPb getObjectType() {
-        return GetableClassEnumPb.TASK_RUN;
+    public GetableClassEnum getObjectType() {
+        return GetableClassEnum.TASK_RUN;
     }
 
     public Class<SearchTaskRunPb> getProtoBaseClass() {
@@ -136,9 +136,9 @@ public class SearchTaskRun
     }
 
     @Override
-    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        return TagStorageTypePb.LOCAL;
+        return TagStorageType.LOCAL;
     }
 
     @Override

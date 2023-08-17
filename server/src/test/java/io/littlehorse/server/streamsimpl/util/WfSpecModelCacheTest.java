@@ -5,7 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.objectId.WfSpecId;
+import io.littlehorse.common.model.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import org.apache.kafka.common.utils.Bytes;
@@ -34,7 +34,7 @@ class WfSpecModelCacheTest {
             wfSpecCache.addToCache(key, value);
 
             WfSpecModel cachedWfSpecModel = wfSpecCache.get(
-                new WfSpecId(wfSpecName, wfSpecVersion)
+                new WfSpecIdModel(wfSpecName, wfSpecVersion)
             );
 
             assertThat(cachedWfSpecModel)
@@ -60,7 +60,7 @@ class WfSpecModelCacheTest {
             wfSpecCache.addToCache(key, value);
 
             WfSpecModel cachedLatestWfSpecModel = wfSpecCache.get(
-                new WfSpecId(wfSpecName, LATEST_VERSION)
+                new WfSpecIdModel(wfSpecName, LATEST_VERSION)
             );
 
             assertThat(cachedLatestWfSpecModel)
@@ -74,7 +74,7 @@ class WfSpecModelCacheTest {
             throws LHSerdeError {
             final WfSpecCache wfSpecCache = new WfSpecCache();
             final String key = "2/WF1/23";
-            final WfSpecId cacheKey = new WfSpecId("WF1", 23);
+            final WfSpecIdModel cacheKey = new WfSpecIdModel("WF1", 23);
             final Bytes value = null;
 
             wfSpecCache.updateCache(cacheKey, TestUtil.wfSpec("WF1"));
@@ -89,7 +89,10 @@ class WfSpecModelCacheTest {
             throws LHSerdeError {
             final WfSpecCache wfSpecCache = new WfSpecCache();
             final String key = "2/WF1/23";
-            final WfSpecId latestCacheKey = new WfSpecId("WF1", LATEST_VERSION);
+            final WfSpecIdModel latestCacheKey = new WfSpecIdModel(
+                "WF1",
+                LATEST_VERSION
+            );
             final Bytes value = null;
 
             wfSpecCache.updateCache(latestCacheKey, TestUtil.wfSpec("WF1"));
@@ -104,7 +107,7 @@ class WfSpecModelCacheTest {
             final WfSpecCache wfSpecCache = new WfSpecCache();
             final String nonWfSpecKey =
                 "11/WF1/123/0b80d81e-8984-4da5-8312-f19e3fbfa780";
-            final WfSpecId cacheKey = new WfSpecId("WF1", 23);
+            final WfSpecIdModel cacheKey = new WfSpecIdModel("WF1", 23);
             final Bytes value = Bytes.wrap(TestUtil.taskRun().toBytes(null));
 
             wfSpecCache.addToCache(nonWfSpecKey, value);
@@ -121,7 +124,7 @@ class WfSpecModelCacheTest {
             final WfSpecCache wfSpecCache = new WfSpecCache();
             String name = "WF1";
             int version = 23;
-            final WfSpecId cacheKey = new WfSpecId(name, version);
+            final WfSpecIdModel cacheKey = new WfSpecIdModel(name, version);
 
             wfSpecCache.getOrCache(cacheKey, () -> null);
             wfSpecCache.getOrCache(name, version, () -> null);
@@ -139,7 +142,7 @@ class WfSpecModelCacheTest {
             wfSpecCache.getOrCache(name, version, () -> wfSpecModel);
 
             WfSpecModel cachedLatestWfSpecModel = wfSpecCache.get(
-                new WfSpecId(name, LATEST_VERSION)
+                new WfSpecIdModel(name, LATEST_VERSION)
             );
 
             assertThat(cachedLatestWfSpecModel)

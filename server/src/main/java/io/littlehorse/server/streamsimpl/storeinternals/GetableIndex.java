@@ -1,7 +1,7 @@
 package io.littlehorse.server.streamsimpl.storeinternals;
 
 import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.TagStorageType;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -12,12 +12,12 @@ import org.apache.commons.lang3.tuple.Pair;
 public class GetableIndex<T extends Getable<?>> {
 
     private List<Pair<String, ValueType>> attributes;
-    private Optional<TagStorageTypePb> tagStorageTypePb;
+    private Optional<TagStorageType> tagStorageTypePb;
     private Predicate<T> conditional;
 
     public GetableIndex(
         List<Pair<String, ValueType>> attributes,
-        Optional<TagStorageTypePb> tagStorageTypePb,
+        Optional<TagStorageType> tagStorageTypePb,
         Predicate<T> conditional
     ) {
         this.attributes = attributes;
@@ -27,7 +27,7 @@ public class GetableIndex<T extends Getable<?>> {
 
     public GetableIndex(
         List<Pair<String, ValueType>> attributes,
-        Optional<TagStorageTypePb> tagStorageTypePb
+        Optional<TagStorageType> tagStorageTypePb
     ) {
         this(attributes, tagStorageTypePb, null);
     }

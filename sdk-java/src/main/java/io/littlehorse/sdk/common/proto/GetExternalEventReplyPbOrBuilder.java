@@ -8,15 +8,15 @@ public interface GetExternalEventReplyPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   int getCodeValue();
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The code.
    */
-  io.littlehorse.sdk.common.proto.LHResponseCodePb getCode();
+  io.littlehorse.sdk.common.proto.LHResponseCode getCode();
 
   /**
    * <code>optional string message = 2;</code>
@@ -36,17 +36,17 @@ public interface GetExternalEventReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
+   * <code>optional .littlehorse.ExternalEvent result = 3;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
+   * <code>optional .littlehorse.ExternalEvent result = 3;</code>
    * @return The result.
    */
-  io.littlehorse.sdk.common.proto.ExternalEventPb getResult();
+  io.littlehorse.sdk.common.proto.ExternalEvent getResult();
   /**
-   * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
+   * <code>optional .littlehorse.ExternalEvent result = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.ExternalEventPbOrBuilder getResultOrBuilder();
+  io.littlehorse.sdk.common.proto.ExternalEventOrBuilder getResultOrBuilder();
 }

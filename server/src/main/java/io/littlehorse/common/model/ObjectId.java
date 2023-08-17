@@ -1,7 +1,7 @@
 package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnum;
 import java.lang.reflect.InvocationTargetException;
 
 public abstract class ObjectId<
@@ -15,7 +15,7 @@ public abstract class ObjectId<
 
     public abstract String getPartitionKey();
 
-    public abstract GetableClassEnumPb getType();
+    public abstract GetableClassEnum getType();
 
     @Override
     public String toString() {

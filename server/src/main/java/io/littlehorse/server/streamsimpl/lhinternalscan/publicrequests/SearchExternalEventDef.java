@@ -5,10 +5,10 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.sdk.common.proto.ExternalEventDefIdPb;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.SearchExternalEventDefPb;
 import io.littlehorse.sdk.common.proto.SearchExternalEventDefReplyPb;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SearchExternalEventDef
-    extends PublicScanRequest<SearchExternalEventDefPb, SearchExternalEventDefReplyPb, ExternalEventDefIdPb, ExternalEventDefIdModel, SearchExternalEventDefReply> {
+    extends PublicScanRequest<SearchExternalEventDefPb, SearchExternalEventDefReplyPb, ExternalEventDefId, ExternalEventDefIdModel, SearchExternalEventDefReply> {
 
     public String prefix;
 
@@ -27,8 +27,8 @@ public class SearchExternalEventDef
         return SearchExternalEventDefPb.class;
     }
 
-    public GetableClassEnumPb getObjectType() {
-        return GetableClassEnumPb.EXTERNAL_EVENT_DEF;
+    public GetableClassEnum getObjectType() {
+        return GetableClassEnum.EXTERNAL_EVENT_DEF;
     }
 
     public void initFrom(Message proto) {
@@ -64,9 +64,9 @@ public class SearchExternalEventDef
     }
 
     @Override
-    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        return TagStorageTypePb.LOCAL;
+        return TagStorageType.LOCAL;
     }
 
     @Override

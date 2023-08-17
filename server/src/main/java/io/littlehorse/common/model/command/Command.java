@@ -19,7 +19,7 @@ import io.littlehorse.common.model.command.subcommand.PutTaskDefRequestModel;
 import io.littlehorse.common.model.command.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.command.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.model.command.subcommand.ReassignUserTask;
-import io.littlehorse.common.model.command.subcommand.ReportTaskRun;
+import io.littlehorse.common.model.command.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
 import io.littlehorse.common.model.command.subcommand.RunWf;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
@@ -43,7 +43,7 @@ public class Command extends LHSerializable<CommandPb> {
     public Date time;
 
     public CommandCase type;
-    public ReportTaskRun reportTaskRun;
+    public ReportTaskRunModel reportTaskRun;
     public TaskClaimEvent taskClaimEvent;
     public PutExternalEventRequestModel putExternalEventRequest;
     public PutWfSpecRequestModel putWfSpecRequest;
@@ -182,7 +182,7 @@ public class Command extends LHSerializable<CommandPb> {
         type = p.getCommandCase();
         switch (type) {
             case REPORT_TASK_RUN:
-                reportTaskRun = ReportTaskRun.fromProto(p.getReportTaskRun());
+                reportTaskRun = ReportTaskRunModel.fromProto(p.getReportTaskRun());
                 break;
             case TASK_CLAIM_EVENT:
                 taskClaimEvent = TaskClaimEvent.fromProto(p.getTaskClaimEvent());
@@ -368,9 +368,9 @@ public class Command extends LHSerializable<CommandPb> {
         } else if (cls.equals(PutExternalEventRequestModel.class)) {
             type = CommandCase.PUT_EXTERNAL_EVENT;
             putExternalEventRequest = (PutExternalEventRequestModel) cmd;
-        } else if (cls.equals(ReportTaskRun.class)) {
+        } else if (cls.equals(ReportTaskRunModel.class)) {
             type = CommandCase.REPORT_TASK_RUN;
-            reportTaskRun = (ReportTaskRun) cmd;
+            reportTaskRun = (ReportTaskRunModel) cmd;
         } else if (cls.equals(TaskClaimEvent.class)) {
             type = CommandCase.TASK_CLAIM_EVENT;
             taskClaimEvent = (TaskClaimEvent) cmd;

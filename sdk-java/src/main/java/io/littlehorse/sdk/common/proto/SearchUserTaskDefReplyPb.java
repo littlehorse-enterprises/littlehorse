@@ -51,19 +51,19 @@ private static final long serialVersionUID = 0L;
   public static final int CODE_FIELD_NUMBER = 1;
   private int code_ = 0;
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   @java.lang.Override public int getCodeValue() {
     return code_;
   }
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The code.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.LHResponseCodePb getCode() {
-    io.littlehorse.sdk.common.proto.LHResponseCodePb result = io.littlehorse.sdk.common.proto.LHResponseCodePb.forNumber(code_);
-    return result == null ? io.littlehorse.sdk.common.proto.LHResponseCodePb.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.LHResponseCode getCode() {
+    io.littlehorse.sdk.common.proto.LHResponseCode result = io.littlehorse.sdk.common.proto.LHResponseCode.forNumber(code_);
+    return result == null ? io.littlehorse.sdk.common.proto.LHResponseCode.UNRECOGNIZED : result;
   }
 
   public static final int MESSAGE_FIELD_NUMBER = 2;
@@ -187,7 +187,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCodePb.OK.getNumber()) {
+    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCode.OK.getNumber()) {
       output.writeEnum(1, code_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
@@ -208,7 +208,7 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCodePb.OK.getNumber()) {
+    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCode.OK.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(1, code_);
     }
@@ -630,14 +630,14 @@ private static final long serialVersionUID = 0L;
 
     private int code_ = 0;
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @return The enum numeric value on the wire for code.
      */
     @java.lang.Override public int getCodeValue() {
       return code_;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @param value The enum numeric value on the wire for code to set.
      * @return This builder for chaining.
      */
@@ -648,20 +648,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @return The code.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.LHResponseCodePb getCode() {
-      io.littlehorse.sdk.common.proto.LHResponseCodePb result = io.littlehorse.sdk.common.proto.LHResponseCodePb.forNumber(code_);
-      return result == null ? io.littlehorse.sdk.common.proto.LHResponseCodePb.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.LHResponseCode getCode() {
+      io.littlehorse.sdk.common.proto.LHResponseCode result = io.littlehorse.sdk.common.proto.LHResponseCode.forNumber(code_);
+      return result == null ? io.littlehorse.sdk.common.proto.LHResponseCode.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @param value The code to set.
      * @return This builder for chaining.
      */
-    public Builder setCode(io.littlehorse.sdk.common.proto.LHResponseCodePb value) {
+    public Builder setCode(io.littlehorse.sdk.common.proto.LHResponseCode value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -671,7 +671,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+     * <code>.littlehorse.LHResponseCode code = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearCode() {

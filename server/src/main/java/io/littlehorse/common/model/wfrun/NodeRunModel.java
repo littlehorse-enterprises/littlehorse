@@ -5,18 +5,18 @@ import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.NodeModel;
 import io.littlehorse.common.model.objectId.NodeRunIdModel;
-import io.littlehorse.common.model.objectId.WfSpecId;
-import io.littlehorse.common.model.wfrun.subnoderun.EntrypointRun;
-import io.littlehorse.common.model.wfrun.subnoderun.ExitRun;
-import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRun;
-import io.littlehorse.common.model.wfrun.subnoderun.SleepNodeRun;
-import io.littlehorse.common.model.wfrun.subnoderun.StartThreadRun;
-import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRun;
-import io.littlehorse.common.model.wfrun.subnoderun.UserTaskNodeRun;
-import io.littlehorse.common.model.wfrun.subnoderun.WaitForThreadsRun;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.model.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.wfrun.subnoderun.EntrypointRunModel;
+import io.littlehorse.common.model.wfrun.subnoderun.ExitRunModel;
+import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRunModel;
+import io.littlehorse.common.model.wfrun.subnoderun.SleepNodeRunModel;
+import io.littlehorse.common.model.wfrun.subnoderun.StartThreadRunModel;
+import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRunModel;
+import io.littlehorse.common.model.wfrun.subnoderun.UserTaskNodeRunModel;
+import io.littlehorse.common.model.wfrun.subnoderun.WaitForThreadsRunModel;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.FailurePb;
+import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NodeRun;
@@ -48,24 +48,24 @@ public class NodeRunModel extends Getable<NodeRun> {
     public Date arrivalTime;
     public Date endTime;
 
-    public WfSpecId wfSpecId;
+    public WfSpecIdModel wfSpecId;
     public String wfSpecName;
     public String threadSpecName;
     public String nodeName;
 
     public String errorMessage;
 
-    public List<Failure> failures;
+    public List<FailureModel> failures;
 
-    public ExternalEventRun externalEventRun;
-    public TaskNodeRun taskRun;
+    public ExternalEventRunModel externalEventRun;
+    public TaskNodeRunModel taskRun;
     public NodeTypeCase type;
-    public ExitRun exitRun;
-    public EntrypointRun entrypointRun;
-    public StartThreadRun startThreadRun;
-    public WaitForThreadsRun waitThreadsRun;
-    public SleepNodeRun sleepNodeRun;
-    public UserTaskNodeRun userTaskRun;
+    public ExitRunModel exitRun;
+    public EntrypointRunModel entrypointRun;
+    public StartThreadRunModel startThreadRun;
+    public WaitForThreadsRunModel waitThreadsRun;
+    public SleepNodeRunModel sleepNodeRun;
+    public UserTaskNodeRunModel userTaskRun;
 
     public List<Integer> failureHandlerIds;
 
@@ -98,7 +98,7 @@ public class NodeRunModel extends Getable<NodeRun> {
         threadRunModelDoNotUseMe = threadRunModel;
     }
 
-    public Failure getLatestFailure() {
+    public FailureModel getLatestFailure() {
         if (failures.size() == 0) return null;
         return failures.get(failures.size() - 1);
     }
@@ -123,7 +123,7 @@ public class NodeRunModel extends Getable<NodeRun> {
                     Pair.of("status", GetableIndex.ValueType.SINGLE),
                     Pair.of("type", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.LOCAL)
+                Optional.of(TagStorageType.LOCAL)
             )
         );
     }
@@ -131,7 +131,7 @@ public class NodeRunModel extends Getable<NodeRun> {
     @Override
     public List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageTypePb> tagStorageTypePb
+        Optional<TagStorageType> tagStorageTypePb
     ) {
         switch (key) {
             case "status" -> {
@@ -139,7 +139,7 @@ public class NodeRunModel extends Getable<NodeRun> {
                     new IndexedField(
                         key,
                         this.getStatus().toString(),
-                        TagStorageTypePb.LOCAL
+                        TagStorageType.LOCAL
                     )
                 );
             }
@@ -148,7 +148,7 @@ public class NodeRunModel extends Getable<NodeRun> {
                     new IndexedField(
                         key,
                         this.getType().toString(),
-                        TagStorageTypePb.LOCAL
+                        TagStorageType.LOCAL
                     )
                 );
             }
@@ -168,7 +168,7 @@ public class NodeRunModel extends Getable<NodeRun> {
             endTime = LHUtil.fromProtoTs(proto.getEndTime());
         }
 
-        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecId.class);
+        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class);
         threadSpecName = proto.getThreadSpecName();
         nodeName = proto.getNodeName();
         status = proto.getStatus();
@@ -179,40 +179,42 @@ public class NodeRunModel extends Getable<NodeRun> {
         switch (type) {
             case TASK:
                 taskRun =
-                    LHSerializable.fromProto(proto.getTask(), TaskNodeRun.class);
+                    LHSerializable.fromProto(proto.getTask(), TaskNodeRunModel.class);
                 break;
             case EXTERNAL_EVENT:
                 externalEventRun =
-                    ExternalEventRun.fromProto(proto.getExternalEvent());
+                    ExternalEventRunModel.fromProto(proto.getExternalEvent());
                 break;
             case EXIT:
-                exitRun = ExitRun.fromProto(proto.getExit());
+                exitRun = ExitRunModel.fromProto(proto.getExit());
                 break;
             case ENTRYPOINT:
-                entrypointRun = EntrypointRun.fromProto(proto.getEntrypoint());
+                entrypointRun = EntrypointRunModel.fromProto(proto.getEntrypoint());
                 break;
             case START_THREAD:
-                startThreadRun = StartThreadRun.fromProto(proto.getStartThread());
+                startThreadRun =
+                    StartThreadRunModel.fromProto(proto.getStartThread());
                 break;
             case WAIT_THREADS:
-                waitThreadsRun = WaitForThreadsRun.fromProto(proto.getWaitThreads());
+                waitThreadsRun =
+                    WaitForThreadsRunModel.fromProto(proto.getWaitThreads());
                 break;
             case SLEEP:
-                sleepNodeRun = SleepNodeRun.fromProto(proto.getSleep());
+                sleepNodeRun = SleepNodeRunModel.fromProto(proto.getSleep());
                 break;
             case USER_TASK:
                 userTaskRun =
                     LHSerializable.fromProto(
                         proto.getUserTask(),
-                        UserTaskNodeRun.class
+                        UserTaskNodeRunModel.class
                     );
                 break;
             case NODETYPE_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
 
-        for (FailurePb failure : proto.getFailuresList()) {
-            failures.add(Failure.fromProto(failure));
+        for (Failure failure : proto.getFailuresList()) {
+            failures.add(FailureModel.fromProto(failure));
         }
         for (int handlerId : proto.getFailureHandlerIdsList()) {
             failureHandlerIds.add(handlerId);
@@ -246,30 +248,30 @@ public class NodeRunModel extends Getable<NodeRun> {
 
     public void setSubNodeRun(SubNodeRun<?> snr) {
         Class<?> cls = snr.getClass();
-        if (cls.equals(TaskNodeRun.class)) {
+        if (cls.equals(TaskNodeRunModel.class)) {
             type = NodeTypeCase.TASK;
-            taskRun = (TaskNodeRun) snr;
-        } else if (cls.equals(EntrypointRun.class)) {
+            taskRun = (TaskNodeRunModel) snr;
+        } else if (cls.equals(EntrypointRunModel.class)) {
             type = NodeTypeCase.ENTRYPOINT;
-            entrypointRun = (EntrypointRun) snr;
-        } else if (cls.equals(ExitRun.class)) {
+            entrypointRun = (EntrypointRunModel) snr;
+        } else if (cls.equals(ExitRunModel.class)) {
             type = NodeTypeCase.EXIT;
-            exitRun = (ExitRun) snr;
-        } else if (cls.equals(ExternalEventRun.class)) {
+            exitRun = (ExitRunModel) snr;
+        } else if (cls.equals(ExternalEventRunModel.class)) {
             type = NodeTypeCase.EXTERNAL_EVENT;
-            externalEventRun = (ExternalEventRun) snr;
-        } else if (cls.equals(StartThreadRun.class)) {
+            externalEventRun = (ExternalEventRunModel) snr;
+        } else if (cls.equals(StartThreadRunModel.class)) {
             type = NodeTypeCase.START_THREAD;
-            startThreadRun = (StartThreadRun) snr;
-        } else if (cls.equals(WaitForThreadsRun.class)) {
+            startThreadRun = (StartThreadRunModel) snr;
+        } else if (cls.equals(WaitForThreadsRunModel.class)) {
             type = NodeTypeCase.WAIT_THREADS;
-            waitThreadsRun = (WaitForThreadsRun) snr;
-        } else if (cls.equals(SleepNodeRun.class)) {
+            waitThreadsRun = (WaitForThreadsRunModel) snr;
+        } else if (cls.equals(SleepNodeRunModel.class)) {
             type = NodeTypeCase.SLEEP;
-            sleepNodeRun = (SleepNodeRun) snr;
-        } else if (cls.equals(UserTaskNodeRun.class)) {
+            sleepNodeRun = (SleepNodeRunModel) snr;
+        } else if (cls.equals(UserTaskNodeRunModel.class)) {
             type = NodeTypeCase.USER_TASK;
-            userTaskRun = (UserTaskNodeRun) snr;
+            userTaskRun = (UserTaskNodeRunModel) snr;
         } else {
             throw new RuntimeException("Didn't recognize " + snr.getClass());
         }
@@ -321,7 +323,7 @@ public class NodeRunModel extends Getable<NodeRun> {
             case NODETYPE_NOT_SET:
         }
 
-        for (Failure failure : failures) {
+        for (FailureModel failure : failures) {
             out.addFailures(failure.toProto());
         }
         for (Integer id : failureHandlerIds) {
@@ -395,7 +397,7 @@ public class NodeRunModel extends Getable<NodeRun> {
         getThreadRun().completeCurrentNode(output, time);
     }
 
-    public void fail(Failure failure, Date time) {
+    public void fail(FailureModel failure, Date time) {
         this.failures.add(failure);
         endTime = time;
         status = LHStatus.ERROR;

@@ -142,58 +142,58 @@ public interface ThreadRunOrBuilder extends
   int getParentThreadId();
 
   /**
-   * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+   * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReasonPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReason> 
       getHaltReasonsList();
   /**
-   * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+   * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
    */
-  io.littlehorse.sdk.common.proto.ThreadHaltReasonPb getHaltReasons(int index);
+  io.littlehorse.sdk.common.proto.ThreadHaltReason getHaltReasons(int index);
   /**
-   * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+   * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
    */
   int getHaltReasonsCount();
   /**
-   * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+   * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadHaltReasonPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadHaltReasonOrBuilder> 
       getHaltReasonsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+   * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
    */
-  io.littlehorse.sdk.common.proto.ThreadHaltReasonPbOrBuilder getHaltReasonsOrBuilder(
+  io.littlehorse.sdk.common.proto.ThreadHaltReasonOrBuilder getHaltReasonsOrBuilder(
       int index);
 
   /**
-   * <code>optional .littlehorse.ExternalEventIdPb interrupt_trigger_id = 14;</code>
+   * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
    * @return Whether the interruptTriggerId field is set.
    */
   boolean hasInterruptTriggerId();
   /**
-   * <code>optional .littlehorse.ExternalEventIdPb interrupt_trigger_id = 14;</code>
+   * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
    * @return The interruptTriggerId.
    */
-  io.littlehorse.sdk.common.proto.ExternalEventIdPb getInterruptTriggerId();
+  io.littlehorse.sdk.common.proto.ExternalEventId getInterruptTriggerId();
   /**
-   * <code>optional .littlehorse.ExternalEventIdPb interrupt_trigger_id = 14;</code>
+   * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
    */
-  io.littlehorse.sdk.common.proto.ExternalEventIdPbOrBuilder getInterruptTriggerIdOrBuilder();
+  io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getInterruptTriggerIdOrBuilder();
 
   /**
-   * <code>optional .littlehorse.FailureBeingHandledPb failure_being_handled = 15;</code>
+   * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
    * @return Whether the failureBeingHandled field is set.
    */
   boolean hasFailureBeingHandled();
   /**
-   * <code>optional .littlehorse.FailureBeingHandledPb failure_being_handled = 15;</code>
+   * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
    * @return The failureBeingHandled.
    */
-  io.littlehorse.sdk.common.proto.FailureBeingHandledPb getFailureBeingHandled();
+  io.littlehorse.sdk.common.proto.FailureBeingHandled getFailureBeingHandled();
   /**
-   * <code>optional .littlehorse.FailureBeingHandledPb failure_being_handled = 15;</code>
+   * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
    */
-  io.littlehorse.sdk.common.proto.FailureBeingHandledPbOrBuilder getFailureBeingHandledOrBuilder();
+  io.littlehorse.sdk.common.proto.FailureBeingHandledOrBuilder getFailureBeingHandledOrBuilder();
 
   /**
    * <code>int32 current_node_position = 16;</code>
@@ -219,13 +219,13 @@ public interface ThreadRunOrBuilder extends
   int getHandledFailedChildren(int index);
 
   /**
-   * <code>.littlehorse.ThreadTypePb type = 18;</code>
+   * <code>.littlehorse.ThreadType type = 18;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
-   * <code>.littlehorse.ThreadTypePb type = 18;</code>
+   * <code>.littlehorse.ThreadType type = 18;</code>
    * @return The type.
    */
-  io.littlehorse.sdk.common.proto.ThreadTypePb getType();
+  io.littlehorse.sdk.common.proto.ThreadType getType();
 }

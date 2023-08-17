@@ -2,27 +2,27 @@ package io.littlehorse.sdk.worker.internal;
 
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.HostInfoPb;
+import io.littlehorse.sdk.common.proto.HostInfo;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
-import io.littlehorse.sdk.common.proto.PollTaskPb;
-import io.littlehorse.sdk.common.proto.PollTaskReplyPb;
-import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
+import io.littlehorse.sdk.common.proto.PollTaskRequest;
+import io.littlehorse.sdk.common.proto.PollTaskResponse;
+import io.littlehorse.sdk.common.proto.ScheduledTask;
 import java.io.Closeable;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class LHServerConnection
-    implements Closeable, StreamObserver<PollTaskReplyPb> {
+    implements Closeable, StreamObserver<PollTaskResponse> {
 
     private LHServerConnectionManager manager;
-    private HostInfoPb host;
+    private HostInfo host;
 
     private boolean stillRunning;
-    private StreamObserver<PollTaskPb> pollClient;
+    private StreamObserver<PollTaskRequest> pollClient;
     private LHPublicApiStub stub;
 
-    public LHServerConnection(LHServerConnectionManager manager, HostInfoPb host)
+    public LHServerConnection(LHServerConnectionManager manager, HostInfo host)
         throws IOException {
         stillRunning = true;
         this.manager = manager;
@@ -51,9 +51,9 @@ public class LHServerConnection
     }
 
     @Override
-    public void onNext(PollTaskReplyPb taskToDo) {
+    public void onNext(PollTaskResponse taskToDo) {
         if (taskToDo.hasResult()) {
-            ScheduledTaskPb scheduledTask = taskToDo.getResult();
+            ScheduledTask scheduledTask = taskToDo.getResult();
             String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource());
             log.info("Received task schedule request for wfRun {}", wfRunId);
 
@@ -77,11 +77,11 @@ public class LHServerConnection
         }
     }
 
-    public HostInfoPb getHostInfo() {
+    public HostInfo getHostInfo() {
         return host;
     }
 
-    public boolean isSameAs(HostInfoPb other) {
+    public boolean isSameAs(HostInfo other) {
         return (
             this.host.getHost().equals(other.getHost()) &&
             this.host.getPort() == other.getPort()
@@ -91,7 +91,7 @@ public class LHServerConnection
     private void askForMoreWork() {
         log.debug("Asking for more work on {}:{}", host.getHost(), host.getPort());
         pollClient.onNext(
-            PollTaskPb
+            PollTaskRequest
                 .newBuilder()
                 .setClientId(manager.config.getClientId())
                 .setTaskDefName(manager.taskDef.getName())

@@ -98,7 +98,7 @@ message InternalScanPb {
     ScanResultTypePb result_type = 1;
     int32 limit = 2;
     optional BookmarkPb bookmark = 3;
-    GetableClassEnumPb object_type = 4;
+    GetableClassEnum object_type = 4;
     string store_name = 5;
 
     // If this is set: Remote Tag Scan
@@ -149,7 +149,7 @@ message InternalScanReplyPb {
 message InternalGetAdvertisedHostsPb {}
 
 message InternalGetAdvertisedHostsReplyPb {
-    map<string, HostInfoPb> hosts = 1;
+    map<string, HostInfo> hosts = 1;
 }
 
 service LHInternals {
@@ -220,7 +220,7 @@ message RepartitionCommandPb {
 }
 
 // Stuff for Index (internal to the store)
-enum GetableClassEnumPb {
+enum GetableClassEnum {
     TASK_DEF = 0;
     EXTERNAL_EVENT_DEF = 1;
     WF_SPEC = 2;
@@ -241,20 +241,20 @@ message AttributePb {
     string val = 2;
 }
 
-enum TagStorageTypePb {
+enum TagStorageType {
     LOCAL = 0;
     REMOTE = 1;
 }
 
 message TagPb {
     // The following info is also stored in the key of the Tag in the store.
-    GetableClassEnumPb object_type = 1;
+    GetableClassEnum object_type = 1;
     repeated AttributePb attributes = 2;
     string described_object_id = 3;
     google.protobuf.Timestamp created = 4;
 
     // The following is not stored in the key.
-    TagStorageTypePb tag_type = 5;
+    TagStorageType tag_type = 5;
 
     string store_key = 7;
 
@@ -274,7 +274,7 @@ message TagsCachePb {
 message StoredGetablePb {
     TagsCachePb index_cache = 1;
     bytes getable_payload = 2;
-    GetableClassEnumPb type = 3;
+    GetableClassEnum type = 3;
 }
 
 // This section defines the "Command"
@@ -285,7 +285,7 @@ message WfRunRequestPb {
 }
 
 message TaskClaimEventPb {
-    TaskRunIdPb task_run_id = 1;
+    TaskRunId task_run_id = 1;
     google.protobuf.Timestamp time = 2;
     string task_worker_id = 3;
     optional string task_worker_version = 4;
@@ -328,7 +328,7 @@ message CommandPb {
     google.protobuf.Timestamp time = 1;
     optional string command_id = 2;
     oneof command {
-        ReportTaskRunPb report_task_run = 3;
+        ReportTaskRun report_task_run = 3;
         TaskClaimEventPb task_claim_event = 4;
         PutWfSpecRequest put_wf_spec = 6;
         PutTaskDefRequest put_task_def = 7;

@@ -1,23 +1,23 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
-import io.littlehorse.common.model.objectId.ExternalEventId;
-import io.littlehorse.sdk.common.proto.ExternalEventIdPb;
+import io.littlehorse.common.model.objectId.ExternalEventIdModel;
+import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.sdk.common.proto.SearchExternalEventReplyPb;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class SearchExternalEventReply
-    extends PublicScanReply<SearchExternalEventReplyPb, ExternalEventIdPb, ExternalEventId> {
+    extends PublicScanReply<SearchExternalEventReplyPb, ExternalEventId, ExternalEventIdModel> {
 
     public Class<SearchExternalEventReplyPb> getProtoBaseClass() {
         return SearchExternalEventReplyPb.class;
     }
 
-    public Class<ExternalEventIdPb> getResultProtoClass() {
-        return ExternalEventIdPb.class;
+    public Class<ExternalEventId> getResultProtoClass() {
+        return ExternalEventId.class;
     }
 
-    public Class<ExternalEventId> getResultJavaClass() {
-        return ExternalEventId.class;
+    public Class<ExternalEventIdModel> getResultJavaClass() {
+        return ExternalEventIdModel.class;
     }
     // public SearchExternalEventReplyPb.Builder toProto() {
     //     SearchExternalEventReplyPb.Builder out = SearchExternalEventReplyPb
@@ -39,7 +39,7 @@ public class SearchExternalEventReply
     //     if (p.hasMessage()) message = p.getMessage();
     //     if (p.hasBookmark()) bookmark = p.getBookmark();
 
-    //     for (ExternalEventIdPb id : p.getIdsList()) {
+    //     for (ExternalEventId id : p.getIdsList()) {
     //         results.add(LHSerializable.fromProto(id, ExternalEventId.class));
     //     }
     // }

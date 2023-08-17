@@ -2,11 +2,11 @@ package io.littlehorse.common.model.meta;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.objectId.TaskDefId;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.model.objectId.TaskDefIdModel;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskDef;
-import io.littlehorse.sdk.common.proto.TaskDefIdPb;
+import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
@@ -41,14 +41,14 @@ public class TaskDefModel extends Getable<TaskDef> {
         return List.of();
     }
 
-    public TaskDefId getObjectId() {
-        return new TaskDefId(name);
+    public TaskDefIdModel getObjectId() {
+        return new TaskDefIdModel(name);
     }
 
     @Override
     public List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageTypePb> tagStorageTypePb
+        Optional<TagStorageType> tagStorageTypePb
     ) {
         return List.of();
     }
@@ -85,7 +85,7 @@ public class TaskDefModel extends Getable<TaskDef> {
         return out;
     }
 
-    public static TaskDefIdPb parseId(String fullId) {
-        return TaskDefIdPb.newBuilder().setName(fullId).build();
+    public static TaskDefId parseId(String fullId) {
+        return TaskDefId.newBuilder().setName(fullId).build();
     }
 }

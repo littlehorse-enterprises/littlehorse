@@ -18,19 +18,19 @@ import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.meta.ExternalEventDefModel;
-import io.littlehorse.common.model.meta.Host;
+import io.littlehorse.common.model.meta.HostModel;
 import io.littlehorse.common.model.meta.TaskDefModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.objectId.ExternalEventDefIdModel;
-import io.littlehorse.common.model.objectId.TaskDefId;
+import io.littlehorse.common.model.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
-import io.littlehorse.common.model.objectId.WfSpecId;
+import io.littlehorse.common.model.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
-import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalGetAdvertisedHostsPb;
 import io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb;
 import io.littlehorse.common.proto.InternalScanPb;
@@ -57,7 +57,6 @@ import io.littlehorse.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.HostInfoPb;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;
@@ -309,23 +308,25 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    public Set<Host> getAllInternalHosts() {
+    public Set<HostModel> getAllInternalHosts() {
         // It returns a sorted collection always
         return coreStreams
             .metadataForAllStreamsClients()
             .stream()
             .map(meta -> meta.hostInfo())
-            .map(hostInfo -> new Host(hostInfo.host(), hostInfo.port()))
+            .map(hostInfo -> new HostModel(hostInfo.host(), hostInfo.port()))
             .collect(Collectors.toCollection(TreeSet::new));
     }
 
-    public HostInfoPb getAdvertisedHost(Host host, String listenerName)
-        throws LHBadRequestError, LHConnectionError {
+    public io.littlehorse.sdk.common.proto.HostInfo getAdvertisedHost(
+        HostModel host,
+        String listenerName
+    ) throws LHBadRequestError, LHConnectionError {
         InternalGetAdvertisedHostsReplyPb advertisedHostsForHost = getPublicListenersForHost(
             new HostInfo(host.host, host.port)
         );
 
-        HostInfoPb desiredHost = advertisedHostsForHost.getHostsOrDefault(
+        io.littlehorse.sdk.common.proto.HostInfo desiredHost = advertisedHostsForHost.getHostsOrDefault(
             listenerName,
             null
         );
@@ -343,13 +344,14 @@ public class BackendInternalComms implements Closeable {
         return desiredHost;
     }
 
-    public List<HostInfoPb> getAllAdvertisedHosts(String listenerName)
-        throws LHBadRequestError {
-        Set<Host> hosts = getAllInternalHosts();
+    public List<io.littlehorse.sdk.common.proto.HostInfo> getAllAdvertisedHosts(
+        String listenerName
+    ) throws LHBadRequestError {
+        Set<HostModel> hosts = getAllInternalHosts();
 
-        List<HostInfoPb> out = new ArrayList<>();
+        List<io.littlehorse.sdk.common.proto.HostInfo> out = new ArrayList<>();
 
-        for (Host host : hosts) {
+        for (HostModel host : hosts) {
             try {
                 out.add(getAdvertisedHost(host, listenerName));
             } catch (LHConnectionError e) {
@@ -791,14 +793,14 @@ public class BackendInternalComms implements Closeable {
             InternalGetAdvertisedHostsPb req,
             StreamObserver<InternalGetAdvertisedHostsReplyPb> ctx
         ) {
-            Map<String, HostInfoPb> hosts = config
+            Map<String, io.littlehorse.sdk.common.proto.HostInfo> hosts = config
                 .getAdvertisedListeners()
                 .stream()
                 .collect(
                     Collectors.toMap(
                         AdvertisedListenerConfig::getName,
                         listenerConfig ->
-                            HostInfoPb
+                            io.littlehorse.sdk.common.proto.HostInfo
                                 .newBuilder()
                                 .setHost(listenerConfig.getHost())
                                 .setPort(listenerConfig.getPort())
@@ -1003,7 +1005,7 @@ public class BackendInternalComms implements Closeable {
     private ByteString iterKeyValueToInternalScanResult(
         LHIterKeyValue<? extends Storeable<?>> next,
         ScanResultTypePb resultType,
-        GetableClassEnumPb objectType
+        GetableClassEnum objectType
     ) {
         if (resultType == ScanResultTypePb.OBJECT) {
             return ByteString.copyFrom(next.getValue().toBytes(config));
@@ -1225,7 +1227,7 @@ public class BackendInternalComms implements Closeable {
         TagScanPb tagPrefixScan,
         PartitionBookmarkPb bookmark,
         int limit,
-        GetableClassEnumPb objectType,
+        GetableClassEnum objectType,
         int partition,
         LHROStoreWrapper store
     ) {
@@ -1343,7 +1345,7 @@ class GlobalMetaStoresServerImpl implements LHGlobalMetaStores {
     public WfSpecModel getWfSpec(String name, Integer version) {
         if (version != null) {
             return store.get(
-                new WfSpecId(name, version).toString(),
+                new WfSpecIdModel(name, version).toString(),
                 WfSpecModel.class
             );
         } else {
@@ -1352,7 +1354,7 @@ class GlobalMetaStoresServerImpl implements LHGlobalMetaStores {
     }
 
     public TaskDefModel getTaskDef(String name) {
-        return store.get(new TaskDefId(name).toString(), TaskDefModel.class);
+        return store.get(new TaskDefIdModel(name).toString(), TaskDefModel.class);
     }
 
     public ExternalEventDefModel getExternalEventDef(String name) {

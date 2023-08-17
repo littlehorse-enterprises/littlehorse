@@ -11,10 +11,10 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommand.internals.RoundRobinAssignor;
 import io.littlehorse.common.model.command.subcommand.internals.TaskWorkerAssignor;
 import io.littlehorse.common.model.command.subcommandresponse.RegisterTaskWorkerReply;
-import io.littlehorse.common.model.meta.Host;
-import io.littlehorse.common.model.meta.TaskWorkerGroup;
-import io.littlehorse.common.model.meta.TaskWorkerMetadata;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.common.model.meta.HostModel;
+import io.littlehorse.common.model.meta.TaskWorkerGroupModel;
+import io.littlehorse.common.model.meta.TaskWorkerMetadataModel;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb;
 import io.littlehorse.server.streamsimpl.util.InternalHosts;
 import java.time.Duration;
@@ -32,7 +32,7 @@ public class TaskWorkerHeartBeat extends SubCommand<TaskWorkerHeartBeatPb> {
     public String taskDefName;
     public String listenerName;
     private TaskWorkerAssignor assignor;
-    private Set<Host> hosts;
+    private Set<HostModel> hosts;
 
     public TaskWorkerHeartBeat() {
         assignor = new RoundRobinAssignor();
@@ -47,11 +47,11 @@ public class TaskWorkerHeartBeat extends SubCommand<TaskWorkerHeartBeatPb> {
         log.debug("Processing a heartbeat");
 
         // Get the group, a group contains all the task worker for that specific task
-        TaskWorkerGroup taskWorkerGroup = dao.getTaskWorkerGroup(taskDefName);
+        TaskWorkerGroupModel taskWorkerGroup = dao.getTaskWorkerGroup(taskDefName);
 
         // If it does not exist then create it with empty workers
         if (taskWorkerGroup == null) {
-            taskWorkerGroup = new TaskWorkerGroup();
+            taskWorkerGroup = new TaskWorkerGroupModel();
             taskWorkerGroup.createdAt = new Date();
             taskWorkerGroup.taskDefName = taskDefName;
         }
@@ -61,12 +61,14 @@ public class TaskWorkerHeartBeat extends SubCommand<TaskWorkerHeartBeatPb> {
 
         // Get the specific worker, each worker is supposed to have a unique client id
         boolean isANewTaskWorker = false;
-        TaskWorkerMetadata taskWorker = taskWorkerGroup.taskWorkers.get(clientId);
+        TaskWorkerMetadataModel taskWorker = taskWorkerGroup.taskWorkers.get(
+            clientId
+        );
 
         // If it is null then create it and add it to the task worker group
         if (taskWorker == null) {
             isANewTaskWorker = true;
-            taskWorker = new TaskWorkerMetadata();
+            taskWorker = new TaskWorkerMetadataModel();
             taskWorker.clientId = clientId;
             taskWorkerGroup.taskWorkers.put(clientId, taskWorker);
         }
@@ -98,16 +100,16 @@ public class TaskWorkerHeartBeat extends SubCommand<TaskWorkerHeartBeatPb> {
         return internalHosts.hasChanges();
     }
 
-    private RegisterTaskWorkerReply prepareReply(LHDAO dao, Set<Host> hosts) {
+    private RegisterTaskWorkerReply prepareReply(LHDAO dao, Set<HostModel> hosts) {
         RegisterTaskWorkerReply reply = new RegisterTaskWorkerReply();
-        for (Host hostInfo : hosts) {
+        for (HostModel hostInfo : hosts) {
             try {
                 // Validate the host is reachable
                 reply.yourHosts.add(dao.getAdvertisedHost(hostInfo, listenerName));
             } catch (LHBadRequestError e) {
                 // Reply error if the listener name is not correct
                 log.error(e.getMessage(), e);
-                reply.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+                reply.code = LHResponseCode.BAD_REQUEST_ERROR;
                 reply.message = e.getMessage();
                 reply.yourHosts.clear();
                 return reply;
@@ -122,18 +124,18 @@ public class TaskWorkerHeartBeat extends SubCommand<TaskWorkerHeartBeatPb> {
         // This SHOULD be impossible unless there's a bug in LittleHorse.
         if (reply.yourHosts.isEmpty()) {
             log.error("Server hosts unavailable, this SHOULD be impossible");
-            reply.code = LHResponseCodePb.CONNECTION_ERROR;
+            reply.code = LHResponseCode.CONNECTION_ERROR;
             reply.message = "Server hosts unavailable";
             return reply;
         }
 
         // Everything went well so reply with ok
-        reply.code = LHResponseCodePb.OK;
+        reply.code = LHResponseCode.OK;
 
         return reply;
     }
 
-    private boolean removeInactiveWorkers(TaskWorkerGroup taskWorkerGroup) {
+    private boolean removeInactiveWorkers(TaskWorkerGroupModel taskWorkerGroup) {
         int sizeBeforeFiltering = taskWorkerGroup.taskWorkers.size();
 
         taskWorkerGroup.taskWorkers =

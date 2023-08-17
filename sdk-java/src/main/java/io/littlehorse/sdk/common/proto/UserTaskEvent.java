@@ -448,19 +448,19 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
+     * <code>.littlehorse.TaskRunId task_run = 1;</code>
      * @return Whether the taskRun field is set.
      */
     boolean hasTaskRun();
     /**
-     * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
+     * <code>.littlehorse.TaskRunId task_run = 1;</code>
      * @return The taskRun.
      */
-    io.littlehorse.sdk.common.proto.TaskRunIdPb getTaskRun();
+    io.littlehorse.sdk.common.proto.TaskRunId getTaskRun();
     /**
-     * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
+     * <code>.littlehorse.TaskRunId task_run = 1;</code>
      */
-    io.littlehorse.sdk.common.proto.TaskRunIdPbOrBuilder getTaskRunOrBuilder();
+    io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder getTaskRunOrBuilder();
   }
   /**
    * Protobuf type {@code littlehorse.UserTaskEvent.UTETaskExecuted}
@@ -503,9 +503,9 @@ private static final long serialVersionUID = 0L;
     }
 
     public static final int TASK_RUN_FIELD_NUMBER = 1;
-    private io.littlehorse.sdk.common.proto.TaskRunIdPb taskRun_;
+    private io.littlehorse.sdk.common.proto.TaskRunId taskRun_;
     /**
-     * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
+     * <code>.littlehorse.TaskRunId task_run = 1;</code>
      * @return Whether the taskRun field is set.
      */
     @java.lang.Override
@@ -513,19 +513,19 @@ private static final long serialVersionUID = 0L;
       return taskRun_ != null;
     }
     /**
-     * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
+     * <code>.littlehorse.TaskRunId task_run = 1;</code>
      * @return The taskRun.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskRunIdPb getTaskRun() {
-      return taskRun_ == null ? io.littlehorse.sdk.common.proto.TaskRunIdPb.getDefaultInstance() : taskRun_;
+    public io.littlehorse.sdk.common.proto.TaskRunId getTaskRun() {
+      return taskRun_ == null ? io.littlehorse.sdk.common.proto.TaskRunId.getDefaultInstance() : taskRun_;
     }
     /**
-     * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
+     * <code>.littlehorse.TaskRunId task_run = 1;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskRunIdPbOrBuilder getTaskRunOrBuilder() {
-      return taskRun_ == null ? io.littlehorse.sdk.common.proto.TaskRunIdPb.getDefaultInstance() : taskRun_;
+    public io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder getTaskRunOrBuilder() {
+      return taskRun_ == null ? io.littlehorse.sdk.common.proto.TaskRunId.getDefaultInstance() : taskRun_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -864,31 +864,31 @@ private static final long serialVersionUID = 0L;
       }
       private int bitField0_;
 
-      private io.littlehorse.sdk.common.proto.TaskRunIdPb taskRun_;
+      private io.littlehorse.sdk.common.proto.TaskRunId taskRun_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.TaskRunIdPb, io.littlehorse.sdk.common.proto.TaskRunIdPb.Builder, io.littlehorse.sdk.common.proto.TaskRunIdPbOrBuilder> taskRunBuilder_;
+          io.littlehorse.sdk.common.proto.TaskRunId, io.littlehorse.sdk.common.proto.TaskRunId.Builder, io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder> taskRunBuilder_;
       /**
-       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunId task_run = 1;</code>
        * @return Whether the taskRun field is set.
        */
       public boolean hasTaskRun() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunId task_run = 1;</code>
        * @return The taskRun.
        */
-      public io.littlehorse.sdk.common.proto.TaskRunIdPb getTaskRun() {
+      public io.littlehorse.sdk.common.proto.TaskRunId getTaskRun() {
         if (taskRunBuilder_ == null) {
-          return taskRun_ == null ? io.littlehorse.sdk.common.proto.TaskRunIdPb.getDefaultInstance() : taskRun_;
+          return taskRun_ == null ? io.littlehorse.sdk.common.proto.TaskRunId.getDefaultInstance() : taskRun_;
         } else {
           return taskRunBuilder_.getMessage();
         }
       }
       /**
-       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunId task_run = 1;</code>
        */
-      public Builder setTaskRun(io.littlehorse.sdk.common.proto.TaskRunIdPb value) {
+      public Builder setTaskRun(io.littlehorse.sdk.common.proto.TaskRunId value) {
         if (taskRunBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -902,10 +902,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunId task_run = 1;</code>
        */
       public Builder setTaskRun(
-          io.littlehorse.sdk.common.proto.TaskRunIdPb.Builder builderForValue) {
+          io.littlehorse.sdk.common.proto.TaskRunId.Builder builderForValue) {
         if (taskRunBuilder_ == null) {
           taskRun_ = builderForValue.build();
         } else {
@@ -916,13 +916,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunId task_run = 1;</code>
        */
-      public Builder mergeTaskRun(io.littlehorse.sdk.common.proto.TaskRunIdPb value) {
+      public Builder mergeTaskRun(io.littlehorse.sdk.common.proto.TaskRunId value) {
         if (taskRunBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0) &&
             taskRun_ != null &&
-            taskRun_ != io.littlehorse.sdk.common.proto.TaskRunIdPb.getDefaultInstance()) {
+            taskRun_ != io.littlehorse.sdk.common.proto.TaskRunId.getDefaultInstance()) {
             getTaskRunBuilder().mergeFrom(value);
           } else {
             taskRun_ = value;
@@ -935,7 +935,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunId task_run = 1;</code>
        */
       public Builder clearTaskRun() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -948,33 +948,33 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunId task_run = 1;</code>
        */
-      public io.littlehorse.sdk.common.proto.TaskRunIdPb.Builder getTaskRunBuilder() {
+      public io.littlehorse.sdk.common.proto.TaskRunId.Builder getTaskRunBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getTaskRunFieldBuilder().getBuilder();
       }
       /**
-       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunId task_run = 1;</code>
        */
-      public io.littlehorse.sdk.common.proto.TaskRunIdPbOrBuilder getTaskRunOrBuilder() {
+      public io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder getTaskRunOrBuilder() {
         if (taskRunBuilder_ != null) {
           return taskRunBuilder_.getMessageOrBuilder();
         } else {
           return taskRun_ == null ?
-              io.littlehorse.sdk.common.proto.TaskRunIdPb.getDefaultInstance() : taskRun_;
+              io.littlehorse.sdk.common.proto.TaskRunId.getDefaultInstance() : taskRun_;
         }
       }
       /**
-       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunId task_run = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.sdk.common.proto.TaskRunIdPb, io.littlehorse.sdk.common.proto.TaskRunIdPb.Builder, io.littlehorse.sdk.common.proto.TaskRunIdPbOrBuilder> 
+          io.littlehorse.sdk.common.proto.TaskRunId, io.littlehorse.sdk.common.proto.TaskRunId.Builder, io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder> 
           getTaskRunFieldBuilder() {
         if (taskRunBuilder_ == null) {
           taskRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.sdk.common.proto.TaskRunIdPb, io.littlehorse.sdk.common.proto.TaskRunIdPb.Builder, io.littlehorse.sdk.common.proto.TaskRunIdPbOrBuilder>(
+              io.littlehorse.sdk.common.proto.TaskRunId, io.littlehorse.sdk.common.proto.TaskRunId.Builder, io.littlehorse.sdk.common.proto.TaskRunIdOrBuilder>(
                   getTaskRun(),
                   getParentForChildren(),
                   isClean());

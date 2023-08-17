@@ -8,15 +8,15 @@ public interface ListExternalEventsReplyPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   int getCodeValue();
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The code.
    */
-  io.littlehorse.sdk.common.proto.LHResponseCodePb getCode();
+  io.littlehorse.sdk.common.proto.LHResponseCode getCode();
 
   /**
    * <code>optional string message = 2;</code>
@@ -36,26 +36,26 @@ public interface ListExternalEventsReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>repeated .littlehorse.ExternalEventPb results = 3;</code>
+   * <code>repeated .littlehorse.ExternalEvent results = 3;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.ExternalEventPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.ExternalEvent> 
       getResultsList();
   /**
-   * <code>repeated .littlehorse.ExternalEventPb results = 3;</code>
+   * <code>repeated .littlehorse.ExternalEvent results = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.ExternalEventPb getResults(int index);
+  io.littlehorse.sdk.common.proto.ExternalEvent getResults(int index);
   /**
-   * <code>repeated .littlehorse.ExternalEventPb results = 3;</code>
+   * <code>repeated .littlehorse.ExternalEvent results = 3;</code>
    */
   int getResultsCount();
   /**
-   * <code>repeated .littlehorse.ExternalEventPb results = 3;</code>
+   * <code>repeated .littlehorse.ExternalEvent results = 3;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.ExternalEventPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.ExternalEventOrBuilder> 
       getResultsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.ExternalEventPb results = 3;</code>
+   * <code>repeated .littlehorse.ExternalEvent results = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.ExternalEventPbOrBuilder getResultsOrBuilder(
+  io.littlehorse.sdk.common.proto.ExternalEventOrBuilder getResultsOrBuilder(
       int index);
 }

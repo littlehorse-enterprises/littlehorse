@@ -2,7 +2,7 @@ package io.littlehorse.common.model.meta;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.JsonIndex;
 import lombok.AllArgsConstructor;
@@ -39,9 +39,9 @@ public class JsonIndexModel extends LHSerializable<JsonIndex> {
         indexType = p.getIndexType();
     }
 
-    public TagStorageTypePb getTagStorageType() {
+    public TagStorageType getTagStorageType() {
         return indexType == IndexType.LOCAL_INDEX
-            ? TagStorageTypePb.LOCAL
-            : TagStorageTypePb.REMOTE;
+            ? TagStorageType.LOCAL
+            : TagStorageType.REMOTE;
     }
 }

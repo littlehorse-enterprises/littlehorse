@@ -1,23 +1,23 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
-import io.littlehorse.common.model.objectId.TaskDefId;
+import io.littlehorse.common.model.objectId.TaskDefIdModel;
 import io.littlehorse.sdk.common.proto.SearchTaskDefReplyPb;
-import io.littlehorse.sdk.common.proto.TaskDefIdPb;
+import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class SearchTaskDefReply
-    extends PublicScanReply<SearchTaskDefReplyPb, TaskDefIdPb, TaskDefId> {
+    extends PublicScanReply<SearchTaskDefReplyPb, TaskDefId, TaskDefIdModel> {
 
     public Class<SearchTaskDefReplyPb> getProtoBaseClass() {
         return SearchTaskDefReplyPb.class;
     }
 
-    public Class<TaskDefId> getResultJavaClass() {
-        return TaskDefId.class;
+    public Class<TaskDefIdModel> getResultJavaClass() {
+        return TaskDefIdModel.class;
     }
 
-    public Class<TaskDefIdPb> getResultProtoClass() {
-        return TaskDefIdPb.class;
+    public Class<TaskDefId> getResultProtoClass() {
+        return TaskDefId.class;
     }
     // public SearchTaskDefReplyPb.Builder toProto() {
     //     SearchTaskDefReplyPb.Builder out = SearchTaskDefReplyPb
@@ -39,7 +39,7 @@ public class SearchTaskDefReply
     //     if (p.hasMessage()) message = p.getMessage();
     //     if (p.hasBookmark()) bookmark = p.getBookmark().toByteArray();
 
-    //     for (TaskDefIdPb id : p.getIdsList()) {
+    //     for (TaskDefId id : p.getIdsList()) {
     //         objectIds.add(TaskDef.getObjectId(id));
     //     }
     // }

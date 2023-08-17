@@ -3,14 +3,14 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.objectId.TaskDefId;
+import io.littlehorse.common.model.objectId.TaskDefIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.SearchTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchTaskDefReplyPb;
-import io.littlehorse.sdk.common.proto.TaskDefIdPb;
+import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SearchTaskDef
-    extends PublicScanRequest<SearchTaskDefPb, SearchTaskDefReplyPb, TaskDefIdPb, TaskDefId, SearchTaskDefReply> {
+    extends PublicScanRequest<SearchTaskDefPb, SearchTaskDefReplyPb, TaskDefId, TaskDefIdModel, SearchTaskDefReply> {
 
     public String prefix;
 
@@ -27,8 +27,8 @@ public class SearchTaskDef
         return SearchTaskDefPb.class;
     }
 
-    public GetableClassEnumPb getObjectType() {
-        return GetableClassEnumPb.TASK_DEF;
+    public GetableClassEnum getObjectType() {
+        return GetableClassEnum.TASK_DEF;
     }
 
     public void initFrom(Message proto) {
@@ -64,9 +64,9 @@ public class SearchTaskDef
     }
 
     @Override
-    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        return TagStorageTypePb.LOCAL;
+        return TagStorageType.LOCAL;
     }
 
     @Override

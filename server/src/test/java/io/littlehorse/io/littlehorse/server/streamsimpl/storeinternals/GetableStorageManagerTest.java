@@ -7,12 +7,12 @@ import io.littlehorse.common.model.meta.JsonIndexModel;
 import io.littlehorse.common.model.meta.ThreadSpecModel;
 import io.littlehorse.common.model.meta.VariableDefModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.wfrun.ExternalEvent;
+import io.littlehorse.common.model.wfrun.ExternalEventModel;
 import io.littlehorse.common.model.wfrun.NodeRunModel;
-import io.littlehorse.common.model.wfrun.Variable;
+import io.littlehorse.common.model.wfrun.VariableModel;
 import io.littlehorse.common.model.wfrun.WfRunModel;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRunModel;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -179,7 +179,7 @@ public class GetableStorageManagerTest {
 
     @Test
     void storeBooleanVariableWithUserDefinedStorageType() {
-        Variable variable = TestUtil.variable("test-id");
+        VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.BOOL);
         variable.getValue().setBoolVal(true);
@@ -207,7 +207,7 @@ public class GetableStorageManagerTest {
 
     @Test
     void storeLocalStringVariableWithUserDefinedStorageType() {
-        Variable variable = TestUtil.variable("test-id");
+        VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.STR);
         variable.getValue().setStrVal("ThisShouldBeLocal");
@@ -237,7 +237,7 @@ public class GetableStorageManagerTest {
 
     @Test
     void storeRemoteStringVariableWithUserDefinedStorageType() {
-        Variable variable = TestUtil.variable("test-id");
+        VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.STR);
         variable.getValue().setStrVal("ThisShouldBeRemote");
@@ -277,7 +277,7 @@ public class GetableStorageManagerTest {
 
     @Test
     void storeLocalIntVariableWithUserDefinedStorageType() {
-        Variable variable = TestUtil.variable("test-id");
+        VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.INT);
         variable.getValue().setIntVal(20L);
@@ -307,7 +307,7 @@ public class GetableStorageManagerTest {
 
     @Test
     void storeRemoteIntVariableWithUserDefinedStorageType() {
-        Variable variable = TestUtil.variable("test-id");
+        VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.INT);
         variable.getValue().setIntVal(20L);
@@ -347,7 +347,7 @@ public class GetableStorageManagerTest {
 
     @Test
     void storeLocalDoubleVariableWithUserDefinedStorageType() {
-        Variable variable = TestUtil.variable("test-id");
+        VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.DOUBLE);
         variable.getValue().setDoubleVal(21.0);
@@ -377,7 +377,7 @@ public class GetableStorageManagerTest {
 
     @Test
     void storeRemoteDoubleVariableWithUserDefinedStorageType() {
-        Variable variable = TestUtil.variable("test-id");
+        VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.DOUBLE);
         variable.getValue().setDoubleVal(21.0);
@@ -431,7 +431,7 @@ public class GetableStorageManagerTest {
 
     @Test
     void storeLocalJsonVariablesWithUserDefinedStorageType() {
-        Variable variable = TestUtil.variable("test-id");
+        VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.JSON_OBJ);
         variable
@@ -492,7 +492,7 @@ public class GetableStorageManagerTest {
 
     @Test
     void storeRemoteJsonVariablesWithUserDefinedStorageType() {
-        Variable variable = TestUtil.variable("test-id");
+        VariableModel variable = TestUtil.variable("test-id");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.JSON_OBJ);
         variable
@@ -563,20 +563,20 @@ public class GetableStorageManagerTest {
     @MethodSource("provideNodeRunObjects")
     void storeNodeRun(
         NodeRunModel nodeRunModel,
-        List<Pair<String, TagStorageTypePb>> expectedStoreKeys,
+        List<Pair<String, TagStorageType>> expectedStoreKeys,
         NodeRun.NodeTypeCase nodeTypeCase
     ) {
         List<String> expectedLocalStoreKeys = expectedStoreKeys
             .stream()
             .filter(stringTagStorageTypePbPair ->
-                stringTagStorageTypePbPair.getValue() == TagStorageTypePb.LOCAL
+                stringTagStorageTypePbPair.getValue() == TagStorageType.LOCAL
             )
             .map(Pair::getKey)
             .toList();
         List<String> expectedRemoteStoreKeys = expectedStoreKeys
             .stream()
             .filter(stringTagStorageTypePbPair ->
-                stringTagStorageTypePbPair.getValue() == TagStorageTypePb.REMOTE
+                stringTagStorageTypePbPair.getValue() == TagStorageType.REMOTE
             )
             .map(Pair::getKey)
             .toList();
@@ -607,7 +607,7 @@ public class GetableStorageManagerTest {
             Arguments.of(
                 nodeRunModel,
                 List.of(
-                    Pair.of("4/__status_RUNNING__type_TASK", TagStorageTypePb.LOCAL)
+                    Pair.of("4/__status_RUNNING__type_TASK", TagStorageType.LOCAL)
                 ),
                 NodeRun.NodeTypeCase.TASK
             )
@@ -626,8 +626,8 @@ public class GetableStorageManagerTest {
 
     private static Stream<Arguments> provideGetableObjectsAndIds() {
         WfRunModel wfRunModel = TestUtil.wfRun("0000000");
-        TaskRun taskRun = TestUtil.taskRun();
-        Variable variable = TestUtil.variable("0000000");
+        TaskRunModel taskRun = TestUtil.taskRun();
+        VariableModel variable = TestUtil.variable("0000000");
         variable.setName("variableName");
         variable.getValue().setType(VariableType.STR);
         variable.getValue().setStrVal("ThisShouldBeLocal");
@@ -640,7 +640,7 @@ public class GetableStorageManagerTest {
                 variableDef1.setType(VariableType.STR);
                 threadSpec.setVariableDefs(List.of(variableDef1));
             });
-        ExternalEvent externalEvent = TestUtil.externalEvent();
+        ExternalEventModel externalEvent = TestUtil.externalEvent();
         WfSpecModel wfSpecModel = TestUtil.wfSpec("testWfSpecName");
         ThreadSpecModel threadSpecModel1 = TestUtil.threadSpec();
         threadSpecModel1

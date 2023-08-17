@@ -252,82 +252,82 @@ private static final long serialVersionUID = 0L;
 
   public static final int PENDING_INTERRUPTS_FIELD_NUMBER = 9;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.PendingInterruptPb> pendingInterrupts_;
+  private java.util.List<io.littlehorse.sdk.common.proto.PendingInterrupt> pendingInterrupts_;
   /**
-   * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+   * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.PendingInterruptPb> getPendingInterruptsList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.PendingInterrupt> getPendingInterruptsList() {
     return pendingInterrupts_;
   }
   /**
-   * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+   * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.PendingInterruptPbOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder> 
       getPendingInterruptsOrBuilderList() {
     return pendingInterrupts_;
   }
   /**
-   * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+   * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   @java.lang.Override
   public int getPendingInterruptsCount() {
     return pendingInterrupts_.size();
   }
   /**
-   * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+   * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PendingInterruptPb getPendingInterrupts(int index) {
+  public io.littlehorse.sdk.common.proto.PendingInterrupt getPendingInterrupts(int index) {
     return pendingInterrupts_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+   * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PendingInterruptPbOrBuilder getPendingInterruptsOrBuilder(
+  public io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder getPendingInterruptsOrBuilder(
       int index) {
     return pendingInterrupts_.get(index);
   }
 
   public static final int PENDING_FAILURES_FIELD_NUMBER = 10;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandlerPb> pendingFailures_;
+  private java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandler> pendingFailures_;
   /**
-   * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+   * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandlerPb> getPendingFailuresList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandler> getPendingFailuresList() {
     return pendingFailures_;
   }
   /**
-   * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+   * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.PendingFailureHandlerPbOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder> 
       getPendingFailuresOrBuilderList() {
     return pendingFailures_;
   }
   /**
-   * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+   * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   @java.lang.Override
   public int getPendingFailuresCount() {
     return pendingFailures_.size();
   }
   /**
-   * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+   * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PendingFailureHandlerPb getPendingFailures(int index) {
+  public io.littlehorse.sdk.common.proto.PendingFailureHandler getPendingFailures(int index) {
     return pendingFailures_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+   * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PendingFailureHandlerPbOrBuilder getPendingFailuresOrBuilder(
+  public io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder getPendingFailuresOrBuilder(
       int index) {
     return pendingFailures_.get(index);
   }
@@ -976,9 +976,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 66
             case 74: {
-              io.littlehorse.sdk.common.proto.PendingInterruptPb m =
+              io.littlehorse.sdk.common.proto.PendingInterrupt m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.PendingInterruptPb.parser(),
+                      io.littlehorse.sdk.common.proto.PendingInterrupt.parser(),
                       extensionRegistry);
               if (pendingInterruptsBuilder_ == null) {
                 ensurePendingInterruptsIsMutable();
@@ -989,9 +989,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 74
             case 82: {
-              io.littlehorse.sdk.common.proto.PendingFailureHandlerPb m =
+              io.littlehorse.sdk.common.proto.PendingFailureHandler m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.PendingFailureHandlerPb.parser(),
+                      io.littlehorse.sdk.common.proto.PendingFailureHandler.parser(),
                       extensionRegistry);
               if (pendingFailuresBuilder_ == null) {
                 ensurePendingFailuresIsMutable();
@@ -1725,22 +1725,22 @@ private static final long serialVersionUID = 0L;
       return threadRunsBuilder_;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.PendingInterruptPb> pendingInterrupts_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.PendingInterrupt> pendingInterrupts_ =
       java.util.Collections.emptyList();
     private void ensurePendingInterruptsIsMutable() {
       if (!((bitField0_ & 0x00000080) != 0)) {
-        pendingInterrupts_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.PendingInterruptPb>(pendingInterrupts_);
+        pendingInterrupts_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.PendingInterrupt>(pendingInterrupts_);
         bitField0_ |= 0x00000080;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.PendingInterruptPb, io.littlehorse.sdk.common.proto.PendingInterruptPb.Builder, io.littlehorse.sdk.common.proto.PendingInterruptPbOrBuilder> pendingInterruptsBuilder_;
+        io.littlehorse.sdk.common.proto.PendingInterrupt, io.littlehorse.sdk.common.proto.PendingInterrupt.Builder, io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder> pendingInterruptsBuilder_;
 
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.PendingInterruptPb> getPendingInterruptsList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.PendingInterrupt> getPendingInterruptsList() {
       if (pendingInterruptsBuilder_ == null) {
         return java.util.Collections.unmodifiableList(pendingInterrupts_);
       } else {
@@ -1748,7 +1748,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public int getPendingInterruptsCount() {
       if (pendingInterruptsBuilder_ == null) {
@@ -1758,9 +1758,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.PendingInterruptPb getPendingInterrupts(int index) {
+    public io.littlehorse.sdk.common.proto.PendingInterrupt getPendingInterrupts(int index) {
       if (pendingInterruptsBuilder_ == null) {
         return pendingInterrupts_.get(index);
       } else {
@@ -1768,10 +1768,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder setPendingInterrupts(
-        int index, io.littlehorse.sdk.common.proto.PendingInterruptPb value) {
+        int index, io.littlehorse.sdk.common.proto.PendingInterrupt value) {
       if (pendingInterruptsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1785,10 +1785,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder setPendingInterrupts(
-        int index, io.littlehorse.sdk.common.proto.PendingInterruptPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.PendingInterrupt.Builder builderForValue) {
       if (pendingInterruptsBuilder_ == null) {
         ensurePendingInterruptsIsMutable();
         pendingInterrupts_.set(index, builderForValue.build());
@@ -1799,9 +1799,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
-    public Builder addPendingInterrupts(io.littlehorse.sdk.common.proto.PendingInterruptPb value) {
+    public Builder addPendingInterrupts(io.littlehorse.sdk.common.proto.PendingInterrupt value) {
       if (pendingInterruptsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1815,10 +1815,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder addPendingInterrupts(
-        int index, io.littlehorse.sdk.common.proto.PendingInterruptPb value) {
+        int index, io.littlehorse.sdk.common.proto.PendingInterrupt value) {
       if (pendingInterruptsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1832,10 +1832,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder addPendingInterrupts(
-        io.littlehorse.sdk.common.proto.PendingInterruptPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.PendingInterrupt.Builder builderForValue) {
       if (pendingInterruptsBuilder_ == null) {
         ensurePendingInterruptsIsMutable();
         pendingInterrupts_.add(builderForValue.build());
@@ -1846,10 +1846,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder addPendingInterrupts(
-        int index, io.littlehorse.sdk.common.proto.PendingInterruptPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.PendingInterrupt.Builder builderForValue) {
       if (pendingInterruptsBuilder_ == null) {
         ensurePendingInterruptsIsMutable();
         pendingInterrupts_.add(index, builderForValue.build());
@@ -1860,10 +1860,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder addAllPendingInterrupts(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.PendingInterruptPb> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.PendingInterrupt> values) {
       if (pendingInterruptsBuilder_ == null) {
         ensurePendingInterruptsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -1875,7 +1875,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder clearPendingInterrupts() {
       if (pendingInterruptsBuilder_ == null) {
@@ -1888,7 +1888,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
     public Builder removePendingInterrupts(int index) {
       if (pendingInterruptsBuilder_ == null) {
@@ -1901,16 +1901,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.PendingInterruptPb.Builder getPendingInterruptsBuilder(
+    public io.littlehorse.sdk.common.proto.PendingInterrupt.Builder getPendingInterruptsBuilder(
         int index) {
       return getPendingInterruptsFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.PendingInterruptPbOrBuilder getPendingInterruptsOrBuilder(
+    public io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder getPendingInterruptsOrBuilder(
         int index) {
       if (pendingInterruptsBuilder_ == null) {
         return pendingInterrupts_.get(index);  } else {
@@ -1918,9 +1918,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.PendingInterruptPbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder> 
          getPendingInterruptsOrBuilderList() {
       if (pendingInterruptsBuilder_ != null) {
         return pendingInterruptsBuilder_.getMessageOrBuilderList();
@@ -1929,33 +1929,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.PendingInterruptPb.Builder addPendingInterruptsBuilder() {
+    public io.littlehorse.sdk.common.proto.PendingInterrupt.Builder addPendingInterruptsBuilder() {
       return getPendingInterruptsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.PendingInterruptPb.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.PendingInterrupt.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.PendingInterruptPb.Builder addPendingInterruptsBuilder(
+    public io.littlehorse.sdk.common.proto.PendingInterrupt.Builder addPendingInterruptsBuilder(
         int index) {
       return getPendingInterruptsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.PendingInterruptPb.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.PendingInterrupt.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+     * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.PendingInterruptPb.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.PendingInterrupt.Builder> 
          getPendingInterruptsBuilderList() {
       return getPendingInterruptsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.PendingInterruptPb, io.littlehorse.sdk.common.proto.PendingInterruptPb.Builder, io.littlehorse.sdk.common.proto.PendingInterruptPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.PendingInterrupt, io.littlehorse.sdk.common.proto.PendingInterrupt.Builder, io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder> 
         getPendingInterruptsFieldBuilder() {
       if (pendingInterruptsBuilder_ == null) {
         pendingInterruptsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.PendingInterruptPb, io.littlehorse.sdk.common.proto.PendingInterruptPb.Builder, io.littlehorse.sdk.common.proto.PendingInterruptPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.PendingInterrupt, io.littlehorse.sdk.common.proto.PendingInterrupt.Builder, io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder>(
                 pendingInterrupts_,
                 ((bitField0_ & 0x00000080) != 0),
                 getParentForChildren(),
@@ -1965,22 +1965,22 @@ private static final long serialVersionUID = 0L;
       return pendingInterruptsBuilder_;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandlerPb> pendingFailures_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandler> pendingFailures_ =
       java.util.Collections.emptyList();
     private void ensurePendingFailuresIsMutable() {
       if (!((bitField0_ & 0x00000100) != 0)) {
-        pendingFailures_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.PendingFailureHandlerPb>(pendingFailures_);
+        pendingFailures_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.PendingFailureHandler>(pendingFailures_);
         bitField0_ |= 0x00000100;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.PendingFailureHandlerPb, io.littlehorse.sdk.common.proto.PendingFailureHandlerPb.Builder, io.littlehorse.sdk.common.proto.PendingFailureHandlerPbOrBuilder> pendingFailuresBuilder_;
+        io.littlehorse.sdk.common.proto.PendingFailureHandler, io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder, io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder> pendingFailuresBuilder_;
 
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandlerPb> getPendingFailuresList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandler> getPendingFailuresList() {
       if (pendingFailuresBuilder_ == null) {
         return java.util.Collections.unmodifiableList(pendingFailures_);
       } else {
@@ -1988,7 +1988,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public int getPendingFailuresCount() {
       if (pendingFailuresBuilder_ == null) {
@@ -1998,9 +1998,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
-    public io.littlehorse.sdk.common.proto.PendingFailureHandlerPb getPendingFailures(int index) {
+    public io.littlehorse.sdk.common.proto.PendingFailureHandler getPendingFailures(int index) {
       if (pendingFailuresBuilder_ == null) {
         return pendingFailures_.get(index);
       } else {
@@ -2008,10 +2008,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder setPendingFailures(
-        int index, io.littlehorse.sdk.common.proto.PendingFailureHandlerPb value) {
+        int index, io.littlehorse.sdk.common.proto.PendingFailureHandler value) {
       if (pendingFailuresBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2025,10 +2025,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder setPendingFailures(
-        int index, io.littlehorse.sdk.common.proto.PendingFailureHandlerPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder builderForValue) {
       if (pendingFailuresBuilder_ == null) {
         ensurePendingFailuresIsMutable();
         pendingFailures_.set(index, builderForValue.build());
@@ -2039,9 +2039,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
-    public Builder addPendingFailures(io.littlehorse.sdk.common.proto.PendingFailureHandlerPb value) {
+    public Builder addPendingFailures(io.littlehorse.sdk.common.proto.PendingFailureHandler value) {
       if (pendingFailuresBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2055,10 +2055,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder addPendingFailures(
-        int index, io.littlehorse.sdk.common.proto.PendingFailureHandlerPb value) {
+        int index, io.littlehorse.sdk.common.proto.PendingFailureHandler value) {
       if (pendingFailuresBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2072,10 +2072,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder addPendingFailures(
-        io.littlehorse.sdk.common.proto.PendingFailureHandlerPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder builderForValue) {
       if (pendingFailuresBuilder_ == null) {
         ensurePendingFailuresIsMutable();
         pendingFailures_.add(builderForValue.build());
@@ -2086,10 +2086,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder addPendingFailures(
-        int index, io.littlehorse.sdk.common.proto.PendingFailureHandlerPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder builderForValue) {
       if (pendingFailuresBuilder_ == null) {
         ensurePendingFailuresIsMutable();
         pendingFailures_.add(index, builderForValue.build());
@@ -2100,10 +2100,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder addAllPendingFailures(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.PendingFailureHandlerPb> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.PendingFailureHandler> values) {
       if (pendingFailuresBuilder_ == null) {
         ensurePendingFailuresIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -2115,7 +2115,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder clearPendingFailures() {
       if (pendingFailuresBuilder_ == null) {
@@ -2128,7 +2128,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
     public Builder removePendingFailures(int index) {
       if (pendingFailuresBuilder_ == null) {
@@ -2141,16 +2141,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
-    public io.littlehorse.sdk.common.proto.PendingFailureHandlerPb.Builder getPendingFailuresBuilder(
+    public io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder getPendingFailuresBuilder(
         int index) {
       return getPendingFailuresFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
-    public io.littlehorse.sdk.common.proto.PendingFailureHandlerPbOrBuilder getPendingFailuresOrBuilder(
+    public io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder getPendingFailuresOrBuilder(
         int index) {
       if (pendingFailuresBuilder_ == null) {
         return pendingFailures_.get(index);  } else {
@@ -2158,9 +2158,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.PendingFailureHandlerPbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder> 
          getPendingFailuresOrBuilderList() {
       if (pendingFailuresBuilder_ != null) {
         return pendingFailuresBuilder_.getMessageOrBuilderList();
@@ -2169,33 +2169,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
-    public io.littlehorse.sdk.common.proto.PendingFailureHandlerPb.Builder addPendingFailuresBuilder() {
+    public io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder addPendingFailuresBuilder() {
       return getPendingFailuresFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.PendingFailureHandlerPb.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.PendingFailureHandler.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
-    public io.littlehorse.sdk.common.proto.PendingFailureHandlerPb.Builder addPendingFailuresBuilder(
+    public io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder addPendingFailuresBuilder(
         int index) {
       return getPendingFailuresFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.PendingFailureHandlerPb.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.PendingFailureHandler.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+     * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandlerPb.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder> 
          getPendingFailuresBuilderList() {
       return getPendingFailuresFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.PendingFailureHandlerPb, io.littlehorse.sdk.common.proto.PendingFailureHandlerPb.Builder, io.littlehorse.sdk.common.proto.PendingFailureHandlerPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.PendingFailureHandler, io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder, io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder> 
         getPendingFailuresFieldBuilder() {
       if (pendingFailuresBuilder_ == null) {
         pendingFailuresBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.PendingFailureHandlerPb, io.littlehorse.sdk.common.proto.PendingFailureHandlerPb.Builder, io.littlehorse.sdk.common.proto.PendingFailureHandlerPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.PendingFailureHandler, io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder, io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder>(
                 pendingFailures_,
                 ((bitField0_ & 0x00000100) != 0),
                 getParentForChildren(),

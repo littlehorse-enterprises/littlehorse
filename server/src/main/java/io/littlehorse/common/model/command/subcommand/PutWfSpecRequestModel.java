@@ -10,7 +10,7 @@ import io.littlehorse.common.model.command.subcommandresponse.PutWfSpecResponseM
 import io.littlehorse.common.model.meta.ThreadSpecModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import java.util.Date;
@@ -70,7 +70,7 @@ public class PutWfSpecRequestModel
         PutWfSpecResponseModel out = new PutWfSpecResponseModel();
 
         if (!LHUtil.isValidLHName(name)) {
-            out.code = LHResponseCodePb.VALIDATION_ERROR;
+            out.code = LHResponseCode.VALIDATION_ERROR;
             out.message = "WfSpec name must be a valid hostname";
             return out;
         }
@@ -99,11 +99,11 @@ public class PutWfSpecRequestModel
                 spec.version = 0;
             }
             spec.validate(dao.getGlobalMetaStores(), config);
-            out.code = LHResponseCodePb.OK;
+            out.code = LHResponseCode.OK;
             out.result = spec;
             dao.putWfSpec(spec);
         } catch (LHValidationError exn) {
-            out.code = LHResponseCodePb.VALIDATION_ERROR;
+            out.code = LHResponseCode.VALIDATION_ERROR;
             out.message = "Invalid wfSpec: " + exn.getMessage();
         }
 

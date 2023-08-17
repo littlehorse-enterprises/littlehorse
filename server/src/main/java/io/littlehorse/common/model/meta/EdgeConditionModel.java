@@ -3,14 +3,14 @@ package io.littlehorse.common.model.meta;
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
+import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.EdgeCondition;
 import java.util.HashSet;
 import java.util.Set;
 
 public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
 
-    public ComparatorPb comparator;
+    public Comparator comparator;
     public VariableAssignmentModel left;
     public VariableAssignmentModel right;
 

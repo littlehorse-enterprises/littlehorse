@@ -3,9 +3,9 @@ package io.littlehorse.sdk.worker;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.littlehorse.sdk.common.proto.NodeRunIdPb;
-import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
+import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TaskNodeReferencePb;
-import io.littlehorse.sdk.common.proto.TaskRunSourcePb;
+import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerReferencePb;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +13,7 @@ public class WorkerContextTest {
 
     @Test
     void checkTaskRunSourceWfRunId() {
-        TaskRunSourcePb source = TaskRunSourcePb
+        TaskRunSource source = TaskRunSource
             .newBuilder()
             .setTaskNode(
                 TaskNodeReferencePb
@@ -23,7 +23,7 @@ public class WorkerContextTest {
             .build();
 
         WorkerContext context = new WorkerContext(
-            ScheduledTaskPb.newBuilder().setSource(source).build(),
+            ScheduledTask.newBuilder().setSource(source).build(),
             null
         );
 
@@ -32,7 +32,7 @@ public class WorkerContextTest {
 
     @Test
     void checkUserTaskSourceWfRunId() {
-        TaskRunSourcePb source = TaskRunSourcePb
+        TaskRunSource source = TaskRunSource
             .newBuilder()
             .setUserTaskTrigger(
                 UserTaskTriggerReferencePb
@@ -42,7 +42,7 @@ public class WorkerContextTest {
             .build();
 
         WorkerContext context = new WorkerContext(
-            ScheduledTaskPb.newBuilder().setSource(source).build(),
+            ScheduledTask.newBuilder().setSource(source).build(),
             null
         );
 

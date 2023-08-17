@@ -3,13 +3,13 @@ package io.littlehorse.common.model.command.subcommandresponse;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.sdk.common.proto.DeleteObjectReplyPb;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 
 public class DeleteObjectReply extends AbstractResponse<DeleteObjectReplyPb> {
 
     public DeleteObjectReply() {}
 
-    public DeleteObjectReply(LHResponseCodePb code, String message) {
+    public DeleteObjectReply(LHResponseCode code, String message) {
         this.code = code;
         this.message = message;
     }

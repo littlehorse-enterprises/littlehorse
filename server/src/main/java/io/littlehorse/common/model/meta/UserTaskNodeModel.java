@@ -7,7 +7,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.subnode.UserAssignmentModel;
 import io.littlehorse.common.model.meta.usertasks.UTActionTriggerModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
-import io.littlehorse.common.model.wfrun.subnoderun.UserTaskNodeRun;
+import io.littlehorse.common.model.wfrun.subnoderun.UserTaskNodeRunModel;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
@@ -112,8 +112,8 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         return matchingHooks;
     }
 
-    public UserTaskNodeRun createSubNodeRun(Date time) {
-        return new UserTaskNodeRun();
+    public UserTaskNodeRunModel createSubNodeRun(Date time) {
+        return new UserTaskNodeRunModel();
     }
 
     public void validate(LHGlobalMetaStores stores, LHConfig config)

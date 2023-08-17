@@ -1,9 +1,9 @@
 package io.littlehorse.sdk.worker.internal.util;
 
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.ReportTaskReplyPb;
-import io.littlehorse.sdk.common.proto.ReportTaskRunPb;
+import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,12 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 public class ReportTaskObserver implements StreamObserver<ReportTaskReplyPb> {
 
     private LHServerConnectionManager manager;
-    private ReportTaskRunPb reportedTask;
+    private ReportTaskRun reportedTask;
     private int retriesLeft;
 
     public ReportTaskObserver(
         LHServerConnectionManager manager,
-        ReportTaskRunPb reportedTask,
+        ReportTaskRun reportedTask,
         int retriesLeft
     ) {
         this.manager = manager;
@@ -39,9 +39,9 @@ public class ReportTaskObserver implements StreamObserver<ReportTaskReplyPb> {
     }
 
     public void onNext(ReportTaskReplyPb reply) {
-        if (reply.getCode() == LHResponseCodePb.OK) {
+        if (reply.getCode() == LHResponseCode.OK) {
             // Nothing to do
-        } else if (reply.getCode() == LHResponseCodePb.REPORTED_BUT_NOT_PROCESSED) {
+        } else if (reply.getCode() == LHResponseCode.REPORTED_BUT_NOT_PROCESSED) {
             log.warn("Reported task but processor was down. No action required");
             // Nothing to do
         } else {

@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
+import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.EdgeCondition;
 import io.littlehorse.sdk.common.proto.EntrypointNode;
@@ -736,7 +736,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
     public WorkflowConditionImpl condition(
         Object lhs,
-        ComparatorPb comparator,
+        Comparator comparator,
         Object rhs
     ) {
         EdgeCondition.Builder edge = EdgeCondition

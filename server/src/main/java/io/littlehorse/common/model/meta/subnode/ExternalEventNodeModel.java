@@ -6,7 +6,7 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.ExternalEventDefModel;
 import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.meta.VariableAssignmentModel;
-import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRun;
+import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRunModel;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.ExternalEventNode;
 import java.util.Date;
@@ -58,8 +58,8 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         }
     }
 
-    public ExternalEventRun createSubNodeRun(Date time) {
-        ExternalEventRun out = new ExternalEventRun();
+    public ExternalEventRunModel createSubNodeRun(Date time) {
+        ExternalEventRunModel out = new ExternalEventRunModel();
         out.externalEventDefName = externalEventDefName;
 
         return out;

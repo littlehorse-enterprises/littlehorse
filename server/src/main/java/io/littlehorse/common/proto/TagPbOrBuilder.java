@@ -12,7 +12,7 @@ public interface TagPbOrBuilder extends
    * The following info is also stored in the key of the Tag in the store.
    * </pre>
    *
-   * <code>.littlehorse.GetableClassEnumPb object_type = 1;</code>
+   * <code>.littlehorse.GetableClassEnum object_type = 1;</code>
    * @return The enum numeric value on the wire for objectType.
    */
   int getObjectTypeValue();
@@ -21,10 +21,10 @@ public interface TagPbOrBuilder extends
    * The following info is also stored in the key of the Tag in the store.
    * </pre>
    *
-   * <code>.littlehorse.GetableClassEnumPb object_type = 1;</code>
+   * <code>.littlehorse.GetableClassEnum object_type = 1;</code>
    * @return The objectType.
    */
-  io.littlehorse.common.proto.GetableClassEnumPb getObjectType();
+  io.littlehorse.common.proto.GetableClassEnum getObjectType();
 
   /**
    * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
@@ -82,7 +82,7 @@ public interface TagPbOrBuilder extends
    * The following is not stored in the key.
    * </pre>
    *
-   * <code>.littlehorse.TagStorageTypePb tag_type = 5;</code>
+   * <code>.littlehorse.TagStorageType tag_type = 5;</code>
    * @return The enum numeric value on the wire for tagType.
    */
   int getTagTypeValue();
@@ -91,10 +91,10 @@ public interface TagPbOrBuilder extends
    * The following is not stored in the key.
    * </pre>
    *
-   * <code>.littlehorse.TagStorageTypePb tag_type = 5;</code>
+   * <code>.littlehorse.TagStorageType tag_type = 5;</code>
    * @return The tagType.
    */
-  io.littlehorse.common.proto.TagStorageTypePb getTagType();
+  io.littlehorse.common.proto.TagStorageType getTagType();
 
   /**
    * <code>string store_key = 7;</code>

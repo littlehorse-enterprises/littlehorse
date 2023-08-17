@@ -3,13 +3,13 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.objectId.ExternalEventId;
-import io.littlehorse.common.model.wfrun.ExternalEvent;
+import io.littlehorse.common.model.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.wfrun.ExternalEventModel;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.sdk.common.proto.ExternalEventIdPb;
+import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.sdk.common.proto.SearchExternalEventPb;
 import io.littlehorse.sdk.common.proto.SearchExternalEventPb.ExtEvtCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchExternalEventReplyPb;
@@ -28,15 +28,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 public class SearchExternalEvent
-    extends PublicScanRequest<SearchExternalEventPb, SearchExternalEventReplyPb, ExternalEventIdPb, ExternalEventId, SearchExternalEventReply> {
+    extends PublicScanRequest<SearchExternalEventPb, SearchExternalEventReplyPb, ExternalEventId, ExternalEventIdModel, SearchExternalEventReply> {
 
     public ExtEvtCriteriaCase type;
     public String wfRunId;
     private String externalEventDefName;
     private Optional<Boolean> isClaimed = Optional.empty();
 
-    public GetableClassEnumPb getObjectType() {
-        return GetableClassEnumPb.EXTERNAL_EVENT;
+    public GetableClassEnum getObjectType() {
+        return GetableClassEnum.EXTERNAL_EVENT;
     }
 
     public Class<SearchExternalEventPb> getProtoBaseClass() {
@@ -116,13 +116,13 @@ public class SearchExternalEvent
     }
 
     @Override
-    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
         List<String> searchAttributes = getSearchAttributes()
             .stream()
             .map(Attribute::getEscapedKey)
             .toList();
-        List<GetableIndex<? extends Getable<?>>> indexConfigurations = new ExternalEvent()
+        List<GetableIndex<? extends Getable<?>>> indexConfigurations = new ExternalEventModel()
             .getIndexConfigurations();
         GetableIndex<? extends Getable<?>> getableIndex = indexConfigurations
             .stream()
@@ -136,7 +136,7 @@ public class SearchExternalEvent
         if (getableIndex != null) {
             return getableIndex.getTagStorageTypePb().get();
         } else {
-            return TagStorageTypePb.LOCAL;
+            return TagStorageType.LOCAL;
         }
     }
 

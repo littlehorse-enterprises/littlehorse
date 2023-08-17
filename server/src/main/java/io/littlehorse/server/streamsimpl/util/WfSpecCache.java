@@ -1,7 +1,7 @@
 package io.littlehorse.server.streamsimpl.util;
 
 import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.objectId.WfSpecId;
+import io.littlehorse.common.model.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 
 @Slf4j
-public class WfSpecCache extends LHCache<WfSpecId, WfSpecModel> {
+public class WfSpecCache extends LHCache<WfSpecIdModel, WfSpecModel> {
 
     private static final Pattern WFSPEC_KEY_PATTERN = Pattern.compile(
         "2\\/(?<name>.+)\\/(?<version>\\d+)"
@@ -26,8 +26,8 @@ public class WfSpecCache extends LHCache<WfSpecId, WfSpecModel> {
         if (isWfSpec) {
             String name = wfSpecMatcher.group("name");
             Integer version = Integer.valueOf(wfSpecMatcher.group("version"));
-            WfSpecId cacheVersionKey = new WfSpecId(name, version);
-            WfSpecId cacheLatestKey = new WfSpecId(name, LATEST_VERSION);
+            WfSpecIdModel cacheVersionKey = new WfSpecIdModel(name, version);
+            WfSpecIdModel cacheLatestKey = new WfSpecIdModel(name, LATEST_VERSION);
             if (value == null) {
                 log.trace("Evicting wfSpecCache for {}", cacheVersionKey);
                 evictCache(cacheVersionKey);
@@ -53,7 +53,7 @@ public class WfSpecCache extends LHCache<WfSpecId, WfSpecModel> {
         if (version == null) {
             version = LATEST_VERSION;
         }
-        WfSpecId cachedId = new WfSpecId(name, version);
+        WfSpecIdModel cachedId = new WfSpecIdModel(name, version);
         return getOrCache(cachedId, cacheable);
     }
 }

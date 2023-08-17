@@ -1,23 +1,23 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
-import io.littlehorse.common.model.objectId.WfRunId;
+import io.littlehorse.common.model.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.SearchWfRunReplyPb;
-import io.littlehorse.sdk.common.proto.WfRunIdPb;
+import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class SearchWfRunReply
-    extends PublicScanReply<SearchWfRunReplyPb, WfRunIdPb, WfRunId> {
+    extends PublicScanReply<SearchWfRunReplyPb, WfRunId, WfRunIdModel> {
 
     public Class<SearchWfRunReplyPb> getProtoBaseClass() {
         return SearchWfRunReplyPb.class;
     }
 
-    public Class<WfRunId> getResultJavaClass() {
-        return WfRunId.class;
+    public Class<WfRunIdModel> getResultJavaClass() {
+        return WfRunIdModel.class;
     }
 
-    public Class<WfRunIdPb> getResultProtoClass() {
-        return WfRunIdPb.class;
+    public Class<WfRunId> getResultProtoClass() {
+        return WfRunId.class;
     }
     // public SearchWfRunReplyPb.Builder toProto() {
     //     SearchWfRunReplyPb.Builder out = SearchWfRunReplyPb
@@ -39,7 +39,7 @@ public class SearchWfRunReply
     //     if (p.hasMessage()) message = p.getMessage();
     //     if (p.hasBookmark()) bookmark = p.getBookmark().toByteArray();
 
-    //     for (WfRunIdPb id : p.getIdsList()) {
+    //     for (WfRunId id : p.getIdsList()) {
     //         objectIds.add(WfRun.getObjectId(id));
     //     }
     // }

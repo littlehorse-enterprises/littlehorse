@@ -3,11 +3,11 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.objectId.WfRunId;
+import io.littlehorse.common.model.objectId.WfRunIdModel;
 import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchWfRunPb;
@@ -16,7 +16,7 @@ import io.littlehorse.sdk.common.proto.SearchWfRunPb.StatusAndNamePb;
 import io.littlehorse.sdk.common.proto.SearchWfRunPb.StatusAndSpecPb;
 import io.littlehorse.sdk.common.proto.SearchWfRunPb.WfrunCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchWfRunReplyPb;
-import io.littlehorse.sdk.common.proto.WfRunIdPb;
+import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.TagScanBoundaryStrategy;
@@ -30,15 +30,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SearchWfRun
-    extends PublicScanRequest<SearchWfRunPb, SearchWfRunReplyPb, WfRunIdPb, WfRunId, SearchWfRunReply> {
+    extends PublicScanRequest<SearchWfRunPb, SearchWfRunReplyPb, WfRunId, WfRunIdModel, SearchWfRunReply> {
 
     public WfrunCriteriaCase type;
     public StatusAndSpecPb statusAndSpec;
     private NamePb namePb;
     private StatusAndNamePb statusAndName;
 
-    public GetableClassEnumPb getObjectType() {
-        return GetableClassEnumPb.WF_RUN;
+    public GetableClassEnum getObjectType() {
+        return GetableClassEnum.WF_RUN;
     }
 
     public Class<SearchWfRunPb> getProtoBaseClass() {
@@ -148,7 +148,7 @@ public class SearchWfRun
     }
 
     @Override
-    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
         List<String> searchAttributeKeys = getSearchAttributes()
             .stream()

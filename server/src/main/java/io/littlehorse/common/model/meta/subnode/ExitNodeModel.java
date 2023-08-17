@@ -5,7 +5,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.FailureDefModel;
 import io.littlehorse.common.model.meta.SubNode;
-import io.littlehorse.common.model.wfrun.subnoderun.ExitRun;
+import io.littlehorse.common.model.wfrun.subnoderun.ExitRunModel;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.ExitNode;
 import java.util.Date;
@@ -39,8 +39,8 @@ public class ExitNodeModel extends SubNode<ExitNode> {
         if (failureDef != null) failureDef.validate();
     }
 
-    public ExitRun createSubNodeRun(Date time) {
-        return new ExitRun();
+    public ExitRunModel createSubNodeRun(Date time) {
+        return new ExitRunModel();
     }
 
     @Override

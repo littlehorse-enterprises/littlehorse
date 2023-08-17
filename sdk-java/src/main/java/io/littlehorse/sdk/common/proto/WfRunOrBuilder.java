@@ -103,50 +103,50 @@ public interface WfRunOrBuilder extends
       int index);
 
   /**
-   * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+   * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.PendingInterruptPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.PendingInterrupt> 
       getPendingInterruptsList();
   /**
-   * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+   * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
-  io.littlehorse.sdk.common.proto.PendingInterruptPb getPendingInterrupts(int index);
+  io.littlehorse.sdk.common.proto.PendingInterrupt getPendingInterrupts(int index);
   /**
-   * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+   * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
   int getPendingInterruptsCount();
   /**
-   * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+   * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.PendingInterruptPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder> 
       getPendingInterruptsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.PendingInterruptPb pending_interrupts = 9;</code>
+   * <code>repeated .littlehorse.PendingInterrupt pending_interrupts = 9;</code>
    */
-  io.littlehorse.sdk.common.proto.PendingInterruptPbOrBuilder getPendingInterruptsOrBuilder(
+  io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder getPendingInterruptsOrBuilder(
       int index);
 
   /**
-   * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+   * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandlerPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandler> 
       getPendingFailuresList();
   /**
-   * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+   * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
-  io.littlehorse.sdk.common.proto.PendingFailureHandlerPb getPendingFailures(int index);
+  io.littlehorse.sdk.common.proto.PendingFailureHandler getPendingFailures(int index);
   /**
-   * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+   * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
   int getPendingFailuresCount();
   /**
-   * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+   * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.PendingFailureHandlerPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder> 
       getPendingFailuresOrBuilderList();
   /**
-   * <code>repeated .littlehorse.PendingFailureHandlerPb pending_failures = 10;</code>
+   * <code>repeated .littlehorse.PendingFailureHandler pending_failures = 10;</code>
    */
-  io.littlehorse.sdk.common.proto.PendingFailureHandlerPbOrBuilder getPendingFailuresOrBuilder(
+  io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder getPendingFailuresOrBuilder(
       int index);
 }

@@ -8,8 +8,8 @@ import io.littlehorse.common.model.wfrun.UserGroupModel;
 import io.littlehorse.common.model.wfrun.UserModel;
 import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunPb;
@@ -46,10 +46,10 @@ public class SearchUserTaskRun
 
     private Date latestStart;
     private Date earliestStart;
-    private TagStorageTypePb storageTypePbByStatus;
+    private TagStorageType storageTypePbByStatus;
 
-    public GetableClassEnumPb getObjectType() {
-        return GetableClassEnumPb.USER_TASK_RUN;
+    public GetableClassEnum getObjectType() {
+        return GetableClassEnum.USER_TASK_RUN;
     }
 
     public Class<SearchUserTaskRunPb> getProtoBaseClass() {
@@ -136,20 +136,20 @@ public class SearchUserTaskRun
         }
     }
 
-    private Optional<TagStorageTypePb> tagStorageTypePbByStatus() {
+    private Optional<TagStorageType> tagStorageTypePbByStatus() {
         return Optional
             .ofNullable(status)
             .map(userTaskRunStatusPb -> {
                 if (UserTaskRunModel.isRemote(userTaskRunStatusPb)) {
-                    return TagStorageTypePb.REMOTE;
+                    return TagStorageType.REMOTE;
                 } else {
-                    return TagStorageTypePb.LOCAL;
+                    return TagStorageType.LOCAL;
                 }
             });
     }
 
-    private Optional<TagStorageTypePb> tagStorageTypePbByUserId() {
-        return Optional.ofNullable(user).map(userId -> TagStorageTypePb.REMOTE);
+    private Optional<TagStorageType> tagStorageTypePbByUserId() {
+        return Optional.ofNullable(user).map(userId -> TagStorageType.REMOTE);
     }
 
     @Override
@@ -180,16 +180,16 @@ public class SearchUserTaskRun
     }
 
     @Override
-    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        TagStorageTypePb tagStorageTypePb = tagStorageTypePbByUserId()
+        TagStorageType tagStorageTypePb = tagStorageTypePbByUserId()
             .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
         if (tagStorageTypePb == null) {
             List<String> searchAttributes = getSearchAttributes()
                 .stream()
                 .map(Attribute::getEscapedKey)
                 .toList();
-            Optional<TagStorageTypePb> tagStorageTypePbOptional = getStorageTypeForSearchAttributes(
+            Optional<TagStorageType> tagStorageTypePbOptional = getStorageTypeForSearchAttributes(
                 searchAttributes
             );
             if (tagStorageTypePbOptional.isEmpty()) {
@@ -222,7 +222,7 @@ public class SearchUserTaskRun
         );
     }
 
-    private Optional<TagStorageTypePb> getStorageTypeForSearchAttributes(
+    private Optional<TagStorageType> getStorageTypeForSearchAttributes(
         List<String> attributes
     ) {
         return new UserTaskRunModel()

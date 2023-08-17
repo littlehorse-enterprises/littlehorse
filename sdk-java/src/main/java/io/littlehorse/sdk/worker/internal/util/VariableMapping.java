@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionError;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
+import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TaskDef;
-import io.littlehorse.sdk.common.proto.VarNameAndValPb;
+import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
@@ -85,13 +85,13 @@ public class VariableMapping {
         }
     }
 
-    public Object assign(ScheduledTaskPb taskInstance, WorkerContext context)
+    public Object assign(ScheduledTask taskInstance, WorkerContext context)
         throws InputVarSubstitutionError {
         if (type.equals(WorkerContext.class)) {
             return context;
         }
 
-        VarNameAndValPb assignment = taskInstance.getVariables(position);
+        VarNameAndVal assignment = taskInstance.getVariables(position);
         String taskDefParamName = assignment.getVarName();
         VariableValue val = assignment.getValue();
 

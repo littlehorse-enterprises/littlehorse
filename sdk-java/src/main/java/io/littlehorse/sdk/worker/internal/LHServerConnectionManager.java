@@ -5,15 +5,15 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.HostInfoPb;
+import io.littlehorse.sdk.common.proto.HostInfo;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerPb;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerReplyPb;
-import io.littlehorse.sdk.common.proto.ReportTaskRunPb;
-import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
+import io.littlehorse.sdk.common.proto.ReportTaskRun;
+import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TaskDef;
-import io.littlehorse.sdk.common.proto.TaskStatusPb;
+import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
@@ -87,7 +87,7 @@ public class LHServerConnectionManager
     }
 
     public void submitTaskForExecution(
-        ScheduledTaskPb scheduledTask,
+        ScheduledTask scheduledTask,
         LHPublicApiStub specificStub
     ) {
         try {
@@ -100,8 +100,8 @@ public class LHServerConnectionManager
             });
     }
 
-    private void doTask(ScheduledTaskPb scheduledTask, LHPublicApiStub specificStub) {
-        ReportTaskRunPb result = executeTask(
+    private void doTask(ScheduledTask scheduledTask, LHPublicApiStub specificStub) {
+        ReportTaskRun result = executeTask(
             scheduledTask,
             LHLibUtil.fromProtoTs(scheduledTask.getCreatedAt())
         );
@@ -129,11 +129,11 @@ public class LHServerConnectionManager
 
     @Override
     public void onNext(RegisterTaskWorkerReplyPb next) {
-        if (next.getCode() == LHResponseCodePb.BAD_REQUEST_ERROR) {
+        if (next.getCode() == LHResponseCode.BAD_REQUEST_ERROR) {
             throw new RuntimeException("Invalid configuration: " + next.getMessage());
         }
         // Reconcile what's running
-        for (HostInfoPb host : next.getYourHostsList()) {
+        for (HostInfo host : next.getYourHostsList()) {
             if (!isAlreadyRunning(host)) {
                 try {
                     runningConnections.add(new LHServerConnection(this, host));
@@ -164,14 +164,14 @@ public class LHServerConnectionManager
         }
     }
 
-    private boolean shouldBeRunning(LHServerConnection ssc, List<HostInfoPb> hosts) {
-        for (HostInfoPb h : hosts) {
+    private boolean shouldBeRunning(LHServerConnection ssc, List<HostInfo> hosts) {
+        for (HostInfo h : hosts) {
             if (ssc.isSameAs(h)) return true;
         }
         return false;
     }
 
-    private boolean isAlreadyRunning(HostInfoPb host) {
+    private boolean isAlreadyRunning(HostInfo host) {
         for (LHServerConnection ssc : runningConnections) {
             if (ssc.isSameAs(host)) {
                 return true;
@@ -209,7 +209,7 @@ public class LHServerConnectionManager
         );
     }
 
-    public void retryReportTask(ReportTaskRunPb result, int retriesLeft) {
+    public void retryReportTask(ReportTaskRun result, int retriesLeft) {
         // EMPLOYEE_TODO: create a queue or something that has delay and multiple
         // retries. This thing just tries again with the bootstrap host and hopes
         // that the request finds the right
@@ -256,11 +256,11 @@ public class LHServerConnectionManager
 
     // Below is actual task execution logic
 
-    private ReportTaskRunPb executeTask(
-        ScheduledTaskPb scheduledTask,
+    private ReportTaskRun executeTask(
+        ScheduledTask scheduledTask,
         Date scheduleTime
     ) {
-        ReportTaskRunPb.Builder taskResult = ReportTaskRunPb
+        ReportTaskRun.Builder taskResult = ReportTaskRun
             .newBuilder()
             .setTaskRunId(scheduledTask.getTaskRunId())
             .setAttemptNumber(scheduledTask.getAttemptNumber());
@@ -272,7 +272,7 @@ public class LHServerConnectionManager
             VariableValue serialized = LHLibUtil.objToVarVal(rawResult);
             taskResult
                 .setOutput(serialized.toBuilder())
-                .setStatus(TaskStatusPb.TASK_SUCCESS);
+                .setStatus(TaskStatus.TASK_SUCCESS);
 
             if (wc.getLogOutput() != null) {
                 taskResult.setLogOutput(
@@ -282,26 +282,26 @@ public class LHServerConnectionManager
         } catch (InputVarSubstitutionError exn) {
             log.error("Failed calculating task input variables", exn);
             taskResult.setLogOutput(exnToVarVal(exn, wc));
-            taskResult.setStatus(TaskStatusPb.TASK_INPUT_VAR_SUB_ERROR);
+            taskResult.setStatus(TaskStatus.TASK_INPUT_VAR_SUB_ERROR);
         } catch (LHSerdeError exn) {
             log.error("Failed serializing Task Output", exn);
             taskResult.setLogOutput(exnToVarVal(exn, wc));
-            taskResult.setStatus(TaskStatusPb.TASK_OUTPUT_SERIALIZING_ERROR);
+            taskResult.setStatus(TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR);
         } catch (InvocationTargetException exn) {
             log.error("Task Method threw an exception", exn.getCause());
             taskResult.setLogOutput(exnToVarVal(exn.getCause(), wc));
-            taskResult.setStatus(TaskStatusPb.TASK_FAILED);
+            taskResult.setStatus(TaskStatus.TASK_FAILED);
         } catch (Exception exn) {
             log.error("Unexpected exception during task execution", exn);
             taskResult.setLogOutput(exnToVarVal(exn, wc));
-            taskResult.setStatus(TaskStatusPb.TASK_FAILED);
+            taskResult.setStatus(TaskStatus.TASK_FAILED);
         }
 
         taskResult.setTime(LHLibUtil.fromDate(new Date()));
         return taskResult.build();
     }
 
-    private Object invoke(ScheduledTaskPb scheduledTask, WorkerContext context)
+    private Object invoke(ScheduledTask scheduledTask, WorkerContext context)
         throws InputVarSubstitutionError, Exception {
         List<Object> inputs = new ArrayList<>();
         for (VariableMapping mapping : this.mappings) {

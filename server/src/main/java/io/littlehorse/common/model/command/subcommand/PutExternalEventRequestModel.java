@@ -9,13 +9,13 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventResponseModel;
 import io.littlehorse.common.model.meta.ExternalEventDefModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.wfrun.ExternalEvent;
-import io.littlehorse.common.model.wfrun.Failure;
+import io.littlehorse.common.model.wfrun.ExternalEventModel;
+import io.littlehorse.common.model.wfrun.FailureModel;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
@@ -61,13 +61,13 @@ public class PutExternalEventRequestModel
 
         ExternalEventDefModel eed = dao.getExternalEventDef(externalEventDefName);
         if (eed == null) {
-            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+            out.code = LHResponseCode.NOT_FOUND_ERROR;
             out.message = "No ExternalEventDef named " + externalEventDefName;
             return out;
         }
 
         if (guid == null) guid = LHUtil.generateGuid();
-        ExternalEvent evt = new ExternalEvent();
+        ExternalEventModel evt = new ExternalEventModel();
         evt.wfRunId = wfRunId;
         evt.content = content;
         evt.externalEventDefName = externalEventDefName;
@@ -104,24 +104,24 @@ public class PutExternalEventRequestModel
                 wfRunModel.threadRunModels
                     .get(0)
                     .fail(
-                        new Failure(
+                        new FailureModel(
                             "Appears wfSpec was deleted",
                             LHConstants.INTERNAL_ERROR
                         ),
                         new Date()
                     );
-                out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+                out.code = LHResponseCode.NOT_FOUND_ERROR;
                 out.message = "Apparently WfSpec was deleted!";
             } else {
                 wfRunModel.wfSpecModel = spec;
                 wfRunModel.processExternalEvent(evt);
-                out.code = LHResponseCodePb.OK;
+                out.code = LHResponseCode.OK;
             }
             dao.saveWfRun(wfRunModel);
             dao.saveExternalEvent(evt);
         } else {
             // it's a pre-emptive event.
-            out.code = LHResponseCodePb.OK;
+            out.code = LHResponseCode.OK;
         }
 
         out.result = evt;

@@ -73,19 +73,19 @@ public interface NodeRunOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder();
 
   /**
-   * <code>.littlehorse.WfSpecIdPb wf_spec_id = 9;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 9;</code>
    * @return Whether the wfSpecId field is set.
    */
   boolean hasWfSpecId();
   /**
-   * <code>.littlehorse.WfSpecIdPb wf_spec_id = 9;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 9;</code>
    * @return The wfSpecId.
    */
-  io.littlehorse.sdk.common.proto.WfSpecIdPb getWfSpecId();
+  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
-   * <code>.littlehorse.WfSpecIdPb wf_spec_id = 9;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 9;</code>
    */
-  io.littlehorse.sdk.common.proto.WfSpecIdPbOrBuilder getWfSpecIdOrBuilder();
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
    * <code>string thread_spec_name = 10;</code>
@@ -129,148 +129,148 @@ public interface NodeRunOrBuilder extends
       getErrorMessageBytes();
 
   /**
-   * <code>repeated .littlehorse.FailurePb failures = 14;</code>
+   * <code>repeated .littlehorse.Failure failures = 14;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.FailurePb> 
+  java.util.List<io.littlehorse.sdk.common.proto.Failure> 
       getFailuresList();
   /**
-   * <code>repeated .littlehorse.FailurePb failures = 14;</code>
+   * <code>repeated .littlehorse.Failure failures = 14;</code>
    */
-  io.littlehorse.sdk.common.proto.FailurePb getFailures(int index);
+  io.littlehorse.sdk.common.proto.Failure getFailures(int index);
   /**
-   * <code>repeated .littlehorse.FailurePb failures = 14;</code>
+   * <code>repeated .littlehorse.Failure failures = 14;</code>
    */
   int getFailuresCount();
   /**
-   * <code>repeated .littlehorse.FailurePb failures = 14;</code>
+   * <code>repeated .littlehorse.Failure failures = 14;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.FailurePbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.FailureOrBuilder> 
       getFailuresOrBuilderList();
   /**
-   * <code>repeated .littlehorse.FailurePb failures = 14;</code>
+   * <code>repeated .littlehorse.Failure failures = 14;</code>
    */
-  io.littlehorse.sdk.common.proto.FailurePbOrBuilder getFailuresOrBuilder(
+  io.littlehorse.sdk.common.proto.FailureOrBuilder getFailuresOrBuilder(
       int index);
 
   /**
-   * <code>.littlehorse.TaskNodeRunPb task = 15;</code>
+   * <code>.littlehorse.TaskNodeRun task = 15;</code>
    * @return Whether the task field is set.
    */
   boolean hasTask();
   /**
-   * <code>.littlehorse.TaskNodeRunPb task = 15;</code>
+   * <code>.littlehorse.TaskNodeRun task = 15;</code>
    * @return The task.
    */
-  io.littlehorse.sdk.common.proto.TaskNodeRunPb getTask();
+  io.littlehorse.sdk.common.proto.TaskNodeRun getTask();
   /**
-   * <code>.littlehorse.TaskNodeRunPb task = 15;</code>
+   * <code>.littlehorse.TaskNodeRun task = 15;</code>
    */
-  io.littlehorse.sdk.common.proto.TaskNodeRunPbOrBuilder getTaskOrBuilder();
+  io.littlehorse.sdk.common.proto.TaskNodeRunOrBuilder getTaskOrBuilder();
 
   /**
-   * <code>.littlehorse.ExternalEventRunPb external_event = 16;</code>
+   * <code>.littlehorse.ExternalEventRun external_event = 16;</code>
    * @return Whether the externalEvent field is set.
    */
   boolean hasExternalEvent();
   /**
-   * <code>.littlehorse.ExternalEventRunPb external_event = 16;</code>
+   * <code>.littlehorse.ExternalEventRun external_event = 16;</code>
    * @return The externalEvent.
    */
-  io.littlehorse.sdk.common.proto.ExternalEventRunPb getExternalEvent();
+  io.littlehorse.sdk.common.proto.ExternalEventRun getExternalEvent();
   /**
-   * <code>.littlehorse.ExternalEventRunPb external_event = 16;</code>
+   * <code>.littlehorse.ExternalEventRun external_event = 16;</code>
    */
-  io.littlehorse.sdk.common.proto.ExternalEventRunPbOrBuilder getExternalEventOrBuilder();
+  io.littlehorse.sdk.common.proto.ExternalEventRunOrBuilder getExternalEventOrBuilder();
 
   /**
-   * <code>.littlehorse.EntrypointRunPb entrypoint = 17;</code>
+   * <code>.littlehorse.EntrypointRun entrypoint = 17;</code>
    * @return Whether the entrypoint field is set.
    */
   boolean hasEntrypoint();
   /**
-   * <code>.littlehorse.EntrypointRunPb entrypoint = 17;</code>
+   * <code>.littlehorse.EntrypointRun entrypoint = 17;</code>
    * @return The entrypoint.
    */
-  io.littlehorse.sdk.common.proto.EntrypointRunPb getEntrypoint();
+  io.littlehorse.sdk.common.proto.EntrypointRun getEntrypoint();
   /**
-   * <code>.littlehorse.EntrypointRunPb entrypoint = 17;</code>
+   * <code>.littlehorse.EntrypointRun entrypoint = 17;</code>
    */
-  io.littlehorse.sdk.common.proto.EntrypointRunPbOrBuilder getEntrypointOrBuilder();
+  io.littlehorse.sdk.common.proto.EntrypointRunOrBuilder getEntrypointOrBuilder();
 
   /**
-   * <code>.littlehorse.ExitRunPb exit = 19;</code>
+   * <code>.littlehorse.ExitRun exit = 19;</code>
    * @return Whether the exit field is set.
    */
   boolean hasExit();
   /**
-   * <code>.littlehorse.ExitRunPb exit = 19;</code>
+   * <code>.littlehorse.ExitRun exit = 19;</code>
    * @return The exit.
    */
-  io.littlehorse.sdk.common.proto.ExitRunPb getExit();
+  io.littlehorse.sdk.common.proto.ExitRun getExit();
   /**
-   * <code>.littlehorse.ExitRunPb exit = 19;</code>
+   * <code>.littlehorse.ExitRun exit = 19;</code>
    */
-  io.littlehorse.sdk.common.proto.ExitRunPbOrBuilder getExitOrBuilder();
+  io.littlehorse.sdk.common.proto.ExitRunOrBuilder getExitOrBuilder();
 
   /**
-   * <code>.littlehorse.StartThreadRunPb start_thread = 20;</code>
+   * <code>.littlehorse.StartThreadRun start_thread = 20;</code>
    * @return Whether the startThread field is set.
    */
   boolean hasStartThread();
   /**
-   * <code>.littlehorse.StartThreadRunPb start_thread = 20;</code>
+   * <code>.littlehorse.StartThreadRun start_thread = 20;</code>
    * @return The startThread.
    */
-  io.littlehorse.sdk.common.proto.StartThreadRunPb getStartThread();
+  io.littlehorse.sdk.common.proto.StartThreadRun getStartThread();
   /**
-   * <code>.littlehorse.StartThreadRunPb start_thread = 20;</code>
+   * <code>.littlehorse.StartThreadRun start_thread = 20;</code>
    */
-  io.littlehorse.sdk.common.proto.StartThreadRunPbOrBuilder getStartThreadOrBuilder();
+  io.littlehorse.sdk.common.proto.StartThreadRunOrBuilder getStartThreadOrBuilder();
 
   /**
-   * <code>.littlehorse.WaitForThreadsRunPb wait_threads = 21;</code>
+   * <code>.littlehorse.WaitForThreadsRun wait_threads = 21;</code>
    * @return Whether the waitThreads field is set.
    */
   boolean hasWaitThreads();
   /**
-   * <code>.littlehorse.WaitForThreadsRunPb wait_threads = 21;</code>
+   * <code>.littlehorse.WaitForThreadsRun wait_threads = 21;</code>
    * @return The waitThreads.
    */
-  io.littlehorse.sdk.common.proto.WaitForThreadsRunPb getWaitThreads();
+  io.littlehorse.sdk.common.proto.WaitForThreadsRun getWaitThreads();
   /**
-   * <code>.littlehorse.WaitForThreadsRunPb wait_threads = 21;</code>
+   * <code>.littlehorse.WaitForThreadsRun wait_threads = 21;</code>
    */
-  io.littlehorse.sdk.common.proto.WaitForThreadsRunPbOrBuilder getWaitThreadsOrBuilder();
+  io.littlehorse.sdk.common.proto.WaitForThreadsRunOrBuilder getWaitThreadsOrBuilder();
 
   /**
-   * <code>.littlehorse.SleepNodeRunPb sleep = 22;</code>
+   * <code>.littlehorse.SleepNodeRun sleep = 22;</code>
    * @return Whether the sleep field is set.
    */
   boolean hasSleep();
   /**
-   * <code>.littlehorse.SleepNodeRunPb sleep = 22;</code>
+   * <code>.littlehorse.SleepNodeRun sleep = 22;</code>
    * @return The sleep.
    */
-  io.littlehorse.sdk.common.proto.SleepNodeRunPb getSleep();
+  io.littlehorse.sdk.common.proto.SleepNodeRun getSleep();
   /**
-   * <code>.littlehorse.SleepNodeRunPb sleep = 22;</code>
+   * <code>.littlehorse.SleepNodeRun sleep = 22;</code>
    */
-  io.littlehorse.sdk.common.proto.SleepNodeRunPbOrBuilder getSleepOrBuilder();
+  io.littlehorse.sdk.common.proto.SleepNodeRunOrBuilder getSleepOrBuilder();
 
   /**
-   * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
+   * <code>.littlehorse.UserTaskNodeRun user_task = 24;</code>
    * @return Whether the userTask field is set.
    */
   boolean hasUserTask();
   /**
-   * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
+   * <code>.littlehorse.UserTaskNodeRun user_task = 24;</code>
    * @return The userTask.
    */
-  io.littlehorse.sdk.common.proto.UserTaskNodeRunPb getUserTask();
+  io.littlehorse.sdk.common.proto.UserTaskNodeRun getUserTask();
   /**
-   * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
+   * <code>.littlehorse.UserTaskNodeRun user_task = 24;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskNodeRunPbOrBuilder getUserTaskOrBuilder();
+  io.littlehorse.sdk.common.proto.UserTaskNodeRunOrBuilder getUserTaskOrBuilder();
 
   /**
    * <code>repeated int32 failure_handler_ids = 23;</code>

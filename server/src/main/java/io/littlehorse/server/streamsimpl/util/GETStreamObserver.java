@@ -7,7 +7,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 
 /**
  * @deprecated
@@ -42,7 +42,7 @@ public class GETStreamObserver<
     public void onError(Throwable t) {
         Throwable cause = t.getCause() != null ? t.getCause() : t;
 
-        out.code = LHResponseCodePb.CONNECTION_ERROR;
+        out.code = LHResponseCode.CONNECTION_ERROR;
         out.message = "Failed connecting to backend: " + cause.getMessage();
         ctx.onNext(out.toProto());
         ctx.onCompleted();
@@ -53,7 +53,7 @@ public class GETStreamObserver<
     public void onNext(CentralStoreQueryReplyPb reply) {
         // TODO
         if (reply.hasResult()) {
-            out.code = LHResponseCodePb.OK;
+            out.code = LHResponseCode.OK;
             try {
                 out.result =
                     LHSerializable.fromBytes(
@@ -62,13 +62,13 @@ public class GETStreamObserver<
                         config
                     );
             } catch (LHSerdeError exn) {
-                out.code = LHResponseCodePb.CONNECTION_ERROR;
+                out.code = LHResponseCode.CONNECTION_ERROR;
                 out.message =
                     "Impossible: got unreadable response from backend: " +
                     exn.getMessage();
             }
         } else {
-            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+            out.code = LHResponseCode.NOT_FOUND_ERROR;
         }
 
         ctx.onNext(out.toProto());

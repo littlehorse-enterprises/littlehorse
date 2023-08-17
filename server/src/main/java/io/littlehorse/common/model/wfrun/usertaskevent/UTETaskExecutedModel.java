@@ -2,7 +2,7 @@ package io.littlehorse.common.model.wfrun.usertaskevent;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.objectId.TaskRunId;
+import io.littlehorse.common.model.objectId.TaskRunIdModel;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,11 +11,11 @@ import lombok.Setter;
 @Setter
 public class UTETaskExecutedModel extends LHSerializable<UTETaskExecuted> {
 
-    private TaskRunId taskRunId;
+    private TaskRunIdModel taskRunId;
 
     public UTETaskExecutedModel() {}
 
-    public UTETaskExecutedModel(TaskRunId taskRunId) {
+    public UTETaskExecutedModel(TaskRunIdModel taskRunId) {
         this.taskRunId = taskRunId;
     }
 
@@ -31,6 +31,6 @@ public class UTETaskExecutedModel extends LHSerializable<UTETaskExecuted> {
 
     public void initFrom(Message proto) {
         UTETaskExecuted p = (UTETaskExecuted) proto;
-        taskRunId = LHSerializable.fromProto(p.getTaskRun(), TaskRunId.class);
+        taskRunId = LHSerializable.fromProto(p.getTaskRun(), TaskRunIdModel.class);
     }
 }

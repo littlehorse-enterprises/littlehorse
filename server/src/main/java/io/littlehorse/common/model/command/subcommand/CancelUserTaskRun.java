@@ -10,7 +10,7 @@ import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.wfrun.UserTaskRunModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 
 public class CancelUserTaskRun extends SubCommand<CancelUserTaskRunPb> {
 
@@ -44,13 +44,13 @@ public class CancelUserTaskRun extends SubCommand<CancelUserTaskRunPb> {
         if (userTaskRun == null) {
             return new CancelUserTaskRunReply(
                 "Provided invalid wfRunId",
-                LHResponseCodePb.BAD_REQUEST_ERROR
+                LHResponseCode.BAD_REQUEST_ERROR
             );
         }
         userTaskRun.cancel();
         return new CancelUserTaskRunReply(
             userTaskRun.getId().getPartitionKey(),
-            LHResponseCodePb.OK
+            LHResponseCode.OK
         );
     }
 

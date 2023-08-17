@@ -9,18 +9,18 @@ import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.meta.subnode.TaskNodeModel;
 import io.littlehorse.common.model.objectId.NodeRunIdModel;
-import io.littlehorse.common.model.objectId.TaskRunId;
+import io.littlehorse.common.model.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.wfrun.NodeRunModel;
-import io.littlehorse.common.model.wfrun.ScheduledTask;
-import io.littlehorse.common.model.wfrun.TaskAttempt;
+import io.littlehorse.common.model.wfrun.ScheduledTaskModel;
+import io.littlehorse.common.model.wfrun.TaskAttemptModel;
 import io.littlehorse.common.model.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.wfrun.UserTaskRunModel;
-import io.littlehorse.common.model.wfrun.VarNameAndVal;
+import io.littlehorse.common.model.wfrun.VarNameAndValModel;
 import io.littlehorse.common.model.wfrun.WfRunModel;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRunSource;
-import io.littlehorse.common.model.wfrun.taskrun.UserTaskTriggerReference;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRunModel;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRunSourceModel;
+import io.littlehorse.common.model.wfrun.taskrun.UserTaskTriggerReferenceModel;
 import io.littlehorse.common.model.wfrun.usertaskevent.UTETaskExecutedModel;
 import io.littlehorse.common.model.wfrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.proto.TriggeredTaskRunPb;
@@ -111,10 +111,12 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
         log.info("Scheduling a one-off task for wfRun {} due to UserTask", wfRunId);
 
         try {
-            List<VarNameAndVal> inputVars = taskToSchedule.assignInputVars(thread);
-            TaskRunId taskRunId = new TaskRunId(wfRunId);
+            List<VarNameAndValModel> inputVars = taskToSchedule.assignInputVars(
+                thread
+            );
+            TaskRunIdModel taskRunId = new TaskRunIdModel(wfRunId);
 
-            ScheduledTask toSchedule = new ScheduledTask(
+            ScheduledTaskModel toSchedule = new ScheduledTaskModel(
                 taskToSchedule.getTaskDef().getObjectId(),
                 inputVars,
                 userTaskRun,
@@ -122,14 +124,16 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
             );
             toSchedule.setTaskRunId(taskRunId);
 
-            TaskRun taskRun = new TaskRun(
+            TaskRunModel taskRun = new TaskRunModel(
                 dao,
                 inputVars,
-                new TaskRunSource(new UserTaskTriggerReference(userTaskRun)),
+                new TaskRunSourceModel(
+                    new UserTaskTriggerReferenceModel(userTaskRun)
+                ),
                 taskToSchedule
             );
             taskRun.setId(taskRunId);
-            taskRun.getAttempts().add(new TaskAttempt());
+            taskRun.getAttempts().add(new TaskAttemptModel());
             dao.putTaskRun(taskRun);
             dao.scheduleTask(toSchedule);
 

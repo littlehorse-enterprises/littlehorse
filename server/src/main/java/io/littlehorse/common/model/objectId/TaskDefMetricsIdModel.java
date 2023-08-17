@@ -3,7 +3,7 @@ package io.littlehorse.common.model.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.metrics.TaskDefMetricsModel;
-import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.TaskDefMetrics;
@@ -64,7 +64,7 @@ public class TaskDefMetricsIdModel
         windowStart = new Date(Long.valueOf(split[2]));
     }
 
-    public GetableClassEnumPb getType() {
-        return GetableClassEnumPb.TASK_DEF_METRICS;
+    public GetableClassEnum getType() {
+        return GetableClassEnum.TASK_DEF_METRICS;
     }
 }

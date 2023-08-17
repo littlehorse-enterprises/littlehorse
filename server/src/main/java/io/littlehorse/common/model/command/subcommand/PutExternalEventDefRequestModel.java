@@ -8,7 +8,7 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventDefResponseModel;
 import io.littlehorse.common.model.meta.ExternalEventDefModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 
 public class PutExternalEventDefRequestModel
     extends SubCommand<io.littlehorse.sdk.common.proto.PutExternalEventDefRequest> {
@@ -47,14 +47,14 @@ public class PutExternalEventDefRequestModel
         PutExternalEventDefResponseModel out = new PutExternalEventDefResponseModel();
 
         if (!LHUtil.isValidLHName(name)) {
-            out.code = LHResponseCodePb.VALIDATION_ERROR;
+            out.code = LHResponseCode.VALIDATION_ERROR;
             out.message = "ExternalEventDef name must be a valid hostname";
             return out;
         }
 
         ExternalEventDefModel oldVersion = dao.getExternalEventDef(name);
         if (oldVersion != null) {
-            out.code = LHResponseCodePb.ALREADY_EXISTS_ERROR;
+            out.code = LHResponseCode.ALREADY_EXISTS_ERROR;
             out.message = "ExternalEventDef already exists and is immutable.";
             out.result = oldVersion;
         } else {
@@ -67,7 +67,7 @@ public class PutExternalEventDefRequestModel
 
             dao.putExternalEventDef(spec);
 
-            out.code = LHResponseCodePb.OK;
+            out.code = LHResponseCode.OK;
             out.result = spec;
         }
         return out;

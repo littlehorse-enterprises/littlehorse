@@ -3,7 +3,7 @@ package io.littlehorse.common.model.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.wfrun.UserTaskRunModel;
-import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
@@ -61,7 +61,7 @@ public class UserTaskRunIdModel
         userTaskGuid = split[1];
     }
 
-    public GetableClassEnumPb getType() {
-        return GetableClassEnumPb.USER_TASK_RUN;
+    public GetableClassEnum getType() {
+        return GetableClassEnum.USER_TASK_RUN;
     }
 }

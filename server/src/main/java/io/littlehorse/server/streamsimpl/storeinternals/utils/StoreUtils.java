@@ -4,8 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.model.wfrun.ScheduledTask;
-import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.common.model.wfrun.ScheduledTaskModel;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
@@ -54,7 +54,7 @@ public class StoreUtils {
 
         if (cls.equals(Tag.class)) {
             return "TG/";
-        } else if (cls.equals(ScheduledTask.class)) {
+        } else if (cls.equals(ScheduledTaskModel.class)) {
             return "ST/";
         } else if (cls.equals(TagsCache.class)) {
             return "TC/";
@@ -69,7 +69,7 @@ public class StoreUtils {
         }
     }
 
-    public static String getFullStoreKey(String objectId, GetableClassEnumPb type) {
+    public static String getFullStoreKey(String objectId, GetableClassEnum type) {
         return getFullStoreKey(objectId, Getable.getCls(type));
     }
 

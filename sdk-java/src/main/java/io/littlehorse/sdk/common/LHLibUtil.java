@@ -11,8 +11,8 @@ import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.TaskRunIdPb;
-import io.littlehorse.sdk.common.proto.TaskRunSourcePb;
+import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import java.lang.reflect.InvocationTargetException;
@@ -86,7 +86,7 @@ public class LHLibUtil {
         return mapper.readValue(json, cls);
     }
 
-    public static String getWfRunId(TaskRunSourcePb taskRunSource) {
+    public static String getWfRunId(TaskRunSource taskRunSource) {
         switch (taskRunSource.getTaskRunSourceCase()) {
             case TASK_NODE:
                 return taskRunSource.getTaskNode().getNodeRunId().getWfRunId();
@@ -98,7 +98,7 @@ public class LHLibUtil {
         return null;
     }
 
-    public static String taskRunIdToString(TaskRunIdPb taskRunId) {
+    public static String taskRunIdToString(TaskRunId taskRunId) {
         return taskRunId.getWfRunId() + "/" + taskRunId.getTaskGuid();
     }
 

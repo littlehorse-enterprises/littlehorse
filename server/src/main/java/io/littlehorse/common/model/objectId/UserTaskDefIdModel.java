@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
-import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDefId;
@@ -58,7 +58,7 @@ public class UserTaskDefIdModel
         version = Integer.valueOf(split[1]);
     }
 
-    public GetableClassEnumPb getType() {
-        return GetableClassEnumPb.USER_TASK_DEF;
+    public GetableClassEnum getType() {
+        return GetableClassEnum.USER_TASK_DEF;
     }
 }

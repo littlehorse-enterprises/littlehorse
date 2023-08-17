@@ -12,9 +12,9 @@ import io.littlehorse.common.model.meta.TaskDefModel;
 import io.littlehorse.common.model.meta.VariableAssignmentModel;
 import io.littlehorse.common.model.meta.VariableDefModel;
 import io.littlehorse.common.model.wfrun.ThreadRunModel;
-import io.littlehorse.common.model.wfrun.VarNameAndVal;
+import io.littlehorse.common.model.wfrun.VarNameAndValModel;
 import io.littlehorse.common.model.wfrun.VariableValueModel;
-import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRun;
+import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRunModel;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
@@ -157,9 +157,9 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         return out;
     }
 
-    public List<VarNameAndVal> assignInputVars(ThreadRunModel thread)
+    public List<VarNameAndValModel> assignInputVars(ThreadRunModel thread)
         throws LHVarSubError {
-        List<VarNameAndVal> out = new ArrayList<>();
+        List<VarNameAndValModel> out = new ArrayList<>();
         if (getTaskDef().getInputVars().size() != variables.size()) {
             throw new LHVarSubError(
                 null,
@@ -192,15 +192,15 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                     val.type
                 );
             }
-            out.add(new VarNameAndVal(varName, val));
+            out.add(new VarNameAndValModel(varName, val));
         }
 
         return out;
     }
 
     @Override
-    public TaskNodeRun createSubNodeRun(Date time) {
-        TaskNodeRun out = new TaskNodeRun();
+    public TaskNodeRunModel createSubNodeRun(Date time) {
+        TaskNodeRunModel out = new TaskNodeRunModel();
         // Note: all of the initialization is done in `TaskNodeRun#arrive()`
         return out;
     }

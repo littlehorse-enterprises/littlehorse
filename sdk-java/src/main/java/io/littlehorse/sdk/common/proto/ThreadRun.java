@@ -359,49 +359,49 @@ private static final long serialVersionUID = 0L;
 
   public static final int HALT_REASONS_FIELD_NUMBER = 13;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReasonPb> haltReasons_;
+  private java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReason> haltReasons_;
   /**
-   * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+   * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReasonPb> getHaltReasonsList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReason> getHaltReasonsList() {
     return haltReasons_;
   }
   /**
-   * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+   * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadHaltReasonPbOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadHaltReasonOrBuilder> 
       getHaltReasonsOrBuilderList() {
     return haltReasons_;
   }
   /**
-   * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+   * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
    */
   @java.lang.Override
   public int getHaltReasonsCount() {
     return haltReasons_.size();
   }
   /**
-   * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+   * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ThreadHaltReasonPb getHaltReasons(int index) {
+  public io.littlehorse.sdk.common.proto.ThreadHaltReason getHaltReasons(int index) {
     return haltReasons_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+   * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ThreadHaltReasonPbOrBuilder getHaltReasonsOrBuilder(
+  public io.littlehorse.sdk.common.proto.ThreadHaltReasonOrBuilder getHaltReasonsOrBuilder(
       int index) {
     return haltReasons_.get(index);
   }
 
   public static final int INTERRUPT_TRIGGER_ID_FIELD_NUMBER = 14;
-  private io.littlehorse.sdk.common.proto.ExternalEventIdPb interruptTriggerId_;
+  private io.littlehorse.sdk.common.proto.ExternalEventId interruptTriggerId_;
   /**
-   * <code>optional .littlehorse.ExternalEventIdPb interrupt_trigger_id = 14;</code>
+   * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
    * @return Whether the interruptTriggerId field is set.
    */
   @java.lang.Override
@@ -409,25 +409,25 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000008) != 0);
   }
   /**
-   * <code>optional .littlehorse.ExternalEventIdPb interrupt_trigger_id = 14;</code>
+   * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
    * @return The interruptTriggerId.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ExternalEventIdPb getInterruptTriggerId() {
-    return interruptTriggerId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventIdPb.getDefaultInstance() : interruptTriggerId_;
+  public io.littlehorse.sdk.common.proto.ExternalEventId getInterruptTriggerId() {
+    return interruptTriggerId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance() : interruptTriggerId_;
   }
   /**
-   * <code>optional .littlehorse.ExternalEventIdPb interrupt_trigger_id = 14;</code>
+   * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ExternalEventIdPbOrBuilder getInterruptTriggerIdOrBuilder() {
-    return interruptTriggerId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventIdPb.getDefaultInstance() : interruptTriggerId_;
+  public io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getInterruptTriggerIdOrBuilder() {
+    return interruptTriggerId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance() : interruptTriggerId_;
   }
 
   public static final int FAILURE_BEING_HANDLED_FIELD_NUMBER = 15;
-  private io.littlehorse.sdk.common.proto.FailureBeingHandledPb failureBeingHandled_;
+  private io.littlehorse.sdk.common.proto.FailureBeingHandled failureBeingHandled_;
   /**
-   * <code>optional .littlehorse.FailureBeingHandledPb failure_being_handled = 15;</code>
+   * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
    * @return Whether the failureBeingHandled field is set.
    */
   @java.lang.Override
@@ -435,19 +435,19 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000010) != 0);
   }
   /**
-   * <code>optional .littlehorse.FailureBeingHandledPb failure_being_handled = 15;</code>
+   * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
    * @return The failureBeingHandled.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.FailureBeingHandledPb getFailureBeingHandled() {
-    return failureBeingHandled_ == null ? io.littlehorse.sdk.common.proto.FailureBeingHandledPb.getDefaultInstance() : failureBeingHandled_;
+  public io.littlehorse.sdk.common.proto.FailureBeingHandled getFailureBeingHandled() {
+    return failureBeingHandled_ == null ? io.littlehorse.sdk.common.proto.FailureBeingHandled.getDefaultInstance() : failureBeingHandled_;
   }
   /**
-   * <code>optional .littlehorse.FailureBeingHandledPb failure_being_handled = 15;</code>
+   * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.FailureBeingHandledPbOrBuilder getFailureBeingHandledOrBuilder() {
-    return failureBeingHandled_ == null ? io.littlehorse.sdk.common.proto.FailureBeingHandledPb.getDefaultInstance() : failureBeingHandled_;
+  public io.littlehorse.sdk.common.proto.FailureBeingHandledOrBuilder getFailureBeingHandledOrBuilder() {
+    return failureBeingHandled_ == null ? io.littlehorse.sdk.common.proto.FailureBeingHandled.getDefaultInstance() : failureBeingHandled_;
   }
 
   public static final int CURRENT_NODE_POSITION_FIELD_NUMBER = 16;
@@ -493,19 +493,19 @@ private static final long serialVersionUID = 0L;
   public static final int TYPE_FIELD_NUMBER = 18;
   private int type_ = 0;
   /**
-   * <code>.littlehorse.ThreadTypePb type = 18;</code>
+   * <code>.littlehorse.ThreadType type = 18;</code>
    * @return The enum numeric value on the wire for type.
    */
   @java.lang.Override public int getTypeValue() {
     return type_;
   }
   /**
-   * <code>.littlehorse.ThreadTypePb type = 18;</code>
+   * <code>.littlehorse.ThreadType type = 18;</code>
    * @return The type.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.ThreadTypePb getType() {
-    io.littlehorse.sdk.common.proto.ThreadTypePb result = io.littlehorse.sdk.common.proto.ThreadTypePb.forNumber(type_);
-    return result == null ? io.littlehorse.sdk.common.proto.ThreadTypePb.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.ThreadType getType() {
+    io.littlehorse.sdk.common.proto.ThreadType result = io.littlehorse.sdk.common.proto.ThreadType.forNumber(type_);
+    return result == null ? io.littlehorse.sdk.common.proto.ThreadType.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -579,7 +579,7 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < handledFailedChildren_.size(); i++) {
       output.writeInt32NoTag(handledFailedChildren_.getInt(i));
     }
-    if (type_ != io.littlehorse.sdk.common.proto.ThreadTypePb.ENTRYPOINT.getNumber()) {
+    if (type_ != io.littlehorse.sdk.common.proto.ThreadType.ENTRYPOINT.getNumber()) {
       output.writeEnum(18, type_);
     }
     getUnknownFields().writeTo(output);
@@ -671,7 +671,7 @@ private static final long serialVersionUID = 0L;
       }
       handledFailedChildrenMemoizedSerializedSize = dataSize;
     }
-    if (type_ != io.littlehorse.sdk.common.proto.ThreadTypePb.ENTRYPOINT.getNumber()) {
+    if (type_ != io.littlehorse.sdk.common.proto.ThreadType.ENTRYPOINT.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(18, type_);
     }
@@ -1333,9 +1333,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 96
             case 106: {
-              io.littlehorse.sdk.common.proto.ThreadHaltReasonPb m =
+              io.littlehorse.sdk.common.proto.ThreadHaltReason m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.parser(),
+                      io.littlehorse.sdk.common.proto.ThreadHaltReason.parser(),
                       extensionRegistry);
               if (haltReasonsBuilder_ == null) {
                 ensureHaltReasonsIsMutable();
@@ -2173,22 +2173,22 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReasonPb> haltReasons_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReason> haltReasons_ =
       java.util.Collections.emptyList();
     private void ensureHaltReasonsIsMutable() {
       if (!((bitField0_ & 0x00000800) != 0)) {
-        haltReasons_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.ThreadHaltReasonPb>(haltReasons_);
+        haltReasons_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.ThreadHaltReason>(haltReasons_);
         bitField0_ |= 0x00000800;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ThreadHaltReasonPb, io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.Builder, io.littlehorse.sdk.common.proto.ThreadHaltReasonPbOrBuilder> haltReasonsBuilder_;
+        io.littlehorse.sdk.common.proto.ThreadHaltReason, io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder, io.littlehorse.sdk.common.proto.ThreadHaltReasonOrBuilder> haltReasonsBuilder_;
 
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReasonPb> getHaltReasonsList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReason> getHaltReasonsList() {
       if (haltReasonsBuilder_ == null) {
         return java.util.Collections.unmodifiableList(haltReasons_);
       } else {
@@ -2196,7 +2196,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
     public int getHaltReasonsCount() {
       if (haltReasonsBuilder_ == null) {
@@ -2206,9 +2206,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
-    public io.littlehorse.sdk.common.proto.ThreadHaltReasonPb getHaltReasons(int index) {
+    public io.littlehorse.sdk.common.proto.ThreadHaltReason getHaltReasons(int index) {
       if (haltReasonsBuilder_ == null) {
         return haltReasons_.get(index);
       } else {
@@ -2216,10 +2216,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
     public Builder setHaltReasons(
-        int index, io.littlehorse.sdk.common.proto.ThreadHaltReasonPb value) {
+        int index, io.littlehorse.sdk.common.proto.ThreadHaltReason value) {
       if (haltReasonsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2233,10 +2233,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
     public Builder setHaltReasons(
-        int index, io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder builderForValue) {
       if (haltReasonsBuilder_ == null) {
         ensureHaltReasonsIsMutable();
         haltReasons_.set(index, builderForValue.build());
@@ -2247,9 +2247,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
-    public Builder addHaltReasons(io.littlehorse.sdk.common.proto.ThreadHaltReasonPb value) {
+    public Builder addHaltReasons(io.littlehorse.sdk.common.proto.ThreadHaltReason value) {
       if (haltReasonsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2263,10 +2263,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
     public Builder addHaltReasons(
-        int index, io.littlehorse.sdk.common.proto.ThreadHaltReasonPb value) {
+        int index, io.littlehorse.sdk.common.proto.ThreadHaltReason value) {
       if (haltReasonsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2280,10 +2280,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
     public Builder addHaltReasons(
-        io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder builderForValue) {
       if (haltReasonsBuilder_ == null) {
         ensureHaltReasonsIsMutable();
         haltReasons_.add(builderForValue.build());
@@ -2294,10 +2294,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
     public Builder addHaltReasons(
-        int index, io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder builderForValue) {
       if (haltReasonsBuilder_ == null) {
         ensureHaltReasonsIsMutable();
         haltReasons_.add(index, builderForValue.build());
@@ -2308,10 +2308,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
     public Builder addAllHaltReasons(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.ThreadHaltReasonPb> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.ThreadHaltReason> values) {
       if (haltReasonsBuilder_ == null) {
         ensureHaltReasonsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -2323,7 +2323,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
     public Builder clearHaltReasons() {
       if (haltReasonsBuilder_ == null) {
@@ -2336,7 +2336,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
     public Builder removeHaltReasons(int index) {
       if (haltReasonsBuilder_ == null) {
@@ -2349,16 +2349,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
-    public io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.Builder getHaltReasonsBuilder(
+    public io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder getHaltReasonsBuilder(
         int index) {
       return getHaltReasonsFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
-    public io.littlehorse.sdk.common.proto.ThreadHaltReasonPbOrBuilder getHaltReasonsOrBuilder(
+    public io.littlehorse.sdk.common.proto.ThreadHaltReasonOrBuilder getHaltReasonsOrBuilder(
         int index) {
       if (haltReasonsBuilder_ == null) {
         return haltReasons_.get(index);  } else {
@@ -2366,9 +2366,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadHaltReasonPbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadHaltReasonOrBuilder> 
          getHaltReasonsOrBuilderList() {
       if (haltReasonsBuilder_ != null) {
         return haltReasonsBuilder_.getMessageOrBuilderList();
@@ -2377,33 +2377,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
-    public io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.Builder addHaltReasonsBuilder() {
+    public io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder addHaltReasonsBuilder() {
       return getHaltReasonsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.ThreadHaltReason.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
-    public io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.Builder addHaltReasonsBuilder(
+    public io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder addHaltReasonsBuilder(
         int index) {
       return getHaltReasonsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.ThreadHaltReason.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.ThreadHaltReasonPb halt_reasons = 13;</code>
+     * <code>repeated .littlehorse.ThreadHaltReason halt_reasons = 13;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder> 
          getHaltReasonsBuilderList() {
       return getHaltReasonsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ThreadHaltReasonPb, io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.Builder, io.littlehorse.sdk.common.proto.ThreadHaltReasonPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.ThreadHaltReason, io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder, io.littlehorse.sdk.common.proto.ThreadHaltReasonOrBuilder> 
         getHaltReasonsFieldBuilder() {
       if (haltReasonsBuilder_ == null) {
         haltReasonsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.ThreadHaltReasonPb, io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.Builder, io.littlehorse.sdk.common.proto.ThreadHaltReasonPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.ThreadHaltReason, io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder, io.littlehorse.sdk.common.proto.ThreadHaltReasonOrBuilder>(
                 haltReasons_,
                 ((bitField0_ & 0x00000800) != 0),
                 getParentForChildren(),
@@ -2413,31 +2413,31 @@ private static final long serialVersionUID = 0L;
       return haltReasonsBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.ExternalEventIdPb interruptTriggerId_;
+    private io.littlehorse.sdk.common.proto.ExternalEventId interruptTriggerId_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ExternalEventIdPb, io.littlehorse.sdk.common.proto.ExternalEventIdPb.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdPbOrBuilder> interruptTriggerIdBuilder_;
+        io.littlehorse.sdk.common.proto.ExternalEventId, io.littlehorse.sdk.common.proto.ExternalEventId.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder> interruptTriggerIdBuilder_;
     /**
-     * <code>optional .littlehorse.ExternalEventIdPb interrupt_trigger_id = 14;</code>
+     * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
      * @return Whether the interruptTriggerId field is set.
      */
     public boolean hasInterruptTriggerId() {
       return ((bitField0_ & 0x00001000) != 0);
     }
     /**
-     * <code>optional .littlehorse.ExternalEventIdPb interrupt_trigger_id = 14;</code>
+     * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
      * @return The interruptTriggerId.
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventIdPb getInterruptTriggerId() {
+    public io.littlehorse.sdk.common.proto.ExternalEventId getInterruptTriggerId() {
       if (interruptTriggerIdBuilder_ == null) {
-        return interruptTriggerId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventIdPb.getDefaultInstance() : interruptTriggerId_;
+        return interruptTriggerId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance() : interruptTriggerId_;
       } else {
         return interruptTriggerIdBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .littlehorse.ExternalEventIdPb interrupt_trigger_id = 14;</code>
+     * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
      */
-    public Builder setInterruptTriggerId(io.littlehorse.sdk.common.proto.ExternalEventIdPb value) {
+    public Builder setInterruptTriggerId(io.littlehorse.sdk.common.proto.ExternalEventId value) {
       if (interruptTriggerIdBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2451,10 +2451,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.ExternalEventIdPb interrupt_trigger_id = 14;</code>
+     * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
      */
     public Builder setInterruptTriggerId(
-        io.littlehorse.sdk.common.proto.ExternalEventIdPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.ExternalEventId.Builder builderForValue) {
       if (interruptTriggerIdBuilder_ == null) {
         interruptTriggerId_ = builderForValue.build();
       } else {
@@ -2465,13 +2465,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.ExternalEventIdPb interrupt_trigger_id = 14;</code>
+     * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
      */
-    public Builder mergeInterruptTriggerId(io.littlehorse.sdk.common.proto.ExternalEventIdPb value) {
+    public Builder mergeInterruptTriggerId(io.littlehorse.sdk.common.proto.ExternalEventId value) {
       if (interruptTriggerIdBuilder_ == null) {
         if (((bitField0_ & 0x00001000) != 0) &&
           interruptTriggerId_ != null &&
-          interruptTriggerId_ != io.littlehorse.sdk.common.proto.ExternalEventIdPb.getDefaultInstance()) {
+          interruptTriggerId_ != io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance()) {
           getInterruptTriggerIdBuilder().mergeFrom(value);
         } else {
           interruptTriggerId_ = value;
@@ -2484,7 +2484,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.ExternalEventIdPb interrupt_trigger_id = 14;</code>
+     * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
      */
     public Builder clearInterruptTriggerId() {
       bitField0_ = (bitField0_ & ~0x00001000);
@@ -2497,33 +2497,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.ExternalEventIdPb interrupt_trigger_id = 14;</code>
+     * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventIdPb.Builder getInterruptTriggerIdBuilder() {
+    public io.littlehorse.sdk.common.proto.ExternalEventId.Builder getInterruptTriggerIdBuilder() {
       bitField0_ |= 0x00001000;
       onChanged();
       return getInterruptTriggerIdFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.ExternalEventIdPb interrupt_trigger_id = 14;</code>
+     * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventIdPbOrBuilder getInterruptTriggerIdOrBuilder() {
+    public io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getInterruptTriggerIdOrBuilder() {
       if (interruptTriggerIdBuilder_ != null) {
         return interruptTriggerIdBuilder_.getMessageOrBuilder();
       } else {
         return interruptTriggerId_ == null ?
-            io.littlehorse.sdk.common.proto.ExternalEventIdPb.getDefaultInstance() : interruptTriggerId_;
+            io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance() : interruptTriggerId_;
       }
     }
     /**
-     * <code>optional .littlehorse.ExternalEventIdPb interrupt_trigger_id = 14;</code>
+     * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ExternalEventIdPb, io.littlehorse.sdk.common.proto.ExternalEventIdPb.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.ExternalEventId, io.littlehorse.sdk.common.proto.ExternalEventId.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder> 
         getInterruptTriggerIdFieldBuilder() {
       if (interruptTriggerIdBuilder_ == null) {
         interruptTriggerIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.ExternalEventIdPb, io.littlehorse.sdk.common.proto.ExternalEventIdPb.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.ExternalEventId, io.littlehorse.sdk.common.proto.ExternalEventId.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder>(
                 getInterruptTriggerId(),
                 getParentForChildren(),
                 isClean());
@@ -2532,31 +2532,31 @@ private static final long serialVersionUID = 0L;
       return interruptTriggerIdBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.FailureBeingHandledPb failureBeingHandled_;
+    private io.littlehorse.sdk.common.proto.FailureBeingHandled failureBeingHandled_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.FailureBeingHandledPb, io.littlehorse.sdk.common.proto.FailureBeingHandledPb.Builder, io.littlehorse.sdk.common.proto.FailureBeingHandledPbOrBuilder> failureBeingHandledBuilder_;
+        io.littlehorse.sdk.common.proto.FailureBeingHandled, io.littlehorse.sdk.common.proto.FailureBeingHandled.Builder, io.littlehorse.sdk.common.proto.FailureBeingHandledOrBuilder> failureBeingHandledBuilder_;
     /**
-     * <code>optional .littlehorse.FailureBeingHandledPb failure_being_handled = 15;</code>
+     * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
      * @return Whether the failureBeingHandled field is set.
      */
     public boolean hasFailureBeingHandled() {
       return ((bitField0_ & 0x00002000) != 0);
     }
     /**
-     * <code>optional .littlehorse.FailureBeingHandledPb failure_being_handled = 15;</code>
+     * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
      * @return The failureBeingHandled.
      */
-    public io.littlehorse.sdk.common.proto.FailureBeingHandledPb getFailureBeingHandled() {
+    public io.littlehorse.sdk.common.proto.FailureBeingHandled getFailureBeingHandled() {
       if (failureBeingHandledBuilder_ == null) {
-        return failureBeingHandled_ == null ? io.littlehorse.sdk.common.proto.FailureBeingHandledPb.getDefaultInstance() : failureBeingHandled_;
+        return failureBeingHandled_ == null ? io.littlehorse.sdk.common.proto.FailureBeingHandled.getDefaultInstance() : failureBeingHandled_;
       } else {
         return failureBeingHandledBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .littlehorse.FailureBeingHandledPb failure_being_handled = 15;</code>
+     * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
      */
-    public Builder setFailureBeingHandled(io.littlehorse.sdk.common.proto.FailureBeingHandledPb value) {
+    public Builder setFailureBeingHandled(io.littlehorse.sdk.common.proto.FailureBeingHandled value) {
       if (failureBeingHandledBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2570,10 +2570,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.FailureBeingHandledPb failure_being_handled = 15;</code>
+     * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
      */
     public Builder setFailureBeingHandled(
-        io.littlehorse.sdk.common.proto.FailureBeingHandledPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.FailureBeingHandled.Builder builderForValue) {
       if (failureBeingHandledBuilder_ == null) {
         failureBeingHandled_ = builderForValue.build();
       } else {
@@ -2584,13 +2584,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.FailureBeingHandledPb failure_being_handled = 15;</code>
+     * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
      */
-    public Builder mergeFailureBeingHandled(io.littlehorse.sdk.common.proto.FailureBeingHandledPb value) {
+    public Builder mergeFailureBeingHandled(io.littlehorse.sdk.common.proto.FailureBeingHandled value) {
       if (failureBeingHandledBuilder_ == null) {
         if (((bitField0_ & 0x00002000) != 0) &&
           failureBeingHandled_ != null &&
-          failureBeingHandled_ != io.littlehorse.sdk.common.proto.FailureBeingHandledPb.getDefaultInstance()) {
+          failureBeingHandled_ != io.littlehorse.sdk.common.proto.FailureBeingHandled.getDefaultInstance()) {
           getFailureBeingHandledBuilder().mergeFrom(value);
         } else {
           failureBeingHandled_ = value;
@@ -2603,7 +2603,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.FailureBeingHandledPb failure_being_handled = 15;</code>
+     * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
      */
     public Builder clearFailureBeingHandled() {
       bitField0_ = (bitField0_ & ~0x00002000);
@@ -2616,33 +2616,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.FailureBeingHandledPb failure_being_handled = 15;</code>
+     * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
      */
-    public io.littlehorse.sdk.common.proto.FailureBeingHandledPb.Builder getFailureBeingHandledBuilder() {
+    public io.littlehorse.sdk.common.proto.FailureBeingHandled.Builder getFailureBeingHandledBuilder() {
       bitField0_ |= 0x00002000;
       onChanged();
       return getFailureBeingHandledFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.FailureBeingHandledPb failure_being_handled = 15;</code>
+     * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
      */
-    public io.littlehorse.sdk.common.proto.FailureBeingHandledPbOrBuilder getFailureBeingHandledOrBuilder() {
+    public io.littlehorse.sdk.common.proto.FailureBeingHandledOrBuilder getFailureBeingHandledOrBuilder() {
       if (failureBeingHandledBuilder_ != null) {
         return failureBeingHandledBuilder_.getMessageOrBuilder();
       } else {
         return failureBeingHandled_ == null ?
-            io.littlehorse.sdk.common.proto.FailureBeingHandledPb.getDefaultInstance() : failureBeingHandled_;
+            io.littlehorse.sdk.common.proto.FailureBeingHandled.getDefaultInstance() : failureBeingHandled_;
       }
     }
     /**
-     * <code>optional .littlehorse.FailureBeingHandledPb failure_being_handled = 15;</code>
+     * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.FailureBeingHandledPb, io.littlehorse.sdk.common.proto.FailureBeingHandledPb.Builder, io.littlehorse.sdk.common.proto.FailureBeingHandledPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.FailureBeingHandled, io.littlehorse.sdk.common.proto.FailureBeingHandled.Builder, io.littlehorse.sdk.common.proto.FailureBeingHandledOrBuilder> 
         getFailureBeingHandledFieldBuilder() {
       if (failureBeingHandledBuilder_ == null) {
         failureBeingHandledBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.FailureBeingHandledPb, io.littlehorse.sdk.common.proto.FailureBeingHandledPb.Builder, io.littlehorse.sdk.common.proto.FailureBeingHandledPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.FailureBeingHandled, io.littlehorse.sdk.common.proto.FailureBeingHandled.Builder, io.littlehorse.sdk.common.proto.FailureBeingHandledOrBuilder>(
                 getFailureBeingHandled(),
                 getParentForChildren(),
                 isClean());
@@ -2766,14 +2766,14 @@ private static final long serialVersionUID = 0L;
 
     private int type_ = 0;
     /**
-     * <code>.littlehorse.ThreadTypePb type = 18;</code>
+     * <code>.littlehorse.ThreadType type = 18;</code>
      * @return The enum numeric value on the wire for type.
      */
     @java.lang.Override public int getTypeValue() {
       return type_;
     }
     /**
-     * <code>.littlehorse.ThreadTypePb type = 18;</code>
+     * <code>.littlehorse.ThreadType type = 18;</code>
      * @param value The enum numeric value on the wire for type to set.
      * @return This builder for chaining.
      */
@@ -2784,20 +2784,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ThreadTypePb type = 18;</code>
+     * <code>.littlehorse.ThreadType type = 18;</code>
      * @return The type.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ThreadTypePb getType() {
-      io.littlehorse.sdk.common.proto.ThreadTypePb result = io.littlehorse.sdk.common.proto.ThreadTypePb.forNumber(type_);
-      return result == null ? io.littlehorse.sdk.common.proto.ThreadTypePb.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.ThreadType getType() {
+      io.littlehorse.sdk.common.proto.ThreadType result = io.littlehorse.sdk.common.proto.ThreadType.forNumber(type_);
+      return result == null ? io.littlehorse.sdk.common.proto.ThreadType.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.ThreadTypePb type = 18;</code>
+     * <code>.littlehorse.ThreadType type = 18;</code>
      * @param value The type to set.
      * @return This builder for chaining.
      */
-    public Builder setType(io.littlehorse.sdk.common.proto.ThreadTypePb value) {
+    public Builder setType(io.littlehorse.sdk.common.proto.ThreadType value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -2807,7 +2807,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ThreadTypePb type = 18;</code>
+     * <code>.littlehorse.ThreadType type = 18;</code>
      * @return This builder for chaining.
      */
     public Builder clearType() {

@@ -4,13 +4,13 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.meta.ExternalEventDefModel;
-import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
-import io.littlehorse.sdk.common.proto.ExternalEventDefIdPb;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 
 // Used by ExternalEventDef, TaskDef, and ExternalEventDef
 public class ExternalEventDefIdModel
-    extends ObjectId<ExternalEventDefIdPb, ExternalEventDef, ExternalEventDefModel> {
+    extends ObjectId<ExternalEventDefId, ExternalEventDef, ExternalEventDefModel> {
 
     public String name;
 
@@ -20,8 +20,8 @@ public class ExternalEventDefIdModel
         this.name = name;
     }
 
-    public Class<ExternalEventDefIdPb> getProtoBaseClass() {
-        return ExternalEventDefIdPb.class;
+    public Class<ExternalEventDefId> getProtoBaseClass() {
+        return ExternalEventDefId.class;
     }
 
     public String getPartitionKey() {
@@ -29,12 +29,12 @@ public class ExternalEventDefIdModel
     }
 
     public void initFrom(Message proto) {
-        ExternalEventDefIdPb p = (ExternalEventDefIdPb) proto;
+        ExternalEventDefId p = (ExternalEventDefId) proto;
         name = p.getName();
     }
 
-    public ExternalEventDefIdPb.Builder toProto() {
-        ExternalEventDefIdPb.Builder out = ExternalEventDefIdPb
+    public ExternalEventDefId.Builder toProto() {
+        ExternalEventDefId.Builder out = ExternalEventDefId
             .newBuilder()
             .setName(name);
         return out;
@@ -48,7 +48,7 @@ public class ExternalEventDefIdModel
         name = storeKey;
     }
 
-    public GetableClassEnumPb getType() {
-        return GetableClassEnumPb.WF_SPEC;
+    public GetableClassEnum getType() {
+        return GetableClassEnum.WF_SPEC;
     }
 }

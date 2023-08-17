@@ -14,16 +14,16 @@ import io.littlehorse.common.model.command.subcommand.StopWfRun;
 import io.littlehorse.common.model.meta.ThreadSpecModel;
 import io.littlehorse.common.model.meta.VariableDefModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.objectId.WfRunId;
-import io.littlehorse.common.model.wfrun.haltreason.ManualHalt;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.model.objectId.WfRunIdModel;
+import io.littlehorse.common.model.wfrun.haltreason.ManualHaltModel;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.PendingFailureHandlerPb;
-import io.littlehorse.sdk.common.proto.PendingInterruptPb;
-import io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.ReasonCase;
+import io.littlehorse.sdk.common.proto.PendingFailureHandler;
+import io.littlehorse.sdk.common.proto.PendingInterrupt;
+import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
-import io.littlehorse.sdk.common.proto.ThreadTypePb;
+import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
@@ -54,8 +54,8 @@ public class WfRunModel extends Getable<WfRun> {
     public Date startTime;
     public Date endTime;
     public List<ThreadRunModel> threadRunModels;
-    public List<PendingInterrupt> pendingInterrupts;
-    public List<PendingFailureHandler> pendingFailures;
+    public List<PendingInterruptModel> pendingInterrupts;
+    public List<PendingFailureHandlerModel> pendingFailures;
 
     public WfRunModel() {
         threadRunModels = new ArrayList<>();
@@ -73,14 +73,14 @@ public class WfRunModel extends Getable<WfRun> {
         return List.of(
             new GetableIndex<>(
                 List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageTypePb.LOCAL)
+                Optional.of(TagStorageType.LOCAL)
             ),
             new GetableIndex<>(
                 List.of(
                     Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
                     Pair.of("status", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.LOCAL)
+                Optional.of(TagStorageType.LOCAL)
             ),
             new GetableIndex<>(
                 List.of(
@@ -88,7 +88,7 @@ public class WfRunModel extends Getable<WfRun> {
                     Pair.of("status", GetableIndex.ValueType.SINGLE),
                     Pair.of("wfSpecVersion", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.LOCAL)
+                Optional.of(TagStorageType.LOCAL)
             )
         );
     }
@@ -96,7 +96,7 @@ public class WfRunModel extends Getable<WfRun> {
     @Override
     public List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageTypePb> tagStorageTypePb
+        Optional<TagStorageType> tagStorageTypePb
     ) {
         switch (key) {
             case "wfSpecName" -> {
@@ -122,7 +122,7 @@ public class WfRunModel extends Getable<WfRun> {
                     new IndexedField(
                         key,
                         LHUtil.toLHDbVersionFormat(this.getWfSpecVersion()),
-                        TagStorageTypePb.LOCAL
+                        TagStorageType.LOCAL
                     )
                 );
             }
@@ -162,16 +162,16 @@ public class WfRunModel extends Getable<WfRun> {
             thr.wfRunModel = this;
             threadRunModels.add(thr);
         }
-        for (PendingInterruptPb pipb : proto.getPendingInterruptsList()) {
-            pendingInterrupts.add(PendingInterrupt.fromProto(pipb));
+        for (PendingInterrupt pipb : proto.getPendingInterruptsList()) {
+            pendingInterrupts.add(PendingInterruptModel.fromProto(pipb));
         }
-        for (PendingFailureHandlerPb pfhpb : proto.getPendingFailuresList()) {
-            pendingFailures.add(PendingFailureHandler.fromProto(pfhpb));
+        for (PendingFailureHandler pfhpb : proto.getPendingFailuresList()) {
+            pendingFailures.add(PendingFailureHandlerModel.fromProto(pfhpb));
         }
     }
 
-    public WfRunId getObjectId() {
-        return new WfRunId(id);
+    public WfRunIdModel getObjectId() {
+        return new WfRunIdModel(id);
     }
 
     /*
@@ -200,11 +200,11 @@ public class WfRunModel extends Getable<WfRun> {
             out.addThreadRuns(threadRunModel.toProto());
         }
 
-        for (PendingInterrupt pi : pendingInterrupts) {
+        for (PendingInterruptModel pi : pendingInterrupts) {
             out.addPendingInterrupts(pi.toProto());
         }
 
-        for (PendingFailureHandler pfh : pendingFailures) {
+        for (PendingFailureHandlerModel pfh : pendingFailures) {
             out.addPendingFailures(pfh.toProto());
         }
 
@@ -224,7 +224,7 @@ public class WfRunModel extends Getable<WfRun> {
         Date start,
         Integer parentThreadId,
         Map<String, VariableValueModel> variables,
-        ThreadTypePb type
+        ThreadType type
     ) {
         ThreadSpecModel tspec = wfSpecModel.threadSpecs.get(threadName);
         if (tspec == null) {
@@ -254,7 +254,7 @@ public class WfRunModel extends Getable<WfRun> {
             log.error("Invalid variables received", exn);
             // TODO: determine how observability events should look like for this case.
             thread.fail(
-                new Failure(
+                new FailureModel(
                     "Failed validating variables on start: " + exn.getMessage(),
                     LHConstants.VAR_MUTATION_ERROR
                 ),
@@ -312,13 +312,13 @@ public class WfRunModel extends Getable<WfRun> {
 
     private boolean startInterrupts(Date time) {
         boolean somethingChanged = false;
-        List<PendingInterrupt> toHandleNow = new ArrayList<>();
+        List<PendingInterruptModel> toHandleNow = new ArrayList<>();
         // Can only send one interrupt at a time to a thread...they need to complete
         // sequentially.
         Set<Integer> threadsToHandleNow = new HashSet<>();
 
         for (int i = pendingInterrupts.size() - 1; i >= 0; i--) {
-            PendingInterrupt pi = pendingInterrupts.get(i);
+            PendingInterruptModel pi = pendingInterrupts.get(i);
             ThreadRunModel toInterrupt = threadRunModels.get(pi.interruptedThreadId);
 
             if (toInterrupt.canBeInterrupted()) {
@@ -331,14 +331,14 @@ public class WfRunModel extends Getable<WfRun> {
             }
         }
 
-        for (PendingInterrupt pi : toHandleNow) {
+        for (PendingInterruptModel pi : toHandleNow) {
             ThreadRunModel toInterrupt = threadRunModels.get(pi.interruptedThreadId);
             Map<String, VariableValueModel> vars;
 
             ThreadSpecModel iSpec = wfSpecModel.threadSpecs.get(pi.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
                 vars = new HashMap<>();
-                ExternalEvent event = getDao()
+                ExternalEventModel event = getDao()
                     .getExternalEvent(pi.externalEventId.getStoreKey());
                 vars.put(LHConstants.EXT_EVT_HANDLER_VAR, event.content);
             } else {
@@ -349,13 +349,13 @@ public class WfRunModel extends Getable<WfRun> {
                 time,
                 pi.interruptedThreadId,
                 vars,
-                ThreadTypePb.INTERRUPT
+                ThreadType.INTERRUPT
             );
             interruptor.interruptTriggerId = pi.externalEventId;
 
             if (interruptor.status == LHStatus.ERROR) {
                 toInterrupt.fail(
-                    new Failure(
+                    new FailureModel(
                         "Failed launching interrupt thread with id: " +
                         interruptor.number,
                         LHConstants.CHILD_FAILURE
@@ -374,7 +374,7 @@ public class WfRunModel extends Getable<WfRun> {
         boolean somethingChanged = false;
 
         for (int i = pendingFailures.size() - 1; i >= 0; i--) {
-            PendingFailureHandler pfh = pendingFailures.get(i);
+            PendingFailureHandlerModel pfh = pendingFailures.get(i);
             ThreadRunModel failedThr = threadRunModels.get(pfh.failedThreadRun);
 
             if (!failedThr.canBeInterrupted()) {
@@ -387,7 +387,9 @@ public class WfRunModel extends Getable<WfRun> {
             ThreadSpecModel iSpec = wfSpecModel.threadSpecs.get(pfh.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
                 vars = new HashMap<>();
-                Failure failure = failedThr.getCurrentNodeRun().getLatestFailure();
+                FailureModel failure = failedThr
+                    .getCurrentNodeRun()
+                    .getLatestFailure();
                 vars.put(LHConstants.EXT_EVT_HANDLER_VAR, failure.content);
             } else {
                 vars = new HashMap<>();
@@ -398,12 +400,12 @@ public class WfRunModel extends Getable<WfRun> {
                 time,
                 pfh.failedThreadRun,
                 vars,
-                ThreadTypePb.FAILURE_HANDLER
+                ThreadType.FAILURE_HANDLER
             );
 
             failedThr.getCurrentNodeRun().failureHandlerIds.add(fh.number);
 
-            fh.failureBeingHandled = new FailureBeingHandled();
+            fh.failureBeingHandled = new FailureBeingHandledModel();
             fh.failureBeingHandled.setFailureNumber(
                 failedThr.getCurrentNodeRun().failures.size() - 1
             );
@@ -412,7 +414,7 @@ public class WfRunModel extends Getable<WfRun> {
 
             if (fh.status == LHStatus.ERROR) {
                 fh.fail(
-                    new Failure(
+                    new FailureModel(
                         "Failed launching interrupt thread with id: " + fh.number,
                         LHConstants.CHILD_FAILURE
                     ),
@@ -468,12 +470,15 @@ public class WfRunModel extends Getable<WfRun> {
         threadRunModels
             .get(0)
             .fail(
-                new Failure("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR),
+                new FailureModel(
+                    "Appears wfSpec was deleted",
+                    LHConstants.INTERNAL_ERROR
+                ),
                 new Date()
             );
     }
 
-    public void processExternalEvent(ExternalEvent event) {
+    public void processExternalEvent(ExternalEventModel event) {
         // TODO LH-303: maybe if the event has a `threadRunNumber` and
         // `nodeRunPosition` set, it should do some validation here?
         for (ThreadRunModel thread : threadRunModels) {
@@ -493,15 +498,15 @@ public class WfRunModel extends Getable<WfRun> {
         }
 
         ThreadRunModel thread = threadRunModels.get(req.threadRunNumber);
-        ThreadHaltReason haltReason = new ThreadHaltReason();
+        ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
         haltReason.type = ReasonCase.MANUAL_HALT;
-        haltReason.manualHalt = new ManualHalt();
+        haltReason.manualHalt = new ManualHaltModel();
         stop(thread, haltReason);
     }
 
-    public void stop(ThreadRunModel thread, ThreadHaltReason threadHaltReason) {
+    public void stop(ThreadRunModel thread, ThreadHaltReasonModel threadHaltReason) {
         // need to see if thread already is halted. If so, don't double halt it.
-        for (ThreadHaltReason reason : thread.haltReasons) {
+        for (ThreadHaltReasonModel reason : thread.haltReasons) {
             if (reason.type == ReasonCase.MANUAL_HALT) {
                 return;
             }
@@ -523,7 +528,7 @@ public class WfRunModel extends Getable<WfRun> {
         ThreadRunModel thread = threadRunModels.get(req.threadRunNumber);
 
         for (int i = thread.haltReasons.size() - 1; i >= 0; i--) {
-            ThreadHaltReason thr = thread.haltReasons.get(i);
+            ThreadHaltReasonModel thr = thread.haltReasons.get(i);
             if (thr.type == ReasonCase.MANUAL_HALT) {
                 thread.haltReasons.remove(i);
             }

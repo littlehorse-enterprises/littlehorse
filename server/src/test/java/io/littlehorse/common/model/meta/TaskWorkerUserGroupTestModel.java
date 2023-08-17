@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test;
 
 public class TaskWorkerUserGroupTestModel {
 
-    private TaskWorkerGroup taskWorkerGroup;
+    private TaskWorkerGroupModel taskWorkerGroup;
 
     @BeforeEach
     public void initialize() {
-        taskWorkerGroup = new TaskWorkerGroup();
+        taskWorkerGroup = new TaskWorkerGroupModel();
     }
 
     @Test

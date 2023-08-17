@@ -3,8 +3,8 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.wfrun.NodeRunModel;
-import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.ListNodeRunsPb;
 import io.littlehorse.sdk.common.proto.ListNodeRunsReplyPb;
@@ -32,14 +32,14 @@ public class ListNodeRuns
         wfRunId = p.getWfRunId();
     }
 
-    public GetableClassEnumPb getObjectType() {
-        return GetableClassEnumPb.NODE_RUN;
+    public GetableClassEnum getObjectType() {
+        return GetableClassEnum.NODE_RUN;
     }
 
     @Override
-    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        return TagStorageTypePb.LOCAL;
+        return TagStorageType.LOCAL;
     }
 
     @Override

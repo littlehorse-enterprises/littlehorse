@@ -4,8 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
@@ -31,7 +31,7 @@ public abstract class PublicScanRequest<
     protected Integer limit;
     protected GetableSearch getableSearch;
 
-    public abstract GetableClassEnumPb getObjectType();
+    public abstract GetableClassEnum getObjectType();
 
     public int getLimit() {
         if (limit == null) {
@@ -89,7 +89,7 @@ public abstract class PublicScanRequest<
      * @throws LHValidationError if there are validation errors in the input.
      */
 
-    public abstract TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+    public abstract TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError;
 
     /**

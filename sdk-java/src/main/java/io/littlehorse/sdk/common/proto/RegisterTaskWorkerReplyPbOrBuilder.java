@@ -8,15 +8,15 @@ public interface RegisterTaskWorkerReplyPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   int getCodeValue();
   /**
-   * <code>.littlehorse.LHResponseCodePb code = 1;</code>
+   * <code>.littlehorse.LHResponseCode code = 1;</code>
    * @return The code.
    */
-  io.littlehorse.sdk.common.proto.LHResponseCodePb getCode();
+  io.littlehorse.sdk.common.proto.LHResponseCode getCode();
 
   /**
    * <code>optional string message = 2;</code>
@@ -36,26 +36,26 @@ public interface RegisterTaskWorkerReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>repeated .littlehorse.HostInfoPb your_hosts = 3;</code>
+   * <code>repeated .littlehorse.HostInfo your_hosts = 3;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.HostInfoPb> 
+  java.util.List<io.littlehorse.sdk.common.proto.HostInfo> 
       getYourHostsList();
   /**
-   * <code>repeated .littlehorse.HostInfoPb your_hosts = 3;</code>
+   * <code>repeated .littlehorse.HostInfo your_hosts = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.HostInfoPb getYourHosts(int index);
+  io.littlehorse.sdk.common.proto.HostInfo getYourHosts(int index);
   /**
-   * <code>repeated .littlehorse.HostInfoPb your_hosts = 3;</code>
+   * <code>repeated .littlehorse.HostInfo your_hosts = 3;</code>
    */
   int getYourHostsCount();
   /**
-   * <code>repeated .littlehorse.HostInfoPb your_hosts = 3;</code>
+   * <code>repeated .littlehorse.HostInfo your_hosts = 3;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.HostInfoPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.HostInfoOrBuilder> 
       getYourHostsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.HostInfoPb your_hosts = 3;</code>
+   * <code>repeated .littlehorse.HostInfo your_hosts = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.HostInfoPbOrBuilder getYourHostsOrBuilder(
+  io.littlehorse.sdk.common.proto.HostInfoOrBuilder getYourHostsOrBuilder(
       int index);
 }

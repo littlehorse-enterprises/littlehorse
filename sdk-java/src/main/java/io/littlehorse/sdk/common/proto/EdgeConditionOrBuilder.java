@@ -8,15 +8,15 @@ public interface EdgeConditionOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.ComparatorPb comparator = 1;</code>
+   * <code>.littlehorse.Comparator comparator = 1;</code>
    * @return The enum numeric value on the wire for comparator.
    */
   int getComparatorValue();
   /**
-   * <code>.littlehorse.ComparatorPb comparator = 1;</code>
+   * <code>.littlehorse.Comparator comparator = 1;</code>
    * @return The comparator.
    */
-  io.littlehorse.sdk.common.proto.ComparatorPb getComparator();
+  io.littlehorse.sdk.common.proto.Comparator getComparator();
 
   /**
    * <code>.littlehorse.VariableAssignment left = 2;</code>

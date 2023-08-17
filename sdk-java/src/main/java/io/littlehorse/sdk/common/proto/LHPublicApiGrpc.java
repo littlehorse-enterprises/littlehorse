@@ -46,27 +46,27 @@ public final class LHPublicApiGrpc {
     return getPutTaskDefMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefIdPb,
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefId,
       io.littlehorse.sdk.common.proto.GetTaskDefReplyPb> getGetTaskDefMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "GetTaskDef",
-      requestType = io.littlehorse.sdk.common.proto.TaskDefIdPb.class,
+      requestType = io.littlehorse.sdk.common.proto.TaskDefId.class,
       responseType = io.littlehorse.sdk.common.proto.GetTaskDefReplyPb.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefIdPb,
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefId,
       io.littlehorse.sdk.common.proto.GetTaskDefReplyPb> getGetTaskDefMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefIdPb, io.littlehorse.sdk.common.proto.GetTaskDefReplyPb> getGetTaskDefMethod;
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.GetTaskDefReplyPb> getGetTaskDefMethod;
     if ((getGetTaskDefMethod = LHPublicApiGrpc.getGetTaskDefMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
         if ((getGetTaskDefMethod = LHPublicApiGrpc.getGetTaskDefMethod) == null) {
           LHPublicApiGrpc.getGetTaskDefMethod = getGetTaskDefMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.TaskDefIdPb, io.littlehorse.sdk.common.proto.GetTaskDefReplyPb>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.GetTaskDefReplyPb>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetTaskDef"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.TaskDefIdPb.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.GetTaskDefReplyPb.getDefaultInstance()))
               .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("GetTaskDef"))
@@ -108,27 +108,27 @@ public final class LHPublicApiGrpc {
     return getPutExternalEventDefMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventDefIdPb,
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventDefId,
       io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb> getGetExternalEventDefMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "GetExternalEventDef",
-      requestType = io.littlehorse.sdk.common.proto.ExternalEventDefIdPb.class,
+      requestType = io.littlehorse.sdk.common.proto.ExternalEventDefId.class,
       responseType = io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventDefIdPb,
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventDefId,
       io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb> getGetExternalEventDefMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventDefIdPb, io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb> getGetExternalEventDefMethod;
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb> getGetExternalEventDefMethod;
     if ((getGetExternalEventDefMethod = LHPublicApiGrpc.getGetExternalEventDefMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
         if ((getGetExternalEventDefMethod = LHPublicApiGrpc.getGetExternalEventDefMethod) == null) {
           LHPublicApiGrpc.getGetExternalEventDefMethod = getGetExternalEventDefMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ExternalEventDefIdPb, io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetExternalEventDef"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ExternalEventDefIdPb.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb.getDefaultInstance()))
               .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("GetExternalEventDef"))
@@ -170,27 +170,27 @@ public final class LHPublicApiGrpc {
     return getPutWfSpecMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfSpecIdPb,
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfSpecId,
       io.littlehorse.sdk.common.proto.GetWfSpecReplyPb> getGetWfSpecMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "GetWfSpec",
-      requestType = io.littlehorse.sdk.common.proto.WfSpecIdPb.class,
+      requestType = io.littlehorse.sdk.common.proto.WfSpecId.class,
       responseType = io.littlehorse.sdk.common.proto.GetWfSpecReplyPb.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfSpecIdPb,
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfSpecId,
       io.littlehorse.sdk.common.proto.GetWfSpecReplyPb> getGetWfSpecMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfSpecIdPb, io.littlehorse.sdk.common.proto.GetWfSpecReplyPb> getGetWfSpecMethod;
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.GetWfSpecReplyPb> getGetWfSpecMethod;
     if ((getGetWfSpecMethod = LHPublicApiGrpc.getGetWfSpecMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
         if ((getGetWfSpecMethod = LHPublicApiGrpc.getGetWfSpecMethod) == null) {
           LHPublicApiGrpc.getGetWfSpecMethod = getGetWfSpecMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.WfSpecIdPb, io.littlehorse.sdk.common.proto.GetWfSpecReplyPb>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.GetWfSpecReplyPb>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetWfSpec"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.WfSpecIdPb.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.GetWfSpecReplyPb.getDefaultInstance()))
               .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("GetWfSpec"))
@@ -387,27 +387,27 @@ public final class LHPublicApiGrpc {
     return getRunWfMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfRunIdPb,
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfRunId,
       io.littlehorse.sdk.common.proto.GetWfRunReplyPb> getGetWfRunMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "GetWfRun",
-      requestType = io.littlehorse.sdk.common.proto.WfRunIdPb.class,
+      requestType = io.littlehorse.sdk.common.proto.WfRunId.class,
       responseType = io.littlehorse.sdk.common.proto.GetWfRunReplyPb.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfRunIdPb,
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfRunId,
       io.littlehorse.sdk.common.proto.GetWfRunReplyPb> getGetWfRunMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfRunIdPb, io.littlehorse.sdk.common.proto.GetWfRunReplyPb> getGetWfRunMethod;
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.GetWfRunReplyPb> getGetWfRunMethod;
     if ((getGetWfRunMethod = LHPublicApiGrpc.getGetWfRunMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
         if ((getGetWfRunMethod = LHPublicApiGrpc.getGetWfRunMethod) == null) {
           LHPublicApiGrpc.getGetWfRunMethod = getGetWfRunMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.WfRunIdPb, io.littlehorse.sdk.common.proto.GetWfRunReplyPb>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.GetWfRunReplyPb>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetWfRun"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.WfRunIdPb.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.GetWfRunReplyPb.getDefaultInstance()))
               .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("GetWfRun"))
@@ -542,27 +542,27 @@ public final class LHPublicApiGrpc {
     return getListNodeRunsMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskRunIdPb,
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskRunId,
       io.littlehorse.sdk.common.proto.GetTaskRunReplyPb> getGetTaskRunMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "GetTaskRun",
-      requestType = io.littlehorse.sdk.common.proto.TaskRunIdPb.class,
+      requestType = io.littlehorse.sdk.common.proto.TaskRunId.class,
       responseType = io.littlehorse.sdk.common.proto.GetTaskRunReplyPb.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskRunIdPb,
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskRunId,
       io.littlehorse.sdk.common.proto.GetTaskRunReplyPb> getGetTaskRunMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskRunIdPb, io.littlehorse.sdk.common.proto.GetTaskRunReplyPb> getGetTaskRunMethod;
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskRunId, io.littlehorse.sdk.common.proto.GetTaskRunReplyPb> getGetTaskRunMethod;
     if ((getGetTaskRunMethod = LHPublicApiGrpc.getGetTaskRunMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
         if ((getGetTaskRunMethod = LHPublicApiGrpc.getGetTaskRunMethod) == null) {
           LHPublicApiGrpc.getGetTaskRunMethod = getGetTaskRunMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.TaskRunIdPb, io.littlehorse.sdk.common.proto.GetTaskRunReplyPb>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.TaskRunId, io.littlehorse.sdk.common.proto.GetTaskRunReplyPb>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetTaskRun"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.TaskRunIdPb.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.TaskRunId.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.GetTaskRunReplyPb.getDefaultInstance()))
               .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("GetTaskRun"))
@@ -573,27 +573,27 @@ public final class LHPublicApiGrpc {
     return getGetTaskRunMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.VariableIdPb,
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.VariableId,
       io.littlehorse.sdk.common.proto.GetVariableReplyPb> getGetVariableMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "GetVariable",
-      requestType = io.littlehorse.sdk.common.proto.VariableIdPb.class,
+      requestType = io.littlehorse.sdk.common.proto.VariableId.class,
       responseType = io.littlehorse.sdk.common.proto.GetVariableReplyPb.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.VariableIdPb,
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.VariableId,
       io.littlehorse.sdk.common.proto.GetVariableReplyPb> getGetVariableMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.VariableIdPb, io.littlehorse.sdk.common.proto.GetVariableReplyPb> getGetVariableMethod;
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.VariableId, io.littlehorse.sdk.common.proto.GetVariableReplyPb> getGetVariableMethod;
     if ((getGetVariableMethod = LHPublicApiGrpc.getGetVariableMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
         if ((getGetVariableMethod = LHPublicApiGrpc.getGetVariableMethod) == null) {
           LHPublicApiGrpc.getGetVariableMethod = getGetVariableMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.VariableIdPb, io.littlehorse.sdk.common.proto.GetVariableReplyPb>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.VariableId, io.littlehorse.sdk.common.proto.GetVariableReplyPb>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetVariable"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.VariableIdPb.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.VariableId.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.GetVariableReplyPb.getDefaultInstance()))
               .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("GetVariable"))
@@ -666,27 +666,27 @@ public final class LHPublicApiGrpc {
     return getPutExternalEventMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventIdPb,
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventId,
       io.littlehorse.sdk.common.proto.GetExternalEventReplyPb> getGetExternalEventMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "GetExternalEvent",
-      requestType = io.littlehorse.sdk.common.proto.ExternalEventIdPb.class,
+      requestType = io.littlehorse.sdk.common.proto.ExternalEventId.class,
       responseType = io.littlehorse.sdk.common.proto.GetExternalEventReplyPb.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventIdPb,
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventId,
       io.littlehorse.sdk.common.proto.GetExternalEventReplyPb> getGetExternalEventMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventIdPb, io.littlehorse.sdk.common.proto.GetExternalEventReplyPb> getGetExternalEventMethod;
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventId, io.littlehorse.sdk.common.proto.GetExternalEventReplyPb> getGetExternalEventMethod;
     if ((getGetExternalEventMethod = LHPublicApiGrpc.getGetExternalEventMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
         if ((getGetExternalEventMethod = LHPublicApiGrpc.getGetExternalEventMethod) == null) {
           LHPublicApiGrpc.getGetExternalEventMethod = getGetExternalEventMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ExternalEventIdPb, io.littlehorse.sdk.common.proto.GetExternalEventReplyPb>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ExternalEventId, io.littlehorse.sdk.common.proto.GetExternalEventReplyPb>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetExternalEvent"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ExternalEventIdPb.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.GetExternalEventReplyPb.getDefaultInstance()))
               .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("GetExternalEvent"))
@@ -1069,29 +1069,29 @@ public final class LHPublicApiGrpc {
     return getRegisterTaskWorkerMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PollTaskPb,
-      io.littlehorse.sdk.common.proto.PollTaskReplyPb> getPollTaskMethod;
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PollTaskRequest,
+      io.littlehorse.sdk.common.proto.PollTaskResponse> getPollTaskMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "PollTask",
-      requestType = io.littlehorse.sdk.common.proto.PollTaskPb.class,
-      responseType = io.littlehorse.sdk.common.proto.PollTaskReplyPb.class,
+      requestType = io.littlehorse.sdk.common.proto.PollTaskRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.PollTaskResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PollTaskPb,
-      io.littlehorse.sdk.common.proto.PollTaskReplyPb> getPollTaskMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PollTaskPb, io.littlehorse.sdk.common.proto.PollTaskReplyPb> getPollTaskMethod;
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PollTaskRequest,
+      io.littlehorse.sdk.common.proto.PollTaskResponse> getPollTaskMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PollTaskRequest, io.littlehorse.sdk.common.proto.PollTaskResponse> getPollTaskMethod;
     if ((getPollTaskMethod = LHPublicApiGrpc.getPollTaskMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
         if ((getPollTaskMethod = LHPublicApiGrpc.getPollTaskMethod) == null) {
           LHPublicApiGrpc.getPollTaskMethod = getPollTaskMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PollTaskPb, io.littlehorse.sdk.common.proto.PollTaskReplyPb>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PollTaskRequest, io.littlehorse.sdk.common.proto.PollTaskResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PollTask"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.PollTaskPb.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.PollTaskRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.PollTaskReplyPb.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.PollTaskResponse.getDefaultInstance()))
               .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("PollTask"))
               .build();
         }
@@ -1100,27 +1100,27 @@ public final class LHPublicApiGrpc {
     return getPollTaskMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ReportTaskRunPb,
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ReportTaskRun,
       io.littlehorse.sdk.common.proto.ReportTaskReplyPb> getReportTaskMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "ReportTask",
-      requestType = io.littlehorse.sdk.common.proto.ReportTaskRunPb.class,
+      requestType = io.littlehorse.sdk.common.proto.ReportTaskRun.class,
       responseType = io.littlehorse.sdk.common.proto.ReportTaskReplyPb.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ReportTaskRunPb,
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ReportTaskRun,
       io.littlehorse.sdk.common.proto.ReportTaskReplyPb> getReportTaskMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ReportTaskRunPb, io.littlehorse.sdk.common.proto.ReportTaskReplyPb> getReportTaskMethod;
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ReportTaskRun, io.littlehorse.sdk.common.proto.ReportTaskReplyPb> getReportTaskMethod;
     if ((getReportTaskMethod = LHPublicApiGrpc.getReportTaskMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
         if ((getReportTaskMethod = LHPublicApiGrpc.getReportTaskMethod) == null) {
           LHPublicApiGrpc.getReportTaskMethod = getReportTaskMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ReportTaskRunPb, io.littlehorse.sdk.common.proto.ReportTaskReplyPb>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ReportTaskRun, io.littlehorse.sdk.common.proto.ReportTaskReplyPb>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ReportTask"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ReportTaskRunPb.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.ReportTaskRun.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.ReportTaskReplyPb.getDefaultInstance()))
               .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("ReportTask"))
@@ -1591,7 +1591,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    default void getTaskDef(io.littlehorse.sdk.common.proto.TaskDefIdPb request,
+    default void getTaskDef(io.littlehorse.sdk.common.proto.TaskDefId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetTaskDefReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetTaskDefMethod(), responseObserver);
     }
@@ -1605,7 +1605,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    default void getExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefIdPb request,
+    default void getExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetExternalEventDefMethod(), responseObserver);
     }
@@ -1619,7 +1619,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    default void getWfSpec(io.littlehorse.sdk.common.proto.WfSpecIdPb request,
+    default void getWfSpec(io.littlehorse.sdk.common.proto.WfSpecId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetWfSpecReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetWfSpecMethod(), responseObserver);
     }
@@ -1668,7 +1668,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    default void getWfRun(io.littlehorse.sdk.common.proto.WfRunIdPb request,
+    default void getWfRun(io.littlehorse.sdk.common.proto.WfRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetWfRunReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetWfRunMethod(), responseObserver);
     }
@@ -1703,14 +1703,14 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    default void getTaskRun(io.littlehorse.sdk.common.proto.TaskRunIdPb request,
+    default void getTaskRun(io.littlehorse.sdk.common.proto.TaskRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetTaskRunReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetTaskRunMethod(), responseObserver);
     }
 
     /**
      */
-    default void getVariable(io.littlehorse.sdk.common.proto.VariableIdPb request,
+    default void getVariable(io.littlehorse.sdk.common.proto.VariableId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetVariableReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetVariableMethod(), responseObserver);
     }
@@ -1731,7 +1731,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    default void getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventIdPb request,
+    default void getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetExternalEventReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetExternalEventMethod(), responseObserver);
     }
@@ -1822,14 +1822,14 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    default io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PollTaskPb> pollTask(
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PollTaskReplyPb> responseObserver) {
+    default io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PollTaskRequest> pollTask(
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PollTaskResponse> responseObserver) {
       return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getPollTaskMethod(), responseObserver);
     }
 
     /**
      */
-    default void reportTask(io.littlehorse.sdk.common.proto.ReportTaskRunPb request,
+    default void reportTask(io.littlehorse.sdk.common.proto.ReportTaskRun request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ReportTaskReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getReportTaskMethod(), responseObserver);
     }
@@ -1963,7 +1963,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public void getTaskDef(io.littlehorse.sdk.common.proto.TaskDefIdPb request,
+    public void getTaskDef(io.littlehorse.sdk.common.proto.TaskDefId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetTaskDefReplyPb> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetTaskDefMethod(), getCallOptions()), request, responseObserver);
@@ -1979,7 +1979,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public void getExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefIdPb request,
+    public void getExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetExternalEventDefMethod(), getCallOptions()), request, responseObserver);
@@ -1995,7 +1995,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public void getWfSpec(io.littlehorse.sdk.common.proto.WfSpecIdPb request,
+    public void getWfSpec(io.littlehorse.sdk.common.proto.WfSpecId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetWfSpecReplyPb> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetWfSpecMethod(), getCallOptions()), request, responseObserver);
@@ -2051,7 +2051,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public void getWfRun(io.littlehorse.sdk.common.proto.WfRunIdPb request,
+    public void getWfRun(io.littlehorse.sdk.common.proto.WfRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetWfRunReplyPb> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetWfRunMethod(), getCallOptions()), request, responseObserver);
@@ -2091,7 +2091,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public void getTaskRun(io.littlehorse.sdk.common.proto.TaskRunIdPb request,
+    public void getTaskRun(io.littlehorse.sdk.common.proto.TaskRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetTaskRunReplyPb> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetTaskRunMethod(), getCallOptions()), request, responseObserver);
@@ -2099,7 +2099,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public void getVariable(io.littlehorse.sdk.common.proto.VariableIdPb request,
+    public void getVariable(io.littlehorse.sdk.common.proto.VariableId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetVariableReplyPb> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetVariableMethod(), getCallOptions()), request, responseObserver);
@@ -2123,7 +2123,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public void getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventIdPb request,
+    public void getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetExternalEventReplyPb> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetExternalEventMethod(), getCallOptions()), request, responseObserver);
@@ -2227,15 +2227,15 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PollTaskPb> pollTask(
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PollTaskReplyPb> responseObserver) {
+    public io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PollTaskRequest> pollTask(
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PollTaskResponse> responseObserver) {
       return io.grpc.stub.ClientCalls.asyncBidiStreamingCall(
           getChannel().newCall(getPollTaskMethod(), getCallOptions()), responseObserver);
     }
 
     /**
      */
-    public void reportTask(io.littlehorse.sdk.common.proto.ReportTaskRunPb request,
+    public void reportTask(io.littlehorse.sdk.common.proto.ReportTaskRun request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ReportTaskReplyPb> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getReportTaskMethod(), getCallOptions()), request, responseObserver);
@@ -2371,7 +2371,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public io.littlehorse.sdk.common.proto.GetTaskDefReplyPb getTaskDef(io.littlehorse.sdk.common.proto.TaskDefIdPb request) {
+    public io.littlehorse.sdk.common.proto.GetTaskDefReplyPb getTaskDef(io.littlehorse.sdk.common.proto.TaskDefId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetTaskDefMethod(), getCallOptions(), request);
     }
@@ -2385,7 +2385,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb getExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefIdPb request) {
+    public io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb getExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetExternalEventDefMethod(), getCallOptions(), request);
     }
@@ -2399,7 +2399,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public io.littlehorse.sdk.common.proto.GetWfSpecReplyPb getWfSpec(io.littlehorse.sdk.common.proto.WfSpecIdPb request) {
+    public io.littlehorse.sdk.common.proto.GetWfSpecReplyPb getWfSpec(io.littlehorse.sdk.common.proto.WfSpecId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetWfSpecMethod(), getCallOptions(), request);
     }
@@ -2448,7 +2448,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public io.littlehorse.sdk.common.proto.GetWfRunReplyPb getWfRun(io.littlehorse.sdk.common.proto.WfRunIdPb request) {
+    public io.littlehorse.sdk.common.proto.GetWfRunReplyPb getWfRun(io.littlehorse.sdk.common.proto.WfRunId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetWfRunMethod(), getCallOptions(), request);
     }
@@ -2483,14 +2483,14 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public io.littlehorse.sdk.common.proto.GetTaskRunReplyPb getTaskRun(io.littlehorse.sdk.common.proto.TaskRunIdPb request) {
+    public io.littlehorse.sdk.common.proto.GetTaskRunReplyPb getTaskRun(io.littlehorse.sdk.common.proto.TaskRunId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetTaskRunMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public io.littlehorse.sdk.common.proto.GetVariableReplyPb getVariable(io.littlehorse.sdk.common.proto.VariableIdPb request) {
+    public io.littlehorse.sdk.common.proto.GetVariableReplyPb getVariable(io.littlehorse.sdk.common.proto.VariableId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetVariableMethod(), getCallOptions(), request);
     }
@@ -2511,7 +2511,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public io.littlehorse.sdk.common.proto.GetExternalEventReplyPb getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventIdPb request) {
+    public io.littlehorse.sdk.common.proto.GetExternalEventReplyPb getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetExternalEventMethod(), getCallOptions(), request);
     }
@@ -2602,7 +2602,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public io.littlehorse.sdk.common.proto.ReportTaskReplyPb reportTask(io.littlehorse.sdk.common.proto.ReportTaskRunPb request) {
+    public io.littlehorse.sdk.common.proto.ReportTaskReplyPb reportTask(io.littlehorse.sdk.common.proto.ReportTaskRun request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getReportTaskMethod(), getCallOptions(), request);
     }
@@ -2726,7 +2726,7 @@ public final class LHPublicApiGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.GetTaskDefReplyPb> getTaskDef(
-        io.littlehorse.sdk.common.proto.TaskDefIdPb request) {
+        io.littlehorse.sdk.common.proto.TaskDefId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetTaskDefMethod(), getCallOptions()), request);
     }
@@ -2742,7 +2742,7 @@ public final class LHPublicApiGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb> getExternalEventDef(
-        io.littlehorse.sdk.common.proto.ExternalEventDefIdPb request) {
+        io.littlehorse.sdk.common.proto.ExternalEventDefId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetExternalEventDefMethod(), getCallOptions()), request);
     }
@@ -2758,7 +2758,7 @@ public final class LHPublicApiGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.GetWfSpecReplyPb> getWfSpec(
-        io.littlehorse.sdk.common.proto.WfSpecIdPb request) {
+        io.littlehorse.sdk.common.proto.WfSpecId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetWfSpecMethod(), getCallOptions()), request);
     }
@@ -2814,7 +2814,7 @@ public final class LHPublicApiGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.GetWfRunReplyPb> getWfRun(
-        io.littlehorse.sdk.common.proto.WfRunIdPb request) {
+        io.littlehorse.sdk.common.proto.WfRunId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetWfRunMethod(), getCallOptions()), request);
     }
@@ -2854,7 +2854,7 @@ public final class LHPublicApiGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.GetTaskRunReplyPb> getTaskRun(
-        io.littlehorse.sdk.common.proto.TaskRunIdPb request) {
+        io.littlehorse.sdk.common.proto.TaskRunId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetTaskRunMethod(), getCallOptions()), request);
     }
@@ -2862,7 +2862,7 @@ public final class LHPublicApiGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.GetVariableReplyPb> getVariable(
-        io.littlehorse.sdk.common.proto.VariableIdPb request) {
+        io.littlehorse.sdk.common.proto.VariableId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetVariableMethod(), getCallOptions()), request);
     }
@@ -2886,7 +2886,7 @@ public final class LHPublicApiGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.GetExternalEventReplyPb> getExternalEvent(
-        io.littlehorse.sdk.common.proto.ExternalEventIdPb request) {
+        io.littlehorse.sdk.common.proto.ExternalEventId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetExternalEventMethod(), getCallOptions()), request);
     }
@@ -2990,7 +2990,7 @@ public final class LHPublicApiGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ReportTaskReplyPb> reportTask(
-        io.littlehorse.sdk.common.proto.ReportTaskRunPb request) {
+        io.littlehorse.sdk.common.proto.ReportTaskRun request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getReportTaskMethod(), getCallOptions()), request);
     }
@@ -3172,7 +3172,7 @@ public final class LHPublicApiGrpc {
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PutTaskDefResponse>) responseObserver);
           break;
         case METHODID_GET_TASK_DEF:
-          serviceImpl.getTaskDef((io.littlehorse.sdk.common.proto.TaskDefIdPb) request,
+          serviceImpl.getTaskDef((io.littlehorse.sdk.common.proto.TaskDefId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetTaskDefReplyPb>) responseObserver);
           break;
         case METHODID_PUT_EXTERNAL_EVENT_DEF:
@@ -3180,7 +3180,7 @@ public final class LHPublicApiGrpc {
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PutExternalEventDefResponse>) responseObserver);
           break;
         case METHODID_GET_EXTERNAL_EVENT_DEF:
-          serviceImpl.getExternalEventDef((io.littlehorse.sdk.common.proto.ExternalEventDefIdPb) request,
+          serviceImpl.getExternalEventDef((io.littlehorse.sdk.common.proto.ExternalEventDefId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb>) responseObserver);
           break;
         case METHODID_PUT_WF_SPEC:
@@ -3188,7 +3188,7 @@ public final class LHPublicApiGrpc {
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PutWfSpecResponse>) responseObserver);
           break;
         case METHODID_GET_WF_SPEC:
-          serviceImpl.getWfSpec((io.littlehorse.sdk.common.proto.WfSpecIdPb) request,
+          serviceImpl.getWfSpec((io.littlehorse.sdk.common.proto.WfSpecId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetWfSpecReplyPb>) responseObserver);
           break;
         case METHODID_GET_LATEST_WF_SPEC:
@@ -3216,7 +3216,7 @@ public final class LHPublicApiGrpc {
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.RunWfReplyPb>) responseObserver);
           break;
         case METHODID_GET_WF_RUN:
-          serviceImpl.getWfRun((io.littlehorse.sdk.common.proto.WfRunIdPb) request,
+          serviceImpl.getWfRun((io.littlehorse.sdk.common.proto.WfRunId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetWfRunReplyPb>) responseObserver);
           break;
         case METHODID_ASSIGN_USER_TASK_RUN:
@@ -3236,11 +3236,11 @@ public final class LHPublicApiGrpc {
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListNodeRunsReplyPb>) responseObserver);
           break;
         case METHODID_GET_TASK_RUN:
-          serviceImpl.getTaskRun((io.littlehorse.sdk.common.proto.TaskRunIdPb) request,
+          serviceImpl.getTaskRun((io.littlehorse.sdk.common.proto.TaskRunId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetTaskRunReplyPb>) responseObserver);
           break;
         case METHODID_GET_VARIABLE:
-          serviceImpl.getVariable((io.littlehorse.sdk.common.proto.VariableIdPb) request,
+          serviceImpl.getVariable((io.littlehorse.sdk.common.proto.VariableId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetVariableReplyPb>) responseObserver);
           break;
         case METHODID_LIST_VARIABLES:
@@ -3252,7 +3252,7 @@ public final class LHPublicApiGrpc {
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PutExternalEventResponse>) responseObserver);
           break;
         case METHODID_GET_EXTERNAL_EVENT:
-          serviceImpl.getExternalEvent((io.littlehorse.sdk.common.proto.ExternalEventIdPb) request,
+          serviceImpl.getExternalEvent((io.littlehorse.sdk.common.proto.ExternalEventId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetExternalEventReplyPb>) responseObserver);
           break;
         case METHODID_LIST_EXTERNAL_EVENTS:
@@ -3304,7 +3304,7 @@ public final class LHPublicApiGrpc {
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.RegisterTaskWorkerReplyPb>) responseObserver);
           break;
         case METHODID_REPORT_TASK:
-          serviceImpl.reportTask((io.littlehorse.sdk.common.proto.ReportTaskRunPb) request,
+          serviceImpl.reportTask((io.littlehorse.sdk.common.proto.ReportTaskRun) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ReportTaskReplyPb>) responseObserver);
           break;
         case METHODID_STOP_WF_RUN:
@@ -3371,7 +3371,7 @@ public final class LHPublicApiGrpc {
       switch (methodId) {
         case METHODID_POLL_TASK:
           return (io.grpc.stub.StreamObserver<Req>) serviceImpl.pollTask(
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PollTaskReplyPb>) responseObserver);
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PollTaskResponse>) responseObserver);
         default:
           throw new AssertionError();
       }
@@ -3391,7 +3391,7 @@ public final class LHPublicApiGrpc {
           getGetTaskDefMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.TaskDefIdPb,
+              io.littlehorse.sdk.common.proto.TaskDefId,
               io.littlehorse.sdk.common.proto.GetTaskDefReplyPb>(
                 service, METHODID_GET_TASK_DEF)))
         .addMethod(
@@ -3405,7 +3405,7 @@ public final class LHPublicApiGrpc {
           getGetExternalEventDefMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.ExternalEventDefIdPb,
+              io.littlehorse.sdk.common.proto.ExternalEventDefId,
               io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb>(
                 service, METHODID_GET_EXTERNAL_EVENT_DEF)))
         .addMethod(
@@ -3419,7 +3419,7 @@ public final class LHPublicApiGrpc {
           getGetWfSpecMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.WfSpecIdPb,
+              io.littlehorse.sdk.common.proto.WfSpecId,
               io.littlehorse.sdk.common.proto.GetWfSpecReplyPb>(
                 service, METHODID_GET_WF_SPEC)))
         .addMethod(
@@ -3468,7 +3468,7 @@ public final class LHPublicApiGrpc {
           getGetWfRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.WfRunIdPb,
+              io.littlehorse.sdk.common.proto.WfRunId,
               io.littlehorse.sdk.common.proto.GetWfRunReplyPb>(
                 service, METHODID_GET_WF_RUN)))
         .addMethod(
@@ -3503,14 +3503,14 @@ public final class LHPublicApiGrpc {
           getGetTaskRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.TaskRunIdPb,
+              io.littlehorse.sdk.common.proto.TaskRunId,
               io.littlehorse.sdk.common.proto.GetTaskRunReplyPb>(
                 service, METHODID_GET_TASK_RUN)))
         .addMethod(
           getGetVariableMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.VariableIdPb,
+              io.littlehorse.sdk.common.proto.VariableId,
               io.littlehorse.sdk.common.proto.GetVariableReplyPb>(
                 service, METHODID_GET_VARIABLE)))
         .addMethod(
@@ -3531,7 +3531,7 @@ public final class LHPublicApiGrpc {
           getGetExternalEventMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.ExternalEventIdPb,
+              io.littlehorse.sdk.common.proto.ExternalEventId,
               io.littlehorse.sdk.common.proto.GetExternalEventReplyPb>(
                 service, METHODID_GET_EXTERNAL_EVENT)))
         .addMethod(
@@ -3622,14 +3622,14 @@ public final class LHPublicApiGrpc {
           getPollTaskMethod(),
           io.grpc.stub.ServerCalls.asyncBidiStreamingCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.PollTaskPb,
-              io.littlehorse.sdk.common.proto.PollTaskReplyPb>(
+              io.littlehorse.sdk.common.proto.PollTaskRequest,
+              io.littlehorse.sdk.common.proto.PollTaskResponse>(
                 service, METHODID_POLL_TASK)))
         .addMethod(
           getReportTaskMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.ReportTaskRunPb,
+              io.littlehorse.sdk.common.proto.ReportTaskRun,
               io.littlehorse.sdk.common.proto.ReportTaskReplyPb>(
                 service, METHODID_REPORT_TASK)))
         .addMethod(
