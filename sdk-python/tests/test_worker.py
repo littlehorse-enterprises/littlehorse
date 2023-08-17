@@ -16,6 +16,18 @@ class TestLHTask(unittest.TestCase):
             str(exception_context.exception),
         )
 
+    def test_raise_exception_if_contexts_is_not_the_last_param(self):
+        def my_method(ctx: LHWorkerContext, param: str):
+            pass
+
+        with self.assertRaises(TaskSchemaMismatchException) as exception_context:
+            LHTask(my_method, TaskDefPb())
+
+        self.assertEqual(
+            "The WorkerContext should be the last parameter",
+            str(exception_context.exception),
+        )
+
     def test_raise_exception_if_there_are_more_than_one_contexts(self):
         def my_method(ctx1: LHWorkerContext, ctx2: LHWorkerContext):
             pass

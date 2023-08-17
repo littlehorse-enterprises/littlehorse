@@ -122,9 +122,7 @@ class TestLHConfig(unittest.TestCase):
     def test_establish_insecure_channel_with_custom_server(self, grpc_package_mock):
         config = LHConfig()
         config.establish_channel("192.10.10.20:5555")
-        grpc_package_mock.insecure_channel.assert_called_once_with(
-            "192.10.10.20:5555"
-        )
+        grpc_package_mock.insecure_channel.assert_called_once_with("192.10.10.20:5555")
 
     @patch("builtins.open", new_callable=mock_open, read_data="data")
     @patch("littlehorse.config.grpc")
@@ -132,9 +130,7 @@ class TestLHConfig(unittest.TestCase):
         os.environ["LHC_CA_CERT"] = "my-path"
         config = LHConfig()
         config.establish_channel()
-        grpc_package_mock.secure_channel.assert_called_once_with(
-            "localhost:2023", ANY
-        )
+        grpc_package_mock.secure_channel.assert_called_once_with("localhost:2023", ANY)
 
     @patch("builtins.open", new_callable=mock_open, read_data="data")
     @patch("littlehorse.config.grpc")
@@ -161,6 +157,4 @@ class TestLHConfig(unittest.TestCase):
         grpc_package_mock.metadata_call_credentials.assert_called_once_with(
             grpc_auth_class_mock.return_value
         )
-        grpc_package_mock.secure_channel.assert_called_once_with(
-            "localhost:2023", ANY
-        )
+        grpc_package_mock.secure_channel.assert_called_once_with("localhost:2023", ANY)

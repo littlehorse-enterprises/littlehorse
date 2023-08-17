@@ -65,9 +65,7 @@ class TestGrpcAuth(unittest.TestCase):
 
     @patch("littlehorse.auth.requests")
     @patch("littlehorse.auth.OAuth2Session")
-    def test_get_expired_access_token(
-        self, session_class_mock, requests_package_mock
-    ):
+    def test_get_expired_access_token(self, session_class_mock, requests_package_mock):
         expiries = datetime.now() - timedelta(days=1)
         session_class_mock.return_value.fetch_token.return_value = {
             "expires_at": expiries.timestamp()

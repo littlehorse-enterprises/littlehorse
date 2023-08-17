@@ -109,12 +109,21 @@ class LHTask:
                 f"Any is not allowed: {names(filtered_params)}"
             )
 
-        # validate context
+        # validate context is not repeated
         filtered_params = filter(lambda param: param.annotation is LHWorkerContext)
         if len(filtered_params) > 1:
             raise TaskSchemaMismatchException(
                 f"Too many context arguments (expected 1): {names(filtered_params)}"
             )
+
+        # validate context is the last one
+        if len(filtered_params) > 0:
+            last_parameter = list(self._signature.parameters.values())[-1]
+
+            if last_parameter.annotation is not LHWorkerContext:
+                raise TaskSchemaMismatchException(
+                    "The WorkerContext should be the last parameter"
+                )
 
     def name(self) -> str:
         return self.task_def.name
@@ -146,9 +155,7 @@ class LHTaskWorker:
         reply: GetTaskDefReplyPb = stub.GetTaskDef(TaskDefIdPb(name=task_def_name))
 
         if reply.code is not LHResponseCodePb.OK:
-            raise InvalidTaskDefNameException(
-                f"Couldn't find TaskDef: {task_def_name}"
-            )
+            raise InvalidTaskDefNameException(f"Couldn't find TaskDef: {task_def_name}")
 
         # initialize internal task and parameters
         self.task = LHTask(callable, reply.result)

@@ -32,13 +32,13 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
-line-length = 86
+line-length = 88
 exclude = """
 littlehorse/model/
 """
 
 [tool.ruff]
-line-length = 86
+line-length = 88
 exclude = ["littlehorse/model/"]
 
 [tool.mypy]
