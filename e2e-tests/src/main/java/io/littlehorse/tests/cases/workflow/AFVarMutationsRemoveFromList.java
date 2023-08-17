@@ -3,9 +3,9 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -35,18 +35,18 @@ public class AFVarMutationsRemoveFromList extends WorkflowLogicTest {
             thread -> {
                 WfRunVariable listOne = thread.addVariable(
                     "list-one",
-                    VariableTypePb.JSON_ARR
+                    VariableType.JSON_ARR
                 );
 
                 thread.execute("af-simple");
 
-                thread.mutate(listOne, VariableMutationTypePb.REMOVE_IF_PRESENT, 5);
+                thread.mutate(listOne, VariableMutationType.REMOVE_IF_PRESENT, 5);
                 thread.mutate(
                     listOne,
-                    VariableMutationTypePb.REMOVE_IF_PRESENT,
+                    VariableMutationType.REMOVE_IF_PRESENT,
                     "hello"
                 );
-                thread.mutate(listOne, VariableMutationTypePb.REMOVE_INDEX, 3);
+                thread.mutate(listOne, VariableMutationType.REMOVE_INDEX, 3);
             }
         );
     }
@@ -70,8 +70,8 @@ public class AFVarMutationsRemoveFromList extends WorkflowLogicTest {
 
         Thread.sleep(500);
 
-        assertStatus(client, wfOne, LHStatusPb.ERROR);
-        assertStatus(client, wfTwo, LHStatusPb.COMPLETED);
+        assertStatus(client, wfOne, LHStatus.ERROR);
+        assertStatus(client, wfTwo, LHStatus.COMPLETED);
 
         List<?> removed = getVarAsList(client, wfOne, 0, "list-one");
         for (int i = 0; i < wfOneInput.size(); i++) {

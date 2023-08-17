@@ -3,9 +3,9 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
@@ -34,7 +34,7 @@ public class ARChildThreadSimple extends WorkflowLogicTest {
             thread -> {
                 WfRunVariable sharedVar = thread.addVariable(
                     "shared-var",
-                    VariableTypePb.INT
+                    VariableType.INT
                 );
 
                 SpawnedThread child = thread.spawnThread(
@@ -45,7 +45,7 @@ public class ARChildThreadSimple extends WorkflowLogicTest {
                         );
                         subthread.mutate(
                             sharedVar,
-                            VariableMutationTypePb.ADD,
+                            VariableMutationType.ADD,
                             echoOutput
                         );
                         subthread.execute("ar-obiwan");
@@ -70,7 +70,7 @@ public class ARChildThreadSimple extends WorkflowLogicTest {
         throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("shared-var", 5));
         Thread.sleep(500);
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
 
         // The parent's variable should be equal to the
         assertVarEqual(client, wfRunId, 0, "shared-var", 10);

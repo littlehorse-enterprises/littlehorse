@@ -3,7 +3,7 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -60,7 +60,7 @@ public class AYExtEvtFollowedBySpawnThread extends WorkflowLogicTest {
         Thread.sleep(200);
         sendEvent(client, wfRunId, "ay-some-event", "dummy content", null);
         Thread.sleep(600);
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
 
         // both threads should execute the obiwan() task once
         assertTaskOutputsMatch(client, wfRunId, 0, "hello there");

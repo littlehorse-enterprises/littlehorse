@@ -3,8 +3,8 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -34,14 +34,14 @@ public class ALConditionalsGreaterThanEq extends WorkflowLogicTest {
                 // schema.
                 WfRunVariable input = thread.addVariable(
                     "input",
-                    VariableTypePb.JSON_OBJ
+                    VariableType.JSON_OBJ
                 );
                 thread.execute("al-one");
 
                 thread.doIfElse(
                     thread.condition(
                         input.jsonPath("$.lhs"),
-                        ComparatorPb.GREATER_THAN_EQ,
+                        Comparator.GREATER_THAN_EQ,
                         input.jsonPath("$.rhs")
                     ),
                     ifBlock -> {

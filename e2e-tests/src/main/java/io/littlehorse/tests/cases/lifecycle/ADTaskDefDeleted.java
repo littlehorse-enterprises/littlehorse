@@ -3,8 +3,8 @@ package io.littlehorse.tests.cases.lifecycle;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.WfRunPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
@@ -78,8 +78,8 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
         wfRunId = client.runWf(WF_SPEC_NAME, null, null);
 
         Thread.sleep(120);
-        WfRunPb wfRun = client.getWfRun(wfRunId);
-        if (wfRun.getStatus() != LHStatusPb.ERROR) {
+        WfRun wfRun = client.getWfRun(wfRunId);
+        if (wfRun.getStatus() != LHStatus.ERROR) {
             throw new RuntimeException("Should have failed!");
         }
 

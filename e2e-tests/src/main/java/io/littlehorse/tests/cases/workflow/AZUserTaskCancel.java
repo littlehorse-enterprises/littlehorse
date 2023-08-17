@@ -3,13 +3,13 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.CancelUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.NodeRunPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.CancelUserTaskRunResponse;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.NodeRun;
+import io.littlehorse.sdk.common.proto.UserTaskRun;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -45,7 +45,7 @@ public class AZUserTaskCancel extends UserTaskWorkflowTest {
             thread -> {
                 WfRunVariable formVar = thread.addVariable(
                     "form",
-                    VariableTypePb.JSON_OBJ
+                    VariableType.JSON_OBJ
                 );
 
                 thread.assignUserTaskToUser(USER_TASK_DEF_NAME, "test-user");
@@ -68,23 +68,23 @@ public class AZUserTaskCancel extends UserTaskWorkflowTest {
         Thread.sleep(8 * 1000); // Wait for reminder task to execute
 
         // Get the UserTaskRun, ensure that there is an event with a taskRunId
-        NodeRunPb firstUserTask = getNodeRun(client, wfRunId, 0, 1);
-        UserTaskRunPb utr = getUserTaskRun(
+        NodeRun firstUserTask = getNodeRun(client, wfRunId, 0, 1);
+        UserTaskRun utr = getUserTaskRun(
             client,
             firstUserTask.getUserTask().getUserTaskRunId()
         );
-        CancelUserTaskRunPb cancelUserTaskRunPb = CancelUserTaskRunPb
+        CancelUserTaskRunRequest cancelUserTaskRun = CancelUserTaskRunRequest
             .newBuilder()
             .setUserTaskRunId(utr.getId())
             .build();
-        CancelUserTaskRunReplyPb cancelUserTaskRunReplyPb = client
+        CancelUserTaskRunResponse cancelUserTaskRunResponse = client
             .getGrpcClient()
-            .cancelUserTaskRun(cancelUserTaskRunPb);
+            .cancelUserTaskRun(cancelUserTaskRun);
         assertThat(
-            cancelUserTaskRunReplyPb.getCode().equals(LHResponseCodePb.OK),
+            cancelUserTaskRunResponse.getCode().equals(LHResponseCode.OK),
             "Error processing cancel UserTaskRun request"
         );
-        assertStatus(client, wfRunId, LHStatusPb.ERROR);
+        assertStatus(client, wfRunId, LHStatus.ERROR);
         return out;
     }
 }

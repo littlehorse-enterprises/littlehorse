@@ -3,9 +3,9 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -36,7 +36,7 @@ public class ACVarMutationsJsonObj extends WorkflowLogicTest {
             thread -> {
                 WfRunVariable myVar = thread.addVariable(
                     "my-var",
-                    VariableTypePb.JSON_OBJ
+                    VariableType.JSON_OBJ
                 );
 
                 // Use JsonPath to pass in a String from a nested subobject.
@@ -48,7 +48,7 @@ public class ACVarMutationsJsonObj extends WorkflowLogicTest {
                 // Use jsonpath to edit a nested field in a big object
                 thread.mutate(
                     myVar.jsonPath("$.subObject.bar"),
-                    VariableMutationTypePb.ADD,
+                    VariableMutationType.ADD,
                     taskOutput
                 );
 
@@ -91,7 +91,7 @@ public class ACVarMutationsJsonObj extends WorkflowLogicTest {
         String wfRunId = runWf(client, Arg.of("my-var", inputVar));
         Thread.sleep(500);
 
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
 
         // Check first output
         assertTaskOutput(client, wfRunId, 0, 1, inputVar.subObject.foo.length());

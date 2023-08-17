@@ -3,7 +3,7 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -47,7 +47,7 @@ public class AUExceptionHandlerTask extends WorkflowLogicTest {
         throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client);
         Thread.sleep(300);
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
 
         // Check that the handler ran.
         assertTaskOutputsMatch(client, wfRunId, 1, new AUSimpleTask().obiwan());

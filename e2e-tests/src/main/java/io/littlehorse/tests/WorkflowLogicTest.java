@@ -5,13 +5,13 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.NodeRunPb;
-import io.littlehorse.sdk.common.proto.NodeRunPb.NodeTypeCase;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
-import io.littlehorse.sdk.common.proto.TaskRunPb;
-import io.littlehorse.sdk.common.proto.VariableValuePb;
-import io.littlehorse.sdk.common.proto.WfRunPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.NodeRun;
+import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.TaskRun;
+import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -124,7 +124,10 @@ public abstract class WorkflowLogicTest extends Test {
         for (String externalEvent : requiredExternalEventDefNames) {
             try {
                 client.putExternalEventDef(
-                    PutExternalEventDefPb.newBuilder().setName(externalEvent).build(),
+                    PutExternalEventDefRequest
+                        .newBuilder()
+                        .setName(externalEvent)
+                        .build(),
                     true
                 );
             } catch (LHApiError exn) {
@@ -206,16 +209,16 @@ public abstract class WorkflowLogicTest extends Test {
     ) throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("input", input));
         Thread.sleep(100 * (expectedPath.length + 1));
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
-        WfRunPb wfRun = getWfRun(client, wfRunId);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
+        WfRun wfRun = getWfRun(client, wfRunId);
 
-        List<VariableValuePb> actualPath = new ArrayList<>();
+        List<VariableValue> actualPath = new ArrayList<>();
         for (int i = 1; i < wfRun.getThreadRuns(0).getCurrentNodePosition(); i++) {
-            NodeRunPb nr = getNodeRun(client, wfRunId, 0, i);
+            NodeRun nr = getNodeRun(client, wfRunId, 0, i);
             if (nr.getNodeTypeCase() != NodeTypeCase.TASK) {
                 continue;
             }
-            TaskRunPb taskRun = getTaskRun(client, nr.getTask().getTaskRunId());
+            TaskRun taskRun = getTaskRun(client, nr.getTask().getTaskRunId());
             actualPath.add(
                 taskRun.getAttempts(taskRun.getAttemptsCount() - 1).getOutput()
             );
@@ -227,7 +230,7 @@ public abstract class WorkflowLogicTest extends Test {
 
         for (int i = 0; i < expectedPath.length; i++) {
             Object expected = expectedPath[i];
-            VariableValuePb actual = actualPath.get(i);
+            VariableValue actual = actualPath.get(i);
             try {
                 if (
                     !LHLibUtil.areVariableValuesEqual(

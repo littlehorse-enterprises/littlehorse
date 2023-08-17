@@ -3,9 +3,9 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -37,7 +37,7 @@ public class AGConditionalsEquals extends WorkflowLogicTest {
                 // schema.
                 WfRunVariable input = thread.addVariable(
                     "input",
-                    VariableTypePb.JSON_OBJ
+                    VariableType.JSON_OBJ
                 );
 
                 // So that the run request succeeds even on workflows where we want
@@ -47,7 +47,7 @@ public class AGConditionalsEquals extends WorkflowLogicTest {
                 thread.doIfElse(
                     thread.condition(
                         input.jsonPath("$.lhs"),
-                        ComparatorPb.EQUALS,
+                        Comparator.EQUALS,
                         input.jsonPath("$.rhs")
                     ),
                     ifBlock -> {
@@ -65,7 +65,7 @@ public class AGConditionalsEquals extends WorkflowLogicTest {
         throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("input", new InputObj(lhs, rhs)));
         Thread.sleep(100);
-        assertStatus(client, wfRunId, LHStatusPb.ERROR);
+        assertStatus(client, wfRunId, LHStatus.ERROR);
         return wfRunId;
     }
 

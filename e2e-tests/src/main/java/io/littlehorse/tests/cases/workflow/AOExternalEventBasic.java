@@ -3,11 +3,11 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ExternalEventIdPb;
-import io.littlehorse.sdk.common.proto.ExternalEventPb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.ExternalEvent;
+import io.littlehorse.sdk.common.proto.ExternalEventId;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -36,11 +36,11 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
             thread -> {
                 WfRunVariable evtOutput = thread.addVariable(
                     "evt-output",
-                    VariableTypePb.STR
+                    VariableType.STR
                 );
                 thread.mutate(
                     evtOutput,
-                    VariableMutationTypePb.ASSIGN,
+                    VariableMutationType.ASSIGN,
                     thread.waitForEvent("ao-my-event")
                 );
                 thread.execute("ao-simple", evtOutput);
@@ -65,7 +65,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
     private String sendEventBeforeWfRun(LHClient client)
         throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = generateGuid();
-        ExternalEventIdPb extEvtId = sendEvent(
+        ExternalEventId extEvtId = sendEvent(
             client,
             wfRunId,
             "ao-my-event",
@@ -75,11 +75,11 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         Thread.sleep(10);
         runWf(wfRunId, client);
         Thread.sleep(3000);
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
 
         assertVarEqual(client, wfRunId, 0, "evt-output", "evt-content");
         assertTaskOutput(client, wfRunId, 0, 2, "hello there evt-content");
-        ExternalEventPb evt = getExternalEvent(client, extEvtId);
+        ExternalEvent evt = getExternalEvent(client, extEvtId);
         if (!evt.getWfRunId().equals(wfRunId)) {
             throw new TestFailure(
                 this,
@@ -98,9 +98,9 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         Thread.sleep(500);
 
         // TODO: Maybe check more, ensure that we're waiting on the same event
-        assertStatus(client, wfRunId, LHStatusPb.RUNNING);
+        assertStatus(client, wfRunId, LHStatus.RUNNING);
 
-        ExternalEventIdPb extEvtId = sendEvent(
+        ExternalEventId extEvtId = sendEvent(
             client,
             wfRunId,
             "ao-my-event",
@@ -109,11 +109,11 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         );
         Thread.sleep(500);
 
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
 
         assertVarEqual(client, wfRunId, 0, "evt-output", "evt-content");
         assertTaskOutput(client, wfRunId, 0, 2, "hello there evt-content");
-        ExternalEventPb evt = getExternalEvent(client, extEvtId);
+        ExternalEvent evt = getExternalEvent(client, extEvtId);
         if (!evt.getClaimed()) {
             throw new TestFailure(
                 this,
@@ -127,14 +127,14 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
     private String sendTwoEventsBefore(LHClient client)
         throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = generateGuid();
-        ExternalEventIdPb extEvtIdOne = sendEvent(
+        ExternalEventId extEvtIdOne = sendEvent(
             client,
             wfRunId,
             "ao-my-event",
             "evt-content",
             null
         );
-        ExternalEventIdPb extEvtIdTwo = sendEvent(
+        ExternalEventId extEvtIdTwo = sendEvent(
             client,
             wfRunId,
             "ao-my-event",
@@ -144,11 +144,11 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         Thread.sleep(10);
         runWf(wfRunId, client);
         Thread.sleep(500);
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
 
         assertVarEqual(client, wfRunId, 0, "evt-output", "evt-content");
         assertTaskOutput(client, wfRunId, 0, 2, "hello there evt-content");
-        ExternalEventPb evt = getExternalEvent(client, extEvtIdOne);
+        ExternalEvent evt = getExternalEvent(client, extEvtIdOne);
         if (!evt.hasNodeRunPosition()) {
             throw new TestFailure(
                 this,
@@ -156,7 +156,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
             );
         }
 
-        ExternalEventPb evtTwo = getExternalEvent(client, extEvtIdTwo);
+        ExternalEvent evtTwo = getExternalEvent(client, extEvtIdTwo);
         if (evtTwo.hasNodeRunPosition()) {
             throw new TestFailure(this, "Should not have associated second event!");
         }
@@ -169,7 +169,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         String wfRunId = runWf(client);
         Thread.sleep(500);
         // TODO: Inspect the node run a bit
-        assertStatus(client, wfRunId, LHStatusPb.RUNNING);
+        assertStatus(client, wfRunId, LHStatus.RUNNING);
 
         // This is so that we can delete it in the cleanup() method.
         client.stopWfRun(wfRunId, 0);

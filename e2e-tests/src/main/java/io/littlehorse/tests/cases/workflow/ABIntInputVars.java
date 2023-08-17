@@ -3,8 +3,8 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -29,10 +29,7 @@ public class ABIntInputVars extends WorkflowLogicTest {
         return new WorkflowImpl(
             getWorkflowName(),
             thread -> {
-                WfRunVariable myVar = thread.addVariable(
-                    "my-var",
-                    VariableTypePb.INT
-                );
+                WfRunVariable myVar = thread.addVariable("my-var", VariableType.INT);
                 thread.execute("ab-double-it", myVar);
                 thread.execute("ab-subtract", 10, 8);
             }
@@ -48,7 +45,7 @@ public class ABIntInputVars extends WorkflowLogicTest {
         String wfRunId = runWf(client, Arg.of("my-var", 5));
         Thread.sleep(500);
 
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
         assertTaskOutput(client, wfRunId, 0, 1, new ABDoubler().doubleIt(5));
         assertTaskOutput(client, wfRunId, 0, 2, 10 - 8);
 

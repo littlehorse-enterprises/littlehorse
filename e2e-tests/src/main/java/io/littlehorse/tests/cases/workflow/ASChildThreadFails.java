@@ -3,9 +3,9 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.NodeRunPb;
-import io.littlehorse.sdk.common.proto.WaitForThreadsRunPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.NodeRun;
+import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -56,14 +56,14 @@ public class ASChildThreadFails extends WorkflowLogicTest {
         throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client);
         Thread.sleep(500);
-        assertStatus(client, wfRunId, LHStatusPb.ERROR);
+        assertStatus(client, wfRunId, LHStatus.ERROR);
 
         // The parent should only execute one task.
         assertTaskOutputsMatch(client, wfRunId, 0, new ASSimpleTask().obiwan());
 
-        NodeRunPb nr = getNodeRun(client, wfRunId, 0, 3);
+        NodeRun nr = getNodeRun(client, wfRunId, 0, 3);
 
-        WaitForThreadsRunPb wtr = nr.getWaitThreads();
+        WaitForThreadsRun wtr = nr.getWaitThreads();
         // There's only one thread in this example, so we only look at the first.
         if (wtr.getThreads(0).getThreadRunNumber() != 1) {
             throw new TestFailure(this, wfRunId + " should have waited for thread 1");

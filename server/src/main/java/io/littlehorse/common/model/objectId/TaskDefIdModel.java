@@ -31,7 +31,7 @@ public class TaskDefIdModel extends ObjectId<TaskDefId, TaskDef, TaskDefModel> {
     }
 
     public void initFrom(Message proto) {
-        TaskDefIdModel p = (TaskDefIdModel) proto;
+        TaskDefId p = (TaskDefId) proto;
         name = p.getName();
     }
 

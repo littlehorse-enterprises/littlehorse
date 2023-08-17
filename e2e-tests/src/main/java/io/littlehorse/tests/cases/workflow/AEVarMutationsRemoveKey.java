@@ -3,9 +3,9 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -33,11 +33,11 @@ public class AEVarMutationsRemoveKey extends WorkflowLogicTest {
             thread -> {
                 WfRunVariable myObj = thread.addVariable(
                     "my-obj",
-                    VariableTypePb.JSON_OBJ
+                    VariableType.JSON_OBJ
                 );
 
                 thread.execute("ae-simple");
-                thread.mutate(myObj, VariableMutationTypePb.REMOVE_KEY, "foo");
+                thread.mutate(myObj, VariableMutationType.REMOVE_KEY, "foo");
             }
         );
     }
@@ -56,8 +56,8 @@ public class AEVarMutationsRemoveKey extends WorkflowLogicTest {
 
         Thread.sleep(500);
 
-        assertStatus(client, wfWithFoo, LHStatusPb.COMPLETED);
-        assertStatus(client, wfWithoutFoo, LHStatusPb.COMPLETED);
+        assertStatus(client, wfWithFoo, LHStatus.COMPLETED);
+        assertStatus(client, wfWithoutFoo, LHStatus.COMPLETED);
 
         Map<?, ?> removed = getVarAsObj(client, wfWithFoo, 0, "my-obj", Map.class);
         if (removed.containsKey("foo")) {

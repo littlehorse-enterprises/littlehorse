@@ -3,9 +3,9 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -38,7 +38,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
             thread -> {
                 WfRunVariable sharedVar = thread.addVariable(
                     "my-int",
-                    VariableTypePb.INT
+                    VariableType.INT
                 );
 
                 thread.registerInterruptHandler(
@@ -46,14 +46,14 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
                     handler -> {
                         WfRunVariable interruptInput = handler.addVariable(
                             ThreadBuilder.HANDLER_INPUT_VAR,
-                            VariableTypePb.INT
+                            VariableType.INT
                         );
 
                         handler.execute("at-obiwan");
 
                         handler.mutate(
                             sharedVar,
-                            VariableMutationTypePb.ADD,
+                            VariableMutationType.ADD,
                             interruptInput
                         );
                     }
@@ -83,9 +83,9 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
     private String runWithoutInterrupt(LHClient client)
         throws TestFailure, InterruptedException, LHApiError {
         String id = runWf(client, Arg.of("my-int", 5));
-        assertStatus(client, id, LHStatusPb.RUNNING);
+        assertStatus(client, id, LHStatus.RUNNING);
         Thread.sleep(3 * 1000);
-        assertStatus(client, id, LHStatusPb.COMPLETED);
+        assertStatus(client, id, LHStatus.COMPLETED);
         assertVarEqual(client, id, 0, "my-int", 5);
         return id;
     }
@@ -98,9 +98,9 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
         sendEvent(client, id, INTERRUPT_NAME, 10, null);
 
         runWf(id, client, Arg.of("my-int", 5));
-        assertStatus(client, id, LHStatusPb.RUNNING);
+        assertStatus(client, id, LHStatus.RUNNING);
         Thread.sleep(3 * 1000);
-        assertStatus(client, id, LHStatusPb.COMPLETED);
+        assertStatus(client, id, LHStatus.COMPLETED);
         assertVarEqual(client, id, 0, "my-int", 5);
         return id;
     }
@@ -120,9 +120,9 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
 
         assertTaskOutputsMatch(client, id, 1, "hello there");
         assertTaskOutputsMatch(client, id, 2, "hello there");
-        assertStatus(client, id, LHStatusPb.RUNNING);
+        assertStatus(client, id, LHStatus.RUNNING);
         Thread.sleep(7 * 1000);
-        assertStatus(client, id, LHStatusPb.COMPLETED);
+        assertStatus(client, id, LHStatus.COMPLETED);
         assertVarEqual(client, id, 0, "my-int", 25);
         return id;
     }
@@ -135,7 +135,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
 
         Thread.sleep(3 * 1000);
 
-        assertStatus(client, id, LHStatusPb.COMPLETED);
+        assertStatus(client, id, LHStatus.COMPLETED);
         assertVarEqual(client, id, 0, "my-int", 15);
         assertTaskOutputsMatch(client, id, 1, "hello there");
         return id;
@@ -145,10 +145,10 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
         throws TestFailure, InterruptedException, LHApiError {
         String id = runWf(client, Arg.of("my-int", 5));
         sendEvent(client, id, INTERRUPT_NAME, "bad input should crash", null);
-        assertStatus(client, id, LHStatusPb.ERROR);
+        assertStatus(client, id, LHStatus.ERROR);
         Thread.sleep(3 * 1000);
         // should still be dead after the sleep node expires
-        assertStatus(client, id, LHStatusPb.ERROR);
+        assertStatus(client, id, LHStatus.ERROR);
         return id;
     }
 }

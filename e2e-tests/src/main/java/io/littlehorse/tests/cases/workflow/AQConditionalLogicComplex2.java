@@ -3,8 +3,8 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -32,7 +32,7 @@ public class AQConditionalLogicComplex2 extends WorkflowLogicTest {
                 // This allows us to test with various types on the left and the
                 // right, since right now the JSON_OBJ var type does not have a
                 // schema.
-                WfRunVariable input = thread.addVariable("input", VariableTypePb.INT);
+                WfRunVariable input = thread.addVariable("input", VariableType.INT);
 
                 /*
                 if (input < 10) {
@@ -45,13 +45,13 @@ public class AQConditionalLogicComplex2 extends WorkflowLogicTest {
                 }
                  */
                 thread.doIfElse(
-                    thread.condition(input, ComparatorPb.LESS_THAN, 10),
+                    thread.condition(input, Comparator.LESS_THAN, 10),
                     ifBlock -> {
                         ifBlock.execute("aq-task", 1);
                     },
                     elseBlock -> {
                         thread.doIf(
-                            thread.condition(input, ComparatorPb.LESS_THAN, 15),
+                            thread.condition(input, Comparator.LESS_THAN, 15),
                             ifBlock -> {
                                 ifBlock.execute("aq-task", 2);
                             }

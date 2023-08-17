@@ -3,7 +3,7 @@ package io.littlehorse.tests.cases.lifecycle;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecResponse;
@@ -46,7 +46,7 @@ public class AATaskDefDependency extends Test {
         PutWfSpecRequest request = wf.compileWorkflow();
         PutWfSpecResponse reply = client.getGrpcClient().putWfSpec(request);
 
-        if (reply.getCode() != LHResponseCodePb.VALIDATION_ERROR) {
+        if (reply.getCode() != LHResponseCode.VALIDATION_ERROR) {
             throw new RuntimeException(
                 "Was able to create wfSpec with missing taskdef!"
             );

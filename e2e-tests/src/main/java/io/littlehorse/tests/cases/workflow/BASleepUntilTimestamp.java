@@ -3,8 +3,8 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -33,7 +33,7 @@ public class BASleepUntilTimestamp extends WorkflowLogicTest {
             thread -> {
                 WfRunVariable myVar = thread.addVariable(
                     "timestamp-to-wait-for",
-                    VariableTypePb.INT
+                    VariableType.INT
                 );
                 thread.sleepUntil(myVar);
             }
@@ -54,9 +54,9 @@ public class BASleepUntilTimestamp extends WorkflowLogicTest {
             )
         );
         Thread.sleep(1000);
-        assertStatus(client, wfRunId, LHStatusPb.RUNNING);
+        assertStatus(client, wfRunId, LHStatus.RUNNING);
         Thread.sleep(7000); // note that the timer interval is 4 seconds
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
 
         return Arrays.asList(wfRunId);
     }

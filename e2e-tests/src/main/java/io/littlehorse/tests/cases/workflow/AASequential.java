@@ -3,7 +3,7 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -41,7 +41,7 @@ public class AASequential extends WorkflowLogicTest {
         throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client);
         Thread.sleep(500);
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
 
         for (int i = 1; i < 3; i++) {
             assertTaskOutput(

@@ -3,12 +3,12 @@ package io.littlehorse.tests.cases.lifecycle;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.FailurePb;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.NodeRunPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
-import io.littlehorse.sdk.common.proto.WfRunPb;
+import io.littlehorse.sdk.common.proto.Failure;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.NodeRun;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -65,7 +65,7 @@ public class AEImproperTaskNode extends Test {
         }
         if (
             caught == null ||
-            caught.getCode() != LHResponseCodePb.VALIDATION_ERROR ||
+            caught.getCode() != LHResponseCode.VALIDATION_ERROR ||
             !caught.getMessage().contains("needs to be INT")
         ) {
             throw new RuntimeException("Should have got task input var type error!");
@@ -80,10 +80,7 @@ public class AEImproperTaskNode extends Test {
         new WorkflowImpl(
             VALID_WF_SPEC_NAME,
             thread -> {
-                WfRunVariable var = thread.addVariable(
-                    "var",
-                    VariableTypePb.JSON_OBJ
-                );
+                WfRunVariable var = thread.addVariable("var", VariableType.JSON_OBJ);
                 // This ensures the RunWf request succeeds, since it's the first
                 // node that actually gets executed.
                 thread.execute(TASK_DEF_NAME, 12345);
@@ -113,12 +110,12 @@ public class AEImproperTaskNode extends Test {
             );
         Thread.sleep(120);
 
-        WfRunPb wfRun = client.getWfRun(failWfRun);
-        if (wfRun.getStatus() != LHStatusPb.ERROR) {
+        WfRun wfRun = client.getWfRun(failWfRun);
+        if (wfRun.getStatus() != LHStatus.ERROR) {
             throw new RuntimeException("Wf " + failWfRun + " should have failed!");
         }
-        NodeRunPb nodeRun = client.getNodeRun(failWfRun, 0, 2);
-        FailurePb failure = nodeRun.getFailures(0);
+        NodeRun nodeRun = client.getNodeRun(failWfRun, 0, 2);
+        Failure failure = nodeRun.getFailures(0);
         if (!failure.getFailureName().equals("VAR_SUB_ERROR")) {
             throw new RuntimeException("Expected VAR_SUB_ERROR!");
         }
@@ -127,7 +124,7 @@ public class AEImproperTaskNode extends Test {
         }
 
         // Now verify the other one succeeded.
-        if (client.getWfRun(successWfRun).getStatus() != LHStatusPb.COMPLETED) {
+        if (client.getWfRun(successWfRun).getStatus() != LHStatus.COMPLETED) {
             throw new RuntimeException(
                 "Wf " + successWfRun + " should have succeeded!"
             );

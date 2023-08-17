@@ -3,9 +3,9 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.ThreadBuilder;
@@ -41,7 +41,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
             thread -> {
                 WfRunVariable parentInt = thread.addVariable(
                     "parent-int",
-                    VariableTypePb.INT
+                    VariableType.INT
                 );
 
                 thread.registerInterruptHandler(
@@ -49,13 +49,13 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
                     parentHandler -> {
                         WfRunVariable interruptInput = parentHandler.addVariable(
                             ThreadBuilder.HANDLER_INPUT_VAR,
-                            VariableTypePb.INT
+                            VariableType.INT
                         );
 
                         parentHandler.execute("av-obiwan");
                         parentHandler.mutate(
                             parentInt,
-                            VariableMutationTypePb.ADD,
+                            VariableMutationType.ADD,
                             interruptInput
                         );
                         parentHandler.sleepSeconds(1);
@@ -66,7 +66,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
                     child -> {
                         WfRunVariable childInt = child.addVariable(
                             "child-int",
-                            VariableTypePb.INT
+                            VariableType.INT
                         );
 
                         child.registerInterruptHandler(
@@ -74,13 +74,13 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
                             childHandler -> {
                                 WfRunVariable interruptInput = childHandler.addVariable(
                                     ThreadBuilder.HANDLER_INPUT_VAR,
-                                    VariableTypePb.INT
+                                    VariableType.INT
                                 );
                                 childHandler.execute("av-obiwan");
                                 childHandler.sleepSeconds(1);
                                 childHandler.mutate(
                                     childInt,
-                                    VariableMutationTypePb.ADD,
+                                    VariableMutationType.ADD,
                                     interruptInput
                                 );
                             }
@@ -118,7 +118,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
         throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("parent-int", 0));
         Thread.sleep(1000 * 3);
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
         assertTaskOutputsMatch(client, wfRunId, 0, "hello there");
         assertTaskOutputsMatch(client, wfRunId, 1, "hello there");
         assertVarEqual(client, wfRunId, 0, "parent-int", 0);
@@ -132,14 +132,14 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
 
         sendEvent(client, wfRunId, CHILD_EVENT, 10, null);
         Thread.sleep(500);
-        assertStatus(client, wfRunId, LHStatusPb.RUNNING);
-        assertThreadStatus(client, wfRunId, 0, LHStatusPb.RUNNING);
-        assertThreadStatus(client, wfRunId, 1, LHStatusPb.HALTED);
-        assertThreadStatus(client, wfRunId, 2, LHStatusPb.RUNNING);
+        assertStatus(client, wfRunId, LHStatus.RUNNING);
+        assertThreadStatus(client, wfRunId, 0, LHStatus.RUNNING);
+        assertThreadStatus(client, wfRunId, 1, LHStatus.HALTED);
+        assertThreadStatus(client, wfRunId, 2, LHStatus.RUNNING);
 
         Thread.sleep(1000 * 5);
 
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
         assertTaskOutputsMatch(client, wfRunId, 0, "hello there");
         assertTaskOutputsMatch(client, wfRunId, 1, "hello there");
         assertTaskOutputsMatch(client, wfRunId, 2, "hello there");
@@ -154,15 +154,15 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
 
         sendEvent(client, wfRunId, PARENT_EVENT, 10, null);
         Thread.sleep(500);
-        assertStatus(client, wfRunId, LHStatusPb.RUNNING);
+        assertStatus(client, wfRunId, LHStatus.RUNNING);
 
-        assertThreadStatus(client, wfRunId, 0, LHStatusPb.HALTED);
-        assertThreadStatus(client, wfRunId, 1, LHStatusPb.HALTED);
-        assertThreadStatus(client, wfRunId, 2, LHStatusPb.RUNNING);
+        assertThreadStatus(client, wfRunId, 0, LHStatus.HALTED);
+        assertThreadStatus(client, wfRunId, 1, LHStatus.HALTED);
+        assertThreadStatus(client, wfRunId, 2, LHStatus.RUNNING);
 
         Thread.sleep(1000 * 5);
 
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
         assertTaskOutputsMatch(client, wfRunId, 0, "hello there");
         assertTaskOutputsMatch(client, wfRunId, 1, "hello there");
         assertTaskOutputsMatch(client, wfRunId, 2, "hello there");
@@ -178,18 +178,18 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
         sendEvent(client, wfRunId, PARENT_EVENT, 10, null);
         sendEvent(client, wfRunId, CHILD_EVENT, 10, null);
         Thread.sleep(500);
-        assertStatus(client, wfRunId, LHStatusPb.RUNNING);
-        assertThreadStatus(client, wfRunId, 0, LHStatusPb.HALTED);
-        assertThreadStatus(client, wfRunId, 1, LHStatusPb.HALTED);
+        assertStatus(client, wfRunId, LHStatus.RUNNING);
+        assertThreadStatus(client, wfRunId, 0, LHStatus.HALTED);
+        assertThreadStatus(client, wfRunId, 1, LHStatus.HALTED);
 
         // TODO: In the future, there may be a LittleHorse update which enforces
         // that there can only be one RUNNING interrupt thread at a time.
-        assertThreadStatus(client, wfRunId, 2, LHStatusPb.RUNNING);
-        assertThreadStatus(client, wfRunId, 3, LHStatusPb.RUNNING);
+        assertThreadStatus(client, wfRunId, 2, LHStatus.RUNNING);
+        assertThreadStatus(client, wfRunId, 3, LHStatus.RUNNING);
 
         Thread.sleep(1000 * 8);
 
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
         assertTaskOutputsMatch(client, wfRunId, 0, "hello there");
         assertTaskOutputsMatch(client, wfRunId, 1, "hello there");
         assertTaskOutputsMatch(client, wfRunId, 2, "hello there");

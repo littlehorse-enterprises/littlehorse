@@ -3,9 +3,9 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -29,7 +29,7 @@ public class AXConditionalWhileLogic extends WorkflowLogicTest {
         return new WorkflowImpl(
             getWorkflowName(),
             thread -> {
-                WfRunVariable input = thread.addVariable("input", VariableTypePb.INT);
+                WfRunVariable input = thread.addVariable("input", VariableType.INT);
 
                 /*
                 while (input > 0) {
@@ -38,10 +38,10 @@ public class AXConditionalWhileLogic extends WorkflowLogicTest {
                 }
                  */
                 thread.doWhile(
-                    thread.condition(input, ComparatorPb.GREATER_THAN, 0),
+                    thread.condition(input, Comparator.GREATER_THAN, 0),
                     whileBlock -> {
                         whileBlock.execute("aq-task", input);
-                        whileBlock.mutate(input, VariableMutationTypePb.SUBTRACT, 1);
+                        whileBlock.mutate(input, VariableMutationType.SUBTRACT, 1);
                     }
                 );
             }

@@ -3,7 +3,7 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -64,10 +64,10 @@ public class AWChildThreadExceptionHandler extends WorkflowLogicTest {
         String wfRunId = runWf(client);
 
         Thread.sleep(500);
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
-        assertThreadStatus(client, wfRunId, 0, LHStatusPb.COMPLETED);
-        assertThreadStatus(client, wfRunId, 1, LHStatusPb.ERROR);
-        assertThreadStatus(client, wfRunId, 2, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
+        assertThreadStatus(client, wfRunId, 0, LHStatus.COMPLETED);
+        assertThreadStatus(client, wfRunId, 1, LHStatus.ERROR);
+        assertThreadStatus(client, wfRunId, 2, LHStatus.COMPLETED);
         assertTaskOutputsMatch(client, wfRunId, 2, "hi from handler");
         assertTaskOutputsMatch(client, wfRunId, 0, "Success!");
 

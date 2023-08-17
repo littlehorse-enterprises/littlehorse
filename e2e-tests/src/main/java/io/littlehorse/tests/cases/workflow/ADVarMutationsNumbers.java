@@ -3,9 +3,9 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -34,31 +34,28 @@ public class ADVarMutationsNumbers extends WorkflowLogicTest {
         return new WorkflowImpl(
             getWorkflowName(),
             thread -> {
-                WfRunVariable myInt = thread.addVariable(
-                    "my-int",
-                    VariableTypePb.INT
-                );
+                WfRunVariable myInt = thread.addVariable("my-int", VariableType.INT);
 
                 WfRunVariable myDouble = thread.addVariable(
                     "my-double",
-                    VariableTypePb.DOUBLE
+                    VariableType.DOUBLE
                 );
 
                 WfRunVariable myOtherInt = thread.addVariable(
                     "my-other-int",
-                    VariableTypePb.INT
+                    VariableType.INT
                 );
 
                 NodeOutput output = thread.execute("ad-simple");
-                thread.mutate(myInt, VariableMutationTypePb.ADD, output);
-                thread.mutate(myInt, VariableMutationTypePb.SUBTRACT, 2);
+                thread.mutate(myInt, VariableMutationType.ADD, output);
+                thread.mutate(myInt, VariableMutationType.SUBTRACT, 2);
 
                 // ensure that we can cast from double to int, and that the
                 // original type is respected
-                thread.mutate(myOtherInt, VariableMutationTypePb.ASSIGN, myDouble);
+                thread.mutate(myOtherInt, VariableMutationType.ASSIGN, myDouble);
 
                 // Do some math, and divide by zero to show that failures work
-                thread.mutate(myOtherInt, VariableMutationTypePb.DIVIDE, myInt);
+                thread.mutate(myOtherInt, VariableMutationType.DIVIDE, myInt);
             }
         );
     }
@@ -78,7 +75,7 @@ public class ADVarMutationsNumbers extends WorkflowLogicTest {
         // this should fail with divide by zero
         String sadWf = runWf(client, Arg.of("my-int", -8), Arg.of("my-double", 10.0));
         Thread.sleep(500);
-        assertStatus(client, happyWf, LHStatusPb.COMPLETED);
+        assertStatus(client, happyWf, LHStatus.COMPLETED);
 
         assertVarEqual(client, happyWf, 0, "my-int", 13);
         // the my-double var isn't mutated
@@ -86,7 +83,7 @@ public class ADVarMutationsNumbers extends WorkflowLogicTest {
         assertVarEqual(client, happyWf, 0, "my-other-int", (int) (24.2 / 13));
 
         // Should fail due to division by zero
-        assertStatus(client, sadWf, LHStatusPb.ERROR);
+        assertStatus(client, sadWf, LHStatus.ERROR);
 
         // Since the mutations failed, all should be rolled back.
         assertVarEqual(client, sadWf, 0, "my-int", -8);
