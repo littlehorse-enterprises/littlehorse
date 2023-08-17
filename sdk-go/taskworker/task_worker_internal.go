@@ -23,7 +23,7 @@ func (tw *LHTaskWorker) registerTaskDef(ignoreAlreadyExistsError bool) error {
 	}
 
 	for i, arg := range tw.taskSig.Args {
-		ptd.InputVars = append(ptd.InputVars, &model.VariableDefPb{
+		ptd.InputVars = append(ptd.InputVars, &model.VariableDef{
 			Name: strconv.Itoa(i) + "-" + arg.Name,
 			Type: common.ReflectTypeToVarType(arg.Type),
 		})
@@ -47,14 +47,14 @@ func (tw *LHTaskWorker) close() error {
 // ///////////////////////////////////////////////////////////
 type serverConnection struct {
 	manager        *serverConnectionManager
-	host           *model.HostInfoPb
+	host           *model.HostInfo
 	running        bool
 	pollTaskClient *model.LHPublicApi_PollTaskClient
 	grpcClient     *model.LHPublicApiClient
 }
 
 func newServerConnection(
-	manager *serverConnectionManager, host *model.HostInfoPb,
+	manager *serverConnectionManager, host *model.HostInfo,
 ) (*serverConnection, error) {
 	grpcClient, err := manager.tw.config.GetGrpcClientForHost(
 		host.Host + ":" + strconv.Itoa(int(host.Port)),
@@ -76,7 +76,7 @@ func newServerConnection(
 		grpcClient:     grpcClient,
 	}
 
-	stream.Send(&model.PollTaskPb{
+	stream.Send(&model.PollTaskRequest{
 		ClientId:          manager.tw.config.ClientId,
 		TaskDefName:       manager.tw.taskDefName,
 		TaskWorkerVersion: &manager.tw.config.TaskWorkerVersion,
@@ -103,7 +103,7 @@ func newServerConnection(
 			}
 
 			if out.running {
-				req := model.PollTaskPb{
+				req := model.PollTaskRequest{
 					ClientId:          manager.tw.config.ClientId,
 					TaskDefName:       manager.tw.taskDefName,
 					TaskWorkerVersion: &manager.tw.config.TaskWorkerVersion,
@@ -179,7 +179,7 @@ func (m *serverConnectionManager) start() {
 	for m.running {
 		reply, err := (*m.tw.grpcStub).RegisterTaskWorker(
 			context.Background(),
-			&model.RegisterTaskWorkerPb{
+			&model.RegisterTaskWorkerRequest{
 				TaskDefName:  m.tw.taskDefName,
 				ClientId:     m.tw.config.ClientId,
 				ListenerName: m.tw.config.ServerConnectListener,
@@ -233,7 +233,7 @@ func (m *serverConnectionManager) start() {
 
 }
 
-func (m *serverConnectionManager) isAlreadyRunning(host *model.HostInfoPb) bool {
+func (m *serverConnectionManager) isAlreadyRunning(host *model.HostInfo) bool {
 	for _, connection := range m.connections {
 		if connection.host.Host == host.Host && connection.host.Port == host.Port {
 			return true
@@ -243,7 +243,7 @@ func (m *serverConnectionManager) isAlreadyRunning(host *model.HostInfoPb) bool 
 }
 
 func (m *serverConnectionManager) shouldBeRunning(
-	conn *serverConnection, hosts []*model.HostInfoPb,
+	conn *serverConnection, hosts []*model.HostInfo,
 ) bool {
 	for _, host := range hosts {
 		if conn.host.Host == host.Host && conn.host.Port == host.Port {
@@ -295,7 +295,7 @@ func (m *serverConnectionManager) doTask(taskToExec *taskExecutionInfo) {
 	}
 }
 
-func (m *serverConnectionManager) retryReportTask(ctx context.Context, taskResult *model.ReportTaskRunPb, retries int) {
+func (m *serverConnectionManager) retryReportTask(ctx context.Context, taskResult *model.ReportTaskRun, retries int) {
 	log.Println("Retrying reportTask rpc on wfRunModel {}", taskResult.TaskRunId.WfRunId)
 
 	// TODO: Is this a Really Bad Idea? I forget whether this runs in the main
@@ -314,9 +314,9 @@ func (m *serverConnectionManager) retryReportTask(ctx context.Context, taskResul
 	}
 }
 
-func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTask) *model.ReportTaskRunPb {
+func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTask) *model.ReportTaskRun {
 	var reflectArgs []reflect.Value
-	taskResult := &model.ReportTaskRunPb{
+	taskResult := &model.ReportTaskRun{
 		TaskRunId: task.TaskRunId,
 	}
 

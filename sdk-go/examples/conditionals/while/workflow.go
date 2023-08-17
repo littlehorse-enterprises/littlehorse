@@ -17,10 +17,10 @@ func DonutWorkflow(thread *wflib.ThreadBuilder) {
 	numDonuts := thread.AddVariable("number-of-donuts", model.VariableType_INT)
 
 	thread.DoWhile(
-		thread.Condition(numDonuts, model.ComparatorPb_GREATER_THAN, 0),
+		thread.Condition(numDonuts, model.Comparator_GREATER_THAN, 0),
 		func(t *wflib.ThreadBuilder) {
 			taskOutput := t.Execute("eat-another-donut", numDonuts)
-			thread.Mutate(numDonuts, model.VariableMutationTypePb_ASSIGN, taskOutput)
+			thread.Mutate(numDonuts, model.VariableMutationType_ASSIGN, taskOutput)
 		},
 	)
 }

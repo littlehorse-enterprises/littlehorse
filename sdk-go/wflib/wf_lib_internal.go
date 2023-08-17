@@ -33,7 +33,7 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 
 	l.spec.Name = camelCaseToHostNameCase(l.Name)
 	l.spec.EntrypointThreadName = l.addSubThread("entrypoint", l.EntrypointThread)
-	l.spec.ThreadSpecs = make(map[string]*model.ThreadSpecPb)
+	l.spec.ThreadSpecs = make(map[string]*model.ThreadSpec)
 
 	for {
 		curFuncsSize := len(seenThreads)
@@ -47,23 +47,23 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 					Name:     funcName,
 					isActive: true,
 					wf:       l,
-					spec:     model.ThreadSpecPb{},
+					spec:     model.ThreadSpec{},
 				}
-				thr.spec.InterruptDefs = make([]*model.InterruptDefPb, 0)
+				thr.spec.InterruptDefs = make([]*model.InterruptDef, 0)
 				thr.spec.VariableDefs = make([]*model.VariableDef, 0)
 
 				// Need to add entrypoint node. We have to do this one manually
 				// for now.
-				entry := &model.NodePb{
-					Node: &model.NodePb_Entrypoint{
-						Entrypoint: &model.EntrypointNodePb{},
+				entry := &model.Node{
+					Node: &model.Node_Entrypoint{
+						Entrypoint: &model.EntrypointNode{},
 					},
-					OutgoingEdges: make([]*model.EdgePb, 0),
+					OutgoingEdges: make([]*model.Edge, 0),
 				}
 				nodeName := "0-ENTRYPOINT"
 				thr.lastNodeName = &nodeName
 				thr.lastNodeCondition = &WorkflowCondition{}
-				thr.spec.Nodes = make(map[string]*model.NodePb)
+				thr.spec.Nodes = make(map[string]*model.Node)
 				thr.spec.Nodes[nodeName] = entry
 
 				// Now do the work for the thread...this calls the user/customer's
@@ -72,8 +72,8 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 
 				// Now add exit node to make a sandwich
 				_, exitNode := thr.createBlankNode("exit", "EXIT")
-				exitNode.Node = &model.NodePb_Exit{
-					Exit: &model.ExitNodePb{},
+				exitNode.Node = &model.Node_Exit{
+					Exit: &model.ExitNode{},
 				}
 				thr.isActive = false
 				// Now save the thread to the protobuf
@@ -93,10 +93,10 @@ func (t *ThreadBuilder) executeTask(name string, args []interface{}) NodeOutput 
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode(name, "TASK")
 
-	taskNode := &model.NodePb_Task{
-		Task: &model.TaskNodePb{
+	taskNode := &model.Node_Task{
+		Task: &model.TaskNode{
 			TaskDefName: name,
-			Variables:   make([]*model.VariableAssignmentPb, 0),
+			Variables:   make([]*model.VariableAssignment, 0),
 		},
 	}
 
@@ -118,20 +118,20 @@ func (t *ThreadBuilder) executeTask(name string, args []interface{}) NodeOutput 
 
 func (t *ThreadBuilder) assignVariable(
 	val interface{},
-) (out *model.VariableAssignmentPb, err error) {
+) (out *model.VariableAssignment, err error) {
 	t.checkIfIsActive()
 	switch v := val.(type) {
 	case *WfRunVariable:
-		out = &model.VariableAssignmentPb{
+		out = &model.VariableAssignment{
 			JsonPath: v.jsonPath,
-			Source: &model.VariableAssignmentPb_VariableName{
+			Source: &model.VariableAssignment_VariableName{
 				VariableName: v.Name,
 			},
 		}
 	case WfRunVariable:
-		out = &model.VariableAssignmentPb{
+		out = &model.VariableAssignment{
 			JsonPath: v.jsonPath,
-			Source: &model.VariableAssignmentPb_VariableName{
+			Source: &model.VariableAssignment_VariableName{
 				VariableName: v.Name,
 			},
 		}
@@ -143,8 +143,8 @@ func (t *ThreadBuilder) assignVariable(
 		var tmp *model.VariableValue
 		tmp, err = common.InterfaceToVarVal(v)
 		if tmp != nil {
-			out = &model.VariableAssignmentPb{
-				Source: &model.VariableAssignmentPb_LiteralValue{
+			out = &model.VariableAssignment{
+				Source: &model.VariableAssignment_LiteralValue{
 					LiteralValue: tmp,
 				},
 			}
@@ -154,7 +154,7 @@ func (t *ThreadBuilder) assignVariable(
 	return out, err
 }
 
-func (t *ThreadBuilder) createBlankNode(name, nType string) (string, *model.NodePb) {
+func (t *ThreadBuilder) createBlankNode(name, nType string) (string, *model.Node) {
 	t.checkIfIsActive()
 	nodeName := t.getNodeName(name, nType)
 
@@ -165,7 +165,7 @@ func (t *ThreadBuilder) createBlankNode(name, nType string) (string, *model.Node
 
 	// Need to add an edge from that node to this node
 	lastNode := t.spec.Nodes[*t.lastNodeName]
-	edge := model.EdgePb{
+	edge := model.Edge{
 		SinkNodeName: nodeName,
 	}
 	if t.lastNodeCondition != nil {
@@ -174,10 +174,10 @@ func (t *ThreadBuilder) createBlankNode(name, nType string) (string, *model.Node
 	}
 	lastNode.OutgoingEdges = append(lastNode.OutgoingEdges, &edge)
 
-	node := &model.NodePb{
-		OutgoingEdges:     make([]*model.EdgePb, 0),
-		VariableMutations: make([]*model.VariableMutationPb, 0),
-		FailureHandlers:   make([]*model.FailureHandlerDefPb, 0),
+	node := &model.Node{
+		OutgoingEdges:     make([]*model.Edge, 0),
+		VariableMutations: make([]*model.VariableMutation, 0),
+		FailureHandlers:   make([]*model.FailureHandlerDef, 0),
 	}
 
 	t.spec.Nodes[nodeName] = node
@@ -238,11 +238,11 @@ func (t *ThreadBuilder) throwError(e error) {
 
 func (t *ThreadBuilder) mutate(
 	lhs *WfRunVariable,
-	mType model.VariableMutationTypePb,
+	mType model.VariableMutationType,
 	rhs interface{},
 ) {
 	t.checkIfIsActive()
-	mutation := &model.VariableMutationPb{
+	mutation := &model.VariableMutation{
 		LhsName:     lhs.Name,
 		LhsJsonPath: lhs.jsonPath,
 		Operation:   mType,
@@ -255,8 +255,8 @@ func (t *ThreadBuilder) mutate(
 				"Cannot use an old NodeOutput from node " + r.nodeName,
 			))
 		}
-		mutation.RhsValue = &model.VariableMutationPb_NodeOutput{
-			NodeOutput: &model.VariableMutationPb_NodeOutputSourcePb{
+		mutation.RhsValue = &model.VariableMutation_NodeOutput{
+			NodeOutput: &model.VariableMutation_NodeOutputSource{
 				Jsonpath: r.jsonPath,
 			},
 		}
@@ -266,25 +266,25 @@ func (t *ThreadBuilder) mutate(
 				"Cannot use an old NodeOutput from node " + r.nodeName,
 			))
 		}
-		mutation.RhsValue = &model.VariableMutationPb_NodeOutput{
-			NodeOutput: &model.VariableMutationPb_NodeOutputSourcePb{
+		mutation.RhsValue = &model.VariableMutation_NodeOutput{
+			NodeOutput: &model.VariableMutation_NodeOutputSource{
 				Jsonpath: r.jsonPath,
 			},
 		}
 	case WfRunVariable:
-		mutation.RhsValue = &model.VariableMutationPb_SourceVariable{
-			SourceVariable: &model.VariableAssignmentPb{
+		mutation.RhsValue = &model.VariableMutation_SourceVariable{
+			SourceVariable: &model.VariableAssignment{
 				JsonPath: r.jsonPath,
-				Source: &model.VariableAssignmentPb_VariableName{
+				Source: &model.VariableAssignment_VariableName{
 					VariableName: r.Name,
 				},
 			},
 		}
 	case *WfRunVariable:
-		mutation.RhsValue = &model.VariableMutationPb_SourceVariable{
-			SourceVariable: &model.VariableAssignmentPb{
+		mutation.RhsValue = &model.VariableMutation_SourceVariable{
+			SourceVariable: &model.VariableAssignment{
 				JsonPath: r.jsonPath,
-				Source: &model.VariableAssignmentPb_VariableName{
+				Source: &model.VariableAssignment_VariableName{
 					VariableName: r.Name,
 				},
 			},
@@ -294,7 +294,7 @@ func (t *ThreadBuilder) mutate(
 		if err != nil {
 			t.throwError(tracerr.Wrap(err))
 		}
-		mutation.RhsValue = &model.VariableMutationPb_LiteralValue{
+		mutation.RhsValue = &model.VariableMutation_LiteralValue{
 			LiteralValue: rhsVarVal,
 		}
 	}
@@ -307,7 +307,7 @@ func (t *ThreadBuilder) addVariable(
 	name string, varType model.VariableType,
 ) *WfRunVariable {
 	t.checkIfIsActive()
-	varDef := &model.VariableDefPb{
+	varDef := &model.VariableDef{
 		Type: varType,
 		Name: name,
 	}
@@ -321,10 +321,10 @@ func (t *ThreadBuilder) addVariable(
 }
 
 func (t *ThreadBuilder) condition(
-	lhs interface{}, op model.ComparatorPb, rhs interface{},
+	lhs interface{}, op model.Comparator, rhs interface{},
 ) *WorkflowCondition {
 	t.checkIfIsActive()
-	cond := &model.EdgeConditionPb{
+	cond := &model.EdgeCondition{
 		Comparator: op,
 	}
 
@@ -350,8 +350,8 @@ func (t *ThreadBuilder) condition(
 func (t *ThreadBuilder) addNopNode() {
 	t.checkIfIsActive()
 	_, n := t.createBlankNode("nop", "NOP")
-	n.Node = &model.NodePb_Nop{
-		Nop: &model.NopNodePb{},
+	n.Node = &model.Node_Nop{
+		Nop: &model.NopNode{},
 	}
 }
 
@@ -385,7 +385,7 @@ func (t *ThreadBuilder) doIf(cond *WorkflowCondition, doIf IfElseBody) {
 	// Now add the sideways path from T directly to B
 	topOfTreeNode.OutgoingEdges = append(
 		topOfTreeNode.OutgoingEdges,
-		&model.EdgePb{
+		&model.Edge{
 			SinkNodeName: *bottomOfTreeNodeName,
 			Condition:    cond.getReverse(),
 		},
@@ -420,7 +420,7 @@ func (t *ThreadBuilder) doIfElse(
 	// Make the last node from the else block point to the joiner node
 	lastNodeFromElseBlock.OutgoingEdges = append(
 		lastNodeFromElseBlock.OutgoingEdges,
-		&model.EdgePb{
+		&model.Edge{
 			SinkNodeName: *joinerNodeName,
 		},
 	)
@@ -459,7 +459,7 @@ func (t *ThreadBuilder) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) {
 	// Now add the sideways path from T directly to B
 	topOfTreeNode.OutgoingEdges = append(
 		topOfTreeNode.OutgoingEdges,
-		&model.EdgePb{
+		&model.Edge{
 			SinkNodeName: *bottomOfTreeNodeName,
 			Condition:    cond.getReverse(),
 		},
@@ -468,34 +468,34 @@ func (t *ThreadBuilder) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) {
 	// Now add the sideways path from B directly to T
 	bottomOfTreeNode.OutgoingEdges = append(
 		bottomOfTreeNode.OutgoingEdges,
-		&model.EdgePb{
+		&model.Edge{
 			SinkNodeName: *topOfTreeNodeName,
 			Condition:    cond.spec,
 		},
 	)
 }
 
-func (c *WorkflowCondition) getReverse() *model.EdgeConditionPb {
-	out := &model.EdgeConditionPb{}
+func (c *WorkflowCondition) getReverse() *model.EdgeCondition {
+	out := &model.EdgeCondition{}
 	out.Left = c.spec.Left
 	out.Right = c.spec.Right
 	switch c.spec.Comparator {
-	case model.ComparatorPb_LESS_THAN:
-		out.Comparator = model.ComparatorPb_GREATER_THAN_EQ
-	case model.ComparatorPb_GREATER_THAN:
-		out.Comparator = model.ComparatorPb_LESS_THAN_EQ
-	case model.ComparatorPb_GREATER_THAN_EQ:
-		out.Comparator = model.ComparatorPb_LESS_THAN
-	case model.ComparatorPb_LESS_THAN_EQ:
-		out.Comparator = model.ComparatorPb_GREATER_THAN
-	case model.ComparatorPb_EQUALS:
-		out.Comparator = model.ComparatorPb_NOT_EQUALS
-	case model.ComparatorPb_NOT_EQUALS:
-		out.Comparator = model.ComparatorPb_EQUALS
-	case model.ComparatorPb_IN:
-		out.Comparator = model.ComparatorPb_NOT_IN
-	case model.ComparatorPb_NOT_IN:
-		out.Comparator = model.ComparatorPb_IN
+	case model.Comparator_LESS_THAN:
+		out.Comparator = model.Comparator_GREATER_THAN_EQ
+	case model.Comparator_GREATER_THAN:
+		out.Comparator = model.Comparator_LESS_THAN_EQ
+	case model.Comparator_GREATER_THAN_EQ:
+		out.Comparator = model.Comparator_LESS_THAN
+	case model.Comparator_LESS_THAN_EQ:
+		out.Comparator = model.Comparator_GREATER_THAN
+	case model.Comparator_EQUALS:
+		out.Comparator = model.Comparator_NOT_EQUALS
+	case model.Comparator_NOT_EQUALS:
+		out.Comparator = model.Comparator_EQUALS
+	case model.Comparator_IN:
+		out.Comparator = model.Comparator_NOT_IN
+	case model.Comparator_NOT_IN:
+		out.Comparator = model.Comparator_IN
 	}
 
 	return out
@@ -510,10 +510,10 @@ func (t *ThreadBuilder) spawnThread(
 	nodeName, node := t.createBlankNode(threadName, "SPAWN_THREAD")
 	cachedThreadVar := t.addVariable(nodeName, model.VariableType_INT)
 
-	node.Node = &model.NodePb_StartThread{
-		StartThread: &model.StartThreadNodePb{
+	node.Node = &model.Node_StartThread{
+		StartThread: &model.StartThreadNode{
 			ThreadSpecName: threadName,
-			Variables:      make(map[string]*model.VariableAssignmentPb),
+			Variables:      make(map[string]*model.VariableAssignment),
 		},
 	}
 
@@ -527,7 +527,7 @@ func (t *ThreadBuilder) spawnThread(
 
 	t.mutate(
 		cachedThreadVar,
-		model.VariableMutationTypePb_ASSIGN,
+		model.VariableMutationType_ASSIGN,
 		NodeOutput{
 			nodeName, nil, t,
 		},
@@ -542,9 +542,9 @@ func (t *ThreadBuilder) spawnThread(
 func (t *ThreadBuilder) waitForThreads(s ...*SpawnedThread) *NodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode("wait", "WAIT_THREADS")
-	node.Node = &model.NodePb_WaitForThreads{
-		WaitForThreads: &model.WaitForThreadsNodePb{
-			Threads: make([]*model.WaitForThreadsNodePb_ThreadToWaitForPb, 0),
+	node.Node = &model.Node_WaitForThreads{
+		WaitForThreads: &model.WaitForThreadsNode{
+			Threads: make([]*model.WaitForThreadsNode_ThreadToWaitFor, 0),
 		},
 	}
 
@@ -552,7 +552,7 @@ func (t *ThreadBuilder) waitForThreads(s ...*SpawnedThread) *NodeOutput {
 		threadRunNumberAssn, _ := t.assignVariable(spawnedThread.threadNumVar)
 
 		node.GetWaitForThreads().Threads = append(node.GetWaitForThreads().Threads,
-			&model.WaitForThreadsNodePb_ThreadToWaitForPb{
+			&model.WaitForThreadsNode_ThreadToWaitFor{
 				ThreadRunNumber: threadRunNumberAssn,
 			},
 		)
@@ -569,8 +569,8 @@ func (t *ThreadBuilder) waitForEvent(eventName string) *NodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode(eventName, "EXTERNAL_EVENT")
 
-	node.Node = &model.NodePb_ExternalEvent{
-		ExternalEvent: &model.ExternalEventNodePb{
+	node.Node = &model.Node_ExternalEvent{
+		ExternalEvent: &model.ExternalEventNode{
 			ExternalEventDefName: eventName,
 		},
 	}
@@ -597,9 +597,9 @@ func (t *ThreadBuilder) fail(content interface{}, failureName string, msg *strin
 		message = *msg
 	}
 
-	node.Node = &model.NodePb_Exit{
-		Exit: &model.ExitNodePb{
-			FailureDef: &model.FailureDefPb{
+	node.Node = &model.Node_Exit{
+		Exit: &model.ExitNode{
+			FailureDef: &model.FailureDef{
 				FailureName: failureName,
 				Content:     contentVarVal,
 				Message:     message,
@@ -614,11 +614,11 @@ func (t *ThreadBuilder) sleep(sleepSeconds int) {
 
 	sleepSeconds64 := int64(sleepSeconds)
 
-	sleepNode := &model.NodePb_Sleep{
-		Sleep: &model.SleepNodePb{
-			SleepLength: &model.SleepNodePb_RawSeconds{
-				RawSeconds: &model.VariableAssignmentPb{
-					Source: &model.VariableAssignmentPb_LiteralValue{
+	sleepNode := &model.Node_Sleep{
+		Sleep: &model.SleepNode{
+			SleepLength: &model.SleepNode_RawSeconds{
+				RawSeconds: &model.VariableAssignment{
+					Source: &model.VariableAssignment_LiteralValue{
 						LiteralValue: &model.VariableValue{
 							Type: model.VariableType_INT,
 							Int:  &sleepSeconds64,
@@ -635,7 +635,7 @@ func (t *ThreadBuilder) sleep(sleepSeconds int) {
 func (t *ThreadBuilder) handleInterrupt(interruptName string, handler ThreadFunc) {
 	t.checkIfIsActive()
 	handlerName := t.wf.addSubThread("interrupt-"+interruptName, handler)
-	t.spec.InterruptDefs = append(t.spec.InterruptDefs, &model.InterruptDefPb{
+	t.spec.InterruptDefs = append(t.spec.InterruptDefs, &model.InterruptDef{
 		ExternalEventDefName: interruptName,
 		HandlerSpecName:      handlerName,
 	})
@@ -651,7 +651,7 @@ func (t *ThreadBuilder) handleException(
 	handlerName := "exception-handler-" + *exceptionName + "-" + nodeOutput.nodeName
 	threadName := t.wf.addSubThread(handlerName, handler)
 
-	node.FailureHandlers = append(node.FailureHandlers, &model.FailureHandlerDefPb{
+	node.FailureHandlers = append(node.FailureHandlers, &model.FailureHandlerDef{
 		SpecificFailure: exceptionName,
 		HandlerSpecName: threadName,
 	})

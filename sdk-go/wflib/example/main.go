@@ -49,7 +49,7 @@ func inputVarsStuff(t *wflib.ThreadBuilder) {
 		"literalThing": "hello there!",
 	})
 
-	myVar.Mutate(model.VariableMutationTypePb_ASSIGN, map[string]string{"foo": "bar"})
+	myVar.Mutate(model.VariableMutationType_ASSIGN, map[string]string{"foo": "bar"})
 }
 
 func simpleConditionals(t *wflib.ThreadBuilder) {
@@ -58,8 +58,8 @@ func simpleConditionals(t *wflib.ThreadBuilder) {
 
 	t.Execute("task1", nil)
 
-	t.DoIf(t.Condition(myVar, model.ComparatorPb_EQUALS, 10), func() {
-		// t.DoIf(t.Condition(myOtherVar, model.ComparatorPb_IN, []int{10, 11}), func() {
+	t.DoIf(t.Condition(myVar, model.Comparator_EQUALS, 10), func() {
+		// t.DoIf(t.Condition(myOtherVar, model.Comparator_IN, []int{10, 11}), func() {
 		t.Execute("task1", nil)
 		// })
 	})
@@ -68,7 +68,7 @@ func simpleConditionals(t *wflib.ThreadBuilder) {
 }
 
 func simpleIfElse(t *wflib.ThreadBuilder) {
-	t.DoIfElse(t.Condition(5, model.ComparatorPb_LESS_THAN, 10),
+	t.DoIfElse(t.Condition(5, model.Comparator_LESS_THAN, 10),
 		func() {
 			t.Execute("task1", nil)
 		}, func() {
@@ -94,7 +94,7 @@ func simpleConditionals(t *wflib.ThreadBuilder) {
 
 	t.Execute("task1", nil)
 
-	t.DoIf(t.Condition(myVar, model.ComparatorPb_EQUALS, 10), func(ifBody *wflib.ThreadBuilder) {
+	t.DoIf(t.Condition(myVar, model.Comparator_EQUALS, 10), func(ifBody *wflib.ThreadBuilder) {
 		ifBody.Execute("task2")
 	})
 

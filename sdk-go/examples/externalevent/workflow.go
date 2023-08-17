@@ -19,7 +19,7 @@ func ExternalEventWorkflow(thread *wflib.ThreadBuilder) {
 
 	eventOutput := thread.WaitForEvent("my-name")
 
-	thread.Mutate(nameVar, model.VariableMutationTypePb_ASSIGN, eventOutput)
+	thread.Mutate(nameVar, model.VariableMutationType_ASSIGN, eventOutput)
 
 	thread.Execute("specific-greeting", nameVar)
 }
