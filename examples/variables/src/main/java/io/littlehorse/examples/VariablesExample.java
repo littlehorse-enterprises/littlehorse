@@ -6,7 +6,7 @@ import static io.littlehorse.sdk.common.proto.IndexType.REMOTE_INDEX;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -56,7 +56,7 @@ public class VariablesExample {
                 );
                 thread.mutate(
                     sentimentScore,
-                    VariableMutationTypePb.ASSIGN,
+                    VariableMutationType.ASSIGN,
                     sentimentAnalysisOutput
                 );
                 NodeOutput processedTextOutput = thread.execute(
@@ -68,7 +68,7 @@ public class VariablesExample {
                 );
                 thread.mutate(
                     processedResult,
-                    VariableMutationTypePb.ASSIGN,
+                    VariableMutationType.ASSIGN,
                     processedTextOutput
                 );
                 thread.execute("send", processedResult);

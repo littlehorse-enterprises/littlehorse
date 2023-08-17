@@ -3,8 +3,8 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -30,13 +30,13 @@ public class MutationExample {
             thread -> {
                 WfRunVariable theName = thread.addVariable(
                     "name",
-                    VariableTypePb.STR
+                    VariableType.STR
                 );
                 // We pass the name of the person and receive if it is spider-man or not
                 NodeOutput output = thread.execute("spider-bite", theName);
 
                 // We save the output in the variable
-                thread.mutate(theName, VariableMutationTypePb.ASSIGN, output);
+                thread.mutate(theName, VariableMutationType.ASSIGN, output);
             }
         );
     }

@@ -3,7 +3,7 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
+import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
@@ -94,7 +94,7 @@ public class UserTasksExample {
         );
 
         thread.doIfElse(
-            thread.condition(isApproved, ComparatorPb.EQUALS, true),
+            thread.condition(isApproved, Comparator.EQUALS, true),
             // Request approved!
             ifBody -> {
                 ifBody.execute(

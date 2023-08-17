@@ -14,7 +14,7 @@ var stopCmd = &cobra.Command{
 	Use:   "stop",
 	Short: "Stop a resource.",
 	Long: `Stop a resource. Supported resources:
-- wfRunModel
+- wfRun
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("stop called")

@@ -12,7 +12,7 @@ import (
 )
 
 var getWfRunCmd = &cobra.Command{
-	Use:   "wfRunModel <id>",
+	Use:   "wfRun <id>",
 	Short: "Get a Workflow Run.",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
@@ -30,7 +30,7 @@ var getWfRunCmd = &cobra.Command{
 }
 
 var searchWfRunCmd = &cobra.Command{
-	Use:   "wfRunModel",
+	Use:   "wfRun",
 	Short: "Search for WfRuns",
 	Long: `
 Search for WfRuns. You may provide any of the following option groups:
@@ -43,7 +43,7 @@ Search for WfRuns. You may provide any of the following option groups:
     options with this group to put a time bound on WfRun's which are returned.
 	The time bound applies to the time that the WfRun was created.
 
-Returns a list of ObjectId's that can be passed into 'lhctl get wfRunModel'.
+Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
@@ -119,7 +119,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRunModel'.
 }
 
 var stopWfRunCmd = &cobra.Command{
-	Use:   "wfRunModel <id>",
+	Use:   "wfRun <id>",
 	Short: "Stop a Workflow Run.",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
@@ -139,7 +139,7 @@ var stopWfRunCmd = &cobra.Command{
 }
 
 var resumeWfRunCmd = &cobra.Command{
-	Use:   "wfRunModel <id>",
+	Use:   "wfRun <id>",
 	Short: "Stop a Workflow Run.",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
@@ -159,7 +159,7 @@ var resumeWfRunCmd = &cobra.Command{
 }
 
 var deleteWfRunCmd = &cobra.Command{
-	Use:   "wfRunModel <id>",
+	Use:   "wfRun <id>",
 	Short: "Delete a Workflow Run.",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {

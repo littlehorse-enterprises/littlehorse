@@ -1,7 +1,5 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.common.proto.UserPb;
-import io.littlehorse.sdk.common.proto.UserTaskTriggerContextPb;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
 
