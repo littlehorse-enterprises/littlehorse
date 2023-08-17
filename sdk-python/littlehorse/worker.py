@@ -8,11 +8,13 @@ from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     InvalidTaskDefNameException,
     TaskSchemaMismatchException,
+    UnknownApiException,
 )
 from littlehorse.model.service_pb2 import (
     GetTaskDefReplyPb,
     LHResponseCodePb,
     RegisterTaskWorkerPb,
+    RegisterTaskWorkerReplyPb,
     TaskDefIdPb,
     TaskDefPb,
     VariableTypePb,
@@ -31,12 +33,6 @@ VARIABLE_TYPES_MAP = {
 
 
 class LHWorkerContext:
-    pass
-
-
-class LHConnection:
-    """Connection to a specific LH Server"""
-
     pass
 
 
@@ -138,6 +134,37 @@ class LHTask:
         return bool(ctx_parameters)
 
 
+class LHConnection:
+    _log = logging.getLogger("LHConnection")
+
+    def __init__(self, server: str, config: LHConfig) -> None:
+        self.server = server
+        self.running = False
+        self._config = config
+
+    async def _ask_for_work(self) -> None:
+        async with self._config.establish_channel(
+            server=self.server, async_channel=True
+        ) as channel:
+            LHPublicApiStub(channel)
+            while self.running:
+                self._log.debug(
+                    "Connection: %s is asking for work at %s",
+                    self.server,
+                    datetime.now(),
+                )
+                await asyncio.sleep(1)
+
+    async def start(self) -> None:
+        self._log.info(f"Starting server connection {self.server}")
+        self.running = True
+        await self._ask_for_work()
+
+    async def stop(self) -> None:
+        self._log.info(f"Stopping server connection {self.server}")
+        self.running = False
+
+
 class LHTaskWorker:
     """The LHTaskWorker talks to the LH Servers and executes a
     specified Task Method every time a Task is scheduled.
@@ -149,6 +176,7 @@ class LHTaskWorker:
         self, callable: Callable[..., Any], task_def_name: str, config: LHConfig
     ) -> None:
         self._config = config
+        self._connections: dict[str, LHConnection] = {}
 
         # get the task definition from the server
         stub = config.blocking_stub()
@@ -172,13 +200,45 @@ class LHTaskWorker:
                     listener_name=self._config.server_listener(),
                     task_def_name=self.task.name(),
                 )
-                await stub.RegisterTaskWorker(request)
-                # HERE: CHECK THE OPENED CONNECTIONS,
-                # DEPENDING ON "YOUR HOSTS" KEEP THEM OR KILL THEM
+                reply: RegisterTaskWorkerReplyPb = await stub.RegisterTaskWorker(
+                    request
+                )
+
+                if reply.code != LHResponseCodePb.OK:
+                    raise UnknownApiException(message=reply.message)
+
+                hosts = [f"{host.host}:{host.port}" for host in reply.your_hosts]
+
+                # add new connections
+                hosts_to_be_added = [
+                    host for host in hosts if host not in self._connections.keys()
+                ]
+
+                if hosts_to_be_added:
+                    self._log.info("Connections to be added: %s", hosts_to_be_added)
+
+                for host in hosts_to_be_added:
+                    new_connection = LHConnection(host, self._config)
+                    self._connections[host] = new_connection
+                    asyncio.create_task(new_connection.start())
+
+                # remove invalid connections
+                hosts_to_be_removed = {
+                    host for host in self._connections.keys() if host not in hosts
+                }
+
+                if hosts_to_be_removed:
+                    self._log.info("Connections to be removed: %s", hosts_to_be_removed)
+
+                for host in hosts_to_be_removed:
+                    connection_to_be_removed = self._connections.pop(host)
+                    asyncio.create_task(connection_to_be_removed.stop())
+
                 await asyncio.sleep(5)
 
     async def start(self) -> None:
         """Starts polling for and executing tasks."""
+        self._log.info("Starting worker")
         self.running = True
         loop = asyncio.get_running_loop()
 
@@ -191,3 +251,5 @@ class LHTaskWorker:
         """Cleanly shuts down the Task Worker."""
         self._log.info("Stopping worker")
         self.running = False
+        for connection in self._connections.values():
+            await connection.stop()

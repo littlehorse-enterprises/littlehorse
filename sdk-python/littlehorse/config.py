@@ -250,7 +250,7 @@ class LHConfig:
             )
 
         if self.is_secure() and self.needs_credentials():
-            self._log.info("Using secure channel with OAuth")
+            self._log.info("Establishing secure channel with OAuth at %s", server)
             return secure_channel(
                 server,
                 grpc.composite_channel_credentials(
@@ -260,14 +260,14 @@ class LHConfig:
             )
 
         if self.is_secure():
-            self._log.info("Using secure channel")
+            self._log.info("Establishing secure channel at %s", server)
             return secure_channel(
                 server,
                 get_ssl_config(),
             )
 
         if not self.is_secure():
-            self._log.warn("Opening insecure channel")
+            self._log.warn("Establishing insecure channel at %s", server)
 
         return insecure_channel(server)
 

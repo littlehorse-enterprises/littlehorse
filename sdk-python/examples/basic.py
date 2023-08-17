@@ -23,15 +23,15 @@ def greeting(name: str, ctx: LHWorkerContext) -> str:
 
 
 async def stop_after() -> None:
-    await asyncio.sleep(10)
+    await asyncio.sleep(60 * 5)
     await worker.stop()
 
 
 async def main() -> None:
     start_task = asyncio.create_task(worker.start())
-    stop_task = asyncio.create_task(stop_after())
+    # stop_task = asyncio.create_task(stop_after())
     await start_task
-    await stop_task
+    # await stop_task
 
 
 if __name__ == "__main__":
