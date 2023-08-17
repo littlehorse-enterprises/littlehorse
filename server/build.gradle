@@ -3,6 +3,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'java'
     id 'maven-publish'
+    id 'com.diffplug.spotless' version '6.20.0'
 }
 
 sourceCompatibility=17
@@ -85,4 +86,10 @@ test {
         exceptionFormat = 'full'
     }
     jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
+}
+
+spotless {
+    java {
+        googleJavaFormat('1.17.0').aosp().reflowLongStrings()
+    }
 }
