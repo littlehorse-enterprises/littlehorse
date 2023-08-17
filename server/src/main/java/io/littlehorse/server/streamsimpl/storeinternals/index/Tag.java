@@ -115,7 +115,7 @@ public class Tag extends Storeable<TagPb> {
         attributes = new ArrayList<>();
     }
 
-    public TagStorageType getTagStorageTypePb() {
+    public TagStorageType getTagStorageType() {
         return this.tagType;
     }
 

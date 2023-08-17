@@ -7,7 +7,7 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
 
     public abstract String getStoreKey();
 
-    public TagStorageType tagStorageTypePb() {
+    public TagStorageType tagStorageType() {
         return TagStorageType.LOCAL;
     }
 }

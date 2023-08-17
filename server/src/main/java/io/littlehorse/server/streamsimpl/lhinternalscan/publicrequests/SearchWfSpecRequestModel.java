@@ -121,9 +121,9 @@ public class SearchWfSpecRequestModel
                 .getIndexConfigurations()) {
                 if (
                     indexConfiguration.searchAttributesMatch(attributes) &&
-                    indexConfiguration.getTagStorageTypePb().isPresent()
+                    indexConfiguration.getTagStorageType().isPresent()
                 ) {
-                    return indexConfiguration.getTagStorageTypePb().get();
+                    return indexConfiguration.getTagStorageType().get();
                 }
             }
             return null;

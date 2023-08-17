@@ -12,24 +12,24 @@ import org.apache.commons.lang3.tuple.Pair;
 public class GetableIndex<T extends Getable<?>> {
 
     private List<Pair<String, ValueType>> attributes;
-    private Optional<TagStorageType> tagStorageTypePb;
+    private Optional<TagStorageType> tagStorageType;
     private Predicate<T> conditional;
 
     public GetableIndex(
         List<Pair<String, ValueType>> attributes,
-        Optional<TagStorageType> tagStorageTypePb,
+        Optional<TagStorageType> tagStorageType,
         Predicate<T> conditional
     ) {
         this.attributes = attributes;
-        this.tagStorageTypePb = tagStorageTypePb;
+        this.tagStorageType = tagStorageType;
         this.conditional = conditional;
     }
 
     public GetableIndex(
         List<Pair<String, ValueType>> attributes,
-        Optional<TagStorageType> tagStorageTypePb
+        Optional<TagStorageType> tagStorageType
     ) {
-        this(attributes, tagStorageTypePb, null);
+        this(attributes, tagStorageType, null);
     }
 
     public boolean searchAttributesMatch(List<String> searchAttributes) {

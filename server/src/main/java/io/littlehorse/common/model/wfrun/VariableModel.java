@@ -125,7 +125,7 @@ public class VariableModel extends Getable<Variable> {
     @Override
     public List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageType> tagStorageTypePb
+        Optional<TagStorageType> tagStorageType
     ) {
         switch (key) {
             case "wfSpecName" -> {
@@ -168,9 +168,9 @@ public class VariableModel extends Getable<Variable> {
         VariableValueModel variableValue = getValue();
         Map<String, VariableDefModel> stringVariableDefMap = variableDefMap();
         VariableDefModel variableDef = stringVariableDefMap.get(this.getName());
-        TagStorageType tagStorageTypePb = variableDef.getTagStorageType();
+        TagStorageType tagStorageType = variableDef.getTagStorageType();
         if (
-            tagStorageTypePb == null && variableDef.getType() != VariableType.JSON_OBJ
+            tagStorageType == null && variableDef.getType() != VariableType.JSON_OBJ
         ) {
             return List.of();
         }
@@ -180,7 +180,7 @@ public class VariableModel extends Getable<Variable> {
                     new IndexedField(
                         this.getName(),
                         variableValue.getStrVal(),
-                        tagStorageTypePb
+                        tagStorageType
                     )
                 );
             }
@@ -198,7 +198,7 @@ public class VariableModel extends Getable<Variable> {
                     new IndexedField(
                         this.getName(),
                         variableValue.getIntVal(),
-                        tagStorageTypePb
+                        tagStorageType
                     )
                 );
             }
@@ -207,7 +207,7 @@ public class VariableModel extends Getable<Variable> {
                     new IndexedField(
                         this.getName(),
                         variableValue.getDoubleVal(),
-                        tagStorageTypePb
+                        tagStorageType
                     )
                 );
             }
@@ -279,7 +279,7 @@ public class VariableModel extends Getable<Variable> {
     }
 
     @Override
-    public TagStorageType tagStorageTypePb() {
+    public TagStorageType tagStorageType() {
         return getWfSpecModel()
             .getThreadSpecs()
             .values()

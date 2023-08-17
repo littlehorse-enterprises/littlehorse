@@ -106,7 +106,7 @@ public class SearchVariableRequestModel
                     searchAttributesString()
                 )
             )
-            .map(GetableIndex::getTagStorageTypePb)
+            .map(GetableIndex::getTagStorageType)
             .filter(Optional::isPresent)
             .map(Optional::get)
             .findFirst();

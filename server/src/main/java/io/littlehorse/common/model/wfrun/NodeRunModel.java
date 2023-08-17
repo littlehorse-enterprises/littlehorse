@@ -131,7 +131,7 @@ public class NodeRunModel extends Getable<NodeRun> {
     @Override
     public List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageType> tagStorageTypePb
+        Optional<TagStorageType> tagStorageType
     ) {
         switch (key) {
             case "status" -> {

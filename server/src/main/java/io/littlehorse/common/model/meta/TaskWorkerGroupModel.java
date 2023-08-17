@@ -40,7 +40,7 @@ public class TaskWorkerGroupModel extends Getable<TaskWorkerGroup> {
     @Override
     public List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageType> tagStorageTypePb
+        Optional<TagStorageType> tagStorageType
     ) {
         return List.of();
     }

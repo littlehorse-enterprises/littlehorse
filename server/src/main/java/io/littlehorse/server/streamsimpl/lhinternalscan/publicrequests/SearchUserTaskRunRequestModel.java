@@ -184,9 +184,9 @@ public class SearchUserTaskRunRequestModel
     @Override
     public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        TagStorageType tagStorageTypePb = tagStorageTypePbByUserId()
+        TagStorageType tagStorageType = tagStorageTypePbByUserId()
             .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
-        if (tagStorageTypePb == null) {
+        if (tagStorageType == null) {
             List<String> searchAttributes = getSearchAttributes()
                 .stream()
                 .map(Attribute::getEscapedKey)
@@ -199,9 +199,9 @@ public class SearchUserTaskRunRequestModel
                     "There is no index configuration for this search"
                 );
             }
-            tagStorageTypePb = tagStorageTypePbOptional.get();
+            tagStorageType = tagStorageTypePbOptional.get();
         }
-        return tagStorageTypePb;
+        return tagStorageType;
     }
 
     @Override
@@ -231,7 +231,7 @@ public class SearchUserTaskRunRequestModel
             .getIndexConfigurations()
             .stream()
             .filter(getableIndex -> getableIndex.searchAttributesMatch(attributes))
-            .map(GetableIndex::getTagStorageTypePb)
+            .map(GetableIndex::getTagStorageType)
             .filter(Optional::isPresent)
             .map(Optional::get)
             .findFirst();

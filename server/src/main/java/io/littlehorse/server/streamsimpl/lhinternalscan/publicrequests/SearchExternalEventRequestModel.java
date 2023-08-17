@@ -134,7 +134,7 @@ public class SearchExternalEventRequestModel
             .findFirst()
             .orElse(null);
         if (getableIndex != null) {
-            return getableIndex.getTagStorageTypePb().get();
+            return getableIndex.getTagStorageType().get();
         } else {
             return TagStorageType.LOCAL;
         }

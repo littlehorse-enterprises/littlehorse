@@ -10,5 +10,5 @@ public class IndexedField {
 
     private String key;
     private Object value;
-    private TagStorageType tagStorageTypePb;
+    private TagStorageType tagStorageType;
 }

@@ -596,18 +596,18 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
     @Override
     public List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageType> tagStorageTypePb
+        Optional<TagStorageType> tagStorageType
     ) {
         switch (key) {
             case "status" -> {
-                return List.of(getIndexedStatusField(key, tagStorageTypePb));
+                return List.of(getIndexedStatusField(key, tagStorageType));
             }
             case "userTaskDefName" -> {
                 return List.of(
                     new IndexedField(
                         key,
                         this.getUserTaskDefId().getName(),
-                        tagStorageTypePb.get() // Is this right?
+                        tagStorageType.get() // Is this right?
                     )
                 );
             }
@@ -625,7 +625,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
                     new IndexedField(
                         key,
                         this.getUserGroup().getId(),
-                        tagStorageTypePb.get()
+                        tagStorageType.get()
                     )
                 );
             }
@@ -638,10 +638,10 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
         String key,
         Optional<TagStorageType> tagStorageTypePbOptional
     ) {
-        TagStorageType tagStorageTypePb = tagStorageTypePbOptional.get();
+        TagStorageType tagStorageType = tagStorageTypePbOptional.get();
         if (this.isRemote()) {
-            tagStorageTypePb = TagStorageType.REMOTE;
+            tagStorageType = TagStorageType.REMOTE;
         }
-        return new IndexedField(key, this.getStatus().toString(), tagStorageTypePb);
+        return new IndexedField(key, this.getStatus().toString(), tagStorageType);
     }
 }

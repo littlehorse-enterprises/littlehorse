@@ -106,7 +106,7 @@ public class ExternalEventModel extends Getable<ExternalEvent> {
     @Override
     public List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageType> tagStorageTypePb
+        Optional<TagStorageType> tagStorageType
     ) {
         switch (key) {
             case "extEvtDefName" -> {
@@ -114,13 +114,13 @@ public class ExternalEventModel extends Getable<ExternalEvent> {
                     new IndexedField(
                         key,
                         this.getExternalEventDefName(),
-                        tagStorageTypePb.get()
+                        tagStorageType.get()
                     )
                 );
             }
             case "isClaimed" -> {
                 return List.of(
-                    new IndexedField(key, this.isClaimed(), tagStorageTypePb.get())
+                    new IndexedField(key, this.isClaimed(), tagStorageType.get())
                 );
             }
         }

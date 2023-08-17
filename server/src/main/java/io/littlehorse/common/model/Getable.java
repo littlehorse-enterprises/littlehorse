@@ -171,7 +171,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
 
     public abstract List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageType> tagStorageTypePb
+        Optional<TagStorageType> tagStorageType
     );
 
     public List<Tag> getIndexEntries() {
@@ -180,7 +180,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             if (!indexConfiguration.isValid(this)) {
                 continue;
             }
-            Optional<TagStorageType> tagStorageTypePb = indexConfiguration.getTagStorageTypePb();
+            Optional<TagStorageType> tagStorageType = indexConfiguration.getTagStorageType();
             List<IndexedField> singleIndexedValues = indexConfiguration
                 .getAttributes()
                 .stream()
@@ -192,7 +192,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
                 .map(stringValueTypePair -> {
                     return this.getIndexValues(
                             stringValueTypePair.getKey(),
-                            tagStorageTypePb
+                            tagStorageType
                         )
                         .get(0);
                 })
@@ -208,7 +208,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
                 .flatMap(stringValueTypePair ->
                     this.getIndexValues(
                             stringValueTypePair.getKey(),
-                            tagStorageTypePb
+                            tagStorageType
                         )
                         .stream()
                 )
@@ -220,7 +220,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             for (List<IndexedField> list : combine) {
                 TagStorageType storageType = list
                     .stream()
-                    .map(IndexedField::getTagStorageTypePb)
+                    .map(IndexedField::getTagStorageType)
                     .filter(tagStorageTypePb1 ->
                         tagStorageTypePb1 == TagStorageType.REMOTE
                     )

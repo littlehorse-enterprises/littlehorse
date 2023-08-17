@@ -96,7 +96,7 @@ public class WfRunModel extends Getable<WfRun> {
     @Override
     public List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageType> tagStorageTypePb
+        Optional<TagStorageType> tagStorageType
     ) {
         switch (key) {
             case "wfSpecName" -> {
@@ -104,7 +104,7 @@ public class WfRunModel extends Getable<WfRun> {
                     new IndexedField(
                         key,
                         this.getWfSpecName(),
-                        tagStorageTypePb.get()
+                        tagStorageType.get()
                     )
                 );
             }
@@ -113,7 +113,7 @@ public class WfRunModel extends Getable<WfRun> {
                     new IndexedField(
                         key,
                         this.getStatus().toString(),
-                        tagStorageTypePb.get()
+                        tagStorageType.get()
                     )
                 );
             }

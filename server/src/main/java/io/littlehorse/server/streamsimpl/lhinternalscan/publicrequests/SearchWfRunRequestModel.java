@@ -160,7 +160,7 @@ public class SearchWfRunRequestModel
             .filter(getableIndexConfiguration ->
                 getableIndexConfiguration.searchAttributesMatch(searchAttributeKeys)
             )
-            .map(GetableIndex::getTagStorageTypePb)
+            .map(GetableIndex::getTagStorageType)
             .filter(Optional::isPresent)
             .map(Optional::get)
             .findFirst()

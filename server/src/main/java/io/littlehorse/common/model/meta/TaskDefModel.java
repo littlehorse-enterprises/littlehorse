@@ -48,7 +48,7 @@ public class TaskDefModel extends Getable<TaskDef> {
     @Override
     public List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageType> tagStorageTypePb
+        Optional<TagStorageType> tagStorageType
     ) {
         return List.of();
     }

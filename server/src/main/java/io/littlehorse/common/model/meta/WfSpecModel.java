@@ -79,13 +79,13 @@ public class WfSpecModel extends Getable<WfSpec> {
     @Override
     public List<IndexedField> getIndexValues(
         String key,
-        Optional<TagStorageType> tagStorageTypePb
+        Optional<TagStorageType> tagStorageType
     ) {
         if (key.equals("taskDef")) {
             return this.taskDefNames()
                 .stream()
                 .map(taskDefName ->
-                    new IndexedField(key, taskDefName, tagStorageTypePb.get())
+                    new IndexedField(key, taskDefName, tagStorageType.get())
                 )
                 .toList();
         }
