@@ -39,7 +39,7 @@ class LHConfig:
             for key, value in os.environ.items()
             if key.startswith(PREFIXES)
         }
-        self._channel: Channel = None
+        self._blocking_stub_channel: Channel = None
 
     def __str__(self) -> str:
         return "\n".join(
@@ -210,12 +210,21 @@ class LHConfig:
         """
         return self.get_or_set_default(TASK_WORKER_VERSION, "")
 
-    def establish_channel(self, async_channel: bool = False) -> Channel:
+    def establish_channel(
+        self, server: Optional[str] = None, async_channel: bool = False
+    ) -> Channel:
         """Open a RPC channel. Returns a new channel.
+
+        Args:
+            server (Optional[str], optional): Target, it will use the
+            bootstrap server in case of None. Defaults to None.
+            async_channel (bool, optional): Defines if the channel
+            will use asyncio. Defaults to False.
 
         Returns:
             Channel: A closable channel. Use 'with' or channel.close().
         """
+        server = server or self.bootstrap_server()
         secure_channel = grpc.secure_channel
         insecure_channel = grpc.insecure_channel
 
@@ -243,7 +252,7 @@ class LHConfig:
         if self.is_secure() and self.needs_credentials():
             self._log.info("Using secure channel with OAuth")
             return secure_channel(
-                self.bootstrap_server(),
+                server,
                 grpc.composite_channel_credentials(
                     get_ssl_config(),
                     get_oauth_config(),
@@ -253,26 +262,24 @@ class LHConfig:
         if self.is_secure():
             self._log.info("Using secure channel")
             return secure_channel(
-                self.bootstrap_server(),
+                server,
                 get_ssl_config(),
             )
 
         if not self.is_secure():
             self._log.warn("Opening insecure channel")
 
-        return insecure_channel(self.bootstrap_server())
+        return insecure_channel(server)
 
-    # TODO not sure about this method, should we just provide establish_channel
-    # or both establish_channel and blocking_stub?
     def blocking_stub(self) -> LHPublicApiStub:
         """Gets a Blocking gRPC stub for the LH Public API
         on the configured bootstrap server. It creates a new LHPublicApiStub,
-        but reuse the grpc.Channel. It is assumed that the channel
-        will not be closed until the execution of the main thread ends.
+        but reuse a grpc.Channel.
 
         Returns:
             LHPublicApiStub: A blocking gRPC stub.
         """
-        self._channel = self._channel or self.establish_channel()
-
-        return LHPublicApiStub(self._channel)
+        self._blocking_stub_channel = (
+            self._blocking_stub_channel or self.establish_channel()
+        )
+        return LHPublicApiStub(self._blocking_stub_channel)

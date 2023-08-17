@@ -2,7 +2,8 @@ import asyncio
 from datetime import datetime
 from inspect import Parameter, signature
 import logging
-from typing import Any, Callable, Optional
+import signal
+from typing import Any, Callable
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     InvalidTaskDefNameException,
@@ -30,6 +31,12 @@ VARIABLE_TYPES_MAP = {
 
 
 class LHWorkerContext:
+    pass
+
+
+class LHConnection:
+    """Connection to a specific LH Server"""
+
     pass
 
 
@@ -127,20 +134,20 @@ class LHTask:
 
 
 class LHTaskWorker:
+    """The LHTaskWorker talks to the LH Servers and executes a
+    specified Task Method every time a Task is scheduled.
+    """
+
     _log = logging.getLogger("LHTaskWorker")
 
     def __init__(
         self, callable: Callable[..., Any], task_def_name: str, config: LHConfig
     ) -> None:
         self._config = config
-        self._heartbeat_task: Optional[asyncio.Task[None]] = None
 
         # get the task definition from the server
-        with self._config.establish_channel() as channel:
-            stub = LHPublicApiStub(channel)
-            reply: GetTaskDefReplyPb = stub.GetTaskDef(
-                TaskDefIdPb(name=task_def_name)
-            )
+        stub = config.blocking_stub()
+        reply: GetTaskDefReplyPb = stub.GetTaskDef(TaskDefIdPb(name=task_def_name))
 
         if reply.code is not LHResponseCodePb.OK:
             raise InvalidTaskDefNameException(
@@ -168,12 +175,16 @@ class LHTaskWorker:
                 await asyncio.sleep(5)
 
     async def start(self) -> None:
+        """Starts polling for and executing tasks."""
         self.running = True
-        self._heartbeat_task = asyncio.create_task(self._heartbeat())
+        loop = asyncio.get_running_loop()
 
-    def stop(self) -> None:
+        for sig in (signal.SIGHUP, signal.SIGTERM, signal.SIGINT):
+            loop.add_signal_handler(sig, lambda: asyncio.create_task(self.stop()))
+
+        await self._heartbeat()
+
+    async def stop(self) -> None:
+        """Cleanly shuts down the Task Worker."""
         self._log.info("Stopping worker")
         self.running = False
-
-        if self._heartbeat_task is not None and not self._heartbeat_task.cancelled():
-            self._heartbeat_task.cancel()

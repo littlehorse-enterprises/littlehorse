@@ -16,19 +16,25 @@ def get_config() -> LHConfig:
     return config
 
 
-def greeting(name: str, ctx2: LHWorkerContext) -> str:
+def greeting(name: str, ctx: LHWorkerContext) -> str:
     greeting = f"Hello {name}!"
     print(greeting)
     return greeting
 
 
-config = get_config()
-worker = LHTaskWorker(greeting, "greet", config)
+async def stop_after() -> None:
+    await asyncio.sleep(10)
+    await worker.stop()
 
-loop = asyncio.get_event_loop()
-loop.create_task(worker.start())
 
-try:
-    loop.run_forever()
-except KeyboardInterrupt:
-    pass
+async def main() -> None:
+    start_task = asyncio.create_task(worker.start())
+    stop_task = asyncio.create_task(stop_after())
+    await start_task
+    await stop_task
+
+
+if __name__ == "__main__":
+    config = get_config()
+    worker = LHTaskWorker(greeting, "greet", config)
+    asyncio.run(main())
