@@ -206,10 +206,7 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
                         .equals(GetableIndex.ValueType.DYNAMIC);
                 })
                 .flatMap(stringValueTypePair ->
-                    this.getIndexValues(
-                            stringValueTypePair.getKey(),
-                            tagStorageType
-                        )
+                    this.getIndexValues(stringValueTypePair.getKey(), tagStorageType)
                         .stream()
                 )
                 .toList();

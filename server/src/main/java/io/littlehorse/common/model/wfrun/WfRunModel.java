@@ -101,11 +101,7 @@ public class WfRunModel extends Getable<WfRun> {
         switch (key) {
             case "wfSpecName" -> {
                 return List.of(
-                    new IndexedField(
-                        key,
-                        this.getWfSpecName(),
-                        tagStorageType.get()
-                    )
+                    new IndexedField(key, this.getWfSpecName(), tagStorageType.get())
                 );
             }
             case "status" -> {
