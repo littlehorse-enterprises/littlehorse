@@ -133,7 +133,10 @@ public class LHTaskWorker implements Closeable {
             log.info(
                 "Creating TaskDef:\n {}",
                 LHLibUtil.protoToJson(
-                    lhClient.putTaskDef(tdb.toPutTaskDefPb(), swallowAlreadyExists)
+                    lhClient.putTaskDef(
+                        tdb.toPutTaskDefRequest(),
+                        swallowAlreadyExists
+                    )
                 )
             );
         } catch (TaskSchemaMismatchError exn) {

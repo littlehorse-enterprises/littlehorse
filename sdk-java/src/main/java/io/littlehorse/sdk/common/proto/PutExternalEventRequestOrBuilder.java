@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface PutExternalEventPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.PutExternalEventPb)
+public interface PutExternalEventRequestOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.PutExternalEventRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**

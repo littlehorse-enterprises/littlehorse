@@ -13,11 +13,11 @@ import io.littlehorse.common.model.command.subcommand.DeleteUserTaskDef;
 import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
 import io.littlehorse.common.model.command.subcommand.DeleteWfSpec;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
-import io.littlehorse.common.model.command.subcommand.PutExternalEvent;
-import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
-import io.littlehorse.common.model.command.subcommand.PutTaskDef;
-import io.littlehorse.common.model.command.subcommand.PutUserTaskDef;
-import io.littlehorse.common.model.command.subcommand.PutWfSpec;
+import io.littlehorse.common.model.command.subcommand.PutExternalEventDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutExternalEventRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutTaskDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutUserTaskDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.model.command.subcommand.ReassignUserTask;
 import io.littlehorse.common.model.command.subcommand.ReportTaskRun;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
@@ -45,10 +45,10 @@ public class Command extends LHSerializable<CommandPb> {
     public CommandCase type;
     public ReportTaskRun reportTaskRun;
     public TaskClaimEvent taskClaimEvent;
-    public PutExternalEvent putExternalEvent;
-    public PutWfSpec putWfSpec;
-    public PutTaskDef putTaskDef;
-    public PutExternalEventDef putExternalEventDef;
+    public PutExternalEventRequestModel putExternalEventRequest;
+    public PutWfSpecRequestModel putWfSpecRequest;
+    public PutTaskDefRequestModel putTaskDefRequest;
+    public PutExternalEventDefRequestModel putExternalEventDefRequest;
     public RunWf runWf;
     public StopWfRun stopWfRun;
     public ResumeWfRun resumeWfRun;
@@ -60,7 +60,7 @@ public class Command extends LHSerializable<CommandPb> {
     public ExternalEventTimeout externalEventTimeout;
     public TaskWorkerHeartBeat taskWorkerHeartBeat;
     public DeleteExternalEvent deleteExternalEvent;
-    public PutUserTaskDef putUserTaskDef;
+    public PutUserTaskDefRequestModel putUserTaskDefRequest;
     public AssignUserTaskRun assignUserTaskRun;
     public CompleteUserTaskRun completeUserTaskRun;
     public TriggeredTaskRun triggeredTaskRun;
@@ -100,16 +100,16 @@ public class Command extends LHSerializable<CommandPb> {
                 out.setTaskClaimEvent(taskClaimEvent.toProto());
                 break;
             case PUT_EXTERNAL_EVENT:
-                out.setPutExternalEvent(putExternalEvent.toProto());
+                out.setPutExternalEvent(putExternalEventRequest.toProto());
                 break;
             case PUT_WF_SPEC:
-                out.setPutWfSpec(putWfSpec.toProto());
+                out.setPutWfSpec(putWfSpecRequest.toProto());
                 break;
             case PUT_TASK_DEF:
-                out.setPutTaskDef(putTaskDef.toProto());
+                out.setPutTaskDef(putTaskDefRequest.toProto());
                 break;
             case PUT_EXTERNAL_EVENT_DEF:
-                out.setPutExternalEventDef(putExternalEventDef.toProto());
+                out.setPutExternalEventDef(putExternalEventDefRequest.toProto());
                 break;
             case RUN_WF:
                 out.setRunWf(runWf.toProto());
@@ -145,7 +145,7 @@ public class Command extends LHSerializable<CommandPb> {
                 out.setDeleteExternalEvent(deleteExternalEvent.toProto());
                 break;
             case PUT_USER_TASK_DEF:
-                out.setPutUserTaskDef(putUserTaskDef.toProto());
+                out.setPutUserTaskDef(putUserTaskDefRequest.toProto());
                 break;
             case ASSIGN_USER_TASK_RUN:
                 out.setAssignUserTaskRun(assignUserTaskRun.toProto());
@@ -188,18 +188,21 @@ public class Command extends LHSerializable<CommandPb> {
                 taskClaimEvent = TaskClaimEvent.fromProto(p.getTaskClaimEvent());
                 break;
             case PUT_EXTERNAL_EVENT:
-                putExternalEvent =
-                    PutExternalEvent.fromProto(p.getPutExternalEvent());
+                putExternalEventRequest =
+                    PutExternalEventRequestModel.fromProto(p.getPutExternalEvent());
                 break;
             case PUT_WF_SPEC:
-                putWfSpec = PutWfSpec.fromProto(p.getPutWfSpec());
+                putWfSpecRequest = PutWfSpecRequestModel.fromProto(p.getPutWfSpec());
                 break;
             case PUT_TASK_DEF:
-                putTaskDef = PutTaskDef.fromProto(p.getPutTaskDef());
+                putTaskDefRequest =
+                    PutTaskDefRequestModel.fromProto(p.getPutTaskDef());
                 break;
             case PUT_EXTERNAL_EVENT_DEF:
-                putExternalEventDef =
-                    PutExternalEventDef.fromProto(p.getPutExternalEventDef());
+                putExternalEventDefRequest =
+                    PutExternalEventDefRequestModel.fromProto(
+                        p.getPutExternalEventDef()
+                    );
                 break;
             case RUN_WF:
                 runWf = RunWf.fromProto(p.getRunWf());
@@ -240,10 +243,10 @@ public class Command extends LHSerializable<CommandPb> {
                     DeleteExternalEvent.fromProto(p.getDeleteExternalEvent());
                 break;
             case PUT_USER_TASK_DEF:
-                putUserTaskDef =
+                putUserTaskDefRequest =
                     LHSerializable.fromProto(
                         p.getPutUserTaskDef(),
-                        PutUserTaskDef.class
+                        PutUserTaskDefRequestModel.class
                     );
                 break;
             case ASSIGN_USER_TASK_RUN:
@@ -300,13 +303,13 @@ public class Command extends LHSerializable<CommandPb> {
             case TASK_CLAIM_EVENT:
                 return taskClaimEvent;
             case PUT_EXTERNAL_EVENT:
-                return putExternalEvent;
+                return putExternalEventRequest;
             case PUT_WF_SPEC:
-                return putWfSpec;
+                return putWfSpecRequest;
             case PUT_TASK_DEF:
-                return putTaskDef;
+                return putTaskDefRequest;
             case PUT_EXTERNAL_EVENT_DEF:
-                return putExternalEventDef;
+                return putExternalEventDefRequest;
             case RUN_WF:
                 return runWf;
             case STOP_WF_RUN:
@@ -330,7 +333,7 @@ public class Command extends LHSerializable<CommandPb> {
             case DELETE_EXTERNAL_EVENT:
                 return deleteExternalEvent;
             case PUT_USER_TASK_DEF:
-                return putUserTaskDef;
+                return putUserTaskDefRequest;
             case ASSIGN_USER_TASK_RUN:
                 return assignUserTaskRun;
             case COMPLETE_USER_TASK_RUN:
@@ -350,21 +353,21 @@ public class Command extends LHSerializable<CommandPb> {
 
     public void setSubCommand(SubCommand<?> cmd) {
         Class<?> cls = cmd.getClass();
-        if (cls.equals(PutTaskDef.class)) {
+        if (cls.equals(PutTaskDefRequestModel.class)) {
             type = CommandCase.PUT_TASK_DEF;
-            putTaskDef = (PutTaskDef) cmd;
-        } else if (cls.equals(PutExternalEventDef.class)) {
+            putTaskDefRequest = (PutTaskDefRequestModel) cmd;
+        } else if (cls.equals(PutExternalEventDefRequestModel.class)) {
             type = CommandCase.PUT_EXTERNAL_EVENT_DEF;
-            putExternalEventDef = (PutExternalEventDef) cmd;
-        } else if (cls.equals(PutWfSpec.class)) {
+            putExternalEventDefRequest = (PutExternalEventDefRequestModel) cmd;
+        } else if (cls.equals(PutWfSpecRequestModel.class)) {
             type = CommandCase.PUT_WF_SPEC;
-            putWfSpec = (PutWfSpec) cmd;
+            putWfSpecRequest = (PutWfSpecRequestModel) cmd;
         } else if (cls.equals(RunWf.class)) {
             type = CommandCase.RUN_WF;
             runWf = (RunWf) cmd;
-        } else if (cls.equals(PutExternalEvent.class)) {
+        } else if (cls.equals(PutExternalEventRequestModel.class)) {
             type = CommandCase.PUT_EXTERNAL_EVENT;
-            putExternalEvent = (PutExternalEvent) cmd;
+            putExternalEventRequest = (PutExternalEventRequestModel) cmd;
         } else if (cls.equals(ReportTaskRun.class)) {
             type = CommandCase.REPORT_TASK_RUN;
             reportTaskRun = (ReportTaskRun) cmd;
@@ -401,9 +404,9 @@ public class Command extends LHSerializable<CommandPb> {
         } else if (cls.equals(DeleteExternalEvent.class)) {
             type = CommandCase.DELETE_EXTERNAL_EVENT;
             deleteExternalEvent = (DeleteExternalEvent) cmd;
-        } else if (cls.equals(PutUserTaskDef.class)) {
+        } else if (cls.equals(PutUserTaskDefRequestModel.class)) {
             type = CommandCase.PUT_USER_TASK_DEF;
-            putUserTaskDef = (PutUserTaskDef) cmd;
+            putUserTaskDefRequest = (PutUserTaskDefRequestModel) cmd;
         } else if (cls.equals(AssignUserTaskRun.class)) {
             type = CommandCase.ASSIGN_USER_TASK_RUN;
             assignUserTaskRun = (AssignUserTaskRun) cmd;

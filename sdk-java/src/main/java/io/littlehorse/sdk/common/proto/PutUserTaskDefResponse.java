@@ -4,18 +4,18 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.PutTaskDefReplyPb}
+ * Protobuf type {@code littlehorse.PutUserTaskDefResponse}
  */
-public final class PutTaskDefReplyPb extends
+public final class PutUserTaskDefResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.PutTaskDefReplyPb)
-    PutTaskDefReplyPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.PutUserTaskDefResponse)
+    PutUserTaskDefResponseOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use PutTaskDefReplyPb.newBuilder() to construct.
-  private PutTaskDefReplyPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use PutUserTaskDefResponse.newBuilder() to construct.
+  private PutUserTaskDefResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private PutTaskDefReplyPb() {
+  private PutUserTaskDefResponse() {
     code_ = 0;
     message_ = "";
   }
@@ -24,7 +24,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new PutTaskDefReplyPb();
+    return new PutUserTaskDefResponse();
   }
 
   @java.lang.Override
@@ -34,15 +34,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutTaskDefReplyPb_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutUserTaskDefResponse_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutTaskDefReplyPb_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutUserTaskDefResponse_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.PutTaskDefReplyPb.class, io.littlehorse.sdk.common.proto.PutTaskDefReplyPb.Builder.class);
+            io.littlehorse.sdk.common.proto.PutUserTaskDefResponse.class, io.littlehorse.sdk.common.proto.PutUserTaskDefResponse.Builder.class);
   }
 
   private int bitField0_;
@@ -112,9 +112,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int RESULT_FIELD_NUMBER = 3;
-  private io.littlehorse.sdk.common.proto.TaskDef result_;
+  private io.littlehorse.sdk.common.proto.UserTaskDef result_;
   /**
-   * <code>optional .littlehorse.TaskDef result = 3;</code>
+   * <code>optional .littlehorse.UserTaskDef result = 3;</code>
    * @return Whether the result field is set.
    */
   @java.lang.Override
@@ -122,19 +122,19 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>optional .littlehorse.TaskDef result = 3;</code>
+   * <code>optional .littlehorse.UserTaskDef result = 3;</code>
    * @return The result.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskDef getResult() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.TaskDef.getDefaultInstance() : result_;
+  public io.littlehorse.sdk.common.proto.UserTaskDef getResult() {
+    return result_ == null ? io.littlehorse.sdk.common.proto.UserTaskDef.getDefaultInstance() : result_;
   }
   /**
-   * <code>optional .littlehorse.TaskDef result = 3;</code>
+   * <code>optional .littlehorse.UserTaskDef result = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskDefOrBuilder getResultOrBuilder() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.TaskDef.getDefaultInstance() : result_;
+  public io.littlehorse.sdk.common.proto.UserTaskDefOrBuilder getResultOrBuilder() {
+    return result_ == null ? io.littlehorse.sdk.common.proto.UserTaskDef.getDefaultInstance() : result_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -190,10 +190,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.PutTaskDefReplyPb)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.PutUserTaskDefResponse)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.PutTaskDefReplyPb other = (io.littlehorse.sdk.common.proto.PutTaskDefReplyPb) obj;
+    io.littlehorse.sdk.common.proto.PutUserTaskDefResponse other = (io.littlehorse.sdk.common.proto.PutUserTaskDefResponse) obj;
 
     if (code_ != other.code_) return false;
     if (hasMessage() != other.hasMessage()) return false;
@@ -232,69 +232,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.PutTaskDefReplyPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutUserTaskDefResponse parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.PutTaskDefReplyPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutUserTaskDefResponse parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.PutTaskDefReplyPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutUserTaskDefResponse parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.PutTaskDefReplyPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutUserTaskDefResponse parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.PutTaskDefReplyPb parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.PutUserTaskDefResponse parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.PutTaskDefReplyPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutUserTaskDefResponse parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.PutTaskDefReplyPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.PutUserTaskDefResponse parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.PutTaskDefReplyPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutUserTaskDefResponse parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.PutTaskDefReplyPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.PutUserTaskDefResponse parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.PutTaskDefReplyPb parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.PutUserTaskDefResponse parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.PutTaskDefReplyPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutUserTaskDefResponse parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.PutTaskDefReplyPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutUserTaskDefResponse parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -307,7 +307,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.PutTaskDefReplyPb prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.PutUserTaskDefResponse prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -323,26 +323,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.PutTaskDefReplyPb}
+   * Protobuf type {@code littlehorse.PutUserTaskDefResponse}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.PutTaskDefReplyPb)
-      io.littlehorse.sdk.common.proto.PutTaskDefReplyPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.PutUserTaskDefResponse)
+      io.littlehorse.sdk.common.proto.PutUserTaskDefResponseOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutTaskDefReplyPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutUserTaskDefResponse_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutTaskDefReplyPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutUserTaskDefResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.PutTaskDefReplyPb.class, io.littlehorse.sdk.common.proto.PutTaskDefReplyPb.Builder.class);
+              io.littlehorse.sdk.common.proto.PutUserTaskDefResponse.class, io.littlehorse.sdk.common.proto.PutUserTaskDefResponse.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.PutTaskDefReplyPb.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.PutUserTaskDefResponse.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -375,17 +375,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutTaskDefReplyPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutUserTaskDefResponse_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutTaskDefReplyPb getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.PutTaskDefReplyPb.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.PutUserTaskDefResponse getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.PutUserTaskDefResponse.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutTaskDefReplyPb build() {
-      io.littlehorse.sdk.common.proto.PutTaskDefReplyPb result = buildPartial();
+    public io.littlehorse.sdk.common.proto.PutUserTaskDefResponse build() {
+      io.littlehorse.sdk.common.proto.PutUserTaskDefResponse result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -393,14 +393,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutTaskDefReplyPb buildPartial() {
-      io.littlehorse.sdk.common.proto.PutTaskDefReplyPb result = new io.littlehorse.sdk.common.proto.PutTaskDefReplyPb(this);
+    public io.littlehorse.sdk.common.proto.PutUserTaskDefResponse buildPartial() {
+      io.littlehorse.sdk.common.proto.PutUserTaskDefResponse result = new io.littlehorse.sdk.common.proto.PutUserTaskDefResponse(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.PutTaskDefReplyPb result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.PutUserTaskDefResponse result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.code_ = code_;
@@ -453,16 +453,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.PutTaskDefReplyPb) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.PutTaskDefReplyPb)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.PutUserTaskDefResponse) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.PutUserTaskDefResponse)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.PutTaskDefReplyPb other) {
-      if (other == io.littlehorse.sdk.common.proto.PutTaskDefReplyPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.PutUserTaskDefResponse other) {
+      if (other == io.littlehorse.sdk.common.proto.PutUserTaskDefResponse.getDefaultInstance()) return this;
       if (other.code_ != 0) {
         setCodeValue(other.getCodeValue());
       }
@@ -666,31 +666,31 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.sdk.common.proto.TaskDef result_;
+    private io.littlehorse.sdk.common.proto.UserTaskDef result_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskDef, io.littlehorse.sdk.common.proto.TaskDef.Builder, io.littlehorse.sdk.common.proto.TaskDefOrBuilder> resultBuilder_;
+        io.littlehorse.sdk.common.proto.UserTaskDef, io.littlehorse.sdk.common.proto.UserTaskDef.Builder, io.littlehorse.sdk.common.proto.UserTaskDefOrBuilder> resultBuilder_;
     /**
-     * <code>optional .littlehorse.TaskDef result = 3;</code>
+     * <code>optional .littlehorse.UserTaskDef result = 3;</code>
      * @return Whether the result field is set.
      */
     public boolean hasResult() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>optional .littlehorse.TaskDef result = 3;</code>
+     * <code>optional .littlehorse.UserTaskDef result = 3;</code>
      * @return The result.
      */
-    public io.littlehorse.sdk.common.proto.TaskDef getResult() {
+    public io.littlehorse.sdk.common.proto.UserTaskDef getResult() {
       if (resultBuilder_ == null) {
-        return result_ == null ? io.littlehorse.sdk.common.proto.TaskDef.getDefaultInstance() : result_;
+        return result_ == null ? io.littlehorse.sdk.common.proto.UserTaskDef.getDefaultInstance() : result_;
       } else {
         return resultBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .littlehorse.TaskDef result = 3;</code>
+     * <code>optional .littlehorse.UserTaskDef result = 3;</code>
      */
-    public Builder setResult(io.littlehorse.sdk.common.proto.TaskDef value) {
+    public Builder setResult(io.littlehorse.sdk.common.proto.UserTaskDef value) {
       if (resultBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -704,10 +704,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.TaskDef result = 3;</code>
+     * <code>optional .littlehorse.UserTaskDef result = 3;</code>
      */
     public Builder setResult(
-        io.littlehorse.sdk.common.proto.TaskDef.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.UserTaskDef.Builder builderForValue) {
       if (resultBuilder_ == null) {
         result_ = builderForValue.build();
       } else {
@@ -718,13 +718,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.TaskDef result = 3;</code>
+     * <code>optional .littlehorse.UserTaskDef result = 3;</code>
      */
-    public Builder mergeResult(io.littlehorse.sdk.common.proto.TaskDef value) {
+    public Builder mergeResult(io.littlehorse.sdk.common.proto.UserTaskDef value) {
       if (resultBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0) &&
           result_ != null &&
-          result_ != io.littlehorse.sdk.common.proto.TaskDef.getDefaultInstance()) {
+          result_ != io.littlehorse.sdk.common.proto.UserTaskDef.getDefaultInstance()) {
           getResultBuilder().mergeFrom(value);
         } else {
           result_ = value;
@@ -737,7 +737,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.TaskDef result = 3;</code>
+     * <code>optional .littlehorse.UserTaskDef result = 3;</code>
      */
     public Builder clearResult() {
       bitField0_ = (bitField0_ & ~0x00000004);
@@ -750,33 +750,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.TaskDef result = 3;</code>
+     * <code>optional .littlehorse.UserTaskDef result = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskDef.Builder getResultBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskDef.Builder getResultBuilder() {
       bitField0_ |= 0x00000004;
       onChanged();
       return getResultFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.TaskDef result = 3;</code>
+     * <code>optional .littlehorse.UserTaskDef result = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskDefOrBuilder getResultOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskDefOrBuilder getResultOrBuilder() {
       if (resultBuilder_ != null) {
         return resultBuilder_.getMessageOrBuilder();
       } else {
         return result_ == null ?
-            io.littlehorse.sdk.common.proto.TaskDef.getDefaultInstance() : result_;
+            io.littlehorse.sdk.common.proto.UserTaskDef.getDefaultInstance() : result_;
       }
     }
     /**
-     * <code>optional .littlehorse.TaskDef result = 3;</code>
+     * <code>optional .littlehorse.UserTaskDef result = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskDef, io.littlehorse.sdk.common.proto.TaskDef.Builder, io.littlehorse.sdk.common.proto.TaskDefOrBuilder> 
+        io.littlehorse.sdk.common.proto.UserTaskDef, io.littlehorse.sdk.common.proto.UserTaskDef.Builder, io.littlehorse.sdk.common.proto.UserTaskDefOrBuilder> 
         getResultFieldBuilder() {
       if (resultBuilder_ == null) {
         resultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.TaskDef, io.littlehorse.sdk.common.proto.TaskDef.Builder, io.littlehorse.sdk.common.proto.TaskDefOrBuilder>(
+            io.littlehorse.sdk.common.proto.UserTaskDef, io.littlehorse.sdk.common.proto.UserTaskDef.Builder, io.littlehorse.sdk.common.proto.UserTaskDefOrBuilder>(
                 getResult(),
                 getParentForChildren(),
                 isClean());
@@ -797,23 +797,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.PutTaskDefReplyPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.PutUserTaskDefResponse)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.PutTaskDefReplyPb)
-  private static final io.littlehorse.sdk.common.proto.PutTaskDefReplyPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.PutUserTaskDefResponse)
+  private static final io.littlehorse.sdk.common.proto.PutUserTaskDefResponse DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.PutTaskDefReplyPb();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.PutUserTaskDefResponse();
   }
 
-  public static io.littlehorse.sdk.common.proto.PutTaskDefReplyPb getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.PutUserTaskDefResponse getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<PutTaskDefReplyPb>
-      PARSER = new com.google.protobuf.AbstractParser<PutTaskDefReplyPb>() {
+  private static final com.google.protobuf.Parser<PutUserTaskDefResponse>
+      PARSER = new com.google.protobuf.AbstractParser<PutUserTaskDefResponse>() {
     @java.lang.Override
-    public PutTaskDefReplyPb parsePartialFrom(
+    public PutUserTaskDefResponse parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -832,17 +832,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<PutTaskDefReplyPb> parser() {
+  public static com.google.protobuf.Parser<PutUserTaskDefResponse> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<PutTaskDefReplyPb> getParserForType() {
+  public com.google.protobuf.Parser<PutUserTaskDefResponse> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PutTaskDefReplyPb getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.PutUserTaskDefResponse getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

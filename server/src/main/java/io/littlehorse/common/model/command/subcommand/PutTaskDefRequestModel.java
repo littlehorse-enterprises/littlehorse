@@ -5,17 +5,17 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefReply;
+import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefResponseModel;
 import io.littlehorse.common.model.meta.TaskDefModel;
 import io.littlehorse.common.model.meta.VariableDefModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.PutTaskDefPb;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PutTaskDef extends SubCommand<PutTaskDefPb> {
+public class PutTaskDefRequestModel
+    extends SubCommand<io.littlehorse.sdk.common.proto.PutTaskDefRequest> {
 
     public String name;
     public List<VariableDefModel> inputVars;
@@ -24,16 +24,16 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
         return LHConstants.META_PARTITION_KEY;
     }
 
-    public PutTaskDef() {
+    public PutTaskDefRequestModel() {
         inputVars = new ArrayList<>();
     }
 
-    public Class<PutTaskDefPb> getProtoBaseClass() {
-        return PutTaskDefPb.class;
+    public Class<io.littlehorse.sdk.common.proto.PutTaskDefRequest> getProtoBaseClass() {
+        return io.littlehorse.sdk.common.proto.PutTaskDefRequest.class;
     }
 
-    public PutTaskDefPb.Builder toProto() {
-        PutTaskDefPb.Builder out = PutTaskDefPb.newBuilder();
+    public io.littlehorse.sdk.common.proto.PutTaskDefRequest.Builder toProto() {
+        io.littlehorse.sdk.common.proto.PutTaskDefRequest.Builder out = io.littlehorse.sdk.common.proto.PutTaskDefRequest.newBuilder();
         out.setName(name);
 
         for (VariableDefModel entry : inputVars) {
@@ -44,7 +44,7 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
     }
 
     public void initFrom(Message proto) {
-        PutTaskDefPb p = (PutTaskDefPb) proto;
+        io.littlehorse.sdk.common.proto.PutTaskDefRequest p = (io.littlehorse.sdk.common.proto.PutTaskDefRequest) proto;
         name = p.getName();
         for (VariableDef entry : p.getInputVarsList()) {
             inputVars.add(VariableDefModel.fromProto(entry));
@@ -55,8 +55,8 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
         return true;
     }
 
-    public PutTaskDefReply process(LHDAO dao, LHConfig config) {
-        PutTaskDefReply out = new PutTaskDefReply();
+    public PutTaskDefResponseModel process(LHDAO dao, LHConfig config) {
+        PutTaskDefResponseModel out = new PutTaskDefResponseModel();
 
         if (!LHUtil.isValidLHName(name)) {
             out.code = LHResponseCodePb.VALIDATION_ERROR;
@@ -82,8 +82,10 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
         return out;
     }
 
-    public static PutTaskDef fromProto(PutTaskDefPb p) {
-        PutTaskDef out = new PutTaskDef();
+    public static PutTaskDefRequestModel fromProto(
+        io.littlehorse.sdk.common.proto.PutTaskDefRequest p
+    ) {
+        PutTaskDefRequestModel out = new PutTaskDefRequestModel();
         out.initFrom(p);
         return out;
     }

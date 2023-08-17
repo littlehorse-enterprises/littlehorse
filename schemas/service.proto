@@ -65,7 +65,7 @@ message GetWfSpecReplyPb {
   optional WfSpec result = 3;
 }
 
-message PutWfSpecPb {
+message PutWfSpecRequest {
   string name = 1;
   reserved 2, 3, 4;
   map<string, ThreadSpec> thread_specs = 5;
@@ -73,7 +73,7 @@ message PutWfSpecPb {
   optional int32 retention_hours = 7;
 }
 
-message PutWfSpecReplyPb {
+message PutWfSpecResponse {
   LHResponseCodePb code = 1;
   optional string message = 2;
   optional WfSpec result = 3;
@@ -85,12 +85,12 @@ message GetTaskDefReplyPb {
   optional TaskDef result = 3;
 }
 
-message PutTaskDefPb {
+message PutTaskDefRequest {
   string name = 1;
   repeated VariableDef input_vars = 2;
 }
 
-message PutTaskDefReplyPb {
+message PutTaskDefResponse {
   LHResponseCodePb code = 1;
   optional string message = 2;
   optional TaskDef result = 3;
@@ -101,13 +101,13 @@ message CancelUserTaskRunReplyPb {
   optional string message = 2;
 }
 
-message PutUserTaskDefPb {
+message PutUserTaskDefRequest {
   string name = 1;
   repeated UserTaskField fields = 2;
   optional string description = 3;
 }
 
-message PutUserTaskDefReplyPb {
+message PutUserTaskDefResponse {
   LHResponseCodePb code = 1;
   optional string message = 2;
   optional UserTaskDef result = 3;
@@ -119,12 +119,12 @@ message GetUserTaskDefReplyPb {
   optional UserTaskDef result = 3;
 }
 
-message PutExternalEventDefPb {
+message PutExternalEventDefRequest {
   string name = 1;
   optional int32 retention_hours = 2;
 }
 
-message PutExternalEventDefReplyPb {
+message PutExternalEventDefResponse {
   LHResponseCodePb code = 1;
   optional string message = 2;
   optional ExternalEventDef result = 3;
@@ -172,7 +172,7 @@ message GetExternalEventReplyPb {
   optional ExternalEventPb result = 3;
 }
 
-message PutExternalEventPb {
+message PutExternalEventRequest {
   string wf_run_id = 1;
   string external_event_def_name = 2;
   optional string guid = 3;
@@ -188,7 +188,7 @@ message DeleteExternalEventPb {
   string guid = 3;
 }
 
-message PutExternalEventReplyPb {
+message PutExternalEventResponse {
   LHResponseCodePb code = 1;
   optional string message = 2;
   optional ExternalEventPb result = 3;
@@ -647,17 +647,17 @@ message ListWfMetricsReplyPb {
 }
 
 service LHPublicApi {
-  rpc PutTaskDef(PutTaskDefPb) returns (PutTaskDefReplyPb) {}
+  rpc PutTaskDef(PutTaskDefRequest) returns (PutTaskDefResponse) {}
   rpc GetTaskDef(TaskDefIdPb) returns (GetTaskDefReplyPb) {}
 
-  rpc PutExternalEventDef(PutExternalEventDefPb) returns (PutExternalEventDefReplyPb) {}
+  rpc PutExternalEventDef(PutExternalEventDefRequest) returns (PutExternalEventDefResponse) {}
   rpc GetExternalEventDef(ExternalEventDefIdPb) returns (GetExternalEventDefReplyPb) {}
 
-  rpc PutWfSpec(PutWfSpecPb) returns (PutWfSpecReplyPb) {}
+  rpc PutWfSpec(PutWfSpecRequest) returns (PutWfSpecResponse) {}
   rpc GetWfSpec(WfSpecIdPb) returns (GetWfSpecReplyPb) {}
   rpc GetLatestWfSpec(GetLatestWfSpecPb) returns (GetWfSpecReplyPb) {}
 
-  rpc PutUserTaskDef(PutUserTaskDefPb) returns (PutUserTaskDefReplyPb) {}
+  rpc PutUserTaskDef(PutUserTaskDefRequest) returns (PutUserTaskDefResponse) {}
   rpc GetUserTaskDef(UserTaskDefId) returns (GetUserTaskDefReplyPb) {}
   rpc GetLatestUserTaskDef(GetLatestUserTaskDefPb) returns (GetUserTaskDefReplyPb) {}
   rpc GetUserTaskRun(UserTaskRunId) returns (GetUserTaskRunReplyPb) {}
@@ -676,7 +676,7 @@ service LHPublicApi {
   rpc GetVariable(VariableIdPb) returns (GetVariableReplyPb) {}
   rpc ListVariables(ListVariablesPb) returns (ListVariablesReplyPb) {}
 
-  rpc PutExternalEvent(PutExternalEventPb) returns (PutExternalEventReplyPb) {}
+  rpc PutExternalEvent(PutExternalEventRequest) returns (PutExternalEventResponse) {}
   rpc GetExternalEvent(ExternalEventIdPb) returns (GetExternalEventReplyPb) {}
   rpc ListExternalEvents(ListExternalEventsPb) returns (ListExternalEventsReplyPb) {}
 

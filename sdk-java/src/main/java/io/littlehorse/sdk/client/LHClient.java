@@ -29,16 +29,16 @@ import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefReplyPb;
-import io.littlehorse.sdk.common.proto.PutExternalEventPb;
-import io.littlehorse.sdk.common.proto.PutExternalEventReplyPb;
-import io.littlehorse.sdk.common.proto.PutTaskDefPb;
-import io.littlehorse.sdk.common.proto.PutTaskDefReplyPb;
-import io.littlehorse.sdk.common.proto.PutUserTaskDefPb;
-import io.littlehorse.sdk.common.proto.PutUserTaskDefReplyPb;
-import io.littlehorse.sdk.common.proto.PutWfSpecPb;
-import io.littlehorse.sdk.common.proto.PutWfSpecReplyPb;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefResponse;
+import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
+import io.littlehorse.sdk.common.proto.PutExternalEventResponse;
+import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
+import io.littlehorse.sdk.common.proto.PutTaskDefResponse;
+import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
+import io.littlehorse.sdk.common.proto.PutUserTaskDefResponse;
+import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.PutWfSpecResponse;
 import io.littlehorse.sdk.common.proto.ResumeWfRunPb;
 import io.littlehorse.sdk.common.proto.RunWfPb;
 import io.littlehorse.sdk.common.proto.RunWfReplyPb;
@@ -428,11 +428,12 @@ public class LHClient {
      * @return An external event when successful
      * @throws LHApiError If there is an error when connecting to the server
      */
-    public ExternalEventPb putExternalEvent(PutExternalEventPb req)
+    public ExternalEventPb putExternalEvent(PutExternalEventRequest req)
         throws LHApiError {
-        PutExternalEventReplyPb response = (PutExternalEventReplyPb) doRequest(() -> {
-            return getGrpcClient().putExternalEvent(req);
-        });
+        PutExternalEventResponse response = (PutExternalEventResponse) doRequest(() -> {
+                return getGrpcClient().putExternalEvent(req);
+            }
+        );
         if (response.hasResult()) {
             return response.getResult();
         } else {
@@ -447,7 +448,7 @@ public class LHClient {
      * @return The definition's data when successful
      * @throws LHApiError If there is an error when connecting to the server
      */
-    public ExternalEventDef putExternalEventDef(PutExternalEventDefPb req)
+    public ExternalEventDef putExternalEventDef(PutExternalEventDefRequest req)
         throws LHApiError {
         return putExternalEventDef(req, false);
     }
@@ -460,10 +461,10 @@ public class LHClient {
      * @throws LHApiError If there is an error when connecting to the server
      */
     public ExternalEventDef putExternalEventDef(
-        PutExternalEventDefPb req,
+        PutExternalEventDefRequest req,
         boolean swallowAlreadyExists
     ) throws LHApiError {
-        PutExternalEventDefReplyPb response = (PutExternalEventDefReplyPb) doRequest(
+        PutExternalEventDefResponse response = (PutExternalEventDefResponse) doRequest(
             () -> {
                 return getGrpcClient().putExternalEventDef(req);
             },
@@ -483,7 +484,7 @@ public class LHClient {
      * @return Task definition's data
      * @throws LHApiError If there is an error when connecting to the server
      */
-    public TaskDef putTaskDef(PutTaskDefPb req) throws LHApiError {
+    public TaskDef putTaskDef(PutTaskDefRequest req) throws LHApiError {
         return putTaskDef(req, false);
     }
 
@@ -494,9 +495,9 @@ public class LHClient {
      * @return Task definition's data
      * @throws LHApiError If there is an error when connecting to the server
      */
-    public TaskDef putTaskDef(PutTaskDefPb req, boolean swallowAlreadyExists)
+    public TaskDef putTaskDef(PutTaskDefRequest req, boolean swallowAlreadyExists)
         throws LHApiError {
-        PutTaskDefReplyPb response = (PutTaskDefReplyPb) doRequest(
+        PutTaskDefResponse response = (PutTaskDefResponse) doRequest(
             () -> {
                 return getGrpcClient().putTaskDef(req);
             },
@@ -516,7 +517,7 @@ public class LHClient {
      * @return User task definition
      * @throws LHApiError If there is an error when connecting to the server
      */
-    public UserTaskDef putUserTaskDef(PutUserTaskDefPb req) throws LHApiError {
+    public UserTaskDef putUserTaskDef(PutUserTaskDefRequest req) throws LHApiError {
         return putUserTaskDef(req, false);
     }
 
@@ -528,10 +529,10 @@ public class LHClient {
      * @throws LHApiError If there is an error when connecting to the server
      */
     public UserTaskDef putUserTaskDef(
-        PutUserTaskDefPb req,
+        PutUserTaskDefRequest req,
         boolean swallowAlreadyExists
     ) throws LHApiError {
-        PutUserTaskDefReplyPb response = (PutUserTaskDefReplyPb) doRequest(
+        PutUserTaskDefResponse response = (PutUserTaskDefResponse) doRequest(
             () -> {
                 return getGrpcClient().putUserTaskDef(req);
             },
@@ -551,8 +552,8 @@ public class LHClient {
      * @return WfSpec's data
      * @throws LHApiError If there is an error when connecting to the server
      */
-    public WfSpec putWfSpec(PutWfSpecPb req) throws LHApiError {
-        PutWfSpecReplyPb response = (PutWfSpecReplyPb) doRequest(() -> {
+    public WfSpec putWfSpec(PutWfSpecRequest req) throws LHApiError {
+        PutWfSpecResponse response = (PutWfSpecResponse) doRequest(() -> {
             return getGrpcClient().putWfSpec(req);
         });
         if (response.hasResult()) {

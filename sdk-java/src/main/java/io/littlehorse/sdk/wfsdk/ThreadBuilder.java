@@ -1,7 +1,7 @@
 package io.littlehorse.sdk.wfsdk;
 
 import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
 import java.util.Map;
 
 /**
@@ -349,5 +349,5 @@ public interface ThreadBuilder {
      * expression, or a `NodeOutput` (which allows you to use the output of a
      * Node Run to mutate variables).
      */
-    public void mutate(WfRunVariable lhs, VariableMutationTypePb type, Object rhs);
+    public void mutate(WfRunVariable lhs, VariableMutationType type, Object rhs);
 }

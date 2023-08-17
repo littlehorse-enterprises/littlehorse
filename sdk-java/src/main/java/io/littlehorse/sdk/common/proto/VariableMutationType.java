@@ -4,9 +4,9 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf enum {@code littlehorse.VariableMutationTypePb}
+ * Protobuf enum {@code littlehorse.VariableMutationType}
  */
-public enum VariableMutationTypePb
+public enum VariableMutationType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
    * <code>ASSIGN = 0;</code>
@@ -99,7 +99,7 @@ public enum VariableMutationTypePb
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static VariableMutationTypePb valueOf(int value) {
+  public static VariableMutationType valueOf(int value) {
     return forNumber(value);
   }
 
@@ -107,7 +107,7 @@ public enum VariableMutationTypePb
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static VariableMutationTypePb forNumber(int value) {
+  public static VariableMutationType forNumber(int value) {
     switch (value) {
       case 0: return ASSIGN;
       case 1: return ADD;
@@ -122,15 +122,15 @@ public enum VariableMutationTypePb
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<VariableMutationTypePb>
+  public static com.google.protobuf.Internal.EnumLiteMap<VariableMutationType>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      VariableMutationTypePb> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<VariableMutationTypePb>() {
-          public VariableMutationTypePb findValueByNumber(int number) {
-            return VariableMutationTypePb.forNumber(number);
+      VariableMutationType> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<VariableMutationType>() {
+          public VariableMutationType findValueByNumber(int number) {
+            return VariableMutationType.forNumber(number);
           }
         };
 
@@ -151,9 +151,9 @@ public enum VariableMutationTypePb
     return io.littlehorse.sdk.common.proto.Service.getDescriptor().getEnumTypes().get(7);
   }
 
-  private static final VariableMutationTypePb[] VALUES = values();
+  private static final VariableMutationType[] VALUES = values();
 
-  public static VariableMutationTypePb valueOf(
+  public static VariableMutationType valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -167,10 +167,10 @@ public enum VariableMutationTypePb
 
   private final int value;
 
-  private VariableMutationTypePb(int value) {
+  private VariableMutationType(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:littlehorse.VariableMutationTypePb)
+  // @@protoc_insertion_point(enum_scope:littlehorse.VariableMutationType)
 }
 

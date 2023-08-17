@@ -4,10 +4,10 @@ import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.PutTaskDefPb;
-import io.littlehorse.sdk.common.proto.PutWfSpecPb;
-import io.littlehorse.sdk.common.proto.PutWfSpecReplyPb;
-import io.littlehorse.sdk.common.proto.WfSpecPb;
+import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
+import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.PutWfSpecResponse;
+import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.tests.Test;
@@ -43,8 +43,8 @@ public class AATaskDefDependency extends Test {
             }
         );
 
-        PutWfSpecPb request = wf.compileWorkflow();
-        PutWfSpecReplyPb reply = client.getGrpcClient().putWfSpec(request);
+        PutWfSpecRequest request = wf.compileWorkflow();
+        PutWfSpecResponse reply = client.getGrpcClient().putWfSpec(request);
 
         if (reply.getCode() != LHResponseCodePb.VALIDATION_ERROR) {
             throw new RuntimeException(
@@ -59,8 +59,10 @@ public class AATaskDefDependency extends Test {
         }
 
         // Now, create the TaskDef and see that we can actually deploy the WfSpec.
-        client.putTaskDef(PutTaskDefPb.newBuilder().setName(taskDefName).build());
-        WfSpecPb result = client.putWfSpec(request);
+        client.putTaskDef(
+            PutTaskDefRequest.newBuilder().setName(taskDefName).build()
+        );
+        WfSpec result = client.putWfSpec(request);
         if (result.getVersion() != 0) {
             throw new RuntimeException("Somehow the version wasn't zero!");
         }

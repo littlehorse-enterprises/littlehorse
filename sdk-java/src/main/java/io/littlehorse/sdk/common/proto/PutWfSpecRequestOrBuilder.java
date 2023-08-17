@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface PutWfSpecPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.PutWfSpecPb)
+public interface PutWfSpecRequestOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.PutWfSpecRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**

@@ -7,33 +7,35 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.command.subcommandresponse.PutUserTaskDefReply;
+import io.littlehorse.common.model.command.subcommandresponse.PutUserTaskDefResponseModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.meta.usertasks.UserTaskFieldModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.PutUserTaskDefPb;
+import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.UserTaskField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class PutUserTaskDef extends SubCommand<PutUserTaskDefPb> {
+public class PutUserTaskDefRequestModel extends SubCommand<PutUserTaskDefRequest> {
 
     public String name;
     public String description;
     public List<UserTaskFieldModel> fields;
 
-    public PutUserTaskDef() {
+    public PutUserTaskDefRequestModel() {
         fields = new ArrayList<>();
     }
 
-    public Class<PutUserTaskDefPb> getProtoBaseClass() {
-        return PutUserTaskDefPb.class;
+    public Class<io.littlehorse.sdk.common.proto.PutUserTaskDefRequest> getProtoBaseClass() {
+        return io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.class;
     }
 
-    public PutUserTaskDefPb.Builder toProto() {
-        PutUserTaskDefPb.Builder out = PutUserTaskDefPb.newBuilder().setName(name);
+    public io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.Builder toProto() {
+        io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.Builder out = io.littlehorse.sdk.common.proto.PutUserTaskDefRequest
+            .newBuilder()
+            .setName(name);
         if (description != null) {
             out.setDescription(description);
         }
@@ -44,7 +46,7 @@ public class PutUserTaskDef extends SubCommand<PutUserTaskDefPb> {
     }
 
     public void initFrom(Message proto) {
-        PutUserTaskDefPb p = (PutUserTaskDefPb) proto;
+        io.littlehorse.sdk.common.proto.PutUserTaskDefRequest p = (io.littlehorse.sdk.common.proto.PutUserTaskDefRequest) proto;
         name = p.getName();
         if (p.hasDescription()) description = p.getDescription();
         for (UserTaskField utfpb : p.getFieldsList()) {
@@ -60,8 +62,8 @@ public class PutUserTaskDef extends SubCommand<PutUserTaskDefPb> {
         return true;
     }
 
-    public PutUserTaskDefReply process(LHDAO dao, LHConfig config) {
-        PutUserTaskDefReply out = new PutUserTaskDefReply();
+    public PutUserTaskDefResponseModel process(LHDAO dao, LHConfig config) {
+        PutUserTaskDefResponseModel out = new PutUserTaskDefResponseModel();
 
         if (!LHUtil.isValidLHName(name)) {
             out.code = LHResponseCodePb.VALIDATION_ERROR;

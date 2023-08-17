@@ -6,9 +6,9 @@ import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
-import io.littlehorse.sdk.common.proto.PutTaskDefPb;
-import io.littlehorse.sdk.common.proto.PutWfSpecPb;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
+import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +30,7 @@ public abstract class Workflow {
 
     protected ThreadFunc entrypointThread;
     protected String name;
-    protected PutWfSpecPb.Builder spec;
+    protected PutWfSpecRequest.Builder spec;
     protected Map<String, ThreadFunc> threadFuncs;
 
     /**
@@ -42,7 +42,7 @@ public abstract class Workflow {
         this.threadFuncs = new HashMap<>();
         this.entrypointThread = entrypointThreadFunc;
         this.name = name;
-        this.spec = PutWfSpecPb.newBuilder().setName(name);
+        this.spec = PutWfSpecRequest.newBuilder().setName(name);
     }
 
     /**
@@ -78,17 +78,17 @@ public abstract class Workflow {
 
     /**
      * Compiles this Workflow into a `WfSpec`.
-     * @return a `PutWfSpecPb` that can be used for the gRPC putWfSpec() call.
+     * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
      */
-    public abstract PutWfSpecPb compileWorkflow();
+    public abstract PutWfSpecRequest compileWorkflow();
 
     /**
      * Creates a set of all TaskDef's that need to be created for this WfSpec,
      * determined by calls to ThreadBuilder::executeAndRegisterTaskDef().
-     * @return a Set of PutTaskDefPbs containing a PutTaskDef for every auto-generated
+     * @return a Set of PutTaskDefRequests containing a PutTaskDef for every auto-generated
      * TaskDef in this `WfSpec`.
      */
-    public abstract Set<PutTaskDefPb> compileTaskDefs();
+    public abstract Set<PutTaskDefRequest> compileTaskDefs();
 
     /**
      * Returns the names of all `TaskDef`s used by this workflow.
@@ -113,11 +113,11 @@ public abstract class Workflow {
     public abstract Set<String> getRequiredExternalEventDefNames();
 
     /**
-     * Returns the associated PutWfSpecPb in JSON form.
-     * @return the associated PutWfSpecPb in JSON form.
+     * Returns the associated PutWfSpecRequest in JSON form.
+     * @return the associated PutWfSpecRequest in JSON form.
      */
     public String compileWfToJson() {
-        PutWfSpecPb wfSpec = compileWorkflow();
+        PutWfSpecRequest wfSpec = compileWorkflow();
         try {
             return JsonFormat.printer().includingDefaultValueFields().print(wfSpec);
         } catch (InvalidProtocolBufferException exn) {
@@ -132,10 +132,10 @@ public abstract class Workflow {
      * for every auto-generated TaskDef in this `WfSpec`.
      */
     public List<String> compileTaskDefsToJson() {
-        Set<PutTaskDefPb> taskDefs = compileTaskDefs();
+        Set<PutTaskDefRequest> taskDefs = compileTaskDefs();
         List<String> out = new ArrayList<>();
         try {
-            for (PutTaskDefPb ptd : taskDefs) {
+            for (PutTaskDefRequest ptd : taskDefs) {
                 out.add(
                     JsonFormat.printer().includingDefaultValueFields().print(ptd)
                 );
@@ -183,12 +183,12 @@ public abstract class Workflow {
     }
 
     /**
-     * Writes out all PutTaskDefPb, PutExternalEventDefPb, and PutWfSpecPb
+     * Writes out all PutTaskDefRequest, PutExternalEventDefRequest, and PutWfSpecRequest
      * in JSON form in a directory.
      * @param directory is the location to save the resources.
      */
     public void compileAndSaveToDisk(String directory) {
-        for (PutTaskDefPb putTaskDef : compileTaskDefs()) {
+        for (PutTaskDefRequest putTaskDef : compileTaskDefs()) {
             String fileName = putTaskDef.getName() + "-taskdef.json";
             log.info("Saving TaskDef to {}", fileName);
             saveProtoToFile(directory, fileName, putTaskDef);
@@ -200,11 +200,11 @@ public abstract class Workflow {
             saveProtoToFile(
                 directory,
                 fileName,
-                PutExternalEventDefPb.newBuilder().setName(eedName)
+                PutExternalEventDefRequest.newBuilder().setName(eedName)
             );
         }
 
-        PutWfSpecPb wf = compileWorkflow();
+        PutWfSpecRequest wf = compileWorkflow();
         String wfFileName = wf.getName() + "-wfspec.json";
         log.info("Saving WfSpec to {}", wfFileName);
         saveProtoToFile(directory, wfFileName, wf);

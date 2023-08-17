@@ -1,14 +1,14 @@
 package io.littlehorse.sdk.usertask;
 
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.PutUserTaskDefPb;
+import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.UserTaskField;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.lang.reflect.Field;
 
 public class UserTaskSchema {
 
-    private PutUserTaskDefPb compiled;
+    private PutUserTaskDefRequest compiled;
     private Object taskObject;
     private String userTaskDefName;
 
@@ -17,14 +17,14 @@ public class UserTaskSchema {
         this.userTaskDefName = userTaskDefName;
     }
 
-    public PutUserTaskDefPb compile() {
+    public PutUserTaskDefRequest compile() {
         if (compiled == null) compileHelper();
 
         return compiled;
     }
 
     private void compileHelper() {
-        PutUserTaskDefPb.Builder out = PutUserTaskDefPb.newBuilder();
+        PutUserTaskDefRequest.Builder out = PutUserTaskDefRequest.newBuilder();
         // todo
         Class<?> cls = taskObject.getClass();
         for (Field field : cls.getFields()) {

@@ -5,13 +5,13 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventDefReply;
+import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventDefResponseModel;
 import io.littlehorse.common.model.meta.ExternalEventDefModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
 
-public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
+public class PutExternalEventDefRequestModel
+    extends SubCommand<io.littlehorse.sdk.common.proto.PutExternalEventDefRequest> {
 
     public String name;
     public Integer retentionHours;
@@ -20,12 +20,12 @@ public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
         return LHConstants.META_PARTITION_KEY;
     }
 
-    public Class<PutExternalEventDefPb> getProtoBaseClass() {
-        return PutExternalEventDefPb.class;
+    public Class<io.littlehorse.sdk.common.proto.PutExternalEventDefRequest> getProtoBaseClass() {
+        return io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.class;
     }
 
-    public PutExternalEventDefPb.Builder toProto() {
-        PutExternalEventDefPb.Builder out = PutExternalEventDefPb.newBuilder();
+    public io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.Builder toProto() {
+        io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.Builder out = io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.newBuilder();
         out.setName(name);
 
         if (retentionHours != null) out.setRetentionHours(retentionHours);
@@ -34,7 +34,7 @@ public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
     }
 
     public void initFrom(Message proto) {
-        PutExternalEventDefPb p = (PutExternalEventDefPb) proto;
+        io.littlehorse.sdk.common.proto.PutExternalEventDefRequest p = (io.littlehorse.sdk.common.proto.PutExternalEventDefRequest) proto;
         name = p.getName();
         if (p.hasRetentionHours()) retentionHours = p.getRetentionHours();
     }
@@ -43,8 +43,8 @@ public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
         return true;
     }
 
-    public PutExternalEventDefReply process(LHDAO dao, LHConfig config) {
-        PutExternalEventDefReply out = new PutExternalEventDefReply();
+    public PutExternalEventDefResponseModel process(LHDAO dao, LHConfig config) {
+        PutExternalEventDefResponseModel out = new PutExternalEventDefResponseModel();
 
         if (!LHUtil.isValidLHName(name)) {
             out.code = LHResponseCodePb.VALIDATION_ERROR;
@@ -73,8 +73,10 @@ public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
         return out;
     }
 
-    public static PutExternalEventDef fromProto(PutExternalEventDefPb p) {
-        PutExternalEventDef out = new PutExternalEventDef();
+    public static PutExternalEventDefRequestModel fromProto(
+        io.littlehorse.sdk.common.proto.PutExternalEventDefRequest p
+    ) {
+        PutExternalEventDefRequestModel out = new PutExternalEventDefRequestModel();
         out.initFrom(p);
         return out;
     }

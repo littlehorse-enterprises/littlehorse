@@ -74,14 +74,14 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LHPublicApiClient interface {
-	PutTaskDef(ctx context.Context, in *PutTaskDefPb, opts ...grpc.CallOption) (*PutTaskDefReplyPb, error)
+	PutTaskDef(ctx context.Context, in *PutTaskDefRequest, opts ...grpc.CallOption) (*PutTaskDefResponse, error)
 	GetTaskDef(ctx context.Context, in *TaskDefIdPb, opts ...grpc.CallOption) (*GetTaskDefReplyPb, error)
-	PutExternalEventDef(ctx context.Context, in *PutExternalEventDefPb, opts ...grpc.CallOption) (*PutExternalEventDefReplyPb, error)
+	PutExternalEventDef(ctx context.Context, in *PutExternalEventDefRequest, opts ...grpc.CallOption) (*PutExternalEventDefResponse, error)
 	GetExternalEventDef(ctx context.Context, in *ExternalEventDefIdPb, opts ...grpc.CallOption) (*GetExternalEventDefReplyPb, error)
-	PutWfSpec(ctx context.Context, in *PutWfSpecPb, opts ...grpc.CallOption) (*PutWfSpecReplyPb, error)
+	PutWfSpec(ctx context.Context, in *PutWfSpecRequest, opts ...grpc.CallOption) (*PutWfSpecResponse, error)
 	GetWfSpec(ctx context.Context, in *WfSpecIdPb, opts ...grpc.CallOption) (*GetWfSpecReplyPb, error)
 	GetLatestWfSpec(ctx context.Context, in *GetLatestWfSpecPb, opts ...grpc.CallOption) (*GetWfSpecReplyPb, error)
-	PutUserTaskDef(ctx context.Context, in *PutUserTaskDefPb, opts ...grpc.CallOption) (*PutUserTaskDefReplyPb, error)
+	PutUserTaskDef(ctx context.Context, in *PutUserTaskDefRequest, opts ...grpc.CallOption) (*PutUserTaskDefResponse, error)
 	GetUserTaskDef(ctx context.Context, in *UserTaskDefId, opts ...grpc.CallOption) (*GetUserTaskDefReplyPb, error)
 	GetLatestUserTaskDef(ctx context.Context, in *GetLatestUserTaskDefPb, opts ...grpc.CallOption) (*GetUserTaskDefReplyPb, error)
 	GetUserTaskRun(ctx context.Context, in *UserTaskRunId, opts ...grpc.CallOption) (*GetUserTaskRunReplyPb, error)
@@ -94,7 +94,7 @@ type LHPublicApiClient interface {
 	GetTaskRun(ctx context.Context, in *TaskRunIdPb, opts ...grpc.CallOption) (*GetTaskRunReplyPb, error)
 	GetVariable(ctx context.Context, in *VariableIdPb, opts ...grpc.CallOption) (*GetVariableReplyPb, error)
 	ListVariables(ctx context.Context, in *ListVariablesPb, opts ...grpc.CallOption) (*ListVariablesReplyPb, error)
-	PutExternalEvent(ctx context.Context, in *PutExternalEventPb, opts ...grpc.CallOption) (*PutExternalEventReplyPb, error)
+	PutExternalEvent(ctx context.Context, in *PutExternalEventRequest, opts ...grpc.CallOption) (*PutExternalEventResponse, error)
 	GetExternalEvent(ctx context.Context, in *ExternalEventIdPb, opts ...grpc.CallOption) (*GetExternalEventReplyPb, error)
 	ListExternalEvents(ctx context.Context, in *ListExternalEventsPb, opts ...grpc.CallOption) (*ListExternalEventsReplyPb, error)
 	SearchWfRun(ctx context.Context, in *SearchWfRunPb, opts ...grpc.CallOption) (*SearchWfRunReplyPb, error)
@@ -133,8 +133,8 @@ func NewLHPublicApiClient(cc grpc.ClientConnInterface) LHPublicApiClient {
 	return &lHPublicApiClient{cc}
 }
 
-func (c *lHPublicApiClient) PutTaskDef(ctx context.Context, in *PutTaskDefPb, opts ...grpc.CallOption) (*PutTaskDefReplyPb, error) {
-	out := new(PutTaskDefReplyPb)
+func (c *lHPublicApiClient) PutTaskDef(ctx context.Context, in *PutTaskDefRequest, opts ...grpc.CallOption) (*PutTaskDefResponse, error) {
+	out := new(PutTaskDefResponse)
 	err := c.cc.Invoke(ctx, LHPublicApi_PutTaskDef_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -151,8 +151,8 @@ func (c *lHPublicApiClient) GetTaskDef(ctx context.Context, in *TaskDefIdPb, opt
 	return out, nil
 }
 
-func (c *lHPublicApiClient) PutExternalEventDef(ctx context.Context, in *PutExternalEventDefPb, opts ...grpc.CallOption) (*PutExternalEventDefReplyPb, error) {
-	out := new(PutExternalEventDefReplyPb)
+func (c *lHPublicApiClient) PutExternalEventDef(ctx context.Context, in *PutExternalEventDefRequest, opts ...grpc.CallOption) (*PutExternalEventDefResponse, error) {
+	out := new(PutExternalEventDefResponse)
 	err := c.cc.Invoke(ctx, LHPublicApi_PutExternalEventDef_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -169,8 +169,8 @@ func (c *lHPublicApiClient) GetExternalEventDef(ctx context.Context, in *Externa
 	return out, nil
 }
 
-func (c *lHPublicApiClient) PutWfSpec(ctx context.Context, in *PutWfSpecPb, opts ...grpc.CallOption) (*PutWfSpecReplyPb, error) {
-	out := new(PutWfSpecReplyPb)
+func (c *lHPublicApiClient) PutWfSpec(ctx context.Context, in *PutWfSpecRequest, opts ...grpc.CallOption) (*PutWfSpecResponse, error) {
+	out := new(PutWfSpecResponse)
 	err := c.cc.Invoke(ctx, LHPublicApi_PutWfSpec_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -196,8 +196,8 @@ func (c *lHPublicApiClient) GetLatestWfSpec(ctx context.Context, in *GetLatestWf
 	return out, nil
 }
 
-func (c *lHPublicApiClient) PutUserTaskDef(ctx context.Context, in *PutUserTaskDefPb, opts ...grpc.CallOption) (*PutUserTaskDefReplyPb, error) {
-	out := new(PutUserTaskDefReplyPb)
+func (c *lHPublicApiClient) PutUserTaskDef(ctx context.Context, in *PutUserTaskDefRequest, opts ...grpc.CallOption) (*PutUserTaskDefResponse, error) {
+	out := new(PutUserTaskDefResponse)
 	err := c.cc.Invoke(ctx, LHPublicApi_PutUserTaskDef_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -313,8 +313,8 @@ func (c *lHPublicApiClient) ListVariables(ctx context.Context, in *ListVariables
 	return out, nil
 }
 
-func (c *lHPublicApiClient) PutExternalEvent(ctx context.Context, in *PutExternalEventPb, opts ...grpc.CallOption) (*PutExternalEventReplyPb, error) {
-	out := new(PutExternalEventReplyPb)
+func (c *lHPublicApiClient) PutExternalEvent(ctx context.Context, in *PutExternalEventRequest, opts ...grpc.CallOption) (*PutExternalEventResponse, error) {
+	out := new(PutExternalEventResponse)
 	err := c.cc.Invoke(ctx, LHPublicApi_PutExternalEvent_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -600,14 +600,14 @@ func (c *lHPublicApiClient) ListWfSpecMetrics(ctx context.Context, in *ListWfMet
 // All implementations must embed UnimplementedLHPublicApiServer
 // for forward compatibility
 type LHPublicApiServer interface {
-	PutTaskDef(context.Context, *PutTaskDefPb) (*PutTaskDefReplyPb, error)
+	PutTaskDef(context.Context, *PutTaskDefRequest) (*PutTaskDefResponse, error)
 	GetTaskDef(context.Context, *TaskDefIdPb) (*GetTaskDefReplyPb, error)
-	PutExternalEventDef(context.Context, *PutExternalEventDefPb) (*PutExternalEventDefReplyPb, error)
+	PutExternalEventDef(context.Context, *PutExternalEventDefRequest) (*PutExternalEventDefResponse, error)
 	GetExternalEventDef(context.Context, *ExternalEventDefIdPb) (*GetExternalEventDefReplyPb, error)
-	PutWfSpec(context.Context, *PutWfSpecPb) (*PutWfSpecReplyPb, error)
+	PutWfSpec(context.Context, *PutWfSpecRequest) (*PutWfSpecResponse, error)
 	GetWfSpec(context.Context, *WfSpecIdPb) (*GetWfSpecReplyPb, error)
 	GetLatestWfSpec(context.Context, *GetLatestWfSpecPb) (*GetWfSpecReplyPb, error)
-	PutUserTaskDef(context.Context, *PutUserTaskDefPb) (*PutUserTaskDefReplyPb, error)
+	PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*PutUserTaskDefResponse, error)
 	GetUserTaskDef(context.Context, *UserTaskDefId) (*GetUserTaskDefReplyPb, error)
 	GetLatestUserTaskDef(context.Context, *GetLatestUserTaskDefPb) (*GetUserTaskDefReplyPb, error)
 	GetUserTaskRun(context.Context, *UserTaskRunId) (*GetUserTaskRunReplyPb, error)
@@ -620,7 +620,7 @@ type LHPublicApiServer interface {
 	GetTaskRun(context.Context, *TaskRunIdPb) (*GetTaskRunReplyPb, error)
 	GetVariable(context.Context, *VariableIdPb) (*GetVariableReplyPb, error)
 	ListVariables(context.Context, *ListVariablesPb) (*ListVariablesReplyPb, error)
-	PutExternalEvent(context.Context, *PutExternalEventPb) (*PutExternalEventReplyPb, error)
+	PutExternalEvent(context.Context, *PutExternalEventRequest) (*PutExternalEventResponse, error)
 	GetExternalEvent(context.Context, *ExternalEventIdPb) (*GetExternalEventReplyPb, error)
 	ListExternalEvents(context.Context, *ListExternalEventsPb) (*ListExternalEventsReplyPb, error)
 	SearchWfRun(context.Context, *SearchWfRunPb) (*SearchWfRunReplyPb, error)
@@ -656,19 +656,19 @@ type LHPublicApiServer interface {
 type UnimplementedLHPublicApiServer struct {
 }
 
-func (UnimplementedLHPublicApiServer) PutTaskDef(context.Context, *PutTaskDefPb) (*PutTaskDefReplyPb, error) {
+func (UnimplementedLHPublicApiServer) PutTaskDef(context.Context, *PutTaskDefRequest) (*PutTaskDefResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutTaskDef not implemented")
 }
 func (UnimplementedLHPublicApiServer) GetTaskDef(context.Context, *TaskDefIdPb) (*GetTaskDefReplyPb, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTaskDef not implemented")
 }
-func (UnimplementedLHPublicApiServer) PutExternalEventDef(context.Context, *PutExternalEventDefPb) (*PutExternalEventDefReplyPb, error) {
+func (UnimplementedLHPublicApiServer) PutExternalEventDef(context.Context, *PutExternalEventDefRequest) (*PutExternalEventDefResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutExternalEventDef not implemented")
 }
 func (UnimplementedLHPublicApiServer) GetExternalEventDef(context.Context, *ExternalEventDefIdPb) (*GetExternalEventDefReplyPb, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetExternalEventDef not implemented")
 }
-func (UnimplementedLHPublicApiServer) PutWfSpec(context.Context, *PutWfSpecPb) (*PutWfSpecReplyPb, error) {
+func (UnimplementedLHPublicApiServer) PutWfSpec(context.Context, *PutWfSpecRequest) (*PutWfSpecResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutWfSpec not implemented")
 }
 func (UnimplementedLHPublicApiServer) GetWfSpec(context.Context, *WfSpecIdPb) (*GetWfSpecReplyPb, error) {
@@ -677,7 +677,7 @@ func (UnimplementedLHPublicApiServer) GetWfSpec(context.Context, *WfSpecIdPb) (*
 func (UnimplementedLHPublicApiServer) GetLatestWfSpec(context.Context, *GetLatestWfSpecPb) (*GetWfSpecReplyPb, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLatestWfSpec not implemented")
 }
-func (UnimplementedLHPublicApiServer) PutUserTaskDef(context.Context, *PutUserTaskDefPb) (*PutUserTaskDefReplyPb, error) {
+func (UnimplementedLHPublicApiServer) PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*PutUserTaskDefResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutUserTaskDef not implemented")
 }
 func (UnimplementedLHPublicApiServer) GetUserTaskDef(context.Context, *UserTaskDefId) (*GetUserTaskDefReplyPb, error) {
@@ -716,7 +716,7 @@ func (UnimplementedLHPublicApiServer) GetVariable(context.Context, *VariableIdPb
 func (UnimplementedLHPublicApiServer) ListVariables(context.Context, *ListVariablesPb) (*ListVariablesReplyPb, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListVariables not implemented")
 }
-func (UnimplementedLHPublicApiServer) PutExternalEvent(context.Context, *PutExternalEventPb) (*PutExternalEventReplyPb, error) {
+func (UnimplementedLHPublicApiServer) PutExternalEvent(context.Context, *PutExternalEventRequest) (*PutExternalEventResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutExternalEvent not implemented")
 }
 func (UnimplementedLHPublicApiServer) GetExternalEvent(context.Context, *ExternalEventIdPb) (*GetExternalEventReplyPb, error) {
@@ -817,7 +817,7 @@ func RegisterLHPublicApiServer(s grpc.ServiceRegistrar, srv LHPublicApiServer) {
 }
 
 func _LHPublicApi_PutTaskDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PutTaskDefPb)
+	in := new(PutTaskDefRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -829,7 +829,7 @@ func _LHPublicApi_PutTaskDef_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: LHPublicApi_PutTaskDef_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LHPublicApiServer).PutTaskDef(ctx, req.(*PutTaskDefPb))
+		return srv.(LHPublicApiServer).PutTaskDef(ctx, req.(*PutTaskDefRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -853,7 +853,7 @@ func _LHPublicApi_GetTaskDef_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _LHPublicApi_PutExternalEventDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PutExternalEventDefPb)
+	in := new(PutExternalEventDefRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -865,7 +865,7 @@ func _LHPublicApi_PutExternalEventDef_Handler(srv interface{}, ctx context.Conte
 		FullMethod: LHPublicApi_PutExternalEventDef_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LHPublicApiServer).PutExternalEventDef(ctx, req.(*PutExternalEventDefPb))
+		return srv.(LHPublicApiServer).PutExternalEventDef(ctx, req.(*PutExternalEventDefRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -889,7 +889,7 @@ func _LHPublicApi_GetExternalEventDef_Handler(srv interface{}, ctx context.Conte
 }
 
 func _LHPublicApi_PutWfSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PutWfSpecPb)
+	in := new(PutWfSpecRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -901,7 +901,7 @@ func _LHPublicApi_PutWfSpec_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: LHPublicApi_PutWfSpec_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LHPublicApiServer).PutWfSpec(ctx, req.(*PutWfSpecPb))
+		return srv.(LHPublicApiServer).PutWfSpec(ctx, req.(*PutWfSpecRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -943,7 +943,7 @@ func _LHPublicApi_GetLatestWfSpec_Handler(srv interface{}, ctx context.Context, 
 }
 
 func _LHPublicApi_PutUserTaskDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PutUserTaskDefPb)
+	in := new(PutUserTaskDefRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -955,7 +955,7 @@ func _LHPublicApi_PutUserTaskDef_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: LHPublicApi_PutUserTaskDef_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LHPublicApiServer).PutUserTaskDef(ctx, req.(*PutUserTaskDefPb))
+		return srv.(LHPublicApiServer).PutUserTaskDef(ctx, req.(*PutUserTaskDefRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1177,7 +1177,7 @@ func _LHPublicApi_ListVariables_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _LHPublicApi_PutExternalEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PutExternalEventPb)
+	in := new(PutExternalEventRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1189,7 +1189,7 @@ func _LHPublicApi_PutExternalEvent_Handler(srv interface{}, ctx context.Context,
 		FullMethod: LHPublicApi_PutExternalEvent_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LHPublicApiServer).PutExternalEvent(ctx, req.(*PutExternalEventPb))
+		return srv.(LHPublicApiServer).PutExternalEvent(ctx, req.(*PutExternalEventRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

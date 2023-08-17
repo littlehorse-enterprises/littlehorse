@@ -19,11 +19,11 @@ import io.littlehorse.common.model.command.subcommand.DeleteTaskDef;
 import io.littlehorse.common.model.command.subcommand.DeleteUserTaskDef;
 import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
 import io.littlehorse.common.model.command.subcommand.DeleteWfSpec;
-import io.littlehorse.common.model.command.subcommand.PutExternalEvent;
-import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
-import io.littlehorse.common.model.command.subcommand.PutTaskDef;
-import io.littlehorse.common.model.command.subcommand.PutUserTaskDef;
-import io.littlehorse.common.model.command.subcommand.PutWfSpec;
+import io.littlehorse.common.model.command.subcommand.PutExternalEventDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutExternalEventRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutTaskDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutUserTaskDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.model.command.subcommand.ReportTaskRun;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
 import io.littlehorse.common.model.command.subcommand.RunWf;
@@ -106,16 +106,11 @@ import io.littlehorse.sdk.common.proto.ListWfMetricsReplyPb;
 import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.PollTaskPb;
 import io.littlehorse.sdk.common.proto.PollTaskReplyPb;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefReplyPb;
-import io.littlehorse.sdk.common.proto.PutExternalEventPb;
-import io.littlehorse.sdk.common.proto.PutExternalEventReplyPb;
-import io.littlehorse.sdk.common.proto.PutTaskDefPb;
-import io.littlehorse.sdk.common.proto.PutTaskDefReplyPb;
-import io.littlehorse.sdk.common.proto.PutUserTaskDefPb;
-import io.littlehorse.sdk.common.proto.PutUserTaskDefReplyPb;
-import io.littlehorse.sdk.common.proto.PutWfSpecPb;
-import io.littlehorse.sdk.common.proto.PutWfSpecReplyPb;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefResponse;
+import io.littlehorse.sdk.common.proto.PutExternalEventResponse;
+import io.littlehorse.sdk.common.proto.PutTaskDefResponse;
+import io.littlehorse.sdk.common.proto.PutUserTaskDefResponse;
+import io.littlehorse.sdk.common.proto.PutWfSpecResponse;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerPb;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerReplyPb;
 import io.littlehorse.sdk.common.proto.ReportTaskReplyPb;
@@ -401,46 +396,54 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
-    public void putTaskDef(PutTaskDefPb req, StreamObserver<PutTaskDefReplyPb> ctx) {
-        processMetadataCommand(req, ctx, PutTaskDef.class, PutTaskDefReplyPb.class);
+    public void putTaskDef(
+        io.littlehorse.sdk.common.proto.PutTaskDefRequest req,
+        StreamObserver<PutTaskDefResponse> ctx
+    ) {
+        processMetadataCommand(
+            req,
+            ctx,
+            PutTaskDefRequestModel.class,
+            PutTaskDefResponse.class
+        );
     }
 
     @Override
     public void putExternalEvent(
-        PutExternalEventPb req,
-        StreamObserver<PutExternalEventReplyPb> ctx
+        io.littlehorse.sdk.common.proto.PutExternalEventRequest req,
+        StreamObserver<PutExternalEventResponse> ctx
     ) {
         processCommand(
             req,
             ctx,
-            PutExternalEvent.class,
-            PutExternalEventReplyPb.class
+            PutExternalEventRequestModel.class,
+            PutExternalEventResponse.class
         );
     }
 
     @Override
     public void putExternalEventDef(
-        PutExternalEventDefPb req,
-        StreamObserver<PutExternalEventDefReplyPb> ctx
+        io.littlehorse.sdk.common.proto.PutExternalEventDefRequest req,
+        StreamObserver<PutExternalEventDefResponse> ctx
     ) {
         processMetadataCommand(
             req,
             ctx,
-            PutExternalEventDef.class,
-            PutExternalEventDefReplyPb.class
+            PutExternalEventDefRequestModel.class,
+            PutExternalEventDefResponse.class
         );
     }
 
     @Override
     public void putUserTaskDef(
-        PutUserTaskDefPb req,
-        StreamObserver<PutUserTaskDefReplyPb> ctx
+        io.littlehorse.sdk.common.proto.PutUserTaskDefRequest req,
+        StreamObserver<PutUserTaskDefResponse> ctx
     ) {
         processMetadataCommand(
             req,
             ctx,
-            PutUserTaskDef.class,
-            PutUserTaskDefReplyPb.class
+            PutUserTaskDefRequestModel.class,
+            PutUserTaskDefResponse.class
         );
     }
 
@@ -484,8 +487,16 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
-    public void putWfSpec(PutWfSpecPb req, StreamObserver<PutWfSpecReplyPb> ctx) {
-        processMetadataCommand(req, ctx, PutWfSpec.class, PutWfSpecReplyPb.class);
+    public void putWfSpec(
+        io.littlehorse.sdk.common.proto.PutWfSpecRequest req,
+        StreamObserver<PutWfSpecResponse> ctx
+    ) {
+        processMetadataCommand(
+            req,
+            ctx,
+            PutWfSpecRequestModel.class,
+            PutWfSpecResponse.class
+        );
     }
 
     @Override

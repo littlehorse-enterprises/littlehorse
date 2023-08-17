@@ -3,18 +3,19 @@ package io.littlehorse.common.model.command.subcommandresponse;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
-import io.littlehorse.sdk.common.proto.PutExternalEventReplyPb;
+import io.littlehorse.sdk.common.proto.PutExternalEventResponse;
 
-public class PutExternalEventReply extends AbstractResponse<PutExternalEventReplyPb> {
+public class PutExternalEventResponseModel
+    extends AbstractResponse<PutExternalEventResponse> {
 
     public ExternalEvent result;
 
-    public Class<PutExternalEventReplyPb> getProtoBaseClass() {
-        return PutExternalEventReplyPb.class;
+    public Class<PutExternalEventResponse> getProtoBaseClass() {
+        return PutExternalEventResponse.class;
     }
 
-    public PutExternalEventReplyPb.Builder toProto() {
-        PutExternalEventReplyPb.Builder out = PutExternalEventReplyPb
+    public PutExternalEventResponse.Builder toProto() {
+        PutExternalEventResponse.Builder out = PutExternalEventResponse
             .newBuilder()
             .setCode(code);
         if (message != null) out.setMessage(message);
@@ -24,7 +25,7 @@ public class PutExternalEventReply extends AbstractResponse<PutExternalEventRepl
     }
 
     public void initFrom(Message proto) {
-        PutExternalEventReplyPb p = (PutExternalEventReplyPb) proto;
+        PutExternalEventResponse p = (PutExternalEventResponse) proto;
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();
         if (p.hasResult()) result = ExternalEvent.fromProto(p.getResult());

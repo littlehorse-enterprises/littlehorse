@@ -7,7 +7,7 @@ import io.littlehorse.common.model.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutation.RhsValueCase;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,7 +19,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
 
     public String lhsName;
     public String lhsJsonPath;
-    public VariableMutationTypePb operation;
+    public VariableMutationType operation;
 
     public RhsValueCase rhsValueType;
     public VariableAssignmentModel rhsSourceVariable;

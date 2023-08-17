@@ -6,19 +6,19 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.command.subcommandresponse.PutWfSpecReply;
+import io.littlehorse.common.model.command.subcommandresponse.PutWfSpecResponseModel;
 import io.littlehorse.common.model.meta.ThreadSpecModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.PutWfSpecPb;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PutWfSpec extends SubCommand<PutWfSpecPb> {
+public class PutWfSpecRequestModel
+    extends SubCommand<io.littlehorse.sdk.common.proto.PutWfSpecRequest> {
 
     public String name;
     public Map<String, ThreadSpecModel> threadSpecs;
@@ -29,16 +29,16 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
         return LHConstants.META_PARTITION_KEY;
     }
 
-    public Class<PutWfSpecPb> getProtoBaseClass() {
-        return PutWfSpecPb.class;
+    public Class<io.littlehorse.sdk.common.proto.PutWfSpecRequest> getProtoBaseClass() {
+        return io.littlehorse.sdk.common.proto.PutWfSpecRequest.class;
     }
 
-    public PutWfSpec() {
+    public PutWfSpecRequestModel() {
         threadSpecs = new HashMap<>();
     }
 
-    public PutWfSpecPb.Builder toProto() {
-        PutWfSpecPb.Builder out = PutWfSpecPb
+    public io.littlehorse.sdk.common.proto.PutWfSpecRequest.Builder toProto() {
+        io.littlehorse.sdk.common.proto.PutWfSpecRequest.Builder out = io.littlehorse.sdk.common.proto.PutWfSpecRequest
             .newBuilder()
             .setName(name)
             .setEntrypointThreadName(entrypointThreadName);
@@ -53,7 +53,7 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
     }
 
     public void initFrom(Message proto) {
-        PutWfSpecPb p = (PutWfSpecPb) proto;
+        io.littlehorse.sdk.common.proto.PutWfSpecRequest p = (io.littlehorse.sdk.common.proto.PutWfSpecRequest) proto;
         name = p.getName();
         entrypointThreadName = p.getEntrypointThreadName();
         if (p.hasRetentionHours()) retentionHours = p.getRetentionHours();
@@ -66,8 +66,8 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
         return true;
     }
 
-    public PutWfSpecReply process(LHDAO dao, LHConfig config) {
-        PutWfSpecReply out = new PutWfSpecReply();
+    public PutWfSpecResponseModel process(LHDAO dao, LHConfig config) {
+        PutWfSpecResponseModel out = new PutWfSpecResponseModel();
 
         if (!LHUtil.isValidLHName(name)) {
             out.code = LHResponseCodePb.VALIDATION_ERROR;
@@ -110,8 +110,10 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
         return out;
     }
 
-    public static PutWfSpec fromProto(PutWfSpecPb p) {
-        PutWfSpec out = new PutWfSpec();
+    public static PutWfSpecRequestModel fromProto(
+        io.littlehorse.sdk.common.proto.PutWfSpecRequest p
+    ) {
+        PutWfSpecRequestModel out = new PutWfSpecRequestModel();
         out.initFrom(p);
         return out;
     }

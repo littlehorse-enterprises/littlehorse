@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface PutTaskDefReplyPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.PutTaskDefReplyPb)
+public interface PutWfSpecResponseOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.PutWfSpecResponse)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -36,17 +36,17 @@ public interface PutTaskDefReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>optional .littlehorse.TaskDef result = 3;</code>
+   * <code>optional .littlehorse.WfSpec result = 3;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>optional .littlehorse.TaskDef result = 3;</code>
+   * <code>optional .littlehorse.WfSpec result = 3;</code>
    * @return The result.
    */
-  io.littlehorse.sdk.common.proto.TaskDef getResult();
+  io.littlehorse.sdk.common.proto.WfSpec getResult();
   /**
-   * <code>optional .littlehorse.TaskDef result = 3;</code>
+   * <code>optional .littlehorse.WfSpec result = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.TaskDefOrBuilder getResultOrBuilder();
+  io.littlehorse.sdk.common.proto.WfSpecOrBuilder getResultOrBuilder();
 }

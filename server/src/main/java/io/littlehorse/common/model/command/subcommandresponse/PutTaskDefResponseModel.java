@@ -3,18 +3,18 @@ package io.littlehorse.common.model.command.subcommandresponse;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.meta.TaskDefModel;
-import io.littlehorse.sdk.common.proto.PutTaskDefReplyPb;
+import io.littlehorse.sdk.common.proto.PutTaskDefResponse;
 
-public class PutTaskDefReply extends AbstractResponse<PutTaskDefReplyPb> {
+public class PutTaskDefResponseModel extends AbstractResponse<PutTaskDefResponse> {
 
     public TaskDefModel result;
 
-    public Class<PutTaskDefReplyPb> getProtoBaseClass() {
-        return PutTaskDefReplyPb.class;
+    public Class<PutTaskDefResponse> getProtoBaseClass() {
+        return PutTaskDefResponse.class;
     }
 
-    public PutTaskDefReplyPb.Builder toProto() {
-        PutTaskDefReplyPb.Builder out = PutTaskDefReplyPb.newBuilder();
+    public PutTaskDefResponse.Builder toProto() {
+        PutTaskDefResponse.Builder out = PutTaskDefResponse.newBuilder();
         out.setCode(code);
         if (message != null) out.setMessage(message);
         if (result != null) out.setResult(result.toProto());
@@ -22,7 +22,7 @@ public class PutTaskDefReply extends AbstractResponse<PutTaskDefReplyPb> {
     }
 
     public void initFrom(Message proto) {
-        PutTaskDefReplyPb p = (PutTaskDefReplyPb) proto;
+        PutTaskDefResponse p = (PutTaskDefResponse) proto;
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();
         if (p.hasResult()) result = TaskDefModel.fromProto(p.getResult());

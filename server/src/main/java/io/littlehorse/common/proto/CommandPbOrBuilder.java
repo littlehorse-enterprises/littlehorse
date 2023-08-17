@@ -70,49 +70,49 @@ public interface CommandPbOrBuilder extends
   io.littlehorse.common.proto.TaskClaimEventPbOrBuilder getTaskClaimEventOrBuilder();
 
   /**
-   * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
+   * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 6;</code>
    * @return Whether the putWfSpec field is set.
    */
   boolean hasPutWfSpec();
   /**
-   * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
+   * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 6;</code>
    * @return The putWfSpec.
    */
-  io.littlehorse.sdk.common.proto.PutWfSpecPb getPutWfSpec();
+  io.littlehorse.sdk.common.proto.PutWfSpecRequest getPutWfSpec();
   /**
-   * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
+   * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 6;</code>
    */
-  io.littlehorse.sdk.common.proto.PutWfSpecPbOrBuilder getPutWfSpecOrBuilder();
+  io.littlehorse.sdk.common.proto.PutWfSpecRequestOrBuilder getPutWfSpecOrBuilder();
 
   /**
-   * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
+   * <code>.littlehorse.PutTaskDefRequest put_task_def = 7;</code>
    * @return Whether the putTaskDef field is set.
    */
   boolean hasPutTaskDef();
   /**
-   * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
+   * <code>.littlehorse.PutTaskDefRequest put_task_def = 7;</code>
    * @return The putTaskDef.
    */
-  io.littlehorse.sdk.common.proto.PutTaskDefPb getPutTaskDef();
+  io.littlehorse.sdk.common.proto.PutTaskDefRequest getPutTaskDef();
   /**
-   * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
+   * <code>.littlehorse.PutTaskDefRequest put_task_def = 7;</code>
    */
-  io.littlehorse.sdk.common.proto.PutTaskDefPbOrBuilder getPutTaskDefOrBuilder();
+  io.littlehorse.sdk.common.proto.PutTaskDefRequestOrBuilder getPutTaskDefOrBuilder();
 
   /**
-   * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
+   * <code>.littlehorse.PutExternalEventDefRequest put_external_event_def = 8;</code>
    * @return Whether the putExternalEventDef field is set.
    */
   boolean hasPutExternalEventDef();
   /**
-   * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
+   * <code>.littlehorse.PutExternalEventDefRequest put_external_event_def = 8;</code>
    * @return The putExternalEventDef.
    */
-  io.littlehorse.sdk.common.proto.PutExternalEventDefPb getPutExternalEventDef();
+  io.littlehorse.sdk.common.proto.PutExternalEventDefRequest getPutExternalEventDef();
   /**
-   * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
+   * <code>.littlehorse.PutExternalEventDefRequest put_external_event_def = 8;</code>
    */
-  io.littlehorse.sdk.common.proto.PutExternalEventDefPbOrBuilder getPutExternalEventDefOrBuilder();
+  io.littlehorse.sdk.common.proto.PutExternalEventDefRequestOrBuilder getPutExternalEventDefOrBuilder();
 
   /**
    * <code>.littlehorse.RunWfPb run_wf = 9;</code>
@@ -130,19 +130,19 @@ public interface CommandPbOrBuilder extends
   io.littlehorse.sdk.common.proto.RunWfPbOrBuilder getRunWfOrBuilder();
 
   /**
-   * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
+   * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
    * @return Whether the putExternalEvent field is set.
    */
   boolean hasPutExternalEvent();
   /**
-   * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
+   * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
    * @return The putExternalEvent.
    */
-  io.littlehorse.sdk.common.proto.PutExternalEventPb getPutExternalEvent();
+  io.littlehorse.sdk.common.proto.PutExternalEventRequest getPutExternalEvent();
   /**
-   * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
+   * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
    */
-  io.littlehorse.sdk.common.proto.PutExternalEventPbOrBuilder getPutExternalEventOrBuilder();
+  io.littlehorse.sdk.common.proto.PutExternalEventRequestOrBuilder getPutExternalEventOrBuilder();
 
   /**
    * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
@@ -325,19 +325,19 @@ public interface CommandPbOrBuilder extends
   io.littlehorse.sdk.common.proto.CompleteUserTaskRunPbOrBuilder getCompleteUserTaskRunOrBuilder();
 
   /**
-   * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+   * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
    * @return Whether the putUserTaskDef field is set.
    */
   boolean hasPutUserTaskDef();
   /**
-   * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+   * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
    * @return The putUserTaskDef.
    */
-  io.littlehorse.sdk.common.proto.PutUserTaskDefPb getPutUserTaskDef();
+  io.littlehorse.sdk.common.proto.PutUserTaskDefRequest getPutUserTaskDef();
   /**
-   * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+   * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
    */
-  io.littlehorse.sdk.common.proto.PutUserTaskDefPbOrBuilder getPutUserTaskDefOrBuilder();
+  io.littlehorse.sdk.common.proto.PutUserTaskDefRequestOrBuilder getPutUserTaskDefOrBuilder();
 
   /**
    * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>

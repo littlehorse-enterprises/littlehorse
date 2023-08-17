@@ -28,7 +28,7 @@ import io.littlehorse.sdk.common.proto.VariableAssignment.FormatString;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
@@ -546,7 +546,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         // of the thread.
         mutate(
             internalStartedThreadVar,
-            VariableMutationTypePb.ASSIGN,
+            VariableMutationType.ASSIGN,
             new NodeOutputImpl(nodeName, this)
         );
 
@@ -577,11 +577,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         spec.putNodes(node.nodeName, n.build());
     }
 
-    public void mutate(
-        WfRunVariable lhsVar,
-        VariableMutationTypePb type,
-        Object rhs
-    ) {
+    public void mutate(WfRunVariable lhsVar, VariableMutationType type, Object rhs) {
         checkIfIsActive();
         WfRunVariableImpl lhs = (WfRunVariableImpl) lhsVar;
         VariableMutation.Builder mutation = VariableMutation

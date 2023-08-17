@@ -6,7 +6,7 @@ import com.jayway.jsonpath.JsonPath;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import java.io.ByteArrayOutputStream;
@@ -165,7 +165,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel operate(
-        VariableMutationTypePb operation,
+        VariableMutationType operation,
         VariableValueModel rhs,
         VariableType typeToCoerceTo
     ) throws LHVarSubError {
@@ -181,25 +181,25 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             }
         }
 
-        if (operation == VariableMutationTypePb.ASSIGN) {
+        if (operation == VariableMutationType.ASSIGN) {
             if (type == VariableType.NULL) return rhs.coerceToType(typeToCoerceTo);
 
             return rhs.coerceToType(type);
-        } else if (operation == VariableMutationTypePb.ADD) {
+        } else if (operation == VariableMutationType.ADD) {
             return add(rhs);
-        } else if (operation == VariableMutationTypePb.SUBTRACT) {
+        } else if (operation == VariableMutationType.SUBTRACT) {
             return subtract(rhs);
-        } else if (operation == VariableMutationTypePb.MULTIPLY) {
+        } else if (operation == VariableMutationType.MULTIPLY) {
             return multiply(rhs);
-        } else if (operation == VariableMutationTypePb.DIVIDE) {
+        } else if (operation == VariableMutationType.DIVIDE) {
             return divide(rhs);
-        } else if (operation == VariableMutationTypePb.EXTEND) {
+        } else if (operation == VariableMutationType.EXTEND) {
             return extend(rhs);
-        } else if (operation == VariableMutationTypePb.REMOVE_IF_PRESENT) {
+        } else if (operation == VariableMutationType.REMOVE_IF_PRESENT) {
             return removeIfPresent(rhs);
-        } else if (operation == VariableMutationTypePb.REMOVE_INDEX) {
+        } else if (operation == VariableMutationType.REMOVE_INDEX) {
             return removeIndex(rhs);
-        } else if (operation == VariableMutationTypePb.REMOVE_KEY) {
+        } else if (operation == VariableMutationType.REMOVE_KEY) {
             return removeKey(rhs);
         }
         throw new RuntimeException("Unsupported operation: " + operation);

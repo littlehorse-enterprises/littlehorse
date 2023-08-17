@@ -4,18 +4,18 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.PutWfSpecPb}
+ * Protobuf type {@code littlehorse.PutWfSpecRequest}
  */
-public final class PutWfSpecPb extends
+public final class PutWfSpecRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.PutWfSpecPb)
-    PutWfSpecPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.PutWfSpecRequest)
+    PutWfSpecRequestOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use PutWfSpecPb.newBuilder() to construct.
-  private PutWfSpecPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use PutWfSpecRequest.newBuilder() to construct.
+  private PutWfSpecRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private PutWfSpecPb() {
+  private PutWfSpecRequest() {
     name_ = "";
     entrypointThreadName_ = "";
   }
@@ -24,7 +24,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new PutWfSpecPb();
+    return new PutWfSpecRequest();
   }
 
   @java.lang.Override
@@ -34,7 +34,7 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutWfSpecPb_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutWfSpecRequest_descriptor;
   }
 
   @SuppressWarnings({"rawtypes"})
@@ -52,9 +52,9 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutWfSpecPb_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutWfSpecRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.PutWfSpecPb.class, io.littlehorse.sdk.common.proto.PutWfSpecPb.Builder.class);
+            io.littlehorse.sdk.common.proto.PutWfSpecRequest.class, io.littlehorse.sdk.common.proto.PutWfSpecRequest.Builder.class);
   }
 
   private int bitField0_;
@@ -103,7 +103,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec> defaultEntry =
             com.google.protobuf.MapEntry
             .<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec>newDefaultInstance(
-                io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutWfSpecPb_ThreadSpecsEntry_descriptor, 
+                io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutWfSpecRequest_ThreadSpecsEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
@@ -302,10 +302,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.PutWfSpecPb)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.PutWfSpecRequest)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.PutWfSpecPb other = (io.littlehorse.sdk.common.proto.PutWfSpecPb) obj;
+    io.littlehorse.sdk.common.proto.PutWfSpecRequest other = (io.littlehorse.sdk.common.proto.PutWfSpecRequest) obj;
 
     if (!getName()
         .equals(other.getName())) return false;
@@ -346,69 +346,69 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.PutWfSpecPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutWfSpecRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.PutWfSpecPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutWfSpecRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.PutWfSpecPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutWfSpecRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.PutWfSpecPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutWfSpecRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.PutWfSpecPb parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.PutWfSpecRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.PutWfSpecPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutWfSpecRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.PutWfSpecPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.PutWfSpecRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.PutWfSpecPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutWfSpecRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.PutWfSpecPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.PutWfSpecRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.PutWfSpecPb parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.PutWfSpecRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.PutWfSpecPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutWfSpecRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.PutWfSpecPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutWfSpecRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -421,7 +421,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.PutWfSpecPb prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.PutWfSpecRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -437,15 +437,15 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.PutWfSpecPb}
+   * Protobuf type {@code littlehorse.PutWfSpecRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.PutWfSpecPb)
-      io.littlehorse.sdk.common.proto.PutWfSpecPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.PutWfSpecRequest)
+      io.littlehorse.sdk.common.proto.PutWfSpecRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutWfSpecPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutWfSpecRequest_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -473,12 +473,12 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutWfSpecPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutWfSpecRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.PutWfSpecPb.class, io.littlehorse.sdk.common.proto.PutWfSpecPb.Builder.class);
+              io.littlehorse.sdk.common.proto.PutWfSpecRequest.class, io.littlehorse.sdk.common.proto.PutWfSpecRequest.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.PutWfSpecPb.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.PutWfSpecRequest.newBuilder()
     private Builder() {
 
     }
@@ -502,17 +502,17 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutWfSpecPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutWfSpecRequest_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutWfSpecPb getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.PutWfSpecPb.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.PutWfSpecRequest getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.PutWfSpecRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutWfSpecPb build() {
-      io.littlehorse.sdk.common.proto.PutWfSpecPb result = buildPartial();
+    public io.littlehorse.sdk.common.proto.PutWfSpecRequest build() {
+      io.littlehorse.sdk.common.proto.PutWfSpecRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -520,14 +520,14 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutWfSpecPb buildPartial() {
-      io.littlehorse.sdk.common.proto.PutWfSpecPb result = new io.littlehorse.sdk.common.proto.PutWfSpecPb(this);
+    public io.littlehorse.sdk.common.proto.PutWfSpecRequest buildPartial() {
+      io.littlehorse.sdk.common.proto.PutWfSpecRequest result = new io.littlehorse.sdk.common.proto.PutWfSpecRequest(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.PutWfSpecPb result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.PutWfSpecRequest result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.name_ = name_;
@@ -581,16 +581,16 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.PutWfSpecPb) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.PutWfSpecPb)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.PutWfSpecRequest) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.PutWfSpecRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.PutWfSpecPb other) {
-      if (other == io.littlehorse.sdk.common.proto.PutWfSpecPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.PutWfSpecRequest other) {
+      if (other == io.littlehorse.sdk.common.proto.PutWfSpecRequest.getDefaultInstance()) return this;
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
         bitField0_ |= 0x00000001;
@@ -997,23 +997,23 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.PutWfSpecPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.PutWfSpecRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.PutWfSpecPb)
-  private static final io.littlehorse.sdk.common.proto.PutWfSpecPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.PutWfSpecRequest)
+  private static final io.littlehorse.sdk.common.proto.PutWfSpecRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.PutWfSpecPb();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.PutWfSpecRequest();
   }
 
-  public static io.littlehorse.sdk.common.proto.PutWfSpecPb getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.PutWfSpecRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<PutWfSpecPb>
-      PARSER = new com.google.protobuf.AbstractParser<PutWfSpecPb>() {
+  private static final com.google.protobuf.Parser<PutWfSpecRequest>
+      PARSER = new com.google.protobuf.AbstractParser<PutWfSpecRequest>() {
     @java.lang.Override
-    public PutWfSpecPb parsePartialFrom(
+    public PutWfSpecRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1032,17 +1032,17 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
   };
 
-  public static com.google.protobuf.Parser<PutWfSpecPb> parser() {
+  public static com.google.protobuf.Parser<PutWfSpecRequest> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<PutWfSpecPb> getParserForType() {
+  public com.google.protobuf.Parser<PutWfSpecRequest> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PutWfSpecPb getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.PutWfSpecRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

@@ -37,15 +37,15 @@ public interface VariableMutationOrBuilder extends
       getLhsJsonPathBytes();
 
   /**
-   * <code>.littlehorse.VariableMutationTypePb operation = 3;</code>
+   * <code>.littlehorse.VariableMutationType operation = 3;</code>
    * @return The enum numeric value on the wire for operation.
    */
   int getOperationValue();
   /**
-   * <code>.littlehorse.VariableMutationTypePb operation = 3;</code>
+   * <code>.littlehorse.VariableMutationType operation = 3;</code>
    * @return The operation.
    */
-  io.littlehorse.sdk.common.proto.VariableMutationTypePb getOperation();
+  io.littlehorse.sdk.common.proto.VariableMutationType getOperation();
 
   /**
    * <code>.littlehorse.VariableAssignment source_variable = 4;</code>

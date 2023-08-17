@@ -271,7 +271,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int PUT_WF_SPEC_FIELD_NUMBER = 6;
   /**
-   * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
+   * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 6;</code>
    * @return Whether the putWfSpec field is set.
    */
   @java.lang.Override
@@ -279,30 +279,30 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 6;
   }
   /**
-   * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
+   * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 6;</code>
    * @return The putWfSpec.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PutWfSpecPb getPutWfSpec() {
+  public io.littlehorse.sdk.common.proto.PutWfSpecRequest getPutWfSpec() {
     if (commandCase_ == 6) {
-       return (io.littlehorse.sdk.common.proto.PutWfSpecPb) command_;
+       return (io.littlehorse.sdk.common.proto.PutWfSpecRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.PutWfSpecPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.PutWfSpecRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
+   * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 6;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PutWfSpecPbOrBuilder getPutWfSpecOrBuilder() {
+  public io.littlehorse.sdk.common.proto.PutWfSpecRequestOrBuilder getPutWfSpecOrBuilder() {
     if (commandCase_ == 6) {
-       return (io.littlehorse.sdk.common.proto.PutWfSpecPb) command_;
+       return (io.littlehorse.sdk.common.proto.PutWfSpecRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.PutWfSpecPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.PutWfSpecRequest.getDefaultInstance();
   }
 
   public static final int PUT_TASK_DEF_FIELD_NUMBER = 7;
   /**
-   * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
+   * <code>.littlehorse.PutTaskDefRequest put_task_def = 7;</code>
    * @return Whether the putTaskDef field is set.
    */
   @java.lang.Override
@@ -310,30 +310,30 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 7;
   }
   /**
-   * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
+   * <code>.littlehorse.PutTaskDefRequest put_task_def = 7;</code>
    * @return The putTaskDef.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PutTaskDefPb getPutTaskDef() {
+  public io.littlehorse.sdk.common.proto.PutTaskDefRequest getPutTaskDef() {
     if (commandCase_ == 7) {
-       return (io.littlehorse.sdk.common.proto.PutTaskDefPb) command_;
+       return (io.littlehorse.sdk.common.proto.PutTaskDefRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.PutTaskDefPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.PutTaskDefRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
+   * <code>.littlehorse.PutTaskDefRequest put_task_def = 7;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PutTaskDefPbOrBuilder getPutTaskDefOrBuilder() {
+  public io.littlehorse.sdk.common.proto.PutTaskDefRequestOrBuilder getPutTaskDefOrBuilder() {
     if (commandCase_ == 7) {
-       return (io.littlehorse.sdk.common.proto.PutTaskDefPb) command_;
+       return (io.littlehorse.sdk.common.proto.PutTaskDefRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.PutTaskDefPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.PutTaskDefRequest.getDefaultInstance();
   }
 
   public static final int PUT_EXTERNAL_EVENT_DEF_FIELD_NUMBER = 8;
   /**
-   * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
+   * <code>.littlehorse.PutExternalEventDefRequest put_external_event_def = 8;</code>
    * @return Whether the putExternalEventDef field is set.
    */
   @java.lang.Override
@@ -341,25 +341,25 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 8;
   }
   /**
-   * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
+   * <code>.littlehorse.PutExternalEventDefRequest put_external_event_def = 8;</code>
    * @return The putExternalEventDef.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PutExternalEventDefPb getPutExternalEventDef() {
+  public io.littlehorse.sdk.common.proto.PutExternalEventDefRequest getPutExternalEventDef() {
     if (commandCase_ == 8) {
-       return (io.littlehorse.sdk.common.proto.PutExternalEventDefPb) command_;
+       return (io.littlehorse.sdk.common.proto.PutExternalEventDefRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.PutExternalEventDefPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
+   * <code>.littlehorse.PutExternalEventDefRequest put_external_event_def = 8;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PutExternalEventDefPbOrBuilder getPutExternalEventDefOrBuilder() {
+  public io.littlehorse.sdk.common.proto.PutExternalEventDefRequestOrBuilder getPutExternalEventDefOrBuilder() {
     if (commandCase_ == 8) {
-       return (io.littlehorse.sdk.common.proto.PutExternalEventDefPb) command_;
+       return (io.littlehorse.sdk.common.proto.PutExternalEventDefRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.PutExternalEventDefPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.getDefaultInstance();
   }
 
   public static final int RUN_WF_FIELD_NUMBER = 9;
@@ -395,7 +395,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int PUT_EXTERNAL_EVENT_FIELD_NUMBER = 10;
   /**
-   * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
+   * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
    * @return Whether the putExternalEvent field is set.
    */
   @java.lang.Override
@@ -403,25 +403,25 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 10;
   }
   /**
-   * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
+   * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
    * @return The putExternalEvent.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PutExternalEventPb getPutExternalEvent() {
+  public io.littlehorse.sdk.common.proto.PutExternalEventRequest getPutExternalEvent() {
     if (commandCase_ == 10) {
-       return (io.littlehorse.sdk.common.proto.PutExternalEventPb) command_;
+       return (io.littlehorse.sdk.common.proto.PutExternalEventRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.PutExternalEventPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.PutExternalEventRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
+   * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PutExternalEventPbOrBuilder getPutExternalEventOrBuilder() {
+  public io.littlehorse.sdk.common.proto.PutExternalEventRequestOrBuilder getPutExternalEventOrBuilder() {
     if (commandCase_ == 10) {
-       return (io.littlehorse.sdk.common.proto.PutExternalEventPb) command_;
+       return (io.littlehorse.sdk.common.proto.PutExternalEventRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.PutExternalEventPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.PutExternalEventRequest.getDefaultInstance();
   }
 
   public static final int STOP_WF_RUN_FIELD_NUMBER = 11;
@@ -798,7 +798,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int PUT_USER_TASK_DEF_FIELD_NUMBER = 23;
   /**
-   * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+   * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
    * @return Whether the putUserTaskDef field is set.
    */
   @java.lang.Override
@@ -806,25 +806,25 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 23;
   }
   /**
-   * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+   * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
    * @return The putUserTaskDef.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PutUserTaskDefPb getPutUserTaskDef() {
+  public io.littlehorse.sdk.common.proto.PutUserTaskDefRequest getPutUserTaskDef() {
     if (commandCase_ == 23) {
-       return (io.littlehorse.sdk.common.proto.PutUserTaskDefPb) command_;
+       return (io.littlehorse.sdk.common.proto.PutUserTaskDefRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.PutUserTaskDefPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+   * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PutUserTaskDefPbOrBuilder getPutUserTaskDefOrBuilder() {
+  public io.littlehorse.sdk.common.proto.PutUserTaskDefRequestOrBuilder getPutUserTaskDefOrBuilder() {
     if (commandCase_ == 23) {
-       return (io.littlehorse.sdk.common.proto.PutUserTaskDefPb) command_;
+       return (io.littlehorse.sdk.common.proto.PutUserTaskDefRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.PutUserTaskDefPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.getDefaultInstance();
   }
 
   public static final int TRIGGERED_TASK_RUN_FIELD_NUMBER = 24;
@@ -990,19 +990,19 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(4, (io.littlehorse.common.proto.TaskClaimEventPb) command_);
     }
     if (commandCase_ == 6) {
-      output.writeMessage(6, (io.littlehorse.sdk.common.proto.PutWfSpecPb) command_);
+      output.writeMessage(6, (io.littlehorse.sdk.common.proto.PutWfSpecRequest) command_);
     }
     if (commandCase_ == 7) {
-      output.writeMessage(7, (io.littlehorse.sdk.common.proto.PutTaskDefPb) command_);
+      output.writeMessage(7, (io.littlehorse.sdk.common.proto.PutTaskDefRequest) command_);
     }
     if (commandCase_ == 8) {
-      output.writeMessage(8, (io.littlehorse.sdk.common.proto.PutExternalEventDefPb) command_);
+      output.writeMessage(8, (io.littlehorse.sdk.common.proto.PutExternalEventDefRequest) command_);
     }
     if (commandCase_ == 9) {
       output.writeMessage(9, (io.littlehorse.sdk.common.proto.RunWfPb) command_);
     }
     if (commandCase_ == 10) {
-      output.writeMessage(10, (io.littlehorse.sdk.common.proto.PutExternalEventPb) command_);
+      output.writeMessage(10, (io.littlehorse.sdk.common.proto.PutExternalEventRequest) command_);
     }
     if (commandCase_ == 11) {
       output.writeMessage(11, (io.littlehorse.sdk.common.proto.StopWfRunPb) command_);
@@ -1041,7 +1041,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(22, (io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb) command_);
     }
     if (commandCase_ == 23) {
-      output.writeMessage(23, (io.littlehorse.sdk.common.proto.PutUserTaskDefPb) command_);
+      output.writeMessage(23, (io.littlehorse.sdk.common.proto.PutUserTaskDefRequest) command_);
     }
     if (commandCase_ == 24) {
       output.writeMessage(24, (io.littlehorse.common.proto.TriggeredTaskRunPb) command_);
@@ -1081,15 +1081,15 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, (io.littlehorse.sdk.common.proto.PutWfSpecPb) command_);
+        .computeMessageSize(6, (io.littlehorse.sdk.common.proto.PutWfSpecRequest) command_);
     }
     if (commandCase_ == 7) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, (io.littlehorse.sdk.common.proto.PutTaskDefPb) command_);
+        .computeMessageSize(7, (io.littlehorse.sdk.common.proto.PutTaskDefRequest) command_);
     }
     if (commandCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(8, (io.littlehorse.sdk.common.proto.PutExternalEventDefPb) command_);
+        .computeMessageSize(8, (io.littlehorse.sdk.common.proto.PutExternalEventDefRequest) command_);
     }
     if (commandCase_ == 9) {
       size += com.google.protobuf.CodedOutputStream
@@ -1097,7 +1097,7 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 10) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(10, (io.littlehorse.sdk.common.proto.PutExternalEventPb) command_);
+        .computeMessageSize(10, (io.littlehorse.sdk.common.proto.PutExternalEventRequest) command_);
     }
     if (commandCase_ == 11) {
       size += com.google.protobuf.CodedOutputStream
@@ -1149,7 +1149,7 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 23) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(23, (io.littlehorse.sdk.common.proto.PutUserTaskDefPb) command_);
+        .computeMessageSize(23, (io.littlehorse.sdk.common.proto.PutUserTaskDefRequest) command_);
     }
     if (commandCase_ == 24) {
       size += com.google.protobuf.CodedOutputStream
@@ -2647,9 +2647,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.PutWfSpecPb, io.littlehorse.sdk.common.proto.PutWfSpecPb.Builder, io.littlehorse.sdk.common.proto.PutWfSpecPbOrBuilder> putWfSpecBuilder_;
+        io.littlehorse.sdk.common.proto.PutWfSpecRequest, io.littlehorse.sdk.common.proto.PutWfSpecRequest.Builder, io.littlehorse.sdk.common.proto.PutWfSpecRequestOrBuilder> putWfSpecBuilder_;
     /**
-     * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
+     * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 6;</code>
      * @return Whether the putWfSpec field is set.
      */
     @java.lang.Override
@@ -2657,27 +2657,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 6;
     }
     /**
-     * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
+     * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 6;</code>
      * @return The putWfSpec.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutWfSpecPb getPutWfSpec() {
+    public io.littlehorse.sdk.common.proto.PutWfSpecRequest getPutWfSpec() {
       if (putWfSpecBuilder_ == null) {
         if (commandCase_ == 6) {
-          return (io.littlehorse.sdk.common.proto.PutWfSpecPb) command_;
+          return (io.littlehorse.sdk.common.proto.PutWfSpecRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.PutWfSpecPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutWfSpecRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 6) {
           return putWfSpecBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.PutWfSpecPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutWfSpecRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
+     * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 6;</code>
      */
-    public Builder setPutWfSpec(io.littlehorse.sdk.common.proto.PutWfSpecPb value) {
+    public Builder setPutWfSpec(io.littlehorse.sdk.common.proto.PutWfSpecRequest value) {
       if (putWfSpecBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2691,10 +2691,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
+     * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 6;</code>
      */
     public Builder setPutWfSpec(
-        io.littlehorse.sdk.common.proto.PutWfSpecPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.PutWfSpecRequest.Builder builderForValue) {
       if (putWfSpecBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -2705,13 +2705,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
+     * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 6;</code>
      */
-    public Builder mergePutWfSpec(io.littlehorse.sdk.common.proto.PutWfSpecPb value) {
+    public Builder mergePutWfSpec(io.littlehorse.sdk.common.proto.PutWfSpecRequest value) {
       if (putWfSpecBuilder_ == null) {
         if (commandCase_ == 6 &&
-            command_ != io.littlehorse.sdk.common.proto.PutWfSpecPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.PutWfSpecPb.newBuilder((io.littlehorse.sdk.common.proto.PutWfSpecPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.PutWfSpecRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.PutWfSpecRequest.newBuilder((io.littlehorse.sdk.common.proto.PutWfSpecRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -2728,7 +2728,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
+     * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 6;</code>
      */
     public Builder clearPutWfSpec() {
       if (putWfSpecBuilder_ == null) {
@@ -2747,38 +2747,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
+     * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 6;</code>
      */
-    public io.littlehorse.sdk.common.proto.PutWfSpecPb.Builder getPutWfSpecBuilder() {
+    public io.littlehorse.sdk.common.proto.PutWfSpecRequest.Builder getPutWfSpecBuilder() {
       return getPutWfSpecFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
+     * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 6;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutWfSpecPbOrBuilder getPutWfSpecOrBuilder() {
+    public io.littlehorse.sdk.common.proto.PutWfSpecRequestOrBuilder getPutWfSpecOrBuilder() {
       if ((commandCase_ == 6) && (putWfSpecBuilder_ != null)) {
         return putWfSpecBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 6) {
-          return (io.littlehorse.sdk.common.proto.PutWfSpecPb) command_;
+          return (io.littlehorse.sdk.common.proto.PutWfSpecRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.PutWfSpecPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutWfSpecRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
+     * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.PutWfSpecPb, io.littlehorse.sdk.common.proto.PutWfSpecPb.Builder, io.littlehorse.sdk.common.proto.PutWfSpecPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.PutWfSpecRequest, io.littlehorse.sdk.common.proto.PutWfSpecRequest.Builder, io.littlehorse.sdk.common.proto.PutWfSpecRequestOrBuilder> 
         getPutWfSpecFieldBuilder() {
       if (putWfSpecBuilder_ == null) {
         if (!(commandCase_ == 6)) {
-          command_ = io.littlehorse.sdk.common.proto.PutWfSpecPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.PutWfSpecRequest.getDefaultInstance();
         }
         putWfSpecBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.PutWfSpecPb, io.littlehorse.sdk.common.proto.PutWfSpecPb.Builder, io.littlehorse.sdk.common.proto.PutWfSpecPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.PutWfSpecPb) command_,
+            io.littlehorse.sdk.common.proto.PutWfSpecRequest, io.littlehorse.sdk.common.proto.PutWfSpecRequest.Builder, io.littlehorse.sdk.common.proto.PutWfSpecRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutWfSpecRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -2789,9 +2789,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.PutTaskDefPb, io.littlehorse.sdk.common.proto.PutTaskDefPb.Builder, io.littlehorse.sdk.common.proto.PutTaskDefPbOrBuilder> putTaskDefBuilder_;
+        io.littlehorse.sdk.common.proto.PutTaskDefRequest, io.littlehorse.sdk.common.proto.PutTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.PutTaskDefRequestOrBuilder> putTaskDefBuilder_;
     /**
-     * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
+     * <code>.littlehorse.PutTaskDefRequest put_task_def = 7;</code>
      * @return Whether the putTaskDef field is set.
      */
     @java.lang.Override
@@ -2799,27 +2799,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 7;
     }
     /**
-     * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
+     * <code>.littlehorse.PutTaskDefRequest put_task_def = 7;</code>
      * @return The putTaskDef.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutTaskDefPb getPutTaskDef() {
+    public io.littlehorse.sdk.common.proto.PutTaskDefRequest getPutTaskDef() {
       if (putTaskDefBuilder_ == null) {
         if (commandCase_ == 7) {
-          return (io.littlehorse.sdk.common.proto.PutTaskDefPb) command_;
+          return (io.littlehorse.sdk.common.proto.PutTaskDefRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.PutTaskDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutTaskDefRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 7) {
           return putTaskDefBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.PutTaskDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutTaskDefRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
+     * <code>.littlehorse.PutTaskDefRequest put_task_def = 7;</code>
      */
-    public Builder setPutTaskDef(io.littlehorse.sdk.common.proto.PutTaskDefPb value) {
+    public Builder setPutTaskDef(io.littlehorse.sdk.common.proto.PutTaskDefRequest value) {
       if (putTaskDefBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2833,10 +2833,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
+     * <code>.littlehorse.PutTaskDefRequest put_task_def = 7;</code>
      */
     public Builder setPutTaskDef(
-        io.littlehorse.sdk.common.proto.PutTaskDefPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.PutTaskDefRequest.Builder builderForValue) {
       if (putTaskDefBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -2847,13 +2847,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
+     * <code>.littlehorse.PutTaskDefRequest put_task_def = 7;</code>
      */
-    public Builder mergePutTaskDef(io.littlehorse.sdk.common.proto.PutTaskDefPb value) {
+    public Builder mergePutTaskDef(io.littlehorse.sdk.common.proto.PutTaskDefRequest value) {
       if (putTaskDefBuilder_ == null) {
         if (commandCase_ == 7 &&
-            command_ != io.littlehorse.sdk.common.proto.PutTaskDefPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.PutTaskDefPb.newBuilder((io.littlehorse.sdk.common.proto.PutTaskDefPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.PutTaskDefRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.PutTaskDefRequest.newBuilder((io.littlehorse.sdk.common.proto.PutTaskDefRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -2870,7 +2870,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
+     * <code>.littlehorse.PutTaskDefRequest put_task_def = 7;</code>
      */
     public Builder clearPutTaskDef() {
       if (putTaskDefBuilder_ == null) {
@@ -2889,38 +2889,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
+     * <code>.littlehorse.PutTaskDefRequest put_task_def = 7;</code>
      */
-    public io.littlehorse.sdk.common.proto.PutTaskDefPb.Builder getPutTaskDefBuilder() {
+    public io.littlehorse.sdk.common.proto.PutTaskDefRequest.Builder getPutTaskDefBuilder() {
       return getPutTaskDefFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
+     * <code>.littlehorse.PutTaskDefRequest put_task_def = 7;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutTaskDefPbOrBuilder getPutTaskDefOrBuilder() {
+    public io.littlehorse.sdk.common.proto.PutTaskDefRequestOrBuilder getPutTaskDefOrBuilder() {
       if ((commandCase_ == 7) && (putTaskDefBuilder_ != null)) {
         return putTaskDefBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 7) {
-          return (io.littlehorse.sdk.common.proto.PutTaskDefPb) command_;
+          return (io.littlehorse.sdk.common.proto.PutTaskDefRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.PutTaskDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutTaskDefRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
+     * <code>.littlehorse.PutTaskDefRequest put_task_def = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.PutTaskDefPb, io.littlehorse.sdk.common.proto.PutTaskDefPb.Builder, io.littlehorse.sdk.common.proto.PutTaskDefPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.PutTaskDefRequest, io.littlehorse.sdk.common.proto.PutTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.PutTaskDefRequestOrBuilder> 
         getPutTaskDefFieldBuilder() {
       if (putTaskDefBuilder_ == null) {
         if (!(commandCase_ == 7)) {
-          command_ = io.littlehorse.sdk.common.proto.PutTaskDefPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.PutTaskDefRequest.getDefaultInstance();
         }
         putTaskDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.PutTaskDefPb, io.littlehorse.sdk.common.proto.PutTaskDefPb.Builder, io.littlehorse.sdk.common.proto.PutTaskDefPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.PutTaskDefPb) command_,
+            io.littlehorse.sdk.common.proto.PutTaskDefRequest, io.littlehorse.sdk.common.proto.PutTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.PutTaskDefRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutTaskDefRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -2931,9 +2931,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.PutExternalEventDefPb, io.littlehorse.sdk.common.proto.PutExternalEventDefPb.Builder, io.littlehorse.sdk.common.proto.PutExternalEventDefPbOrBuilder> putExternalEventDefBuilder_;
+        io.littlehorse.sdk.common.proto.PutExternalEventDefRequest, io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.Builder, io.littlehorse.sdk.common.proto.PutExternalEventDefRequestOrBuilder> putExternalEventDefBuilder_;
     /**
-     * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
+     * <code>.littlehorse.PutExternalEventDefRequest put_external_event_def = 8;</code>
      * @return Whether the putExternalEventDef field is set.
      */
     @java.lang.Override
@@ -2941,27 +2941,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 8;
     }
     /**
-     * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
+     * <code>.littlehorse.PutExternalEventDefRequest put_external_event_def = 8;</code>
      * @return The putExternalEventDef.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutExternalEventDefPb getPutExternalEventDef() {
+    public io.littlehorse.sdk.common.proto.PutExternalEventDefRequest getPutExternalEventDef() {
       if (putExternalEventDefBuilder_ == null) {
         if (commandCase_ == 8) {
-          return (io.littlehorse.sdk.common.proto.PutExternalEventDefPb) command_;
+          return (io.littlehorse.sdk.common.proto.PutExternalEventDefRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.PutExternalEventDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 8) {
           return putExternalEventDefBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.PutExternalEventDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
+     * <code>.littlehorse.PutExternalEventDefRequest put_external_event_def = 8;</code>
      */
-    public Builder setPutExternalEventDef(io.littlehorse.sdk.common.proto.PutExternalEventDefPb value) {
+    public Builder setPutExternalEventDef(io.littlehorse.sdk.common.proto.PutExternalEventDefRequest value) {
       if (putExternalEventDefBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2975,10 +2975,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
+     * <code>.littlehorse.PutExternalEventDefRequest put_external_event_def = 8;</code>
      */
     public Builder setPutExternalEventDef(
-        io.littlehorse.sdk.common.proto.PutExternalEventDefPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.Builder builderForValue) {
       if (putExternalEventDefBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -2989,13 +2989,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
+     * <code>.littlehorse.PutExternalEventDefRequest put_external_event_def = 8;</code>
      */
-    public Builder mergePutExternalEventDef(io.littlehorse.sdk.common.proto.PutExternalEventDefPb value) {
+    public Builder mergePutExternalEventDef(io.littlehorse.sdk.common.proto.PutExternalEventDefRequest value) {
       if (putExternalEventDefBuilder_ == null) {
         if (commandCase_ == 8 &&
-            command_ != io.littlehorse.sdk.common.proto.PutExternalEventDefPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.PutExternalEventDefPb.newBuilder((io.littlehorse.sdk.common.proto.PutExternalEventDefPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.newBuilder((io.littlehorse.sdk.common.proto.PutExternalEventDefRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -3012,7 +3012,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
+     * <code>.littlehorse.PutExternalEventDefRequest put_external_event_def = 8;</code>
      */
     public Builder clearPutExternalEventDef() {
       if (putExternalEventDefBuilder_ == null) {
@@ -3031,38 +3031,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
+     * <code>.littlehorse.PutExternalEventDefRequest put_external_event_def = 8;</code>
      */
-    public io.littlehorse.sdk.common.proto.PutExternalEventDefPb.Builder getPutExternalEventDefBuilder() {
+    public io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.Builder getPutExternalEventDefBuilder() {
       return getPutExternalEventDefFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
+     * <code>.littlehorse.PutExternalEventDefRequest put_external_event_def = 8;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutExternalEventDefPbOrBuilder getPutExternalEventDefOrBuilder() {
+    public io.littlehorse.sdk.common.proto.PutExternalEventDefRequestOrBuilder getPutExternalEventDefOrBuilder() {
       if ((commandCase_ == 8) && (putExternalEventDefBuilder_ != null)) {
         return putExternalEventDefBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 8) {
-          return (io.littlehorse.sdk.common.proto.PutExternalEventDefPb) command_;
+          return (io.littlehorse.sdk.common.proto.PutExternalEventDefRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.PutExternalEventDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
+     * <code>.littlehorse.PutExternalEventDefRequest put_external_event_def = 8;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.PutExternalEventDefPb, io.littlehorse.sdk.common.proto.PutExternalEventDefPb.Builder, io.littlehorse.sdk.common.proto.PutExternalEventDefPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.PutExternalEventDefRequest, io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.Builder, io.littlehorse.sdk.common.proto.PutExternalEventDefRequestOrBuilder> 
         getPutExternalEventDefFieldBuilder() {
       if (putExternalEventDefBuilder_ == null) {
         if (!(commandCase_ == 8)) {
-          command_ = io.littlehorse.sdk.common.proto.PutExternalEventDefPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.getDefaultInstance();
         }
         putExternalEventDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.PutExternalEventDefPb, io.littlehorse.sdk.common.proto.PutExternalEventDefPb.Builder, io.littlehorse.sdk.common.proto.PutExternalEventDefPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.PutExternalEventDefPb) command_,
+            io.littlehorse.sdk.common.proto.PutExternalEventDefRequest, io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.Builder, io.littlehorse.sdk.common.proto.PutExternalEventDefRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutExternalEventDefRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -3215,9 +3215,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.PutExternalEventPb, io.littlehorse.sdk.common.proto.PutExternalEventPb.Builder, io.littlehorse.sdk.common.proto.PutExternalEventPbOrBuilder> putExternalEventBuilder_;
+        io.littlehorse.sdk.common.proto.PutExternalEventRequest, io.littlehorse.sdk.common.proto.PutExternalEventRequest.Builder, io.littlehorse.sdk.common.proto.PutExternalEventRequestOrBuilder> putExternalEventBuilder_;
     /**
-     * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
+     * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
      * @return Whether the putExternalEvent field is set.
      */
     @java.lang.Override
@@ -3225,27 +3225,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 10;
     }
     /**
-     * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
+     * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
      * @return The putExternalEvent.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutExternalEventPb getPutExternalEvent() {
+    public io.littlehorse.sdk.common.proto.PutExternalEventRequest getPutExternalEvent() {
       if (putExternalEventBuilder_ == null) {
         if (commandCase_ == 10) {
-          return (io.littlehorse.sdk.common.proto.PutExternalEventPb) command_;
+          return (io.littlehorse.sdk.common.proto.PutExternalEventRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.PutExternalEventPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutExternalEventRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 10) {
           return putExternalEventBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.PutExternalEventPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutExternalEventRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
+     * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
      */
-    public Builder setPutExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventPb value) {
+    public Builder setPutExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest value) {
       if (putExternalEventBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3259,10 +3259,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
+     * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
      */
     public Builder setPutExternalEvent(
-        io.littlehorse.sdk.common.proto.PutExternalEventPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.PutExternalEventRequest.Builder builderForValue) {
       if (putExternalEventBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -3273,13 +3273,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
+     * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
      */
-    public Builder mergePutExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventPb value) {
+    public Builder mergePutExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest value) {
       if (putExternalEventBuilder_ == null) {
         if (commandCase_ == 10 &&
-            command_ != io.littlehorse.sdk.common.proto.PutExternalEventPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.PutExternalEventPb.newBuilder((io.littlehorse.sdk.common.proto.PutExternalEventPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.PutExternalEventRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.PutExternalEventRequest.newBuilder((io.littlehorse.sdk.common.proto.PutExternalEventRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -3296,7 +3296,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
+     * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
      */
     public Builder clearPutExternalEvent() {
       if (putExternalEventBuilder_ == null) {
@@ -3315,38 +3315,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
+     * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
      */
-    public io.littlehorse.sdk.common.proto.PutExternalEventPb.Builder getPutExternalEventBuilder() {
+    public io.littlehorse.sdk.common.proto.PutExternalEventRequest.Builder getPutExternalEventBuilder() {
       return getPutExternalEventFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
+     * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutExternalEventPbOrBuilder getPutExternalEventOrBuilder() {
+    public io.littlehorse.sdk.common.proto.PutExternalEventRequestOrBuilder getPutExternalEventOrBuilder() {
       if ((commandCase_ == 10) && (putExternalEventBuilder_ != null)) {
         return putExternalEventBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 10) {
-          return (io.littlehorse.sdk.common.proto.PutExternalEventPb) command_;
+          return (io.littlehorse.sdk.common.proto.PutExternalEventRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.PutExternalEventPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutExternalEventRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
+     * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.PutExternalEventPb, io.littlehorse.sdk.common.proto.PutExternalEventPb.Builder, io.littlehorse.sdk.common.proto.PutExternalEventPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.PutExternalEventRequest, io.littlehorse.sdk.common.proto.PutExternalEventRequest.Builder, io.littlehorse.sdk.common.proto.PutExternalEventRequestOrBuilder> 
         getPutExternalEventFieldBuilder() {
       if (putExternalEventBuilder_ == null) {
         if (!(commandCase_ == 10)) {
-          command_ = io.littlehorse.sdk.common.proto.PutExternalEventPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.PutExternalEventRequest.getDefaultInstance();
         }
         putExternalEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.PutExternalEventPb, io.littlehorse.sdk.common.proto.PutExternalEventPb.Builder, io.littlehorse.sdk.common.proto.PutExternalEventPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.PutExternalEventPb) command_,
+            io.littlehorse.sdk.common.proto.PutExternalEventRequest, io.littlehorse.sdk.common.proto.PutExternalEventRequest.Builder, io.littlehorse.sdk.common.proto.PutExternalEventRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutExternalEventRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -5061,9 +5061,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.PutUserTaskDefPb, io.littlehorse.sdk.common.proto.PutUserTaskDefPb.Builder, io.littlehorse.sdk.common.proto.PutUserTaskDefPbOrBuilder> putUserTaskDefBuilder_;
+        io.littlehorse.sdk.common.proto.PutUserTaskDefRequest, io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.PutUserTaskDefRequestOrBuilder> putUserTaskDefBuilder_;
     /**
-     * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+     * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
      * @return Whether the putUserTaskDef field is set.
      */
     @java.lang.Override
@@ -5071,27 +5071,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 23;
     }
     /**
-     * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+     * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
      * @return The putUserTaskDef.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutUserTaskDefPb getPutUserTaskDef() {
+    public io.littlehorse.sdk.common.proto.PutUserTaskDefRequest getPutUserTaskDef() {
       if (putUserTaskDefBuilder_ == null) {
         if (commandCase_ == 23) {
-          return (io.littlehorse.sdk.common.proto.PutUserTaskDefPb) command_;
+          return (io.littlehorse.sdk.common.proto.PutUserTaskDefRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.PutUserTaskDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 23) {
           return putUserTaskDefBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.PutUserTaskDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+     * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
      */
-    public Builder setPutUserTaskDef(io.littlehorse.sdk.common.proto.PutUserTaskDefPb value) {
+    public Builder setPutUserTaskDef(io.littlehorse.sdk.common.proto.PutUserTaskDefRequest value) {
       if (putUserTaskDefBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -5105,10 +5105,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+     * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
      */
     public Builder setPutUserTaskDef(
-        io.littlehorse.sdk.common.proto.PutUserTaskDefPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.Builder builderForValue) {
       if (putUserTaskDefBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -5119,13 +5119,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+     * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
      */
-    public Builder mergePutUserTaskDef(io.littlehorse.sdk.common.proto.PutUserTaskDefPb value) {
+    public Builder mergePutUserTaskDef(io.littlehorse.sdk.common.proto.PutUserTaskDefRequest value) {
       if (putUserTaskDefBuilder_ == null) {
         if (commandCase_ == 23 &&
-            command_ != io.littlehorse.sdk.common.proto.PutUserTaskDefPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.PutUserTaskDefPb.newBuilder((io.littlehorse.sdk.common.proto.PutUserTaskDefPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.newBuilder((io.littlehorse.sdk.common.proto.PutUserTaskDefRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -5142,7 +5142,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+     * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
      */
     public Builder clearPutUserTaskDef() {
       if (putUserTaskDefBuilder_ == null) {
@@ -5161,38 +5161,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+     * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
      */
-    public io.littlehorse.sdk.common.proto.PutUserTaskDefPb.Builder getPutUserTaskDefBuilder() {
+    public io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.Builder getPutUserTaskDefBuilder() {
       return getPutUserTaskDefFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+     * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutUserTaskDefPbOrBuilder getPutUserTaskDefOrBuilder() {
+    public io.littlehorse.sdk.common.proto.PutUserTaskDefRequestOrBuilder getPutUserTaskDefOrBuilder() {
       if ((commandCase_ == 23) && (putUserTaskDefBuilder_ != null)) {
         return putUserTaskDefBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 23) {
-          return (io.littlehorse.sdk.common.proto.PutUserTaskDefPb) command_;
+          return (io.littlehorse.sdk.common.proto.PutUserTaskDefRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.PutUserTaskDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+     * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.PutUserTaskDefPb, io.littlehorse.sdk.common.proto.PutUserTaskDefPb.Builder, io.littlehorse.sdk.common.proto.PutUserTaskDefPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.PutUserTaskDefRequest, io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.PutUserTaskDefRequestOrBuilder> 
         getPutUserTaskDefFieldBuilder() {
       if (putUserTaskDefBuilder_ == null) {
         if (!(commandCase_ == 23)) {
-          command_ = io.littlehorse.sdk.common.proto.PutUserTaskDefPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.getDefaultInstance();
         }
         putUserTaskDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.PutUserTaskDefPb, io.littlehorse.sdk.common.proto.PutUserTaskDefPb.Builder, io.littlehorse.sdk.common.proto.PutUserTaskDefPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.PutUserTaskDefPb) command_,
+            io.littlehorse.sdk.common.proto.PutUserTaskDefRequest, io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.PutUserTaskDefRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutUserTaskDefRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;

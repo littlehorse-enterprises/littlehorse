@@ -4,18 +4,18 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.PutExternalEventPb}
+ * Protobuf type {@code littlehorse.PutExternalEventRequest}
  */
-public final class PutExternalEventPb extends
+public final class PutExternalEventRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.PutExternalEventPb)
-    PutExternalEventPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.PutExternalEventRequest)
+    PutExternalEventRequestOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use PutExternalEventPb.newBuilder() to construct.
-  private PutExternalEventPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use PutExternalEventRequest.newBuilder() to construct.
+  private PutExternalEventRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private PutExternalEventPb() {
+  private PutExternalEventRequest() {
     wfRunId_ = "";
     externalEventDefName_ = "";
     guid_ = "";
@@ -25,7 +25,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new PutExternalEventPb();
+    return new PutExternalEventRequest();
   }
 
   @java.lang.Override
@@ -35,15 +35,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutExternalEventPb_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutExternalEventRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutExternalEventPb_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutExternalEventRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.PutExternalEventPb.class, io.littlehorse.sdk.common.proto.PutExternalEventPb.Builder.class);
+            io.littlehorse.sdk.common.proto.PutExternalEventRequest.class, io.littlehorse.sdk.common.proto.PutExternalEventRequest.Builder.class);
   }
 
   private int bitField0_;
@@ -308,10 +308,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.PutExternalEventPb)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.PutExternalEventRequest)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.PutExternalEventPb other = (io.littlehorse.sdk.common.proto.PutExternalEventPb) obj;
+    io.littlehorse.sdk.common.proto.PutExternalEventRequest other = (io.littlehorse.sdk.common.proto.PutExternalEventRequest) obj;
 
     if (!getWfRunId()
         .equals(other.getWfRunId())) return false;
@@ -373,69 +373,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.PutExternalEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutExternalEventRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.PutExternalEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutExternalEventRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.PutExternalEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutExternalEventRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.PutExternalEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutExternalEventRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.PutExternalEventPb parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.PutExternalEventRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.PutExternalEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutExternalEventRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.PutExternalEventPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.PutExternalEventRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.PutExternalEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutExternalEventRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.PutExternalEventPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.PutExternalEventRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.PutExternalEventPb parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.PutExternalEventRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.PutExternalEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutExternalEventRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.PutExternalEventPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.PutExternalEventRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -448,7 +448,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.PutExternalEventPb prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.PutExternalEventRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -464,26 +464,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.PutExternalEventPb}
+   * Protobuf type {@code littlehorse.PutExternalEventRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.PutExternalEventPb)
-      io.littlehorse.sdk.common.proto.PutExternalEventPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.PutExternalEventRequest)
+      io.littlehorse.sdk.common.proto.PutExternalEventRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutExternalEventPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutExternalEventRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutExternalEventPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutExternalEventRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.PutExternalEventPb.class, io.littlehorse.sdk.common.proto.PutExternalEventPb.Builder.class);
+              io.littlehorse.sdk.common.proto.PutExternalEventRequest.class, io.littlehorse.sdk.common.proto.PutExternalEventRequest.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.PutExternalEventPb.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.PutExternalEventRequest.newBuilder()
     private Builder() {
 
     }
@@ -513,17 +513,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutExternalEventPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutExternalEventRequest_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutExternalEventPb getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.PutExternalEventPb.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.PutExternalEventRequest getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.PutExternalEventRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutExternalEventPb build() {
-      io.littlehorse.sdk.common.proto.PutExternalEventPb result = buildPartial();
+    public io.littlehorse.sdk.common.proto.PutExternalEventRequest build() {
+      io.littlehorse.sdk.common.proto.PutExternalEventRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -531,14 +531,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.PutExternalEventPb buildPartial() {
-      io.littlehorse.sdk.common.proto.PutExternalEventPb result = new io.littlehorse.sdk.common.proto.PutExternalEventPb(this);
+    public io.littlehorse.sdk.common.proto.PutExternalEventRequest buildPartial() {
+      io.littlehorse.sdk.common.proto.PutExternalEventRequest result = new io.littlehorse.sdk.common.proto.PutExternalEventRequest(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.PutExternalEventPb result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.PutExternalEventRequest result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.wfRunId_ = wfRunId_;
@@ -601,16 +601,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.PutExternalEventPb) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.PutExternalEventPb)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.PutExternalEventRequest) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.PutExternalEventRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.PutExternalEventPb other) {
-      if (other == io.littlehorse.sdk.common.proto.PutExternalEventPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.PutExternalEventRequest other) {
+      if (other == io.littlehorse.sdk.common.proto.PutExternalEventRequest.getDefaultInstance()) return this;
       if (!other.getWfRunId().isEmpty()) {
         wfRunId_ = other.wfRunId_;
         bitField0_ |= 0x00000001;
@@ -1144,23 +1144,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.PutExternalEventPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.PutExternalEventRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.PutExternalEventPb)
-  private static final io.littlehorse.sdk.common.proto.PutExternalEventPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.PutExternalEventRequest)
+  private static final io.littlehorse.sdk.common.proto.PutExternalEventRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.PutExternalEventPb();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.PutExternalEventRequest();
   }
 
-  public static io.littlehorse.sdk.common.proto.PutExternalEventPb getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.PutExternalEventRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<PutExternalEventPb>
-      PARSER = new com.google.protobuf.AbstractParser<PutExternalEventPb>() {
+  private static final com.google.protobuf.Parser<PutExternalEventRequest>
+      PARSER = new com.google.protobuf.AbstractParser<PutExternalEventRequest>() {
     @java.lang.Override
-    public PutExternalEventPb parsePartialFrom(
+    public PutExternalEventRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1179,17 +1179,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<PutExternalEventPb> parser() {
+  public static com.google.protobuf.Parser<PutExternalEventRequest> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<PutExternalEventPb> getParserForType() {
+  public com.google.protobuf.Parser<PutExternalEventRequest> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.PutExternalEventPb getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.PutExternalEventRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

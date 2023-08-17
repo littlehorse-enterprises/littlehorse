@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface PutUserTaskDefReplyPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.PutUserTaskDefReplyPb)
+public interface PutExternalEventResponseOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.PutExternalEventResponse)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -36,17 +36,17 @@ public interface PutUserTaskDefReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>optional .littlehorse.UserTaskDef result = 3;</code>
+   * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>optional .littlehorse.UserTaskDef result = 3;</code>
+   * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
    * @return The result.
    */
-  io.littlehorse.sdk.common.proto.UserTaskDef getResult();
+  io.littlehorse.sdk.common.proto.ExternalEventPb getResult();
   /**
-   * <code>optional .littlehorse.UserTaskDef result = 3;</code>
+   * <code>optional .littlehorse.ExternalEventPb result = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskDefOrBuilder getResultOrBuilder();
+  io.littlehorse.sdk.common.proto.ExternalEventPbOrBuilder getResultOrBuilder();
 }

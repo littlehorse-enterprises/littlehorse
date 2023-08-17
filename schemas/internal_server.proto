@@ -330,11 +330,11 @@ message CommandPb {
     oneof command {
         ReportTaskRunPb report_task_run = 3;
         TaskClaimEventPb task_claim_event = 4;
-        PutWfSpecPb put_wf_spec = 6;
-        PutTaskDefPb put_task_def = 7;
-        PutExternalEventDefPb put_external_event_def = 8;
+        PutWfSpecRequest put_wf_spec = 6;
+        PutTaskDefRequest put_task_def = 7;
+        PutExternalEventDefRequest put_external_event_def = 8;
         RunWfPb run_wf = 9;
-        PutExternalEventPb put_external_event = 10;
+        PutExternalEventRequest put_external_event = 10;
         StopWfRunPb stop_wf_run = 11;
         ResumeWfRunPb resume_wf_run = 12;
         SleepNodeMaturedPb sleep_node_matured = 13;
@@ -347,7 +347,7 @@ message CommandPb {
         DeleteExternalEventPb delete_external_event = 20;
         AssignUserTaskRunPb assign_user_task_run = 21;
         CompleteUserTaskRunPb complete_user_task_run = 22;
-        PutUserTaskDefPb put_user_task_def = 23;
+        PutUserTaskDefRequest put_user_task_def = 23;
         TriggeredTaskRunPb triggered_task_run = 24;
         DeleteUserTaskDefPb delete_user_task_def = 25;
         ReassignedUserTaskPb reassigned_user_task = 26;

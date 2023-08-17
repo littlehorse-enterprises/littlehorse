@@ -1,7 +1,7 @@
 package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.sdk.common.proto.PutTaskDefPb;
+import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.List;
@@ -19,8 +19,8 @@ public class TaskDefBuilder {
         this.taskDefName = taskDefName;
     }
 
-    public PutTaskDefPb toPutTaskDefPb() {
-        PutTaskDefPb.Builder out = PutTaskDefPb.newBuilder();
+    public PutTaskDefRequest toPutTaskDefRequest() {
+        PutTaskDefRequest.Builder out = PutTaskDefRequest.newBuilder();
         List<String> varNames = signature.getVarNames();
         List<VariableType> varTypes = signature.getParamTypes();
 

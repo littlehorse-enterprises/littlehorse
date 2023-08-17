@@ -6,7 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventReply;
+import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventResponseModel;
 import io.littlehorse.common.model.meta.ExternalEventDefModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
@@ -16,11 +16,12 @@ import io.littlehorse.common.model.wfrun.VariableValueModel;
 import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.PutExternalEventPb;
+import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
 
-public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
+public class PutExternalEventRequestModel
+    extends SubCommand<PutExternalEventRequest> {
 
     public String wfRunId;
     public String externalEventDefName;
@@ -33,12 +34,12 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
         return wfRunId;
     }
 
-    public Class<PutExternalEventPb> getProtoBaseClass() {
-        return PutExternalEventPb.class;
+    public Class<PutExternalEventRequest> getProtoBaseClass() {
+        return PutExternalEventRequest.class;
     }
 
-    public PutExternalEventPb.Builder toProto() {
-        PutExternalEventPb.Builder out = PutExternalEventPb
+    public PutExternalEventRequest.Builder toProto() {
+        PutExternalEventRequest.Builder out = PutExternalEventRequest
             .newBuilder()
             .setWfRunId(wfRunId)
             .setExternalEventDefName(externalEventDefName)
@@ -55,8 +56,8 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
         return true;
     }
 
-    public PutExternalEventReply process(LHDAO dao, LHConfig config) {
-        PutExternalEventReply out = new PutExternalEventReply();
+    public PutExternalEventResponseModel process(LHDAO dao, LHConfig config) {
+        PutExternalEventResponseModel out = new PutExternalEventResponseModel();
 
         ExternalEventDefModel eed = dao.getExternalEventDef(externalEventDefName);
         if (eed == null) {
@@ -129,7 +130,7 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
     }
 
     public void initFrom(Message proto) {
-        PutExternalEventPb p = (PutExternalEventPb) proto;
+        PutExternalEventRequest p = (PutExternalEventRequest) proto;
         wfRunId = p.getWfRunId();
         externalEventDefName = p.getExternalEventDefName();
         content = VariableValueModel.fromProto(p.getContent());
@@ -139,8 +140,8 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
         if (p.hasNodeRunPosition()) nodeRunPosition = p.getNodeRunPosition();
     }
 
-    public static PutExternalEvent fromProto(PutExternalEventPb p) {
-        PutExternalEvent out = new PutExternalEvent();
+    public static PutExternalEventRequestModel fromProto(PutExternalEventRequest p) {
+        PutExternalEventRequestModel out = new PutExternalEventRequestModel();
         out.initFrom(p);
         return out;
     }
