@@ -24,7 +24,7 @@ var deployTaskDefCmd = &cobra.Command{
 			log.Fatal("You must provide one argument: the filename to deploy from.")
 
 		}
-		ptd := &model.PutTaskDefPb{}
+		ptd := &model.PutTaskDefRequest{}
 
 		// First, read the file
 		dat, err := os.ReadFile(args[0])
@@ -67,7 +67,7 @@ var getTaskDefCmd = &cobra.Command{
 		common.PrintResp(
 			getGlobalClient(cmd).GetTaskDef(
 				context.Background(),
-				&model.TaskDefIdPb{
+				&model.TaskDefId{
 					Name: name,
 				},
 			),

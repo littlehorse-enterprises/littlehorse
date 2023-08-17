@@ -29,11 +29,11 @@ func GetInputVarDefs(w *model.WfSpec) map[string]*model.VariableDef {
 	return out
 }
 
-func GetWfRunIdFromTaskSource(source *model.TaskRunSourcePb) *string {
+func GetWfRunIdFromTaskSource(source *model.TaskRunSource) *string {
 	switch s := source.TaskRunSource.(type) {
-	case *model.TaskRunSourcePb_UserTaskTrigger:
+	case *model.TaskRunSource_UserTaskTrigger:
 		return &s.UserTaskTrigger.NodeRunId.WfRunId
-	case *model.TaskRunSourcePb_TaskNode:
+	case *model.TaskRunSource_TaskNode:
 		return &s.TaskNode.NodeRunId.WfRunId
 	}
 	return nil

@@ -70,7 +70,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			} else {
 				wfSpecReply, err = getGlobalClient(cmd).GetWfSpec(
 					context.Background(),
-					&model.WfSpecIdPb{
+					&model.WfSpecId{
 						Name:    args[0],
 						Version: *wfSpecVersion,
 					})
@@ -79,7 +79,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			if err != nil {
 				log.Fatal("Unable to find WfSpec: " + err.Error())
 			}
-			if wfSpecReply.Code != model.LHResponseCodePb_OK {
+			if wfSpecReply.Code != model.LHResponseCode_OK {
 				msg := "Unable to find WfSpec"
 				if wfSpecReply.Message != nil {
 					msg += ": " + *wfSpecReply.Message

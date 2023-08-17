@@ -89,7 +89,7 @@ func NewTaskSignature(taskFunc interface{}) (*TaskFuncSignature, error) {
 	return out, nil
 }
 
-func (a *TaskFuncArg) Assign(task *model.ScheduledTaskPb, context *WorkerContext) (*reflect.Value, error) {
+func (a *TaskFuncArg) Assign(task *model.ScheduledTask, context *WorkerContext) (*reflect.Value, error) {
 	result, err := a.assign(task, context)
 	if err != nil {
 		return nil, err
@@ -98,7 +98,7 @@ func (a *TaskFuncArg) Assign(task *model.ScheduledTaskPb, context *WorkerContext
 	return &temp, nil
 }
 
-func (a *TaskFuncArg) assign(task *model.ScheduledTaskPb, context *WorkerContext) (interface{}, error) {
+func (a *TaskFuncArg) assign(task *model.ScheduledTask, context *WorkerContext) (interface{}, error) {
 	if a.Type.Kind() == reflect.Ptr && a.Type.Elem().Name() == "WorkerContext" {
 		return context, nil
 	}

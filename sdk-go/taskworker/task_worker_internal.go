@@ -17,7 +17,7 @@ import (
 const TOTAL_RETRIES = 5
 
 func (tw *LHTaskWorker) registerTaskDef(ignoreAlreadyExistsError bool) error {
-	ptd := &model.PutTaskDefPb{
+	ptd := &model.PutTaskDefRequest{
 		Name:      tw.taskDefName,
 		InputVars: make([]*model.VariableDef, 0),
 	}
@@ -191,7 +191,7 @@ func (m *serverConnectionManager) start() {
 			return
 		}
 
-		if reply.Code != model.LHResponseCodePb_OK {
+		if reply.Code != model.LHResponseCode_OK {
 			log.Println("Got a bad response, but ignoring it: " + *reply.Message)
 			// each 'serverConnection' will close itself if it can't talk to LH
 
@@ -275,10 +275,10 @@ func (m *serverConnectionManager) onConnectionClosed(conn *serverConnection) {
 // stores the info related to the task and which stub it should connect to
 type taskExecutionInfo struct {
 	specificStub *model.LHPublicApiClient
-	task         *model.ScheduledTaskPb
+	task         *model.ScheduledTask
 }
 
-func (m *serverConnectionManager) submitTaskForExecution(task *model.ScheduledTaskPb, specificStub *model.LHPublicApiClient) {
+func (m *serverConnectionManager) submitTaskForExecution(task *model.ScheduledTask, specificStub *model.LHPublicApiClient) {
 	taskToExecution := &taskExecutionInfo{
 		specificStub: specificStub,
 		task:         task,
@@ -314,7 +314,7 @@ func (m *serverConnectionManager) retryReportTask(ctx context.Context, taskResul
 	}
 }
 
-func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTaskPb) *model.ReportTaskRunPb {
+func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTask) *model.ReportTaskRunPb {
 	var reflectArgs []reflect.Value
 	taskResult := &model.ReportTaskRunPb{
 		TaskRunId: task.TaskRunId,
@@ -333,7 +333,7 @@ func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTaskPb) *mod
 				Str:  &msg,
 				Type: model.VariableType_STR,
 			}
-			taskResult.Status = model.TaskStatusPb_TASK_INPUT_VAR_SUB_ERROR
+			taskResult.Status = model.TaskStatus_TASK_INPUT_VAR_SUB_ERROR
 			return taskResult
 		}
 		reflectArgs = append(reflectArgs, *goValue)
@@ -360,7 +360,7 @@ func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTaskPb) *mod
 					Str:  &msg,
 					Type: model.VariableType_STR,
 				}
-				taskResult.Status = model.TaskStatusPb_TASK_OUTPUT_SERIALIZING_ERROR
+				taskResult.Status = model.TaskStatus_TASK_OUTPUT_SERIALIZING_ERROR
 				return taskResult
 			}
 			taskResult.Output = taskOutputVarVal
@@ -371,7 +371,7 @@ func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTaskPb) *mod
 					Type: model.VariableType_STR,
 				}
 			}
-			taskResult.Status = model.TaskStatusPb_TASK_SUCCESS
+			taskResult.Status = model.TaskStatus_TASK_SUCCESS
 		}
 	}
 
@@ -385,7 +385,7 @@ func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTaskPb) *mod
 			} else {
 				taskResult.LogOutput = errorVarVal
 			}
-			taskResult.Status = model.TaskStatusPb_TASK_FAILED
+			taskResult.Status = model.TaskStatus_TASK_FAILED
 		}
 	}
 

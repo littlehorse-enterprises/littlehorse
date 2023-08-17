@@ -318,7 +318,7 @@ func getUserTaskDef(userTaskRun *model.UserTaskRun, client *model.LHPublicApiCli
 	if err != nil {
 		return nil, err
 	}
-	if resp.Code != model.LHResponseCodePb_OK {
+	if resp.Code != model.LHResponseCode_OK {
 		return nil, errors.New(*resp.Message)
 	}
 	return resp.Result, nil
@@ -332,7 +332,7 @@ func getUserTaskRun(wfRunId, userTaskGuid string, client *model.LHPublicApiClien
 	if err != nil {
 		return nil, err
 	}
-	if resp.Code != model.LHResponseCodePb_OK {
+	if resp.Code != model.LHResponseCode_OK {
 		return nil, errors.New(*resp.Message)
 	}
 	if resp.Result.Status == model.UserTaskRunStatus_DONE || resp.Result.Status == model.UserTaskRunStatus_CANCELLED {
