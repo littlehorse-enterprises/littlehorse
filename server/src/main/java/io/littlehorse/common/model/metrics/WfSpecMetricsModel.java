@@ -8,7 +8,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.WfSpecMetrics;
-import io.littlehorse.sdk.common.proto.WfSpecMetricsQueryPb;
+import io.littlehorse.sdk.common.proto.WfSpecMetricsQueryRequest;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.util.Date;
@@ -83,7 +83,7 @@ public class WfSpecMetricsModel extends Getable<WfSpecMetrics> {
             .getStoreKey();
     }
 
-    public static String getObjectId(WfSpecMetricsQueryPb request) {
+    public static String getObjectId(WfSpecMetricsQueryRequest request) {
         return new WfSpecMetricsIdModel(
             LHUtil.getWindowStart(
                 LHUtil.fromProtoTs(request.getWindowStart()),

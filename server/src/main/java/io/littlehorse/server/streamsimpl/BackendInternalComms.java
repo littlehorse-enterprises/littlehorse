@@ -29,20 +29,20 @@ import io.littlehorse.common.model.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb;
-import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
+import io.littlehorse.common.proto.CentralStoreQueryResponse;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalGetAdvertisedHostsPb;
-import io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb;
+import io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse;
 import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
-import io.littlehorse.common.proto.InternalScanReplyPb;
+import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsStub;
 import io.littlehorse.common.proto.LocalTasksPb;
-import io.littlehorse.common.proto.LocalTasksReplyPb;
+import io.littlehorse.common.proto.LocalTasksResponse;
 import io.littlehorse.common.proto.PartitionBookmarkPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.ServerStatePb;
@@ -51,9 +51,9 @@ import io.littlehorse.common.proto.StandByTaskStatePb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.TaskStatePb;
 import io.littlehorse.common.proto.TopologyInstanceStatePb;
-import io.littlehorse.common.proto.TopologyInstanceStateReplyPb;
+import io.littlehorse.common.proto.TopologyInstanceStateResponse;
 import io.littlehorse.common.proto.WaitForCommandPb;
-import io.littlehorse.common.proto.WaitForCommandReplyPb;
+import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
@@ -107,7 +107,7 @@ public class BackendInternalComms implements Closeable {
 
     private Map<String, ManagedChannel> channels;
     private AsyncWaiters asyncWaiters;
-    private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsReplyPb> otherHosts;
+    private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
     public BackendInternalComms(
         LHConfig config,
@@ -200,7 +200,7 @@ public class BackendInternalComms implements Closeable {
         String storeName,
         String fullStoreKey,
         String partitionKey,
-        StreamObserver<CentralStoreQueryReplyPb> observer
+        StreamObserver<CentralStoreQueryResponse> observer
     ) {
         KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
             storeName,
@@ -223,7 +223,7 @@ public class BackendInternalComms implements Closeable {
     private void localGetBytesAsync(
         String storeName,
         String fullStoreKey,
-        StreamObserver<CentralStoreQueryReplyPb> observer
+        StreamObserver<CentralStoreQueryResponse> observer
     ) {
         // TODO: We should actually pass in the partition key so that we can
         // improve performance and also safety by getting the store for a specific
@@ -235,7 +235,7 @@ public class BackendInternalComms implements Closeable {
         );
         Bytes result = store.get(fullStoreKey);
 
-        CentralStoreQueryReplyPb.Builder out = CentralStoreQueryReplyPb
+        CentralStoreQueryResponse.Builder out = CentralStoreQueryResponse
             .newBuilder()
             .setCode(StoreQueryStatusPb.RSQ_OK);
         if (result != null) out.setResult(ByteString.copyFrom(result.get()));
@@ -246,7 +246,7 @@ public class BackendInternalComms implements Closeable {
     public void getLastFromPrefixAsync(
         String prefix,
         String partitionKey,
-        StreamObserver<CentralStoreQueryReplyPb> observer,
+        StreamObserver<CentralStoreQueryResponse> observer,
         String storeName
     ) {
         KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
@@ -261,7 +261,7 @@ public class BackendInternalComms implements Closeable {
                 config
             );
             Bytes result = wrapper.getLastBytesFromFullPrefix(prefix);
-            CentralStoreQueryReplyPb.Builder out = CentralStoreQueryReplyPb.newBuilder();
+            CentralStoreQueryResponse.Builder out = CentralStoreQueryResponse.newBuilder();
             out.setCode(StoreQueryStatusPb.RSQ_OK);
             if (result != null) {
                 out.setResult(ByteString.copyFrom(result.get()));
@@ -281,7 +281,7 @@ public class BackendInternalComms implements Closeable {
     // against passing in a Command that's incompatible with the POSTStreamObserver.
     public void waitForCommand(
         Command command,
-        StreamObserver<WaitForCommandReplyPb> observer
+        StreamObserver<WaitForCommandResponse> observer
     ) {
         KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
             ServerTopology.CORE_STORE,
@@ -322,7 +322,7 @@ public class BackendInternalComms implements Closeable {
         HostModel host,
         String listenerName
     ) throws LHBadRequestError, LHConnectionError {
-        InternalGetAdvertisedHostsReplyPb advertisedHostsForHost = getPublicListenersForHost(
+        InternalGetAdvertisedHostsResponse advertisedHostsForHost = getPublicListenersForHost(
             new HostInfo(host.host, host.port)
         );
 
@@ -366,7 +366,7 @@ public class BackendInternalComms implements Closeable {
         return out;
     }
 
-    private InternalGetAdvertisedHostsReplyPb getPublicListenersForHost(
+    private InternalGetAdvertisedHostsResponse getPublicListenersForHost(
         HostInfo streamsHost
     ) throws LHConnectionError {
         if (otherHosts.get(streamsHost) != null) {
@@ -374,7 +374,7 @@ public class BackendInternalComms implements Closeable {
         }
 
         try {
-            InternalGetAdvertisedHostsReplyPb info = getInternalClient(streamsHost)
+            InternalGetAdvertisedHostsResponse info = getInternalClient(streamsHost)
                 .getAdvertisedHosts(
                     InternalGetAdvertisedHostsPb.newBuilder().build()
                 );
@@ -397,7 +397,10 @@ public class BackendInternalComms implements Closeable {
         return producer;
     }
 
-    public void onResponseReceived(String commandId, WaitForCommandReplyPb response) {
+    public void onResponseReceived(
+        String commandId,
+        WaitForCommandResponse response
+    ) {
         asyncWaiters.put(commandId, response);
     }
 
@@ -407,7 +410,7 @@ public class BackendInternalComms implements Closeable {
 
     private void localWaitForCommand(
         String commandId,
-        StreamObserver<WaitForCommandReplyPb> observer
+        StreamObserver<WaitForCommandResponse> observer
     ) {
         asyncWaiters.put(commandId, observer);
         // Once the command has been recorded, we've got nothing to do: the
@@ -466,7 +469,7 @@ public class BackendInternalComms implements Closeable {
     private void queryRemoteAsync(
         KeyQueryMetadata meta,
         CentralStoreSubQueryPb subQuery,
-        StreamObserver<CentralStoreQueryReplyPb> observer,
+        StreamObserver<CentralStoreQueryResponse> observer,
         String storeName
     ) {
         // todo
@@ -525,12 +528,12 @@ public class BackendInternalComms implements Closeable {
         @Override
         public void topologyInstancesState(
             TopologyInstanceStatePb request,
-            StreamObserver<TopologyInstanceStateReplyPb> ctx
+            StreamObserver<TopologyInstanceStateResponse> ctx
         ) {
             var coreServerStates = buildServerStates(coreStreams, "core");
             var timerServerStates = buildServerStates(timerStreams, "timer");
 
-            TopologyInstanceStateReplyPb response = TopologyInstanceStateReplyPb
+            TopologyInstanceStateResponse response = TopologyInstanceStateResponse
                 .newBuilder()
                 .addAllServersCore(coreServerStates)
                 .addAllServersTimer(timerServerStates)
@@ -552,7 +555,7 @@ public class BackendInternalComms implements Closeable {
                     var internalClient = getInternalClient(hostInfo);
 
                     try {
-                        LocalTasksReplyPb hostTask = internalClient.localTasks(
+                        LocalTasksResponse hostTask = internalClient.localTasks(
                             LocalTasksPb.newBuilder().build()
                         );
                         ServerStatePb serverState = ServerStatePb
@@ -588,7 +591,7 @@ public class BackendInternalComms implements Closeable {
         @Override
         public void localTasks(
             LocalTasksPb request,
-            StreamObserver<LocalTasksReplyPb> ctx
+            StreamObserver<LocalTasksResponse> ctx
         ) {
             List<TaskStatePb> activeTasks = coreStreams
                 .metadataForLocalThreads()
@@ -608,7 +611,7 @@ public class BackendInternalComms implements Closeable {
                 )
                 .collect(Collectors.toList());
 
-            LocalTasksReplyPb response = LocalTasksReplyPb
+            LocalTasksResponse response = LocalTasksResponse
                 .newBuilder()
                 .addAllActiveTasks(activeTasks)
                 .addAllStandbyTasks(standbyTasks)
@@ -706,14 +709,14 @@ public class BackendInternalComms implements Closeable {
         @Override
         public void centralStoreQuery(
             CentralStoreQueryPb req,
-            StreamObserver<CentralStoreQueryReplyPb> ctx
+            StreamObserver<CentralStoreQueryResponse> ctx
         ) {
             Integer specificPartition = null;
             if (req.hasSpecificPartition()) {
                 specificPartition = req.getSpecificPartition();
             }
 
-            CentralStoreQueryReplyPb.Builder out = CentralStoreQueryReplyPb.newBuilder();
+            CentralStoreQueryResponse.Builder out = CentralStoreQueryResponse.newBuilder();
 
             ReadOnlyKeyValueStore<String, Bytes> rawStore;
             try {
@@ -760,16 +763,16 @@ public class BackendInternalComms implements Closeable {
         @Override
         public void internalScan(
             InternalScanPb req,
-            StreamObserver<InternalScanReplyPb> ctx
+            StreamObserver<InternalScanResponse> ctx
         ) {
             InternalScan lhis = LHSerializable.fromProto(req, InternalScan.class);
 
             try {
-                InternalScanReplyPb reply = doScan(lhis);
+                InternalScanResponse reply = doScan(lhis);
                 ctx.onNext(reply);
             } catch (LHConnectionError exn) {
                 ctx.onNext(
-                    InternalScanReplyPb
+                    InternalScanResponse
                         .newBuilder()
                         .setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE)
                         .setMessage("Internal connection error: " + exn.getMessage())
@@ -783,7 +786,7 @@ public class BackendInternalComms implements Closeable {
         @Override
         public void waitForCommand(
             WaitForCommandPb req,
-            StreamObserver<WaitForCommandReplyPb> ctx
+            StreamObserver<WaitForCommandResponse> ctx
         ) {
             localWaitForCommand(req.getCommandId(), ctx);
         }
@@ -791,7 +794,7 @@ public class BackendInternalComms implements Closeable {
         @Override
         public void getAdvertisedHosts(
             InternalGetAdvertisedHostsPb req,
-            StreamObserver<InternalGetAdvertisedHostsReplyPb> ctx
+            StreamObserver<InternalGetAdvertisedHostsResponse> ctx
         ) {
             Map<String, io.littlehorse.sdk.common.proto.HostInfo> hosts = config
                 .getAdvertisedListeners()
@@ -808,7 +811,7 @@ public class BackendInternalComms implements Closeable {
                     )
                 );
 
-            InternalGetAdvertisedHostsReplyPb reply = InternalGetAdvertisedHostsReplyPb
+            InternalGetAdvertisedHostsResponse reply = InternalGetAdvertisedHostsResponse
                 .newBuilder()
                 .putAllHosts(hosts)
                 .build();
@@ -823,7 +826,7 @@ public class BackendInternalComms implements Closeable {
      *
      * EMPLOYEE_TODO: Failover to Standby replicas if the leader is down.
      */
-    public InternalScanReplyPb doScan(InternalScan search) throws LHConnectionError {
+    public InternalScanResponse doScan(InternalScan search) throws LHConnectionError {
         if (
             search.partitionKey != null &&
             search.type == ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN
@@ -842,13 +845,13 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    private InternalScanReplyPb specificPartitionTagScan(InternalScan search) {
+    private InternalScanResponse specificPartitionTagScan(InternalScan search) {
         KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
             search.getStoreName(),
             search.getPartitionKey(),
             Serdes.String().serializer()
         );
-        InternalScanReplyPb.Builder out = InternalScanReplyPb.newBuilder();
+        InternalScanResponse.Builder out = InternalScanResponse.newBuilder();
         HostInfo activeHost = meta.activeHost();
 
         if (activeHost.equals(thisHost)) {
@@ -885,7 +888,7 @@ public class BackendInternalComms implements Closeable {
                 out.addAllResults(matchingObjectIds);
             }
         } else {
-            InternalScanReplyPb reply = getInternalClient(activeHost)
+            InternalScanResponse reply = getInternalClient(activeHost)
                 .internalScan(search.toProto().build());
             out.addAllResults(reply.getResultsList());
         }
@@ -893,7 +896,7 @@ public class BackendInternalComms implements Closeable {
         return out.build();
     }
 
-    private InternalScanReplyPb objectIdPrefixScan(InternalScan search)
+    private InternalScanResponse objectIdPrefixScan(InternalScan search)
         throws LHConnectionError {
         HostInfo correctHost = getHostForKey(search.storeName, search.partitionKey);
 
@@ -906,7 +909,7 @@ public class BackendInternalComms implements Closeable {
             } catch (Exception exn) {
                 // EMPLOYEE_TODO: make the caught exn specific to grpc
                 // EMPLOYEE_TODO: use standby hosts
-                return InternalScanReplyPb
+                return InternalScanResponse
                     .newBuilder()
                     .setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE)
                     .setMessage("Failed contacting host: " + exn.getMessage())
@@ -915,7 +918,7 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    private InternalScanReplyPb objectIdPrefixScanOnThisHost(InternalScan req) {
+    private InternalScanResponse objectIdPrefixScanOnThisHost(InternalScan req) {
         /*
          * TODO: There's some things we need to verify here.
          * 1) It's a prerequisite that the request has a partition key set.
@@ -925,7 +928,7 @@ public class BackendInternalComms implements Closeable {
         if (reqBookmark == null) {
             reqBookmark = BookmarkPb.newBuilder().build();
         }
-        InternalScanReplyPb.Builder out = InternalScanReplyPb.newBuilder();
+        InternalScanResponse.Builder out = InternalScanResponse.newBuilder();
 
         KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
             req.storeName,
@@ -1020,7 +1023,7 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    private InternalScanReplyPb allPartitionTagScan(InternalScan search)
+    private InternalScanResponse allPartitionTagScan(InternalScan search)
         throws LHConnectionError {
         int limit = search.limit;
 
@@ -1030,7 +1033,7 @@ public class BackendInternalComms implements Closeable {
         // hasn't been completed yet (by consulting the Bookmark), and then
         // query the owner of that partition.
 
-        InternalScanReplyPb out = localAllPartitionTagScan(search);
+        InternalScanResponse out = localAllPartitionTagScan(search);
         if (out.getResultsCount() >= limit) {
             // Then we've gotten all the data the client asked for.
             return out;
@@ -1070,7 +1073,7 @@ public class BackendInternalComms implements Closeable {
             newReq.storeName = search.storeName;
             newReq.resultType = ScanResultTypePb.OBJECT_ID;
 
-            InternalScanReplyPb reply;
+            InternalScanResponse reply;
             try {
                 reply = stub.internalScan(newReq.toProto().build());
             } catch (Exception exn) {
@@ -1079,7 +1082,7 @@ public class BackendInternalComms implements Closeable {
             if (reply.getCode() != StoreQueryStatusPb.RSQ_OK) {
                 throw new LHConnectionError(null, "Failed connecting to backend.");
             }
-            InternalScanReplyPb.Builder newOutBuilder = InternalScanReplyPb
+            InternalScanResponse.Builder newOutBuilder = InternalScanResponse
                 .newBuilder()
                 .addAllResults(out.getResultsList())
                 .addAllResults(reply.getResultsList());
@@ -1147,7 +1150,7 @@ public class BackendInternalComms implements Closeable {
         return new GlobalMetaStoresServerImpl(coreStreams, config);
     }
 
-    private InternalScanReplyPb localAllPartitionTagScan(InternalScan req) {
+    private InternalScanResponse localAllPartitionTagScan(InternalScan req) {
         log.debug("Local Tag prefix scan");
         if (req.partitionKey != null) {
             throw new IllegalArgumentException(
@@ -1163,7 +1166,7 @@ public class BackendInternalComms implements Closeable {
         }
 
         BookmarkPb.Builder outBookmark = reqBookmark.toBuilder();
-        InternalScanReplyPb.Builder out = InternalScanReplyPb.newBuilder();
+        InternalScanResponse.Builder out = InternalScanResponse.newBuilder();
 
         // iterate through all active and standby local partitions
         for (int partition : getLocalActiveCommandProcessorPartitions()) {

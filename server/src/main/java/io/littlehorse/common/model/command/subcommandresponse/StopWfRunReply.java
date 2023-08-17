@@ -2,16 +2,16 @@ package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.sdk.common.proto.StopWfRunReplyPb;
+import io.littlehorse.sdk.common.proto.StopWfRunResponse;
 
-public class StopWfRunReply extends AbstractResponse<StopWfRunReplyPb> {
+public class StopWfRunReply extends AbstractResponse<StopWfRunResponse> {
 
-    public Class<StopWfRunReplyPb> getProtoBaseClass() {
-        return StopWfRunReplyPb.class;
+    public Class<StopWfRunResponse> getProtoBaseClass() {
+        return StopWfRunResponse.class;
     }
 
-    public StopWfRunReplyPb.Builder toProto() {
-        StopWfRunReplyPb.Builder out = StopWfRunReplyPb.newBuilder();
+    public StopWfRunResponse.Builder toProto() {
+        StopWfRunResponse.Builder out = StopWfRunResponse.newBuilder();
         out.setCode(code);
         if (message != null) {
             out.setMessage(message);
@@ -20,12 +20,12 @@ public class StopWfRunReply extends AbstractResponse<StopWfRunReplyPb> {
     }
 
     public void initFrom(Message proto) {
-        StopWfRunReplyPb p = (StopWfRunReplyPb) proto;
+        StopWfRunResponse p = (StopWfRunResponse) proto;
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();
     }
 
-    public static StopWfRunReply fromProto(StopWfRunReplyPb p) {
+    public static StopWfRunReply fromProto(StopWfRunResponse p) {
         StopWfRunReply out = new StopWfRunReply();
         out.initFrom(p);
         return out;

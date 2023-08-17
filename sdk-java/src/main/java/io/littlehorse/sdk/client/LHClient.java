@@ -5,25 +5,25 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHClientConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb;
-import io.littlehorse.sdk.common.proto.DeleteTaskDefPb;
-import io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb;
-import io.littlehorse.sdk.common.proto.DeleteWfRunPb;
-import io.littlehorse.sdk.common.proto.DeleteWfSpecPb;
+import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
+import io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest;
+import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
+import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
-import io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb;
-import io.littlehorse.sdk.common.proto.GetExternalEventReplyPb;
-import io.littlehorse.sdk.common.proto.GetLatestWfSpecPb;
-import io.littlehorse.sdk.common.proto.GetNodeRunReplyPb;
-import io.littlehorse.sdk.common.proto.GetTaskDefReplyPb;
-import io.littlehorse.sdk.common.proto.GetTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.GetUserTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.GetVariableReplyPb;
-import io.littlehorse.sdk.common.proto.GetWfRunReplyPb;
-import io.littlehorse.sdk.common.proto.GetWfSpecReplyPb;
+import io.littlehorse.sdk.common.proto.GetExternalEventDefResponse;
+import io.littlehorse.sdk.common.proto.GetExternalEventResponse;
+import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
+import io.littlehorse.sdk.common.proto.GetNodeRunResponse;
+import io.littlehorse.sdk.common.proto.GetTaskDefResponse;
+import io.littlehorse.sdk.common.proto.GetTaskRunResponse;
+import io.littlehorse.sdk.common.proto.GetUserTaskRunResponse;
+import io.littlehorse.sdk.common.proto.GetVariableResponse;
+import io.littlehorse.sdk.common.proto.GetWfRunResponse;
+import io.littlehorse.sdk.common.proto.GetWfSpecResponse;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -39,13 +39,13 @@ import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefResponse;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecResponse;
-import io.littlehorse.sdk.common.proto.ResumeWfRunPb;
-import io.littlehorse.sdk.common.proto.RunWfPb;
-import io.littlehorse.sdk.common.proto.RunWfReplyPb;
-import io.littlehorse.sdk.common.proto.SearchWfRunPb;
-import io.littlehorse.sdk.common.proto.SearchWfRunPb.StatusAndSpecPb;
-import io.littlehorse.sdk.common.proto.SearchWfRunReplyPb;
-import io.littlehorse.sdk.common.proto.StopWfRunPb;
+import io.littlehorse.sdk.common.proto.ResumeWfRunRequest;
+import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.RunWfResponse;
+import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
+import io.littlehorse.sdk.common.proto.SearchWfRunRequest.StatusAndSpecRequest;
+import io.littlehorse.sdk.common.proto.SearchWfRunResponse;
+import io.littlehorse.sdk.common.proto.StopWfRunRequest;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskRun;
@@ -111,7 +111,7 @@ public class LHClient {
      * @throws LHApiError If it could not connect to the API
      */
     public ExternalEventDef getExternalEventDef(String name) throws LHApiError {
-        GetExternalEventDefReplyPb reply = (GetExternalEventDefReplyPb) doRequest(() -> {
+        GetExternalEventDefResponse reply = (GetExternalEventDefResponse) doRequest(() -> {
                 return getGrpcClient()
                     .getExternalEventDef(
                         ExternalEventDefId.newBuilder().setName(name).build()
@@ -133,7 +133,7 @@ public class LHClient {
      * @throws LHApiError if it failed contacting to the API
      */
     public TaskDef getTaskDef(String name) throws LHApiError {
-        GetTaskDefReplyPb reply = (GetTaskDefReplyPb) doRequest(() -> {
+        GetTaskDefResponse reply = (GetTaskDefResponse) doRequest(() -> {
             return getGrpcClient()
                 .getTaskDef(TaskDefId.newBuilder().setName(name).build());
         });
@@ -163,7 +163,7 @@ public class LHClient {
      * @throws LHApiError if it failed contacting to the API
      */
     public WfSpec getWfSpec(String name, Integer version) throws LHApiError {
-        GetWfSpecReplyPb reply = (GetWfSpecReplyPb) doRequest(() -> {
+        GetWfSpecResponse reply = (GetWfSpecResponse) doRequest(() -> {
             if (version != null) {
                 return getGrpcClient()
                     .getWfSpec(
@@ -176,7 +176,7 @@ public class LHClient {
             } else {
                 return getGrpcClient()
                     .getLatestWfSpec(
-                        GetLatestWfSpecPb.newBuilder().setName(name).build()
+                        GetLatestWfSpecRequest.newBuilder().setName(name).build()
                     );
             }
         });
@@ -195,7 +195,7 @@ public class LHClient {
      * @throws LHApiError if it failed contacting to the API
      */
     public TaskRun getTaskRun(TaskRunId id) throws LHApiError {
-        GetTaskRunReplyPb reply = (GetTaskRunReplyPb) doRequest(() -> {
+        GetTaskRunResponse reply = (GetTaskRunResponse) doRequest(() -> {
             return getGrpcClient().getTaskRun(id);
         });
         if (reply.hasResult()) {
@@ -211,7 +211,7 @@ public class LHClient {
      * @throws LHApiError if it failed contacting to the API
      */
     public UserTaskRun getUserTaskRun(UserTaskRunId id) throws LHApiError {
-        GetUserTaskRunReplyPb reply = (GetUserTaskRunReplyPb) doRequest(() -> {
+        GetUserTaskRunResponse reply = (GetUserTaskRunResponse) doRequest(() -> {
             return getGrpcClient().getUserTaskRun(id);
         });
         if (reply.hasResult()) {
@@ -231,7 +231,7 @@ public class LHClient {
      */
     public NodeRun getNodeRun(String wfRunId, int threadRunNumber, int position)
         throws LHApiError {
-        GetNodeRunReplyPb reply = (GetNodeRunReplyPb) doRequest(() -> {
+        GetNodeRunResponse reply = (GetNodeRunResponse) doRequest(() -> {
             return getGrpcClient()
                 .getNodeRun(
                     NodeRunId
@@ -260,7 +260,7 @@ public class LHClient {
      */
     public Variable getVariable(String wfRunId, int threadRunNumber, String name)
         throws LHApiError {
-        GetVariableReplyPb reply = (GetVariableReplyPb) doRequest(() -> {
+        GetVariableResponse reply = (GetVariableResponse) doRequest(() -> {
             return getGrpcClient()
                 .getVariable(
                     VariableId
@@ -292,7 +292,7 @@ public class LHClient {
         String externalEventName,
         String guid
     ) throws LHApiError {
-        GetExternalEventReplyPb reply = (GetExternalEventReplyPb) doRequest(() -> {
+        GetExternalEventResponse reply = (GetExternalEventResponse) doRequest(() -> {
             return getGrpcClient()
                 .getExternalEvent(
                     ExternalEventId
@@ -318,7 +318,7 @@ public class LHClient {
      * @throws LHApiError
      */
     public WfRun getWfRun(String id) throws LHApiError {
-        GetWfRunReplyPb reply = (GetWfRunReplyPb) doRequest(() -> {
+        GetWfRunResponse reply = (GetWfRunResponse) doRequest(() -> {
             return getGrpcClient().getWfRun(WfRunId.newBuilder().setId(id).build());
         });
 
@@ -346,7 +346,7 @@ public class LHClient {
         Date earliestStart,
         Date latestStart
     ) throws LHApiError {
-        StatusAndSpecPb.Builder statusBuilder = StatusAndSpecPb
+        StatusAndSpecRequest.Builder statusBuilder = StatusAndSpecRequest
             .newBuilder()
             .setWfSpecName(workflowName)
             .setWfSpecVersion(version)
@@ -360,12 +360,12 @@ public class LHClient {
             statusBuilder.setLatestStart(LHLibUtil.fromDate(latestStart));
         }
 
-        StatusAndSpecPb statusAndSpecPb = statusBuilder.build();
+        StatusAndSpecRequest statusAndSpecPb = statusBuilder.build();
 
-        SearchWfRunReplyPb reply = (SearchWfRunReplyPb) doRequest(() -> {
+        SearchWfRunResponse reply = (SearchWfRunResponse) doRequest(() -> {
             return getGrpcClient()
                 .searchWfRun(
-                    SearchWfRunPb
+                    SearchWfRunRequest
                         .newBuilder()
                         .setStatusAndSpec(statusAndSpecPb)
                         .build()
@@ -392,7 +392,9 @@ public class LHClient {
         String wfRunId,
         Arg... args
     ) throws LHApiError {
-        RunWfPb.Builder req = RunWfPb.newBuilder().setWfSpecName(wfSpecName);
+        RunWfRequest.Builder req = RunWfRequest
+            .newBuilder()
+            .setWfSpecName(wfSpecName);
         if (wfRunId != null) {
             req.setId(wfRunId);
         }
@@ -410,7 +412,7 @@ public class LHClient {
             }
         }
 
-        RunWfReplyPb response = (RunWfReplyPb) doRequest(() -> {
+        RunWfResponse response = (RunWfResponse) doRequest(() -> {
             return getGrpcClient().runWf(req.build());
         });
 
@@ -574,7 +576,7 @@ public class LHClient {
         doRequest(() -> {
             return getGrpcClient()
                 .stopWfRun(
-                    StopWfRunPb
+                    StopWfRunRequest
                         .newBuilder()
                         .setWfRunId(wfRunId)
                         .setThreadRunNumber(threadRunNumber)
@@ -593,7 +595,7 @@ public class LHClient {
         doRequest(() -> {
             return getGrpcClient()
                 .resumeWfRun(
-                    ResumeWfRunPb
+                    ResumeWfRunRequest
                         .newBuilder()
                         .setWfRunId(wfRunId)
                         .setThreadRunNumber(threadRunNumber)
@@ -611,7 +613,10 @@ public class LHClient {
         doRequest(() -> {
             return getGrpcClient()
                 .deleteUserTaskDef(
-                    DeleteUserTaskDefPb.newBuilder().setName(userTaskDefName).build()
+                    DeleteUserTaskDefRequest
+                        .newBuilder()
+                        .setName(userTaskDefName)
+                        .build()
                 );
         });
     }
@@ -624,7 +629,9 @@ public class LHClient {
     public void deleteWfRun(String wfRunId) throws LHApiError {
         doRequest(() -> {
             return getGrpcClient()
-                .deleteWfRun(DeleteWfRunPb.newBuilder().setWfRunId(wfRunId).build());
+                .deleteWfRun(
+                    DeleteWfRunRequest.newBuilder().setWfRunId(wfRunId).build()
+                );
         });
     }
 
@@ -636,7 +643,9 @@ public class LHClient {
     public void deleteTaskDef(String name) throws LHApiError {
         doRequest(() -> {
             return getGrpcClient()
-                .deleteTaskDef(DeleteTaskDefPb.newBuilder().setName(name).build());
+                .deleteTaskDef(
+                    DeleteTaskDefRequest.newBuilder().setName(name).build()
+                );
         });
     }
 
@@ -649,7 +658,7 @@ public class LHClient {
         doRequest(() -> {
             return getGrpcClient()
                 .deleteExternalEventDef(
-                    DeleteExternalEventDefPb.newBuilder().setName(name).build()
+                    DeleteExternalEventDefRequest.newBuilder().setName(name).build()
                 );
         });
     }
@@ -664,7 +673,7 @@ public class LHClient {
         doRequest(() -> {
             return getGrpcClient()
                 .deleteWfSpec(
-                    DeleteWfSpecPb
+                    DeleteWfSpecRequest
                         .newBuilder()
                         .setName(name)
                         .setVersion(version)

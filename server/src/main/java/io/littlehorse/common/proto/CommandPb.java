@@ -364,7 +364,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int RUN_WF_FIELD_NUMBER = 9;
   /**
-   * <code>.littlehorse.RunWfPb run_wf = 9;</code>
+   * <code>.littlehorse.RunWfRequest run_wf = 9;</code>
    * @return Whether the runWf field is set.
    */
   @java.lang.Override
@@ -372,25 +372,25 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 9;
   }
   /**
-   * <code>.littlehorse.RunWfPb run_wf = 9;</code>
+   * <code>.littlehorse.RunWfRequest run_wf = 9;</code>
    * @return The runWf.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.RunWfPb getRunWf() {
+  public io.littlehorse.sdk.common.proto.RunWfRequest getRunWf() {
     if (commandCase_ == 9) {
-       return (io.littlehorse.sdk.common.proto.RunWfPb) command_;
+       return (io.littlehorse.sdk.common.proto.RunWfRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.RunWfPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.RunWfRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.RunWfPb run_wf = 9;</code>
+   * <code>.littlehorse.RunWfRequest run_wf = 9;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.RunWfPbOrBuilder getRunWfOrBuilder() {
+  public io.littlehorse.sdk.common.proto.RunWfRequestOrBuilder getRunWfOrBuilder() {
     if (commandCase_ == 9) {
-       return (io.littlehorse.sdk.common.proto.RunWfPb) command_;
+       return (io.littlehorse.sdk.common.proto.RunWfRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.RunWfPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.RunWfRequest.getDefaultInstance();
   }
 
   public static final int PUT_EXTERNAL_EVENT_FIELD_NUMBER = 10;
@@ -426,7 +426,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int STOP_WF_RUN_FIELD_NUMBER = 11;
   /**
-   * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
+   * <code>.littlehorse.StopWfRunRequest stop_wf_run = 11;</code>
    * @return Whether the stopWfRun field is set.
    */
   @java.lang.Override
@@ -434,30 +434,30 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 11;
   }
   /**
-   * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
+   * <code>.littlehorse.StopWfRunRequest stop_wf_run = 11;</code>
    * @return The stopWfRun.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.StopWfRunPb getStopWfRun() {
+  public io.littlehorse.sdk.common.proto.StopWfRunRequest getStopWfRun() {
     if (commandCase_ == 11) {
-       return (io.littlehorse.sdk.common.proto.StopWfRunPb) command_;
+       return (io.littlehorse.sdk.common.proto.StopWfRunRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.StopWfRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.StopWfRunRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
+   * <code>.littlehorse.StopWfRunRequest stop_wf_run = 11;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.StopWfRunPbOrBuilder getStopWfRunOrBuilder() {
+  public io.littlehorse.sdk.common.proto.StopWfRunRequestOrBuilder getStopWfRunOrBuilder() {
     if (commandCase_ == 11) {
-       return (io.littlehorse.sdk.common.proto.StopWfRunPb) command_;
+       return (io.littlehorse.sdk.common.proto.StopWfRunRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.StopWfRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.StopWfRunRequest.getDefaultInstance();
   }
 
   public static final int RESUME_WF_RUN_FIELD_NUMBER = 12;
   /**
-   * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
+   * <code>.littlehorse.ResumeWfRunRequest resume_wf_run = 12;</code>
    * @return Whether the resumeWfRun field is set.
    */
   @java.lang.Override
@@ -465,25 +465,25 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 12;
   }
   /**
-   * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
+   * <code>.littlehorse.ResumeWfRunRequest resume_wf_run = 12;</code>
    * @return The resumeWfRun.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ResumeWfRunPb getResumeWfRun() {
+  public io.littlehorse.sdk.common.proto.ResumeWfRunRequest getResumeWfRun() {
     if (commandCase_ == 12) {
-       return (io.littlehorse.sdk.common.proto.ResumeWfRunPb) command_;
+       return (io.littlehorse.sdk.common.proto.ResumeWfRunRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.ResumeWfRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.ResumeWfRunRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
+   * <code>.littlehorse.ResumeWfRunRequest resume_wf_run = 12;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ResumeWfRunPbOrBuilder getResumeWfRunOrBuilder() {
+  public io.littlehorse.sdk.common.proto.ResumeWfRunRequestOrBuilder getResumeWfRunOrBuilder() {
     if (commandCase_ == 12) {
-       return (io.littlehorse.sdk.common.proto.ResumeWfRunPb) command_;
+       return (io.littlehorse.sdk.common.proto.ResumeWfRunRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.ResumeWfRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.ResumeWfRunRequest.getDefaultInstance();
   }
 
   public static final int SLEEP_NODE_MATURED_FIELD_NUMBER = 13;
@@ -519,7 +519,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int DELETE_WF_RUN_FIELD_NUMBER = 14;
   /**
-   * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
+   * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 14;</code>
    * @return Whether the deleteWfRun field is set.
    */
   @java.lang.Override
@@ -527,30 +527,30 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 14;
   }
   /**
-   * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
+   * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 14;</code>
    * @return The deleteWfRun.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteWfRunPb getDeleteWfRun() {
+  public io.littlehorse.sdk.common.proto.DeleteWfRunRequest getDeleteWfRun() {
     if (commandCase_ == 14) {
-       return (io.littlehorse.sdk.common.proto.DeleteWfRunPb) command_;
+       return (io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.DeleteWfRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeleteWfRunRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
+   * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 14;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteWfRunPbOrBuilder getDeleteWfRunOrBuilder() {
+  public io.littlehorse.sdk.common.proto.DeleteWfRunRequestOrBuilder getDeleteWfRunOrBuilder() {
     if (commandCase_ == 14) {
-       return (io.littlehorse.sdk.common.proto.DeleteWfRunPb) command_;
+       return (io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.DeleteWfRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeleteWfRunRequest.getDefaultInstance();
   }
 
   public static final int DELETE_WF_SPEC_FIELD_NUMBER = 15;
   /**
-   * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
+   * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 15;</code>
    * @return Whether the deleteWfSpec field is set.
    */
   @java.lang.Override
@@ -558,30 +558,30 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 15;
   }
   /**
-   * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
+   * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 15;</code>
    * @return The deleteWfSpec.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteWfSpecPb getDeleteWfSpec() {
+  public io.littlehorse.sdk.common.proto.DeleteWfSpecRequest getDeleteWfSpec() {
     if (commandCase_ == 15) {
-       return (io.littlehorse.sdk.common.proto.DeleteWfSpecPb) command_;
+       return (io.littlehorse.sdk.common.proto.DeleteWfSpecRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.DeleteWfSpecPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeleteWfSpecRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
+   * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 15;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteWfSpecPbOrBuilder getDeleteWfSpecOrBuilder() {
+  public io.littlehorse.sdk.common.proto.DeleteWfSpecRequestOrBuilder getDeleteWfSpecOrBuilder() {
     if (commandCase_ == 15) {
-       return (io.littlehorse.sdk.common.proto.DeleteWfSpecPb) command_;
+       return (io.littlehorse.sdk.common.proto.DeleteWfSpecRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.DeleteWfSpecPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeleteWfSpecRequest.getDefaultInstance();
   }
 
   public static final int DELETE_TASK_DEF_FIELD_NUMBER = 16;
   /**
-   * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
+   * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 16;</code>
    * @return Whether the deleteTaskDef field is set.
    */
   @java.lang.Override
@@ -589,30 +589,30 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 16;
   }
   /**
-   * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
+   * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 16;</code>
    * @return The deleteTaskDef.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteTaskDefPb getDeleteTaskDef() {
+  public io.littlehorse.sdk.common.proto.DeleteTaskDefRequest getDeleteTaskDef() {
     if (commandCase_ == 16) {
-       return (io.littlehorse.sdk.common.proto.DeleteTaskDefPb) command_;
+       return (io.littlehorse.sdk.common.proto.DeleteTaskDefRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.DeleteTaskDefPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeleteTaskDefRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
+   * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 16;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteTaskDefPbOrBuilder getDeleteTaskDefOrBuilder() {
+  public io.littlehorse.sdk.common.proto.DeleteTaskDefRequestOrBuilder getDeleteTaskDefOrBuilder() {
     if (commandCase_ == 16) {
-       return (io.littlehorse.sdk.common.proto.DeleteTaskDefPb) command_;
+       return (io.littlehorse.sdk.common.proto.DeleteTaskDefRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.DeleteTaskDefPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeleteTaskDefRequest.getDefaultInstance();
   }
 
   public static final int DELETE_EXTERNAL_EVENT_DEF_FIELD_NUMBER = 17;
   /**
-   * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+   * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 17;</code>
    * @return Whether the deleteExternalEventDef field is set.
    */
   @java.lang.Override
@@ -620,25 +620,25 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 17;
   }
   /**
-   * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+   * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 17;</code>
    * @return The deleteExternalEventDef.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb getDeleteExternalEventDef() {
+  public io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest getDeleteExternalEventDef() {
     if (commandCase_ == 17) {
-       return (io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb) command_;
+       return (io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+   * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 17;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteExternalEventDefPbOrBuilder getDeleteExternalEventDefOrBuilder() {
+  public io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequestOrBuilder getDeleteExternalEventDefOrBuilder() {
     if (commandCase_ == 17) {
-       return (io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb) command_;
+       return (io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest.getDefaultInstance();
   }
 
   public static final int EXTERNAL_EVENT_TIMEOUT_FIELD_NUMBER = 18;
@@ -674,7 +674,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int TASK_WORKER_HEART_BEAT_FIELD_NUMBER = 19;
   /**
-   * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+   * <code>.littlehorse.TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;</code>
    * @return Whether the taskWorkerHeartBeat field is set.
    */
   @java.lang.Override
@@ -682,30 +682,30 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 19;
   }
   /**
-   * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+   * <code>.littlehorse.TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;</code>
    * @return The taskWorkerHeartBeat.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb getTaskWorkerHeartBeat() {
+  public io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest getTaskWorkerHeartBeat() {
     if (commandCase_ == 19) {
-       return (io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb) command_;
+       return (io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+   * <code>.littlehorse.TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPbOrBuilder getTaskWorkerHeartBeatOrBuilder() {
+  public io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequestOrBuilder getTaskWorkerHeartBeatOrBuilder() {
     if (commandCase_ == 19) {
-       return (io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb) command_;
+       return (io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest.getDefaultInstance();
   }
 
   public static final int DELETE_EXTERNAL_EVENT_FIELD_NUMBER = 20;
   /**
-   * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+   * <code>.littlehorse.DeleteExternalEventRequest delete_external_event = 20;</code>
    * @return Whether the deleteExternalEvent field is set.
    */
   @java.lang.Override
@@ -713,30 +713,30 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 20;
   }
   /**
-   * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+   * <code>.littlehorse.DeleteExternalEventRequest delete_external_event = 20;</code>
    * @return The deleteExternalEvent.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteExternalEventPb getDeleteExternalEvent() {
+  public io.littlehorse.sdk.common.proto.DeleteExternalEventRequest getDeleteExternalEvent() {
     if (commandCase_ == 20) {
-       return (io.littlehorse.sdk.common.proto.DeleteExternalEventPb) command_;
+       return (io.littlehorse.sdk.common.proto.DeleteExternalEventRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.DeleteExternalEventPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+   * <code>.littlehorse.DeleteExternalEventRequest delete_external_event = 20;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteExternalEventPbOrBuilder getDeleteExternalEventOrBuilder() {
+  public io.littlehorse.sdk.common.proto.DeleteExternalEventRequestOrBuilder getDeleteExternalEventOrBuilder() {
     if (commandCase_ == 20) {
-       return (io.littlehorse.sdk.common.proto.DeleteExternalEventPb) command_;
+       return (io.littlehorse.sdk.common.proto.DeleteExternalEventRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.DeleteExternalEventPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.getDefaultInstance();
   }
 
   public static final int ASSIGN_USER_TASK_RUN_FIELD_NUMBER = 21;
   /**
-   * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+   * <code>.littlehorse.AssignUserTaskRunRequest assign_user_task_run = 21;</code>
    * @return Whether the assignUserTaskRun field is set.
    */
   @java.lang.Override
@@ -744,30 +744,30 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 21;
   }
   /**
-   * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+   * <code>.littlehorse.AssignUserTaskRunRequest assign_user_task_run = 21;</code>
    * @return The assignUserTaskRun.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.AssignUserTaskRunPb getAssignUserTaskRun() {
+  public io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest getAssignUserTaskRun() {
     if (commandCase_ == 21) {
-       return (io.littlehorse.sdk.common.proto.AssignUserTaskRunPb) command_;
+       return (io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+   * <code>.littlehorse.AssignUserTaskRunRequest assign_user_task_run = 21;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.AssignUserTaskRunPbOrBuilder getAssignUserTaskRunOrBuilder() {
+  public io.littlehorse.sdk.common.proto.AssignUserTaskRunRequestOrBuilder getAssignUserTaskRunOrBuilder() {
     if (commandCase_ == 21) {
-       return (io.littlehorse.sdk.common.proto.AssignUserTaskRunPb) command_;
+       return (io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.getDefaultInstance();
   }
 
   public static final int COMPLETE_USER_TASK_RUN_FIELD_NUMBER = 22;
   /**
-   * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+   * <code>.littlehorse.CompleteUserTaskRunRequest complete_user_task_run = 22;</code>
    * @return Whether the completeUserTaskRun field is set.
    */
   @java.lang.Override
@@ -775,25 +775,25 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 22;
   }
   /**
-   * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+   * <code>.littlehorse.CompleteUserTaskRunRequest complete_user_task_run = 22;</code>
    * @return The completeUserTaskRun.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb getCompleteUserTaskRun() {
+  public io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest getCompleteUserTaskRun() {
     if (commandCase_ == 22) {
-       return (io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb) command_;
+       return (io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+   * <code>.littlehorse.CompleteUserTaskRunRequest complete_user_task_run = 22;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CompleteUserTaskRunPbOrBuilder getCompleteUserTaskRunOrBuilder() {
+  public io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequestOrBuilder getCompleteUserTaskRunOrBuilder() {
     if (commandCase_ == 22) {
-       return (io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb) command_;
+       return (io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest.getDefaultInstance();
   }
 
   public static final int PUT_USER_TASK_DEF_FIELD_NUMBER = 23;
@@ -860,7 +860,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int DELETE_USER_TASK_DEF_FIELD_NUMBER = 25;
   /**
-   * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+   * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 25;</code>
    * @return Whether the deleteUserTaskDef field is set.
    */
   @java.lang.Override
@@ -868,25 +868,25 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 25;
   }
   /**
-   * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+   * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 25;</code>
    * @return The deleteUserTaskDef.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb getDeleteUserTaskDef() {
+  public io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest getDeleteUserTaskDef() {
     if (commandCase_ == 25) {
-       return (io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb) command_;
+       return (io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+   * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 25;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteUserTaskDefPbOrBuilder getDeleteUserTaskDefOrBuilder() {
+  public io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequestOrBuilder getDeleteUserTaskDefOrBuilder() {
     if (commandCase_ == 25) {
-       return (io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb) command_;
+       return (io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.getDefaultInstance();
   }
 
   public static final int REASSIGNED_USER_TASK_FIELD_NUMBER = 26;
@@ -926,7 +926,7 @@ private static final long serialVersionUID = 0L;
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.CancelUserTaskRunPb cancel_user_task = 27;</code>
+   * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 27;</code>
    * @return Whether the cancelUserTask field is set.
    */
   @java.lang.Override
@@ -938,29 +938,29 @@ private static final long serialVersionUID = 0L;
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.CancelUserTaskRunPb cancel_user_task = 27;</code>
+   * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 27;</code>
    * @return The cancelUserTask.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CancelUserTaskRunPb getCancelUserTask() {
+  public io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest getCancelUserTask() {
     if (commandCase_ == 27) {
-       return (io.littlehorse.sdk.common.proto.CancelUserTaskRunPb) command_;
+       return (io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.CancelUserTaskRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.getDefaultInstance();
   }
   /**
    * <pre>
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.CancelUserTaskRunPb cancel_user_task = 27;</code>
+   * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 27;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CancelUserTaskRunPbOrBuilder getCancelUserTaskOrBuilder() {
+  public io.littlehorse.sdk.common.proto.CancelUserTaskRunRequestOrBuilder getCancelUserTaskOrBuilder() {
     if (commandCase_ == 27) {
-       return (io.littlehorse.sdk.common.proto.CancelUserTaskRunPb) command_;
+       return (io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) command_;
     }
-    return io.littlehorse.sdk.common.proto.CancelUserTaskRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -999,46 +999,46 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(8, (io.littlehorse.sdk.common.proto.PutExternalEventDefRequest) command_);
     }
     if (commandCase_ == 9) {
-      output.writeMessage(9, (io.littlehorse.sdk.common.proto.RunWfPb) command_);
+      output.writeMessage(9, (io.littlehorse.sdk.common.proto.RunWfRequest) command_);
     }
     if (commandCase_ == 10) {
       output.writeMessage(10, (io.littlehorse.sdk.common.proto.PutExternalEventRequest) command_);
     }
     if (commandCase_ == 11) {
-      output.writeMessage(11, (io.littlehorse.sdk.common.proto.StopWfRunPb) command_);
+      output.writeMessage(11, (io.littlehorse.sdk.common.proto.StopWfRunRequest) command_);
     }
     if (commandCase_ == 12) {
-      output.writeMessage(12, (io.littlehorse.sdk.common.proto.ResumeWfRunPb) command_);
+      output.writeMessage(12, (io.littlehorse.sdk.common.proto.ResumeWfRunRequest) command_);
     }
     if (commandCase_ == 13) {
       output.writeMessage(13, (io.littlehorse.common.proto.SleepNodeMaturedPb) command_);
     }
     if (commandCase_ == 14) {
-      output.writeMessage(14, (io.littlehorse.sdk.common.proto.DeleteWfRunPb) command_);
+      output.writeMessage(14, (io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_);
     }
     if (commandCase_ == 15) {
-      output.writeMessage(15, (io.littlehorse.sdk.common.proto.DeleteWfSpecPb) command_);
+      output.writeMessage(15, (io.littlehorse.sdk.common.proto.DeleteWfSpecRequest) command_);
     }
     if (commandCase_ == 16) {
-      output.writeMessage(16, (io.littlehorse.sdk.common.proto.DeleteTaskDefPb) command_);
+      output.writeMessage(16, (io.littlehorse.sdk.common.proto.DeleteTaskDefRequest) command_);
     }
     if (commandCase_ == 17) {
-      output.writeMessage(17, (io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb) command_);
+      output.writeMessage(17, (io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest) command_);
     }
     if (commandCase_ == 18) {
       output.writeMessage(18, (io.littlehorse.common.proto.ExternalEventNodeTimeoutPb) command_);
     }
     if (commandCase_ == 19) {
-      output.writeMessage(19, (io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb) command_);
+      output.writeMessage(19, (io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest) command_);
     }
     if (commandCase_ == 20) {
-      output.writeMessage(20, (io.littlehorse.sdk.common.proto.DeleteExternalEventPb) command_);
+      output.writeMessage(20, (io.littlehorse.sdk.common.proto.DeleteExternalEventRequest) command_);
     }
     if (commandCase_ == 21) {
-      output.writeMessage(21, (io.littlehorse.sdk.common.proto.AssignUserTaskRunPb) command_);
+      output.writeMessage(21, (io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest) command_);
     }
     if (commandCase_ == 22) {
-      output.writeMessage(22, (io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb) command_);
+      output.writeMessage(22, (io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest) command_);
     }
     if (commandCase_ == 23) {
       output.writeMessage(23, (io.littlehorse.sdk.common.proto.PutUserTaskDefRequest) command_);
@@ -1047,13 +1047,13 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(24, (io.littlehorse.common.proto.TriggeredTaskRunPb) command_);
     }
     if (commandCase_ == 25) {
-      output.writeMessage(25, (io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb) command_);
+      output.writeMessage(25, (io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest) command_);
     }
     if (commandCase_ == 26) {
       output.writeMessage(26, (io.littlehorse.common.proto.ReassignedUserTaskPb) command_);
     }
     if (commandCase_ == 27) {
-      output.writeMessage(27, (io.littlehorse.sdk.common.proto.CancelUserTaskRunPb) command_);
+      output.writeMessage(27, (io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1093,7 +1093,7 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 9) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, (io.littlehorse.sdk.common.proto.RunWfPb) command_);
+        .computeMessageSize(9, (io.littlehorse.sdk.common.proto.RunWfRequest) command_);
     }
     if (commandCase_ == 10) {
       size += com.google.protobuf.CodedOutputStream
@@ -1101,11 +1101,11 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 11) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(11, (io.littlehorse.sdk.common.proto.StopWfRunPb) command_);
+        .computeMessageSize(11, (io.littlehorse.sdk.common.proto.StopWfRunRequest) command_);
     }
     if (commandCase_ == 12) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(12, (io.littlehorse.sdk.common.proto.ResumeWfRunPb) command_);
+        .computeMessageSize(12, (io.littlehorse.sdk.common.proto.ResumeWfRunRequest) command_);
     }
     if (commandCase_ == 13) {
       size += com.google.protobuf.CodedOutputStream
@@ -1113,19 +1113,19 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 14) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(14, (io.littlehorse.sdk.common.proto.DeleteWfRunPb) command_);
+        .computeMessageSize(14, (io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_);
     }
     if (commandCase_ == 15) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(15, (io.littlehorse.sdk.common.proto.DeleteWfSpecPb) command_);
+        .computeMessageSize(15, (io.littlehorse.sdk.common.proto.DeleteWfSpecRequest) command_);
     }
     if (commandCase_ == 16) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(16, (io.littlehorse.sdk.common.proto.DeleteTaskDefPb) command_);
+        .computeMessageSize(16, (io.littlehorse.sdk.common.proto.DeleteTaskDefRequest) command_);
     }
     if (commandCase_ == 17) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(17, (io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb) command_);
+        .computeMessageSize(17, (io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest) command_);
     }
     if (commandCase_ == 18) {
       size += com.google.protobuf.CodedOutputStream
@@ -1133,19 +1133,19 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 19) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(19, (io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb) command_);
+        .computeMessageSize(19, (io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest) command_);
     }
     if (commandCase_ == 20) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(20, (io.littlehorse.sdk.common.proto.DeleteExternalEventPb) command_);
+        .computeMessageSize(20, (io.littlehorse.sdk.common.proto.DeleteExternalEventRequest) command_);
     }
     if (commandCase_ == 21) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(21, (io.littlehorse.sdk.common.proto.AssignUserTaskRunPb) command_);
+        .computeMessageSize(21, (io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest) command_);
     }
     if (commandCase_ == 22) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(22, (io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb) command_);
+        .computeMessageSize(22, (io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest) command_);
     }
     if (commandCase_ == 23) {
       size += com.google.protobuf.CodedOutputStream
@@ -1157,7 +1157,7 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 25) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(25, (io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb) command_);
+        .computeMessageSize(25, (io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest) command_);
     }
     if (commandCase_ == 26) {
       size += com.google.protobuf.CodedOutputStream
@@ -1165,7 +1165,7 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 27) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(27, (io.littlehorse.sdk.common.proto.CancelUserTaskRunPb) command_);
+        .computeMessageSize(27, (io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -3073,9 +3073,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.RunWfPb, io.littlehorse.sdk.common.proto.RunWfPb.Builder, io.littlehorse.sdk.common.proto.RunWfPbOrBuilder> runWfBuilder_;
+        io.littlehorse.sdk.common.proto.RunWfRequest, io.littlehorse.sdk.common.proto.RunWfRequest.Builder, io.littlehorse.sdk.common.proto.RunWfRequestOrBuilder> runWfBuilder_;
     /**
-     * <code>.littlehorse.RunWfPb run_wf = 9;</code>
+     * <code>.littlehorse.RunWfRequest run_wf = 9;</code>
      * @return Whether the runWf field is set.
      */
     @java.lang.Override
@@ -3083,27 +3083,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 9;
     }
     /**
-     * <code>.littlehorse.RunWfPb run_wf = 9;</code>
+     * <code>.littlehorse.RunWfRequest run_wf = 9;</code>
      * @return The runWf.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.RunWfPb getRunWf() {
+    public io.littlehorse.sdk.common.proto.RunWfRequest getRunWf() {
       if (runWfBuilder_ == null) {
         if (commandCase_ == 9) {
-          return (io.littlehorse.sdk.common.proto.RunWfPb) command_;
+          return (io.littlehorse.sdk.common.proto.RunWfRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.RunWfPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.RunWfRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 9) {
           return runWfBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.RunWfPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.RunWfRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.RunWfPb run_wf = 9;</code>
+     * <code>.littlehorse.RunWfRequest run_wf = 9;</code>
      */
-    public Builder setRunWf(io.littlehorse.sdk.common.proto.RunWfPb value) {
+    public Builder setRunWf(io.littlehorse.sdk.common.proto.RunWfRequest value) {
       if (runWfBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3117,10 +3117,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.RunWfPb run_wf = 9;</code>
+     * <code>.littlehorse.RunWfRequest run_wf = 9;</code>
      */
     public Builder setRunWf(
-        io.littlehorse.sdk.common.proto.RunWfPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.RunWfRequest.Builder builderForValue) {
       if (runWfBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -3131,13 +3131,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.RunWfPb run_wf = 9;</code>
+     * <code>.littlehorse.RunWfRequest run_wf = 9;</code>
      */
-    public Builder mergeRunWf(io.littlehorse.sdk.common.proto.RunWfPb value) {
+    public Builder mergeRunWf(io.littlehorse.sdk.common.proto.RunWfRequest value) {
       if (runWfBuilder_ == null) {
         if (commandCase_ == 9 &&
-            command_ != io.littlehorse.sdk.common.proto.RunWfPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.RunWfPb.newBuilder((io.littlehorse.sdk.common.proto.RunWfPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.RunWfRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.RunWfRequest.newBuilder((io.littlehorse.sdk.common.proto.RunWfRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -3154,7 +3154,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.RunWfPb run_wf = 9;</code>
+     * <code>.littlehorse.RunWfRequest run_wf = 9;</code>
      */
     public Builder clearRunWf() {
       if (runWfBuilder_ == null) {
@@ -3173,38 +3173,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.RunWfPb run_wf = 9;</code>
+     * <code>.littlehorse.RunWfRequest run_wf = 9;</code>
      */
-    public io.littlehorse.sdk.common.proto.RunWfPb.Builder getRunWfBuilder() {
+    public io.littlehorse.sdk.common.proto.RunWfRequest.Builder getRunWfBuilder() {
       return getRunWfFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.RunWfPb run_wf = 9;</code>
+     * <code>.littlehorse.RunWfRequest run_wf = 9;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.RunWfPbOrBuilder getRunWfOrBuilder() {
+    public io.littlehorse.sdk.common.proto.RunWfRequestOrBuilder getRunWfOrBuilder() {
       if ((commandCase_ == 9) && (runWfBuilder_ != null)) {
         return runWfBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 9) {
-          return (io.littlehorse.sdk.common.proto.RunWfPb) command_;
+          return (io.littlehorse.sdk.common.proto.RunWfRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.RunWfPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.RunWfRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.RunWfPb run_wf = 9;</code>
+     * <code>.littlehorse.RunWfRequest run_wf = 9;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.RunWfPb, io.littlehorse.sdk.common.proto.RunWfPb.Builder, io.littlehorse.sdk.common.proto.RunWfPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.RunWfRequest, io.littlehorse.sdk.common.proto.RunWfRequest.Builder, io.littlehorse.sdk.common.proto.RunWfRequestOrBuilder> 
         getRunWfFieldBuilder() {
       if (runWfBuilder_ == null) {
         if (!(commandCase_ == 9)) {
-          command_ = io.littlehorse.sdk.common.proto.RunWfPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.RunWfRequest.getDefaultInstance();
         }
         runWfBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.RunWfPb, io.littlehorse.sdk.common.proto.RunWfPb.Builder, io.littlehorse.sdk.common.proto.RunWfPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.RunWfPb) command_,
+            io.littlehorse.sdk.common.proto.RunWfRequest, io.littlehorse.sdk.common.proto.RunWfRequest.Builder, io.littlehorse.sdk.common.proto.RunWfRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.RunWfRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -3357,9 +3357,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.StopWfRunPb, io.littlehorse.sdk.common.proto.StopWfRunPb.Builder, io.littlehorse.sdk.common.proto.StopWfRunPbOrBuilder> stopWfRunBuilder_;
+        io.littlehorse.sdk.common.proto.StopWfRunRequest, io.littlehorse.sdk.common.proto.StopWfRunRequest.Builder, io.littlehorse.sdk.common.proto.StopWfRunRequestOrBuilder> stopWfRunBuilder_;
     /**
-     * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
+     * <code>.littlehorse.StopWfRunRequest stop_wf_run = 11;</code>
      * @return Whether the stopWfRun field is set.
      */
     @java.lang.Override
@@ -3367,27 +3367,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 11;
     }
     /**
-     * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
+     * <code>.littlehorse.StopWfRunRequest stop_wf_run = 11;</code>
      * @return The stopWfRun.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.StopWfRunPb getStopWfRun() {
+    public io.littlehorse.sdk.common.proto.StopWfRunRequest getStopWfRun() {
       if (stopWfRunBuilder_ == null) {
         if (commandCase_ == 11) {
-          return (io.littlehorse.sdk.common.proto.StopWfRunPb) command_;
+          return (io.littlehorse.sdk.common.proto.StopWfRunRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.StopWfRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.StopWfRunRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 11) {
           return stopWfRunBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.StopWfRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.StopWfRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
+     * <code>.littlehorse.StopWfRunRequest stop_wf_run = 11;</code>
      */
-    public Builder setStopWfRun(io.littlehorse.sdk.common.proto.StopWfRunPb value) {
+    public Builder setStopWfRun(io.littlehorse.sdk.common.proto.StopWfRunRequest value) {
       if (stopWfRunBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3401,10 +3401,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
+     * <code>.littlehorse.StopWfRunRequest stop_wf_run = 11;</code>
      */
     public Builder setStopWfRun(
-        io.littlehorse.sdk.common.proto.StopWfRunPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.StopWfRunRequest.Builder builderForValue) {
       if (stopWfRunBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -3415,13 +3415,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
+     * <code>.littlehorse.StopWfRunRequest stop_wf_run = 11;</code>
      */
-    public Builder mergeStopWfRun(io.littlehorse.sdk.common.proto.StopWfRunPb value) {
+    public Builder mergeStopWfRun(io.littlehorse.sdk.common.proto.StopWfRunRequest value) {
       if (stopWfRunBuilder_ == null) {
         if (commandCase_ == 11 &&
-            command_ != io.littlehorse.sdk.common.proto.StopWfRunPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.StopWfRunPb.newBuilder((io.littlehorse.sdk.common.proto.StopWfRunPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.StopWfRunRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.StopWfRunRequest.newBuilder((io.littlehorse.sdk.common.proto.StopWfRunRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -3438,7 +3438,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
+     * <code>.littlehorse.StopWfRunRequest stop_wf_run = 11;</code>
      */
     public Builder clearStopWfRun() {
       if (stopWfRunBuilder_ == null) {
@@ -3457,38 +3457,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
+     * <code>.littlehorse.StopWfRunRequest stop_wf_run = 11;</code>
      */
-    public io.littlehorse.sdk.common.proto.StopWfRunPb.Builder getStopWfRunBuilder() {
+    public io.littlehorse.sdk.common.proto.StopWfRunRequest.Builder getStopWfRunBuilder() {
       return getStopWfRunFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
+     * <code>.littlehorse.StopWfRunRequest stop_wf_run = 11;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.StopWfRunPbOrBuilder getStopWfRunOrBuilder() {
+    public io.littlehorse.sdk.common.proto.StopWfRunRequestOrBuilder getStopWfRunOrBuilder() {
       if ((commandCase_ == 11) && (stopWfRunBuilder_ != null)) {
         return stopWfRunBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 11) {
-          return (io.littlehorse.sdk.common.proto.StopWfRunPb) command_;
+          return (io.littlehorse.sdk.common.proto.StopWfRunRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.StopWfRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.StopWfRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
+     * <code>.littlehorse.StopWfRunRequest stop_wf_run = 11;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.StopWfRunPb, io.littlehorse.sdk.common.proto.StopWfRunPb.Builder, io.littlehorse.sdk.common.proto.StopWfRunPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.StopWfRunRequest, io.littlehorse.sdk.common.proto.StopWfRunRequest.Builder, io.littlehorse.sdk.common.proto.StopWfRunRequestOrBuilder> 
         getStopWfRunFieldBuilder() {
       if (stopWfRunBuilder_ == null) {
         if (!(commandCase_ == 11)) {
-          command_ = io.littlehorse.sdk.common.proto.StopWfRunPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.StopWfRunRequest.getDefaultInstance();
         }
         stopWfRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.StopWfRunPb, io.littlehorse.sdk.common.proto.StopWfRunPb.Builder, io.littlehorse.sdk.common.proto.StopWfRunPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.StopWfRunPb) command_,
+            io.littlehorse.sdk.common.proto.StopWfRunRequest, io.littlehorse.sdk.common.proto.StopWfRunRequest.Builder, io.littlehorse.sdk.common.proto.StopWfRunRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.StopWfRunRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -3499,9 +3499,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ResumeWfRunPb, io.littlehorse.sdk.common.proto.ResumeWfRunPb.Builder, io.littlehorse.sdk.common.proto.ResumeWfRunPbOrBuilder> resumeWfRunBuilder_;
+        io.littlehorse.sdk.common.proto.ResumeWfRunRequest, io.littlehorse.sdk.common.proto.ResumeWfRunRequest.Builder, io.littlehorse.sdk.common.proto.ResumeWfRunRequestOrBuilder> resumeWfRunBuilder_;
     /**
-     * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
+     * <code>.littlehorse.ResumeWfRunRequest resume_wf_run = 12;</code>
      * @return Whether the resumeWfRun field is set.
      */
     @java.lang.Override
@@ -3509,27 +3509,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 12;
     }
     /**
-     * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
+     * <code>.littlehorse.ResumeWfRunRequest resume_wf_run = 12;</code>
      * @return The resumeWfRun.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ResumeWfRunPb getResumeWfRun() {
+    public io.littlehorse.sdk.common.proto.ResumeWfRunRequest getResumeWfRun() {
       if (resumeWfRunBuilder_ == null) {
         if (commandCase_ == 12) {
-          return (io.littlehorse.sdk.common.proto.ResumeWfRunPb) command_;
+          return (io.littlehorse.sdk.common.proto.ResumeWfRunRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.ResumeWfRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ResumeWfRunRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 12) {
           return resumeWfRunBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.ResumeWfRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ResumeWfRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
+     * <code>.littlehorse.ResumeWfRunRequest resume_wf_run = 12;</code>
      */
-    public Builder setResumeWfRun(io.littlehorse.sdk.common.proto.ResumeWfRunPb value) {
+    public Builder setResumeWfRun(io.littlehorse.sdk.common.proto.ResumeWfRunRequest value) {
       if (resumeWfRunBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3543,10 +3543,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
+     * <code>.littlehorse.ResumeWfRunRequest resume_wf_run = 12;</code>
      */
     public Builder setResumeWfRun(
-        io.littlehorse.sdk.common.proto.ResumeWfRunPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.ResumeWfRunRequest.Builder builderForValue) {
       if (resumeWfRunBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -3557,13 +3557,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
+     * <code>.littlehorse.ResumeWfRunRequest resume_wf_run = 12;</code>
      */
-    public Builder mergeResumeWfRun(io.littlehorse.sdk.common.proto.ResumeWfRunPb value) {
+    public Builder mergeResumeWfRun(io.littlehorse.sdk.common.proto.ResumeWfRunRequest value) {
       if (resumeWfRunBuilder_ == null) {
         if (commandCase_ == 12 &&
-            command_ != io.littlehorse.sdk.common.proto.ResumeWfRunPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.ResumeWfRunPb.newBuilder((io.littlehorse.sdk.common.proto.ResumeWfRunPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.ResumeWfRunRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.ResumeWfRunRequest.newBuilder((io.littlehorse.sdk.common.proto.ResumeWfRunRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -3580,7 +3580,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
+     * <code>.littlehorse.ResumeWfRunRequest resume_wf_run = 12;</code>
      */
     public Builder clearResumeWfRun() {
       if (resumeWfRunBuilder_ == null) {
@@ -3599,38 +3599,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
+     * <code>.littlehorse.ResumeWfRunRequest resume_wf_run = 12;</code>
      */
-    public io.littlehorse.sdk.common.proto.ResumeWfRunPb.Builder getResumeWfRunBuilder() {
+    public io.littlehorse.sdk.common.proto.ResumeWfRunRequest.Builder getResumeWfRunBuilder() {
       return getResumeWfRunFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
+     * <code>.littlehorse.ResumeWfRunRequest resume_wf_run = 12;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ResumeWfRunPbOrBuilder getResumeWfRunOrBuilder() {
+    public io.littlehorse.sdk.common.proto.ResumeWfRunRequestOrBuilder getResumeWfRunOrBuilder() {
       if ((commandCase_ == 12) && (resumeWfRunBuilder_ != null)) {
         return resumeWfRunBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 12) {
-          return (io.littlehorse.sdk.common.proto.ResumeWfRunPb) command_;
+          return (io.littlehorse.sdk.common.proto.ResumeWfRunRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.ResumeWfRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ResumeWfRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
+     * <code>.littlehorse.ResumeWfRunRequest resume_wf_run = 12;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ResumeWfRunPb, io.littlehorse.sdk.common.proto.ResumeWfRunPb.Builder, io.littlehorse.sdk.common.proto.ResumeWfRunPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.ResumeWfRunRequest, io.littlehorse.sdk.common.proto.ResumeWfRunRequest.Builder, io.littlehorse.sdk.common.proto.ResumeWfRunRequestOrBuilder> 
         getResumeWfRunFieldBuilder() {
       if (resumeWfRunBuilder_ == null) {
         if (!(commandCase_ == 12)) {
-          command_ = io.littlehorse.sdk.common.proto.ResumeWfRunPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.ResumeWfRunRequest.getDefaultInstance();
         }
         resumeWfRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.ResumeWfRunPb, io.littlehorse.sdk.common.proto.ResumeWfRunPb.Builder, io.littlehorse.sdk.common.proto.ResumeWfRunPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.ResumeWfRunPb) command_,
+            io.littlehorse.sdk.common.proto.ResumeWfRunRequest, io.littlehorse.sdk.common.proto.ResumeWfRunRequest.Builder, io.littlehorse.sdk.common.proto.ResumeWfRunRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.ResumeWfRunRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -3783,9 +3783,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DeleteWfRunPb, io.littlehorse.sdk.common.proto.DeleteWfRunPb.Builder, io.littlehorse.sdk.common.proto.DeleteWfRunPbOrBuilder> deleteWfRunBuilder_;
+        io.littlehorse.sdk.common.proto.DeleteWfRunRequest, io.littlehorse.sdk.common.proto.DeleteWfRunRequest.Builder, io.littlehorse.sdk.common.proto.DeleteWfRunRequestOrBuilder> deleteWfRunBuilder_;
     /**
-     * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
+     * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 14;</code>
      * @return Whether the deleteWfRun field is set.
      */
     @java.lang.Override
@@ -3793,27 +3793,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 14;
     }
     /**
-     * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
+     * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 14;</code>
      * @return The deleteWfRun.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteWfRunPb getDeleteWfRun() {
+    public io.littlehorse.sdk.common.proto.DeleteWfRunRequest getDeleteWfRun() {
       if (deleteWfRunBuilder_ == null) {
         if (commandCase_ == 14) {
-          return (io.littlehorse.sdk.common.proto.DeleteWfRunPb) command_;
+          return (io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.DeleteWfRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteWfRunRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 14) {
           return deleteWfRunBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.DeleteWfRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteWfRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
+     * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 14;</code>
      */
-    public Builder setDeleteWfRun(io.littlehorse.sdk.common.proto.DeleteWfRunPb value) {
+    public Builder setDeleteWfRun(io.littlehorse.sdk.common.proto.DeleteWfRunRequest value) {
       if (deleteWfRunBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3827,10 +3827,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
+     * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 14;</code>
      */
     public Builder setDeleteWfRun(
-        io.littlehorse.sdk.common.proto.DeleteWfRunPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.DeleteWfRunRequest.Builder builderForValue) {
       if (deleteWfRunBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -3841,13 +3841,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
+     * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 14;</code>
      */
-    public Builder mergeDeleteWfRun(io.littlehorse.sdk.common.proto.DeleteWfRunPb value) {
+    public Builder mergeDeleteWfRun(io.littlehorse.sdk.common.proto.DeleteWfRunRequest value) {
       if (deleteWfRunBuilder_ == null) {
         if (commandCase_ == 14 &&
-            command_ != io.littlehorse.sdk.common.proto.DeleteWfRunPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.DeleteWfRunPb.newBuilder((io.littlehorse.sdk.common.proto.DeleteWfRunPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.DeleteWfRunRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.DeleteWfRunRequest.newBuilder((io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -3864,7 +3864,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
+     * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 14;</code>
      */
     public Builder clearDeleteWfRun() {
       if (deleteWfRunBuilder_ == null) {
@@ -3883,38 +3883,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
+     * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 14;</code>
      */
-    public io.littlehorse.sdk.common.proto.DeleteWfRunPb.Builder getDeleteWfRunBuilder() {
+    public io.littlehorse.sdk.common.proto.DeleteWfRunRequest.Builder getDeleteWfRunBuilder() {
       return getDeleteWfRunFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
+     * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 14;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteWfRunPbOrBuilder getDeleteWfRunOrBuilder() {
+    public io.littlehorse.sdk.common.proto.DeleteWfRunRequestOrBuilder getDeleteWfRunOrBuilder() {
       if ((commandCase_ == 14) && (deleteWfRunBuilder_ != null)) {
         return deleteWfRunBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 14) {
-          return (io.littlehorse.sdk.common.proto.DeleteWfRunPb) command_;
+          return (io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.DeleteWfRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteWfRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
+     * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 14;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DeleteWfRunPb, io.littlehorse.sdk.common.proto.DeleteWfRunPb.Builder, io.littlehorse.sdk.common.proto.DeleteWfRunPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.DeleteWfRunRequest, io.littlehorse.sdk.common.proto.DeleteWfRunRequest.Builder, io.littlehorse.sdk.common.proto.DeleteWfRunRequestOrBuilder> 
         getDeleteWfRunFieldBuilder() {
       if (deleteWfRunBuilder_ == null) {
         if (!(commandCase_ == 14)) {
-          command_ = io.littlehorse.sdk.common.proto.DeleteWfRunPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.DeleteWfRunRequest.getDefaultInstance();
         }
         deleteWfRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.DeleteWfRunPb, io.littlehorse.sdk.common.proto.DeleteWfRunPb.Builder, io.littlehorse.sdk.common.proto.DeleteWfRunPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.DeleteWfRunPb) command_,
+            io.littlehorse.sdk.common.proto.DeleteWfRunRequest, io.littlehorse.sdk.common.proto.DeleteWfRunRequest.Builder, io.littlehorse.sdk.common.proto.DeleteWfRunRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -3925,9 +3925,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DeleteWfSpecPb, io.littlehorse.sdk.common.proto.DeleteWfSpecPb.Builder, io.littlehorse.sdk.common.proto.DeleteWfSpecPbOrBuilder> deleteWfSpecBuilder_;
+        io.littlehorse.sdk.common.proto.DeleteWfSpecRequest, io.littlehorse.sdk.common.proto.DeleteWfSpecRequest.Builder, io.littlehorse.sdk.common.proto.DeleteWfSpecRequestOrBuilder> deleteWfSpecBuilder_;
     /**
-     * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 15;</code>
      * @return Whether the deleteWfSpec field is set.
      */
     @java.lang.Override
@@ -3935,27 +3935,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 15;
     }
     /**
-     * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 15;</code>
      * @return The deleteWfSpec.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteWfSpecPb getDeleteWfSpec() {
+    public io.littlehorse.sdk.common.proto.DeleteWfSpecRequest getDeleteWfSpec() {
       if (deleteWfSpecBuilder_ == null) {
         if (commandCase_ == 15) {
-          return (io.littlehorse.sdk.common.proto.DeleteWfSpecPb) command_;
+          return (io.littlehorse.sdk.common.proto.DeleteWfSpecRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.DeleteWfSpecPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteWfSpecRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 15) {
           return deleteWfSpecBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.DeleteWfSpecPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteWfSpecRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 15;</code>
      */
-    public Builder setDeleteWfSpec(io.littlehorse.sdk.common.proto.DeleteWfSpecPb value) {
+    public Builder setDeleteWfSpec(io.littlehorse.sdk.common.proto.DeleteWfSpecRequest value) {
       if (deleteWfSpecBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3969,10 +3969,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 15;</code>
      */
     public Builder setDeleteWfSpec(
-        io.littlehorse.sdk.common.proto.DeleteWfSpecPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.DeleteWfSpecRequest.Builder builderForValue) {
       if (deleteWfSpecBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -3983,13 +3983,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 15;</code>
      */
-    public Builder mergeDeleteWfSpec(io.littlehorse.sdk.common.proto.DeleteWfSpecPb value) {
+    public Builder mergeDeleteWfSpec(io.littlehorse.sdk.common.proto.DeleteWfSpecRequest value) {
       if (deleteWfSpecBuilder_ == null) {
         if (commandCase_ == 15 &&
-            command_ != io.littlehorse.sdk.common.proto.DeleteWfSpecPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.DeleteWfSpecPb.newBuilder((io.littlehorse.sdk.common.proto.DeleteWfSpecPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.DeleteWfSpecRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.DeleteWfSpecRequest.newBuilder((io.littlehorse.sdk.common.proto.DeleteWfSpecRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -4006,7 +4006,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 15;</code>
      */
     public Builder clearDeleteWfSpec() {
       if (deleteWfSpecBuilder_ == null) {
@@ -4025,38 +4025,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 15;</code>
      */
-    public io.littlehorse.sdk.common.proto.DeleteWfSpecPb.Builder getDeleteWfSpecBuilder() {
+    public io.littlehorse.sdk.common.proto.DeleteWfSpecRequest.Builder getDeleteWfSpecBuilder() {
       return getDeleteWfSpecFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 15;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteWfSpecPbOrBuilder getDeleteWfSpecOrBuilder() {
+    public io.littlehorse.sdk.common.proto.DeleteWfSpecRequestOrBuilder getDeleteWfSpecOrBuilder() {
       if ((commandCase_ == 15) && (deleteWfSpecBuilder_ != null)) {
         return deleteWfSpecBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 15) {
-          return (io.littlehorse.sdk.common.proto.DeleteWfSpecPb) command_;
+          return (io.littlehorse.sdk.common.proto.DeleteWfSpecRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.DeleteWfSpecPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteWfSpecRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 15;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DeleteWfSpecPb, io.littlehorse.sdk.common.proto.DeleteWfSpecPb.Builder, io.littlehorse.sdk.common.proto.DeleteWfSpecPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.DeleteWfSpecRequest, io.littlehorse.sdk.common.proto.DeleteWfSpecRequest.Builder, io.littlehorse.sdk.common.proto.DeleteWfSpecRequestOrBuilder> 
         getDeleteWfSpecFieldBuilder() {
       if (deleteWfSpecBuilder_ == null) {
         if (!(commandCase_ == 15)) {
-          command_ = io.littlehorse.sdk.common.proto.DeleteWfSpecPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.DeleteWfSpecRequest.getDefaultInstance();
         }
         deleteWfSpecBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.DeleteWfSpecPb, io.littlehorse.sdk.common.proto.DeleteWfSpecPb.Builder, io.littlehorse.sdk.common.proto.DeleteWfSpecPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.DeleteWfSpecPb) command_,
+            io.littlehorse.sdk.common.proto.DeleteWfSpecRequest, io.littlehorse.sdk.common.proto.DeleteWfSpecRequest.Builder, io.littlehorse.sdk.common.proto.DeleteWfSpecRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.DeleteWfSpecRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -4067,9 +4067,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DeleteTaskDefPb, io.littlehorse.sdk.common.proto.DeleteTaskDefPb.Builder, io.littlehorse.sdk.common.proto.DeleteTaskDefPbOrBuilder> deleteTaskDefBuilder_;
+        io.littlehorse.sdk.common.proto.DeleteTaskDefRequest, io.littlehorse.sdk.common.proto.DeleteTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteTaskDefRequestOrBuilder> deleteTaskDefBuilder_;
     /**
-     * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
+     * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 16;</code>
      * @return Whether the deleteTaskDef field is set.
      */
     @java.lang.Override
@@ -4077,27 +4077,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 16;
     }
     /**
-     * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
+     * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 16;</code>
      * @return The deleteTaskDef.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteTaskDefPb getDeleteTaskDef() {
+    public io.littlehorse.sdk.common.proto.DeleteTaskDefRequest getDeleteTaskDef() {
       if (deleteTaskDefBuilder_ == null) {
         if (commandCase_ == 16) {
-          return (io.littlehorse.sdk.common.proto.DeleteTaskDefPb) command_;
+          return (io.littlehorse.sdk.common.proto.DeleteTaskDefRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.DeleteTaskDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteTaskDefRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 16) {
           return deleteTaskDefBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.DeleteTaskDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteTaskDefRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
+     * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 16;</code>
      */
-    public Builder setDeleteTaskDef(io.littlehorse.sdk.common.proto.DeleteTaskDefPb value) {
+    public Builder setDeleteTaskDef(io.littlehorse.sdk.common.proto.DeleteTaskDefRequest value) {
       if (deleteTaskDefBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -4111,10 +4111,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
+     * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 16;</code>
      */
     public Builder setDeleteTaskDef(
-        io.littlehorse.sdk.common.proto.DeleteTaskDefPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.DeleteTaskDefRequest.Builder builderForValue) {
       if (deleteTaskDefBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -4125,13 +4125,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
+     * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 16;</code>
      */
-    public Builder mergeDeleteTaskDef(io.littlehorse.sdk.common.proto.DeleteTaskDefPb value) {
+    public Builder mergeDeleteTaskDef(io.littlehorse.sdk.common.proto.DeleteTaskDefRequest value) {
       if (deleteTaskDefBuilder_ == null) {
         if (commandCase_ == 16 &&
-            command_ != io.littlehorse.sdk.common.proto.DeleteTaskDefPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.DeleteTaskDefPb.newBuilder((io.littlehorse.sdk.common.proto.DeleteTaskDefPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.DeleteTaskDefRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.DeleteTaskDefRequest.newBuilder((io.littlehorse.sdk.common.proto.DeleteTaskDefRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -4148,7 +4148,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
+     * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 16;</code>
      */
     public Builder clearDeleteTaskDef() {
       if (deleteTaskDefBuilder_ == null) {
@@ -4167,38 +4167,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
+     * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 16;</code>
      */
-    public io.littlehorse.sdk.common.proto.DeleteTaskDefPb.Builder getDeleteTaskDefBuilder() {
+    public io.littlehorse.sdk.common.proto.DeleteTaskDefRequest.Builder getDeleteTaskDefBuilder() {
       return getDeleteTaskDefFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
+     * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 16;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteTaskDefPbOrBuilder getDeleteTaskDefOrBuilder() {
+    public io.littlehorse.sdk.common.proto.DeleteTaskDefRequestOrBuilder getDeleteTaskDefOrBuilder() {
       if ((commandCase_ == 16) && (deleteTaskDefBuilder_ != null)) {
         return deleteTaskDefBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 16) {
-          return (io.littlehorse.sdk.common.proto.DeleteTaskDefPb) command_;
+          return (io.littlehorse.sdk.common.proto.DeleteTaskDefRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.DeleteTaskDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteTaskDefRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
+     * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 16;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DeleteTaskDefPb, io.littlehorse.sdk.common.proto.DeleteTaskDefPb.Builder, io.littlehorse.sdk.common.proto.DeleteTaskDefPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.DeleteTaskDefRequest, io.littlehorse.sdk.common.proto.DeleteTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteTaskDefRequestOrBuilder> 
         getDeleteTaskDefFieldBuilder() {
       if (deleteTaskDefBuilder_ == null) {
         if (!(commandCase_ == 16)) {
-          command_ = io.littlehorse.sdk.common.proto.DeleteTaskDefPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.DeleteTaskDefRequest.getDefaultInstance();
         }
         deleteTaskDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.DeleteTaskDefPb, io.littlehorse.sdk.common.proto.DeleteTaskDefPb.Builder, io.littlehorse.sdk.common.proto.DeleteTaskDefPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.DeleteTaskDefPb) command_,
+            io.littlehorse.sdk.common.proto.DeleteTaskDefRequest, io.littlehorse.sdk.common.proto.DeleteTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteTaskDefRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.DeleteTaskDefRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -4209,9 +4209,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb, io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb.Builder, io.littlehorse.sdk.common.proto.DeleteExternalEventDefPbOrBuilder> deleteExternalEventDefBuilder_;
+        io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest, io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequestOrBuilder> deleteExternalEventDefBuilder_;
     /**
-     * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 17;</code>
      * @return Whether the deleteExternalEventDef field is set.
      */
     @java.lang.Override
@@ -4219,27 +4219,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 17;
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 17;</code>
      * @return The deleteExternalEventDef.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb getDeleteExternalEventDef() {
+    public io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest getDeleteExternalEventDef() {
       if (deleteExternalEventDefBuilder_ == null) {
         if (commandCase_ == 17) {
-          return (io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb) command_;
+          return (io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 17) {
           return deleteExternalEventDefBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 17;</code>
      */
-    public Builder setDeleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb value) {
+    public Builder setDeleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest value) {
       if (deleteExternalEventDefBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -4253,10 +4253,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 17;</code>
      */
     public Builder setDeleteExternalEventDef(
-        io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest.Builder builderForValue) {
       if (deleteExternalEventDefBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -4267,13 +4267,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 17;</code>
      */
-    public Builder mergeDeleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb value) {
+    public Builder mergeDeleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest value) {
       if (deleteExternalEventDefBuilder_ == null) {
         if (commandCase_ == 17 &&
-            command_ != io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb.newBuilder((io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest.newBuilder((io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -4290,7 +4290,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 17;</code>
      */
     public Builder clearDeleteExternalEventDef() {
       if (deleteExternalEventDefBuilder_ == null) {
@@ -4309,38 +4309,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 17;</code>
      */
-    public io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb.Builder getDeleteExternalEventDefBuilder() {
+    public io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest.Builder getDeleteExternalEventDefBuilder() {
       return getDeleteExternalEventDefFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 17;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteExternalEventDefPbOrBuilder getDeleteExternalEventDefOrBuilder() {
+    public io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequestOrBuilder getDeleteExternalEventDefOrBuilder() {
       if ((commandCase_ == 17) && (deleteExternalEventDefBuilder_ != null)) {
         return deleteExternalEventDefBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 17) {
-          return (io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb) command_;
+          return (io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 17;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb, io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb.Builder, io.littlehorse.sdk.common.proto.DeleteExternalEventDefPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest, io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequestOrBuilder> 
         getDeleteExternalEventDefFieldBuilder() {
       if (deleteExternalEventDefBuilder_ == null) {
         if (!(commandCase_ == 17)) {
-          command_ = io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest.getDefaultInstance();
         }
         deleteExternalEventDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb, io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb.Builder, io.littlehorse.sdk.common.proto.DeleteExternalEventDefPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb) command_,
+            io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest, io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -4493,9 +4493,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb, io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb.Builder, io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPbOrBuilder> taskWorkerHeartBeatBuilder_;
+        io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest, io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest.Builder, io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequestOrBuilder> taskWorkerHeartBeatBuilder_;
     /**
-     * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+     * <code>.littlehorse.TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;</code>
      * @return Whether the taskWorkerHeartBeat field is set.
      */
     @java.lang.Override
@@ -4503,27 +4503,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 19;
     }
     /**
-     * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+     * <code>.littlehorse.TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;</code>
      * @return The taskWorkerHeartBeat.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb getTaskWorkerHeartBeat() {
+    public io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest getTaskWorkerHeartBeat() {
       if (taskWorkerHeartBeatBuilder_ == null) {
         if (commandCase_ == 19) {
-          return (io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb) command_;
+          return (io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 19) {
           return taskWorkerHeartBeatBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+     * <code>.littlehorse.TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;</code>
      */
-    public Builder setTaskWorkerHeartBeat(io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb value) {
+    public Builder setTaskWorkerHeartBeat(io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest value) {
       if (taskWorkerHeartBeatBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -4537,10 +4537,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+     * <code>.littlehorse.TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;</code>
      */
     public Builder setTaskWorkerHeartBeat(
-        io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest.Builder builderForValue) {
       if (taskWorkerHeartBeatBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -4551,13 +4551,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+     * <code>.littlehorse.TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;</code>
      */
-    public Builder mergeTaskWorkerHeartBeat(io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb value) {
+    public Builder mergeTaskWorkerHeartBeat(io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest value) {
       if (taskWorkerHeartBeatBuilder_ == null) {
         if (commandCase_ == 19 &&
-            command_ != io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb.newBuilder((io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest.newBuilder((io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -4574,7 +4574,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+     * <code>.littlehorse.TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;</code>
      */
     public Builder clearTaskWorkerHeartBeat() {
       if (taskWorkerHeartBeatBuilder_ == null) {
@@ -4593,38 +4593,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+     * <code>.littlehorse.TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb.Builder getTaskWorkerHeartBeatBuilder() {
+    public io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest.Builder getTaskWorkerHeartBeatBuilder() {
       return getTaskWorkerHeartBeatFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+     * <code>.littlehorse.TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPbOrBuilder getTaskWorkerHeartBeatOrBuilder() {
+    public io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequestOrBuilder getTaskWorkerHeartBeatOrBuilder() {
       if ((commandCase_ == 19) && (taskWorkerHeartBeatBuilder_ != null)) {
         return taskWorkerHeartBeatBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 19) {
-          return (io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb) command_;
+          return (io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+     * <code>.littlehorse.TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb, io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb.Builder, io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest, io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest.Builder, io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequestOrBuilder> 
         getTaskWorkerHeartBeatFieldBuilder() {
       if (taskWorkerHeartBeatBuilder_ == null) {
         if (!(commandCase_ == 19)) {
-          command_ = io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest.getDefaultInstance();
         }
         taskWorkerHeartBeatBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb, io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb.Builder, io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb) command_,
+            io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest, io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest.Builder, io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -4635,9 +4635,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DeleteExternalEventPb, io.littlehorse.sdk.common.proto.DeleteExternalEventPb.Builder, io.littlehorse.sdk.common.proto.DeleteExternalEventPbOrBuilder> deleteExternalEventBuilder_;
+        io.littlehorse.sdk.common.proto.DeleteExternalEventRequest, io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.Builder, io.littlehorse.sdk.common.proto.DeleteExternalEventRequestOrBuilder> deleteExternalEventBuilder_;
     /**
-     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     * <code>.littlehorse.DeleteExternalEventRequest delete_external_event = 20;</code>
      * @return Whether the deleteExternalEvent field is set.
      */
     @java.lang.Override
@@ -4645,27 +4645,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 20;
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     * <code>.littlehorse.DeleteExternalEventRequest delete_external_event = 20;</code>
      * @return The deleteExternalEvent.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteExternalEventPb getDeleteExternalEvent() {
+    public io.littlehorse.sdk.common.proto.DeleteExternalEventRequest getDeleteExternalEvent() {
       if (deleteExternalEventBuilder_ == null) {
         if (commandCase_ == 20) {
-          return (io.littlehorse.sdk.common.proto.DeleteExternalEventPb) command_;
+          return (io.littlehorse.sdk.common.proto.DeleteExternalEventRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.DeleteExternalEventPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 20) {
           return deleteExternalEventBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.DeleteExternalEventPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     * <code>.littlehorse.DeleteExternalEventRequest delete_external_event = 20;</code>
      */
-    public Builder setDeleteExternalEvent(io.littlehorse.sdk.common.proto.DeleteExternalEventPb value) {
+    public Builder setDeleteExternalEvent(io.littlehorse.sdk.common.proto.DeleteExternalEventRequest value) {
       if (deleteExternalEventBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -4679,10 +4679,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     * <code>.littlehorse.DeleteExternalEventRequest delete_external_event = 20;</code>
      */
     public Builder setDeleteExternalEvent(
-        io.littlehorse.sdk.common.proto.DeleteExternalEventPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.Builder builderForValue) {
       if (deleteExternalEventBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -4693,13 +4693,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     * <code>.littlehorse.DeleteExternalEventRequest delete_external_event = 20;</code>
      */
-    public Builder mergeDeleteExternalEvent(io.littlehorse.sdk.common.proto.DeleteExternalEventPb value) {
+    public Builder mergeDeleteExternalEvent(io.littlehorse.sdk.common.proto.DeleteExternalEventRequest value) {
       if (deleteExternalEventBuilder_ == null) {
         if (commandCase_ == 20 &&
-            command_ != io.littlehorse.sdk.common.proto.DeleteExternalEventPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.DeleteExternalEventPb.newBuilder((io.littlehorse.sdk.common.proto.DeleteExternalEventPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.newBuilder((io.littlehorse.sdk.common.proto.DeleteExternalEventRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -4716,7 +4716,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     * <code>.littlehorse.DeleteExternalEventRequest delete_external_event = 20;</code>
      */
     public Builder clearDeleteExternalEvent() {
       if (deleteExternalEventBuilder_ == null) {
@@ -4735,38 +4735,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     * <code>.littlehorse.DeleteExternalEventRequest delete_external_event = 20;</code>
      */
-    public io.littlehorse.sdk.common.proto.DeleteExternalEventPb.Builder getDeleteExternalEventBuilder() {
+    public io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.Builder getDeleteExternalEventBuilder() {
       return getDeleteExternalEventFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     * <code>.littlehorse.DeleteExternalEventRequest delete_external_event = 20;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteExternalEventPbOrBuilder getDeleteExternalEventOrBuilder() {
+    public io.littlehorse.sdk.common.proto.DeleteExternalEventRequestOrBuilder getDeleteExternalEventOrBuilder() {
       if ((commandCase_ == 20) && (deleteExternalEventBuilder_ != null)) {
         return deleteExternalEventBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 20) {
-          return (io.littlehorse.sdk.common.proto.DeleteExternalEventPb) command_;
+          return (io.littlehorse.sdk.common.proto.DeleteExternalEventRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.DeleteExternalEventPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     * <code>.littlehorse.DeleteExternalEventRequest delete_external_event = 20;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DeleteExternalEventPb, io.littlehorse.sdk.common.proto.DeleteExternalEventPb.Builder, io.littlehorse.sdk.common.proto.DeleteExternalEventPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.DeleteExternalEventRequest, io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.Builder, io.littlehorse.sdk.common.proto.DeleteExternalEventRequestOrBuilder> 
         getDeleteExternalEventFieldBuilder() {
       if (deleteExternalEventBuilder_ == null) {
         if (!(commandCase_ == 20)) {
-          command_ = io.littlehorse.sdk.common.proto.DeleteExternalEventPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.getDefaultInstance();
         }
         deleteExternalEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.DeleteExternalEventPb, io.littlehorse.sdk.common.proto.DeleteExternalEventPb.Builder, io.littlehorse.sdk.common.proto.DeleteExternalEventPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.DeleteExternalEventPb) command_,
+            io.littlehorse.sdk.common.proto.DeleteExternalEventRequest, io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.Builder, io.littlehorse.sdk.common.proto.DeleteExternalEventRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.DeleteExternalEventRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -4777,9 +4777,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.AssignUserTaskRunPb, io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.Builder, io.littlehorse.sdk.common.proto.AssignUserTaskRunPbOrBuilder> assignUserTaskRunBuilder_;
+        io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest, io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.AssignUserTaskRunRequestOrBuilder> assignUserTaskRunBuilder_;
     /**
-     * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+     * <code>.littlehorse.AssignUserTaskRunRequest assign_user_task_run = 21;</code>
      * @return Whether the assignUserTaskRun field is set.
      */
     @java.lang.Override
@@ -4787,27 +4787,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 21;
     }
     /**
-     * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+     * <code>.littlehorse.AssignUserTaskRunRequest assign_user_task_run = 21;</code>
      * @return The assignUserTaskRun.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.AssignUserTaskRunPb getAssignUserTaskRun() {
+    public io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest getAssignUserTaskRun() {
       if (assignUserTaskRunBuilder_ == null) {
         if (commandCase_ == 21) {
-          return (io.littlehorse.sdk.common.proto.AssignUserTaskRunPb) command_;
+          return (io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 21) {
           return assignUserTaskRunBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+     * <code>.littlehorse.AssignUserTaskRunRequest assign_user_task_run = 21;</code>
      */
-    public Builder setAssignUserTaskRun(io.littlehorse.sdk.common.proto.AssignUserTaskRunPb value) {
+    public Builder setAssignUserTaskRun(io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest value) {
       if (assignUserTaskRunBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -4821,10 +4821,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+     * <code>.littlehorse.AssignUserTaskRunRequest assign_user_task_run = 21;</code>
      */
     public Builder setAssignUserTaskRun(
-        io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.Builder builderForValue) {
       if (assignUserTaskRunBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -4835,13 +4835,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+     * <code>.littlehorse.AssignUserTaskRunRequest assign_user_task_run = 21;</code>
      */
-    public Builder mergeAssignUserTaskRun(io.littlehorse.sdk.common.proto.AssignUserTaskRunPb value) {
+    public Builder mergeAssignUserTaskRun(io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest value) {
       if (assignUserTaskRunBuilder_ == null) {
         if (commandCase_ == 21 &&
-            command_ != io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.newBuilder((io.littlehorse.sdk.common.proto.AssignUserTaskRunPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.newBuilder((io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -4858,7 +4858,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+     * <code>.littlehorse.AssignUserTaskRunRequest assign_user_task_run = 21;</code>
      */
     public Builder clearAssignUserTaskRun() {
       if (assignUserTaskRunBuilder_ == null) {
@@ -4877,38 +4877,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+     * <code>.littlehorse.AssignUserTaskRunRequest assign_user_task_run = 21;</code>
      */
-    public io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.Builder getAssignUserTaskRunBuilder() {
+    public io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.Builder getAssignUserTaskRunBuilder() {
       return getAssignUserTaskRunFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+     * <code>.littlehorse.AssignUserTaskRunRequest assign_user_task_run = 21;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.AssignUserTaskRunPbOrBuilder getAssignUserTaskRunOrBuilder() {
+    public io.littlehorse.sdk.common.proto.AssignUserTaskRunRequestOrBuilder getAssignUserTaskRunOrBuilder() {
       if ((commandCase_ == 21) && (assignUserTaskRunBuilder_ != null)) {
         return assignUserTaskRunBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 21) {
-          return (io.littlehorse.sdk.common.proto.AssignUserTaskRunPb) command_;
+          return (io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+     * <code>.littlehorse.AssignUserTaskRunRequest assign_user_task_run = 21;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.AssignUserTaskRunPb, io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.Builder, io.littlehorse.sdk.common.proto.AssignUserTaskRunPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest, io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.AssignUserTaskRunRequestOrBuilder> 
         getAssignUserTaskRunFieldBuilder() {
       if (assignUserTaskRunBuilder_ == null) {
         if (!(commandCase_ == 21)) {
-          command_ = io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.getDefaultInstance();
         }
         assignUserTaskRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.AssignUserTaskRunPb, io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.Builder, io.littlehorse.sdk.common.proto.AssignUserTaskRunPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.AssignUserTaskRunPb) command_,
+            io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest, io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.AssignUserTaskRunRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -4919,9 +4919,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb, io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb.Builder, io.littlehorse.sdk.common.proto.CompleteUserTaskRunPbOrBuilder> completeUserTaskRunBuilder_;
+        io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest, io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequestOrBuilder> completeUserTaskRunBuilder_;
     /**
-     * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+     * <code>.littlehorse.CompleteUserTaskRunRequest complete_user_task_run = 22;</code>
      * @return Whether the completeUserTaskRun field is set.
      */
     @java.lang.Override
@@ -4929,27 +4929,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 22;
     }
     /**
-     * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+     * <code>.littlehorse.CompleteUserTaskRunRequest complete_user_task_run = 22;</code>
      * @return The completeUserTaskRun.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb getCompleteUserTaskRun() {
+    public io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest getCompleteUserTaskRun() {
       if (completeUserTaskRunBuilder_ == null) {
         if (commandCase_ == 22) {
-          return (io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb) command_;
+          return (io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 22) {
           return completeUserTaskRunBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+     * <code>.littlehorse.CompleteUserTaskRunRequest complete_user_task_run = 22;</code>
      */
-    public Builder setCompleteUserTaskRun(io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb value) {
+    public Builder setCompleteUserTaskRun(io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest value) {
       if (completeUserTaskRunBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -4963,10 +4963,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+     * <code>.littlehorse.CompleteUserTaskRunRequest complete_user_task_run = 22;</code>
      */
     public Builder setCompleteUserTaskRun(
-        io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest.Builder builderForValue) {
       if (completeUserTaskRunBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -4977,13 +4977,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+     * <code>.littlehorse.CompleteUserTaskRunRequest complete_user_task_run = 22;</code>
      */
-    public Builder mergeCompleteUserTaskRun(io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb value) {
+    public Builder mergeCompleteUserTaskRun(io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest value) {
       if (completeUserTaskRunBuilder_ == null) {
         if (commandCase_ == 22 &&
-            command_ != io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb.newBuilder((io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest.newBuilder((io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -5000,7 +5000,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+     * <code>.littlehorse.CompleteUserTaskRunRequest complete_user_task_run = 22;</code>
      */
     public Builder clearCompleteUserTaskRun() {
       if (completeUserTaskRunBuilder_ == null) {
@@ -5019,38 +5019,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+     * <code>.littlehorse.CompleteUserTaskRunRequest complete_user_task_run = 22;</code>
      */
-    public io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb.Builder getCompleteUserTaskRunBuilder() {
+    public io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest.Builder getCompleteUserTaskRunBuilder() {
       return getCompleteUserTaskRunFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+     * <code>.littlehorse.CompleteUserTaskRunRequest complete_user_task_run = 22;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.CompleteUserTaskRunPbOrBuilder getCompleteUserTaskRunOrBuilder() {
+    public io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequestOrBuilder getCompleteUserTaskRunOrBuilder() {
       if ((commandCase_ == 22) && (completeUserTaskRunBuilder_ != null)) {
         return completeUserTaskRunBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 22) {
-          return (io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb) command_;
+          return (io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+     * <code>.littlehorse.CompleteUserTaskRunRequest complete_user_task_run = 22;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb, io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb.Builder, io.littlehorse.sdk.common.proto.CompleteUserTaskRunPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest, io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequestOrBuilder> 
         getCompleteUserTaskRunFieldBuilder() {
       if (completeUserTaskRunBuilder_ == null) {
         if (!(commandCase_ == 22)) {
-          command_ = io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest.getDefaultInstance();
         }
         completeUserTaskRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb, io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb.Builder, io.littlehorse.sdk.common.proto.CompleteUserTaskRunPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb) command_,
+            io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest, io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -5345,9 +5345,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb, io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.Builder, io.littlehorse.sdk.common.proto.DeleteUserTaskDefPbOrBuilder> deleteUserTaskDefBuilder_;
+        io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest, io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequestOrBuilder> deleteUserTaskDefBuilder_;
     /**
-     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 25;</code>
      * @return Whether the deleteUserTaskDef field is set.
      */
     @java.lang.Override
@@ -5355,27 +5355,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 25;
     }
     /**
-     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 25;</code>
      * @return The deleteUserTaskDef.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb getDeleteUserTaskDef() {
+    public io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest getDeleteUserTaskDef() {
       if (deleteUserTaskDefBuilder_ == null) {
         if (commandCase_ == 25) {
-          return (io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb) command_;
+          return (io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 25) {
           return deleteUserTaskDefBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 25;</code>
      */
-    public Builder setDeleteUserTaskDef(io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb value) {
+    public Builder setDeleteUserTaskDef(io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest value) {
       if (deleteUserTaskDefBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -5389,10 +5389,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 25;</code>
      */
     public Builder setDeleteUserTaskDef(
-        io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.Builder builderForValue) {
       if (deleteUserTaskDefBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -5403,13 +5403,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 25;</code>
      */
-    public Builder mergeDeleteUserTaskDef(io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb value) {
+    public Builder mergeDeleteUserTaskDef(io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest value) {
       if (deleteUserTaskDefBuilder_ == null) {
         if (commandCase_ == 25 &&
-            command_ != io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.newBuilder((io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.newBuilder((io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -5426,7 +5426,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 25;</code>
      */
     public Builder clearDeleteUserTaskDef() {
       if (deleteUserTaskDefBuilder_ == null) {
@@ -5445,38 +5445,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 25;</code>
      */
-    public io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.Builder getDeleteUserTaskDefBuilder() {
+    public io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.Builder getDeleteUserTaskDefBuilder() {
       return getDeleteUserTaskDefFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 25;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteUserTaskDefPbOrBuilder getDeleteUserTaskDefOrBuilder() {
+    public io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequestOrBuilder getDeleteUserTaskDefOrBuilder() {
       if ((commandCase_ == 25) && (deleteUserTaskDefBuilder_ != null)) {
         return deleteUserTaskDefBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 25) {
-          return (io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb) command_;
+          return (io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 25;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb, io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.Builder, io.littlehorse.sdk.common.proto.DeleteUserTaskDefPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest, io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequestOrBuilder> 
         getDeleteUserTaskDefFieldBuilder() {
       if (deleteUserTaskDefBuilder_ == null) {
         if (!(commandCase_ == 25)) {
-          command_ = io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.getDefaultInstance();
         }
         deleteUserTaskDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb, io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb.Builder, io.littlehorse.sdk.common.proto.DeleteUserTaskDefPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb) command_,
+            io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest, io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
@@ -5629,13 +5629,13 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.CancelUserTaskRunPb, io.littlehorse.sdk.common.proto.CancelUserTaskRunPb.Builder, io.littlehorse.sdk.common.proto.CancelUserTaskRunPbOrBuilder> cancelUserTaskBuilder_;
+        io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest, io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.CancelUserTaskRunRequestOrBuilder> cancelUserTaskBuilder_;
     /**
      * <pre>
      * TODO: Add SaveUserTask
      * </pre>
      *
-     * <code>.littlehorse.CancelUserTaskRunPb cancel_user_task = 27;</code>
+     * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 27;</code>
      * @return Whether the cancelUserTask field is set.
      */
     @java.lang.Override
@@ -5647,21 +5647,21 @@ private static final long serialVersionUID = 0L;
      * TODO: Add SaveUserTask
      * </pre>
      *
-     * <code>.littlehorse.CancelUserTaskRunPb cancel_user_task = 27;</code>
+     * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 27;</code>
      * @return The cancelUserTask.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.CancelUserTaskRunPb getCancelUserTask() {
+    public io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest getCancelUserTask() {
       if (cancelUserTaskBuilder_ == null) {
         if (commandCase_ == 27) {
-          return (io.littlehorse.sdk.common.proto.CancelUserTaskRunPb) command_;
+          return (io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.CancelUserTaskRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 27) {
           return cancelUserTaskBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.CancelUserTaskRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.getDefaultInstance();
       }
     }
     /**
@@ -5669,9 +5669,9 @@ private static final long serialVersionUID = 0L;
      * TODO: Add SaveUserTask
      * </pre>
      *
-     * <code>.littlehorse.CancelUserTaskRunPb cancel_user_task = 27;</code>
+     * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 27;</code>
      */
-    public Builder setCancelUserTask(io.littlehorse.sdk.common.proto.CancelUserTaskRunPb value) {
+    public Builder setCancelUserTask(io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest value) {
       if (cancelUserTaskBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -5689,10 +5689,10 @@ private static final long serialVersionUID = 0L;
      * TODO: Add SaveUserTask
      * </pre>
      *
-     * <code>.littlehorse.CancelUserTaskRunPb cancel_user_task = 27;</code>
+     * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 27;</code>
      */
     public Builder setCancelUserTask(
-        io.littlehorse.sdk.common.proto.CancelUserTaskRunPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.Builder builderForValue) {
       if (cancelUserTaskBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -5707,13 +5707,13 @@ private static final long serialVersionUID = 0L;
      * TODO: Add SaveUserTask
      * </pre>
      *
-     * <code>.littlehorse.CancelUserTaskRunPb cancel_user_task = 27;</code>
+     * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 27;</code>
      */
-    public Builder mergeCancelUserTask(io.littlehorse.sdk.common.proto.CancelUserTaskRunPb value) {
+    public Builder mergeCancelUserTask(io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest value) {
       if (cancelUserTaskBuilder_ == null) {
         if (commandCase_ == 27 &&
-            command_ != io.littlehorse.sdk.common.proto.CancelUserTaskRunPb.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.CancelUserTaskRunPb.newBuilder((io.littlehorse.sdk.common.proto.CancelUserTaskRunPb) command_)
+            command_ != io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.newBuilder((io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -5734,7 +5734,7 @@ private static final long serialVersionUID = 0L;
      * TODO: Add SaveUserTask
      * </pre>
      *
-     * <code>.littlehorse.CancelUserTaskRunPb cancel_user_task = 27;</code>
+     * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 27;</code>
      */
     public Builder clearCancelUserTask() {
       if (cancelUserTaskBuilder_ == null) {
@@ -5757,9 +5757,9 @@ private static final long serialVersionUID = 0L;
      * TODO: Add SaveUserTask
      * </pre>
      *
-     * <code>.littlehorse.CancelUserTaskRunPb cancel_user_task = 27;</code>
+     * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 27;</code>
      */
-    public io.littlehorse.sdk.common.proto.CancelUserTaskRunPb.Builder getCancelUserTaskBuilder() {
+    public io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.Builder getCancelUserTaskBuilder() {
       return getCancelUserTaskFieldBuilder().getBuilder();
     }
     /**
@@ -5767,17 +5767,17 @@ private static final long serialVersionUID = 0L;
      * TODO: Add SaveUserTask
      * </pre>
      *
-     * <code>.littlehorse.CancelUserTaskRunPb cancel_user_task = 27;</code>
+     * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 27;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.CancelUserTaskRunPbOrBuilder getCancelUserTaskOrBuilder() {
+    public io.littlehorse.sdk.common.proto.CancelUserTaskRunRequestOrBuilder getCancelUserTaskOrBuilder() {
       if ((commandCase_ == 27) && (cancelUserTaskBuilder_ != null)) {
         return cancelUserTaskBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 27) {
-          return (io.littlehorse.sdk.common.proto.CancelUserTaskRunPb) command_;
+          return (io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) command_;
         }
-        return io.littlehorse.sdk.common.proto.CancelUserTaskRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.getDefaultInstance();
       }
     }
     /**
@@ -5785,18 +5785,18 @@ private static final long serialVersionUID = 0L;
      * TODO: Add SaveUserTask
      * </pre>
      *
-     * <code>.littlehorse.CancelUserTaskRunPb cancel_user_task = 27;</code>
+     * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 27;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.CancelUserTaskRunPb, io.littlehorse.sdk.common.proto.CancelUserTaskRunPb.Builder, io.littlehorse.sdk.common.proto.CancelUserTaskRunPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest, io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.CancelUserTaskRunRequestOrBuilder> 
         getCancelUserTaskFieldBuilder() {
       if (cancelUserTaskBuilder_ == null) {
         if (!(commandCase_ == 27)) {
-          command_ = io.littlehorse.sdk.common.proto.CancelUserTaskRunPb.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.getDefaultInstance();
         }
         cancelUserTaskBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.CancelUserTaskRunPb, io.littlehorse.sdk.common.proto.CancelUserTaskRunPb.Builder, io.littlehorse.sdk.common.proto.CancelUserTaskRunPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.CancelUserTaskRunPb) command_,
+            io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest, io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.Builder, io.littlehorse.sdk.common.proto.CancelUserTaskRunRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;

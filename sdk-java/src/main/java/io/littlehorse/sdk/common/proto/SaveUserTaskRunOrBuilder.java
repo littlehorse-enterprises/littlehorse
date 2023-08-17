@@ -8,19 +8,19 @@ public interface SaveUserTaskRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.UserTaskResultPb result = 1;</code>
+   * <code>.littlehorse.UserTaskResult result = 1;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>.littlehorse.UserTaskResultPb result = 1;</code>
+   * <code>.littlehorse.UserTaskResult result = 1;</code>
    * @return The result.
    */
-  io.littlehorse.sdk.common.proto.UserTaskResultPb getResult();
+  io.littlehorse.sdk.common.proto.UserTaskResult getResult();
   /**
-   * <code>.littlehorse.UserTaskResultPb result = 1;</code>
+   * <code>.littlehorse.UserTaskResult result = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskResultPbOrBuilder getResultOrBuilder();
+  io.littlehorse.sdk.common.proto.UserTaskResultOrBuilder getResultOrBuilder();
 
   /**
    * <code>string user_id = 2;</code>

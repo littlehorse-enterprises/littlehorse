@@ -5,13 +5,13 @@ import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
-import io.littlehorse.common.proto.WaitForCommandReplyPb;
+import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class POSTStreamObserver<U extends Message>
-    implements StreamObserver<WaitForCommandReplyPb> {
+    implements StreamObserver<WaitForCommandResponse> {
 
     private StreamObserver<U> ctx;
     private Class<U> responseCls;
@@ -79,7 +79,7 @@ public class POSTStreamObserver<U extends Message>
         // Nothing to do
     }
 
-    public void onNext(WaitForCommandReplyPb reply) {
+    public void onNext(WaitForCommandResponse reply) {
         U response;
 
         if (reply.getCode() == StoreQueryStatusPb.RSQ_OK) {

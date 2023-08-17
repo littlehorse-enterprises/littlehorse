@@ -115,19 +115,19 @@ public interface CommandPbOrBuilder extends
   io.littlehorse.sdk.common.proto.PutExternalEventDefRequestOrBuilder getPutExternalEventDefOrBuilder();
 
   /**
-   * <code>.littlehorse.RunWfPb run_wf = 9;</code>
+   * <code>.littlehorse.RunWfRequest run_wf = 9;</code>
    * @return Whether the runWf field is set.
    */
   boolean hasRunWf();
   /**
-   * <code>.littlehorse.RunWfPb run_wf = 9;</code>
+   * <code>.littlehorse.RunWfRequest run_wf = 9;</code>
    * @return The runWf.
    */
-  io.littlehorse.sdk.common.proto.RunWfPb getRunWf();
+  io.littlehorse.sdk.common.proto.RunWfRequest getRunWf();
   /**
-   * <code>.littlehorse.RunWfPb run_wf = 9;</code>
+   * <code>.littlehorse.RunWfRequest run_wf = 9;</code>
    */
-  io.littlehorse.sdk.common.proto.RunWfPbOrBuilder getRunWfOrBuilder();
+  io.littlehorse.sdk.common.proto.RunWfRequestOrBuilder getRunWfOrBuilder();
 
   /**
    * <code>.littlehorse.PutExternalEventRequest put_external_event = 10;</code>
@@ -145,34 +145,34 @@ public interface CommandPbOrBuilder extends
   io.littlehorse.sdk.common.proto.PutExternalEventRequestOrBuilder getPutExternalEventOrBuilder();
 
   /**
-   * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
+   * <code>.littlehorse.StopWfRunRequest stop_wf_run = 11;</code>
    * @return Whether the stopWfRun field is set.
    */
   boolean hasStopWfRun();
   /**
-   * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
+   * <code>.littlehorse.StopWfRunRequest stop_wf_run = 11;</code>
    * @return The stopWfRun.
    */
-  io.littlehorse.sdk.common.proto.StopWfRunPb getStopWfRun();
+  io.littlehorse.sdk.common.proto.StopWfRunRequest getStopWfRun();
   /**
-   * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
+   * <code>.littlehorse.StopWfRunRequest stop_wf_run = 11;</code>
    */
-  io.littlehorse.sdk.common.proto.StopWfRunPbOrBuilder getStopWfRunOrBuilder();
+  io.littlehorse.sdk.common.proto.StopWfRunRequestOrBuilder getStopWfRunOrBuilder();
 
   /**
-   * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
+   * <code>.littlehorse.ResumeWfRunRequest resume_wf_run = 12;</code>
    * @return Whether the resumeWfRun field is set.
    */
   boolean hasResumeWfRun();
   /**
-   * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
+   * <code>.littlehorse.ResumeWfRunRequest resume_wf_run = 12;</code>
    * @return The resumeWfRun.
    */
-  io.littlehorse.sdk.common.proto.ResumeWfRunPb getResumeWfRun();
+  io.littlehorse.sdk.common.proto.ResumeWfRunRequest getResumeWfRun();
   /**
-   * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
+   * <code>.littlehorse.ResumeWfRunRequest resume_wf_run = 12;</code>
    */
-  io.littlehorse.sdk.common.proto.ResumeWfRunPbOrBuilder getResumeWfRunOrBuilder();
+  io.littlehorse.sdk.common.proto.ResumeWfRunRequestOrBuilder getResumeWfRunOrBuilder();
 
   /**
    * <code>.littlehorse.SleepNodeMaturedPb sleep_node_matured = 13;</code>
@@ -190,64 +190,64 @@ public interface CommandPbOrBuilder extends
   io.littlehorse.common.proto.SleepNodeMaturedPbOrBuilder getSleepNodeMaturedOrBuilder();
 
   /**
-   * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
+   * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 14;</code>
    * @return Whether the deleteWfRun field is set.
    */
   boolean hasDeleteWfRun();
   /**
-   * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
+   * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 14;</code>
    * @return The deleteWfRun.
    */
-  io.littlehorse.sdk.common.proto.DeleteWfRunPb getDeleteWfRun();
+  io.littlehorse.sdk.common.proto.DeleteWfRunRequest getDeleteWfRun();
   /**
-   * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
+   * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 14;</code>
    */
-  io.littlehorse.sdk.common.proto.DeleteWfRunPbOrBuilder getDeleteWfRunOrBuilder();
+  io.littlehorse.sdk.common.proto.DeleteWfRunRequestOrBuilder getDeleteWfRunOrBuilder();
 
   /**
-   * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
+   * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 15;</code>
    * @return Whether the deleteWfSpec field is set.
    */
   boolean hasDeleteWfSpec();
   /**
-   * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
+   * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 15;</code>
    * @return The deleteWfSpec.
    */
-  io.littlehorse.sdk.common.proto.DeleteWfSpecPb getDeleteWfSpec();
+  io.littlehorse.sdk.common.proto.DeleteWfSpecRequest getDeleteWfSpec();
   /**
-   * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
+   * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 15;</code>
    */
-  io.littlehorse.sdk.common.proto.DeleteWfSpecPbOrBuilder getDeleteWfSpecOrBuilder();
+  io.littlehorse.sdk.common.proto.DeleteWfSpecRequestOrBuilder getDeleteWfSpecOrBuilder();
 
   /**
-   * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
+   * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 16;</code>
    * @return Whether the deleteTaskDef field is set.
    */
   boolean hasDeleteTaskDef();
   /**
-   * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
+   * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 16;</code>
    * @return The deleteTaskDef.
    */
-  io.littlehorse.sdk.common.proto.DeleteTaskDefPb getDeleteTaskDef();
+  io.littlehorse.sdk.common.proto.DeleteTaskDefRequest getDeleteTaskDef();
   /**
-   * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
+   * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 16;</code>
    */
-  io.littlehorse.sdk.common.proto.DeleteTaskDefPbOrBuilder getDeleteTaskDefOrBuilder();
+  io.littlehorse.sdk.common.proto.DeleteTaskDefRequestOrBuilder getDeleteTaskDefOrBuilder();
 
   /**
-   * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+   * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 17;</code>
    * @return Whether the deleteExternalEventDef field is set.
    */
   boolean hasDeleteExternalEventDef();
   /**
-   * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+   * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 17;</code>
    * @return The deleteExternalEventDef.
    */
-  io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb getDeleteExternalEventDef();
+  io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest getDeleteExternalEventDef();
   /**
-   * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+   * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 17;</code>
    */
-  io.littlehorse.sdk.common.proto.DeleteExternalEventDefPbOrBuilder getDeleteExternalEventDefOrBuilder();
+  io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequestOrBuilder getDeleteExternalEventDefOrBuilder();
 
   /**
    * <code>.littlehorse.ExternalEventNodeTimeoutPb external_event_timeout = 18;</code>
@@ -265,64 +265,64 @@ public interface CommandPbOrBuilder extends
   io.littlehorse.common.proto.ExternalEventNodeTimeoutPbOrBuilder getExternalEventTimeoutOrBuilder();
 
   /**
-   * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+   * <code>.littlehorse.TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;</code>
    * @return Whether the taskWorkerHeartBeat field is set.
    */
   boolean hasTaskWorkerHeartBeat();
   /**
-   * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+   * <code>.littlehorse.TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;</code>
    * @return The taskWorkerHeartBeat.
    */
-  io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb getTaskWorkerHeartBeat();
+  io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest getTaskWorkerHeartBeat();
   /**
-   * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+   * <code>.littlehorse.TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;</code>
    */
-  io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPbOrBuilder getTaskWorkerHeartBeatOrBuilder();
+  io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequestOrBuilder getTaskWorkerHeartBeatOrBuilder();
 
   /**
-   * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+   * <code>.littlehorse.DeleteExternalEventRequest delete_external_event = 20;</code>
    * @return Whether the deleteExternalEvent field is set.
    */
   boolean hasDeleteExternalEvent();
   /**
-   * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+   * <code>.littlehorse.DeleteExternalEventRequest delete_external_event = 20;</code>
    * @return The deleteExternalEvent.
    */
-  io.littlehorse.sdk.common.proto.DeleteExternalEventPb getDeleteExternalEvent();
+  io.littlehorse.sdk.common.proto.DeleteExternalEventRequest getDeleteExternalEvent();
   /**
-   * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+   * <code>.littlehorse.DeleteExternalEventRequest delete_external_event = 20;</code>
    */
-  io.littlehorse.sdk.common.proto.DeleteExternalEventPbOrBuilder getDeleteExternalEventOrBuilder();
+  io.littlehorse.sdk.common.proto.DeleteExternalEventRequestOrBuilder getDeleteExternalEventOrBuilder();
 
   /**
-   * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+   * <code>.littlehorse.AssignUserTaskRunRequest assign_user_task_run = 21;</code>
    * @return Whether the assignUserTaskRun field is set.
    */
   boolean hasAssignUserTaskRun();
   /**
-   * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+   * <code>.littlehorse.AssignUserTaskRunRequest assign_user_task_run = 21;</code>
    * @return The assignUserTaskRun.
    */
-  io.littlehorse.sdk.common.proto.AssignUserTaskRunPb getAssignUserTaskRun();
+  io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest getAssignUserTaskRun();
   /**
-   * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+   * <code>.littlehorse.AssignUserTaskRunRequest assign_user_task_run = 21;</code>
    */
-  io.littlehorse.sdk.common.proto.AssignUserTaskRunPbOrBuilder getAssignUserTaskRunOrBuilder();
+  io.littlehorse.sdk.common.proto.AssignUserTaskRunRequestOrBuilder getAssignUserTaskRunOrBuilder();
 
   /**
-   * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+   * <code>.littlehorse.CompleteUserTaskRunRequest complete_user_task_run = 22;</code>
    * @return Whether the completeUserTaskRun field is set.
    */
   boolean hasCompleteUserTaskRun();
   /**
-   * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+   * <code>.littlehorse.CompleteUserTaskRunRequest complete_user_task_run = 22;</code>
    * @return The completeUserTaskRun.
    */
-  io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb getCompleteUserTaskRun();
+  io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest getCompleteUserTaskRun();
   /**
-   * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+   * <code>.littlehorse.CompleteUserTaskRunRequest complete_user_task_run = 22;</code>
    */
-  io.littlehorse.sdk.common.proto.CompleteUserTaskRunPbOrBuilder getCompleteUserTaskRunOrBuilder();
+  io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequestOrBuilder getCompleteUserTaskRunOrBuilder();
 
   /**
    * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 23;</code>
@@ -355,19 +355,19 @@ public interface CommandPbOrBuilder extends
   io.littlehorse.common.proto.TriggeredTaskRunPbOrBuilder getTriggeredTaskRunOrBuilder();
 
   /**
-   * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+   * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 25;</code>
    * @return Whether the deleteUserTaskDef field is set.
    */
   boolean hasDeleteUserTaskDef();
   /**
-   * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+   * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 25;</code>
    * @return The deleteUserTaskDef.
    */
-  io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb getDeleteUserTaskDef();
+  io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest getDeleteUserTaskDef();
   /**
-   * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+   * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 25;</code>
    */
-  io.littlehorse.sdk.common.proto.DeleteUserTaskDefPbOrBuilder getDeleteUserTaskDefOrBuilder();
+  io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequestOrBuilder getDeleteUserTaskDefOrBuilder();
 
   /**
    * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 26;</code>
@@ -389,7 +389,7 @@ public interface CommandPbOrBuilder extends
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.CancelUserTaskRunPb cancel_user_task = 27;</code>
+   * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 27;</code>
    * @return Whether the cancelUserTask field is set.
    */
   boolean hasCancelUserTask();
@@ -398,18 +398,18 @@ public interface CommandPbOrBuilder extends
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.CancelUserTaskRunPb cancel_user_task = 27;</code>
+   * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 27;</code>
    * @return The cancelUserTask.
    */
-  io.littlehorse.sdk.common.proto.CancelUserTaskRunPb getCancelUserTask();
+  io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest getCancelUserTask();
   /**
    * <pre>
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.CancelUserTaskRunPb cancel_user_task = 27;</code>
+   * <code>.littlehorse.CancelUserTaskRunRequest cancel_user_task = 27;</code>
    */
-  io.littlehorse.sdk.common.proto.CancelUserTaskRunPbOrBuilder getCancelUserTaskOrBuilder();
+  io.littlehorse.sdk.common.proto.CancelUserTaskRunRequestOrBuilder getCancelUserTaskOrBuilder();
 
   public io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
 }

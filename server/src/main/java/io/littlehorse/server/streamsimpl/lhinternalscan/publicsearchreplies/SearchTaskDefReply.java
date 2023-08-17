@@ -1,15 +1,15 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
 import io.littlehorse.common.model.objectId.TaskDefIdModel;
-import io.littlehorse.sdk.common.proto.SearchTaskDefReplyPb;
+import io.littlehorse.sdk.common.proto.SearchTaskDefResponse;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class SearchTaskDefReply
-    extends PublicScanReply<SearchTaskDefReplyPb, TaskDefId, TaskDefIdModel> {
+    extends PublicScanReply<SearchTaskDefResponse, TaskDefId, TaskDefIdModel> {
 
-    public Class<SearchTaskDefReplyPb> getProtoBaseClass() {
-        return SearchTaskDefReplyPb.class;
+    public Class<SearchTaskDefResponse> getProtoBaseClass() {
+        return SearchTaskDefResponse.class;
     }
 
     public Class<TaskDefIdModel> getResultJavaClass() {
@@ -19,8 +19,8 @@ public class SearchTaskDefReply
     public Class<TaskDefId> getResultProtoClass() {
         return TaskDefId.class;
     }
-    // public SearchTaskDefReplyPb.Builder toProto() {
-    //     SearchTaskDefReplyPb.Builder out = SearchTaskDefReplyPb
+    // public SearchTaskDefResponse.Builder toProto() {
+    //     SearchTaskDefResponse.Builder out = SearchTaskDefResponse
     //         .newBuilder()
     //         .setCode(code);
     //     if (message != null) out.setMessage(message);
@@ -34,7 +34,7 @@ public class SearchTaskDefReply
     // }
 
     // public void initFrom(Message proto) {
-    //     SearchTaskDefReplyPb p = (SearchTaskDefReplyPb) proto;
+    //     SearchTaskDefResponse p = (SearchTaskDefResponse) proto;
     //     code = p.getCode();
     //     if (p.hasMessage()) message = p.getMessage();
     //     if (p.hasBookmark()) bookmark = p.getBookmark().toByteArray();

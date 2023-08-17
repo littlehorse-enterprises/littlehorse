@@ -5,7 +5,7 @@ import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
+import io.littlehorse.common.proto.CentralStoreQueryResponse;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
@@ -13,7 +13,7 @@ import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
 public class GETStreamObserverNew<
     U extends Message, T extends Getable<U>, V extends Message
 >
-    implements StreamObserver<CentralStoreQueryReplyPb> {
+    implements StreamObserver<CentralStoreQueryResponse> {
 
     private StreamObserver<V> ctx;
     private LHConfig config;
@@ -45,7 +45,7 @@ public class GETStreamObserverNew<
 
     public void onCompleted() {}
 
-    public void onNext(CentralStoreQueryReplyPb reply) {
+    public void onNext(CentralStoreQueryResponse reply) {
         if (reply.hasResult()) {
             out.code = LHResponseCode.OK;
             try {

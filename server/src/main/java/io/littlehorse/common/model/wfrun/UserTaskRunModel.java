@@ -7,8 +7,8 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
-import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
-import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
+import io.littlehorse.common.model.command.subcommand.AssignUserTaskRunRequestModel;
+import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRunRequestModel;
 import io.littlehorse.common.model.command.subcommand.ReassignUserTask;
 import io.littlehorse.common.model.meta.NodeModel;
 import io.littlehorse.common.model.meta.UserTaskNodeModel;
@@ -291,7 +291,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
         }
     }
 
-    public void reassignTo(AssignUserTaskRun event) {
+    public void reassignTo(AssignUserTaskRunRequestModel event) {
         UTEReassignedModel reassigned = null;
         switch (event.getAssigneeType()) {
             case USER:
@@ -407,7 +407,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
         getDao().scheduleTimer(timer);
     }
 
-    public void processTaskCompletedEvent(CompleteUserTaskRun event)
+    public void processTaskCompletedEvent(CompleteUserTaskRunRequestModel event)
         throws LHValidationError {
         if (
             getNodeRun().getStatus() != LHStatus.STARTING &&

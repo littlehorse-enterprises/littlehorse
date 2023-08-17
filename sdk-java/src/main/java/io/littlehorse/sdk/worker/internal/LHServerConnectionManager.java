@@ -8,8 +8,8 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.HostInfo;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
-import io.littlehorse.sdk.common.proto.RegisterTaskWorkerPb;
-import io.littlehorse.sdk.common.proto.RegisterTaskWorkerReplyPb;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TaskDef;
@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class LHServerConnectionManager
-    implements StreamObserver<RegisterTaskWorkerReplyPb>, Closeable {
+    implements StreamObserver<RegisterTaskWorkerResponse>, Closeable {
 
     public Object executable;
     public Method taskMethod;
@@ -128,7 +128,7 @@ public class LHServerConnectionManager
     }
 
     @Override
-    public void onNext(RegisterTaskWorkerReplyPb next) {
+    public void onNext(RegisterTaskWorkerResponse next) {
         if (next.getCode() == LHResponseCode.BAD_REQUEST_ERROR) {
             throw new RuntimeException("Invalid configuration: " + next.getMessage());
         }
@@ -199,7 +199,7 @@ public class LHServerConnectionManager
 
     private void doHeartbeat() {
         bootstrapStub.registerTaskWorker(
-            RegisterTaskWorkerPb
+            RegisterTaskWorkerRequest
                 .newBuilder()
                 .setTaskDefName(taskDef.getName())
                 .setClientId(config.getClientId())

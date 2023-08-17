@@ -37,7 +37,7 @@ public class TaskWorkerHeartBeatTest {
     private LHDAO lhdao = mock(LHDAO.class);
     private TaskWorkerAssignor assignor = mock(TaskWorkerAssignor.class);
     private LHConfig lhConfig = mock(LHConfig.class);
-    private TaskWorkerHeartBeat taskWorkerHeartBeat = new TaskWorkerHeartBeat(
+    private TaskWorkerHeartBeatRequestModel taskWorkerHeartBeat = new TaskWorkerHeartBeatRequestModel(
         assignor
     );
     private ArgumentCaptor<TaskWorkerGroupModel> taskWorkerCaptor = ArgumentCaptor.forClass(

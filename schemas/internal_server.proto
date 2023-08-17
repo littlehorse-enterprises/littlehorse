@@ -30,7 +30,7 @@ enum StoreQueryStatusPb {
     RSQ_NOT_AVAILABLE = 2; // Can't query store, eg. during a rebalance or if migrated.
 }
 
-message CentralStoreQueryReplyPb {
+message CentralStoreQueryResponse {
     StoreQueryStatusPb code = 1;
     optional bytes result = 2;
     int64 approximate_lag = 3;
@@ -53,7 +53,7 @@ message WaitForCommandPb {
     string command_id = 1;
 }
 
-message WaitForCommandReplyPb {
+message WaitForCommandResponse {
     StoreQueryStatusPb code = 1;
     optional CommandResultPb result = 2;
     optional string message = 3;
@@ -111,7 +111,7 @@ message InternalScanPb {
     }
 }
 
-message InternalScanReplyPb {
+message InternalScanResponse {
     StoreQueryStatusPb code = 1;
 
     // The type of 'result' depends on the query.
@@ -148,23 +148,23 @@ message InternalScanReplyPb {
 // Servers so that it can formulate the response described above.
 message InternalGetAdvertisedHostsPb {}
 
-message InternalGetAdvertisedHostsReplyPb {
+message InternalGetAdvertisedHostsResponse {
     map<string, HostInfo> hosts = 1;
 }
 
 service LHInternals {
-    rpc CentralStoreQuery(CentralStoreQueryPb) returns (CentralStoreQueryReplyPb) {}
-    rpc InternalScan(InternalScanPb) returns (InternalScanReplyPb) {}
+    rpc CentralStoreQuery(CentralStoreQueryPb) returns (CentralStoreQueryResponse) {}
+    rpc InternalScan(InternalScanPb) returns (InternalScanResponse) {}
 
-    rpc waitForCommand(WaitForCommandPb) returns (WaitForCommandReplyPb) {}
+    rpc waitForCommand(WaitForCommandPb) returns (WaitForCommandResponse) {}
 
-    rpc GetAdvertisedHosts(InternalGetAdvertisedHostsPb) returns (InternalGetAdvertisedHostsReplyPb) {}
+    rpc GetAdvertisedHosts(InternalGetAdvertisedHostsPb) returns (InternalGetAdvertisedHostsResponse) {}
 
-    rpc TopologyInstancesState(TopologyInstanceStatePb) returns (TopologyInstanceStateReplyPb) {}
+    rpc TopologyInstancesState(TopologyInstanceStatePb) returns (TopologyInstanceStateResponse) {}
 
-    rpc LocalTasks(LocalTasksPb) returns (LocalTasksReplyPb) {}
+    rpc LocalTasks(LocalTasksPb) returns (LocalTasksResponse) {}
 
-    // rpc TagScan(TagScanPb) returns (TagScanReplyPb) {}
+    // rpc TagScan(TagScanPb) returns (TagScanResponse) {}
 }
 
 // Stuff for the metrics topology
@@ -333,25 +333,25 @@ message CommandPb {
         PutWfSpecRequest put_wf_spec = 6;
         PutTaskDefRequest put_task_def = 7;
         PutExternalEventDefRequest put_external_event_def = 8;
-        RunWfPb run_wf = 9;
+        RunWfRequest run_wf = 9;
         PutExternalEventRequest put_external_event = 10;
-        StopWfRunPb stop_wf_run = 11;
-        ResumeWfRunPb resume_wf_run = 12;
+        StopWfRunRequest stop_wf_run = 11;
+        ResumeWfRunRequest resume_wf_run = 12;
         SleepNodeMaturedPb sleep_node_matured = 13;
-        DeleteWfRunPb delete_wf_run = 14;
-        DeleteWfSpecPb delete_wf_spec = 15;
-        DeleteTaskDefPb delete_task_def = 16;
-        DeleteExternalEventDefPb delete_external_event_def = 17;
+        DeleteWfRunRequest delete_wf_run = 14;
+        DeleteWfSpecRequest delete_wf_spec = 15;
+        DeleteTaskDefRequest delete_task_def = 16;
+        DeleteExternalEventDefRequest delete_external_event_def = 17;
         ExternalEventNodeTimeoutPb external_event_timeout = 18;
-        TaskWorkerHeartBeatPb task_worker_heart_beat = 19;
-        DeleteExternalEventPb delete_external_event = 20;
-        AssignUserTaskRunPb assign_user_task_run = 21;
-        CompleteUserTaskRunPb complete_user_task_run = 22;
+        TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;
+        DeleteExternalEventRequest delete_external_event = 20;
+        AssignUserTaskRunRequest assign_user_task_run = 21;
+        CompleteUserTaskRunRequest complete_user_task_run = 22;
         PutUserTaskDefRequest put_user_task_def = 23;
         TriggeredTaskRunPb triggered_task_run = 24;
-        DeleteUserTaskDefPb delete_user_task_def = 25;
+        DeleteUserTaskDefRequest delete_user_task_def = 25;
         ReassignedUserTaskPb reassigned_user_task = 26;
-        CancelUserTaskRunPb cancel_user_task = 27;
+        CancelUserTaskRunRequest cancel_user_task = 27;
         // TODO: Add SaveUserTask
     }
 }
@@ -366,7 +366,7 @@ message LHTimerPb {
     bytes payload = 4;
 }
 
-message TopologyInstanceStateReplyPb {
+message TopologyInstanceStateResponse {
     repeated ServerStatePb servers_core = 1;
     repeated ServerStatePb servers_timer = 2;
 }
@@ -412,7 +412,7 @@ message TopologyInstanceStatePb {
 message LocalTasksPb {
 }
 
-message LocalTasksReplyPb {
+message LocalTasksResponse {
     repeated TaskStatePb active_tasks = 1;
     repeated StandByTaskStatePb standby_tasks = 2;
 }

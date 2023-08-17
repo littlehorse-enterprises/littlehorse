@@ -1,15 +1,15 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
 import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
-import io.littlehorse.sdk.common.proto.ListWfMetricsReplyPb;
+import io.littlehorse.sdk.common.proto.ListWfMetricsResponse;
 import io.littlehorse.sdk.common.proto.WfSpecMetrics;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class ListWfMetricsReply
-    extends PublicScanReply<ListWfMetricsReplyPb, WfSpecMetrics, WfSpecMetricsModel> {
+    extends PublicScanReply<ListWfMetricsResponse, WfSpecMetrics, WfSpecMetricsModel> {
 
-    public Class<ListWfMetricsReplyPb> getProtoBaseClass() {
-        return ListWfMetricsReplyPb.class;
+    public Class<ListWfMetricsResponse> getProtoBaseClass() {
+        return ListWfMetricsResponse.class;
     }
 
     public Class<WfSpecMetricsModel> getResultJavaClass() {

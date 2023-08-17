@@ -2,10 +2,10 @@ package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.sdk.common.proto.DeleteObjectReplyPb;
+import io.littlehorse.sdk.common.proto.DeleteObjectResponse;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 
-public class DeleteObjectReply extends AbstractResponse<DeleteObjectReplyPb> {
+public class DeleteObjectReply extends AbstractResponse<DeleteObjectResponse> {
 
     public DeleteObjectReply() {}
 
@@ -14,12 +14,12 @@ public class DeleteObjectReply extends AbstractResponse<DeleteObjectReplyPb> {
         this.message = message;
     }
 
-    public Class<DeleteObjectReplyPb> getProtoBaseClass() {
-        return DeleteObjectReplyPb.class;
+    public Class<DeleteObjectResponse> getProtoBaseClass() {
+        return DeleteObjectResponse.class;
     }
 
-    public DeleteObjectReplyPb.Builder toProto() {
-        DeleteObjectReplyPb.Builder out = DeleteObjectReplyPb.newBuilder();
+    public DeleteObjectResponse.Builder toProto() {
+        DeleteObjectResponse.Builder out = DeleteObjectResponse.newBuilder();
         out.setCode(code);
         if (message != null) {
             out.setMessage(message);
@@ -28,12 +28,12 @@ public class DeleteObjectReply extends AbstractResponse<DeleteObjectReplyPb> {
     }
 
     public void initFrom(Message proto) {
-        DeleteObjectReplyPb p = (DeleteObjectReplyPb) proto;
+        DeleteObjectResponse p = (DeleteObjectResponse) proto;
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();
     }
 
-    public static DeleteObjectReply fromProto(DeleteObjectReplyPb p) {
+    public static DeleteObjectReply fromProto(DeleteObjectResponse p) {
         DeleteObjectReply out = new DeleteObjectReply();
         out.initFrom(p);
         return out;

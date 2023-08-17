@@ -2,24 +2,24 @@ package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.sdk.common.proto.CompleteUserTaskRunReplyPb;
+import io.littlehorse.sdk.common.proto.CompleteUserTaskRunResponse;
 
 public class CompleteUserTaskRunReply
-    extends AbstractResponse<CompleteUserTaskRunReplyPb> {
+    extends AbstractResponse<CompleteUserTaskRunResponse> {
 
-    public Class<CompleteUserTaskRunReplyPb> getProtoBaseClass() {
-        return CompleteUserTaskRunReplyPb.class;
+    public Class<CompleteUserTaskRunResponse> getProtoBaseClass() {
+        return CompleteUserTaskRunResponse.class;
     }
 
-    public CompleteUserTaskRunReplyPb.Builder toProto() {
-        CompleteUserTaskRunReplyPb.Builder out = CompleteUserTaskRunReplyPb.newBuilder();
+    public CompleteUserTaskRunResponse.Builder toProto() {
+        CompleteUserTaskRunResponse.Builder out = CompleteUserTaskRunResponse.newBuilder();
         out.setCode(code);
         if (message != null) out.setMessage(message);
         return out;
     }
 
     public void initFrom(Message proto) {
-        CompleteUserTaskRunReplyPb p = (CompleteUserTaskRunReplyPb) proto;
+        CompleteUserTaskRunResponse p = (CompleteUserTaskRunResponse) proto;
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();
     }

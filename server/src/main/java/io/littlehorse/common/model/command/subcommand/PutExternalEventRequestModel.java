@@ -83,7 +83,7 @@ public class PutExternalEventRequestModel
         timer.key = this.wfRunId;
         Date now = new Date();
         timer.maturationTime = DateUtils.addHours(now, eed.retentionHours);
-        DeleteExternalEvent deleteExternalEvent = new DeleteExternalEvent();
+        DeleteExternalEventRequestModel deleteExternalEvent = new DeleteExternalEventRequestModel();
         deleteExternalEvent.externalEventDefName = this.externalEventDefName;
         deleteExternalEvent.wfRunId = this.wfRunId;
         deleteExternalEvent.guid = this.guid;

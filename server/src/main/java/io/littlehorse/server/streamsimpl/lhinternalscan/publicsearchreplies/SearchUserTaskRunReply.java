@@ -1,15 +1,15 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
 import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
-import io.littlehorse.sdk.common.proto.SearchUserTaskRunReplyPb;
+import io.littlehorse.sdk.common.proto.SearchUserTaskRunResponse;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class SearchUserTaskRunReply
-    extends PublicScanReply<SearchUserTaskRunReplyPb, UserTaskRunId, UserTaskRunIdModel> {
+    extends PublicScanReply<SearchUserTaskRunResponse, UserTaskRunId, UserTaskRunIdModel> {
 
-    public Class<SearchUserTaskRunReplyPb> getProtoBaseClass() {
-        return SearchUserTaskRunReplyPb.class;
+    public Class<SearchUserTaskRunResponse> getProtoBaseClass() {
+        return SearchUserTaskRunResponse.class;
     }
 
     public Class<UserTaskRunId> getResultProtoClass() {

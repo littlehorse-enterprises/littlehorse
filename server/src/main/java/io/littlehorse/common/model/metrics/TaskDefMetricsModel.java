@@ -8,7 +8,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.TaskDefMetrics;
-import io.littlehorse.sdk.common.proto.TaskDefMetricsQueryPb;
+import io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.util.Date;
@@ -99,7 +99,7 @@ public class TaskDefMetricsModel extends Getable<TaskDefMetrics> {
         return new TaskDefMetricsIdModel(time, windowType, taskDefName).getStoreKey();
     }
 
-    public static String getObjectId(TaskDefMetricsQueryPb request) {
+    public static String getObjectId(TaskDefMetricsQueryRequest request) {
         return new TaskDefMetricsIdModel(
             LHUtil.getWindowStart(
                 LHLibUtil.fromProtoTs(request.getWindowStart()),

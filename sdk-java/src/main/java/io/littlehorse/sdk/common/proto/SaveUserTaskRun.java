@@ -46,9 +46,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int RESULT_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.UserTaskResultPb result_;
+  private io.littlehorse.sdk.common.proto.UserTaskResult result_;
   /**
-   * <code>.littlehorse.UserTaskResultPb result = 1;</code>
+   * <code>.littlehorse.UserTaskResult result = 1;</code>
    * @return Whether the result field is set.
    */
   @java.lang.Override
@@ -56,19 +56,19 @@ private static final long serialVersionUID = 0L;
     return result_ != null;
   }
   /**
-   * <code>.littlehorse.UserTaskResultPb result = 1;</code>
+   * <code>.littlehorse.UserTaskResult result = 1;</code>
    * @return The result.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskResultPb getResult() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.UserTaskResultPb.getDefaultInstance() : result_;
+  public io.littlehorse.sdk.common.proto.UserTaskResult getResult() {
+    return result_ == null ? io.littlehorse.sdk.common.proto.UserTaskResult.getDefaultInstance() : result_;
   }
   /**
-   * <code>.littlehorse.UserTaskResultPb result = 1;</code>
+   * <code>.littlehorse.UserTaskResult result = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskResultPbOrBuilder getResultOrBuilder() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.UserTaskResultPb.getDefaultInstance() : result_;
+  public io.littlehorse.sdk.common.proto.UserTaskResultOrBuilder getResultOrBuilder() {
+    return result_ == null ? io.littlehorse.sdk.common.proto.UserTaskResult.getDefaultInstance() : result_;
   }
 
   public static final int USER_ID_FIELD_NUMBER = 2;
@@ -583,31 +583,31 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.UserTaskResultPb result_;
+    private io.littlehorse.sdk.common.proto.UserTaskResult result_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskResultPb, io.littlehorse.sdk.common.proto.UserTaskResultPb.Builder, io.littlehorse.sdk.common.proto.UserTaskResultPbOrBuilder> resultBuilder_;
+        io.littlehorse.sdk.common.proto.UserTaskResult, io.littlehorse.sdk.common.proto.UserTaskResult.Builder, io.littlehorse.sdk.common.proto.UserTaskResultOrBuilder> resultBuilder_;
     /**
-     * <code>.littlehorse.UserTaskResultPb result = 1;</code>
+     * <code>.littlehorse.UserTaskResult result = 1;</code>
      * @return Whether the result field is set.
      */
     public boolean hasResult() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.littlehorse.UserTaskResultPb result = 1;</code>
+     * <code>.littlehorse.UserTaskResult result = 1;</code>
      * @return The result.
      */
-    public io.littlehorse.sdk.common.proto.UserTaskResultPb getResult() {
+    public io.littlehorse.sdk.common.proto.UserTaskResult getResult() {
       if (resultBuilder_ == null) {
-        return result_ == null ? io.littlehorse.sdk.common.proto.UserTaskResultPb.getDefaultInstance() : result_;
+        return result_ == null ? io.littlehorse.sdk.common.proto.UserTaskResult.getDefaultInstance() : result_;
       } else {
         return resultBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.UserTaskResultPb result = 1;</code>
+     * <code>.littlehorse.UserTaskResult result = 1;</code>
      */
-    public Builder setResult(io.littlehorse.sdk.common.proto.UserTaskResultPb value) {
+    public Builder setResult(io.littlehorse.sdk.common.proto.UserTaskResult value) {
       if (resultBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -621,10 +621,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskResultPb result = 1;</code>
+     * <code>.littlehorse.UserTaskResult result = 1;</code>
      */
     public Builder setResult(
-        io.littlehorse.sdk.common.proto.UserTaskResultPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.UserTaskResult.Builder builderForValue) {
       if (resultBuilder_ == null) {
         result_ = builderForValue.build();
       } else {
@@ -635,13 +635,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskResultPb result = 1;</code>
+     * <code>.littlehorse.UserTaskResult result = 1;</code>
      */
-    public Builder mergeResult(io.littlehorse.sdk.common.proto.UserTaskResultPb value) {
+    public Builder mergeResult(io.littlehorse.sdk.common.proto.UserTaskResult value) {
       if (resultBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0) &&
           result_ != null &&
-          result_ != io.littlehorse.sdk.common.proto.UserTaskResultPb.getDefaultInstance()) {
+          result_ != io.littlehorse.sdk.common.proto.UserTaskResult.getDefaultInstance()) {
           getResultBuilder().mergeFrom(value);
         } else {
           result_ = value;
@@ -654,7 +654,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskResultPb result = 1;</code>
+     * <code>.littlehorse.UserTaskResult result = 1;</code>
      */
     public Builder clearResult() {
       bitField0_ = (bitField0_ & ~0x00000001);
@@ -667,33 +667,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskResultPb result = 1;</code>
+     * <code>.littlehorse.UserTaskResult result = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskResultPb.Builder getResultBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskResult.Builder getResultBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
       return getResultFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.UserTaskResultPb result = 1;</code>
+     * <code>.littlehorse.UserTaskResult result = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskResultPbOrBuilder getResultOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskResultOrBuilder getResultOrBuilder() {
       if (resultBuilder_ != null) {
         return resultBuilder_.getMessageOrBuilder();
       } else {
         return result_ == null ?
-            io.littlehorse.sdk.common.proto.UserTaskResultPb.getDefaultInstance() : result_;
+            io.littlehorse.sdk.common.proto.UserTaskResult.getDefaultInstance() : result_;
       }
     }
     /**
-     * <code>.littlehorse.UserTaskResultPb result = 1;</code>
+     * <code>.littlehorse.UserTaskResult result = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskResultPb, io.littlehorse.sdk.common.proto.UserTaskResultPb.Builder, io.littlehorse.sdk.common.proto.UserTaskResultPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.UserTaskResult, io.littlehorse.sdk.common.proto.UserTaskResult.Builder, io.littlehorse.sdk.common.proto.UserTaskResultOrBuilder> 
         getResultFieldBuilder() {
       if (resultBuilder_ == null) {
         resultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UserTaskResultPb, io.littlehorse.sdk.common.proto.UserTaskResultPb.Builder, io.littlehorse.sdk.common.proto.UserTaskResultPbOrBuilder>(
+            io.littlehorse.sdk.common.proto.UserTaskResult, io.littlehorse.sdk.common.proto.UserTaskResult.Builder, io.littlehorse.sdk.common.proto.UserTaskResultOrBuilder>(
                 getResult(),
                 getParentForChildren(),
                 isClean());

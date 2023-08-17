@@ -1,15 +1,15 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
 import io.littlehorse.common.model.metrics.TaskDefMetricsModel;
-import io.littlehorse.sdk.common.proto.ListTaskMetricsReplyPb;
+import io.littlehorse.sdk.common.proto.ListTaskMetricsResponse;
 import io.littlehorse.sdk.common.proto.TaskDefMetrics;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class ListTaskMetricsReply
-    extends PublicScanReply<ListTaskMetricsReplyPb, TaskDefMetrics, TaskDefMetricsModel> {
+    extends PublicScanReply<ListTaskMetricsResponse, TaskDefMetrics, TaskDefMetricsModel> {
 
-    public Class<ListTaskMetricsReplyPb> getProtoBaseClass() {
-        return ListTaskMetricsReplyPb.class;
+    public Class<ListTaskMetricsResponse> getProtoBaseClass() {
+        return ListTaskMetricsResponse.class;
     }
 
     public Class<TaskDefMetricsModel> getResultJavaClass() {

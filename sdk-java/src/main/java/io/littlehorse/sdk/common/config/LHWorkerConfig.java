@@ -1,6 +1,6 @@
 package io.littlehorse.sdk.common.config;
 
-import io.littlehorse.sdk.common.proto.GetTaskDefReplyPb;
+import io.littlehorse.sdk.common.proto.GetTaskDefResponse;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -77,7 +77,7 @@ public class LHWorkerConfig extends LHClientConfig {
      */
     public TaskDef getTaskDef(String taskDefName) {
         try {
-            GetTaskDefReplyPb reply = getBlockingStub()
+            GetTaskDefResponse reply = getBlockingStub()
                 .getTaskDef(TaskDefId.newBuilder().setName(taskDefName).build());
             if (reply.getCode() != LHResponseCode.OK) {
                 throw new RuntimeException(

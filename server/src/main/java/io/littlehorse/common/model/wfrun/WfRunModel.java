@@ -6,11 +6,11 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.command.Command;
-import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
+import io.littlehorse.common.model.command.subcommand.DeleteWfRunRequestModel;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
-import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
+import io.littlehorse.common.model.command.subcommand.ResumeWfRunRequestModel;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
-import io.littlehorse.common.model.command.subcommand.StopWfRun;
+import io.littlehorse.common.model.command.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.meta.ThreadSpecModel;
 import io.littlehorse.common.model.meta.VariableDefModel;
 import io.littlehorse.common.model.meta.WfSpecModel;
@@ -487,7 +487,8 @@ public class WfRunModel extends Getable<WfRun> {
         advance(event.getCreatedAt());
     }
 
-    public void processStopRequest(StopWfRun req) throws LHValidationError {
+    public void processStopRequest(StopWfRunRequestModel req)
+        throws LHValidationError {
         if (
             req.threadRunNumber >= threadRunModels.size() || req.threadRunNumber < 0
         ) {
@@ -515,7 +516,8 @@ public class WfRunModel extends Getable<WfRun> {
         this.advance(new Date()); // Seems like a good idea, why not?
     }
 
-    public void processResumeRequest(ResumeWfRun req) throws LHValidationError {
+    public void processResumeRequest(ResumeWfRunRequestModel req)
+        throws LHValidationError {
         if (
             req.threadRunNumber >= threadRunModels.size() || req.threadRunNumber < 0
         ) {
@@ -564,7 +566,7 @@ public class WfRunModel extends Getable<WfRun> {
             Date now = new Date();
             timer.maturationTime =
                 DateUtils.addHours(now, this.wfSpecModel.retentionHours);
-            DeleteWfRun deleteWfRun = new DeleteWfRun();
+            DeleteWfRunRequestModel deleteWfRun = new DeleteWfRunRequestModel();
             deleteWfRun.wfRunId = id;
 
             Command deleteWfRunCmd = new Command();

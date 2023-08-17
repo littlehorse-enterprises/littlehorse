@@ -5,7 +5,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.command.subcommand.RunWf;
+import io.littlehorse.common.model.command.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -269,7 +269,7 @@ public class WfSpecModel extends Getable<WfSpec> {
         }
     }
 
-    public WfRunModel startNewRun(RunWf evt) {
+    public WfRunModel startNewRun(RunWfRequestModel evt) {
         WfRunModel out = new WfRunModel();
         out.setDao(getDao());
         out.id = evt.id;

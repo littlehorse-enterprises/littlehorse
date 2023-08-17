@@ -2,13 +2,13 @@ package io.littlehorse.sdk.worker.internal.util;
 
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
-import io.littlehorse.sdk.common.proto.ReportTaskReplyPb;
+import io.littlehorse.sdk.common.proto.ReportTaskResponse;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ReportTaskObserver implements StreamObserver<ReportTaskReplyPb> {
+public class ReportTaskObserver implements StreamObserver<ReportTaskResponse> {
 
     private LHServerConnectionManager manager;
     private ReportTaskRun reportedTask;
@@ -38,7 +38,7 @@ public class ReportTaskObserver implements StreamObserver<ReportTaskReplyPb> {
         }
     }
 
-    public void onNext(ReportTaskReplyPb reply) {
+    public void onNext(ReportTaskResponse reply) {
         if (reply.getCode() == LHResponseCode.OK) {
             // Nothing to do
         } else if (reply.getCode() == LHResponseCode.REPORTED_BUT_NOT_PROCESSED) {
