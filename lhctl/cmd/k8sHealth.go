@@ -31,7 +31,7 @@ to report whether the pod is currently ready to accept requests.`,
 
 		resp, err := getGlobalClient(cmd).HealthCheck(
 			context.Background(),
-			&model.HealthCheckPb{},
+			&model.HealthCheckRequest{},
 		)
 		common.PrintResp(resp, err)
 

@@ -90,7 +90,7 @@ searches for all ExternalEventDefs.
 		common.PrintResp(
 			getGlobalClient(cmd).SearchExternalEventDef(
 				context.Background(),
-				&model.SearchExternalEventDefPb{
+				&model.SearchExternalEventDefRequest{
 					Bookmark: bookmark,
 					Limit:    &limit,
 					Prefix:   &prefix,
@@ -116,7 +116,7 @@ ExternalEventDef to delete.
 		common.PrintResp(
 			getGlobalClient(cmd).DeleteExternalEventDef(
 				context.Background(),
-				&model.DeleteExternalEventDefPb{
+				&model.DeleteExternalEventDefRequest{
 					Name: name,
 				}),
 		)

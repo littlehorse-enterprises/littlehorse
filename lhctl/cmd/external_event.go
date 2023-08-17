@@ -73,29 +73,29 @@ Choose one of the following option groups:
 		claimed, _ := cmd.Flags().GetBool("claimed")
 		unclaimed, _ := cmd.Flags().GetBool("unclaimed")
 
-		search := &model.SearchExternalEventPb{
+		search := &model.SearchExternalEventRequest{
 			Bookmark: bookmark,
 			Limit:    &limit,
 		}
 
 		if wfRunId != "" {
-			search.ExtEvtCriteria = &model.SearchExternalEventPb_WfRunId{
+			search.ExtEvtCriteria = &model.SearchExternalEventRequest_WfRunId{
 				WfRunId: wfRunId,
 			}
 		} else {
-			var extEvtCriteria *model.SearchExternalEventPb_ExternalEventDefNameAndStatus
+			var extEvtCriteria *model.SearchExternalEventRequest_ExternalEventDefNameAndStatus
 			if unclaimed || claimed {
 				isClaimed := claimed && !unclaimed
 
-				extEvtCriteria = &model.SearchExternalEventPb_ExternalEventDefNameAndStatus{
-					ExternalEventDefNameAndStatus: &model.SearchExternalEventPb_ByExtEvtDefNameAndStatusPb{
+				extEvtCriteria = &model.SearchExternalEventRequest_ExternalEventDefNameAndStatus{
+					ExternalEventDefNameAndStatus: &model.SearchExternalEventRequest_ByExtEvtDefNameAndStatusRequest{
 						ExternalEventDefName: externalEventDef,
 						IsClaimed:            &isClaimed,
 					},
 				}
 			} else {
-				extEvtCriteria = &model.SearchExternalEventPb_ExternalEventDefNameAndStatus{
-					ExternalEventDefNameAndStatus: &model.SearchExternalEventPb_ByExtEvtDefNameAndStatusPb{
+				extEvtCriteria = &model.SearchExternalEventRequest_ExternalEventDefNameAndStatus{
+					ExternalEventDefNameAndStatus: &model.SearchExternalEventRequest_ByExtEvtDefNameAndStatusRequest{
 						ExternalEventDefName: externalEventDef,
 					},
 				}
@@ -121,7 +121,7 @@ Lists all ExternalEvent's for a given WfRun Id.
 		}
 		wfRunId := args[0]
 
-		req := &model.ListExternalEventsPb{
+		req := &model.ListExternalEventsRequest{
 			WfRunId: wfRunId,
 		}
 

@@ -78,14 +78,14 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRunModel'.
 			log.Fatal("Must specify wfSpecName!")
 		}
 
-		search := &model.SearchWfRunPb{
+		search := &model.SearchWfRunRequest{
 			Bookmark: bookmark,
 			Limit:    &limit,
 		}
 
 		if version != -1 && status != "" {
-			search.WfrunCriteria = &model.SearchWfRunPb_StatusAndSpec{
-				StatusAndSpec: &model.SearchWfRunPb_StatusAndSpecPb{
+			search.WfrunCriteria = &model.SearchWfRunRequest_StatusAndSpec{
+				StatusAndSpec: &model.SearchWfRunRequest_StatusAndSpecRequest{
 					Status:        model.LHStatus(model.LHStatus_value[status]),
 					WfSpecName:    wfSpecName,
 					WfSpecVersion: version,
@@ -95,8 +95,8 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRunModel'.
 			}
 		} else if status != "" {
 			// TODO: Eventually we need to validate the status
-			search.WfrunCriteria = &model.SearchWfRunPb_StatusAndName{
-				StatusAndName: &model.SearchWfRunPb_StatusAndNamePb{
+			search.WfrunCriteria = &model.SearchWfRunRequest_StatusAndName{
+				StatusAndName: &model.SearchWfRunRequest_StatusAndNameRequest{
 					WfSpecName: wfSpecName,
 					Status:     model.LHStatus(model.LHStatus_value[status]),
 				},
@@ -105,8 +105,8 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRunModel'.
 			if version != -1 {
 				log.Fatal("--wfSpecVersion provided without --status")
 			}
-			search.WfrunCriteria = &model.SearchWfRunPb_Name{
-				Name: &model.SearchWfRunPb_NamePb{
+			search.WfrunCriteria = &model.SearchWfRunRequest_Name{
+				Name: &model.SearchWfRunRequest_NameRequest{
 					WfSpecName: wfSpecName,
 				},
 			}
@@ -130,7 +130,7 @@ var stopWfRunCmd = &cobra.Command{
 
 		common.PrintResp(getGlobalClient(cmd).StopWfRun(
 			context.Background(),
-			&model.StopWfRunPb{
+			&model.StopWfRunRequest{
 				WfRunId:         args[0],
 				ThreadRunNumber: trn,
 			},
@@ -150,7 +150,7 @@ var resumeWfRunCmd = &cobra.Command{
 
 		common.PrintResp(getGlobalClient(cmd).ResumeWfRun(
 			context.Background(),
-			&model.ResumeWfRunPb{
+			&model.ResumeWfRunRequest{
 				WfRunId:         args[0],
 				ThreadRunNumber: trn,
 			},
@@ -169,7 +169,7 @@ var deleteWfRunCmd = &cobra.Command{
 
 		common.PrintResp(getGlobalClient(cmd).DeleteWfRun(
 			context.Background(),
-			&model.DeleteWfRunPb{
+			&model.DeleteWfRunRequest{
 				WfRunId: args[0],
 			},
 		))

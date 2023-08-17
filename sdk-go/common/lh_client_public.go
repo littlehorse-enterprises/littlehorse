@@ -79,12 +79,12 @@ func (l *LHClient) GetTaskDef(name string) (*model.TaskDef, error) {
 }
 
 func (l *LHClient) GetWfSpec(name string, version *int32) (*model.WfSpec, error) {
-	var reply *model.GetWfSpecReplyPb
+	var reply *model.GetWfSpecResponse
 	var err error
 	if version == nil {
 		reply, err = l.grpcStub.GetLatestWfSpec(
 			context.Background(),
-			&model.GetLatestWfSpecPb{
+			&model.GetLatestWfSpecRequest{
 				Name: name,
 			},
 		)
@@ -243,7 +243,7 @@ type WfArg struct {
 func (l *LHClient) RunWf(
 	wfSpecName string, wfSpecVersion *int32, wfRunId *string, args ...WfArg,
 ) (*string, error) {
-	request := &model.RunWfPb{
+	request := &model.RunWfRequest{
 		Id:            wfRunId,
 		WfSpecName:    wfSpecName,
 		WfSpecVersion: wfSpecVersion,
@@ -443,7 +443,7 @@ func (l *LHClient) PutWfSpec(request *model.PutWfSpecRequest) (*model.WfSpec, er
 func (l *LHClient) StopWfRun(id string, threadRunNumber int32) error {
 	reply, err := l.grpcStub.StopWfRun(
 		context.Background(),
-		&model.StopWfRunPb{
+		&model.StopWfRunRequest{
 			WfRunId:         id,
 			ThreadRunNumber: threadRunNumber,
 		},
@@ -473,7 +473,7 @@ func (l *LHClient) StopWfRun(id string, threadRunNumber int32) error {
 func (l *LHClient) ResumeWfRun(id string, threadRunNumber int32) error {
 	reply, err := l.grpcStub.ResumeWfRun(
 		context.Background(),
-		&model.ResumeWfRunPb{
+		&model.ResumeWfRunRequest{
 			WfRunId:         id,
 			ThreadRunNumber: threadRunNumber,
 		},
@@ -503,7 +503,7 @@ func (l *LHClient) ResumeWfRun(id string, threadRunNumber int32) error {
 func (l *LHClient) DeleteWfRun(id string) error {
 	reply, err := l.grpcStub.DeleteWfRun(
 		context.Background(),
-		&model.DeleteWfRunPb{
+		&model.DeleteWfRunRequest{
 			WfRunId: id,
 		},
 	)
@@ -533,7 +533,7 @@ func (l *LHClient) DeleteWfRun(id string) error {
 func (l *LHClient) DeleteWfSpec(name string, version int32) error {
 	reply, err := l.grpcStub.DeleteWfSpec(
 		context.Background(),
-		&model.DeleteWfSpecPb{
+		&model.DeleteWfSpecRequest{
 			Name:    name,
 			Version: version,
 		},
@@ -564,7 +564,7 @@ func (l *LHClient) DeleteWfSpec(name string, version int32) error {
 func (l *LHClient) DeleteTaskDef(name string) error {
 	reply, err := l.grpcStub.DeleteTaskDef(
 		context.Background(),
-		&model.DeleteTaskDefPb{
+		&model.DeleteTaskDefRequest{
 			Name: name,
 		},
 	)
@@ -594,7 +594,7 @@ func (l *LHClient) DeleteTaskDef(name string) error {
 func (l *LHClient) DeleteExternalEventDef(name string) error {
 	reply, err := l.grpcStub.DeleteExternalEventDef(
 		context.Background(),
-		&model.DeleteExternalEventDefPb{
+		&model.DeleteExternalEventDefRequest{
 			Name: name,
 		},
 	)

@@ -83,7 +83,7 @@ Choose one of the following option groups:
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
-		var search model.SearchVariablePb
+		var search model.SearchVariableRequest
 		wfRunId, _ := cmd.Flags().GetString("wfRunId")
 		name, _ := cmd.Flags().GetString("name")
 		varTypeStr, _ := cmd.Flags().GetString("varType")
@@ -92,8 +92,8 @@ Choose one of the following option groups:
 		wfSpecVersion, _ := cmd.Flags().GetInt32("wfSpecVersion")
 
 		if wfRunId != "" {
-			search = model.SearchVariablePb{
-				VariableCriteria: &model.SearchVariablePb_WfRunId{
+			search = model.SearchVariableRequest{
+				VariableCriteria: &model.SearchVariableRequest_WfRunId{
 					WfRunId: wfRunId,
 				},
 			}
@@ -117,9 +117,9 @@ Choose one of the following option groups:
 				v = nil
 			}
 
-			search = model.SearchVariablePb{
-				VariableCriteria: &model.SearchVariablePb_Value{
-					Value: &model.SearchVariablePb_NameAndValuePb{
+			search = model.SearchVariableRequest{
+				VariableCriteria: &model.SearchVariableRequest_Value{
+					Value: &model.SearchVariableRequest_NameAndValueRequest{
 						Value:         content,
 						VarName:       name,
 						WfSpecVersion: v,
@@ -153,7 +153,7 @@ Lists all Variable's for a given WfRun Id.
 		}
 		wfRunId := args[0]
 
-		req := &model.ListVariablesPb{
+		req := &model.ListVariablesRequest{
 			WfRunId: wfRunId,
 		}
 

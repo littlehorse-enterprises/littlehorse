@@ -50,7 +50,7 @@ var getUserTaskDefCmd = &cobra.Command{
 			common.PrintResp(
 				getGlobalClient(cmd).GetLatestUserTaskDef(
 					context.Background(),
-					&model.GetLatestUserTaskDefPb{
+					&model.GetLatestUserTaskDefRequest{
 						Name: name,
 					},
 				),
@@ -119,17 +119,17 @@ Returns a list of ObjectId's that can be passed into 'lhctl get userTaskDef'.
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
-		search := &model.SearchUserTaskDefPb{
+		search := &model.SearchUserTaskDefRequest{
 			Bookmark: bookmark,
 			Limit:    &limit,
 		}
 
 		if name != "" {
-			search.UserTaskDefCriteria = &model.SearchUserTaskDefPb_Name{
+			search.UserTaskDefCriteria = &model.SearchUserTaskDefRequest_Name{
 				Name: name,
 			}
 		} else if prefix != "" {
-			search.UserTaskDefCriteria = &model.SearchUserTaskDefPb_Prefix{
+			search.UserTaskDefCriteria = &model.SearchUserTaskDefRequest_Prefix{
 				Prefix: prefix,
 			}
 		}
@@ -162,7 +162,7 @@ UserTaskDef to delete.
 		common.PrintResp(
 			getGlobalClient(cmd).DeleteUserTaskDef(
 				context.Background(),
-				&model.DeleteUserTaskDefPb{
+				&model.DeleteUserTaskDefRequest{
 					Name:    name,
 					Version: int32(version),
 				}),

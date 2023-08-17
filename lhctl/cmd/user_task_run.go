@@ -67,7 +67,7 @@ The following option groups are supported:
 		// userId and userGroup can't both be non-empty because the flags are
 		// mutually exclusive.
 
-		reassign := &model.AssignUserTaskRunPb{
+		reassign := &model.AssignUserTaskRunRequest{
 			UserTaskRunId: &model.UserTaskRunId{
 				WfRunId:      args[0],
 				UserTaskGuid: args[1],
@@ -79,14 +79,14 @@ The following option groups are supported:
 			var user = &model.User{
 				Id: userId,
 			}
-			reassign.Assignee = &model.AssignUserTaskRunPb_User{
+			reassign.Assignee = &model.AssignUserTaskRunRequest_User{
 				User: user,
 			}
 		} else if userGroup != "" {
 			var userGroupPb = &model.UserGroup{
 				Id: userGroup,
 			}
-			reassign.Assignee = &model.AssignUserTaskRunPb_UserGroup{
+			reassign.Assignee = &model.AssignUserTaskRunRequest_UserGroup{
 				UserGroup: userGroupPb,
 			}
 		} else {
@@ -166,7 +166,7 @@ Choose one of the following option groups:
 
 		earliest, latest := loadEarliestAndLatestStart(cmd)
 
-		search := &model.SearchUserTaskRunPb{
+		search := &model.SearchUserTaskRunRequest{
 			EarliestStart: earliest,
 			LatestStart:   latest,
 			Bookmark:      bookmark,
@@ -190,14 +190,14 @@ Choose one of the following option groups:
 				var userGroup = &model.UserGroup{
 					Id: userGroupStr,
 				}
-				search.TaskOwner = &model.SearchUserTaskRunPb_User{
+				search.TaskOwner = &model.SearchUserTaskRunRequest_User{
 					User: &model.User{
 						Id:        userIdStr,
 						UserGroup: userGroup,
 					},
 				}
 			} else {
-				search.TaskOwner = &model.SearchUserTaskRunPb_User{
+				search.TaskOwner = &model.SearchUserTaskRunRequest_User{
 					User: &model.User{
 						Id: userIdStr,
 					},
@@ -210,7 +210,7 @@ Choose one of the following option groups:
 			var userGroupPb = &model.UserGroup{
 				Id: userGroupStr,
 			}
-			search.TaskOwner = &model.SearchUserTaskRunPb_UserGroup{
+			search.TaskOwner = &model.SearchUserTaskRunRequest_UserGroup{
 				UserGroup: userGroupPb,
 			}
 		}
@@ -231,8 +231,8 @@ Choose one of the following option groups:
 func executeUserTask(wfRunId string, userTaskGuid string, client *model.LHPublicApiClient) {
 	fmt.Println("Executing UserTaskRun ", wfRunId, " ", userTaskGuid)
 
-	completeUserTask := &model.CompleteUserTaskRunPb{
-		Result: &model.UserTaskResultPb{
+	completeUserTask := &model.CompleteUserTaskRunRequest{
+		Result: &model.UserTaskResult{
 			Fields: make([]*model.UserTaskFieldResult, 0),
 		},
 		UserTaskRunId: &model.UserTaskRunId{
@@ -293,7 +293,7 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LHPublic
 }
 
 func cancelUserTask(wfRunId string, userTaskGuid string, client *model.LHPublicApiClient) {
-	cancelUserTask := &model.CancelUserTaskRunPb{
+	cancelUserTask := &model.CancelUserTaskRunRequest{
 		UserTaskRunId: &model.UserTaskRunId{
 			WfRunId:      wfRunId,
 			UserTaskGuid: userTaskGuid,

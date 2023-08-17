@@ -91,7 +91,7 @@ for all TaskDefs.
 		common.PrintResp(
 			getGlobalClient(cmd).SearchTaskDef(
 				context.Background(),
-				&model.SearchTaskDefPb{
+				&model.SearchTaskDefRequest{
 					Bookmark: bookmark,
 					Limit:    &limit,
 					Prefix:   &prefix,
@@ -116,7 +116,7 @@ var deleteTaskDefCmd = &cobra.Command{
 		common.PrintResp(
 			getGlobalClient(cmd).DeleteTaskDef(
 				context.Background(),
-				&model.DeleteTaskDefPb{
+				&model.DeleteTaskDefRequest{
 					Name: name,
 				}),
 		)

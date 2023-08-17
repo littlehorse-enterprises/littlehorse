@@ -77,7 +77,7 @@ Lists all NodeRun's for a given WfRun Id.
 		}
 		wfRunId := args[0]
 
-		req := &model.ListNodeRunsPb{
+		req := &model.ListNodeRunsRequest{
 			WfRunId: wfRunId,
 		}
 
@@ -115,11 +115,11 @@ Choose one of the following option groups:
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
-		var search *model.SearchNodeRunPb
+		var search *model.SearchNodeRunRequest
 
 		if wfRunId != "" {
-			search = &model.SearchNodeRunPb{
-				NoderunCriteria: &model.SearchNodeRunPb_WfRunId{
+			search = &model.SearchNodeRunRequest{
+				NoderunCriteria: &model.SearchNodeRunRequest_WfRunId{
 					WfRunId: wfRunId,
 				},
 			}

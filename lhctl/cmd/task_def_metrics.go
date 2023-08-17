@@ -49,7 +49,7 @@ taskDefName.
 
 		common.PrintResp(getGlobalClient(cmd).ListTaskDefMetrics(
 			context.Background(),
-			&model.ListTaskMetricsPb{
+			&model.ListTaskMetricsRequest{
 				LastWindowStart: ts,
 				WindowLength:    model.MetricsWindowLength(windowType),
 				TaskDefName:     taskDefName,
