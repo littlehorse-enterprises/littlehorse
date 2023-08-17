@@ -13,9 +13,9 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-// getNodeRunCmd represents the nodeRunModel command
+// getNodeRunCmd represents the nodeRun command
 var getNodeRunCmd = &cobra.Command{
-	Use:   "nodeRunModel <wfRunId> <threadRunNumber> <nodeRunPosition>",
+	Use:   "nodeRun <wfRunId> <threadRunNumber> <nodeRunPosition>",
 	Short: "Get a NodeRun by WfRun, ThreadRun, and Node Run Position",
 	Long: `NodeRun's are identified uniquely by the combination of the following:
 	- Associated WfRun Id
@@ -35,7 +35,7 @@ var getNodeRunCmd = &cobra.Command{
 		}
 
 		if needsHelp {
-			log.Fatal("Must provide 1 or 3 arguments. See 'lhctl get nodeRunModel -h'")
+			log.Fatal("Must provide 1 or 3 arguments. See 'lhctl get nodeRun -h'")
 
 		}
 
@@ -63,7 +63,7 @@ var getNodeRunCmd = &cobra.Command{
 }
 
 var listNodeRunCmd = &cobra.Command{
-	Use:   "nodeRunModel <wfRunId>",
+	Use:   "nodeRun <wfRunId>",
 	Short: "List all NodeRun's for a given WfRun Id.",
 	Long: `
 Lists all NodeRun's for a given WfRun Id.
@@ -89,12 +89,12 @@ Lists all NodeRun's for a given WfRun Id.
 }
 
 var searchNodeRunCmd = &cobra.Command{
-	Use:   "nodeRunModel",
+	Use:   "nodeRun",
 	Short: "Search for NodeRun's either by WfRunId or by {takDefId,Status}",
 	Long: `
 Search for NodeRun's by either the WfRunId or by providing the taskDefName and the Status.
 
-Returns a list of ObjectId's that can be passed into 'lhctl get nodeRunModel'.
+Returns a list of ObjectId's that can be passed into 'lhctl get nodeRun'.
 
 Choose one of the following option groups:
 // Returns all NodeRun's from a specified WfRun.
