@@ -43,15 +43,11 @@ class LHConnection:
 class LHTask:
     def __init__(self, callable: Callable[..., Any], task_def: TaskDefPb) -> None:
         self.task_def = task_def
-        self._callable = callable
 
-        # create the signature and validate it is a callable
+        self._callable = callable
         self._signature = signature(callable)
 
-        # validate callable
         self._validate_callable()
-
-        # validate match
         self._validate_match()
 
     def _validate_match(self) -> None:
@@ -154,7 +150,7 @@ class LHTaskWorker:
                 f"Couldn't find TaskDef: {task_def_name}"
             )
 
-        # initialize internal task and attributes
+        # initialize internal task and parameters
         self.task = LHTask(callable, reply.result)
         self.running = False
 
