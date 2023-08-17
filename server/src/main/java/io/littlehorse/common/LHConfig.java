@@ -491,7 +491,7 @@ public class LHConfig extends ConfigBase {
 
         if (
             !rawAuthProtocolMap.matches(
-                "([a-zA-Z0-9_]+:(" + regexAllAuthProtocols + ")+,?)+"
+                "([a-zA-Z0-9_-]+:(" + regexAllAuthProtocols + ")+,?)+"
             )
         ) {
             throw new LHMisconfigurationException(
@@ -531,7 +531,9 @@ public class LHConfig extends ConfigBase {
             .collect(Collectors.joining("|"));
 
         if (
-            !rawProtocolMap.matches("([a-zA-Z0-9_]+:(" + regexAllProtocols + ")+,?)+")
+            !rawProtocolMap.matches(
+                "([a-zA-Z0-9_-]+:(" + regexAllProtocols + ")+,?)+"
+            )
         ) {
             throw new LHMisconfigurationException(
                 "Invalid configuration: " + LHConfig.LISTENERS_PROTOCOL_MAP_KEY
@@ -630,7 +632,7 @@ public class LHConfig extends ConfigBase {
         );
 
         if (
-            !rawListenersConfig.matches("([a-zA-Z0-9_]+://[a-zA-Z0-9.\\-]+:\\d+,?)+")
+            !rawListenersConfig.matches("([a-zA-Z0-9_-]+://[a-zA-Z0-9.\\-]+:\\d+,?)+")
         ) {
             throw new LHMisconfigurationException(
                 "Invalid configuration: " + LHConfig.ADVERTISED_LISTENERS_KEY
