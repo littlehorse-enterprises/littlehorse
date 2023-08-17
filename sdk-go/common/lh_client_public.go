@@ -120,7 +120,7 @@ func (l *LHClient) GetWfSpec(name string, version *int32) (*model.WfSpec, error)
 func (l *LHClient) GetNodeRun(wfRunId string, threadRunNumber, position int32) (*model.NodeRun, error) {
 	reply, err := l.grpcStub.GetNodeRun(
 		context.Background(),
-		&model.NodeRunIdPb{
+		&model.NodeRunId{
 			WfRunId:         wfRunId,
 			ThreadRunNumber: threadRunNumber,
 			Position:        position,

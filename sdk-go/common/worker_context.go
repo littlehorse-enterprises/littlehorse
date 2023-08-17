@@ -29,7 +29,7 @@ func (wc *WorkerContext) GetWfRunId() *string {
 	return GetWfRunIdFromTaskSource(wc.ScheduledTask.Source)
 }
 
-func (wc *WorkerContext) GetNodeRunId() *model.NodeRunIdPb {
+func (wc *WorkerContext) GetNodeRunId() *model.NodeRunId {
 	switch src := wc.ScheduledTask.Source.TaskRunSource.(type) {
 	case *model.TaskRunSourcePb_TaskNode:
 		return src.TaskNode.NodeRunId
