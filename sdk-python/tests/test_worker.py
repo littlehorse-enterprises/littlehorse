@@ -3,37 +3,49 @@ import unittest
 from littlehorse.exceptions import TaskSchemaMismatchException
 from littlehorse.model.service_pb2 import TaskDefPb, VariableDefPb, VariableTypePb
 
-from littlehorse.worker import LHTask, LHWorkerContext
+from littlehorse.worker import LHTaskExecutor, LHWorkerContext
 
 
-class TestLHTask(unittest.TestCase):
+class LHTaskExecutorTest(unittest.TestCase):
     def test_raise_exception_if_it_is_not_a_callable(self):
         not_a_callable = 3
         with self.assertRaises(TypeError) as exception_context:
-            LHTask(not_a_callable, TaskDefPb())
+            LHTaskExecutor(not_a_callable, TaskDefPb(), 1)
         self.assertEqual(
             f"{not_a_callable} is not a callable object",
             str(exception_context.exception),
         )
 
     def test_raise_exception_if_contexts_is_not_the_last_param(self):
-        def my_method(ctx: LHWorkerContext, param: str):
+        async def my_method(ctx: LHWorkerContext, param: str):
             pass
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, TaskDefPb())
+            LHTaskExecutor(my_method, TaskDefPb(), 1)
 
         self.assertEqual(
             "The WorkerContext should be the last parameter",
             str(exception_context.exception),
         )
 
-    def test_raise_exception_if_there_are_more_than_one_contexts(self):
-        def my_method(ctx1: LHWorkerContext, ctx2: LHWorkerContext):
+    def test_raise_exception_if_it_is_not_a_coroutine(self):
+        def my_method():
             pass
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, TaskDefPb())
+            LHTaskExecutor(my_method, TaskDefPb(), 1)
+
+        self.assertEqual(
+            "Is not a coroutine function",
+            str(exception_context.exception),
+        )
+
+    def test_raise_exception_if_there_are_more_than_one_contexts(self):
+        async def my_method(ctx1: LHWorkerContext, ctx2: LHWorkerContext):
+            pass
+
+        with self.assertRaises(TaskSchemaMismatchException) as exception_context:
+            LHTaskExecutor(my_method, TaskDefPb(), 1)
 
         self.assertEqual(
             "Too many context arguments (expected 1): ['ctx1', 'ctx2']",
@@ -41,11 +53,11 @@ class TestLHTask(unittest.TestCase):
         )
 
     def test_raise_exception_if_there_are_params_without_annotation(self):
-        def my_method(param1: int, param2):
+        async def my_method(param1: int, param2):
             pass
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, TaskDefPb())
+            LHTaskExecutor(my_method, TaskDefPb(), 1)
 
         self.assertEqual(
             "Not annotated parameters found: ['param2']",
@@ -53,11 +65,11 @@ class TestLHTask(unittest.TestCase):
         )
 
     def test_raise_exception_if_any(self):
-        def my_method(param: Any):
+        async def my_method(param: Any):
             pass
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, TaskDefPb())
+            LHTaskExecutor(my_method, TaskDefPb(), 1)
 
         self.assertEqual(
             "Any is not allowed: ['param']",
@@ -65,11 +77,11 @@ class TestLHTask(unittest.TestCase):
         )
 
     def test_raise_exception_if_there_are_positional_args(self):
-        def my_method(*param):
+        async def my_method(*param):
             pass
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, TaskDefPb())
+            LHTaskExecutor(my_method, TaskDefPb(), 1)
 
         self.assertEqual(
             "Positional parameters (*args) not allowed: ['param']",
@@ -77,11 +89,11 @@ class TestLHTask(unittest.TestCase):
         )
 
     def test_raise_exception_if_there_are_keyword_args(self):
-        def my_method(**param):
+        async def my_method(**param):
             pass
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, TaskDefPb())
+            LHTaskExecutor(my_method, TaskDefPb(), 1)
 
         self.assertEqual(
             "Keyword parameters (*kwargs) not allowed: ['param']",
@@ -89,28 +101,29 @@ class TestLHTask(unittest.TestCase):
         )
 
     def test_has_no_context(self):
-        def my_method(param: str):
+        async def my_method(param: str):
             pass
 
-        task = LHTask(
+        task = LHTaskExecutor(
             my_method,
             TaskDefPb(
                 input_vars=[VariableDefPb(name="param", type=VariableTypePb.STR)]
             ),
+            1,
         )
 
         self.assertFalse(task.has_context())
 
     def test_has_context(self):
-        def my_method(ctx: LHWorkerContext):
+        async def my_method(ctx: LHWorkerContext):
             pass
 
-        task = LHTask(my_method, TaskDefPb())
+        task = LHTaskExecutor(my_method, TaskDefPb(), 1)
 
         self.assertTrue(task.has_context())
 
     def test_callable_matches_with_context(self):
-        def my_method(param1: str, param2: int, ctx: LHWorkerContext = None):
+        async def my_method(param1: str, param2: int, ctx: LHWorkerContext = None):
             pass
 
         task_def = TaskDefPb(
@@ -121,12 +134,12 @@ class TestLHTask(unittest.TestCase):
         )
 
         try:
-            LHTask(my_method, task_def)
+            LHTaskExecutor(my_method, task_def, 1)
         except Exception as e:
             self.fail(f"Unexpected exception {e}")
 
     def test_raise_error_if_wrong_order(self):
-        def my_method(param1: str, param2: int, ctx: LHWorkerContext):
+        async def my_method(param1: str, param2: int, ctx: LHWorkerContext):
             pass
 
         task_def = TaskDefPb(
@@ -137,7 +150,7 @@ class TestLHTask(unittest.TestCase):
         )
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, task_def)
+            LHTaskExecutor(my_method, task_def, 1)
 
         self.assertEqual(
             "Parameter types do not match, expected: [<class 'int'>, <class 'str'>]",
@@ -145,7 +158,7 @@ class TestLHTask(unittest.TestCase):
         )
 
     def test_raise_error_if_wrong_callable_order(self):
-        def my_method(param1: int, param2: str, ctx: LHWorkerContext):
+        async def my_method(param1: int, param2: str, ctx: LHWorkerContext):
             pass
 
         task_def = TaskDefPb(
@@ -156,7 +169,7 @@ class TestLHTask(unittest.TestCase):
         )
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, task_def)
+            LHTaskExecutor(my_method, task_def, 1)
 
         self.assertEqual(
             "Parameter types do not match, expected: [<class 'str'>, <class 'int'>]",
@@ -164,7 +177,7 @@ class TestLHTask(unittest.TestCase):
         )
 
     def test_raise_exception_if_callable_does_not_match_with_task_def(self):
-        def my_method(param: str):
+        async def my_method(param: str):
             pass
 
         task_def = TaskDefPb(
@@ -175,7 +188,7 @@ class TestLHTask(unittest.TestCase):
         )
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, task_def)
+            LHTaskExecutor(my_method, task_def, 1)
 
         self.assertEqual(
             "Incorrect parameter list, expected: [<class 'str'>, <class 'int'>]",
@@ -184,7 +197,7 @@ class TestLHTask(unittest.TestCase):
 
     def test_raise_exception_if_callable_does_not_match(self):
         def test(variable_type, callable_type):
-            def my_method(param: callable_type):
+            async def my_method(param: callable_type):
                 pass
 
             task_def = TaskDefPb(
@@ -192,7 +205,7 @@ class TestLHTask(unittest.TestCase):
             )
 
             with self.assertRaises(TaskSchemaMismatchException):
-                LHTask(my_method, task_def)
+                LHTaskExecutor(my_method, task_def, 1)
 
         for variable_type, callable_type in {
             VariableTypePb.JSON_OBJ: dict,
@@ -207,7 +220,7 @@ class TestLHTask(unittest.TestCase):
 
     def test_callable_matches(self):
         def test(variable_type, callable_type):
-            def my_method(param: callable_type):
+            async def my_method(param: callable_type):
                 pass
 
             task_def = TaskDefPb(
@@ -217,7 +230,7 @@ class TestLHTask(unittest.TestCase):
             )
 
             try:
-                LHTask(my_method, task_def)
+                LHTaskExecutor(my_method, task_def, 1)
             except Exception as e:
                 self.fail(f"Unexpected exception {e}")
 

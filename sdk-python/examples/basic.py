@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from pathlib import Path
+import random
 
 from littlehorse.config import LHConfig
 from littlehorse.worker import LHTaskWorker, LHWorkerContext
@@ -19,22 +20,15 @@ def get_config() -> LHConfig:
 async def greeting(name: str, ctx: LHWorkerContext) -> str:
     greeting = f"Hello {name}!"
     print(greeting)
+    await asyncio.sleep(random.uniform(0.05, 5.0))
     return greeting
 
 
-async def stop_after() -> None:
-    await asyncio.sleep(60 * 5)
-    await worker.stop()
-
-
 async def main() -> None:
-    start_task = asyncio.create_task(worker.start())
-    # stop_task = asyncio.create_task(stop_after())
-    await start_task
-    # await stop_task
+    config = get_config()
+    worker = LHTaskWorker(greeting, "greet", config)
+    await worker.start()
 
 
 if __name__ == "__main__":
-    config = get_config()
-    worker = LHTaskWorker(greeting, "greet", config)
     asyncio.run(main())
