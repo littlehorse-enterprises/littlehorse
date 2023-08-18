@@ -161,12 +161,12 @@ class LHConnection:
             async def generator() -> AsyncIterator[PollTaskPb]:
                 while self.running:
                     await self._ask_for_work_semaphore.acquire()
-
-                    yield PollTaskPb(
-                        client_id=self._config.client_id(),
-                        task_worker_version=self._config.worker_version(),
-                        task_def_name=self._task.name(),
-                    )
+                    if self.running:
+                        yield PollTaskPb(
+                            client_id=self._config.client_id(),
+                            task_worker_version=self._config.worker_version(),
+                            task_def_name=self._task.name(),
+                        )
 
             async for task_to_executed in stub.PollTask(generator()):
                 print(task_to_executed)
