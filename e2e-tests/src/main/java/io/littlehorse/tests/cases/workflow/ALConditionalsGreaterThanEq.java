@@ -25,36 +25,30 @@ public class ALConditionalsGreaterThanEq extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-                getWorkflowName(),
-                thread -> {
-                    // Use an input JSON blob with two fields, LHS and RHS.
-                    // This allows us to test with various types on the left and the
-                    // right, since right now the JSON_OBJ var type does not have a
-                    // schema.
-                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
-                    thread.execute("al-one");
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            // Use an input JSON blob with two fields, LHS and RHS.
+            // This allows us to test with various types on the left and the
+            // right, since right now the JSON_OBJ var type does not have a
+            // schema.
+            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+            thread.execute("al-one");
 
-                    thread.doIfElse(
-                            thread.condition(
-                                    input.jsonPath("$.lhs"),
-                                    Comparator.GREATER_THAN_EQ,
-                                    input.jsonPath("$.rhs")),
-                            ifBlock -> {
-                                ifBlock.execute("al-one");
-                            },
-                            elseBlock -> {
-                                elseBlock.execute("al-two");
-                            });
-                });
+            thread.doIfElse(
+                    thread.condition(input.jsonPath("$.lhs"), Comparator.GREATER_THAN_EQ, input.jsonPath("$.rhs")),
+                    ifBlock -> {
+                        ifBlock.execute("al-one");
+                    },
+                    elseBlock -> {
+                        elseBlock.execute("al-two");
+                    });
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new ALSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
                 runWithInputsAndCheckPath(client, new ALInputObj(1, 2), true, false),
                 runWithInputsAndCheckPath(client, new ALInputObj(1, 1), true, true),

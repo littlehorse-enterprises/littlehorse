@@ -19,26 +19,22 @@ public class OAuthCredentialsProvider extends CallCredentials {
     }
 
     @Override
-    public void applyRequestMetadata(
-            RequestInfo requestInfo, Executor executor, MetadataApplier metadataApplier) {
-        executor.execute(
-                () -> {
-                    try {
-                        if (currentToken == null || currentToken.isExpired()) {
-                            log.debug("Token expired, requesting a new one");
-                            currentToken = oauthClient.getAccessToken();
-                        } else {
-                            log.debug("Using cached token");
-                        }
+    public void applyRequestMetadata(RequestInfo requestInfo, Executor executor, MetadataApplier metadataApplier) {
+        executor.execute(() -> {
+            try {
+                if (currentToken == null || currentToken.isExpired()) {
+                    log.debug("Token expired, requesting a new one");
+                    currentToken = oauthClient.getAccessToken();
+                } else {
+                    log.debug("Using cached token");
+                }
 
-                        Metadata headers = new Metadata();
-                        headers.put(
-                                AUTHORIZATION_HEADER_KEY,
-                                String.format("Bearer %s", currentToken.getToken()));
-                        metadataApplier.apply(headers);
-                    } catch (Exception e) {
-                        metadataApplier.fail(Status.UNAUTHENTICATED.withCause(e));
-                    }
-                });
+                Metadata headers = new Metadata();
+                headers.put(AUTHORIZATION_HEADER_KEY, String.format("Bearer %s", currentToken.getToken()));
+                metadataApplier.apply(headers);
+            } catch (Exception e) {
+                metadataApplier.fail(Status.UNAUTHENTICATED.withCause(e));
+            }
+        });
     }
 }

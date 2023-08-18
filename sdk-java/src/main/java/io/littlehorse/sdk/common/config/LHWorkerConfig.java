@@ -21,12 +21,10 @@ public class LHWorkerConfig extends LHClientConfig {
     public static final String TASK_WORKER_VERSION_KEY = "LHW_TASK_WORKER_VERSION";
     public static final String DEFAULT_PUBLIC_LISTENER = "PLAIN";
 
-    private static final Set<String> configNames =
-            Collections.unmodifiableSet(
-                    Set.of(
-                            LHWorkerConfig.NUM_WORKER_THREADS_KEY,
-                            LHWorkerConfig.SERVER_CONNECT_LISTENER_KEY,
-                            LHWorkerConfig.TASK_WORKER_VERSION_KEY));
+    private static final Set<String> configNames = Collections.unmodifiableSet(Set.of(
+            LHWorkerConfig.NUM_WORKER_THREADS_KEY,
+            LHWorkerConfig.SERVER_CONNECT_LISTENER_KEY,
+            LHWorkerConfig.TASK_WORKER_VERSION_KEY));
 
     public static Set<String> configNames() {
         return LHWorkerConfig.configNames;
@@ -72,9 +70,8 @@ public class LHWorkerConfig extends LHClientConfig {
      */
     public TaskDef getTaskDef(String taskDefName) {
         try {
-            GetTaskDefResponse reply =
-                    getBlockingStub()
-                            .getTaskDef(TaskDefId.newBuilder().setName(taskDefName).build());
+            GetTaskDefResponse reply = getBlockingStub()
+                    .getTaskDef(TaskDefId.newBuilder().setName(taskDefName).build());
             if (reply.getCode() != LHResponseCode.OK) {
                 throw new RuntimeException("Failed loading taskDef: " + reply.getMessage());
             }

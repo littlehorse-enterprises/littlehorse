@@ -28,22 +28,19 @@ public class AEVarMutationsRemoveKey extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-                getWorkflowName(),
-                thread -> {
-                    WfRunVariable myObj = thread.addVariable("my-obj", VariableType.JSON_OBJ);
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            WfRunVariable myObj = thread.addVariable("my-obj", VariableType.JSON_OBJ);
 
-                    thread.execute("ae-simple");
-                    thread.mutate(myObj, VariableMutationType.REMOVE_KEY, "foo");
-                });
+            thread.execute("ae-simple");
+            thread.mutate(myObj, VariableMutationType.REMOVE_KEY, "foo");
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new AESimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         String wfWithFoo = runWf(client, Arg.of("my-obj", Map.of("foo", "bar", "baz", 2)));
         String wfWithoutFoo = runWf(client, Arg.of("my-obj", Map.of("baz", 2)));
 

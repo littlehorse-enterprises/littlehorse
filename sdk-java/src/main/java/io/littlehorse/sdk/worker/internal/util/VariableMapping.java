@@ -27,8 +27,7 @@ public class VariableMapping {
         this.position = position;
 
         if (position >= taskDef.getInputVarsCount()) {
-            throw new TaskSchemaMismatchError(
-                    "Provided Java function has more parameters than the TaskDef.");
+            throw new TaskSchemaMismatchError("Provided Java function has more parameters than the TaskDef.");
         }
         this.name = javaParamName;
         VariableDef input = taskDef.getInputVars(position);
@@ -75,8 +74,7 @@ public class VariableMapping {
         }
     }
 
-    public Object assign(ScheduledTask taskInstance, WorkerContext context)
-            throws InputVarSubstitutionError {
+    public Object assign(ScheduledTask taskInstance, WorkerContext context) throws InputVarSubstitutionError {
         if (type.equals(WorkerContext.class)) {
             return context;
         }

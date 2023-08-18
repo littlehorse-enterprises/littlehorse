@@ -24,8 +24,7 @@ public class TaskDefBuilder {
         List<VariableType> varTypes = signature.getParamTypes();
 
         for (int i = 0; i < varNames.size(); i++) {
-            out.addInputVars(
-                    VariableDef.newBuilder().setName(varNames.get(i)).setType(varTypes.get(i)));
+            out.addInputVars(VariableDef.newBuilder().setName(varNames.get(i)).setType(varTypes.get(i)));
         }
         out.setName(taskDefName);
 

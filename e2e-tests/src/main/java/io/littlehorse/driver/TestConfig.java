@@ -17,27 +17,24 @@ public class TestConfig {
 
     public TestConfig(String[] args) throws ParseException {
         Options options = new Options();
-        options.addOption(
-                Option.builder("t")
-                        .longOpt("threads")
-                        .hasArg(true)
-                        .desc("number of threads, default " + DEFAULT_THREADS)
-                        .required(false)
-                        .build());
-        options.addOption(
-                Option.builder("h")
-                        .longOpt("help")
-                        .hasArg(false)
-                        .desc("shows this help message")
-                        .required(false)
-                        .build());
-        options.addOption(
-                Option.builder("s")
-                        .longOpt("sandalone")
-                        .hasArg(false)
-                        .desc("run a lh server and kafka")
-                        .required(false)
-                        .build());
+        options.addOption(Option.builder("t")
+                .longOpt("threads")
+                .hasArg(true)
+                .desc("number of threads, default " + DEFAULT_THREADS)
+                .required(false)
+                .build());
+        options.addOption(Option.builder("h")
+                .longOpt("help")
+                .hasArg(false)
+                .desc("shows this help message")
+                .required(false)
+                .build());
+        options.addOption(Option.builder("s")
+                .longOpt("sandalone")
+                .hasArg(false)
+                .desc("run a lh server and kafka")
+                .required(false)
+                .build());
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cli = parser.parse(options, args);

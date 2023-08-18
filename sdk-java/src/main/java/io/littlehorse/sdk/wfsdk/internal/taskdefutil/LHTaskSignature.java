@@ -31,7 +31,8 @@ public class LHTaskSignature {
 
         for (Method method : executable.getClass().getMethods()) {
             if (method.isAnnotationPresent(LHTaskMethod.class)) {
-                String taskDefForThisMethod = method.getAnnotation(LHTaskMethod.class).value();
+                String taskDefForThisMethod =
+                        method.getAnnotation(LHTaskMethod.class).value();
 
                 if (!taskDefForThisMethod.equals(taskDefName)) {
                     continue;
@@ -45,19 +46,17 @@ public class LHTaskSignature {
         }
 
         if (taskMethod == null) {
-            throw new TaskSchemaMismatchError(
-                    "Couldn't find annotated @LHTaskMethod for taskDef "
-                            + taskDefName
-                            + " on "
-                            + executable.getClass());
+            throw new TaskSchemaMismatchError("Couldn't find annotated @LHTaskMethod for taskDef "
+                    + taskDefName
+                    + " on "
+                    + executable.getClass());
         }
 
         for (int i = 0; i < taskMethod.getParameterCount(); i++) {
             Parameter param = taskMethod.getParameters()[i];
             if (param.getType().equals(WorkerContext.class)) {
                 if (i + 1 != taskMethod.getParameterCount()) {
-                    throw new TaskSchemaMismatchError(
-                            "Can only have WorkerContext as the last parameter.");
+                    throw new TaskSchemaMismatchError("Can only have WorkerContext as the last parameter.");
                 } else {
                     hasWorkerContextAtEnd = true;
                     continue; // could also be `break;`
@@ -66,10 +65,9 @@ public class LHTaskSignature {
             VariableType paramLHType = LHLibUtil.javaClassToLHVarType(param.getType());
 
             if (!param.isNamePresent()) {
-                log.warn(
-                        "Was unable to inspect parameter names usingreflection; please compile with"
-                            + " `javac -Parameters` to enable that.Will use param position as its"
-                            + " name, which makes resulting TaskDefharder to understand.");
+                log.warn("Was unable to inspect parameter names usingreflection; please compile with"
+                        + " `javac -Parameters` to enable that.Will use param position as its"
+                        + " name, which makes resulting TaskDefharder to understand.");
             }
             paramTypes.add(paramLHType);
             varNames.add(param.getName());

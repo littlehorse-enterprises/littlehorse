@@ -17,11 +17,7 @@ public final class TestUtils {
 
         return reflections.get(SubTypes.of(Test.class).asClass()).stream()
                 .filter(aClass -> !Modifier.isAbstract(aClass.getModifiers()))
-                .filter(
-                        aClass ->
-                                filter == null
-                                        || filter.isEmpty()
-                                        || filter.contains(aClass.getSimpleName()))
+                .filter(aClass -> filter == null || filter.isEmpty() || filter.contains(aClass.getSimpleName()))
                 .collect(Collectors.toUnmodifiableSet());
     }
 }

@@ -29,37 +29,30 @@ public class ACVarMutationsJsonObj extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-                getWorkflowName(),
-                thread -> {
-                    WfRunVariable myVar = thread.addVariable("my-var", VariableType.JSON_OBJ);
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            WfRunVariable myVar = thread.addVariable("my-var", VariableType.JSON_OBJ);
 
-                    // Use JsonPath to pass in a String from a nested subobject.
-                    NodeOutput taskOutput =
-                            thread.execute("count-length", myVar.jsonPath("$.subObject.foo"));
+            // Use JsonPath to pass in a String from a nested subobject.
+            NodeOutput taskOutput = thread.execute("count-length", myVar.jsonPath("$.subObject.foo"));
 
-                    // Use jsonpath to edit a nested field in a big object
-                    thread.mutate(
-                            myVar.jsonPath("$.subObject.bar"),
-                            VariableMutationType.ADD,
-                            taskOutput);
+            // Use jsonpath to edit a nested field in a big object
+            thread.mutate(myVar.jsonPath("$.subObject.bar"), VariableMutationType.ADD, taskOutput);
 
-                    // Pass in a JSON_OBJ to a Java task that takes in a POJO.
-                    // Behold the magic of the Java LH SDK!
-                    thread.execute("process-big-obj", myVar);
+            // Pass in a JSON_OBJ to a Java task that takes in a POJO.
+            // Behold the magic of the Java LH SDK!
+            thread.execute("process-big-obj", myVar);
 
-                    // Can also pass in a whole sub object rather than just a
-                    // string
-                    thread.execute("process-sub-obj", myVar.jsonPath("$.subObject"));
-                });
+            // Can also pass in a whole sub object rather than just a
+            // string
+            thread.execute("process-sub-obj", myVar.jsonPath("$.subObject"));
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new ACJsonPathThing());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         ACJsonPathThing worker = new ACJsonPathThing();
         /* Create a POJO which will be a json like:
         {
@@ -89,10 +82,8 @@ public class ACVarMutationsJsonObj extends WorkflowLogicTest {
 
         // Check that the first task properly mutated the variable
         MyJsonObj result = getVarAsObj(client, wfRunId, 0, "my-var", MyJsonObj.class);
-        if (!result.subObject.bar.equals(
-                inputVar.subObject.foo.length() + inputVar.subObject.bar)) {
-            throw new TestFailure(
-                    this, "Got wrong value for variable my-var on jsonpath $.subObject.bar");
+        if (!result.subObject.bar.equals(inputVar.subObject.foo.length() + inputVar.subObject.bar)) {
+            throw new TestFailure(this, "Got wrong value for variable my-var on jsonpath $.subObject.bar");
         }
 
         // Check second task output

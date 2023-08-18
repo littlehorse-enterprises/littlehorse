@@ -181,9 +181,7 @@ public abstract class Workflow {
      * @throws LHApiError if the call fails.
      */
     public void registerWfSpec(LHClient client) throws LHApiError {
-        log.info(
-                "Creating wfSpec:\n {}",
-                LHLibUtil.protoToJson(client.putWfSpec(compileWorkflow())));
+        log.info("Creating wfSpec:\n {}", LHLibUtil.protoToJson(client.putWfSpec(compileWorkflow())));
     }
 
     /**
@@ -212,8 +210,7 @@ public abstract class Workflow {
         saveProtoToFile(directory, wfFileName, wf);
     }
 
-    private static void saveProtoToFile(
-            String directory, String fileName, MessageOrBuilder content) {
+    private static void saveProtoToFile(String directory, String fileName, MessageOrBuilder content) {
         Path path = Paths.get(directory, fileName);
         try {
             File file = new File(path.toString());

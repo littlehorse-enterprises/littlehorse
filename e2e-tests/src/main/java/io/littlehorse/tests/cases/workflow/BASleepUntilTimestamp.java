@@ -28,27 +28,19 @@ public class BASleepUntilTimestamp extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-                getWorkflowName(),
-                thread -> {
-                    WfRunVariable myVar =
-                            thread.addVariable("timestamp-to-wait-for", VariableType.INT);
-                    thread.sleepUntil(myVar);
-                });
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            WfRunVariable myVar = thread.addVariable("timestamp-to-wait-for", VariableType.INT);
+            thread.sleepUntil(myVar);
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return new ArrayList<>();
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
-        String wfRunId =
-                runWf(
-                        client,
-                        Arg.of(
-                                "timestamp-to-wait-for",
-                                new Date(System.currentTimeMillis() + (1000 * 2)).getTime()));
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+        String wfRunId = runWf(
+                client, Arg.of("timestamp-to-wait-for", new Date(System.currentTimeMillis() + (1000 * 2)).getTime()));
         Thread.sleep(1000);
         assertStatus(client, wfRunId, LHStatus.RUNNING);
         Thread.sleep(7000); // note that the timer interval is 4 seconds

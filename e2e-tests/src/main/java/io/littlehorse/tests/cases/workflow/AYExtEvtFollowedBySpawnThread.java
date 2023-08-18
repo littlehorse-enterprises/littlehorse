@@ -25,28 +25,24 @@ public class AYExtEvtFollowedBySpawnThread extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-                getWorkflowName(),
-                thread -> {
-                    thread.waitForEvent("ay-some-event");
-                    SpawnedThread child =
-                            thread.spawnThread(
-                                    subthread -> {
-                                        subthread.execute("ay-task");
-                                    },
-                                    "first-thread",
-                                    null);
-                    thread.execute("ay-task");
-                    thread.waitForThreads(child);
-                });
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            thread.waitForEvent("ay-some-event");
+            SpawnedThread child = thread.spawnThread(
+                    subthread -> {
+                        subthread.execute("ay-task");
+                    },
+                    "first-thread",
+                    null);
+            thread.execute("ay-task");
+            thread.waitForThreads(child);
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new AYSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         List<String> out = new ArrayList<>();
 
         String wfRunId = runWf(client);

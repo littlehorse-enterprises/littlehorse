@@ -29,34 +29,31 @@ public class ADVarMutationsNumbers extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-                getWorkflowName(),
-                thread -> {
-                    WfRunVariable myInt = thread.addVariable("my-int", VariableType.INT);
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            WfRunVariable myInt = thread.addVariable("my-int", VariableType.INT);
 
-                    WfRunVariable myDouble = thread.addVariable("my-double", VariableType.DOUBLE);
+            WfRunVariable myDouble = thread.addVariable("my-double", VariableType.DOUBLE);
 
-                    WfRunVariable myOtherInt = thread.addVariable("my-other-int", VariableType.INT);
+            WfRunVariable myOtherInt = thread.addVariable("my-other-int", VariableType.INT);
 
-                    NodeOutput output = thread.execute("ad-simple");
-                    thread.mutate(myInt, VariableMutationType.ADD, output);
-                    thread.mutate(myInt, VariableMutationType.SUBTRACT, 2);
+            NodeOutput output = thread.execute("ad-simple");
+            thread.mutate(myInt, VariableMutationType.ADD, output);
+            thread.mutate(myInt, VariableMutationType.SUBTRACT, 2);
 
-                    // ensure that we can cast from double to int, and that the
-                    // original type is respected
-                    thread.mutate(myOtherInt, VariableMutationType.ASSIGN, myDouble);
+            // ensure that we can cast from double to int, and that the
+            // original type is respected
+            thread.mutate(myOtherInt, VariableMutationType.ASSIGN, myDouble);
 
-                    // Do some math, and divide by zero to show that failures work
-                    thread.mutate(myOtherInt, VariableMutationType.DIVIDE, myInt);
-                });
+            // Do some math, and divide by zero to show that failures work
+            thread.mutate(myOtherInt, VariableMutationType.DIVIDE, myInt);
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new ADSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         String happyWf = runWf(client, Arg.of("my-int", 5), Arg.of("my-double", 24.2));
 
         // this should fail with divide by zero

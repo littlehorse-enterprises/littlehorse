@@ -47,12 +47,10 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
         worker2 = new LHTaskWorker(new TaskWfSpecLifecycleWorker(), TASK_DEF_2, workerConfig);
         worker2.registerTaskDef(true);
 
-        new WorkflowImpl(
-                        WF_SPEC_NAME,
-                        thread -> {
-                            thread.execute(TASK_DEF_1);
-                            thread.execute(TASK_DEF_2);
-                        })
+        new WorkflowImpl(WF_SPEC_NAME, thread -> {
+                    thread.execute(TASK_DEF_1);
+                    thread.execute(TASK_DEF_2);
+                })
                 .registerWfSpec(client);
 
         Thread.sleep(100); // Wait for the data to propagate
@@ -72,11 +70,8 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
             throw new RuntimeException("Should have failed!");
         }
 
-        if (!wfRun.getThreadRuns(0)
-                .getErrorMessage()
-                .contains("Appears that TaskDef was deleted")) {
-            throw new RuntimeException(
-                    "Should have error message about deleted taskdef! WfRun: " + wfRunId);
+        if (!wfRun.getThreadRuns(0).getErrorMessage().contains("Appears that TaskDef was deleted")) {
+            throw new RuntimeException("Should have error message about deleted taskdef! WfRun: " + wfRunId);
         }
     }
 

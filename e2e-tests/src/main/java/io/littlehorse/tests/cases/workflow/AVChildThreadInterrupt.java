@@ -26,80 +26,59 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
     }
 
     public String getDescription() {
-        return ("Tests that we can interrupt a child thread without interrupting "
-                + "the parent thread.");
+        return ("Tests that we can interrupt a child thread without interrupting " + "the parent thread.");
     }
 
     private static final String CHILD_EVENT = "child-event";
     private static final String PARENT_EVENT = "parent-event";
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-                getWorkflowName(),
-                thread -> {
-                    WfRunVariable parentInt = thread.addVariable("parent-int", VariableType.INT);
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            WfRunVariable parentInt = thread.addVariable("parent-int", VariableType.INT);
 
-                    thread.registerInterruptHandler(
-                            PARENT_EVENT,
-                            parentHandler -> {
-                                WfRunVariable interruptInput =
-                                        parentHandler.addVariable(
-                                                ThreadBuilder.HANDLER_INPUT_VAR, VariableType.INT);
+            thread.registerInterruptHandler(PARENT_EVENT, parentHandler -> {
+                WfRunVariable interruptInput =
+                        parentHandler.addVariable(ThreadBuilder.HANDLER_INPUT_VAR, VariableType.INT);
 
-                                parentHandler.execute("av-obiwan");
-                                parentHandler.mutate(
-                                        parentInt, VariableMutationType.ADD, interruptInput);
-                                parentHandler.sleepSeconds(1);
-                            });
+                parentHandler.execute("av-obiwan");
+                parentHandler.mutate(parentInt, VariableMutationType.ADD, interruptInput);
+                parentHandler.sleepSeconds(1);
+            });
 
-                    SpawnedThread childThread =
-                            thread.spawnThread(
-                                    child -> {
-                                        WfRunVariable childInt =
-                                                child.addVariable("child-int", VariableType.INT);
+            SpawnedThread childThread = thread.spawnThread(
+                    child -> {
+                        WfRunVariable childInt = child.addVariable("child-int", VariableType.INT);
 
-                                        child.registerInterruptHandler(
-                                                CHILD_EVENT,
-                                                childHandler -> {
-                                                    WfRunVariable interruptInput =
-                                                            childHandler.addVariable(
-                                                                    ThreadBuilder.HANDLER_INPUT_VAR,
-                                                                    VariableType.INT);
-                                                    childHandler.execute("av-obiwan");
-                                                    childHandler.sleepSeconds(1);
-                                                    childHandler.mutate(
-                                                            childInt,
-                                                            VariableMutationType.ADD,
-                                                            interruptInput);
-                                                });
+                        child.registerInterruptHandler(CHILD_EVENT, childHandler -> {
+                            WfRunVariable interruptInput =
+                                    childHandler.addVariable(ThreadBuilder.HANDLER_INPUT_VAR, VariableType.INT);
+                            childHandler.execute("av-obiwan");
+                            childHandler.sleepSeconds(1);
+                            childHandler.mutate(childInt, VariableMutationType.ADD, interruptInput);
+                        });
 
-                                        child.execute("av-obiwan");
-                                        child.sleepSeconds(1);
-                                    },
-                                    "child",
-                                    Map.of("child-int", 0));
+                        child.execute("av-obiwan");
+                        child.sleepSeconds(1);
+                    },
+                    "child",
+                    Map.of("child-int", 0));
 
-                    thread.sleepSeconds(1);
-                    thread.execute("av-obiwan");
-                    thread.waitForThreads(childThread);
-                });
+            thread.sleepSeconds(1);
+            thread.execute("av-obiwan");
+            thread.waitForThreads(childThread);
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new AVSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
-                runWithNoInterrupts(client),
-                interruptChild(client),
-                interruptParent(client),
-                interruptBoth(client));
+                runWithNoInterrupts(client), interruptChild(client), interruptParent(client), interruptBoth(client));
     }
 
-    private String runWithNoInterrupts(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    private String runWithNoInterrupts(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("parent-int", 0));
         Thread.sleep(1000 * 3);
         assertStatus(client, wfRunId, LHStatus.COMPLETED);
@@ -110,8 +89,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
         return wfRunId;
     }
 
-    private String interruptChild(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    private String interruptChild(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("parent-int", 0));
 
         sendEvent(client, wfRunId, CHILD_EVENT, 10, null);
@@ -132,8 +110,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
         return wfRunId;
     }
 
-    private String interruptParent(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    private String interruptParent(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("parent-int", 0));
 
         sendEvent(client, wfRunId, PARENT_EVENT, 10, null);
@@ -155,8 +132,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
         return wfRunId;
     }
 
-    private String interruptBoth(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    private String interruptBoth(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("parent-int", 0));
 
         sendEvent(client, wfRunId, PARENT_EVENT, 10, null);

@@ -34,8 +34,7 @@ import java.util.concurrent.Semaphore;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class LHServerConnectionManager
-        implements StreamObserver<RegisterTaskWorkerResponse>, Closeable {
+public class LHServerConnectionManager implements StreamObserver<RegisterTaskWorkerResponse>, Closeable {
 
     public Object executable;
     public Method taskMethod;
@@ -73,18 +72,16 @@ public class LHServerConnectionManager
         this.workerSemaphore = new Semaphore(config.getWorkerThreads());
         this.threadPool = Executors.newFixedThreadPool(config.getWorkerThreads());
 
-        this.rebalanceThread =
-                new Thread(
-                        () -> {
-                            while (this.running) {
-                                doHeartbeat();
-                                try {
-                                    Thread.sleep(5000);
-                                } catch (Exception ignored) {
-                                    // Ignored
-                                }
-                            }
-                        });
+        this.rebalanceThread = new Thread(() -> {
+            while (this.running) {
+                doHeartbeat();
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception ignored) {
+                    // Ignored
+                }
+            }
+        });
     }
 
     public void submitTaskForExecution(ScheduledTask scheduledTask, LHPublicApiStub specificStub) {
@@ -93,15 +90,13 @@ public class LHServerConnectionManager
         } catch (InterruptedException exn) {
             throw new RuntimeException(exn);
         }
-        this.threadPool.submit(
-                () -> {
-                    this.doTask(scheduledTask, specificStub);
-                });
+        this.threadPool.submit(() -> {
+            this.doTask(scheduledTask, specificStub);
+        });
     }
 
     private void doTask(ScheduledTask scheduledTask, LHPublicApiStub specificStub) {
-        ReportTaskRun result =
-                executeTask(scheduledTask, LHLibUtil.fromProtoTs(scheduledTask.getCreatedAt()));
+        ReportTaskRun result = executeTask(scheduledTask, LHLibUtil.fromProtoTs(scheduledTask.getCreatedAt()));
         this.workerSemaphore.release();
         String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource());
         try {
@@ -200,32 +195,27 @@ public class LHServerConnectionManager
         // The second arg is null so that we don't get into infinite retry loop.
         // That's why we need an employee to fix it ;)
 
-        threadPool.submit(
-                () -> {
-                    log.debug(
-                            "Retrying reportTask rpc on taskRun {}",
-                            LHLibUtil.taskRunIdToString(result.getTaskRunId()));
-                    try {
-                        // This should also slow down progress on tasks too, which should
-                        // help prevent tons of overflow.
-                        // EMPLOYEE_TODO: make this a bit better oops
-                        Thread.sleep(500);
-                    } catch (Exception ignored) {
-                    }
-                    bootstrapStub.reportTask(
-                            result, new ReportTaskObserver(this, result, retriesLeft - 1));
-                });
+        threadPool.submit(() -> {
+            log.debug("Retrying reportTask rpc on taskRun {}", LHLibUtil.taskRunIdToString(result.getTaskRunId()));
+            try {
+                // This should also slow down progress on tasks too, which should
+                // help prevent tons of overflow.
+                // EMPLOYEE_TODO: make this a bit better oops
+                Thread.sleep(500);
+            } catch (Exception ignored) {
+            }
+            bootstrapStub.reportTask(result, new ReportTaskObserver(this, result, retriesLeft - 1));
+        });
     }
 
     public void onConnectionClosed(LHServerConnection connection) {
         // TODO: remove from the list
-        runningConnections.removeIf(
-                thing -> {
-                    if (thing == connection) {
-                        return true;
-                    }
-                    return false;
-                });
+        runningConnections.removeIf(thing -> {
+            if (thing == connection) {
+                return true;
+            }
+            return false;
+        });
     }
 
     public void start() {
@@ -240,10 +230,9 @@ public class LHServerConnectionManager
     // Below is actual task execution logic
 
     private ReportTaskRun executeTask(ScheduledTask scheduledTask, Date scheduleTime) {
-        ReportTaskRun.Builder taskResult =
-                ReportTaskRun.newBuilder()
-                        .setTaskRunId(scheduledTask.getTaskRunId())
-                        .setAttemptNumber(scheduledTask.getAttemptNumber());
+        ReportTaskRun.Builder taskResult = ReportTaskRun.newBuilder()
+                .setTaskRunId(scheduledTask.getTaskRunId())
+                .setAttemptNumber(scheduledTask.getAttemptNumber());
 
         WorkerContext wc = new WorkerContext(scheduledTask, scheduleTime);
 

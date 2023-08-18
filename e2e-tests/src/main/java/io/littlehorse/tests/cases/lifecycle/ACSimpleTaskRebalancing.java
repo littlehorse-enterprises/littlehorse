@@ -65,8 +65,7 @@ public class ACSimpleTaskRebalancing extends Test {
 
         reply1 = stub.registerTaskWorker(register(client1));
         if (reply1.getYourHostsCount() != allHosts.size()) {
-            throw new RuntimeException(
-                    "First worker should still get all hosts when only one other!");
+            throw new RuntimeException("First worker should still get all hosts when only one other!");
         }
 
         // When we add a third and fourth worker, if there are more than one server,

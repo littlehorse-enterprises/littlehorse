@@ -29,31 +29,26 @@ public class ASChildThreadFails extends WorkflowLogicTest {
     private static final String FAILURE_MESSAGE = "this is the failure message";
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-                getWorkflowName(),
-                thread -> {
-                    SpawnedThread child =
-                            thread.spawnThread(
-                                    subthread -> {
-                                        subthread.execute("as-obiwan");
-                                        subthread.fail(
-                                                FAILURE_OUTPUT, "my-failure", FAILURE_MESSAGE);
-                                    },
-                                    "first-thread",
-                                    null);
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            SpawnedThread child = thread.spawnThread(
+                    subthread -> {
+                        subthread.execute("as-obiwan");
+                        subthread.fail(FAILURE_OUTPUT, "my-failure", FAILURE_MESSAGE);
+                    },
+                    "first-thread",
+                    null);
 
-                    thread.execute("as-obiwan");
-                    thread.waitForThreads(child);
-                    thread.execute("as-obiwan");
-                });
+            thread.execute("as-obiwan");
+            thread.waitForThreads(child);
+            thread.execute("as-obiwan");
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new ASSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client);
         Thread.sleep(500);
         assertStatus(client, wfRunId, LHStatus.ERROR);

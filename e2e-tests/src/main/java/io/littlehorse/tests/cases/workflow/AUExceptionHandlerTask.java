@@ -24,25 +24,19 @@ public class AUExceptionHandlerTask extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-                getWorkflowName(),
-                thread -> {
-                    NodeOutput taskThatWillFail = thread.execute("au-will-fail");
-                    thread.handleException(
-                            taskThatWillFail,
-                            null,
-                            handler -> {
-                                handler.execute("au-obiwan");
-                            });
-                });
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            NodeOutput taskThatWillFail = thread.execute("au-will-fail");
+            thread.handleException(taskThatWillFail, null, handler -> {
+                handler.execute("au-obiwan");
+            });
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new AUSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client);
         Thread.sleep(300);
         assertStatus(client, wfRunId, LHStatus.COMPLETED);

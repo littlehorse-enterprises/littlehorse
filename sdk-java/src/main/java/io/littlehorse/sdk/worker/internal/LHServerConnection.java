@@ -60,9 +60,7 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
             log.info("Scheduled task on threadpool for wfRun {}", wfRunId);
         } else {
             log.error(
-                    "Didn't successfully claim task: {} {}",
-                    taskToDo.getCode().toString(),
-                    taskToDo.getMessage());
+                    "Didn't successfully claim task: {} {}", taskToDo.getCode().toString(), taskToDo.getMessage());
         }
 
         if (stillRunning) {
@@ -79,18 +77,16 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
     }
 
     public boolean isSameAs(HostInfo other) {
-        return (this.host.getHost().equals(other.getHost())
-                && this.host.getPort() == other.getPort());
+        return (this.host.getHost().equals(other.getHost()) && this.host.getPort() == other.getPort());
     }
 
     private void askForMoreWork() {
         log.debug("Asking for more work on {}:{}", host.getHost(), host.getPort());
-        pollClient.onNext(
-                PollTaskRequest.newBuilder()
-                        .setClientId(manager.config.getClientId())
-                        .setTaskDefName(manager.taskDef.getName())
-                        .setTaskWorkerVersion(manager.config.getTaskWorkerVersion())
-                        .build());
+        pollClient.onNext(PollTaskRequest.newBuilder()
+                .setClientId(manager.config.getClientId())
+                .setTaskDefName(manager.taskDef.getName())
+                .setTaskWorkerVersion(manager.config.getTaskWorkerVersion())
+                .build());
     }
 
     public void close() {

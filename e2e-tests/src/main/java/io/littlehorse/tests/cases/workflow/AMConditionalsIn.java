@@ -28,31 +28,26 @@ public class AMConditionalsIn extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-                getWorkflowName(),
-                thread -> {
-                    // Use an input JSON blob with two fields, LHS and RHS.
-                    // This allows us to test with various types on the left and the
-                    // right, since right now the JSON_OBJ var type does not have a
-                    // schema.
-                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            // Use an input JSON blob with two fields, LHS and RHS.
+            // This allows us to test with various types on the left and the
+            // right, since right now the JSON_OBJ var type does not have a
+            // schema.
+            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-                    // So that the run request succeeds even on workflows where we want
-                    // a crash.
-                    thread.execute("am-one");
+            // So that the run request succeeds even on workflows where we want
+            // a crash.
+            thread.execute("am-one");
 
-                    thread.doIfElse(
-                            thread.condition(
-                                    input.jsonPath("$.lhs"),
-                                    Comparator.IN,
-                                    input.jsonPath("$.rhs")),
-                            ifBlock -> {
-                                ifBlock.execute("am-one");
-                            },
-                            elseBlock -> {
-                                elseBlock.execute("am-two");
-                            });
-                });
+            thread.doIfElse(
+                    thread.condition(input.jsonPath("$.lhs"), Comparator.IN, input.jsonPath("$.rhs")),
+                    ifBlock -> {
+                        ifBlock.execute("am-one");
+                    },
+                    elseBlock -> {
+                        elseBlock.execute("am-two");
+                    });
+        });
     }
 
     private String assertThatFails(LHClient client, Object lhs, Object rhs)
@@ -63,8 +58,7 @@ public class AMConditionalsIn extends WorkflowLogicTest {
         return wfRunId;
     }
 
-    private String runWithInputsAndCheck(
-            LHClient client, Object lhs, Object rhs, boolean shouldEqual)
+    private String runWithInputsAndCheck(LHClient client, Object lhs, Object rhs, boolean shouldEqual)
             throws TestFailure, InterruptedException, LHApiError {
         AMInputObj input = new AMInputObj(lhs, rhs);
 
@@ -79,8 +73,7 @@ public class AMConditionalsIn extends WorkflowLogicTest {
         return Arrays.asList(new AMSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
                 runWithInputsAndCheck(client, Map.of("a", 1), Map.of("a", 1), false),
                 runWithInputsAndCheck(client, "hi", Map.of("hi", 2), true),

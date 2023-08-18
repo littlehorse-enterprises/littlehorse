@@ -26,32 +26,27 @@ public class AXConditionalWhileLogic extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-                getWorkflowName(),
-                thread -> {
-                    WfRunVariable input = thread.addVariable("input", VariableType.INT);
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            WfRunVariable input = thread.addVariable("input", VariableType.INT);
 
-                    /*
-                    while (input > 0) {
-                        execute(input);
-                        input--
-                    }
-                     */
-                    thread.doWhile(
-                            thread.condition(input, Comparator.GREATER_THAN, 0),
-                            whileBlock -> {
-                                whileBlock.execute("aq-task", input);
-                                whileBlock.mutate(input, VariableMutationType.SUBTRACT, 1);
-                            });
-                });
+            /*
+            while (input > 0) {
+                execute(input);
+                input--
+            }
+             */
+            thread.doWhile(thread.condition(input, Comparator.GREATER_THAN, 0), whileBlock -> {
+                whileBlock.execute("aq-task", input);
+                whileBlock.mutate(input, VariableMutationType.SUBTRACT, 1);
+            });
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new AXSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
                 runWithInputsAndCheckPath(client, 3, 3, 2, 1),
                 runWithInputsAndCheckPath(client, 2, 2, 1),

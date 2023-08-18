@@ -54,8 +54,7 @@ public class WorkflowImpl extends Workflow {
         TaskDefBuilder previous = taskDefBuilders.get(tdb.taskDefName);
         if (previous != null) {
             if (!previous.signature.equals(tdb.signature)) {
-                throw new RuntimeException(
-                        "Tried to register two DIFFERENT tasks named " + tdb.taskDefName);
+                throw new RuntimeException("Tried to register two DIFFERENT tasks named " + tdb.taskDefName);
             }
         } else {
             taskDefBuilders.put(tdb.taskDefName, tdb);
@@ -119,8 +118,7 @@ public class WorkflowImpl extends Workflow {
     // so we don't need to pass in the name.
     public String addSubThread(String subThreadName, ThreadFunc subThreadFunc) {
         if (threadFuncs.containsKey(subThreadName)) {
-            throw new LHMisconfigurationException(
-                    String.format("Thread %s already exists", subThreadName));
+            throw new LHMisconfigurationException(String.format("Thread %s already exists", subThreadName));
         }
         threadFuncs.put(subThreadName, subThreadFunc);
         return subThreadName;

@@ -111,17 +111,17 @@ public abstract class WorkflowLogicTest extends Test {
             }
         }
 
-        Set<String> requiredExternalEventDefNames =
-                getWorkflow().getRequiredExternalEventDefNames();
+        Set<String> requiredExternalEventDefNames = getWorkflow().getRequiredExternalEventDefNames();
 
         for (String externalEvent : requiredExternalEventDefNames) {
             try {
                 client.putExternalEventDef(
-                        PutExternalEventDefRequest.newBuilder().setName(externalEvent).build(),
+                        PutExternalEventDefRequest.newBuilder()
+                                .setName(externalEvent)
+                                .build(),
                         true);
             } catch (LHApiError exn) {
-                throw new TestFailure(
-                        this, "Failed deploying external event def: " + exn.getMessage());
+                throw new TestFailure(this, "Failed deploying external event def: " + exn.getMessage());
             }
         }
 
@@ -147,13 +147,13 @@ public abstract class WorkflowLogicTest extends Test {
         log.info("Done deploying for testCase " + getWorkflowName());
     }
 
-    private List<LHTaskWorker> getWorkersFromExecutable(Object exe, LHWorkerConfig workerConfig)
-            throws TestFailure {
+    private List<LHTaskWorker> getWorkersFromExecutable(Object exe, LHWorkerConfig workerConfig) throws TestFailure {
         List<LHTaskWorker> out = new ArrayList<>();
 
         for (Method method : exe.getClass().getMethods()) {
             if (method.isAnnotationPresent(LHTaskMethod.class)) {
-                String taskDefForThisMethod = method.getAnnotation(LHTaskMethod.class).value();
+                String taskDefForThisMethod =
+                        method.getAnnotation(LHTaskMethod.class).value();
 
                 out.add(new LHTaskWorker(exe, taskDefForThisMethod, workerConfig));
             }
@@ -166,8 +166,7 @@ public abstract class WorkflowLogicTest extends Test {
         return runWf(generateGuid(), client, params);
     }
 
-    protected String runWf(String id, LHClient client, Arg... params)
-            throws TestFailure, LHApiError {
+    protected String runWf(String id, LHClient client, Arg... params) throws TestFailure, LHApiError {
         String resultingId = client.runWf(getWorkflowName(), wfSpecVersion, id, params);
 
         log.info("Test {} launched: {}", getWorkflowName(), resultingId);
@@ -178,8 +177,7 @@ public abstract class WorkflowLogicTest extends Test {
         return resultingId;
     }
 
-    protected String runWithInputsAndCheckPath(
-            LHClient client, Object input, Object... expectedPath)
+    protected String runWithInputsAndCheckPath(LHClient client, Object input, Object... expectedPath)
             throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("input", input));
         Thread.sleep(100 * (expectedPath.length + 1));

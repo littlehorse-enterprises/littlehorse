@@ -38,8 +38,7 @@ public class LHLibUtil {
         return fromMillis(date.getTime());
     }
 
-    public static <T extends GeneratedMessageV3> T loadProto(byte[] data, Class<T> cls)
-            throws LHSerdeError {
+    public static <T extends GeneratedMessageV3> T loadProto(byte[] data, Class<T> cls) throws LHSerdeError {
         try {
             return cls.cast(cls.getMethod("parseFrom", byte[].class).invoke(null, data));
         } catch (NoSuchMethodException | IllegalAccessException exn) {
@@ -70,8 +69,7 @@ public class LHLibUtil {
         return mapper.writeValueAsString(o);
     }
 
-    public static <T extends Object> T deserializeFromjson(String json, Class<T> cls)
-            throws JsonProcessingException {
+    public static <T extends Object> T deserializeFromjson(String json, Class<T> cls) throws JsonProcessingException {
         return mapper.readValue(json, cls);
     }
 

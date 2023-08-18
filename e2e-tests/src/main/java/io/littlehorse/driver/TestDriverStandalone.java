@@ -54,15 +54,14 @@ public class TestDriverStandalone extends TestDriver {
         // run the server in another thread
         server = new KafkaStreamsServerImpl(serverConfig);
 
-        new Thread(
-                        () -> {
-                            try {
-                                log.info("Starting server");
-                                server.start();
-                            } catch (IOException exn) {
-                                throw new RuntimeException(exn);
-                            }
-                        })
+        new Thread(() -> {
+                    try {
+                        log.info("Starting server");
+                        server.start();
+                    } catch (IOException exn) {
+                        throw new RuntimeException(exn);
+                    }
+                })
                 .start();
 
         // wait until the server is up

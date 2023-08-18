@@ -64,8 +64,7 @@ public interface ThreadBuilder {
      * @param deadlineSeconds Time in seconds after which the UserTask will be automatically
      *     reassigned to the UserGroup.
      */
-    void scheduleReassignmentToUserOnDeadline(
-            UserTaskOutput userTaskOutput, String userId, int deadlineSeconds);
+    void scheduleReassignmentToUserOnDeadline(UserTaskOutput userTaskOutput, String userId, int deadlineSeconds);
 
     /**
      * Adds a User Task Node, and assigns it to a specific user
@@ -84,8 +83,7 @@ public interface ThreadBuilder {
      * @param userGroup is the User's group
      * @return a NodeOutput.
      */
-    UserTaskOutput assignUserTaskToUser(
-            String userTaskDefName, WfRunVariable userId, String userGroup);
+    UserTaskOutput assignUserTaskToUser(String userTaskDefName, WfRunVariable userId, String userGroup);
 
     /**
      * Adds a User Task Node, and assigns it to a specific user
@@ -95,8 +93,7 @@ public interface ThreadBuilder {
      * @param userGroup is the User's group
      * @return a NodeOutput.
      */
-    UserTaskOutput assignUserTaskToUser(
-            String userTaskDefName, WfRunVariable userId, WfRunVariable userGroup);
+    UserTaskOutput assignUserTaskToUser(String userTaskDefName, WfRunVariable userId, WfRunVariable userGroup);
 
     /**
      * Adds a User Task Node, and assigns it to a group of users.
@@ -116,8 +113,7 @@ public interface ThreadBuilder {
      * @param userGroup is the User Group (either WfRunVariable or String) to assign the task to.
      * @return a UserTaskOutput.
      */
-    public UserTaskOutput assignUserTaskToUserGroup(
-            String userTaskDefName, WfRunVariable userGroup);
+    public UserTaskOutput assignUserTaskToUserGroup(String userTaskDefName, WfRunVariable userGroup);
 
     // TODO: Allow assigning User Tasks via `WfRunVariable`
 
@@ -168,8 +164,7 @@ public interface ThreadBuilder {
      *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
      *     pass that literal value in.
      */
-    public void scheduleTaskAfter(
-            UserTaskOutput userTask, int delaySeconds, String taskDefName, Object... args);
+    public void scheduleTaskAfter(UserTaskOutput userTask, int delaySeconds, String taskDefName, Object... args);
 
     /**
      * Adds a TASK node to the ThreadSpec.
@@ -183,10 +178,7 @@ public interface ThreadBuilder {
      *     pass that literal value in.
      */
     public void scheduleTaskAfter(
-            UserTaskOutput userTask,
-            WfRunVariable delaySeconds,
-            String taskDefName,
-            Object... args);
+            UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Object... args);
 
     /**
      * Conditionally executes some workflow code; equivalent to an while() statement in programming.
@@ -209,8 +201,7 @@ public interface ThreadBuilder {
      * @return a handle to the resulting SpawnedThread, which can be used in
      *     ThreadBuilder::waitForThread()
      */
-    public SpawnedThread spawnThread(
-            ThreadFunc threadFunc, String threadName, Map<String, Object> inputVars);
+    public SpawnedThread spawnThread(ThreadFunc threadFunc, String threadName, Map<String, Object> inputVars);
 
     /**
      * Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.

@@ -24,31 +24,23 @@ public class AASequential extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-                getWorkflowName(),
-                thread -> {
-                    thread.execute("aa-simple");
-                    thread.execute("aa-simple");
-                });
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            thread.execute("aa-simple");
+            thread.execute("aa-simple");
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new SimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client);
         Thread.sleep(500);
         assertStatus(client, wfRunId, LHStatus.COMPLETED);
 
         for (int i = 1; i < 3; i++) {
-            assertTaskOutput(
-                    client,
-                    wfRunId,
-                    0,
-                    i,
-                    "hello there from wfRun " + wfRunId + " on nodeRun " + i);
+            assertTaskOutput(client, wfRunId, 0, i, "hello there from wfRun " + wfRunId + " on nodeRun " + i);
         }
 
         return Arrays.asList(wfRunId);

@@ -27,25 +27,22 @@ public class AFVarMutationsRemoveFromList extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-                getWorkflowName(),
-                thread -> {
-                    WfRunVariable listOne = thread.addVariable("list-one", VariableType.JSON_ARR);
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            WfRunVariable listOne = thread.addVariable("list-one", VariableType.JSON_ARR);
 
-                    thread.execute("af-simple");
+            thread.execute("af-simple");
 
-                    thread.mutate(listOne, VariableMutationType.REMOVE_IF_PRESENT, 5);
-                    thread.mutate(listOne, VariableMutationType.REMOVE_IF_PRESENT, "hello");
-                    thread.mutate(listOne, VariableMutationType.REMOVE_INDEX, 3);
-                });
+            thread.mutate(listOne, VariableMutationType.REMOVE_IF_PRESENT, 5);
+            thread.mutate(listOne, VariableMutationType.REMOVE_IF_PRESENT, "hello");
+            thread.mutate(listOne, VariableMutationType.REMOVE_INDEX, 3);
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new AFSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         // Workflow removes number 5, then removes "hello", then removes
         // index 3. That should throw index out of bounds exception here
         List<?> wfOneInput = Arrays.asList(5, "hello", 3, 4);

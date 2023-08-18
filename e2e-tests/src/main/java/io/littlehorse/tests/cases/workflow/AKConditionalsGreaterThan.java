@@ -25,35 +25,29 @@ public class AKConditionalsGreaterThan extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-                getWorkflowName(),
-                thread -> {
-                    // Use an input JSON blob with two fields, LHS and RHS.
-                    // This allows us to test with various types on the left and the
-                    // right, since right now the JSON_OBJ var type does not have a
-                    // schema.
-                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            // Use an input JSON blob with two fields, LHS and RHS.
+            // This allows us to test with various types on the left and the
+            // right, since right now the JSON_OBJ var type does not have a
+            // schema.
+            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-                    // So that the run request succeeds even on workflows where we want
-                    // a crash.
-                    thread.execute("ak-one");
+            // So that the run request succeeds even on workflows where we want
+            // a crash.
+            thread.execute("ak-one");
 
-                    thread.doIfElse(
-                            thread.condition(
-                                    input.jsonPath("$.lhs"),
-                                    Comparator.GREATER_THAN,
-                                    input.jsonPath("$.rhs")),
-                            ifBlock -> {
-                                ifBlock.execute("ak-one");
-                            },
-                            elseBlock -> {
-                                elseBlock.execute("ak-two");
-                            });
-                });
+            thread.doIfElse(
+                    thread.condition(input.jsonPath("$.lhs"), Comparator.GREATER_THAN, input.jsonPath("$.rhs")),
+                    ifBlock -> {
+                        ifBlock.execute("ak-one");
+                    },
+                    elseBlock -> {
+                        elseBlock.execute("ak-two");
+                    });
+        });
     }
 
-    private String runWithInputsAndCheck(
-            LHClient client, Object lhs, Object rhs, boolean shouldEqual)
+    private String runWithInputsAndCheck(LHClient client, Object lhs, Object rhs, boolean shouldEqual)
             throws TestFailure, InterruptedException, LHApiError {
         AKInputObj input = new AKInputObj(lhs, rhs);
 
@@ -70,8 +64,7 @@ public class AKConditionalsGreaterThan extends WorkflowLogicTest {
 
     // private String twoInts() throws TestFailure
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-            throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
                 runWithInputsAndCheck(client, 1, 2, false),
                 runWithInputsAndCheck(client, 1, 1, false),

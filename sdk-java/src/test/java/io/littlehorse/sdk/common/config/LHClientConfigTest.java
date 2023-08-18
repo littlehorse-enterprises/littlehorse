@@ -51,8 +51,7 @@ public class LHClientConfigTest {
 
     @Test
     void shouldThrowAnExceptionIfTryToModifyConfigNames() {
-        assertThrows(
-                UnsupportedOperationException.class,
-                () -> LHClientConfig.configNames().add(faker.regexify("[a-z]{10}")));
+        assertThrows(UnsupportedOperationException.class, () -> LHClientConfig.configNames()
+                .add(faker.regexify("[a-z]{10}")));
     }
 }

@@ -11,15 +11,11 @@ public class ThreadVariablesTest {
 
     @Test
     public void shouldThrowMisconfigurationExceptionWhenAddingJsonIndexToANonJsonVariable() {
-        WorkflowImpl wf =
-                new WorkflowImpl(
-                        "my-workflow",
-                        thread -> {
-                            WfRunVariable var =
-                                    thread.addVariable("my-var", VariableType.INT)
-                                            .withJsonIndex("$.somePath", IndexType.REMOTE_INDEX);
-                            thread.sleepUntil(var);
-                        });
+        WorkflowImpl wf = new WorkflowImpl("my-workflow", thread -> {
+            WfRunVariable var =
+                    thread.addVariable("my-var", VariableType.INT).withJsonIndex("$.somePath", IndexType.REMOTE_INDEX);
+            thread.sleepUntil(var);
+        });
         Throwable throwable = Assertions.catchThrowable(wf::compileWorkflow);
         Assertions.assertThat(throwable)
                 .isInstanceOf(LHMisconfigurationException.class)
@@ -28,15 +24,11 @@ public class ThreadVariablesTest {
 
     @Test
     public void shouldThrowMisconfigurationExceptionForInvalidJsonPath() {
-        WorkflowImpl wf =
-                new WorkflowImpl(
-                        "my-workflow",
-                        thread -> {
-                            WfRunVariable var =
-                                    thread.addVariable("my-var", VariableType.JSON_OBJ)
-                                            .withJsonIndex("somePath", IndexType.REMOTE_INDEX);
-                            thread.sleepUntil(var);
-                        });
+        WorkflowImpl wf = new WorkflowImpl("my-workflow", thread -> {
+            WfRunVariable var = thread.addVariable("my-var", VariableType.JSON_OBJ)
+                    .withJsonIndex("somePath", IndexType.REMOTE_INDEX);
+            thread.sleepUntil(var);
+        });
         Throwable throwable = Assertions.catchThrowable(wf::compileWorkflow);
         Assertions.assertThat(throwable)
                 .isInstanceOf(LHMisconfigurationException.class)

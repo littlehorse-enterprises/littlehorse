@@ -14,8 +14,7 @@ public class ReportTaskObserver implements StreamObserver<ReportTaskResponse> {
     private ReportTaskRun reportedTask;
     private int retriesLeft;
 
-    public ReportTaskObserver(
-            LHServerConnectionManager manager, ReportTaskRun reportedTask, int retriesLeft) {
+    public ReportTaskObserver(LHServerConnectionManager manager, ReportTaskRun reportedTask, int retriesLeft) {
         this.manager = manager;
         this.reportedTask = reportedTask;
         this.retriesLeft = retriesLeft;

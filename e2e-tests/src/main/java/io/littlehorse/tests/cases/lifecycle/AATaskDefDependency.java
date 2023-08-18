@@ -34,12 +34,9 @@ public class AATaskDefDependency extends Test {
     }
 
     public void test() throws LHApiError {
-        Workflow wf =
-                new WorkflowImpl(
-                        wfSpecName,
-                        thread -> {
-                            thread.execute(taskDefName);
-                        });
+        Workflow wf = new WorkflowImpl(wfSpecName, thread -> {
+            thread.execute(taskDefName);
+        });
 
         PutWfSpecRequest request = wf.compileWorkflow();
         PutWfSpecResponse reply = client.getGrpcClient().putWfSpec(request);

@@ -115,16 +115,11 @@ public class LHClient {
      * @throws LHApiError If it could not connect to the API
      */
     public ExternalEventDef getExternalEventDef(String name) throws LHApiError {
-        GetExternalEventDefResponse reply =
-                (GetExternalEventDefResponse)
-                        doRequest(
-                                () -> {
-                                    return getGrpcClient()
-                                            .getExternalEventDef(
-                                                    ExternalEventDefId.newBuilder()
-                                                            .setName(name)
-                                                            .build());
-                                });
+        GetExternalEventDefResponse reply = (GetExternalEventDefResponse) doRequest(() -> {
+            return getGrpcClient()
+                    .getExternalEventDef(
+                            ExternalEventDefId.newBuilder().setName(name).build());
+        });
 
         if (reply.hasResult()) {
             return reply.getResult();
@@ -141,14 +136,10 @@ public class LHClient {
      * @throws LHApiError if it failed contacting to the API
      */
     public TaskDef getTaskDef(String name) throws LHApiError {
-        GetTaskDefResponse reply =
-                (GetTaskDefResponse)
-                        doRequest(
-                                () -> {
-                                    return getGrpcClient()
-                                            .getTaskDef(
-                                                    TaskDefId.newBuilder().setName(name).build());
-                                });
+        GetTaskDefResponse reply = (GetTaskDefResponse) doRequest(() -> {
+            return getGrpcClient()
+                    .getTaskDef(TaskDefId.newBuilder().setName(name).build());
+        });
 
         if (reply.hasResult()) {
             return reply.getResult();
@@ -179,25 +170,20 @@ public class LHClient {
      * @throws LHApiError if it failed contacting to the API
      */
     public WfSpec getWfSpec(String name, Integer version) throws LHApiError {
-        GetWfSpecResponse reply =
-                (GetWfSpecResponse)
-                        doRequest(
-                                () -> {
-                                    if (version != null) {
-                                        return getGrpcClient()
-                                                .getWfSpec(
-                                                        WfSpecId.newBuilder()
-                                                                .setName(name)
-                                                                .setVersion(version)
-                                                                .build());
-                                    } else {
-                                        return getGrpcClient()
-                                                .getLatestWfSpec(
-                                                        GetLatestWfSpecRequest.newBuilder()
-                                                                .setName(name)
-                                                                .build());
-                                    }
-                                });
+        GetWfSpecResponse reply = (GetWfSpecResponse) doRequest(() -> {
+            if (version != null) {
+                return getGrpcClient()
+                        .getWfSpec(WfSpecId.newBuilder()
+                                .setName(name)
+                                .setVersion(version)
+                                .build());
+            } else {
+                return getGrpcClient()
+                        .getLatestWfSpec(GetLatestWfSpecRequest.newBuilder()
+                                .setName(name)
+                                .build());
+            }
+        });
 
         if (reply.hasResult()) {
             return reply.getResult();
@@ -214,12 +200,9 @@ public class LHClient {
      * @throws LHApiError if it failed contacting to the API
      */
     public TaskRun getTaskRun(TaskRunId id) throws LHApiError {
-        GetTaskRunResponse reply =
-                (GetTaskRunResponse)
-                        doRequest(
-                                () -> {
-                                    return getGrpcClient().getTaskRun(id);
-                                });
+        GetTaskRunResponse reply = (GetTaskRunResponse) doRequest(() -> {
+            return getGrpcClient().getTaskRun(id);
+        });
         if (reply.hasResult()) {
             return reply.getResult();
         }
@@ -234,12 +217,9 @@ public class LHClient {
      * @throws LHApiError if it failed contacting to the API
      */
     public UserTaskRun getUserTaskRun(UserTaskRunId id) throws LHApiError {
-        GetUserTaskRunResponse reply =
-                (GetUserTaskRunResponse)
-                        doRequest(
-                                () -> {
-                                    return getGrpcClient().getUserTaskRun(id);
-                                });
+        GetUserTaskRunResponse reply = (GetUserTaskRunResponse) doRequest(() -> {
+            return getGrpcClient().getUserTaskRun(id);
+        });
         if (reply.hasResult()) {
             return reply.getResult();
         }
@@ -256,18 +236,14 @@ public class LHClient {
      * @throws LHApiError if it failed contacting to the API
      */
     public NodeRun getNodeRun(String wfRunId, int threadRunNumber, int position) throws LHApiError {
-        GetNodeRunResponse reply =
-                (GetNodeRunResponse)
-                        doRequest(
-                                () -> {
-                                    return getGrpcClient()
-                                            .getNodeRun(
-                                                    NodeRunId.newBuilder()
-                                                            .setWfRunId(wfRunId)
-                                                            .setThreadRunNumber(threadRunNumber)
-                                                            .setPosition(position)
-                                                            .build());
-                                });
+        GetNodeRunResponse reply = (GetNodeRunResponse) doRequest(() -> {
+            return getGrpcClient()
+                    .getNodeRun(NodeRunId.newBuilder()
+                            .setWfRunId(wfRunId)
+                            .setThreadRunNumber(threadRunNumber)
+                            .setPosition(position)
+                            .build());
+        });
 
         if (reply.hasResult()) {
             return reply.getResult();
@@ -285,20 +261,15 @@ public class LHClient {
      * @return The variable's data if it does exist, or null otherwise
      * @throws LHApiError if it failed contacting to the API
      */
-    public Variable getVariable(String wfRunId, int threadRunNumber, String name)
-            throws LHApiError {
-        GetVariableResponse reply =
-                (GetVariableResponse)
-                        doRequest(
-                                () -> {
-                                    return getGrpcClient()
-                                            .getVariable(
-                                                    VariableId.newBuilder()
-                                                            .setWfRunId(wfRunId)
-                                                            .setThreadRunNumber(threadRunNumber)
-                                                            .setName(name)
-                                                            .build());
-                                });
+    public Variable getVariable(String wfRunId, int threadRunNumber, String name) throws LHApiError {
+        GetVariableResponse reply = (GetVariableResponse) doRequest(() -> {
+            return getGrpcClient()
+                    .getVariable(VariableId.newBuilder()
+                            .setWfRunId(wfRunId)
+                            .setThreadRunNumber(threadRunNumber)
+                            .setName(name)
+                            .build());
+        });
 
         if (reply.hasResult()) {
             return reply.getResult();
@@ -316,21 +287,15 @@ public class LHClient {
      * @return The external event's data if it does exist, or null otherwise
      * @throws LHApiError if it failed contacting to the API
      */
-    public ExternalEvent getExternalEvent(String wfRunId, String externalEventName, String guid)
-            throws LHApiError {
-        GetExternalEventResponse reply =
-                (GetExternalEventResponse)
-                        doRequest(
-                                () -> {
-                                    return getGrpcClient()
-                                            .getExternalEvent(
-                                                    ExternalEventId.newBuilder()
-                                                            .setWfRunId(wfRunId)
-                                                            .setGuid(guid)
-                                                            .setExternalEventDefName(
-                                                                    externalEventName)
-                                                            .build());
-                                });
+    public ExternalEvent getExternalEvent(String wfRunId, String externalEventName, String guid) throws LHApiError {
+        GetExternalEventResponse reply = (GetExternalEventResponse) doRequest(() -> {
+            return getGrpcClient()
+                    .getExternalEvent(ExternalEventId.newBuilder()
+                            .setWfRunId(wfRunId)
+                            .setGuid(guid)
+                            .setExternalEventDefName(externalEventName)
+                            .build());
+        });
 
         if (reply.hasResult()) {
             return reply.getResult();
@@ -347,13 +312,9 @@ public class LHClient {
      * @throws LHApiError
      */
     public WfRun getWfRun(String id) throws LHApiError {
-        GetWfRunResponse reply =
-                (GetWfRunResponse)
-                        doRequest(
-                                () -> {
-                                    return getGrpcClient()
-                                            .getWfRun(WfRunId.newBuilder().setId(id).build());
-                                });
+        GetWfRunResponse reply = (GetWfRunResponse) doRequest(() -> {
+            return getGrpcClient().getWfRun(WfRunId.newBuilder().setId(id).build());
+        });
 
         if (reply.hasResult()) {
             return reply.getResult();
@@ -375,13 +336,11 @@ public class LHClient {
      * @throws LHApiError If there is an error when connecting to the server
      */
     public List<WfRunId> searchWfRun(
-            String workflowName, int version, LHStatus status, Date earliestStart, Date latestStart)
-            throws LHApiError {
-        StatusAndSpecRequest.Builder statusBuilder =
-                StatusAndSpecRequest.newBuilder()
-                        .setWfSpecName(workflowName)
-                        .setWfSpecVersion(version)
-                        .setStatus(status);
+            String workflowName, int version, LHStatus status, Date earliestStart, Date latestStart) throws LHApiError {
+        StatusAndSpecRequest.Builder statusBuilder = StatusAndSpecRequest.newBuilder()
+                .setWfSpecName(workflowName)
+                .setWfSpecVersion(version)
+                .setStatus(status);
 
         if (earliestStart != null) {
             statusBuilder.setEarliestStart(LHLibUtil.fromDate(earliestStart));
@@ -393,16 +352,12 @@ public class LHClient {
 
         StatusAndSpecRequest statusAndSpecPb = statusBuilder.build();
 
-        SearchWfRunResponse reply =
-                (SearchWfRunResponse)
-                        doRequest(
-                                () -> {
-                                    return getGrpcClient()
-                                            .searchWfRun(
-                                                    SearchWfRunRequest.newBuilder()
-                                                            .setStatusAndSpec(statusAndSpecPb)
-                                                            .build());
-                                });
+        SearchWfRunResponse reply = (SearchWfRunResponse) doRequest(() -> {
+            return getGrpcClient()
+                    .searchWfRun(SearchWfRunRequest.newBuilder()
+                            .setStatusAndSpec(statusAndSpecPb)
+                            .build());
+        });
 
         return reply.getResultsList();
     }
@@ -419,8 +374,7 @@ public class LHClient {
      * @return The workflow run identification
      * @throws LHApiError If there is an error when connecting to the server
      */
-    public String runWf(String wfSpecName, Integer wfSpecVersion, String wfRunId, Arg... args)
-            throws LHApiError {
+    public String runWf(String wfSpecName, Integer wfSpecVersion, String wfRunId, Arg... args) throws LHApiError {
         RunWfRequest.Builder req = RunWfRequest.newBuilder().setWfSpecName(wfSpecName);
         if (wfRunId != null) {
             req.setId(wfRunId);
@@ -436,12 +390,9 @@ public class LHClient {
             }
         }
 
-        RunWfResponse response =
-                (RunWfResponse)
-                        doRequest(
-                                () -> {
-                                    return getGrpcClient().runWf(req.build());
-                                });
+        RunWfResponse response = (RunWfResponse) doRequest(() -> {
+            return getGrpcClient().runWf(req.build());
+        });
 
         if (response.hasWfRunId()) {
             return response.getWfRunId();
@@ -459,12 +410,9 @@ public class LHClient {
      * @throws LHApiError If there is an error when connecting to the server
      */
     public ExternalEvent putExternalEvent(PutExternalEventRequest req) throws LHApiError {
-        PutExternalEventResponse response =
-                (PutExternalEventResponse)
-                        doRequest(
-                                () -> {
-                                    return getGrpcClient().putExternalEvent(req);
-                                });
+        PutExternalEventResponse response = (PutExternalEventResponse) doRequest(() -> {
+            return getGrpcClient().putExternalEvent(req);
+        });
         if (response.hasResult()) {
             return response.getResult();
         } else {
@@ -493,15 +441,13 @@ public class LHClient {
      * @return The definition's data when successful
      * @throws LHApiError If there is an error when connecting to the server
      */
-    public ExternalEventDef putExternalEventDef(
-            PutExternalEventDefRequest req, boolean swallowAlreadyExists) throws LHApiError {
-        PutExternalEventDefResponse response =
-                (PutExternalEventDefResponse)
-                        doRequest(
-                                () -> {
-                                    return getGrpcClient().putExternalEventDef(req);
-                                },
-                                swallowAlreadyExists);
+    public ExternalEventDef putExternalEventDef(PutExternalEventDefRequest req, boolean swallowAlreadyExists)
+            throws LHApiError {
+        PutExternalEventDefResponse response = (PutExternalEventDefResponse) doRequest(
+                () -> {
+                    return getGrpcClient().putExternalEventDef(req);
+                },
+                swallowAlreadyExists);
         if (response.hasResult()) {
             return response.getResult();
         } else {
@@ -530,15 +476,12 @@ public class LHClient {
      * @return Task definition's data
      * @throws LHApiError If there is an error when connecting to the server
      */
-    public TaskDef putTaskDef(PutTaskDefRequest req, boolean swallowAlreadyExists)
-            throws LHApiError {
-        PutTaskDefResponse response =
-                (PutTaskDefResponse)
-                        doRequest(
-                                () -> {
-                                    return getGrpcClient().putTaskDef(req);
-                                },
-                                swallowAlreadyExists);
+    public TaskDef putTaskDef(PutTaskDefRequest req, boolean swallowAlreadyExists) throws LHApiError {
+        PutTaskDefResponse response = (PutTaskDefResponse) doRequest(
+                () -> {
+                    return getGrpcClient().putTaskDef(req);
+                },
+                swallowAlreadyExists);
         if (response.hasResult()) {
             return response.getResult();
         } else {
@@ -567,15 +510,12 @@ public class LHClient {
      * @return User task definition
      * @throws LHApiError If there is an error when connecting to the server
      */
-    public UserTaskDef putUserTaskDef(PutUserTaskDefRequest req, boolean swallowAlreadyExists)
-            throws LHApiError {
-        PutUserTaskDefResponse response =
-                (PutUserTaskDefResponse)
-                        doRequest(
-                                () -> {
-                                    return getGrpcClient().putUserTaskDef(req);
-                                },
-                                swallowAlreadyExists);
+    public UserTaskDef putUserTaskDef(PutUserTaskDefRequest req, boolean swallowAlreadyExists) throws LHApiError {
+        PutUserTaskDefResponse response = (PutUserTaskDefResponse) doRequest(
+                () -> {
+                    return getGrpcClient().putUserTaskDef(req);
+                },
+                swallowAlreadyExists);
         if (response.hasResult()) {
             return response.getResult();
         } else {
@@ -593,12 +533,9 @@ public class LHClient {
      * @throws LHApiError If there is an error when connecting to the server
      */
     public WfSpec putWfSpec(PutWfSpecRequest req) throws LHApiError {
-        PutWfSpecResponse response =
-                (PutWfSpecResponse)
-                        doRequest(
-                                () -> {
-                                    return getGrpcClient().putWfSpec(req);
-                                });
+        PutWfSpecResponse response = (PutWfSpecResponse) doRequest(() -> {
+            return getGrpcClient().putWfSpec(req);
+        });
         if (response.hasResult()) {
             return response.getResult();
         } else {
@@ -615,15 +552,13 @@ public class LHClient {
      * @throws LHApiError If there is an error when connecting to the server
      */
     public void stopWfRun(String wfRunId, int threadRunNumber) throws LHApiError {
-        doRequest(
-                () -> {
-                    return getGrpcClient()
-                            .stopWfRun(
-                                    StopWfRunRequest.newBuilder()
-                                            .setWfRunId(wfRunId)
-                                            .setThreadRunNumber(threadRunNumber)
-                                            .build());
-                });
+        doRequest(() -> {
+            return getGrpcClient()
+                    .stopWfRun(StopWfRunRequest.newBuilder()
+                            .setWfRunId(wfRunId)
+                            .setThreadRunNumber(threadRunNumber)
+                            .build());
+        });
     }
 
     /**
@@ -634,15 +569,13 @@ public class LHClient {
      * @throws LHApiError If there is an error when connecting to the server
      */
     public void resumeWfRun(String wfRunId, int threadRunNumber) throws LHApiError {
-        doRequest(
-                () -> {
-                    return getGrpcClient()
-                            .resumeWfRun(
-                                    ResumeWfRunRequest.newBuilder()
-                                            .setWfRunId(wfRunId)
-                                            .setThreadRunNumber(threadRunNumber)
-                                            .build());
-                });
+        doRequest(() -> {
+            return getGrpcClient()
+                    .resumeWfRun(ResumeWfRunRequest.newBuilder()
+                            .setWfRunId(wfRunId)
+                            .setThreadRunNumber(threadRunNumber)
+                            .build());
+        });
     }
 
     /**
@@ -652,14 +585,12 @@ public class LHClient {
      * @throws LHApiError If there is an error when connecting to the server
      */
     public void deleteUserTaskDef(String userTaskDefName) throws LHApiError {
-        doRequest(
-                () -> {
-                    return getGrpcClient()
-                            .deleteUserTaskDef(
-                                    DeleteUserTaskDefRequest.newBuilder()
-                                            .setName(userTaskDefName)
-                                            .build());
-                });
+        doRequest(() -> {
+            return getGrpcClient()
+                    .deleteUserTaskDef(DeleteUserTaskDefRequest.newBuilder()
+                            .setName(userTaskDefName)
+                            .build());
+        });
     }
 
     /**
@@ -669,12 +600,11 @@ public class LHClient {
      * @throws LHApiError If there is an error when connecting to the server
      */
     public void deleteWfRun(String wfRunId) throws LHApiError {
-        doRequest(
-                () -> {
-                    return getGrpcClient()
-                            .deleteWfRun(
-                                    DeleteWfRunRequest.newBuilder().setWfRunId(wfRunId).build());
-                });
+        doRequest(() -> {
+            return getGrpcClient()
+                    .deleteWfRun(
+                            DeleteWfRunRequest.newBuilder().setWfRunId(wfRunId).build());
+        });
     }
 
     /**
@@ -684,11 +614,11 @@ public class LHClient {
      * @throws LHApiError If there is an error when connecting to the server
      */
     public void deleteTaskDef(String name) throws LHApiError {
-        doRequest(
-                () -> {
-                    return getGrpcClient()
-                            .deleteTaskDef(DeleteTaskDefRequest.newBuilder().setName(name).build());
-                });
+        doRequest(() -> {
+            return getGrpcClient()
+                    .deleteTaskDef(
+                            DeleteTaskDefRequest.newBuilder().setName(name).build());
+        });
     }
 
     /**
@@ -698,14 +628,12 @@ public class LHClient {
      * @throws LHApiError If there is an error when connecting to the server
      */
     public void deleteExternalEventDef(String name) throws LHApiError {
-        doRequest(
-                () -> {
-                    return getGrpcClient()
-                            .deleteExternalEventDef(
-                                    DeleteExternalEventDefRequest.newBuilder()
-                                            .setName(name)
-                                            .build());
-                });
+        doRequest(() -> {
+            return getGrpcClient()
+                    .deleteExternalEventDef(DeleteExternalEventDefRequest.newBuilder()
+                            .setName(name)
+                            .build());
+        });
     }
 
     /**
@@ -716,32 +644,27 @@ public class LHClient {
      * @throws LHApiError If there is an error when connecting to the server
      */
     public void deleteWfSpec(String name, int version) throws LHApiError {
-        doRequest(
-                () -> {
-                    return getGrpcClient()
-                            .deleteWfSpec(
-                                    DeleteWfSpecRequest.newBuilder()
-                                            .setName(name)
-                                            .setVersion(version)
-                                            .build());
-                });
+        doRequest(() -> {
+            return getGrpcClient()
+                    .deleteWfSpec(DeleteWfSpecRequest.newBuilder()
+                            .setName(name)
+                            .setVersion(version)
+                            .build());
+        });
     }
 
     private MessageOrBuilder doRequest(LHRequest request) throws LHApiError {
         return doRequest(request, false);
     }
 
-    private MessageOrBuilder doRequest(LHRequest request, boolean swallowAlreadyExists)
-            throws LHApiError {
+    private MessageOrBuilder doRequest(LHRequest request, boolean swallowAlreadyExists) throws LHApiError {
         MessageOrBuilder response;
         try {
             response = request.doRequest();
         } catch (LHApiError exn) {
             throw exn;
         } catch (Exception exn) {
-            throw new LHApiError(
-                    "Failed contacting LH API: " + exn.getMessage(),
-                    LHResponseCode.CONNECTION_ERROR);
+            throw new LHApiError("Failed contacting LH API: " + exn.getMessage(), LHResponseCode.CONNECTION_ERROR);
         }
 
         try {

@@ -47,18 +47,16 @@ public class LHClientConfig extends ConfigBase {
     public static final String OAUTH_CLIENT_SECRET_KEY = "LHC_OAUTH_CLIENT_SECRET";
     public static final String OAUTH_AUTHORIZATION_SERVER_KEY = "LHC_OAUTH_AUTHORIZATION_SERVER";
 
-    private static final Set<String> configNames =
-            Collections.unmodifiableSet(
-                    Set.of(
-                            LHClientConfig.API_HOST_KEY,
-                            LHClientConfig.API_PORT_KEY,
-                            LHClientConfig.CLIENT_ID_KEY,
-                            LHClientConfig.CLIENT_CERT_KEY,
-                            LHClientConfig.CLIENT_KEY_KEY,
-                            LHClientConfig.CA_CERT_KEY,
-                            LHClientConfig.OAUTH_AUTHORIZATION_SERVER_KEY,
-                            LHClientConfig.OAUTH_CLIENT_ID_KEY,
-                            LHClientConfig.OAUTH_CLIENT_SECRET_KEY));
+    private static final Set<String> configNames = Collections.unmodifiableSet(Set.of(
+            LHClientConfig.API_HOST_KEY,
+            LHClientConfig.API_PORT_KEY,
+            LHClientConfig.CLIENT_ID_KEY,
+            LHClientConfig.CLIENT_CERT_KEY,
+            LHClientConfig.CLIENT_KEY_KEY,
+            LHClientConfig.CA_CERT_KEY,
+            LHClientConfig.OAUTH_AUTHORIZATION_SERVER_KEY,
+            LHClientConfig.OAUTH_CLIENT_ID_KEY,
+            LHClientConfig.OAUTH_CLIENT_SECRET_KEY));
 
     /**
      * Returns a set of all config names.
@@ -145,8 +143,7 @@ public class LHClientConfig extends ConfigBase {
      */
     public LHPublicApiStub getAsyncStub(String host, int port) throws IOException {
         if (isOauth()) {
-            return LHPublicApiGrpc.newStub(getChannel(host, port))
-                    .withCallCredentials(oauthCredentialsProvider);
+            return LHPublicApiGrpc.newStub(getChannel(host, port)).withCallCredentials(oauthCredentialsProvider);
         }
         return LHPublicApiGrpc.newStub(getChannel(host, port));
     }
@@ -202,7 +199,8 @@ public class LHClientConfig extends ConfigBase {
                 tlsBuilder.keyManager(new File(clientCertFile), new File(clientKeyFile));
             }
 
-            out = Grpc.newChannelBuilderForAddress(host, port, tlsBuilder.build()).build();
+            out = Grpc.newChannelBuilderForAddress(host, port, tlsBuilder.build())
+                    .build();
         }
 
         createdChannels.put(hostKey, out);
@@ -235,12 +233,11 @@ public class LHClientConfig extends ConfigBase {
         log.info("OAuth is enable");
 
         if (oauthConfig == null) {
-            oauthConfig =
-                    OAuthConfig.builder()
-                            .authorizationServer(URI.create(authServer))
-                            .clientId(clientId)
-                            .clientSecret(clientSecret)
-                            .build();
+            oauthConfig = OAuthConfig.builder()
+                    .authorizationServer(URI.create(authServer))
+                    .clientId(clientId)
+                    .clientSecret(clientSecret)
+                    .build();
         }
 
         if (oauthClient == null) {
