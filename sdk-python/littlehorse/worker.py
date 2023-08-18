@@ -3,7 +3,7 @@ from datetime import datetime
 from inspect import Parameter, signature, iscoroutinefunction
 import logging
 import signal
-from typing import Any, AsyncIterator, Callable, Generic, TypeVar
+from typing import Any, AsyncIterator, Callable, TypeVar
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     InvalidTaskDefNameException,
@@ -41,23 +41,6 @@ class LHWorkerContext:
 T = TypeVar("T")
 
 
-class Queue(Generic[T]):
-    def __init__(self, size: int) -> None:
-        self.size = size
-        self._semaphore = asyncio.Semaphore(size)
-        self._queue = asyncio.Queue[T](size)
-
-    async def put(self, name: T) -> None:
-        await self._queue.put(name)
-
-    async def get(self) -> T:
-        await self._semaphore.acquire()
-        return await self._queue.get()
-
-    async def release(self) -> None:
-        self._semaphore.release()
-
-
 class LHTaskExecutor:
     _log = logging.getLogger("LHTaskExecutor")
 
@@ -65,11 +48,10 @@ class LHTaskExecutor:
         self, callable: Callable[..., Any], task_def: TaskDefPb, size: int
     ) -> None:
         self.task_def = task_def
-        self.running = False
 
         self._callable = callable
         self._signature = signature(callable)
-        self._scheduled_tasks = Queue[ScheduledTaskPb](size)
+        self._ask_for_work_semaphore = asyncio.Semaphore(size - 1)
 
         self._validate_callable()
         self._validate_match()
@@ -157,37 +139,19 @@ class LHTaskExecutor:
         return self.task_def.name
 
     def has_context(self) -> bool:
-        ctx_parameters = [
-            param
-            for param in self._signature.parameters.values()
-            if param.annotation is LHWorkerContext
-        ]
-
-        return bool(ctx_parameters)
+        last_parameter = list(self._signature.parameters.values())[-1]
+        return last_parameter.annotation is LHWorkerContext
 
     async def schedule_task(self, task: ScheduledTaskPb) -> None:
-        await self._scheduled_tasks.put(task)
-
-    async def _execute_tasks(self) -> None:
-        while self.running:
-            task = await self._scheduled_tasks.get()
-            asyncio.create_task(self._execute_task(task))
+        asyncio.create_task(self._execute_task(task))
+        await self._ask_for_work_semaphore.acquire()
 
     async def _execute_task(self, task: ScheduledTaskPb) -> None:
         args: Any = [var.value.str for var in task.variables]
         if self.has_context():
             args.append(LHWorkerContext())
         await self._callable(*args)
-        await self._scheduled_tasks.release()
-
-    async def start(self) -> None:
-        self._log.info(f"Starting task executor for {self.task_name()}")
-        self.running = True
-        await self._execute_tasks()
-
-    async def stop(self) -> None:
-        self._log.info(f"Stopping task executor for {self.task_name()}")
-        self.running = False
+        self._ask_for_work_semaphore.release()
 
 
 class LHConnection:
@@ -327,16 +291,15 @@ class LHTaskWorker:
         for sig in (signal.SIGHUP, signal.SIGTERM, signal.SIGINT):
             loop.add_signal_handler(sig, lambda: asyncio.create_task(self.stop()))
 
-        heartbeat_task = asyncio.create_task(self._heartbeat())
-        task_executor_task = asyncio.create_task(self._task_executor.start())
-
-        await task_executor_task
-        await heartbeat_task
+        await self._heartbeat()
 
     async def stop(self) -> None:
         """Cleanly shuts down the Task Worker."""
         self._log.info("Stopping worker")
         self.running = False
+
         for connection in self._connections.values():
             await connection.stop()
-        await self._task_executor.stop()
+
+        tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+        await asyncio.gather(*tasks)
