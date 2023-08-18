@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TaskNodeReference;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
-import io.littlehorse.sqdk.common.proto.UserTaskTriggerReference;
+import io.littlehorse.sdk.common.proto.UserTaskTriggerReference;
 import org.junit.jupiter.api.Test;
 
 public class WorkerContextTest {
