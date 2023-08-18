@@ -16,7 +16,7 @@ def get_config() -> LHConfig:
     return config
 
 
-def greeting(name: str, ctx: LHWorkerContext) -> str:
+async def greeting(name: str, ctx: LHWorkerContext) -> str:
     greeting = f"Hello {name}!"
     print(greeting)
     return greeting

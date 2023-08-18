@@ -1,6 +1,6 @@
 import asyncio
 from datetime import datetime
-from inspect import Parameter, signature
+from inspect import Parameter, signature, iscoroutinefunction
 import logging
 import signal
 from typing import Any, AsyncIterator, Callable
@@ -77,6 +77,10 @@ class LHTask:
 
         def names(parameters: list[Parameter]) -> list[str]:
             return [param.name for param in parameters]
+
+        # validate is coroutine
+        if not iscoroutinefunction(self._callable):
+            raise TaskSchemaMismatchException("Is not a coroutine function")
 
         # validate *args
         filtered_params = filter(lambda param: param.kind is Parameter.VAR_POSITIONAL)
