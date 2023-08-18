@@ -84,9 +84,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return toProto().getJsonObj();
         } else {
             throw new RuntimeException(
-                    "This is a bug: Variable is of type "
-                            + type
-                            + " but asked for json str from that variable.");
+                    "This is a bug: Variable is of type " + type + " but asked for json str from that variable.");
         }
     }
 
@@ -98,12 +96,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         } catch (Exception jsonExn) {
             throw new LHVarSubError(
                     jsonExn,
-                    "Failed updating jsonPath "
-                            + jsonPath
-                            + " on object "
-                            + jsonString
-                            + ": "
-                            + jsonExn.getMessage());
+                    "Failed updating jsonPath " + jsonPath + " on object " + jsonString + ": " + jsonExn.getMessage());
         }
 
         if (type == VariableType.JSON_ARR) {
@@ -161,16 +154,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel operate(
-            VariableMutationType operation, VariableValueModel rhs, VariableType typeToCoerceTo)
-            throws LHVarSubError {
+            VariableMutationType operation, VariableValueModel rhs, VariableType typeToCoerceTo) throws LHVarSubError {
         if (type != VariableType.NULL) {
             if (type != typeToCoerceTo) {
                 throw new LHVarSubError(
-                        null,
-                        "got unexpected variable type. Thought it was a "
-                                + typeToCoerceTo
-                                + " but is a "
-                                + type);
+                        null, "got unexpected variable type. Thought it was a " + typeToCoerceTo + " but is a " + type);
             }
         }
 
@@ -214,13 +202,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             val = JsonPath.parse(jsonStr).read(path);
         } catch (Exception exn) {
             throw new LHVarSubError(
-                    exn,
-                    "Failed accessing path "
-                            + path
-                            + " on data "
-                            + jsonStr
-                            + "  :\n"
-                            + exn.getMessage());
+                    exn, "Failed accessing path " + path + " on data " + jsonStr + "  :\n" + exn.getMessage());
         }
 
         if (val == null) {
@@ -272,8 +254,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         if (type == VariableType.INT) {
             return new VariableValueModel((long) (asInt().intVal * rhs.asDouble().doubleVal));
         } else if (type == VariableType.DOUBLE) {
-            return new VariableValueModel(
-                    (double) (asDouble().doubleVal * rhs.asDouble().doubleVal));
+            return new VariableValueModel((double) (asDouble().doubleVal * rhs.asDouble().doubleVal));
         }
         throw new LHVarSubError(null, "Cannot multiply var of type " + type);
     }
@@ -281,14 +262,12 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     public VariableValueModel divide(VariableValueModel rhs) throws LHVarSubError {
         if (type == VariableType.INT) {
             if (rhs.type == VariableType.DOUBLE) {
-                return new VariableValueModel(
-                        (long) (asDouble().doubleVal / rhs.asDouble().doubleVal));
+                return new VariableValueModel((long) (asDouble().doubleVal / rhs.asDouble().doubleVal));
             } else {
                 return new VariableValueModel((long) (intVal / rhs.asInt().intVal));
             }
         } else if (type == VariableType.DOUBLE) {
-            return new VariableValueModel(
-                    (double) (asDouble().doubleVal / rhs.asDouble().doubleVal));
+            return new VariableValueModel((double) (asDouble().doubleVal / rhs.asDouble().doubleVal));
         }
         throw new LHVarSubError(null, "Cannot divide var of type " + type);
     }
@@ -316,10 +295,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     public VariableValueModel removeIfPresent(VariableValueModel other) throws LHVarSubError {
         List<Object> lhsList = asArr().jsonArrVal;
         Object o = other.getVal();
-        lhsList.removeIf(
-                i -> {
-                    return isEqual(i, o);
-                });
+        lhsList.removeIf(i -> {
+            return isEqual(i, o);
+        });
         return new VariableValueModel(lhsList);
     }
 

@@ -17,10 +17,9 @@ public class VariableValueModelTest {
 
         assertThat(doubleVarval.type).isEqualTo(VariableType.DOUBLE);
 
-        assertDoesNotThrow(
-                () -> {
-                    doubleVarval.asInt();
-                });
+        assertDoesNotThrow(() -> {
+            doubleVarval.asInt();
+        });
         VariableValueModel intVarVal = doubleVarval.asInt();
 
         assertThat(intVarVal.type).isEqualTo(VariableType.INT);

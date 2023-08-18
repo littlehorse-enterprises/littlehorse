@@ -32,17 +32,16 @@ public class WfSpecMetricsModel extends Getable<WfSpecMetrics> {
     }
 
     public WfSpecMetrics.Builder toProto() {
-        WfSpecMetrics.Builder out =
-                WfSpecMetrics.newBuilder()
-                        .setWindowStart(LHLibUtil.fromDate(windowStart))
-                        .setType(type)
-                        .setWfSpecName(wfSpecName)
-                        .setWfSpecVersion(wfSpecVersion)
-                        .setTotalCompleted(totalCompleted)
-                        .setTotalErrored(totalErrored)
-                        .setTotalStarted(totalStarted)
-                        .setStartToCompleteAvg(startToCompleteAvg)
-                        .setStartToCompleteMax(startToCompleteMax);
+        WfSpecMetrics.Builder out = WfSpecMetrics.newBuilder()
+                .setWindowStart(LHLibUtil.fromDate(windowStart))
+                .setType(type)
+                .setWfSpecName(wfSpecName)
+                .setWfSpecVersion(wfSpecVersion)
+                .setTotalCompleted(totalCompleted)
+                .setTotalErrored(totalErrored)
+                .setTotalStarted(totalStarted)
+                .setStartToCompleteAvg(startToCompleteAvg)
+                .setStartToCompleteMax(startToCompleteMax);
 
         return out;
     }
@@ -73,16 +72,13 @@ public class WfSpecMetricsModel extends Getable<WfSpecMetrics> {
         return List.of();
     }
 
-    public static String getObjectId(
-            MetricsWindowLength windowType, Date time, String wfSpecName, int wfSpecVersion) {
+    public static String getObjectId(MetricsWindowLength windowType, Date time, String wfSpecName, int wfSpecVersion) {
         return new WfSpecMetricsIdModel(time, windowType, wfSpecName, wfSpecVersion).getStoreKey();
     }
 
     public static String getObjectId(WfSpecMetricsQueryRequest request) {
         return new WfSpecMetricsIdModel(
-                        LHUtil.getWindowStart(
-                                LHUtil.fromProtoTs(request.getWindowStart()),
-                                request.getWindowType()),
+                        LHUtil.getWindowStart(LHUtil.fromProtoTs(request.getWindowStart()), request.getWindowType()),
                         request.getWindowType(),
                         request.getWfSpecName(),
                         request.getWfSpecVersion())

@@ -20,15 +20,7 @@ public class ServerFilterRuleTest {
     void denyMetric() {
         ServerFilterRule rule = new ServerFilterRule("random.metric", MeterFilterReply.DENY);
 
-        assertThat(
-                        rule.getFilter()
-                                .accept(
-                                        new Id(
-                                                "random.metric.other.values",
-                                                null,
-                                                null,
-                                                null,
-                                                null)))
+        assertThat(rule.getFilter().accept(new Id("random.metric.other.values", null, null, null, null)))
                 .isEqualTo(MeterFilterReply.DENY);
     }
 
@@ -36,15 +28,7 @@ public class ServerFilterRuleTest {
     void acceptMetricWithUnderscore() {
         ServerFilterRule rule = new ServerFilterRule("random_metric", MeterFilterReply.ACCEPT);
 
-        assertThat(
-                        rule.getFilter()
-                                .accept(
-                                        new Id(
-                                                "random.metric.other.values",
-                                                null,
-                                                null,
-                                                null,
-                                                null)))
+        assertThat(rule.getFilter().accept(new Id("random.metric.other.values", null, null, null, null)))
                 .isEqualTo(MeterFilterReply.ACCEPT);
     }
 
@@ -52,15 +36,7 @@ public class ServerFilterRuleTest {
     void acceptMetric() {
         ServerFilterRule rule = new ServerFilterRule("random.metric", MeterFilterReply.ACCEPT);
 
-        assertThat(
-                        rule.getFilter()
-                                .accept(
-                                        new Id(
-                                                "random.metric.other.values",
-                                                null,
-                                                null,
-                                                null,
-                                                null)))
+        assertThat(rule.getFilter().accept(new Id("random.metric.other.values", null, null, null, null)))
                 .isEqualTo(MeterFilterReply.ACCEPT);
     }
 

@@ -94,15 +94,11 @@ public class WfRunModel extends Getable<WfRun> {
                 return List.of(new IndexedField(key, this.getWfSpecName(), tagStorageType.get()));
             }
             case "status" -> {
-                return List.of(
-                        new IndexedField(key, this.getStatus().toString(), tagStorageType.get()));
+                return List.of(new IndexedField(key, this.getStatus().toString(), tagStorageType.get()));
             }
             case "wfSpecVersion" -> {
-                return List.of(
-                        new IndexedField(
-                                key,
-                                LHUtil.toLHDbVersionFormat(this.getWfSpecVersion()),
-                                TagStorageType.LOCAL));
+                return List.of(new IndexedField(
+                        key, LHUtil.toLHDbVersionFormat(this.getWfSpecVersion()), TagStorageType.LOCAL));
             }
         }
         return List.of();
@@ -162,13 +158,12 @@ public class WfRunModel extends Getable<WfRun> {
     }
 
     public WfRun.Builder toProto() {
-        WfRun.Builder out =
-                WfRun.newBuilder()
-                        .setId(id)
-                        .setWfSpecName(wfSpecName)
-                        .setWfSpecVersion(wfSpecVersion)
-                        .setStatus(status)
-                        .setStartTime(LHUtil.fromDate(startTime));
+        WfRun.Builder out = WfRun.newBuilder()
+                .setId(id)
+                .setWfSpecName(wfSpecName)
+                .setWfSpecVersion(wfSpecVersion)
+                .setStatus(status)
+                .setStartTime(LHUtil.fromDate(startTime));
 
         if (endTime != null) {
             out.setEndTime(LHUtil.fromDate(endTime));
@@ -313,19 +308,13 @@ public class WfRunModel extends Getable<WfRun> {
             ThreadSpecModel iSpec = wfSpecModel.threadSpecs.get(pi.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
                 vars = new HashMap<>();
-                ExternalEventModel event =
-                        getDao().getExternalEvent(pi.externalEventId.getStoreKey());
+                ExternalEventModel event = getDao().getExternalEvent(pi.externalEventId.getStoreKey());
                 vars.put(LHConstants.EXT_EVT_HANDLER_VAR, event.content);
             } else {
                 vars = new HashMap<>();
             }
             ThreadRunModel interruptor =
-                    startThread(
-                            pi.handlerSpecName,
-                            time,
-                            pi.interruptedThreadId,
-                            vars,
-                            ThreadType.INTERRUPT);
+                    startThread(pi.handlerSpecName, time, pi.interruptedThreadId, vars, ThreadType.INTERRUPT);
             interruptor.interruptTriggerId = pi.externalEventId;
 
             if (interruptor.status == LHStatus.ERROR) {
@@ -366,12 +355,7 @@ public class WfRunModel extends Getable<WfRun> {
             }
 
             ThreadRunModel fh =
-                    startThread(
-                            pfh.handlerSpecName,
-                            time,
-                            pfh.failedThreadRun,
-                            vars,
-                            ThreadType.FAILURE_HANDLER);
+                    startThread(pfh.handlerSpecName, time, pfh.failedThreadRun, vars, ThreadType.FAILURE_HANDLER);
 
             failedThr.getCurrentNodeRun().failureHandlerIds.add(fh.number);
 
@@ -384,8 +368,7 @@ public class WfRunModel extends Getable<WfRun> {
             if (fh.status == LHStatus.ERROR) {
                 fh.fail(
                         new FailureModel(
-                                "Failed launching interrupt thread with id: " + fh.number,
-                                LHConstants.CHILD_FAILURE),
+                                "Failed launching interrupt thread with id: " + fh.number, LHConstants.CHILD_FAILURE),
                         time);
             } else {
                 failedThr.acknowledgeXnHandlerStarted(pfh, fh.number);
@@ -436,9 +419,7 @@ public class WfRunModel extends Getable<WfRun> {
     public void failDueToWfSpecDeletion() {
         threadRunModels
                 .get(0)
-                .fail(
-                        new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR),
-                        new Date());
+                .fail(new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR), new Date());
     }
 
     public void processExternalEvent(ExternalEventModel event) {

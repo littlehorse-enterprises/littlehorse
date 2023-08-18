@@ -8,8 +8,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
 
-public class ExternalEventIdModel
-        extends ObjectId<ExternalEventId, ExternalEvent, ExternalEventModel> {
+public class ExternalEventIdModel extends ObjectId<ExternalEventId, ExternalEvent, ExternalEventModel> {
 
     public String wfRunId;
     public String externalEventDefName;
@@ -39,11 +38,10 @@ public class ExternalEventIdModel
     }
 
     public ExternalEventId.Builder toProto() {
-        ExternalEventId.Builder out =
-                ExternalEventId.newBuilder()
-                        .setWfRunId(wfRunId)
-                        .setExternalEventDefName(externalEventDefName)
-                        .setGuid(guid);
+        ExternalEventId.Builder out = ExternalEventId.newBuilder()
+                .setWfRunId(wfRunId)
+                .setExternalEventDefName(externalEventDefName)
+                .setGuid(guid);
         return out;
     }
 

@@ -29,9 +29,7 @@ public class TaskRunModelTest {
         taskRun.processStart(taskClaimEvent);
 
         // assert
-        assertThat(taskRun.getLatestAttempt().getTaskWorkerVersion())
-                .isEqualTo(taskClaimEvent.getTaskWorkerVersion());
-        assertThat(taskRun.getLatestAttempt().getTaskWorkerId())
-                .isEqualTo(taskClaimEvent.getTaskWorkerId());
+        assertThat(taskRun.getLatestAttempt().getTaskWorkerVersion()).isEqualTo(taskClaimEvent.getTaskWorkerVersion());
+        assertThat(taskRun.getLatestAttempt().getTaskWorkerId()).isEqualTo(taskClaimEvent.getTaskWorkerId());
     }
 }

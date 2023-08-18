@@ -29,21 +29,18 @@ public class TagStorageManager {
      *     migrated to use the StoredGetable class.
      */
     @Deprecated(forRemoval = true)
-    public void storeUsingCache(
-            Collection<Tag> tags, String getableId, Class<? extends Getable<?>> getableCls) {
+    public void storeUsingCache(Collection<Tag> tags, String getableId, Class<? extends Getable<?>> getableCls) {
         TagsCache tagsCache = localStore.getTagsCache(getableId, getableCls);
         tagsCache = tagsCache != null ? tagsCache : new TagsCache();
         List<String> existingTagIds = tagsCache.getTagIds();
-        List<CachedTag> cachedTags =
-                tags.stream()
-                        .map(
-                                tag -> {
-                                    CachedTag cachedTag = new CachedTag();
-                                    cachedTag.setId(tag.getStoreKey());
-                                    cachedTag.setRemote(tag.isRemote());
-                                    return cachedTag;
-                                })
-                        .toList();
+        List<CachedTag> cachedTags = tags.stream()
+                .map(tag -> {
+                    CachedTag cachedTag = new CachedTag();
+                    cachedTag.setId(tag.getStoreKey());
+                    cachedTag.setRemote(tag.isRemote());
+                    return cachedTag;
+                })
+                .toList();
         this.storeLocalOrRemoteTag(tags, existingTagIds);
         this.removeOldTags(tags, tagsCache.getTags());
         tagsCache.setTags(cachedTags);
@@ -58,10 +55,9 @@ public class TagStorageManager {
 
     private void removeOldTags(Collection<Tag> newTags, List<CachedTag> cachedTags) {
         List<String> newTagIds = newTags.stream().map(Tag::getStoreKey).toList();
-        List<CachedTag> tagsIdsToRemove =
-                cachedTags.stream()
-                        .filter(cachedTag -> !newTagIds.contains(cachedTag.getId()))
-                        .toList();
+        List<CachedTag> tagsIdsToRemove = cachedTags.stream()
+                .filter(cachedTag -> !newTagIds.contains(cachedTag.getId()))
+                .toList();
         tagsIdsToRemove.forEach(this::removeTag);
     }
 
@@ -85,27 +81,22 @@ public class TagStorageManager {
     }
 
     private void storeLocalOrRemoteTag(Collection<Tag> tags, List<String> cachedTagIds) {
-        tags.stream()
-                .filter(tag -> !cachedTagIds.contains(tag.getStoreKey()))
-                .forEach(
-                        tag -> {
-                            if (tag.isRemote()) {
-                                this.sendRepartitionCommandForCreateRemoteTag(tag);
-                            } else {
-                                localStore.put(tag);
-                            }
-                        });
+        tags.stream().filter(tag -> !cachedTagIds.contains(tag.getStoreKey())).forEach(tag -> {
+            if (tag.isRemote()) {
+                this.sendRepartitionCommandForCreateRemoteTag(tag);
+            } else {
+                localStore.put(tag);
+            }
+        });
     }
 
-    private void sendRepartitionCommandForRemoveRemoteTag(
-            String tagStoreKey, String tagAttributeString) {
+    private void sendRepartitionCommandForRemoveRemoteTag(String tagStoreKey, String tagAttributeString) {
         RemoveRemoteTag command = new RemoveRemoteTag(tagStoreKey, tagAttributeString);
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.partitionKey = tagAttributeString;
         cpo.topic = this.lhConfig.getRepartitionTopicName();
         cpo.payload = new RepartitionCommand(command, new Date(), tagStoreKey);
-        Record<String, CommandProcessorOutput> out =
-                new Record<>(tagAttributeString, cpo, System.currentTimeMillis());
+        Record<String, CommandProcessorOutput> out = new Record<>(tagAttributeString, cpo, System.currentTimeMillis());
         this.context.forward(out);
     }
 
@@ -116,8 +107,7 @@ public class TagStorageManager {
         cpo.setPartitionKey(partitionKey);
         cpo.setTopic(this.lhConfig.getRepartitionTopicName());
         cpo.setPayload(new RepartitionCommand(command, new Date(), partitionKey));
-        Record<String, CommandProcessorOutput> out =
-                new Record<>(partitionKey, cpo, System.currentTimeMillis());
+        Record<String, CommandProcessorOutput> out = new Record<>(partitionKey, cpo, System.currentTimeMillis());
         this.context.forward(out);
     }
 }

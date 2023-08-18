@@ -30,11 +30,10 @@ public class CompleteUserTaskRunRequestModel extends SubCommand<CompleteUserTask
     }
 
     public CompleteUserTaskRunRequest.Builder toProto() {
-        CompleteUserTaskRunRequest.Builder out =
-                CompleteUserTaskRunRequest.newBuilder()
-                        .setUserTaskRunId(userTaskRunId.toProto())
-                        .setUserId(userId)
-                        .setResult(result);
+        CompleteUserTaskRunRequest.Builder out = CompleteUserTaskRunRequest.newBuilder()
+                .setUserTaskRunId(userTaskRunId.toProto())
+                .setUserId(userId)
+                .setResult(result);
         return out;
     }
 

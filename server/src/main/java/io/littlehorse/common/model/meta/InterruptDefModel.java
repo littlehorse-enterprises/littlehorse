@@ -24,10 +24,9 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
     }
 
     public InterruptDef.Builder toProto() {
-        InterruptDef.Builder out =
-                InterruptDef.newBuilder()
-                        .setExternalEventDefName(externalEventDefName)
-                        .setHandlerSpecName(handlerSpecName);
+        InterruptDef.Builder out = InterruptDef.newBuilder()
+                .setExternalEventDefName(externalEventDefName)
+                .setHandlerSpecName(handlerSpecName);
         return out;
     }
 
@@ -47,8 +46,7 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
         eed = client.getExternalEventDef(externalEventDefName);
 
         if (eed == null) {
-            throw new LHValidationError(
-                    null, "Refers to missing ExternalEventDef " + externalEventDefName);
+            throw new LHValidationError(null, "Refers to missing ExternalEventDef " + externalEventDefName);
         }
 
         handler = ownerThreadSpecModel.wfSpecModel.threadSpecs.get(handlerSpecName);
@@ -61,8 +59,7 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
         // which is named as INPUT (a reserved word).
 
         if (handler.variableDefs.size() > 1) {
-            throw new LHValidationError(
-                    null, "Handler thread " + handler.name + " should only have 'INPUT' var.");
+            throw new LHValidationError(null, "Handler thread " + handler.name + " should only have 'INPUT' var.");
         } else if (handler.variableDefs.size() == 1) {
             VariableDefModel theVarDef = handler.variableDefs.get(0);
             if (!theVarDef.name.equals(LHConstants.EXT_EVT_HANDLER_VAR)) {

@@ -24,12 +24,11 @@ public class ExternalEventTimeout extends SubCommand<ExternalEventNodeTimeoutPb>
     }
 
     public ExternalEventNodeTimeoutPb.Builder toProto() {
-        ExternalEventNodeTimeoutPb.Builder out =
-                ExternalEventNodeTimeoutPb.newBuilder()
-                        .setWfRunId(wfRunId)
-                        .setThreadRunNumber(threadRunNumber)
-                        .setNodeRunPosition(nodeRunPosition)
-                        .setTime(LHUtil.fromDate(time));
+        ExternalEventNodeTimeoutPb.Builder out = ExternalEventNodeTimeoutPb.newBuilder()
+                .setWfRunId(wfRunId)
+                .setThreadRunNumber(threadRunNumber)
+                .setNodeRunPosition(nodeRunPosition)
+                .setTime(LHUtil.fromDate(time));
         return out;
     }
 

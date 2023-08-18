@@ -14,8 +14,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     private String taskDefName;
     private String taskWorkerVersion;
 
-    public PollTaskRequestObserver(
-            StreamObserver<PollTaskResponse> responseObserver, TaskQueueManager manager) {
+    public PollTaskRequestObserver(StreamObserver<PollTaskResponse> responseObserver, TaskQueueManager manager) {
         this.responseObserver = responseObserver;
         this.taskQueueManager = manager;
         this.clientId = null;
@@ -56,10 +55,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         if (taskDefName == null) {
             taskDefName = req.getTaskDefName();
         } else if (!taskDefName.equals(req.getTaskDefName())) {
-            log.error(
-                    "TaskDefName not null: {} but doesnt match {}",
-                    taskDefName,
-                    req.getTaskDefName());
+            log.error("TaskDefName not null: {} but doesnt match {}", taskDefName, req.getTaskDefName());
         }
 
         taskDefName = req.getTaskDefName();

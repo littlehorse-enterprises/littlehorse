@@ -68,10 +68,8 @@ public class WfSpecModel extends Getable<WfSpec> {
 
     @Override
     public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
-        return List.of(
-                new GetableIndex<>(
-                        List.of(Pair.of("taskDef", GetableIndex.ValueType.DYNAMIC)),
-                        Optional.of(TagStorageType.REMOTE)));
+        return List.of(new GetableIndex<>(
+                List.of(Pair.of("taskDef", GetableIndex.ValueType.DYNAMIC)), Optional.of(TagStorageType.REMOTE)));
     }
 
     @Override
@@ -86,18 +84,13 @@ public class WfSpecModel extends Getable<WfSpec> {
 
     public List<String> taskDefNames() {
         List<String> names = new ArrayList<>();
-        threadSpecs.forEach(
-                (s, threadSpec) -> {
-                    threadSpec
-                            .getNodes()
-                            .values()
-                            .forEach(
-                                    node -> {
-                                        if (node.getType() == Node.NodeCase.TASK) {
-                                            names.add(node.getTaskNode().getTaskDefName());
-                                        }
-                                    });
-                });
+        threadSpecs.forEach((s, threadSpec) -> {
+            threadSpec.getNodes().values().forEach(node -> {
+                if (node.getType() == Node.NodeCase.TASK) {
+                    names.add(node.getTaskNode().getTaskDefName());
+                }
+            });
+        });
         return names;
     }
 
@@ -112,14 +105,13 @@ public class WfSpecModel extends Getable<WfSpec> {
     }
 
     public WfSpec.Builder toProto() {
-        WfSpec.Builder out =
-                WfSpec.newBuilder()
-                        .setVersion(version)
-                        .setCreatedAt(LHUtil.fromDate(createdAt))
-                        .setEntrypointThreadName(entrypointThreadName)
-                        .setStatus(status)
-                        .setRetentionHours(retentionHours)
-                        .setName(name);
+        WfSpec.Builder out = WfSpec.newBuilder()
+                .setVersion(version)
+                .setCreatedAt(LHUtil.fromDate(createdAt))
+                .setEntrypointThreadName(entrypointThreadName)
+                .setStatus(status)
+                .setRetentionHours(retentionHours)
+                .setName(name);
 
         if (threadSpecs != null) {
             for (Map.Entry<String, ThreadSpecModel> p : threadSpecs.entrySet()) {
@@ -252,8 +244,7 @@ public class WfSpecModel extends Getable<WfSpec> {
         for (ThreadSpecModel tspec : threadSpecs.values()) {
             for (String varName : tspec.getRequiredVariableNames()) {
                 if (!varToThreadSpec.containsKey(varName)) {
-                    throw new LHValidationError(
-                            null, "Thread " + tspec.name + " refers to missing var " + varName);
+                    throw new LHValidationError(null, "Thread " + tspec.name + " refers to missing var " + varName);
                 }
             }
         }
@@ -270,12 +261,7 @@ public class WfSpecModel extends Getable<WfSpec> {
         out.startTime = getDao().getEventTime();
         out.status = LHStatus.RUNNING;
 
-        out.startThread(
-                entrypointThreadName,
-                getDao().getEventTime(),
-                null,
-                evt.variables,
-                ThreadType.ENTRYPOINT);
+        out.startThread(entrypointThreadName, getDao().getEventTime(), null, evt.variables, ThreadType.ENTRYPOINT);
 
         getDao().saveWfRun(out);
 

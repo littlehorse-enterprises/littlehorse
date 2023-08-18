@@ -14,7 +14,8 @@ public class PutExternalEventResponseModel extends AbstractResponse<PutExternalE
     }
 
     public PutExternalEventResponse.Builder toProto() {
-        PutExternalEventResponse.Builder out = PutExternalEventResponse.newBuilder().setCode(code);
+        PutExternalEventResponse.Builder out =
+                PutExternalEventResponse.newBuilder().setCode(code);
         if (message != null) out.setMessage(message);
         if (result != null) out.setResult(result.toProto());
 

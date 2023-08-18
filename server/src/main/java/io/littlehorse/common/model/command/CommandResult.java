@@ -19,11 +19,10 @@ public class CommandResult extends Storeable<CommandResultPb> {
     }
 
     public CommandResultPb.Builder toProto() {
-        CommandResultPb.Builder out =
-                CommandResultPb.newBuilder()
-                        .setCommandId(commandId)
-                        .setResult(ByteString.copyFrom(result))
-                        .setResultTime(LHUtil.fromDate(resultTime));
+        CommandResultPb.Builder out = CommandResultPb.newBuilder()
+                .setCommandId(commandId)
+                .setResult(ByteString.copyFrom(result))
+                .setResultTime(LHUtil.fromDate(resultTime));
         return out;
     }
 

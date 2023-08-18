@@ -20,11 +20,10 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
     private static final Metadata.Key<String> AUTHORIZATION_HEADER_KEY =
             Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
 
-    private final Cache<String, TokenStatus> tokenCache =
-            CacheBuilder.newBuilder()
-                    .maximumSize(10000)
-                    .expireAfterWrite(4, TimeUnit.HOURS)
-                    .build();
+    private final Cache<String, TokenStatus> tokenCache = CacheBuilder.newBuilder()
+            .maximumSize(10000)
+            .expireAfterWrite(4, TimeUnit.HOURS)
+            .build();
 
     private final OAuthClient client;
 

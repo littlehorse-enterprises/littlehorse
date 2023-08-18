@@ -21,8 +21,7 @@ public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
     }
 
     public FailureHandlerDef.Builder toProto() {
-        FailureHandlerDef.Builder out =
-                FailureHandlerDef.newBuilder().setHandlerSpecName(handlerSpecName);
+        FailureHandlerDef.Builder out = FailureHandlerDef.newBuilder().setHandlerSpecName(handlerSpecName);
 
         if (specificFailure != null) out.setSpecificFailure(specificFailure);
 
@@ -66,8 +65,7 @@ public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
         }
 
         if (specificFailure.equals(LHConstants.TASK_ERROR)) {
-            return (failureName.equals(LHConstants.TASK_FAILURE)
-                    || failureName.equals(LHConstants.TIMEOUT));
+            return (failureName.equals(LHConstants.TASK_FAILURE) || failureName.equals(LHConstants.TIMEOUT));
         }
 
         return false;

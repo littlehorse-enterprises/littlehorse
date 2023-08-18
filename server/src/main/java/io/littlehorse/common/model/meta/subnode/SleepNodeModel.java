@@ -85,8 +85,7 @@ public class SleepNodeModel extends SubNode<SleepNode> {
                 try {
                     return new Date(Instant.parse(dateStr).toEpochMilli());
                 } catch (Exception exn) {
-                    throw new LHVarSubError(
-                            exn, "failed parsing date string " + dateStr + ": " + exn.getMessage());
+                    throw new LHVarSubError(exn, "failed parsing date string " + dateStr + ": " + exn.getMessage());
                 }
             case TIMESTAMP:
                 long ts = thread.assignVariable(timestamp).asInt().intVal;

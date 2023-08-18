@@ -15,8 +15,7 @@ public class StoreUtils {
 
     @SuppressWarnings("unchecked")
     public static String getFullStoreKey(Storeable<?> thing) {
-        return (getSubstorePrefix((Class<? extends Storeable<?>>) thing.getClass())
-                + thing.getStoreKey());
+        return (getSubstorePrefix((Class<? extends Storeable<?>>) thing.getClass()) + thing.getStoreKey());
     }
 
     public static <T extends Message, U extends Getable<T>> String getFullStoreKey(

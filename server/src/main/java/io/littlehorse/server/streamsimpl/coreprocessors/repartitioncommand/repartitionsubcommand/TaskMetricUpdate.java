@@ -14,8 +14,7 @@ import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import java.util.Date;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
-public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb>
-        implements RepartitionSubCommand {
+public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements RepartitionSubCommand {
 
     public Date windowStart;
     public MetricsWindowLength type;
@@ -44,20 +43,19 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb>
     }
 
     public TaskMetricUpdatePb.Builder toProto() {
-        TaskMetricUpdatePb.Builder out =
-                TaskMetricUpdatePb.newBuilder()
-                        .setWindowStart(LHLibUtil.fromDate(windowStart))
-                        .setType(type)
-                        .setTaskDefName(taskDefName)
-                        .setTotalCompleted(totalCompleted)
-                        .setTotalErrored(totalErrored)
-                        .setTotalStarted(totalStarted)
-                        .setScheduleToStartTotal(scheduleToStartTotal)
-                        .setScheduleToStartMax(scheduleToStartMax)
-                        .setStartToCompleteTotal(startToCompleteTotal)
-                        .setStartToCompleteMax(startToCompleteMax)
-                        .setNumEntries(numEntries)
-                        .setTotalScheduled(totalScheduled);
+        TaskMetricUpdatePb.Builder out = TaskMetricUpdatePb.newBuilder()
+                .setWindowStart(LHLibUtil.fromDate(windowStart))
+                .setType(type)
+                .setTaskDefName(taskDefName)
+                .setTotalCompleted(totalCompleted)
+                .setTotalErrored(totalErrored)
+                .setTotalStarted(totalStarted)
+                .setScheduleToStartTotal(scheduleToStartTotal)
+                .setScheduleToStartMax(scheduleToStartMax)
+                .setStartToCompleteTotal(startToCompleteTotal)
+                .setStartToCompleteMax(startToCompleteMax)
+                .setNumEntries(numEntries)
+                .setTotalScheduled(totalScheduled);
 
         return out;
     }
@@ -121,8 +119,7 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb>
     }
 
     public String getClusterLevelWindow() {
-        return new TaskDefMetricsIdModel(windowStart, type, LHConstants.CLUSTER_LEVEL_METRIC)
-                .getStoreKey();
+        return new TaskDefMetricsIdModel(windowStart, type, LHConstants.CLUSTER_LEVEL_METRIC).getStoreKey();
     }
 
     public void process(LHStoreWrapper store, ProcessorContext<Void, Void> ctx) {
@@ -140,14 +137,11 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb>
     }
 
     public String getStoreKey() {
-        return LHUtil.getCompositeId(
-                LHUtil.toLhDbFormat(windowStart), type.toString(), taskDefName);
+        return LHUtil.getCompositeId(LHUtil.toLhDbFormat(windowStart), type.toString(), taskDefName);
     }
 
-    public static String getStoreKey(
-            MetricsWindowLength type, Date windowStart, String taskDefName) {
-        return LHUtil.getCompositeId(
-                LHUtil.toLhDbFormat(windowStart), type.toString(), taskDefName);
+    public static String getStoreKey(MetricsWindowLength type, Date windowStart, String taskDefName) {
+        return LHUtil.getCompositeId(LHUtil.toLhDbFormat(windowStart), type.toString(), taskDefName);
     }
 
     public Date getCreatedAt() {

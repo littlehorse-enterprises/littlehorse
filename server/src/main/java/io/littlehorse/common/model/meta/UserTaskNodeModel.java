@@ -117,12 +117,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
 
         if (utd == null) {
             throw new LHValidationError(
-                    null,
-                    "Specified UserTaskDef "
-                            + userTaskDefName
-                            + "/"
-                            + userTaskDefVersion
-                            + " not found");
+                    null, "Specified UserTaskDef " + userTaskDefName + "/" + userTaskDefVersion + " not found");
         }
 
         // Now pin the version

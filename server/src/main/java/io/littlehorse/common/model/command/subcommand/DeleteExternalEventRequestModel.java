@@ -25,11 +25,10 @@ public class DeleteExternalEventRequestModel extends SubCommand<DeleteExternalEv
     }
 
     public DeleteExternalEventRequest.Builder toProto() {
-        DeleteExternalEventRequest.Builder out =
-                DeleteExternalEventRequest.newBuilder()
-                        .setWfRunId(wfRunId)
-                        .setExternalEventDefName(externalEventDefName)
-                        .setGuid(guid);
+        DeleteExternalEventRequest.Builder out = DeleteExternalEventRequest.newBuilder()
+                .setWfRunId(wfRunId)
+                .setExternalEventDefName(externalEventDefName)
+                .setGuid(guid);
 
         return out;
     }
@@ -39,8 +38,7 @@ public class DeleteExternalEventRequestModel extends SubCommand<DeleteExternalEv
     }
 
     public DeleteObjectReply process(LHDAO dao, LHConfig config) {
-        ExternalEventIdModel eventId =
-                new ExternalEventIdModel(wfRunId, externalEventDefName, guid);
+        ExternalEventIdModel eventId = new ExternalEventIdModel(wfRunId, externalEventDefName, guid);
         ExternalEventModel externalEvent = dao.getExternalEvent(eventId.getStoreKey());
         if (!externalEvent.claimed) {
             return dao.deleteExternalEvent(eventId.getStoreKey());

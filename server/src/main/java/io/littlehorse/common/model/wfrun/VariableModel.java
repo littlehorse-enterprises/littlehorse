@@ -42,11 +42,7 @@ public class VariableModel extends Getable<Variable> {
     public VariableModel() {}
 
     public VariableModel(
-            String name,
-            VariableValueModel value,
-            String wfRunId,
-            int threadRunNumber,
-            WfSpecModel wfSpecModel) {
+            String name, VariableValueModel value, String wfRunId, int threadRunNumber, WfSpecModel wfSpecModel) {
         this.name = name;
         this.value = value;
         this.wfRunId = wfRunId;
@@ -76,13 +72,12 @@ public class VariableModel extends Getable<Variable> {
     }
 
     public Variable.Builder toProto() {
-        Variable.Builder out =
-                Variable.newBuilder()
-                        .setName(name)
-                        .setThreadRunNumber(threadRunNumber)
-                        .setWfRunId(wfRunId)
-                        .setDate(LHUtil.fromDate(getCreatedAt()))
-                        .setValue(value.toProto());
+        Variable.Builder out = Variable.newBuilder()
+                .setName(name)
+                .setThreadRunNumber(threadRunNumber)
+                .setWfRunId(wfRunId)
+                .setDate(LHUtil.fromDate(getCreatedAt()))
+                .setValue(value.toProto());
 
         return out;
     }
@@ -104,34 +99,25 @@ public class VariableModel extends Getable<Variable> {
 
     @Override
     public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
-        return List.of(
-                new GetableIndex<>(
-                        List.of(
-                                Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
-                                Pair.of("wfSpecVersion", GetableIndex.ValueType.SINGLE),
-                                Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
-                        Optional.empty(),
-                        variable ->
-                                ((VariableModel) variable).getValue().getType() != VariableType.NULL
-                                        && !((VariableModel) variable)
-                                                .getName()
-                                                .equals(LHConstants.EXT_EVT_HANDLER_VAR)));
+        return List.of(new GetableIndex<>(
+                List.of(
+                        Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                        Pair.of("wfSpecVersion", GetableIndex.ValueType.SINGLE),
+                        Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
+                Optional.empty(),
+                variable -> ((VariableModel) variable).getValue().getType() != VariableType.NULL
+                        && !((VariableModel) variable).getName().equals(LHConstants.EXT_EVT_HANDLER_VAR)));
     }
 
     @Override
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         switch (key) {
             case "wfSpecName" -> {
-                return List.of(
-                        new IndexedField(
-                                key, this.getWfSpecModel().getName(), TagStorageType.LOCAL));
+                return List.of(new IndexedField(key, this.getWfSpecModel().getName(), TagStorageType.LOCAL));
             }
             case "wfSpecVersion" -> {
-                return List.of(
-                        new IndexedField(
-                                key,
-                                LHUtil.toLHDbVersionFormat(this.getWfSpecModel().version),
-                                TagStorageType.LOCAL));
+                return List.of(new IndexedField(
+                        key, LHUtil.toLHDbVersionFormat(this.getWfSpecModel().version), TagStorageType.LOCAL));
             }
             case "variable" -> {
                 return getDynamicFields();
@@ -161,43 +147,30 @@ public class VariableModel extends Getable<Variable> {
         }
         switch (variableValue.getType()) {
             case STR -> {
-                return List.of(
-                        new IndexedField(
-                                this.getName(), variableValue.getStrVal(), tagStorageType));
+                return List.of(new IndexedField(this.getName(), variableValue.getStrVal(), tagStorageType));
             }
             case BOOL -> {
-                return List.of(
-                        new IndexedField(
-                                this.getName(), variableValue.getBoolVal(), TagStorageType.LOCAL));
+                return List.of(new IndexedField(this.getName(), variableValue.getBoolVal(), TagStorageType.LOCAL));
             }
             case INT -> {
-                return List.of(
-                        new IndexedField(
-                                this.getName(), variableValue.getIntVal(), tagStorageType));
+                return List.of(new IndexedField(this.getName(), variableValue.getIntVal(), tagStorageType));
             }
             case DOUBLE -> {
-                return List.of(
-                        new IndexedField(
-                                this.getName(), variableValue.getDoubleVal(), tagStorageType));
+                return List.of(new IndexedField(this.getName(), variableValue.getDoubleVal(), tagStorageType));
             }
             case JSON_OBJ -> {
                 Map<String, Object> flattenedMap = new HashMap<>();
                 flatten("$.", variableValue.getJsonObjVal(), flattenedMap);
                 return flattenedMap.entrySet().stream()
-                        .map(
-                                keyValueJson -> {
-                                    TagStorageType storageTypePb =
-                                            findStorageTypeFromVariableDef(
-                                                            variableDef, keyValueJson.getKey())
-                                                    .orElse(null);
-                                    if (storageTypePb == null) {
-                                        return null;
-                                    }
-                                    return new IndexedField(
-                                            keyValueJson.getKey(),
-                                            keyValueJson.getValue(),
-                                            storageTypePb);
-                                })
+                        .map(keyValueJson -> {
+                            TagStorageType storageTypePb = findStorageTypeFromVariableDef(
+                                            variableDef, keyValueJson.getKey())
+                                    .orElse(null);
+                            if (storageTypePb == null) {
+                                return null;
+                            }
+                            return new IndexedField(keyValueJson.getKey(), keyValueJson.getValue(), storageTypePb);
+                        })
                         .filter(Objects::nonNull)
                         .toList();
             }
@@ -208,19 +181,16 @@ public class VariableModel extends Getable<Variable> {
         }
     }
 
-    private Optional<TagStorageType> findStorageTypeFromVariableDef(
-            VariableDefModel variableDef, String jsonPath) {
+    private Optional<TagStorageType> findStorageTypeFromVariableDef(VariableDefModel variableDef, String jsonPath) {
         return variableDef.getJsonIndices().stream()
-                .filter(
-                        jsonIndex -> {
-                            return jsonIndex.getPath().equals(jsonPath);
-                        })
+                .filter(jsonIndex -> {
+                    return jsonIndex.getPath().equals(jsonPath);
+                })
                 .map(JsonIndexModel::getTagStorageType)
                 .findFirst();
     }
 
-    private static void flatten(
-            String prefix, Map<String, Object> map, Map<String, Object> flattenedMap) {
+    private static void flatten(String prefix, Map<String, Object> map, Map<String, Object> flattenedMap) {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
@@ -238,22 +208,15 @@ public class VariableModel extends Getable<Variable> {
     @Override
     public TagStorageType tagStorageType() {
         return getWfSpecModel().getThreadSpecs().values().stream()
-                .map(
-                        threadSpec -> {
-                            VariableDefModel currentVariableDef =
-                                    threadSpec.getVariableDefs().stream()
-                                            .filter(
-                                                    variableDef ->
-                                                            variableDef
-                                                                    .getName()
-                                                                    .equals(this.getName()))
-                                            .findFirst()
-                                            .orElse(null);
-                            return (currentVariableDef != null
-                                            && currentVariableDef.getTagStorageType() != null)
-                                    ? currentVariableDef.getTagStorageType()
-                                    : TagStorageType.LOCAL;
-                        })
+                .map(threadSpec -> {
+                    VariableDefModel currentVariableDef = threadSpec.getVariableDefs().stream()
+                            .filter(variableDef -> variableDef.getName().equals(this.getName()))
+                            .findFirst()
+                            .orElse(null);
+                    return (currentVariableDef != null && currentVariableDef.getTagStorageType() != null)
+                            ? currentVariableDef.getTagStorageType()
+                            : TagStorageType.LOCAL;
+                })
                 .findFirst()
                 .get();
     }

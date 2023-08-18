@@ -31,10 +31,9 @@ public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata> 
         TaskWorkerMetadata metadataPb = (TaskWorkerMetadata) proto;
         clientId = metadataPb.getClientId();
         latestHeartbeat = LHUtil.fromProtoTs(metadataPb.getLatestHeartbeat());
-        hosts =
-                metadataPb.getHostsList().stream()
-                        .map(host -> new HostModel(host.getHost(), host.getPort()))
-                        .collect(Collectors.toCollection(TreeSet::new));
+        hosts = metadataPb.getHostsList().stream()
+                .map(host -> new HostModel(host.getHost(), host.getPort()))
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 
     @Override

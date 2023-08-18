@@ -72,10 +72,8 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
 
             nodeRunModel.getThreadRun().getWfRunModel().getDao().scheduleTimer(timer);
         } catch (LHVarSubError exn) {
-            FailureModel failure =
-                    new FailureModel(
-                            "Failed calculating maturation for timer: " + exn.getMessage(),
-                            LHConstants.VAR_SUB_ERROR);
+            FailureModel failure = new FailureModel(
+                    "Failed calculating maturation for timer: " + exn.getMessage(), LHConstants.VAR_SUB_ERROR);
             nodeRunModel.fail(failure, time);
         }
     }

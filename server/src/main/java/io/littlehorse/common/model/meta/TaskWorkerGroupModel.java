@@ -17,8 +17,7 @@ public class TaskWorkerGroupModel extends Getable<TaskWorkerGroup> {
 
     public String taskDefName;
     public Date createdAt;
-    public Map<String, TaskWorkerMetadataModel> taskWorkers =
-            new HashMap<String, TaskWorkerMetadataModel>();
+    public Map<String, TaskWorkerMetadataModel> taskWorkers = new HashMap<String, TaskWorkerMetadataModel>();
 
     public TaskWorkerGroupModel() {}
 
@@ -56,17 +55,12 @@ public class TaskWorkerGroupModel extends Getable<TaskWorkerGroup> {
         TaskWorkerGroup proto = (TaskWorkerGroup) p;
         taskDefName = proto.getTaskDefName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
-        taskWorkers =
-                proto.getTaskWorkersMap().entrySet().stream()
-                        .collect(
-                                Collectors.toMap(
-                                        entry -> entry.getKey(),
-                                        entry -> {
-                                            TaskWorkerMetadataModel metadata =
-                                                    new TaskWorkerMetadataModel();
-                                            metadata.initFrom(entry.getValue());
-                                            return metadata;
-                                        }));
+        taskWorkers = proto.getTaskWorkersMap().entrySet().stream()
+                .collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
+                    TaskWorkerMetadataModel metadata = new TaskWorkerMetadataModel();
+                    metadata.initFrom(entry.getValue());
+                    return metadata;
+                }));
     }
 
     @Override
@@ -76,9 +70,8 @@ public class TaskWorkerGroupModel extends Getable<TaskWorkerGroup> {
 
     public Map<String, TaskWorkerMetadata> taskWorkersToProto() {
         return taskWorkers.entrySet().stream()
-                .collect(
-                        Collectors.toMap(
-                                entry -> entry.getKey(),
-                                entry -> entry.getValue().toProto().build()));
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey(),
+                        entry -> entry.getValue().toProto().build()));
     }
 }

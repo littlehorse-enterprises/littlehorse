@@ -69,8 +69,7 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
 
         switch (type) {
             case TASK_EXECUTED:
-                executed =
-                        LHSerializable.fromProto(p.getTaskExecuted(), UTETaskExecutedModel.class);
+                executed = LHSerializable.fromProto(p.getTaskExecuted(), UTETaskExecutedModel.class);
                 break;
             case REASSIGNED:
                 reassigned = LHSerializable.fromProto(p.getReassigned(), UTEReassignedModel.class);

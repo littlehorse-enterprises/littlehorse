@@ -20,8 +20,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 
 @Slf4j
-public class CommandProcessor
-        implements Processor<String, Command, String, CommandProcessorOutput> {
+public class CommandProcessor implements Processor<String, Command, String, CommandProcessorOutput> {
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private KafkaStreamsLHDAOImpl dao;
@@ -52,20 +51,10 @@ public class CommandProcessor
 
         this.ctx = ctx;
         final LHStoreWrapper localStore = new LHStoreWrapper(ctx.getStateStore(storeName), config);
-        dao =
-                new KafkaStreamsLHDAOImpl(
-                        this.ctx,
-                        config,
-                        server,
-                        wfSpecCache,
-                        localStore,
-                        isMetadataProcessorInstance);
+        dao = new KafkaStreamsLHDAOImpl(this.ctx, config, server, wfSpecCache, localStore, isMetadataProcessorInstance);
         dao.onPartitionClaimed();
 
-        ctx.schedule(
-                Duration.ofSeconds(30),
-                PunctuationType.WALL_CLOCK_TIME,
-                this::forwardMetricsUpdates);
+        ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
     }
 
     @Override
@@ -95,17 +84,13 @@ public class CommandProcessor
             AbstractResponse<?> response = command.process(dao, config);
             dao.commitChanges();
             if (command.hasResponse() && command.commandId != null) {
-                WaitForCommandResponse cmdReply =
-                        WaitForCommandResponse.newBuilder()
-                                .setCode(StoreQueryStatusPb.RSQ_OK)
-                                .setResult(
-                                        CommandResultPb.newBuilder()
-                                                .setCommandId(command.commandId)
-                                                .setResultTime(LHUtil.fromDate(new Date()))
-                                                .setResult(
-                                                        ByteString.copyFrom(
-                                                                response.toBytes(config))))
-                                .build();
+                WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
+                        .setCode(StoreQueryStatusPb.RSQ_OK)
+                        .setResult(CommandResultPb.newBuilder()
+                                .setCommandId(command.commandId)
+                                .setResultTime(LHUtil.fromDate(new Date()))
+                                .setResult(ByteString.copyFrom(response.toBytes(config))))
+                        .build();
 
                 server.onResponseReceived(command.commandId, cmdReply);
             }

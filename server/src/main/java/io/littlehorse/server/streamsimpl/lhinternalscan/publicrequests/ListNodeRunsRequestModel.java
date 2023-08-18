@@ -15,12 +15,7 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrate
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListNodeRunsReply;
 
 public class ListNodeRunsRequestModel
-        extends PublicScanRequest<
-                ListNodeRunsRequest,
-                ListNodeRunsResponse,
-                NodeRun,
-                NodeRunModel,
-                ListNodeRunsReply> {
+        extends PublicScanRequest<ListNodeRunsRequest, ListNodeRunsResponse, NodeRun, NodeRunModel, ListNodeRunsReply> {
 
     public String wfRunId;
 

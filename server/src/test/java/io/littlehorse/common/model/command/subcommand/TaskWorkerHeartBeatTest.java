@@ -37,10 +37,8 @@ public class TaskWorkerHeartBeatTest {
     private LHDAO lhdao = mock(LHDAO.class);
     private TaskWorkerAssignor assignor = mock(TaskWorkerAssignor.class);
     private LHConfig lhConfig = mock(LHConfig.class);
-    private TaskWorkerHeartBeatRequestModel taskWorkerHeartBeat =
-            new TaskWorkerHeartBeatRequestModel(assignor);
-    private ArgumentCaptor<TaskWorkerGroupModel> taskWorkerCaptor =
-            ArgumentCaptor.forClass(TaskWorkerGroupModel.class);
+    private TaskWorkerHeartBeatRequestModel taskWorkerHeartBeat = new TaskWorkerHeartBeatRequestModel(assignor);
+    private ArgumentCaptor<TaskWorkerGroupModel> taskWorkerCaptor = ArgumentCaptor.forClass(TaskWorkerGroupModel.class);
 
     @Test
     void doNotRemoveTaskWorkerIfItJustSentAHeartbeat() {
@@ -64,8 +62,7 @@ public class TaskWorkerHeartBeatTest {
 
         verify(lhdao).putTaskWorkerGroup(taskWorkerCaptor.capture());
 
-        assertThat(taskWorkerGroup.taskWorkers)
-                .contains(Map.entry(taskWorkerToKeep.clientId, taskWorkerToKeep));
+        assertThat(taskWorkerGroup.taskWorkers).contains(Map.entry(taskWorkerToKeep.clientId, taskWorkerToKeep));
         assertThat(taskWorkerGroup.taskWorkers).hasSize(2);
     }
 
@@ -192,9 +189,7 @@ public class TaskWorkerHeartBeatTest {
         Set<HostModel> hosts = new TreeSet<HostModel>();
         for (int i = 0; i < q; i++) {
             HostModel host =
-                    new HostModel(
-                            faker.internet().domainName(),
-                            faker.number().numberBetween(5000, 5500));
+                    new HostModel(faker.internet().domainName(), faker.number().numberBetween(5000, 5500));
             hosts.add(host);
         }
         return hosts;

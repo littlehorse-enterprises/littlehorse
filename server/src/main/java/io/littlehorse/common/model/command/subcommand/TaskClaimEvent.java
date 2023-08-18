@@ -52,12 +52,11 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
     }
 
     public TaskClaimEventPb.Builder toProto() {
-        TaskClaimEventPb.Builder b =
-                TaskClaimEventPb.newBuilder()
-                        .setTaskRunId(taskRunId.toProto())
-                        .setTaskWorkerVersion(taskWorkerVersion)
-                        .setTaskWorkerId(taskWorkerId)
-                        .setTime(LHUtil.fromDate(time));
+        TaskClaimEventPb.Builder b = TaskClaimEventPb.newBuilder()
+                .setTaskRunId(taskRunId.toProto())
+                .setTaskWorkerVersion(taskWorkerVersion)
+                .setTaskWorkerId(taskWorkerId)
+                .setTime(LHUtil.fromDate(time));
         return b;
     }
 

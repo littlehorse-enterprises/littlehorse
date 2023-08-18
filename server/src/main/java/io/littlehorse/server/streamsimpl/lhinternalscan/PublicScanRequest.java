@@ -37,8 +37,7 @@ public abstract class PublicScanRequest<
     }
 
     public InternalScan getInternalSearch(LHGlobalMetaStores stores) throws LHValidationError {
-        SearchScanBoundaryStrategy searchScanBoundaryStrategy =
-                getScanBoundary(getSearchAttributeString());
+        SearchScanBoundaryStrategy searchScanBoundaryStrategy = getScanBoundary(getSearchAttributeString());
         getableSearch = new GetableSearchImpl(getObjectType(), searchScanBoundaryStrategy);
         InternalScan out = getableSearch.buildInternalScan(stores, indexTypeForSearch(stores));
         if (out.limit == 0) out.limit = getLimit();
@@ -78,8 +77,7 @@ public abstract class PublicScanRequest<
      * @return The storage type or null if not specified in the configuration.
      * @throws LHValidationError if there are validation errors in the input.
      */
-    public abstract TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
-            throws LHValidationError;
+    public abstract TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError;
 
     /**
      * Validate input parameters for the search operation
@@ -88,6 +86,5 @@ public abstract class PublicScanRequest<
      */
     public abstract void validate() throws LHValidationError;
 
-    public abstract SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString)
-            throws LHValidationError;
+    public abstract SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHValidationError;
 }

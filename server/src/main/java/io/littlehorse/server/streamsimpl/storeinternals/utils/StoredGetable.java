@@ -16,8 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @Setter
-public class StoredGetable<U extends Message, T extends Getable<U>>
-        extends Storeable<StoredGetablePb> {
+public class StoredGetable<U extends Message, T extends Getable<U>> extends Storeable<StoredGetablePb> {
 
     private TagsCache indexCache;
     private T storedObject;
@@ -42,9 +41,7 @@ public class StoredGetable<U extends Message, T extends Getable<U>>
         indexCache = LHSerializable.fromProto(p.getIndexCache(), TagsCache.class);
         objectType = p.getType();
         try {
-            storedObject =
-                    LHSerializable.fromBytes(
-                            p.getGetablePayload().toByteArray(), getStoredClass(), null);
+            storedObject = LHSerializable.fromBytes(p.getGetablePayload().toByteArray(), getStoredClass(), null);
         } catch (LHSerdeError exception) {
             log.error("Failed loading from store: {}", exception.getMessage(), exception);
         }

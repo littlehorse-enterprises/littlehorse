@@ -22,9 +22,7 @@ public class StopWfRunRequestModel extends SubCommand<StopWfRunRequest> {
 
     public StopWfRunRequest.Builder toProto() {
         StopWfRunRequest.Builder out =
-                StopWfRunRequest.newBuilder()
-                        .setWfRunId(wfRunId)
-                        .setThreadRunNumber(threadRunNumber);
+                StopWfRunRequest.newBuilder().setWfRunId(wfRunId).setThreadRunNumber(threadRunNumber);
         return out;
     }
 

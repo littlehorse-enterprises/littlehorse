@@ -44,17 +44,15 @@ public class OneTaskQueue {
 
         try {
             lock.lock();
-            hungryClients.removeIf(
-                    thing -> {
-                        log.debug(
-                                "Instance {}: Removing task queue observer for taskdef {} with"
-                                        + " client id {}: {}",
-                                parent.backend.getInstanceId(),
-                                taskDefName,
-                                disconnectedObserver.getClientId(),
-                                disconnectedObserver);
-                        return thing.equals(disconnectedObserver);
-                    });
+            hungryClients.removeIf(thing -> {
+                log.debug(
+                        "Instance {}: Removing task queue observer for taskdef {} with" + " client id {}: {}",
+                        parent.backend.getInstanceId(),
+                        taskDefName,
+                        disconnectedObserver.getClientId(),
+                        disconnectedObserver);
+                return thing.equals(disconnectedObserver);
+            });
         } finally {
             lock.unlock();
         }

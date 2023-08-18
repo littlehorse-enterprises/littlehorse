@@ -52,27 +52,19 @@ public class UTATaskModel extends LHSerializable<UTATask> {
     // TODO: There is a lot of duplicated code between here and in the TaskRun
     // infrastructure. See if possible to combine it.
     // Like hey both use the same TaskNode
-    public void schedule(LHDAO dao, UserTaskRunModel utr, UTActionTriggerModel trigger)
-            throws LHVarSubError {
+    public void schedule(LHDAO dao, UserTaskRunModel utr, UTActionTriggerModel trigger) throws LHVarSubError {
         NodeRunModel nodeRunModel = utr.getNodeRun();
 
         // Next, figure out when the task should be scheduled.
-        VariableValueModel delaySeconds =
-                nodeRunModel.getThreadRun().assignVariable(trigger.delaySeconds);
+        VariableValueModel delaySeconds = nodeRunModel.getThreadRun().assignVariable(trigger.delaySeconds);
 
         if (delaySeconds.getType() != VariableType.INT) {
-            throw new LHVarSubError(
-                    null,
-                    "Delay for User Task Action was not an INT, got a " + delaySeconds.getType());
+            throw new LHVarSubError(null, "Delay for User Task Action was not an INT, got a " + delaySeconds.getType());
         }
 
         Date maturationTime = new Date(System.currentTimeMillis() + (1000 * delaySeconds.intVal));
-        LHTimer timer =
-                new LHTimer(
-                        new Command(
-                                new TriggeredTaskRun(task, utr.getNodeRun().getObjectId()),
-                                maturationTime),
-                        dao);
+        LHTimer timer = new LHTimer(
+                new Command(new TriggeredTaskRun(task, utr.getNodeRun().getObjectId()), maturationTime), dao);
 
         dao.scheduleTimer(timer);
     }

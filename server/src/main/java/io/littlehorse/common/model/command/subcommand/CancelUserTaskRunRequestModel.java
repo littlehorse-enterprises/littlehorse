@@ -24,9 +24,7 @@ public class CancelUserTaskRunRequestModel extends SubCommand<CancelUserTaskRunR
     @Override
     public void initFrom(Message proto) throws LHSerdeError {
         CancelUserTaskRunRequest cancelUserTaskRunPb = (CancelUserTaskRunRequest) proto;
-        userTaskRunId =
-                LHSerializable.fromProto(
-                        cancelUserTaskRunPb.getUserTaskRunId(), UserTaskRunIdModel.class);
+        userTaskRunId = LHSerializable.fromProto(cancelUserTaskRunPb.getUserTaskRunId(), UserTaskRunIdModel.class);
     }
 
     @Override
@@ -38,8 +36,7 @@ public class CancelUserTaskRunRequestModel extends SubCommand<CancelUserTaskRunR
     public CancelUserTaskRunReply process(LHDAO dao, LHConfig config) {
         UserTaskRunModel userTaskRun = dao.getUserTaskRun(userTaskRunId);
         if (userTaskRun == null) {
-            return new CancelUserTaskRunReply(
-                    "Provided invalid wfRunId", LHResponseCode.BAD_REQUEST_ERROR);
+            return new CancelUserTaskRunReply("Provided invalid wfRunId", LHResponseCode.BAD_REQUEST_ERROR);
         }
         userTaskRun.cancel();
         return new CancelUserTaskRunReply(userTaskRun.getId().getPartitionKey(), LHResponseCode.OK);

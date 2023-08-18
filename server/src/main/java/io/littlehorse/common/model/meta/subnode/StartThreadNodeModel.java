@@ -39,8 +39,7 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
     }
 
     public StartThreadNode.Builder toProto() {
-        StartThreadNode.Builder out =
-                StartThreadNode.newBuilder().setThreadSpecName(threadSpecName);
+        StartThreadNode.Builder out = StartThreadNode.newBuilder().setThreadSpecName(threadSpecName);
 
         for (Map.Entry<String, VariableAssignmentModel> e : variables.entrySet()) {
             out.putVariables(e.getKey(), e.getValue().toProto().build());
@@ -58,8 +57,7 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
 
         ThreadSpecModel childThreadSpecModel = wfSpecModel.threadSpecs.get(threadSpecName);
         if (childThreadSpecModel == null) {
-            throw new LHValidationError(
-                    null, "Tried to start nonexistent thread " + threadSpecName);
+            throw new LHValidationError(null, "Tried to start nonexistent thread " + threadSpecName);
         }
 
         childThreadSpecModel.validateStartVariablesByType(variables);

@@ -33,8 +33,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
     }
 
     public ExternalEventNode.Builder toProto() {
-        ExternalEventNode.Builder out =
-                ExternalEventNode.newBuilder().setExternalEventDefName(externalEventDefName);
+        ExternalEventNode.Builder out = ExternalEventNode.newBuilder().setExternalEventDefName(externalEventDefName);
 
         if (timeoutSeconds != null) out.setTimeoutSeconds(timeoutSeconds.toProto());
         return out;
@@ -49,8 +48,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         // TODO: validate the timeout
 
         if (eed == null) {
-            throw new LHValidationError(
-                    null, "Refers to nonexistent ExternalEventDef " + externalEventDefName);
+            throw new LHValidationError(null, "Refers to nonexistent ExternalEventDef " + externalEventDefName);
         }
     }
 

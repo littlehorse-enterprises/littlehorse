@@ -32,13 +32,12 @@ public class Tag extends Storeable<TagPb> {
 
     @Override
     public TagPb.Builder toProto() {
-        TagPb.Builder out =
-                TagPb.newBuilder()
-                        .setObjectType(objectType)
-                        .setDescribedObjectId(describedObjectId)
-                        .setCreated(LHUtil.fromDate(createdAt))
-                        .setStoreKey(this.getStoreKey())
-                        .setTagType(tagType);
+        TagPb.Builder out = TagPb.newBuilder()
+                .setObjectType(objectType)
+                .setDescribedObjectId(describedObjectId)
+                .setCreated(LHUtil.fromDate(createdAt))
+                .setStoreKey(this.getStoreKey())
+                .setTagType(tagType);
 
         for (Attribute attr : attributes) {
             out.addAttributes(attr.toProto());
@@ -68,8 +67,7 @@ public class Tag extends Storeable<TagPb> {
         return getAttributeString(getObjectType(), attributes);
     }
 
-    public static String getAttributeString(
-            GetableClassEnum objectType, List<Attribute> attributes) {
+    public static String getAttributeString(GetableClassEnum objectType, List<Attribute> attributes) {
         StringBuilder builder = new StringBuilder();
         builder.append(objectType.getNumber());
         builder.append("/");
@@ -82,13 +80,10 @@ public class Tag extends Storeable<TagPb> {
         return builder.toString();
     }
 
-    public static String getAttributeStringFromPb(
-            GetableClassEnum objectType, List<AttributePb> attributes) {
+    public static String getAttributeStringFromPb(GetableClassEnum objectType, List<AttributePb> attributes) {
         return getAttributeString(
                 objectType,
-                attributes.stream()
-                        .map(attr -> Attribute.fromProto(attr))
-                        .collect(Collectors.toList()));
+                attributes.stream().map(attr -> Attribute.fromProto(attr)).collect(Collectors.toList()));
     }
 
     public boolean isRemote() {

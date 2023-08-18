@@ -5,8 +5,7 @@ import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.meta.ExternalEventDefModel;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefResponse;
 
-public class PutExternalEventDefResponseModel
-        extends AbstractResponse<PutExternalEventDefResponse> {
+public class PutExternalEventDefResponseModel extends AbstractResponse<PutExternalEventDefResponse> {
 
     public ExternalEventDefModel result;
 

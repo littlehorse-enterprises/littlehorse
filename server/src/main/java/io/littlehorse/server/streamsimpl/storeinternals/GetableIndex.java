@@ -24,8 +24,7 @@ public class GetableIndex<T extends Getable<?>> {
         this.conditional = conditional;
     }
 
-    public GetableIndex(
-            List<Pair<String, ValueType>> attributes, Optional<TagStorageType> tagStorageType) {
+    public GetableIndex(List<Pair<String, ValueType>> attributes, Optional<TagStorageType> tagStorageType) {
         this(attributes, tagStorageType, null);
     }
 

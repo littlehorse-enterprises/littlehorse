@@ -110,10 +110,7 @@ public class BackendInternalComms implements Closeable {
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
     public BackendInternalComms(
-            LHConfig config,
-            KafkaStreams coreStreams,
-            KafkaStreams timerStreams,
-            Executor executor) {
+            LHConfig config, KafkaStreams coreStreams, KafkaStreams timerStreams, Executor executor) {
         this.config = config;
         this.coreStreams = coreStreams;
         this.timerStreams = timerStreams;
@@ -127,38 +124,32 @@ public class BackendInternalComms implements Closeable {
         if (security == null) {
             builder = ServerBuilder.forPort(config.getInternalBindPort());
         } else {
-            builder =
-                    Grpc.newServerBuilderForPort(
-                            config.getInternalBindPort(), config.getInternalServerCreds());
+            builder = Grpc.newServerBuilderForPort(config.getInternalBindPort(), config.getInternalServerCreds());
         }
 
-        internalGrpcServer =
-                builder.keepAliveTime(10, TimeUnit.SECONDS)
-                        .keepAliveTimeout(3, TimeUnit.SECONDS)
-                        .permitKeepAliveTime(10, TimeUnit.SECONDS)
-                        .permitKeepAliveWithoutCalls(true)
-                        .executor(executor)
-                        .addService(new InterBrokerCommServer())
-                        .build();
+        internalGrpcServer = builder.keepAliveTime(10, TimeUnit.SECONDS)
+                .keepAliveTimeout(3, TimeUnit.SECONDS)
+                .permitKeepAliveTime(10, TimeUnit.SECONDS)
+                .permitKeepAliveWithoutCalls(true)
+                .executor(executor)
+                .addService(new InterBrokerCommServer())
+                .build();
 
-        thisHost =
-                new HostInfo(
-                        config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
+        thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
         this.producer = config.getProducer();
         this.asyncWaiters = new AsyncWaiters();
 
         // TODO: Optimize this later.
-        new Thread(
-                        () -> {
-                            while (true) {
-                                try {
-                                    Thread.sleep(20 * 1000);
-                                    this.asyncWaiters.cleanupOldWaiters();
-                                } catch (InterruptedException exn) {
-                                    throw new RuntimeException(exn);
-                                }
-                            }
-                        })
+        new Thread(() -> {
+                    while (true) {
+                        try {
+                            Thread.sleep(20 * 1000);
+                            this.asyncWaiters.cleanupOldWaiters();
+                        } catch (InterruptedException exn) {
+                            throw new RuntimeException(exn);
+                        }
+                    }
+                })
                 .start();
     }
 
@@ -196,9 +187,8 @@ public class BackendInternalComms implements Closeable {
             String fullStoreKey,
             String partitionKey,
             StreamObserver<CentralStoreQueryResponse> observer) {
-        KeyQueryMetadata meta =
-                coreStreams.queryMetadataForKey(
-                        storeName, partitionKey, Serdes.String().serializer());
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+                storeName, partitionKey, Serdes.String().serializer());
 
         if (meta.activeHost().equals(thisHost)) {
             localGetBytesAsync(storeName, fullStoreKey, observer);
@@ -212,9 +202,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     private void localGetBytesAsync(
-            String storeName,
-            String fullStoreKey,
-            StreamObserver<CentralStoreQueryResponse> observer) {
+            String storeName, String fullStoreKey, StreamObserver<CentralStoreQueryResponse> observer) {
         // TODO: We should actually pass in the partition key so that we can
         // improve performance and also safety by getting the store for a specific
         // partition rather than all.
@@ -229,17 +217,12 @@ public class BackendInternalComms implements Closeable {
     }
 
     public void getLastFromPrefixAsync(
-            String prefix,
-            String partitionKey,
-            StreamObserver<CentralStoreQueryResponse> observer,
-            String storeName) {
-        KeyQueryMetadata meta =
-                coreStreams.queryMetadataForKey(
-                        storeName, partitionKey, Serdes.String().serializer());
+            String prefix, String partitionKey, StreamObserver<CentralStoreQueryResponse> observer, String storeName) {
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+                storeName, partitionKey, Serdes.String().serializer());
 
         if (meta.activeHost().equals(thisHost)) {
-            LHROStoreWrapper wrapper =
-                    new LHROStoreWrapper(getRawStore(null, false, storeName), config);
+            LHROStoreWrapper wrapper = new LHROStoreWrapper(getRawStore(null, false, storeName), config);
             Bytes result = wrapper.getLastBytesFromFullPrefix(prefix);
             CentralStoreQueryResponse.Builder out = CentralStoreQueryResponse.newBuilder();
             out.setCode(StoreQueryStatusPb.RSQ_OK);
@@ -250,7 +233,9 @@ public class BackendInternalComms implements Closeable {
         } else {
             queryRemoteAsync(
                     meta,
-                    CentralStoreSubQueryPb.newBuilder().setLastFromPrefix(prefix).build(),
+                    CentralStoreSubQueryPb.newBuilder()
+                            .setLastFromPrefix(prefix)
+                            .build(),
                     observer,
                     storeName);
         }
@@ -259,11 +244,10 @@ public class BackendInternalComms implements Closeable {
     // EMPLOYEE_TODO: determine if we can use generics here to provide some guards
     // against passing in a Command that's incompatible with the POSTStreamObserver.
     public void waitForCommand(Command command, StreamObserver<WaitForCommandResponse> observer) {
-        KeyQueryMetadata meta =
-                coreStreams.queryMetadataForKey(
-                        ServerTopology.CORE_STORE,
-                        command.getPartitionKey(),
-                        Serdes.String().serializer());
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+                ServerTopology.CORE_STORE,
+                command.getPartitionKey(),
+                Serdes.String().serializer());
 
         /*
          * As a prerequisite to this method being called, the command has already
@@ -275,7 +259,9 @@ public class BackendInternalComms implements Closeable {
         } else {
             getInternalAsyncClient(meta.activeHost())
                     .waitForCommand(
-                            WaitForCommandPb.newBuilder().setCommandId(command.commandId).build(),
+                            WaitForCommandPb.newBuilder()
+                                    .setCommandId(command.commandId)
+                                    .build(),
                             observer);
         }
     }
@@ -288,21 +274,20 @@ public class BackendInternalComms implements Closeable {
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
-    public io.littlehorse.sdk.common.proto.HostInfo getAdvertisedHost(
-            HostModel host, String listenerName) throws LHBadRequestError, LHConnectionError {
+    public io.littlehorse.sdk.common.proto.HostInfo getAdvertisedHost(HostModel host, String listenerName)
+            throws LHBadRequestError, LHConnectionError {
         InternalGetAdvertisedHostsResponse advertisedHostsForHost =
                 getPublicListenersForHost(new HostInfo(host.host, host.port));
 
         io.littlehorse.sdk.common.proto.HostInfo desiredHost =
                 advertisedHostsForHost.getHostsOrDefault(listenerName, null);
         if (desiredHost == null) {
-            String message =
-                    String.format(
-                            """
+            String message = String.format(
+                    """
                 Unknown listener name %s. Check LHS_ADVERTISED_LISTENERS on
                 LH Server and check the LHW_SERVER_CONNECT_LISTENER config on task worker.
                 """,
-                            listenerName);
+                    listenerName);
             throw new LHBadRequestError(message);
         }
 
@@ -341,17 +326,15 @@ public class BackendInternalComms implements Closeable {
         }
 
         try {
-            InternalGetAdvertisedHostsResponse info =
-                    getInternalClient(streamsHost)
-                            .getAdvertisedHosts(InternalGetAdvertisedHostsPb.newBuilder().build());
+            InternalGetAdvertisedHostsResponse info = getInternalClient(streamsHost)
+                    .getAdvertisedHosts(
+                            InternalGetAdvertisedHostsPb.newBuilder().build());
 
             otherHosts.put(streamsHost, info);
             return info;
         } catch (Exception exn) {
             throw new LHConnectionError(
-                    exn,
-                    String.format(
-                            "Host '{}:{}' unreachable", streamsHost.host(), streamsHost.port()));
+                    exn, String.format("Host '{}:{}' unreachable", streamsHost.host(), streamsHost.port()));
         }
     }
 
@@ -367,8 +350,7 @@ public class BackendInternalComms implements Closeable {
         asyncWaiters.markCommandFailed(commandId, caught);
     }
 
-    private void localWaitForCommand(
-            String commandId, StreamObserver<WaitForCommandResponse> observer) {
+    private void localWaitForCommand(String commandId, StreamObserver<WaitForCommandResponse> observer) {
         asyncWaiters.put(commandId, observer);
         // Once the command has been recorded, we've got nothing to do: the
         // CommandProcessor will notify the StreamObserver once the command is
@@ -378,8 +360,7 @@ public class BackendInternalComms implements Closeable {
     private ReadOnlyKeyValueStore<String, Bytes> getRawStore(
             Integer specificPartition, boolean enableStaleStores, String storeName) {
         StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
-                StoreQueryParameters.fromNameAndType(
-                        storeName, QueryableStoreTypes.keyValueStore());
+                StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());
 
         if (enableStaleStores) {
             params = params.enableStaleStores();
@@ -392,10 +373,8 @@ public class BackendInternalComms implements Closeable {
         return coreStreams.store(params);
     }
 
-    private LHROStoreWrapper getStore(
-            Integer specificPartition, boolean enableStaleStores, String storeName) {
-        ReadOnlyKeyValueStore<String, Bytes> rawStore =
-                getRawStore(specificPartition, enableStaleStores, storeName);
+    private LHROStoreWrapper getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
+        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, enableStaleStores, storeName);
         return new LHROStoreWrapper(rawStore, config);
     }
 
@@ -443,14 +422,12 @@ public class BackendInternalComms implements Closeable {
         ManagedChannel channel = channels.get(key);
         if (channel == null) {
             if (clientCreds == null) {
-                channel =
-                        ManagedChannelBuilder.forAddress(host.host(), host.port())
-                                .usePlaintext()
-                                .build();
+                channel = ManagedChannelBuilder.forAddress(host.host(), host.port())
+                        .usePlaintext()
+                        .build();
             } else {
-                channel =
-                        Grpc.newChannelBuilderForAddress(host.host(), host.port(), clientCreds)
-                                .build();
+                channel = Grpc.newChannelBuilderForAddress(host.host(), host.port(), clientCreds)
+                        .build();
             }
             channels.put(key, channel);
         }
@@ -465,16 +442,14 @@ public class BackendInternalComms implements Closeable {
 
         @Override
         public void topologyInstancesState(
-                TopologyInstanceStatePb request,
-                StreamObserver<TopologyInstanceStateResponse> ctx) {
+                TopologyInstanceStatePb request, StreamObserver<TopologyInstanceStateResponse> ctx) {
             var coreServerStates = buildServerStates(coreStreams, "core");
             var timerServerStates = buildServerStates(timerStreams, "timer");
 
-            TopologyInstanceStateResponse response =
-                    TopologyInstanceStateResponse.newBuilder()
-                            .addAllServersCore(coreServerStates)
-                            .addAllServersTimer(timerServerStates)
-                            .build();
+            TopologyInstanceStateResponse response = TopologyInstanceStateResponse.newBuilder()
+                    .addAllServersCore(coreServerStates)
+                    .addAllServersTimer(timerServerStates)
+                    .build();
 
             ctx.onNext(response);
             ctx.onCompleted();
@@ -482,72 +457,57 @@ public class BackendInternalComms implements Closeable {
 
         private List<ServerStatePb> buildServerStates(KafkaStreams kafkaStreams, String name) {
             List<ServerStatePb> serverStates = new ArrayList<>();
-            kafkaStreams
-                    .metadataForAllStreamsClients()
-                    .forEach(
-                            streamsClient -> {
-                                var hostInfo = streamsClient.hostInfo();
-                                var internalClient = getInternalClient(hostInfo);
+            kafkaStreams.metadataForAllStreamsClients().forEach(streamsClient -> {
+                var hostInfo = streamsClient.hostInfo();
+                var internalClient = getInternalClient(hostInfo);
 
-                                try {
-                                    LocalTasksResponse hostTask =
-                                            internalClient.localTasks(
-                                                    LocalTasksPb.newBuilder().build());
-                                    ServerStatePb serverState =
-                                            ServerStatePb.newBuilder()
-                                                    .addAllActiveTasks(
-                                                            hostTask.getActiveTasksList())
-                                                    .addAllStandbyTasks(
-                                                            hostTask.getStandbyTasksList())
-                                                    .setHost(hostInfo.host())
-                                                    .setPort(hostInfo.port())
-                                                    .setServerStatus(ServerStatusPb.HOST_UP)
-                                                    .setTopologyName(name)
-                                                    .build();
+                try {
+                    LocalTasksResponse hostTask =
+                            internalClient.localTasks(LocalTasksPb.newBuilder().build());
+                    ServerStatePb serverState = ServerStatePb.newBuilder()
+                            .addAllActiveTasks(hostTask.getActiveTasksList())
+                            .addAllStandbyTasks(hostTask.getStandbyTasksList())
+                            .setHost(hostInfo.host())
+                            .setPort(hostInfo.port())
+                            .setServerStatus(ServerStatusPb.HOST_UP)
+                            .setTopologyName(name)
+                            .build();
 
-                                    serverStates.add(serverState);
-                                } catch (Exception e) {
-                                    log.warn("Host {} not available to get info", hostInfo);
-                                    ServerStatePb serverState =
-                                            ServerStatePb.newBuilder()
-                                                    .addAllActiveTasks(List.of())
-                                                    .addAllStandbyTasks(List.of())
-                                                    .setHost(hostInfo.host())
-                                                    .setPort(hostInfo.port())
-                                                    .setServerStatus(ServerStatusPb.HOST_DOWN)
-                                                    .setTopologyName(name)
-                                                    .setErrorMessage(e.getMessage())
-                                                    .build();
+                    serverStates.add(serverState);
+                } catch (Exception e) {
+                    log.warn("Host {} not available to get info", hostInfo);
+                    ServerStatePb serverState = ServerStatePb.newBuilder()
+                            .addAllActiveTasks(List.of())
+                            .addAllStandbyTasks(List.of())
+                            .setHost(hostInfo.host())
+                            .setPort(hostInfo.port())
+                            .setServerStatus(ServerStatusPb.HOST_DOWN)
+                            .setTopologyName(name)
+                            .setErrorMessage(e.getMessage())
+                            .build();
 
-                                    serverStates.add(serverState);
-                                }
-                            });
+                    serverStates.add(serverState);
+                }
+            });
             return serverStates;
         }
 
         @Override
         public void localTasks(LocalTasksPb request, StreamObserver<LocalTasksResponse> ctx) {
-            List<TaskStatePb> activeTasks =
-                    coreStreams.metadataForLocalThreads().stream()
-                            .flatMap(threadMetadata -> threadMetadata.activeTasks().stream())
-                            .flatMap(
-                                    taskMetadata ->
-                                            this.buildActiveTasksStatePb(taskMetadata).stream())
-                            .collect(Collectors.toList());
+            List<TaskStatePb> activeTasks = coreStreams.metadataForLocalThreads().stream()
+                    .flatMap(threadMetadata -> threadMetadata.activeTasks().stream())
+                    .flatMap(taskMetadata -> this.buildActiveTasksStatePb(taskMetadata).stream())
+                    .collect(Collectors.toList());
 
-            List<StandByTaskStatePb> standbyTasks =
-                    coreStreams.metadataForLocalThreads().stream()
-                            .flatMap(threadMetadata -> threadMetadata.standbyTasks().stream())
-                            .flatMap(
-                                    taskMetadata ->
-                                            this.buildStandbyTasksStatePb(taskMetadata).stream())
-                            .collect(Collectors.toList());
+            List<StandByTaskStatePb> standbyTasks = coreStreams.metadataForLocalThreads().stream()
+                    .flatMap(threadMetadata -> threadMetadata.standbyTasks().stream())
+                    .flatMap(taskMetadata -> this.buildStandbyTasksStatePb(taskMetadata).stream())
+                    .collect(Collectors.toList());
 
-            LocalTasksResponse response =
-                    LocalTasksResponse.newBuilder()
-                            .addAllActiveTasks(activeTasks)
-                            .addAllStandbyTasks(standbyTasks)
-                            .build();
+            LocalTasksResponse response = LocalTasksResponse.newBuilder()
+                    .addAllActiveTasks(activeTasks)
+                    .addAllStandbyTasks(standbyTasks)
+                    .build();
 
             ctx.onNext(response);
             ctx.onCompleted();
@@ -555,41 +515,39 @@ public class BackendInternalComms implements Closeable {
 
         private List<TaskStatePb> buildActiveTasksStatePb(TaskMetadata taskMetadata) {
             return taskMetadata.topicPartitions().stream()
-                    .map(
-                            topicPartition -> {
-                                Long currentOffset = getCurrentOffset(taskMetadata, topicPartition);
-                                Long endOffset = getEndOffset(taskMetadata, topicPartition);
-                                return TaskStatePb.newBuilder()
-                                        .setTaskId(taskMetadata.taskId().toString())
-                                        .setTopic(topicPartition.topic())
-                                        .setPartition(topicPartition.partition())
-                                        .setHost(thisHost.host())
-                                        .setPort(thisHost.port())
-                                        .setCurrentOffset(currentOffset)
-                                        .setLag(calculateLag(currentOffset, endOffset))
-                                        .setRackId(config.getRackId())
-                                        .build();
-                            })
+                    .map(topicPartition -> {
+                        Long currentOffset = getCurrentOffset(taskMetadata, topicPartition);
+                        Long endOffset = getEndOffset(taskMetadata, topicPartition);
+                        return TaskStatePb.newBuilder()
+                                .setTaskId(taskMetadata.taskId().toString())
+                                .setTopic(topicPartition.topic())
+                                .setPartition(topicPartition.partition())
+                                .setHost(thisHost.host())
+                                .setPort(thisHost.port())
+                                .setCurrentOffset(currentOffset)
+                                .setLag(calculateLag(currentOffset, endOffset))
+                                .setRackId(config.getRackId())
+                                .build();
+                    })
                     .collect(Collectors.toList());
         }
 
         private List<StandByTaskStatePb> buildStandbyTasksStatePb(TaskMetadata taskMetadata) {
             return taskMetadata.topicPartitions().stream()
-                    .map(
-                            topicPartition -> {
-                                Long currentOffset = getCurrentOffset(taskMetadata, topicPartition);
+                    .map(topicPartition -> {
+                        Long currentOffset = getCurrentOffset(taskMetadata, topicPartition);
 
-                                Long endOffset = getEndOffset(taskMetadata, topicPartition);
+                        Long endOffset = getEndOffset(taskMetadata, topicPartition);
 
-                                return StandByTaskStatePb.newBuilder()
-                                        .setTaskId(taskMetadata.taskId().toString())
-                                        .setHost(thisHost.host())
-                                        .setPort(thisHost.port())
-                                        .setCurrentOffset(currentOffset)
-                                        .setLag(calculateLag(currentOffset, endOffset))
-                                        .setRackId(config.getRackId())
-                                        .build();
-                            })
+                        return StandByTaskStatePb.newBuilder()
+                                .setTaskId(taskMetadata.taskId().toString())
+                                .setHost(thisHost.host())
+                                .setPort(thisHost.port())
+                                .setCurrentOffset(currentOffset)
+                                .setLag(calculateLag(currentOffset, endOffset))
+                                .setRackId(config.getRackId())
+                                .build();
+                    })
                     .collect(Collectors.toList());
         }
 
@@ -621,8 +579,7 @@ public class BackendInternalComms implements Closeable {
          * the response.
          */
         @Override
-        public void centralStoreQuery(
-                CentralStoreQueryPb req, StreamObserver<CentralStoreQueryResponse> ctx) {
+        public void centralStoreQuery(CentralStoreQueryPb req, StreamObserver<CentralStoreQueryResponse> ctx) {
             Integer specificPartition = null;
             if (req.hasSpecificPartition()) {
                 specificPartition = req.getSpecificPartition();
@@ -632,8 +589,7 @@ public class BackendInternalComms implements Closeable {
 
             ReadOnlyKeyValueStore<String, Bytes> rawStore;
             try {
-                rawStore =
-                        getRawStore(specificPartition, req.getEnableStaleStores(), req.getStore());
+                rawStore = getRawStore(specificPartition, req.getEnableStaleStores(), req.getStore());
             } catch (Exception exn) {
                 log.error(exn.getMessage(), exn);
                 out.setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE);
@@ -648,9 +604,8 @@ public class BackendInternalComms implements Closeable {
                     result = rawStore.get(req.getQuery().getKey());
                     break;
                 case LAST_FROM_PREFIX:
-                    result =
-                            new LHROStoreWrapper(rawStore, config)
-                                    .getLastBytesFromFullPrefix(req.getQuery().getLastFromPrefix());
+                    result = new LHROStoreWrapper(rawStore, config)
+                            .getLastBytesFromFullPrefix(req.getQuery().getLastFromPrefix());
                     break;
                 case QUERY_NOT_SET:
                 default:
@@ -674,40 +629,34 @@ public class BackendInternalComms implements Closeable {
                 InternalScanResponse reply = doScan(lhis);
                 ctx.onNext(reply);
             } catch (LHConnectionError exn) {
-                ctx.onNext(
-                        InternalScanResponse.newBuilder()
-                                .setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE)
-                                .setMessage("Internal connection error: " + exn.getMessage())
-                                .build());
+                ctx.onNext(InternalScanResponse.newBuilder()
+                        .setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE)
+                        .setMessage("Internal connection error: " + exn.getMessage())
+                        .build());
             }
 
             ctx.onCompleted();
         }
 
         @Override
-        public void waitForCommand(
-                WaitForCommandPb req, StreamObserver<WaitForCommandResponse> ctx) {
+        public void waitForCommand(WaitForCommandPb req, StreamObserver<WaitForCommandResponse> ctx) {
             localWaitForCommand(req.getCommandId(), ctx);
         }
 
         @Override
         public void getAdvertisedHosts(
-                InternalGetAdvertisedHostsPb req,
-                StreamObserver<InternalGetAdvertisedHostsResponse> ctx) {
-            Map<String, io.littlehorse.sdk.common.proto.HostInfo> hosts =
-                    config.getAdvertisedListeners().stream()
-                            .collect(
-                                    Collectors.toMap(
-                                            AdvertisedListenerConfig::getName,
-                                            listenerConfig ->
-                                                    io.littlehorse.sdk.common.proto.HostInfo
-                                                            .newBuilder()
-                                                            .setHost(listenerConfig.getHost())
-                                                            .setPort(listenerConfig.getPort())
-                                                            .build()));
+                InternalGetAdvertisedHostsPb req, StreamObserver<InternalGetAdvertisedHostsResponse> ctx) {
+            Map<String, io.littlehorse.sdk.common.proto.HostInfo> hosts = config.getAdvertisedListeners().stream()
+                    .collect(Collectors.toMap(
+                            AdvertisedListenerConfig::getName,
+                            listenerConfig -> io.littlehorse.sdk.common.proto.HostInfo.newBuilder()
+                                    .setHost(listenerConfig.getHost())
+                                    .setPort(listenerConfig.getPort())
+                                    .build()));
 
-            InternalGetAdvertisedHostsResponse reply =
-                    InternalGetAdvertisedHostsResponse.newBuilder().putAllHosts(hosts).build();
+            InternalGetAdvertisedHostsResponse reply = InternalGetAdvertisedHostsResponse.newBuilder()
+                    .putAllHosts(hosts)
+                    .build();
 
             ctx.onNext(reply);
             ctx.onCompleted();
@@ -732,11 +681,8 @@ public class BackendInternalComms implements Closeable {
     }
 
     private InternalScanResponse specificPartitionTagScan(InternalScan search) {
-        KeyQueryMetadata meta =
-                coreStreams.queryMetadataForKey(
-                        search.getStoreName(),
-                        search.getPartitionKey(),
-                        Serdes.String().serializer());
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+                search.getStoreName(), search.getPartitionKey(), Serdes.String().serializer());
         InternalScanResponse.Builder out = InternalScanResponse.newBuilder();
         HostInfo activeHost = meta.activeHost();
 
@@ -744,19 +690,16 @@ public class BackendInternalComms implements Closeable {
             LHROStoreWrapper store = getStore(meta.partition(), false, search.getStoreName());
 
             String prefix = search.getTagScan().getKeyPrefix() + "/";
-            try (LHKeyValueIterator<Tag> tagScanResultIterator =
-                    store.prefixScan(prefix, Tag.class)) {
+            try (LHKeyValueIterator<Tag> tagScanResultIterator = store.prefixScan(prefix, Tag.class)) {
                 List<ByteString> matchingObjectIds = new ArrayList<>();
                 while (tagScanResultIterator.hasNext()) {
                     LHIterKeyValue<Tag> currentItem = tagScanResultIterator.next();
                     Tag matchingTag = currentItem.getValue();
-                    ByteString matchingObjectId =
-                            ObjectId.fromString(
-                                            matchingTag.getDescribedObjectId(),
-                                            Getable.getIdCls(search.getObjectType()))
-                                    .toProto()
-                                    .build()
-                                    .toByteString();
+                    ByteString matchingObjectId = ObjectId.fromString(
+                                    matchingTag.getDescribedObjectId(), Getable.getIdCls(search.getObjectType()))
+                            .toProto()
+                            .build()
+                            .toByteString();
                     matchingObjectIds.add(matchingObjectId);
                     if (matchingObjectIds.size() == search.getLimit()) {
                         break;
@@ -780,7 +723,8 @@ public class BackendInternalComms implements Closeable {
             return objectIdPrefixScanOnThisHost(search);
         } else {
             try {
-                return getInternalClient(correctHost).internalScan(search.toProto().build());
+                return getInternalClient(correctHost)
+                        .internalScan(search.toProto().build());
             } catch (Exception exn) {
                 // EMPLOYEE_TODO: make the caught exn specific to grpc
                 // EMPLOYEE_TODO: use standby hosts
@@ -804,14 +748,12 @@ public class BackendInternalComms implements Closeable {
         }
         InternalScanResponse.Builder out = InternalScanResponse.newBuilder();
 
-        KeyQueryMetadata meta =
-                coreStreams.queryMetadataForKey(
-                        req.storeName, req.partitionKey, Serdes.String().serializer());
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+                req.storeName, req.partitionKey, Serdes.String().serializer());
         int partition = meta.partition();
 
         LHROStoreWrapper store = getStore(partition, false, req.storeName);
-        PartitionBookmarkPb partBookmark =
-                reqBookmark.getInProgressPartitionsOrDefault(partition, null);
+        PartitionBookmarkPb partBookmark = reqBookmark.getInProgressPartitionsOrDefault(partition, null);
 
         String endKey = req.boundedObjectIdScan.getEndObjectId() + "~";
         String startKey;
@@ -832,8 +774,7 @@ public class BackendInternalComms implements Closeable {
                     brokenBecauseOutOfData = false;
                     break;
                 }
-                out.addResults(
-                        iterKeyValueToInternalScanResult(next, req.resultType, req.objectType));
+                out.addResults(iterKeyValueToInternalScanResult(next, req.resultType, req.objectType));
             }
         }
 
@@ -841,14 +782,12 @@ public class BackendInternalComms implements Closeable {
             // Then we have more data for the next request, so we want to return
             // a bookmark.
 
-            PartitionBookmarkPb nextBookmark =
-                    PartitionBookmarkPb.newBuilder()
-                            .setParttion(partition)
-                            .setLastKey(bookmarkKey)
-                            .build();
+            PartitionBookmarkPb nextBookmark = PartitionBookmarkPb.newBuilder()
+                    .setParttion(partition)
+                    .setLastKey(bookmarkKey)
+                    .build();
 
-            out.setUpdatedBookmark(
-                    BookmarkPb.newBuilder().putInProgressPartitions(partition, nextBookmark));
+            out.setUpdatedBookmark(BookmarkPb.newBuilder().putInProgressPartitions(partition, nextBookmark));
         } else {
             // If we never set `bookmarkKey`, then we know that we read all of the
             // data. So we don't set a bookmark on the response.
@@ -863,9 +802,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     private ByteString iterKeyValueToInternalScanResult(
-            LHIterKeyValue<? extends Storeable<?>> next,
-            ScanResultTypePb resultType,
-            GetableClassEnum objectType) {
+            LHIterKeyValue<? extends Storeable<?>> next, ScanResultTypePb resultType, GetableClassEnum objectType) {
         if (resultType == ScanResultTypePb.OBJECT) {
             return ByteString.copyFrom(next.getValue().toBytes(config));
         } else if (resultType == ScanResultTypePb.OBJECT_ID) {
@@ -909,8 +846,7 @@ public class BackendInternalComms implements Closeable {
         // Basically, what we need to do is find the set of all partitions that
         // AREN'T in the BookmarkPb::getCompletedPartitionsList();
         while (out.hasUpdatedBookmark() && out.getResultsCount() < search.limit) {
-            HostInfo otherHost =
-                    getHostForPartition(getRandomUnfinishedPartition(out.getUpdatedBookmark()));
+            HostInfo otherHost = getHostForPartition(getRandomUnfinishedPartition(out.getUpdatedBookmark()));
             if (otherHost.equals(thisHost)) {
                 throw new RuntimeException("wtf, host the same");
             }
@@ -934,10 +870,9 @@ public class BackendInternalComms implements Closeable {
             if (reply.getCode() != StoreQueryStatusPb.RSQ_OK) {
                 throw new LHConnectionError(null, "Failed connecting to backend.");
             }
-            InternalScanResponse.Builder newOutBuilder =
-                    InternalScanResponse.newBuilder()
-                            .addAllResults(out.getResultsList())
-                            .addAllResults(reply.getResultsList());
+            InternalScanResponse.Builder newOutBuilder = InternalScanResponse.newBuilder()
+                    .addAllResults(out.getResultsList())
+                    .addAllResults(reply.getResultsList());
 
             if (reply.hasUpdatedBookmark()) {
                 newOutBuilder.setUpdatedBookmark(reply.getUpdatedBookmark());
@@ -968,9 +903,8 @@ public class BackendInternalComms implements Closeable {
     }
 
     private HostInfo getHostForKey(String storeName, String partitionKey) {
-        KeyQueryMetadata meta =
-                coreStreams.queryMetadataForKey(
-                        storeName, partitionKey, Serdes.String().serializer());
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+                storeName, partitionKey, Serdes.String().serializer());
         return meta.activeHost();
     }
 
@@ -1029,14 +963,8 @@ public class BackendInternalComms implements Closeable {
             }
 
             // Add all matching objects from that partition
-            Pair<List<ByteString>, PartitionBookmarkPb> result =
-                    onePartitionPaginatedTagScan(
-                            req.tagScan,
-                            partBookmark,
-                            curLimit,
-                            req.objectType,
-                            partition,
-                            partStore);
+            Pair<List<ByteString>, PartitionBookmarkPb> result = onePartitionPaginatedTagScan(
+                    req.tagScan, partBookmark, curLimit, req.objectType, partition, partStore);
 
             curLimit -= result.getLeft().size();
             out.addAllResults(result.getLeft());
@@ -1087,10 +1015,7 @@ public class BackendInternalComms implements Closeable {
         if (bookmark == null) {
             startKey = tagPrefixScan.getKeyPrefix() + "/";
             if (tagPrefixScan.hasEarliestCreateTime()) {
-                startKey +=
-                        LHUtil.toLhDbFormat(
-                                        LHUtil.fromProtoTs(tagPrefixScan.getEarliestCreateTime()))
-                                + "/";
+                startKey += LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagPrefixScan.getEarliestCreateTime())) + "/";
             }
         } else {
             startKey = bookmark.getLastKey();
@@ -1098,9 +1023,7 @@ public class BackendInternalComms implements Closeable {
 
         endKey = tagPrefixScan.getKeyPrefix() + "/";
         if (tagPrefixScan.hasLatestCreateTime()) {
-            endKey +=
-                    LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagPrefixScan.getLatestCreateTime()))
-                            + "/";
+            endKey += LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagPrefixScan.getLatestCreateTime())) + "/";
         }
         endKey += "~";
 
@@ -1110,11 +1033,10 @@ public class BackendInternalComms implements Closeable {
                 LHIterKeyValue<Tag> next = iter.next();
                 Tag tag = next.getValue();
                 if (--limit < 0) {
-                    bookmarkOut =
-                            PartitionBookmarkPb.newBuilder()
-                                    .setParttion(partition)
-                                    .setLastKey(tag.getStoreKey())
-                                    .build();
+                    bookmarkOut = PartitionBookmarkPb.newBuilder()
+                            .setParttion(partition)
+                            .setLastKey(tag.getStoreKey())
+                            .build();
 
                     // broke loop because we filled up the limit
                     brokenBecauseOutOfData = false;
@@ -1124,11 +1046,10 @@ public class BackendInternalComms implements Closeable {
                 // Turn the ID String into the ObjectId structure, then serialize it
                 // to proto
                 Class<? extends ObjectId<?, ?, ?>> idCls = Getable.getIdCls(objectType);
-                idsOut.add(
-                        ObjectId.fromString(next.getValue().describedObjectId, idCls)
-                                .toProto()
-                                .build()
-                                .toByteString());
+                idsOut.add(ObjectId.fromString(next.getValue().describedObjectId, idCls)
+                        .toProto()
+                        .build()
+                        .toByteString());
             }
 
             if (brokenBecauseOutOfData) {
@@ -1172,8 +1093,7 @@ class GlobalMetaStoresServerImpl implements LHGlobalMetaStores {
 
     public GlobalMetaStoresServerImpl(KafkaStreams coreStreams, LHConfig config) {
         StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
-                StoreQueryParameters.fromNameAndType(
-                        ServerTopology.GLOBAL_STORE, QueryableStoreTypes.keyValueStore());
+                StoreQueryParameters.fromNameAndType(ServerTopology.GLOBAL_STORE, QueryableStoreTypes.keyValueStore());
 
         store = new LHROStoreWrapper(coreStreams.store(params), config);
     }
@@ -1195,7 +1115,6 @@ class GlobalMetaStoresServerImpl implements LHGlobalMetaStores {
     }
 
     public UserTaskDefModel getUserTaskDef(String name, Integer version) {
-        return (store.get(
-                new UserTaskDefIdModel(name, version).getStoreKey(), UserTaskDefModel.class));
+        return (store.get(new UserTaskDefIdModel(name, version).getStoreKey(), UserTaskDefModel.class));
     }
 }

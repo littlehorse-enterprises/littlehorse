@@ -63,9 +63,7 @@ public class PutExternalEventDefRequestModel
             ExternalEventDefModel spec = new ExternalEventDefModel();
             spec.name = name;
             spec.retentionHours =
-                    retentionHours == null
-                            ? config.getDefaultExternalEventRetentionHours()
-                            : retentionHours;
+                    retentionHours == null ? config.getDefaultExternalEventRetentionHours() : retentionHours;
 
             dao.putExternalEventDef(spec);
 

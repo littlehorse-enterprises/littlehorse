@@ -139,20 +139,12 @@ public class TaskWorkerHeartBeatRequestModel extends SubCommand<TaskWorkerHeartB
     private boolean removeInactiveWorkers(TaskWorkerGroupModel taskWorkerGroup) {
         int sizeBeforeFiltering = taskWorkerGroup.taskWorkers.size();
 
-        taskWorkerGroup.taskWorkers =
-                taskWorkerGroup.taskWorkers.values().stream()
-                        .filter(
-                                taskWorker ->
-                                        Duration.between(
-                                                                        taskWorker.latestHeartbeat
-                                                                                .toInstant(),
-                                                                        Instant.now())
-                                                                .toSeconds()
-                                                        < MAX_TASK_WORKER_INACTIVITY
-                                                || taskWorker.clientId == clientId)
-                        .collect(
-                                Collectors.toMap(
-                                        taskWorker -> taskWorker.clientId, Function.identity()));
+        taskWorkerGroup.taskWorkers = taskWorkerGroup.taskWorkers.values().stream()
+                .filter(taskWorker -> Duration.between(taskWorker.latestHeartbeat.toInstant(), Instant.now())
+                                        .toSeconds()
+                                < MAX_TASK_WORKER_INACTIVITY
+                        || taskWorker.clientId == clientId)
+                .collect(Collectors.toMap(taskWorker -> taskWorker.clientId, Function.identity()));
 
         return sizeBeforeFiltering > taskWorkerGroup.taskWorkers.size();
     }
@@ -169,11 +161,10 @@ public class TaskWorkerHeartBeatRequestModel extends SubCommand<TaskWorkerHeartB
 
     @Override
     public TaskWorkerHeartBeatRequest.Builder toProto() {
-        TaskWorkerHeartBeatRequest.Builder builder =
-                TaskWorkerHeartBeatRequest.newBuilder()
-                        .setClientId(clientId)
-                        .setTaskDefName(taskDefName)
-                        .setListenerName(listenerName);
+        TaskWorkerHeartBeatRequest.Builder builder = TaskWorkerHeartBeatRequest.newBuilder()
+                .setClientId(clientId)
+                .setTaskDefName(taskDefName)
+                .setListenerName(listenerName);
         return builder;
     }
 

@@ -5,8 +5,7 @@ import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.SearchNodeRunResponse;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
-public class SearchNodeRunReply
-        extends PublicScanReply<SearchNodeRunResponse, NodeRunId, NodeRunIdModel> {
+public class SearchNodeRunReply extends PublicScanReply<SearchNodeRunResponse, NodeRunId, NodeRunIdModel> {
 
     public Class<SearchNodeRunResponse> getProtoBaseClass() {
         return SearchNodeRunResponse.class;

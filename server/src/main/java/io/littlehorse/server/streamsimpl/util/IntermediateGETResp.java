@@ -7,8 +7,7 @@ import io.littlehorse.sdk.common.proto.LHResponseCode;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class IntermediateGETResp<
-        U extends Message, T extends LHSerializable<U>, V extends Message> {
+public class IntermediateGETResp<U extends Message, T extends LHSerializable<U>, V extends Message> {
 
     public String message;
     public LHResponseCode code;
@@ -24,9 +23,8 @@ public class IntermediateGETResp<
     @SuppressWarnings("unchecked")
     public V toProto() {
         try {
-            GeneratedMessageV3.Builder<?> b =
-                    (GeneratedMessageV3.Builder<?>)
-                            responseCls.getMethod("newBuilder").invoke(null);
+            GeneratedMessageV3.Builder<?> b = (GeneratedMessageV3.Builder<?>)
+                    responseCls.getMethod("newBuilder").invoke(null);
             if (message != null) {
                 b.getClass().getMethod("setMessage", String.class).invoke(b, message);
             }

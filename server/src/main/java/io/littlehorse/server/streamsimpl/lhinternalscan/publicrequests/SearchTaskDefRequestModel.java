@@ -20,11 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SearchTaskDefRequestModel
         extends PublicScanRequest<
-                SearchTaskDefRequest,
-                SearchTaskDefResponse,
-                TaskDefId,
-                TaskDefIdModel,
-                SearchTaskDefReply> {
+                SearchTaskDefRequest, SearchTaskDefResponse, TaskDefId, TaskDefIdModel, SearchTaskDefReply> {
 
     public String prefix;
 
@@ -79,8 +75,7 @@ public class SearchTaskDefRequestModel
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         if (prefix != null && !prefix.equals("")) {
-            return new ObjectIdScanBoundaryStrategy(
-                    LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
+            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
         } else {
             return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, "", "~");
         }

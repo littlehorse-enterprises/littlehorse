@@ -64,8 +64,8 @@ public class SearchExternalEventRequestModel
                 wfRunId = p.getWfRunId();
                 break;
             case EXTERNAL_EVENT_DEF_NAME_AND_STATUS:
-                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest
-                        externalEventDefNameAndStatus = p.getExternalEventDefNameAndStatus();
+                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest externalEventDefNameAndStatus =
+                        p.getExternalEventDefNameAndStatus();
                 externalEventDefName = externalEventDefNameAndStatus.getExternalEventDefName();
                 if (externalEventDefNameAndStatus.hasIsClaimed()) {
                     isClaimed = Optional.of(externalEventDefNameAndStatus.getIsClaimed());
@@ -91,11 +91,9 @@ public class SearchExternalEventRequestModel
                 out.setWfRunId(wfRunId);
                 break;
             case EXTERNAL_EVENT_DEF_NAME_AND_STATUS:
-                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest.Builder
-                        byExtEvtDefNameAndStatusPb =
-                                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest
-                                        .newBuilder()
-                                        .setExternalEventDefName(externalEventDefName);
+                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest.Builder byExtEvtDefNameAndStatusPb =
+                        SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest.newBuilder()
+                                .setExternalEventDefName(externalEventDefName);
                 isClaimed.ifPresent(b -> byExtEvtDefNameAndStatusPb.setIsClaimed(b));
                 out.setExternalEventDefNameAndStatus(byExtEvtDefNameAndStatusPb);
                 break;
@@ -108,11 +106,9 @@ public class SearchExternalEventRequestModel
 
     public List<Attribute> getSearchAttributes() {
         return isClaimed
-                .map(
-                        claimed ->
-                                List.of(
-                                        new Attribute("extEvtDefName", externalEventDefName),
-                                        new Attribute("isClaimed", String.valueOf(claimed))))
+                .map(claimed -> List.of(
+                        new Attribute("extEvtDefName", externalEventDefName),
+                        new Attribute("isClaimed", String.valueOf(claimed))))
                 .orElse(List.of(new Attribute("extEvtDefName", externalEventDefName)));
     }
 
@@ -122,15 +118,12 @@ public class SearchExternalEventRequestModel
                 getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
         List<GetableIndex<? extends Getable<?>>> indexConfigurations =
                 new ExternalEventModel().getIndexConfigurations();
-        GetableIndex<? extends Getable<?>> getableIndex =
-                indexConfigurations.stream()
-                        .filter(
-                                getableIndexConfiguration -> {
-                                    return getableIndexConfiguration.searchAttributesMatch(
-                                            searchAttributes);
-                                })
-                        .findFirst()
-                        .orElse(null);
+        GetableIndex<? extends Getable<?>> getableIndex = indexConfigurations.stream()
+                .filter(getableIndexConfiguration -> {
+                    return getableIndexConfiguration.searchAttributesMatch(searchAttributes);
+                })
+                .findFirst()
+                .orElse(null);
         if (getableIndex != null) {
             return getableIndex.getTagStorageType().get();
         } else {
@@ -146,8 +139,7 @@ public class SearchExternalEventRequestModel
         if (type == ExtEvtCriteriaCase.WF_RUN_ID) {
             return new ObjectIdScanBoundaryStrategy(wfRunId);
         } else if (type.equals(ExtEvtCriteriaCase.EXTERNAL_EVENT_DEF_NAME_AND_STATUS)) {
-            return new TagScanBoundaryStrategy(
-                    searchAttributeString, Optional.empty(), Optional.empty());
+            return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
         } else {
             throw new IllegalArgumentException("%s type is not supported yet".formatted(type));
         }

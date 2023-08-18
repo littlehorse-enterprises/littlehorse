@@ -34,7 +34,8 @@ public class PutUserTaskDefRequestModel extends SubCommand<PutUserTaskDefRequest
 
     public io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.Builder toProto() {
         io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.Builder out =
-                io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.newBuilder().setName(name);
+                io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.newBuilder()
+                        .setName(name);
         if (description != null) {
             out.setDescription(description);
         }

@@ -36,20 +36,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class UserTaskRunModelStorageManagerTest {
 
-    private final KeyValueStore<String, Bytes> store =
-            Stores.keyValueStoreBuilder(
-                            Stores.inMemoryKeyValueStore("myStore"),
-                            Serdes.String(),
-                            Serdes.Bytes())
-                    .withLoggingDisabled()
-                    .build();
+    private final KeyValueStore<String, Bytes> store = Stores.keyValueStoreBuilder(
+                    Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
+            .withLoggingDisabled()
+            .build();
 
-    @Mock private LHConfig lhConfig;
+    @Mock
+    private LHConfig lhConfig;
 
     private LHStoreWrapper localStoreWrapper;
 
-    final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
-            new MockProcessorContext<>();
+    final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
     private GetableStorageManager geTableStorageManager;
     private String wfRunId = "1234567890";
 
@@ -61,18 +58,17 @@ public class UserTaskRunModelStorageManagerTest {
                 continue;
             }
             UserTaskRunModel userTaskRun = TestUtil.userTaskRun(wfRunId);
-            userTaskRun.setUser(
-                    new UserModel(userTaskRun.getUser().getId(), userTaskRun.getUserGroup()));
+            userTaskRun.setUser(new UserModel(userTaskRun.getUser().getId(), userTaskRun.getUserGroup()));
             userTaskRun.setStatus(UserTaskRunStatus);
-            userTaskRun.setId(new UserTaskRunIdModel(wfRunId + "1", UUID.randomUUID().toString()));
+            userTaskRun.setId(
+                    new UserTaskRunIdModel(wfRunId + "1", UUID.randomUUID().toString()));
             geTableStorageManager.store(userTaskRun);
         }
     }
 
     private void initializeDependencies() {
         localStoreWrapper = new LHStoreWrapper(store, lhConfig);
-        geTableStorageManager =
-                new GetableStorageManager(localStoreWrapper, lhConfig, mockProcessorContext);
+        geTableStorageManager = new GetableStorageManager(localStoreWrapper, lhConfig, mockProcessorContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
@@ -132,20 +128,17 @@ public class UserTaskRunModelStorageManagerTest {
 
     @Test
     public void indexByUserIdAndUserGroupId() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
-                .contains("12/__userId_33333__userGroup_1234567");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys()).contains("12/__userId_33333__userGroup_1234567");
     }
 
     @Test
     public void indexByStatusAndUserTaskDefName_DONE() {
-        Assertions.assertThat(storedTagPrefixStoreKeys())
-                .contains("12/__status_DONE__userTaskDefName_ut-name");
+        Assertions.assertThat(storedTagPrefixStoreKeys()).contains("12/__status_DONE__userTaskDefName_ut-name");
     }
 
     @Test
     public void indexByStatusAndUserTaskDefName_CANCELLED() {
-        Assertions.assertThat(storedTagPrefixStoreKeys())
-                .contains("12/__status_CANCELLED__userTaskDefName_ut-name");
+        Assertions.assertThat(storedTagPrefixStoreKeys()).contains("12/__status_CANCELLED__userTaskDefName_ut-name");
     }
 
     @Test
@@ -160,14 +153,12 @@ public class UserTaskRunModelStorageManagerTest {
 
     @Test
     public void indexByStatusAndUserId() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
-                .contains("12/__status_ASSIGNED__userId_33333");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys()).contains("12/__status_ASSIGNED__userId_33333");
     }
 
     @Test
     public void indexByStatusAndUserId_DONE() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
-                .contains("12/__status_DONE__userId_33333");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys()).contains("12/__status_DONE__userId_33333");
     }
 
     @Test
@@ -184,8 +175,7 @@ public class UserTaskRunModelStorageManagerTest {
 
     @Test
     public void indexByStatusAndUserGroup() {
-        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
-                .contains("12/__status_ASSIGNED__userGroup_1234567");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys()).contains("12/__status_ASSIGNED__userGroup_1234567");
     }
 
     @Test

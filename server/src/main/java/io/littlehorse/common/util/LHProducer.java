@@ -32,8 +32,7 @@ public class LHProducer implements Closeable {
         return (cb != null) ? prod.send(record, cb) : prod.send(record);
     }
 
-    public Future<RecordMetadata> sendToPartition(
-            String key, Command val, String topic, int partition) {
+    public Future<RecordMetadata> sendToPartition(String key, Command val, String topic, int partition) {
         Bytes valBytes = val == null ? null : new Bytes(val.toBytes(config));
         return sendRecord(new ProducerRecord<>(topic, partition, key, valBytes), null);
     }

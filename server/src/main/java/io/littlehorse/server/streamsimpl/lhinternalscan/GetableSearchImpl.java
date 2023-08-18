@@ -15,9 +15,7 @@ public class GetableSearchImpl implements GetableSearch {
     private GetableClassEnum getableClassEnum;
     private SearchScanBoundaryStrategy searchScanBoundary;
 
-    public GetableSearchImpl(
-            GetableClassEnum getableClassEnum,
-            SearchScanBoundaryStrategy searchScanBoundaryStrategy) {
+    public GetableSearchImpl(GetableClassEnum getableClassEnum, SearchScanBoundaryStrategy searchScanBoundaryStrategy) {
         this.getableClassEnum = getableClassEnum;
         this.searchScanBoundary = searchScanBoundaryStrategy;
     }
@@ -31,8 +29,7 @@ public class GetableSearchImpl implements GetableSearch {
             out.setTagScan((InternalScanPb.TagScanPb) searchScanBoundary.buildScanProto());
             out.setType(InternalScanPb.ScanBoundaryCase.TAG_SCAN);
         } else {
-            out.setBoundedObjectIdScan(
-                    (InternalScanPb.BoundedObjectIdScanPb) searchScanBoundary.buildScanProto());
+            out.setBoundedObjectIdScan((InternalScanPb.BoundedObjectIdScanPb) searchScanBoundary.buildScanProto());
             out.setType(InternalScanPb.ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN);
             out.setResultType(ScanResultTypePb.OBJECT);
             out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);

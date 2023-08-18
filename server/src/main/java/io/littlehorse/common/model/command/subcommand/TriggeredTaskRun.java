@@ -53,10 +53,9 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
 
     @Override
     public TriggeredTaskRunPb.Builder toProto() {
-        TriggeredTaskRunPb.Builder out =
-                TriggeredTaskRunPb.newBuilder()
-                        .setTaskToSchedule(taskToSchedule.toProto())
-                        .setSource(source.toProto());
+        TriggeredTaskRunPb.Builder out = TriggeredTaskRunPb.newBuilder()
+                .setTaskToSchedule(taskToSchedule.toProto())
+                .setSource(source.toProto());
 
         return out;
     }
@@ -106,28 +105,21 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
             List<VarNameAndValModel> inputVars = taskToSchedule.assignInputVars(thread);
             TaskRunIdModel taskRunId = new TaskRunIdModel(wfRunId);
 
-            ScheduledTaskModel toSchedule =
-                    new ScheduledTaskModel(
-                            taskToSchedule.getTaskDef().getObjectId(),
-                            inputVars,
-                            userTaskRun,
-                            userTaskRun.buildTaskContext());
+            ScheduledTaskModel toSchedule = new ScheduledTaskModel(
+                    taskToSchedule.getTaskDef().getObjectId(), inputVars, userTaskRun, userTaskRun.buildTaskContext());
             toSchedule.setTaskRunId(taskRunId);
 
-            TaskRunModel taskRun =
-                    new TaskRunModel(
-                            dao,
-                            inputVars,
-                            new TaskRunSourceModel(new UserTaskTriggerReferenceModel(userTaskRun)),
-                            taskToSchedule);
+            TaskRunModel taskRun = new TaskRunModel(
+                    dao,
+                    inputVars,
+                    new TaskRunSourceModel(new UserTaskTriggerReferenceModel(userTaskRun)),
+                    taskToSchedule);
             taskRun.setId(taskRunId);
             taskRun.getAttempts().add(new TaskAttemptModel());
             dao.putTaskRun(taskRun);
             dao.scheduleTask(toSchedule);
 
-            userTaskRun
-                    .getEvents()
-                    .add(new UserTaskEventModel(new UTETaskExecutedModel(taskRunId), new Date()));
+            userTaskRun.getEvents().add(new UserTaskEventModel(new UTETaskExecutedModel(taskRunId), new Date()));
 
             dao.putNodeRun(userTaskNR); // should be unnecessary
         } catch (LHVarSubError exn) {

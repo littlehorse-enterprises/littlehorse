@@ -14,8 +14,7 @@ import java.util.stream.IntStream;
 public class RoundRobinAssignor implements TaskWorkerAssignor {
 
     @Override
-    public void assign(
-            Collection<HostModel> hosts, Collection<TaskWorkerMetadataModel> taskWorkers) {
+    public void assign(Collection<HostModel> hosts, Collection<TaskWorkerMetadataModel> taskWorkers) {
         // Remove old assignment
         taskWorkers.forEach(worker -> worker.hosts.clear());
 
@@ -28,13 +27,11 @@ public class RoundRobinAssignor implements TaskWorkerAssignor {
 
         // Assigning N workers to a server
         for (HostModel host : hosts) {
-            IntStream.range(0, MIN_WORKER_ASSIGNMENT_BY_SERVER)
-                    .forEach(
-                            i -> {
-                                TaskWorkerMetadataModel worker = roundRobinWorkers.next();
-                                remainingWorkers.remove(worker);
-                                worker.hosts.add(host);
-                            });
+            IntStream.range(0, MIN_WORKER_ASSIGNMENT_BY_SERVER).forEach(i -> {
+                TaskWorkerMetadataModel worker = roundRobinWorkers.next();
+                remainingWorkers.remove(worker);
+                worker.hosts.add(host);
+            });
         }
 
         // Assign remaining workers to a server

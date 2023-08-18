@@ -24,7 +24,8 @@ public class UserTaskDefModel extends Getable<UserTaskDef> {
     public String name;
     public Date createdAt;
 
-    @Getter public List<UserTaskFieldModel> fields;
+    @Getter
+    public List<UserTaskFieldModel> fields;
 
     public String description;
     public int version;
@@ -38,11 +39,10 @@ public class UserTaskDefModel extends Getable<UserTaskDef> {
     }
 
     public UserTaskDef.Builder toProto() {
-        UserTaskDef.Builder out =
-                UserTaskDef.newBuilder()
-                        .setName(name)
-                        .setCreatedAt(LHUtil.fromDate(createdAt))
-                        .setVersion(version);
+        UserTaskDef.Builder out = UserTaskDef.newBuilder()
+                .setName(name)
+                .setCreatedAt(LHUtil.fromDate(createdAt))
+                .setVersion(version);
 
         if (description != null) out.setDescription(description);
 

@@ -10,8 +10,7 @@ import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
-public class RemoveRemoteTag extends LHSerializable<RemoveRemoteTagPb>
-        implements RepartitionSubCommand {
+public class RemoveRemoteTag extends LHSerializable<RemoveRemoteTagPb> implements RepartitionSubCommand {
 
     private String storeKey;
     private String partitionKey;
@@ -25,9 +24,7 @@ public class RemoveRemoteTag extends LHSerializable<RemoveRemoteTagPb>
 
     @Override
     public RemoveRemoteTagPb.Builder toProto() {
-        return RemoveRemoteTagPb.newBuilder()
-                .setStoreKey(this.storeKey)
-                .setPartitionKey(this.partitionKey);
+        return RemoveRemoteTagPb.newBuilder().setStoreKey(this.storeKey).setPartitionKey(this.partitionKey);
     }
 
     @Override

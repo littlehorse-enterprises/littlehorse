@@ -103,8 +103,7 @@ public class TestUtil {
         TaskRunModel taskRun = new TaskRunModel();
         taskRun.setId(taskRunId());
         taskRun.setTaskRunSource(
-                new TaskRunSourceModel(
-                        new TaskNodeReferenceModel(nodeRun().getObjectId(), wfSpecId())));
+                new TaskRunSourceModel(new TaskNodeReferenceModel(nodeRun().getObjectId(), wfSpecId())));
         taskRun.setTaskDefName("test-name");
         taskRun.setMaxAttempts(10);
         taskRun.setScheduledAt(new Date());
@@ -158,8 +157,7 @@ public class TestUtil {
         if (getableClass.equals(WfRunModel.class)) {
             return wfRun(id);
         } else {
-            throw new IllegalArgumentException(
-                    "There is no test data for " + getableClass.getName());
+            throw new IllegalArgumentException("There is no test data for " + getableClass.getName());
         }
     }
 

@@ -188,8 +188,7 @@ public class Command extends LHSerializable<CommandPb> {
                 taskClaimEvent = TaskClaimEvent.fromProto(p.getTaskClaimEvent());
                 break;
             case PUT_EXTERNAL_EVENT:
-                putExternalEventRequest =
-                        PutExternalEventRequestModel.fromProto(p.getPutExternalEvent());
+                putExternalEventRequest = PutExternalEventRequestModel.fromProto(p.getPutExternalEvent());
                 break;
             case PUT_WF_SPEC:
                 putWfSpecRequest = PutWfSpecRequestModel.fromProto(p.getPutWfSpec());
@@ -198,8 +197,7 @@ public class Command extends LHSerializable<CommandPb> {
                 putTaskDefRequest = PutTaskDefRequestModel.fromProto(p.getPutTaskDef());
                 break;
             case PUT_EXTERNAL_EVENT_DEF:
-                putExternalEventDefRequest =
-                        PutExternalEventDefRequestModel.fromProto(p.getPutExternalEventDef());
+                putExternalEventDefRequest = PutExternalEventDefRequestModel.fromProto(p.getPutExternalEventDef());
                 break;
             case RUN_WF:
                 runWf = RunWfRequestModel.fromProto(p.getRunWf());
@@ -217,8 +215,7 @@ public class Command extends LHSerializable<CommandPb> {
                 deleteWfRun = DeleteWfRunRequestModel.fromProto(p.getDeleteWfRun());
                 break;
             case DELETE_EXTERNAL_EVENT_DEF:
-                deleteExternalEventDef =
-                        DeleteExternalEventDefRequestModel.fromProto(p.getDeleteExternalEventDef());
+                deleteExternalEventDef = DeleteExternalEventDefRequestModel.fromProto(p.getDeleteExternalEventDef());
                 break;
             case DELETE_TASK_DEF:
                 deleteTaskDef = DeleteTaskDefRequestModel.fromProto(p.getDeleteTaskDef());
@@ -230,45 +227,36 @@ public class Command extends LHSerializable<CommandPb> {
                 externalEventTimeout = ExternalEventTimeout.fromProto(p.getExternalEventTimeout());
                 break;
             case TASK_WORKER_HEART_BEAT:
-                taskWorkerHeartBeat =
-                        TaskWorkerHeartBeatRequestModel.fromProto(p.getTaskWorkerHeartBeat());
+                taskWorkerHeartBeat = TaskWorkerHeartBeatRequestModel.fromProto(p.getTaskWorkerHeartBeat());
                 break;
             case DELETE_EXTERNAL_EVENT:
-                deleteExternalEvent =
-                        DeleteExternalEventRequestModel.fromProto(p.getDeleteExternalEvent());
+                deleteExternalEvent = DeleteExternalEventRequestModel.fromProto(p.getDeleteExternalEvent());
                 break;
             case PUT_USER_TASK_DEF:
                 putUserTaskDefRequest =
-                        LHSerializable.fromProto(
-                                p.getPutUserTaskDef(), PutUserTaskDefRequestModel.class);
+                        LHSerializable.fromProto(p.getPutUserTaskDef(), PutUserTaskDefRequestModel.class);
                 break;
             case ASSIGN_USER_TASK_RUN:
                 assignUserTaskRun =
-                        LHSerializable.fromProto(
-                                p.getAssignUserTaskRun(), AssignUserTaskRunRequestModel.class);
+                        LHSerializable.fromProto(p.getAssignUserTaskRun(), AssignUserTaskRunRequestModel.class);
                 break;
             case COMPLETE_USER_TASK_RUN:
                 completeUserTaskRun =
-                        LHSerializable.fromProto(
-                                p.getCompleteUserTaskRun(), CompleteUserTaskRunRequestModel.class);
+                        LHSerializable.fromProto(p.getCompleteUserTaskRun(), CompleteUserTaskRunRequestModel.class);
                 break;
             case TRIGGERED_TASK_RUN:
-                triggeredTaskRun =
-                        LHSerializable.fromProto(p.getTriggeredTaskRun(), TriggeredTaskRun.class);
+                triggeredTaskRun = LHSerializable.fromProto(p.getTriggeredTaskRun(), TriggeredTaskRun.class);
                 break;
             case DELETE_USER_TASK_DEF:
                 deleteUserTaskDef =
-                        LHSerializable.fromProto(
-                                p.getDeleteUserTaskDef(), DeleteUserTaskDefRequestModel.class);
+                        LHSerializable.fromProto(p.getDeleteUserTaskDef(), DeleteUserTaskDefRequestModel.class);
                 break;
             case REASSIGNED_USER_TASK:
-                reassignUserTask =
-                        LHSerializable.fromProto(p.getReassignedUserTask(), ReassignUserTask.class);
+                reassignUserTask = LHSerializable.fromProto(p.getReassignedUserTask(), ReassignUserTask.class);
                 break;
             case CANCEL_USER_TASK:
                 cancelUserTaskRun =
-                        LHSerializable.fromProto(
-                                p.getCancelUserTask(), CancelUserTaskRunRequestModel.class);
+                        LHSerializable.fromProto(p.getCancelUserTask(), CancelUserTaskRunRequestModel.class);
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");

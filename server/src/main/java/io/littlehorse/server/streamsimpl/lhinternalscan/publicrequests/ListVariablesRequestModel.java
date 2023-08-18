@@ -16,11 +16,7 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.List
 
 public class ListVariablesRequestModel
         extends PublicScanRequest<
-                ListVariablesRequest,
-                ListVariablesResponse,
-                Variable,
-                VariableModel,
-                ListVariablesReply> {
+                ListVariablesRequest, ListVariablesResponse, Variable, VariableModel, ListVariablesReply> {
 
     public String wfRunId;
 

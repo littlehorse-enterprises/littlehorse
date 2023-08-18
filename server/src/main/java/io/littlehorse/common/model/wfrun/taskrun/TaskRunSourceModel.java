@@ -25,8 +25,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
             this.type = TaskRunSourceCase.USER_TASK_TRIGGER;
             this.userTaskTrigger = (UserTaskTriggerReferenceModel) source;
         } else {
-            throw new IllegalArgumentException(
-                    "Unexpected TaskRunSubSourceClass: " + source.getClass());
+            throw new IllegalArgumentException("Unexpected TaskRunSubSourceClass: " + source.getClass());
         }
     }
 
@@ -42,9 +41,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
                 taskNode = LHSerializable.fromProto(p.getTaskNode(), TaskNodeReferenceModel.class);
                 break;
             case USER_TASK_TRIGGER:
-                userTaskTrigger =
-                        LHSerializable.fromProto(
-                                p.getUserTaskTrigger(), UserTaskTriggerReferenceModel.class);
+                userTaskTrigger = LHSerializable.fromProto(p.getUserTaskTrigger(), UserTaskTriggerReferenceModel.class);
                 break;
             case TASKRUNSOURCE_NOT_SET:
                 // Not really possible. Maybe throw error?

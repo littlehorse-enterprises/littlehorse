@@ -60,14 +60,13 @@ public class ExternalEventModel extends Getable<ExternalEvent> {
     }
 
     public ExternalEvent.Builder toProto() {
-        ExternalEvent.Builder out =
-                ExternalEvent.newBuilder()
-                        .setWfRunId(wfRunId)
-                        .setExternalEventDefName(externalEventDefName)
-                        .setGuid(guid)
-                        .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
-                        .setContent(content.toProto())
-                        .setClaimed(claimed);
+        ExternalEvent.Builder out = ExternalEvent.newBuilder()
+                .setWfRunId(wfRunId)
+                .setExternalEventDefName(externalEventDefName)
+                .setGuid(guid)
+                .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
+                .setContent(content.toProto())
+                .setClaimed(claimed);
 
         if (threadRunNumber != null) {
             out.setThreadRunNumber(threadRunNumber);
@@ -103,9 +102,7 @@ public class ExternalEventModel extends Getable<ExternalEvent> {
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         switch (key) {
             case "extEvtDefName" -> {
-                return List.of(
-                        new IndexedField(
-                                key, this.getExternalEventDefName(), tagStorageType.get()));
+                return List.of(new IndexedField(key, this.getExternalEventDefName(), tagStorageType.get()));
             }
             case "isClaimed" -> {
                 return List.of(new IndexedField(key, this.isClaimed(), tagStorageType.get()));

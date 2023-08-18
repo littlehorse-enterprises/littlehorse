@@ -11,8 +11,7 @@ import org.apache.kafka.clients.admin.NewTopic;
 @Slf4j
 public class App {
 
-    public static void doIdempotentSetup(LHConfig config)
-            throws InterruptedException, ExecutionException {
+    public static void doIdempotentSetup(LHConfig config) throws InterruptedException, ExecutionException {
         log.info("Creating topics!!");
 
         boolean createdATopic = false;
@@ -33,8 +32,7 @@ public class App {
         }
     }
 
-    public static void main(String[] args)
-            throws IOException, InterruptedException, ExecutionException {
+    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
         LHConfig config;
 
         if (args.length > 0) {

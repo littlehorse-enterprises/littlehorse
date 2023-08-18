@@ -83,15 +83,14 @@ public class ServerTopology {
     public static Topology initCoreTopology(LHConfig config, KafkaStreamsServerImpl server) {
         Topology topo = new Topology();
         WfSpecCache wfSpecCache = new WfSpecCache();
-        Serializer<Object> sinkValueSerializer =
-                (topic, output) -> {
-                    CommandProcessorOutput cpo = (CommandProcessorOutput) output;
-                    if (cpo.payload == null) {
-                        return null;
-                    }
+        Serializer<Object> sinkValueSerializer = (topic, output) -> {
+            CommandProcessorOutput cpo = (CommandProcessorOutput) output;
+            if (cpo.payload == null) {
+                return null;
+            }
 
-                    return cpo.payload.toBytes(config);
-                };
+            return cpo.payload.toBytes(config);
+        };
 
         TopicNameExtractor<String, Object> sinkTopicNameExtractor =
                 (key, coreServerOutput, ctx) -> ((CommandProcessorOutput) coreServerOutput).topic;
@@ -143,29 +142,18 @@ public class ServerTopology {
                 config.getRepartitionTopicName());
 
         topo.addProcessor(
-                CORE_REPARTITION_PROCESSOR,
-                () -> new RepartitionCommandProcessor(config),
-                CORE_REPARTITION_SOURCE);
+                CORE_REPARTITION_PROCESSOR, () -> new RepartitionCommandProcessor(config), CORE_REPARTITION_SOURCE);
 
-        StoreBuilder<KeyValueStore<String, Bytes>> rePartitionedStoreBuilder =
-                Stores.keyValueStoreBuilder(
-                        Stores.persistentKeyValueStore(CORE_REPARTITION_STORE),
-                        Serdes.String(),
-                        Serdes.Bytes());
+        StoreBuilder<KeyValueStore<String, Bytes>> rePartitionedStoreBuilder = Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(CORE_REPARTITION_STORE), Serdes.String(), Serdes.Bytes());
         topo.addStateStore(rePartitionedStoreBuilder, CORE_REPARTITION_PROCESSOR);
 
-        StoreBuilder<KeyValueStore<String, Bytes>> coreStoreBuilder =
-                Stores.keyValueStoreBuilder(
-                        Stores.persistentKeyValueStore(CORE_STORE),
-                        Serdes.String(),
-                        Serdes.Bytes());
+        StoreBuilder<KeyValueStore<String, Bytes>> coreStoreBuilder = Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(CORE_STORE), Serdes.String(), Serdes.Bytes());
         topo.addStateStore(coreStoreBuilder, CORE_PROCESSOR);
 
-        StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder =
-                Stores.keyValueStoreBuilder(
-                        Stores.persistentKeyValueStore(METADATA_STORE),
-                        Serdes.String(),
-                        Serdes.Bytes());
+        StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder = Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(METADATA_STORE), Serdes.String(), Serdes.Bytes());
         topo.addStateStore(metadataStoreBuilder, METADATA_PROCESSOR);
 
         // There's a topic for global communication, which is used for two things:
@@ -176,12 +164,9 @@ public class ServerTopology {
         // topo.addSource(globalMetaSource, Serdes.String().deserializer(), new LHDeserializer<>(),
         // config))
 
-        StoreBuilder<KeyValueStore<String, Bytes>> globalStoreBuilder =
-                Stores.keyValueStoreBuilder(
-                                Stores.persistentKeyValueStore(GLOBAL_STORE),
-                                Serdes.String(),
-                                Serdes.Bytes())
-                        .withLoggingDisabled();
+        StoreBuilder<KeyValueStore<String, Bytes>> globalStoreBuilder = Stores.keyValueStoreBuilder(
+                        Stores.persistentKeyValueStore(GLOBAL_STORE), Serdes.String(), Serdes.Bytes())
+                .withLoggingDisabled();
 
         topo.addGlobalStore(
                 globalStoreBuilder,
@@ -198,18 +183,11 @@ public class ServerTopology {
         Topology topo = new Topology();
         Serde<LHTimer> timerSerde = new LHSerde<>(LHTimer.class, config);
 
-        Runtime.getRuntime()
-                .addShutdownHook(
-                        new Thread(
-                                () -> {
-                                    timerSerde.close();
-                                }));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            timerSerde.close();
+        }));
 
-        topo.addSource(
-                TIMER_SOURCE,
-                Serdes.String().deserializer(),
-                timerSerde.deserializer(),
-                config.getTimerTopic());
+        topo.addSource(TIMER_SOURCE, Serdes.String().deserializer(), timerSerde.deserializer(), config.getTimerTopic());
 
         topo.addProcessor(
                 TIMER_PROCESSOR,
@@ -231,8 +209,7 @@ public class ServerTopology {
 
         // Add state store
         StoreBuilder<KeyValueStore<String, LHTimer>> timerStoreBuilder =
-                Stores.keyValueStoreBuilder(
-                        Stores.persistentKeyValueStore(TIMER_STORE), Serdes.String(), timerSerde);
+                Stores.keyValueStoreBuilder(Stores.persistentKeyValueStore(TIMER_STORE), Serdes.String(), timerSerde);
         topo.addStateStore(timerStoreBuilder, TIMER_PROCESSOR);
 
         return topo;

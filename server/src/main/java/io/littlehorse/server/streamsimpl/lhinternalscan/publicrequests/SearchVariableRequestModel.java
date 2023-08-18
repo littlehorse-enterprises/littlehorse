@@ -31,11 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SearchVariableRequestModel
         extends PublicScanRequest<
-                SearchVariableRequest,
-                SearchVariableResponse,
-                VariableId,
-                VariableIdModel,
-                SearchVariableReply> {
+                SearchVariableRequest, SearchVariableResponse, VariableId, VariableIdModel, SearchVariableReply> {
 
     public VariableCriteriaCase type;
     public NameAndValueRequest value;
@@ -105,10 +101,8 @@ public class SearchVariableRequestModel
         return new VariableModel()
                 .getIndexConfigurations().stream()
                         // Filter matching configuration
-                        .filter(
-                                getableIndexConfiguration ->
-                                        getableIndexConfiguration.searchAttributesMatch(
-                                                searchAttributesString()))
+                        .filter(getableIndexConfiguration ->
+                                getableIndexConfiguration.searchAttributesMatch(searchAttributesString()))
                         .map(GetableIndex::getTagStorageType)
                         .filter(Optional::isPresent)
                         .map(Optional::get)
@@ -119,11 +113,10 @@ public class SearchVariableRequestModel
         WfSpecModel spec = stores.getWfSpec(value.getWfSpecName(), null);
 
         return spec.getThreadSpecs().entrySet().stream()
-                .flatMap(
-                        stringThreadSpecEntry ->
-                                stringThreadSpecEntry.getValue().getVariableDefs().stream())
+                .flatMap(stringThreadSpecEntry -> stringThreadSpecEntry.getValue().getVariableDefs().stream())
                 .filter(variableDef -> variableDef.getName().equals(value.getVarName()))
-                .filter(variableDef -> variableDef.getType().equals(value.getValue().getType()))
+                .filter(variableDef ->
+                        variableDef.getType().equals(value.getValue().getType()))
                 .map(VariableDefModel::getTagStorageType)
                 .findFirst()
                 .orElse(null);
@@ -138,8 +131,7 @@ public class SearchVariableRequestModel
 
     @Override
     public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
-        return getStorageTypeFromVariableIndexConfiguration()
-                .orElse(indexTypeForSearchFromWfSpec(stores));
+        return getStorageTypeFromVariableIndexConfiguration().orElse(indexTypeForSearchFromWfSpec(stores));
     }
 
     @Override
@@ -150,8 +142,7 @@ public class SearchVariableRequestModel
         if (type == VariableCriteriaCase.WF_RUN_ID) {
             return new ObjectIdScanBoundaryStrategy(wfRunId);
         } else if (type == VariableCriteriaCase.VALUE) {
-            return new TagScanBoundaryStrategy(
-                    searchAttributeString, Optional.empty(), Optional.empty());
+            return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
         }
         return null;
     }
@@ -163,8 +154,7 @@ public class SearchVariableRequestModel
             case INT -> String.valueOf(value.getInt());
             case DOUBLE -> String.valueOf(value.getDouble());
             default -> {
-                throw new LHValidationError(
-                        "Search for %s not supported".formatted(value.getType()));
+                throw new LHValidationError("Search for %s not supported".formatted(value.getType()));
             }
         };
     }

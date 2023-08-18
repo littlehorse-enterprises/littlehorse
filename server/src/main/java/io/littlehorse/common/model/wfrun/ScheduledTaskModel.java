@@ -71,13 +71,12 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
     }
 
     public ScheduledTask.Builder toProto() {
-        ScheduledTask.Builder out =
-                ScheduledTask.newBuilder()
-                        .setTaskRunId(taskRunId.toProto())
-                        .setTaskDefId(taskDefId.toProto())
-                        .setAttemptNumber(attemptNumber)
-                        .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
-                        .setSource(source.toProto());
+        ScheduledTask.Builder out = ScheduledTask.newBuilder()
+                .setTaskRunId(taskRunId.toProto())
+                .setTaskDefId(taskDefId.toProto())
+                .setAttemptNumber(attemptNumber)
+                .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
+                .setSource(source.toProto());
         for (VarNameAndValModel v : variables) {
             out.addVariables(v.toProto());
         }

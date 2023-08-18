@@ -16,18 +16,16 @@ public class PendingInterruptModel extends LHSerializable<PendingInterrupt> {
     }
 
     public PendingInterrupt.Builder toProto() {
-        PendingInterrupt.Builder out =
-                PendingInterrupt.newBuilder()
-                        .setHandlerSpecName(handlerSpecName)
-                        .setExternalEventId(externalEventId.toProto())
-                        .setInterruptedThreadId(interruptedThreadId);
+        PendingInterrupt.Builder out = PendingInterrupt.newBuilder()
+                .setHandlerSpecName(handlerSpecName)
+                .setExternalEventId(externalEventId.toProto())
+                .setInterruptedThreadId(interruptedThreadId);
         return out;
     }
 
     public void initFrom(Message proto) {
         PendingInterrupt p = (PendingInterrupt) proto;
-        externalEventId =
-                LHSerializable.fromProto(p.getExternalEventId(), ExternalEventIdModel.class);
+        externalEventId = LHSerializable.fromProto(p.getExternalEventId(), ExternalEventIdModel.class);
         handlerSpecName = p.getHandlerSpecName();
         interruptedThreadId = p.getInterruptedThreadId();
     }

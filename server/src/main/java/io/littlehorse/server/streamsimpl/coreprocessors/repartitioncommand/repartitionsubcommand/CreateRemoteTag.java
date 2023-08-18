@@ -10,8 +10,7 @@ import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
-public class CreateRemoteTag extends LHSerializable<CreateRemoteTagPb>
-        implements RepartitionSubCommand {
+public class CreateRemoteTag extends LHSerializable<CreateRemoteTagPb> implements RepartitionSubCommand {
 
     private Tag tag;
 

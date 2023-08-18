@@ -101,10 +101,8 @@ public class AsyncWaiters {
                 AsyncWaiter waiter = pair.getValue();
                 if (waiter.getObserver() != null) {
                     waiter.getObserver()
-                            .onError(
-                                    new RuntimeException(
-                                            "Request not processed on this worker, likely due to"
-                                                    + " rebalance"));
+                            .onError(new RuntimeException(
+                                    "Request not processed on this worker, likely due to" + " rebalance"));
                 }
                 iter.remove();
             }

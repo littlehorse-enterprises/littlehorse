@@ -60,9 +60,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
         if (td == null) {
             // that means the TaskDef was deleted between now and the time that the
             // WfSpec was first created. Yikers!
-            nodeRunModel.fail(
-                    new FailureModel("Appears that TaskDef was deleted!", LHConstants.TASK_ERROR),
-                    time);
+            nodeRunModel.fail(new FailureModel("Appears that TaskDef was deleted!", LHConstants.TASK_ERROR), time);
             return;
         }
 
@@ -73,8 +71,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
         } catch (LHVarSubError exn) {
             nodeRunModel.fail(
                     new FailureModel(
-                            "Failed calculating TaskRun Input Vars: " + exn.getMessage(),
-                            LHConstants.VAR_SUB_ERROR),
+                            "Failed calculating TaskRun Input Vars: " + exn.getMessage(), LHConstants.VAR_SUB_ERROR),
                     time);
             return;
         }
@@ -84,11 +81,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
                 new TaskNodeReferenceModel(nodeRunModel.getObjectId(), nodeRunModel.getWfSpecId());
 
         TaskRunModel task =
-                new TaskRunModel(
-                        getDao(),
-                        inputVariables,
-                        new TaskRunSourceModel(source),
-                        node.getTaskNode());
+                new TaskRunModel(getDao(), inputVariables, new TaskRunSourceModel(source), node.getTaskNode());
         this.taskRunId = new TaskRunIdModel(nodeRunModel.getPartitionKey());
         task.setId(taskRunId);
 

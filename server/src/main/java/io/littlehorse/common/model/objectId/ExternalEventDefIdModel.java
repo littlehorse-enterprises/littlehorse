@@ -9,8 +9,7 @@ import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 
 // Used by ExternalEventDef, TaskDef, and ExternalEventDef
-public class ExternalEventDefIdModel
-        extends ObjectId<ExternalEventDefId, ExternalEventDef, ExternalEventDefModel> {
+public class ExternalEventDefIdModel extends ObjectId<ExternalEventDefId, ExternalEventDef, ExternalEventDefModel> {
 
     public String name;
 

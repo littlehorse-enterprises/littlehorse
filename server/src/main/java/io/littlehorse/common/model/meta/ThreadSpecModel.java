@@ -188,11 +188,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 Pair<String, VariableDefModel> result = lookupVarDef(varName);
                 if (result == null) {
                     throw new LHValidationError(
-                            null,
-                            " node "
-                                    + node.name
-                                    + " refers to unknown or out-of-scope variable "
-                                    + varName);
+                            null, " node " + node.name + " refers to unknown or out-of-scope variable " + varName);
                 }
             }
             if (node.type == NodeCase.ENTRYPOINT) {
@@ -238,8 +234,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         for (InterruptDefModel idef : interruptDefs) {
             String eedn = idef.externalEventDefName;
             if (wfSpecModel.getNodeExternalEventDefs().contains(eedn)) {
-                throw new LHValidationError(
-                        null, "ExternalEventDef " + eedn + " used for Node and Interrupt!");
+                throw new LHValidationError(null, "ExternalEventDef " + eedn + " used for Node and Interrupt!");
             }
 
             for (ThreadSpecModel tspec : wfSpecModel.threadSpecs.values()) {
@@ -247,15 +242,13 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
                 if (tspec.getInterruptExternalEventDefs().contains(eedn)) {
                     throw new LHValidationError(
-                            null,
-                            "ExternalEventDef " + eedn + " used by multiple threads as interrupt!");
+                            null, "ExternalEventDef " + eedn + " used by multiple threads as interrupt!");
                 }
             }
         }
     }
 
-    public void validateStartVariables(Map<String, VariableValueModel> vars)
-            throws LHValidationError {
+    public void validateStartVariables(Map<String, VariableValueModel> vars) throws LHValidationError {
         Map<String, VariableDefModel> required = getInputVariableDefs();
 
         for (Map.Entry<String, VariableDefModel> e : required.entrySet()) {
@@ -267,20 +260,13 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
             if (val.type != e.getValue().type && val.type != VariableType.NULL) {
                 throw new LHValidationError(
-                        null,
-                        "Var "
-                                + e.getKey()
-                                + " should be "
-                                + e.getValue().type
-                                + " but is "
-                                + val.type);
+                        null, "Var " + e.getKey() + " should be " + e.getValue().type + " but is " + val.type);
             }
         }
 
         for (Map.Entry<String, VariableValueModel> e : vars.entrySet()) {
             if (getVd(e.getKey()) == null) {
-                throw new LHValidationError(
-                        null, "Var " + e.getKey() + " provided but not needed for thread " + name);
+                throw new LHValidationError(null, "Var " + e.getKey() + " provided but not needed for thread " + name);
             }
         }
     }
@@ -299,13 +285,11 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             }
         }
         if (!timeoutSeconds.canBeType(VariableType.INT, this)) {
-            throw new LHValidationError(
-                    null, "Timeout on node " + nodeName + " refers to non INT variable.");
+            throw new LHValidationError(null, "Timeout on node " + nodeName + " refers to non INT variable.");
         }
     }
 
-    public void validateStartVariablesByType(Map<String, VariableAssignmentModel> vars)
-            throws LHValidationError {
+    public void validateStartVariablesByType(Map<String, VariableAssignmentModel> vars) throws LHValidationError {
         Map<String, VariableDefModel> inputVarDefs = getInputVariableDefs();
 
         for (Map.Entry<String, VariableDefModel> e : inputVarDefs.entrySet()) {
@@ -316,15 +300,13 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             }
 
             if (!assn.canBeType(e.getValue().type, this)) {
-                throw new LHValidationError(
-                        null, "Var " + e.getKey() + " should be " + e.getValue().type);
+                throw new LHValidationError(null, "Var " + e.getKey() + " should be " + e.getValue().type);
             }
         }
 
         for (Map.Entry<String, VariableAssignmentModel> e : vars.entrySet()) {
             if (localGetVarDef(e.getKey()) == null) {
-                throw new LHValidationError(
-                        null, "Var " + e.getKey() + " provided but not needed for thread " + name);
+                throw new LHValidationError(null, "Var " + e.getKey() + " provided but not needed for thread " + name);
             }
         }
     }

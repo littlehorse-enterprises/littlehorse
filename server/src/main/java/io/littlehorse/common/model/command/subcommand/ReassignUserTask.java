@@ -23,10 +23,7 @@ public class ReassignUserTask extends SubCommand<ReassignedUserTaskPb> {
 
     public ReassignUserTask() {}
 
-    public ReassignUserTask(
-            NodeRunIdModel source,
-            String newOwner,
-            ReassignedUserTaskPb.AssignToCase assignToCase) {
+    public ReassignUserTask(NodeRunIdModel source, String newOwner, ReassignedUserTaskPb.AssignToCase assignToCase) {
         this.source = source;
         this.newOwner = newOwner;
         this.assignToCase = assignToCase;

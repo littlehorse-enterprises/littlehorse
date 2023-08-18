@@ -20,11 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SearchNodeRunRequestModel
         extends PublicScanRequest<
-                SearchNodeRunRequest,
-                SearchNodeRunResponse,
-                NodeRunId,
-                NodeRunIdModel,
-                SearchNodeRunReply> {
+                SearchNodeRunRequest, SearchNodeRunResponse, NodeRunId, NodeRunIdModel, SearchNodeRunReply> {
 
     public NoderunCriteriaCase type;
     public String wfRunId;
@@ -92,8 +88,7 @@ public class SearchNodeRunRequestModel
     public void validate() throws LHValidationError {}
 
     @Override
-    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString)
-            throws LHValidationError {
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHValidationError {
         if (type == NoderunCriteriaCase.WF_RUN_ID) {
             return new ObjectIdScanBoundaryStrategy(wfRunId);
         } else {

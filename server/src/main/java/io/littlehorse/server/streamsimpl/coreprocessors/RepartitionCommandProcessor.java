@@ -21,8 +21,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 
 @Slf4j
-public class RepartitionCommandProcessor
-        implements Processor<String, RepartitionCommand, Void, Void> {
+public class RepartitionCommandProcessor implements Processor<String, RepartitionCommand, Void, Void> {
 
     private LHStoreWrapper store;
     private LHConfig config;
@@ -34,9 +33,7 @@ public class RepartitionCommandProcessor
 
     public void init(final ProcessorContext<Void, Void> ctx) {
         this.ctx = ctx;
-        store =
-                new LHStoreWrapper(
-                        ctx.getStateStore(ServerTopology.CORE_REPARTITION_STORE), config);
+        store = new LHStoreWrapper(ctx.getStateStore(ServerTopology.CORE_REPARTITION_STORE), config);
 
         ctx.schedule(Duration.ofMinutes(1), PunctuationType.WALL_CLOCK_TIME, this::cleanOldMetrics);
     }
@@ -62,8 +59,7 @@ public class RepartitionCommandProcessor
                 TaskMetricUpdate metric = next.getValue();
                 store.delete(metric.getStoreKey());
                 String taskDefMetricKey =
-                        TaskDefMetricsModel.getObjectId(
-                                metric.type, metric.windowStart, metric.taskDefName);
+                        TaskDefMetricsModel.getObjectId(metric.type, metric.windowStart, metric.taskDefName);
                 store.delete(taskDefMetricKey, TaskDefMetricsModel.class);
             }
         }
@@ -76,12 +72,8 @@ public class RepartitionCommandProcessor
                 LHIterKeyValue<WfMetricUpdate> next = iter.next();
                 WfMetricUpdate metric = next.getValue();
                 store.delete(metric.getStoreKey());
-                String wfSpecMetricKey =
-                        WfSpecMetricsModel.getObjectId(
-                                metric.type,
-                                metric.windowStart,
-                                metric.wfSpecName,
-                                metric.wfSpecVersion);
+                String wfSpecMetricKey = WfSpecMetricsModel.getObjectId(
+                        metric.type, metric.windowStart, metric.wfSpecName, metric.wfSpecVersion);
                 store.delete(wfSpecMetricKey, WfSpecMetricsModel.class);
             }
         }

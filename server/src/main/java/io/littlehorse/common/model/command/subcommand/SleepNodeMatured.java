@@ -23,11 +23,10 @@ public class SleepNodeMatured extends SubCommand<SleepNodeMaturedPb> {
     }
 
     public SleepNodeMaturedPb.Builder toProto() {
-        SleepNodeMaturedPb.Builder out =
-                SleepNodeMaturedPb.newBuilder()
-                        .setThreadRunNumber(threadRunNumber)
-                        .setNodeRunPosition(nodeRunPosition)
-                        .setWfRunId(wfRunId);
+        SleepNodeMaturedPb.Builder out = SleepNodeMaturedPb.newBuilder()
+                .setThreadRunNumber(threadRunNumber)
+                .setNodeRunPosition(nodeRunPosition)
+                .setWfRunId(wfRunId);
         return out;
     }
 

@@ -69,23 +69,21 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
             nodeRunModel.fail(failure, time);
         }
 
-        ThreadRunModel child =
-                nodeRunModel
-                        .getThreadRun()
-                        .getWfRunModel()
-                        .startThread(
-                                nodeRunModel.getNode().startThreadNode.threadSpecName,
-                                time,
-                                nodeRunModel.threadRunNumber,
-                                variables,
-                                ThreadType.CHILD);
+        ThreadRunModel child = nodeRunModel
+                .getThreadRun()
+                .getWfRunModel()
+                .startThread(
+                        nodeRunModel.getNode().startThreadNode.threadSpecName,
+                        time,
+                        nodeRunModel.threadRunNumber,
+                        variables,
+                        ThreadType.CHILD);
 
         nodeRunModel.getThreadRun().getChildThreadIds().add(child.number);
 
         if (child.status == LHStatus.ERROR) {
             FailureModel failure = new FailureModel();
-            failure.message =
-                    "Failed launching child thread. See child for details, id: " + child.number;
+            failure.message = "Failed launching child thread. See child for details, id: " + child.number;
 
             failure.failureName = LHConstants.CHILD_FAILURE;
             nodeRunModel.fail(failure, time);

@@ -12,8 +12,7 @@ import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailureHaltReason>
-        implements SubHaltReason {
+public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailureHaltReason> implements SubHaltReason {
 
     public int handlerThreadId;
 
@@ -27,11 +26,9 @@ public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailu
             // Need to figure out if the handler thread was handling another
             // failed thread.
             ThreadRunModel originalThatFailed =
-                    wfRunModel.threadRunModels.get(
-                            handlerThread.failureBeingHandled.getThreadRunNumber());
+                    wfRunModel.threadRunModels.get(handlerThread.failureBeingHandled.getThreadRunNumber());
             NodeRunModel handledNode =
-                    originalThatFailed.getNodeRun(
-                            handlerThread.failureBeingHandled.getNodeRunPosition());
+                    originalThatFailed.getNodeRun(handlerThread.failureBeingHandled.getNodeRunPosition());
 
             if (handledNode.type == NodeTypeCase.WAIT_THREADS) {
                 // The current implementation of failure handlers for wait_thread nodes
@@ -42,9 +39,8 @@ public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailu
                     if (wft.getThreadStatus() == LHStatus.ERROR) {
                         originalThatFailed.handledFailedChildren.add(wft.getThreadRunNumber());
                     } else if (wft.getThreadStatus() != LHStatus.COMPLETED) {
-                        log.warn(
-                                "Impossible: handling failure for a WaitThreadNode "
-                                        + "and found a non-terminated child");
+                        log.warn("Impossible: handling failure for a WaitThreadNode "
+                                + "and found a non-terminated child");
                     }
                 }
             }

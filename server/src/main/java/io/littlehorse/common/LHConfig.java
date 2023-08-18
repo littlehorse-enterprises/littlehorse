@@ -63,8 +63,7 @@ public class LHConfig extends ConfigBase {
     // General LittleHorse Runtime Behavior Config Env Vars
     public static final String NUM_NETWORK_THREADS_KEY = "LHS_NUM_NETWORK_THREADS";
     public static final String DEFAULT_WFRUN_RETENTION_HOURS = "LHS_DEFAULT_WFRUN_RETENTION_HOURS";
-    public static final String DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS =
-            "LHS_DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS";
+    public static final String DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS = "LHS_DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS";
     public static final String INTERNAL_BIND_PORT_KEY = "LHS_INTERNAL_BIND_PORT";
     public static final String INTERNAL_ADVERTISED_HOST_KEY = "LHS_INTERNAL_ADVERTISED_HOST";
     public static final String INTERNAL_ADVERTISED_PORT_KEY = "LHS_INTERNAL_ADVERTISED_PORT";
@@ -75,12 +74,10 @@ public class LHConfig extends ConfigBase {
 
     public static final String KAFKA_TRUSTSTORE_KEY = "LHS_KAFKA_TRUSTSTORE";
     public static final String KAFKA_TRUSTSTORE_PASSWORD_KEY = "LHS_KAFKA_TRUSTSTORE_PASSWORD";
-    public static final String KAFKA_TRUSTSTORE_PASSWORD_FILE_KEY =
-            "LHS_KAFKA_TRUSTSTORE_PASSWORD_FILE";
+    public static final String KAFKA_TRUSTSTORE_PASSWORD_FILE_KEY = "LHS_KAFKA_TRUSTSTORE_PASSWORD_FILE";
     public static final String KAFKA_KEYSTORE_KEY = "LHS_KAFKA_KEYSTORE";
     public static final String KAFKA_KEYSTORE_PASSWORD_KEY = "LHS_KAFKA_KEYSTORE_PASSWORD";
-    public static final String KAFKA_KEYSTORE_PASSWORD_FILE_KEY =
-            "LHS_KAFKA_KEYSTORE_PASSWORD_FILE";
+    public static final String KAFKA_KEYSTORE_PASSWORD_FILE_KEY = "LHS_KAFKA_KEYSTORE_PASSWORD_FILE";
 
     public static final String SHOULD_CREATE_TOPICS_KEY = "LHS_SHOULD_CREATE_TOPICS";
 
@@ -109,8 +106,7 @@ public class LHConfig extends ConfigBase {
     private LHProducer txnProducer;
 
     public int getHotMetadataPartition() {
-        return (Utils.toPositive(Utils.murmur2(LHConstants.META_PARTITION_KEY.getBytes()))
-                % getClusterPartitions());
+        return (Utils.toPositive(Utils.murmur2(LHConstants.META_PARTITION_KEY.getBytes())) % getClusterPartitions());
     }
 
     /*
@@ -207,63 +203,43 @@ public class LHConfig extends ConfigBase {
     // that are not explicitly created here will be automatically created by Kafka Stream. Please
     // make sure to
     // manually create all internal topics. Kafka has opened KIP-698 to solve this.
-    public static List<NewTopic> getAllTopics(
-            String clusterId, short replicationFactor, int clusterPartitions) {
-        HashMap<String, String> compactedTopicConfig =
-                new HashMap<>() {
-                    {
-                        put(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
-                    }
-                };
+    public static List<NewTopic> getAllTopics(String clusterId, short replicationFactor, int clusterPartitions) {
+        HashMap<String, String> compactedTopicConfig = new HashMap<>() {
+            {
+                put(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
+            }
+        };
 
-        NewTopic coreCommand =
-                new NewTopic(getCoreCmdTopicName(clusterId), clusterPartitions, replicationFactor);
+        NewTopic coreCommand = new NewTopic(getCoreCmdTopicName(clusterId), clusterPartitions, replicationFactor);
 
-        NewTopic repartition =
-                new NewTopic(
-                        getRepartitionTopicName(clusterId), clusterPartitions, replicationFactor);
+        NewTopic repartition = new NewTopic(getRepartitionTopicName(clusterId), clusterPartitions, replicationFactor);
 
         NewTopic observability =
-                new NewTopic(
-                        getObservabilityEventTopicName(clusterId),
-                        clusterPartitions,
-                        replicationFactor);
+                new NewTopic(getObservabilityEventTopicName(clusterId), clusterPartitions, replicationFactor);
 
-        NewTopic timer =
-                new NewTopic(getTimerTopic(clusterId), clusterPartitions, replicationFactor);
+        NewTopic timer = new NewTopic(getTimerTopic(clusterId), clusterPartitions, replicationFactor);
 
-        NewTopic coreStoreChangelog =
-                new NewTopic(
-                                getCoreStoreChangelogTopic(clusterId),
-                                clusterPartitions,
-                                replicationFactor)
-                        .configs(compactedTopicConfig);
+        NewTopic coreStoreChangelog = new NewTopic(
+                        getCoreStoreChangelogTopic(clusterId), clusterPartitions, replicationFactor)
+                .configs(compactedTopicConfig);
 
-        NewTopic repartitionStoreChangelog =
-                new NewTopic(
-                                getRepartitionStoreChangelogTopic(clusterId),
-                                clusterPartitions,
-                                replicationFactor)
-                        .configs(compactedTopicConfig);
+        NewTopic repartitionStoreChangelog = new NewTopic(
+                        getRepartitionStoreChangelogTopic(clusterId), clusterPartitions, replicationFactor)
+                .configs(compactedTopicConfig);
 
-        NewTopic timerStoreChangelog =
-                new NewTopic(
-                                getTimerStoreChangelogTopic(clusterId),
-                                clusterPartitions,
-                                replicationFactor)
-                        .configs(compactedTopicConfig);
+        NewTopic timerStoreChangelog = new NewTopic(
+                        getTimerStoreChangelogTopic(clusterId), clusterPartitions, replicationFactor)
+                .configs(compactedTopicConfig);
 
-        NewTopic metadataStoreChangelog =
-                new NewTopic(getMetadataStoreChangelogTopic(clusterId), 1, replicationFactor)
-                        .configs(compactedTopicConfig);
+        NewTopic metadataStoreChangelog = new NewTopic(getMetadataStoreChangelogTopic(clusterId), 1, replicationFactor)
+                .configs(compactedTopicConfig);
 
-        NewTopic globalMetadataStoreChangelog =
-                new NewTopic(getGlobalMetadataCLTopicName(clusterId), 1, replicationFactor)
-                        .configs(compactedTopicConfig);
+        NewTopic globalMetadataStoreChangelog = new NewTopic(
+                        getGlobalMetadataCLTopicName(clusterId), 1, replicationFactor)
+                .configs(compactedTopicConfig);
 
         NewTopic metadataCommand =
-                new NewTopic(getMetadataCmdTopicName(clusterId), 1, replicationFactor)
-                        .configs(compactedTopicConfig);
+                new NewTopic(getMetadataCmdTopicName(clusterId), 1, replicationFactor).configs(compactedTopicConfig);
 
         return List.of(
                 coreCommand,
@@ -285,13 +261,11 @@ public class LHConfig extends ConfigBase {
     }
 
     public short getReplicationFactor() {
-        return Short.valueOf(
-                String.class.cast(props.getOrDefault(LHConfig.REPLICATION_FACTOR_KEY, "1")));
+        return Short.valueOf(String.class.cast(props.getOrDefault(LHConfig.REPLICATION_FACTOR_KEY, "1")));
     }
 
     public int getClusterPartitions() {
-        return Integer.valueOf(
-                String.class.cast(props.getOrDefault(LHConfig.CLUSTER_PARTITIONS_KEY, "12")));
+        return Integer.valueOf(String.class.cast(props.getOrDefault(LHConfig.CLUSTER_PARTITIONS_KEY, "12")));
     }
 
     public String getKafkaGroupId(String component) {
@@ -317,9 +291,7 @@ public class LHConfig extends ConfigBase {
     // If INTERNAL_ADVERTISED_PORT isn't set, we return INTERNAL_BIND_PORT.
     public int getInternalAdvertisedPort() {
         return Integer.valueOf(
-                getOrSetDefault(
-                        LHConfig.INTERNAL_ADVERTISED_PORT_KEY,
-                        String.valueOf(getInternalBindPort())));
+                getOrSetDefault(LHConfig.INTERNAL_ADVERTISED_PORT_KEY, String.valueOf(getInternalBindPort())));
     }
 
     public int getHealthServicePort() {
@@ -377,8 +349,7 @@ public class LHConfig extends ConfigBase {
                     .clientSecret(clientSecret)
                     .build();
         } catch (IllegalArgumentException e) {
-            throw new LHMisconfigurationException(
-                    "Malformed URL check: " + configPrefix + "_AUTHORIZATION_SERVER");
+            throw new LHMisconfigurationException("Malformed URL check: " + configPrefix + "_AUTHORIZATION_SERVER");
         }
     }
 
@@ -400,7 +371,9 @@ public class LHConfig extends ConfigBase {
                     "TLS configuration called but not provided. Check missing cert or key");
         }
 
-        return builder.cert(new File(serverCertFile)).key(new File(serverKeyFile)).build();
+        return builder.cert(new File(serverCertFile))
+                .key(new File(serverKeyFile))
+                .build();
     }
 
     public Map<String, AuthorizationProtocol> getListenersAuthorizationMap() {
@@ -415,24 +388,18 @@ public class LHConfig extends ConfigBase {
         }
 
         String regexAllAuthProtocols =
-                Arrays.stream(AuthorizationProtocol.values())
-                        .map(Enum::name)
-                        .collect(Collectors.joining("|"));
+                Arrays.stream(AuthorizationProtocol.values()).map(Enum::name).collect(Collectors.joining("|"));
 
         if (!rawAuthProtocolMap.matches("([a-zA-Z0-9_-]+:(" + regexAllAuthProtocols + ")+,?)+")) {
-            throw new LHMisconfigurationException(
-                    "Invalid configuration: " + LHConfig.LISTENERS_AUTHORIZATION_MAP_KEY);
+            throw new LHMisconfigurationException("Invalid configuration: " + LHConfig.LISTENERS_AUTHORIZATION_MAP_KEY);
         }
 
         List<String> rawAuthProtocols = Arrays.asList(rawAuthProtocolMap.split(","));
 
-        return (listenersAuthorizationMap =
-                rawAuthProtocols.stream()
-                        .map(protocolMap -> protocolMap.split(":"))
-                        .collect(
-                                Collectors.toMap(
-                                        strings -> strings[0],
-                                        strings -> AuthorizationProtocol.valueOf(strings[1]))));
+        return (listenersAuthorizationMap = rawAuthProtocols.stream()
+                .map(protocolMap -> protocolMap.split(":"))
+                .collect(
+                        Collectors.toMap(strings -> strings[0], strings -> AuthorizationProtocol.valueOf(strings[1]))));
     }
 
     public Map<String, ListenerProtocol> getListenersProtocolMap() {
@@ -443,24 +410,17 @@ public class LHConfig extends ConfigBase {
         String rawProtocolMap = getOrSetDefault(LHConfig.LISTENERS_PROTOCOL_MAP_KEY, "PLAIN:PLAIN");
 
         String regexAllProtocols =
-                Arrays.stream(ListenerProtocol.values())
-                        .map(Enum::name)
-                        .collect(Collectors.joining("|"));
+                Arrays.stream(ListenerProtocol.values()).map(Enum::name).collect(Collectors.joining("|"));
 
         if (!rawProtocolMap.matches("([a-zA-Z0-9_-]+:(" + regexAllProtocols + ")+,?)+")) {
-            throw new LHMisconfigurationException(
-                    "Invalid configuration: " + LHConfig.LISTENERS_PROTOCOL_MAP_KEY);
+            throw new LHMisconfigurationException("Invalid configuration: " + LHConfig.LISTENERS_PROTOCOL_MAP_KEY);
         }
 
         List<String> rawProtocols = Arrays.asList(rawProtocolMap.split(","));
 
-        return (listenersProtocolMap =
-                rawProtocols.stream()
-                        .map(protocolMap -> protocolMap.split(":"))
-                        .collect(
-                                Collectors.toMap(
-                                        strings -> strings[0],
-                                        strings -> ListenerProtocol.valueOf(strings[1]))));
+        return (listenersProtocolMap = rawProtocols.stream()
+                .map(protocolMap -> protocolMap.split(":"))
+                .collect(Collectors.toMap(strings -> strings[0], strings -> ListenerProtocol.valueOf(strings[1]))));
     }
 
     public List<ServerListenerConfig> getListeners() {
@@ -473,50 +433,40 @@ public class LHConfig extends ConfigBase {
         Map<String, AuthorizationProtocol> authMap = getListenersAuthorizationMap();
 
         if (!rawListenersConfig.matches("([a-zA-Z0-9_-]+:\\d+,?)+")) {
-            throw new LHMisconfigurationException(
-                    "Invalid configuration: " + LHConfig.LISTENERS_KEY);
+            throw new LHMisconfigurationException("Invalid configuration: " + LHConfig.LISTENERS_KEY);
         }
 
         List<String> rawListenersConfigs = Arrays.asList(rawListenersConfig.split(","));
 
-        listenerConfigs =
-                rawListenersConfigs.stream()
-                        .map(
-                                listener -> {
-                                    String[] split = listener.split(":");
-                                    String name = split[0].trim();
-                                    String port = split[1].trim();
-                                    ListenerProtocol protocol =
-                                            protocolMap.get(name) == null
-                                                    ? ListenerProtocol.PLAIN
-                                                    : protocolMap.get(name);
-                                    AuthorizationProtocol authProtocol =
-                                            authMap.get(name) == null
-                                                    ? AuthorizationProtocol.NONE
-                                                    : authMap.get(name);
+        listenerConfigs = rawListenersConfigs.stream()
+                .map(listener -> {
+                    String[] split = listener.split(":");
+                    String name = split[0].trim();
+                    String port = split[1].trim();
+                    ListenerProtocol protocol =
+                            protocolMap.get(name) == null ? ListenerProtocol.PLAIN : protocolMap.get(name);
+                    AuthorizationProtocol authProtocol =
+                            authMap.get(name) == null ? AuthorizationProtocol.NONE : authMap.get(name);
 
-                                    return ServerListenerConfig.builder()
-                                            .name(name)
-                                            .port(Integer.parseInt(port))
-                                            .protocol(protocol)
-                                            .config(this)
-                                            .authorizationProtocol(authProtocol)
-                                            .build();
-                                })
-                        .toList();
+                    return ServerListenerConfig.builder()
+                            .name(name)
+                            .port(Integer.parseInt(port))
+                            .protocol(protocol)
+                            .config(this)
+                            .authorizationProtocol(authProtocol)
+                            .build();
+                })
+                .toList();
 
-        int totalDifferentPorts =
-                listenerConfigs.stream()
-                        .map(ServerListenerConfig::getPort)
-                        .collect(Collectors.toSet())
-                        .size();
+        int totalDifferentPorts = listenerConfigs.stream()
+                .map(ServerListenerConfig::getPort)
+                .collect(Collectors.toSet())
+                .size();
 
         if (totalDifferentPorts != listenerConfigs.size()) {
             listenerConfigs = null;
             throw new LHMisconfigurationException(
-                    "Invalid configuration: "
-                            + LHConfig.LISTENERS_KEY
-                            + ". Ports should be different");
+                    "Invalid configuration: " + LHConfig.LISTENERS_KEY + ". Ports should be different");
         }
 
         return listenerConfigs;
@@ -527,32 +477,28 @@ public class LHConfig extends ConfigBase {
             return advertisedListenerConfigs;
         }
 
-        String rawListenersConfig =
-                getOrSetDefault(LHConfig.ADVERTISED_LISTENERS_KEY, "PLAIN://localhost:2023");
+        String rawListenersConfig = getOrSetDefault(LHConfig.ADVERTISED_LISTENERS_KEY, "PLAIN://localhost:2023");
 
         if (!rawListenersConfig.matches("([a-zA-Z0-9_-]+://[a-zA-Z0-9.\\-]+:\\d+,?)+")) {
-            throw new LHMisconfigurationException(
-                    "Invalid configuration: " + LHConfig.ADVERTISED_LISTENERS_KEY);
+            throw new LHMisconfigurationException("Invalid configuration: " + LHConfig.ADVERTISED_LISTENERS_KEY);
         }
 
         List<String> rawAdvertisedListenerConfigs = Arrays.asList(rawListenersConfig.split(","));
 
-        advertisedListenerConfigs =
-                rawAdvertisedListenerConfigs.stream()
-                        .map(
-                                listener -> {
-                                    String[] split = listener.split(":(//)?");
-                                    String name = split[0].trim();
-                                    String host = split[1].trim();
-                                    String port = split[2].trim();
+        advertisedListenerConfigs = rawAdvertisedListenerConfigs.stream()
+                .map(listener -> {
+                    String[] split = listener.split(":(//)?");
+                    String name = split[0].trim();
+                    String host = split[1].trim();
+                    String port = split[2].trim();
 
-                                    return AdvertisedListenerConfig.builder()
-                                            .name(name)
-                                            .port(Integer.parseInt(port))
-                                            .host(host)
-                                            .build();
-                                })
-                        .toList();
+                    return AdvertisedListenerConfig.builder()
+                            .name(name)
+                            .port(Integer.parseInt(port))
+                            .host(host)
+                            .build();
+                })
+                .toList();
 
         return advertisedListenerConfigs;
     }
@@ -619,27 +565,20 @@ public class LHConfig extends ConfigBase {
             truststorePassword = loadSettingFromFile(truststorePasswordFile);
         }
 
-        if (keystoreLoc == null
-                && keystorePassword == null
-                && truststoreLoc == null
-                && truststorePassword == null) {
+        if (keystoreLoc == null && keystorePassword == null && truststoreLoc == null && truststorePassword == null) {
             log.info("Using plaintext kafka access");
             return;
         }
 
-        if (keystoreLoc == null
-                || keystorePassword == null
-                || truststoreLoc == null
-                || truststorePassword == null) {
-            throw new RuntimeException(
-                    "Must provide all or none of the following configs: "
-                            + KAFKA_KEYSTORE_KEY
-                            + ", "
-                            + KAFKA_KEYSTORE_PASSWORD_KEY
-                            + ", "
-                            + KAFKA_TRUSTSTORE_KEY
-                            + ", "
-                            + KAFKA_TRUSTSTORE_PASSWORD_KEY);
+        if (keystoreLoc == null || keystorePassword == null || truststoreLoc == null || truststorePassword == null) {
+            throw new RuntimeException("Must provide all or none of the following configs: "
+                    + KAFKA_KEYSTORE_KEY
+                    + ", "
+                    + KAFKA_KEYSTORE_PASSWORD_KEY
+                    + ", "
+                    + KAFKA_TRUSTSTORE_KEY
+                    + ", "
+                    + KAFKA_TRUSTSTORE_PASSWORD_KEY);
         }
 
         conf.put("security.protocol", "SSL");
@@ -675,8 +614,7 @@ public class LHConfig extends ConfigBase {
         }
         props.put(StreamsConfig.TOPOLOGY_OPTIMIZATION_CONFIG, "all");
         props.put(StreamsConfig.REQUEST_TIMEOUT_MS_CONFIG, 30000);
-        props.put(
-                StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), 1000 * 15);
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), 1000 * 15);
         props.put(StreamsConfig.producerPrefix(ProducerConfig.ACKS_CONFIG), "all");
 
         props.put(
@@ -700,10 +638,8 @@ public class LHConfig extends ConfigBase {
                 StreamsConfig.NUM_STREAM_THREADS_CONFIG,
                 Integer.valueOf(getOrSetDefault(LHConfig.NUM_STREAM_THREADS_KEY, "1")));
         props.put(StreamsConfig.TASK_TIMEOUT_MS_CONFIG, 10 * 1000);
-        props.put(
-                StreamsConfig.producerPrefix(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG), 10 * 1000);
-        props.put(
-                StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName());
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG), 10 * 1000);
+        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName());
         props.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG, this.getStandbyReplicas());
         props.put(StreamsConfig.MAX_WARMUP_REPLICAS_CONFIG, this.getWarmupReplicas());
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName());
@@ -741,8 +677,7 @@ public class LHConfig extends ConfigBase {
     }
 
     public int getDefaultExternalEventRetentionHours() {
-        return Integer.valueOf(
-                getOrSetDefault(LHConfig.DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS, "168"));
+        return Integer.valueOf(getOrSetDefault(LHConfig.DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS, "168"));
     }
 
     public int getStandbyReplicas() {
@@ -753,8 +688,7 @@ public class LHConfig extends ConfigBase {
         return Integer.valueOf(getOrSetDefault(LHConfig.NUM_WARMUP_REPLICAS_KEY, "12"));
     }
 
-    public boolean createKafkaTopic(NewTopic topic)
-            throws InterruptedException, ExecutionException {
+    public boolean createKafkaTopic(NewTopic topic) throws InterruptedException, ExecutionException {
         try {
             kafkaAdmin.createTopics(Collections.singleton(topic)).all().get();
             log.info("Topic {} created.", topic.name());
@@ -824,8 +758,7 @@ public class LHConfig extends ConfigBase {
         }
     }
 
-    private ServerCredentials getCreds(
-            String caCertFile, String serverCertFile, String serverKeyFile) {
+    private ServerCredentials getCreds(String caCertFile, String serverCertFile, String serverKeyFile) {
         if (caCertFile == null) {
             log.info("No ca cert file found, deploying insecure!");
             return null;
@@ -852,16 +785,12 @@ public class LHConfig extends ConfigBase {
     @Override
     public String toString() {
         return props.entrySet().stream()
-                .map(
-                        entry ->
-                                String.format(
-                                        "%s=%s",
-                                        entry.getKey(),
-                                        entry.getKey()
-                                                        .toString()
-                                                        .matches(".*(PASSWORD|CLIENT_SECRET).*")
-                                                ? "*********"
-                                                : entry.getValue()))
+                .map(entry -> String.format(
+                        "%s=%s",
+                        entry.getKey(),
+                        entry.getKey().toString().matches(".*(PASSWORD|CLIENT_SECRET).*")
+                                ? "*********"
+                                : entry.getValue()))
                 .sorted()
                 .collect(Collectors.joining("\n"));
     }

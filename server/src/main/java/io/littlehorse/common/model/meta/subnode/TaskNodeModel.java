@@ -80,11 +80,10 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     }
 
     public TaskNode.Builder toProto() {
-        TaskNode.Builder out =
-                TaskNode.newBuilder()
-                        .setTaskDefName(taskDefName)
-                        .setTimeoutSeconds(timeoutSeconds)
-                        .setRetries(retries);
+        TaskNode.Builder out = TaskNode.newBuilder()
+                .setTaskDefName(taskDefName)
+                .setTimeoutSeconds(timeoutSeconds)
+                .setRetries(retries);
 
         for (VariableAssignmentModel va : variables) {
             out.addVariables(va.toProto());
@@ -126,12 +125,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             VariableAssignmentModel assn = variables.get(i);
             if (!assn.canBeType(taskDefVar.getType(), this.node.getThreadSpecModel())) {
                 throw new LHValidationError(
-                        null,
-                        "Input variable "
-                                + i
-                                + " needs to be "
-                                + taskDefVar.getType()
-                                + " but cannot be!");
+                        null, "Input variable " + i + " needs to be " + taskDefVar.getType() + " but cannot be!");
             }
         }
 
@@ -152,8 +146,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     public List<VarNameAndValModel> assignInputVars(ThreadRunModel thread) throws LHVarSubError {
         List<VarNameAndValModel> out = new ArrayList<>();
         if (getTaskDef().getInputVars().size() != variables.size()) {
-            throw new LHVarSubError(
-                    null, "Impossible: got different number of taskdef vars and node input vars");
+            throw new LHVarSubError(null, "Impossible: got different number of taskdef vars and node input vars");
         }
 
         for (int i = 0; i < taskDef.inputVars.size(); i++) {
@@ -170,12 +163,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             if (val.type != requiredVarDef.type && val.type != VariableType.NULL) {
                 throw new LHVarSubError(
                         null,
-                        "Variable "
-                                + varName
-                                + " should be "
-                                + requiredVarDef.type
-                                + " but is of type "
-                                + val.type);
+                        "Variable " + varName + " should be " + requiredVarDef.type + " but is of type " + val.type);
             }
             out.add(new VarNameAndValModel(varName, val));
         }

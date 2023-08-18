@@ -102,8 +102,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     }
 
     private boolean isTerminated(WaitForThreadModel wft) {
-        return ((wft.getThreadStatus() == LHStatus.COMPLETED)
-                || (wft.getThreadStatus() == LHStatus.ERROR));
+        return ((wft.getThreadStatus() == LHStatus.COMPLETED) || (wft.getThreadStatus() == LHStatus.ERROR));
     }
 
     public void arrive(Date time) {

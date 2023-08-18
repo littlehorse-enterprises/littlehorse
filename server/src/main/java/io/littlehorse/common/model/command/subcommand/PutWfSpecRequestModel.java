@@ -17,8 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PutWfSpecRequestModel
-        extends SubCommand<io.littlehorse.sdk.common.proto.PutWfSpecRequest> {
+public class PutWfSpecRequestModel extends SubCommand<io.littlehorse.sdk.common.proto.PutWfSpecRequest> {
 
     public String name;
     public Map<String, ThreadSpecModel> threadSpecs;
@@ -53,8 +52,7 @@ public class PutWfSpecRequestModel
     }
 
     public void initFrom(Message proto) {
-        io.littlehorse.sdk.common.proto.PutWfSpecRequest p =
-                (io.littlehorse.sdk.common.proto.PutWfSpecRequest) proto;
+        io.littlehorse.sdk.common.proto.PutWfSpecRequest p = (io.littlehorse.sdk.common.proto.PutWfSpecRequest) proto;
         name = p.getName();
         entrypointThreadName = p.getEntrypointThreadName();
         if (p.hasRetentionHours()) retentionHours = p.getRetentionHours();
@@ -81,8 +79,7 @@ public class PutWfSpecRequestModel
         spec.entrypointThreadName = entrypointThreadName;
         spec.threadSpecs = threadSpecs;
         spec.createdAt = new Date();
-        spec.retentionHours =
-                retentionHours == null ? config.getDefaultWfRunRetentionHours() : retentionHours;
+        spec.retentionHours = retentionHours == null ? config.getDefaultWfRunRetentionHours() : retentionHours;
         spec.status = LHStatus.RUNNING;
         for (Map.Entry<String, ThreadSpecModel> entry : spec.threadSpecs.entrySet()) {
             ThreadSpecModel tspec = entry.getValue();
@@ -109,8 +106,7 @@ public class PutWfSpecRequestModel
         return out;
     }
 
-    public static PutWfSpecRequestModel fromProto(
-            io.littlehorse.sdk.common.proto.PutWfSpecRequest p) {
+    public static PutWfSpecRequestModel fromProto(io.littlehorse.sdk.common.proto.PutWfSpecRequest p) {
         PutWfSpecRequestModel out = new PutWfSpecRequestModel();
         out.initFrom(p);
         return out;

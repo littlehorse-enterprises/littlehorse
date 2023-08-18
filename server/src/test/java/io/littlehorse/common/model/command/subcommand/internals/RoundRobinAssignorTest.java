@@ -46,18 +46,14 @@ public class RoundRobinAssignorTest {
 
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
-        assertTrue(
-                taskWorkersMetadata.get(0).hosts.contains(hosts.get(0))
-                        && !taskWorkersMetadata.get(0).hosts.contains(hosts.get(1)));
-        assertTrue(
-                taskWorkersMetadata.get(1).hosts.contains(hosts.get(0))
-                        && !taskWorkersMetadata.get(1).hosts.contains(hosts.get(1)));
-        assertTrue(
-                taskWorkersMetadata.get(2).hosts.contains(hosts.get(1))
-                        && !taskWorkersMetadata.get(2).hosts.contains(hosts.get(0)));
-        assertTrue(
-                taskWorkersMetadata.get(3).hosts.contains(hosts.get(1))
-                        && !taskWorkersMetadata.get(3).hosts.contains(hosts.get(0)));
+        assertTrue(taskWorkersMetadata.get(0).hosts.contains(hosts.get(0))
+                && !taskWorkersMetadata.get(0).hosts.contains(hosts.get(1)));
+        assertTrue(taskWorkersMetadata.get(1).hosts.contains(hosts.get(0))
+                && !taskWorkersMetadata.get(1).hosts.contains(hosts.get(1)));
+        assertTrue(taskWorkersMetadata.get(2).hosts.contains(hosts.get(1))
+                && !taskWorkersMetadata.get(2).hosts.contains(hosts.get(0)));
+        assertTrue(taskWorkersMetadata.get(3).hosts.contains(hosts.get(1))
+                && !taskWorkersMetadata.get(3).hosts.contains(hosts.get(0)));
     }
 
     @Test
@@ -94,26 +90,21 @@ public class RoundRobinAssignorTest {
 
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
-        assertTrue(
-                taskWorkersMetadata.get(0).hosts.contains(hosts.get(0))
-                        && taskWorkersMetadata.get(0).hosts.contains(hosts.get(2))
-                        && taskWorkersMetadata.get(0).hosts.size() == 2);
-        assertTrue(
-                taskWorkersMetadata.get(1).hosts.contains(hosts.get(0))
-                        && taskWorkersMetadata.get(1).hosts.contains(hosts.get(3))
-                        && taskWorkersMetadata.get(1).hosts.size() == 2);
-        assertTrue(
-                taskWorkersMetadata.get(2).hosts.contains(hosts.get(1))
-                        && taskWorkersMetadata.get(2).hosts.contains(hosts.get(3))
-                        && taskWorkersMetadata.get(2).hosts.size() == 2);
-        assertTrue(
-                taskWorkersMetadata.get(3).hosts.contains(hosts.get(1))
-                        && taskWorkersMetadata.get(3).hosts.contains(hosts.get(4))
-                        && taskWorkersMetadata.get(3).hosts.size() == 2);
-        assertTrue(
-                taskWorkersMetadata.get(4).hosts.contains(hosts.get(2))
-                        && taskWorkersMetadata.get(4).hosts.contains(hosts.get(4))
-                        && taskWorkersMetadata.get(4).hosts.size() == 2);
+        assertTrue(taskWorkersMetadata.get(0).hosts.contains(hosts.get(0))
+                && taskWorkersMetadata.get(0).hosts.contains(hosts.get(2))
+                && taskWorkersMetadata.get(0).hosts.size() == 2);
+        assertTrue(taskWorkersMetadata.get(1).hosts.contains(hosts.get(0))
+                && taskWorkersMetadata.get(1).hosts.contains(hosts.get(3))
+                && taskWorkersMetadata.get(1).hosts.size() == 2);
+        assertTrue(taskWorkersMetadata.get(2).hosts.contains(hosts.get(1))
+                && taskWorkersMetadata.get(2).hosts.contains(hosts.get(3))
+                && taskWorkersMetadata.get(2).hosts.size() == 2);
+        assertTrue(taskWorkersMetadata.get(3).hosts.contains(hosts.get(1))
+                && taskWorkersMetadata.get(3).hosts.contains(hosts.get(4))
+                && taskWorkersMetadata.get(3).hosts.size() == 2);
+        assertTrue(taskWorkersMetadata.get(4).hosts.contains(hosts.get(2))
+                && taskWorkersMetadata.get(4).hosts.contains(hosts.get(4))
+                && taskWorkersMetadata.get(4).hosts.size() == 2);
     }
 
     @Test
@@ -123,22 +114,18 @@ public class RoundRobinAssignorTest {
 
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
-        assertTrue(
-                taskWorkersMetadata.get(0).hosts.contains(hosts.get(0))
-                        && taskWorkersMetadata.get(0).hosts.contains(hosts.get(2))
-                        && taskWorkersMetadata.get(0).hosts.size() == 2);
-        assertTrue(
-                taskWorkersMetadata.get(1).hosts.contains(hosts.get(0))
-                        && taskWorkersMetadata.get(1).hosts.contains(hosts.get(2))
-                        && taskWorkersMetadata.get(1).hosts.size() == 2);
-        assertTrue(
-                taskWorkersMetadata.get(2).hosts.contains(hosts.get(1))
-                        && !taskWorkersMetadata.get(2).hosts.contains(hosts.get(2))
-                        && taskWorkersMetadata.get(2).hosts.size() == 1);
-        assertTrue(
-                taskWorkersMetadata.get(3).hosts.contains(hosts.get(1))
-                        && !taskWorkersMetadata.get(3).hosts.contains(hosts.get(2))
-                        && taskWorkersMetadata.get(3).hosts.size() == 1);
+        assertTrue(taskWorkersMetadata.get(0).hosts.contains(hosts.get(0))
+                && taskWorkersMetadata.get(0).hosts.contains(hosts.get(2))
+                && taskWorkersMetadata.get(0).hosts.size() == 2);
+        assertTrue(taskWorkersMetadata.get(1).hosts.contains(hosts.get(0))
+                && taskWorkersMetadata.get(1).hosts.contains(hosts.get(2))
+                && taskWorkersMetadata.get(1).hosts.size() == 2);
+        assertTrue(taskWorkersMetadata.get(2).hosts.contains(hosts.get(1))
+                && !taskWorkersMetadata.get(2).hosts.contains(hosts.get(2))
+                && taskWorkersMetadata.get(2).hosts.size() == 1);
+        assertTrue(taskWorkersMetadata.get(3).hosts.contains(hosts.get(1))
+                && !taskWorkersMetadata.get(3).hosts.contains(hosts.get(2))
+                && taskWorkersMetadata.get(3).hosts.size() == 1);
     }
 
     @Test
@@ -152,50 +139,38 @@ public class RoundRobinAssignorTest {
             System.out.println(var.hosts);
         }
 
-        assertTrue(
-                taskWorkersMetadata.get(0).hosts.contains(hosts.get(0))
-                        && taskWorkersMetadata.get(0).hosts.size() == 1);
-        assertTrue(
-                taskWorkersMetadata.get(1).hosts.contains(hosts.get(0))
-                        && taskWorkersMetadata.get(1).hosts.size() == 1);
-        assertTrue(
-                taskWorkersMetadata.get(2).hosts.contains(hosts.get(1))
-                        && taskWorkersMetadata.get(2).hosts.size() == 1);
-        assertTrue(
-                taskWorkersMetadata.get(3).hosts.contains(hosts.get(1))
-                        && taskWorkersMetadata.get(3).hosts.size() == 1);
-        assertTrue(
-                taskWorkersMetadata.get(4).hosts.contains(hosts.get(2))
-                        && taskWorkersMetadata.get(4).hosts.size() == 1);
-        assertTrue(
-                taskWorkersMetadata.get(5).hosts.contains(hosts.get(2))
-                        && taskWorkersMetadata.get(5).hosts.size() == 1);
-        assertTrue(
-                taskWorkersMetadata.get(6).hosts.contains(hosts.get(0))
-                        && taskWorkersMetadata.get(6).hosts.size() == 1);
-        assertTrue(
-                taskWorkersMetadata.get(7).hosts.contains(hosts.get(1))
-                        && taskWorkersMetadata.get(7).hosts.size() == 1);
-        assertTrue(
-                taskWorkersMetadata.get(8).hosts.contains(hosts.get(2))
-                        && taskWorkersMetadata.get(8).hosts.size() == 1);
+        assertTrue(taskWorkersMetadata.get(0).hosts.contains(hosts.get(0))
+                && taskWorkersMetadata.get(0).hosts.size() == 1);
+        assertTrue(taskWorkersMetadata.get(1).hosts.contains(hosts.get(0))
+                && taskWorkersMetadata.get(1).hosts.size() == 1);
+        assertTrue(taskWorkersMetadata.get(2).hosts.contains(hosts.get(1))
+                && taskWorkersMetadata.get(2).hosts.size() == 1);
+        assertTrue(taskWorkersMetadata.get(3).hosts.contains(hosts.get(1))
+                && taskWorkersMetadata.get(3).hosts.size() == 1);
+        assertTrue(taskWorkersMetadata.get(4).hosts.contains(hosts.get(2))
+                && taskWorkersMetadata.get(4).hosts.size() == 1);
+        assertTrue(taskWorkersMetadata.get(5).hosts.contains(hosts.get(2))
+                && taskWorkersMetadata.get(5).hosts.size() == 1);
+        assertTrue(taskWorkersMetadata.get(6).hosts.contains(hosts.get(0))
+                && taskWorkersMetadata.get(6).hosts.size() == 1);
+        assertTrue(taskWorkersMetadata.get(7).hosts.contains(hosts.get(1))
+                && taskWorkersMetadata.get(7).hosts.size() == 1);
+        assertTrue(taskWorkersMetadata.get(8).hosts.contains(hosts.get(2))
+                && taskWorkersMetadata.get(8).hosts.size() == 1);
     }
 
     public List<HostModel> generateHosts(int q) {
         List<HostModel> hosts = new ArrayList<HostModel>();
         for (int i = 0; i < q; i++) {
             HostModel host =
-                    new HostModel(
-                            faker.internet().domainName(),
-                            faker.number().numberBetween(5000, 5500));
+                    new HostModel(faker.internet().domainName(), faker.number().numberBetween(5000, 5500));
             hosts.add(host);
         }
         return hosts;
     }
 
     public List<TaskWorkerMetadataModel> generateTaskWorkersMetadata(int q) {
-        List<TaskWorkerMetadataModel> taskWorkersMetadata =
-                new ArrayList<TaskWorkerMetadataModel>();
+        List<TaskWorkerMetadataModel> taskWorkersMetadata = new ArrayList<TaskWorkerMetadataModel>();
         for (int i = 0; i < q; i++) {
             TaskWorkerMetadataModel taskWorker = new TaskWorkerMetadataModel();
             taskWorker.clientId = UUID.randomUUID().toString();

@@ -37,10 +37,9 @@ public class AssignUserTaskRunRequestModel extends SubCommand<AssignUserTaskRunR
     }
 
     public AssignUserTaskRunRequest.Builder toProto() {
-        AssignUserTaskRunRequest.Builder out =
-                AssignUserTaskRunRequest.newBuilder()
-                        .setUserTaskRunId(userTaskRunId.toProto())
-                        .setOverrideClaim(overrideClaim);
+        AssignUserTaskRunRequest.Builder out = AssignUserTaskRunRequest.newBuilder()
+                .setUserTaskRunId(userTaskRunId.toProto())
+                .setOverrideClaim(overrideClaim);
         switch (assigneeType) {
             case USER:
                 out.setUser(user.toProto());
@@ -100,12 +99,9 @@ public class AssignUserTaskRunRequestModel extends SubCommand<AssignUserTaskRunR
             return out;
         }
 
-        if (utr.getStatus() != UserTaskRunStatus.ASSIGNED
-                && utr.getStatus() != UserTaskRunStatus.UNASSIGNED) {
+        if (utr.getStatus() != UserTaskRunStatus.ASSIGNED && utr.getStatus() != UserTaskRunStatus.UNASSIGNED) {
             out.code = LHResponseCode.BAD_REQUEST_ERROR;
-            out.message =
-                    "Couldn't reassign User Task Run since it  is in terminal status "
-                            + utr.getStatus();
+            out.message = "Couldn't reassign User Task Run since it  is in terminal status " + utr.getStatus();
         }
 
         // In the future, we could add some verification to make sure that the

@@ -29,8 +29,7 @@ public class PendingInterruptHaltReasonModel extends LHSerializable<PendingInter
 
     public void initFrom(Message proto) {
         PendingInterruptHaltReason p = (PendingInterruptHaltReason) proto;
-        externalEventId =
-                LHSerializable.fromProto(p.getExternalEventId(), ExternalEventIdModel.class);
+        externalEventId = LHSerializable.fromProto(p.getExternalEventId(), ExternalEventIdModel.class);
     }
 
     public static PendingInterruptHaltReasonModel fromProto(PendingInterruptHaltReason proto) {

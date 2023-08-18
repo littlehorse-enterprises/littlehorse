@@ -35,10 +35,8 @@ public class UTEReassignedModel extends LHSerializable<UTEReassigned> {
     @Override
     public void initFrom(Message proto) {
         UTEReassigned p = (UTEReassigned) proto;
-        if (p.hasNewUserGroup())
-            newUserGroup = LHSerializable.fromProto(p.getNewUserGroup(), UserGroupModel.class);
-        if (p.hasOldUserGroup())
-            oldUserGroup = LHSerializable.fromProto(p.getOldUserGroup(), UserGroupModel.class);
+        if (p.hasNewUserGroup()) newUserGroup = LHSerializable.fromProto(p.getNewUserGroup(), UserGroupModel.class);
+        if (p.hasOldUserGroup()) oldUserGroup = LHSerializable.fromProto(p.getOldUserGroup(), UserGroupModel.class);
         if (p.hasNewUser()) newUser = LHSerializable.fromProto(p.getNewUser(), UserModel.class);
         if (p.hasOldUser()) oldUser = LHSerializable.fromProto(p.getOldUser(), UserModel.class);
     }

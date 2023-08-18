@@ -106,20 +106,16 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
 
         switch (type) {
             case TASK_METRIC_UPDATE:
-                taskMetricPartitionWindow =
-                        LHSerializable.fromProto(p.getTaskMetricUpdate(), TaskMetricUpdate.class);
+                taskMetricPartitionWindow = LHSerializable.fromProto(p.getTaskMetricUpdate(), TaskMetricUpdate.class);
                 break;
             case WF_METRIC_UPDATE:
-                wfMetricPartitionWindow =
-                        LHSerializable.fromProto(p.getWfMetricUpdate(), WfMetricUpdate.class);
+                wfMetricPartitionWindow = LHSerializable.fromProto(p.getWfMetricUpdate(), WfMetricUpdate.class);
                 break;
             case CREATE_REMOTE_TAG:
-                createRemoteTag =
-                        LHSerializable.fromProto(p.getCreateRemoteTag(), CreateRemoteTag.class);
+                createRemoteTag = LHSerializable.fromProto(p.getCreateRemoteTag(), CreateRemoteTag.class);
                 break;
             case REMOVE_REMOTE_TAG:
-                removeRemoteTag =
-                        LHSerializable.fromProto(p.getRemoveRemoteTag(), RemoveRemoteTag.class);
+                removeRemoteTag = LHSerializable.fromProto(p.getRemoveRemoteTag(), RemoveRemoteTag.class);
                 break;
             case REPARTITIONCOMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");

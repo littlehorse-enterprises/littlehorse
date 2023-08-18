@@ -35,12 +35,11 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
     }
 
     public LHTimerPb.Builder toProto() {
-        LHTimerPb.Builder out =
-                LHTimerPb.newBuilder()
-                        .setMaturationTime(LHUtil.fromDate(maturationTime))
-                        .setKey(key)
-                        .setTopic(topic)
-                        .setPayload(ByteString.copyFrom(payload));
+        LHTimerPb.Builder out = LHTimerPb.newBuilder()
+                .setMaturationTime(LHUtil.fromDate(maturationTime))
+                .setKey(key)
+                .setTopic(topic)
+                .setPayload(ByteString.copyFrom(payload));
 
         return out;
     }

@@ -14,8 +14,7 @@ public class LHKeyValueIterator<T extends Storeable<?>>
     private Class<T> cls;
     private LHConfig config;
 
-    public LHKeyValueIterator(
-            KeyValueIterator<String, Bytes> rawIter, Class<T> cls, LHConfig config) {
+    public LHKeyValueIterator(KeyValueIterator<String, Bytes> rawIter, Class<T> cls, LHConfig config) {
         this.cls = cls;
         this.rawIter = rawIter;
         this.config = config;

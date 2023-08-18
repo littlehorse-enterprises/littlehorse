@@ -10,15 +10,13 @@ import io.littlehorse.sdk.common.proto.LHResponseCode;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class POSTStreamObserver<U extends Message>
-        implements StreamObserver<WaitForCommandResponse> {
+public class POSTStreamObserver<U extends Message> implements StreamObserver<WaitForCommandResponse> {
 
     private StreamObserver<U> ctx;
     private Class<U> responseCls;
     private boolean shouldComplete;
 
-    public POSTStreamObserver(
-            StreamObserver<U> responseObserver, Class<U> responseCls, boolean shouldComplete) {
+    public POSTStreamObserver(StreamObserver<U> responseObserver, Class<U> responseCls, boolean shouldComplete) {
         this.ctx = responseObserver;
         this.responseCls = responseCls;
         this.shouldComplete = shouldComplete;
@@ -31,10 +29,9 @@ public class POSTStreamObserver<U extends Message>
                 t.getMessage(),
                 t);
 
-        U response =
-                buildErrorResponse(
-                        LHResponseCode.REPORTED_BUT_NOT_PROCESSED,
-                        "Recorded request but processing not verified: " + t.getMessage());
+        U response = buildErrorResponse(
+                LHResponseCode.REPORTED_BUT_NOT_PROCESSED,
+                "Recorded request but processing not verified: " + t.getMessage());
 
         ctx.onNext(response);
         if (shouldComplete) ctx.onCompleted();
@@ -42,9 +39,8 @@ public class POSTStreamObserver<U extends Message>
 
     private U buildErrorResponse(LHResponseCode code, String msg) {
         try {
-            GeneratedMessageV3.Builder<?> b =
-                    (GeneratedMessageV3.Builder<?>)
-                            responseCls.getMethod("newBuilder").invoke(null);
+            GeneratedMessageV3.Builder<?> b = (GeneratedMessageV3.Builder<?>)
+                    responseCls.getMethod("newBuilder").invoke(null);
             b.getClass().getMethod("setCode", LHResponseCode.class).invoke(b, code);
 
             b.getClass().getMethod("setMessage", String.class).invoke(b, msg);
@@ -82,11 +78,9 @@ public class POSTStreamObserver<U extends Message>
             }
             response = buildRespFromBytes(reply.getResult().getResult());
         } else if (reply.getCode() == StoreQueryStatusPb.RSQ_NOT_AVAILABLE) {
-            response =
-                    buildErrorResponse(
-                            LHResponseCode.CONNECTION_ERROR,
-                            "Failed connecting to backend: "
-                                    + (reply.hasMessage() ? reply.getMessage() : ""));
+            response = buildErrorResponse(
+                    LHResponseCode.CONNECTION_ERROR,
+                    "Failed connecting to backend: " + (reply.hasMessage() ? reply.getMessage() : ""));
         } else {
             throw new RuntimeException("Unexpected RSQ code");
         }

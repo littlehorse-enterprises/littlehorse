@@ -10,8 +10,7 @@ import io.littlehorse.sdk.common.proto.TaskDefMetrics;
 import io.littlehorse.sdk.common.proto.TaskDefMetricsId;
 import java.util.Date;
 
-public class TaskDefMetricsIdModel
-        extends ObjectId<TaskDefMetricsId, TaskDefMetrics, TaskDefMetricsModel> {
+public class TaskDefMetricsIdModel extends ObjectId<TaskDefMetricsId, TaskDefMetrics, TaskDefMetricsModel> {
 
     public Date windowStart;
     public MetricsWindowLength windowType;
@@ -41,17 +40,15 @@ public class TaskDefMetricsIdModel
     }
 
     public TaskDefMetricsId.Builder toProto() {
-        TaskDefMetricsId.Builder out =
-                TaskDefMetricsId.newBuilder()
-                        .setTaskDefName(taskDefName)
-                        .setWindowType(windowType)
-                        .setWindowStart(LHUtil.fromDate(windowStart));
+        TaskDefMetricsId.Builder out = TaskDefMetricsId.newBuilder()
+                .setTaskDefName(taskDefName)
+                .setWindowType(windowType)
+                .setWindowStart(LHUtil.fromDate(windowStart));
         return out;
     }
 
     public String getStoreKey() {
-        return LHUtil.getCompositeId(
-                taskDefName, windowType.toString(), LHUtil.toLhDbFormat(windowStart));
+        return LHUtil.getCompositeId(taskDefName, windowType.toString(), LHUtil.toLhDbFormat(windowStart));
     }
 
     public void initFrom(String storeKey) {

@@ -24,10 +24,7 @@ public class GETStreamObserver<U extends Message, T extends Storeable<U>, V exte
     private IntermediateGETResp<U, T, V> out;
 
     public GETStreamObserver(
-            StreamObserver<V> responseObserver,
-            Class<T> getableCls,
-            Class<V> responseCls,
-            LHConfig config) {
+            StreamObserver<V> responseObserver, Class<T> getableCls, Class<V> responseCls, LHConfig config) {
         this.ctx = responseObserver;
         this.getableCls = getableCls;
         this.config = config;
@@ -51,13 +48,10 @@ public class GETStreamObserver<U extends Message, T extends Storeable<U>, V exte
         if (reply.hasResult()) {
             out.code = LHResponseCode.OK;
             try {
-                out.result =
-                        LHSerializable.fromBytes(
-                                reply.getResult().toByteArray(), getableCls, config);
+                out.result = LHSerializable.fromBytes(reply.getResult().toByteArray(), getableCls, config);
             } catch (LHSerdeError exn) {
                 out.code = LHResponseCode.CONNECTION_ERROR;
-                out.message =
-                        "Impossible: got unreadable response from backend: " + exn.getMessage();
+                out.message = "Impossible: got unreadable response from backend: " + exn.getMessage();
             }
         } else {
             out.code = LHResponseCode.NOT_FOUND_ERROR;

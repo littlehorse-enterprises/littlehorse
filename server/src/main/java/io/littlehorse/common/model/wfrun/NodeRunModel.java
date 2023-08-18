@@ -116,24 +116,21 @@ public class NodeRunModel extends Getable<NodeRun> {
 
     @Override
     public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
-        return List.of(
-                new GetableIndex<NodeRunModel>(
-                        List.of(
-                                Pair.of("status", GetableIndex.ValueType.SINGLE),
-                                Pair.of("type", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL)));
+        return List.of(new GetableIndex<NodeRunModel>(
+                List.of(
+                        Pair.of("status", GetableIndex.ValueType.SINGLE),
+                        Pair.of("type", GetableIndex.ValueType.SINGLE)),
+                Optional.of(TagStorageType.LOCAL)));
     }
 
     @Override
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         switch (key) {
             case "status" -> {
-                return List.of(
-                        new IndexedField(key, this.getStatus().toString(), TagStorageType.LOCAL));
+                return List.of(new IndexedField(key, this.getStatus().toString(), TagStorageType.LOCAL));
             }
             case "type" -> {
-                return List.of(
-                        new IndexedField(key, this.getType().toString(), TagStorageType.LOCAL));
+                return List.of(new IndexedField(key, this.getType().toString(), TagStorageType.LOCAL));
             }
         }
         log.warn("Tried to get value for unknown index field {}", key);
@@ -182,8 +179,7 @@ public class NodeRunModel extends Getable<NodeRun> {
                 sleepNodeRun = SleepNodeRunModel.fromProto(proto.getSleep());
                 break;
             case USER_TASK:
-                userTaskRun =
-                        LHSerializable.fromProto(proto.getUserTask(), UserTaskNodeRunModel.class);
+                userTaskRun = LHSerializable.fromProto(proto.getUserTask(), UserTaskNodeRunModel.class);
                 break;
             case NODETYPE_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -256,16 +252,15 @@ public class NodeRunModel extends Getable<NodeRun> {
     }
 
     public NodeRun.Builder toProto() {
-        NodeRun.Builder out =
-                NodeRun.newBuilder()
-                        .setWfRunId(wfRunId)
-                        .setThreadRunNumber(threadRunNumber)
-                        .setPosition(position)
-                        .setStatus(status)
-                        .setArrivalTime(LHUtil.fromDate(arrivalTime))
-                        .setWfSpecId(wfSpecId.toProto())
-                        .setThreadSpecName(threadSpecName)
-                        .setNodeName(nodeName);
+        NodeRun.Builder out = NodeRun.newBuilder()
+                .setWfRunId(wfRunId)
+                .setThreadRunNumber(threadRunNumber)
+                .setPosition(position)
+                .setStatus(status)
+                .setArrivalTime(LHUtil.fromDate(arrivalTime))
+                .setWfSpecId(wfSpecId.toProto())
+                .setThreadSpecName(threadSpecName)
+                .setNodeName(nodeName);
 
         if (endTime != null) out.setEndTime(LHUtil.fromDate(endTime));
 
@@ -310,9 +305,7 @@ public class NodeRunModel extends Getable<NodeRun> {
     }
 
     public boolean isInProgress() {
-        return (status != LHStatus.COMPLETED
-                && status != LHStatus.HALTED
-                && status != LHStatus.ERROR);
+        return (status != LHStatus.COMPLETED && status != LHStatus.HALTED && status != LHStatus.ERROR);
     }
 
     public boolean isCompletedOrRecoveredFromFailure() {

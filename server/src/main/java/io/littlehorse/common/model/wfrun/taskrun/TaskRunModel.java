@@ -71,15 +71,14 @@ public class TaskRunModel extends Getable<TaskRun> {
     }
 
     public TaskRun.Builder toProto() {
-        TaskRun.Builder out =
-                TaskRun.newBuilder()
-                        .setTaskDefName(taskDefName)
-                        .setMaxAttempts(maxAttempts)
-                        .setScheduledAt(LHUtil.fromDate(scheduledAt))
-                        .setStatus(status)
-                        .setSource(taskRunSource.toProto())
-                        .setTimeoutSeconds(timeoutSeconds)
-                        .setId(id.toProto());
+        TaskRun.Builder out = TaskRun.newBuilder()
+                .setTaskDefName(taskDefName)
+                .setMaxAttempts(maxAttempts)
+                .setScheduledAt(LHUtil.fromDate(scheduledAt))
+                .setStatus(status)
+                .setSource(taskRunSource.toProto())
+                .setTimeoutSeconds(timeoutSeconds)
+                .setId(id.toProto());
 
         for (VarNameAndValModel v : inputVariables) {
             out.addInputVariables(v.toProto());
@@ -138,11 +137,7 @@ public class TaskRunModel extends Getable<TaskRun> {
         attempts = new ArrayList<>();
     }
 
-    public TaskRunModel(
-            LHDAO dao,
-            List<VarNameAndValModel> inputVars,
-            TaskRunSourceModel source,
-            TaskNodeModel node) {
+    public TaskRunModel(LHDAO dao, List<VarNameAndValModel> inputVars, TaskRunSourceModel source, TaskNodeModel node) {
         this();
         this.inputVariables = inputVars;
         this.taskRunSource = source;
@@ -177,8 +172,7 @@ public class TaskRunModel extends Getable<TaskRun> {
             return false;
         }
 
-        if (latest.getStatus() != TaskStatus.TASK_FAILED
-                && latest.getStatus() != TaskStatus.TASK_TIMEOUT) {
+        if (latest.getStatus() != TaskStatus.TASK_FAILED && latest.getStatus() != TaskStatus.TASK_TIMEOUT) {
             // Can only retry timeout or task failure.
             return false;
         }
@@ -226,8 +220,7 @@ public class TaskRunModel extends Getable<TaskRun> {
     public ReportTaskReply updateTaskResult(ReportTaskRunModel ce) {
         if (ce.getAttemptNumber() >= attempts.size()) {
             return new ReportTaskReply(
-                    LHResponseCode.BAD_REQUEST_ERROR,
-                    "Couldn't find specified Task Attempt. Bad client!");
+                    LHResponseCode.BAD_REQUEST_ERROR, "Couldn't find specified Task Attempt. Bad client!");
         }
 
         TaskAttemptModel attempt = attempts.get(ce.getAttemptNumber());

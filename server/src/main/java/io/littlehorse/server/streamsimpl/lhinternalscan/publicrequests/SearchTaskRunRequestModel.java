@@ -31,11 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 public class SearchTaskRunRequestModel
         extends PublicScanRequest<
-                SearchTaskRunRequest,
-                SearchTaskRunResponse,
-                TaskRunId,
-                TaskRunIdModel,
-                SearchTaskRunReply> {
+                SearchTaskRunRequest, SearchTaskRunResponse, TaskRunId, TaskRunIdModel, SearchTaskRunReply> {
 
     private TaskRunCriteriaCase type;
     private ByTaskDefRequest taskDef;
@@ -146,10 +142,8 @@ public class SearchTaskRunRequestModel
     public void validate() throws LHValidationError {}
 
     @Override
-    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString)
-            throws LHValidationError {
-        if (type == TaskRunCriteriaCase.TASK_DEF
-                || type == TaskRunCriteriaCase.STATUS_AND_TASK_DEF) {
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHValidationError {
+        if (type == TaskRunCriteriaCase.TASK_DEF || type == TaskRunCriteriaCase.STATUS_AND_TASK_DEF) {
             return new TagScanBoundaryStrategy(
                     searchAttributeString,
                     Optional.ofNullable(LHUtil.fromProtoTs(getEarliestStart())),

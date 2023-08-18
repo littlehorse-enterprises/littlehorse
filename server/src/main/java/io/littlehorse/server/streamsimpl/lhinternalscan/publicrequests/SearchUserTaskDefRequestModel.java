@@ -106,11 +106,9 @@ public class SearchUserTaskDefRequestModel
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         if (prefix != null && !prefix.equals("")) {
-            return new ObjectIdScanBoundaryStrategy(
-                    LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
+            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
         } else if (name != null && !name.isEmpty()) {
-            return new ObjectIdScanBoundaryStrategy(
-                    LHConstants.META_PARTITION_KEY, name, name + "/");
+            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, name, name + "/");
         } else {
             return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, "", "~");
         }

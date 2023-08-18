@@ -11,15 +11,10 @@ public class ListenersManager implements Closeable {
 
     private final List<ServerListener> servers;
 
-    public ListenersManager(
-            LHConfig config, BindableService service, Executor threadpool, MeterRegistry meter) {
-        this.servers =
-                config.getListeners().stream()
-                        .map(
-                                serverListenerConfig ->
-                                        new ServerListener(
-                                                serverListenerConfig, threadpool, service, meter))
-                        .toList();
+    public ListenersManager(LHConfig config, BindableService service, Executor threadpool, MeterRegistry meter) {
+        this.servers = config.getListeners().stream()
+                .map(serverListenerConfig -> new ServerListener(serverListenerConfig, threadpool, service, meter))
+                .toList();
     }
 
     public void start() {

@@ -30,8 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SearchWfRunRequestModel
-        extends PublicScanRequest<
-                SearchWfRunRequest, SearchWfRunResponse, WfRunId, WfRunIdModel, SearchWfRunReply> {
+        extends PublicScanRequest<SearchWfRunRequest, SearchWfRunResponse, WfRunId, WfRunIdModel, SearchWfRunReply> {
 
     public WfrunCriteriaCase type;
     public StatusAndSpecRequest statusAndSpec;
@@ -105,10 +104,7 @@ public class SearchWfRunRequestModel
     }
 
     private List<WfrunCriteriaCase> supportedCriteriaCases() {
-        return List.of(
-                WfrunCriteriaCase.STATUS_AND_SPEC,
-                WfrunCriteriaCase.NAME,
-                WfrunCriteriaCase.STATUS_AND_NAME);
+        return List.of(WfrunCriteriaCase.STATUS_AND_SPEC, WfrunCriteriaCase.NAME, WfrunCriteriaCase.STATUS_AND_NAME);
     }
 
     private Timestamp getEarliestStart() {
@@ -153,10 +149,8 @@ public class SearchWfRunRequestModel
                 getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
         return new WfRunModel()
                 .getIndexConfigurations().stream()
-                        .filter(
-                                getableIndexConfiguration ->
-                                        getableIndexConfiguration.searchAttributesMatch(
-                                                searchAttributeKeys))
+                        .filter(getableIndexConfiguration ->
+                                getableIndexConfiguration.searchAttributesMatch(searchAttributeKeys))
                         .map(GetableIndex::getTagStorageType)
                         .filter(Optional::isPresent)
                         .map(Optional::get)
@@ -193,8 +187,6 @@ public class SearchWfRunRequestModel
         return Arrays.asList(
                 new Attribute("wfSpecName", statusAndSpec.getWfSpecName()),
                 new Attribute("status", statusAndSpec.getStatus().toString()),
-                new Attribute(
-                        "wfSpecVersion",
-                        LHUtil.toLHDbVersionFormat(statusAndSpec.getWfSpecVersion())));
+                new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(statusAndSpec.getWfSpecVersion())));
     }
 }

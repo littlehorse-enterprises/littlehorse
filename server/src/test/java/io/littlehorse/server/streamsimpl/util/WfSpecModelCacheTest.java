@@ -25,14 +25,12 @@ class WfSpecModelCacheTest {
             final WfSpecModel wfSpecModel = TestUtil.wfSpec(wfSpecName);
             wfSpecModel.setVersion(wfSpecVersion);
             final String key =
-                    StoreUtils.getFullStoreKey(
-                            wfSpecModel.getObjectId().getStoreKey(), WfSpecModel.class);
+                    StoreUtils.getFullStoreKey(wfSpecModel.getObjectId().getStoreKey(), WfSpecModel.class);
             final Bytes value = Bytes.wrap(wfSpecModel.toBytes(null));
 
             wfSpecCache.addToCache(key, value);
 
-            WfSpecModel cachedWfSpecModel =
-                    wfSpecCache.get(new WfSpecIdModel(wfSpecName, wfSpecVersion));
+            WfSpecModel cachedWfSpecModel = wfSpecCache.get(new WfSpecIdModel(wfSpecName, wfSpecVersion));
 
             assertThat(cachedWfSpecModel)
                     .usingRecursiveComparison()
@@ -48,14 +46,12 @@ class WfSpecModelCacheTest {
             final WfSpecModel wfSpecModel = TestUtil.wfSpec(wfSpecName);
             wfSpecModel.setVersion(wfSpecVersion);
             final String key =
-                    StoreUtils.getFullStoreKey(
-                            wfSpecModel.getObjectId().getStoreKey(), WfSpecModel.class);
+                    StoreUtils.getFullStoreKey(wfSpecModel.getObjectId().getStoreKey(), WfSpecModel.class);
             final Bytes value = Bytes.wrap(wfSpecModel.toBytes(null));
 
             wfSpecCache.addToCache(key, value);
 
-            WfSpecModel cachedLatestWfSpecModel =
-                    wfSpecCache.get(new WfSpecIdModel(wfSpecName, LATEST_VERSION));
+            WfSpecModel cachedLatestWfSpecModel = wfSpecCache.get(new WfSpecIdModel(wfSpecName, LATEST_VERSION));
 
             assertThat(cachedLatestWfSpecModel)
                     .usingRecursiveComparison()
@@ -129,8 +125,7 @@ class WfSpecModelCacheTest {
 
             wfSpecCache.getOrCache(name, version, () -> wfSpecModel);
 
-            WfSpecModel cachedLatestWfSpecModel =
-                    wfSpecCache.get(new WfSpecIdModel(name, LATEST_VERSION));
+            WfSpecModel cachedLatestWfSpecModel = wfSpecCache.get(new WfSpecIdModel(name, LATEST_VERSION));
 
             assertThat(cachedLatestWfSpecModel)
                     .usingRecursiveComparison()

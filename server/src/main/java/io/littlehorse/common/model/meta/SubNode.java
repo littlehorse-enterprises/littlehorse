@@ -14,8 +14,7 @@ public abstract class SubNode<T extends Message> extends LHSerializable<T> {
 
     public abstract SubNodeRun<?> createSubNodeRun(Date time);
 
-    public abstract void validate(LHGlobalMetaStores stores, LHConfig config)
-            throws LHValidationError;
+    public abstract void validate(LHGlobalMetaStores stores, LHConfig config) throws LHValidationError;
 
     protected NodeModel node;
 

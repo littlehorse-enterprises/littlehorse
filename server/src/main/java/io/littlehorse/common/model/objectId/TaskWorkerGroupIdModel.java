@@ -7,8 +7,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.TaskWorkerGroup;
 import io.littlehorse.sdk.common.proto.TaskWorkerGroupId;
 
-public class TaskWorkerGroupIdModel
-        extends ObjectId<TaskWorkerGroupId, TaskWorkerGroup, TaskWorkerGroupModel> {
+public class TaskWorkerGroupIdModel extends ObjectId<TaskWorkerGroupId, TaskWorkerGroup, TaskWorkerGroupModel> {
 
     public String taskDefName;
 

@@ -5,8 +5,8 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.PendingFailureHandlerHaltReason;
 
-public class PendingFailureHandlerHaltReasonModel
-        extends LHSerializable<PendingFailureHandlerHaltReason> implements SubHaltReason {
+public class PendingFailureHandlerHaltReasonModel extends LHSerializable<PendingFailureHandlerHaltReason>
+        implements SubHaltReason {
 
     public int nodeRunPosition;
 
@@ -31,8 +31,7 @@ public class PendingFailureHandlerHaltReasonModel
         nodeRunPosition = p.getNodeRunPosition();
     }
 
-    public static PendingFailureHandlerHaltReasonModel fromProto(
-            PendingFailureHandlerHaltReason proto) {
+    public static PendingFailureHandlerHaltReasonModel fromProto(PendingFailureHandlerHaltReason proto) {
         PendingFailureHandlerHaltReasonModel out = new PendingFailureHandlerHaltReasonModel();
         out.initFrom(proto);
         return out;

@@ -5,6 +5,5 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 
 public interface GetableSearch {
-    InternalScan buildInternalScan(LHGlobalMetaStores stores, TagStorageType tagStorageType)
-            throws LHValidationError;
+    InternalScan buildInternalScan(LHGlobalMetaStores stores, TagStorageType tagStorageType) throws LHValidationError;
 }

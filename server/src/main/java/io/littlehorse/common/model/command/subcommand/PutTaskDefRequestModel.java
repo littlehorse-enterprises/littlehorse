@@ -14,8 +14,7 @@ import io.littlehorse.sdk.common.proto.VariableDef;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PutTaskDefRequestModel
-        extends SubCommand<io.littlehorse.sdk.common.proto.PutTaskDefRequest> {
+public class PutTaskDefRequestModel extends SubCommand<io.littlehorse.sdk.common.proto.PutTaskDefRequest> {
 
     public String name;
     public List<VariableDefModel> inputVars;
@@ -45,8 +44,7 @@ public class PutTaskDefRequestModel
     }
 
     public void initFrom(Message proto) {
-        io.littlehorse.sdk.common.proto.PutTaskDefRequest p =
-                (io.littlehorse.sdk.common.proto.PutTaskDefRequest) proto;
+        io.littlehorse.sdk.common.proto.PutTaskDefRequest p = (io.littlehorse.sdk.common.proto.PutTaskDefRequest) proto;
         name = p.getName();
         for (VariableDef entry : p.getInputVarsList()) {
             inputVars.add(VariableDefModel.fromProto(entry));
@@ -84,8 +82,7 @@ public class PutTaskDefRequestModel
         return out;
     }
 
-    public static PutTaskDefRequestModel fromProto(
-            io.littlehorse.sdk.common.proto.PutTaskDefRequest p) {
+    public static PutTaskDefRequestModel fromProto(io.littlehorse.sdk.common.proto.PutTaskDefRequest p) {
         PutTaskDefRequestModel out = new PutTaskDefRequestModel();
         out.initFrom(p);
         return out;

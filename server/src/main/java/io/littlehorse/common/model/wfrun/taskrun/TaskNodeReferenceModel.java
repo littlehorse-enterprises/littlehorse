@@ -35,9 +35,7 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
 
     public TaskNodeReference.Builder toProto() {
         TaskNodeReference.Builder out =
-                TaskNodeReference.newBuilder()
-                        .setWfSpecId(wfSpecId.toProto())
-                        .setNodeRunId(nodeRunId.toProto());
+                TaskNodeReference.newBuilder().setWfSpecId(wfSpecId.toProto()).setNodeRunId(nodeRunId.toProto());
 
         return out;
     }
@@ -62,8 +60,7 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
             message += ": " + stderr.getVal().toString();
         }
         nodeRunModel.fail(
-                new FailureModel(message, getFailureCodeFor(lastFailure.getStatus())),
-                lastFailure.getEndTime());
+                new FailureModel(message, getFailureCodeFor(lastFailure.getStatus())), lastFailure.getEndTime());
     }
 
     private String getMessageFor(TaskStatus status) {

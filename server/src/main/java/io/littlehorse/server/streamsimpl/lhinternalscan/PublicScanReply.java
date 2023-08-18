@@ -13,8 +13,7 @@ import java.util.List;
 /**
  * RP: The Response Protobuf OP: The Individual Entry Protobuf OJ: The Individual Entry Java Object
  */
-public abstract class PublicScanReply<
-                RP extends Message, OP extends Message, OJ extends LHSerializable<OP>>
+public abstract class PublicScanReply<RP extends Message, OP extends Message, OJ extends LHSerializable<OP>>
         extends LHSerializable<RP> {
 
     public ByteString bookmark;

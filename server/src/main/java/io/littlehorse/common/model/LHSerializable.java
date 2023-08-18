@@ -34,8 +34,7 @@ public abstract class LHSerializable<T extends Message> {
         return toProto().build().toByteArray();
     }
 
-    public static <U extends Message, T extends LHSerializable<U>> T fromProto(
-            U proto, Class<T> cls) {
+    public static <U extends Message, T extends LHSerializable<U>> T fromProto(U proto, Class<T> cls) {
         try {
             T out = cls.getDeclaredConstructor().newInstance();
             out.initFrom(proto);
@@ -54,9 +53,8 @@ public abstract class LHSerializable<T extends Message> {
             T out = load(cls, config);
             Class<? extends GeneratedMessageV3> protoClass = out.getProtoBaseClass();
 
-            GeneratedMessageV3 proto =
-                    protoClass.cast(
-                            protoClass.getMethod("parseFrom", byte[].class).invoke(null, b));
+            GeneratedMessageV3 proto = protoClass.cast(
+                    protoClass.getMethod("parseFrom", byte[].class).invoke(null, b));
             out.initFrom(proto);
             return out;
         } catch (Exception exn) {
@@ -66,10 +64,7 @@ public abstract class LHSerializable<T extends Message> {
     }
 
     private static <T extends LHSerializable<?>> T load(Class<T> cls, LHConfig config)
-            throws IllegalAccessException,
-                    InvocationTargetException,
-                    NoSuchMethodException,
-                    InstantiationException {
+            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
         try {
             return cls.getDeclaredConstructor().newInstance();
         } catch (NoSuchMethodException exn) {
@@ -77,16 +72,15 @@ public abstract class LHSerializable<T extends Message> {
         }
     }
 
-    public static <T extends LHSerializable<?>> T fromJson(
-            String json, Class<T> cls, LHConfig config) throws LHSerdeError {
+    public static <T extends LHSerializable<?>> T fromJson(String json, Class<T> cls, LHConfig config)
+            throws LHSerdeError {
         GeneratedMessageV3.Builder<?> builder;
         T out;
 
         try {
             out = load(cls, config);
-            builder =
-                    (GeneratedMessageV3.Builder<?>)
-                            out.getProtoBaseClass().getMethod("newBuilder").invoke(null);
+            builder = (GeneratedMessageV3.Builder<?>)
+                    out.getProtoBaseClass().getMethod("newBuilder").invoke(null);
         } catch (Exception exn) {
             throw new LHSerdeError(exn, "Failed to reflect the protobuilder");
         }

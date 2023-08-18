@@ -78,9 +78,7 @@ public class LHUtil {
         return val == null ? "null" : val.toString();
     }
 
-    /**
-     * @precondition every input string is a valid LHName.
-     */
+    /** @precondition every input string is a valid LHName. */
     public static String getCompositeId(String... components) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < components.length; i++) {
@@ -101,12 +99,14 @@ public class LHUtil {
     }
 
     public static String fullDigestify(String str) {
-        return Hashing.sha256().hashString(str, StandardCharsets.UTF_8).toString().substring(0, 18);
+        return Hashing.sha256()
+                .hashString(str, StandardCharsets.UTF_8)
+                .toString()
+                .substring(0, 18);
     }
 
     @SuppressWarnings("unchecked")
-    public static <U extends Message, T extends LHSerializable<U>> Class<U> getProtoBaseClass(
-            Class<T> cls) {
+    public static <U extends Message, T extends LHSerializable<U>> Class<U> getProtoBaseClass(Class<T> cls) {
         try {
             T t = cls.getDeclaredConstructor().newInstance();
             return (Class<U>) t.getProtoBaseClass();

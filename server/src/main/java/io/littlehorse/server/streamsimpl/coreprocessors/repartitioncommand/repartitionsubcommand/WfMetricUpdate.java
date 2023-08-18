@@ -32,8 +32,7 @@ public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements Repar
 
     public WfMetricUpdate() {}
 
-    public WfMetricUpdate(
-            Date windowStart, MetricsWindowLength type, String wfSpecName, int wfSpecVersion) {
+    public WfMetricUpdate(Date windowStart, MetricsWindowLength type, String wfSpecName, int wfSpecVersion) {
         this.windowStart = windowStart;
         this.type = type;
         this.wfSpecName = wfSpecName;
@@ -45,18 +44,17 @@ public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements Repar
     }
 
     public WfMetricUpdatePb.Builder toProto() {
-        WfMetricUpdatePb.Builder out =
-                WfMetricUpdatePb.newBuilder()
-                        .setWindowStart(LHLibUtil.fromDate(windowStart))
-                        .setType(type)
-                        .setWfSpecName(wfSpecName)
-                        .setWfSpecVersion(wfSpecVersion)
-                        .setTotalCompleted(totalCompleted)
-                        .setTotalErrored(totalErrored)
-                        .setTotalStarted(totalStarted)
-                        .setStartToCompleteTotal(startToCompleteTotal)
-                        .setStartToCompleteMax(startToCompleteMax)
-                        .setNumEntries(numEntries);
+        WfMetricUpdatePb.Builder out = WfMetricUpdatePb.newBuilder()
+                .setWindowStart(LHLibUtil.fromDate(windowStart))
+                .setType(type)
+                .setWfSpecName(wfSpecName)
+                .setWfSpecVersion(wfSpecVersion)
+                .setTotalCompleted(totalCompleted)
+                .setTotalErrored(totalErrored)
+                .setTotalStarted(totalStarted)
+                .setStartToCompleteTotal(startToCompleteTotal)
+                .setStartToCompleteMax(startToCompleteMax)
+                .setNumEntries(numEntries);
 
         return out;
     }
@@ -114,8 +112,7 @@ public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements Repar
     }
 
     public String getClusterLevelWindow() {
-        return new WfSpecMetricsIdModel(windowStart, type, LHConstants.CLUSTER_LEVEL_METRIC, 0)
-                .getStoreKey();
+        return new WfSpecMetricsIdModel(windowStart, type, LHConstants.CLUSTER_LEVEL_METRIC, 0).getStoreKey();
     }
 
     public void process(LHStoreWrapper store, ProcessorContext<Void, Void> ctx) {
@@ -136,13 +133,11 @@ public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements Repar
         return wfSpecName;
     }
 
-    public static String getObjectId(
-            MetricsWindowLength type, Date windowStart, String wfSpecName, int wfSpecVersion) {
+    public static String getObjectId(MetricsWindowLength type, Date windowStart, String wfSpecName, int wfSpecVersion) {
         return WfSpecMetricsModel.getObjectId(type, windowStart, wfSpecName, wfSpecVersion);
     }
 
-    public static String getStoreKey(
-            MetricsWindowLength type, Date windowStart, String wfSpecName, int wfSpecVersion) {
+    public static String getStoreKey(MetricsWindowLength type, Date windowStart, String wfSpecName, int wfSpecVersion) {
         return LHUtil.getCompositeId(
                 LHUtil.toLhDbFormat(windowStart),
                 type.toString(),

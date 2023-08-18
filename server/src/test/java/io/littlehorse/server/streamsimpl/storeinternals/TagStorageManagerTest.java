@@ -28,24 +28,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class TagStorageManagerTest {
 
-    private final KeyValueStore<String, Bytes> store =
-            Stores.keyValueStoreBuilder(
-                            Stores.inMemoryKeyValueStore("myStore"),
-                            Serdes.String(),
-                            Serdes.Bytes())
-                    .withLoggingDisabled()
-                    .build();
+    private final KeyValueStore<String, Bytes> store = Stores.keyValueStoreBuilder(
+                    Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
+            .withLoggingDisabled()
+            .build();
 
-    @Mock private LHConfig lhConfig;
+    @Mock
+    private LHConfig lhConfig;
 
     private LHStoreWrapper localStore = new LHStoreWrapper(store, lhConfig);
 
-    final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
-            new MockProcessorContext<>();
+    final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
 
     @InjectMocks
-    private TagStorageManager tagStorageManager =
-            new TagStorageManager(localStore, mockProcessorContext, lhConfig);
+    private TagStorageManager tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, lhConfig);
 
     private Tag tag1 = TestUtil.tag();
 
@@ -74,12 +70,9 @@ public class TagStorageManagerTest {
         Assertions.assertThat(tagResult2).isNotNull();
         Assertions.assertThat(tagsCache).isNotNull();
         Assertions.assertThat(tagsCache.getTags()).hasSize(2);
-        tagsCache
-                .getTags()
-                .forEach(
-                        cachedTag -> {
-                            Assertions.assertThat(cachedTag.getId()).isNotNull();
-                        });
+        tagsCache.getTags().forEach(cachedTag -> {
+            Assertions.assertThat(cachedTag.getId()).isNotNull();
+        });
     }
 
     @Test
@@ -115,18 +108,15 @@ public class TagStorageManagerTest {
                         .map(MockProcessorContext.CapturedForward::record)
                         .toList();
         Assertions.assertThat(outputs).hasSize(1);
-        outputs.forEach(
-                record -> {
-                    Assertions.assertThat(record.key()).isEqualTo(expectedPartitionKey);
-                    Assertions.assertThat(record.value().getPartitionKey())
-                            .isEqualTo(expectedPartitionKey);
-                    Assertions.assertThat(record.value().getPayload())
-                            .isInstanceOf(RepartitionCommand.class);
-                    RepartitionCommand repartitionCommand =
-                            (RepartitionCommand) record.value().getPayload();
-                    Assertions.assertThat(repartitionCommand.getSubCommand().getPartitionKey())
-                            .isEqualTo(expectedPartitionKey);
-                });
+        outputs.forEach(record -> {
+            Assertions.assertThat(record.key()).isEqualTo(expectedPartitionKey);
+            Assertions.assertThat(record.value().getPartitionKey()).isEqualTo(expectedPartitionKey);
+            Assertions.assertThat(record.value().getPayload()).isInstanceOf(RepartitionCommand.class);
+            RepartitionCommand repartitionCommand =
+                    (RepartitionCommand) record.value().getPayload();
+            Assertions.assertThat(repartitionCommand.getSubCommand().getPartitionKey())
+                    .isEqualTo(expectedPartitionKey);
+        });
     }
 
     @Test

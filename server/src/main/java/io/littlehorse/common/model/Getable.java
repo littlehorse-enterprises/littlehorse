@@ -163,80 +163,56 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
         return getObjectId().getStoreKey();
     }
 
-    public abstract List<IndexedField> getIndexValues(
-            String key, Optional<TagStorageType> tagStorageType);
+    public abstract List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType);
 
     public List<Tag> getIndexEntries() {
         List<Tag> out = new ArrayList<>();
-        for (GetableIndex<? extends Getable<?>> indexConfiguration :
-                this.getIndexConfigurations()) {
+        for (GetableIndex<? extends Getable<?>> indexConfiguration : this.getIndexConfigurations()) {
             if (!indexConfiguration.isValid(this)) {
                 continue;
             }
             Optional<TagStorageType> tagStorageType = indexConfiguration.getTagStorageType();
-            List<IndexedField> singleIndexedValues =
-                    indexConfiguration.getAttributes().stream()
-                            .filter(
-                                    stringValueTypePair -> {
-                                        return stringValueTypePair
-                                                .getValue()
-                                                .equals(GetableIndex.ValueType.SINGLE);
-                                    })
-                            .map(
-                                    stringValueTypePair -> {
-                                        return this.getIndexValues(
-                                                        stringValueTypePair.getKey(),
-                                                        tagStorageType)
-                                                .get(0);
-                                    })
-                            .toList();
-            List<IndexedField> dynamicIndexedFields =
-                    indexConfiguration.getAttributes().stream()
-                            .filter(
-                                    stringValueTypePair -> {
-                                        return stringValueTypePair
-                                                .getValue()
-                                                .equals(GetableIndex.ValueType.DYNAMIC);
-                                    })
-                            .flatMap(
-                                    stringValueTypePair ->
-                                            this.getIndexValues(
-                                                    stringValueTypePair.getKey(), tagStorageType)
-                                                    .stream())
-                            .toList();
+            List<IndexedField> singleIndexedValues = indexConfiguration.getAttributes().stream()
+                    .filter(stringValueTypePair -> {
+                        return stringValueTypePair.getValue().equals(GetableIndex.ValueType.SINGLE);
+                    })
+                    .map(stringValueTypePair -> {
+                        return this.getIndexValues(stringValueTypePair.getKey(), tagStorageType)
+                                .get(0);
+                    })
+                    .toList();
+            List<IndexedField> dynamicIndexedFields = indexConfiguration.getAttributes().stream()
+                    .filter(stringValueTypePair -> {
+                        return stringValueTypePair.getValue().equals(GetableIndex.ValueType.DYNAMIC);
+                    })
+                    .flatMap(stringValueTypePair ->
+                            this.getIndexValues(stringValueTypePair.getKey(), tagStorageType).stream())
+                    .toList();
             List<List<IndexedField>> combine = combine(singleIndexedValues, dynamicIndexedFields);
             for (List<IndexedField> list : combine) {
-                TagStorageType storageType =
-                        list.stream()
-                                .map(IndexedField::getTagStorageType)
-                                .filter(
-                                        tagStorageTypePb1 ->
-                                                tagStorageTypePb1 == TagStorageType.REMOTE)
-                                .findAny()
-                                .orElse(TagStorageType.LOCAL);
-                List<Pair<String, String>> pairs =
-                        list.stream()
-                                .map(
-                                        indexedField ->
-                                                Pair.of(
-                                                        indexedField.getKey(),
-                                                        indexedField.getValue().toString()))
-                                .toList();
+                TagStorageType storageType = list.stream()
+                        .map(IndexedField::getTagStorageType)
+                        .filter(tagStorageTypePb1 -> tagStorageTypePb1 == TagStorageType.REMOTE)
+                        .findAny()
+                        .orElse(TagStorageType.LOCAL);
+                List<Pair<String, String>> pairs = list.stream()
+                        .map(indexedField -> Pair.of(
+                                indexedField.getKey(), indexedField.getValue().toString()))
+                        .toList();
                 out.add(new Tag(this, storageType, pairs));
             }
         }
         return out;
     }
 
-    private List<List<IndexedField>> combine(
-            List<IndexedField> source, List<IndexedField> multiple) {
+    private List<List<IndexedField>> combine(List<IndexedField> source, List<IndexedField> multiple) {
         if (multiple.isEmpty()) {
             return List.of(source);
         }
         List<List<IndexedField>> result = new ArrayList<>();
         for (IndexedField dynamicIndexedField : multiple) {
-            List<IndexedField> list =
-                    Stream.concat(source.stream(), Stream.of(dynamicIndexedField)).toList();
+            List<IndexedField> list = Stream.concat(source.stream(), Stream.of(dynamicIndexedField))
+                    .toList();
             result.add(list);
         }
         return result;

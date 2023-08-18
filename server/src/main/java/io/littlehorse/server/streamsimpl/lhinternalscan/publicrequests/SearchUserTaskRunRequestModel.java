@@ -81,8 +81,7 @@ public class SearchUserTaskRunRequestModel
         // dictates that we would search by userGroup (since it has a higher
         // field number) and ignore userId silently. By using the way below,
         // we can throw an LHValidationError when processing the search.
-        if (p.hasUserGroup())
-            userGroup = LHSerializable.fromProto(p.getUserGroup(), UserGroupModel.class);
+        if (p.hasUserGroup()) userGroup = LHSerializable.fromProto(p.getUserGroup(), UserGroupModel.class);
         if (p.hasUser()) user = LHSerializable.fromProto(p.getUser(), UserModel.class);
         if (p.hasLatestStart()) {
             latestStart = LHUtil.fromProtoTs(p.getLatestStart());
@@ -133,21 +132,18 @@ public class SearchUserTaskRunRequestModel
 
     private void validateUserGroupAndUserId() throws LHValidationError {
         if (userGroup != null && user != null) {
-            throw new LHValidationError(
-                    null, "Cannot specify UserID and User Group in same search!");
+            throw new LHValidationError(null, "Cannot specify UserID and User Group in same search!");
         }
     }
 
     private Optional<TagStorageType> tagStorageTypePbByStatus() {
-        return Optional.ofNullable(status)
-                .map(
-                        userTaskRunStatusPb -> {
-                            if (UserTaskRunModel.isRemote(userTaskRunStatusPb)) {
-                                return TagStorageType.REMOTE;
-                            } else {
-                                return TagStorageType.LOCAL;
-                            }
-                        });
+        return Optional.ofNullable(status).map(userTaskRunStatusPb -> {
+            if (UserTaskRunModel.isRemote(userTaskRunStatusPb)) {
+                return TagStorageType.REMOTE;
+            } else {
+                return TagStorageType.LOCAL;
+            }
+        });
     }
 
     private Optional<TagStorageType> tagStorageTypePbByUserId() {
@@ -167,7 +163,8 @@ public class SearchUserTaskRunRequestModel
         if (user != null) {
             attributes.add(new Attribute("userId", this.getUser().getId()));
             if (this.getUser().getUserGroup() != null) {
-                attributes.add(new Attribute("userGroup", this.getUser().getUserGroup().getId()));
+                attributes.add(
+                        new Attribute("userGroup", this.getUser().getUserGroup().getId()));
             }
         }
 
@@ -179,13 +176,12 @@ public class SearchUserTaskRunRequestModel
 
     @Override
     public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
-        TagStorageType tagStorageType =
-                tagStorageTypePbByUserId().orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
+        TagStorageType tagStorageType = tagStorageTypePbByUserId()
+                .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
         if (tagStorageType == null) {
             List<String> searchAttributes =
                     getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
-            Optional<TagStorageType> tagStorageTypePbOptional =
-                    getStorageTypeForSearchAttributes(searchAttributes);
+            Optional<TagStorageType> tagStorageTypePbOptional = getStorageTypeForSearchAttributes(searchAttributes);
             if (tagStorageTypePbOptional.isEmpty()) {
                 throw new LHValidationError("There is no index configuration for this search");
             }
@@ -199,17 +195,14 @@ public class SearchUserTaskRunRequestModel
         this.validateUserGroupAndUserId();
         if (getSearchAttributes().isEmpty()) {
             throw new LHValidationError(
-                    null,
-                    "Must specify at least one of: [status, userTaskDefName, userGroup, userId]");
+                    null, "Must specify at least one of: [status, userTaskDefName, userGroup, userId]");
         }
     }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         return new TagScanBoundaryStrategy(
-                searchAttributeString,
-                Optional.ofNullable(earliestStart),
-                Optional.ofNullable(latestStart));
+                searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
     }
 
     private Optional<TagStorageType> getStorageTypeForSearchAttributes(List<String> attributes) {

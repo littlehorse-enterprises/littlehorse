@@ -62,8 +62,7 @@ public class SearchExternalEventDefRequestModel
         return out;
     }
 
-    public static SearchExternalEventDefRequestModel fromProto(
-            SearchExternalEventDefRequest proto) {
+    public static SearchExternalEventDefRequestModel fromProto(SearchExternalEventDefRequest proto) {
         SearchExternalEventDefRequestModel out = new SearchExternalEventDefRequestModel();
         out.initFrom(proto);
         return out;
@@ -80,8 +79,7 @@ public class SearchExternalEventDefRequestModel
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         if (prefix != null && !prefix.equals("")) {
-            return new ObjectIdScanBoundaryStrategy(
-                    LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
+            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
         } else {
             return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, "", "~");
         }

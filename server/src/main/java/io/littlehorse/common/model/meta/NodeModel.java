@@ -154,12 +154,10 @@ public class NodeModel extends LHSerializable<Node> {
                 sleepNode.initFrom(proto.getSleep());
                 break;
             case USER_TASK:
-                userTaskNode =
-                        LHSerializable.fromProto(proto.getUserTask(), UserTaskNodeModel.class);
+                userTaskNode = LHSerializable.fromProto(proto.getUserTask(), UserTaskNodeModel.class);
                 break;
             case NODE_NOT_SET:
-                throw new RuntimeException(
-                        "Node " + name + " on thread " + threadSpecModel.name + " is unset!");
+                throw new RuntimeException("Node " + name + " on thread " + threadSpecModel.name + " is unset!");
         }
         getSubNode().setNode(this);
     }
@@ -203,17 +201,13 @@ public class NodeModel extends LHSerializable<Node> {
             NodeModel sink = threadSpecModel.nodes.get(e.sinkNodeName);
             if (sink == null) {
                 throw new LHValidationError(
-                        null,
-                        String.format(
-                                "Outgoing edge referring to missing node %s!", e.sinkNodeName));
+                        null, String.format("Outgoing edge referring to missing node %s!", e.sinkNodeName));
             }
 
             if (sink.type == NodeCase.ENTRYPOINT) {
                 throw new LHValidationError(
                         null,
-                        String.format(
-                                "Entrypoint node has incoming edge from node %s.",
-                                threadSpecModel.name, name));
+                        String.format("Entrypoint node has incoming edge from node %s.", threadSpecModel.name, name));
             }
             if (e.condition != null) {
                 e.condition.validate();

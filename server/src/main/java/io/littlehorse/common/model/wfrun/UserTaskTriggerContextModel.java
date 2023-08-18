@@ -40,9 +40,7 @@ public class UserTaskTriggerContextModel extends LHSerializable<UserTaskTriggerC
             user = LHSerializable.fromProto(taskTriggerContext.getUser(), UserModel.class);
         }
         if (taskTriggerContext.hasUserGroup()) {
-            userGroup =
-                    LHSerializable.fromProto(
-                            taskTriggerContext.getUserGroup(), UserGroupModel.class);
+            userGroup = LHSerializable.fromProto(taskTriggerContext.getUserGroup(), UserGroupModel.class);
         }
     }
 

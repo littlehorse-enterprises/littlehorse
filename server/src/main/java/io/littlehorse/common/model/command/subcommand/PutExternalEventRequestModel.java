@@ -38,11 +38,10 @@ public class PutExternalEventRequestModel extends SubCommand<PutExternalEventReq
     }
 
     public PutExternalEventRequest.Builder toProto() {
-        PutExternalEventRequest.Builder out =
-                PutExternalEventRequest.newBuilder()
-                        .setWfRunId(wfRunId)
-                        .setExternalEventDefName(externalEventDefName)
-                        .setContent(content.toProto());
+        PutExternalEventRequest.Builder out = PutExternalEventRequest.newBuilder()
+                .setWfRunId(wfRunId)
+                .setExternalEventDefName(externalEventDefName)
+                .setContent(content.toProto());
 
         if (guid != null) out.setGuid(guid);
         if (threadRunNumber != null) out.setThreadRunNumber(threadRunNumber);
@@ -100,10 +99,7 @@ public class PutExternalEventRequestModel extends SubCommand<PutExternalEventReq
                 wfRunModel
                         .threadRunModels
                         .get(0)
-                        .fail(
-                                new FailureModel(
-                                        "Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR),
-                                new Date());
+                        .fail(new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR), new Date());
                 out.code = LHResponseCode.NOT_FOUND_ERROR;
                 out.message = "Apparently WfSpec was deleted!";
             } else {

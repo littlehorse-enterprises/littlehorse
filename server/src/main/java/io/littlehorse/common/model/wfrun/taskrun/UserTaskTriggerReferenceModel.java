@@ -33,11 +33,10 @@ public class UserTaskTriggerReferenceModel extends TaskRunSubSource<UserTaskTrig
     }
 
     public UserTaskTriggerReference.Builder toProto() {
-        UserTaskTriggerReference.Builder out =
-                UserTaskTriggerReference.newBuilder()
-                        .setWfSpecId(wfSpecId.toProto())
-                        .setNodeRunId(nodeRunId.toProto())
-                        .setUserTaskEventNumber(userTaskEventNumber);
+        UserTaskTriggerReference.Builder out = UserTaskTriggerReference.newBuilder()
+                .setWfSpecId(wfSpecId.toProto())
+                .setNodeRunId(nodeRunId.toProto())
+                .setUserTaskEventNumber(userTaskEventNumber);
 
         return out;
     }

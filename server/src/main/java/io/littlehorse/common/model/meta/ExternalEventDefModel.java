@@ -40,11 +40,10 @@ public class ExternalEventDefModel extends Getable<ExternalEventDef> {
     }
 
     public ExternalEventDef.Builder toProto() {
-        ExternalEventDef.Builder b =
-                ExternalEventDef.newBuilder()
-                        .setName(name)
-                        .setRetentionHours(retentionHours)
-                        .setCreatedAt(LHUtil.fromDate(getCreatedAt()));
+        ExternalEventDef.Builder b = ExternalEventDef.newBuilder()
+                .setName(name)
+                .setRetentionHours(retentionHours)
+                .setCreatedAt(LHUtil.fromDate(getCreatedAt()));
         return b;
     }
 

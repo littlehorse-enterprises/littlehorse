@@ -49,12 +49,10 @@ public class LHROStoreWrapper {
             return null;
         }
         try {
-            return (StoredGetable<U, T>)
-                    LHSerializable.fromBytes(raw.get(), StoredGetable.class, config);
+            return (StoredGetable<U, T>) LHSerializable.fromBytes(raw.get(), StoredGetable.class, config);
         } catch (LHSerdeError exn) {
             log.error(exn.getMessage(), exn);
-            throw new RuntimeException(
-                    "Not possible to have this happen, indicates corrupted store.");
+            throw new RuntimeException("Not possible to have this happen, indicates corrupted store.");
         }
     }
 
@@ -72,8 +70,7 @@ public class LHROStoreWrapper {
             return LHSerializable.fromBytes(raw.get(), cls, config);
         } catch (LHSerdeError exn) {
             log.error(exn.getMessage(), exn);
-            throw new RuntimeException(
-                    "Not possible to have this happen, indicates corrupted store.");
+            throw new RuntimeException("Not possible to have this happen, indicates corrupted store.");
         }
     }
 
@@ -90,26 +87,19 @@ public class LHROStoreWrapper {
      * Make sure to `.close()` the result!
      */
     @SuppressWarnings("unchecked")
-    public <U extends Message, T extends Getable<U>>
-            LHKeyValueIterator<StoredGetable<U, T>> prefixScanStoredGetable(
-                    String prefix, Class<T> cls) {
+    public <U extends Message, T extends Getable<U>> LHKeyValueIterator<StoredGetable<U, T>> prefixScanStoredGetable(
+            String prefix, Class<T> cls) {
         String compositePrefix = StoreUtils.getFullStoreKey(prefix, cls);
-        LHKeyValueIterator<?> iterator =
-                new LHKeyValueIterator<>(
-                        store.prefixScan(compositePrefix, Serdes.String().serializer()),
-                        StoredGetable.class,
-                        config);
+        LHKeyValueIterator<?> iterator = new LHKeyValueIterator<>(
+                store.prefixScan(compositePrefix, Serdes.String().serializer()), StoredGetable.class, config);
         return (LHKeyValueIterator<StoredGetable<U, T>>) iterator;
     }
 
-    public <T extends Storeable<?>> LHKeyValueIterator<T> prefixTagScan(
-            String prefix, Class<T> cls) {
-        return new LHKeyValueIterator<>(
-                store.prefixScan(prefix, Serdes.String().serializer()), cls, config);
+    public <T extends Storeable<?>> LHKeyValueIterator<T> prefixTagScan(String prefix, Class<T> cls) {
+        return new LHKeyValueIterator<>(store.prefixScan(prefix, Serdes.String().serializer()), cls, config);
     }
 
-    public <U extends Message, T extends Storeable<U>> T getLastFromPrefix(
-            String prefix, Class<T> cls) {
+    public <U extends Message, T extends Storeable<U>> T getLastFromPrefix(String prefix, Class<T> cls) {
         LHKeyValueIterator<T> iterator = null;
         try {
             iterator = reversePrefixScan(prefix + "/", cls);
@@ -139,8 +129,7 @@ public class LHROStoreWrapper {
         }
     }
 
-    public <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(
-            String prefix, Class<T> cls) {
+    public <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(String prefix, Class<T> cls) {
         String start = StoreUtils.getFullStoreKey(prefix, cls);
         // The Streams ReadOnlyKeyValueStore doesn't have a reverse prefix scan.
         // However, they do have a reverse range scan. So we take the prefix and
@@ -161,14 +150,9 @@ public class LHROStoreWrapper {
      * @param cls type
      * @return an iter
      */
-    public <T extends Storeable<?>> LHKeyValueIterator<T> range(
-            String start, String end, Class<T> cls) {
+    public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
         return new LHKeyValueIterator<>(
-                store.range(
-                        StoreUtils.getFullStoreKey(start, cls),
-                        StoreUtils.getFullStoreKey(end, cls)),
-                cls,
-                config);
+                store.range(StoreUtils.getFullStoreKey(start, cls), StoreUtils.getFullStoreKey(end, cls)), cls, config);
     }
 }
 /*

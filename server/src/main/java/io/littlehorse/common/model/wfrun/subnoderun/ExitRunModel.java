@@ -81,17 +81,14 @@ public class ExitRunModel extends SubNodeRun<ExitRun> {
             } else {
                 // then this is a "yikes Throw Exception" node.
 
-                nodeRunModel.fail(
-                        getNode().exitNode.failureDef.getFailure(nodeRunModel.getThreadRun()),
-                        time);
+                nodeRunModel.fail(getNode().exitNode.failureDef.getFailure(nodeRunModel.getThreadRun()), time);
             }
         } else {
             nodeRunModel
                     .getThreadRun()
                     .fail(
                             new FailureModel(
-                                    "Child thread (or threads) failed:" + failedChildren,
-                                    LHConstants.CHILD_FAILURE),
+                                    "Child thread (or threads) failed:" + failedChildren, LHConstants.CHILD_FAILURE),
                             time);
         }
     }

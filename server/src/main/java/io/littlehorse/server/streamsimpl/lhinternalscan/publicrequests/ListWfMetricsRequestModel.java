@@ -19,11 +19,7 @@ import java.util.Date;
 
 public class ListWfMetricsRequestModel
         extends PublicScanRequest<
-                ListWfMetricsRequest,
-                ListWfMetricsResponse,
-                WfSpecMetrics,
-                WfSpecMetricsModel,
-                ListWfMetricsReply> {
+                ListWfMetricsRequest, ListWfMetricsResponse, WfSpecMetrics, WfSpecMetricsModel, ListWfMetricsReply> {
 
     public Date lastWindowStart;
     public String wfSpecName;
@@ -36,13 +32,12 @@ public class ListWfMetricsRequestModel
     }
 
     public ListWfMetricsRequest.Builder toProto() {
-        ListWfMetricsRequest.Builder out =
-                ListWfMetricsRequest.newBuilder()
-                        .setLastWindowStart(LHUtil.fromDate(lastWindowStart))
-                        .setNumWindows(numWindows)
-                        .setWindowLength(windowLength)
-                        .setWfSpecName(wfSpecName)
-                        .setWfSpecVersion(wfSpecVersion);
+        ListWfMetricsRequest.Builder out = ListWfMetricsRequest.newBuilder()
+                .setLastWindowStart(LHUtil.fromDate(lastWindowStart))
+                .setNumWindows(numWindows)
+                .setWindowLength(windowLength)
+                .setWfSpecName(wfSpecName)
+                .setWfSpecVersion(wfSpecVersion);
 
         return out;
     }
@@ -71,18 +66,12 @@ public class ListWfMetricsRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        String endKey =
-                WfSpecMetricsModel.getObjectId(
-                        windowLength, lastWindowStart, wfSpecName, wfSpecVersion);
-        String startKey =
-                WfSpecMetricsModel.getObjectId(
-                        windowLength,
-                        new Date(
-                                lastWindowStart.getTime()
-                                        - (LHUtil.getWindowLengthMillis(windowLength)
-                                                * numWindows)),
-                        wfSpecName,
-                        wfSpecVersion);
+        String endKey = WfSpecMetricsModel.getObjectId(windowLength, lastWindowStart, wfSpecName, wfSpecVersion);
+        String startKey = WfSpecMetricsModel.getObjectId(
+                windowLength,
+                new Date(lastWindowStart.getTime() - (LHUtil.getWindowLengthMillis(windowLength) * numWindows)),
+                wfSpecName,
+                wfSpecVersion);
         return new ObjectIdScanBoundaryStrategy(wfSpecName, startKey, endKey);
     }
 }

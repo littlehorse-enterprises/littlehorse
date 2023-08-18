@@ -14,10 +14,9 @@ public class PendingFailureHandlerModel extends LHSerializable<PendingFailureHan
     }
 
     public PendingFailureHandler.Builder toProto() {
-        PendingFailureHandler.Builder out =
-                PendingFailureHandler.newBuilder()
-                        .setFailedThreadRun(failedThreadRun)
-                        .setHandlerSpecName(handlerSpecName);
+        PendingFailureHandler.Builder out = PendingFailureHandler.newBuilder()
+                .setFailedThreadRun(failedThreadRun)
+                .setHandlerSpecName(handlerSpecName);
         return out;
     }
 

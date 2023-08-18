@@ -66,8 +66,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
     public void validate(LHGlobalMetaStores stores, LHConfig config) throws LHValidationError {
         for (ThreadToWaitForModel ttwf : threads) {
             if (!ttwf.getThreadRunNumber().canBeType(VariableType.INT, node.threadSpecModel)) {
-                throw new LHValidationError(
-                        null, "`threadRunNumber` for WAIT_FOR_THREAD node must resolve to INT!");
+                throw new LHValidationError(null, "`threadRunNumber` for WAIT_FOR_THREAD node must resolve to INT!");
             }
         }
     }

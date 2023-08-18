@@ -33,11 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 public class SearchWfSpecRequestModel
         extends PublicScanRequest<
-                SearchWfSpecRequest,
-                SearchWfSpecResponse,
-                WfSpecId,
-                WfSpecIdModel,
-                SearchWfSpecReply> {
+                SearchWfSpecRequest, SearchWfSpecResponse, WfSpecId, WfSpecIdModel, SearchWfSpecReply> {
 
     private WfSpecCriteriaCase type;
     private String name;
@@ -119,8 +115,7 @@ public class SearchWfSpecRequestModel
         if (taskDefName != null) {
             List<String> attributes =
                     getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
-            for (GetableIndex<? extends Getable<?>> indexConfiguration :
-                    new WfSpecModel().getIndexConfigurations()) {
+            for (GetableIndex<? extends Getable<?>> indexConfiguration : new WfSpecModel().getIndexConfigurations()) {
                 if (indexConfiguration.searchAttributesMatch(attributes)
                         && indexConfiguration.getTagStorageType().isPresent()) {
                     return indexConfiguration.getTagStorageType().get();
@@ -138,14 +133,11 @@ public class SearchWfSpecRequestModel
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         if (name != null && !name.equals("")) {
-            return new ObjectIdScanBoundaryStrategy(
-                    LHConstants.META_PARTITION_KEY, name + "/", name + "/~");
+            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, name + "/", name + "/~");
         } else if (prefix != null && !prefix.isEmpty()) {
-            return new ObjectIdScanBoundaryStrategy(
-                    LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
+            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
         } else if (!Strings.isNullOrEmpty(taskDefName)) {
-            return new TagScanBoundaryStrategy(
-                    searchAttributeString, Optional.empty(), Optional.empty());
+            return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
         } else {
             return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, "", "~");
         }

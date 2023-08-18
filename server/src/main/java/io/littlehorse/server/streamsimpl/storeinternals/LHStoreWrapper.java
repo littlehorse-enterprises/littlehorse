@@ -101,11 +101,8 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         }
     }
 
-    public void putTagsCache(
-            String getableId, Class<? extends Getable<?>> getableCls, TagsCache newTagsCache) {
-        putRaw(
-                StoreUtils.getTagsCacheKey(getableId, getableCls),
-                new Bytes(newTagsCache.toBytes(config)));
+    public void putTagsCache(String getableId, Class<? extends Getable<?>> getableCls, TagsCache newTagsCache) {
+        putRaw(StoreUtils.getTagsCacheKey(getableId, getableCls), new Bytes(newTagsCache.toBytes(config)));
     }
 
     public void deleteTagCache(Getable<?> thing) {
@@ -117,12 +114,7 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         if (cmd.getType() == CommandCase.TASK_WORKER_HEART_BEAT) {
             return;
         }
-        log.trace(
-                "{}: {} gets, {} puts, {} deletes",
-                cmd.getType().toString(),
-                totalGets,
-                totalPuts,
-                totalDeletes);
+        log.trace("{}: {} gets, {} puts, {} deletes", cmd.getType().toString(), totalGets, totalPuts, totalDeletes);
         totalGets = 0;
         totalPuts = 0;
         totalDeletes = 0;

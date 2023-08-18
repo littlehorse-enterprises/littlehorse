@@ -36,10 +36,9 @@ public class PrometheusMetricExporter implements Closeable {
     }
 
     public void bind(KafkaStreams coreStreams, KafkaStreams timerStreams) {
-        this.kafkaStreamsMeters =
-                List.of(
-                        new KafkaStreamsMetrics(coreStreams, Tags.of("topology", "core")),
-                        new KafkaStreamsMetrics(timerStreams, Tags.of("topology", "timer")));
+        this.kafkaStreamsMeters = List.of(
+                new KafkaStreamsMetrics(coreStreams, Tags.of("topology", "core")),
+                new KafkaStreamsMetrics(timerStreams, Tags.of("topology", "timer")));
         for (KafkaStreamsMetrics ksm : kafkaStreamsMeters) {
             ksm.bindTo(prometheusRegistry);
         }
@@ -50,8 +49,7 @@ public class PrometheusMetricExporter implements Closeable {
         JvmThreadMetrics jvmThreadMetrics = new JvmThreadMetrics();
         jvmThreadMetrics.bindTo(prometheusRegistry);
 
-        DiskSpaceMetrics diskSpaceMetrics =
-                new DiskSpaceMetrics(new File(config.getStateDirectory()));
+        DiskSpaceMetrics diskSpaceMetrics = new DiskSpaceMetrics(new File(config.getStateDirectory()));
         diskSpaceMetrics.bindTo(prometheusRegistry);
 
         ProcessorMetrics processorMetrics = new ProcessorMetrics();

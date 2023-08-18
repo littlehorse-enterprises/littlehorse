@@ -53,12 +53,11 @@ public class ReportTaskRunModel extends SubCommand<ReportTaskRun> {
     }
 
     public ReportTaskRun.Builder toProto() {
-        ReportTaskRun.Builder b =
-                ReportTaskRun.newBuilder()
-                        .setTaskRunId(taskRunId.toProto())
-                        .setTime(LHUtil.fromDate(time))
-                        .setStatus(status)
-                        .setAttemptNumber(attemptNumber);
+        ReportTaskRun.Builder b = ReportTaskRun.newBuilder()
+                .setTaskRunId(taskRunId.toProto())
+                .setTime(LHUtil.fromDate(time))
+                .setStatus(status)
+                .setAttemptNumber(attemptNumber);
 
         if (stdout != null) b.setOutput(stdout.toProto());
         if (stderr != null) b.setLogOutput(stderr.toProto());

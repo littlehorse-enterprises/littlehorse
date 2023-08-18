@@ -140,8 +140,7 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public List<WfMetricUpdate> getWfMetricWindows(String wfSpecName, int wfSpecVersion, Date time);
 
-    public HostInfo getAdvertisedHost(HostModel host, String listenerName)
-            throws LHBadRequestError, LHConnectionError;
+    public HostInfo getAdvertisedHost(HostModel host, String listenerName) throws LHBadRequestError, LHConnectionError;
 
     public InternalHosts getInternalHosts();
 
