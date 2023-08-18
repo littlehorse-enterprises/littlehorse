@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -179,6 +178,10 @@ public class LHConfig extends ConfigBase {
         return (clusterId + "-timer-" + ServerTopology.TIMER_STORE + "-changelog");
     }
 
+    public static String getMetadataStoreChangelogTopic(String clusterId) {
+        return (clusterId + "-core-" + ServerTopology.METADATA_STORE + "-changelog");
+    }
+
     public String getTimerStoreChangelogTopic() {
         return getTimerStoreChangelogTopic(getLHClusterId());
     }
@@ -195,70 +198,84 @@ public class LHConfig extends ConfigBase {
         return getAllTopics(getLHClusterId(), getReplicationFactor(), getClusterPartitions());
     }
 
+    // Internal topics are manually created because:
+    // 1.- It makes it possible to manage/create topics using an external tool (e.g terraform,
+    // strimzi, etc.)
+    // 2.- It allows to explicitly manage the configuration of the topics
+    // Note: Kafka streams doesn't support disabling automatic internal topic creation. Thus,
+    // internal topics
+    // that are not explicitly created here will be automatically created by Kafka Stream. Please
+    // make sure to
+    // manually create all internal topics. Kafka has opened KIP-698 to solve this.
     public static List<NewTopic> getAllTopics(
             String clusterId, short replicationFactor, int clusterPartitions) {
-        List<NewTopic> out = new ArrayList<>();
+        HashMap<String, String> compactedTopicConfig =
+                new HashMap<>() {
+                    {
+                        put(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
+                    }
+                };
 
-        // These are non-compacted topics, partitioned with the cluster wide
-        // thing.
-        List<String> eventTopics =
-                Arrays.asList(
-                        getCoreCmdTopicName(clusterId),
-                        getRepartitionTopicName(clusterId),
+        NewTopic coreCommand =
+                new NewTopic(getCoreCmdTopicName(clusterId), clusterPartitions, replicationFactor);
+
+        NewTopic repartition =
+                new NewTopic(
+                        getRepartitionTopicName(clusterId), clusterPartitions, replicationFactor);
+
+        NewTopic observability =
+                new NewTopic(
                         getObservabilityEventTopicName(clusterId),
-                        getTimerTopic(clusterId));
-        for (String name : eventTopics) {
-            // default config is normal retention policy (not compact)
-            out.add(new NewTopic(name, clusterPartitions, replicationFactor));
-        }
+                        clusterPartitions,
+                        replicationFactor);
 
-        // These need to be compacted.
-        List<String> partitionedChangelogs =
-                Arrays.asList(
-                        getCoreStoreChangelogTopic(clusterId),
-                        getRepartitionStoreChangelogTopic(clusterId),
-                        getTimerStoreChangelogTopic(clusterId));
-        HashMap<String, String> changelogConfig =
-                new HashMap<String, String>() {
-                    {
-                        put(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
-                    }
-                };
-        for (String name : partitionedChangelogs) {
-            out.add(
-                    new NewTopic(name, clusterPartitions, replicationFactor)
-                            .configs(changelogConfig));
-        }
+        NewTopic timer =
+                new NewTopic(getTimerTopic(clusterId), clusterPartitions, replicationFactor);
 
-        // Lastly, the global metadata changelog topic.
-        // Inputs to global state store's are always treated
-        // as changelog topics. Therefore, we need it to be
-        // compacted. In order to minimize restore time, we
-        // also want the compaction to be quite aggressive.
-        HashMap<String, String> globalMetaCLConfig =
-                new HashMap<String, String>() {
-                    {
-                        put(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
-                    }
-                };
-        out.add(
+        NewTopic coreStoreChangelog =
                 new NewTopic(
-                                getGlobalMetadataCLTopicName(clusterId),
-                                // This topic is input to a global store. Therefore, it doesn't
-                                // make sense to have any more than just one partition.
-                                1,
+                                getCoreStoreChangelogTopic(clusterId),
+                                clusterPartitions,
                                 replicationFactor)
-                        .configs(globalMetaCLConfig));
+                        .configs(compactedTopicConfig);
 
-        out.add(
+        NewTopic repartitionStoreChangelog =
                 new NewTopic(
-                        getMetadataCmdTopicName(clusterId),
-                        // All metadata have the same key, thus having more than one partition is
-                        // unnecessary.
-                        1,
-                        replicationFactor));
+                                getRepartitionStoreChangelogTopic(clusterId),
+                                clusterPartitions,
+                                replicationFactor)
+                        .configs(compactedTopicConfig);
 
-        return out;
+        NewTopic timerStoreChangelog =
+                new NewTopic(
+                                getTimerStoreChangelogTopic(clusterId),
+                                clusterPartitions,
+                                replicationFactor)
+                        .configs(compactedTopicConfig);
+
+        NewTopic metadataStoreChangelog =
+                new NewTopic(getMetadataStoreChangelogTopic(clusterId), 1, replicationFactor)
+                        .configs(compactedTopicConfig);
+
+        NewTopic globalMetadataStoreChangelog =
+                new NewTopic(getGlobalMetadataCLTopicName(clusterId), 1, replicationFactor)
+                        .configs(compactedTopicConfig);
+
+        NewTopic metadataCommand =
+                new NewTopic(getMetadataCmdTopicName(clusterId), 1, replicationFactor)
+                        .configs(compactedTopicConfig);
+
+        return List.of(
+                coreCommand,
+                metadataCommand,
+                repartition,
+                observability,
+                timer,
+                coreStoreChangelog,
+                repartitionStoreChangelog,
+                timerStoreChangelog,
+                metadataStoreChangelog,
+                globalMetadataStoreChangelog);
     }
 
     // TODO: Determine how and where to set the topic names for TaskDef queues
@@ -402,7 +419,7 @@ public class LHConfig extends ConfigBase {
                         .map(Enum::name)
                         .collect(Collectors.joining("|"));
 
-        if (!rawAuthProtocolMap.matches("([a-zA-Z0-9_]+:(" + regexAllAuthProtocols + ")+,?)+")) {
+        if (!rawAuthProtocolMap.matches("([a-zA-Z0-9_-]+:(" + regexAllAuthProtocols + ")+,?)+")) {
             throw new LHMisconfigurationException(
                     "Invalid configuration: " + LHConfig.LISTENERS_AUTHORIZATION_MAP_KEY);
         }
@@ -430,7 +447,7 @@ public class LHConfig extends ConfigBase {
                         .map(Enum::name)
                         .collect(Collectors.joining("|"));
 
-        if (!rawProtocolMap.matches("([a-zA-Z0-9_]+:(" + regexAllProtocols + ")+,?)+")) {
+        if (!rawProtocolMap.matches("([a-zA-Z0-9_-]+:(" + regexAllProtocols + ")+,?)+")) {
             throw new LHMisconfigurationException(
                     "Invalid configuration: " + LHConfig.LISTENERS_PROTOCOL_MAP_KEY);
         }
@@ -513,7 +530,7 @@ public class LHConfig extends ConfigBase {
         String rawListenersConfig =
                 getOrSetDefault(LHConfig.ADVERTISED_LISTENERS_KEY, "PLAIN://localhost:2023");
 
-        if (!rawListenersConfig.matches("([a-zA-Z0-9_]+://[a-zA-Z0-9.\\-]+:\\d+,?)+")) {
+        if (!rawListenersConfig.matches("([a-zA-Z0-9_-]+://[a-zA-Z0-9.\\-]+:\\d+,?)+")) {
             throw new LHMisconfigurationException(
                     "Invalid configuration: " + LHConfig.ADVERTISED_LISTENERS_KEY);
         }
