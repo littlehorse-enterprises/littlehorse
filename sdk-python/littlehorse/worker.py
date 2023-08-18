@@ -3,7 +3,7 @@ from datetime import datetime
 from inspect import Parameter, signature
 import logging
 import signal
-from typing import Any, Callable
+from typing import Any, AsyncIterator, Callable
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     InvalidTaskDefNameException,
@@ -13,6 +13,7 @@ from littlehorse.exceptions import (
 from littlehorse.model.service_pb2 import (
     GetTaskDefReplyPb,
     LHResponseCodePb,
+    PollTaskPb,
     RegisterTaskWorkerPb,
     RegisterTaskWorkerReplyPb,
     TaskDefIdPb,
@@ -137,23 +138,39 @@ class LHTask:
 class LHConnection:
     _log = logging.getLogger("LHConnection")
 
-    def __init__(self, server: str, config: LHConfig) -> None:
+    def __init__(self, server: str, config: LHConfig, task: LHTask) -> None:
         self.server = server
         self.running = False
+        self._task = task
         self._config = config
+        self._ask_for_work_semaphore = asyncio.Semaphore()
 
     async def _ask_for_work(self) -> None:
         async with self._config.establish_channel(
             server=self.server, async_channel=True
         ) as channel:
-            LHPublicApiStub(channel)
-            while self.running:
-                self._log.debug(
-                    "Connection: %s is asking for work at %s",
-                    self.server,
-                    datetime.now(),
-                )
-                await asyncio.sleep(1)
+            stub = LHPublicApiStub(channel)
+
+            self._log.debug(
+                "Connection: %s is asking for work for %s at %s",
+                self.server,
+                self._task.name(),
+                datetime.now(),
+            )
+
+            async def generator() -> AsyncIterator[PollTaskPb]:
+                while self.running:
+                    await self._ask_for_work_semaphore.acquire()
+
+                    yield PollTaskPb(
+                        client_id=self._config.client_id(),
+                        task_worker_version=self._config.worker_version(),
+                        task_def_name=self._task.name(),
+                    )
+
+            async for task_to_executed in stub.PollTask(generator()):
+                print(task_to_executed)
+                self._ask_for_work_semaphore.release()
 
     async def start(self) -> None:
         self._log.info(f"Starting server connection {self.server}")
@@ -163,6 +180,7 @@ class LHConnection:
     async def stop(self) -> None:
         self._log.info(f"Stopping server connection {self.server}")
         self.running = False
+        self._ask_for_work_semaphore.release()
 
 
 class LHTaskWorker:
@@ -218,7 +236,7 @@ class LHTaskWorker:
                     self._log.info("Connections to be added: %s", hosts_to_be_added)
 
                 for host in hosts_to_be_added:
-                    new_connection = LHConnection(host, self._config)
+                    new_connection = LHConnection(host, self._config, self.task)
                     self._connections[host] = new_connection
                     asyncio.create_task(new_connection.start())
 
