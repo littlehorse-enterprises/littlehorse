@@ -18,9 +18,10 @@ def get_config() -> LHConfig:
 
 
 async def greeting(name: str, ctx: LHWorkerContext) -> str:
-    greeting = f"Hello {name}!"
+    greeting = f"Hello {name}!. Context {ctx}"
     print(greeting)
     await asyncio.sleep(random.uniform(2.0, 5.0))
+    print(f"After sleep {name}")
     return greeting
 
 

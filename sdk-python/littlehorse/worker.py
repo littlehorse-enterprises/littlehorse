@@ -3,7 +3,7 @@ from datetime import datetime
 from inspect import Parameter, signature, iscoroutinefunction
 import logging
 import signal
-from typing import Any, AsyncIterator, Callable, TypeVar
+from typing import Any, AsyncIterator, Callable
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     InvalidTaskDefNameException,
@@ -35,10 +35,23 @@ VARIABLE_TYPES_MAP = {
 
 
 class LHWorkerContext:
-    pass
+    def __init__(self, scheduled_task: ScheduledTaskPb) -> None:
+        self._scheduled_task = scheduled_task
 
+    def scheduled_time(self) -> datetime:
+        return datetime.fromtimestamp(float(self._scheduled_task.created_at.seconds))
 
-T = TypeVar("T")
+    def task_run_id(self) -> str:
+        return self._scheduled_task.task_run_id.task_guid
+
+    def wf_run_id(self) -> str:
+        return self._scheduled_task.task_run_id.wf_run_id
+
+    def __str__(self) -> str:
+        return (
+            f"WfRunId: {self.wf_run_id()}, TaskRunId: {self.task_run_id()}, "
+            f"ScheduledTime: {self.scheduled_time()}"
+        )
 
 
 class LHTaskExecutor:
@@ -51,7 +64,7 @@ class LHTaskExecutor:
 
         self._callable = callable
         self._signature = signature(callable)
-        self._ask_for_work_semaphore = asyncio.Semaphore(size - 1)
+        self._ask_for_work_semaphore = asyncio.Semaphore(size)
 
         self._validate_callable()
         self._validate_match()
@@ -143,13 +156,13 @@ class LHTaskExecutor:
         return last_parameter.annotation is LHWorkerContext
 
     async def schedule_task(self, task: ScheduledTaskPb) -> None:
-        asyncio.create_task(self._execute_task(task))
         await self._ask_for_work_semaphore.acquire()
+        asyncio.create_task(self._execute_task(task))
 
     async def _execute_task(self, task: ScheduledTaskPb) -> None:
         args: Any = [var.value.str for var in task.variables]
         if self.has_context():
-            args.append(LHWorkerContext())
+            args.append(LHWorkerContext(task))
         await self._callable(*args)
         self._ask_for_work_semaphore.release()
 
@@ -301,5 +314,7 @@ class LHTaskWorker:
         for connection in self._connections.values():
             await connection.stop()
 
-        tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
-        await asyncio.gather(*tasks)
+        tasks = [
+            task for task in asyncio.all_tasks() if task is not asyncio.current_task()
+        ]
+        await asyncio.gather(*tasks, return_exceptions=True)
