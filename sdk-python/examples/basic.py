@@ -25,8 +25,7 @@ async def greeting(name: str, ctx: LHWorkerContext) -> str:
 
 
 async def main() -> None:
-    config = get_config()
-    worker = LHTaskWorker(greeting, "greet", config)
+    worker = LHTaskWorker(greeting, "greet", get_config())
     await worker.start()
 
 
