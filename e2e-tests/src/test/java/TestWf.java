@@ -37,7 +37,7 @@ public class TestWf {
     }
 
     @LHWorkflow("user-task-test-1")
-    public static Workflow buildWorkflow() {
+    public Workflow buildWorkflow() {
         return new WorkflowImpl(
             "user-task-test-1",
             thread -> {
