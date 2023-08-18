@@ -45,10 +45,19 @@ export const TaskRunSearch = ({ id }: any) => {
 
   const fetchData = async (type: string, paginate = false, useLimit = true) => {
     let bookmark: string | undefined;
-    if (type === "ERROR") bookmark = errorBookmark;
-    if (type === "COMPLETED") bookmark = completedBookmark;
-    if (type === "STARTING") bookmark = startingBookmark;
-    if (type === "RUNNING") bookmark = runningBookmark;
+    if (type === "TASK_FAILED") bookmark = errorBookmark;
+    if (type === "TASK_SUCCESS") bookmark = completedBookmark;
+    if (type === "TASK_SCHEDULED") bookmark = startingBookmark;
+    if (type === "TASK_RUNNING") bookmark = runningBookmark;
+    //TASK_SCHEDULED
+
+    // - TASK_SCHEDULED
+    // - TASK_RUNNING
+    // - TASK_SUCCESS
+    // - TASK_FAILED
+    // - TASK_TIMEOUT
+    // - TASK_OUTPUT_SERIALIZING_ERROR
+    // - TASK_INPUT_VAR_SUB_ERROR
 
     const filters: any = {
       limit: useLimit ? limit : allLimit,
@@ -56,10 +65,10 @@ export const TaskRunSearch = ({ id }: any) => {
     // if(prefix?.trim()) filters['prefix'] = prefix.trim().toLocaleLowerCase()
     if (paginate && bookmark) filters["bookmark"] = bookmark;
     if (paginate && !bookmark) return { status: "done" };
-    const res = await fetch("/api/search/nodeRun", {
+    const res = await fetch("/api/search/taskRun", {
       method: "POST",
       body: JSON.stringify({
-        statusAndTaskdef: {
+        statusAndTaskDef: {
           status: type,
           taskDefName: id,
           earliestStart: startDt,
@@ -76,10 +85,10 @@ export const TaskRunSearch = ({ id }: any) => {
   const getData = async () => {
     setLoading(true);
     const { results, bookmark } = await fetchData(type);
-    if (type === "ERROR") setErrorBookmark(bookmark);
-    if (type === "COMPLETED") setCompletedBookmark(bookmark);
-    if (type === "STARTING") setStartingBookmark(bookmark);
-    if (type === "RUNNING") setRunningBookmark(bookmark);
+    if (type === "TASK_FAILED") setErrorBookmark(bookmark);
+    if (type === "TASK_SUCCESS") setCompletedBookmark(bookmark);
+    if (type === "TASK_SCHEDULED") setStartingBookmark(bookmark);
+    if (type === "TASK_RUNNING") setRunningBookmark(bookmark);
     setResults(results.map((v: Result) => ({ ...v, status: type })));
     setLoading(false);
   };
@@ -93,32 +102,32 @@ export const TaskRunSearch = ({ id }: any) => {
     setLoading(true);
     setResults([]);
 
-    const starting = await fetchData("STARTING", false, false);
+    const starting = await fetchData("TASK_SCHEDULED", false, false);
     setStartingBookmark(starting.bookmark);
     setResults((prev) => [
       ...prev,
-      ...starting.results?.map((v: any) => ({ ...v, status: "STARTING" })),
+      ...starting.results?.map((v: any) => ({ ...v, status: "TASK_SCHEDULED" })),
     ]);
 
-    const running = await fetchData("RUNNING", false, false);
+    const running = await fetchData("TASK_RUNNING", false, false);
     setRunningBookmark(running.bookmark);
     setResults((prev) => [
       ...prev,
-      ...running.results.map((v: any) => ({ ...v, status: "RUNNING" })),
+      ...running.results.map((v: any) => ({ ...v, status: "TASK_RUNNING" })),
     ]);
 
-    const completed = await fetchData("COMPLETED", false, false);
+    const completed = await fetchData("TASK_SUCCESS", false, false);
     setCompletedBookmark(completed.bookmark);
     setResults((prev) => [
       ...prev,
-      ...completed.results.map((v: any) => ({ ...v, status: "COMPLETED" })),
+      ...completed.results.map((v: any) => ({ ...v, status: "TASK_SUCCESS" })),
     ]);
 
-    const errors = await fetchData("ERROR", false, false);
+    const errors = await fetchData("TASK_FAILED", false, false);
     setErrorBookmark(errors.bookmark);
     setResults((prev) => [
       ...prev,
-      ...errors.results.map((v: any) => ({ ...v, status: "ERROR" })),
+      ...errors.results.map((v: any) => ({ ...v, status: "TASK_FAILED" })),
     ]);
 
     setFirstLoad(true);
@@ -129,42 +138,42 @@ export const TaskRunSearch = ({ id }: any) => {
     setLoading(true);
 
     if (startingBookmark) {
-      const starting = await fetchData("STARTING", true, false);
+      const starting = await fetchData("TASK_SCHEDULED", true, false);
       if (starting.status != "done") {
         setStartingBookmark(starting.bookmark);
         setResults((prev) => [
           ...prev,
-          ...starting.results.map((v: any) => ({ ...v, status: "STARTING" })),
+          ...starting.results.map((v: any) => ({ ...v, status: "TASK_SCHEDULED" })),
         ]);
       }
     }
     if (runningBookmark) {
-      const running = await fetchData("RUNNING", true, false);
+      const running = await fetchData("TASK_RUNNING", true, false);
       if (running.status != "done") {
         setRunningBookmark(running.bookmark);
         setResults((prev) => [
           ...prev,
-          ...running.results.map((v: any) => ({ ...v, status: "RUNNING" })),
+          ...running.results.map((v: any) => ({ ...v, status: "TASK_RUNNING" })),
         ]);
       }
     }
     if (completedBookmark) {
-      const completed = await fetchData("COMPLETED", true, false);
+      const completed = await fetchData("TASK_SUCCESS", true, false);
       if (completed.status != "done") {
         setCompletedBookmark(completed.bookmark);
         setResults((prev) => [
           ...prev,
-          ...completed.results.map((v: any) => ({ ...v, status: "COMPLETED" })),
+          ...completed.results.map((v: any) => ({ ...v, status: "TASK_SUCCESS" })),
         ]);
       }
     }
     if (errorBookmark) {
-      const tasks = await fetchData("ERROR", true, false);
+      const tasks = await fetchData("TASK_FAILED", true, false);
       if (tasks.status != "done") {
         setErrorBookmark(tasks.bookmark);
         setResults((prev) => [
           ...prev,
-          ...tasks.results.map((v: any) => ({ ...v, status: "ERROR" })),
+          ...tasks.results.map((v: any) => ({ ...v, status: "TASK_FAILED" })),
         ]);
       }
     }
@@ -178,10 +187,10 @@ export const TaskRunSearch = ({ id }: any) => {
 
     if (status === "done") return;
 
-    if (type === "ERROR") setErrorBookmark(bookmark);
-    if (type === "COMPLETED") setCompletedBookmark(bookmark);
-    if (type === "STARTING") setStartingBookmark(bookmark);
-    if (type === "RUNNING") setRunningBookmark(bookmark);
+    if (type === "TASK_FAILED") setErrorBookmark(bookmark);
+    if (type === "TASK_SUCCESS") setCompletedBookmark(bookmark);
+    if (type === "TASK_SCHEDULED") setStartingBookmark(bookmark);
+    if (type === "TASK_RUNNING") setRunningBookmark(bookmark);
     setResults((prev) => [
       ...prev,
       ...results.map((v: any) => ({ ...v, status: type })),
@@ -224,24 +233,24 @@ export const TaskRunSearch = ({ id }: any) => {
             All
           </Button>
           <Button
-            active={type === "STARTING"}
-            onClick={() => setType("STARTING")}
+            active={type === "TASK_SCHEDULED"}
+            onClick={() => setType("TASK_SCHEDULED")}
           >
             Starting
           </Button>
           <Button
-            active={type === "RUNNING"}
-            onClick={() => setType("RUNNING")}
+            active={type === "TASK_RUNNING"}
+            onClick={() => setType("TASK_RUNNING")}
           >
             Running
           </Button>
           <Button
-            active={type === "COMPLETED"}
-            onClick={() => setType("COMPLETED")}
+            active={type === "TASK_SUCCESS"}
+            onClick={() => setType("TASK_SUCCESS")}
           >
             Completed
           </Button>
-          <Button active={type === "ERROR"} onClick={() => setType("ERROR")}>
+          <Button active={type === "TASK_FAILED"} onClick={() => setType("TASK_FAILED")}>
             Error
           </Button>
         </div>
