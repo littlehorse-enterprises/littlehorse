@@ -15,29 +15,26 @@ public class RoundRobinAssignor implements TaskWorkerAssignor {
 
     @Override
     public void assign(
-        Collection<HostModel> hosts,
-        Collection<TaskWorkerMetadataModel> taskWorkers
-    ) {
+            Collection<HostModel> hosts, Collection<TaskWorkerMetadataModel> taskWorkers) {
         // Remove old assignment
         taskWorkers.forEach(worker -> worker.hosts.clear());
 
         // Create a circular list
-        Iterator<TaskWorkerMetadataModel> roundRobinWorkers = Iterables
-            .cycle(taskWorkers)
-            .iterator();
+        Iterator<TaskWorkerMetadataModel> roundRobinWorkers =
+                Iterables.cycle(taskWorkers).iterator();
 
         // Control collection, it is needed to assign remaining worker to a server
         List<TaskWorkerMetadataModel> remainingWorkers = new ArrayList<>(taskWorkers);
 
         // Assigning N workers to a server
         for (HostModel host : hosts) {
-            IntStream
-                .range(0, MIN_WORKER_ASSIGNMENT_BY_SERVER)
-                .forEach(i -> {
-                    TaskWorkerMetadataModel worker = roundRobinWorkers.next();
-                    remainingWorkers.remove(worker);
-                    worker.hosts.add(host);
-                });
+            IntStream.range(0, MIN_WORKER_ASSIGNMENT_BY_SERVER)
+                    .forEach(
+                            i -> {
+                                TaskWorkerMetadataModel worker = roundRobinWorkers.next();
+                                remainingWorkers.remove(worker);
+                                worker.hosts.add(host);
+                            });
         }
 
         // Assign remaining workers to a server

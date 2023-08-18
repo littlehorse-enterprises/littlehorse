@@ -24,12 +24,12 @@ public class ExternalEventTimeout extends SubCommand<ExternalEventNodeTimeoutPb>
     }
 
     public ExternalEventNodeTimeoutPb.Builder toProto() {
-        ExternalEventNodeTimeoutPb.Builder out = ExternalEventNodeTimeoutPb
-            .newBuilder()
-            .setWfRunId(wfRunId)
-            .setThreadRunNumber(threadRunNumber)
-            .setNodeRunPosition(nodeRunPosition)
-            .setTime(LHUtil.fromDate(time));
+        ExternalEventNodeTimeoutPb.Builder out =
+                ExternalEventNodeTimeoutPb.newBuilder()
+                        .setWfRunId(wfRunId)
+                        .setThreadRunNumber(threadRunNumber)
+                        .setNodeRunPosition(nodeRunPosition)
+                        .setTime(LHUtil.fromDate(time));
         return out;
     }
 
@@ -53,8 +53,7 @@ public class ExternalEventTimeout extends SubCommand<ExternalEventNodeTimeoutPb>
             return null;
         }
 
-        wfRunModel.wfSpecModel =
-            dao.getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
+        wfRunModel.wfSpecModel = dao.getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
         wfRunModel.processExtEvtTimeout(this);
 
         return null;

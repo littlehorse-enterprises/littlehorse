@@ -35,7 +35,12 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class SearchUserTaskRunRequestModel
-    extends PublicScanRequest<SearchUserTaskRunRequest, SearchUserTaskRunResponse, UserTaskRunId, UserTaskRunIdModel, SearchUserTaskRunReply> {
+        extends PublicScanRequest<
+                SearchUserTaskRunRequest,
+                SearchUserTaskRunResponse,
+                UserTaskRunId,
+                UserTaskRunIdModel,
+                SearchUserTaskRunReply> {
 
     private UserTaskRunStatus status;
     private String userTaskDefName;
@@ -76,10 +81,9 @@ public class SearchUserTaskRunRequestModel
         // dictates that we would search by userGroup (since it has a higher
         // field number) and ignore userId silently. By using the way below,
         // we can throw an LHValidationError when processing the search.
-        if (p.hasUserGroup()) userGroup =
-            LHSerializable.fromProto(p.getUserGroup(), UserGroupModel.class);
-        if (p.hasUser()) user =
-            LHSerializable.fromProto(p.getUser(), UserModel.class);
+        if (p.hasUserGroup())
+            userGroup = LHSerializable.fromProto(p.getUserGroup(), UserGroupModel.class);
+        if (p.hasUser()) user = LHSerializable.fromProto(p.getUser(), UserModel.class);
         if (p.hasLatestStart()) {
             latestStart = LHUtil.fromProtoTs(p.getLatestStart());
         }
@@ -108,7 +112,7 @@ public class SearchUserTaskRunRequestModel
                 out.setUser(user.toProto());
                 break;
             case TASKOWNER_NOT_SET:
-            // nothing to do
+                // nothing to do
         }
 
         if (latestStart != null) {
@@ -121,9 +125,7 @@ public class SearchUserTaskRunRequestModel
         return out;
     }
 
-    public static SearchUserTaskRunRequestModel fromProto(
-        SearchUserTaskRunRequest proto
-    ) {
+    public static SearchUserTaskRunRequestModel fromProto(SearchUserTaskRunRequest proto) {
         SearchUserTaskRunRequestModel out = new SearchUserTaskRunRequestModel();
         out.initFrom(proto);
         return out;
@@ -132,22 +134,20 @@ public class SearchUserTaskRunRequestModel
     private void validateUserGroupAndUserId() throws LHValidationError {
         if (userGroup != null && user != null) {
             throw new LHValidationError(
-                null,
-                "Cannot specify UserID and User Group in same search!"
-            );
+                    null, "Cannot specify UserID and User Group in same search!");
         }
     }
 
     private Optional<TagStorageType> tagStorageTypePbByStatus() {
-        return Optional
-            .ofNullable(status)
-            .map(userTaskRunStatusPb -> {
-                if (UserTaskRunModel.isRemote(userTaskRunStatusPb)) {
-                    return TagStorageType.REMOTE;
-                } else {
-                    return TagStorageType.LOCAL;
-                }
-            });
+        return Optional.ofNullable(status)
+                .map(
+                        userTaskRunStatusPb -> {
+                            if (UserTaskRunModel.isRemote(userTaskRunStatusPb)) {
+                                return TagStorageType.REMOTE;
+                            } else {
+                                return TagStorageType.LOCAL;
+                            }
+                        });
     }
 
     private Optional<TagStorageType> tagStorageTypePbByUserId() {
@@ -161,17 +161,13 @@ public class SearchUserTaskRunRequestModel
             attributes.add(new Attribute("status", this.getStatus().toString()));
         }
         if (userTaskDefName != null) {
-            attributes.add(
-                new Attribute("userTaskDefName", this.getUserTaskDefName())
-            );
+            attributes.add(new Attribute("userTaskDefName", this.getUserTaskDefName()));
         }
 
         if (user != null) {
             attributes.add(new Attribute("userId", this.getUser().getId()));
             if (this.getUser().getUserGroup() != null) {
-                attributes.add(
-                    new Attribute("userGroup", this.getUser().getUserGroup().getId())
-                );
+                attributes.add(new Attribute("userGroup", this.getUser().getUserGroup().getId()));
             }
         }
 
@@ -182,22 +178,16 @@ public class SearchUserTaskRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
-        TagStorageType tagStorageType = tagStorageTypePbByUserId()
-            .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
+        TagStorageType tagStorageType =
+                tagStorageTypePbByUserId().orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
         if (tagStorageType == null) {
-            List<String> searchAttributes = getSearchAttributes()
-                .stream()
-                .map(Attribute::getEscapedKey)
-                .toList();
-            Optional<TagStorageType> tagStorageTypePbOptional = getStorageTypeForSearchAttributes(
-                searchAttributes
-            );
+            List<String> searchAttributes =
+                    getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
+            Optional<TagStorageType> tagStorageTypePbOptional =
+                    getStorageTypeForSearchAttributes(searchAttributes);
             if (tagStorageTypePbOptional.isEmpty()) {
-                throw new LHValidationError(
-                    "There is no index configuration for this search"
-                );
+                throw new LHValidationError("There is no index configuration for this search");
             }
             tagStorageType = tagStorageTypePbOptional.get();
         }
@@ -209,31 +199,26 @@ public class SearchUserTaskRunRequestModel
         this.validateUserGroupAndUserId();
         if (getSearchAttributes().isEmpty()) {
             throw new LHValidationError(
-                null,
-                "Must specify at least one of: [status, userTaskDefName, userGroup, userId]"
-            );
+                    null,
+                    "Must specify at least one of: [status, userTaskDefName, userGroup, userId]");
         }
     }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         return new TagScanBoundaryStrategy(
-            searchAttributeString,
-            Optional.ofNullable(earliestStart),
-            Optional.ofNullable(latestStart)
-        );
+                searchAttributeString,
+                Optional.ofNullable(earliestStart),
+                Optional.ofNullable(latestStart));
     }
 
-    private Optional<TagStorageType> getStorageTypeForSearchAttributes(
-        List<String> attributes
-    ) {
+    private Optional<TagStorageType> getStorageTypeForSearchAttributes(List<String> attributes) {
         return new UserTaskRunModel()
-            .getIndexConfigurations()
-            .stream()
-            .filter(getableIndex -> getableIndex.searchAttributesMatch(attributes))
-            .map(GetableIndex::getTagStorageType)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .findFirst();
+                .getIndexConfigurations().stream()
+                        .filter(getableIndex -> getableIndex.searchAttributesMatch(attributes))
+                        .map(GetableIndex::getTagStorageType)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .findFirst();
     }
 }

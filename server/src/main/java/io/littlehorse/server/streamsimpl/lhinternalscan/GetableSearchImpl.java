@@ -16,29 +16,23 @@ public class GetableSearchImpl implements GetableSearch {
     private SearchScanBoundaryStrategy searchScanBoundary;
 
     public GetableSearchImpl(
-        GetableClassEnum getableClassEnum,
-        SearchScanBoundaryStrategy searchScanBoundaryStrategy
-    ) {
+            GetableClassEnum getableClassEnum,
+            SearchScanBoundaryStrategy searchScanBoundaryStrategy) {
         this.getableClassEnum = getableClassEnum;
         this.searchScanBoundary = searchScanBoundaryStrategy;
     }
 
     @Override
-    public InternalScan buildInternalScan(
-        LHGlobalMetaStores stores,
-        TagStorageType tagStorageType
-    ) throws LHValidationError {
+    public InternalScan buildInternalScan(LHGlobalMetaStores stores, TagStorageType tagStorageType)
+            throws LHValidationError {
         InternalScan out = new InternalScan();
         out.objectType = getableClassEnum;
         if (isTagScan()) {
-            out.setTagScan(
-                (InternalScanPb.TagScanPb) searchScanBoundary.buildScanProto()
-            );
+            out.setTagScan((InternalScanPb.TagScanPb) searchScanBoundary.buildScanProto());
             out.setType(InternalScanPb.ScanBoundaryCase.TAG_SCAN);
         } else {
             out.setBoundedObjectIdScan(
-                (InternalScanPb.BoundedObjectIdScanPb) searchScanBoundary.buildScanProto()
-            );
+                    (InternalScanPb.BoundedObjectIdScanPb) searchScanBoundary.buildScanProto());
             out.setType(InternalScanPb.ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN);
             out.setResultType(ScanResultTypePb.OBJECT);
             out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);

@@ -16,9 +16,7 @@ public class DeleteWfRunRequestModel extends SubCommand<DeleteWfRunRequest> {
     }
 
     public DeleteWfRunRequest.Builder toProto() {
-        DeleteWfRunRequest.Builder out = DeleteWfRunRequest
-            .newBuilder()
-            .setWfRunId(wfRunId);
+        DeleteWfRunRequest.Builder out = DeleteWfRunRequest.newBuilder().setWfRunId(wfRunId);
         return out;
     }
 

@@ -17,7 +17,8 @@ public class TaskWorkerGroupModel extends Getable<TaskWorkerGroup> {
 
     public String taskDefName;
     public Date createdAt;
-    public Map<String, TaskWorkerMetadataModel> taskWorkers = new HashMap<String, TaskWorkerMetadataModel>();
+    public Map<String, TaskWorkerMetadataModel> taskWorkers =
+            new HashMap<String, TaskWorkerMetadataModel>();
 
     public TaskWorkerGroupModel() {}
 
@@ -38,20 +39,16 @@ public class TaskWorkerGroupModel extends Getable<TaskWorkerGroup> {
     }
 
     @Override
-    public List<IndexedField> getIndexValues(
-        String key,
-        Optional<TagStorageType> tagStorageType
-    ) {
+    public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         return List.of();
     }
 
     @Override
     public TaskWorkerGroup.Builder toProto() {
-        return TaskWorkerGroup
-            .newBuilder()
-            .setTaskDefName(taskDefName)
-            .setCreatedAt(Timestamps.fromDate(createdAt))
-            .putAllTaskWorkers(taskWorkersToProto());
+        return TaskWorkerGroup.newBuilder()
+                .setTaskDefName(taskDefName)
+                .setCreatedAt(Timestamps.fromDate(createdAt))
+                .putAllTaskWorkers(taskWorkersToProto());
     }
 
     @Override
@@ -60,20 +57,16 @@ public class TaskWorkerGroupModel extends Getable<TaskWorkerGroup> {
         taskDefName = proto.getTaskDefName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         taskWorkers =
-            proto
-                .getTaskWorkersMap()
-                .entrySet()
-                .stream()
-                .collect(
-                    Collectors.toMap(
-                        entry -> entry.getKey(),
-                        entry -> {
-                            TaskWorkerMetadataModel metadata = new TaskWorkerMetadataModel();
-                            metadata.initFrom(entry.getValue());
-                            return metadata;
-                        }
-                    )
-                );
+                proto.getTaskWorkersMap().entrySet().stream()
+                        .collect(
+                                Collectors.toMap(
+                                        entry -> entry.getKey(),
+                                        entry -> {
+                                            TaskWorkerMetadataModel metadata =
+                                                    new TaskWorkerMetadataModel();
+                                            metadata.initFrom(entry.getValue());
+                                            return metadata;
+                                        }));
     }
 
     @Override
@@ -82,14 +75,10 @@ public class TaskWorkerGroupModel extends Getable<TaskWorkerGroup> {
     }
 
     public Map<String, TaskWorkerMetadata> taskWorkersToProto() {
-        return taskWorkers
-            .entrySet()
-            .stream()
-            .collect(
-                Collectors.toMap(
-                    entry -> entry.getKey(),
-                    entry -> entry.getValue().toProto().build()
-                )
-            );
+        return taskWorkers.entrySet().stream()
+                .collect(
+                        Collectors.toMap(
+                                entry -> entry.getKey(),
+                                entry -> entry.getValue().toProto().build()));
     }
 }

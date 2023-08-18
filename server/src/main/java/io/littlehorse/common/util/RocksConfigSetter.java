@@ -11,10 +11,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
     @Override
     public void setConfig(
-        final String storeName,
-        final Options options,
-        final Map<String, Object> configs
-    ) {
+            final String storeName, final Options options, final Map<String, Object> configs) {
         log.info("Overriding rocksdb settings for store {}", storeName);
 
         // This is useful for getting the LOG file in the Kafka Streams

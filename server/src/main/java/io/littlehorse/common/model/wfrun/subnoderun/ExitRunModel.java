@@ -64,12 +64,7 @@ public class ExitRunModel extends SubNodeRun<ExitRun> {
                 return;
             }
             if (child.status != LHStatus.COMPLETED) {
-                if (
-                    !nodeRunModel
-                        .getThreadRun()
-                        .getHandledFailedChildren()
-                        .contains(childId)
-                ) {
+                if (!nodeRunModel.getThreadRun().getHandledFailedChildren().contains(childId)) {
                     allComplete = false;
 
                     // lolz this is silly but it works:
@@ -87,21 +82,17 @@ public class ExitRunModel extends SubNodeRun<ExitRun> {
                 // then this is a "yikes Throw Exception" node.
 
                 nodeRunModel.fail(
-                    getNode()
-                        .exitNode.failureDef.getFailure(nodeRunModel.getThreadRun()),
-                    time
-                );
+                        getNode().exitNode.failureDef.getFailure(nodeRunModel.getThreadRun()),
+                        time);
             }
         } else {
             nodeRunModel
-                .getThreadRun()
-                .fail(
-                    new FailureModel(
-                        "Child thread (or threads) failed:" + failedChildren,
-                        LHConstants.CHILD_FAILURE
-                    ),
-                    time
-                );
+                    .getThreadRun()
+                    .fail(
+                            new FailureModel(
+                                    "Child thread (or threads) failed:" + failedChildren,
+                                    LHConstants.CHILD_FAILURE),
+                            time);
         }
     }
 }

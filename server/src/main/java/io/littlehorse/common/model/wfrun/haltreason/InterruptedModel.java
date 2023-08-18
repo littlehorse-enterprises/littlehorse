@@ -7,9 +7,7 @@ import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.Interrupted;
 import io.littlehorse.sdk.common.proto.LHStatus;
 
-public class InterruptedModel
-    extends LHSerializable<Interrupted>
-    implements SubHaltReason {
+public class InterruptedModel extends LHSerializable<Interrupted> implements SubHaltReason {
 
     public int interruptThreadId;
 

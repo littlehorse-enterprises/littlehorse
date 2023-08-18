@@ -59,10 +59,7 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public VariableModel getVariable(String wfRunId, String name, int threadNum);
 
-    public ExternalEventModel getUnclaimedEvent(
-        String wfRunId,
-        String externalEventDefName
-    );
+    public ExternalEventModel getUnclaimedEvent(String wfRunId, String externalEventDefName);
 
     public ExternalEventModel getExternalEvent(String externalEventId);
 
@@ -141,14 +138,10 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public List<TaskMetricUpdate> getTaskMetricWindows(String taskDefName, Date time);
 
-    public List<WfMetricUpdate> getWfMetricWindows(
-        String wfSpecName,
-        int wfSpecVersion,
-        Date time
-    );
+    public List<WfMetricUpdate> getWfMetricWindows(String wfSpecName, int wfSpecVersion, Date time);
 
     public HostInfo getAdvertisedHost(HostModel host, String listenerName)
-        throws LHBadRequestError, LHConnectionError;
+            throws LHBadRequestError, LHConnectionError;
 
     public InternalHosts getInternalHosts();
 

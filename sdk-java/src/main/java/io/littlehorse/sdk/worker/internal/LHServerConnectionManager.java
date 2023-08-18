@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class LHServerConnectionManager
-    implements StreamObserver<RegisterTaskWorkerResponse>, Closeable {
+        implements StreamObserver<RegisterTaskWorkerResponse>, Closeable {
 
     public Object executable;
     public Method taskMethod;
@@ -53,12 +53,12 @@ public class LHServerConnectionManager
     private static final int TOTAL_RETRIES = 5;
 
     public LHServerConnectionManager(
-        Method taskMethod,
-        TaskDef taskDef,
-        LHWorkerConfig config,
-        List<VariableMapping> mappings,
-        Object executable
-    ) throws IOException {
+            Method taskMethod,
+            TaskDef taskDef,
+            LHWorkerConfig config,
+            List<VariableMapping> mappings,
+            Object executable)
+            throws IOException {
         this.executable = executable;
         this.taskMethod = taskMethod;
         taskMethod.setAccessible(true);
@@ -74,55 +74,42 @@ public class LHServerConnectionManager
         this.threadPool = Executors.newFixedThreadPool(config.getWorkerThreads());
 
         this.rebalanceThread =
-            new Thread(() -> {
-                while (this.running) {
-                    doHeartbeat();
-                    try {
-                        Thread.sleep(5000);
-                    } catch (Exception ignored) {
-                        // Ignored
-                    }
-                }
-            });
+                new Thread(
+                        () -> {
+                            while (this.running) {
+                                doHeartbeat();
+                                try {
+                                    Thread.sleep(5000);
+                                } catch (Exception ignored) {
+                                    // Ignored
+                                }
+                            }
+                        });
     }
 
-    public void submitTaskForExecution(
-        ScheduledTask scheduledTask,
-        LHPublicApiStub specificStub
-    ) {
+    public void submitTaskForExecution(ScheduledTask scheduledTask, LHPublicApiStub specificStub) {
         try {
             this.workerSemaphore.acquire();
         } catch (InterruptedException exn) {
             throw new RuntimeException(exn);
         }
-        this.threadPool.submit(() -> {
-                this.doTask(scheduledTask, specificStub);
-            });
+        this.threadPool.submit(
+                () -> {
+                    this.doTask(scheduledTask, specificStub);
+                });
     }
 
     private void doTask(ScheduledTask scheduledTask, LHPublicApiStub specificStub) {
-        ReportTaskRun result = executeTask(
-            scheduledTask,
-            LHLibUtil.fromProtoTs(scheduledTask.getCreatedAt())
-        );
+        ReportTaskRun result =
+                executeTask(scheduledTask, LHLibUtil.fromProtoTs(scheduledTask.getCreatedAt()));
         this.workerSemaphore.release();
         String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource());
         try {
             log.debug("Going to report task for wfRun {}", wfRunId);
-            specificStub.reportTask(
-                result,
-                new ReportTaskObserver(this, result, TOTAL_RETRIES)
-            );
-            log.debug(
-                "Successfully contacted LHServer on reportTask for wfRun {}",
-                wfRunId
-            );
+            specificStub.reportTask(result, new ReportTaskObserver(this, result, TOTAL_RETRIES));
+            log.debug("Successfully contacted LHServer on reportTask for wfRun {}", wfRunId);
         } catch (Exception exn) {
-            log.warn(
-                "Failed to report task for wfRun {}: {}",
-                wfRunId,
-                exn.getMessage()
-            );
+            log.warn("Failed to report task for wfRun {}: {}", wfRunId, exn.getMessage());
             retryReportTask(result, TOTAL_RETRIES);
         }
     }
@@ -138,11 +125,10 @@ public class LHServerConnectionManager
                 try {
                     runningConnections.add(new LHServerConnection(this, host));
                     log.info(
-                        "Adding connection to: {}:{} for taskdef {}",
-                        host.getHost(),
-                        host.getPort(),
-                        taskDef.getName()
-                    );
+                            "Adding connection to: {}:{} for taskdef {}",
+                            host.getHost(),
+                            host.getPort(),
+                            taskDef.getName());
                 } catch (IOException exn) {
                     log.error("Yikes, caught IOException in onNext", exn);
                     throw new RuntimeException(exn);
@@ -154,10 +140,9 @@ public class LHServerConnectionManager
             LHServerConnection runningThread = runningConnections.get(i);
             if (!shouldBeRunning(runningThread, next.getYourHostsList())) {
                 log.info(
-                    "Stopping worker thread for host {}:{}",
-                    runningThread.getHostInfo().getHost(),
-                    runningThread.getHostInfo().getPort()
-                );
+                        "Stopping worker thread for host {}:{}",
+                        runningThread.getHostInfo().getHost(),
+                        runningThread.getHostInfo().getPort());
                 runningThread.close();
                 runningConnections.remove(i);
             }
@@ -183,11 +168,10 @@ public class LHServerConnectionManager
     @Override
     public void onError(Throwable t) {
         log.error(
-            "Failed contacting bootstrap host {}:{}",
-            config.getApiBootstrapHost(),
-            config.getApiBootstrapPort(),
-            t
-        );
+                "Failed contacting bootstrap host {}:{}",
+                config.getApiBootstrapHost(),
+                config.getApiBootstrapPort(),
+                t);
         // We don't close the connections to other hosts here since they will do
         // that themselves if they can't connect.
     }
@@ -199,14 +183,13 @@ public class LHServerConnectionManager
 
     private void doHeartbeat() {
         bootstrapStub.registerTaskWorker(
-            RegisterTaskWorkerRequest
-                .newBuilder()
-                .setTaskDefName(taskDef.getName())
-                .setClientId(config.getClientId())
-                .setListenerName(config.getConnectListener())
-                .build(),
-            this // the callbacks come back to this manager.
-        );
+                RegisterTaskWorkerRequest.newBuilder()
+                        .setTaskDefName(taskDef.getName())
+                        .setClientId(config.getClientId())
+                        .setListenerName(config.getConnectListener())
+                        .build(),
+                this // the callbacks come back to this manager.
+                );
     }
 
     public void retryReportTask(ReportTaskRun result, int retriesLeft) {
@@ -217,32 +200,32 @@ public class LHServerConnectionManager
         // The second arg is null so that we don't get into infinite retry loop.
         // That's why we need an employee to fix it ;)
 
-        threadPool.submit(() -> {
-            log.debug(
-                "Retrying reportTask rpc on taskRun {}",
-                LHLibUtil.taskRunIdToString(result.getTaskRunId())
-            );
-            try {
-                // This should also slow down progress on tasks too, which should
-                // help prevent tons of overflow.
-                // EMPLOYEE_TODO: make this a bit better oops
-                Thread.sleep(500);
-            } catch (Exception ignored) {}
-            bootstrapStub.reportTask(
-                result,
-                new ReportTaskObserver(this, result, retriesLeft - 1)
-            );
-        });
+        threadPool.submit(
+                () -> {
+                    log.debug(
+                            "Retrying reportTask rpc on taskRun {}",
+                            LHLibUtil.taskRunIdToString(result.getTaskRunId()));
+                    try {
+                        // This should also slow down progress on tasks too, which should
+                        // help prevent tons of overflow.
+                        // EMPLOYEE_TODO: make this a bit better oops
+                        Thread.sleep(500);
+                    } catch (Exception ignored) {
+                    }
+                    bootstrapStub.reportTask(
+                            result, new ReportTaskObserver(this, result, retriesLeft - 1));
+                });
     }
 
     public void onConnectionClosed(LHServerConnection connection) {
         // TODO: remove from the list
-        runningConnections.removeIf(thing -> {
-            if (thing == connection) {
-                return true;
-            }
-            return false;
-        });
+        runningConnections.removeIf(
+                thing -> {
+                    if (thing == connection) {
+                        return true;
+                    }
+                    return false;
+                });
     }
 
     public void start() {
@@ -256,28 +239,21 @@ public class LHServerConnectionManager
 
     // Below is actual task execution logic
 
-    private ReportTaskRun executeTask(
-        ScheduledTask scheduledTask,
-        Date scheduleTime
-    ) {
-        ReportTaskRun.Builder taskResult = ReportTaskRun
-            .newBuilder()
-            .setTaskRunId(scheduledTask.getTaskRunId())
-            .setAttemptNumber(scheduledTask.getAttemptNumber());
+    private ReportTaskRun executeTask(ScheduledTask scheduledTask, Date scheduleTime) {
+        ReportTaskRun.Builder taskResult =
+                ReportTaskRun.newBuilder()
+                        .setTaskRunId(scheduledTask.getTaskRunId())
+                        .setAttemptNumber(scheduledTask.getAttemptNumber());
 
         WorkerContext wc = new WorkerContext(scheduledTask, scheduleTime);
 
         try {
             Object rawResult = invoke(scheduledTask, wc);
             VariableValue serialized = LHLibUtil.objToVarVal(rawResult);
-            taskResult
-                .setOutput(serialized.toBuilder())
-                .setStatus(TaskStatus.TASK_SUCCESS);
+            taskResult.setOutput(serialized.toBuilder()).setStatus(TaskStatus.TASK_SUCCESS);
 
             if (wc.getLogOutput() != null) {
-                taskResult.setLogOutput(
-                    VariableValue.newBuilder().setStr(wc.getLogOutput())
-                );
+                taskResult.setLogOutput(VariableValue.newBuilder().setStr(wc.getLogOutput()));
             }
         } catch (InputVarSubstitutionError exn) {
             log.error("Failed calculating task input variables", exn);
@@ -302,7 +278,7 @@ public class LHServerConnectionManager
     }
 
     private Object invoke(ScheduledTask scheduledTask, WorkerContext context)
-        throws InputVarSubstitutionError, Exception {
+            throws InputVarSubstitutionError, Exception {
         List<Object> inputs = new ArrayList<>();
         for (VariableMapping mapping : this.mappings) {
             inputs.add(mapping.assign(scheduledTask, context));

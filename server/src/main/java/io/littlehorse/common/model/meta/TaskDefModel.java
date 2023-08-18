@@ -21,8 +21,7 @@ import lombok.Setter;
 @Setter
 public class TaskDefModel extends Getable<TaskDef> {
 
-    @Getter
-    public String name;
+    @Getter public String name;
 
     public Date createdAt;
     public List<VariableDefModel> inputVars;
@@ -46,10 +45,7 @@ public class TaskDefModel extends Getable<TaskDef> {
     }
 
     @Override
-    public List<IndexedField> getIndexValues(
-        String key,
-        Optional<TagStorageType> tagStorageType
-    ) {
+    public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         return List.of();
     }
 
@@ -58,10 +54,8 @@ public class TaskDefModel extends Getable<TaskDef> {
     }
 
     public TaskDef.Builder toProto() {
-        TaskDef.Builder b = TaskDef
-            .newBuilder()
-            .setName(name)
-            .setCreatedAt(LHUtil.fromDate(getCreatedAt()));
+        TaskDef.Builder b =
+                TaskDef.newBuilder().setName(name).setCreatedAt(LHUtil.fromDate(getCreatedAt()));
         for (VariableDefModel entry : inputVars) {
             b.addInputVars(entry.toProto());
         }

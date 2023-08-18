@@ -12,26 +12,21 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 
-public class CancelUserTaskRunRequestModel
-    extends SubCommand<CancelUserTaskRunRequest> {
+public class CancelUserTaskRunRequestModel extends SubCommand<CancelUserTaskRunRequest> {
 
     private UserTaskRunIdModel userTaskRunId;
 
     @Override
     public CancelUserTaskRunRequest.Builder toProto() {
-        return CancelUserTaskRunRequest
-            .newBuilder()
-            .setUserTaskRunId(userTaskRunId.toProto());
+        return CancelUserTaskRunRequest.newBuilder().setUserTaskRunId(userTaskRunId.toProto());
     }
 
     @Override
     public void initFrom(Message proto) throws LHSerdeError {
         CancelUserTaskRunRequest cancelUserTaskRunPb = (CancelUserTaskRunRequest) proto;
         userTaskRunId =
-            LHSerializable.fromProto(
-                cancelUserTaskRunPb.getUserTaskRunId(),
-                UserTaskRunIdModel.class
-            );
+                LHSerializable.fromProto(
+                        cancelUserTaskRunPb.getUserTaskRunId(), UserTaskRunIdModel.class);
     }
 
     @Override
@@ -44,15 +39,10 @@ public class CancelUserTaskRunRequestModel
         UserTaskRunModel userTaskRun = dao.getUserTaskRun(userTaskRunId);
         if (userTaskRun == null) {
             return new CancelUserTaskRunReply(
-                "Provided invalid wfRunId",
-                LHResponseCode.BAD_REQUEST_ERROR
-            );
+                    "Provided invalid wfRunId", LHResponseCode.BAD_REQUEST_ERROR);
         }
         userTaskRun.cancel();
-        return new CancelUserTaskRunReply(
-            userTaskRun.getId().getPartitionKey(),
-            LHResponseCode.OK
-        );
+        return new CancelUserTaskRunReply(userTaskRun.getId().getPartitionKey(), LHResponseCode.OK);
     }
 
     @Override

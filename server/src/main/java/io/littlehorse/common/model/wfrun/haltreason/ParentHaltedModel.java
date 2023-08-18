@@ -7,9 +7,7 @@ import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.ParentHalted;
 
-public class ParentHaltedModel
-    extends LHSerializable<ParentHalted>
-    implements SubHaltReason {
+public class ParentHaltedModel extends LHSerializable<ParentHalted> implements SubHaltReason {
 
     public int parentThreadId;
 
@@ -20,9 +18,7 @@ public class ParentHaltedModel
         }
 
         // If parent status is ERROR, then the thread halt reason is still valid.
-        return (
-            parent.status == LHStatus.RUNNING || parent.status == LHStatus.STARTING
-        );
+        return (parent.status == LHStatus.RUNNING || parent.status == LHStatus.STARTING);
     }
 
     public Class<ParentHalted> getProtoBaseClass() {

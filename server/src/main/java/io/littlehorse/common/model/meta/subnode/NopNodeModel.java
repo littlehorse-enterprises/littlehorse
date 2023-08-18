@@ -21,8 +21,7 @@ public class NopNodeModel extends SubNode<NopNode> {
 
     public void initFrom(Message proto) {}
 
-    public void validate(LHGlobalMetaStores stores, LHConfig config)
-        throws LHValidationError {}
+    public void validate(LHGlobalMetaStores stores, LHConfig config) throws LHValidationError {}
 
     public EntrypointRunModel createSubNodeRun(Date time) {
         return new EntrypointRunModel();

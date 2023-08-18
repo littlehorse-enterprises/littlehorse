@@ -6,9 +6,8 @@ import io.littlehorse.common.model.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.PendingInterruptHaltReason;
 
-public class PendingInterruptHaltReasonModel
-    extends LHSerializable<PendingInterruptHaltReason>
-    implements SubHaltReason {
+public class PendingInterruptHaltReasonModel extends LHSerializable<PendingInterruptHaltReason>
+        implements SubHaltReason {
 
     public ExternalEventIdModel externalEventId;
 
@@ -31,15 +30,10 @@ public class PendingInterruptHaltReasonModel
     public void initFrom(Message proto) {
         PendingInterruptHaltReason p = (PendingInterruptHaltReason) proto;
         externalEventId =
-            LHSerializable.fromProto(
-                p.getExternalEventId(),
-                ExternalEventIdModel.class
-            );
+                LHSerializable.fromProto(p.getExternalEventId(), ExternalEventIdModel.class);
     }
 
-    public static PendingInterruptHaltReasonModel fromProto(
-        PendingInterruptHaltReason proto
-    ) {
+    public static PendingInterruptHaltReasonModel fromProto(PendingInterruptHaltReason proto) {
         PendingInterruptHaltReasonModel out = new PendingInterruptHaltReasonModel();
         out.initFrom(proto);
         return out;

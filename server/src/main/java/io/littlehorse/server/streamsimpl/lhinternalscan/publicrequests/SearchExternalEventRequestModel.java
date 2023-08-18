@@ -28,7 +28,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 public class SearchExternalEventRequestModel
-    extends PublicScanRequest<SearchExternalEventRequest, SearchExternalEventResponse, ExternalEventId, ExternalEventIdModel, SearchExternalEventReply> {
+        extends PublicScanRequest<
+                SearchExternalEventRequest,
+                SearchExternalEventResponse,
+                ExternalEventId,
+                ExternalEventIdModel,
+                SearchExternalEventReply> {
 
     public ExtEvtCriteriaCase type;
     public String wfRunId;
@@ -59,20 +64,17 @@ public class SearchExternalEventRequestModel
                 wfRunId = p.getWfRunId();
                 break;
             case EXTERNAL_EVENT_DEF_NAME_AND_STATUS:
-                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest externalEventDefNameAndStatus = p.getExternalEventDefNameAndStatus();
-                externalEventDefName =
-                    externalEventDefNameAndStatus.getExternalEventDefName();
+                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest
+                        externalEventDefNameAndStatus = p.getExternalEventDefNameAndStatus();
+                externalEventDefName = externalEventDefNameAndStatus.getExternalEventDefName();
                 if (externalEventDefNameAndStatus.hasIsClaimed()) {
-                    isClaimed =
-                        Optional.of(externalEventDefNameAndStatus.getIsClaimed());
+                    isClaimed = Optional.of(externalEventDefNameAndStatus.getIsClaimed());
                 } else {
                     isClaimed = Optional.empty();
                 }
                 break;
             case EXTEVTCRITERIA_NOT_SET:
-                throw new IllegalArgumentException(
-                    "%s type is not supported yet".formatted(type)
-                );
+                throw new IllegalArgumentException("%s type is not supported yet".formatted(type));
         }
     }
 
@@ -89,16 +91,16 @@ public class SearchExternalEventRequestModel
                 out.setWfRunId(wfRunId);
                 break;
             case EXTERNAL_EVENT_DEF_NAME_AND_STATUS:
-                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest.Builder byExtEvtDefNameAndStatusPb = SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest
-                    .newBuilder()
-                    .setExternalEventDefName(externalEventDefName);
+                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest.Builder
+                        byExtEvtDefNameAndStatusPb =
+                                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest
+                                        .newBuilder()
+                                        .setExternalEventDefName(externalEventDefName);
                 isClaimed.ifPresent(b -> byExtEvtDefNameAndStatusPb.setIsClaimed(b));
                 out.setExternalEventDefNameAndStatus(byExtEvtDefNameAndStatusPb);
                 break;
             case EXTEVTCRITERIA_NOT_SET:
-                throw new IllegalArgumentException(
-                    "%s type is not supported yet".formatted(type)
-                );
+                throw new IllegalArgumentException("%s type is not supported yet".formatted(type));
         }
 
         return out;
@@ -106,33 +108,29 @@ public class SearchExternalEventRequestModel
 
     public List<Attribute> getSearchAttributes() {
         return isClaimed
-            .map(claimed ->
-                List.of(
-                    new Attribute("extEvtDefName", externalEventDefName),
-                    new Attribute("isClaimed", String.valueOf(claimed))
-                )
-            )
-            .orElse(List.of(new Attribute("extEvtDefName", externalEventDefName)));
+                .map(
+                        claimed ->
+                                List.of(
+                                        new Attribute("extEvtDefName", externalEventDefName),
+                                        new Attribute("isClaimed", String.valueOf(claimed))))
+                .orElse(List.of(new Attribute("extEvtDefName", externalEventDefName)));
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
-        List<String> searchAttributes = getSearchAttributes()
-            .stream()
-            .map(Attribute::getEscapedKey)
-            .toList();
-        List<GetableIndex<? extends Getable<?>>> indexConfigurations = new ExternalEventModel()
-            .getIndexConfigurations();
-        GetableIndex<? extends Getable<?>> getableIndex = indexConfigurations
-            .stream()
-            .filter(getableIndexConfiguration -> {
-                return getableIndexConfiguration.searchAttributesMatch(
-                    searchAttributes
-                );
-            })
-            .findFirst()
-            .orElse(null);
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
+        List<String> searchAttributes =
+                getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
+        List<GetableIndex<? extends Getable<?>>> indexConfigurations =
+                new ExternalEventModel().getIndexConfigurations();
+        GetableIndex<? extends Getable<?>> getableIndex =
+                indexConfigurations.stream()
+                        .filter(
+                                getableIndexConfiguration -> {
+                                    return getableIndexConfiguration.searchAttributesMatch(
+                                            searchAttributes);
+                                })
+                        .findFirst()
+                        .orElse(null);
         if (getableIndex != null) {
             return getableIndex.getTagStorageType().get();
         } else {
@@ -147,18 +145,11 @@ public class SearchExternalEventRequestModel
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         if (type == ExtEvtCriteriaCase.WF_RUN_ID) {
             return new ObjectIdScanBoundaryStrategy(wfRunId);
-        } else if (
-            type.equals(ExtEvtCriteriaCase.EXTERNAL_EVENT_DEF_NAME_AND_STATUS)
-        ) {
+        } else if (type.equals(ExtEvtCriteriaCase.EXTERNAL_EVENT_DEF_NAME_AND_STATUS)) {
             return new TagScanBoundaryStrategy(
-                searchAttributeString,
-                Optional.empty(),
-                Optional.empty()
-            );
+                    searchAttributeString, Optional.empty(), Optional.empty());
         } else {
-            throw new IllegalArgumentException(
-                "%s type is not supported yet".formatted(type)
-            );
+            throw new IllegalArgumentException("%s type is not supported yet".formatted(type));
         }
     }
 }

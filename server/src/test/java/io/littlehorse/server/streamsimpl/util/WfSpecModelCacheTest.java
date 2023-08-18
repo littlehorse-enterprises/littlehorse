@@ -18,60 +18,53 @@ class WfSpecModelCacheTest {
     class AddToCache {
 
         @Test
-        public void shouldAddDeserializedWfSpecWithVersionToCache()
-            throws LHSerdeError {
+        public void shouldAddDeserializedWfSpecWithVersionToCache() throws LHSerdeError {
             final WfSpecCache wfSpecCache = new WfSpecCache();
             final String wfSpecName = "WF1";
             final int wfSpecVersion = 23;
             final WfSpecModel wfSpecModel = TestUtil.wfSpec(wfSpecName);
             wfSpecModel.setVersion(wfSpecVersion);
-            final String key = StoreUtils.getFullStoreKey(
-                wfSpecModel.getObjectId().getStoreKey(),
-                WfSpecModel.class
-            );
+            final String key =
+                    StoreUtils.getFullStoreKey(
+                            wfSpecModel.getObjectId().getStoreKey(), WfSpecModel.class);
             final Bytes value = Bytes.wrap(wfSpecModel.toBytes(null));
 
             wfSpecCache.addToCache(key, value);
 
-            WfSpecModel cachedWfSpecModel = wfSpecCache.get(
-                new WfSpecIdModel(wfSpecName, wfSpecVersion)
-            );
+            WfSpecModel cachedWfSpecModel =
+                    wfSpecCache.get(new WfSpecIdModel(wfSpecName, wfSpecVersion));
 
             assertThat(cachedWfSpecModel)
-                .usingRecursiveComparison()
-                .ignoringFields("threadSpecs")
-                .isEqualTo(wfSpecModel);
+                    .usingRecursiveComparison()
+                    .ignoringFields("threadSpecs")
+                    .isEqualTo(wfSpecModel);
         }
 
         @Test
-        public void shouldAddDeserializedWfSpecWithLatestToCache()
-            throws LHSerdeError {
+        public void shouldAddDeserializedWfSpecWithLatestToCache() throws LHSerdeError {
             final WfSpecCache wfSpecCache = new WfSpecCache();
             final String wfSpecName = "WF1";
             final int wfSpecVersion = 23;
             final WfSpecModel wfSpecModel = TestUtil.wfSpec(wfSpecName);
             wfSpecModel.setVersion(wfSpecVersion);
-            final String key = StoreUtils.getFullStoreKey(
-                wfSpecModel.getObjectId().getStoreKey(),
-                WfSpecModel.class
-            );
+            final String key =
+                    StoreUtils.getFullStoreKey(
+                            wfSpecModel.getObjectId().getStoreKey(), WfSpecModel.class);
             final Bytes value = Bytes.wrap(wfSpecModel.toBytes(null));
 
             wfSpecCache.addToCache(key, value);
 
-            WfSpecModel cachedLatestWfSpecModel = wfSpecCache.get(
-                new WfSpecIdModel(wfSpecName, LATEST_VERSION)
-            );
+            WfSpecModel cachedLatestWfSpecModel =
+                    wfSpecCache.get(new WfSpecIdModel(wfSpecName, LATEST_VERSION));
 
             assertThat(cachedLatestWfSpecModel)
-                .usingRecursiveComparison()
-                .ignoringFields("threadSpecs")
-                .isEqualTo(wfSpecModel);
+                    .usingRecursiveComparison()
+                    .ignoringFields("threadSpecs")
+                    .isEqualTo(wfSpecModel);
         }
 
         @Test
-        public void shouldEvictWfSpecWithVersionFromCacheWhenValueIsNull()
-            throws LHSerdeError {
+        public void shouldEvictWfSpecWithVersionFromCacheWhenValueIsNull() throws LHSerdeError {
             final WfSpecCache wfSpecCache = new WfSpecCache();
             final String key = "2/WF1/23";
             final WfSpecIdModel cacheKey = new WfSpecIdModel("WF1", 23);
@@ -85,14 +78,10 @@ class WfSpecModelCacheTest {
         }
 
         @Test
-        public void shouldEvictLatestWfSpecFromCacheWhenValueIsNull()
-            throws LHSerdeError {
+        public void shouldEvictLatestWfSpecFromCacheWhenValueIsNull() throws LHSerdeError {
             final WfSpecCache wfSpecCache = new WfSpecCache();
             final String key = "2/WF1/23";
-            final WfSpecIdModel latestCacheKey = new WfSpecIdModel(
-                "WF1",
-                LATEST_VERSION
-            );
+            final WfSpecIdModel latestCacheKey = new WfSpecIdModel("WF1", LATEST_VERSION);
             final Bytes value = null;
 
             wfSpecCache.updateCache(latestCacheKey, TestUtil.wfSpec("WF1"));
@@ -105,8 +94,7 @@ class WfSpecModelCacheTest {
         @Test
         public void shouldNotCacheKeysThatAreNotWfSpec() throws LHSerdeError {
             final WfSpecCache wfSpecCache = new WfSpecCache();
-            final String nonWfSpecKey =
-                "11/WF1/123/0b80d81e-8984-4da5-8312-f19e3fbfa780";
+            final String nonWfSpecKey = "11/WF1/123/0b80d81e-8984-4da5-8312-f19e3fbfa780";
             final WfSpecIdModel cacheKey = new WfSpecIdModel("WF1", 23);
             final Bytes value = Bytes.wrap(TestUtil.taskRun().toBytes(null));
 
@@ -141,14 +129,13 @@ class WfSpecModelCacheTest {
 
             wfSpecCache.getOrCache(name, version, () -> wfSpecModel);
 
-            WfSpecModel cachedLatestWfSpecModel = wfSpecCache.get(
-                new WfSpecIdModel(name, LATEST_VERSION)
-            );
+            WfSpecModel cachedLatestWfSpecModel =
+                    wfSpecCache.get(new WfSpecIdModel(name, LATEST_VERSION));
 
             assertThat(cachedLatestWfSpecModel)
-                .usingRecursiveComparison()
-                .ignoringFields("threadSpecs")
-                .isEqualTo(wfSpecModel);
+                    .usingRecursiveComparison()
+                    .ignoringFields("threadSpecs")
+                    .isEqualTo(wfSpecModel);
         }
     }
 }

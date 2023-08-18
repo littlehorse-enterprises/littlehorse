@@ -28,28 +28,24 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class TagStorageManagerTest {
 
-    private final KeyValueStore<String, Bytes> store = Stores
-        .keyValueStoreBuilder(
-            Stores.inMemoryKeyValueStore("myStore"),
-            Serdes.String(),
-            Serdes.Bytes()
-        )
-        .withLoggingDisabled()
-        .build();
+    private final KeyValueStore<String, Bytes> store =
+            Stores.keyValueStoreBuilder(
+                            Stores.inMemoryKeyValueStore("myStore"),
+                            Serdes.String(),
+                            Serdes.Bytes())
+                    .withLoggingDisabled()
+                    .build();
 
-    @Mock
-    private LHConfig lhConfig;
+    @Mock private LHConfig lhConfig;
 
     private LHStoreWrapper localStore = new LHStoreWrapper(store, lhConfig);
 
-    final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
+    final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
+            new MockProcessorContext<>();
 
     @InjectMocks
-    private TagStorageManager tagStorageManager = new TagStorageManager(
-        localStore,
-        mockProcessorContext,
-        lhConfig
-    );
+    private TagStorageManager tagStorageManager =
+            new TagStorageManager(localStore, mockProcessorContext, lhConfig);
 
     private Tag tag1 = TestUtil.tag();
 
@@ -79,10 +75,11 @@ public class TagStorageManagerTest {
         Assertions.assertThat(tagsCache).isNotNull();
         Assertions.assertThat(tagsCache.getTags()).hasSize(2);
         tagsCache
-            .getTags()
-            .forEach(cachedTag -> {
-                Assertions.assertThat(cachedTag.getId()).isNotNull();
-            });
+                .getTags()
+                .forEach(
+                        cachedTag -> {
+                            Assertions.assertThat(cachedTag.getId()).isNotNull();
+                        });
     }
 
     @Test
@@ -98,21 +95,13 @@ public class TagStorageManagerTest {
         localStore.putTagsCache(wfRunId, WfRunModel.class, tagsCache);
 
         tagStorageManager.storeUsingCache(tags, wfRunId, WfRunModel.class);
-        TagsCache tagsCacheResult = localStore.getTagsCache(
-            wfRunId,
-            WfRunModel.class
-        );
-        Assertions
-            .assertThat(localStore.get(tag2.getStoreKey(), Tag.class))
-            .isNotNull();
-        Assertions
-            .assertThat(localStore.get(tag3.getStoreKey(), Tag.class))
-            .isNotNull();
+        TagsCache tagsCacheResult = localStore.getTagsCache(wfRunId, WfRunModel.class);
+        Assertions.assertThat(localStore.get(tag2.getStoreKey(), Tag.class)).isNotNull();
+        Assertions.assertThat(localStore.get(tag3.getStoreKey(), Tag.class)).isNotNull();
         Assertions.assertThat(localStore.get(tag1.getStoreKey(), Tag.class)).isNull();
         Assertions.assertThat(tagsCacheResult).isNotNull();
-        Assertions
-            .assertThat(tagsCacheResult.getTagIds())
-            .containsExactlyInAnyOrder(tag2.getStoreKey(), tag3.getStoreKey());
+        Assertions.assertThat(tagsCacheResult.getTagIds())
+                .containsExactlyInAnyOrder(tag2.getStoreKey(), tag3.getStoreKey());
     }
 
     @Test
@@ -121,27 +110,23 @@ public class TagStorageManagerTest {
         tag1.setTagType(TagStorageType.REMOTE);
         tags = List.of(tag1, tag2);
         tagStorageManager.storeUsingCache(tags, "test-wfrun-id", WfRunModel.class);
-        List<? extends Record<? extends String, ? extends CommandProcessorOutput>> outputs = mockProcessorContext
-            .forwarded()
-            .stream()
-            .map(MockProcessorContext.CapturedForward::record)
-            .toList();
+        List<? extends Record<? extends String, ? extends CommandProcessorOutput>> outputs =
+                mockProcessorContext.forwarded().stream()
+                        .map(MockProcessorContext.CapturedForward::record)
+                        .toList();
         Assertions.assertThat(outputs).hasSize(1);
-        outputs.forEach(record -> {
-            Assertions.assertThat(record.key()).isEqualTo(expectedPartitionKey);
-            Assertions
-                .assertThat(record.value().getPartitionKey())
-                .isEqualTo(expectedPartitionKey);
-            Assertions
-                .assertThat(record.value().getPayload())
-                .isInstanceOf(RepartitionCommand.class);
-            RepartitionCommand repartitionCommand = (RepartitionCommand) record
-                .value()
-                .getPayload();
-            Assertions
-                .assertThat(repartitionCommand.getSubCommand().getPartitionKey())
-                .isEqualTo(expectedPartitionKey);
-        });
+        outputs.forEach(
+                record -> {
+                    Assertions.assertThat(record.key()).isEqualTo(expectedPartitionKey);
+                    Assertions.assertThat(record.value().getPartitionKey())
+                            .isEqualTo(expectedPartitionKey);
+                    Assertions.assertThat(record.value().getPayload())
+                            .isInstanceOf(RepartitionCommand.class);
+                    RepartitionCommand repartitionCommand =
+                            (RepartitionCommand) record.value().getPayload();
+                    Assertions.assertThat(repartitionCommand.getSubCommand().getPartitionKey())
+                            .isEqualTo(expectedPartitionKey);
+                });
     }
 
     @Test
@@ -161,11 +146,10 @@ public class TagStorageManagerTest {
         localStore.putTagsCache(wfRunId, WfRunModel.class, tagsCache);
 
         tagStorageManager.storeUsingCache(tags, wfRunId, WfRunModel.class);
-        List<? extends Record<? extends String, ? extends CommandProcessorOutput>> outputs = mockProcessorContext
-            .forwarded()
-            .stream()
-            .map(MockProcessorContext.CapturedForward::record)
-            .toList();
+        List<? extends Record<? extends String, ? extends CommandProcessorOutput>> outputs =
+                mockProcessorContext.forwarded().stream()
+                        .map(MockProcessorContext.CapturedForward::record)
+                        .toList();
         Assertions.assertThat(outputs).hasSize(2);
     }
 }

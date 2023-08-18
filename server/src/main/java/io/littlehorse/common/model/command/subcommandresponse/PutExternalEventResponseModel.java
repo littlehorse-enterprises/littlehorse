@@ -5,8 +5,7 @@ import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.wfrun.ExternalEventModel;
 import io.littlehorse.sdk.common.proto.PutExternalEventResponse;
 
-public class PutExternalEventResponseModel
-    extends AbstractResponse<PutExternalEventResponse> {
+public class PutExternalEventResponseModel extends AbstractResponse<PutExternalEventResponse> {
 
     public ExternalEventModel result;
 
@@ -15,9 +14,7 @@ public class PutExternalEventResponseModel
     }
 
     public PutExternalEventResponse.Builder toProto() {
-        PutExternalEventResponse.Builder out = PutExternalEventResponse
-            .newBuilder()
-            .setCode(code);
+        PutExternalEventResponse.Builder out = PutExternalEventResponse.newBuilder().setCode(code);
         if (message != null) out.setMessage(message);
         if (result != null) out.setResult(result.toProto());
 

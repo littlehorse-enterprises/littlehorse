@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.proto.ListExternalEventsResponse;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class ListExternalEventsReply
-    extends PublicScanReply<ListExternalEventsResponse, ExternalEvent, ExternalEventModel> {
+        extends PublicScanReply<ListExternalEventsResponse, ExternalEvent, ExternalEventModel> {
 
     public Class<ExternalEventModel> getResultJavaClass() {
         return ExternalEventModel.class;

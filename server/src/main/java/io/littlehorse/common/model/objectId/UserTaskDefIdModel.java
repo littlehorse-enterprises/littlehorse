@@ -13,8 +13,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserTaskDefIdModel
-    extends ObjectId<UserTaskDefId, UserTaskDef, UserTaskDefModel> {
+public class UserTaskDefIdModel extends ObjectId<UserTaskDefId, UserTaskDef, UserTaskDefModel> {
 
     private String name;
     private int version;
@@ -41,10 +40,7 @@ public class UserTaskDefIdModel
     }
 
     public UserTaskDefId.Builder toProto() {
-        UserTaskDefId.Builder out = UserTaskDefId
-            .newBuilder()
-            .setName(name)
-            .setVersion(version);
+        UserTaskDefId.Builder out = UserTaskDefId.newBuilder().setName(name).setVersion(version);
         return out;
     }
 

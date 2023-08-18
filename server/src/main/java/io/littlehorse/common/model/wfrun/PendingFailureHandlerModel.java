@@ -4,8 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.sdk.common.proto.PendingFailureHandler;
 
-public class PendingFailureHandlerModel
-    extends LHSerializable<PendingFailureHandler> {
+public class PendingFailureHandlerModel extends LHSerializable<PendingFailureHandler> {
 
     public int failedThreadRun;
     public String handlerSpecName;
@@ -15,10 +14,10 @@ public class PendingFailureHandlerModel
     }
 
     public PendingFailureHandler.Builder toProto() {
-        PendingFailureHandler.Builder out = PendingFailureHandler
-            .newBuilder()
-            .setFailedThreadRun(failedThreadRun)
-            .setHandlerSpecName(handlerSpecName);
+        PendingFailureHandler.Builder out =
+                PendingFailureHandler.newBuilder()
+                        .setFailedThreadRun(failedThreadRun)
+                        .setHandlerSpecName(handlerSpecName);
         return out;
     }
 

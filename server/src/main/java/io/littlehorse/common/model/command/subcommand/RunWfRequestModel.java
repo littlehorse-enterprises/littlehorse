@@ -39,9 +39,7 @@ public class RunWfRequestModel extends SubCommand<RunWfRequest> {
     }
 
     public RunWfRequest.Builder toProto() {
-        RunWfRequest.Builder out = RunWfRequest
-            .newBuilder()
-            .setWfSpecName(wfSpecName);
+        RunWfRequest.Builder out = RunWfRequest.newBuilder().setWfSpecName(wfSpecName);
         if (id != null) out.setId(id);
         if (wfSpecVersion != null) out.setWfSpecVersion(wfSpecVersion);
 

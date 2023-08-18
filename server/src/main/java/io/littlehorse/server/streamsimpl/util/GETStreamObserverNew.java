@@ -10,10 +10,8 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
 
-public class GETStreamObserverNew<
-    U extends Message, T extends Getable<U>, V extends Message
->
-    implements StreamObserver<CentralStoreQueryResponse> {
+public class GETStreamObserverNew<U extends Message, T extends Getable<U>, V extends Message>
+        implements StreamObserver<CentralStoreQueryResponse> {
 
     private StreamObserver<V> ctx;
     private LHConfig config;
@@ -22,11 +20,10 @@ public class GETStreamObserverNew<
     private IntermediateGETResp<U, T, V> out;
 
     public GETStreamObserverNew(
-        StreamObserver<V> responseObserver,
-        Class<T> getableCls,
-        Class<V> responseCls,
-        LHConfig config
-    ) {
+            StreamObserver<V> responseObserver,
+            Class<T> getableCls,
+            Class<V> responseCls,
+            LHConfig config) {
         this.ctx = responseObserver;
         this.getableCls = getableCls;
         this.config = config;
@@ -49,17 +46,17 @@ public class GETStreamObserverNew<
         if (reply.hasResult()) {
             out.code = LHResponseCode.OK;
             try {
-                StoredGetable<U, T> entity = (StoredGetable<U, T>) LHSerializable.fromBytes(
-                    reply.getResult().toByteArray(),
-                    StoredGetable.class,
-                    config
-                );
+                StoredGetable<U, T> entity =
+                        (StoredGetable<U, T>)
+                                LHSerializable.fromBytes(
+                                        reply.getResult().toByteArray(),
+                                        StoredGetable.class,
+                                        config);
                 out.result = entity.getStoredObject();
             } catch (LHSerdeError exn) {
                 out.code = LHResponseCode.CONNECTION_ERROR;
                 out.message =
-                    "Impossible: got unreadable response from backend: " +
-                    exn.getMessage();
+                        "Impossible: got unreadable response from backend: " + exn.getMessage();
             }
         } else {
             out.code = LHResponseCode.NOT_FOUND_ERROR;

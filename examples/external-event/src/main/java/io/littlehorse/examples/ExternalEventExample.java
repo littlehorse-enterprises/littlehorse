@@ -114,7 +114,10 @@ public class ExternalEventExample {
         for (String externalEventName : externalEventNames) {
             log.debug("Registering external event {}", externalEventName);
             client.putExternalEventDef(
-                PutExternalEventDefRequest.newBuilder().setName(externalEventName).build(),
+                PutExternalEventDefRequest
+                    .newBuilder()
+                    .setName(externalEventName)
+                    .build(),
                 true
             );
         }

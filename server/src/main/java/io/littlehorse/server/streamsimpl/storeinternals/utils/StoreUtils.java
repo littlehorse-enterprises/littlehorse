@@ -15,41 +15,27 @@ public class StoreUtils {
 
     @SuppressWarnings("unchecked")
     public static String getFullStoreKey(Storeable<?> thing) {
-        return (
-            getSubstorePrefix((Class<? extends Storeable<?>>) thing.getClass()) +
-            thing.getStoreKey()
-        );
+        return (getSubstorePrefix((Class<? extends Storeable<?>>) thing.getClass())
+                + thing.getStoreKey());
     }
 
     public static <T extends Message, U extends Getable<T>> String getFullStoreKey(
-        ObjectId<?, T, U> objectId,
-        Class<? extends Storeable<T>> cls
-    ) {
+            ObjectId<?, T, U> objectId, Class<? extends Storeable<T>> cls) {
         return getSubstorePrefix(cls) + objectId.getStoreKey();
     }
 
-    public static String getFullStoreKey(
-        String objectId,
-        Class<? extends Storeable<?>> cls
-    ) {
+    public static String getFullStoreKey(String objectId, Class<? extends Storeable<?>> cls) {
         return getSubstorePrefix(cls) + objectId;
     }
 
-    public static String getFullPrefixByName(
-        String name,
-        Class<? extends Storeable<?>> cls
-    ) {
+    public static String getFullPrefixByName(String name, Class<? extends Storeable<?>> cls) {
         return getSubstorePrefix(cls) + name + "/";
     }
 
     @SuppressWarnings("unchecked")
     public static String getSubstorePrefix(Class<? extends Storeable<?>> cls) {
         if (Getable.class.isAssignableFrom(cls)) {
-            return (
-                "" +
-                Getable.getTypeEnum((Class<? extends Getable<?>>) cls).getNumber() +
-                "/"
-            );
+            return ("" + Getable.getTypeEnum((Class<? extends Getable<?>>) cls).getNumber() + "/");
         }
 
         if (cls.equals(Tag.class)) {
@@ -63,9 +49,7 @@ public class StoreUtils {
         } else if (cls.equals(WfMetricUpdate.class)) {
             return "WM/";
         } else {
-            throw new IllegalArgumentException(
-                "Unrecognized Storeable Class: " + cls.getName()
-            );
+            throw new IllegalArgumentException("Unrecognized Storeable Class: " + cls.getName());
         }
     }
 
@@ -90,10 +74,7 @@ public class StoreUtils {
         return getTagsCacheKey(thing.getStoreKey(), cls);
     }
 
-    public static String getTagsCacheKey(
-        String getableId,
-        Class<? extends Getable<?>> cls
-    ) {
+    public static String getTagsCacheKey(String getableId, Class<? extends Getable<?>> cls) {
         return "TC/" + cls.getSimpleName() + "/" + getableId;
     }
 }

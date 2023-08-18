@@ -29,37 +29,33 @@ public abstract class TestDriver {
         ForkJoinPool customThreadPool = new ForkJoinPool(threads);
 
         customThreadPool
-            .submit(() ->
-                tests
-                    .parallelStream()
-                    .forEach(testClass -> {
-                        execTest(workerConfig, client, testClass);
-                    })
-            )
-            .get();
+                .submit(
+                        () ->
+                                tests.parallelStream()
+                                        .forEach(
+                                                testClass -> {
+                                                    execTest(workerConfig, client, testClass);
+                                                }))
+                .get();
         customThreadPool.shutdown();
 
         log.info(
-            "\u001B[32mPlanned tests: {}. Executed tests: {}.\u001B[0m",
-            tests.size(),
-            executedTest
-        );
+                "\u001B[32mPlanned tests: {}. Executed tests: {}.\u001B[0m",
+                tests.size(),
+                executedTest);
     }
 
-    private void execTest(
-        LHWorkerConfig workerConfig,
-        LHClient client,
-        Class<?> testClass
-    ) {
+    private void execTest(LHWorkerConfig workerConfig, LHClient client, Class<?> testClass) {
         try {
-            Test test = (Test) testClass
-                .getDeclaredConstructor(LHClient.class, LHWorkerConfig.class)
-                .newInstance(client, workerConfig);
+            Test test =
+                    (Test)
+                            testClass
+                                    .getDeclaredConstructor(LHClient.class, LHWorkerConfig.class)
+                                    .newInstance(client, workerConfig);
             log.info(
-                "\u001B[32mStarting test:\n\tName:        {}.\n\tDescription: {}.\u001B[0m",
-                testClass.getName(),
-                test.getDescription()
-            );
+                    "\u001B[32mStarting test:\n\tName:        {}.\n\tDescription: {}.\u001B[0m",
+                    testClass.getName(),
+                    test.getDescription());
             test.test();
             test.cleanup();
             executedTest++;
@@ -71,11 +67,7 @@ public abstract class TestDriver {
             }
 
             log.error(
-                "\u001B[31mTest {} failed: {}.\u001B[0m",
-                testClass.getName(),
-                exnMessage,
-                exn
-            );
+                    "\u001B[31mTest {} failed: {}.\u001B[0m", testClass.getName(), exnMessage, exn);
             System.exit(1);
         }
     }

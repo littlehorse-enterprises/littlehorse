@@ -11,14 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * RP: The Response Protobuf
- * OP: The Individual Entry Protobuf
- * OJ: The Individual Entry Java Object
+ * RP: The Response Protobuf OP: The Individual Entry Protobuf OJ: The Individual Entry Java Object
  */
 public abstract class PublicScanReply<
-    RP extends Message, OP extends Message, OJ extends LHSerializable<OP>
->
-    extends LHSerializable<RP> {
+                RP extends Message, OP extends Message, OJ extends LHSerializable<OP>>
+        extends LHSerializable<RP> {
 
     public ByteString bookmark;
     public LHResponseCode code;
@@ -56,11 +53,7 @@ public abstract class PublicScanReply<
             for (OJ result : results) {
                 addResults.invoke(builder, result.toProto().build());
             }
-        } catch (
-            InvocationTargetException
-            | NoSuchMethodException
-            | IllegalAccessException exn
-        ) {
+        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException exn) {
             throw new RuntimeException(exn);
         }
         return (GeneratedMessageV3.Builder<?>) builder;
@@ -90,15 +83,9 @@ public abstract class PublicScanReply<
             List<OP> protoResults = (List<OP>) getResults.invoke(p);
 
             for (OP protoResult : protoResults) {
-                results.add(
-                    LHSerializable.fromProto(protoResult, getResultJavaClass())
-                );
+                results.add(LHSerializable.fromProto(protoResult, getResultJavaClass()));
             }
-        } catch (
-            NoSuchMethodException
-            | InvocationTargetException
-            | IllegalAccessException exn
-        ) {
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException exn) {
             throw new RuntimeException(exn);
         }
     }

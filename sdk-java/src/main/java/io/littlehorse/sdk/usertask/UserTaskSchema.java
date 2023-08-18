@@ -28,33 +28,25 @@ public class UserTaskSchema {
         // todo
         Class<?> cls = taskObject.getClass();
         for (Field field : cls.getFields()) {
-            if (
-                !field.isAnnotationPresent(
-                    io.littlehorse.sdk.usertask.annotations.UserTaskField.class
-                )
-            ) continue;
+            if (!field.isAnnotationPresent(
+                    io.littlehorse.sdk.usertask.annotations.UserTaskField.class)) continue;
 
-            io.littlehorse.sdk.usertask.annotations.UserTaskField utf = field.getAnnotation(
-                io.littlehorse.sdk.usertask.annotations.UserTaskField.class
-            );
+            io.littlehorse.sdk.usertask.annotations.UserTaskField utf =
+                    field.getAnnotation(
+                            io.littlehorse.sdk.usertask.annotations.UserTaskField.class);
             VariableType type = LHLibUtil.javaClassToLHVarType(field.getType());
-            if (
-                type == VariableType.JSON_ARR ||
-                type == VariableType.JSON_OBJ ||
-                type == VariableType.BYTES
-            ) {
+            if (type == VariableType.JSON_ARR
+                    || type == VariableType.JSON_OBJ
+                    || type == VariableType.BYTES) {
                 throw new IllegalArgumentException(
-                    "Only primitive types supported for UserTaskField. Field " +
-                    field.getName() +
-                    " is of type " +
-                    type
-                );
+                        "Only primitive types supported for UserTaskField. Field "
+                                + field.getName()
+                                + " is of type "
+                                + type);
             }
 
-            UserTaskField.Builder fieldBuilder = UserTaskField
-                .newBuilder()
-                .setName(field.getName())
-                .setType(type);
+            UserTaskField.Builder fieldBuilder =
+                    UserTaskField.newBuilder().setName(field.getName()).setType(type);
 
             if (utf.description() != null && !utf.description().isEmpty()) {
                 fieldBuilder.setDescription(utf.description());

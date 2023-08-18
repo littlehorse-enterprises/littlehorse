@@ -60,14 +60,14 @@ public class ExternalEventModel extends Getable<ExternalEvent> {
     }
 
     public ExternalEvent.Builder toProto() {
-        ExternalEvent.Builder out = ExternalEvent
-            .newBuilder()
-            .setWfRunId(wfRunId)
-            .setExternalEventDefName(externalEventDefName)
-            .setGuid(guid)
-            .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
-            .setContent(content.toProto())
-            .setClaimed(claimed);
+        ExternalEvent.Builder out =
+                ExternalEvent.newBuilder()
+                        .setWfRunId(wfRunId)
+                        .setExternalEventDefName(externalEventDefName)
+                        .setGuid(guid)
+                        .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
+                        .setContent(content.toProto())
+                        .setClaimed(claimed);
 
         if (threadRunNumber != null) {
             out.setThreadRunNumber(threadRunNumber);
@@ -89,39 +89,26 @@ public class ExternalEventModel extends Getable<ExternalEvent> {
     @Override
     public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
         return List.of(
-            new GetableIndex<>(
-                List.of(
-                    Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE),
-                    Pair.of("isClaimed", GetableIndex.ValueType.SINGLE)
-                ),
-                Optional.of(TagStorageType.LOCAL)
-            ),
-            new GetableIndex<>(
-                List.of(Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageType.LOCAL)
-            )
-        );
+                new GetableIndex<>(
+                        List.of(
+                                Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE),
+                                Pair.of("isClaimed", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)),
+                new GetableIndex<>(
+                        List.of(Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)));
     }
 
     @Override
-    public List<IndexedField> getIndexValues(
-        String key,
-        Optional<TagStorageType> tagStorageType
-    ) {
+    public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         switch (key) {
             case "extEvtDefName" -> {
                 return List.of(
-                    new IndexedField(
-                        key,
-                        this.getExternalEventDefName(),
-                        tagStorageType.get()
-                    )
-                );
+                        new IndexedField(
+                                key, this.getExternalEventDefName(), tagStorageType.get()));
             }
             case "isClaimed" -> {
-                return List.of(
-                    new IndexedField(key, this.isClaimed(), tagStorageType.get())
-                );
+                return List.of(new IndexedField(key, this.isClaimed(), tagStorageType.get()));
             }
         }
         return List.of();

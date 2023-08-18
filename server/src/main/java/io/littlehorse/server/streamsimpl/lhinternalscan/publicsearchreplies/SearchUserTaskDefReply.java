@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.proto.UserTaskDefId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class SearchUserTaskDefReply
-    extends PublicScanReply<SearchUserTaskDefResponse, UserTaskDefId, UserTaskDefIdModel> {
+        extends PublicScanReply<SearchUserTaskDefResponse, UserTaskDefId, UserTaskDefIdModel> {
 
     public Class<SearchUserTaskDefResponse> getProtoBaseClass() {
         return SearchUserTaskDefResponse.class;

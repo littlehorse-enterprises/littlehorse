@@ -25,9 +25,7 @@ public class FormatStringModel extends LHSerializable<FormatString> {
     }
 
     public FormatString.Builder toProto() {
-        FormatString.Builder out = FormatString
-            .newBuilder()
-            .setFormat(format.toProto());
+        FormatString.Builder out = FormatString.newBuilder().setFormat(format.toProto());
         for (VariableAssignmentModel arg : args) {
             out.addArgs(arg.toProto());
         }

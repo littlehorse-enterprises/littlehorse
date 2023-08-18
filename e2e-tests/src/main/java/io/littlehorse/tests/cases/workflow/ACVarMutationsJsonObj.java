@@ -24,43 +24,34 @@ public class ACVarMutationsJsonObj extends WorkflowLogicTest {
     }
 
     public String getDescription() {
-        return (
-            "Tests JSONPath for both task inputs (variable assignment) and " +
-            "Variable Mutations; i.e. mutating a sub-field of a JSON Object."
-        );
+        return ("Tests JSONPath for both task inputs (variable assignment) and "
+                + "Variable Mutations; i.e. mutating a sub-field of a JSON Object.");
     }
 
     public Workflow getWorkflowImpl() {
         return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                WfRunVariable myVar = thread.addVariable(
-                    "my-var",
-                    VariableType.JSON_OBJ
-                );
+                getWorkflowName(),
+                thread -> {
+                    WfRunVariable myVar = thread.addVariable("my-var", VariableType.JSON_OBJ);
 
-                // Use JsonPath to pass in a String from a nested subobject.
-                NodeOutput taskOutput = thread.execute(
-                    "count-length",
-                    myVar.jsonPath("$.subObject.foo")
-                );
+                    // Use JsonPath to pass in a String from a nested subobject.
+                    NodeOutput taskOutput =
+                            thread.execute("count-length", myVar.jsonPath("$.subObject.foo"));
 
-                // Use jsonpath to edit a nested field in a big object
-                thread.mutate(
-                    myVar.jsonPath("$.subObject.bar"),
-                    VariableMutationType.ADD,
-                    taskOutput
-                );
+                    // Use jsonpath to edit a nested field in a big object
+                    thread.mutate(
+                            myVar.jsonPath("$.subObject.bar"),
+                            VariableMutationType.ADD,
+                            taskOutput);
 
-                // Pass in a JSON_OBJ to a Java task that takes in a POJO.
-                // Behold the magic of the Java LH SDK!
-                thread.execute("process-big-obj", myVar);
+                    // Pass in a JSON_OBJ to a Java task that takes in a POJO.
+                    // Behold the magic of the Java LH SDK!
+                    thread.execute("process-big-obj", myVar);
 
-                // Can also pass in a whole sub object rather than just a
-                // string
-                thread.execute("process-sub-obj", myVar.jsonPath("$.subObject"));
-            }
-        );
+                    // Can also pass in a whole sub object rather than just a
+                    // string
+                    thread.execute("process-sub-obj", myVar.jsonPath("$.subObject"));
+                });
     }
 
     public List<Object> getTaskWorkerObjects() {
@@ -68,7 +59,7 @@ public class ACVarMutationsJsonObj extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+            throws TestFailure, InterruptedException, LHApiError {
         ACJsonPathThing worker = new ACJsonPathThing();
         /* Create a POJO which will be a json like:
         {
@@ -98,28 +89,17 @@ public class ACVarMutationsJsonObj extends WorkflowLogicTest {
 
         // Check that the first task properly mutated the variable
         MyJsonObj result = getVarAsObj(client, wfRunId, 0, "my-var", MyJsonObj.class);
-        if (
-            !result.subObject.bar.equals(
-                inputVar.subObject.foo.length() + inputVar.subObject.bar
-            )
-        ) {
+        if (!result.subObject.bar.equals(
+                inputVar.subObject.foo.length() + inputVar.subObject.bar)) {
             throw new TestFailure(
-                this,
-                "Got wrong value for variable my-var on jsonpath $.subObject.bar"
-            );
+                    this, "Got wrong value for variable my-var on jsonpath $.subObject.bar");
         }
 
         // Check second task output
         assertTaskOutput(client, wfRunId, 0, 2, worker.processBigObject(inputVar));
 
         // Check third task output
-        assertTaskOutput(
-            client,
-            wfRunId,
-            0,
-            3,
-            worker.processSubObj(result.subObject)
-        );
+        assertTaskOutput(client, wfRunId, 0, 3, worker.processSubObj(result.subObject));
 
         return Arrays.asList(wfRunId);
     }

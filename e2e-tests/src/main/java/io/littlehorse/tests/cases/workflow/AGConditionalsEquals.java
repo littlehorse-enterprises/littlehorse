@@ -29,40 +29,34 @@ public class AGConditionalsEquals extends WorkflowLogicTest {
 
     public Workflow getWorkflowImpl() {
         return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                // Use an input JSON blob with two fields, LHS and RHS.
-                // This allows us to test with various types on the left and the
-                // right, since right now the JSON_OBJ var type does not have a
-                // schema.
-                WfRunVariable input = thread.addVariable(
-                    "input",
-                    VariableType.JSON_OBJ
-                );
+                getWorkflowName(),
+                thread -> {
+                    // Use an input JSON blob with two fields, LHS and RHS.
+                    // This allows us to test with various types on the left and the
+                    // right, since right now the JSON_OBJ var type does not have a
+                    // schema.
+                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-                // So that the run request succeeds even on workflows where we want
-                // a crash.
-                thread.execute("ag-one");
+                    // So that the run request succeeds even on workflows where we want
+                    // a crash.
+                    thread.execute("ag-one");
 
-                thread.doIfElse(
-                    thread.condition(
-                        input.jsonPath("$.lhs"),
-                        Comparator.EQUALS,
-                        input.jsonPath("$.rhs")
-                    ),
-                    ifBlock -> {
-                        ifBlock.execute("ag-one");
-                    },
-                    elseBlock -> {
-                        elseBlock.execute("ag-two");
-                    }
-                );
-            }
-        );
+                    thread.doIfElse(
+                            thread.condition(
+                                    input.jsonPath("$.lhs"),
+                                    Comparator.EQUALS,
+                                    input.jsonPath("$.rhs")),
+                            ifBlock -> {
+                                ifBlock.execute("ag-one");
+                            },
+                            elseBlock -> {
+                                elseBlock.execute("ag-two");
+                            });
+                });
     }
 
     private String assertThatFails(LHClient client, Object lhs, Object rhs)
-        throws TestFailure, InterruptedException, LHApiError {
+            throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("input", new InputObj(lhs, rhs)));
         Thread.sleep(100);
         assertStatus(client, wfRunId, LHStatus.ERROR);
@@ -74,35 +68,19 @@ public class AGConditionalsEquals extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+            throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
-            runWithInputsAndCheckPath(
-                client,
-                Map.of("lhs", 1, "rhs", 2),
-                true,
-                false
-            ),
-            runWithInputsAndCheckPath(client, Map.of("lhs", 2, "rhs", 2), true, true),
-            runWithInputsAndCheckPath(
-                client,
-                Map.of("lhs", "hi", "rhs", "hi"),
-                true,
-                true
-            ),
-            runWithInputsAndCheckPath(
-                client,
-                Map.of("lhs", 1.0, "rhs", 2.0),
-                true,
-                false
-            ),
-            assertThatFails(client, Map.of("a", 1), Map.of("a", 1)),
-            assertThatFails(client, Arrays.asList(0), Arrays.asList(0)),
-            assertThatFails(client, false, "false"),
-            assertThatFails(client, 1, 1.0),
-            assertThatFails(client, 1, "one"),
-            assertThatFails(client, 2, "2"),
-            assertThatFails(client, 2, Map.of("a", 1))
-        );
+                runWithInputsAndCheckPath(client, Map.of("lhs", 1, "rhs", 2), true, false),
+                runWithInputsAndCheckPath(client, Map.of("lhs", 2, "rhs", 2), true, true),
+                runWithInputsAndCheckPath(client, Map.of("lhs", "hi", "rhs", "hi"), true, true),
+                runWithInputsAndCheckPath(client, Map.of("lhs", 1.0, "rhs", 2.0), true, false),
+                assertThatFails(client, Map.of("a", 1), Map.of("a", 1)),
+                assertThatFails(client, Arrays.asList(0), Arrays.asList(0)),
+                assertThatFails(client, false, "false"),
+                assertThatFails(client, 1, 1.0),
+                assertThatFails(client, 1, "one"),
+                assertThatFails(client, 2, "2"),
+                assertThatFails(client, 2, Map.of("a", 1)));
     }
 }
 

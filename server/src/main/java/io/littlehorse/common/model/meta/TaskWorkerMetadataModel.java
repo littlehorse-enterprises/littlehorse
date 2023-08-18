@@ -20,11 +20,10 @@ public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata> 
 
     @Override
     public TaskWorkerMetadata.Builder toProto() {
-        return TaskWorkerMetadata
-            .newBuilder()
-            .setClientId(clientId)
-            .setLatestHeartbeat(Timestamps.fromDate(latestHeartbeat))
-            .addAllHosts(hostsToProto());
+        return TaskWorkerMetadata.newBuilder()
+                .setClientId(clientId)
+                .setLatestHeartbeat(Timestamps.fromDate(latestHeartbeat))
+                .addAllHosts(hostsToProto());
     }
 
     @Override
@@ -33,11 +32,9 @@ public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata> 
         clientId = metadataPb.getClientId();
         latestHeartbeat = LHUtil.fromProtoTs(metadataPb.getLatestHeartbeat());
         hosts =
-            metadataPb
-                .getHostsList()
-                .stream()
-                .map(host -> new HostModel(host.getHost(), host.getPort()))
-                .collect(Collectors.toCollection(TreeSet::new));
+                metadataPb.getHostsList().stream()
+                        .map(host -> new HostModel(host.getHost(), host.getPort()))
+                        .collect(Collectors.toCollection(TreeSet::new));
     }
 
     @Override
@@ -46,9 +43,6 @@ public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata> 
     }
 
     public List<HostInfo> hostsToProto() {
-        return hosts
-            .stream()
-            .map(host -> host.toProto().build())
-            .collect(Collectors.toList());
+        return hosts.stream().map(host -> host.toProto().build()).collect(Collectors.toList());
     }
 }

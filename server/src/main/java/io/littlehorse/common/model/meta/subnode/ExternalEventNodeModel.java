@@ -33,16 +33,14 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
     }
 
     public ExternalEventNode.Builder toProto() {
-        ExternalEventNode.Builder out = ExternalEventNode
-            .newBuilder()
-            .setExternalEventDefName(externalEventDefName);
+        ExternalEventNode.Builder out =
+                ExternalEventNode.newBuilder().setExternalEventDefName(externalEventDefName);
 
         if (timeoutSeconds != null) out.setTimeoutSeconds(timeoutSeconds.toProto());
         return out;
     }
 
-    public void validate(LHGlobalMetaStores stores, LHConfig config)
-        throws LHValidationError {
+    public void validate(LHGlobalMetaStores stores, LHConfig config) throws LHValidationError {
         // Want to be able to release new versions of ExternalEventDef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the EED to ensure that this isn't an issue.
@@ -52,9 +50,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
 
         if (eed == null) {
             throw new LHValidationError(
-                null,
-                "Refers to nonexistent ExternalEventDef " + externalEventDefName
-            );
+                    null, "Refers to nonexistent ExternalEventDef " + externalEventDefName);
         }
     }
 

@@ -5,9 +5,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.ManualHalt;
 
-public class ManualHaltModel
-    extends LHSerializable<ManualHalt>
-    implements SubHaltReason {
+public class ManualHaltModel extends LHSerializable<ManualHalt> implements SubHaltReason {
 
     public boolean meaningOfLife;
 

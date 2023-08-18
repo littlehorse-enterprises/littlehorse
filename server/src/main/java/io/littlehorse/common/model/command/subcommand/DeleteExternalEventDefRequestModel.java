@@ -8,8 +8,7 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
 
-public class DeleteExternalEventDefRequestModel
-    extends SubCommand<DeleteExternalEventDefRequest> {
+public class DeleteExternalEventDefRequestModel extends SubCommand<DeleteExternalEventDefRequest> {
 
     public String name;
 
@@ -18,9 +17,8 @@ public class DeleteExternalEventDefRequestModel
     }
 
     public DeleteExternalEventDefRequest.Builder toProto() {
-        DeleteExternalEventDefRequest.Builder out = DeleteExternalEventDefRequest
-            .newBuilder()
-            .setName(name);
+        DeleteExternalEventDefRequest.Builder out =
+                DeleteExternalEventDefRequest.newBuilder().setName(name);
         return out;
     }
 
@@ -41,9 +39,7 @@ public class DeleteExternalEventDefRequestModel
         return true;
     }
 
-    public static DeleteExternalEventDefRequestModel fromProto(
-        DeleteExternalEventDefRequest p
-    ) {
+    public static DeleteExternalEventDefRequestModel fromProto(DeleteExternalEventDefRequest p) {
         DeleteExternalEventDefRequestModel out = new DeleteExternalEventDefRequestModel();
         out.initFrom(p);
         return out;

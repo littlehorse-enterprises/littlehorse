@@ -5,8 +5,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerContext;
 
-public class UserTaskTriggerContextModel
-    extends LHSerializable<UserTaskTriggerContext> {
+public class UserTaskTriggerContextModel extends LHSerializable<UserTaskTriggerContext> {
 
     private UserModel user;
     private UserGroupModel userGroup;
@@ -38,18 +37,12 @@ public class UserTaskTriggerContextModel
     public void initFrom(Message proto) throws LHSerdeError {
         UserTaskTriggerContext taskTriggerContext = (UserTaskTriggerContext) proto;
         if (taskTriggerContext.hasUser()) {
-            user =
-                LHSerializable.fromProto(
-                    taskTriggerContext.getUser(),
-                    UserModel.class
-                );
+            user = LHSerializable.fromProto(taskTriggerContext.getUser(), UserModel.class);
         }
         if (taskTriggerContext.hasUserGroup()) {
             userGroup =
-                LHSerializable.fromProto(
-                    taskTriggerContext.getUserGroup(),
-                    UserGroupModel.class
-                );
+                    LHSerializable.fromProto(
+                            taskTriggerContext.getUserGroup(), UserGroupModel.class);
         }
     }
 

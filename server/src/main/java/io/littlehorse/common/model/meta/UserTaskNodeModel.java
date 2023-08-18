@@ -42,9 +42,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     }
 
     public UserTaskNode.Builder toProto() {
-        UserTaskNode.Builder out = UserTaskNode
-            .newBuilder()
-            .setUserTaskDefName(userTaskDefName);
+        UserTaskNode.Builder out = UserTaskNode.newBuilder().setUserTaskDefName(userTaskDefName);
 
         switch (assignmentType) {
             case USER_GROUP:
@@ -81,8 +79,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
                 userGroup = VariableAssignmentModel.fromProto(p.getUserGroup());
                 break;
             case USER:
-                user =
-                    LHSerializable.fromProto(p.getUser(), UserAssignmentModel.class);
+                user = LHSerializable.fromProto(p.getUser(), UserAssignmentModel.class);
                 break;
             case ASSIGNMENT_NOT_SET:
                 throw new RuntimeException("not possible");
@@ -97,8 +94,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         }
 
         if (p.hasNotes()) {
-            notes =
-                LHSerializable.fromProto(p.getNotes(), VariableAssignmentModel.class);
+            notes = LHSerializable.fromProto(p.getNotes(), VariableAssignmentModel.class);
         }
     }
 
@@ -116,32 +112,24 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         return new UserTaskNodeRunModel();
     }
 
-    public void validate(LHGlobalMetaStores stores, LHConfig config)
-        throws LHValidationError {
-        UserTaskDefModel utd = stores.getUserTaskDef(
-            userTaskDefName,
-            userTaskDefVersion
-        );
+    public void validate(LHGlobalMetaStores stores, LHConfig config) throws LHValidationError {
+        UserTaskDefModel utd = stores.getUserTaskDef(userTaskDefName, userTaskDefVersion);
 
         if (utd == null) {
             throw new LHValidationError(
-                null,
-                "Specified UserTaskDef " +
-                userTaskDefName +
-                "/" +
-                userTaskDefVersion +
-                " not found"
-            );
+                    null,
+                    "Specified UserTaskDef "
+                            + userTaskDefName
+                            + "/"
+                            + userTaskDefVersion
+                            + " not found");
         }
 
         // Now pin the version
         userTaskDefVersion = utd.version;
 
         if (assignmentType == null) {
-            throw new LHValidationError(
-                null,
-                "Must specify assignment type for User Task Node"
-            );
+            throw new LHValidationError(null, "Must specify assignment type for User Task Node");
         }
     }
 }

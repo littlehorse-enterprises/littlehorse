@@ -14,10 +14,7 @@ public class TagScanBoundaryStrategy implements SearchScanBoundaryStrategy {
     private Optional<Date> latestStart;
 
     public TagScanBoundaryStrategy(
-        String keyPrefix,
-        Optional<Date> earliestStart,
-        Optional<Date> latestStart
-    ) {
+            String keyPrefix, Optional<Date> earliestStart, Optional<Date> latestStart) {
         this.keyPrefix = keyPrefix;
         this.earliestStart = earliestStart;
         this.latestStart = latestStart;
@@ -27,12 +24,14 @@ public class TagScanBoundaryStrategy implements SearchScanBoundaryStrategy {
     public Message buildScanProto() {
         InternalScanPb.TagScanPb.Builder prefixScanBuilder = InternalScanPb.TagScanPb.newBuilder();
         prefixScanBuilder.setKeyPrefix(keyPrefix);
-        Consumer<Date> setLatestStartToBuilder = date -> {
-            prefixScanBuilder.setLatestCreateTime(LHUtil.fromDate(date));
-        };
-        Consumer<Date> setEarliestStartToBuilder = date -> {
-            prefixScanBuilder.setLatestCreateTime(LHUtil.fromDate(date));
-        };
+        Consumer<Date> setLatestStartToBuilder =
+                date -> {
+                    prefixScanBuilder.setLatestCreateTime(LHUtil.fromDate(date));
+                };
+        Consumer<Date> setEarliestStartToBuilder =
+                date -> {
+                    prefixScanBuilder.setLatestCreateTime(LHUtil.fromDate(date));
+                };
         earliestStart.ifPresent(setEarliestStartToBuilder);
         latestStart.ifPresent(setLatestStartToBuilder);
         return prefixScanBuilder.build();

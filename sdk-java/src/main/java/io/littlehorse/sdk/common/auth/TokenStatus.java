@@ -23,9 +23,6 @@ public class TokenStatus {
     @Override
     public String toString() {
         return String.format(
-            "IntrospectResponse [expired=%s, expiration date=%s]",
-            isExpired(),
-            expiration
-        );
+                "IntrospectResponse [expired=%s, expiration date=%s]", isExpired(), expiration);
     }
 }

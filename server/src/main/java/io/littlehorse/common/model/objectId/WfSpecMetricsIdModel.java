@@ -11,7 +11,7 @@ import io.littlehorse.sdk.common.proto.WfSpecMetricsId;
 import java.util.Date;
 
 public class WfSpecMetricsIdModel
-    extends ObjectId<WfSpecMetricsId, WfSpecMetrics, WfSpecMetricsModel> {
+        extends ObjectId<WfSpecMetricsId, WfSpecMetrics, WfSpecMetricsModel> {
 
     public Date windowStart;
     public MetricsWindowLength windowType;
@@ -29,11 +29,7 @@ public class WfSpecMetricsIdModel
     public WfSpecMetricsIdModel() {}
 
     public WfSpecMetricsIdModel(
-        Date windowStart,
-        MetricsWindowLength type,
-        String wfSpecName,
-        int wfSpecVersion
-    ) {
+            Date windowStart, MetricsWindowLength type, String wfSpecName, int wfSpecVersion) {
         this.windowStart = windowStart;
         this.windowType = type;
         this.WfSpecName = wfSpecName;
@@ -49,22 +45,21 @@ public class WfSpecMetricsIdModel
     }
 
     public WfSpecMetricsId.Builder toProto() {
-        WfSpecMetricsId.Builder out = WfSpecMetricsId
-            .newBuilder()
-            .setWfSpecName(WfSpecName)
-            .setWindowType(windowType)
-            .setWindowStart(LHUtil.fromDate(windowStart))
-            .setWfSpecVersion(wfSpecVersion);
+        WfSpecMetricsId.Builder out =
+                WfSpecMetricsId.newBuilder()
+                        .setWfSpecName(WfSpecName)
+                        .setWindowType(windowType)
+                        .setWindowStart(LHUtil.fromDate(windowStart))
+                        .setWfSpecVersion(wfSpecVersion);
         return out;
     }
 
     public String getStoreKey() {
         return LHUtil.getCompositeId(
-            WfSpecName,
-            LHUtil.toLHDbVersionFormat(wfSpecVersion),
-            windowType.toString(),
-            LHUtil.toLhDbFormat(windowStart)
-        );
+                WfSpecName,
+                LHUtil.toLHDbVersionFormat(wfSpecVersion),
+                windowType.toString(),
+                LHUtil.toLhDbFormat(windowStart));
     }
 
     public void initFrom(String storeKey) {

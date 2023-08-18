@@ -18,8 +18,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CompleteUserTaskRunRequestModel
-    extends SubCommand<CompleteUserTaskRunRequest> {
+public class CompleteUserTaskRunRequestModel extends SubCommand<CompleteUserTaskRunRequest> {
 
     private UserTaskRunIdModel userTaskRunId;
     private String userId;
@@ -31,19 +30,18 @@ public class CompleteUserTaskRunRequestModel
     }
 
     public CompleteUserTaskRunRequest.Builder toProto() {
-        CompleteUserTaskRunRequest.Builder out = CompleteUserTaskRunRequest
-            .newBuilder()
-            .setUserTaskRunId(userTaskRunId.toProto())
-            .setUserId(userId)
-            .setResult(result);
+        CompleteUserTaskRunRequest.Builder out =
+                CompleteUserTaskRunRequest.newBuilder()
+                        .setUserTaskRunId(userTaskRunId.toProto())
+                        .setUserId(userId)
+                        .setResult(result);
         return out;
     }
 
     public void initFrom(Message proto) {
         CompleteUserTaskRunRequest p = (CompleteUserTaskRunRequest) proto;
         userId = p.getUserId();
-        userTaskRunId =
-            LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class);
+        userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class);
         result = p.getResult();
     }
 

@@ -33,20 +33,14 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
     public void initFrom(Message proto) {
         StartThreadNode p = (StartThreadNode) proto;
         threadSpecName = p.getThreadSpecName();
-        for (Map.Entry<String, VariableAssignment> e : p
-            .getVariablesMap()
-            .entrySet()) {
-            variables.put(
-                e.getKey(),
-                VariableAssignmentModel.fromProto(e.getValue())
-            );
+        for (Map.Entry<String, VariableAssignment> e : p.getVariablesMap().entrySet()) {
+            variables.put(e.getKey(), VariableAssignmentModel.fromProto(e.getValue()));
         }
     }
 
     public StartThreadNode.Builder toProto() {
-        StartThreadNode.Builder out = StartThreadNode
-            .newBuilder()
-            .setThreadSpecName(threadSpecName);
+        StartThreadNode.Builder out =
+                StartThreadNode.newBuilder().setThreadSpecName(threadSpecName);
 
         for (Map.Entry<String, VariableAssignmentModel> e : variables.entrySet()) {
             out.putVariables(e.getKey(), e.getValue().toProto().build());
@@ -55,22 +49,17 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
         return out;
     }
 
-    public void validate(LHGlobalMetaStores stores, LHConfig config)
-        throws LHValidationError {
+    public void validate(LHGlobalMetaStores stores, LHConfig config) throws LHValidationError {
         WfSpecModel wfSpecModel = node.threadSpecModel.wfSpecModel;
 
         if (threadSpecName.equals(node.threadSpecModel.name)) {
             throw new LHValidationError(null, "Tried to start same thread");
         }
 
-        ThreadSpecModel childThreadSpecModel = wfSpecModel.threadSpecs.get(
-            threadSpecName
-        );
+        ThreadSpecModel childThreadSpecModel = wfSpecModel.threadSpecs.get(threadSpecName);
         if (childThreadSpecModel == null) {
             throw new LHValidationError(
-                null,
-                "Tried to start nonexistent thread " + threadSpecName
-            );
+                    null, "Tried to start nonexistent thread " + threadSpecName);
         }
 
         childThreadSpecModel.validateStartVariablesByType(variables);

@@ -96,33 +96,21 @@ public class ParallelApprovalExample {
     private static ThreadFunc waitForPerson3(WfRunVariable person3Approved) {
         return approvalThread -> {
             approvalThread.waitForEvent("person-3-approves");
-            approvalThread.mutate(
-                person3Approved,
-                VariableMutationType.ASSIGN,
-                true
-            );
+            approvalThread.mutate(person3Approved, VariableMutationType.ASSIGN, true);
         };
     }
 
     private static ThreadFunc waitForPerson2(WfRunVariable person2Approved) {
         return approvalThread -> {
             approvalThread.waitForEvent("person-2-approves");
-            approvalThread.mutate(
-                person2Approved,
-                VariableMutationType.ASSIGN,
-                true
-            );
+            approvalThread.mutate(person2Approved, VariableMutationType.ASSIGN, true);
         };
     }
 
     private static ThreadFunc waitForPerson1(WfRunVariable person1Approved) {
         return approvalThread -> {
             approvalThread.waitForEvent("person-1-approves");
-            approvalThread.mutate(
-                person1Approved,
-                VariableMutationType.ASSIGN,
-                true
-            );
+            approvalThread.mutate(person1Approved, VariableMutationType.ASSIGN, true);
         };
     }
 
@@ -227,7 +215,10 @@ public class ParallelApprovalExample {
         for (String externalEventName : externalEventNames) {
             log.debug("Registering external event {}", externalEventName);
             client.putExternalEventDef(
-                PutExternalEventDefRequest.newBuilder().setName(externalEventName).build(),
+                PutExternalEventDefRequest
+                    .newBuilder()
+                    .setName(externalEventName)
+                    .build(),
                 true
             );
         }

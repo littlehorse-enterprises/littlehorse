@@ -24,10 +24,8 @@ public class FailureDefModel extends LHSerializable<FailureDef> {
     }
 
     public FailureDef.Builder toProto() {
-        FailureDef.Builder out = FailureDef
-            .newBuilder()
-            .setFailureName(failureName)
-            .setMessage(message);
+        FailureDef.Builder out =
+                FailureDef.newBuilder().setFailureName(failureName).setMessage(message);
 
         if (content != null) {
             out.setContent(content.toProto());
@@ -61,10 +59,7 @@ public class FailureDefModel extends LHSerializable<FailureDef> {
 
     public void validate() throws LHValidationError {
         if (LHConstants.RESERVED_EXCEPTION_NAMES.contains(failureName)) {
-            throw new LHValidationError(
-                null,
-                "Failure name " + failureName + " is reserved!"
-            );
+            throw new LHValidationError(null, "Failure name " + failureName + " is reserved!");
         }
     }
 
@@ -79,9 +74,7 @@ public class FailureDefModel extends LHSerializable<FailureDef> {
             } catch (LHVarSubError exn) {
                 out.content = new VariableValueModel();
                 out.content.type = VariableType.NULL;
-                out.message +=
-                    "\n\nWARNING: Unable to assign output content: " +
-                    exn.getMessage();
+                out.message += "\n\nWARNING: Unable to assign output content: " + exn.getMessage();
             }
         } else {
             out.content = new VariableValueModel();

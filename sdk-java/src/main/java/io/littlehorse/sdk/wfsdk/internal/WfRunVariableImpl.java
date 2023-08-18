@@ -40,18 +40,14 @@ public class WfRunVariableImpl implements WfRunVariable {
                 this.type = defaultValue.getType();
             } catch (LHSerdeError e) {
                 throw new IllegalArgumentException(
-                    "Was unable to convert provided default value to LH Variable Type",
-                    e
-                );
+                        "Was unable to convert provided default value to LH Variable Type", e);
             }
         }
     }
 
     public WfRunVariableImpl jsonPath(String path) {
         if (jsonPath != null) {
-            throw new LHMisconfigurationException(
-                "Cannot use jsonpath() twice on same var!"
-            );
+            throw new LHMisconfigurationException("Cannot use jsonpath() twice on same var!");
         }
         WfRunVariableImpl out = new WfRunVariableImpl(name, typeOrDefaultVal);
         out.jsonPath = path;
@@ -65,27 +61,16 @@ public class WfRunVariableImpl implements WfRunVariable {
     }
 
     @Override
-    public WfRunVariable withJsonIndex(
-        @NonNull String jsonPath,
-        @NonNull IndexType indexType
-    ) {
+    public WfRunVariable withJsonIndex(@NonNull String jsonPath, @NonNull IndexType indexType) {
         if (!jsonPath.startsWith("$.")) {
-            throw new LHMisconfigurationException(
-                String.format("Invalid JsonPath: %s", jsonPath)
-            );
+            throw new LHMisconfigurationException(String.format("Invalid JsonPath: %s", jsonPath));
         }
         if (!type.equals(VariableType.JSON_OBJ)) {
             throw new LHMisconfigurationException(
-                String.format("Non-Json %s varibale contains jsonIndex", name)
-            );
+                    String.format("Non-Json %s varibale contains jsonIndex", name));
         }
         this.jsonIndexes.add(
-                JsonIndex
-                    .newBuilder()
-                    .setIndexType(indexType)
-                    .setPath(jsonPath)
-                    .build()
-            );
+                JsonIndex.newBuilder().setIndexType(indexType).setPath(jsonPath).build());
         return this;
     }
 

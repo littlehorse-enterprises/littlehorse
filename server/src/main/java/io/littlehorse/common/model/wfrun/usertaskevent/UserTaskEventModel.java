@@ -44,9 +44,7 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
     }
 
     public UserTaskEvent.Builder toProto() {
-        UserTaskEvent.Builder out = UserTaskEvent
-            .newBuilder()
-            .setTime(LHUtil.fromDate(time));
+        UserTaskEvent.Builder out = UserTaskEvent.newBuilder().setTime(LHUtil.fromDate(time));
 
         switch (type) {
             case TASK_EXECUTED:
@@ -72,24 +70,13 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
         switch (type) {
             case TASK_EXECUTED:
                 executed =
-                    LHSerializable.fromProto(
-                        p.getTaskExecuted(),
-                        UTETaskExecutedModel.class
-                    );
+                        LHSerializable.fromProto(p.getTaskExecuted(), UTETaskExecutedModel.class);
                 break;
             case REASSIGNED:
-                reassigned =
-                    LHSerializable.fromProto(
-                        p.getReassigned(),
-                        UTEReassignedModel.class
-                    );
+                reassigned = LHSerializable.fromProto(p.getReassigned(), UTEReassignedModel.class);
                 break;
             case CANCELLED:
-                cancelled =
-                    LHSerializable.fromProto(
-                        p.getCancelled(),
-                        UTECancelledModel.class
-                    );
+                cancelled = LHSerializable.fromProto(p.getCancelled(), UTECancelledModel.class);
                 break;
             case EVENT_NOT_SET:
                 throw new RuntimeException("not possible");

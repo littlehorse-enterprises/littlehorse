@@ -29,17 +29,11 @@ public class TaskQueueManager {
         getSubQueue(observer.getTaskDefName()).onRequestDisconnected(observer);
     }
 
-    public void onTaskScheduled(
-        TaskDefIdModel taskDef,
-        ScheduledTaskModel scheduledTask
-    ) {
+    public void onTaskScheduled(TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask) {
         getSubQueue(taskDef.getName()).onTaskScheduled(scheduledTask);
     }
 
-    public void itsAMatch(
-        ScheduledTaskModel scheduledTask,
-        PollTaskRequestObserver luckyClient
-    ) {
+    public void itsAMatch(ScheduledTaskModel scheduledTask, PollTaskRequestObserver luckyClient) {
         backend.returnTaskToClient(scheduledTask, luckyClient);
     }
 

@@ -36,10 +36,7 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
 
     public TaskClaimEvent() {}
 
-    public TaskClaimEvent(
-        ScheduledTaskModel task,
-        PollTaskRequestObserver taskClaimer
-    ) {
+    public TaskClaimEvent(ScheduledTaskModel task, PollTaskRequestObserver taskClaimer) {
         this.taskRunId = task.getTaskRunId();
         this.time = new Date();
         this.taskWorkerId = taskClaimer.getClientId();
@@ -55,12 +52,12 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
     }
 
     public TaskClaimEventPb.Builder toProto() {
-        TaskClaimEventPb.Builder b = TaskClaimEventPb
-            .newBuilder()
-            .setTaskRunId(taskRunId.toProto())
-            .setTaskWorkerVersion(taskWorkerVersion)
-            .setTaskWorkerId(taskWorkerId)
-            .setTime(LHUtil.fromDate(time));
+        TaskClaimEventPb.Builder b =
+                TaskClaimEventPb.newBuilder()
+                        .setTaskRunId(taskRunId.toProto())
+                        .setTaskWorkerVersion(taskWorkerVersion)
+                        .setTaskWorkerId(taskWorkerId)
+                        .setTime(LHUtil.fromDate(time));
         return b;
     }
 
@@ -108,8 +105,7 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
 
     public void initFrom(Message p) {
         TaskClaimEventPb proto = (TaskClaimEventPb) p;
-        taskRunId =
-            LHSerializable.fromProto(proto.getTaskRunId(), TaskRunIdModel.class);
+        taskRunId = LHSerializable.fromProto(proto.getTaskRunId(), TaskRunIdModel.class);
         this.taskWorkerVersion = proto.getTaskWorkerVersion();
         this.taskWorkerId = proto.getTaskWorkerId();
         this.time = LHUtil.fromProtoTs(proto.getTime());

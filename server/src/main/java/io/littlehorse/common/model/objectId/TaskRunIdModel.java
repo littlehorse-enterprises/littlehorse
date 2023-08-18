@@ -39,10 +39,7 @@ public class TaskRunIdModel extends ObjectId<TaskRunId, TaskRun, TaskRunModel> {
     }
 
     public TaskRunId.Builder toProto() {
-        TaskRunId.Builder out = TaskRunId
-            .newBuilder()
-            .setWfRunId(wfRunId)
-            .setTaskGuid(taskGuid);
+        TaskRunId.Builder out = TaskRunId.newBuilder().setWfRunId(wfRunId).setTaskGuid(taskGuid);
         return out;
     }
 

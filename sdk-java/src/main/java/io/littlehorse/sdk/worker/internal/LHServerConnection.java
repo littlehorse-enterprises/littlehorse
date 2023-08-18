@@ -12,8 +12,7 @@ import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class LHServerConnection
-    implements Closeable, StreamObserver<PollTaskResponse> {
+public class LHServerConnection implements Closeable, StreamObserver<PollTaskResponse> {
 
     private LHServerConnectionManager manager;
     private HostInfo host;
@@ -22,8 +21,7 @@ public class LHServerConnection
     private StreamObserver<PollTaskRequest> pollClient;
     private LHPublicApiStub stub;
 
-    public LHServerConnection(LHServerConnectionManager manager, HostInfo host)
-        throws IOException {
+    public LHServerConnection(LHServerConnectionManager manager, HostInfo host) throws IOException {
         stillRunning = true;
         this.manager = manager;
         this.host = host;
@@ -62,10 +60,9 @@ public class LHServerConnection
             log.info("Scheduled task on threadpool for wfRun {}", wfRunId);
         } else {
             log.error(
-                "Didn't successfully claim task: {} {}",
-                taskToDo.getCode().toString(),
-                taskToDo.getMessage()
-            );
+                    "Didn't successfully claim task: {} {}",
+                    taskToDo.getCode().toString(),
+                    taskToDo.getMessage());
         }
 
         if (stillRunning) {
@@ -82,22 +79,18 @@ public class LHServerConnection
     }
 
     public boolean isSameAs(HostInfo other) {
-        return (
-            this.host.getHost().equals(other.getHost()) &&
-            this.host.getPort() == other.getPort()
-        );
+        return (this.host.getHost().equals(other.getHost())
+                && this.host.getPort() == other.getPort());
     }
 
     private void askForMoreWork() {
         log.debug("Asking for more work on {}:{}", host.getHost(), host.getPort());
         pollClient.onNext(
-            PollTaskRequest
-                .newBuilder()
-                .setClientId(manager.config.getClientId())
-                .setTaskDefName(manager.taskDef.getName())
-                .setTaskWorkerVersion(manager.config.getTaskWorkerVersion())
-                .build()
-        );
+                PollTaskRequest.newBuilder()
+                        .setClientId(manager.config.getClientId())
+                        .setTaskDefName(manager.taskDef.getName())
+                        .setTaskWorkerVersion(manager.config.getTaskWorkerVersion())
+                        .build());
     }
 
     public void close() {

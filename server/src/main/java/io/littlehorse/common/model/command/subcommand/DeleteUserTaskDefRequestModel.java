@@ -8,8 +8,7 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest;
 
-public class DeleteUserTaskDefRequestModel
-    extends SubCommand<DeleteUserTaskDefRequest> {
+public class DeleteUserTaskDefRequestModel extends SubCommand<DeleteUserTaskDefRequest> {
 
     public String name;
     public int version;
@@ -19,10 +18,8 @@ public class DeleteUserTaskDefRequestModel
     }
 
     public DeleteUserTaskDefRequest.Builder toProto() {
-        DeleteUserTaskDefRequest.Builder out = DeleteUserTaskDefRequest
-            .newBuilder()
-            .setName(name)
-            .setVersion(version);
+        DeleteUserTaskDefRequest.Builder out =
+                DeleteUserTaskDefRequest.newBuilder().setName(name).setVersion(version);
         return out;
     }
 
@@ -44,9 +41,7 @@ public class DeleteUserTaskDefRequestModel
         return true;
     }
 
-    public static DeleteUserTaskDefRequestModel fromProto(
-        DeleteUserTaskDefRequest p
-    ) {
+    public static DeleteUserTaskDefRequestModel fromProto(DeleteUserTaskDefRequest p) {
         DeleteUserTaskDefRequestModel out = new DeleteUserTaskDefRequestModel();
         out.initFrom(p);
         return out;

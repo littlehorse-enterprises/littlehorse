@@ -19,7 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SearchNodeRunRequestModel
-    extends PublicScanRequest<SearchNodeRunRequest, SearchNodeRunResponse, NodeRunId, NodeRunIdModel, SearchNodeRunReply> {
+        extends PublicScanRequest<
+                SearchNodeRunRequest,
+                SearchNodeRunResponse,
+                NodeRunId,
+                NodeRunIdModel,
+                SearchNodeRunReply> {
 
     public NoderunCriteriaCase type;
     public String wfRunId;
@@ -79,8 +84,7 @@ public class SearchNodeRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
         return TagStorageType.LOCAL;
     }
 
@@ -89,7 +93,7 @@ public class SearchNodeRunRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString)
-        throws LHValidationError {
+            throws LHValidationError {
         if (type == NoderunCriteriaCase.WF_RUN_ID) {
             return new ObjectIdScanBoundaryStrategy(wfRunId);
         } else {

@@ -6,8 +6,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunResponse;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 
-public class CancelUserTaskRunReply
-    extends AbstractResponse<CancelUserTaskRunResponse> {
+public class CancelUserTaskRunReply extends AbstractResponse<CancelUserTaskRunResponse> {
 
     private String message;
     private LHResponseCode lhResponseCodePb;
@@ -19,10 +18,7 @@ public class CancelUserTaskRunReply
 
     @Override
     public CancelUserTaskRunResponse.Builder toProto() {
-        return CancelUserTaskRunResponse
-            .newBuilder()
-            .setCode(lhResponseCodePb)
-            .setMessage(message);
+        return CancelUserTaskRunResponse.newBuilder().setCode(lhResponseCodePb).setMessage(message);
     }
 
     @Override

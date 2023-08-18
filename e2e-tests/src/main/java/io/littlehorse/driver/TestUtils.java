@@ -15,15 +15,13 @@ public final class TestUtils {
     public static Set<Class<?>> getAllTestClasses(Set<String> filter) {
         Reflections reflections = new Reflections("io.littlehorse.tests");
 
-        return reflections
-            .get(SubTypes.of(Test.class).asClass())
-            .stream()
-            .filter(aClass -> !Modifier.isAbstract(aClass.getModifiers()))
-            .filter(aClass ->
-                filter == null ||
-                filter.isEmpty() ||
-                filter.contains(aClass.getSimpleName())
-            )
-            .collect(Collectors.toUnmodifiableSet());
+        return reflections.get(SubTypes.of(Test.class).asClass()).stream()
+                .filter(aClass -> !Modifier.isAbstract(aClass.getModifiers()))
+                .filter(
+                        aClass ->
+                                filter == null
+                                        || filter.isEmpty()
+                                        || filter.contains(aClass.getSimpleName()))
+                .collect(Collectors.toUnmodifiableSet());
     }
 }

@@ -15,9 +15,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     private String taskWorkerVersion;
 
     public PollTaskRequestObserver(
-        StreamObserver<PollTaskResponse> responseObserver,
-        TaskQueueManager manager
-    ) {
+            StreamObserver<PollTaskResponse> responseObserver, TaskQueueManager manager) {
         this.responseObserver = responseObserver;
         this.taskQueueManager = manager;
         this.clientId = null;
@@ -42,11 +40,10 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     @Override
     public void onError(Throwable t) {
         log.info(
-            "Instance {}: Client {} disconnected from task queue {}",
-            taskQueueManager.backend.getInstanceId(),
-            clientId,
-            taskDefName
-        );
+                "Instance {}: Client {} disconnected from task queue {}",
+                taskQueueManager.backend.getInstanceId(),
+                clientId,
+                taskDefName);
         taskQueueManager.onRequestDisconnected(this);
     }
 
@@ -60,10 +57,9 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
             taskDefName = req.getTaskDefName();
         } else if (!taskDefName.equals(req.getTaskDefName())) {
             log.error(
-                "TaskDefName not null: {} but doesnt match {}",
-                taskDefName,
-                req.getTaskDefName()
-            );
+                    "TaskDefName not null: {} but doesnt match {}",
+                    taskDefName,
+                    req.getTaskDefName());
         }
 
         taskDefName = req.getTaskDefName();

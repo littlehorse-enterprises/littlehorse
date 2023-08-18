@@ -41,18 +41,14 @@ public class AZUserTaskCancel extends UserTaskWorkflowTest {
     @Override
     public Workflow getWorkflowImpl() {
         return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                WfRunVariable formVar = thread.addVariable(
-                    "form",
-                    VariableType.JSON_OBJ
-                );
+                getWorkflowName(),
+                thread -> {
+                    WfRunVariable formVar = thread.addVariable("form", VariableType.JSON_OBJ);
 
-                thread.assignUserTaskToUser(USER_TASK_DEF_NAME, "test-user");
+                    thread.assignUserTaskToUser(USER_TASK_DEF_NAME, "test-user");
 
-                thread.execute("az-unreachable-task", formVar);
-            }
-        );
+                    thread.execute("az-unreachable-task", formVar);
+                });
     }
 
     @Override
@@ -61,7 +57,7 @@ public class AZUserTaskCancel extends UserTaskWorkflowTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+            throws TestFailure, InterruptedException, LHApiError {
         List<String> out = new ArrayList<>();
 
         String wfRunId = runWf(client);
@@ -69,21 +65,14 @@ public class AZUserTaskCancel extends UserTaskWorkflowTest {
 
         // Get the UserTaskRun, ensure that there is an event with a taskRunId
         NodeRun firstUserTask = getNodeRun(client, wfRunId, 0, 1);
-        UserTaskRun utr = getUserTaskRun(
-            client,
-            firstUserTask.getUserTask().getUserTaskRunId()
-        );
-        CancelUserTaskRunRequest cancelUserTaskRun = CancelUserTaskRunRequest
-            .newBuilder()
-            .setUserTaskRunId(utr.getId())
-            .build();
-        CancelUserTaskRunResponse cancelUserTaskRunResponse = client
-            .getGrpcClient()
-            .cancelUserTaskRun(cancelUserTaskRun);
+        UserTaskRun utr = getUserTaskRun(client, firstUserTask.getUserTask().getUserTaskRunId());
+        CancelUserTaskRunRequest cancelUserTaskRun =
+                CancelUserTaskRunRequest.newBuilder().setUserTaskRunId(utr.getId()).build();
+        CancelUserTaskRunResponse cancelUserTaskRunResponse =
+                client.getGrpcClient().cancelUserTaskRun(cancelUserTaskRun);
         assertThat(
-            cancelUserTaskRunResponse.getCode().equals(LHResponseCode.OK),
-            "Error processing cancel UserTaskRun request"
-        );
+                cancelUserTaskRunResponse.getCode().equals(LHResponseCode.OK),
+                "Error processing cancel UserTaskRun request");
         assertStatus(client, wfRunId, LHStatus.ERROR);
         return out;
     }

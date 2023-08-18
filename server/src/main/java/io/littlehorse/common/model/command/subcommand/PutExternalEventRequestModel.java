@@ -20,8 +20,7 @@ import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
 
-public class PutExternalEventRequestModel
-    extends SubCommand<PutExternalEventRequest> {
+public class PutExternalEventRequestModel extends SubCommand<PutExternalEventRequest> {
 
     public String wfRunId;
     public String externalEventDefName;
@@ -39,11 +38,11 @@ public class PutExternalEventRequestModel
     }
 
     public PutExternalEventRequest.Builder toProto() {
-        PutExternalEventRequest.Builder out = PutExternalEventRequest
-            .newBuilder()
-            .setWfRunId(wfRunId)
-            .setExternalEventDefName(externalEventDefName)
-            .setContent(content.toProto());
+        PutExternalEventRequest.Builder out =
+                PutExternalEventRequest.newBuilder()
+                        .setWfRunId(wfRunId)
+                        .setExternalEventDefName(externalEventDefName)
+                        .setContent(content.toProto());
 
         if (guid != null) out.setGuid(guid);
         if (threadRunNumber != null) out.setThreadRunNumber(threadRunNumber);
@@ -96,20 +95,15 @@ public class PutExternalEventRequestModel
 
         WfRunModel wfRunModel = dao.getWfRun(wfRunId);
         if (wfRunModel != null) {
-            WfSpecModel spec = dao.getWfSpec(
-                wfRunModel.wfSpecName,
-                wfRunModel.wfSpecVersion
-            );
+            WfSpecModel spec = dao.getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
             if (spec == null) {
-                wfRunModel.threadRunModels
-                    .get(0)
-                    .fail(
-                        new FailureModel(
-                            "Appears wfSpec was deleted",
-                            LHConstants.INTERNAL_ERROR
-                        ),
-                        new Date()
-                    );
+                wfRunModel
+                        .threadRunModels
+                        .get(0)
+                        .fail(
+                                new FailureModel(
+                                        "Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR),
+                                new Date());
                 out.code = LHResponseCode.NOT_FOUND_ERROR;
                 out.message = "Apparently WfSpec was deleted!";
             } else {

@@ -60,8 +60,7 @@ public class TaskRunModel extends Getable<TaskRun> {
         id = LHSerializable.fromProto(p.getId(), TaskRunIdModel.class);
         status = p.getStatus();
         timeoutSeconds = p.getTimeoutSeconds();
-        taskRunSource =
-            LHSerializable.fromProto(p.getSource(), TaskRunSourceModel.class);
+        taskRunSource = LHSerializable.fromProto(p.getSource(), TaskRunSourceModel.class);
 
         for (TaskAttempt attempt : p.getAttemptsList()) {
             attempts.add(LHSerializable.fromProto(attempt, TaskAttemptModel.class));
@@ -72,15 +71,15 @@ public class TaskRunModel extends Getable<TaskRun> {
     }
 
     public TaskRun.Builder toProto() {
-        TaskRun.Builder out = TaskRun
-            .newBuilder()
-            .setTaskDefName(taskDefName)
-            .setMaxAttempts(maxAttempts)
-            .setScheduledAt(LHUtil.fromDate(scheduledAt))
-            .setStatus(status)
-            .setSource(taskRunSource.toProto())
-            .setTimeoutSeconds(timeoutSeconds)
-            .setId(id.toProto());
+        TaskRun.Builder out =
+                TaskRun.newBuilder()
+                        .setTaskDefName(taskDefName)
+                        .setMaxAttempts(maxAttempts)
+                        .setScheduledAt(LHUtil.fromDate(scheduledAt))
+                        .setStatus(status)
+                        .setSource(taskRunSource.toProto())
+                        .setTimeoutSeconds(timeoutSeconds)
+                        .setId(id.toProto());
 
         for (VarNameAndValModel v : inputVariables) {
             out.addInputVariables(v.toProto());
@@ -99,45 +98,31 @@ public class TaskRunModel extends Getable<TaskRun> {
     @Override
     public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
         return List.of(
-            new GetableIndex<>(
-                List.of(Pair.of("taskDefName", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageType.LOCAL)
-            ),
-            new GetableIndex<>(
-                List.of(
-                    Pair.of("taskDefName", GetableIndex.ValueType.SINGLE),
-                    Pair.of("status", GetableIndex.ValueType.SINGLE)
-                ),
-                Optional.of(TagStorageType.LOCAL)
-            )
-            // NOTE: we're not indexing just based on status because we don't want
-            // to have too many reads/writes in RocksDB as those are expensive.
-            //
-            // Additionally, we could index based on the number of retries, so that
-            // we can find all TaskRun's that have been retried. But that maybe can
-            // be in the 0.1.1 release, not 0.1.0
-        );
+                new GetableIndex<>(
+                        List.of(Pair.of("taskDefName", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)),
+                new GetableIndex<>(
+                        List.of(
+                                Pair.of("taskDefName", GetableIndex.ValueType.SINGLE),
+                                Pair.of("status", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL))
+                // NOTE: we're not indexing just based on status because we don't want
+                // to have too many reads/writes in RocksDB as those are expensive.
+                //
+                // Additionally, we could index based on the number of retries, so that
+                // we can find all TaskRun's that have been retried. But that maybe can
+                // be in the 0.1.1 release, not 0.1.0
+                );
     }
 
     @Override
-    public List<IndexedField> getIndexValues(
-        String key,
-        Optional<TagStorageType> tagStorageType
-    ) {
+    public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         switch (key) {
             case "taskDefName" -> {
-                return List.of(
-                    new IndexedField(key, this.getTaskDefName(), TagStorageType.LOCAL)
-                );
+                return List.of(new IndexedField(key, this.getTaskDefName(), TagStorageType.LOCAL));
             }
             case "status" -> {
-                return List.of(
-                    new IndexedField(
-                        key,
-                        this.status.toString(),
-                        TagStorageType.LOCAL
-                    )
-                );
+                return List.of(new IndexedField(key, this.status.toString(), TagStorageType.LOCAL));
             }
         }
         log.warn("Received unknown key for TaskRun Index: {}", key);
@@ -154,11 +139,10 @@ public class TaskRunModel extends Getable<TaskRun> {
     }
 
     public TaskRunModel(
-        LHDAO dao,
-        List<VarNameAndValModel> inputVars,
-        TaskRunSourceModel source,
-        TaskNodeModel node
-    ) {
+            LHDAO dao,
+            List<VarNameAndValModel> inputVars,
+            TaskRunSourceModel source,
+            TaskNodeModel node) {
         this();
         this.inputVariables = inputVars;
         this.taskRunSource = source;
@@ -193,10 +177,8 @@ public class TaskRunModel extends Getable<TaskRun> {
             return false;
         }
 
-        if (
-            latest.getStatus() != TaskStatus.TASK_FAILED &&
-            latest.getStatus() != TaskStatus.TASK_TIMEOUT
-        ) {
+        if (latest.getStatus() != TaskStatus.TASK_FAILED
+                && latest.getStatus() != TaskStatus.TASK_TIMEOUT) {
             // Can only retry timeout or task failure.
             return false;
         }
@@ -226,15 +208,10 @@ public class TaskRunModel extends Getable<TaskRun> {
         // create a timer to mark the task is timeout if it does not finish
         ReportTaskRunModel taskResult = new ReportTaskRunModel();
         taskResult.setTaskRunId(id);
-        taskResult.setTime(
-            new Date(System.currentTimeMillis() + (1000 * timeoutSeconds))
-        );
+        taskResult.setTime(new Date(System.currentTimeMillis() + (1000 * timeoutSeconds)));
         taskResult.setStatus(TaskStatus.TASK_TIMEOUT);
 
-        LHTimer timer = new LHTimer(
-            new Command(taskResult, taskResult.getTime()),
-            getDao()
-        );
+        LHTimer timer = new LHTimer(new Command(taskResult, taskResult.getTime()), getDao());
         getDao().scheduleTimer(timer);
 
         // Now that that's out of the way, we can mark the TaskRun as running.
@@ -249,9 +226,8 @@ public class TaskRunModel extends Getable<TaskRun> {
     public ReportTaskReply updateTaskResult(ReportTaskRunModel ce) {
         if (ce.getAttemptNumber() >= attempts.size()) {
             return new ReportTaskReply(
-                LHResponseCode.BAD_REQUEST_ERROR,
-                "Couldn't find specified Task Attempt. Bad client!"
-            );
+                    LHResponseCode.BAD_REQUEST_ERROR,
+                    "Couldn't find specified Task Attempt. Bad client!");
         }
 
         TaskAttemptModel attempt = attempts.get(ce.getAttemptNumber());
@@ -266,12 +242,11 @@ public class TaskRunModel extends Getable<TaskRun> {
             //    we may want to do something more with it, but it gets really
             //    complicated very quickly from a user semantics perspective.
             log.trace(
-                "Ignored {} TaskRunResult on TaskRun {} attempt no. {} w/status {}",
-                ce.getStatus(),
-                id.getStoreKey(),
-                ce.getAttemptNumber(),
-                attempt.getStatus()
-            );
+                    "Ignored {} TaskRunResult on TaskRun {} attempt no. {} w/status {}",
+                    ce.getStatus(),
+                    id.getStoreKey(),
+                    ce.getAttemptNumber(),
+                    attempt.getStatus());
             return new ReportTaskReply(LHResponseCode.OK, null);
         }
 

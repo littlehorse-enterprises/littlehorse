@@ -30,36 +30,27 @@ public class ARChildThreadSimple extends WorkflowLogicTest {
 
     public Workflow getWorkflowImpl() {
         return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                WfRunVariable sharedVar = thread.addVariable(
-                    "shared-var",
-                    VariableType.INT
-                );
+                getWorkflowName(),
+                thread -> {
+                    WfRunVariable sharedVar = thread.addVariable("shared-var", VariableType.INT);
 
-                SpawnedThread child = thread.spawnThread(
-                    subthread -> {
-                        NodeOutput echoOutput = subthread.execute(
-                            "ar-echo",
-                            sharedVar
-                        );
-                        subthread.mutate(
-                            sharedVar,
-                            VariableMutationType.ADD,
-                            echoOutput
-                        );
-                        subthread.execute("ar-obiwan");
-                    },
-                    "first-thread",
-                    null
-                );
+                    SpawnedThread child =
+                            thread.spawnThread(
+                                    subthread -> {
+                                        NodeOutput echoOutput =
+                                                subthread.execute("ar-echo", sharedVar);
+                                        subthread.mutate(
+                                                sharedVar, VariableMutationType.ADD, echoOutput);
+                                        subthread.execute("ar-obiwan");
+                                    },
+                                    "first-thread",
+                                    null);
 
-                thread.execute("ar-obiwan");
-                thread.waitForThreads(child);
+                    thread.execute("ar-obiwan");
+                    thread.waitForThreads(child);
 
-                thread.execute("ar-echo", sharedVar);
-            }
-        );
+                    thread.execute("ar-echo", sharedVar);
+                });
     }
 
     public List<Object> getTaskWorkerObjects() {
@@ -67,7 +58,7 @@ public class ARChildThreadSimple extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+            throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("shared-var", 5));
         Thread.sleep(500);
         assertStatus(client, wfRunId, LHStatus.COMPLETED);

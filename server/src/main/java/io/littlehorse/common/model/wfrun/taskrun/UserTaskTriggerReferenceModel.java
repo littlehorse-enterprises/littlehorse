@@ -13,8 +13,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserTaskTriggerReferenceModel
-    extends TaskRunSubSource<UserTaskTriggerReference> {
+public class UserTaskTriggerReferenceModel extends TaskRunSubSource<UserTaskTriggerReference> {
 
     private NodeRunIdModel nodeRunId;
     private int userTaskEventNumber;
@@ -34,11 +33,11 @@ public class UserTaskTriggerReferenceModel
     }
 
     public UserTaskTriggerReference.Builder toProto() {
-        UserTaskTriggerReference.Builder out = UserTaskTriggerReference
-            .newBuilder()
-            .setWfSpecId(wfSpecId.toProto())
-            .setNodeRunId(nodeRunId.toProto())
-            .setUserTaskEventNumber(userTaskEventNumber);
+        UserTaskTriggerReference.Builder out =
+                UserTaskTriggerReference.newBuilder()
+                        .setWfSpecId(wfSpecId.toProto())
+                        .setNodeRunId(nodeRunId.toProto())
+                        .setUserTaskEventNumber(userTaskEventNumber);
 
         return out;
     }

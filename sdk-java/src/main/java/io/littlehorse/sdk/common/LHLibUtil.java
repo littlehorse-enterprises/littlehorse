@@ -24,9 +24,7 @@ public class LHLibUtil {
 
     public static Date fromProtoTs(Timestamp proto) {
         if (proto == null) return null;
-        Date out = Date.from(
-            Instant.ofEpochSecond(proto.getSeconds(), proto.getNanos())
-        );
+        Date out = Date.from(Instant.ofEpochSecond(proto.getSeconds(), proto.getNanos()));
 
         if (out.getTime() == 0) {
             out = new Date();
@@ -40,25 +38,16 @@ public class LHLibUtil {
         return fromMillis(date.getTime());
     }
 
-    public static <T extends GeneratedMessageV3> T loadProto(
-        byte[] data,
-        Class<T> cls
-    ) throws LHSerdeError {
+    public static <T extends GeneratedMessageV3> T loadProto(byte[] data, Class<T> cls)
+            throws LHSerdeError {
         try {
-            return cls.cast(
-                cls.getMethod("parseFrom", byte[].class).invoke(null, data)
-            );
+            return cls.cast(cls.getMethod("parseFrom", byte[].class).invoke(null, data));
         } catch (NoSuchMethodException | IllegalAccessException exn) {
             exn.printStackTrace();
-            throw new RuntimeException(
-                "Passed in an invalid proto class. Not possible"
-            );
+            throw new RuntimeException("Passed in an invalid proto class. Not possible");
         } catch (InvocationTargetException exn) {
             exn.printStackTrace();
-            throw new LHSerdeError(
-                exn.getCause(),
-                "Failed loading protobuf: " + exn.getMessage()
-            );
+            throw new LHSerdeError(exn.getCause(), "Failed loading protobuf: " + exn.getMessage());
         }
     }
 
@@ -82,7 +71,7 @@ public class LHLibUtil {
     }
 
     public static <T extends Object> T deserializeFromjson(String json, Class<T> cls)
-        throws JsonProcessingException {
+            throws JsonProcessingException {
         return mapper.readValue(json, cls);
     }
 
@@ -93,7 +82,7 @@ public class LHLibUtil {
             case USER_TASK_TRIGGER:
                 return taskRunSource.getUserTaskTrigger().getNodeRunId().getWfRunId();
             case TASKRUNSOURCE_NOT_SET:
-            // we end up returning null
+                // we end up returning null
         }
         return null;
     }
@@ -152,21 +141,17 @@ public class LHLibUtil {
     }
 
     public static boolean isINT(Class<?> cls) {
-        return (
-            Integer.class.isAssignableFrom(cls) ||
-            Long.class.isAssignableFrom(cls) ||
-            int.class.isAssignableFrom(cls) ||
-            long.class.isAssignableFrom(cls)
-        );
+        return (Integer.class.isAssignableFrom(cls)
+                || Long.class.isAssignableFrom(cls)
+                || int.class.isAssignableFrom(cls)
+                || long.class.isAssignableFrom(cls));
     }
 
     public static boolean isDOUBLE(Class<?> cls) {
-        return (
-            Double.class.isAssignableFrom(cls) ||
-            Float.class.isAssignableFrom(cls) ||
-            double.class.isAssignableFrom(cls) ||
-            float.class.isAssignableFrom(cls)
-        );
+        return (Double.class.isAssignableFrom(cls)
+                || Float.class.isAssignableFrom(cls)
+                || double.class.isAssignableFrom(cls)
+                || float.class.isAssignableFrom(cls));
     }
 
     public static boolean isSTR(Class<?> cls) {
@@ -174,9 +159,7 @@ public class LHLibUtil {
     }
 
     public static boolean isBOOL(Class<?> cls) {
-        return (
-            Boolean.class.isAssignableFrom(cls) || boolean.class.isAssignableFrom(cls)
-        );
+        return (Boolean.class.isAssignableFrom(cls) || boolean.class.isAssignableFrom(cls));
     }
 
     public static boolean isBYTES(Class<?> cls) {

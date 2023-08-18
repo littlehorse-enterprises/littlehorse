@@ -21,9 +21,8 @@ public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
     }
 
     public FailureHandlerDef.Builder toProto() {
-        FailureHandlerDef.Builder out = FailureHandlerDef
-            .newBuilder()
-            .setHandlerSpecName(handlerSpecName);
+        FailureHandlerDef.Builder out =
+                FailureHandlerDef.newBuilder().setHandlerSpecName(handlerSpecName);
 
         if (specificFailure != null) out.setSpecificFailure(specificFailure);
 
@@ -57,24 +56,18 @@ public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
         log.debug("Specific: {} handling: {}", this.specificFailure, failureName);
 
         if (specificFailure.equals(LHConstants.VAR_ERROR)) {
-            return (
-                failureName.equals(LHConstants.VAR_MUTATION_ERROR) ||
-                failureName.equals(LHConstants.VAR_SUB_ERROR)
-            );
+            return (failureName.equals(LHConstants.VAR_MUTATION_ERROR)
+                    || failureName.equals(LHConstants.VAR_SUB_ERROR));
         }
 
         if (specificFailure.equals(LHConstants.VAR_ERROR)) {
-            return (
-                failureName.equals(LHConstants.VAR_MUTATION_ERROR) ||
-                failureName.equals(LHConstants.VAR_SUB_ERROR)
-            );
+            return (failureName.equals(LHConstants.VAR_MUTATION_ERROR)
+                    || failureName.equals(LHConstants.VAR_SUB_ERROR));
         }
 
         if (specificFailure.equals(LHConstants.TASK_ERROR)) {
-            return (
-                failureName.equals(LHConstants.TASK_FAILURE) ||
-                failureName.equals(LHConstants.TIMEOUT)
-            );
+            return (failureName.equals(LHConstants.TASK_FAILURE)
+                    || failureName.equals(LHConstants.TIMEOUT));
         }
 
         return false;

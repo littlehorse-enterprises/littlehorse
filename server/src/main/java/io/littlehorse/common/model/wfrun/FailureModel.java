@@ -15,10 +15,7 @@ public class FailureModel extends LHSerializable<Failure> {
     }
 
     public Failure.Builder toProto() {
-        Failure.Builder out = Failure
-            .newBuilder()
-            .setMessage(message)
-            .setFailureName(failureName);
+        Failure.Builder out = Failure.newBuilder().setMessage(message).setFailureName(failureName);
 
         if (content != null) out.setContent(content.toProto());
 
@@ -48,11 +45,7 @@ public class FailureModel extends LHSerializable<Failure> {
         this.failureName = failureName;
     }
 
-    public FailureModel(
-        String message,
-        String failureName,
-        VariableValueModel content
-    ) {
+    public FailureModel(String message, String failureName, VariableValueModel content) {
         this.message = message;
         this.failureName = failureName;
         this.content = new VariableValueModel();

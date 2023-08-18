@@ -5,9 +5,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.HostInfo;
 
-public class HostModel
-    extends LHSerializable<HostInfo>
-    implements Comparable<HostModel> {
+public class HostModel extends LHSerializable<HostInfo> implements Comparable<HostModel> {
 
     public String host;
     public int port;

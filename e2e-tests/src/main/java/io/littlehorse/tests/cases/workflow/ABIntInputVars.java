@@ -27,13 +27,12 @@ public class ABIntInputVars extends WorkflowLogicTest {
 
     public Workflow getWorkflowImpl() {
         return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                WfRunVariable myVar = thread.addVariable("my-var", VariableType.INT);
-                thread.execute("ab-double-it", myVar);
-                thread.execute("ab-subtract", 10, 8);
-            }
-        );
+                getWorkflowName(),
+                thread -> {
+                    WfRunVariable myVar = thread.addVariable("my-var", VariableType.INT);
+                    thread.execute("ab-double-it", myVar);
+                    thread.execute("ab-subtract", 10, 8);
+                });
     }
 
     public List<Object> getTaskWorkerObjects() {
@@ -41,7 +40,7 @@ public class ABIntInputVars extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+            throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("my-var", 5));
         Thread.sleep(500);
 

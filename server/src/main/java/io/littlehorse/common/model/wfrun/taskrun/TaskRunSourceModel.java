@@ -26,8 +26,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
             this.userTaskTrigger = (UserTaskTriggerReferenceModel) source;
         } else {
             throw new IllegalArgumentException(
-                "Unexpected TaskRunSubSourceClass: " + source.getClass()
-            );
+                    "Unexpected TaskRunSubSourceClass: " + source.getClass());
         }
     }
 
@@ -40,21 +39,15 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
         type = p.getTaskRunSourceCase();
         switch (type) {
             case TASK_NODE:
-                taskNode =
-                    LHSerializable.fromProto(
-                        p.getTaskNode(),
-                        TaskNodeReferenceModel.class
-                    );
+                taskNode = LHSerializable.fromProto(p.getTaskNode(), TaskNodeReferenceModel.class);
                 break;
             case USER_TASK_TRIGGER:
                 userTaskTrigger =
-                    LHSerializable.fromProto(
-                        p.getUserTaskTrigger(),
-                        UserTaskTriggerReferenceModel.class
-                    );
+                        LHSerializable.fromProto(
+                                p.getUserTaskTrigger(), UserTaskTriggerReferenceModel.class);
                 break;
             case TASKRUNSOURCE_NOT_SET:
-            // Not really possible. Maybe throw error?
+                // Not really possible. Maybe throw error?
         }
     }
 
@@ -68,7 +61,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
                 out.setUserTaskTrigger(userTaskTrigger.toProto());
                 break;
             case TASKRUNSOURCE_NOT_SET:
-            // Not really possible. Maybe throw error?
+                // Not really possible. Maybe throw error?
         }
         return out;
     }
@@ -80,7 +73,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
             case USER_TASK_TRIGGER:
                 return userTaskTrigger;
             case TASKRUNSOURCE_NOT_SET:
-            // Not really possible. Maybe throw error?
+                // Not really possible. Maybe throw error?
         }
         // This is impossible.
         return null;

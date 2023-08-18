@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class ListNodeRunsReply
-    extends PublicScanReply<ListNodeRunsResponse, NodeRun, NodeRunModel> {
+        extends PublicScanReply<ListNodeRunsResponse, NodeRun, NodeRunModel> {
 
     public Class<NodeRunModel> getResultJavaClass() {
         return NodeRunModel.class;

@@ -46,10 +46,7 @@ public class ResumeWfRunRequestModel extends SubCommand<ResumeWfRunRequest> {
             return out;
         }
 
-        WfSpecModel wfSpecModel = dao.getWfSpec(
-            wfRunModel.wfSpecName,
-            wfRunModel.wfSpecVersion
-        );
+        WfSpecModel wfSpecModel = dao.getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
         if (wfSpecModel == null) {
             out.code = LHResponseCode.BAD_REQUEST_ERROR;
             out.message = "Somehow missing wfSpec for wfRun";

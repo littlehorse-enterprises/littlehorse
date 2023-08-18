@@ -5,8 +5,7 @@ import io.littlehorse.sdk.common.proto.SearchWfRunResponse;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
-public class SearchWfRunReply
-    extends PublicScanReply<SearchWfRunResponse, WfRunId, WfRunIdModel> {
+public class SearchWfRunReply extends PublicScanReply<SearchWfRunResponse, WfRunId, WfRunIdModel> {
 
     public Class<SearchWfRunResponse> getProtoBaseClass() {
         return SearchWfRunResponse.class;

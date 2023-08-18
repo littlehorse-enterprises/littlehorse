@@ -16,36 +16,29 @@ import java.util.List;
 
 public class AYExtEvtFollowedBySpawnThread extends WorkflowLogicTest {
 
-    public AYExtEvtFollowedBySpawnThread(
-        LHClient client,
-        LHWorkerConfig workerConfig
-    ) {
+    public AYExtEvtFollowedBySpawnThread(LHClient client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
     public String getDescription() {
-        return (
-            "Tests that we can neatly segway from EXTERNAL_EVENT to " +
-            "SPAWN_THREAD node."
-        );
+        return ("Tests that we can neatly segway from EXTERNAL_EVENT to " + "SPAWN_THREAD node.");
     }
 
     public Workflow getWorkflowImpl() {
         return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                thread.waitForEvent("ay-some-event");
-                SpawnedThread child = thread.spawnThread(
-                    subthread -> {
-                        subthread.execute("ay-task");
-                    },
-                    "first-thread",
-                    null
-                );
-                thread.execute("ay-task");
-                thread.waitForThreads(child);
-            }
-        );
+                getWorkflowName(),
+                thread -> {
+                    thread.waitForEvent("ay-some-event");
+                    SpawnedThread child =
+                            thread.spawnThread(
+                                    subthread -> {
+                                        subthread.execute("ay-task");
+                                    },
+                                    "first-thread",
+                                    null);
+                    thread.execute("ay-task");
+                    thread.waitForThreads(child);
+                });
     }
 
     public List<Object> getTaskWorkerObjects() {
@@ -53,7 +46,7 @@ public class AYExtEvtFollowedBySpawnThread extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+            throws TestFailure, InterruptedException, LHApiError {
         List<String> out = new ArrayList<>();
 
         String wfRunId = runWf(client);

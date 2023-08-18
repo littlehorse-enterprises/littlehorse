@@ -16,9 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 @Slf4j
-public class WfMetricUpdate
-    extends Storeable<WfMetricUpdatePb>
-    implements RepartitionSubCommand {
+public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements RepartitionSubCommand {
 
     public Date windowStart;
     public MetricsWindowLength type;
@@ -35,11 +33,7 @@ public class WfMetricUpdate
     public WfMetricUpdate() {}
 
     public WfMetricUpdate(
-        Date windowStart,
-        MetricsWindowLength type,
-        String wfSpecName,
-        int wfSpecVersion
-    ) {
+            Date windowStart, MetricsWindowLength type, String wfSpecName, int wfSpecVersion) {
         this.windowStart = windowStart;
         this.type = type;
         this.wfSpecName = wfSpecName;
@@ -51,18 +45,18 @@ public class WfMetricUpdate
     }
 
     public WfMetricUpdatePb.Builder toProto() {
-        WfMetricUpdatePb.Builder out = WfMetricUpdatePb
-            .newBuilder()
-            .setWindowStart(LHLibUtil.fromDate(windowStart))
-            .setType(type)
-            .setWfSpecName(wfSpecName)
-            .setWfSpecVersion(wfSpecVersion)
-            .setTotalCompleted(totalCompleted)
-            .setTotalErrored(totalErrored)
-            .setTotalStarted(totalStarted)
-            .setStartToCompleteTotal(startToCompleteTotal)
-            .setStartToCompleteMax(startToCompleteMax)
-            .setNumEntries(numEntries);
+        WfMetricUpdatePb.Builder out =
+                WfMetricUpdatePb.newBuilder()
+                        .setWindowStart(LHLibUtil.fromDate(windowStart))
+                        .setType(type)
+                        .setWfSpecName(wfSpecName)
+                        .setWfSpecVersion(wfSpecVersion)
+                        .setTotalCompleted(totalCompleted)
+                        .setTotalErrored(totalErrored)
+                        .setTotalStarted(totalStarted)
+                        .setStartToCompleteTotal(startToCompleteTotal)
+                        .setStartToCompleteMax(startToCompleteMax)
+                        .setNumEntries(numEntries);
 
         return out;
     }
@@ -106,8 +100,7 @@ public class WfMetricUpdate
 
     public WfSpecMetricsModel toResponse() {
         WfSpecMetricsModel out = new WfSpecMetricsModel();
-        out.startToCompleteAvg =
-            totalCompleted > 0 ? startToCompleteTotal / totalCompleted : 0;
+        out.startToCompleteAvg = totalCompleted > 0 ? startToCompleteTotal / totalCompleted : 0;
         out.startToCompleteMax = startToCompleteMax;
         out.wfSpecName = wfSpecName;
         out.wfSpecVersion = wfSpecVersion;
@@ -121,13 +114,8 @@ public class WfMetricUpdate
     }
 
     public String getClusterLevelWindow() {
-        return new WfSpecMetricsIdModel(
-            windowStart,
-            type,
-            LHConstants.CLUSTER_LEVEL_METRIC,
-            0
-        )
-            .getStoreKey();
+        return new WfSpecMetricsIdModel(windowStart, type, LHConstants.CLUSTER_LEVEL_METRIC, 0)
+                .getStoreKey();
     }
 
     public void process(LHStoreWrapper store, ProcessorContext<Void, Void> ctx) {
@@ -149,39 +137,24 @@ public class WfMetricUpdate
     }
 
     public static String getObjectId(
-        MetricsWindowLength type,
-        Date windowStart,
-        String wfSpecName,
-        int wfSpecVersion
-    ) {
-        return WfSpecMetricsModel.getObjectId(
-            type,
-            windowStart,
-            wfSpecName,
-            wfSpecVersion
-        );
+            MetricsWindowLength type, Date windowStart, String wfSpecName, int wfSpecVersion) {
+        return WfSpecMetricsModel.getObjectId(type, windowStart, wfSpecName, wfSpecVersion);
     }
 
     public static String getStoreKey(
-        MetricsWindowLength type,
-        Date windowStart,
-        String wfSpecName,
-        int wfSpecVersion
-    ) {
+            MetricsWindowLength type, Date windowStart, String wfSpecName, int wfSpecVersion) {
         return LHUtil.getCompositeId(
-            LHUtil.toLhDbFormat(windowStart),
-            type.toString(),
-            wfSpecName,
-            LHUtil.toLHDbVersionFormat(wfSpecVersion)
-        );
+                LHUtil.toLhDbFormat(windowStart),
+                type.toString(),
+                wfSpecName,
+                LHUtil.toLHDbVersionFormat(wfSpecVersion));
     }
 
     public String getStoreKey() {
         return LHUtil.getCompositeId(
-            LHUtil.toLhDbFormat(windowStart),
-            type.toString(),
-            wfSpecName,
-            LHUtil.toLHDbVersionFormat(wfSpecVersion)
-        );
+                LHUtil.toLhDbFormat(windowStart),
+                type.toString(),
+                wfSpecName,
+                LHUtil.toLHDbVersionFormat(wfSpecVersion));
     }
 }

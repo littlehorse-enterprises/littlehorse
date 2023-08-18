@@ -26,8 +26,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TaskWorkerHeartBeatRequestModel
-    extends SubCommand<TaskWorkerHeartBeatRequest> {
+public class TaskWorkerHeartBeatRequestModel extends SubCommand<TaskWorkerHeartBeatRequest> {
 
     public String clientId;
     public String taskDefName;
@@ -62,9 +61,7 @@ public class TaskWorkerHeartBeatRequestModel
 
         // Get the specific worker, each worker is supposed to have a unique client id
         boolean isANewTaskWorker = false;
-        TaskWorkerMetadataModel taskWorker = taskWorkerGroup.taskWorkers.get(
-            clientId
-        );
+        TaskWorkerMetadataModel taskWorker = taskWorkerGroup.taskWorkers.get(clientId);
 
         // If it is null then create it and add it to the task worker group
         if (taskWorker == null) {
@@ -79,7 +76,8 @@ public class TaskWorkerHeartBeatRequestModel
 
         // If there are dead workers or new workers or new hosts let's rebalance
         if (areInactiveWorkersRemoved || isANewTaskWorker || thereAreNewHost) {
-            // Get all internal servers (from kafka stream API), they are already sorted by Host::getKey.
+            // Get all internal servers (from kafka stream API), they are already sorted by
+            // Host::getKey.
             // As it is a new worker then we need to rebalance
             log.info("Triggering rebalance");
             assignor.assign(hosts, taskWorkerGroup.taskWorkers.values());
@@ -91,7 +89,8 @@ public class TaskWorkerHeartBeatRequestModel
         // Save the data
         dao.putTaskWorkerGroup(taskWorkerGroup);
 
-        // Prepare the response with the assigned host for this specific task worker (taskWorker.hosts)
+        // Prepare the response with the assigned host for this specific task worker
+        // (taskWorker.hosts)
         return prepareReply(dao, taskWorker.hosts);
     }
 
@@ -115,7 +114,8 @@ public class TaskWorkerHeartBeatRequestModel
                 reply.yourHosts.clear();
                 return reply;
             } catch (LHConnectionError e) {
-                // Continue if it receives an internal error, it is probably that this server is not ready yet
+                // Continue if it receives an internal error, it is probably that this server is not
+                // ready yet
                 log.warn(e.getMessage());
                 continue;
             }
@@ -140,25 +140,19 @@ public class TaskWorkerHeartBeatRequestModel
         int sizeBeforeFiltering = taskWorkerGroup.taskWorkers.size();
 
         taskWorkerGroup.taskWorkers =
-            taskWorkerGroup.taskWorkers
-                .values()
-                .stream()
-                .filter(taskWorker ->
-                    Duration
-                        .between(
-                            taskWorker.latestHeartbeat.toInstant(),
-                            Instant.now()
-                        )
-                        .toSeconds() <
-                    MAX_TASK_WORKER_INACTIVITY ||
-                    taskWorker.clientId == clientId
-                )
-                .collect(
-                    Collectors.toMap(
-                        taskWorker -> taskWorker.clientId,
-                        Function.identity()
-                    )
-                );
+                taskWorkerGroup.taskWorkers.values().stream()
+                        .filter(
+                                taskWorker ->
+                                        Duration.between(
+                                                                        taskWorker.latestHeartbeat
+                                                                                .toInstant(),
+                                                                        Instant.now())
+                                                                .toSeconds()
+                                                        < MAX_TASK_WORKER_INACTIVITY
+                                                || taskWorker.clientId == clientId)
+                        .collect(
+                                Collectors.toMap(
+                                        taskWorker -> taskWorker.clientId, Function.identity()));
 
         return sizeBeforeFiltering > taskWorkerGroup.taskWorkers.size();
     }
@@ -175,11 +169,11 @@ public class TaskWorkerHeartBeatRequestModel
 
     @Override
     public TaskWorkerHeartBeatRequest.Builder toProto() {
-        TaskWorkerHeartBeatRequest.Builder builder = TaskWorkerHeartBeatRequest
-            .newBuilder()
-            .setClientId(clientId)
-            .setTaskDefName(taskDefName)
-            .setListenerName(listenerName);
+        TaskWorkerHeartBeatRequest.Builder builder =
+                TaskWorkerHeartBeatRequest.newBuilder()
+                        .setClientId(clientId)
+                        .setTaskDefName(taskDefName)
+                        .setListenerName(listenerName);
         return builder;
     }
 
@@ -196,9 +190,7 @@ public class TaskWorkerHeartBeatRequestModel
         return TaskWorkerHeartBeatRequest.class;
     }
 
-    public static TaskWorkerHeartBeatRequestModel fromProto(
-        TaskWorkerHeartBeatRequest p
-    ) {
+    public static TaskWorkerHeartBeatRequestModel fromProto(TaskWorkerHeartBeatRequest p) {
         TaskWorkerHeartBeatRequestModel out = new TaskWorkerHeartBeatRequestModel();
         out.initFrom(p);
         return out;

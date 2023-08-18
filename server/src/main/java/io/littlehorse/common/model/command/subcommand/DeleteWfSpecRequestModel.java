@@ -18,10 +18,8 @@ public class DeleteWfSpecRequestModel extends SubCommand<DeleteWfSpecRequest> {
     }
 
     public DeleteWfSpecRequest.Builder toProto() {
-        DeleteWfSpecRequest.Builder out = DeleteWfSpecRequest
-            .newBuilder()
-            .setName(name)
-            .setVersion(version);
+        DeleteWfSpecRequest.Builder out =
+                DeleteWfSpecRequest.newBuilder().setName(name).setVersion(version);
         return out;
     }
 

@@ -19,12 +19,8 @@ public class VariableMapping {
     private Class<?> type;
     private int position;
 
-    public VariableMapping(
-        TaskDef taskDef,
-        int position,
-        Class<?> type,
-        String javaParamName
-    ) throws TaskSchemaMismatchError {
+    public VariableMapping(TaskDef taskDef, int position, Class<?> type, String javaParamName)
+            throws TaskSchemaMismatchError {
         this.type = type;
 
         if (type.equals(WorkerContext.class)) return;
@@ -32,8 +28,7 @@ public class VariableMapping {
 
         if (position >= taskDef.getInputVarsCount()) {
             throw new TaskSchemaMismatchError(
-                "Provided Java function has more parameters than the TaskDef."
-            );
+                    "Provided Java function has more parameters than the TaskDef.");
         }
         this.name = javaParamName;
         VariableDef input = taskDef.getInputVars(position);
@@ -68,10 +63,7 @@ public class VariableMapping {
                 break;
             case JSON_ARR:
             case JSON_OBJ:
-                log.info(
-                    "Info: Will use Jackson to deserialize Json into {}",
-                    type.getName()
-                );
+                log.info("Info: Will use Jackson to deserialize Json into {}", type.getName());
                 break;
             case NULL:
             case UNRECOGNIZED:
@@ -79,14 +71,12 @@ public class VariableMapping {
         }
 
         if (msg != null) {
-            throw new TaskSchemaMismatchError(
-                "Invalid assignment for var " + name + ": " + msg
-            );
+            throw new TaskSchemaMismatchError("Invalid assignment for var " + name + ": " + msg);
         }
     }
 
     public Object assign(ScheduledTask taskInstance, WorkerContext context)
-        throws InputVarSubstitutionError {
+            throws InputVarSubstitutionError {
         if (type.equals(WorkerContext.class)) {
             return context;
         }
@@ -133,10 +123,7 @@ public class VariableMapping {
             return LHLibUtil.deserializeFromjson(jsonStr, type);
         } catch (JsonProcessingException exn) {
             throw new InputVarSubstitutionError(
-                "Failed deserializing the Java object for variable " +
-                taskDefParamName,
-                exn
-            );
+                    "Failed deserializing the Java object for variable " + taskDefParamName, exn);
         }
     }
 }

@@ -6,7 +6,8 @@ import io.littlehorse.sdk.common.proto.SearchExternalEventResponse;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class SearchExternalEventReply
-    extends PublicScanReply<SearchExternalEventResponse, ExternalEventId, ExternalEventIdModel> {
+        extends PublicScanReply<
+                SearchExternalEventResponse, ExternalEventId, ExternalEventIdModel> {
 
     public Class<SearchExternalEventResponse> getProtoBaseClass() {
         return SearchExternalEventResponse.class;

@@ -22,10 +22,7 @@ public class AsyncWaiter {
         this.arrivalTime = new Date();
     }
 
-    public AsyncWaiter(
-        String commandId,
-        StreamObserver<WaitForCommandResponse> observer
-    ) {
+    public AsyncWaiter(String commandId, StreamObserver<WaitForCommandResponse> observer) {
         this();
         this.commandId = commandId;
         this.observer = observer;
@@ -49,9 +46,7 @@ public class AsyncWaiter {
         }
 
         if (caughtException != null) {
-            log.info(
-                "Waiter is aborting client request due to command process failure"
-            );
+            log.info("Waiter is aborting client request due to command process failure");
             observer.onError(caughtException);
         } else if (response != null) {
             observer.onNext(response);

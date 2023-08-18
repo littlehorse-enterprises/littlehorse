@@ -8,7 +8,7 @@ import io.littlehorse.sdk.common.proto.TaskWorkerGroup;
 import io.littlehorse.sdk.common.proto.TaskWorkerGroupId;
 
 public class TaskWorkerGroupIdModel
-    extends ObjectId<TaskWorkerGroupId, TaskWorkerGroup, TaskWorkerGroupModel> {
+        extends ObjectId<TaskWorkerGroupId, TaskWorkerGroup, TaskWorkerGroupModel> {
 
     public String taskDefName;
 
@@ -32,9 +32,7 @@ public class TaskWorkerGroupIdModel
     }
 
     public TaskWorkerGroupId.Builder toProto() {
-        TaskWorkerGroupId.Builder out = TaskWorkerGroupId
-            .newBuilder()
-            .setTaskDefName(taskDefName);
+        TaskWorkerGroupId.Builder out = TaskWorkerGroupId.newBuilder().setTaskDefName(taskDefName);
         return out;
     }
 

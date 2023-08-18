@@ -80,11 +80,11 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     }
 
     public TaskNode.Builder toProto() {
-        TaskNode.Builder out = TaskNode
-            .newBuilder()
-            .setTaskDefName(taskDefName)
-            .setTimeoutSeconds(timeoutSeconds)
-            .setRetries(retries);
+        TaskNode.Builder out =
+                TaskNode.newBuilder()
+                        .setTaskDefName(taskDefName)
+                        .setTimeoutSeconds(timeoutSeconds)
+                        .setRetries(retries);
 
         for (VariableAssignmentModel va : variables) {
             out.addVariables(va.toProto());
@@ -92,17 +92,13 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         return out;
     }
 
-    public void validate(LHGlobalMetaStores stores, LHConfig config)
-        throws LHValidationError {
+    public void validate(LHGlobalMetaStores stores, LHConfig config) throws LHValidationError {
         // Want to be able to release new versions of taskdef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the taskdef to ensure that this isn't an issue.
         TaskDefModel taskDef = stores.getTaskDef(taskDefName);
         if (taskDef == null) {
-            throw new LHValidationError(
-                null,
-                "Refers to nonexistent TaskDef " + taskDefName
-            );
+            throw new LHValidationError(null, "Refers to nonexistent TaskDef " + taskDefName);
         }
         if (retries < 0) {
             throw new LHValidationError(null, "has negative " + "number of retries!");
@@ -111,14 +107,13 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         // Now need to validate that all of the variables are provided.
         if (variables.size() != taskDef.inputVars.size()) {
             throw new LHValidationError(
-                null,
-                "For TaskDef " +
-                taskDef.name +
-                " we need " +
-                taskDef.inputVars.size() +
-                " input vars, but we have " +
-                variables.size()
-            );
+                    null,
+                    "For TaskDef "
+                            + taskDef.name
+                            + " we need "
+                            + taskDef.inputVars.size()
+                            + " input vars, but we have "
+                            + variables.size());
         }
 
         // Currently, we don't do any type-checking for JSON_ARR or JSON_OBJ variables
@@ -129,17 +124,14 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         for (int i = 0; i < variables.size(); i++) {
             VariableDefModel taskDefVar = taskDef.getInputVars().get(i);
             VariableAssignmentModel assn = variables.get(i);
-            if (
-                !assn.canBeType(taskDefVar.getType(), this.node.getThreadSpecModel())
-            ) {
+            if (!assn.canBeType(taskDefVar.getType(), this.node.getThreadSpecModel())) {
                 throw new LHValidationError(
-                    null,
-                    "Input variable " +
-                    i +
-                    " needs to be " +
-                    taskDefVar.getType() +
-                    " but cannot be!"
-                );
+                        null,
+                        "Input variable "
+                                + i
+                                + " needs to be "
+                                + taskDefVar.getType()
+                                + " but cannot be!");
             }
         }
 
@@ -157,14 +149,11 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         return out;
     }
 
-    public List<VarNameAndValModel> assignInputVars(ThreadRunModel thread)
-        throws LHVarSubError {
+    public List<VarNameAndValModel> assignInputVars(ThreadRunModel thread) throws LHVarSubError {
         List<VarNameAndValModel> out = new ArrayList<>();
         if (getTaskDef().getInputVars().size() != variables.size()) {
             throw new LHVarSubError(
-                null,
-                "Impossible: got different number of taskdef vars and node input vars"
-            );
+                    null, "Impossible: got different number of taskdef vars and node input vars");
         }
 
         for (int i = 0; i < taskDef.inputVars.size(); i++) {
@@ -176,21 +165,17 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             if (assn != null) {
                 val = thread.assignVariable(assn);
             } else {
-                throw new LHVarSubError(
-                    null,
-                    "Variable " + varName + " is unassigned."
-                );
+                throw new LHVarSubError(null, "Variable " + varName + " is unassigned.");
             }
             if (val.type != requiredVarDef.type && val.type != VariableType.NULL) {
                 throw new LHVarSubError(
-                    null,
-                    "Variable " +
-                    varName +
-                    " should be " +
-                    requiredVarDef.type +
-                    " but is of type " +
-                    val.type
-                );
+                        null,
+                        "Variable "
+                                + varName
+                                + " should be "
+                                + requiredVarDef.type
+                                + " but is of type "
+                                + val.type);
             }
             out.add(new VarNameAndValModel(varName, val));
         }

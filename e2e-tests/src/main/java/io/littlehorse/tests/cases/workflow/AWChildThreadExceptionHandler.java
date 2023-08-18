@@ -16,43 +16,36 @@ import java.util.List;
 
 public class AWChildThreadExceptionHandler extends WorkflowLogicTest {
 
-    public AWChildThreadExceptionHandler(
-        LHClient client,
-        LHWorkerConfig workerConfig
-    ) {
+    public AWChildThreadExceptionHandler(LHClient client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
     public String getDescription() {
-        return (
-            "Tests that we can put an exception handler on WAIT_FOR_THREAD node" +
-            " in case the child thread fails."
-        );
+        return ("Tests that we can put an exception handler on WAIT_FOR_THREAD node"
+                + " in case the child thread fails.");
     }
 
     public Workflow getWorkflowImpl() {
         return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                SpawnedThread childThread = thread.spawnThread(
-                    child -> {
-                        child.execute("aw-fail");
-                    },
-                    "child",
-                    null
-                );
+                getWorkflowName(),
+                thread -> {
+                    SpawnedThread childThread =
+                            thread.spawnThread(
+                                    child -> {
+                                        child.execute("aw-fail");
+                                    },
+                                    "child",
+                                    null);
 
-                NodeOutput toHandle = thread.waitForThreads(childThread);
-                thread.handleException(
-                    toHandle,
-                    null,
-                    handler -> {
-                        handler.execute("aw-echo", "hi from handler");
-                    }
-                );
-                thread.execute("aw-succeed");
-            }
-        );
+                    NodeOutput toHandle = thread.waitForThreads(childThread);
+                    thread.handleException(
+                            toHandle,
+                            null,
+                            handler -> {
+                                handler.execute("aw-echo", "hi from handler");
+                            });
+                    thread.execute("aw-succeed");
+                });
     }
 
     public List<Object> getTaskWorkerObjects() {
@@ -60,7 +53,7 @@ public class AWChildThreadExceptionHandler extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+            throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client);
 
         Thread.sleep(500);

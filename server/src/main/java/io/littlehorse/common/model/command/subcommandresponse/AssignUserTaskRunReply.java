@@ -5,8 +5,7 @@ import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.meta.ExternalEventDefModel;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunResponse;
 
-public class AssignUserTaskRunReply
-    extends AbstractResponse<AssignUserTaskRunResponse> {
+public class AssignUserTaskRunReply extends AbstractResponse<AssignUserTaskRunResponse> {
 
     public ExternalEventDefModel result;
 

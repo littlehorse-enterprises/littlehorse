@@ -35,8 +35,7 @@ public class UserModel extends LHSerializable<User> {
         User User = (User) proto;
         this.id = User.getId();
         if (User.hasUserGroup()) {
-            this.userGroup =
-                LHSerializable.fromProto(User.getUserGroup(), UserGroupModel.class);
+            this.userGroup = LHSerializable.fromProto(User.getUserGroup(), UserGroupModel.class);
         }
     }
 

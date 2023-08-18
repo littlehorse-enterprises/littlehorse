@@ -30,11 +30,7 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
 
     public RepartitionCommand() {}
 
-    public RepartitionCommand(
-        RepartitionSubCommand command,
-        Date time,
-        String commandId
-    ) {
+    public RepartitionCommand(RepartitionSubCommand command, Date time, String commandId) {
         setSubCommand(command);
         this.time = time;
         this.commandId = commandId;
@@ -111,31 +107,19 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
         switch (type) {
             case TASK_METRIC_UPDATE:
                 taskMetricPartitionWindow =
-                    LHSerializable.fromProto(
-                        p.getTaskMetricUpdate(),
-                        TaskMetricUpdate.class
-                    );
+                        LHSerializable.fromProto(p.getTaskMetricUpdate(), TaskMetricUpdate.class);
                 break;
             case WF_METRIC_UPDATE:
                 wfMetricPartitionWindow =
-                    LHSerializable.fromProto(
-                        p.getWfMetricUpdate(),
-                        WfMetricUpdate.class
-                    );
+                        LHSerializable.fromProto(p.getWfMetricUpdate(), WfMetricUpdate.class);
                 break;
             case CREATE_REMOTE_TAG:
                 createRemoteTag =
-                    LHSerializable.fromProto(
-                        p.getCreateRemoteTag(),
-                        CreateRemoteTag.class
-                    );
+                        LHSerializable.fromProto(p.getCreateRemoteTag(), CreateRemoteTag.class);
                 break;
             case REMOVE_REMOTE_TAG:
                 removeRemoteTag =
-                    LHSerializable.fromProto(
-                        p.getRemoveRemoteTag(),
-                        RemoveRemoteTag.class
-                    );
+                        LHSerializable.fromProto(p.getRemoveRemoteTag(), RemoveRemoteTag.class);
                 break;
             case REPARTITIONCOMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");

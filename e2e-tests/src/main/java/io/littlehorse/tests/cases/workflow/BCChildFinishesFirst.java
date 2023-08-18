@@ -24,10 +24,8 @@ public class BCChildFinishesFirst extends WorkflowLogicTest {
     }
 
     public String getDescription() {
-        return (
-            "Tests happy path behavior of WAIT_FOR_THREADS node with " +
-            "multiple threads to wait for."
-        );
+        return ("Tests happy path behavior of WAIT_FOR_THREADS node with "
+                + "multiple threads to wait for.");
     }
 
     /*
@@ -46,13 +44,12 @@ public class BCChildFinishesFirst extends WorkflowLogicTest {
      */
     public Workflow getWorkflowImpl() {
         return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                SpawnedThread child = thread.spawnThread(this::child, "child", null);
-                thread.sleepSeconds(1);
-                thread.waitForThreads(child);
-            }
-        );
+                getWorkflowName(),
+                thread -> {
+                    SpawnedThread child = thread.spawnThread(this::child, "child", null);
+                    thread.sleepSeconds(1);
+                    thread.waitForThreads(child);
+                });
     }
 
     private void child(ThreadBuilder thread) {
@@ -64,7 +61,7 @@ public class BCChildFinishesFirst extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+            throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client);
         Thread.sleep(100);
         assertStatus(client, wfRunId, LHStatus.RUNNING);

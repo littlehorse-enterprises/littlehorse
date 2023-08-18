@@ -6,8 +6,7 @@ import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefResponse;
 
-public class PutUserTaskDefResponseModel
-    extends AbstractResponse<PutUserTaskDefResponse> {
+public class PutUserTaskDefResponseModel extends AbstractResponse<PutUserTaskDefResponse> {
 
     public UserTaskDefModel result;
 
@@ -27,7 +26,6 @@ public class PutUserTaskDefResponseModel
         PutUserTaskDefResponse p = (PutUserTaskDefResponse) proto;
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();
-        if (p.hasResult()) result =
-            LHSerializable.fromProto(p.getResult(), UserTaskDefModel.class);
+        if (p.hasResult()) result = LHSerializable.fromProto(p.getResult(), UserTaskDefModel.class);
     }
 }

@@ -37,10 +37,7 @@ public class WfSpecIdModel extends ObjectId<WfSpecId, WfSpec, WfSpecModel> {
     }
 
     public WfSpecId.Builder toProto() {
-        WfSpecId.Builder out = WfSpecId
-            .newBuilder()
-            .setVersion(version)
-            .setName(name);
+        WfSpecId.Builder out = WfSpecId.newBuilder().setVersion(version).setName(name);
         return out;
     }
 

@@ -8,8 +8,7 @@ import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse.Builder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RegisterTaskWorkerReply
-    extends AbstractResponse<RegisterTaskWorkerResponse> {
+public class RegisterTaskWorkerReply extends AbstractResponse<RegisterTaskWorkerResponse> {
 
     public List<HostInfo> yourHosts = new ArrayList<>();
 

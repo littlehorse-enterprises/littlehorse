@@ -21,10 +21,10 @@ public class StopWfRunRequestModel extends SubCommand<StopWfRunRequest> {
     }
 
     public StopWfRunRequest.Builder toProto() {
-        StopWfRunRequest.Builder out = StopWfRunRequest
-            .newBuilder()
-            .setWfRunId(wfRunId)
-            .setThreadRunNumber(threadRunNumber);
+        StopWfRunRequest.Builder out =
+                StopWfRunRequest.newBuilder()
+                        .setWfRunId(wfRunId)
+                        .setThreadRunNumber(threadRunNumber);
         return out;
     }
 
@@ -47,10 +47,7 @@ public class StopWfRunRequestModel extends SubCommand<StopWfRunRequest> {
             return out;
         }
 
-        WfSpecModel wfSpecModel = dao.getWfSpec(
-            wfRunModel.wfSpecName,
-            wfRunModel.wfSpecVersion
-        );
+        WfSpecModel wfSpecModel = dao.getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
         if (wfSpecModel == null) {
             out.code = LHResponseCode.BAD_REQUEST_ERROR;
             out.message = "Somehow missing wfSpec for wfRun";

@@ -34,19 +34,19 @@ public class TaskDefMetricsModel extends Getable<TaskDefMetrics> {
     }
 
     public TaskDefMetrics.Builder toProto() {
-        TaskDefMetrics.Builder out = TaskDefMetrics
-            .newBuilder()
-            .setWindowStart(LHLibUtil.fromDate(windowStart))
-            .setType(type)
-            .setTaskDefName(taskDefName)
-            .setTotalCompleted(totalCompleted)
-            .setTotalErrored(totalErrored)
-            .setTotalStarted(totalStarted)
-            .setScheduleToStartAvg(scheduleToStartAvg)
-            .setScheduleToStartMax(scheduleToStartMax)
-            .setStartToCompleteAvg(startToCompleteAvg)
-            .setStartToCompleteMax(startToCompleteMax)
-            .setTotalScheduled(totalScheduled);
+        TaskDefMetrics.Builder out =
+                TaskDefMetrics.newBuilder()
+                        .setWindowStart(LHLibUtil.fromDate(windowStart))
+                        .setType(type)
+                        .setTaskDefName(taskDefName)
+                        .setTotalCompleted(totalCompleted)
+                        .setTotalErrored(totalErrored)
+                        .setTotalStarted(totalStarted)
+                        .setScheduleToStartAvg(scheduleToStartAvg)
+                        .setScheduleToStartMax(scheduleToStartMax)
+                        .setStartToCompleteAvg(startToCompleteAvg)
+                        .setStartToCompleteMax(startToCompleteMax)
+                        .setTotalScheduled(totalScheduled);
 
         return out;
     }
@@ -84,30 +84,22 @@ public class TaskDefMetricsModel extends Getable<TaskDefMetrics> {
     }
 
     @Override
-    public List<IndexedField> getIndexValues(
-        String key,
-        Optional<TagStorageType> tagStorageType
-    ) {
+    public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         return List.of();
     }
 
     public static String getObjectId(
-        MetricsWindowLength windowType,
-        Date time,
-        String taskDefName
-    ) {
+            MetricsWindowLength windowType, Date time, String taskDefName) {
         return new TaskDefMetricsIdModel(time, windowType, taskDefName).getStoreKey();
     }
 
     public static String getObjectId(TaskDefMetricsQueryRequest request) {
         return new TaskDefMetricsIdModel(
-            LHUtil.getWindowStart(
-                LHLibUtil.fromProtoTs(request.getWindowStart()),
-                request.getWindowType()
-            ),
-            request.getWindowType(),
-            request.getTaskDefName()
-        )
-            .getStoreKey();
+                        LHUtil.getWindowStart(
+                                LHLibUtil.fromProtoTs(request.getWindowStart()),
+                                request.getWindowType()),
+                        request.getWindowType(),
+                        request.getTaskDefName())
+                .getStoreKey();
     }
 }

@@ -32,7 +32,12 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class SearchWfSpecRequestModel
-    extends PublicScanRequest<SearchWfSpecRequest, SearchWfSpecResponse, WfSpecId, WfSpecIdModel, SearchWfSpecReply> {
+        extends PublicScanRequest<
+                SearchWfSpecRequest,
+                SearchWfSpecResponse,
+                WfSpecId,
+                WfSpecIdModel,
+                SearchWfSpecReply> {
 
     private WfSpecCriteriaCase type;
     private String name;
@@ -70,7 +75,7 @@ public class SearchWfSpecRequestModel
                 taskDefName = p.getTaskDefName();
                 break;
             case WFSPECCRITERIA_NOT_SET:
-            // nothing to do, we just return all the WfSpec's.
+                // nothing to do, we just return all the WfSpec's.
         }
     }
 
@@ -93,7 +98,7 @@ public class SearchWfSpecRequestModel
                 out.setTaskDefName(taskDefName);
                 break;
             case WFSPECCRITERIA_NOT_SET:
-            // nothing to do, we just return all the WfSpec's.
+                // nothing to do, we just return all the WfSpec's.
         }
         return out;
     }
@@ -110,19 +115,14 @@ public class SearchWfSpecRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
         if (taskDefName != null) {
-            List<String> attributes = getSearchAttributes()
-                .stream()
-                .map(Attribute::getEscapedKey)
-                .toList();
-            for (GetableIndex<? extends Getable<?>> indexConfiguration : new WfSpecModel()
-                .getIndexConfigurations()) {
-                if (
-                    indexConfiguration.searchAttributesMatch(attributes) &&
-                    indexConfiguration.getTagStorageType().isPresent()
-                ) {
+            List<String> attributes =
+                    getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
+            for (GetableIndex<? extends Getable<?>> indexConfiguration :
+                    new WfSpecModel().getIndexConfigurations()) {
+                if (indexConfiguration.searchAttributesMatch(attributes)
+                        && indexConfiguration.getTagStorageType().isPresent()) {
                     return indexConfiguration.getTagStorageType().get();
                 }
             }
@@ -139,28 +139,15 @@ public class SearchWfSpecRequestModel
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         if (name != null && !name.equals("")) {
             return new ObjectIdScanBoundaryStrategy(
-                LHConstants.META_PARTITION_KEY,
-                name + "/",
-                name + "/~"
-            );
+                    LHConstants.META_PARTITION_KEY, name + "/", name + "/~");
         } else if (prefix != null && !prefix.isEmpty()) {
             return new ObjectIdScanBoundaryStrategy(
-                LHConstants.META_PARTITION_KEY,
-                prefix,
-                prefix + "~"
-            );
+                    LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
         } else if (!Strings.isNullOrEmpty(taskDefName)) {
             return new TagScanBoundaryStrategy(
-                searchAttributeString,
-                Optional.empty(),
-                Optional.empty()
-            );
+                    searchAttributeString, Optional.empty(), Optional.empty());
         } else {
-            return new ObjectIdScanBoundaryStrategy(
-                LHConstants.META_PARTITION_KEY,
-                "",
-                "~"
-            );
+            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, "", "~");
         }
     }
 }

@@ -22,7 +22,7 @@ import org.apache.kafka.streams.processor.api.Record;
 
 @Slf4j
 public class RepartitionCommandProcessor
-    implements Processor<String, RepartitionCommand, Void, Void> {
+        implements Processor<String, RepartitionCommand, Void, Void> {
 
     private LHStoreWrapper store;
     private LHConfig config;
@@ -35,16 +35,10 @@ public class RepartitionCommandProcessor
     public void init(final ProcessorContext<Void, Void> ctx) {
         this.ctx = ctx;
         store =
-            new LHStoreWrapper(
-                ctx.getStateStore(ServerTopology.CORE_REPARTITION_STORE),
-                config
-            );
+                new LHStoreWrapper(
+                        ctx.getStateStore(ServerTopology.CORE_REPARTITION_STORE), config);
 
-        ctx.schedule(
-            Duration.ofMinutes(1),
-            PunctuationType.WALL_CLOCK_TIME,
-            this::cleanOldMetrics
-        );
+        ctx.schedule(Duration.ofMinutes(1), PunctuationType.WALL_CLOCK_TIME, this::cleanOldMetrics);
     }
 
     public void process(final Record<String, RepartitionCommand> record) {
@@ -61,45 +55,33 @@ public class RepartitionCommandProcessor
     }
 
     private void cleanOldTaskMetrics(Date daysAgo) {
-        try (
-            LHKeyValueIterator<TaskMetricUpdate> iter = store.range(
-                "",
-                LHUtil.toLhDbFormat(daysAgo),
-                TaskMetricUpdate.class
-            )
-        ) {
+        try (LHKeyValueIterator<TaskMetricUpdate> iter =
+                store.range("", LHUtil.toLhDbFormat(daysAgo), TaskMetricUpdate.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<TaskMetricUpdate> next = iter.next();
                 TaskMetricUpdate metric = next.getValue();
                 store.delete(metric.getStoreKey());
-                String taskDefMetricKey = TaskDefMetricsModel.getObjectId(
-                    metric.type,
-                    metric.windowStart,
-                    metric.taskDefName
-                );
+                String taskDefMetricKey =
+                        TaskDefMetricsModel.getObjectId(
+                                metric.type, metric.windowStart, metric.taskDefName);
                 store.delete(taskDefMetricKey, TaskDefMetricsModel.class);
             }
         }
     }
 
     private void cleanOldWfMetrics(Date daysAgo) {
-        try (
-            LHKeyValueIterator<WfMetricUpdate> iter = store.range(
-                "",
-                LHUtil.toLhDbFormat(daysAgo),
-                WfMetricUpdate.class
-            )
-        ) {
+        try (LHKeyValueIterator<WfMetricUpdate> iter =
+                store.range("", LHUtil.toLhDbFormat(daysAgo), WfMetricUpdate.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<WfMetricUpdate> next = iter.next();
                 WfMetricUpdate metric = next.getValue();
                 store.delete(metric.getStoreKey());
-                String wfSpecMetricKey = WfSpecMetricsModel.getObjectId(
-                    metric.type,
-                    metric.windowStart,
-                    metric.wfSpecName,
-                    metric.wfSpecVersion
-                );
+                String wfSpecMetricKey =
+                        WfSpecMetricsModel.getObjectId(
+                                metric.type,
+                                metric.windowStart,
+                                metric.wfSpecName,
+                                metric.wfSpecVersion);
                 store.delete(wfSpecMetricKey, WfSpecMetricsModel.class);
             }
         }

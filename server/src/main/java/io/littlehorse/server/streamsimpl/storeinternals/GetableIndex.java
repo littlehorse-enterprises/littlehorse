@@ -16,28 +16,21 @@ public class GetableIndex<T extends Getable<?>> {
     private Predicate<T> conditional;
 
     public GetableIndex(
-        List<Pair<String, ValueType>> attributes,
-        Optional<TagStorageType> tagStorageType,
-        Predicate<T> conditional
-    ) {
+            List<Pair<String, ValueType>> attributes,
+            Optional<TagStorageType> tagStorageType,
+            Predicate<T> conditional) {
         this.attributes = attributes;
         this.tagStorageType = tagStorageType;
         this.conditional = conditional;
     }
 
     public GetableIndex(
-        List<Pair<String, ValueType>> attributes,
-        Optional<TagStorageType> tagStorageType
-    ) {
+            List<Pair<String, ValueType>> attributes, Optional<TagStorageType> tagStorageType) {
         this(attributes, tagStorageType, null);
     }
 
     public boolean searchAttributesMatch(List<String> searchAttributes) {
-        return attributes
-            .stream()
-            .map(Pair::getKey)
-            .toList()
-            .equals(searchAttributes);
+        return attributes.stream().map(Pair::getKey).toList().equals(searchAttributes);
     }
 
     @SuppressWarnings("unchecked")

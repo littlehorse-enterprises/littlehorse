@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.proto.WfSpecMetrics;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class ListWfMetricsReply
-    extends PublicScanReply<ListWfMetricsResponse, WfSpecMetrics, WfSpecMetricsModel> {
+        extends PublicScanReply<ListWfMetricsResponse, WfSpecMetrics, WfSpecMetricsModel> {
 
     public Class<ListWfMetricsResponse> getProtoBaseClass() {
         return ListWfMetricsResponse.class;

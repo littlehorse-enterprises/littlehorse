@@ -25,7 +25,12 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class SearchUserTaskDefRequestModel
-    extends PublicScanRequest<SearchUserTaskDefRequest, SearchUserTaskDefResponse, UserTaskDefId, UserTaskDefIdModel, SearchUserTaskDefReply> {
+        extends PublicScanRequest<
+                SearchUserTaskDefRequest,
+                SearchUserTaskDefResponse,
+                UserTaskDefId,
+                UserTaskDefIdModel,
+                SearchUserTaskDefReply> {
 
     private UserTaskDefCriteriaCase type;
     private String name;
@@ -59,7 +64,7 @@ public class SearchUserTaskDefRequestModel
                 prefix = p.getPrefix();
                 break;
             case USERTASKDEFCRITERIA_NOT_SET:
-            // nothing to do, we just return all the UserTaskDef's.
+                // nothing to do, we just return all the UserTaskDef's.
         }
     }
 
@@ -79,22 +84,19 @@ public class SearchUserTaskDefRequestModel
                 out.setPrefix(prefix);
                 break;
             case USERTASKDEFCRITERIA_NOT_SET:
-            // nothing to do, we just return all the UserTaskDef's.
+                // nothing to do, we just return all the UserTaskDef's.
         }
         return out;
     }
 
-    public static SearchUserTaskDefRequestModel fromProto(
-        SearchUserTaskDefRequest proto
-    ) {
+    public static SearchUserTaskDefRequestModel fromProto(SearchUserTaskDefRequest proto) {
         SearchUserTaskDefRequestModel out = new SearchUserTaskDefRequestModel();
         out.initFrom(proto);
         return out;
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
         return TagStorageType.LOCAL;
     }
 
@@ -105,22 +107,12 @@ public class SearchUserTaskDefRequestModel
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         if (prefix != null && !prefix.equals("")) {
             return new ObjectIdScanBoundaryStrategy(
-                LHConstants.META_PARTITION_KEY,
-                prefix,
-                prefix + "~"
-            );
+                    LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
         } else if (name != null && !name.isEmpty()) {
             return new ObjectIdScanBoundaryStrategy(
-                LHConstants.META_PARTITION_KEY,
-                name,
-                name + "/"
-            );
+                    LHConstants.META_PARTITION_KEY, name, name + "/");
         } else {
-            return new ObjectIdScanBoundaryStrategy(
-                LHConstants.META_PARTITION_KEY,
-                "",
-                "~"
-            );
+            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, "", "~");
         }
     }
 }

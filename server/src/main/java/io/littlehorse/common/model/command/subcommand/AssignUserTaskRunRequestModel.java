@@ -23,8 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @Setter
-public class AssignUserTaskRunRequestModel
-    extends SubCommand<AssignUserTaskRunRequest> {
+public class AssignUserTaskRunRequestModel extends SubCommand<AssignUserTaskRunRequest> {
 
     private UserTaskRunIdModel userTaskRunId;
     private boolean overrideClaim;
@@ -38,10 +37,10 @@ public class AssignUserTaskRunRequestModel
     }
 
     public AssignUserTaskRunRequest.Builder toProto() {
-        AssignUserTaskRunRequest.Builder out = AssignUserTaskRunRequest
-            .newBuilder()
-            .setUserTaskRunId(userTaskRunId.toProto())
-            .setOverrideClaim(overrideClaim);
+        AssignUserTaskRunRequest.Builder out =
+                AssignUserTaskRunRequest.newBuilder()
+                        .setUserTaskRunId(userTaskRunId.toProto())
+                        .setOverrideClaim(overrideClaim);
         switch (assigneeType) {
             case USER:
                 out.setUser(user.toProto());
@@ -50,9 +49,7 @@ public class AssignUserTaskRunRequestModel
                 out.setUserGroup(userGroup.toProto());
                 break;
             case ASSIGNEE_NOT_SET:
-                log.warn(
-                    "assignee not set. Should this be LHSerdeError or validation error?"
-                );
+                log.warn("assignee not set. Should this be LHSerdeError or validation error?");
                 break;
         }
         return out;
@@ -60,8 +57,7 @@ public class AssignUserTaskRunRequestModel
 
     public void initFrom(Message proto) {
         AssignUserTaskRunRequest p = (AssignUserTaskRunRequest) proto;
-        userTaskRunId =
-            LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class);
+        userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class);
         assigneeType = p.getAssigneeCase();
         overrideClaim = p.getOverrideClaim();
 
@@ -70,8 +66,7 @@ public class AssignUserTaskRunRequestModel
                 user = LHSerializable.fromProto(p.getUser(), UserModel.class);
                 break;
             case USER_GROUP:
-                userGroup =
-                    LHSerializable.fromProto(p.getUserGroup(), UserGroupModel.class);
+                userGroup = LHSerializable.fromProto(p.getUserGroup(), UserGroupModel.class);
                 break;
             case ASSIGNEE_NOT_SET:
                 log.warn("Unset assignee. Should this be error?");
@@ -105,14 +100,12 @@ public class AssignUserTaskRunRequestModel
             return out;
         }
 
-        if (
-            utr.getStatus() != UserTaskRunStatus.ASSIGNED &&
-            utr.getStatus() != UserTaskRunStatus.UNASSIGNED
-        ) {
+        if (utr.getStatus() != UserTaskRunStatus.ASSIGNED
+                && utr.getStatus() != UserTaskRunStatus.UNASSIGNED) {
             out.code = LHResponseCode.BAD_REQUEST_ERROR;
             out.message =
-                "Couldn't reassign User Task Run since it  is in terminal status " +
-                utr.getStatus();
+                    "Couldn't reassign User Task Run since it  is in terminal status "
+                            + utr.getStatus();
         }
 
         // In the future, we could add some verification to make sure that the
@@ -120,10 +113,7 @@ public class AssignUserTaskRunRequestModel
         utr.reassignTo(this);
         WfRunModel wfRunModel = dao.getWfRun(getWfRunId());
         if (wfRunModel == null) {
-            log.error(
-                "Impossible: Got the UserTaskRun but WfRun missing {}",
-                getWfRunId()
-            );
+            log.error("Impossible: Got the UserTaskRun but WfRun missing {}", getWfRunId());
             return out;
         }
 

@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class SearchWfSpecReply
-    extends PublicScanReply<SearchWfSpecResponse, WfSpecId, WfSpecIdModel> {
+        extends PublicScanReply<SearchWfSpecResponse, WfSpecId, WfSpecIdModel> {
 
     public Class<SearchWfSpecResponse> getProtoBaseClass() {
         return SearchWfSpecResponse.class;

@@ -32,12 +32,12 @@ public class UserTaskFieldModel extends LHSerializable<UserTaskField> {
     }
 
     public UserTaskField.Builder toProto() {
-        UserTaskField.Builder out = UserTaskField
-            .newBuilder()
-            .setName(name)
-            .setType(type)
-            .setRequired(required)
-            .setDisplayName(displayName);
+        UserTaskField.Builder out =
+                UserTaskField.newBuilder()
+                        .setName(name)
+                        .setType(type)
+                        .setRequired(required)
+                        .setDisplayName(displayName);
 
         if (description != null) out.setDescription(description);
         return out;

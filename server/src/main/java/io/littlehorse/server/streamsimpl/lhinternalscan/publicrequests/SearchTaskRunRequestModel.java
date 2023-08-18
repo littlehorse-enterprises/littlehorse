@@ -30,7 +30,12 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class SearchTaskRunRequestModel
-    extends PublicScanRequest<SearchTaskRunRequest, SearchTaskRunResponse, TaskRunId, TaskRunIdModel, SearchTaskRunReply> {
+        extends PublicScanRequest<
+                SearchTaskRunRequest,
+                SearchTaskRunResponse,
+                TaskRunId,
+                TaskRunIdModel,
+                SearchTaskRunReply> {
 
     private TaskRunCriteriaCase type;
     private ByTaskDefRequest taskDef;
@@ -124,20 +129,16 @@ public class SearchTaskRunRequestModel
     @Override
     public List<Attribute> getSearchAttributes() {
         if (type == TaskRunCriteriaCase.TASK_DEF) {
-            return List.of(
-                new Attribute("taskDefName", statusAndTaskDef.getTaskDefName())
-            );
+            return List.of(new Attribute("taskDefName", statusAndTaskDef.getTaskDefName()));
         } else {
             return List.of(
-                new Attribute("taskDefName", statusAndTaskDef.getTaskDefName()),
-                new Attribute("status", statusAndTaskDef.getStatus().toString())
-            );
+                    new Attribute("taskDefName", statusAndTaskDef.getTaskDefName()),
+                    new Attribute("status", statusAndTaskDef.getStatus().toString()));
         }
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
         return TagStorageType.LOCAL;
     }
 
@@ -146,16 +147,13 @@ public class SearchTaskRunRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString)
-        throws LHValidationError {
-        if (
-            type == TaskRunCriteriaCase.TASK_DEF ||
-            type == TaskRunCriteriaCase.STATUS_AND_TASK_DEF
-        ) {
+            throws LHValidationError {
+        if (type == TaskRunCriteriaCase.TASK_DEF
+                || type == TaskRunCriteriaCase.STATUS_AND_TASK_DEF) {
             return new TagScanBoundaryStrategy(
-                searchAttributeString,
-                Optional.ofNullable(LHUtil.fromProtoTs(getEarliestStart())),
-                Optional.ofNullable(LHUtil.fromProtoTs(getLatestStart()))
-            );
+                    searchAttributeString,
+                    Optional.ofNullable(LHUtil.fromProtoTs(getEarliestStart())),
+                    Optional.ofNullable(LHUtil.fromProtoTs(getLatestStart())));
         } else {
             throw new LHValidationError("Unimplemented search type: " + type);
         }

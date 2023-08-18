@@ -68,10 +68,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         this.name = name;
 
         // For now, the creation of the entrypoint node is manual.
-        Node entrypointNode = Node
-            .newBuilder()
-            .setEntrypoint(EntrypointNode.newBuilder())
-            .build();
+        Node entrypointNode = Node.newBuilder().setEntrypoint(EntrypointNode.newBuilder()).build();
 
         String entrypointNodeName = "0-entrypoint-ENTRYPOINT";
         lastNodeName = entrypointNodeName;
@@ -93,27 +90,19 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         return spec;
     }
 
-    public UserTaskOutputImpl assignUserTaskToUser(
-        String userTaskDefName,
-        String userId
-    ) {
+    public UserTaskOutputImpl assignUserTaskToUser(String userTaskDefName, String userId) {
         return assignUserTaskHelper(userTaskDefName, userId, null);
     }
 
     @Override
     public UserTaskOutput assignUserTaskToUser(
-        String userTaskDefName,
-        String userId,
-        String userGroup
-    ) {
+            String userTaskDefName, String userId, String userGroup) {
         return assignUserTaskHelper(userTaskDefName, userId, userGroup);
     }
 
     @Override
     public void scheduleReassignmentToGroupOnDeadline(
-        UserTaskOutput userTaskOutput,
-        int deadlineSeconds
-    ) {
+            UserTaskOutput userTaskOutput, int deadlineSeconds) {
         checkIfIsActive();
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
@@ -122,106 +111,78 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         }
         VariableAssignment userGroup = curNode.getUserTaskBuilder().getUserGroup();
         if (userGroup == null) {
-            throw new IllegalStateException(
-                "User task is not assigned to a userGroup"
-            );
+            throw new IllegalStateException("User task is not assigned to a userGroup");
         }
-        UTActionTrigger.UTAReassign reassignPb = UTActionTrigger.UTAReassign
-            .newBuilder()
-            .setUserGroup(userGroup)
-            .build();
-        UTActionTrigger actionTrigger = UTActionTrigger
-            .newBuilder()
-            .setReassign(reassignPb)
-            .setHook(UTActionTrigger.UTHook.ON_TASK_ASSIGNED)
-            .setDelaySeconds(assignVariable(deadlineSeconds))
-            .build();
+        UTActionTrigger.UTAReassign reassignPb =
+                UTActionTrigger.UTAReassign.newBuilder().setUserGroup(userGroup).build();
+        UTActionTrigger actionTrigger =
+                UTActionTrigger.newBuilder()
+                        .setReassign(reassignPb)
+                        .setHook(UTActionTrigger.UTHook.ON_TASK_ASSIGNED)
+                        .setDelaySeconds(assignVariable(deadlineSeconds))
+                        .build();
         curNode.getUserTaskBuilder().addActions(actionTrigger);
         spec.putNodes(lastNodeName, curNode.build());
     }
 
     @Override
     public void scheduleReassignmentToUserOnDeadline(
-        UserTaskOutput userTaskOutput,
-        String userId,
-        int deadlineSeconds
-    ) {
+            UserTaskOutput userTaskOutput, String userId, int deadlineSeconds) {
         checkIfIsActive();
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
         if (!lastNodeName.equals(utImpl.nodeName)) {
             throw new IllegalStateException("Tried to edit a stale User Task node!");
         }
-        UTActionTrigger.UTAReassign reassignPb = UTActionTrigger.UTAReassign
-            .newBuilder()
-            .setUserId(assignVariable(userId))
-            .build();
-        UTActionTrigger actionTrigger = UTActionTrigger
-            .newBuilder()
-            .setReassign(reassignPb)
-            .setHook(UTActionTrigger.UTHook.ON_TASK_ASSIGNED)
-            .setDelaySeconds(assignVariable(deadlineSeconds))
-            .build();
+        UTActionTrigger.UTAReassign reassignPb =
+                UTActionTrigger.UTAReassign.newBuilder().setUserId(assignVariable(userId)).build();
+        UTActionTrigger actionTrigger =
+                UTActionTrigger.newBuilder()
+                        .setReassign(reassignPb)
+                        .setHook(UTActionTrigger.UTHook.ON_TASK_ASSIGNED)
+                        .setDelaySeconds(assignVariable(deadlineSeconds))
+                        .build();
         curNode.getUserTaskBuilder().addActions(actionTrigger);
         spec.putNodes(lastNodeName, curNode.build());
     }
 
-    public UserTaskOutputImpl assignUserTaskToUser(
-        String userTaskDefName,
-        WfRunVariable userId
-    ) {
+    public UserTaskOutputImpl assignUserTaskToUser(String userTaskDefName, WfRunVariable userId) {
         return assignUserTaskHelper(userTaskDefName, userId, null);
     }
 
     @Override
     public UserTaskOutput assignUserTaskToUser(
-        String userTaskDefName,
-        WfRunVariable userId,
-        String userGroup
-    ) {
+            String userTaskDefName, WfRunVariable userId, String userGroup) {
         return assignUserTaskHelper(userTaskDefName, userId, userGroup);
     }
 
     @Override
     public UserTaskOutput assignUserTaskToUser(
-        String userTaskDefName,
-        WfRunVariable userId,
-        WfRunVariable userGroup
-    ) {
+            String userTaskDefName, WfRunVariable userId, WfRunVariable userGroup) {
         return assignUserTaskHelper(userTaskDefName, userId, userGroup);
     }
 
-    public UserTaskOutputImpl assignUserTaskToUserGroup(
-        String userTaskDefName,
-        String userGroup
-    ) {
+    public UserTaskOutputImpl assignUserTaskToUserGroup(String userTaskDefName, String userGroup) {
         return assignUserTaskHelper(userTaskDefName, null, userGroup);
     }
 
     public UserTaskOutputImpl assignUserTaskToUserGroup(
-        String userTaskDefName,
-        WfRunVariable userGroup
-    ) {
+            String userTaskDefName, WfRunVariable userGroup) {
         return assignUserTaskHelper(userTaskDefName, null, userGroup);
     }
 
     private UserTaskOutputImpl assignUserTaskHelper(
-        String userTaskDefName,
-        Object userId,
-        Object userGroups
-    ) {
+            String userTaskDefName, Object userId, Object userGroups) {
         checkIfIsActive();
         // guaranteed that exatly one of userId or userGroup is not null
-        UserTaskNode.Builder utNode = UserTaskNode
-            .newBuilder()
-            .setUserTaskDefName(userTaskDefName);
+        UserTaskNode.Builder utNode = UserTaskNode.newBuilder().setUserTaskDefName(userTaskDefName);
 
         if (userId != null) {
             VariableAssignment userIdAssn = assignVariable(userId);
-            VariableAssignment userGroupAssn = userGroups != null
-                ? assignVariable(userGroups)
-                : null;
-            UserTaskNode.UserAssignment.Builder userAssignmentBuilder = UserTaskNode.UserAssignment.newBuilder();
+            VariableAssignment userGroupAssn =
+                    userGroups != null ? assignVariable(userGroups) : null;
+            UserTaskNode.UserAssignment.Builder userAssignmentBuilder =
+                    UserTaskNode.UserAssignment.newBuilder();
             userAssignmentBuilder.setUserId(userIdAssn);
             if (userGroupAssn != null) {
                 userAssignmentBuilder.setUserGroup(userGroupAssn);
@@ -235,38 +196,22 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         // TODO LH-313: Return a special subclass of NodeOutputImpl that
         // allows for adding trigger actions
 
-        String nodeName = addNode(
-            userTaskDefName,
-            NodeCase.USER_TASK,
-            utNode.build()
-        );
+        String nodeName = addNode(userTaskDefName, NodeCase.USER_TASK, utNode.build());
         return new UserTaskOutputImpl(nodeName, this);
     }
 
     public void scheduleTaskAfter(
-        UserTaskOutput ut,
-        WfRunVariable delaySeconds,
-        String taskDefName,
-        Object... args
-    ) {
+            UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Object... args) {
         scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, args);
     }
 
     public void scheduleTaskAfter(
-        UserTaskOutput ut,
-        int delaySeconds,
-        String taskDefName,
-        Object... args
-    ) {
+            UserTaskOutput ut, int delaySeconds, String taskDefName, Object... args) {
         scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, args);
     }
 
     public void scheduleTaskAfterHelper(
-        UserTaskOutput ut,
-        Object delaySeconds,
-        String taskDefName,
-        Object... args
-    ) {
+            UserTaskOutput ut, Object delaySeconds, String taskDefName, Object... args) {
         checkIfIsActive();
         VariableAssignment assn = assignVariable(delaySeconds);
         TaskNode taskNode = createTaskNode(taskDefName, args);
@@ -278,11 +223,11 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         }
 
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        UTActionTrigger.Builder newUtActionBuilder = UTActionTrigger
-            .newBuilder()
-            .setTask(utaTask)
-            .setHook(UTActionTrigger.UTHook.ON_ARRIVAL)
-            .setDelaySeconds(assn);
+        UTActionTrigger.Builder newUtActionBuilder =
+                UTActionTrigger.newBuilder()
+                        .setTask(utaTask)
+                        .setHook(UTActionTrigger.UTHook.ON_ARRIVAL)
+                        .setDelaySeconds(assn);
         curNode.getUserTaskBuilder().addActions(newUtActionBuilder);
         spec.putNodes(lastNodeName, curNode.build());
         // TODO LH-334: return a modified child class of NodeOutput which lets
@@ -311,10 +256,8 @@ public class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     public void checkArgsVsTaskDef(
-        List<VariableDef> taskDefInputVars,
-        String taskDefName,
-        Object... args
-    ) throws TaskSchemaMismatchError {
+            List<VariableDef> taskDefInputVars, String taskDefName, Object... args)
+            throws TaskSchemaMismatchError {
         if (args.length != taskDefInputVars.size()) {
             throw new TaskSchemaMismatchError("Mismatched number of arguments!");
         }
@@ -326,16 +269,11 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             if (WfRunVariableImpl.class.isAssignableFrom(arg.getClass())) {
                 WfRunVariableImpl wfVar = ((WfRunVariableImpl) arg);
 
-                if (
-                    (
-                        wfVar.type == VariableType.JSON_ARR ||
-                        wfVar.type == VariableType.JSON_OBJ
-                    ) &&
-                    wfVar.jsonPath != null
-                ) {
+                if ((wfVar.type == VariableType.JSON_ARR || wfVar.type == VariableType.JSON_OBJ)
+                        && wfVar.jsonPath != null) {
                     log.info(
-                        "There is a jsonpath, so not checking value because Json schema isn't yet implemented"
-                    );
+                            "There is a jsonpath, so not checking value because Json schema isn't"
+                                    + " yet implemented");
                     continue;
                 }
                 argType = wfVar.type;
@@ -345,15 +283,14 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
             if (!argType.equals(taskDefInputVars.get(i).getType())) {
                 throw new TaskSchemaMismatchError(
-                    "Mismatch var type for param " +
-                    i +
-                    "on taskdef " +
-                    taskDefName +
-                    ": " +
-                    argType +
-                    " not compatible with " +
-                    taskDefInputVars.get(i).getType()
-                );
+                        "Mismatch var type for param "
+                                + i
+                                + "on taskdef "
+                                + taskDefName
+                                + ": "
+                                + argType
+                                + " not compatible with "
+                                + taskDefInputVars.get(i).getType());
             }
         }
     }
@@ -367,10 +304,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
     public WfRunVariableImpl addVariable(String name, Object typeOrDefaultVal) {
         checkIfIsActive();
-        WfRunVariableImpl wfRunVariable = new WfRunVariableImpl(
-            name,
-            typeOrDefaultVal
-        );
+        WfRunVariableImpl wfRunVariable = new WfRunVariableImpl(name, typeOrDefaultVal);
         wfRunVariables.add(wfRunVariable);
         return wfRunVariable;
     }
@@ -393,12 +327,10 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
         Node.Builder treeRoot = spec.getNodesOrThrow(treeRootNodeName).toBuilder();
         treeRoot.addOutgoingEdges(
-            Edge
-                .newBuilder()
-                .setSinkNodeName(lastNodeName)
-                .setCondition(cond.getReverse())
-                .build()
-        );
+                Edge.newBuilder()
+                        .setSinkNodeName(lastNodeName)
+                        .setCondition(cond.getReverse())
+                        .build());
         spec.putNodes(treeRootNodeName, treeRoot.build());
     }
 
@@ -407,11 +339,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         addNode("nop", NodeCase.NOP, NopNode.newBuilder().build());
     }
 
-    public void doIfElse(
-        WorkflowCondition condition,
-        IfElseBody ifBody,
-        IfElseBody elseBody
-    ) {
+    public void doIfElse(WorkflowCondition condition, IfElseBody ifBody, IfElseBody elseBody) {
         checkIfIsActive();
         WorkflowConditionImpl cond = (WorkflowConditionImpl) condition;
 
@@ -434,22 +362,17 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         // Now need to join the last node to the joiner node.
         if (lastNodeCondition != null) {
             throw new RuntimeException(
-                "Not possible to have lastNodeCondition after internal call to " +
-                "elseBody.body(this); please contact maintainers. This is a bug."
-            );
+                    "Not possible to have lastNodeCondition after internal call to "
+                            + "elseBody.body(this); please contact maintainers. This is a bug.");
         }
 
-        Node.Builder lastNodeFromElseBlock = spec
-            .getNodesOrThrow(lastNodeName)
-            .toBuilder();
+        Node.Builder lastNodeFromElseBlock = spec.getNodesOrThrow(lastNodeName).toBuilder();
         lastNodeFromElseBlock.addOutgoingEdges(
-            Edge
-                .newBuilder()
-                .setSinkNodeName(joinerNodeName)
-                // No condition necessary since we need to just go straight to
-                // the joiner node
-                .build()
-        );
+                Edge.newBuilder()
+                        .setSinkNodeName(joinerNodeName)
+                        // No condition necessary since we need to just go straight to
+                        // the joiner node
+                        .build());
 
         spec.putNodes(lastNodeName, lastNodeFromElseBlock.build());
 
@@ -477,48 +400,37 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         // Now add the sideways path from root directly to last
         Node.Builder treeRoot = spec.getNodesOrThrow(treeRootNodeName).toBuilder();
         treeRoot.addOutgoingEdges(
-            Edge
-                .newBuilder()
-                .setSinkNodeName(treeLastNodeName)
-                .setCondition(cond.getReverse())
-                .build()
-        );
+                Edge.newBuilder()
+                        .setSinkNodeName(treeLastNodeName)
+                        .setCondition(cond.getReverse())
+                        .build());
         spec.putNodes(treeRootNodeName, treeRoot.build());
 
         // Now add the sideways path from last directly to root
         Node.Builder treeLast = spec.getNodesOrThrow(treeLastNodeName).toBuilder();
         treeLast.addOutgoingEdges(
-            Edge
-                .newBuilder()
-                .setSinkNodeName(treeRootNodeName)
-                .setCondition(cond.getSpec())
-                .build()
-        );
+                Edge.newBuilder()
+                        .setSinkNodeName(treeRootNodeName)
+                        .setCondition(cond.getSpec())
+                        .build());
 
         spec.putNodes(treeLastNodeName, treeLast.build());
     }
 
     public void sleepSeconds(Object secondsToSleep) {
         checkIfIsActive();
-        SleepNode.Builder n = SleepNode
-            .newBuilder()
-            .setRawSeconds(assignVariable(secondsToSleep));
+        SleepNode.Builder n = SleepNode.newBuilder().setRawSeconds(assignVariable(secondsToSleep));
         addNode("sleep", NodeCase.SLEEP, n.build());
     }
 
     public void sleepUntil(WfRunVariable timestamp) {
         checkIfIsActive();
-        SleepNode.Builder n = SleepNode
-            .newBuilder()
-            .setTimestamp(assignVariable(timestamp));
+        SleepNode.Builder n = SleepNode.newBuilder().setTimestamp(assignVariable(timestamp));
         addNode("sleep", NodeCase.SLEEP, n.build());
     }
 
     public SpawnedThreadImpl spawnThread(
-        ThreadFunc threadFunc,
-        String threadName,
-        Map<String, Object> inputVars
-    ) {
+            ThreadFunc threadFunc, String threadName, Map<String, Object> inputVars) {
         checkIfIsActive();
         if (inputVars == null) {
             inputVars = new HashMap<>();
@@ -530,25 +442,21 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             varAssigns.put(var.getKey(), assignVariable(var.getValue()));
         }
 
-        StartThreadNode startThread = StartThreadNode
-            .newBuilder()
-            .setThreadSpecName(threadName)
-            .putAllVariables(varAssigns)
-            .build();
+        StartThreadNode startThread =
+                StartThreadNode.newBuilder()
+                        .setThreadSpecName(threadName)
+                        .putAllVariables(varAssigns)
+                        .build();
 
         String nodeName = addNode(threadName, NodeCase.START_THREAD, startThread);
-        WfRunVariableImpl internalStartedThreadVar = addVariable(
-            nodeName,
-            VariableType.INT
-        );
+        WfRunVariableImpl internalStartedThreadVar = addVariable(nodeName, VariableType.INT);
 
         // The output of a StartThreadNode is just an integer containing the name
         // of the thread.
         mutate(
-            internalStartedThreadVar,
-            VariableMutationType.ASSIGN,
-            new NodeOutputImpl(nodeName, this)
-        );
+                internalStartedThreadVar,
+                VariableMutationType.ASSIGN,
+                new NodeOutputImpl(nodeName, this));
 
         return new SpawnedThreadImpl(this, threadName, internalStartedThreadVar);
     }
@@ -562,15 +470,11 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
         ExternalEventNode.Builder evt = n.getExternalEventBuilder();
         evt.setTimeoutSeconds(
-            VariableAssignment
-                .newBuilder()
-                .setLiteralValue(
-                    VariableValue
-                        .newBuilder()
-                        .setInt(timeoutSeconds)
-                        .setType(VariableType.INT)
-                )
-        );
+                VariableAssignment.newBuilder()
+                        .setLiteralValue(
+                                VariableValue.newBuilder()
+                                        .setInt(timeoutSeconds)
+                                        .setType(VariableType.INT)));
 
         n.setExternalEvent(evt);
 
@@ -580,10 +484,8 @@ public class ThreadBuilderImpl implements ThreadBuilder {
     public void mutate(WfRunVariable lhsVar, VariableMutationType type, Object rhs) {
         checkIfIsActive();
         WfRunVariableImpl lhs = (WfRunVariableImpl) lhsVar;
-        VariableMutation.Builder mutation = VariableMutation
-            .newBuilder()
-            .setLhsName(lhs.name)
-            .setOperation(type);
+        VariableMutation.Builder mutation =
+                VariableMutation.newBuilder().setLhsName(lhs.name).setOperation(type);
 
         if (lhs.jsonPath != null) {
             mutation.setLhsJsonPath(lhs.jsonPath);
@@ -594,9 +496,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             if (!no.nodeName.equals(this.lastNodeName)) {
                 log.debug("Mutating {} {} {}", no.nodeName, this.lastNodeName, name);
 
-                throw new RuntimeException(
-                    "Cannot use an old NodeOutput from node " + no.nodeName
-                );
+                throw new RuntimeException("Cannot use an old NodeOutput from node " + no.nodeName);
             }
 
             NodeOutputSource.Builder nodeOutputSource = NodeOutputSource.newBuilder();
@@ -639,34 +539,26 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         for (int i = 0; i < threadsToWaitFor.length; i++) {
             SpawnedThreadImpl st = (SpawnedThreadImpl) threadsToWaitFor[i];
             waitNode.addThreads(
-                ThreadToWaitFor
-                    .newBuilder()
-                    .setThreadRunNumber(assignVariable(st.internalThreadVar))
-            );
+                    ThreadToWaitFor.newBuilder()
+                            .setThreadRunNumber(assignVariable(st.internalThreadVar)));
         }
 
-        String nodeName = addNode(
-            "threads",
-            NodeCase.WAIT_FOR_THREADS,
-            waitNode.build()
-        );
+        String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode.build());
 
         return new NodeOutputImpl(nodeName, this);
     }
 
     public NodeOutputImpl waitForEvent(String externalEventDefName) {
         checkIfIsActive();
-        ExternalEventNode waitNode = ExternalEventNode
-            .newBuilder()
-            .setExternalEventDefName(externalEventDefName)
-            .build();
+        ExternalEventNode waitNode =
+                ExternalEventNode.newBuilder()
+                        .setExternalEventDefName(externalEventDefName)
+                        .build();
 
         parent.addExternalEventDefName(externalEventDefName);
 
         return new NodeOutputImpl(
-            addNode(externalEventDefName, NodeCase.EXTERNAL_EVENT, waitNode),
-            this
-        );
+                addNode(externalEventDefName, NodeCase.EXTERNAL_EVENT, waitNode), this);
     }
 
     public void complete() {
@@ -686,10 +578,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         if (message != null) failureBuilder.setMessage(message);
         failureBuilder.setFailureName(failureName);
 
-        ExitNode exitNode = ExitNode
-            .newBuilder()
-            .setFailureDef(failureBuilder)
-            .build();
+        ExitNode exitNode = ExitNode.newBuilder().setFailureDef(failureBuilder).build();
 
         addNode(failureName, NodeCase.EXIT, exitNode);
     }
@@ -701,49 +590,36 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         parent.addExternalEventDefName(interruptName);
 
         spec.addInterruptDefs(
-            InterruptDef
-                .newBuilder()
-                .setExternalEventDefName(interruptName)
-                .setHandlerSpecName(threadName)
-                .build()
-        );
+                InterruptDef.newBuilder()
+                        .setExternalEventDefName(interruptName)
+                        .setHandlerSpecName(threadName)
+                        .build());
     }
 
-    public void handleException(
-        NodeOutput nodeOutput,
-        String exceptionName,
-        ThreadFunc handler
-    ) {
+    public void handleException(NodeOutput nodeOutput, String exceptionName, ThreadFunc handler) {
         checkIfIsActive();
         NodeOutputImpl node = (NodeOutputImpl) nodeOutput;
         String threadName = "exn-handler-" + node.nodeName + "-" + exceptionName;
         threadName = parent.addSubThread(threadName, handler);
-        FailureHandlerDef.Builder handlerDef = FailureHandlerDef
-            .newBuilder()
-            .setHandlerSpecName(threadName);
+        FailureHandlerDef.Builder handlerDef =
+                FailureHandlerDef.newBuilder().setHandlerSpecName(threadName);
         if (exceptionName != null) {
             handlerDef.setSpecificFailure(exceptionName);
         }
 
         // Add the failure handler to the most recent node
-        Node.Builder lastNodeBuilder = spec
-            .getNodesOrThrow(node.nodeName)
-            .toBuilder();
+        Node.Builder lastNodeBuilder = spec.getNodesOrThrow(node.nodeName).toBuilder();
 
         lastNodeBuilder.addFailureHandlers(handlerDef);
         spec.putNodes(node.nodeName, lastNodeBuilder.build());
     }
 
-    public WorkflowConditionImpl condition(
-        Object lhs,
-        Comparator comparator,
-        Object rhs
-    ) {
-        EdgeCondition.Builder edge = EdgeCondition
-            .newBuilder()
-            .setComparator(comparator)
-            .setLeft(assignVariable(lhs))
-            .setRight(assignVariable(rhs));
+    public WorkflowConditionImpl condition(Object lhs, Comparator comparator, Object rhs) {
+        EdgeCondition.Builder edge =
+                EdgeCondition.newBuilder()
+                        .setComparator(comparator)
+                        .setLeft(assignVariable(lhs))
+                        .setRight(assignVariable(rhs));
 
         return new WorkflowConditionImpl(edge.build());
     }
@@ -822,17 +698,14 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             builder.setVariableName(wrv.name);
         } else if (variable.getClass().equals(NodeOutputImpl.class)) {
             throw new RuntimeException(
-                "Error: Cannot use NodeOutput directly as input to" +
-                " task. First save to a WfRunVariable."
-            );
+                    "Error: Cannot use NodeOutput directly as input to"
+                            + " task. First save to a WfRunVariable.");
         } else if (variable.getClass().equals(LHFormatStringImpl.class)) {
             LHFormatStringImpl format = (LHFormatStringImpl) variable;
             builder.setFormatString(
-                FormatString
-                    .newBuilder()
-                    .setFormat(assignVariable(format.getFormat()))
-                    .addAllArgs(format.getArgs())
-            );
+                    FormatString.newBuilder()
+                            .setFormat(assignVariable(format.getFormat()))
+                            .addAllArgs(format.getArgs()));
         } else {
             try {
                 VariableValue defVal = LHLibUtil.objToVarVal(variable);

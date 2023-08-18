@@ -69,41 +69,35 @@ public class WfSpecModel extends Getable<WfSpec> {
     @Override
     public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
         return List.of(
-            new GetableIndex<>(
-                List.of(Pair.of("taskDef", GetableIndex.ValueType.DYNAMIC)),
-                Optional.of(TagStorageType.REMOTE)
-            )
-        );
+                new GetableIndex<>(
+                        List.of(Pair.of("taskDef", GetableIndex.ValueType.DYNAMIC)),
+                        Optional.of(TagStorageType.REMOTE)));
     }
 
     @Override
-    public List<IndexedField> getIndexValues(
-        String key,
-        Optional<TagStorageType> tagStorageType
-    ) {
+    public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         if (key.equals("taskDef")) {
-            return this.taskDefNames()
-                .stream()
-                .map(taskDefName ->
-                    new IndexedField(key, taskDefName, tagStorageType.get())
-                )
-                .toList();
+            return this.taskDefNames().stream()
+                    .map(taskDefName -> new IndexedField(key, taskDefName, tagStorageType.get()))
+                    .toList();
         }
         return List.of();
     }
 
     public List<String> taskDefNames() {
         List<String> names = new ArrayList<>();
-        threadSpecs.forEach((s, threadSpec) -> {
-            threadSpec
-                .getNodes()
-                .values()
-                .forEach(node -> {
-                    if (node.getType() == Node.NodeCase.TASK) {
-                        names.add(node.getTaskNode().getTaskDefName());
-                    }
+        threadSpecs.forEach(
+                (s, threadSpec) -> {
+                    threadSpec
+                            .getNodes()
+                            .values()
+                            .forEach(
+                                    node -> {
+                                        if (node.getType() == Node.NodeCase.TASK) {
+                                            names.add(node.getTaskNode().getTaskDefName());
+                                        }
+                                    });
                 });
-        });
         return names;
     }
 
@@ -118,14 +112,14 @@ public class WfSpecModel extends Getable<WfSpec> {
     }
 
     public WfSpec.Builder toProto() {
-        WfSpec.Builder out = WfSpec
-            .newBuilder()
-            .setVersion(version)
-            .setCreatedAt(LHUtil.fromDate(createdAt))
-            .setEntrypointThreadName(entrypointThreadName)
-            .setStatus(status)
-            .setRetentionHours(retentionHours)
-            .setName(name);
+        WfSpec.Builder out =
+                WfSpec.newBuilder()
+                        .setVersion(version)
+                        .setCreatedAt(LHUtil.fromDate(createdAt))
+                        .setEntrypointThreadName(entrypointThreadName)
+                        .setStatus(status)
+                        .setRetentionHours(retentionHours)
+                        .setName(name);
 
         if (threadSpecs != null) {
             for (Map.Entry<String, ThreadSpecModel> p : threadSpecs.entrySet()) {
@@ -184,8 +178,7 @@ public class WfSpecModel extends Getable<WfSpec> {
         return Pair.of(tspecName, out);
     }
 
-    public void validate(LHGlobalMetaStores dbClient, LHConfig config)
-        throws LHValidationError {
+    public void validate(LHGlobalMetaStores dbClient, LHConfig config) throws LHValidationError {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new LHValidationError(null, "Unknown entrypoint thread");
         }
@@ -240,14 +233,13 @@ public class WfSpecModel extends Getable<WfSpec> {
                 if (varToThreadSpec.containsKey(varName)) {
                     if (!varName.equals(LHConstants.EXT_EVT_HANDLER_VAR)) {
                         throw new LHValidationError(
-                            null,
-                            "Var name " +
-                            varName +
-                            " defined in threads " +
-                            tspec.name +
-                            " and " +
-                            varToThreadSpec.get(varName)
-                        );
+                                null,
+                                "Var name "
+                                        + varName
+                                        + " defined in threads "
+                                        + tspec.name
+                                        + " and "
+                                        + varToThreadSpec.get(varName));
                     }
                 }
                 varToThreadSpec.put(varName, name);
@@ -261,9 +253,7 @@ public class WfSpecModel extends Getable<WfSpec> {
             for (String varName : tspec.getRequiredVariableNames()) {
                 if (!varToThreadSpec.containsKey(varName)) {
                     throw new LHValidationError(
-                        null,
-                        "Thread " + tspec.name + " refers to missing var " + varName
-                    );
+                            null, "Thread " + tspec.name + " refers to missing var " + varName);
                 }
             }
         }
@@ -281,12 +271,11 @@ public class WfSpecModel extends Getable<WfSpec> {
         out.status = LHStatus.RUNNING;
 
         out.startThread(
-            entrypointThreadName,
-            getDao().getEventTime(),
-            null,
-            evt.variables,
-            ThreadType.ENTRYPOINT
-        );
+                entrypointThreadName,
+                getDao().getEventTime(),
+                null,
+                evt.variables,
+                ThreadType.ENTRYPOINT);
 
         getDao().saveWfRun(out);
 
@@ -295,10 +284,9 @@ public class WfSpecModel extends Getable<WfSpec> {
 
     public static WfSpecId parseId(String fullId) {
         String[] split = fullId.split("/");
-        return WfSpecId
-            .newBuilder()
-            .setName(split[0])
-            .setVersion(Integer.valueOf(split[1]))
-            .build();
+        return WfSpecId.newBuilder()
+                .setName(split[0])
+                .setVersion(Integer.valueOf(split[1]))
+                .build();
     }
 }

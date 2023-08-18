@@ -12,9 +12,8 @@ import org.apache.kafka.common.utils.Bytes;
 @Slf4j
 public class WfSpecCache extends LHCache<WfSpecIdModel, WfSpecModel> {
 
-    private static final Pattern WFSPEC_KEY_PATTERN = Pattern.compile(
-        "2\\/(?<name>.+)\\/(?<version>\\d+)"
-    );
+    private static final Pattern WFSPEC_KEY_PATTERN =
+            Pattern.compile("2\\/(?<name>.+)\\/(?<version>\\d+)");
     public static final int LATEST_VERSION = -1;
 
     public WfSpecCache() {}
@@ -33,11 +32,8 @@ public class WfSpecCache extends LHCache<WfSpecIdModel, WfSpecModel> {
                 evictCache(cacheVersionKey);
                 evictCache(cacheLatestKey);
             } else {
-                WfSpecModel wfSpecModel = WfSpecModel.fromBytes(
-                    value.get(),
-                    WfSpecModel.class,
-                    null
-                );
+                WfSpecModel wfSpecModel =
+                        WfSpecModel.fromBytes(value.get(), WfSpecModel.class, null);
                 log.trace("Updating wfSpecCache for {}", cacheVersionKey);
                 updateCache(cacheVersionKey, wfSpecModel);
                 updateCache(cacheLatestKey, wfSpecModel);
@@ -45,11 +41,7 @@ public class WfSpecCache extends LHCache<WfSpecIdModel, WfSpecModel> {
         }
     }
 
-    public WfSpecModel getOrCache(
-        String name,
-        Integer version,
-        Supplier<WfSpecModel> cacheable
-    ) {
+    public WfSpecModel getOrCache(String name, Integer version, Supplier<WfSpecModel> cacheable) {
         if (version == null) {
             version = LATEST_VERSION;
         }

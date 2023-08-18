@@ -14,11 +14,7 @@ public class ObjectIdScanBoundaryStrategy implements SearchScanBoundaryStrategy 
         this(objectId, objectId + "/", objectId + "/~");
     }
 
-    public ObjectIdScanBoundaryStrategy(
-        String objectId,
-        String startKey,
-        String endKey
-    ) {
+    public ObjectIdScanBoundaryStrategy(String objectId, String startKey, String endKey) {
         this.startKey = startKey;
         this.endKey = endKey;
         this.objectId = objectId;
@@ -26,11 +22,10 @@ public class ObjectIdScanBoundaryStrategy implements SearchScanBoundaryStrategy 
 
     @Override
     public Message buildScanProto() {
-        return InternalScanPb.BoundedObjectIdScanPb
-            .newBuilder()
-            .setStartObjectId(startKey)
-            .setEndObjectId(endKey)
-            .build();
+        return InternalScanPb.BoundedObjectIdScanPb.newBuilder()
+                .setStartObjectId(startKey)
+                .setEndObjectId(endKey)
+                .build();
     }
 
     @Override

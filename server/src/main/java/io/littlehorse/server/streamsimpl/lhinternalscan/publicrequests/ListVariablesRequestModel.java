@@ -15,7 +15,12 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrate
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListVariablesReply;
 
 public class ListVariablesRequestModel
-    extends PublicScanRequest<ListVariablesRequest, ListVariablesResponse, Variable, VariableModel, ListVariablesReply> {
+        extends PublicScanRequest<
+                ListVariablesRequest,
+                ListVariablesResponse,
+                Variable,
+                VariableModel,
+                ListVariablesReply> {
 
     public String wfRunId;
 
@@ -37,8 +42,7 @@ public class ListVariablesRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
         return TagStorageType.LOCAL;
     }
 

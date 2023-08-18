@@ -19,7 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SearchTaskDefRequestModel
-    extends PublicScanRequest<SearchTaskDefRequest, SearchTaskDefResponse, TaskDefId, TaskDefIdModel, SearchTaskDefReply> {
+        extends PublicScanRequest<
+                SearchTaskDefRequest,
+                SearchTaskDefResponse,
+                TaskDefId,
+                TaskDefIdModel,
+                SearchTaskDefReply> {
 
     public String prefix;
 
@@ -64,8 +69,7 @@ public class SearchTaskDefRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
         return TagStorageType.LOCAL;
     }
 
@@ -76,16 +80,9 @@ public class SearchTaskDefRequestModel
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         if (prefix != null && !prefix.equals("")) {
             return new ObjectIdScanBoundaryStrategy(
-                LHConstants.META_PARTITION_KEY,
-                prefix,
-                prefix + "~"
-            );
+                    LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
         } else {
-            return new ObjectIdScanBoundaryStrategy(
-                LHConstants.META_PARTITION_KEY,
-                "",
-                "~"
-            );
+            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, "", "~");
         }
     }
 }

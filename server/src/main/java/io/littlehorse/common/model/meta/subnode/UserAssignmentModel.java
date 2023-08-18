@@ -28,8 +28,7 @@ public class UserAssignmentModel extends LHSerializable<UserAssignment> {
         UserAssignment UserAssignment = (UserAssignment) proto;
         userId = VariableAssignmentModel.fromProto(UserAssignment.getUserId());
         if (UserAssignment.hasUserGroup()) {
-            userGroup =
-                VariableAssignmentModel.fromProto(UserAssignment.getUserGroup());
+            userGroup = VariableAssignmentModel.fromProto(UserAssignment.getUserGroup());
         }
     }
 

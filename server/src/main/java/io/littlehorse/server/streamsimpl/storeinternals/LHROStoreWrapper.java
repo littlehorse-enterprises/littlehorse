@@ -37,45 +37,33 @@ public class LHROStoreWrapper {
     protected ReadOnlyKeyValueStore<String, Bytes> store;
     protected LHConfig config;
 
-    public LHROStoreWrapper(
-        ReadOnlyKeyValueStore<String, Bytes> store,
-        LHConfig config
-    ) {
+    public LHROStoreWrapper(ReadOnlyKeyValueStore<String, Bytes> store, LHConfig config) {
         this.store = store;
         this.config = config;
     }
 
-    public <
-        U extends Message, T extends Getable<U>
-    > StoredGetable<U, T> getStoredGetable(String objectId, Class<T> cls) {
+    public <U extends Message, T extends Getable<U>> StoredGetable<U, T> getStoredGetable(
+            String objectId, Class<T> cls) {
         Bytes raw = store.get(StoreUtils.getFullStoreKey(objectId, cls));
         if (raw == null) {
             return null;
         }
         try {
-            return (StoredGetable<U, T>) LHSerializable.fromBytes(
-                raw.get(),
-                StoredGetable.class,
-                config
-            );
+            return (StoredGetable<U, T>)
+                    LHSerializable.fromBytes(raw.get(), StoredGetable.class, config);
         } catch (LHSerdeError exn) {
             log.error(exn.getMessage(), exn);
             throw new RuntimeException(
-                "Not possible to have this happen, indicates corrupted store."
-            );
+                    "Not possible to have this happen, indicates corrupted store.");
         }
     }
 
     /**
-     * @deprecated
-     * Should not use this method because it's not using the StoredGetable class. This method will
-     * be removed once all entities are migrated to use the StoredGetable class.
+     * @deprecated Should not use this method because it's not using the StoredGetable class. This
+     *     method will be removed once all entities are migrated to use the StoredGetable class.
      */
     @Deprecated(forRemoval = true)
-    public <U extends Message, T extends Storeable<U>> T get(
-        String objectId,
-        Class<T> cls
-    ) {
+    public <U extends Message, T extends Storeable<U>> T get(String objectId, Class<T> cls) {
         Bytes raw = store.get(StoreUtils.getFullStoreKey(objectId, cls));
         if (raw == null) {
             return null;
@@ -85,60 +73,43 @@ public class LHROStoreWrapper {
         } catch (LHSerdeError exn) {
             log.error(exn.getMessage(), exn);
             throw new RuntimeException(
-                "Not possible to have this happen, indicates corrupted store."
-            );
+                    "Not possible to have this happen, indicates corrupted store.");
         }
     }
 
     /*
      * Make sure to `.close()` the result!
      */
-    public <T extends Storeable<?>> LHKeyValueIterator<T> prefixScan(
-        String prefix,
-        Class<T> cls
-    ) {
+    public <T extends Storeable<?>> LHKeyValueIterator<T> prefixScan(String prefix, Class<T> cls) {
         String compositePrefix = StoreUtils.getFullStoreKey(prefix, cls);
         return new LHKeyValueIterator<>(
-            store.prefixScan(compositePrefix, Serdes.String().serializer()),
-            cls,
-            config
-        );
+                store.prefixScan(compositePrefix, Serdes.String().serializer()), cls, config);
     }
 
     /*
      * Make sure to `.close()` the result!
      */
     @SuppressWarnings("unchecked")
-    public <
-        U extends Message, T extends Getable<U>
-    > LHKeyValueIterator<StoredGetable<U, T>> prefixScanStoredGetable(
-        String prefix,
-        Class<T> cls
-    ) {
+    public <U extends Message, T extends Getable<U>>
+            LHKeyValueIterator<StoredGetable<U, T>> prefixScanStoredGetable(
+                    String prefix, Class<T> cls) {
         String compositePrefix = StoreUtils.getFullStoreKey(prefix, cls);
-        LHKeyValueIterator<?> iterator = new LHKeyValueIterator<>(
-            store.prefixScan(compositePrefix, Serdes.String().serializer()),
-            StoredGetable.class,
-            config
-        );
+        LHKeyValueIterator<?> iterator =
+                new LHKeyValueIterator<>(
+                        store.prefixScan(compositePrefix, Serdes.String().serializer()),
+                        StoredGetable.class,
+                        config);
         return (LHKeyValueIterator<StoredGetable<U, T>>) iterator;
     }
 
     public <T extends Storeable<?>> LHKeyValueIterator<T> prefixTagScan(
-        String prefix,
-        Class<T> cls
-    ) {
+            String prefix, Class<T> cls) {
         return new LHKeyValueIterator<>(
-            store.prefixScan(prefix, Serdes.String().serializer()),
-            cls,
-            config
-        );
+                store.prefixScan(prefix, Serdes.String().serializer()), cls, config);
     }
 
     public <U extends Message, T extends Storeable<U>> T getLastFromPrefix(
-        String prefix,
-        Class<T> cls
-    ) {
+            String prefix, Class<T> cls) {
         LHKeyValueIterator<T> iterator = null;
         try {
             iterator = reversePrefixScan(prefix + "/", cls);
@@ -169,9 +140,7 @@ public class LHROStoreWrapper {
     }
 
     public <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(
-        String prefix,
-        Class<T> cls
-    ) {
+            String prefix, Class<T> cls) {
         String start = StoreUtils.getFullStoreKey(prefix, cls);
         // The Streams ReadOnlyKeyValueStore doesn't have a reverse prefix scan.
         // However, they do have a reverse range scan. So we take the prefix and
@@ -184,8 +153,8 @@ public class LHROStoreWrapper {
     }
 
     /**
-     * Does a range scan over the provided object id's (note: these are NOT full
-     * store keys.)
+     * Does a range scan over the provided object id's (note: these are NOT full store keys.)
+     *
      * @param <T> type of object
      * @param start start object id
      * @param end end object id
@@ -193,18 +162,13 @@ public class LHROStoreWrapper {
      * @return an iter
      */
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(
-        String start,
-        String end,
-        Class<T> cls
-    ) {
+            String start, String end, Class<T> cls) {
         return new LHKeyValueIterator<>(
-            store.range(
-                StoreUtils.getFullStoreKey(start, cls),
-                StoreUtils.getFullStoreKey(end, cls)
-            ),
-            cls,
-            config
-        );
+                store.range(
+                        StoreUtils.getFullStoreKey(start, cls),
+                        StoreUtils.getFullStoreKey(end, cls)),
+                cls,
+                config);
     }
 }
 /*

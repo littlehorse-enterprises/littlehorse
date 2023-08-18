@@ -17,9 +17,10 @@ public class VariableValueModelTest {
 
         assertThat(doubleVarval.type).isEqualTo(VariableType.DOUBLE);
 
-        assertDoesNotThrow(() -> {
-            doubleVarval.asInt();
-        });
+        assertDoesNotThrow(
+                () -> {
+                    doubleVarval.asInt();
+                });
         VariableValueModel intVarVal = doubleVarval.asInt();
 
         assertThat(intVarVal.type).isEqualTo(VariableType.INT);
@@ -47,9 +48,7 @@ public class VariableValueModelTest {
     @Test
     void asObjShouldReturnCopy() throws LHVarSubError, LHSerdeError {
         ObjVarThing thing = new ObjVarThing("Hi There");
-        VariableValueModel first = VariableValueModel.fromProto(
-            LHLibUtil.objToVarVal(thing)
-        );
+        VariableValueModel first = VariableValueModel.fromProto(LHLibUtil.objToVarVal(thing));
 
         assertThat(first.type).isEqualTo(VariableType.JSON_OBJ);
         assertThat(first.jsonObjVal.get("foo")).isEqualTo("Hi There");

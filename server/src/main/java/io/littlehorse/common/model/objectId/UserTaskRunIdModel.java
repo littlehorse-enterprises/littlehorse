@@ -12,8 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserTaskRunIdModel
-    extends ObjectId<UserTaskRunId, UserTaskRun, UserTaskRunModel> {
+public class UserTaskRunIdModel extends ObjectId<UserTaskRunId, UserTaskRun, UserTaskRunModel> {
 
     private String wfRunId;
     private String userTaskGuid;
@@ -44,10 +43,8 @@ public class UserTaskRunIdModel
     }
 
     public UserTaskRunId.Builder toProto() {
-        UserTaskRunId.Builder out = UserTaskRunId
-            .newBuilder()
-            .setWfRunId(wfRunId)
-            .setUserTaskGuid(userTaskGuid);
+        UserTaskRunId.Builder out =
+                UserTaskRunId.newBuilder().setWfRunId(wfRunId).setUserTaskGuid(userTaskGuid);
         return out;
     }
 

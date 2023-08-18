@@ -36,9 +36,7 @@ public class OAuthClient {
         this.config = config;
         try {
             this.providerMetadata =
-                OIDCProviderMetadata.resolve(
-                    new Issuer(config.getAuthorizationServer())
-                );
+                    OIDCProviderMetadata.resolve(new Issuer(config.getAuthorizationServer()));
         } catch (GeneralException | IOException e) {
             log.error(e.getMessage(), e);
             throw new AuthorizationServerException(e);
@@ -47,22 +45,19 @@ public class OAuthClient {
 
     public TokenStatus getAccessToken() {
         try {
-            TokenRequest request = new TokenRequest(
-                providerMetadata.getTokenEndpointURI(),
-                getCredentials(),
-                new ClientCredentialsGrant(),
-                new Scope("openid")
-            );
+            TokenRequest request =
+                    new TokenRequest(
+                            providerMetadata.getTokenEndpointURI(),
+                            getCredentials(),
+                            new ClientCredentialsGrant(),
+                            new Scope("openid"));
 
-            TokenResponse response = TokenResponse.parse(
-                request.toHTTPRequest().send()
-            );
+            TokenResponse response = TokenResponse.parse(request.toHTTPRequest().send());
 
             if (!response.indicatesSuccess()) {
                 throw new AuthorizationServerException(
-                    "Error getting the token status: " +
-                    response.toErrorResponse().getErrorObject()
-                );
+                        "Error getting the token status: "
+                                + response.toErrorResponse().getErrorObject());
             }
 
             AccessTokenResponse successResponse = response.toSuccessResponse();
@@ -76,28 +71,27 @@ public class OAuthClient {
 
     public TokenStatus introspect(String token) {
         try {
-            TokenIntrospectionRequest request = new TokenIntrospectionRequest(
-                providerMetadata.getIntrospectionEndpointURI(),
-                getCredentials(),
-                new BearerAccessToken(token)
-            );
+            TokenIntrospectionRequest request =
+                    new TokenIntrospectionRequest(
+                            providerMetadata.getIntrospectionEndpointURI(),
+                            getCredentials(),
+                            new BearerAccessToken(token));
 
-            TokenIntrospectionResponse response = TokenIntrospectionResponse.parse(
-                request.toHTTPRequest().send()
-            );
+            TokenIntrospectionResponse response =
+                    TokenIntrospectionResponse.parse(request.toHTTPRequest().send());
 
             if (!response.indicatesSuccess()) {
                 throw new AuthorizationServerException(
-                    "Error getting the token status: " +
-                    response.toErrorResponse().getErrorObject()
-                );
+                        "Error getting the token status: "
+                                + response.toErrorResponse().getErrorObject());
             }
 
             TokenIntrospectionSuccessResponse successResponse = response.toSuccessResponse();
 
-            Instant expiration = successResponse.getExpirationTime() != null
-                ? successResponse.getExpirationTime().toInstant()
-                : Instant.MIN;
+            Instant expiration =
+                    successResponse.getExpirationTime() != null
+                            ? successResponse.getExpirationTime().toInstant()
+                            : Instant.MIN;
 
             return TokenStatus.builder().token(token).expiration(expiration).build();
         } catch (ParseException | IOException e) {
@@ -108,8 +102,6 @@ public class OAuthClient {
 
     private ClientAuthentication getCredentials() {
         return new ClientSecretBasic(
-            new ClientID(config.getClientId()),
-            new Secret(config.getClientSecret())
-        );
+                new ClientID(config.getClientId()), new Secret(config.getClientSecret()));
     }
 }

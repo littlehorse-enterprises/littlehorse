@@ -53,12 +53,12 @@ public class ReportTaskRunModel extends SubCommand<ReportTaskRun> {
     }
 
     public ReportTaskRun.Builder toProto() {
-        ReportTaskRun.Builder b = ReportTaskRun
-            .newBuilder()
-            .setTaskRunId(taskRunId.toProto())
-            .setTime(LHUtil.fromDate(time))
-            .setStatus(status)
-            .setAttemptNumber(attemptNumber);
+        ReportTaskRun.Builder b =
+                ReportTaskRun.newBuilder()
+                        .setTaskRunId(taskRunId.toProto())
+                        .setTime(LHUtil.fromDate(time))
+                        .setStatus(status)
+                        .setAttemptNumber(attemptNumber);
 
         if (stdout != null) b.setOutput(stdout.toProto());
         if (stderr != null) b.setLogOutput(stderr.toProto());
@@ -68,8 +68,7 @@ public class ReportTaskRunModel extends SubCommand<ReportTaskRun> {
 
     public void initFrom(Message proto) {
         ReportTaskRun p = (ReportTaskRun) proto;
-        this.taskRunId =
-            TaskRunIdModel.fromProto(p.getTaskRunId(), TaskRunIdModel.class);
+        this.taskRunId = TaskRunIdModel.fromProto(p.getTaskRunId(), TaskRunIdModel.class);
         this.time = LHUtil.fromProtoTs(p.getTime());
         this.status = p.getStatus();
         this.attemptNumber = p.getAttemptNumber();

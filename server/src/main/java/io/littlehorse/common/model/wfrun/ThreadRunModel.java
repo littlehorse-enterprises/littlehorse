@@ -99,10 +99,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         if (proto.hasInterruptTriggerId()) {
             interruptTriggerId =
-                LHSerializable.fromProto(
-                    proto.getInterruptTriggerId(),
-                    ExternalEventIdModel.class
-                );
+                    LHSerializable.fromProto(
+                            proto.getInterruptTriggerId(), ExternalEventIdModel.class);
         }
 
         for (ThreadHaltReason thrpb : proto.getHaltReasonsList()) {
@@ -113,7 +111,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         if (proto.hasFailureBeingHandled()) {
             failureBeingHandled =
-                FailureBeingHandledModel.fromProto(proto.getFailureBeingHandled());
+                    FailureBeingHandledModel.fromProto(proto.getFailureBeingHandled());
         }
 
         for (int handledFailedChildId : proto.getHandledFailedChildrenList()) {
@@ -124,17 +122,17 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     public ThreadRun.Builder toProto() {
-        ThreadRun.Builder out = ThreadRun
-            .newBuilder()
-            .setWfRunId(wfRunId)
-            .setNumber(number)
-            .setStatus(status)
-            .setWfSpecName(wfSpecName)
-            .setWfSpecVersion(wfSpecVersion)
-            .setThreadSpecName(threadSpecName)
-            .setCurrentNodePosition(currentNodePosition)
-            .setStartTime(LHUtil.fromDate(startTime))
-            .setType(type);
+        ThreadRun.Builder out =
+                ThreadRun.newBuilder()
+                        .setWfRunId(wfRunId)
+                        .setNumber(number)
+                        .setStatus(status)
+                        .setWfSpecName(wfSpecName)
+                        .setWfSpecVersion(wfSpecVersion)
+                        .setThreadSpecName(threadSpecName)
+                        .setCurrentNodePosition(currentNodePosition)
+                        .setStartTime(LHUtil.fromDate(startTime))
+                        .setType(type);
 
         if (errorMessage != null) {
             out.setErrorMessage(errorMessage);
@@ -222,10 +220,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void processExtEvtTimeout(ExternalEventTimeout timeout) {
         NodeRunModel nr = getNodeRun(timeout.nodeRunPosition);
         if (nr.type != NodeTypeCase.EXTERNAL_EVENT) {
-            log.error(
-                "Impossible: got a misconfigured external event timeout: {}",
-                nr.toJson()
-            );
+            log.error("Impossible: got a misconfigured external event timeout: {}", nr.toJson());
             return;
         }
         nr.externalEventRun.processExternalEventTimeout(timeout);
@@ -242,10 +237,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         nr.sleepNodeRun.processSleepNodeMatured(e);
     }
 
-    public void acknowledgeInterruptStarted(
-        PendingInterruptModel pi,
-        int handlerThreadId
-    ) {
+    public void acknowledgeInterruptStarted(PendingInterruptModel pi, int handlerThreadId) {
         boolean foundIt = false;
         for (int i = haltReasons.size() - 1; i >= 0; i--) {
             ThreadHaltReasonModel hr = haltReasons.get(i);
@@ -272,10 +264,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         haltReasons.add(thr);
     }
 
-    private void initializeInterrupt(
-        ExternalEventModel trigger,
-        InterruptDefModel idef
-    ) {
+    private void initializeInterrupt(ExternalEventModel trigger, InterruptDefModel idef) {
         // First, stop all child threads.
         ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
         haltReason.type = ReasonCase.PENDING_INTERRUPT;
@@ -335,15 +324,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             // However, if the child is an interrupt thread, and the parent got
             // interrupted again, we let the two interrupts continue side-by-side.
             if (child.interruptTriggerId != null) {
-                if (
-                    reason.type != ReasonCase.PENDING_INTERRUPT &&
-                    reason.type != ReasonCase.INTERRUPTED
-                ) {
+                if (reason.type != ReasonCase.PENDING_INTERRUPT
+                        && reason.type != ReasonCase.INTERRUPTED) {
                     child.halt(childHaltReason);
                 } else {
                     log.debug(
-                        "Not halting sibling interrupt thread! This will change, in future release."
-                    );
+                            "Not halting sibling interrupt thread! This will change, in future"
+                                    + " release.");
                 }
             } else {
                 child.halt(childHaltReason);
@@ -369,12 +356,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 if (hr.isResolved()) {
                     haltReasons.remove(i);
                     log.debug(
-                        "Removed haltReason {} on thread {} {}, leaving: {}",
-                        hr,
-                        wfRunId,
-                        number,
-                        haltReasons
-                    );
+                            "Removed haltReason {} on thread {} {}, leaving: {}",
+                            hr,
+                            wfRunId,
+                            number,
+                            haltReasons);
                 }
             }
             if (haltReasons.isEmpty()) {
@@ -419,11 +405,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
 
     public boolean isRunning() {
-        return (
-            status == LHStatus.RUNNING ||
-            status == LHStatus.STARTING ||
-            status == LHStatus.HALTING
-        );
+        return (status == LHStatus.RUNNING
+                || status == LHStatus.STARTING
+                || status == LHStatus.HALTING);
     }
 
     public boolean advance(Date eventTime) {
@@ -503,9 +487,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     public void acknowledgeXnHandlerStarted(
-        PendingFailureHandlerModel pfh,
-        int handlerThreadNumber
-    ) {
+            PendingFailureHandlerModel pfh, int handlerThreadNumber) {
         boolean foundIt = false;
         for (int i = haltReasons.size() - 1; i >= 0; i--) {
             ThreadHaltReasonModel hr = haltReasons.get(i);
@@ -547,22 +529,18 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             // then we're an interrupt thread and need to fail the parent.
 
             getParent() // guaranteed not to be null in this case
-                .failWithoutGrace(
-                    new FailureModel(
-                        "Interrupt thread with id " + number + " failed!",
-                        failure.failureName
-                    ),
-                    time
-                );
+                    .failWithoutGrace(
+                            new FailureModel(
+                                    "Interrupt thread with id " + number + " failed!",
+                                    failure.failureName),
+                            time);
         } else if (failureBeingHandled != null) {
             getParent()
-                .failWithoutGrace(
-                    new FailureModel(
-                        "Interrupt thread with id " + number + " failed!",
-                        failure.failureName
-                    ),
-                    time
-                );
+                    .failWithoutGrace(
+                            new FailureModel(
+                                    "Interrupt thread with id " + number + " failed!",
+                                    failure.failureName),
+                            time);
         }
 
         wfRunModel.handleThreadStatus(number, new Date(), status);
@@ -588,12 +566,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             mutateVariables(output);
         } catch (LHVarSubError exn) {
             fail(
-                new FailureModel(
-                    "Failed mutating variables: " + exn.getMessage(),
-                    LHConstants.VAR_MUTATION_ERROR
-                ),
-                eventTime
-            );
+                    new FailureModel(
+                            "Failed mutating variables: " + exn.getMessage(),
+                            LHConstants.VAR_MUTATION_ERROR),
+                    eventTime);
             return;
         }
 
@@ -617,18 +593,15 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 }
             } catch (LHVarSubError exn) {
                 log.error(
-                    "Failing threadrun due to VarSubError {} {}",
-                    wfRunModel.id,
-                    currentNodePosition,
-                    exn
-                );
+                        "Failing threadrun due to VarSubError {} {}",
+                        wfRunModel.id,
+                        currentNodePosition,
+                        exn);
                 fail(
-                    new FailureModel(
-                        "Failed evaluating outgoing edge: " + exn.getMessage(),
-                        LHConstants.VAR_MUTATION_ERROR
-                    ),
-                    new Date()
-                );
+                        new FailureModel(
+                                "Failed evaluating outgoing edge: " + exn.getMessage(),
+                                LHConstants.VAR_MUTATION_ERROR),
+                        new Date());
                 return;
             }
         }
@@ -636,13 +609,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             // TODO: Later versions should validate wfSpec's so that this is not
             // possible
             fail(
-                new FailureModel(
-                    "WfSpec was invalid. There were no activated outgoing edges" +
-                    " from a non-exit node.",
-                    LHConstants.INTERNAL_ERROR
-                ),
-                new Date()
-            );
+                    new FailureModel(
+                            "WfSpec was invalid. There were no activated outgoing edges"
+                                    + " from a non-exit node.",
+                            LHConstants.INTERNAL_ERROR),
+                    new Date());
         } else {
             activateNode(nextNode);
         }
@@ -704,9 +675,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         // TODO: Refactor this line
-        throw new RuntimeException(
-            "Unhandled comparison enum " + e.condition.comparator
-        );
+        throw new RuntimeException("Unhandled comparison enum " + e.condition.comparator);
     }
 
     public ThreadRunModel getParent() {
@@ -714,16 +683,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return wfRunModel.threadRunModels.get(parentThreadId);
     }
 
-    public List<VarNameAndValModel> assignVarsForNode(TaskNodeModel node)
-        throws LHVarSubError {
+    public List<VarNameAndValModel> assignVarsForNode(TaskNodeModel node) throws LHVarSubError {
         List<VarNameAndValModel> out = new ArrayList<>();
         TaskDefModel taskDef = node.getTaskDef();
 
         if (taskDef.inputVars.size() != node.variables.size()) {
             throw new LHVarSubError(
-                null,
-                "Impossible: got different number of taskdef vars and node input vars"
-            );
+                    null, "Impossible: got different number of taskdef vars and node input vars");
         }
 
         for (int i = 0; i < taskDef.inputVars.size(); i++) {
@@ -735,21 +701,17 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             if (assn != null) {
                 val = assignVariable(assn);
             } else {
-                throw new LHVarSubError(
-                    null,
-                    "Variable " + varName + " is unassigned."
-                );
+                throw new LHVarSubError(null, "Variable " + varName + " is unassigned.");
             }
             if (val.type != requiredVarDef.type && val.type != VariableType.NULL) {
                 throw new LHVarSubError(
-                    null,
-                    "Variable " +
-                    varName +
-                    " should be " +
-                    requiredVarDef.type +
-                    " but is of type " +
-                    val.type
-                );
+                        null,
+                        "Variable "
+                                + varName
+                                + " should be "
+                                + requiredVarDef.type
+                                + " but is of type "
+                                + val.type);
             }
             out.add(new VarNameAndValModel(varName, val));
         }
@@ -770,11 +732,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             } catch (LHVarSubError exn) {
                 log.error(exn.getMessage(), exn);
                 exn.addPrefix(
-                    "Mutating variable " +
-                    mut.lhsName +
-                    " with operation " +
-                    mut.operation
-                );
+                        "Mutating variable " + mut.lhsName + " with operation " + mut.operation);
                 throw exn;
             }
         }
@@ -793,15 +751,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return status == LHStatus.COMPLETED || status == LHStatus.ERROR;
     }
 
-    public VariableValueModel assignVariable(VariableAssignmentModel assn)
-        throws LHVarSubError {
+    public VariableValueModel assignVariable(VariableAssignmentModel assn) throws LHVarSubError {
         return assignVariable(assn, new HashMap<>());
     }
 
     public VariableValueModel assignVariable(
-        VariableAssignmentModel assn,
-        Map<String, VariableValueModel> txnCache
-    ) throws LHVarSubError {
+            VariableAssignmentModel assn, Map<String, VariableValueModel> txnCache)
+            throws LHVarSubError {
         VariableValueModel val = null;
         switch (assn.getRhsSourceType()) {
             case LITERAL_VALUE:
@@ -816,36 +772,26 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
                 if (val == null) {
                     throw new LHVarSubError(
-                        null,
-                        "Variable " + assn.getVariableName() + " not in scope!"
-                    );
+                            null, "Variable " + assn.getVariableName() + " not in scope!");
                 }
 
                 break;
             case FORMAT_STRING:
                 // first, assign the format string
-                VariableValueModel formatStringVarVal = assignVariable(
-                    assn.getFormatString().getFormat(),
-                    txnCache
-                );
+                VariableValueModel formatStringVarVal =
+                        assignVariable(assn.getFormatString().getFormat(), txnCache);
                 if (formatStringVarVal.getType() != VariableType.STR) {
                     throw new LHVarSubError(
-                        null,
-                        "Format String template isn't a STR; it's a " +
-                        formatStringVarVal.getType()
-                    );
+                            null,
+                            "Format String template isn't a STR; it's a "
+                                    + formatStringVarVal.getType());
                 }
 
                 List<Object> formatArgs = new ArrayList<>();
 
                 // second, assign the vars
-                for (VariableAssignmentModel argAssn : assn
-                    .getFormatString()
-                    .getArgs()) {
-                    VariableValueModel variableValue = assignVariable(
-                        argAssn,
-                        txnCache
-                    );
+                for (VariableAssignmentModel argAssn : assn.getFormatString().getArgs()) {
+                    VariableValueModel variableValue = assignVariable(argAssn, txnCache);
                     formatArgs.add(variableValue.getVal());
                 }
 
@@ -854,16 +800,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 val.type = VariableType.STR;
                 try {
                     val.strVal =
-                        MessageFormat.format(
-                            formatStringVarVal.strVal,
-                            formatArgs.toArray(new Object[0])
-                        );
+                            MessageFormat.format(
+                                    formatStringVarVal.strVal, formatArgs.toArray(new Object[0]));
                 } catch (RuntimeException e) {
                     throw new LHVarSubError(e, "Error formatting variable");
                 }
                 break;
             case SOURCE_NOT_SET:
-            // Not possible
+                // Not possible
         }
 
         // TODO: Refactor this line
@@ -881,9 +825,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     public NodeRunModel getNodeRun(int position) {
-        NodeRunModel out = wfRunModel
-            .getDao()
-            .getNodeRun(wfRunModel.id, number, position);
+        NodeRunModel out = wfRunModel.getDao().getNodeRun(wfRunModel.id, number, position);
         if (out != null) {
             out.setThreadRun(this);
         }
@@ -891,79 +833,72 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     /**
-     * Traverse the current and parent ThreadRun to run the variable modification on the appropriate ThreadRun
+     * Traverse the current and parent ThreadRun to run the variable modification on the appropriate
+     * ThreadRun
+     *
      * @param varName name of the variable
-     * @param function function that executes the variable modification (e.g. creation, mutation, etc.)
-     * @throws LHVarSubError when the varName is not found either on the current ThreadRun definition
-     * or its parents definition
+     * @param function function that executes the variable modification (e.g. creation, mutation,
+     *     etc.)
+     * @throws LHVarSubError when the varName is not found either on the current ThreadRun
+     *     definition or its parents definition
      */
-    private void applyVarMutationOnAppropriateThread(
-        String varName,
-        VariableMutator function
-    ) throws LHVarSubError {
+    private void applyVarMutationOnAppropriateThread(String varName, VariableMutator function)
+            throws LHVarSubError {
         if (getThreadSpecModel().localGetVarDef(varName) != null) {
             function.apply(wfRunId, this.number, wfRunModel);
         } else {
             if (getParent() != null) {
                 getParent().applyVarMutationOnAppropriateThread(varName, function);
             } else {
-                throw new LHVarSubError(
-                    null,
-                    "Tried to save out-of-scope var " + varName
-                );
+                throw new LHVarSubError(null, "Tried to save out-of-scope var " + varName);
             }
         }
     }
 
     /**
-     * Creates a new variable on the current ThreadRun or any of its parents depending on
-     * who has the variable on its definition
+     * Creates a new variable on the current ThreadRun or any of its parents depending on who has
+     * the variable on its definition
+     *
      * @param varName name of the variable
      * @param var value of the variable
-     * @throws LHVarSubError when the varName is not found either on the current ThreadRun definition
-     * or its parents definition
+     * @throws LHVarSubError when the varName is not found either on the current ThreadRun
+     *     definition or its parents definition
      */
-    public void createVariable(String varName, VariableValueModel var)
-        throws LHVarSubError {
-        VariableMutator createVariable = (wfRunId, threadRunNumber, wfRun) -> {
-            VariableModel variable = new VariableModel(
-                varName,
-                var,
-                wfRunId,
-                threadRunNumber,
-                wfRun.getWfSpecModel()
-            );
-            wfRun.getDao().putVariable(variable);
-        };
+    public void createVariable(String varName, VariableValueModel var) throws LHVarSubError {
+        VariableMutator createVariable =
+                (wfRunId, threadRunNumber, wfRun) -> {
+                    VariableModel variable =
+                            new VariableModel(
+                                    varName, var, wfRunId, threadRunNumber, wfRun.getWfSpecModel());
+                    wfRun.getDao().putVariable(variable);
+                };
         applyVarMutationOnAppropriateThread(varName, createVariable);
     }
 
     /**
-     * Mutates an existing variable on the current ThreadRun or any of its parents depending on
-     * who has the variable on its definition
+     * Mutates an existing variable on the current ThreadRun or any of its parents depending on who
+     * has the variable on its definition
+     *
      * @param varName name of the variable
      * @param var value of the variable
-     * @throws LHVarSubError when the varName is not found either on the current ThreadRun definition
-     * or its parents definition
+     * @throws LHVarSubError when the varName is not found either on the current ThreadRun
+     *     definition or its parents definition
      */
-    public void mutateVariable(String varName, VariableValueModel var)
-        throws LHVarSubError {
-        VariableMutator mutateVariable = (wfRunId, threadRunNumber, wfRun) -> {
-            VariableModel variable = wfRun
-                .getDao()
-                .getVariable(wfRunId, varName, threadRunNumber);
-            variable.setValue(var);
-            wfRun.getDao().putVariable(variable);
-        };
+    public void mutateVariable(String varName, VariableValueModel var) throws LHVarSubError {
+        VariableMutator mutateVariable =
+                (wfRunId, threadRunNumber, wfRun) -> {
+                    VariableModel variable =
+                            wfRun.getDao().getVariable(wfRunId, varName, threadRunNumber);
+                    variable.setValue(var);
+                    wfRun.getDao().putVariable(variable);
+                };
         applyVarMutationOnAppropriateThread(varName, mutateVariable);
     }
 
     public VariableModel getVariable(String varName) {
         // For now, just do the local one
         // Once we have threads, this will do a backtrack up the thread tree.
-        VariableModel out = wfRunModel
-            .getDao()
-            .getVariable(wfRunId, varName, this.number);
+        VariableModel out = wfRunModel.getDao().getVariable(wfRunId, varName, this.number);
         if (out != null) {
             return out;
         }
@@ -974,13 +909,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return null;
     }
 
-    /**
-     * Allows to apply variable modifications within the context of the ThreadRun that owns it
-     */
+    /** Allows to apply variable modifications within the context of the ThreadRun that owns it */
     @FunctionalInterface
     private interface VariableMutator {
         /**
          * Apply a variable modification within the context of the ThreadRun that owns the variable
+         *
          * @param wfRunId the wfRunId of the ThreadRun that owns the variable
          * @param threadRunNumber the threadRunNumber of the ThreadRun that owns the variable
          * @param wfRunModel the wfRun of the ThreadRun that owns the variable
@@ -995,10 +929,9 @@ class Comparer {
 
     @SuppressWarnings("all") // lol
     public static int compare(VariableValueModel left, VariableValueModel right)
-        throws LHVarSubError {
+            throws LHVarSubError {
         try {
-            int result =
-                ((Comparable) left.getVal()).compareTo((Comparable) right.getVal());
+            int result = ((Comparable) left.getVal()).compareTo((Comparable) right.getVal());
             return result;
         } catch (Exception exn) {
             log.error(exn.getMessage(), exn);
@@ -1007,7 +940,7 @@ class Comparer {
     }
 
     public static boolean contains(VariableValueModel left, VariableValueModel right)
-        throws LHVarSubError {
+            throws LHVarSubError {
         // Can only do for Str, Arr, and Obj
 
         if (left.type == VariableType.STR) {

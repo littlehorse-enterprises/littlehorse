@@ -32,10 +32,7 @@ public class ConditionalsExample {
         return new WorkflowImpl(
             "example-conditionals",
             thread -> {
-                WfRunVariable foo = thread.addVariable(
-                    "foo",
-                    VariableType.JSON_OBJ
-                );
+                WfRunVariable foo = thread.addVariable("foo", VariableType.JSON_OBJ);
 
                 thread.execute("task-a");
 

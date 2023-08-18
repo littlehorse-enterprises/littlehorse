@@ -10,8 +10,7 @@ import io.littlehorse.common.model.wfrun.ExternalEventModel;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventRequest;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 
-public class DeleteExternalEventRequestModel
-    extends SubCommand<DeleteExternalEventRequest> {
+public class DeleteExternalEventRequestModel extends SubCommand<DeleteExternalEventRequest> {
 
     public String wfRunId;
     public String externalEventDefName;
@@ -26,11 +25,11 @@ public class DeleteExternalEventRequestModel
     }
 
     public DeleteExternalEventRequest.Builder toProto() {
-        DeleteExternalEventRequest.Builder out = DeleteExternalEventRequest
-            .newBuilder()
-            .setWfRunId(wfRunId)
-            .setExternalEventDefName(externalEventDefName)
-            .setGuid(guid);
+        DeleteExternalEventRequest.Builder out =
+                DeleteExternalEventRequest.newBuilder()
+                        .setWfRunId(wfRunId)
+                        .setExternalEventDefName(externalEventDefName)
+                        .setGuid(guid);
 
         return out;
     }
@@ -40,21 +39,15 @@ public class DeleteExternalEventRequestModel
     }
 
     public DeleteObjectReply process(LHDAO dao, LHConfig config) {
-        ExternalEventIdModel eventId = new ExternalEventIdModel(
-            wfRunId,
-            externalEventDefName,
-            guid
-        );
-        ExternalEventModel externalEvent = dao.getExternalEvent(
-            eventId.getStoreKey()
-        );
+        ExternalEventIdModel eventId =
+                new ExternalEventIdModel(wfRunId, externalEventDefName, guid);
+        ExternalEventModel externalEvent = dao.getExternalEvent(eventId.getStoreKey());
         if (!externalEvent.claimed) {
             return dao.deleteExternalEvent(eventId.getStoreKey());
         } else {
             DeleteObjectReply response = new DeleteObjectReply();
             response.code = LHResponseCode.VALIDATION_ERROR;
-            response.message =
-                "ExternalEvent already claimed by WfRun " + externalEvent.wfRunId;
+            response.message = "ExternalEvent already claimed by WfRun " + externalEvent.wfRunId;
             return response;
         }
     }
@@ -66,9 +59,7 @@ public class DeleteExternalEventRequestModel
         guid = p.getGuid();
     }
 
-    public static DeleteExternalEventRequestModel fromProto(
-        DeleteExternalEventRequest p
-    ) {
+    public static DeleteExternalEventRequestModel fromProto(DeleteExternalEventRequest p) {
         DeleteExternalEventRequestModel out = new DeleteExternalEventRequestModel();
         out.initFrom(p);
         return out;

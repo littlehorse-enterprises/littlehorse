@@ -9,10 +9,7 @@ public class SpawnedThreadImpl implements SpawnedThread {
     public String childThreadName;
 
     public SpawnedThreadImpl(
-        ThreadBuilderImpl parent,
-        String childThreadName,
-        WfRunVariableImpl internalThreadVar
-    ) {
+            ThreadBuilderImpl parent, String childThreadName, WfRunVariableImpl internalThreadVar) {
         this.parent = parent;
         this.childThreadName = childThreadName;
         this.internalThreadVar = internalThreadVar;

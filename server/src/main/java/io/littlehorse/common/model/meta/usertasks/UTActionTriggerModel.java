@@ -64,7 +64,7 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
                 log.warn("Unimplemented: Cancel trigger");
                 break;
             case ACTION_NOT_SET:
-            // nothing to do
+                // nothing to do
         }
     }
 
@@ -73,18 +73,13 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
         UTActionTrigger p = (UTActionTrigger) proto;
         hook = p.getHook();
         actionType = p.getActionCase();
-        delaySeconds =
-            LHSerializable.fromProto(
-                p.getDelaySeconds(),
-                VariableAssignmentModel.class
-            );
+        delaySeconds = LHSerializable.fromProto(p.getDelaySeconds(), VariableAssignmentModel.class);
         switch (actionType) {
             case TASK:
                 task = LHSerializable.fromProto(p.getTask(), UTATaskModel.class);
                 break;
             case REASSIGN:
-                reassign =
-                    LHSerializable.fromProto(p.getReassign(), UTAReassignModel.class);
+                reassign = LHSerializable.fromProto(p.getReassign(), UTAReassignModel.class);
                 break;
             case CANCEL:
                 cancel = p.getCancel();

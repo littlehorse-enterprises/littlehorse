@@ -11,7 +11,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 
 public class PutExternalEventDefRequestModel
-    extends SubCommand<io.littlehorse.sdk.common.proto.PutExternalEventDefRequest> {
+        extends SubCommand<io.littlehorse.sdk.common.proto.PutExternalEventDefRequest> {
 
     public String name;
     public Integer retentionHours;
@@ -25,7 +25,8 @@ public class PutExternalEventDefRequestModel
     }
 
     public io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.Builder toProto() {
-        io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.Builder out = io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.newBuilder();
+        io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.Builder out =
+                io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.newBuilder();
         out.setName(name);
 
         if (retentionHours != null) out.setRetentionHours(retentionHours);
@@ -34,7 +35,8 @@ public class PutExternalEventDefRequestModel
     }
 
     public void initFrom(Message proto) {
-        io.littlehorse.sdk.common.proto.PutExternalEventDefRequest p = (io.littlehorse.sdk.common.proto.PutExternalEventDefRequest) proto;
+        io.littlehorse.sdk.common.proto.PutExternalEventDefRequest p =
+                (io.littlehorse.sdk.common.proto.PutExternalEventDefRequest) proto;
         name = p.getName();
         if (p.hasRetentionHours()) retentionHours = p.getRetentionHours();
     }
@@ -61,9 +63,9 @@ public class PutExternalEventDefRequestModel
             ExternalEventDefModel spec = new ExternalEventDefModel();
             spec.name = name;
             spec.retentionHours =
-                retentionHours == null
-                    ? config.getDefaultExternalEventRetentionHours()
-                    : retentionHours;
+                    retentionHours == null
+                            ? config.getDefaultExternalEventRetentionHours()
+                            : retentionHours;
 
             dao.putExternalEventDef(spec);
 
@@ -74,8 +76,7 @@ public class PutExternalEventDefRequestModel
     }
 
     public static PutExternalEventDefRequestModel fromProto(
-        io.littlehorse.sdk.common.proto.PutExternalEventDefRequest p
-    ) {
+            io.littlehorse.sdk.common.proto.PutExternalEventDefRequest p) {
         PutExternalEventDefRequestModel out = new PutExternalEventDefRequestModel();
         out.initFrom(p);
         return out;

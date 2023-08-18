@@ -19,11 +19,11 @@ public class FailureBeingHandledModel extends LHSerializable<FailureBeingHandled
     }
 
     public FailureBeingHandled.Builder toProto() {
-        FailureBeingHandled.Builder out = FailureBeingHandled
-            .newBuilder()
-            .setThreadRunNumber(threadRunNumber)
-            .setNodeRunPosition(nodeRunPosition)
-            .setFailureNumber(failureNumber);
+        FailureBeingHandled.Builder out =
+                FailureBeingHandled.newBuilder()
+                        .setThreadRunNumber(threadRunNumber)
+                        .setNodeRunPosition(nodeRunPosition)
+                        .setFailureNumber(failureNumber);
         return out;
     }
 

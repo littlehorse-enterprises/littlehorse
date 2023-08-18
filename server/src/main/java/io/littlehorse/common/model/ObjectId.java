@@ -4,10 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.proto.GetableClassEnum;
 import java.lang.reflect.InvocationTargetException;
 
-public abstract class ObjectId<
-    T extends Message, U extends Message, V extends Storeable<U>
->
-    extends LHSerializable<T> {
+public abstract class ObjectId<T extends Message, U extends Message, V extends Storeable<U>>
+        extends LHSerializable<T> {
 
     public abstract String getStoreKey();
 
@@ -35,22 +33,16 @@ public abstract class ObjectId<
         return getStoreKey().hashCode();
     }
 
-    public static <
-        T extends Message, U extends Message, V extends LHSerializable<U>
-    > ObjectId<?, ?, ?> fromString(
-        String objectId,
-        Class<? extends ObjectId<?, ?, ?>> cls
-    ) {
+    public static <T extends Message, U extends Message, V extends LHSerializable<U>>
+            ObjectId<?, ?, ?> fromString(String objectId, Class<? extends ObjectId<?, ?, ?>> cls) {
         try {
             ObjectId<?, ?, ?> id = cls.getDeclaredConstructor().newInstance();
             id.initFrom(objectId);
             return id;
-        } catch (
-            IllegalAccessException
-            | InstantiationException
-            | InvocationTargetException
-            | NoSuchMethodException exn
-        ) {
+        } catch (IllegalAccessException
+                | InstantiationException
+                | InvocationTargetException
+                | NoSuchMethodException exn) {
             throw new RuntimeException(exn);
         }
     }

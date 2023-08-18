@@ -23,10 +23,7 @@ public class AsyncWaiters {
     }
 
     // TODO: rename this to register()
-    public void put(
-        String commandId,
-        StreamObserver<WaitForCommandResponse> observer
-    ) {
+    public void put(String commandId, StreamObserver<WaitForCommandResponse> observer) {
         try {
             lock.lock();
             AsyncWaiter waiter = waiters.get(commandId);
@@ -93,9 +90,7 @@ public class AsyncWaiters {
     public void cleanupOldWaiters() {
         try {
             lock.lock();
-            Iterator<Map.Entry<String, AsyncWaiter>> iter = waiters
-                .entrySet()
-                .iterator();
+            Iterator<Map.Entry<String, AsyncWaiter>> iter = waiters.entrySet().iterator();
             long now = System.currentTimeMillis();
             while (iter.hasNext()) {
                 Map.Entry<String, AsyncWaiter> pair = iter.next();
@@ -105,13 +100,11 @@ public class AsyncWaiters {
                 }
                 AsyncWaiter waiter = pair.getValue();
                 if (waiter.getObserver() != null) {
-                    waiter
-                        .getObserver()
-                        .onError(
-                            new RuntimeException(
-                                "Request not processed on this worker, likely due to rebalance"
-                            )
-                        );
+                    waiter.getObserver()
+                            .onError(
+                                    new RuntimeException(
+                                            "Request not processed on this worker, likely due to"
+                                                    + " rebalance"));
                 }
                 iter.remove();
             }

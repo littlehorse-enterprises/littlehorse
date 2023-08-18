@@ -24,10 +24,10 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
     }
 
     public InterruptDef.Builder toProto() {
-        InterruptDef.Builder out = InterruptDef
-            .newBuilder()
-            .setExternalEventDefName(externalEventDefName)
-            .setHandlerSpecName(handlerSpecName);
+        InterruptDef.Builder out =
+                InterruptDef.newBuilder()
+                        .setExternalEventDefName(externalEventDefName)
+                        .setHandlerSpecName(handlerSpecName);
         return out;
     }
 
@@ -43,23 +43,17 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
         return out;
     }
 
-    public void validate(LHGlobalMetaStores client, LHConfig config)
-        throws LHValidationError {
+    public void validate(LHGlobalMetaStores client, LHConfig config) throws LHValidationError {
         eed = client.getExternalEventDef(externalEventDefName);
 
         if (eed == null) {
             throw new LHValidationError(
-                null,
-                "Refers to missing ExternalEventDef " + externalEventDefName
-            );
+                    null, "Refers to missing ExternalEventDef " + externalEventDefName);
         }
 
         handler = ownerThreadSpecModel.wfSpecModel.threadSpecs.get(handlerSpecName);
         if (handler == null) {
-            throw new LHValidationError(
-                null,
-                "Refers to missing ThreadSpec: " + handlerSpecName
-            );
+            throw new LHValidationError(null, "Refers to missing ThreadSpec: " + handlerSpecName);
         }
 
         // As of now, Interrupt Handler Threads can only have one input variable.
@@ -68,20 +62,17 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
 
         if (handler.variableDefs.size() > 1) {
             throw new LHValidationError(
-                null,
-                "Handler thread " + handler.name + " should only have 'INPUT' var."
-            );
+                    null, "Handler thread " + handler.name + " should only have 'INPUT' var.");
         } else if (handler.variableDefs.size() == 1) {
             VariableDefModel theVarDef = handler.variableDefs.get(0);
             if (!theVarDef.name.equals(LHConstants.EXT_EVT_HANDLER_VAR)) {
                 throw new LHValidationError(
-                    null,
-                    "Handler thread " +
-                    handler.name +
-                    " can only have '" +
-                    LHConstants.EXT_EVT_HANDLER_VAR +
-                    "' as an input var"
-                );
+                        null,
+                        "Handler thread "
+                                + handler.name
+                                + " can only have '"
+                                + LHConstants.EXT_EVT_HANDLER_VAR
+                                + "' as an input var");
             }
         }
     }

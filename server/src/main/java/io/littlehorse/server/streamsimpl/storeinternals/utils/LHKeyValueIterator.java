@@ -8,17 +8,14 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueIterator;
 
 public class LHKeyValueIterator<T extends Storeable<?>>
-    implements Iterator<LHIterKeyValue<T>>, Closeable, AutoCloseable {
+        implements Iterator<LHIterKeyValue<T>>, Closeable, AutoCloseable {
 
     private KeyValueIterator<String, Bytes> rawIter;
     private Class<T> cls;
     private LHConfig config;
 
     public LHKeyValueIterator(
-        KeyValueIterator<String, Bytes> rawIter,
-        Class<T> cls,
-        LHConfig config
-    ) {
+            KeyValueIterator<String, Bytes> rawIter, Class<T> cls, LHConfig config) {
         this.cls = cls;
         this.rawIter = rawIter;
         this.config = config;

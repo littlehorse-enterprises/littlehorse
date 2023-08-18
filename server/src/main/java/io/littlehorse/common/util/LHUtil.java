@@ -31,9 +31,7 @@ public class LHUtil {
 
     public static Date fromProtoTs(Timestamp proto) {
         if (proto == null) return null;
-        Date out = Date.from(
-            Instant.ofEpochSecond(proto.getSeconds(), proto.getNanos())
-        );
+        Date out = Date.from(Instant.ofEpochSecond(proto.getSeconds(), proto.getNanos()));
 
         if (out.getTime() == 0) {
             out = new Date();
@@ -103,17 +101,12 @@ public class LHUtil {
     }
 
     public static String fullDigestify(String str) {
-        return Hashing
-            .sha256()
-            .hashString(str, StandardCharsets.UTF_8)
-            .toString()
-            .substring(0, 18);
+        return Hashing.sha256().hashString(str, StandardCharsets.UTF_8).toString().substring(0, 18);
     }
 
     @SuppressWarnings("unchecked")
-    public static <
-        U extends Message, T extends LHSerializable<U>
-    > Class<U> getProtoBaseClass(Class<T> cls) {
+    public static <U extends Message, T extends LHSerializable<U>> Class<U> getProtoBaseClass(
+            Class<T> cls) {
         try {
             T t = cls.getDeclaredConstructor().newInstance();
             return (Class<U>) t.getProtoBaseClass();
@@ -145,8 +138,8 @@ public class LHUtil {
     }
 
     /**
-     * TODO: THis needs more thought. We want the double to be searchable both positive and negative,
-     * and we want to be able to do range queries.
+     * TODO: THis needs more thought. We want the double to be searchable both positive and
+     * negative, and we want to be able to do range queries.
      */
     public static String toLhDbFormat(Double val) {
         return val == null ? "null" : String.format("%20.10f", val);

@@ -42,29 +42,18 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
     }
 
     public void test() throws LHApiError, InterruptedException {
-        worker1 =
-            new LHTaskWorker(
-                new TaskWfSpecLifecycleWorker(),
-                TASK_DEF_1,
-                workerConfig
-            );
+        worker1 = new LHTaskWorker(new TaskWfSpecLifecycleWorker(), TASK_DEF_1, workerConfig);
         worker1.registerTaskDef(true);
-        worker2 =
-            new LHTaskWorker(
-                new TaskWfSpecLifecycleWorker(),
-                TASK_DEF_2,
-                workerConfig
-            );
+        worker2 = new LHTaskWorker(new TaskWfSpecLifecycleWorker(), TASK_DEF_2, workerConfig);
         worker2.registerTaskDef(true);
 
         new WorkflowImpl(
-            WF_SPEC_NAME,
-            thread -> {
-                thread.execute(TASK_DEF_1);
-                thread.execute(TASK_DEF_2);
-            }
-        )
-            .registerWfSpec(client);
+                        WF_SPEC_NAME,
+                        thread -> {
+                            thread.execute(TASK_DEF_1);
+                            thread.execute(TASK_DEF_2);
+                        })
+                .registerWfSpec(client);
 
         Thread.sleep(100); // Wait for the data to propagate
         worker1.start();
@@ -83,15 +72,11 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
             throw new RuntimeException("Should have failed!");
         }
 
-        if (
-            !wfRun
-                .getThreadRuns(0)
+        if (!wfRun.getThreadRuns(0)
                 .getErrorMessage()
-                .contains("Appears that TaskDef was deleted")
-        ) {
+                .contains("Appears that TaskDef was deleted")) {
             throw new RuntimeException(
-                "Should have error message about deleted taskdef! WfRun: " + wfRunId
-            );
+                    "Should have error message about deleted taskdef! WfRun: " + wfRunId);
         }
     }
 
@@ -103,7 +88,8 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
             worker1.close();
             worker2.close();
             client.deleteTaskDef(TASK_DEF_2);
-        } catch (Exception exn) {}
+        } catch (Exception exn) {
+        }
     }
 }
 

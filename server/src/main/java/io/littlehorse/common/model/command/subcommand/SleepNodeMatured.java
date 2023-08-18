@@ -23,11 +23,11 @@ public class SleepNodeMatured extends SubCommand<SleepNodeMaturedPb> {
     }
 
     public SleepNodeMaturedPb.Builder toProto() {
-        SleepNodeMaturedPb.Builder out = SleepNodeMaturedPb
-            .newBuilder()
-            .setThreadRunNumber(threadRunNumber)
-            .setNodeRunPosition(nodeRunPosition)
-            .setWfRunId(wfRunId);
+        SleepNodeMaturedPb.Builder out =
+                SleepNodeMaturedPb.newBuilder()
+                        .setThreadRunNumber(threadRunNumber)
+                        .setNodeRunPosition(nodeRunPosition)
+                        .setWfRunId(wfRunId);
         return out;
     }
 
@@ -59,10 +59,7 @@ public class SleepNodeMatured extends SubCommand<SleepNodeMaturedPb> {
             return null;
         }
 
-        WfSpecModel wfSpecModel = dao.getWfSpec(
-            wfRunModel.wfSpecName,
-            wfRunModel.wfSpecVersion
-        );
+        WfSpecModel wfSpecModel = dao.getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
         if (wfSpecModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfSpec found.");
             return null;

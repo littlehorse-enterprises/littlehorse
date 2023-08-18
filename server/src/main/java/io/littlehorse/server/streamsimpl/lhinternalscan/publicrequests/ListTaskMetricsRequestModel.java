@@ -18,7 +18,12 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.List
 import java.util.Date;
 
 public class ListTaskMetricsRequestModel
-    extends PublicScanRequest<ListTaskMetricsRequest, ListTaskMetricsResponse, TaskDefMetrics, TaskDefMetricsModel, ListTaskMetricsReply> {
+        extends PublicScanRequest<
+                ListTaskMetricsRequest,
+                ListTaskMetricsResponse,
+                TaskDefMetrics,
+                TaskDefMetricsModel,
+                ListTaskMetricsReply> {
 
     public Date lastWindowStart;
     public String taskDefName;
@@ -30,12 +35,12 @@ public class ListTaskMetricsRequestModel
     }
 
     public ListTaskMetricsRequest.Builder toProto() {
-        ListTaskMetricsRequest.Builder out = ListTaskMetricsRequest
-            .newBuilder()
-            .setLastWindowStart(LHUtil.fromDate(lastWindowStart))
-            .setNumWindows(numWindows)
-            .setWindowLength(windowLength)
-            .setTaskDefName(taskDefName);
+        ListTaskMetricsRequest.Builder out =
+                ListTaskMetricsRequest.newBuilder()
+                        .setLastWindowStart(LHUtil.fromDate(lastWindowStart))
+                        .setNumWindows(numWindows)
+                        .setWindowLength(windowLength)
+                        .setTaskDefName(taskDefName);
 
         return out;
     }
@@ -54,8 +59,7 @@ public class ListTaskMetricsRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
         return TagStorageType.LOCAL;
     }
 
@@ -64,19 +68,15 @@ public class ListTaskMetricsRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        String endKey = TaskDefMetricsModel.getObjectId(
-            windowLength,
-            lastWindowStart,
-            taskDefName
-        );
-        String startKey = TaskDefMetricsModel.getObjectId(
-            windowLength,
-            new Date(
-                lastWindowStart.getTime() -
-                (LHUtil.getWindowLengthMillis(windowLength) * numWindows)
-            ),
-            taskDefName
-        );
+        String endKey = TaskDefMetricsModel.getObjectId(windowLength, lastWindowStart, taskDefName);
+        String startKey =
+                TaskDefMetricsModel.getObjectId(
+                        windowLength,
+                        new Date(
+                                lastWindowStart.getTime()
+                                        - (LHUtil.getWindowLengthMillis(windowLength)
+                                                * numWindows)),
+                        taskDefName);
         return new ObjectIdScanBoundaryStrategy(taskDefName, startKey, endKey);
     }
 }

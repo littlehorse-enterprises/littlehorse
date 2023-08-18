@@ -55,18 +55,14 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         delete(StoreUtils.getFullStoreKey(storeKey, cls));
     }
 
-    public void deleteByStoreKey(
-        String storeKey,
-        Class<? extends Storeable<?>> storeableClass
-    ) {
+    public void deleteByStoreKey(String storeKey, Class<? extends Storeable<?>> storeableClass) {
         String fullStoreKey = StoreUtils.getFullStoreKey(storeKey, storeableClass);
         delete(fullStoreKey);
     }
 
     @Override
-    public <
-        U extends Message, T extends Getable<U>
-    > StoredGetable<U, T> getStoredGetable(String objectId, Class<T> cls) {
+    public <U extends Message, T extends Getable<U>> StoredGetable<U, T> getStoredGetable(
+            String objectId, Class<T> cls) {
         totalGets++;
         return super.getStoredGetable(objectId, cls);
     }
@@ -106,14 +102,10 @@ public class LHStoreWrapper extends LHROStoreWrapper {
     }
 
     public void putTagsCache(
-        String getableId,
-        Class<? extends Getable<?>> getableCls,
-        TagsCache newTagsCache
-    ) {
+            String getableId, Class<? extends Getable<?>> getableCls, TagsCache newTagsCache) {
         putRaw(
-            StoreUtils.getTagsCacheKey(getableId, getableCls),
-            new Bytes(newTagsCache.toBytes(config))
-        );
+                StoreUtils.getTagsCacheKey(getableId, getableCls),
+                new Bytes(newTagsCache.toBytes(config)));
     }
 
     public void deleteTagCache(Getable<?> thing) {
@@ -126,12 +118,11 @@ public class LHStoreWrapper extends LHROStoreWrapper {
             return;
         }
         log.trace(
-            "{}: {} gets, {} puts, {} deletes",
-            cmd.getType().toString(),
-            totalGets,
-            totalPuts,
-            totalDeletes
-        );
+                "{}: {} gets, {} puts, {} deletes",
+                cmd.getType().toString(),
+                totalGets,
+                totalPuts,
+                totalDeletes);
         totalGets = 0;
         totalPuts = 0;
         totalDeletes = 0;

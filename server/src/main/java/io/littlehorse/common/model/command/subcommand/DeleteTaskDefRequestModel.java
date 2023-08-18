@@ -18,9 +18,7 @@ public class DeleteTaskDefRequestModel extends SubCommand<DeleteTaskDefRequest> 
     }
 
     public DeleteTaskDefRequest.Builder toProto() {
-        DeleteTaskDefRequest.Builder out = DeleteTaskDefRequest
-            .newBuilder()
-            .setName(name);
+        DeleteTaskDefRequest.Builder out = DeleteTaskDefRequest.newBuilder().setName(name);
         return out;
     }
 

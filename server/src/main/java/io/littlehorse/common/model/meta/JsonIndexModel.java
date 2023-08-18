@@ -24,10 +24,7 @@ public class JsonIndexModel extends LHSerializable<JsonIndex> {
 
     @Override
     public JsonIndex.Builder toProto() {
-        JsonIndex.Builder out = JsonIndex
-            .newBuilder()
-            .setPath(path)
-            .setIndexType(indexType);
+        JsonIndex.Builder out = JsonIndex.newBuilder().setPath(path).setIndexType(indexType);
 
         return out;
     }
@@ -40,8 +37,6 @@ public class JsonIndexModel extends LHSerializable<JsonIndex> {
     }
 
     public TagStorageType getTagStorageType() {
-        return indexType == IndexType.LOCAL_INDEX
-            ? TagStorageType.LOCAL
-            : TagStorageType.REMOTE;
+        return indexType == IndexType.LOCAL_INDEX ? TagStorageType.LOCAL : TagStorageType.REMOTE;
     }
 }

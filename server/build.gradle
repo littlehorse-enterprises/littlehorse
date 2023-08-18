@@ -90,6 +90,8 @@ test {
 
 spotless {
     java {
+        target('**/*.java')
+        targetExclude('**/proto/*.java')
         googleJavaFormat('1.17.0').aosp().reflowLongStrings()
     }
 }

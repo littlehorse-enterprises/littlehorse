@@ -92,10 +92,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
             for (Integer threadRunNumber : failedThreads) {
                 message += ", " + threadRunNumber;
             }
-            nodeRunModel.fail(
-                new FailureModel(message, LHConstants.CHILD_FAILURE),
-                time
-            );
+            nodeRunModel.fail(new FailureModel(message, LHConstants.CHILD_FAILURE), time);
             return true;
         } else {
             // nothing to do.
@@ -105,10 +102,8 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     }
 
     private boolean isTerminated(WaitForThreadModel wft) {
-        return (
-            (wft.getThreadStatus() == LHStatus.COMPLETED) ||
-            (wft.getThreadStatus() == LHStatus.ERROR)
-        );
+        return ((wft.getThreadStatus() == LHStatus.COMPLETED)
+                || (wft.getThreadStatus() == LHStatus.ERROR));
     }
 
     public void arrive(Date time) {
@@ -122,13 +117,10 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
             }
         } catch (LHVarSubError exn) {
             nodeRunModel.fail(
-                new FailureModel(
-                    "Failed determining thread run number to wait for: " +
-                    exn.getMessage(),
-                    LHConstants.VAR_SUB_ERROR
-                ),
-                time
-            );
+                    new FailureModel(
+                            "Failed determining thread run number to wait for: " + exn.getMessage(),
+                            LHConstants.VAR_SUB_ERROR),
+                    time);
         }
     }
 }

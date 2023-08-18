@@ -50,13 +50,7 @@ public class TestUtil {
     }
 
     public static VariableModel variable(String wfRunId) {
-        return new VariableModel(
-            "test",
-            variableValue(),
-            wfRunId,
-            0,
-            wfSpec("testWfSpecName")
-        );
+        return new VariableModel("test", variableValue(), wfRunId, 0, wfSpec("testWfSpecName"));
     }
 
     public static NodeRunModel nodeRun() {
@@ -109,10 +103,8 @@ public class TestUtil {
         TaskRunModel taskRun = new TaskRunModel();
         taskRun.setId(taskRunId());
         taskRun.setTaskRunSource(
-            new TaskRunSourceModel(
-                new TaskNodeReferenceModel(nodeRun().getObjectId(), wfSpecId())
-            )
-        );
+                new TaskRunSourceModel(
+                        new TaskNodeReferenceModel(nodeRun().getObjectId(), wfSpecId())));
         taskRun.setTaskDefName("test-name");
         taskRun.setMaxAttempts(10);
         taskRun.setScheduledAt(new Date());
@@ -167,8 +159,7 @@ public class TestUtil {
             return wfRun(id);
         } else {
             throw new IllegalArgumentException(
-                "There is no test data for " + getableClass.getName()
-            );
+                    "There is no test data for " + getableClass.getName());
         }
     }
 
@@ -191,10 +182,7 @@ public class TestUtil {
         return externalEvent;
     }
 
-    public static VariableDefModel variableDef(
-        String name,
-        VariableType variableTypePb
-    ) {
+    public static VariableDefModel variableDef(String name, VariableType variableTypePb) {
         VariableDefModel variableDef = new VariableDefModel();
         variableDef.setName(name);
         variableDef.setType(variableTypePb);

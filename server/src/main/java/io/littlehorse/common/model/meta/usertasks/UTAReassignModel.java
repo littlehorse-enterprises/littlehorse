@@ -23,9 +23,7 @@ public class UTAReassignModel extends LHSerializable<UTAReassign> {
         } else if (assignToCase.equals(UTAReassign.AssignToCase.USER_GROUP)) {
             reassignBuilder.setUserGroup(newOwner.toProto());
         } else {
-            throw new IllegalStateException(
-                "Assign operation not supported yet " + assignToCase
-            );
+            throw new IllegalStateException("Assign operation not supported yet " + assignToCase);
         }
         return reassignBuilder;
     }
@@ -37,13 +35,9 @@ public class UTAReassignModel extends LHSerializable<UTAReassign> {
         if (assignToCase.equals(UTAReassign.AssignToCase.USER_ID)) {
             this.newOwner = VariableAssignmentModel.fromProto(reassignPb.getUserId());
         } else if (assignToCase.equals(UTAReassign.AssignToCase.USER_GROUP)) {
-            this.newOwner =
-                VariableAssignmentModel.fromProto(reassignPb.getUserGroup());
+            this.newOwner = VariableAssignmentModel.fromProto(reassignPb.getUserGroup());
         } else {
-            throw new LHSerdeError(
-                null,
-                "Assign operation not supported yet " + assignToCase
-            );
+            throw new LHSerdeError(null, "Assign operation not supported yet " + assignToCase);
         }
     }
 

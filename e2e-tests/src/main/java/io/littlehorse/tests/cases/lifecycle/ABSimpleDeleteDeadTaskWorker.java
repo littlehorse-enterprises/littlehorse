@@ -37,10 +37,7 @@ public class ABSimpleDeleteDeadTaskWorker extends Test {
 
     public void test() throws LHApiError, InterruptedException {
         // Create taskdef
-        client.putTaskDef(
-            PutTaskDefRequest.newBuilder().setName(taskDefName).build(),
-            false
-        );
+        client.putTaskDef(PutTaskDefRequest.newBuilder().setName(taskDefName).build(), false);
 
         // Taskdef needs to propagate to all servers
         Thread.sleep(50);
@@ -53,9 +50,7 @@ public class ABSimpleDeleteDeadTaskWorker extends Test {
         String client4 = "client-4";
         String client5 = "client-5";
 
-        RegisterTaskWorkerResponse reply1 = stub.registerTaskWorker(
-            register(client1)
-        );
+        RegisterTaskWorkerResponse reply1 = stub.registerTaskWorker(register(client1));
         for (HostInfo host : reply1.getYourHostsList()) {
             allHosts.add(hostToString(host));
         }
@@ -68,9 +63,7 @@ public class ABSimpleDeleteDeadTaskWorker extends Test {
         // Wait until all workers are dead
         Thread.sleep(15000);
 
-        RegisterTaskWorkerResponse reply5 = stub.registerTaskWorker(
-            register(client5)
-        );
+        RegisterTaskWorkerResponse reply5 = stub.registerTaskWorker(register(client5));
         int newCount = reply5.getYourHostsCount();
 
         // It should assign all the workers available for this only task worker
@@ -84,12 +77,11 @@ public class ABSimpleDeleteDeadTaskWorker extends Test {
     }
 
     private RegisterTaskWorkerRequest register(String clientId) {
-        return RegisterTaskWorkerRequest
-            .newBuilder()
-            .setClientId(clientId)
-            .setTaskDefName(taskDefName)
-            .setListenerName(config.getConnectListener())
-            .build();
+        return RegisterTaskWorkerRequest.newBuilder()
+                .setClientId(clientId)
+                .setTaskDefName(taskDefName)
+                .setListenerName(config.getConnectListener())
+                .build();
     }
 
     public void cleanup() throws LHApiError {

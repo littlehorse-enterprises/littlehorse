@@ -24,8 +24,7 @@ public class UserTaskDefModel extends Getable<UserTaskDef> {
     public String name;
     public Date createdAt;
 
-    @Getter
-    public List<UserTaskFieldModel> fields;
+    @Getter public List<UserTaskFieldModel> fields;
 
     public String description;
     public int version;
@@ -39,11 +38,11 @@ public class UserTaskDefModel extends Getable<UserTaskDef> {
     }
 
     public UserTaskDef.Builder toProto() {
-        UserTaskDef.Builder out = UserTaskDef
-            .newBuilder()
-            .setName(name)
-            .setCreatedAt(LHUtil.fromDate(createdAt))
-            .setVersion(version);
+        UserTaskDef.Builder out =
+                UserTaskDef.newBuilder()
+                        .setName(name)
+                        .setCreatedAt(LHUtil.fromDate(createdAt))
+                        .setVersion(version);
 
         if (description != null) out.setDescription(description);
 
@@ -79,15 +78,11 @@ public class UserTaskDefModel extends Getable<UserTaskDef> {
     }
 
     @Override
-    public List<IndexedField> getIndexValues(
-        String key,
-        Optional<TagStorageType> tagStorageType
-    ) {
+    public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         return List.of();
     }
 
-    public void validate(LHGlobalMetaStores stores, LHConfig config)
-        throws LHValidationError {
+    public void validate(LHGlobalMetaStores stores, LHConfig config) throws LHValidationError {
         // TODO: Add validation
     }
 }

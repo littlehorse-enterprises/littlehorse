@@ -29,40 +29,34 @@ public class ANConditionalsNotIn extends WorkflowLogicTest {
 
     public Workflow getWorkflowImpl() {
         return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                // Use an input JSON blob with two fields, LHS and RHS.
-                // This allows us to test with various types on the left and the
-                // right, since right now the JSON_OBJ var type does not have a
-                // schema.
-                WfRunVariable input = thread.addVariable(
-                    "input",
-                    VariableType.JSON_OBJ
-                );
+                getWorkflowName(),
+                thread -> {
+                    // Use an input JSON blob with two fields, LHS and RHS.
+                    // This allows us to test with various types on the left and the
+                    // right, since right now the JSON_OBJ var type does not have a
+                    // schema.
+                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-                // So that the run request succeeds even on workflows where we want
-                // a crash.
-                thread.execute("an-one");
+                    // So that the run request succeeds even on workflows where we want
+                    // a crash.
+                    thread.execute("an-one");
 
-                thread.doIfElse(
-                    thread.condition(
-                        input.jsonPath("$.lhs"),
-                        Comparator.NOT_IN,
-                        input.jsonPath("$.rhs")
-                    ),
-                    ifBlock -> {
-                        ifBlock.execute("an-one");
-                    },
-                    elseBlock -> {
-                        elseBlock.execute("an-two");
-                    }
-                );
-            }
-        );
+                    thread.doIfElse(
+                            thread.condition(
+                                    input.jsonPath("$.lhs"),
+                                    Comparator.NOT_IN,
+                                    input.jsonPath("$.rhs")),
+                            ifBlock -> {
+                                ifBlock.execute("an-one");
+                            },
+                            elseBlock -> {
+                                elseBlock.execute("an-two");
+                            });
+                });
     }
 
     private String assertThatFails(LHClient client, Object lhs, Object rhs)
-        throws TestFailure, InterruptedException, LHApiError {
+            throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("input", new ANInputObj(lhs, rhs)));
         Thread.sleep(3000);
         assertStatus(client, wfRunId, LHStatus.ERROR);
@@ -76,54 +70,21 @@ public class ANConditionalsNotIn extends WorkflowLogicTest {
     // private String twoInts() throws TestFailure
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+            throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
-            runWithInputsAndCheckPath(
-                client,
-                new ANInputObj(Map.of("a", 1), Map.of("a", 1)),
-                true,
-                true
-            ),
-            runWithInputsAndCheckPath(
-                client,
-                new ANInputObj("hi", Map.of("hi", 2)),
-                true,
-                false
-            ),
-            runWithInputsAndCheckPath(
-                client,
-                new ANInputObj(2, Map.of("hi", 2)),
-                true,
-                true
-            ),
-            runWithInputsAndCheckPath(
-                client,
-                new ANInputObj(Arrays.asList(0), Arrays.asList(0)),
-                true,
-                true
-            ),
-            runWithInputsAndCheckPath(
-                client,
-                new ANInputObj(0, Arrays.asList(0)),
-                true,
-                false
-            ),
-            runWithInputsAndCheckPath(client, new ANInputObj(1, "one"), true, true),
-            runWithInputsAndCheckPath(
-                client,
-                new ANInputObj("o", "one"),
-                true,
-                false
-            ),
-            runWithInputsAndCheckPath(client, new ANInputObj(2, "2"), true, false),
-            assertThatFails(client, 1, 1.0),
-            runWithInputsAndCheckPath(
-                client,
-                new ANInputObj(2, Map.of("a", 1)),
-                true,
-                true
-            )
-        );
+                runWithInputsAndCheckPath(
+                        client, new ANInputObj(Map.of("a", 1), Map.of("a", 1)), true, true),
+                runWithInputsAndCheckPath(
+                        client, new ANInputObj("hi", Map.of("hi", 2)), true, false),
+                runWithInputsAndCheckPath(client, new ANInputObj(2, Map.of("hi", 2)), true, true),
+                runWithInputsAndCheckPath(
+                        client, new ANInputObj(Arrays.asList(0), Arrays.asList(0)), true, true),
+                runWithInputsAndCheckPath(client, new ANInputObj(0, Arrays.asList(0)), true, false),
+                runWithInputsAndCheckPath(client, new ANInputObj(1, "one"), true, true),
+                runWithInputsAndCheckPath(client, new ANInputObj("o", "one"), true, false),
+                runWithInputsAndCheckPath(client, new ANInputObj(2, "2"), true, false),
+                assertThatFails(client, 1, 1.0),
+                runWithInputsAndCheckPath(client, new ANInputObj(2, Map.of("a", 1)), true, true));
     }
 }
 

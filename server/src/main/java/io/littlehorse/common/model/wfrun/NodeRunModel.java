@@ -88,8 +88,7 @@ public class NodeRunModel extends Getable<NodeRun> {
     public ThreadRunModel getThreadRun() {
         if (threadRunModelDoNotUseMe == null) {
             WfRunModel wfRunModel = getDao().getWfRun(wfRunId);
-            threadRunModelDoNotUseMe =
-                wfRunModel.getThreadRunModels().get(threadRunNumber);
+            threadRunModelDoNotUseMe = wfRunModel.getThreadRunModels().get(threadRunNumber);
         }
         return threadRunModelDoNotUseMe;
     }
@@ -118,39 +117,23 @@ public class NodeRunModel extends Getable<NodeRun> {
     @Override
     public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
         return List.of(
-            new GetableIndex<NodeRunModel>(
-                List.of(
-                    Pair.of("status", GetableIndex.ValueType.SINGLE),
-                    Pair.of("type", GetableIndex.ValueType.SINGLE)
-                ),
-                Optional.of(TagStorageType.LOCAL)
-            )
-        );
+                new GetableIndex<NodeRunModel>(
+                        List.of(
+                                Pair.of("status", GetableIndex.ValueType.SINGLE),
+                                Pair.of("type", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)));
     }
 
     @Override
-    public List<IndexedField> getIndexValues(
-        String key,
-        Optional<TagStorageType> tagStorageType
-    ) {
+    public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         switch (key) {
             case "status" -> {
                 return List.of(
-                    new IndexedField(
-                        key,
-                        this.getStatus().toString(),
-                        TagStorageType.LOCAL
-                    )
-                );
+                        new IndexedField(key, this.getStatus().toString(), TagStorageType.LOCAL));
             }
             case "type" -> {
                 return List.of(
-                    new IndexedField(
-                        key,
-                        this.getType().toString(),
-                        TagStorageType.LOCAL
-                    )
-                );
+                        new IndexedField(key, this.getType().toString(), TagStorageType.LOCAL));
             }
         }
         log.warn("Tried to get value for unknown index field {}", key);
@@ -178,12 +161,10 @@ public class NodeRunModel extends Getable<NodeRun> {
         type = proto.getNodeTypeCase();
         switch (type) {
             case TASK:
-                taskRun =
-                    LHSerializable.fromProto(proto.getTask(), TaskNodeRunModel.class);
+                taskRun = LHSerializable.fromProto(proto.getTask(), TaskNodeRunModel.class);
                 break;
             case EXTERNAL_EVENT:
-                externalEventRun =
-                    ExternalEventRunModel.fromProto(proto.getExternalEvent());
+                externalEventRun = ExternalEventRunModel.fromProto(proto.getExternalEvent());
                 break;
             case EXIT:
                 exitRun = ExitRunModel.fromProto(proto.getExit());
@@ -192,22 +173,17 @@ public class NodeRunModel extends Getable<NodeRun> {
                 entrypointRun = EntrypointRunModel.fromProto(proto.getEntrypoint());
                 break;
             case START_THREAD:
-                startThreadRun =
-                    StartThreadRunModel.fromProto(proto.getStartThread());
+                startThreadRun = StartThreadRunModel.fromProto(proto.getStartThread());
                 break;
             case WAIT_THREADS:
-                waitThreadsRun =
-                    WaitForThreadsRunModel.fromProto(proto.getWaitThreads());
+                waitThreadsRun = WaitForThreadsRunModel.fromProto(proto.getWaitThreads());
                 break;
             case SLEEP:
                 sleepNodeRun = SleepNodeRunModel.fromProto(proto.getSleep());
                 break;
             case USER_TASK:
                 userTaskRun =
-                    LHSerializable.fromProto(
-                        proto.getUserTask(),
-                        UserTaskNodeRunModel.class
-                    );
+                        LHSerializable.fromProto(proto.getUserTask(), UserTaskNodeRunModel.class);
                 break;
             case NODETYPE_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -280,16 +256,16 @@ public class NodeRunModel extends Getable<NodeRun> {
     }
 
     public NodeRun.Builder toProto() {
-        NodeRun.Builder out = NodeRun
-            .newBuilder()
-            .setWfRunId(wfRunId)
-            .setThreadRunNumber(threadRunNumber)
-            .setPosition(position)
-            .setStatus(status)
-            .setArrivalTime(LHUtil.fromDate(arrivalTime))
-            .setWfSpecId(wfSpecId.toProto())
-            .setThreadSpecName(threadSpecName)
-            .setNodeName(nodeName);
+        NodeRun.Builder out =
+                NodeRun.newBuilder()
+                        .setWfRunId(wfRunId)
+                        .setThreadRunNumber(threadRunNumber)
+                        .setPosition(position)
+                        .setStatus(status)
+                        .setArrivalTime(LHUtil.fromDate(arrivalTime))
+                        .setWfSpecId(wfSpecId.toProto())
+                        .setThreadSpecName(threadSpecName)
+                        .setNodeName(nodeName);
 
         if (endTime != null) out.setEndTime(LHUtil.fromDate(endTime));
 
@@ -334,11 +310,9 @@ public class NodeRunModel extends Getable<NodeRun> {
     }
 
     public boolean isInProgress() {
-        return (
-            status != LHStatus.COMPLETED &&
-            status != LHStatus.HALTED &&
-            status != LHStatus.ERROR
-        );
+        return (status != LHStatus.COMPLETED
+                && status != LHStatus.HALTED
+                && status != LHStatus.ERROR);
     }
 
     public boolean isCompletedOrRecoveredFromFailure() {
@@ -353,8 +327,8 @@ public class NodeRunModel extends Getable<NodeRun> {
                     return false;
                 }
                 for (int handlerId : failureHandlerIds) {
-                    ThreadRunModel handler = getThreadRun()
-                        .wfRunModel.threadRunModels.get(handlerId);
+                    ThreadRunModel handler =
+                            getThreadRun().wfRunModel.threadRunModels.get(handlerId);
                     if (handler.status != LHStatus.COMPLETED) {
                         return false;
                     }

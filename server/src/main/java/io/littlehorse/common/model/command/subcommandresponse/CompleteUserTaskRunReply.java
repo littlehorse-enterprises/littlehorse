@@ -4,8 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunResponse;
 
-public class CompleteUserTaskRunReply
-    extends AbstractResponse<CompleteUserTaskRunResponse> {
+public class CompleteUserTaskRunReply extends AbstractResponse<CompleteUserTaskRunResponse> {
 
     public Class<CompleteUserTaskRunResponse> getProtoBaseClass() {
         return CompleteUserTaskRunResponse.class;

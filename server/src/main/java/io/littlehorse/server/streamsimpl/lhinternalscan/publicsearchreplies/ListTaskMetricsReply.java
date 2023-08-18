@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.proto.TaskDefMetrics;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class ListTaskMetricsReply
-    extends PublicScanReply<ListTaskMetricsResponse, TaskDefMetrics, TaskDefMetricsModel> {
+        extends PublicScanReply<ListTaskMetricsResponse, TaskDefMetrics, TaskDefMetricsModel> {
 
     public Class<ListTaskMetricsResponse> getProtoBaseClass() {
         return ListTaskMetricsResponse.class;

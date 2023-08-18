@@ -20,11 +20,7 @@ public class HealthService implements Closeable {
     private State coreState;
     private State timerState;
 
-    public HealthService(
-        LHConfig config,
-        KafkaStreams coreStreams,
-        KafkaStreams timerStreams
-    ) {
+    public HealthService(LHConfig config, KafkaStreams coreStreams, KafkaStreams timerStreams) {
         this.prom = new PrometheusMetricExporter(config);
         this.prom.bind(coreStreams, timerStreams);
         this.server = Javalin.create();

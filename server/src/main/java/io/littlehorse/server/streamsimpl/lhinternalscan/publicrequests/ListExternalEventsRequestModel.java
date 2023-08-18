@@ -15,7 +15,12 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrate
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
 
 public class ListExternalEventsRequestModel
-    extends PublicScanRequest<ListExternalEventsRequest, ListExternalEventsResponse, ExternalEvent, ExternalEventModel, ListExternalEventsReply> {
+        extends PublicScanRequest<
+                ListExternalEventsRequest,
+                ListExternalEventsResponse,
+                ExternalEvent,
+                ExternalEventModel,
+                ListExternalEventsReply> {
 
     public String wfRunId;
 
@@ -37,8 +42,7 @@ public class ListExternalEventsRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
         return TagStorageType.LOCAL;
     }
 

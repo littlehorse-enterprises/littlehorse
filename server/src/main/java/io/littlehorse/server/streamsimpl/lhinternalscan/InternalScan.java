@@ -33,12 +33,12 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
     }
 
     public InternalScanPb.Builder toProto() {
-        InternalScanPb.Builder out = InternalScanPb
-            .newBuilder()
-            .setLimit(limit)
-            .setStoreName(storeName)
-            .setObjectType(objectType)
-            .setResultType(resultType);
+        InternalScanPb.Builder out =
+                InternalScanPb.newBuilder()
+                        .setLimit(limit)
+                        .setStoreName(storeName)
+                        .setObjectType(objectType)
+                        .setResultType(resultType);
 
         if (bookmark != null) out.setBookmark(bookmark);
         if (partitionKey != null) {

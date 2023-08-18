@@ -40,11 +40,11 @@ public class ExternalEventDefModel extends Getable<ExternalEventDef> {
     }
 
     public ExternalEventDef.Builder toProto() {
-        ExternalEventDef.Builder b = ExternalEventDef
-            .newBuilder()
-            .setName(name)
-            .setRetentionHours(retentionHours)
-            .setCreatedAt(LHUtil.fromDate(getCreatedAt()));
+        ExternalEventDef.Builder b =
+                ExternalEventDef.newBuilder()
+                        .setName(name)
+                        .setRetentionHours(retentionHours)
+                        .setCreatedAt(LHUtil.fromDate(getCreatedAt()));
         return b;
     }
 
@@ -70,10 +70,7 @@ public class ExternalEventDefModel extends Getable<ExternalEventDef> {
     }
 
     @Override
-    public List<IndexedField> getIndexValues(
-        String key,
-        Optional<TagStorageType> tagStorageType
-    ) {
+    public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         return List.of();
     }
 }

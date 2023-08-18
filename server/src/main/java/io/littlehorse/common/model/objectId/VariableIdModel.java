@@ -38,11 +38,11 @@ public class VariableIdModel extends ObjectId<VariableId, Variable, VariableMode
     }
 
     public VariableId.Builder toProto() {
-        VariableId.Builder out = VariableId
-            .newBuilder()
-            .setWfRunId(wfRunId)
-            .setThreadRunNumber(threadRunNumber)
-            .setName(name);
+        VariableId.Builder out =
+                VariableId.newBuilder()
+                        .setWfRunId(wfRunId)
+                        .setThreadRunNumber(threadRunNumber)
+                        .setName(name);
         return out;
     }
 

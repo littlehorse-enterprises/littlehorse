@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class ListVariablesReply
-    extends PublicScanReply<ListVariablesResponse, Variable, VariableModel> {
+        extends PublicScanReply<ListVariablesResponse, Variable, VariableModel> {
 
     public Class<VariableModel> getResultJavaClass() {
         return VariableModel.class;

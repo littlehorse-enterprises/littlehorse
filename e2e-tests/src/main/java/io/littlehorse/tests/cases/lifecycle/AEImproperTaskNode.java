@@ -41,12 +41,7 @@ public class AEImproperTaskNode extends Test {
     }
 
     public void test() throws LHApiError, InterruptedException {
-        worker =
-            new LHTaskWorker(
-                new AETaskNodeValidationWorker(),
-                TASK_DEF_NAME,
-                workerConfig
-            );
+        worker = new LHTaskWorker(new AETaskNodeValidationWorker(), TASK_DEF_NAME, workerConfig);
         worker.registerTaskDef(true);
 
         // First, verify that we get an error when trying to create a WfRun that
@@ -54,20 +49,17 @@ public class AEImproperTaskNode extends Test {
         LHApiError caught = null;
         try {
             new WorkflowImpl(
-                "ae-invalid-asdf",
-                thread -> {
-                    thread.execute(TASK_DEF_NAME, "not-an-int");
-                }
-            )
-                .registerWfSpec(client);
+                            "ae-invalid-asdf",
+                            thread -> {
+                                thread.execute(TASK_DEF_NAME, "not-an-int");
+                            })
+                    .registerWfSpec(client);
         } catch (LHApiError exn) {
             caught = exn;
         }
-        if (
-            caught == null ||
-            caught.getCode() != LHResponseCode.VALIDATION_ERROR ||
-            !caught.getMessage().contains("needs to be INT")
-        ) {
+        if (caught == null
+                || caught.getCode() != LHResponseCode.VALIDATION_ERROR
+                || !caught.getMessage().contains("needs to be INT")) {
             throw new RuntimeException("Should have got task input var type error!");
         }
         // check to ensure the WfSpec wasn't actually saved
@@ -78,36 +70,30 @@ public class AEImproperTaskNode extends Test {
         // Now deploy a valid WfSpec and cause it to crash (because JSON_OBJ vars
         // aren't strongly typed)
         new WorkflowImpl(
-            VALID_WF_SPEC_NAME,
-            thread -> {
-                WfRunVariable var = thread.addVariable("var", VariableType.JSON_OBJ);
-                // This ensures the RunWf request succeeds, since it's the first
-                // node that actually gets executed.
-                thread.execute(TASK_DEF_NAME, 12345);
+                        VALID_WF_SPEC_NAME,
+                        thread -> {
+                            WfRunVariable var = thread.addVariable("var", VariableType.JSON_OBJ);
+                            // This ensures the RunWf request succeeds, since it's the first
+                            // node that actually gets executed.
+                            thread.execute(TASK_DEF_NAME, 12345);
 
-                // This one either fails or succeeds.
-                thread.execute(TASK_DEF_NAME, var.jsonPath("$.theField"));
-            }
-        )
-            .registerWfSpec(client);
+                            // This one either fails or succeeds.
+                            thread.execute(TASK_DEF_NAME, var.jsonPath("$.theField"));
+                        })
+                .registerWfSpec(client);
 
         Thread.sleep(200); // Wait for the data to propagate
         worker.start();
 
         this.failWfRun =
-            client.runWf(
-                VALID_WF_SPEC_NAME,
-                null,
-                null,
-                Arg.of("var", Map.of("theField", "not-an-int"))
-            );
+                client.runWf(
+                        VALID_WF_SPEC_NAME,
+                        null,
+                        null,
+                        Arg.of("var", Map.of("theField", "not-an-int")));
         this.successWfRun =
-            client.runWf(
-                VALID_WF_SPEC_NAME,
-                null,
-                null,
-                Arg.of("var", Map.of("theField", 1776))
-            );
+                client.runWf(
+                        VALID_WF_SPEC_NAME, null, null, Arg.of("var", Map.of("theField", 1776)));
         Thread.sleep(120);
 
         WfRun wfRun = client.getWfRun(failWfRun);
@@ -125,9 +111,7 @@ public class AEImproperTaskNode extends Test {
 
         // Now verify the other one succeeded.
         if (client.getWfRun(successWfRun).getStatus() != LHStatus.COMPLETED) {
-            throw new RuntimeException(
-                "Wf " + successWfRun + " should have succeeded!"
-            );
+            throw new RuntimeException("Wf " + successWfRun + " should have succeeded!");
         }
     }
 
@@ -138,7 +122,8 @@ public class AEImproperTaskNode extends Test {
             client.deleteTaskDef(TASK_DEF_NAME);
             client.deleteWfSpec(VALID_WF_SPEC_NAME, 0);
             worker.close();
-        } catch (Exception exn) {}
+        } catch (Exception exn) {
+        }
     }
 }
 

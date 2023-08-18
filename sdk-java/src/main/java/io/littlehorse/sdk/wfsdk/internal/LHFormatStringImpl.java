@@ -10,11 +10,7 @@ public class LHFormatStringImpl implements LHFormatString {
     private String format;
     private List<VariableAssignment> formatArgs;
 
-    public LHFormatStringImpl(
-        ThreadBuilderImpl thread,
-        String format,
-        Object[] args
-    ) {
+    public LHFormatStringImpl(ThreadBuilderImpl thread, String format, Object[] args) {
         this.format = format;
         formatArgs = new ArrayList<>();
         for (Object arg : args) {

@@ -22,22 +22,23 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * The LHTaskWorker talks to the LH Servers and executes a specified Task Method every
- * time a Task is scheduled.
+ * The LHTaskWorker talks to the LH Servers and executes a specified Task Method every time a Task
+ * is scheduled.
  */
 @Slf4j
 public class LHTaskWorker implements Closeable {
 
-    public static HashMap<Class<?>, VariableType> javaTypeToLHType = new HashMap<>() {
-        {
-            put(Integer.class, VariableType.INT);
-            put(Long.class, VariableType.INT);
-            put(Boolean.class, VariableType.BOOL);
-            put(Double.class, VariableType.DOUBLE);
-            put(byte[].class, VariableType.BYTES);
-            put(String.class, VariableType.STR);
-        }
-    };
+    public static HashMap<Class<?>, VariableType> javaTypeToLHType =
+            new HashMap<>() {
+                {
+                    put(Integer.class, VariableType.INT);
+                    put(Long.class, VariableType.INT);
+                    put(Boolean.class, VariableType.BOOL);
+                    put(Double.class, VariableType.DOUBLE);
+                    put(byte[].class, VariableType.BYTES);
+                    put(String.class, VariableType.STR);
+                }
+            };
 
     private Object executable;
     private LHWorkerConfig config;
@@ -49,18 +50,15 @@ public class LHTaskWorker implements Closeable {
     private String taskDefName;
 
     /**
-     * Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod,
-     * and a configuration Properties object.
-     * @param executable is any Object which has exactly one method annotated with
-     * '@LHTaskMethod'. That method will be used to execute the tasks.
+     * Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod, and a
+     * configuration Properties object.
+     *
+     * @param executable is any Object which has exactly one method annotated with '@LHTaskMethod'.
+     *     That method will be used to execute the tasks.
      * @param taskDefName is the name of the `TaskDef` to execute.
      * @param config is a valid LHWorkerConfig.
      */
-    public LHTaskWorker(
-        Object executable,
-        String taskDefName,
-        LHWorkerConfig config
-    ) {
+    public LHTaskWorker(Object executable, String taskDefName, LHWorkerConfig config) {
         this.config = config;
         this.executable = executable;
         this.mappings = new ArrayList<>();
@@ -70,6 +68,7 @@ public class LHTaskWorker implements Closeable {
 
     /**
      * `TaskDef` to execute
+     *
      * @return the name of the `TaskDef` to execute
      */
     public String getTaskDefName() {
@@ -81,19 +80,13 @@ public class LHTaskWorker implements Closeable {
             validateTaskDefAndExecutable();
 
             this.manager =
-                new LHServerConnectionManager(
-                    taskMethod,
-                    taskDef,
-                    config,
-                    mappings,
-                    executable
-                );
+                    new LHServerConnectionManager(
+                            taskMethod, taskDef, config, mappings, executable);
         } catch (TaskSchemaMismatchError exn) {
             throw new LHApiError(
-                exn,
-                "Provided java method does not match registered task!",
-                LHResponseCode.BAD_REQUEST_ERROR
-            );
+                    exn,
+                    "Provided java method does not match registered task!",
+                    LHResponseCode.BAD_REQUEST_ERROR);
         } catch (IOException exn) {
             throw new LHApiError(exn, "Couldn't create connection to LH");
         }
@@ -101,6 +94,7 @@ public class LHTaskWorker implements Closeable {
 
     /**
      * Checks if the TaskDef exists
+     *
      * @return true if the task is registered or false otherwise
      * @throws LHApiError if the call fails.
      */
@@ -110,9 +104,9 @@ public class LHTaskWorker implements Closeable {
     }
 
     /**
-     * Deploys the  TaskDef object to the LH Server.
-     * This is a convenience method, generally not recommended for
-     * production (in production you should manually use the PutTaskDef).
+     * Deploys the TaskDef object to the LH Server. This is a convenience method, generally not
+     * recommended for production (in production you should manually use the PutTaskDef).
+     *
      * @throws LHApiError if the call fails.
      */
     public void registerTaskDef() throws LHApiError {
@@ -120,40 +114,28 @@ public class LHTaskWorker implements Closeable {
     }
 
     /**
-     * Deploys the  TaskDef object to the LH Server.
-     * This is a convenience method, generally not recommended for
-     * production (in production you should manually use the PutTaskDef).
-     * @param swallowAlreadyExists if true, then ignore ALREADY_EXISTS_ERROR when
-     * registering the TaskDef.
+     * Deploys the TaskDef object to the LH Server. This is a convenience method, generally not
+     * recommended for production (in production you should manually use the PutTaskDef).
+     *
+     * @param swallowAlreadyExists if true, then ignore ALREADY_EXISTS_ERROR when registering the
+     *     TaskDef.
      * @throws LHApiError if the call fails.
      */
     public void registerTaskDef(boolean swallowAlreadyExists) throws LHApiError {
         try {
             TaskDefBuilder tdb = new TaskDefBuilder(executable, taskDefName);
             log.info(
-                "Creating TaskDef:\n {}",
-                LHLibUtil.protoToJson(
-                    lhClient.putTaskDef(
-                        tdb.toPutTaskDefRequest(),
-                        swallowAlreadyExists
-                    )
-                )
-            );
+                    "Creating TaskDef:\n {}",
+                    LHLibUtil.protoToJson(
+                            lhClient.putTaskDef(tdb.toPutTaskDefRequest(), swallowAlreadyExists)));
         } catch (TaskSchemaMismatchError exn) {
             log.error("Error registering task", exn);
-            throw new LHApiError(
-                exn,
-                exn.getMessage(),
-                LHResponseCode.VALIDATION_ERROR
-            );
+            throw new LHApiError(exn, exn.getMessage(), LHResponseCode.VALIDATION_ERROR);
         }
     }
 
     private void validateTaskDefAndExecutable() throws TaskSchemaMismatchError {
-        LHTaskSignature signature = new LHTaskSignature(
-            taskDef.getName(),
-            executable
-        );
+        LHTaskSignature signature = new LHTaskSignature(taskDef.getName(), executable);
         taskMethod = signature.getTaskMethod();
 
         int numTaskMethodParams = taskMethod.getParameterCount();
@@ -170,8 +152,7 @@ public class LHTaskWorker implements Closeable {
 
         if (wrongNumParams) {
             throw new TaskSchemaMismatchError(
-                "Number of task method params doesn't match number of taskdef params!"
-            );
+                    "Number of task method params doesn't match number of taskdef params!");
         }
 
         for (int i = 0; i < numTaskDefParams; i++) {
@@ -181,53 +162,39 @@ public class LHTaskWorker implements Closeable {
 
             if (paramClass.equals(WorkerContext.class)) {
                 throw new TaskSchemaMismatchError(
-                    "Can only have WorkerContext after all required taskDef params."
-                );
+                        "Can only have WorkerContext after all required taskDef params.");
             }
 
             // This line throws a TaskSchemaMismatchError if the param can't
             // be provided properly.
-            VariableMapping mapping = new VariableMapping(
-                taskDef,
-                i,
-                paramClass,
-                javaParamName
-            );
+            VariableMapping mapping = new VariableMapping(taskDef, i, paramClass, javaParamName);
             mappings.add(mapping);
         }
 
         if (signature.getHasWorkerContextAtEnd()) {
             mappings.add(
-                new VariableMapping(
-                    taskDef,
-                    numTaskMethodParams - 1,
-                    WorkerContext.class,
-                    null
-                )
-            );
+                    new VariableMapping(
+                            taskDef, numTaskMethodParams - 1, WorkerContext.class, null));
         }
     }
 
     /**
      * Starts polling for and executing tasks.
-     * @throws LHApiError if the schema from the TaskDef configured in
-     * the configProps is incompatible with the method signature from the provided
-     * executable Java object, or if the Worker cannot connect to the LH Server.
+     *
+     * @throws LHApiError if the schema from the TaskDef configured in the configProps is
+     *     incompatible with the method signature from the provided executable Java object, or if
+     *     the Worker cannot connect to the LH Server.
      */
     public void start() throws LHApiError {
         if (!doesTaskDefExist()) {
             throw new LHApiError(
-                "Couldn't find TaskDef: " + taskDefName,
-                LHResponseCode.NOT_FOUND_ERROR
-            );
+                    "Couldn't find TaskDef: " + taskDefName, LHResponseCode.NOT_FOUND_ERROR);
         }
         createManager();
         manager.start();
     }
 
-    /**
-     * Cleanly shuts down the Task Worker.
-     */
+    /** Cleanly shuts down the Task Worker. */
     public void close() {
         if (manager != null) {
             manager.close();

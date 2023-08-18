@@ -37,10 +37,7 @@ public class ACSimpleTaskRebalancing extends Test {
 
     public void test() throws LHApiError, InterruptedException {
         // Create taskdef
-        client.putTaskDef(
-            PutTaskDefRequest.newBuilder().setName(taskDefName).build(),
-            false
-        );
+        client.putTaskDef(PutTaskDefRequest.newBuilder().setName(taskDefName).build(), false);
 
         // Taskdef needs to propagate to all servers
         Thread.sleep(50);
@@ -53,9 +50,7 @@ public class ACSimpleTaskRebalancing extends Test {
         String client4 = "client-4";
 
         // This is the first worker to connect, so it should get ALL of the hosts
-        RegisterTaskWorkerResponse reply1 = stub.registerTaskWorker(
-            register(client1)
-        );
+        RegisterTaskWorkerResponse reply1 = stub.registerTaskWorker(register(client1));
         for (HostInfo host : reply1.getYourHostsList()) {
             allHosts.add(hostToString(host));
         }
@@ -63,9 +58,7 @@ public class ACSimpleTaskRebalancing extends Test {
         // Since we require that each server has at least two connections on it,
         // we should check that when we add the worker #2, then it still gets all
         // the hosts.
-        RegisterTaskWorkerResponse reply2 = stub.registerTaskWorker(
-            register(client2)
-        );
+        RegisterTaskWorkerResponse reply2 = stub.registerTaskWorker(register(client2));
         if (reply2.getYourHostsCount() != allHosts.size()) {
             throw new RuntimeException("Second worker should still get all hosts!");
         }
@@ -73,8 +66,7 @@ public class ACSimpleTaskRebalancing extends Test {
         reply1 = stub.registerTaskWorker(register(client1));
         if (reply1.getYourHostsCount() != allHosts.size()) {
             throw new RuntimeException(
-                "First worker should still get all hosts when only one other!"
-            );
+                    "First worker should still get all hosts when only one other!");
         }
 
         // When we add a third and fourth worker, if there are more than one server,
@@ -95,12 +87,11 @@ public class ACSimpleTaskRebalancing extends Test {
     }
 
     private RegisterTaskWorkerRequest register(String clientId) {
-        return RegisterTaskWorkerRequest
-            .newBuilder()
-            .setClientId(clientId)
-            .setTaskDefName(taskDefName)
-            .setListenerName(config.getConnectListener())
-            .build();
+        return RegisterTaskWorkerRequest.newBuilder()
+                .setClientId(clientId)
+                .setTaskDefName(taskDefName)
+                .setListenerName(config.getConnectListener())
+                .build();
     }
 
     public void cleanup() throws LHApiError {

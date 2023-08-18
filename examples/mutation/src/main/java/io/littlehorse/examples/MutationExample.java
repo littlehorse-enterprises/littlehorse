@@ -28,10 +28,7 @@ public class MutationExample {
         return new WorkflowImpl(
             "example-mutation",
             thread -> {
-                WfRunVariable theName = thread.addVariable(
-                    "name",
-                    VariableType.STR
-                );
+                WfRunVariable theName = thread.addVariable("name", VariableType.STR);
                 // We pass the name of the person and receive if it is spider-man or not
                 NodeOutput output = thread.execute("spider-bite", theName);
 

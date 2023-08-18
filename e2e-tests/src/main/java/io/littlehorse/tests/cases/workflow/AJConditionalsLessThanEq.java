@@ -26,44 +26,35 @@ public class AJConditionalsLessThanEq extends WorkflowLogicTest {
 
     public Workflow getWorkflowImpl() {
         return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                // Use an input JSON blob with two fields, LHS and RHS.
-                // This allows us to test with various types on the left and the
-                // right, since right now the JSON_OBJ var type does not have a
-                // schema.
-                WfRunVariable input = thread.addVariable(
-                    "input",
-                    VariableType.JSON_OBJ
-                );
+                getWorkflowName(),
+                thread -> {
+                    // Use an input JSON blob with two fields, LHS and RHS.
+                    // This allows us to test with various types on the left and the
+                    // right, since right now the JSON_OBJ var type does not have a
+                    // schema.
+                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-                // So that the run request succeeds even on workflows where we want
-                // a crash.
-                thread.execute("aj-one");
+                    // So that the run request succeeds even on workflows where we want
+                    // a crash.
+                    thread.execute("aj-one");
 
-                thread.doIfElse(
-                    thread.condition(
-                        input.jsonPath("$.lhs"),
-                        Comparator.LESS_THAN_EQ,
-                        input.jsonPath("$.rhs")
-                    ),
-                    ifBlock -> {
-                        ifBlock.execute("aj-one");
-                    },
-                    elseBlock -> {
-                        elseBlock.execute("aj-two");
-                    }
-                );
-            }
-        );
+                    thread.doIfElse(
+                            thread.condition(
+                                    input.jsonPath("$.lhs"),
+                                    Comparator.LESS_THAN_EQ,
+                                    input.jsonPath("$.rhs")),
+                            ifBlock -> {
+                                ifBlock.execute("aj-one");
+                            },
+                            elseBlock -> {
+                                elseBlock.execute("aj-two");
+                            });
+                });
     }
 
     private String runWithInputsAndCheck(
-        LHClient client,
-        Object lhs,
-        Object rhs,
-        boolean shouldEqual
-    ) throws TestFailure, InterruptedException, LHApiError {
+            LHClient client, Object lhs, Object rhs, boolean shouldEqual)
+            throws TestFailure, InterruptedException, LHApiError {
         AJInputObj input = new AJInputObj(lhs, rhs);
 
         if (shouldEqual) {
@@ -80,15 +71,14 @@ public class AJConditionalsLessThanEq extends WorkflowLogicTest {
     // private String twoInts() throws TestFailure
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+            throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
-            runWithInputsAndCheck(client, 1, 2, true),
-            runWithInputsAndCheck(client, 1, 1, true),
-            runWithInputsAndCheck(client, "hi", "hi", true),
-            runWithInputsAndCheck(client, "a", "b", true),
-            runWithInputsAndCheck(client, 1.0, 1.0, true),
-            runWithInputsAndCheck(client, 5, 4, false)
-        );
+                runWithInputsAndCheck(client, 1, 2, true),
+                runWithInputsAndCheck(client, 1, 1, true),
+                runWithInputsAndCheck(client, "hi", "hi", true),
+                runWithInputsAndCheck(client, "a", "b", true),
+                runWithInputsAndCheck(client, 1.0, 1.0, true),
+                runWithInputsAndCheck(client, 5, 4, false));
     }
 }
 

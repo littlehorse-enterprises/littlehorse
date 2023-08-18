@@ -42,20 +42,17 @@ public class NodeRunIdModel extends ObjectId<NodeRunId, NodeRun, NodeRunModel> {
     }
 
     public NodeRunId.Builder toProto() {
-        NodeRunId.Builder out = NodeRunId
-            .newBuilder()
-            .setWfRunId(wfRunId)
-            .setThreadRunNumber(threadRunNumber)
-            .setPosition(position);
+        NodeRunId.Builder out =
+                NodeRunId.newBuilder()
+                        .setWfRunId(wfRunId)
+                        .setThreadRunNumber(threadRunNumber)
+                        .setPosition(position);
         return out;
     }
 
     public String getStoreKey() {
         return LHUtil.getCompositeId(
-            wfRunId,
-            String.valueOf(threadRunNumber),
-            String.valueOf(position)
-        );
+                wfRunId, String.valueOf(threadRunNumber), String.valueOf(position));
     }
 
     public void initFrom(String storeKey) {

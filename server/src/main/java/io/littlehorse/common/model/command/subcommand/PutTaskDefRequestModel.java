@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PutTaskDefRequestModel
-    extends SubCommand<io.littlehorse.sdk.common.proto.PutTaskDefRequest> {
+        extends SubCommand<io.littlehorse.sdk.common.proto.PutTaskDefRequest> {
 
     public String name;
     public List<VariableDefModel> inputVars;
@@ -33,7 +33,8 @@ public class PutTaskDefRequestModel
     }
 
     public io.littlehorse.sdk.common.proto.PutTaskDefRequest.Builder toProto() {
-        io.littlehorse.sdk.common.proto.PutTaskDefRequest.Builder out = io.littlehorse.sdk.common.proto.PutTaskDefRequest.newBuilder();
+        io.littlehorse.sdk.common.proto.PutTaskDefRequest.Builder out =
+                io.littlehorse.sdk.common.proto.PutTaskDefRequest.newBuilder();
         out.setName(name);
 
         for (VariableDefModel entry : inputVars) {
@@ -44,7 +45,8 @@ public class PutTaskDefRequestModel
     }
 
     public void initFrom(Message proto) {
-        io.littlehorse.sdk.common.proto.PutTaskDefRequest p = (io.littlehorse.sdk.common.proto.PutTaskDefRequest) proto;
+        io.littlehorse.sdk.common.proto.PutTaskDefRequest p =
+                (io.littlehorse.sdk.common.proto.PutTaskDefRequest) proto;
         name = p.getName();
         for (VariableDef entry : p.getInputVarsList()) {
             inputVars.add(VariableDefModel.fromProto(entry));
@@ -83,8 +85,7 @@ public class PutTaskDefRequestModel
     }
 
     public static PutTaskDefRequestModel fromProto(
-        io.littlehorse.sdk.common.proto.PutTaskDefRequest p
-    ) {
+            io.littlehorse.sdk.common.proto.PutTaskDefRequest p) {
         PutTaskDefRequestModel out = new PutTaskDefRequestModel();
         out.initFrom(p);
         return out;

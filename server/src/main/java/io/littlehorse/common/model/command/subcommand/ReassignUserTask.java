@@ -24,10 +24,9 @@ public class ReassignUserTask extends SubCommand<ReassignedUserTaskPb> {
     public ReassignUserTask() {}
 
     public ReassignUserTask(
-        NodeRunIdModel source,
-        String newOwner,
-        ReassignedUserTaskPb.AssignToCase assignToCase
-    ) {
+            NodeRunIdModel source,
+            String newOwner,
+            ReassignedUserTaskPb.AssignToCase assignToCase) {
         this.source = source;
         this.newOwner = newOwner;
         this.assignToCase = assignToCase;
@@ -65,9 +64,8 @@ public class ReassignUserTask extends SubCommand<ReassignedUserTaskPb> {
     @Override
     public AbstractResponse<?> process(LHDAO dao, LHConfig config) {
         NodeRunModel nodeRunModel = dao.getNodeRun(source);
-        UserTaskRunModel userTaskRun = dao.getUserTaskRun(
-            nodeRunModel.getUserTaskRun().getUserTaskRunId()
-        );
+        UserTaskRunModel userTaskRun =
+                dao.getUserTaskRun(nodeRunModel.getUserTaskRun().getUserTaskRunId());
         if (userTaskRun.getStatus() == UserTaskRunStatus.ASSIGNED) {
             userTaskRun.deadlineReassign(newOwner, assignToCase);
         }

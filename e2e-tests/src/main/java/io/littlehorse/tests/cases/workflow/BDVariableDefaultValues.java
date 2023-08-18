@@ -26,12 +26,11 @@ public class BDVariableDefaultValues extends WorkflowLogicTest {
 
     public Workflow getWorkflowImpl() {
         return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                WfRunVariable myVar = thread.addVariable("my-var", 123);
-                thread.execute("bd-the-task", myVar);
-            }
-        );
+                getWorkflowName(),
+                thread -> {
+                    WfRunVariable myVar = thread.addVariable("my-var", 123);
+                    thread.execute("bd-the-task", myVar);
+                });
     }
 
     public List<Object> getTaskWorkerObjects() {
@@ -39,7 +38,7 @@ public class BDVariableDefaultValues extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+            throws TestFailure, InterruptedException, LHApiError {
         String withVals = runWf(client, Arg.of("my-var", 321));
         String withDefault = runWf(client);
         Thread.sleep(200);

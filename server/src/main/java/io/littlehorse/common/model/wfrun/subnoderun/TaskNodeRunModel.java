@@ -32,8 +32,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     public void initFrom(Message proto) {
         TaskNodeRun p = (TaskNodeRun) proto;
         if (p.hasTaskRunId()) {
-            taskRunId =
-                LHSerializable.fromProto(p.getTaskRunId(), TaskRunIdModel.class);
+            taskRunId = LHSerializable.fromProto(p.getTaskRunId(), TaskRunIdModel.class);
         }
     }
 
@@ -62,43 +61,34 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
             // that means the TaskDef was deleted between now and the time that the
             // WfSpec was first created. Yikers!
             nodeRunModel.fail(
-                new FailureModel(
-                    "Appears that TaskDef was deleted!",
-                    LHConstants.TASK_ERROR
-                ),
-                time
-            );
+                    new FailureModel("Appears that TaskDef was deleted!", LHConstants.TASK_ERROR),
+                    time);
             return;
         }
 
         List<VarNameAndValModel> inputVariables;
 
         try {
-            inputVariables =
-                node.getTaskNode().assignInputVars(nodeRunModel.getThreadRun());
+            inputVariables = node.getTaskNode().assignInputVars(nodeRunModel.getThreadRun());
         } catch (LHVarSubError exn) {
             nodeRunModel.fail(
-                new FailureModel(
-                    "Failed calculating TaskRun Input Vars: " + exn.getMessage(),
-                    LHConstants.VAR_SUB_ERROR
-                ),
-                time
-            );
+                    new FailureModel(
+                            "Failed calculating TaskRun Input Vars: " + exn.getMessage(),
+                            LHConstants.VAR_SUB_ERROR),
+                    time);
             return;
         }
 
         // Create a TaskRun
-        TaskNodeReferenceModel source = new TaskNodeReferenceModel(
-            nodeRunModel.getObjectId(),
-            nodeRunModel.getWfSpecId()
-        );
+        TaskNodeReferenceModel source =
+                new TaskNodeReferenceModel(nodeRunModel.getObjectId(), nodeRunModel.getWfSpecId());
 
-        TaskRunModel task = new TaskRunModel(
-            getDao(),
-            inputVariables,
-            new TaskRunSourceModel(source),
-            node.getTaskNode()
-        );
+        TaskRunModel task =
+                new TaskRunModel(
+                        getDao(),
+                        inputVariables,
+                        new TaskRunSourceModel(source),
+                        node.getTaskNode());
         this.taskRunId = new TaskRunIdModel(nodeRunModel.getPartitionKey());
         task.setId(taskRunId);
 

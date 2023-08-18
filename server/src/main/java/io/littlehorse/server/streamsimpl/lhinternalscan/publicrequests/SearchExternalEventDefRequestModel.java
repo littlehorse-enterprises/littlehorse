@@ -19,7 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SearchExternalEventDefRequestModel
-    extends PublicScanRequest<SearchExternalEventDefRequest, SearchExternalEventDefResponse, ExternalEventDefId, ExternalEventDefIdModel, SearchExternalEventDefReply> {
+        extends PublicScanRequest<
+                SearchExternalEventDefRequest,
+                SearchExternalEventDefResponse,
+                ExternalEventDefId,
+                ExternalEventDefIdModel,
+                SearchExternalEventDefReply> {
 
     public String prefix;
 
@@ -58,16 +63,14 @@ public class SearchExternalEventDefRequestModel
     }
 
     public static SearchExternalEventDefRequestModel fromProto(
-        SearchExternalEventDefRequest proto
-    ) {
+            SearchExternalEventDefRequest proto) {
         SearchExternalEventDefRequestModel out = new SearchExternalEventDefRequestModel();
         out.initFrom(proto);
         return out;
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
+    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
         return TagStorageType.LOCAL;
     }
 
@@ -78,16 +81,9 @@ public class SearchExternalEventDefRequestModel
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         if (prefix != null && !prefix.equals("")) {
             return new ObjectIdScanBoundaryStrategy(
-                LHConstants.META_PARTITION_KEY,
-                prefix,
-                prefix + "~"
-            );
+                    LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
         } else {
-            return new ObjectIdScanBoundaryStrategy(
-                LHConstants.META_PARTITION_KEY,
-                "",
-                "~"
-            );
+            return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, "", "~");
         }
     }
 }

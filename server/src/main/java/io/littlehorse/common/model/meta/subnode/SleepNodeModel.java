@@ -64,8 +64,7 @@ public class SleepNodeModel extends SubNode<SleepNode> {
     }
 
     @Override
-    public void validate(LHGlobalMetaStores stores, LHConfig config)
-        throws LHValidationError {
+    public void validate(LHGlobalMetaStores stores, LHConfig config) throws LHValidationError {
         // TODO: once we have schemas, we need to validate that the
         // variable assignments are types that make sense (unsigned int, long,
         // or date string).
@@ -87,12 +86,7 @@ public class SleepNodeModel extends SubNode<SleepNode> {
                     return new Date(Instant.parse(dateStr).toEpochMilli());
                 } catch (Exception exn) {
                     throw new LHVarSubError(
-                        exn,
-                        "failed parsing date string " +
-                        dateStr +
-                        ": " +
-                        exn.getMessage()
-                    );
+                            exn, "failed parsing date string " + dateStr + ": " + exn.getMessage());
                 }
             case TIMESTAMP:
                 long ts = thread.assignVariable(timestamp).asInt().intVal;

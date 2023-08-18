@@ -46,10 +46,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     }
 
     public VariableDef.Builder toProto() {
-        VariableDef.Builder out = VariableDef
-            .newBuilder()
-            .setType(type)
-            .setName(name);
+        VariableDef.Builder out = VariableDef.newBuilder().setType(type).setName(name);
 
         if (defaultValue != null) out.setDefaultValue(defaultValue.toProto());
         if (indexType != null) out.setIndexType(indexType);
@@ -70,8 +67,6 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     public TagStorageType getTagStorageType() {
         if (indexType == null) return null;
 
-        return indexType == IndexType.LOCAL_INDEX
-            ? TagStorageType.LOCAL
-            : TagStorageType.REMOTE;
+        return indexType == IndexType.LOCAL_INDEX ? TagStorageType.LOCAL : TagStorageType.REMOTE;
     }
 }

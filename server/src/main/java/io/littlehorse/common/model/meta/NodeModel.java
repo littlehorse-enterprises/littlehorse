@@ -155,19 +155,11 @@ public class NodeModel extends LHSerializable<Node> {
                 break;
             case USER_TASK:
                 userTaskNode =
-                    LHSerializable.fromProto(
-                        proto.getUserTask(),
-                        UserTaskNodeModel.class
-                    );
+                        LHSerializable.fromProto(proto.getUserTask(), UserTaskNodeModel.class);
                 break;
             case NODE_NOT_SET:
                 throw new RuntimeException(
-                    "Node " +
-                    name +
-                    " on thread " +
-                    threadSpecModel.name +
-                    " is unset!"
-                );
+                        "Node " + name + " on thread " + threadSpecModel.name + " is unset!");
         }
         getSubNode().setNode(this);
     }
@@ -202,8 +194,7 @@ public class NodeModel extends LHSerializable<Node> {
         return out;
     }
 
-    public void validate(LHGlobalMetaStores client, LHConfig config)
-        throws LHValidationError {
+    public void validate(LHGlobalMetaStores client, LHConfig config) throws LHValidationError {
         for (EdgeModel e : outgoingEdges) {
             if (e.sinkNodeName.equals(name)) {
                 throw new LHValidationError(null, "Self loop not allowed!");
@@ -212,23 +203,17 @@ public class NodeModel extends LHSerializable<Node> {
             NodeModel sink = threadSpecModel.nodes.get(e.sinkNodeName);
             if (sink == null) {
                 throw new LHValidationError(
-                    null,
-                    String.format(
-                        "Outgoing edge referring to missing node %s!",
-                        e.sinkNodeName
-                    )
-                );
+                        null,
+                        String.format(
+                                "Outgoing edge referring to missing node %s!", e.sinkNodeName));
             }
 
             if (sink.type == NodeCase.ENTRYPOINT) {
                 throw new LHValidationError(
-                    null,
-                    String.format(
-                        "Entrypoint node has incoming edge from node %s.",
-                        threadSpecModel.name,
-                        name
-                    )
-                );
+                        null,
+                        String.format(
+                                "Entrypoint node has incoming edge from node %s.",
+                                threadSpecModel.name, name));
             }
             if (e.condition != null) {
                 e.condition.validate();
@@ -244,11 +229,10 @@ public class NodeModel extends LHSerializable<Node> {
                 // );
 
                 log.warn(
-                    """
+                        """
                         There is no default edge, better know what you're doing!.
                         Future releases will validate that everything is ok.
-                    """
-                );
+                    """);
             }
         }
 
@@ -287,10 +271,9 @@ public class NodeModel extends LHSerializable<Node> {
     }
 
     /**
-     * Returns the set of all thread variable names referred to by this
-     * Node. Used internally for validation of the WfSpec.
+     * Returns the set of all thread variable names referred to by this Node. Used internally for
+     * validation of the WfSpec.
      */
-
     public Set<String> getRequiredVariableNames() {
         Set<String> out = new HashSet<>();
         for (VariableMutationModel mut : variableMutations) {

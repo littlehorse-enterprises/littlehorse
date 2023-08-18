@@ -39,8 +39,7 @@ class LHWorkerConfigTest {
     @Test
     void shouldThrowAnExceptionIfTryToModifyConfigNames() {
         assertThrows(
-            UnsupportedOperationException.class,
-            () -> LHWorkerConfig.configNames().add(faker.regexify("[a-z]{10}"))
-        );
+                UnsupportedOperationException.class,
+                () -> LHWorkerConfig.configNames().add(faker.regexify("[a-z]{10}")));
     }
 }

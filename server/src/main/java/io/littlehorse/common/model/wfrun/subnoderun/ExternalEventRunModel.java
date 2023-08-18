@@ -39,18 +39,14 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
         }
         if (p.hasExternalEventId()) {
             externalEventId =
-                LHSerializable.fromProto(
-                    p.getExternalEventId(),
-                    ExternalEventIdModel.class
-                );
+                    LHSerializable.fromProto(p.getExternalEventId(), ExternalEventIdModel.class);
         }
         externalEventDefName = p.getExternalEventDefName();
     }
 
     public ExternalEventRun.Builder toProto() {
-        ExternalEventRun.Builder out = ExternalEventRun
-            .newBuilder()
-            .setExternalEventDefName(externalEventDefName);
+        ExternalEventRun.Builder out =
+                ExternalEventRun.newBuilder().setExternalEventDefName(externalEventDefName);
 
         if (eventTime != null) {
             out.setEventTime(LHUtil.fromDate(eventTime));
@@ -70,35 +66,28 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
     }
 
     public void processExternalEventTimeout(ExternalEventTimeout timeout) {
-        if (
-            nodeRunModel.status == LHStatus.COMPLETED ||
-            nodeRunModel.status == LHStatus.ERROR
-        ) {
+        if (nodeRunModel.status == LHStatus.COMPLETED || nodeRunModel.status == LHStatus.ERROR) {
             log.debug("ignoring timeout; already completed or failed");
             return;
         }
 
         nodeRunModel.fail(
-            new FailureModel(
-                "External Event did not arrive in time.",
-                LHConstants.TIMEOUT,
-                null
-            ),
-            timeout.time
-        );
+                new FailureModel(
+                        "External Event did not arrive in time.", LHConstants.TIMEOUT, null),
+                timeout.time);
     }
 
     public boolean advanceIfPossible(Date time) {
         NodeModel node = nodeRunModel.getNode();
         ExternalEventNodeModel eNode = node.externalEventNode;
 
-        ExternalEventModel evt = nodeRunModel
-            .getThreadRun()
-            .wfRunModel.getDao()
-            .getUnclaimedEvent(
-                nodeRunModel.getThreadRun().wfRunId,
-                eNode.externalEventDefName
-            );
+        ExternalEventModel evt =
+                nodeRunModel
+                        .getThreadRun()
+                        .wfRunModel
+                        .getDao()
+                        .getUnclaimedEvent(
+                                nodeRunModel.getThreadRun().wfRunId, eNode.externalEventDefName);
         if (evt == null) {
             // It hasn't come in yet.
             return false;
@@ -133,24 +122,23 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
 
         if (getNode().externalEventNode.timeoutSeconds != null) {
             try {
-                VariableValueModel timeoutSeconds = nodeRunModel
-                    .getThreadRun()
-                    .assignVariable(getNode().externalEventNode.timeoutSeconds);
+                VariableValueModel timeoutSeconds =
+                        nodeRunModel
+                                .getThreadRun()
+                                .assignVariable(getNode().externalEventNode.timeoutSeconds);
                 if (timeoutSeconds.type != VariableType.INT) {
                     throw new LHVarSubError(
-                        null,
-                        "Resulting TimeoutSeconds was of type " +
-                        timeoutSeconds.type +
-                        " not INT!"
-                    );
+                            null,
+                            "Resulting TimeoutSeconds was of type "
+                                    + timeoutSeconds.type
+                                    + " not INT!");
                 }
 
                 LHTimer timer = new LHTimer();
-                timer.topic =
-                    nodeRunModel.getThreadRun().wfRunModel.getDao().getCoreCmdTopic();
+                timer.topic = nodeRunModel.getThreadRun().wfRunModel.getDao().getCoreCmdTopic();
                 timer.key = nodeRunModel.wfRunId;
                 timer.maturationTime =
-                    new Date(new Date().getTime() + (timeoutSeconds.intVal * 1000));
+                        new Date(new Date().getTime() + (timeoutSeconds.intVal * 1000));
 
                 Command cmd = new Command();
                 ExternalEventTimeout timeoutEvt = new ExternalEventTimeout();
@@ -166,13 +154,10 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
                 log.info("Scheduled timer!");
             } catch (LHVarSubError exn) {
                 nodeRunModel.fail(
-                    new FailureModel(
-                        "Failed determining timeout for ext evt node: " +
-                        exn.getMessage(),
-                        LHConstants.VAR_ERROR
-                    ),
-                    time
-                );
+                        new FailureModel(
+                                "Failed determining timeout for ext evt node: " + exn.getMessage(),
+                                LHConstants.VAR_ERROR),
+                        time);
             }
         }
     }

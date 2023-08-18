@@ -79,23 +79,18 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
     public UserTaskRunModel() {}
 
     public UserTaskRunModel(
-        UserTaskDefModel utd,
-        UserTaskNodeModel userTaskNode,
-        NodeRunModel nodeRunModel
-    ) {
+            UserTaskDefModel utd, UserTaskNodeModel userTaskNode, NodeRunModel nodeRunModel) {
         this.userTaskDefId = utd.getObjectId();
         this.nodeRunId = nodeRunModel.getObjectId();
         this.id = new UserTaskRunIdModel(nodeRunId.getWfRunId());
         this.scheduledTime = new Date();
         this.userTaskNode = userTaskNode;
         ownerCase =
-            switch (userTaskNode.getAssignmentType()) {
-                case USER -> UserTaskRun.OwnerCase.USER;
-                case USER_GROUP -> UserTaskRun.OwnerCase.USER_GROUP;
-                default -> throw new IllegalArgumentException(
-                    "Assignment Type not supported"
-                );
-            };
+                switch (userTaskNode.getAssignmentType()) {
+                    case USER -> UserTaskRun.OwnerCase.USER;
+                    case USER_GROUP -> UserTaskRun.OwnerCase.USER_GROUP;
+                    default -> throw new IllegalArgumentException("Assignment Type not supported");
+                };
     }
 
     public Class<UserTaskRun> getProtoBaseClass() {
@@ -103,13 +98,13 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
     }
 
     public UserTaskRun.Builder toProto() {
-        UserTaskRun.Builder out = UserTaskRun
-            .newBuilder()
-            .setStatus(status)
-            .setId(id.toProto())
-            .setUserTaskDefId(userTaskDefId.toProto())
-            .setScheduledTime(LHUtil.fromDate(scheduledTime))
-            .setNodeRunId(nodeRunId.toProto());
+        UserTaskRun.Builder out =
+                UserTaskRun.newBuilder()
+                        .setStatus(status)
+                        .setId(id.toProto())
+                        .setUserTaskDefId(userTaskDefId.toProto())
+                        .setScheduledTime(LHUtil.fromDate(scheduledTime))
+                        .setNodeRunId(nodeRunId.toProto());
 
         if (ownerCase.equals(UserTaskRun.OwnerCase.USER)) {
             if (user != null) out.setUser(user.toProto());
@@ -138,8 +133,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
     public void initFrom(Message proto) {
         UserTaskRun p = (UserTaskRun) proto;
         id = LHSerializable.fromProto(p.getId(), UserTaskRunIdModel.class);
-        userTaskDefId =
-            LHSerializable.fromProto(p.getUserTaskDefId(), UserTaskDefIdModel.class);
+        userTaskDefId = LHSerializable.fromProto(p.getUserTaskDefId(), UserTaskDefIdModel.class);
         status = p.getStatus();
         scheduledTime = LHLibUtil.fromProtoTs(p.getScheduledTime());
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class);
@@ -147,8 +141,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
         if (ownerCase.equals(UserTaskRun.OwnerCase.USER)) {
             user = LHSerializable.fromProto(p.getUser(), UserModel.class);
         } else if (ownerCase.equals(UserTaskRun.OwnerCase.USER_GROUP)) {
-            userGroup =
-                LHSerializable.fromProto(p.getUserGroup(), UserGroupModel.class);
+            userGroup = LHSerializable.fromProto(p.getUserGroup(), UserGroupModel.class);
         } else {
             throw new IllegalArgumentException("Owner case not supported yet");
         }
@@ -181,10 +174,11 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
         // Need to either assign to a user or to a group.
         try {
             if (node.userTaskNode.getNotes() != null) {
-                VariableValueModel notesVal = getNodeRun()
-                    .getThreadRun()
-                    .assignVariable(node.userTaskNode.getNotes())
-                    .asStr();
+                VariableValueModel notesVal =
+                        getNodeRun()
+                                .getThreadRun()
+                                .assignVariable(node.userTaskNode.getNotes())
+                                .asStr();
 
                 notes = notesVal.getStrVal();
             }
@@ -199,53 +193,39 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
 
             // I don't think there's anything to do other than schedule the timers for
             // the actions which need to occur.
-            for (UTActionTriggerModel action : node.userTaskNode.getActions(
-                UTHook.ON_ARRIVAL
-            )) {
+            for (UTActionTriggerModel action : node.userTaskNode.getActions(UTHook.ON_ARRIVAL)) {
                 scheduleAction(action);
             }
             log.info("Arrived at user task!");
         } catch (LHVarSubError exn) {
             // darnit ):
             getNodeRun()
-                .fail(
-                    new FailureModel(
-                        "Invalid variables when creating UserTaskRun: " +
-                        exn.getMessage(),
-                        LHConstants.VAR_SUB_ERROR
-                    ),
-                    time
-                );
+                    .fail(
+                            new FailureModel(
+                                    "Invalid variables when creating UserTaskRun: "
+                                            + exn.getMessage(),
+                                    LHConstants.VAR_SUB_ERROR),
+                            time);
         }
     }
 
     private void assignToSpecificUser(NodeModel node) throws LHVarSubError {
         ThreadRunModel threadRunModel = getNodeRun().getThreadRun();
-        VariableValueModel userIdVal = threadRunModel.assignVariable(
-            node.userTaskNode.getUser().getUserId()
-        );
-        VariableValueModel userGroupVal = node.userTaskNode
-                .getUser()
-                .getUserGroup() !=
-            null
-            ? threadRunModel.assignVariable(
-                node.userTaskNode.getUser().getUserGroup()
-            )
-            : null;
+        VariableValueModel userIdVal =
+                threadRunModel.assignVariable(node.userTaskNode.getUser().getUserId());
+        VariableValueModel userGroupVal =
+                node.userTaskNode.getUser().getUserGroup() != null
+                        ? threadRunModel.assignVariable(node.userTaskNode.getUser().getUserGroup())
+                        : null;
         if (userIdVal.type != VariableType.STR) {
             throw new LHVarSubError(
-                null,
-                "VariableAssignment for specific user id should be STR!" +
-                " What we got is: " +
-                userIdVal.type
-            );
+                    null,
+                    "VariableAssignment for specific user id should be STR!"
+                            + " What we got is: "
+                            + userIdVal.type);
         }
         if (userGroupVal != null) {
-            user =
-                new UserModel(
-                    userIdVal.strVal,
-                    new UserGroupModel(userGroupVal.strVal)
-                );
+            user = new UserModel(userIdVal.strVal, new UserGroupModel(userGroupVal.strVal));
         } else {
             user = new UserModel(userIdVal.strVal);
         }
@@ -258,17 +238,15 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
     }
 
     private void assignToGroup(NodeModel node) throws LHVarSubError {
-        VariableValueModel groupIdVal = getNodeRun()
-            .getThreadRun()
-            .assignVariable(node.userTaskNode.getUserGroup());
+        VariableValueModel groupIdVal =
+                getNodeRun().getThreadRun().assignVariable(node.userTaskNode.getUserGroup());
 
         if (groupIdVal.type != VariableType.STR) {
             throw new LHVarSubError(
-                null,
-                "VariableAssignment for group id should be STR!" +
-                " What we got is: " +
-                groupIdVal.type
-            );
+                    null,
+                    "VariableAssignment for group id should be STR!"
+                            + " What we got is: "
+                            + groupIdVal.type);
         }
         userGroup = new UserGroupModel(groupIdVal.strVal);
         status = UserTaskRunStatus.UNASSIGNED;
@@ -295,10 +273,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
         UTEReassignedModel reassigned = null;
         switch (event.getAssigneeType()) {
             case USER:
-                UserModel user = new UserModel(
-                    event.getUser().getId(),
-                    this.getUserGroup()
-                );
+                UserModel user = new UserModel(event.getUser().getId(), this.getUserGroup());
                 reassigned = reassignToUser(user, true);
                 break;
             case USER_GROUP:
@@ -311,10 +286,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
         }
     }
 
-    public void deadlineReassign(
-        String newOwner,
-        ReassignedUserTaskPb.AssignToCase assignToCase
-    ) {
+    public void deadlineReassign(String newOwner, ReassignedUserTaskPb.AssignToCase assignToCase) {
         UTEReassignedModel reassigned = null;
         UserModel user = new UserModel(newOwner, this.getUserGroup());
         switch (assignToCase) {
@@ -344,10 +316,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
         return ute;
     }
 
-    private UTEReassignedModel reassignToUser(
-        UserModel newUser,
-        boolean triggerAction
-    ) {
+    private UTEReassignedModel reassignToUser(UserModel newUser, boolean triggerAction) {
         UTEReassignedModel ute = new UTEReassignedModel();
         ute.setNewUser(newUser);
         ute.setOldUser(user);
@@ -356,9 +325,8 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
         status = UserTaskRunStatus.ASSIGNED;
         NodeModel node = getNodeRun().getNode();
         if (triggerAction) {
-            for (UTActionTriggerModel action : node
-                .getUserTaskNode()
-                .getActions(UTHook.ON_TASK_ASSIGNED)) {
+            for (UTActionTriggerModel action :
+                    node.getUserTaskNode().getActions(UTHook.ON_TASK_ASSIGNED)) {
                 scheduleTaskReassign(action);
             }
         }
@@ -367,19 +335,15 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
 
     public void cancel() {
         status = UserTaskRunStatus.CANCELLED;
-        FailureModel failure = new FailureModel(
-            "User task cancelled",
-            LHConstants.USER_TASK_CANCELLED
-        );
+        FailureModel failure =
+                new FailureModel("User task cancelled", LHConstants.USER_TASK_CANCELLED);
         getNodeRun().fail(failure, new Date());
     }
 
     private void scheduleTaskReassign(UTActionTriggerModel action) {
         long delayInSeconds = action.getDelaySeconds().getRhsLiteralValue().intVal;
         LocalDateTime localDateTime = LocalDateTime.now().plusSeconds(delayInSeconds);
-        Date maturationTime = Date.from(
-            localDateTime.atZone(ZoneId.systemDefault()).toInstant()
-        );
+        Date maturationTime = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
         ReassignedUserTaskPb.AssignToCase assignToCase = null;
         switch (action.getReassign().getAssignToCase()) {
             case USER_ID:
@@ -389,30 +353,25 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
                 assignToCase = ReassignedUserTaskPb.AssignToCase.USER_GROUP;
                 break;
         }
-        LHTimer timer = new LHTimer(
-            new Command(
-                new ReassignUserTask(
-                    getNodeRun().getObjectId(),
-                    action
-                        .getReassign()
-                        .getNewOwner()
-                        .getRhsLiteralValue()
-                        .getStrVal(),
-                    assignToCase
-                ),
-                maturationTime
-            ),
-            getDao()
-        );
+        LHTimer timer =
+                new LHTimer(
+                        new Command(
+                                new ReassignUserTask(
+                                        getNodeRun().getObjectId(),
+                                        action.getReassign()
+                                                .getNewOwner()
+                                                .getRhsLiteralValue()
+                                                .getStrVal(),
+                                        assignToCase),
+                                maturationTime),
+                        getDao());
         getDao().scheduleTimer(timer);
     }
 
     public void processTaskCompletedEvent(CompleteUserTaskRunRequestModel event)
-        throws LHValidationError {
-        if (
-            getNodeRun().getStatus() != LHStatus.STARTING &&
-            getNodeRun().getStatus() != LHStatus.RUNNING
-        ) {
+            throws LHValidationError {
+        if (getNodeRun().getStatus() != LHStatus.STARTING
+                && getNodeRun().getStatus() != LHStatus.RUNNING) {
             log.warn("Tried to complete a user task that was not running");
             return;
         }
@@ -423,44 +382,30 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
         // Now we need to create an output thing...
         // TODO LH-309: Validate this vs the schema
         Map<String, Object> raw = new HashMap<>();
-        UserTaskDefModel userTaskDef = getDao()
-            .getUserTaskDef(
-                getUserTaskDefId().getName(),
-                getUserTaskDefId().getVersion()
-            );
-        Map<String, UserTaskFieldModel> userTaskFieldsGroupedByName = userTaskDef
-            .getFields()
-            .stream()
-            .collect(
-                Collectors.toMap(UserTaskFieldModel::getName, Function.identity())
-            );
+        UserTaskDefModel userTaskDef =
+                getDao().getUserTaskDef(
+                                getUserTaskDefId().getName(), getUserTaskDefId().getVersion());
+        Map<String, UserTaskFieldModel> userTaskFieldsGroupedByName =
+                userTaskDef.getFields().stream()
+                        .collect(
+                                Collectors.toMap(UserTaskFieldModel::getName, Function.identity()));
         for (UserTaskFieldResult inputField : event.getResult().getFieldsList()) {
-            UserTaskFieldModel userTaskFieldFromTaskDef = userTaskFieldsGroupedByName.get(
-                inputField.getName()
-            );
-            if (
-                userTaskFieldFromTaskDef == null ||
-                !userTaskFieldFromTaskDef
-                    .getType()
-                    .equals(inputField.getValue().getType())
-            ) {
+            UserTaskFieldModel userTaskFieldFromTaskDef =
+                    userTaskFieldsGroupedByName.get(inputField.getName());
+            if (userTaskFieldFromTaskDef == null
+                    || !userTaskFieldFromTaskDef
+                            .getType()
+                            .equals(inputField.getValue().getType())) {
                 throw new LHValidationError(
-                    "Field [name = %s, type = %s] is not defined in UserTask schema".formatted(
-                            inputField.getName(),
-                            inputField.getValue().getType()
-                        )
-                );
+                        "Field [name = %s, type = %s] is not defined in UserTask schema"
+                                .formatted(inputField.getName(), inputField.getValue().getType()));
             }
             results.add(inputField);
-            VariableValueModel fieldVal = VariableValueModel.fromProto(
-                inputField.getValue()
-            );
+            VariableValueModel fieldVal = VariableValueModel.fromProto(inputField.getValue());
             raw.put(inputField.getName(), fieldVal.getVal());
         }
         validateMandatoryFieldsFromCompletedEvent(
-            userTaskFieldsGroupedByName.values(),
-            raw.keySet()
-        );
+                userTaskFieldsGroupedByName.values(), raw.keySet());
         VariableValueModel output = new VariableValueModel();
         output.setType(VariableType.JSON_OBJ);
         output.setJsonObjVal(raw);
@@ -469,22 +414,21 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
     }
 
     private void validateMandatoryFieldsFromCompletedEvent(
-        Collection<UserTaskFieldModel> userTaskFieldsFromTaskDef,
-        Collection<String> inputFieldNames
-    ) throws LHValidationError {
-        List<String> mandatoryFieldNames = userTaskFieldsFromTaskDef
-            .stream()
-            .filter(UserTaskFieldModel::isRequired)
-            .map(UserTaskFieldModel::getName)
-            .toList();
-        String mandatoryFieldsNotFound = mandatoryFieldNames
-            .stream()
-            .filter(Predicate.not(inputFieldNames::contains))
-            .collect(Collectors.joining(","));
+            Collection<UserTaskFieldModel> userTaskFieldsFromTaskDef,
+            Collection<String> inputFieldNames)
+            throws LHValidationError {
+        List<String> mandatoryFieldNames =
+                userTaskFieldsFromTaskDef.stream()
+                        .filter(UserTaskFieldModel::isRequired)
+                        .map(UserTaskFieldModel::getName)
+                        .toList();
+        String mandatoryFieldsNotFound =
+                mandatoryFieldNames.stream()
+                        .filter(Predicate.not(inputFieldNames::contains))
+                        .collect(Collectors.joining(","));
         if (!mandatoryFieldsNotFound.isEmpty()) {
             throw new LHValidationError(
-                "[%s] are mandatory fields".formatted(mandatoryFieldsNotFound)
-            );
+                    "[%s] are mandatory fields".formatted(mandatoryFieldsNotFound));
         }
     }
 
@@ -499,78 +443,61 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
 
     public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
         return List.of(
-            new GetableIndex<UserTaskRunModel>(
-                List.of(Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageType.LOCAL)
-            ),
-            // Future: We will make this LOCAL if it's DONE or CANCELLED, and
-            // REMOTE if it's CLAIMED, UNASSIGNED, or ASSIGNED_NOT_CLAIMED.
-            new GetableIndex<UserTaskRunModel>(
-                List.of(
-                    Pair.of("status", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE)
-                ),
-                Optional.of(TagStorageType.LOCAL)
-            ),
-            new GetableIndex<UserTaskRunModel>(
-                List.of(Pair.of("status", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageType.LOCAL)
-            ),
-            new GetableIndex<UserTaskRunModel>(
-                List.of(Pair.of("userId", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageType.REMOTE),
-                userTaskRun -> userTaskRun.getUser() != null
-            ),
-            new GetableIndex<UserTaskRunModel>(
-                List.of(
-                    Pair.of("status", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userId", GetableIndex.ValueType.SINGLE)
-                ),
-                Optional.of(TagStorageType.LOCAL),
-                userTaskRun -> userTaskRun.getUser() != null
-            ),
-            new GetableIndex<UserTaskRunModel>(
-                List.of(
-                    Pair.of("userId", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userGroup", GetableIndex.ValueType.SINGLE)
-                ),
-                Optional.of(TagStorageType.LOCAL),
-                userTaskRun ->
-                    userTaskRun.getUser() != null &&
-                    userTaskRun.getUser().getUserGroup() != null
-            ),
-            new GetableIndex<UserTaskRunModel>(
-                List.of(
-                    Pair.of("status", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userId", GetableIndex.ValueType.SINGLE)
-                ),
-                Optional.of(TagStorageType.LOCAL),
-                userTaskRun -> userTaskRun.getUser() != null
-            ),
-            new GetableIndex<UserTaskRunModel>(
-                List.of(
-                    Pair.of("status", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userGroup", GetableIndex.ValueType.SINGLE)
-                ),
-                Optional.of(TagStorageType.LOCAL),
-                userTaskRun -> userTaskRun.getUserGroup() != null
-            ),
-            new GetableIndex<UserTaskRunModel>(
-                List.of(
-                    Pair.of("status", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userGroup", GetableIndex.ValueType.SINGLE)
-                ),
-                Optional.of(TagStorageType.LOCAL),
-                userTaskRun -> userTaskRun.getUserGroup() != null
-            ),
-            new GetableIndex<UserTaskRunModel>(
-                List.of(Pair.of("userGroup", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageType.REMOTE),
-                userTaskRun -> userTaskRun.getUserGroup() != null
-            )
-        );
+                new GetableIndex<UserTaskRunModel>(
+                        List.of(Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)),
+                // Future: We will make this LOCAL if it's DONE or CANCELLED, and
+                // REMOTE if it's CLAIMED, UNASSIGNED, or ASSIGNED_NOT_CLAIMED.
+                new GetableIndex<UserTaskRunModel>(
+                        List.of(
+                                Pair.of("status", GetableIndex.ValueType.SINGLE),
+                                Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)),
+                new GetableIndex<UserTaskRunModel>(
+                        List.of(Pair.of("status", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)),
+                new GetableIndex<UserTaskRunModel>(
+                        List.of(Pair.of("userId", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.REMOTE),
+                        userTaskRun -> userTaskRun.getUser() != null),
+                new GetableIndex<UserTaskRunModel>(
+                        List.of(
+                                Pair.of("status", GetableIndex.ValueType.SINGLE),
+                                Pair.of("userId", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL),
+                        userTaskRun -> userTaskRun.getUser() != null),
+                new GetableIndex<UserTaskRunModel>(
+                        List.of(
+                                Pair.of("userId", GetableIndex.ValueType.SINGLE),
+                                Pair.of("userGroup", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL),
+                        userTaskRun ->
+                                userTaskRun.getUser() != null
+                                        && userTaskRun.getUser().getUserGroup() != null),
+                new GetableIndex<UserTaskRunModel>(
+                        List.of(
+                                Pair.of("status", GetableIndex.ValueType.SINGLE),
+                                Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
+                                Pair.of("userId", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL),
+                        userTaskRun -> userTaskRun.getUser() != null),
+                new GetableIndex<UserTaskRunModel>(
+                        List.of(
+                                Pair.of("status", GetableIndex.ValueType.SINGLE),
+                                Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
+                                Pair.of("userGroup", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL),
+                        userTaskRun -> userTaskRun.getUserGroup() != null),
+                new GetableIndex<UserTaskRunModel>(
+                        List.of(
+                                Pair.of("status", GetableIndex.ValueType.SINGLE),
+                                Pair.of("userGroup", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL),
+                        userTaskRun -> userTaskRun.getUserGroup() != null),
+                new GetableIndex<UserTaskRunModel>(
+                        List.of(Pair.of("userGroup", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.REMOTE),
+                        userTaskRun -> userTaskRun.getUserGroup() != null));
     }
 
     public boolean isRemote() {
@@ -587,47 +514,31 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
     }
 
     public static boolean isRemote(UserTaskRunStatus UserTaskRunStatus) {
-        return (
-            UserTaskRunStatus == UserTaskRunStatus.ASSIGNED ||
-            UserTaskRunStatus == UserTaskRunStatus.UNASSIGNED
-        );
+        return (UserTaskRunStatus == UserTaskRunStatus.ASSIGNED
+                || UserTaskRunStatus == UserTaskRunStatus.UNASSIGNED);
     }
 
     @Override
-    public List<IndexedField> getIndexValues(
-        String key,
-        Optional<TagStorageType> tagStorageType
-    ) {
+    public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         switch (key) {
             case "status" -> {
                 return List.of(getIndexedStatusField(key, tagStorageType));
             }
             case "userTaskDefName" -> {
                 return List.of(
-                    new IndexedField(
-                        key,
-                        this.getUserTaskDefId().getName(),
-                        tagStorageType.get() // Is this right?
-                    )
-                );
+                        new IndexedField(
+                                key,
+                                this.getUserTaskDefId().getName(),
+                                tagStorageType.get() // Is this right?
+                                ));
             }
             case "userId" -> {
                 return List.of(
-                    new IndexedField(
-                        key,
-                        this.getUser().getId(),
-                        TagStorageType.REMOTE
-                    )
-                );
+                        new IndexedField(key, this.getUser().getId(), TagStorageType.REMOTE));
             }
             case "userGroup" -> {
                 return List.of(
-                    new IndexedField(
-                        key,
-                        this.getUserGroup().getId(),
-                        tagStorageType.get()
-                    )
-                );
+                        new IndexedField(key, this.getUserGroup().getId(), tagStorageType.get()));
             }
         }
         log.warn("Tried to get value for unknown index field {}", key);
@@ -635,9 +546,7 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
     }
 
     private IndexedField getIndexedStatusField(
-        String key,
-        Optional<TagStorageType> tagStorageTypePbOptional
-    ) {
+            String key, Optional<TagStorageType> tagStorageTypePbOptional) {
         TagStorageType tagStorageType = tagStorageTypePbOptional.get();
         if (this.isRemote()) {
             tagStorageType = TagStorageType.REMOTE;

@@ -24,11 +24,10 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
         this.context = context;
         timerStore = context.getStateStore(ServerTopology.TIMER_STORE);
         this.punctuator =
-            context.schedule(
-                LHConstants.PUNCTUATOR_INERVAL,
-                PunctuationType.WALL_CLOCK_TIME,
-                this::clearTimers
-            );
+                context.schedule(
+                        LHConstants.PUNCTUATOR_INERVAL,
+                        PunctuationType.WALL_CLOCK_TIME,
+                        this::clearTimers);
     }
 
     @Override
@@ -49,16 +48,12 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
             while (iter.hasNext()) {
                 KeyValue<String, LHTimer> entry = iter.next();
                 LHTimer timer = entry.value;
-                if (
-                    !entry.key.equals(timer.getStoreKey())
-                ) throw new RuntimeException("WTF?");
+                if (!entry.key.equals(timer.getStoreKey())) throw new RuntimeException("WTF?");
 
                 // Now we gotta forward the timer.
-                Record<String, LHTimer> record = new Record<String, LHTimer>(
-                    timer.key,
-                    timer,
-                    timer.maturationTime.getTime()
-                );
+                Record<String, LHTimer> record =
+                        new Record<String, LHTimer>(
+                                timer.key, timer, timer.maturationTime.getTime());
                 context.forward(record);
                 timerStore.delete(entry.key);
             }

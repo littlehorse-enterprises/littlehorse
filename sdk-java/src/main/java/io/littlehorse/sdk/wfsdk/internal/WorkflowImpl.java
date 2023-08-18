@@ -55,8 +55,7 @@ public class WorkflowImpl extends Workflow {
         if (previous != null) {
             if (!previous.signature.equals(tdb.signature)) {
                 throw new RuntimeException(
-                    "Tried to register two DIFFERENT tasks named " + tdb.taskDefName
-                );
+                        "Tried to register two DIFFERENT tasks named " + tdb.taskDefName);
             }
         } else {
             taskDefBuilders.put(tdb.taskDefName, tdb);
@@ -81,8 +80,7 @@ public class WorkflowImpl extends Workflow {
 
     private PutWfSpecRequest compileWorkflowHelper() {
         Set<String> seenThreads = new HashSet<>();
-        String entrypointThreadName =
-            this.addSubThread("entrypoint", entrypointThread);
+        String entrypointThreadName = this.addSubThread("entrypoint", entrypointThread);
         spec.setEntrypointThreadName(entrypointThreadName);
 
         while (true) {
@@ -122,8 +120,7 @@ public class WorkflowImpl extends Workflow {
     public String addSubThread(String subThreadName, ThreadFunc subThreadFunc) {
         if (threadFuncs.containsKey(subThreadName)) {
             throw new LHMisconfigurationException(
-                String.format("Thread %s already exists", subThreadName)
-            );
+                    String.format("Thread %s already exists", subThreadName));
         }
         threadFuncs.put(subThreadName, subThreadFunc);
         return subThreadName;

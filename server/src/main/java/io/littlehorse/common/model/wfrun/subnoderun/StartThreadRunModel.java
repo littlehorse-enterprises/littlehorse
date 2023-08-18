@@ -33,9 +33,7 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
     }
 
     public StartThreadRun.Builder toProto() {
-        StartThreadRun.Builder out = StartThreadRun
-            .newBuilder()
-            .setThreadSpecName(threadSpecName);
+        StartThreadRun.Builder out = StartThreadRun.newBuilder().setThreadSpecName(threadSpecName);
 
         if (childThreadId != null) {
             out.setChildThreadId(childThreadId);
@@ -61,38 +59,33 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
 
         try {
             for (Map.Entry<String, VariableAssignmentModel> e : stn.variables.entrySet()) {
-                variables.put(
-                    e.getKey(),
-                    nodeRunModel.getThreadRun().assignVariable(e.getValue())
-                );
+                variables.put(e.getKey(), nodeRunModel.getThreadRun().assignVariable(e.getValue()));
             }
         } catch (LHVarSubError exn) {
             FailureModel failure = new FailureModel();
-            failure.message =
-                "Failed constructing input variables for thread: " + exn.getMessage();
+            failure.message = "Failed constructing input variables for thread: " + exn.getMessage();
             failure.failureName = LHConstants.VAR_SUB_ERROR;
 
             nodeRunModel.fail(failure, time);
         }
 
-        ThreadRunModel child = nodeRunModel
-            .getThreadRun()
-            .getWfRunModel()
-            .startThread(
-                nodeRunModel.getNode().startThreadNode.threadSpecName,
-                time,
-                nodeRunModel.threadRunNumber,
-                variables,
-                ThreadType.CHILD
-            );
+        ThreadRunModel child =
+                nodeRunModel
+                        .getThreadRun()
+                        .getWfRunModel()
+                        .startThread(
+                                nodeRunModel.getNode().startThreadNode.threadSpecName,
+                                time,
+                                nodeRunModel.threadRunNumber,
+                                variables,
+                                ThreadType.CHILD);
 
         nodeRunModel.getThreadRun().getChildThreadIds().add(child.number);
 
         if (child.status == LHStatus.ERROR) {
             FailureModel failure = new FailureModel();
             failure.message =
-                "Failed launching child thread. See child for details, id: " +
-                child.number;
+                    "Failed launching child thread. See child for details, id: " + child.number;
 
             failure.failureName = LHConstants.CHILD_FAILURE;
             nodeRunModel.fail(failure, time);

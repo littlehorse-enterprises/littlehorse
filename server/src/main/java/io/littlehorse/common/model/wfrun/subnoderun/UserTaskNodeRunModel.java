@@ -33,10 +33,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
         UserTaskNodeRun p = (UserTaskNodeRun) proto;
         if (p.hasUserTaskRunId()) {
             userTaskRunId =
-                LHSerializable.fromProto(
-                    p.getUserTaskRunId(),
-                    UserTaskRunIdModel.class
-                );
+                    LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class);
         }
     }
 
@@ -62,18 +59,15 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
         NodeModel node = getNodeRunModel().getNode();
         UserTaskNodeModel utn = node.getUserTaskNode();
 
-        UserTaskDefModel utd = getDao()
-            .getUserTaskDef(utn.getUserTaskDefName(), utn.getUserTaskDefVersion());
+        UserTaskDefModel utd =
+                getDao().getUserTaskDef(utn.getUserTaskDefName(), utn.getUserTaskDefVersion());
         if (utd == null) {
             // that means the UserTaskDef was deleted between now and the time that the
             // WfSpec was first created. Yikers!
             nodeRunModel.fail(
-                new FailureModel(
-                    "Appears that UserTaskDef was deleted!",
-                    LHConstants.TASK_ERROR
-                ),
-                time
-            );
+                    new FailureModel(
+                            "Appears that UserTaskDef was deleted!", LHConstants.TASK_ERROR),
+                    time);
             return;
         }
         UserTaskRunModel out = new UserTaskRunModel(utd, utn, getNodeRunModel());

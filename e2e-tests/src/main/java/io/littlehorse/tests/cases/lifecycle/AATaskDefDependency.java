@@ -29,39 +29,31 @@ public class AATaskDefDependency extends Test {
     }
 
     public String getDescription() {
-        return (
-            "Ensures that a WfSpec cannot be deployed if a TaskDef is missing " +
-            "and that we can still deploy it after the TaskDef is properly created."
-        );
+        return ("Ensures that a WfSpec cannot be deployed if a TaskDef is missing "
+                + "and that we can still deploy it after the TaskDef is properly created.");
     }
 
     public void test() throws LHApiError {
-        Workflow wf = new WorkflowImpl(
-            wfSpecName,
-            thread -> {
-                thread.execute(taskDefName);
-            }
-        );
+        Workflow wf =
+                new WorkflowImpl(
+                        wfSpecName,
+                        thread -> {
+                            thread.execute(taskDefName);
+                        });
 
         PutWfSpecRequest request = wf.compileWorkflow();
         PutWfSpecResponse reply = client.getGrpcClient().putWfSpec(request);
 
         if (reply.getCode() != LHResponseCode.VALIDATION_ERROR) {
-            throw new RuntimeException(
-                "Was able to create wfSpec with missing taskdef!"
-            );
+            throw new RuntimeException("Was able to create wfSpec with missing taskdef!");
         }
 
         if (client.getWfSpec(wfSpecName, null) != null) {
-            throw new RuntimeException(
-                "If WfSpec creation fails we should not pollute the API!"
-            );
+            throw new RuntimeException("If WfSpec creation fails we should not pollute the API!");
         }
 
         // Now, create the TaskDef and see that we can actually deploy the WfSpec.
-        client.putTaskDef(
-            PutTaskDefRequest.newBuilder().setName(taskDefName).build()
-        );
+        client.putTaskDef(PutTaskDefRequest.newBuilder().setName(taskDefName).build());
         WfSpec result = client.putWfSpec(request);
         if (result.getVersion() != 0) {
             throw new RuntimeException("Somehow the version wasn't zero!");

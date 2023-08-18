@@ -19,9 +19,7 @@ public class OutputSchemaModel extends LHSerializable<OutputSchema> {
     }
 
     public OutputSchema.Builder toProto() {
-        OutputSchema.Builder out = OutputSchema
-            .newBuilder()
-            .setOutputType(outputType);
+        OutputSchema.Builder out = OutputSchema.newBuilder().setOutputType(outputType);
         return out;
     }
 

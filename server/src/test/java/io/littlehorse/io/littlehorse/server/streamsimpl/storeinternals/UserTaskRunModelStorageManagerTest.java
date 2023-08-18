@@ -36,21 +36,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class UserTaskRunModelStorageManagerTest {
 
-    private final KeyValueStore<String, Bytes> store = Stores
-        .keyValueStoreBuilder(
-            Stores.inMemoryKeyValueStore("myStore"),
-            Serdes.String(),
-            Serdes.Bytes()
-        )
-        .withLoggingDisabled()
-        .build();
+    private final KeyValueStore<String, Bytes> store =
+            Stores.keyValueStoreBuilder(
+                            Stores.inMemoryKeyValueStore("myStore"),
+                            Serdes.String(),
+                            Serdes.Bytes())
+                    .withLoggingDisabled()
+                    .build();
 
-    @Mock
-    private LHConfig lhConfig;
+    @Mock private LHConfig lhConfig;
 
     private LHStoreWrapper localStoreWrapper;
 
-    final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
+    final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
+            new MockProcessorContext<>();
     private GetableStorageManager geTableStorageManager;
     private String wfRunId = "1234567890";
 
@@ -63,15 +62,9 @@ public class UserTaskRunModelStorageManagerTest {
             }
             UserTaskRunModel userTaskRun = TestUtil.userTaskRun(wfRunId);
             userTaskRun.setUser(
-                new UserModel(
-                    userTaskRun.getUser().getId(),
-                    userTaskRun.getUserGroup()
-                )
-            );
+                    new UserModel(userTaskRun.getUser().getId(), userTaskRun.getUserGroup()));
             userTaskRun.setStatus(UserTaskRunStatus);
-            userTaskRun.setId(
-                new UserTaskRunIdModel(wfRunId + "1", UUID.randomUUID().toString())
-            );
+            userTaskRun.setId(new UserTaskRunIdModel(wfRunId + "1", UUID.randomUUID().toString()));
             geTableStorageManager.store(userTaskRun);
         }
     }
@@ -79,11 +72,7 @@ public class UserTaskRunModelStorageManagerTest {
     private void initializeDependencies() {
         localStoreWrapper = new LHStoreWrapper(store, lhConfig);
         geTableStorageManager =
-            new GetableStorageManager(
-                localStoreWrapper,
-                lhConfig,
-                mockProcessorContext
-            );
+                new GetableStorageManager(localStoreWrapper, lhConfig, mockProcessorContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
@@ -93,148 +82,120 @@ public class UserTaskRunModelStorageManagerTest {
 
     private Stream<LHIterKeyValue<Tag>> localTagScan(String keyPrefix) {
         return StreamSupport.stream(
-            Spliterators.spliteratorUnknownSize(
-                localStoreWrapper.prefixScan(keyPrefix, Tag.class),
-                Spliterator.ORDERED
-            ),
-            false
-        );
+                Spliterators.spliteratorUnknownSize(
+                        localStoreWrapper.prefixScan(keyPrefix, Tag.class), Spliterator.ORDERED),
+                false);
     }
 
     private List<String> storedRemoteTagPrefixStoreKeys() {
-        return mockProcessorContext
-            .forwarded()
-            .stream()
-            .map(MockProcessorContext.CapturedForward::record)
-            .map(Record::value)
-            .map(CommandProcessorOutput::getPayload)
-            .map(lhSerializable -> (RepartitionCommand) lhSerializable)
-            .map(RepartitionCommand::getSubCommand)
-            .filter(subCommand -> subCommand instanceof CreateRemoteTag)
-            .map(RepartitionSubCommand::getPartitionKey)
-            .toList();
+        return mockProcessorContext.forwarded().stream()
+                .map(MockProcessorContext.CapturedForward::record)
+                .map(Record::value)
+                .map(CommandProcessorOutput::getPayload)
+                .map(lhSerializable -> (RepartitionCommand) lhSerializable)
+                .map(RepartitionCommand::getSubCommand)
+                .filter(subCommand -> subCommand instanceof CreateRemoteTag)
+                .map(RepartitionSubCommand::getPartitionKey)
+                .toList();
     }
 
     private List<String> storedTagPrefixStoreKeys() {
-        return storedTags()
-            .stream()
-            .map(Tag::getStoreKey)
-            .map(s -> s.split("/"))
-            .map(strings -> strings[0] + "/" + strings[1])
-            .toList();
+        return storedTags().stream()
+                .map(Tag::getStoreKey)
+                .map(s -> s.split("/"))
+                .map(strings -> strings[0] + "/" + strings[1])
+                .toList();
     }
 
     @Test
     public void indexByUserTaskDefName() {
-        Assertions
-            .assertThat(storedTagPrefixStoreKeys())
-            .contains("12/__userTaskDefName_ut-name");
+        Assertions.assertThat(storedTagPrefixStoreKeys()).contains("12/__userTaskDefName_ut-name");
     }
 
     @Test
     public void indexByStatusAndUserTaskDefName_CLAIMED() {
-        Assertions
-            .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_ASSIGNED__userTaskDefName_ut-name");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+                .contains("12/__status_ASSIGNED__userTaskDefName_ut-name");
     }
 
     @Test
     public void indexByStatusAndUserTaskDefName_UNASSIGNED() {
-        Assertions
-            .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_UNASSIGNED__userTaskDefName_ut-name");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+                .contains("12/__status_UNASSIGNED__userTaskDefName_ut-name");
     }
 
     @Test
     public void indexByStatusAndUserTaskDefName_ASSIGNED_NOT_CLAIMED() {
-        Assertions
-            .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_UNASSIGNED__userTaskDefName_ut-name");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+                .contains("12/__status_UNASSIGNED__userTaskDefName_ut-name");
     }
 
     @Test
     public void indexByUserIdAndUserGroupId() {
-        Assertions
-            .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__userId_33333__userGroup_1234567");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+                .contains("12/__userId_33333__userGroup_1234567");
     }
 
     @Test
     public void indexByStatusAndUserTaskDefName_DONE() {
-        Assertions
-            .assertThat(storedTagPrefixStoreKeys())
-            .contains("12/__status_DONE__userTaskDefName_ut-name");
+        Assertions.assertThat(storedTagPrefixStoreKeys())
+                .contains("12/__status_DONE__userTaskDefName_ut-name");
     }
 
     @Test
     public void indexByStatusAndUserTaskDefName_CANCELLED() {
-        Assertions
-            .assertThat(storedTagPrefixStoreKeys())
-            .contains("12/__status_CANCELLED__userTaskDefName_ut-name");
+        Assertions.assertThat(storedTagPrefixStoreKeys())
+                .contains("12/__status_CANCELLED__userTaskDefName_ut-name");
     }
 
     @Test
     public void indexByStatus() {
-        Assertions
-            .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_ASSIGNED");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys()).contains("12/__status_ASSIGNED");
     }
 
     @Test
     public void indexByUserId() {
-        Assertions
-            .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__userId_33333");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys()).contains("12/__userId_33333");
     }
 
     @Test
     public void indexByStatusAndUserId() {
-        Assertions
-            .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_ASSIGNED__userId_33333");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+                .contains("12/__status_ASSIGNED__userId_33333");
     }
 
     @Test
     public void indexByStatusAndUserId_DONE() {
-        Assertions
-            .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_DONE__userId_33333");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+                .contains("12/__status_DONE__userId_33333");
     }
 
     @Test
     public void indexByStatusAndTaskDefNameAndUserId() {
-        Assertions
-            .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_ASSIGNED__userTaskDefName_ut-name__userId_33333");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+                .contains("12/__status_ASSIGNED__userTaskDefName_ut-name__userId_33333");
     }
 
     @Test
     public void indexByStatusAndTaskDefNameAndUserId_DONE() {
-        Assertions
-            .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_DONE__userTaskDefName_ut-name__userId_33333");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+                .contains("12/__status_DONE__userTaskDefName_ut-name__userId_33333");
     }
 
     @Test
     public void indexByStatusAndUserGroup() {
-        Assertions
-            .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__status_ASSIGNED__userGroup_1234567");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+                .contains("12/__status_ASSIGNED__userGroup_1234567");
     }
 
     @Test
     public void indexByStatusUserAndTaskDefNameAndUserGroup() {
-        Assertions
-            .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains(
-                "12/__status_ASSIGNED__userTaskDefName_ut-name__userGroup_1234567"
-            );
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys())
+                .contains("12/__status_ASSIGNED__userTaskDefName_ut-name__userGroup_1234567");
     }
 
     @Test
     public void indexByUserGroup() {
-        Assertions
-            .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("12/__userGroup_1234567");
+        Assertions.assertThat(storedRemoteTagPrefixStoreKeys()).contains("12/__userGroup_1234567");
     }
 }

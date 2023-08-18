@@ -32,13 +32,13 @@ public class Tag extends Storeable<TagPb> {
 
     @Override
     public TagPb.Builder toProto() {
-        TagPb.Builder out = TagPb
-            .newBuilder()
-            .setObjectType(objectType)
-            .setDescribedObjectId(describedObjectId)
-            .setCreated(LHUtil.fromDate(createdAt))
-            .setStoreKey(this.getStoreKey())
-            .setTagType(tagType);
+        TagPb.Builder out =
+                TagPb.newBuilder()
+                        .setObjectType(objectType)
+                        .setDescribedObjectId(describedObjectId)
+                        .setCreated(LHUtil.fromDate(createdAt))
+                        .setStoreKey(this.getStoreKey())
+                        .setTagType(tagType);
 
         for (Attribute attr : attributes) {
             out.addAttributes(attr.toProto());
@@ -69,9 +69,7 @@ public class Tag extends Storeable<TagPb> {
     }
 
     public static String getAttributeString(
-        GetableClassEnum objectType,
-        List<Attribute> attributes
-    ) {
+            GetableClassEnum objectType, List<Attribute> attributes) {
         StringBuilder builder = new StringBuilder();
         builder.append(objectType.getNumber());
         builder.append("/");
@@ -85,16 +83,12 @@ public class Tag extends Storeable<TagPb> {
     }
 
     public static String getAttributeStringFromPb(
-        GetableClassEnum objectType,
-        List<AttributePb> attributes
-    ) {
+            GetableClassEnum objectType, List<AttributePb> attributes) {
         return getAttributeString(
-            objectType,
-            attributes
-                .stream()
-                .map(attr -> Attribute.fromProto(attr))
-                .collect(Collectors.toList())
-        );
+                objectType,
+                attributes.stream()
+                        .map(attr -> Attribute.fromProto(attr))
+                        .collect(Collectors.toList()));
     }
 
     public boolean isRemote() {
@@ -120,23 +114,14 @@ public class Tag extends Storeable<TagPb> {
     }
 
     @SafeVarargs
-    public Tag(
-        Getable<?> getable,
-        TagStorageType type,
-        Pair<String, String>... atts
-    ) {
+    public Tag(Getable<?> getable, TagStorageType type, Pair<String, String>... atts) {
         this(getable, type, Arrays.asList(atts));
     }
 
     @SuppressWarnings("unchecked")
-    public Tag(
-        Getable<?> getable,
-        TagStorageType type,
-        Collection<Pair<String, String>> atts
-    ) {
+    public Tag(Getable<?> getable, TagStorageType type, Collection<Pair<String, String>> atts) {
         this();
-        this.objectType =
-            Getable.getTypeEnum((Class<? extends Getable<?>>) getable.getClass());
+        this.objectType = Getable.getTypeEnum((Class<? extends Getable<?>>) getable.getClass());
         createdAt = getable.getCreatedAt();
         describedObjectId = getable.getStoreKey();
         this.tagType = type;
@@ -147,12 +132,11 @@ public class Tag extends Storeable<TagPb> {
     }
 
     public Tag(
-        TagStorageType type,
-        GetableClassEnum objectType,
-        Collection<Attribute> attributes,
-        String describedObjectId,
-        Date createAt
-    ) {
+            TagStorageType type,
+            GetableClassEnum objectType,
+            Collection<Attribute> attributes,
+            String describedObjectId,
+            Date createAt) {
         this();
         this.tagType = type;
         this.objectType = objectType;

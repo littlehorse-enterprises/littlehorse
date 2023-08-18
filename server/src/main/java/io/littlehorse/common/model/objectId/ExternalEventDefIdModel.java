@@ -10,7 +10,7 @@ import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 
 // Used by ExternalEventDef, TaskDef, and ExternalEventDef
 public class ExternalEventDefIdModel
-    extends ObjectId<ExternalEventDefId, ExternalEventDef, ExternalEventDefModel> {
+        extends ObjectId<ExternalEventDefId, ExternalEventDef, ExternalEventDefModel> {
 
     public String name;
 
@@ -34,9 +34,7 @@ public class ExternalEventDefIdModel
     }
 
     public ExternalEventDefId.Builder toProto() {
-        ExternalEventDefId.Builder out = ExternalEventDefId
-            .newBuilder()
-            .setName(name);
+        ExternalEventDefId.Builder out = ExternalEventDefId.newBuilder().setName(name);
         return out;
     }
 

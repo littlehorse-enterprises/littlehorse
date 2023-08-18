@@ -38,22 +38,19 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
      * Sets attempt number to zero.
      */
     public ScheduledTaskModel(
-        TaskDefIdModel taskDefId,
-        List<VarNameAndValModel> variables,
-        UserTaskRunModel userTaskRun,
-        UserTaskTriggerContextModel context
-    ) {
+            TaskDefIdModel taskDefId,
+            List<VarNameAndValModel> variables,
+            UserTaskRunModel userTaskRun,
+            UserTaskTriggerContextModel context) {
         this.variables = variables;
         this.createdAt = new Date();
-        this.source =
-            new TaskRunSourceModel(new UserTaskTriggerReferenceModel(userTaskRun));
+        this.source = new TaskRunSourceModel(new UserTaskTriggerReferenceModel(userTaskRun));
         this.taskDefId = taskDefId;
         this.attemptNumber = 0;
         this.context = context;
 
         // This is just the wfRunId.
-        this.taskRunId =
-            new TaskRunIdModel(userTaskRun.getNodeRun().getPartitionKey());
+        this.taskRunId = new TaskRunIdModel(userTaskRun.getNodeRun().getPartitionKey());
     }
 
     public String getPartitionKey() {
@@ -74,13 +71,13 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
     }
 
     public ScheduledTask.Builder toProto() {
-        ScheduledTask.Builder out = ScheduledTask
-            .newBuilder()
-            .setTaskRunId(taskRunId.toProto())
-            .setTaskDefId(taskDefId.toProto())
-            .setAttemptNumber(attemptNumber)
-            .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
-            .setSource(source.toProto());
+        ScheduledTask.Builder out =
+                ScheduledTask.newBuilder()
+                        .setTaskRunId(taskRunId.toProto())
+                        .setTaskDefId(taskDefId.toProto())
+                        .setAttemptNumber(attemptNumber)
+                        .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
+                        .setSource(source.toProto());
         for (VarNameAndValModel v : variables) {
             out.addVariables(v.toProto());
         }
@@ -112,7 +109,6 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         if (this.createdAt.getTime() == 0) {
             this.createdAt = new Date();
         }
-        this.source =
-            LHSerializable.fromProto(p.getSource(), TaskRunSourceModel.class);
+        this.source = LHSerializable.fromProto(p.getSource(), TaskRunSourceModel.class);
     }
 }

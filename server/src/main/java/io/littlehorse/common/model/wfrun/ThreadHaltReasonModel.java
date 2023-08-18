@@ -101,19 +101,14 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
                 break;
             case PENDING_INTERRUPT:
                 pendingInterrupt =
-                    PendingInterruptHaltReasonModel.fromProto(
-                        p.getPendingInterrupt()
-                    );
+                        PendingInterruptHaltReasonModel.fromProto(p.getPendingInterrupt());
                 break;
             case HANDLING_FAILURE:
-                handlingFailure =
-                    HandlingFailureHaltReasonModel.fromProto(p.getHandlingFailure());
+                handlingFailure = HandlingFailureHaltReasonModel.fromProto(p.getHandlingFailure());
                 break;
             case PENDING_FAILURE:
                 pendingFailure =
-                    PendingFailureHandlerHaltReasonModel.fromProto(
-                        p.getPendingFailure()
-                    );
+                        PendingFailureHandlerHaltReasonModel.fromProto(p.getPendingFailure());
                 break;
             case MANUAL_HALT:
                 manualHalt = ManualHaltModel.fromProto(p.getManualHalt());
