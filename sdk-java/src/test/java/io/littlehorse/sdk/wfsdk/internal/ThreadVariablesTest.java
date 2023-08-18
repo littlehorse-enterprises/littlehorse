@@ -1,8 +1,8 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
-import io.littlehorse.sdk.common.proto.IndexTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.IndexType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,8 +15,8 @@ public class ThreadVariablesTest {
             "my-workflow",
             thread -> {
                 WfRunVariable var = thread
-                    .addVariable("my-var", VariableTypePb.INT)
-                    .withJsonIndex("$.somePath", IndexTypePb.REMOTE_INDEX);
+                    .addVariable("my-var", VariableType.INT)
+                    .withJsonIndex("$.somePath", IndexType.REMOTE_INDEX);
                 thread.sleepUntil(var);
             }
         );
@@ -33,8 +33,8 @@ public class ThreadVariablesTest {
             "my-workflow",
             thread -> {
                 WfRunVariable var = thread
-                    .addVariable("my-var", VariableTypePb.JSON_OBJ)
-                    .withJsonIndex("somePath", IndexTypePb.REMOTE_INDEX);
+                    .addVariable("my-var", VariableType.JSON_OBJ)
+                    .withJsonIndex("somePath", IndexType.REMOTE_INDEX);
                 thread.sleepUntil(var);
             }
         );

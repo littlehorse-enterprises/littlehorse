@@ -3,13 +3,13 @@ package io.littlehorse.sdk.wfsdk.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.NodePb;
-import io.littlehorse.sdk.common.proto.NodePb.NodeCase;
-import io.littlehorse.sdk.common.proto.PutWfSpecPb;
-import io.littlehorse.sdk.common.proto.SleepNodePb.SleepLengthCase;
-import io.littlehorse.sdk.common.proto.VariableDefPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.Node;
+import io.littlehorse.sdk.common.proto.Node.NodeCase;
+import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
+import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import java.util.List;
 import java.util.Map;
@@ -27,14 +27,14 @@ public class ThreadBuilderImplTest {
         WorkflowImpl wf = new WorkflowImpl(
             "asdf",
             thread -> {
-                WfRunVariable var = thread.addVariable("my-var", VariableTypePb.INT);
+                WfRunVariable var = thread.addVariable("my-var", VariableType.INT);
                 thread.sleepUntil(var);
             }
         );
 
-        PutWfSpecPb wfSpec = wf.compileWorkflow();
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
 
-        NodePb sleepNode = wfSpec
+        Node sleepNode = wfSpec
             .getThreadSpecsOrThrow("entrypoint")
             .getNodesOrThrow("1-sleep-SLEEP");
 
@@ -51,9 +51,9 @@ public class ThreadBuilderImplTest {
         WorkflowImpl wf = new WorkflowImpl(
             "asdf",
             thread -> {
-                WfRunVariable var = thread.addVariable("my-var", VariableTypePb.INT);
+                WfRunVariable var = thread.addVariable("my-var", VariableType.INT);
                 thread.doIf(
-                    thread.condition(var, ComparatorPb.LESS_THAN, 10),
+                    thread.condition(var, Comparator.LESS_THAN, 10),
                     ifBody -> {
                         ifBody.execute("foo");
                         ifBody.complete();
@@ -63,8 +63,8 @@ public class ThreadBuilderImplTest {
             }
         );
 
-        PutWfSpecPb wfSpec = wf.compileWorkflow();
-        List<Map.Entry<String, NodePb>> exitNodes = wfSpec
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+        List<Map.Entry<String, Node>> exitNodes = wfSpec
             .getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName())
             .getNodesMap()
             .entrySet()
@@ -77,7 +77,7 @@ public class ThreadBuilderImplTest {
         assertEquals(exitNodes.size(), 2);
 
         exitNodes.forEach(entry -> {
-            NodePb node = entry.getValue();
+            Node node = entry.getValue();
             assertThat(node.getOutgoingEdgesCount()).isEqualTo(0);
         });
     }
@@ -99,18 +99,18 @@ public class ThreadBuilderImplTest {
             }
         );
 
-        PutWfSpecPb wfSpec = wf.compileWorkflow();
-        List<VariableDefPb> varDefs = wfSpec
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+        List<VariableDef> varDefs = wfSpec
             .getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName())
             .getVariableDefsList();
 
-        VariableDefPb intVar = varDefs.get(0);
+        VariableDef intVar = varDefs.get(0);
         assertThat(intVar.getDefaultValue()).isNotNull();
         assertEquals(intVar.getDefaultValue().getInt(), 123);
 
-        VariableDefPb objVar = varDefs.get(1);
+        VariableDef objVar = varDefs.get(1);
         assertThat(objVar.getDefaultValue()).isNotEqualTo(null);
-        assertEquals(objVar.getType(), VariableTypePb.JSON_OBJ);
+        assertEquals(objVar.getType(), VariableType.JSON_OBJ);
     }
 
     @Test
@@ -120,7 +120,7 @@ public class ThreadBuilderImplTest {
             thread -> {
                 thread.execute("asdf");
                 thread.doWhile(
-                    thread.condition("asf", ComparatorPb.EQUALS, "asf"),
+                    thread.condition("asf", Comparator.EQUALS, "asf"),
                     loop -> {
                         loop.execute("fdsa");
                     }
@@ -128,8 +128,8 @@ public class ThreadBuilderImplTest {
             }
         );
 
-        PutWfSpecPb wfSpec = wf.compileWorkflow();
-        NodePb lastNodeInLoopBody = wfSpec
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+        Node lastNodeInLoopBody = wfSpec
             .getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName())
             .getNodesOrThrow("2-nop-NOP");
 
