@@ -16,16 +16,16 @@ In another terminal, use `lhctl` to run the workflow:
 lhctl run example-interrupt-handler
 
 # Take the resulting workflow ID, and do:
-lhctl get wfRunModel <wf run id>
+lhctl get wfRun <wf run id>
 
 # Note that it is 'RUNNING'. Next, post an external event using the following:
 lhctl postEvent <wf run id> interruption-event NULL
 
-# Then inspect the wfRunModel:
+# Then inspect the wfRun:
 # Note it is 'COMPLETED' whit type 'INTERRUPT'
-lhctl get wfRunModel <wf run id>
+lhctl get wfRun <wf run id>
 
-# Then inspect the output of the ExternalEvent and how it completed the nodeRunModel:
-lhctl get nodeRunModel <wf run id> 1 1
+# Then inspect the output of the ExternalEvent and how it completed the nodeRun:
+lhctl get nodeRun <wf run id> 1 1
 lhctl get taskRun <wf run id> <task runid>
 ```

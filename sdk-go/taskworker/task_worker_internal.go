@@ -296,7 +296,7 @@ func (m *serverConnectionManager) doTask(taskToExec *taskExecutionInfo) {
 }
 
 func (m *serverConnectionManager) retryReportTask(ctx context.Context, taskResult *model.ReportTaskRun, retries int) {
-	log.Println("Retrying reportTask rpc on wfRunModel {}", taskResult.TaskRunId.WfRunId)
+	log.Println("Retrying reportTask rpc on wfRun {}", taskResult.TaskRunId.WfRunId)
 
 	// TODO: Is this a Really Bad Idea? I forget whether this runs in the main
 	// thread or in a goroutine.

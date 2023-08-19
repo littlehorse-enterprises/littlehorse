@@ -36,7 +36,7 @@ Next, you can start the LH server itself. The server can be started in a single 
 You can confirm that the Server is running via:
 
 ```
--> lhctl search wfSpecModel
+-> lhctl search wfSpec
 {
   "code":  "OK",
   "objectIds":  []

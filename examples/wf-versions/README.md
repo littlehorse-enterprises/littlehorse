@@ -20,10 +20,10 @@ In addition, you can check the result with:
 
 ```
 # This call shows the result
-lhctl get wfRunModel <wf_run_id>
+lhctl get wfRun <wf_run_id>
 
 # This will show you all nodes in tha run
-lhctl list nodeRunModel <wf_run_id>
+lhctl list nodeRun <wf_run_id>
 
 # This shows the task run information
 lhctl get taskRun <wf_run_id> <task_run_global_id>
@@ -34,15 +34,15 @@ lhctl get taskRun <wf_run_id> <task_run_global_id>
 You can see the latest version of your `WfSpec` as follows:
 
 ```
-lhctl get wfSpecModel example-wf-versions
+lhctl get wfSpec example-wf-versions
 ```
 
 You can get a specific version as follows:
 
 ```
-lhctl get wfSpecModel example-wf-versions --v 1
+lhctl get wfSpec example-wf-versions --v 1
 
-lhctl get wfSpecModel example-wf-versions --v 0
+lhctl get wfSpec example-wf-versions --v 0
 ```
 
 ## Other considerations
@@ -55,8 +55,8 @@ Properties props = getConfigProps();
 LHWorkerConfig config = new LHWorkerConfig(props);
 LHClient client = new LHClient(config);
 
-WfSpecPb wfSpecModel = client.getWfSpec("example-wf-versions");
-wfSpecModel.getName()
-wfSpecModel.getVersion()
+WfSpecPb wfSpec = client.getWfSpec("example-wf-versions");
+wfSpec.getName()
+wfSpec.getVersion()
         ...
 ```
