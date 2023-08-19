@@ -2,7 +2,6 @@ import asyncio
 from datetime import datetime
 from inspect import Parameter, signature, iscoroutinefunction
 import logging
-import signal
 from typing import Any, AsyncIterator, Callable
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
@@ -19,19 +18,9 @@ from littlehorse.model.service_pb2 import (
     ScheduledTaskPb,
     TaskDefIdPb,
     TaskDefPb,
-    VariableTypePb,
 )
 from littlehorse.model.service_pb2_grpc import LHPublicApiStub
-
-VARIABLE_TYPES_MAP = {
-    VariableTypePb.JSON_OBJ: dict[str, Any],
-    VariableTypePb.JSON_ARR: list[Any],
-    VariableTypePb.DOUBLE: float,
-    VariableTypePb.BOOL: bool,
-    VariableTypePb.STR: str,
-    VariableTypePb.INT: int,
-    VariableTypePb.BYTES: bytes,
-}
+from littlehorse.utils import parse_type, parse_value
 
 
 class LHWorkerContext:
@@ -70,9 +59,7 @@ class LHTaskExecutor:
         self._validate_match()
 
     def _validate_match(self) -> None:
-        task_def_vars = [
-            VARIABLE_TYPES_MAP[var.type] for var in self.task_def.input_vars
-        ]
+        task_def_vars = [parse_type(var.type) for var in self.task_def.input_vars]
 
         callable_params = [
             param.annotation
@@ -160,7 +147,7 @@ class LHTaskExecutor:
         asyncio.create_task(self._execute_task(task))
 
     async def _execute_task(self, task: ScheduledTaskPb) -> None:
-        args: Any = [var.value.str for var in task.variables]
+        args: Any = [parse_value(var.value) for var in task.variables]
         if self.has_context():
             args.append(LHWorkerContext(task))
         await self._callable(*args)
@@ -213,11 +200,10 @@ class LHConnection:
         self.running = True
         await self._ask_for_work()
 
-    async def stop(self) -> None:
+    def stop(self) -> None:
         self._log.info(f"Stopping server connection {self.server}")
         self.running = False
-        if self._ask_for_work_semaphore is not None:
-            self._ask_for_work_semaphore.release()
+        self._ask_for_work_semaphore.release()
 
 
 class LHTaskWorker:
@@ -250,7 +236,11 @@ class LHTaskWorker:
         async with self._config.establish_channel(async_channel=True) as channel:
             stub = LHPublicApiStub(channel)
             while self.running:
-                self._log.debug("Sending heart beat at %s", datetime.now())
+                self._log.debug(
+                    "Sending heart beat (%s) at %s",
+                    self._task_executor.task_name(),
+                    datetime.now(),
+                )
 
                 request = RegisterTaskWorkerPb(
                     client_id=self._config.client_id(),
@@ -291,30 +281,21 @@ class LHTaskWorker:
 
                 for host in hosts_to_be_removed:
                     connection_to_be_removed = self._connections.pop(host)
-                    asyncio.create_task(connection_to_be_removed.stop())
+                    connection_to_be_removed.stop()
 
                 await asyncio.sleep(5)
 
     async def start(self) -> None:
         """Starts polling for and executing tasks."""
-        self._log.info("Starting worker")
+        self._log.info(f"Starting worker '{self._task_executor.task_name()}'")
         self.running = True
-        loop = asyncio.get_running_loop()
-
-        for sig in (signal.SIGHUP, signal.SIGTERM, signal.SIGINT):
-            loop.add_signal_handler(sig, lambda: asyncio.create_task(self.stop()))
 
         await self._heartbeat()
 
-    async def stop(self) -> None:
+    def stop(self) -> None:
         """Cleanly shuts down the Task Worker."""
-        self._log.info("Stopping worker")
+        self._log.info(f"Stopping worker '{self._task_executor.task_name()}'")
         self.running = False
 
         for connection in self._connections.values():
-            await connection.stop()
-
-        tasks = [
-            task for task in asyncio.all_tasks() if task is not asyncio.current_task()
-        ]
-        await asyncio.gather(*tasks, return_exceptions=True)
+            connection.stop()

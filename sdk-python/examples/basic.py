@@ -2,8 +2,10 @@ import asyncio
 import logging
 from pathlib import Path
 import random
+from typing import Any
 
 from littlehorse.config import LHConfig
+from littlehorse.utils import start_workers
 from littlehorse.worker import LHTaskWorker, LHWorkerContext
 
 logging.basicConfig(level=logging.DEBUG)
@@ -25,9 +27,14 @@ async def greeting(name: str, ctx: LHWorkerContext) -> str:
     return greeting
 
 
+async def describe_car(car: dict[str, Any], ctx: LHWorkerContext) -> None:
+    print(f"You drive a {car['brand']} model {car['model']}")
+
+
 async def main() -> None:
-    worker = LHTaskWorker(greeting, "greet", get_config())
-    await worker.start()
+    greet_worker = LHTaskWorker(greeting, "greet", get_config())
+    car_worker = LHTaskWorker(describe_car, "describe-car", get_config())
+    await start_workers(greet_worker, car_worker)
 
 
 if __name__ == "__main__":
