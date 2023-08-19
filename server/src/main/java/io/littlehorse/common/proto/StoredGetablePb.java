@@ -85,19 +85,19 @@ private static final long serialVersionUID = 0L;
   public static final int TYPE_FIELD_NUMBER = 3;
   private int type_ = 0;
   /**
-   * <code>.littlehorse.GetableClassEnumPb type = 3;</code>
+   * <code>.littlehorse.GetableClassEnum type = 3;</code>
    * @return The enum numeric value on the wire for type.
    */
   @java.lang.Override public int getTypeValue() {
     return type_;
   }
   /**
-   * <code>.littlehorse.GetableClassEnumPb type = 3;</code>
+   * <code>.littlehorse.GetableClassEnum type = 3;</code>
    * @return The type.
    */
-  @java.lang.Override public io.littlehorse.common.proto.GetableClassEnumPb getType() {
-    io.littlehorse.common.proto.GetableClassEnumPb result = io.littlehorse.common.proto.GetableClassEnumPb.forNumber(type_);
-    return result == null ? io.littlehorse.common.proto.GetableClassEnumPb.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.common.proto.GetableClassEnum getType() {
+    io.littlehorse.common.proto.GetableClassEnum result = io.littlehorse.common.proto.GetableClassEnum.forNumber(type_);
+    return result == null ? io.littlehorse.common.proto.GetableClassEnum.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -120,7 +120,7 @@ private static final long serialVersionUID = 0L;
     if (!getablePayload_.isEmpty()) {
       output.writeBytes(2, getablePayload_);
     }
-    if (type_ != io.littlehorse.common.proto.GetableClassEnumPb.TASK_DEF.getNumber()) {
+    if (type_ != io.littlehorse.common.proto.GetableClassEnum.TASK_DEF.getNumber()) {
       output.writeEnum(3, type_);
     }
     getUnknownFields().writeTo(output);
@@ -140,7 +140,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeBytesSize(2, getablePayload_);
     }
-    if (type_ != io.littlehorse.common.proto.GetableClassEnumPb.TASK_DEF.getNumber()) {
+    if (type_ != io.littlehorse.common.proto.GetableClassEnum.TASK_DEF.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(3, type_);
     }
@@ -634,14 +634,14 @@ private static final long serialVersionUID = 0L;
 
     private int type_ = 0;
     /**
-     * <code>.littlehorse.GetableClassEnumPb type = 3;</code>
+     * <code>.littlehorse.GetableClassEnum type = 3;</code>
      * @return The enum numeric value on the wire for type.
      */
     @java.lang.Override public int getTypeValue() {
       return type_;
     }
     /**
-     * <code>.littlehorse.GetableClassEnumPb type = 3;</code>
+     * <code>.littlehorse.GetableClassEnum type = 3;</code>
      * @param value The enum numeric value on the wire for type to set.
      * @return This builder for chaining.
      */
@@ -652,20 +652,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.GetableClassEnumPb type = 3;</code>
+     * <code>.littlehorse.GetableClassEnum type = 3;</code>
      * @return The type.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.GetableClassEnumPb getType() {
-      io.littlehorse.common.proto.GetableClassEnumPb result = io.littlehorse.common.proto.GetableClassEnumPb.forNumber(type_);
-      return result == null ? io.littlehorse.common.proto.GetableClassEnumPb.UNRECOGNIZED : result;
+    public io.littlehorse.common.proto.GetableClassEnum getType() {
+      io.littlehorse.common.proto.GetableClassEnum result = io.littlehorse.common.proto.GetableClassEnum.forNumber(type_);
+      return result == null ? io.littlehorse.common.proto.GetableClassEnum.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.GetableClassEnumPb type = 3;</code>
+     * <code>.littlehorse.GetableClassEnum type = 3;</code>
      * @param value The type to set.
      * @return This builder for chaining.
      */
-    public Builder setType(io.littlehorse.common.proto.GetableClassEnumPb value) {
+    public Builder setType(io.littlehorse.common.proto.GetableClassEnum value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -675,7 +675,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.GetableClassEnumPb type = 3;</code>
+     * <code>.littlehorse.GetableClassEnum type = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearType() {

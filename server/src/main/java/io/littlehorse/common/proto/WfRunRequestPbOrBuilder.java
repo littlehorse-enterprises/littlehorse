@@ -37,11 +37,11 @@ public interface WfRunRequestPbOrBuilder extends
       getWfSpecIdBytes();
 
   /**
-   * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
    */
   int getVariablesCount();
   /**
-   * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
    */
   boolean containsVariables(
       java.lang.String key);
@@ -49,24 +49,24 @@ public interface WfRunRequestPbOrBuilder extends
    * Use {@link #getVariablesMap()} instead.
    */
   @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
   getVariables();
   /**
-   * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
    */
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
   getVariablesMap();
   /**
-   * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
    */
   /* nullable */
-io.littlehorse.sdk.common.proto.VariableValuePb getVariablesOrDefault(
+io.littlehorse.sdk.common.proto.VariableValue getVariablesOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.sdk.common.proto.VariableValuePb defaultValue);
+io.littlehorse.sdk.common.proto.VariableValue defaultValue);
   /**
-   * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableValuePb getVariablesOrThrow(
+  io.littlehorse.sdk.common.proto.VariableValue getVariablesOrThrow(
       java.lang.String key);
 }

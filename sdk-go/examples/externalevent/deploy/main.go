@@ -13,7 +13,7 @@ import (
 func main() {
 	_, client := examples.LoadConfigAndClient()
 
-	client.PutExternalEventDef(&model.PutExternalEventDefPb{
+	client.PutExternalEventDef(&model.PutExternalEventDefRequest{
 		Name: "my-name",
 	}, true)
 

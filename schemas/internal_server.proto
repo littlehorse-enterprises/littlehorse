@@ -30,7 +30,7 @@ enum StoreQueryStatusPb {
     RSQ_NOT_AVAILABLE = 2; // Can't query store, eg. during a rebalance or if migrated.
 }
 
-message CentralStoreQueryReplyPb {
+message CentralStoreQueryResponse {
     StoreQueryStatusPb code = 1;
     optional bytes result = 2;
     int64 approximate_lag = 3;
@@ -53,7 +53,7 @@ message WaitForCommandPb {
     string command_id = 1;
 }
 
-message WaitForCommandReplyPb {
+message WaitForCommandResponse {
     StoreQueryStatusPb code = 1;
     optional CommandResultPb result = 2;
     optional string message = 3;
@@ -98,7 +98,7 @@ message InternalScanPb {
     ScanResultTypePb result_type = 1;
     int32 limit = 2;
     optional BookmarkPb bookmark = 3;
-    GetableClassEnumPb object_type = 4;
+    GetableClassEnum object_type = 4;
     string store_name = 5;
 
     // If this is set: Remote Tag Scan
@@ -111,7 +111,7 @@ message InternalScanPb {
     }
 }
 
-message InternalScanReplyPb {
+message InternalScanResponse {
     StoreQueryStatusPb code = 1;
 
     // The type of 'result' depends on the query.
@@ -148,29 +148,29 @@ message InternalScanReplyPb {
 // Servers so that it can formulate the response described above.
 message InternalGetAdvertisedHostsPb {}
 
-message InternalGetAdvertisedHostsReplyPb {
-    map<string, HostInfoPb> hosts = 1;
+message InternalGetAdvertisedHostsResponse {
+    map<string, HostInfo> hosts = 1;
 }
 
 service LHInternals {
-    rpc CentralStoreQuery(CentralStoreQueryPb) returns (CentralStoreQueryReplyPb) {}
-    rpc InternalScan(InternalScanPb) returns (InternalScanReplyPb) {}
+    rpc CentralStoreQuery(CentralStoreQueryPb) returns (CentralStoreQueryResponse) {}
+    rpc InternalScan(InternalScanPb) returns (InternalScanResponse) {}
 
-    rpc waitForCommand(WaitForCommandPb) returns (WaitForCommandReplyPb) {}
+    rpc waitForCommand(WaitForCommandPb) returns (WaitForCommandResponse) {}
 
-    rpc GetAdvertisedHosts(InternalGetAdvertisedHostsPb) returns (InternalGetAdvertisedHostsReplyPb) {}
+    rpc GetAdvertisedHosts(InternalGetAdvertisedHostsPb) returns (InternalGetAdvertisedHostsResponse) {}
 
-    rpc TopologyInstancesState(TopologyInstanceStatePb) returns (TopologyInstanceStateReplyPb) {}
+    rpc TopologyInstancesState(TopologyInstanceStatePb) returns (TopologyInstanceStateResponse) {}
 
-    rpc LocalTasks(LocalTasksPb) returns (LocalTasksReplyPb) {}
+    rpc LocalTasks(LocalTasksPb) returns (LocalTasksResponse) {}
 
-    // rpc TagScan(TagScanPb) returns (TagScanReplyPb) {}
+    // rpc TagScan(TagScanPb) returns (TagScanResponse) {}
 }
 
 // Stuff for the metrics topology
 message TaskMetricUpdatePb {
     google.protobuf.Timestamp window_start = 1;
-    MetricsWindowLengthPb type = 2;
+    MetricsWindowLength type = 2;
     int64 num_entries = 3;
     int64 schedule_to_start_max = 4;
     int64 schedule_to_start_total = 5;
@@ -196,7 +196,7 @@ message RemoveRemoteTagPb {
 
 message WfMetricUpdatePb {
     google.protobuf.Timestamp window_start = 1;
-    MetricsWindowLengthPb type = 2;
+    MetricsWindowLength type = 2;
     int64 num_entries = 3;
     int64 start_to_complete_max = 6;
     int64 start_to_complete_total = 7;
@@ -220,7 +220,7 @@ message RepartitionCommandPb {
 }
 
 // Stuff for Index (internal to the store)
-enum GetableClassEnumPb {
+enum GetableClassEnum {
     TASK_DEF = 0;
     EXTERNAL_EVENT_DEF = 1;
     WF_SPEC = 2;
@@ -241,20 +241,20 @@ message AttributePb {
     string val = 2;
 }
 
-enum TagStorageTypePb {
+enum TagStorageType {
     LOCAL = 0;
     REMOTE = 1;
 }
 
 message TagPb {
     // The following info is also stored in the key of the Tag in the store.
-    GetableClassEnumPb object_type = 1;
+    GetableClassEnum object_type = 1;
     repeated AttributePb attributes = 2;
     string described_object_id = 3;
     google.protobuf.Timestamp created = 4;
 
     // The following is not stored in the key.
-    TagStorageTypePb tag_type = 5;
+    TagStorageType tag_type = 5;
 
     string store_key = 7;
 
@@ -274,18 +274,18 @@ message TagsCachePb {
 message StoredGetablePb {
     TagsCachePb index_cache = 1;
     bytes getable_payload = 2;
-    GetableClassEnumPb type = 3;
+    GetableClassEnum type = 3;
 }
 
 // This section defines the "Command"
 message WfRunRequestPb {
     optional string wf_run_id = 1;
     string wf_spec_id = 2;
-    map<string, VariableValuePb> variables = 3;
+    map<string, VariableValue> variables = 3;
 }
 
 message TaskClaimEventPb {
-    TaskRunIdPb task_run_id = 1;
+    TaskRunId task_run_id = 1;
     google.protobuf.Timestamp time = 2;
     string task_worker_id = 3;
     optional string task_worker_version = 4;
@@ -310,8 +310,8 @@ message SleepNodeMaturedPb {
 // This is currently used by the UserTaskRun ActionTrigger, it could be potentially
 // extended in the future to allow scheduling one-off tasks.
 message TriggeredTaskRunPb {
-    TaskNodePb task_to_schedule = 1;
-    NodeRunIdPb source = 2;
+    TaskNode task_to_schedule = 1;
+    NodeRunId source = 2;
 }
 
 message ReassignedUserTaskPb {
@@ -320,7 +320,7 @@ message ReassignedUserTaskPb {
         string user_group = 2;
     }
     int32 delay_in_seconds = 3;
-    NodeRunIdPb source = 4;
+    NodeRunId source = 4;
 }
 
 // This is the schema of everything that flows through the Central Command topic.
@@ -328,30 +328,30 @@ message CommandPb {
     google.protobuf.Timestamp time = 1;
     optional string command_id = 2;
     oneof command {
-        ReportTaskRunPb report_task_run = 3;
+        ReportTaskRun report_task_run = 3;
         TaskClaimEventPb task_claim_event = 4;
-        PutWfSpecPb put_wf_spec = 6;
-        PutTaskDefPb put_task_def = 7;
-        PutExternalEventDefPb put_external_event_def = 8;
-        RunWfPb run_wf = 9;
-        PutExternalEventPb put_external_event = 10;
-        StopWfRunPb stop_wf_run = 11;
-        ResumeWfRunPb resume_wf_run = 12;
+        PutWfSpecRequest put_wf_spec = 6;
+        PutTaskDefRequest put_task_def = 7;
+        PutExternalEventDefRequest put_external_event_def = 8;
+        RunWfRequest run_wf = 9;
+        PutExternalEventRequest put_external_event = 10;
+        StopWfRunRequest stop_wf_run = 11;
+        ResumeWfRunRequest resume_wf_run = 12;
         SleepNodeMaturedPb sleep_node_matured = 13;
-        DeleteWfRunPb delete_wf_run = 14;
-        DeleteWfSpecPb delete_wf_spec = 15;
-        DeleteTaskDefPb delete_task_def = 16;
-        DeleteExternalEventDefPb delete_external_event_def = 17;
+        DeleteWfRunRequest delete_wf_run = 14;
+        DeleteWfSpecRequest delete_wf_spec = 15;
+        DeleteTaskDefRequest delete_task_def = 16;
+        DeleteExternalEventDefRequest delete_external_event_def = 17;
         ExternalEventNodeTimeoutPb external_event_timeout = 18;
-        TaskWorkerHeartBeatPb task_worker_heart_beat = 19;
-        DeleteExternalEventPb delete_external_event = 20;
-        AssignUserTaskRunPb assign_user_task_run = 21;
-        CompleteUserTaskRunPb complete_user_task_run = 22;
-        PutUserTaskDefPb put_user_task_def = 23;
+        TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;
+        DeleteExternalEventRequest delete_external_event = 20;
+        AssignUserTaskRunRequest assign_user_task_run = 21;
+        CompleteUserTaskRunRequest complete_user_task_run = 22;
+        PutUserTaskDefRequest put_user_task_def = 23;
         TriggeredTaskRunPb triggered_task_run = 24;
-        DeleteUserTaskDefPb delete_user_task_def = 25;
+        DeleteUserTaskDefRequest delete_user_task_def = 25;
         ReassignedUserTaskPb reassigned_user_task = 26;
-        CancelUserTaskRunPb cancel_user_task = 27;
+        CancelUserTaskRunRequest cancel_user_task = 27;
         // TODO: Add SaveUserTask
     }
 }
@@ -366,7 +366,7 @@ message LHTimerPb {
     bytes payload = 4;
 }
 
-message TopologyInstanceStateReplyPb {
+message TopologyInstanceStateResponse {
     repeated ServerStatePb servers_core = 1;
     repeated ServerStatePb servers_timer = 2;
 }
@@ -412,7 +412,7 @@ message TopologyInstanceStatePb {
 message LocalTasksPb {
 }
 
-message LocalTasksReplyPb {
+message LocalTasksResponse {
     repeated TaskStatePb active_tasks = 1;
     repeated StandByTaskStatePb standby_tasks = 2;
 }

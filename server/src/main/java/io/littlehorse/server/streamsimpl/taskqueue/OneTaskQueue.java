@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
-import io.littlehorse.common.model.wfrun.ScheduledTask;
+import io.littlehorse.common.model.wfrun.ScheduledTaskModel;
 import io.littlehorse.sdk.common.LHLibUtil;
 // import io.littlehorse.common.util.LHUtil;
 import java.util.LinkedList;
@@ -17,7 +17,7 @@ public class OneTaskQueue {
     private Queue<PollTaskRequestObserver> hungryClients;
     private Lock lock;
 
-    private LinkedList<ScheduledTask> pendingTasks;
+    private LinkedList<ScheduledTaskModel> pendingTasks;
     private TaskQueueManager parent;
 
     private String taskDefName;
@@ -33,10 +33,10 @@ public class OneTaskQueue {
     }
 
     /**
-     * Called when a gRPC client (and its StreamObserver) disconnect, whether due
-     * to a clean shutdown (onCompleted()) or connection error (onError()).
-     * @param observer is the TaskQueueStreamObserver for the client whose connection
-     * is now gone.
+     * Called when a gRPC client (and its StreamObserver) disconnect, whether due to a clean
+     * shutdown (onCompleted()) or connection error (onError()).
+     *
+     * @param observer is the TaskQueueStreamObserver for the client whose connection is now gone.
      */
     public void onRequestDisconnected(PollTaskRequestObserver disconnectedObserver) {
         // Remove the request listener when the gRPC stream is completed (i.e.
@@ -46,12 +46,11 @@ public class OneTaskQueue {
             lock.lock();
             hungryClients.removeIf(thing -> {
                 log.debug(
-                    "Instance {}: Removing task queue observer for taskdef {} with client id {}: {}",
-                    parent.backend.getInstanceId(),
-                    taskDefName,
-                    disconnectedObserver.getClientId(),
-                    disconnectedObserver
-                );
+                        "Instance {}: Removing task queue observer for taskdef {} with" + " client id {}: {}",
+                        parent.backend.getInstanceId(),
+                        taskDefName,
+                        disconnectedObserver.getClientId(),
+                        disconnectedObserver);
                 return thing.equals(disconnectedObserver);
             });
         } finally {
@@ -60,20 +59,19 @@ public class OneTaskQueue {
     }
 
     /**
-     * Called in two places:
-     * 1. In the CommandProcessorDaoImpl::scheduleTask()
-     * 2. In the CommandProcessor::init().
+     * Called in two places: 1. In the CommandProcessorDaoImpl::scheduleTask() 2. In the
+     * CommandProcessor::init().
      *
-     * Item 1) is quite self-explanatory.
+     * <p>Item 1) is quite self-explanatory.
      *
-     * For Item 2), remember that the Task Queue Manager system is only in-memory.
-     * Upon a restart or rebalance, we need to rebuild that state. During the
-     * init() call, we iterate through all currently scheduled but not started tasks
-     * in the state store.
-     * @param scheduledTaskId is the ::getObjectId() for the TaskScheduleRequest that was
-     * just scheduled.
+     * <p>For Item 2), remember that the Task Queue Manager system is only in-memory. Upon a restart
+     * or rebalance, we need to rebuild that state. During the init() call, we iterate through all
+     * currently scheduled but not started tasks in the state store.
+     *
+     * @param scheduledTaskId is the ::getObjectId() for the TaskScheduleRequest that was just
+     *     scheduled.
      */
-    public void onTaskScheduled(ScheduledTask scheduledTaskId) {
+    public void onTaskScheduled(ScheduledTaskModel scheduledTaskId) {
         // There's two cases here:
         // 1. There are clients waiting for requests, in which case we know that
         //    the pendingTaskIds queue/list must be empty.
@@ -81,11 +79,10 @@ public class OneTaskQueue {
         //    add the task id to the taskid list.
 
         log.trace(
-            "Instance {}: Task scheduled for wfRun {}, queue is empty? {}",
-            hostName,
-            LHLibUtil.getWfRunId(scheduledTaskId.getSource().toProto().build()),
-            hungryClients.isEmpty()
-        );
+                "Instance {}: Task scheduled for wfRun {}, queue is empty? {}",
+                hostName,
+                LHLibUtil.getWfRunId(scheduledTaskId.getSource().toProto().build()),
+                hungryClients.isEmpty());
 
         PollTaskRequestObserver luckyClient = null;
         // long result = 0;
@@ -95,9 +92,7 @@ public class OneTaskQueue {
             if (!hungryClients.isEmpty()) {
                 // This is case 1.
                 if (!pendingTasks.isEmpty()) {
-                    throw new RuntimeException(
-                        "Can't have pending tasks and hungry clients"
-                    );
+                    throw new RuntimeException("Can't have pending tasks and hungry clients");
                 }
 
                 luckyClient = hungryClients.poll();
@@ -117,8 +112,9 @@ public class OneTaskQueue {
 
     /**
      * Called when a grpc client sends a new PollTaskPb.
-     * @param requestObserver is the grpc StreamObserver representing the channel that
-     * talks to the client who made the PollTaskRequest.
+     *
+     * @param requestObserver is the grpc StreamObserver representing the channel that talks to the
+     *     client who made the PollTaskRequest.
      */
     public void onPollRequest(PollTaskRequestObserver requestObserver) {
         if (taskDefName == null) {
@@ -128,11 +124,7 @@ public class OneTaskQueue {
             throw new RuntimeException("Not possible, got mismatched taskdef name");
         }
 
-        log.trace(
-            "Instance {}: Poll request received for taskDef {}",
-            hostName,
-            taskDefName
-        );
+        log.trace("Instance {}: Poll request received for taskDef {}", hostName, taskDefName);
 
         // There's two cases here:
         // 1. There are pending Task Id's in the queue, which means that there
@@ -140,7 +132,7 @@ public class OneTaskQueue {
         // 2. There are no pending Taskid's in the queue, in which case we simply
         //    push the request client observer thing onto the back of the
         //    `hungryClients` list.
-        ScheduledTask nextTask = null;
+        ScheduledTaskModel nextTask = null;
 
         try {
             lock.lock();
@@ -148,9 +140,7 @@ public class OneTaskQueue {
             if (!pendingTasks.isEmpty()) {
                 // This is case 1.
                 if (!hungryClients.isEmpty()) {
-                    throw new RuntimeException(
-                        "Can't have pending tasks and hungry clients"
-                    );
+                    throw new RuntimeException("Can't have pending tasks and hungry clients");
                 }
 
                 nextTask = pendingTasks.poll();

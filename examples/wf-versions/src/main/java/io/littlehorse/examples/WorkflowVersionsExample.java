@@ -3,8 +3,8 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
-import io.littlehorse.sdk.common.proto.WfSpecPb;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -33,7 +33,7 @@ public class WorkflowVersionsExample {
             thread -> {
                 WfRunVariable theName = thread.addVariable(
                     "input-name",
-                    VariableTypePb.STR
+                    VariableType.STR
                 );
                 thread.execute("greet0", theName);
             }
@@ -46,7 +46,7 @@ public class WorkflowVersionsExample {
             thread -> {
                 WfRunVariable theName = thread.addVariable(
                     "input-name",
-                    VariableTypePb.STR
+                    VariableType.STR
                 );
                 thread.execute("greet1", theName);
             }
@@ -144,7 +144,7 @@ public class WorkflowVersionsExample {
         }
 
         // Getting the latest version
-        WfSpecPb wfSpec = client.getWfSpec("example-wf-versions");
+        WfSpec wfSpec = client.getWfSpec("example-wf-versions");
         log.info(
             "The latest version of example-wf-versions is {}",
             wfSpec.getVersion()

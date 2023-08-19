@@ -31,12 +31,10 @@ public class ServerListenerConfig {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ServerListenerConfig that = (ServerListenerConfig) o;
-        return (
-            port == that.port &&
-            Objects.equal(name, that.name) &&
-            protocol == that.protocol &&
-            authorizationProtocol == that.authorizationProtocol
-        );
+        return (port == that.port
+                && Objects.equal(name, that.name)
+                && protocol == that.protocol
+                && authorizationProtocol == that.authorizationProtocol);
     }
 
     @Override
@@ -49,19 +47,17 @@ public class ServerListenerConfig {
             return switch (protocol) {
                 case TLS -> {
                     TlsConfig tlsConfig = config.getTlsConfigByListener(name);
-                    yield TlsServerCredentials
-                        .newBuilder()
-                        .keyManager(tlsConfig.getCert(), tlsConfig.getKey())
-                        .build();
+                    yield TlsServerCredentials.newBuilder()
+                            .keyManager(tlsConfig.getCert(), tlsConfig.getKey())
+                            .build();
                 }
                 case MTLS -> {
                     TlsConfig mtlsConfig = config.getTlsConfigByListener(name);
-                    yield TlsServerCredentials
-                        .newBuilder()
-                        .keyManager(mtlsConfig.getCert(), mtlsConfig.getKey())
-                        .trustManager(mtlsConfig.getCaCert())
-                        .clientAuth(TlsServerCredentials.ClientAuth.REQUIRE)
-                        .build();
+                    yield TlsServerCredentials.newBuilder()
+                            .keyManager(mtlsConfig.getCert(), mtlsConfig.getKey())
+                            .trustManager(mtlsConfig.getCaCert())
+                            .clientAuth(TlsServerCredentials.ClientAuth.REQUIRE)
+                            .build();
                 }
                 default -> InsecureServerCredentials.create();
             };
@@ -72,9 +68,7 @@ public class ServerListenerConfig {
 
     public ServerAuthorizer getAuthorizer() {
         return switch (authorizationProtocol) {
-            case OAUTH -> new OAuthServerAuthorizer(
-                config.getOAuthConfigByListener(name)
-            );
+            case OAUTH -> new OAuthServerAuthorizer(config.getOAuthConfigByListener(name));
             default -> InsecureServerAuthorizer.create();
         };
     }

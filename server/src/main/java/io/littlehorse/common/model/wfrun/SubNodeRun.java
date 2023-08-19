@@ -3,8 +3,8 @@ package io.littlehorse.common.model.wfrun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.meta.Node;
-import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.NodeModel;
+import io.littlehorse.common.model.meta.WfSpecModel;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
 
-    public NodeRun nodeRun;
+    public NodeRunModel nodeRunModel;
 
     public abstract boolean advanceIfPossible(Date time);
 
@@ -26,26 +26,26 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
      * an interrupt thread.
      */
     public boolean canBeInterrupted() {
-        return !nodeRun.isInProgress();
+        return !nodeRunModel.isInProgress();
     }
 
-    public void setNodeRun(NodeRun nodeRun) {
-        this.nodeRun = nodeRun;
+    public void setNodeRunModel(NodeRunModel nodeRunModel) {
+        this.nodeRunModel = nodeRunModel;
     }
 
-    public WfSpec getWfSpec() {
-        return getWfRun().getWfSpec();
+    public WfSpecModel getWfSpec() {
+        return getWfRun().getWfSpecModel();
     }
 
-    public WfRun getWfRun() {
-        return nodeRun.getThreadRun().getWfRun();
+    public WfRunModel getWfRun() {
+        return nodeRunModel.getThreadRun().getWfRunModel();
     }
 
-    public Node getNode() {
-        return nodeRun.getNode();
+    public NodeModel getNode() {
+        return nodeRunModel.getNode();
     }
 
     public LHDAO getDao() {
-        return nodeRun.getThreadRun().getWfRun().getDao();
+        return nodeRunModel.getThreadRun().getWfRunModel().getDao();
     }
 }

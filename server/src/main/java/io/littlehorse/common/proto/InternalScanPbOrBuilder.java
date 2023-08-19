@@ -40,15 +40,15 @@ public interface InternalScanPbOrBuilder extends
   io.littlehorse.common.proto.BookmarkPbOrBuilder getBookmarkOrBuilder();
 
   /**
-   * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
+   * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
    * @return The enum numeric value on the wire for objectType.
    */
   int getObjectTypeValue();
   /**
-   * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
+   * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
    * @return The objectType.
    */
-  io.littlehorse.common.proto.GetableClassEnumPb getObjectType();
+  io.littlehorse.common.proto.GetableClassEnum getObjectType();
 
   /**
    * <code>string store_name = 5;</code>

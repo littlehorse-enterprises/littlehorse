@@ -38,7 +38,7 @@ var getTaskRunCmd = &cobra.Command{
 
 		common.PrintResp(getGlobalClient(cmd).GetTaskRun(
 			context.Background(),
-			&model.TaskRunIdPb{
+			&model.TaskRunId{
 				WfRunId:  args[0],
 				TaskGuid: args[1],
 			},
@@ -78,7 +78,7 @@ Choose one of the following option groups:
 		statusStr, _ := cmd.Flags().GetString("status")
 		taskDefName, _ := cmd.Flags().GetString("taskDefName")
 
-		var search *model.SearchTaskRunPb
+		var search *model.SearchTaskRunRequest
 
 		if statusStr != "" {
 			if taskDefName == "" {
@@ -86,15 +86,15 @@ Choose one of the following option groups:
 			}
 			earliest, latest := loadEarliestAndLatestStart(cmd)
 
-			statusInt, ok := model.TaskStatusPb_value[statusStr]
+			statusInt, ok := model.TaskStatus_value[statusStr]
 			if !ok {
 				log.Fatal("Invalid status provided. See --help.")
 			}
-			status := model.TaskStatusPb(statusInt)
+			status := model.TaskStatus(statusInt)
 
-			search = &model.SearchTaskRunPb{
-				TaskRunCriteria: &model.SearchTaskRunPb_StatusAndTaskDef{
-					StatusAndTaskDef: &model.SearchTaskRunPb_StatusAndTaskDefPb{
+			search = &model.SearchTaskRunRequest{
+				TaskRunCriteria: &model.SearchTaskRunRequest_StatusAndTaskDef{
+					StatusAndTaskDef: &model.SearchTaskRunRequest_StatusAndTaskDefRequest{
 						Status:        status,
 						TaskDefName:   taskDefName,
 						EarliestStart: earliest,
@@ -124,9 +124,9 @@ Choose one of the following option groups:
 				)
 			}
 
-			search = &model.SearchTaskRunPb{
-				TaskRunCriteria: &model.SearchTaskRunPb_TaskDef{
-					TaskDef: &model.SearchTaskRunPb_ByTaskDefPb{
+			search = &model.SearchTaskRunRequest{
+				TaskRunCriteria: &model.SearchTaskRunRequest_TaskDef{
+					TaskDef: &model.SearchTaskRunRequest_ByTaskDefRequest{
 						TaskDefName:   taskDefName,
 						EarliestStart: earliestStartTime,
 						LatestStart:   latestStartTime,

@@ -1,26 +1,25 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
-import io.littlehorse.common.model.objectId.WfRunId;
-import io.littlehorse.sdk.common.proto.SearchWfRunReplyPb;
-import io.littlehorse.sdk.common.proto.WfRunIdPb;
+import io.littlehorse.common.model.objectId.WfRunIdModel;
+import io.littlehorse.sdk.common.proto.SearchWfRunResponse;
+import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
-public class SearchWfRunReply
-    extends PublicScanReply<SearchWfRunReplyPb, WfRunIdPb, WfRunId> {
+public class SearchWfRunReply extends PublicScanReply<SearchWfRunResponse, WfRunId, WfRunIdModel> {
 
-    public Class<SearchWfRunReplyPb> getProtoBaseClass() {
-        return SearchWfRunReplyPb.class;
+    public Class<SearchWfRunResponse> getProtoBaseClass() {
+        return SearchWfRunResponse.class;
     }
 
-    public Class<WfRunId> getResultJavaClass() {
+    public Class<WfRunIdModel> getResultJavaClass() {
+        return WfRunIdModel.class;
+    }
+
+    public Class<WfRunId> getResultProtoClass() {
         return WfRunId.class;
     }
-
-    public Class<WfRunIdPb> getResultProtoClass() {
-        return WfRunIdPb.class;
-    }
-    // public SearchWfRunReplyPb.Builder toProto() {
-    //     SearchWfRunReplyPb.Builder out = SearchWfRunReplyPb
+    // public SearchWfRunResponse.Builder toProto() {
+    //     SearchWfRunResponse.Builder out = SearchWfRunResponse
     //         .newBuilder()
     //         .setCode(code);
     //     if (message != null) out.setMessage(message);
@@ -34,12 +33,12 @@ public class SearchWfRunReply
     // }
 
     // public void initFrom(Message proto) {
-    //     SearchWfRunReplyPb p = (SearchWfRunReplyPb) proto;
+    //     SearchWfRunResponse p = (SearchWfRunResponse) proto;
     //     code = p.getCode();
     //     if (p.hasMessage()) message = p.getMessage();
     //     if (p.hasBookmark()) bookmark = p.getBookmark().toByteArray();
 
-    //     for (WfRunIdPb id : p.getIdsList()) {
+    //     for (WfRunId id : p.getIdsList()) {
     //         objectIds.add(WfRun.getObjectId(id));
     //     }
     // }

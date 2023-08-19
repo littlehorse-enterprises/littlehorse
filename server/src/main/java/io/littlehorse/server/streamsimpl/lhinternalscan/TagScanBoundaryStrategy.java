@@ -13,11 +13,7 @@ public class TagScanBoundaryStrategy implements SearchScanBoundaryStrategy {
     private Optional<Date> earliestStart;
     private Optional<Date> latestStart;
 
-    public TagScanBoundaryStrategy(
-        String keyPrefix,
-        Optional<Date> earliestStart,
-        Optional<Date> latestStart
-    ) {
+    public TagScanBoundaryStrategy(String keyPrefix, Optional<Date> earliestStart, Optional<Date> latestStart) {
         this.keyPrefix = keyPrefix;
         this.earliestStart = earliestStart;
         this.latestStart = latestStart;

@@ -1,26 +1,25 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
-import io.littlehorse.common.model.objectId.WfSpecId;
-import io.littlehorse.sdk.common.proto.SearchWfSpecReplyPb;
-import io.littlehorse.sdk.common.proto.WfSpecIdPb;
+import io.littlehorse.common.model.objectId.WfSpecIdModel;
+import io.littlehorse.sdk.common.proto.SearchWfSpecResponse;
+import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
-public class SearchWfSpecReply
-    extends PublicScanReply<SearchWfSpecReplyPb, WfSpecIdPb, WfSpecId> {
+public class SearchWfSpecReply extends PublicScanReply<SearchWfSpecResponse, WfSpecId, WfSpecIdModel> {
 
-    public Class<SearchWfSpecReplyPb> getProtoBaseClass() {
-        return SearchWfSpecReplyPb.class;
+    public Class<SearchWfSpecResponse> getProtoBaseClass() {
+        return SearchWfSpecResponse.class;
     }
 
-    public Class<WfSpecId> getResultJavaClass() {
+    public Class<WfSpecIdModel> getResultJavaClass() {
+        return WfSpecIdModel.class;
+    }
+
+    public Class<WfSpecId> getResultProtoClass() {
         return WfSpecId.class;
     }
-
-    public Class<WfSpecIdPb> getResultProtoClass() {
-        return WfSpecIdPb.class;
-    }
-    // public SearchWfSpecReplyPb.Builder toProto() {
-    //     SearchWfSpecReplyPb.Builder out = SearchWfSpecReplyPb
+    // public SearchWfSpecResponse.Builder toProto() {
+    //     SearchWfSpecResponse.Builder out = SearchWfSpecResponse
     //         .newBuilder()
     //         .setCode(code);
     //     if (message != null) out.setMessage(message);
@@ -34,12 +33,12 @@ public class SearchWfSpecReply
     // }
 
     // public void initFrom(Message proto) {
-    //     SearchWfSpecReplyPb p = (SearchWfSpecReplyPb) proto;
+    //     SearchWfSpecResponse p = (SearchWfSpecResponse) proto;
     //     code = p.getCode();
     //     if (p.hasMessage()) message = p.getMessage();
     //     if (p.hasBookmark()) bookmark = p.getBookmark().toByteArray();
 
-    //     for (WfSpecIdPb id : p.getIdsList()) {
+    //     for (WfSpecId id : p.getIdsList()) {
     //         objectIds.add(WfSpec.getObjectId(id));
     //     }
     // }

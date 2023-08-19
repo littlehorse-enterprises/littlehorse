@@ -10,9 +10,7 @@ import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
-public class CreateRemoteTag
-    extends LHSerializable<CreateRemoteTagPb>
-    implements RepartitionSubCommand {
+public class CreateRemoteTag extends LHSerializable<CreateRemoteTagPb> implements RepartitionSubCommand {
 
     private Tag tag;
 
@@ -23,10 +21,7 @@ public class CreateRemoteTag
     }
 
     @Override
-    public void process(
-        LHStoreWrapper repartitionedStore,
-        ProcessorContext<Void, Void> ctx
-    ) {
+    public void process(LHStoreWrapper repartitionedStore, ProcessorContext<Void, Void> ctx) {
         repartitionedStore.put(tag);
     }
 
@@ -43,8 +38,7 @@ public class CreateRemoteTag
     @Override
     public void initFrom(Message proto) throws LHSerdeError {
         CreateRemoteTagPb remoteTagSubCommandPb = (CreateRemoteTagPb) proto;
-        this.tag =
-            LHSerializable.fromProto(remoteTagSubCommandPb.getTag(), Tag.class);
+        this.tag = LHSerializable.fromProto(remoteTagSubCommandPb.getTag(), Tag.class);
     }
 
     @Override

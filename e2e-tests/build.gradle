@@ -1,6 +1,7 @@
 plugins {
     id 'application'
     id 'java-library'
+    id 'com.diffplug.spotless' version '6.20.0'
 }
 
 sourceCompatibility=17
@@ -31,4 +32,12 @@ application {
 // less descriptive.
 compileJava {
     options.compilerArgs << '-parameters'
+}
+
+spotless {
+    java {
+        target('**/*.java')
+        targetExclude('**/proto/*.java')
+        palantirJavaFormat()
+    }
 }

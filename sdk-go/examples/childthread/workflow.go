@@ -14,7 +14,7 @@ func ChildThreadTask(input string) string {
 }
 
 func ChildThreadWorkflow(thread *wflib.ThreadBuilder) {
-	inputVar := thread.AddVariable("input", model.VariableTypePb_STR)
+	inputVar := thread.AddVariable("input", model.VariableType_STR)
 
 	childThread := thread.SpawnThread(
 		func(child *wflib.ThreadBuilder) {

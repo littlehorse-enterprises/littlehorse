@@ -8,32 +8,32 @@ public interface TriggeredTaskRunPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
+   * <code>.littlehorse.TaskNode task_to_schedule = 1;</code>
    * @return Whether the taskToSchedule field is set.
    */
   boolean hasTaskToSchedule();
   /**
-   * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
+   * <code>.littlehorse.TaskNode task_to_schedule = 1;</code>
    * @return The taskToSchedule.
    */
-  io.littlehorse.sdk.common.proto.TaskNodePb getTaskToSchedule();
+  io.littlehorse.sdk.common.proto.TaskNode getTaskToSchedule();
   /**
-   * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
+   * <code>.littlehorse.TaskNode task_to_schedule = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder getTaskToScheduleOrBuilder();
+  io.littlehorse.sdk.common.proto.TaskNodeOrBuilder getTaskToScheduleOrBuilder();
 
   /**
-   * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+   * <code>.littlehorse.NodeRunId source = 2;</code>
    * @return Whether the source field is set.
    */
   boolean hasSource();
   /**
-   * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+   * <code>.littlehorse.NodeRunId source = 2;</code>
    * @return The source.
    */
-  io.littlehorse.sdk.common.proto.NodeRunIdPb getSource();
+  io.littlehorse.sdk.common.proto.NodeRunId getSource();
   /**
-   * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+   * <code>.littlehorse.NodeRunId source = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getSourceOrBuilder();
+  io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getSourceOrBuilder();
 }

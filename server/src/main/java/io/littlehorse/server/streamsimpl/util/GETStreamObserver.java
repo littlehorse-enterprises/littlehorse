@@ -5,20 +5,17 @@ import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
+import io.littlehorse.common.proto.CentralStoreQueryResponse;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 
 /**
- * @deprecated
- * Should not use this class because it's not using the StoredGetable class. This class will
- * be removed once all entities are migrated to use the StoredGetable class.
+ * @deprecated Should not use this class because it's not using the StoredGetable class. This class
+ *     will be removed once all entities are migrated to use the StoredGetable class.
  */
 @Deprecated(forRemoval = true)
-public class GETStreamObserver<
-    U extends Message, T extends Storeable<U>, V extends Message
->
-    implements StreamObserver<CentralStoreQueryReplyPb> {
+public class GETStreamObserver<U extends Message, T extends Storeable<U>, V extends Message>
+        implements StreamObserver<CentralStoreQueryResponse> {
 
     private StreamObserver<V> ctx;
     private LHConfig config;
@@ -27,11 +24,7 @@ public class GETStreamObserver<
     private IntermediateGETResp<U, T, V> out;
 
     public GETStreamObserver(
-        StreamObserver<V> responseObserver,
-        Class<T> getableCls,
-        Class<V> responseCls,
-        LHConfig config
-    ) {
+            StreamObserver<V> responseObserver, Class<T> getableCls, Class<V> responseCls, LHConfig config) {
         this.ctx = responseObserver;
         this.getableCls = getableCls;
         this.config = config;
@@ -42,7 +35,7 @@ public class GETStreamObserver<
     public void onError(Throwable t) {
         Throwable cause = t.getCause() != null ? t.getCause() : t;
 
-        out.code = LHResponseCodePb.CONNECTION_ERROR;
+        out.code = LHResponseCode.CONNECTION_ERROR;
         out.message = "Failed connecting to backend: " + cause.getMessage();
         ctx.onNext(out.toProto());
         ctx.onCompleted();
@@ -50,25 +43,18 @@ public class GETStreamObserver<
 
     public void onCompleted() {}
 
-    public void onNext(CentralStoreQueryReplyPb reply) {
+    public void onNext(CentralStoreQueryResponse reply) {
         // TODO
         if (reply.hasResult()) {
-            out.code = LHResponseCodePb.OK;
+            out.code = LHResponseCode.OK;
             try {
-                out.result =
-                    LHSerializable.fromBytes(
-                        reply.getResult().toByteArray(),
-                        getableCls,
-                        config
-                    );
+                out.result = LHSerializable.fromBytes(reply.getResult().toByteArray(), getableCls, config);
             } catch (LHSerdeError exn) {
-                out.code = LHResponseCodePb.CONNECTION_ERROR;
-                out.message =
-                    "Impossible: got unreadable response from backend: " +
-                    exn.getMessage();
+                out.code = LHResponseCode.CONNECTION_ERROR;
+                out.message = "Impossible: got unreadable response from backend: " + exn.getMessage();
             }
         } else {
-            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+            out.code = LHResponseCode.NOT_FOUND_ERROR;
         }
 
         ctx.onNext(out.toProto());

@@ -11,7 +11,7 @@ type LHTaskWorker struct {
 	client      *common.LHClient
 	taskFunc    interface{}
 	taskSig     *common.TaskFuncSignature
-	taskDef     *model.TaskDefPb
+	taskDef     *model.TaskDef
 	manager     *serverConnectionManager
 	taskDefName string
 }

@@ -1,7 +1,7 @@
 package io.littlehorse.server.streamsimpl.util;
 
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.proto.WaitForCommandReplyPb;
+import io.littlehorse.common.proto.WaitForCommandResponse;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AsyncWaiter {
 
     private String commandId;
-    private StreamObserver<WaitForCommandReplyPb> observer;
-    private WaitForCommandReplyPb response;
+    private StreamObserver<WaitForCommandResponse> observer;
+    private WaitForCommandResponse response;
     private Date arrivalTime;
     private Exception caughtException;
 
@@ -22,10 +22,7 @@ public class AsyncWaiter {
         this.arrivalTime = new Date();
     }
 
-    public AsyncWaiter(
-        String commandId,
-        StreamObserver<WaitForCommandReplyPb> observer
-    ) {
+    public AsyncWaiter(String commandId, StreamObserver<WaitForCommandResponse> observer) {
         this();
         this.commandId = commandId;
         this.observer = observer;
@@ -37,7 +34,7 @@ public class AsyncWaiter {
         this.caughtException = caughtException;
     }
 
-    public AsyncWaiter(String commandId, WaitForCommandReplyPb response) {
+    public AsyncWaiter(String commandId, WaitForCommandResponse response) {
         this();
         this.commandId = commandId;
         this.response = response;
@@ -49,9 +46,7 @@ public class AsyncWaiter {
         }
 
         if (caughtException != null) {
-            log.info(
-                "Waiter is aborting client request due to command process failure"
-            );
+            log.info("Waiter is aborting client request due to command process failure");
             observer.onError(caughtException);
         } else if (response != null) {
             observer.onNext(response);

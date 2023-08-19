@@ -3,23 +3,21 @@ package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repa
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.model.metrics.TaskDefMetrics;
-import io.littlehorse.common.model.objectId.TaskDefMetricsId;
+import io.littlehorse.common.model.metrics.TaskDefMetricsModel;
+import io.littlehorse.common.model.objectId.TaskDefMetricsIdModel;
 import io.littlehorse.common.proto.TaskMetricUpdatePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
+import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import java.util.Date;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
-public class TaskMetricUpdate
-    extends Storeable<TaskMetricUpdatePb>
-    implements RepartitionSubCommand {
+public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements RepartitionSubCommand {
 
     public Date windowStart;
-    public MetricsWindowLengthPb type;
+    public MetricsWindowLength type;
     public long numEntries;
     public long scheduleToStartMax;
     public long scheduleToStartTotal;
@@ -34,11 +32,7 @@ public class TaskMetricUpdate
 
     public TaskMetricUpdate() {}
 
-    public TaskMetricUpdate(
-        Date windowStart,
-        MetricsWindowLengthPb type,
-        String taskDefName
-    ) {
+    public TaskMetricUpdate(Date windowStart, MetricsWindowLength type, String taskDefName) {
         this.windowStart = windowStart;
         this.type = type;
         this.taskDefName = taskDefName;
@@ -49,20 +43,19 @@ public class TaskMetricUpdate
     }
 
     public TaskMetricUpdatePb.Builder toProto() {
-        TaskMetricUpdatePb.Builder out = TaskMetricUpdatePb
-            .newBuilder()
-            .setWindowStart(LHLibUtil.fromDate(windowStart))
-            .setType(type)
-            .setTaskDefName(taskDefName)
-            .setTotalCompleted(totalCompleted)
-            .setTotalErrored(totalErrored)
-            .setTotalStarted(totalStarted)
-            .setScheduleToStartTotal(scheduleToStartTotal)
-            .setScheduleToStartMax(scheduleToStartMax)
-            .setStartToCompleteTotal(startToCompleteTotal)
-            .setStartToCompleteMax(startToCompleteMax)
-            .setNumEntries(numEntries)
-            .setTotalScheduled(totalScheduled);
+        TaskMetricUpdatePb.Builder out = TaskMetricUpdatePb.newBuilder()
+                .setWindowStart(LHLibUtil.fromDate(windowStart))
+                .setType(type)
+                .setTaskDefName(taskDefName)
+                .setTotalCompleted(totalCompleted)
+                .setTotalErrored(totalErrored)
+                .setTotalStarted(totalStarted)
+                .setScheduleToStartTotal(scheduleToStartTotal)
+                .setScheduleToStartMax(scheduleToStartMax)
+                .setStartToCompleteTotal(startToCompleteTotal)
+                .setStartToCompleteMax(startToCompleteMax)
+                .setNumEntries(numEntries)
+                .setTotalScheduled(totalScheduled);
 
         return out;
     }
@@ -108,13 +101,11 @@ public class TaskMetricUpdate
         totalScheduled += o.totalScheduled;
     }
 
-    public TaskDefMetrics toResponse() {
-        TaskDefMetrics out = new TaskDefMetrics();
-        out.scheduleToStartAvg =
-            totalStarted > 0 ? scheduleToStartTotal / totalStarted : 0;
+    public TaskDefMetricsModel toResponse() {
+        TaskDefMetricsModel out = new TaskDefMetricsModel();
+        out.scheduleToStartAvg = totalStarted > 0 ? scheduleToStartTotal / totalStarted : 0;
         out.scheduleToStartMax = scheduleToStartMax;
-        out.startToCompleteAvg =
-            totalCompleted > 0 ? startToCompleteTotal / totalCompleted : 0;
+        out.startToCompleteAvg = totalCompleted > 0 ? startToCompleteTotal / totalCompleted : 0;
         out.startToCompleteMax = startToCompleteMax;
         out.taskDefName = taskDefName;
         out.totalCompleted = totalCompleted;
@@ -128,12 +119,7 @@ public class TaskMetricUpdate
     }
 
     public String getClusterLevelWindow() {
-        return new TaskDefMetricsId(
-            windowStart,
-            type,
-            LHConstants.CLUSTER_LEVEL_METRIC
-        )
-            .getStoreKey();
+        return new TaskDefMetricsIdModel(windowStart, type, LHConstants.CLUSTER_LEVEL_METRIC).getStoreKey();
     }
 
     public void process(LHStoreWrapper store, ProcessorContext<Void, Void> ctx) {
@@ -151,23 +137,11 @@ public class TaskMetricUpdate
     }
 
     public String getStoreKey() {
-        return LHUtil.getCompositeId(
-            LHUtil.toLhDbFormat(windowStart),
-            type.toString(),
-            taskDefName
-        );
+        return LHUtil.getCompositeId(LHUtil.toLhDbFormat(windowStart), type.toString(), taskDefName);
     }
 
-    public static String getStoreKey(
-        MetricsWindowLengthPb type,
-        Date windowStart,
-        String taskDefName
-    ) {
-        return LHUtil.getCompositeId(
-            LHUtil.toLhDbFormat(windowStart),
-            type.toString(),
-            taskDefName
-        );
+    public static String getStoreKey(MetricsWindowLength type, Date windowStart, String taskDefName) {
+        return LHUtil.getCompositeId(LHUtil.toLhDbFormat(windowStart), type.toString(), taskDefName);
     }
 
     public Date getCreatedAt() {

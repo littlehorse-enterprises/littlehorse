@@ -23,15 +23,15 @@ public interface TaskMetricUpdatePbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 
   /**
-   * <code>.littlehorse.MetricsWindowLengthPb type = 2;</code>
+   * <code>.littlehorse.MetricsWindowLength type = 2;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
-   * <code>.littlehorse.MetricsWindowLengthPb type = 2;</code>
+   * <code>.littlehorse.MetricsWindowLength type = 2;</code>
    * @return The type.
    */
-  io.littlehorse.sdk.common.proto.MetricsWindowLengthPb getType();
+  io.littlehorse.sdk.common.proto.MetricsWindowLength getType();
 
   /**
    * <code>int64 num_entries = 3;</code>

@@ -17,16 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OAuthServerAuthorizer implements ServerAuthorizer {
 
-    private static final Metadata.Key<String> AUTHORIZATION_HEADER_KEY = Metadata.Key.of(
-        "Authorization",
-        Metadata.ASCII_STRING_MARSHALLER
-    );
+    private static final Metadata.Key<String> AUTHORIZATION_HEADER_KEY =
+            Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
 
-    private final Cache<String, TokenStatus> tokenCache = CacheBuilder
-        .newBuilder()
-        .maximumSize(10000)
-        .expireAfterWrite(4, TimeUnit.HOURS)
-        .build();
+    private final Cache<String, TokenStatus> tokenCache = CacheBuilder.newBuilder()
+            .maximumSize(10000)
+            .expireAfterWrite(4, TimeUnit.HOURS)
+            .build();
 
     private final OAuthClient client;
 
@@ -36,10 +33,7 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
 
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
-        ServerCall<ReqT, RespT> call,
-        Metadata headers,
-        ServerCallHandler<ReqT, RespT> next
-    ) {
+            ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
         String token = extractAccessToken(headers);
 
         try {
@@ -61,11 +55,10 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
     }
 
     private String extractAccessToken(Metadata metadata) {
-        return Optional
-            .ofNullable(metadata.get(AUTHORIZATION_HEADER_KEY))
-            .orElse("")
-            .replace("Bearer", "")
-            .trim();
+        return Optional.ofNullable(metadata.get(AUTHORIZATION_HEADER_KEY))
+                .orElse("")
+                .replace("Bearer", "")
+                .trim();
     }
 
     private void validateToken(String token) throws Exception {

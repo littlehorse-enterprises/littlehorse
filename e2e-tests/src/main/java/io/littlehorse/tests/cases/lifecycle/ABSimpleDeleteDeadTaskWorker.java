@@ -3,11 +3,11 @@ package io.littlehorse.tests.cases.lifecycle;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.HostInfoPb;
+import io.littlehorse.sdk.common.proto.HostInfo;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
-import io.littlehorse.sdk.common.proto.PutTaskDefPb;
-import io.littlehorse.sdk.common.proto.RegisterTaskWorkerPb;
-import io.littlehorse.sdk.common.proto.RegisterTaskWorkerReplyPb;
+import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.tests.Test;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,10 +37,7 @@ public class ABSimpleDeleteDeadTaskWorker extends Test {
 
     public void test() throws LHApiError, InterruptedException {
         // Create taskdef
-        client.putTaskDef(
-            PutTaskDefPb.newBuilder().setName(taskDefName).build(),
-            false
-        );
+        client.putTaskDef(PutTaskDefRequest.newBuilder().setName(taskDefName).build(), false);
 
         // Taskdef needs to propagate to all servers
         Thread.sleep(50);
@@ -53,8 +50,8 @@ public class ABSimpleDeleteDeadTaskWorker extends Test {
         String client4 = "client-4";
         String client5 = "client-5";
 
-        RegisterTaskWorkerReplyPb reply1 = stub.registerTaskWorker(register(client1));
-        for (HostInfoPb host : reply1.getYourHostsList()) {
+        RegisterTaskWorkerResponse reply1 = stub.registerTaskWorker(register(client1));
+        for (HostInfo host : reply1.getYourHostsList()) {
             allHosts.add(hostToString(host));
         }
 
@@ -66,7 +63,7 @@ public class ABSimpleDeleteDeadTaskWorker extends Test {
         // Wait until all workers are dead
         Thread.sleep(15000);
 
-        RegisterTaskWorkerReplyPb reply5 = stub.registerTaskWorker(register(client5));
+        RegisterTaskWorkerResponse reply5 = stub.registerTaskWorker(register(client5));
         int newCount = reply5.getYourHostsCount();
 
         // It should assign all the workers available for this only task worker
@@ -75,17 +72,16 @@ public class ABSimpleDeleteDeadTaskWorker extends Test {
         }
     }
 
-    private String hostToString(HostInfoPb host) {
+    private String hostToString(HostInfo host) {
         return host.getHost() + ":" + host.getPort();
     }
 
-    private RegisterTaskWorkerPb register(String clientId) {
-        return RegisterTaskWorkerPb
-            .newBuilder()
-            .setClientId(clientId)
-            .setTaskDefName(taskDefName)
-            .setListenerName(config.getConnectListener())
-            .build();
+    private RegisterTaskWorkerRequest register(String clientId) {
+        return RegisterTaskWorkerRequest.newBuilder()
+                .setClientId(clientId)
+                .setTaskDefName(taskDefName)
+                .setListenerName(config.getConnectListener())
+                .build();
     }
 
     public void cleanup() throws LHApiError {

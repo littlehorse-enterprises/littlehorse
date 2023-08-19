@@ -3,11 +3,11 @@ package io.littlehorse.tests.cases.lifecycle;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.HostInfoPb;
+import io.littlehorse.sdk.common.proto.HostInfo;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
-import io.littlehorse.sdk.common.proto.PutTaskDefPb;
-import io.littlehorse.sdk.common.proto.RegisterTaskWorkerPb;
-import io.littlehorse.sdk.common.proto.RegisterTaskWorkerReplyPb;
+import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.tests.Test;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,10 +37,7 @@ public class ACSimpleTaskRebalancing extends Test {
 
     public void test() throws LHApiError, InterruptedException {
         // Create taskdef
-        client.putTaskDef(
-            PutTaskDefPb.newBuilder().setName(taskDefName).build(),
-            false
-        );
+        client.putTaskDef(PutTaskDefRequest.newBuilder().setName(taskDefName).build(), false);
 
         // Taskdef needs to propagate to all servers
         Thread.sleep(50);
@@ -53,24 +50,22 @@ public class ACSimpleTaskRebalancing extends Test {
         String client4 = "client-4";
 
         // This is the first worker to connect, so it should get ALL of the hosts
-        RegisterTaskWorkerReplyPb reply1 = stub.registerTaskWorker(register(client1));
-        for (HostInfoPb host : reply1.getYourHostsList()) {
+        RegisterTaskWorkerResponse reply1 = stub.registerTaskWorker(register(client1));
+        for (HostInfo host : reply1.getYourHostsList()) {
             allHosts.add(hostToString(host));
         }
 
         // Since we require that each server has at least two connections on it,
         // we should check that when we add the worker #2, then it still gets all
         // the hosts.
-        RegisterTaskWorkerReplyPb reply2 = stub.registerTaskWorker(register(client2));
+        RegisterTaskWorkerResponse reply2 = stub.registerTaskWorker(register(client2));
         if (reply2.getYourHostsCount() != allHosts.size()) {
             throw new RuntimeException("Second worker should still get all hosts!");
         }
 
         reply1 = stub.registerTaskWorker(register(client1));
         if (reply1.getYourHostsCount() != allHosts.size()) {
-            throw new RuntimeException(
-                "First worker should still get all hosts when only one other!"
-            );
+            throw new RuntimeException("First worker should still get all hosts when only one other!");
         }
 
         // When we add a third and fourth worker, if there are more than one server,
@@ -86,17 +81,16 @@ public class ACSimpleTaskRebalancing extends Test {
         }
     }
 
-    private String hostToString(HostInfoPb host) {
+    private String hostToString(HostInfo host) {
         return host.getHost() + ":" + host.getPort();
     }
 
-    private RegisterTaskWorkerPb register(String clientId) {
-        return RegisterTaskWorkerPb
-            .newBuilder()
-            .setClientId(clientId)
-            .setTaskDefName(taskDefName)
-            .setListenerName(config.getConnectListener())
-            .build();
+    private RegisterTaskWorkerRequest register(String clientId) {
+        return RegisterTaskWorkerRequest.newBuilder()
+                .setClientId(clientId)
+                .setTaskDefName(taskDefName)
+                .setListenerName(config.getConnectListener())
+                .build();
     }
 
     public void cleanup() throws LHApiError {

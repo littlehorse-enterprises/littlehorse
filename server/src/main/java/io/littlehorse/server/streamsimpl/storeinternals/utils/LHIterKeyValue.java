@@ -15,11 +15,7 @@ public class LHIterKeyValue<T extends Storeable<?>> {
     private LHConfig config;
     private Class<T> cls;
 
-    public LHIterKeyValue(
-        KeyValue<String, Bytes> raw,
-        LHConfig config,
-        Class<T> cls
-    ) {
+    public LHIterKeyValue(KeyValue<String, Bytes> raw, LHConfig config, Class<T> cls) {
         valBytes = raw.value;
         this.config = config;
         this.cls = cls;

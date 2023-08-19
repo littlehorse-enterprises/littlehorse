@@ -1838,19 +1838,19 @@ private static final long serialVersionUID = 0L;
   public static final int OBJECT_TYPE_FIELD_NUMBER = 4;
   private int objectType_ = 0;
   /**
-   * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
+   * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
    * @return The enum numeric value on the wire for objectType.
    */
   @java.lang.Override public int getObjectTypeValue() {
     return objectType_;
   }
   /**
-   * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
+   * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
    * @return The objectType.
    */
-  @java.lang.Override public io.littlehorse.common.proto.GetableClassEnumPb getObjectType() {
-    io.littlehorse.common.proto.GetableClassEnumPb result = io.littlehorse.common.proto.GetableClassEnumPb.forNumber(objectType_);
-    return result == null ? io.littlehorse.common.proto.GetableClassEnumPb.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.common.proto.GetableClassEnum getObjectType() {
+    io.littlehorse.common.proto.GetableClassEnum result = io.littlehorse.common.proto.GetableClassEnum.forNumber(objectType_);
+    return result == null ? io.littlehorse.common.proto.GetableClassEnum.UNRECOGNIZED : result;
   }
 
   public static final int STORE_NAME_FIELD_NUMBER = 5;
@@ -2039,7 +2039,7 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(3, getBookmark());
     }
-    if (objectType_ != io.littlehorse.common.proto.GetableClassEnumPb.TASK_DEF.getNumber()) {
+    if (objectType_ != io.littlehorse.common.proto.GetableClassEnum.TASK_DEF.getNumber()) {
       output.writeEnum(4, objectType_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(storeName_)) {
@@ -2075,7 +2075,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getBookmark());
     }
-    if (objectType_ != io.littlehorse.common.proto.GetableClassEnumPb.TASK_DEF.getNumber()) {
+    if (objectType_ != io.littlehorse.common.proto.GetableClassEnum.TASK_DEF.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(4, objectType_);
     }
@@ -2791,14 +2791,14 @@ private static final long serialVersionUID = 0L;
 
     private int objectType_ = 0;
     /**
-     * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
+     * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
      * @return The enum numeric value on the wire for objectType.
      */
     @java.lang.Override public int getObjectTypeValue() {
       return objectType_;
     }
     /**
-     * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
+     * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
      * @param value The enum numeric value on the wire for objectType to set.
      * @return This builder for chaining.
      */
@@ -2809,20 +2809,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
+     * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
      * @return The objectType.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.GetableClassEnumPb getObjectType() {
-      io.littlehorse.common.proto.GetableClassEnumPb result = io.littlehorse.common.proto.GetableClassEnumPb.forNumber(objectType_);
-      return result == null ? io.littlehorse.common.proto.GetableClassEnumPb.UNRECOGNIZED : result;
+    public io.littlehorse.common.proto.GetableClassEnum getObjectType() {
+      io.littlehorse.common.proto.GetableClassEnum result = io.littlehorse.common.proto.GetableClassEnum.forNumber(objectType_);
+      return result == null ? io.littlehorse.common.proto.GetableClassEnum.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
+     * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
      * @param value The objectType to set.
      * @return This builder for chaining.
      */
-    public Builder setObjectType(io.littlehorse.common.proto.GetableClassEnumPb value) {
+    public Builder setObjectType(io.littlehorse.common.proto.GetableClassEnum value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -2832,7 +2832,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
+     * <code>.littlehorse.GetableClassEnum object_type = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearObjectType() {
