@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "common_enums.proto";
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+
+message WfSpecId {
+  string name = 1;
+  int32 version = 2;
+}
+
+message TaskDefId {
+  string name = 1;
+}
+
+message ExternalEventDefId {
+  string name = 1;
+}
+
+message GetLatestWfSpecRequest {
+  string name = 1;
+}
+
+message UserTaskDefId {
+  string name = 1;
+  int32 version = 2;
+}
+
+
+message TaskWorkerGroupId {
+  string task_def_name = 1;
+}
+
+message VariableId {
+  string wf_run_id = 1;
+  int32 thread_run_number = 2;
+  string name = 3;
+}
+
+message ExternalEventId {
+  string wf_run_id = 1;
+  string external_event_def_name = 2;
+  string guid = 3;
+}
+  
+message WfRunId {
+  string id = 1;
+}
+
+message NodeRunId {
+  string wf_run_id = 1;
+  int32 thread_run_number = 2;
+  int32 position = 3;
+}
+
+message TaskRunId {
+  string wf_run_id = 1;
+  string task_guid = 2;
+}
+
+message UserTaskRunId {
+  string wf_run_id = 1;
+  string user_task_guid = 2;
+}
+
+message TaskDefMetricsId {
+  google.protobuf.Timestamp window_start = 1;
+  MetricsWindowLength window_type = 2;
+  string task_def_name = 3;
+}
+
+
+message WfSpecMetricsId {
+  google.protobuf.Timestamp window_start = 1;
+  MetricsWindowLength window_type = 2;
+  string wf_spec_name = 3;
+  int32 wf_spec_version = 4;
+}

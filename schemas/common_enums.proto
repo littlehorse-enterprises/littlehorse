@@ -1,0 +1,44 @@
+syntax = "proto3";
+package littlehorse;
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+
+enum LHStatus {
+  STARTING = 0;
+  RUNNING = 1;
+  COMPLETED = 2;
+  HALTING = 3;
+  HALTED = 4;
+  ERROR = 5;
+}
+
+enum TaskStatus {
+  TASK_SCHEDULED = 0;
+  TASK_RUNNING = 1;
+  TASK_SUCCESS = 2;
+  TASK_FAILED = 3;
+  TASK_TIMEOUT = 4;
+  TASK_OUTPUT_SERIALIZING_ERROR = 5;
+  TASK_INPUT_VAR_SUB_ERROR = 6;
+  TASK_CANCELLED = 7;
+}
+
+// Metrics
+enum MetricsWindowLength {
+  MINUTES_5 = 0;
+  HOURS_2 = 1;
+  DAYS_1 = 2;
+}
+  
+enum VariableType {
+  JSON_OBJ = 0;
+  JSON_ARR = 1;
+  DOUBLE = 2;
+  BOOL = 3;
+  STR = 4;
+  INT = 5;
+  BYTES = 6;
+  NULL = 7;
+}
