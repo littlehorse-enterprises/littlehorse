@@ -1,11 +1,17 @@
 package io.littlehorse.test;
 
+import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.internal.ExternalTestBootstrapper;
 import io.littlehorse.test.internal.TestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor {
 
@@ -35,8 +41,10 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
         Object testInstance,
         ExtensionContext context
     ) {
-        getStore(context)
-            .get(LH_TEST_CONTEXT, TestContext.class)
-            .instrument(testInstance);
+        TestContext testContext = getStore(context)
+            .get(LH_TEST_CONTEXT, TestContext.class);
+        testContext.discoverTaskWorkers(testInstance);
+        testContext.registerWorkers();
+        testContext.instrument(testInstance);
     }
 }
