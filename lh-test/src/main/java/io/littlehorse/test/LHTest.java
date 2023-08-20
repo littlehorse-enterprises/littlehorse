@@ -10,7 +10,5 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(LHExtension.class)
 public @interface LHTest {
-
-    Class<?>[] taskWorkers() default {} ;
-
+    Class<?>[] taskWorkers() default {};
 }

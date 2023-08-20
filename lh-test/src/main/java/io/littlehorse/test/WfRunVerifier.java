@@ -6,7 +6,6 @@ import io.littlehorse.sdk.common.proto.PutTaskDefPb;
 import io.littlehorse.sdk.common.proto.WfRunPb;
 import io.littlehorse.sdk.common.proto.WfSpecPb;
 import io.littlehorse.sdk.wfsdk.Workflow;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -15,13 +14,18 @@ public class WfRunVerifier {
     private final LHClient lhClient;
     private final Workflow workflow;
     private final List<WorkflowExecutor.Step> steps;
-    public WfRunVerifier(LHClient lhClient, Workflow workflow, List<WorkflowExecutor.Step> steps){
+
+    public WfRunVerifier(
+        LHClient lhClient,
+        Workflow workflow,
+        List<WorkflowExecutor.Step> steps
+    ) {
         this.lhClient = lhClient;
         this.workflow = workflow;
         this.steps = steps;
     }
 
-    public void start(){
+    public void start() {
         try {
             for (PutTaskDefPb compileTaskDef : workflow.compileTaskDefs()) {
                 lhClient.putTaskDef(compileTaskDef, true);
@@ -36,5 +40,4 @@ public class WfRunVerifier {
             throw new RuntimeException(e);
         }
     }
-
 }

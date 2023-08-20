@@ -2,7 +2,7 @@ package io.littlehorse.test.exception;
 
 public class LHTestTimeoutException extends RuntimeException {
 
-    public LHTestTimeoutException(String message){
+    public LHTestTimeoutException(String message) {
         super(message);
     }
 

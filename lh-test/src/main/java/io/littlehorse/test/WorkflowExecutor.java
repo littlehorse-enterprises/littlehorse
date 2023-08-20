@@ -8,7 +8,6 @@ import io.littlehorse.sdk.common.proto.PutExternalEventPb;
 import io.littlehorse.sdk.common.proto.WfRunPb;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.exception.LHTestTimeoutException;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -83,7 +82,7 @@ public class WorkflowExecutor {
 
         private final LHStatusPb lhStatusPb;
 
-        WaitForStatusStep(LHStatusPb lhStatusPb, Consumer<WfRunPb> wfRunConsumer){
+        WaitForStatusStep(LHStatusPb lhStatusPb, Consumer<WfRunPb> wfRunConsumer) {
             super(wfRunConsumer);
             this.lhStatusPb = lhStatusPb;
         }
@@ -92,9 +91,9 @@ public class WorkflowExecutor {
         void execute(WfRunPb wfRun) {
             try {
                 LocalDateTime expiration = LocalDateTime.now().plus(timeout);
-                while (LocalDateTime.now().isBefore(expiration)){
+                while (LocalDateTime.now().isBefore(expiration)) {
                     WfRunPb refreshed = lhClient.getWfRun(wfRun.getId());
-                    if(refreshed.getStatus().equals(lhStatusPb)){
+                    if (refreshed.getStatus().equals(lhStatusPb)) {
                         return;
                     }
                 }

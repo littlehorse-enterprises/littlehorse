@@ -26,14 +26,23 @@ public class TestContext {
         this.lhClient = bootstrapper.getLhClient();
     }
 
-    public void discoverTaskWorkers(Object testInstance){
-        List<LHTaskMethod> annotatedMethods = ReflectionUtil.findAnnotatedMethods(testInstance.getClass(), LHTaskMethod.class);
+    public void discoverTaskWorkers(Object testInstance) {
+        List<LHTaskMethod> annotatedMethods = ReflectionUtil.findAnnotatedMethods(
+            testInstance.getClass(),
+            LHTaskMethod.class
+        );
         for (LHTaskMethod annotatedMethod : annotatedMethods) {
-            workers.add(new LHTaskWorker(testInstance, annotatedMethod.value(), lhWorkerConfig));
+            workers.add(
+                new LHTaskWorker(
+                    testInstance,
+                    annotatedMethod.value(),
+                    lhWorkerConfig
+                )
+            );
         }
     }
 
-    public void registerWorkers(){
+    public void registerWorkers() {
         for (LHTaskWorker worker : workers) {
             try {
                 worker.registerTaskDef(true);

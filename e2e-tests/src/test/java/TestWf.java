@@ -12,10 +12,9 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.test.*;
+import java.util.function.Predicate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.function.Predicate;
 
 @LHTest
 public class TestWf {
@@ -40,25 +39,28 @@ public class TestWf {
     @LHWorkflow("user-task-test-1")
     public Workflow buildWorkflow() {
         return new WorkflowImpl(
-                "example-basic",
-                thread -> {
-                    WfRunVariable theName = thread.addVariable(
-                            "input-name",
-                            VariableTypePb.STR
-                    );
-                    thread.execute("greet", theName);
-                }
+            "example-basic",
+            thread -> {
+                WfRunVariable theName = thread.addVariable(
+                    "input-name",
+                    VariableTypePb.STR
+                );
+                thread.execute("greet", theName);
+            }
         );
     }
 
     public class AZUserTaskForm {
 
-        @UserTaskField(displayName = "Str display name", description = "some discription")
+        @UserTaskField(
+            displayName = "Str display name",
+            description = "some discription"
+        )
         public String myStr;
 
         @UserTaskField(
-                displayName = "Int display name",
-                description = "another discription"
+            displayName = "Int display name",
+            description = "another discription"
         )
         public int myInt;
     }
@@ -82,5 +84,4 @@ public class TestWf {
         String userGroupId = workerContext.getUserGroup().getId();
         return String.format("Hey there %s execute your task!", userGroupId);
     }
-
 }
