@@ -2,10 +2,10 @@ package io.littlehorse.test;
 
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.PutExternalEventPb;
-import io.littlehorse.sdk.common.proto.WfRunPb;
+import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.exception.LHTestTimeoutException;
 import java.time.Duration;
@@ -33,12 +33,12 @@ public class WorkflowExecutor {
         return this;
     }
 
-    public WorkflowExecutor waitForStatus(LHStatusPb lhStatus) {
+    public WorkflowExecutor waitForStatus(LHStatus lhStatus) {
         steps.add(new WaitForStatusStep(lhStatus, System.out::println));
         return this;
     }
 
-    private WfRunPb findWfRun(String wfRunId) {
+    private WfRun findWfRun(String wfRunId) {
         try {
             return lhClient.getWfRun(wfRunId);
         } catch (LHApiError e) {
@@ -47,12 +47,12 @@ public class WorkflowExecutor {
     }
 
     public WorkflowExecutor andThenExecute(
-        CompleteUserTaskRunPb completeUserTaskRun
+        CompleteUserTaskRunRequest completeUserTaskRun
     ) {
         return this;
     }
 
-    public WorkflowExecutor andThenSend(PutExternalEventPb externalEvent) {
+    public WorkflowExecutor andThenSend(PutExternalEventRequest externalEvent) {
         return this;
     }
 
@@ -64,35 +64,35 @@ public class WorkflowExecutor {
 
     public class Step {
 
-        protected final Consumer<WfRunPb> wfRunConsumer;
+        protected final Consumer<WfRun> wfRunConsumer;
 
         protected final Duration timeout;
 
-        Step(Consumer<WfRunPb> wfRunConsumer) {
+        Step(Consumer<WfRun> wfRunConsumer) {
             this.wfRunConsumer = wfRunConsumer;
             this.timeout = Duration.ofSeconds(3);
         }
 
-        void execute(WfRunPb wfRun) {
+        void execute(WfRun wfRun) {
             this.wfRunConsumer.accept(wfRun);
         }
     }
 
     private class WaitForStatusStep extends Step {
 
-        private final LHStatusPb lhStatusPb;
+        private final LHStatus lhStatusPb;
 
-        WaitForStatusStep(LHStatusPb lhStatusPb, Consumer<WfRunPb> wfRunConsumer) {
+        WaitForStatusStep(LHStatus lhStatusPb, Consumer<WfRun> wfRunConsumer) {
             super(wfRunConsumer);
             this.lhStatusPb = lhStatusPb;
         }
 
         @Override
-        void execute(WfRunPb wfRun) {
+        void execute(WfRun wfRun) {
             try {
                 LocalDateTime expiration = LocalDateTime.now().plus(timeout);
                 while (LocalDateTime.now().isBefore(expiration)) {
-                    WfRunPb refreshed = lhClient.getWfRun(wfRun.getId());
+                    WfRun refreshed = lhClient.getWfRun(wfRun.getId());
                     if (refreshed.getStatus().equals(lhStatusPb)) {
                         return;
                     }

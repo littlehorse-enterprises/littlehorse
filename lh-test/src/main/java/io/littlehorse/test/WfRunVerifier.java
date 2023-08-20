@@ -2,9 +2,9 @@ package io.littlehorse.test;
 
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.PutTaskDefPb;
-import io.littlehorse.sdk.common.proto.WfRunPb;
-import io.littlehorse.sdk.common.proto.WfSpecPb;
+import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
+import io.littlehorse.sdk.common.proto.WfRun;
+import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import java.util.List;
 import java.util.UUID;
@@ -27,14 +27,14 @@ public class WfRunVerifier {
 
     public void start() {
         try {
-            for (PutTaskDefPb compileTaskDef : workflow.compileTaskDefs()) {
+            for (PutTaskDefRequest compileTaskDef : workflow.compileTaskDefs()) {
                 lhClient.putTaskDef(compileTaskDef, true);
             }
             workflow.registerWfSpec(lhClient);
-            WfSpecPb wfSpec = lhClient.getWfSpec(workflow.getName());
+            WfSpec wfSpec = lhClient.getWfSpec(workflow.getName());
             String wfId = UUID.randomUUID().toString();
             lhClient.runWf(wfSpec.getName(), wfSpec.getVersion(), wfId);
-            WfRunPb wfRun = lhClient.getWfRun(wfId);
+            WfRun wfRun = lhClient.getWfRun(wfId);
             steps.forEach(step -> step.execute(wfRun));
         } catch (LHApiError e) {
             throw new RuntimeException(e);

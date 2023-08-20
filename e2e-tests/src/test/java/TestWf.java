@@ -1,11 +1,9 @@
-import io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.PutExternalEventPb;
-import io.littlehorse.sdk.common.proto.VarNameAndValPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
+import io.littlehorse.sdk.common.proto.VarNameAndVal;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.usertask.annotations.UserTaskField;
-import io.littlehorse.sdk.wfsdk.UserTaskOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -13,10 +11,11 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.test.*;
 import java.util.function.Predicate;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @LHTest
+@Disabled("WIP!")
 public class TestWf {
 
     private WorkflowExecutor workflowExecutor;
@@ -26,11 +25,11 @@ public class TestWf {
 
     @Test
     public void test1() {
-        CompleteUserTaskRunPb completeUserTaskRun = null;
-        PutExternalEventPb externalEvent = null;
+        CompleteUserTaskRunRequest completeUserTaskRun = null;
+        PutExternalEventRequest externalEvent = null;
         WfRunVerifier verify = workflowExecutor
             .prepare(workflow)
-            .waitForStatus(LHStatusPb.RUNNING)
+            .waitForStatus(LHStatus.RUNNING)
             .andThenExecute(completeUserTaskRun)
             .andThenSend(externalEvent)
             .verify();
@@ -43,7 +42,7 @@ public class TestWf {
             thread -> {
                 WfRunVariable theName = thread.addVariable(
                     "input-name",
-                    VariableTypePb.STR
+                    VariableType.STR
                 );
                 thread.execute("greet", theName);
             }
@@ -78,7 +77,7 @@ public class TestWf {
 
     @LHTaskMethod("az-reminder")
     public String reminder(WorkerContext workerContext) {
-        Predicate<VarNameAndValPb> isUserGroupVariable = candidateVariable -> {
+        Predicate<VarNameAndVal> isUserGroupVariable = candidateVariable -> {
             return candidateVariable.getVarName().equals("userGroup");
         };
         String userGroupId = workerContext.getUserGroup().getId();
