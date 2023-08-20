@@ -1,26 +1,25 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
-import io.littlehorse.common.model.objectId.TaskDefId;
-import io.littlehorse.sdk.common.proto.SearchTaskDefReplyPb;
-import io.littlehorse.sdk.common.proto.TaskDefIdPb;
+import io.littlehorse.common.model.objectId.TaskDefIdModel;
+import io.littlehorse.sdk.common.proto.SearchTaskDefResponse;
+import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
-public class SearchTaskDefReply
-    extends PublicScanReply<SearchTaskDefReplyPb, TaskDefIdPb, TaskDefId> {
+public class SearchTaskDefReply extends PublicScanReply<SearchTaskDefResponse, TaskDefId, TaskDefIdModel> {
 
-    public Class<SearchTaskDefReplyPb> getProtoBaseClass() {
-        return SearchTaskDefReplyPb.class;
+    public Class<SearchTaskDefResponse> getProtoBaseClass() {
+        return SearchTaskDefResponse.class;
     }
 
-    public Class<TaskDefId> getResultJavaClass() {
+    public Class<TaskDefIdModel> getResultJavaClass() {
+        return TaskDefIdModel.class;
+    }
+
+    public Class<TaskDefId> getResultProtoClass() {
         return TaskDefId.class;
     }
-
-    public Class<TaskDefIdPb> getResultProtoClass() {
-        return TaskDefIdPb.class;
-    }
-    // public SearchTaskDefReplyPb.Builder toProto() {
-    //     SearchTaskDefReplyPb.Builder out = SearchTaskDefReplyPb
+    // public SearchTaskDefResponse.Builder toProto() {
+    //     SearchTaskDefResponse.Builder out = SearchTaskDefResponse
     //         .newBuilder()
     //         .setCode(code);
     //     if (message != null) out.setMessage(message);
@@ -34,12 +33,12 @@ public class SearchTaskDefReply
     // }
 
     // public void initFrom(Message proto) {
-    //     SearchTaskDefReplyPb p = (SearchTaskDefReplyPb) proto;
+    //     SearchTaskDefResponse p = (SearchTaskDefResponse) proto;
     //     code = p.getCode();
     //     if (p.hasMessage()) message = p.getMessage();
     //     if (p.hasBookmark()) bookmark = p.getBookmark().toByteArray();
 
-    //     for (TaskDefIdPb id : p.getIdsList()) {
+    //     for (TaskDefId id : p.getIdsList()) {
     //         objectIds.add(TaskDef.getObjectId(id));
     //     }
     // }

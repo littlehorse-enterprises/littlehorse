@@ -26,3 +26,4 @@ lhctl/lhctl
 
 # Others
 local-dev/certs/
+build/

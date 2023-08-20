@@ -11,173 +11,167 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
-import io.littlehorse.common.model.command.subcommand.CancelUserTaskRun;
-import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
-import io.littlehorse.common.model.command.subcommand.DeleteExternalEventDef;
-import io.littlehorse.common.model.command.subcommand.DeleteTaskDef;
-import io.littlehorse.common.model.command.subcommand.DeleteUserTaskDef;
-import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
-import io.littlehorse.common.model.command.subcommand.DeleteWfSpec;
-import io.littlehorse.common.model.command.subcommand.PutExternalEvent;
-import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
-import io.littlehorse.common.model.command.subcommand.PutTaskDef;
-import io.littlehorse.common.model.command.subcommand.PutUserTaskDef;
-import io.littlehorse.common.model.command.subcommand.PutWfSpec;
-import io.littlehorse.common.model.command.subcommand.ReportTaskRun;
-import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
-import io.littlehorse.common.model.command.subcommand.RunWf;
-import io.littlehorse.common.model.command.subcommand.StopWfRun;
+import io.littlehorse.common.model.command.subcommand.AssignUserTaskRunRequestModel;
+import io.littlehorse.common.model.command.subcommand.CancelUserTaskRunRequestModel;
+import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRunRequestModel;
+import io.littlehorse.common.model.command.subcommand.DeleteExternalEventDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.DeleteTaskDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.DeleteUserTaskDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.DeleteWfRunRequestModel;
+import io.littlehorse.common.model.command.subcommand.DeleteWfSpecRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutExternalEventDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutExternalEventRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutTaskDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutUserTaskDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutWfSpecRequestModel;
+import io.littlehorse.common.model.command.subcommand.ReportTaskRunModel;
+import io.littlehorse.common.model.command.subcommand.ResumeWfRunRequestModel;
+import io.littlehorse.common.model.command.subcommand.RunWfRequestModel;
+import io.littlehorse.common.model.command.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
-import io.littlehorse.common.model.command.subcommand.TaskWorkerHeartBeat;
-import io.littlehorse.common.model.meta.ExternalEventDef;
-import io.littlehorse.common.model.meta.Host;
-import io.littlehorse.common.model.meta.TaskDef;
-import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
-import io.littlehorse.common.model.metrics.TaskDefMetrics;
-import io.littlehorse.common.model.metrics.WfSpecMetrics;
-import io.littlehorse.common.model.objectId.ExternalEventDefId;
-import io.littlehorse.common.model.objectId.ExternalEventId;
-import io.littlehorse.common.model.objectId.NodeRunId;
-import io.littlehorse.common.model.objectId.TaskDefId;
-import io.littlehorse.common.model.objectId.TaskRunId;
-import io.littlehorse.common.model.objectId.UserTaskDefId;
-import io.littlehorse.common.model.objectId.UserTaskRunId;
-import io.littlehorse.common.model.objectId.VariableId;
-import io.littlehorse.common.model.objectId.WfRunId;
-import io.littlehorse.common.model.objectId.WfSpecId;
-import io.littlehorse.common.model.wfrun.ExternalEvent;
-import io.littlehorse.common.model.wfrun.NodeRun;
-import io.littlehorse.common.model.wfrun.ScheduledTask;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
-import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
-import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
-import io.littlehorse.common.proto.InternalScanReplyPb;
+import io.littlehorse.common.model.command.subcommand.TaskWorkerHeartBeatRequestModel;
+import io.littlehorse.common.model.meta.ExternalEventDefModel;
+import io.littlehorse.common.model.meta.HostModel;
+import io.littlehorse.common.model.meta.TaskDefModel;
+import io.littlehorse.common.model.meta.WfSpecModel;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.metrics.TaskDefMetricsModel;
+import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
+import io.littlehorse.common.model.objectId.ExternalEventDefIdModel;
+import io.littlehorse.common.model.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.objectId.TaskDefIdModel;
+import io.littlehorse.common.model.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
+import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
+import io.littlehorse.common.model.objectId.VariableIdModel;
+import io.littlehorse.common.model.objectId.WfRunIdModel;
+import io.littlehorse.common.model.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.wfrun.ExternalEventModel;
+import io.littlehorse.common.model.wfrun.NodeRunModel;
+import io.littlehorse.common.model.wfrun.ScheduledTaskModel;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
+import io.littlehorse.common.model.wfrun.VariableModel;
+import io.littlehorse.common.model.wfrun.WfRunModel;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRunModel;
+import io.littlehorse.common.proto.CentralStoreQueryResponse;
+import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
-import io.littlehorse.common.proto.WaitForCommandReplyPb;
+import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.AssignUserTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.CancelUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.CompleteUserTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.DeleteExternalEventDefPb;
-import io.littlehorse.sdk.common.proto.DeleteObjectReplyPb;
-import io.littlehorse.sdk.common.proto.DeleteTaskDefPb;
-import io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb;
-import io.littlehorse.sdk.common.proto.DeleteWfRunPb;
-import io.littlehorse.sdk.common.proto.DeleteWfSpecPb;
-import io.littlehorse.sdk.common.proto.ExternalEventDefIdPb;
-import io.littlehorse.sdk.common.proto.ExternalEventIdPb;
-import io.littlehorse.sdk.common.proto.GetExternalEventDefReplyPb;
-import io.littlehorse.sdk.common.proto.GetExternalEventReplyPb;
-import io.littlehorse.sdk.common.proto.GetLatestUserTaskDefPb;
-import io.littlehorse.sdk.common.proto.GetLatestWfSpecPb;
-import io.littlehorse.sdk.common.proto.GetNodeRunReplyPb;
-import io.littlehorse.sdk.common.proto.GetTaskDefReplyPb;
-import io.littlehorse.sdk.common.proto.GetTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.GetUserTaskDefReplyPb;
-import io.littlehorse.sdk.common.proto.GetUserTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.GetVariableReplyPb;
-import io.littlehorse.sdk.common.proto.GetWfRunReplyPb;
-import io.littlehorse.sdk.common.proto.GetWfSpecReplyPb;
-import io.littlehorse.sdk.common.proto.HealthCheckPb;
-import io.littlehorse.sdk.common.proto.HealthCheckReplyPb;
-import io.littlehorse.sdk.common.proto.HostInfoPb;
-import io.littlehorse.sdk.common.proto.LHHealthResultPb;
+import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.AssignUserTaskRunResponse;
+import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.CancelUserTaskRunResponse;
+import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.CompleteUserTaskRunResponse;
+import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.DeleteObjectResponse;
+import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
+import io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest;
+import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
+import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
+import io.littlehorse.sdk.common.proto.ExternalEventId;
+import io.littlehorse.sdk.common.proto.GetExternalEventDefResponse;
+import io.littlehorse.sdk.common.proto.GetExternalEventResponse;
+import io.littlehorse.sdk.common.proto.GetLatestUserTaskDefRequest;
+import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
+import io.littlehorse.sdk.common.proto.GetNodeRunResponse;
+import io.littlehorse.sdk.common.proto.GetTaskDefResponse;
+import io.littlehorse.sdk.common.proto.GetTaskRunResponse;
+import io.littlehorse.sdk.common.proto.GetUserTaskDefResponse;
+import io.littlehorse.sdk.common.proto.GetUserTaskRunResponse;
+import io.littlehorse.sdk.common.proto.GetVariableResponse;
+import io.littlehorse.sdk.common.proto.GetWfRunResponse;
+import io.littlehorse.sdk.common.proto.GetWfSpecResponse;
+import io.littlehorse.sdk.common.proto.HealthCheckRequest;
+import io.littlehorse.sdk.common.proto.HealthCheckResponse;
+import io.littlehorse.sdk.common.proto.HostInfo;
+import io.littlehorse.sdk.common.proto.LHHealthResult;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.ListExternalEventsPb;
-import io.littlehorse.sdk.common.proto.ListExternalEventsReplyPb;
-import io.littlehorse.sdk.common.proto.ListNodeRunsPb;
-import io.littlehorse.sdk.common.proto.ListNodeRunsReplyPb;
-import io.littlehorse.sdk.common.proto.ListTaskMetricsPb;
-import io.littlehorse.sdk.common.proto.ListTaskMetricsReplyPb;
-import io.littlehorse.sdk.common.proto.ListVariablesPb;
-import io.littlehorse.sdk.common.proto.ListVariablesReplyPb;
-import io.littlehorse.sdk.common.proto.ListWfMetricsPb;
-import io.littlehorse.sdk.common.proto.ListWfMetricsReplyPb;
-import io.littlehorse.sdk.common.proto.NodeRunIdPb;
-import io.littlehorse.sdk.common.proto.PollTaskPb;
-import io.littlehorse.sdk.common.proto.PollTaskReplyPb;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefReplyPb;
-import io.littlehorse.sdk.common.proto.PutExternalEventPb;
-import io.littlehorse.sdk.common.proto.PutExternalEventReplyPb;
-import io.littlehorse.sdk.common.proto.PutTaskDefPb;
-import io.littlehorse.sdk.common.proto.PutTaskDefReplyPb;
-import io.littlehorse.sdk.common.proto.PutUserTaskDefPb;
-import io.littlehorse.sdk.common.proto.PutUserTaskDefReplyPb;
-import io.littlehorse.sdk.common.proto.PutWfSpecPb;
-import io.littlehorse.sdk.common.proto.PutWfSpecReplyPb;
-import io.littlehorse.sdk.common.proto.RegisterTaskWorkerPb;
-import io.littlehorse.sdk.common.proto.RegisterTaskWorkerReplyPb;
-import io.littlehorse.sdk.common.proto.ReportTaskReplyPb;
-import io.littlehorse.sdk.common.proto.ReportTaskRunPb;
-import io.littlehorse.sdk.common.proto.ResumeWfRunPb;
-import io.littlehorse.sdk.common.proto.ResumeWfRunReplyPb;
-import io.littlehorse.sdk.common.proto.RunWfPb;
-import io.littlehorse.sdk.common.proto.RunWfReplyPb;
-import io.littlehorse.sdk.common.proto.SearchExternalEventDefPb;
-import io.littlehorse.sdk.common.proto.SearchExternalEventDefReplyPb;
-import io.littlehorse.sdk.common.proto.SearchExternalEventPb;
-import io.littlehorse.sdk.common.proto.SearchExternalEventReplyPb;
-import io.littlehorse.sdk.common.proto.SearchNodeRunPb;
-import io.littlehorse.sdk.common.proto.SearchNodeRunReplyPb;
-import io.littlehorse.sdk.common.proto.SearchTaskDefPb;
-import io.littlehorse.sdk.common.proto.SearchTaskDefReplyPb;
-import io.littlehorse.sdk.common.proto.SearchTaskRunPb;
-import io.littlehorse.sdk.common.proto.SearchTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.SearchUserTaskDefPb;
-import io.littlehorse.sdk.common.proto.SearchUserTaskDefReplyPb;
-import io.littlehorse.sdk.common.proto.SearchUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.SearchUserTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.SearchVariablePb;
-import io.littlehorse.sdk.common.proto.SearchVariableReplyPb;
-import io.littlehorse.sdk.common.proto.SearchWfRunPb;
-import io.littlehorse.sdk.common.proto.SearchWfRunReplyPb;
-import io.littlehorse.sdk.common.proto.SearchWfSpecPb;
-import io.littlehorse.sdk.common.proto.SearchWfSpecReplyPb;
-import io.littlehorse.sdk.common.proto.StopWfRunPb;
-import io.littlehorse.sdk.common.proto.StopWfRunReplyPb;
-import io.littlehorse.sdk.common.proto.TaskDefIdPb;
-import io.littlehorse.sdk.common.proto.TaskDefMetricsQueryPb;
-import io.littlehorse.sdk.common.proto.TaskDefMetricsReplyPb;
-import io.littlehorse.sdk.common.proto.TaskRunIdPb;
-import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb;
-import io.littlehorse.sdk.common.proto.UserTaskDefIdPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
-import io.littlehorse.sdk.common.proto.VariableIdPb;
-import io.littlehorse.sdk.common.proto.WfRunIdPb;
-import io.littlehorse.sdk.common.proto.WfSpecIdPb;
-import io.littlehorse.sdk.common.proto.WfSpecMetricsQueryPb;
-import io.littlehorse.sdk.common.proto.WfSpecMetricsReplyPb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
+import io.littlehorse.sdk.common.proto.ListExternalEventsRequest;
+import io.littlehorse.sdk.common.proto.ListExternalEventsResponse;
+import io.littlehorse.sdk.common.proto.ListNodeRunsRequest;
+import io.littlehorse.sdk.common.proto.ListNodeRunsResponse;
+import io.littlehorse.sdk.common.proto.ListTaskMetricsRequest;
+import io.littlehorse.sdk.common.proto.ListTaskMetricsResponse;
+import io.littlehorse.sdk.common.proto.ListVariablesRequest;
+import io.littlehorse.sdk.common.proto.ListVariablesResponse;
+import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
+import io.littlehorse.sdk.common.proto.ListWfMetricsResponse;
+import io.littlehorse.sdk.common.proto.NodeRunId;
+import io.littlehorse.sdk.common.proto.PollTaskRequest;
+import io.littlehorse.sdk.common.proto.PollTaskResponse;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefResponse;
+import io.littlehorse.sdk.common.proto.PutExternalEventResponse;
+import io.littlehorse.sdk.common.proto.PutTaskDefResponse;
+import io.littlehorse.sdk.common.proto.PutUserTaskDefResponse;
+import io.littlehorse.sdk.common.proto.PutWfSpecResponse;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
+import io.littlehorse.sdk.common.proto.ReportTaskResponse;
+import io.littlehorse.sdk.common.proto.ReportTaskRun;
+import io.littlehorse.sdk.common.proto.ResumeWfRunRequest;
+import io.littlehorse.sdk.common.proto.ResumeWfRunResponse;
+import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.RunWfResponse;
+import io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.SearchExternalEventDefResponse;
+import io.littlehorse.sdk.common.proto.SearchExternalEventRequest;
+import io.littlehorse.sdk.common.proto.SearchExternalEventResponse;
+import io.littlehorse.sdk.common.proto.SearchNodeRunRequest;
+import io.littlehorse.sdk.common.proto.SearchNodeRunResponse;
+import io.littlehorse.sdk.common.proto.SearchTaskDefResponse;
+import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;
+import io.littlehorse.sdk.common.proto.SearchTaskRunResponse;
+import io.littlehorse.sdk.common.proto.SearchUserTaskDefRequest;
+import io.littlehorse.sdk.common.proto.SearchUserTaskDefResponse;
+import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.SearchUserTaskRunResponse;
+import io.littlehorse.sdk.common.proto.SearchVariableRequest;
+import io.littlehorse.sdk.common.proto.SearchVariableResponse;
+import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
+import io.littlehorse.sdk.common.proto.SearchWfRunResponse;
+import io.littlehorse.sdk.common.proto.SearchWfSpecRequest;
+import io.littlehorse.sdk.common.proto.SearchWfSpecResponse;
+import io.littlehorse.sdk.common.proto.StopWfRunRequest;
+import io.littlehorse.sdk.common.proto.StopWfRunResponse;
+import io.littlehorse.sdk.common.proto.TaskDefId;
+import io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest;
+import io.littlehorse.sdk.common.proto.TaskDefMetricsResponse;
+import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
+import io.littlehorse.sdk.common.proto.UserTaskDefId;
+import io.littlehorse.sdk.common.proto.UserTaskRunId;
+import io.littlehorse.sdk.common.proto.VariableId;
+import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.common.proto.WfSpecId;
+import io.littlehorse.sdk.common.proto.WfSpecMetricsQueryRequest;
+import io.littlehorse.sdk.common.proto.WfSpecMetricsResponse;
 import io.littlehorse.server.listener.ListenersManager;
 import io.littlehorse.server.streamsimpl.BackendInternalComms;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.ListExternalEvents;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.ListNodeRuns;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.ListTaskMetrics;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.ListVariables;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.ListWfMetrics;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchExternalEvent;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchExternalEventDef;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchNodeRun;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchTaskDef;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchTaskRun;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchUserTaskDef;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchUserTaskRun;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchVariable;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchWfRun;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchWfSpec;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.ListExternalEventsRequestModel;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.ListNodeRunsRequestModel;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.ListTaskMetricsRequestModel;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.ListVariablesRequestModel;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.ListWfMetricsRequestModel;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchExternalEventDefRequestModel;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchExternalEventRequestModel;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchNodeRunRequestModel;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchTaskDefRequestModel;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchTaskRunRequestModel;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchUserTaskDefRequestModel;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchUserTaskRunRequestModel;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchVariableRequestModel;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchWfRunRequestModel;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchWfSpecRequestModel;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListNodeRunsReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListTaskMetricsReply;
@@ -200,7 +194,6 @@ import io.littlehorse.server.streamsimpl.util.GETStreamObserver;
 import io.littlehorse.server.streamsimpl.util.GETStreamObserverNew;
 import io.littlehorse.server.streamsimpl.util.HealthService;
 import io.littlehorse.server.streamsimpl.util.POSTStreamObserver;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
@@ -231,14 +224,11 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public KafkaStreamsServerImpl(LHConfig config) {
         this.config = config;
         this.taskQueueManager = new TaskQueueManager(this);
-        this.coreStreams =
-            new KafkaStreams(
+        this.coreStreams = new KafkaStreams(
                 ServerTopology.initCoreTopology(config, this),
                 // Core topology must be EOS
-                config.getStreamsConfig("core", true)
-            );
-        this.timerStreams =
-            new KafkaStreams(
+                config.getStreamsConfig("core", true));
+        this.timerStreams = new KafkaStreams(
                 ServerTopology.initTimerTopology(config),
                 // We don't want the Timer topology to be EOS. The reason for this
                 // has to do with the fact that:
@@ -247,28 +237,13 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 //    the core command topic. With the EOS for the core topology,
                 //    that means processing will block until the commit() of the
                 //    timer, which means latency will jump from 15ms to >100ms
-                config.getStreamsConfig("timer", false)
-            );
+                config.getStreamsConfig("timer", false));
         this.healthService = new HealthService(config, coreStreams, timerStreams);
 
-        Executor networkThreadpool = Executors.newFixedThreadPool(
-            config.getNumNetworkThreads()
-        );
-        this.listenerManager =
-            new ListenersManager(
-                config,
-                this,
-                networkThreadpool,
-                healthService.getMeterRegistry()
-            );
+        Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
+        this.listenerManager = new ListenersManager(config, this, networkThreadpool, healthService.getMeterRegistry());
 
-        this.internalComms =
-            new BackendInternalComms(
-                config,
-                coreStreams,
-                timerStreams,
-                networkThreadpool
-            );
+        this.internalComms = new BackendInternalComms(config, coreStreams, timerStreams, networkThreadpool);
     }
 
     public String getInstanceId() {
@@ -276,536 +251,308 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
-    public void getWfSpec(WfSpecIdPb req, StreamObserver<GetWfSpecReplyPb> ctx) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
-            ctx,
-            WfSpec.class,
-            GetWfSpecReplyPb.class,
-            config
-        );
+    public void getWfSpec(WfSpecId req, StreamObserver<GetWfSpecResponse> ctx) {
+        StreamObserver<CentralStoreQueryResponse> observer =
+                new GETStreamObserver<>(ctx, WfSpecModel.class, GetWfSpecResponse.class, config);
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
-            StoreUtils.getFullStoreKey(
-                new WfSpecId(req.getName(), req.getVersion()),
-                WfSpec.class
-            ),
-            LHConstants.META_PARTITION_KEY,
-            observer
-        );
+                ServerTopology.METADATA_STORE,
+                StoreUtils.getFullStoreKey(new WfSpecIdModel(req.getName(), req.getVersion()), WfSpecModel.class),
+                LHConstants.META_PARTITION_KEY,
+                observer);
     }
 
     @Override
-    public void getLatestWfSpec(
-        GetLatestWfSpecPb req,
-        StreamObserver<GetWfSpecReplyPb> ctx
-    ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
-            ctx,
-            WfSpec.class,
-            GetWfSpecReplyPb.class,
-            config
-        );
+    public void getLatestWfSpec(GetLatestWfSpecRequest req, StreamObserver<GetWfSpecResponse> ctx) {
+        StreamObserver<CentralStoreQueryResponse> observer =
+                new GETStreamObserver<>(ctx, WfSpecModel.class, GetWfSpecResponse.class, config);
         internalComms.getLastFromPrefixAsync(
-            StoreUtils.getFullPrefixByName(req.getName(), WfSpec.class),
-            LHConstants.META_PARTITION_KEY,
-            observer,
-            ServerTopology.CORE_STORE
-        );
+                StoreUtils.getFullPrefixByName(req.getName(), WfSpecModel.class),
+                LHConstants.META_PARTITION_KEY,
+                observer,
+                ServerTopology.METADATA_STORE);
     }
 
     @Override
-    public void getLatestUserTaskDef(
-        GetLatestUserTaskDefPb req,
-        StreamObserver<GetUserTaskDefReplyPb> ctx
-    ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
-            ctx,
-            UserTaskDef.class,
-            GetUserTaskDefReplyPb.class,
-            config
-        );
+    public void getLatestUserTaskDef(GetLatestUserTaskDefRequest req, StreamObserver<GetUserTaskDefResponse> ctx) {
+        StreamObserver<CentralStoreQueryResponse> observer =
+                new GETStreamObserver<>(ctx, UserTaskDefModel.class, GetUserTaskDefResponse.class, config);
 
         // TODO MVP-140: Remove StoreUtils.java. Then in here we would pass in
-        // a GetableClassEnumPb.
+        // a GetableClassEnum.
         internalComms.getLastFromPrefixAsync(
-            StoreUtils.getFullPrefixByName(req.getName(), UserTaskDef.class),
-            LHConstants.META_PARTITION_KEY,
-            observer,
-            ServerTopology.CORE_STORE
-        );
+                StoreUtils.getFullPrefixByName(req.getName(), UserTaskDefModel.class),
+                LHConstants.META_PARTITION_KEY,
+                observer,
+                ServerTopology.METADATA_STORE);
     }
 
     @Override
-    public void getUserTaskDef(
-        UserTaskDefIdPb req,
-        StreamObserver<GetUserTaskDefReplyPb> ctx
-    ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
-            ctx,
-            UserTaskDef.class,
-            GetUserTaskDefReplyPb.class,
-            config
-        );
+    public void getUserTaskDef(UserTaskDefId req, StreamObserver<GetUserTaskDefResponse> ctx) {
+        StreamObserver<CentralStoreQueryResponse> observer =
+                new GETStreamObserver<>(ctx, UserTaskDefModel.class, GetUserTaskDefResponse.class, config);
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
-            StoreUtils.getFullStoreKey(
-                new UserTaskDefId(req.getName(), req.getVersion()),
-                UserTaskDef.class
-            ),
-            LHConstants.META_PARTITION_KEY,
-            observer
-        );
+                ServerTopology.METADATA_STORE,
+                StoreUtils.getFullStoreKey(
+                        new UserTaskDefIdModel(req.getName(), req.getVersion()), UserTaskDefModel.class),
+                LHConstants.META_PARTITION_KEY,
+                observer);
     }
 
     @Override
-    public void getTaskDef(TaskDefIdPb req, StreamObserver<GetTaskDefReplyPb> ctx) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
-            ctx,
-            TaskDef.class,
-            GetTaskDefReplyPb.class,
-            config
-        );
+    public void getTaskDef(TaskDefId req, StreamObserver<GetTaskDefResponse> ctx) {
+        StreamObserver<CentralStoreQueryResponse> observer =
+                new GETStreamObserver<>(ctx, TaskDefModel.class, GetTaskDefResponse.class, config);
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
-            StoreUtils.getFullStoreKey(new TaskDefId(req.getName()), TaskDef.class),
-            LHConstants.META_PARTITION_KEY,
-            observer
-        );
+                ServerTopology.METADATA_STORE,
+                StoreUtils.getFullStoreKey(new TaskDefIdModel(req.getName()), TaskDefModel.class),
+                LHConstants.META_PARTITION_KEY,
+                observer);
     }
 
     @Override
-    public void getExternalEventDef(
-        ExternalEventDefIdPb req,
-        StreamObserver<GetExternalEventDefReplyPb> ctx
-    ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
-            ctx,
-            ExternalEventDef.class,
-            GetExternalEventDefReplyPb.class,
-            config
-        );
+    public void getExternalEventDef(ExternalEventDefId req, StreamObserver<GetExternalEventDefResponse> ctx) {
+        StreamObserver<CentralStoreQueryResponse> observer =
+                new GETStreamObserver<>(ctx, ExternalEventDefModel.class, GetExternalEventDefResponse.class, config);
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
-            StoreUtils.getFullStoreKey(
-                new ExternalEventDefId(req.getName()),
-                ExternalEventDef.class
-            ),
-            LHConstants.META_PARTITION_KEY,
-            observer
-        );
+                ServerTopology.METADATA_STORE,
+                StoreUtils.getFullStoreKey(new ExternalEventDefIdModel(req.getName()), ExternalEventDefModel.class),
+                LHConstants.META_PARTITION_KEY,
+                observer);
     }
 
     @Override
-    public void putTaskDef(PutTaskDefPb req, StreamObserver<PutTaskDefReplyPb> ctx) {
-        processCommand(req, ctx, PutTaskDef.class, PutTaskDefReplyPb.class);
+    public void putTaskDef(
+            io.littlehorse.sdk.common.proto.PutTaskDefRequest req, StreamObserver<PutTaskDefResponse> ctx) {
+        processMetadataCommand(req, ctx, PutTaskDefRequestModel.class, PutTaskDefResponse.class);
     }
 
     @Override
     public void putExternalEvent(
-        PutExternalEventPb req,
-        StreamObserver<PutExternalEventReplyPb> ctx
-    ) {
-        processCommand(
-            req,
-            ctx,
-            PutExternalEvent.class,
-            PutExternalEventReplyPb.class
-        );
+            io.littlehorse.sdk.common.proto.PutExternalEventRequest req, StreamObserver<PutExternalEventResponse> ctx) {
+        processCommand(req, ctx, PutExternalEventRequestModel.class, PutExternalEventResponse.class);
     }
 
     @Override
     public void putExternalEventDef(
-        PutExternalEventDefPb req,
-        StreamObserver<PutExternalEventDefReplyPb> ctx
-    ) {
-        processCommand(
-            req,
-            ctx,
-            PutExternalEventDef.class,
-            PutExternalEventDefReplyPb.class
-        );
+            io.littlehorse.sdk.common.proto.PutExternalEventDefRequest req,
+            StreamObserver<PutExternalEventDefResponse> ctx) {
+        processMetadataCommand(req, ctx, PutExternalEventDefRequestModel.class, PutExternalEventDefResponse.class);
     }
 
     @Override
     public void putUserTaskDef(
-        PutUserTaskDefPb req,
-        StreamObserver<PutUserTaskDefReplyPb> ctx
-    ) {
-        processCommand(req, ctx, PutUserTaskDef.class, PutUserTaskDefReplyPb.class);
+            io.littlehorse.sdk.common.proto.PutUserTaskDefRequest req, StreamObserver<PutUserTaskDefResponse> ctx) {
+        processMetadataCommand(req, ctx, PutUserTaskDefRequestModel.class, PutUserTaskDefResponse.class);
     }
 
     @Override
-    public void assignUserTaskRun(
-        AssignUserTaskRunPb req,
-        StreamObserver<AssignUserTaskRunReplyPb> ctx
-    ) {
-        processCommand(
-            req,
-            ctx,
-            AssignUserTaskRun.class,
-            AssignUserTaskRunReplyPb.class
-        );
+    public void assignUserTaskRun(AssignUserTaskRunRequest req, StreamObserver<AssignUserTaskRunResponse> ctx) {
+        processCommand(req, ctx, AssignUserTaskRunRequestModel.class, AssignUserTaskRunResponse.class);
     }
 
     @Override
-    public void completeUserTaskRun(
-        CompleteUserTaskRunPb req,
-        StreamObserver<CompleteUserTaskRunReplyPb> ctx
-    ) {
-        processCommand(
-            req,
-            ctx,
-            CompleteUserTaskRun.class,
-            CompleteUserTaskRunReplyPb.class
-        );
+    public void completeUserTaskRun(CompleteUserTaskRunRequest req, StreamObserver<CompleteUserTaskRunResponse> ctx) {
+        processCommand(req, ctx, CompleteUserTaskRunRequestModel.class, CompleteUserTaskRunResponse.class);
     }
 
     @Override
-    public void cancelUserTaskRun(
-        CancelUserTaskRunPb req,
-        StreamObserver<CancelUserTaskRunReplyPb> ctx
-    ) {
-        processCommand(
-            req,
-            ctx,
-            CancelUserTaskRun.class,
-            CancelUserTaskRunReplyPb.class
-        );
+    public void cancelUserTaskRun(CancelUserTaskRunRequest req, StreamObserver<CancelUserTaskRunResponse> ctx) {
+        processCommand(req, ctx, CancelUserTaskRunRequestModel.class, CancelUserTaskRunResponse.class);
     }
 
     @Override
-    public void putWfSpec(PutWfSpecPb req, StreamObserver<PutWfSpecReplyPb> ctx) {
-        processCommand(req, ctx, PutWfSpec.class, PutWfSpecReplyPb.class);
+    public void putWfSpec(io.littlehorse.sdk.common.proto.PutWfSpecRequest req, StreamObserver<PutWfSpecResponse> ctx) {
+        processMetadataCommand(req, ctx, PutWfSpecRequestModel.class, PutWfSpecResponse.class);
     }
 
     @Override
-    public void runWf(RunWfPb req, StreamObserver<RunWfReplyPb> ctx) {
-        processCommand(req, ctx, RunWf.class, RunWfReplyPb.class);
+    public void runWf(RunWfRequest req, StreamObserver<RunWfResponse> ctx) {
+        processCommand(req, ctx, RunWfRequestModel.class, RunWfResponse.class);
     }
 
     @Override
-    public StreamObserver<PollTaskPb> pollTask(StreamObserver<PollTaskReplyPb> ctx) {
+    public StreamObserver<PollTaskRequest> pollTask(StreamObserver<PollTaskResponse> ctx) {
         return new PollTaskRequestObserver(ctx, taskQueueManager);
     }
 
     @Override
     public void registerTaskWorker(
-        RegisterTaskWorkerPb req,
-        StreamObserver<RegisterTaskWorkerReplyPb> responseObserver
-    ) {
-        log.trace(
-            "Receiving RegisterTaskWorkerPb (heartbeat) from: " + req.getClientId()
-        );
+            RegisterTaskWorkerRequest req, StreamObserver<RegisterTaskWorkerResponse> responseObserver) {
+        log.trace("Receiving RegisterTaskWorkerRequest (heartbeat) from: " + req.getClientId());
 
-        TaskWorkerHeartBeatPb heartBeatPb = TaskWorkerHeartBeatPb
-            .newBuilder()
-            .setClientId(req.getClientId())
-            .setListenerName(req.getListenerName())
-            .setTaskDefName(req.getTaskDefName())
-            .build();
+        TaskWorkerHeartBeatRequest heartBeatPb = TaskWorkerHeartBeatRequest.newBuilder()
+                .setClientId(req.getClientId())
+                .setListenerName(req.getListenerName())
+                .setTaskDefName(req.getTaskDefName())
+                .build();
 
         processCommand(
-            heartBeatPb,
-            responseObserver,
-            TaskWorkerHeartBeat.class,
-            RegisterTaskWorkerReplyPb.class
-        );
+                heartBeatPb, responseObserver, TaskWorkerHeartBeatRequestModel.class, RegisterTaskWorkerResponse.class);
     }
 
     @Override
-    public void reportTask(
-        ReportTaskRunPb req,
-        StreamObserver<ReportTaskReplyPb> ctx
-    ) {
-        processCommand(req, ctx, ReportTaskRun.class, ReportTaskReplyPb.class);
+    public void reportTask(ReportTaskRun req, StreamObserver<ReportTaskResponse> ctx) {
+        processCommand(req, ctx, ReportTaskRunModel.class, ReportTaskResponse.class);
     }
 
     @Override
-    public void getWfRun(WfRunIdPb req, StreamObserver<GetWfRunReplyPb> ctx) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
-            ctx,
-            WfRun.class,
-            GetWfRunReplyPb.class,
-            config
-        );
-        WfRunId id = LHSerializable.fromProto(req, WfRunId.class);
+    public void getWfRun(WfRunId req, StreamObserver<GetWfRunResponse> ctx) {
+        StreamObserver<CentralStoreQueryResponse> observer =
+                new GETStreamObserverNew<>(ctx, WfRunModel.class, GetWfRunResponse.class, config);
+        WfRunIdModel id = LHSerializable.fromProto(req, WfRunIdModel.class);
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
-            StoreUtils.getFullStoreKey(id, WfRun.class),
-            req.getId(),
-            observer
-        );
+                ServerTopology.CORE_STORE, StoreUtils.getFullStoreKey(id, WfRunModel.class), req.getId(), observer);
     }
 
     @Override
-    public void getNodeRun(NodeRunIdPb req, StreamObserver<GetNodeRunReplyPb> ctx) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
-            ctx,
-            NodeRun.class,
-            GetNodeRunReplyPb.class,
-            config
-        );
+    public void getNodeRun(NodeRunId req, StreamObserver<GetNodeRunResponse> ctx) {
+        StreamObserver<CentralStoreQueryResponse> observer =
+                new GETStreamObserverNew<>(ctx, NodeRunModel.class, GetNodeRunResponse.class, config);
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
-            StoreUtils.getFullStoreKey(
-                new NodeRunId(
-                    req.getWfRunId(),
-                    req.getThreadRunNumber(),
-                    req.getPosition()
-                ),
-                NodeRun.class
-            ),
-            req.getWfRunId(),
-            observer
-        );
+                ServerTopology.CORE_STORE,
+                StoreUtils.getFullStoreKey(
+                        new NodeRunIdModel(req.getWfRunId(), req.getThreadRunNumber(), req.getPosition()),
+                        NodeRunModel.class),
+                req.getWfRunId(),
+                observer);
     }
 
     @Override
-    public void getTaskRun(TaskRunIdPb req, StreamObserver<GetTaskRunReplyPb> ctx) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
-            ctx,
-            TaskRun.class,
-            GetTaskRunReplyPb.class,
-            config
-        );
+    public void getTaskRun(TaskRunId req, StreamObserver<GetTaskRunResponse> ctx) {
+        StreamObserver<CentralStoreQueryResponse> observer =
+                new GETStreamObserverNew<>(ctx, TaskRunModel.class, GetTaskRunResponse.class, config);
 
-        TaskRunId taskRunId = LHSerializable.fromProto(req, TaskRunId.class);
+        TaskRunIdModel taskRunId = LHSerializable.fromProto(req, TaskRunIdModel.class);
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
-            StoreUtils.getFullStoreKey(taskRunId.getStoreKey(), TaskRun.class),
-            req.getWfRunId(),
-            observer
-        );
+                ServerTopology.CORE_STORE,
+                StoreUtils.getFullStoreKey(taskRunId.getStoreKey(), TaskRunModel.class),
+                req.getWfRunId(),
+                observer);
     }
 
     @Override
-    public void getUserTaskRun(
-        UserTaskRunIdPb req,
-        StreamObserver<GetUserTaskRunReplyPb> ctx
-    ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
-            ctx,
-            UserTaskRun.class,
-            GetUserTaskRunReplyPb.class,
-            config
-        );
+    public void getUserTaskRun(UserTaskRunId req, StreamObserver<GetUserTaskRunResponse> ctx) {
+        StreamObserver<CentralStoreQueryResponse> observer =
+                new GETStreamObserverNew<>(ctx, UserTaskRunModel.class, GetUserTaskRunResponse.class, config);
 
-        UserTaskRunId userTaskRunId = LHSerializable.fromProto(
-            req,
-            UserTaskRunId.class
-        );
+        UserTaskRunIdModel userTaskRunId = LHSerializable.fromProto(req, UserTaskRunIdModel.class);
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
-            StoreUtils.getFullStoreKey(
-                userTaskRunId.getStoreKey(),
-                UserTaskRun.class
-            ),
-            req.getWfRunId(),
-            observer
-        );
+                ServerTopology.CORE_STORE,
+                StoreUtils.getFullStoreKey(userTaskRunId.getStoreKey(), UserTaskRunModel.class),
+                req.getWfRunId(),
+                observer);
     }
 
     @Override
-    public void taskDefMetrics(
-        TaskDefMetricsQueryPb req,
-        StreamObserver<TaskDefMetricsReplyPb> ctx
-    ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
-            ctx,
-            TaskDefMetrics.class,
-            TaskDefMetricsReplyPb.class,
-            config
-        );
+    public void taskDefMetrics(TaskDefMetricsQueryRequest req, StreamObserver<TaskDefMetricsResponse> ctx) {
+        StreamObserver<CentralStoreQueryResponse> observer =
+                new GETStreamObserver<>(ctx, TaskDefMetricsModel.class, TaskDefMetricsResponse.class, config);
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_REPARTITION_STORE,
-            StoreUtils.getFullStoreKey(
-                TaskDefMetrics.getObjectId(req),
-                TaskDefMetrics.class
-            ),
-            req.getTaskDefName(),
-            observer
-        );
+                ServerTopology.CORE_REPARTITION_STORE,
+                StoreUtils.getFullStoreKey(TaskDefMetricsModel.getObjectId(req), TaskDefMetricsModel.class),
+                req.getTaskDefName(),
+                observer);
     }
 
     @Override
-    public void wfSpecMetrics(
-        WfSpecMetricsQueryPb req,
-        StreamObserver<WfSpecMetricsReplyPb> ctx
-    ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
-            ctx,
-            WfSpecMetrics.class,
-            WfSpecMetricsReplyPb.class,
-            config
-        );
+    public void wfSpecMetrics(WfSpecMetricsQueryRequest req, StreamObserver<WfSpecMetricsResponse> ctx) {
+        StreamObserver<CentralStoreQueryResponse> observer =
+                new GETStreamObserver<>(ctx, WfSpecMetricsModel.class, WfSpecMetricsResponse.class, config);
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_REPARTITION_STORE,
-            StoreUtils.getFullStoreKey(
-                WfSpecMetrics.getObjectId(req),
-                WfSpecMetrics.class
-            ),
-            req.getWfSpecName(),
-            observer
-        );
+                ServerTopology.CORE_REPARTITION_STORE,
+                StoreUtils.getFullStoreKey(WfSpecMetricsModel.getObjectId(req), WfSpecMetricsModel.class),
+                req.getWfSpecName(),
+                observer);
     }
 
     @Override
-    public void getVariable(
-        VariableIdPb req,
-        StreamObserver<GetVariableReplyPb> ctx
-    ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
-            ctx,
-            Variable.class,
-            GetVariableReplyPb.class,
-            config
-        );
+    public void getVariable(VariableId req, StreamObserver<GetVariableResponse> ctx) {
+        StreamObserver<CentralStoreQueryResponse> observer =
+                new GETStreamObserverNew<>(ctx, VariableModel.class, GetVariableResponse.class, config);
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
-            StoreUtils.getFullStoreKey(
-                new VariableId(
-                    req.getWfRunId(),
-                    req.getThreadRunNumber(),
-                    req.getName()
-                ),
-                Variable.class
-            ),
-            req.getWfRunId(),
-            observer
-        );
+                ServerTopology.CORE_STORE,
+                StoreUtils.getFullStoreKey(
+                        new VariableIdModel(req.getWfRunId(), req.getThreadRunNumber(), req.getName()),
+                        VariableModel.class),
+                req.getWfRunId(),
+                observer);
     }
 
     @Override
-    public void getExternalEvent(
-        ExternalEventIdPb req,
-        StreamObserver<GetExternalEventReplyPb> ctx
-    ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserverNew<>(
-            ctx,
-            ExternalEvent.class,
-            GetExternalEventReplyPb.class,
-            config
-        );
+    public void getExternalEvent(ExternalEventId req, StreamObserver<GetExternalEventResponse> ctx) {
+        StreamObserver<CentralStoreQueryResponse> observer =
+                new GETStreamObserverNew<>(ctx, ExternalEventModel.class, GetExternalEventResponse.class, config);
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.CORE_STORE,
-            StoreUtils.getFullStoreKey(
-                new ExternalEventId(
-                    req.getWfRunId(),
-                    req.getExternalEventDefName(),
-                    req.getGuid()
-                ),
-                ExternalEvent.class
-            ),
-            req.getWfRunId(),
-            observer
-        );
+                ServerTopology.CORE_STORE,
+                StoreUtils.getFullStoreKey(
+                        new ExternalEventIdModel(req.getWfRunId(), req.getExternalEventDefName(), req.getGuid()),
+                        ExternalEventModel.class),
+                req.getWfRunId(),
+                observer);
     }
 
     @Override
-    public void searchWfRun(
-        SearchWfRunPb req,
-        StreamObserver<SearchWfRunReplyPb> ctx
-    ) {
-        handleScan(SearchWfRun.fromProto(req), ctx, SearchWfRunReply.class);
+    public void searchWfRun(SearchWfRunRequest req, StreamObserver<SearchWfRunResponse> ctx) {
+        handleScan(SearchWfRunRequestModel.fromProto(req), ctx, SearchWfRunReply.class);
     }
 
     @Override
-    public void searchExternalEvent(
-        SearchExternalEventPb req,
-        StreamObserver<SearchExternalEventReplyPb> ctx
-    ) {
-        SearchExternalEvent see = LHSerializable.fromProto(
-            req,
-            SearchExternalEvent.class
-        );
+    public void searchExternalEvent(SearchExternalEventRequest req, StreamObserver<SearchExternalEventResponse> ctx) {
+        SearchExternalEventRequestModel see = LHSerializable.fromProto(req, SearchExternalEventRequestModel.class);
         handleScan(see, ctx, SearchExternalEventReply.class);
     }
 
     @Override
-    public void searchNodeRun(
-        SearchNodeRunPb req,
-        StreamObserver<SearchNodeRunReplyPb> ctx
-    ) {
-        handleScan(SearchNodeRun.fromProto(req), ctx, SearchNodeRunReply.class);
+    public void searchNodeRun(SearchNodeRunRequest req, StreamObserver<SearchNodeRunResponse> ctx) {
+        handleScan(SearchNodeRunRequestModel.fromProto(req), ctx, SearchNodeRunReply.class);
     }
 
     @Override
-    public void searchTaskRun(
-        SearchTaskRunPb req,
-        StreamObserver<SearchTaskRunReplyPb> ctx
-    ) {
-        handleScan(SearchTaskRun.fromProto(req), ctx, SearchTaskRunReply.class);
+    public void searchTaskRun(SearchTaskRunRequest req, StreamObserver<SearchTaskRunResponse> ctx) {
+        handleScan(SearchTaskRunRequestModel.fromProto(req), ctx, SearchTaskRunReply.class);
     }
 
     @Override
-    public void searchUserTaskRun(
-        SearchUserTaskRunPb req,
-        StreamObserver<SearchUserTaskRunReplyPb> ctx
-    ) {
-        handleScan(
-            SearchUserTaskRun.fromProto(req),
-            ctx,
-            SearchUserTaskRunReply.class
-        );
+    public void searchUserTaskRun(SearchUserTaskRunRequest req, StreamObserver<SearchUserTaskRunResponse> ctx) {
+        handleScan(SearchUserTaskRunRequestModel.fromProto(req), ctx, SearchUserTaskRunReply.class);
     }
 
     @Override
-    public void searchVariable(
-        SearchVariablePb req,
-        StreamObserver<SearchVariableReplyPb> ctx
-    ) {
-        handleScan(SearchVariable.fromProto(req), ctx, SearchVariableReply.class);
+    public void searchVariable(SearchVariableRequest req, StreamObserver<SearchVariableResponse> ctx) {
+        handleScan(SearchVariableRequestModel.fromProto(req), ctx, SearchVariableReply.class);
     }
 
     @Override
     public void searchTaskDef(
-        SearchTaskDefPb req,
-        StreamObserver<SearchTaskDefReplyPb> ctx
-    ) {
-        handleScan(SearchTaskDef.fromProto(req), ctx, SearchTaskDefReply.class);
+            io.littlehorse.sdk.common.proto.SearchTaskDefRequest req, StreamObserver<SearchTaskDefResponse> ctx) {
+        handleScan(SearchTaskDefRequestModel.fromProto(req), ctx, SearchTaskDefReply.class);
     }
 
     @Override
-    public void searchUserTaskDef(
-        SearchUserTaskDefPb req,
-        StreamObserver<SearchUserTaskDefReplyPb> ctx
-    ) {
-        handleScan(
-            SearchUserTaskDef.fromProto(req),
-            ctx,
-            SearchUserTaskDefReply.class
-        );
+    public void searchUserTaskDef(SearchUserTaskDefRequest req, StreamObserver<SearchUserTaskDefResponse> ctx) {
+        handleScan(SearchUserTaskDefRequestModel.fromProto(req), ctx, SearchUserTaskDefReply.class);
     }
 
     @Override
-    public void searchWfSpec(
-        SearchWfSpecPb req,
-        StreamObserver<SearchWfSpecReplyPb> ctx
-    ) {
-        handleScan(SearchWfSpec.fromProto(req), ctx, SearchWfSpecReply.class);
+    public void searchWfSpec(SearchWfSpecRequest req, StreamObserver<SearchWfSpecResponse> ctx) {
+        handleScan(SearchWfSpecRequestModel.fromProto(req), ctx, SearchWfSpecReply.class);
     }
 
     @Override
     public void searchExternalEventDef(
-        SearchExternalEventDefPb req,
-        StreamObserver<SearchExternalEventDefReplyPb> ctx
-    ) {
-        handleScan(
-            SearchExternalEventDef.fromProto(req),
-            ctx,
-            SearchExternalEventDefReply.class
-        );
+            SearchExternalEventDefRequest req, StreamObserver<SearchExternalEventDefResponse> ctx) {
+        handleScan(SearchExternalEventDefRequestModel.fromProto(req), ctx, SearchExternalEventDefReply.class);
     }
 
     // EMPLOYEE_TODO: this is a synchronous call. Make it asynchronous.
@@ -819,52 +566,39 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     // so that we can return a useful error message to the client.
     @SuppressWarnings("unchecked")
     private <
-        T extends Message,
-        RP extends Message,
-        OP extends Message,
-        OJ extends LHSerializable<OP>,
-        R extends PublicScanReply<RP, OP, OJ>
-    > void handleScan(
-        PublicScanRequest<T, RP, OP, OJ, R> req,
-        StreamObserver<RP> ctx,
-        Class<R> replyCls
-    ) {
+                    T extends Message,
+                    RP extends Message,
+                    OP extends Message,
+                    OJ extends LHSerializable<OP>,
+                    R extends PublicScanReply<RP, OP, OJ>>
+            void handleScan(PublicScanRequest<T, RP, OP, OJ, R> req, StreamObserver<RP> ctx, Class<R> replyCls) {
         R out;
         try {
             out = replyCls.getDeclaredConstructor().newInstance();
-        } catch (
-            NoSuchMethodException
-            | InvocationTargetException
-            | InstantiationException
-            | IllegalAccessException exn
-        ) {
+        } catch (NoSuchMethodException
+                | InvocationTargetException
+                | InstantiationException
+                | IllegalAccessException exn) {
             ctx.onError(exn);
             return;
         }
 
         try {
-            InternalScanReplyPb raw = internalComms.doScan(
-                req.getInternalSearch(internalComms.getGlobalStoreImpl())
-            );
-            out.code = LHResponseCodePb.OK;
+            InternalScanResponse raw = internalComms.doScan(req.getInternalSearch(internalComms.getGlobalStoreImpl()));
+            out.code = LHResponseCode.OK;
             if (raw.hasUpdatedBookmark()) {
                 out.bookmark = raw.getUpdatedBookmark().toByteString();
             }
             for (ByteString responseEntry : raw.getResultsList()) {
                 out.results.add(
-                    LHSerializable.fromBytes(
-                        responseEntry.toByteArray(),
-                        out.getResultJavaClass(),
-                        config
-                    )
-                );
+                        LHSerializable.fromBytes(responseEntry.toByteArray(), out.getResultJavaClass(), config));
             }
         } catch (LHSerdeError | LHConnectionError exn) {
             log.error("Error with interactive query between instances", exn);
-            out.code = LHResponseCodePb.CONNECTION_ERROR;
+            out.code = LHResponseCode.CONNECTION_ERROR;
             out.message = "Failed connecting to backend: " + exn.getMessage();
         } catch (LHValidationError exn) {
-            out.code = LHResponseCodePb.VALIDATION_ERROR;
+            out.code = LHResponseCode.VALIDATION_ERROR;
             out.message = "Failed validating search request: " + exn.getMessage();
         }
 
@@ -873,162 +607,112 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
-    public void listNodeRuns(
-        ListNodeRunsPb req,
-        StreamObserver<ListNodeRunsReplyPb> ctx
-    ) {
-        ListNodeRuns lnr = LHSerializable.fromProto(req, ListNodeRuns.class);
+    public void listNodeRuns(ListNodeRunsRequest req, StreamObserver<ListNodeRunsResponse> ctx) {
+        ListNodeRunsRequestModel lnr = LHSerializable.fromProto(req, ListNodeRunsRequestModel.class);
         handleScan(lnr, ctx, ListNodeRunsReply.class);
     }
 
     @Override
-    public void listVariables(
-        ListVariablesPb req,
-        StreamObserver<ListVariablesReplyPb> ctx
-    ) {
-        ListVariables lv = LHSerializable.fromProto(req, ListVariables.class);
+    public void listVariables(ListVariablesRequest req, StreamObserver<ListVariablesResponse> ctx) {
+        ListVariablesRequestModel lv = LHSerializable.fromProto(req, ListVariablesRequestModel.class);
         handleScan(lv, ctx, ListVariablesReply.class);
     }
 
     @Override
-    public void listExternalEvents(
-        ListExternalEventsPb req,
-        StreamObserver<ListExternalEventsReplyPb> ctx
-    ) {
-        ListExternalEvents lv = LHSerializable.fromProto(
-            req,
-            ListExternalEvents.class
-        );
+    public void listExternalEvents(ListExternalEventsRequest req, StreamObserver<ListExternalEventsResponse> ctx) {
+        ListExternalEventsRequestModel lv = LHSerializable.fromProto(req, ListExternalEventsRequestModel.class);
         handleScan(lv, ctx, ListExternalEventsReply.class);
     }
 
     @Override
-    public void listTaskDefMetrics(
-        ListTaskMetricsPb req,
-        StreamObserver<ListTaskMetricsReplyPb> ctx
-    ) {
-        ListTaskMetrics ltm = LHSerializable.fromProto(req, ListTaskMetrics.class);
+    public void listTaskDefMetrics(ListTaskMetricsRequest req, StreamObserver<ListTaskMetricsResponse> ctx) {
+        ListTaskMetricsRequestModel ltm = LHSerializable.fromProto(req, ListTaskMetricsRequestModel.class);
         handleScan(ltm, ctx, ListTaskMetricsReply.class);
     }
 
     @Override
-    public void listWfSpecMetrics(
-        ListWfMetricsPb req,
-        StreamObserver<ListWfMetricsReplyPb> ctx
-    ) {
-        ListWfMetrics ltm = LHSerializable.fromProto(req, ListWfMetrics.class);
+    public void listWfSpecMetrics(ListWfMetricsRequest req, StreamObserver<ListWfMetricsResponse> ctx) {
+        ListWfMetricsRequestModel ltm = LHSerializable.fromProto(req, ListWfMetricsRequestModel.class);
         handleScan(ltm, ctx, ListWfMetricsReply.class);
     }
 
     @Override
-    public void stopWfRun(StopWfRunPb req, StreamObserver<StopWfRunReplyPb> ctx) {
-        processCommand(req, ctx, StopWfRun.class, StopWfRunReplyPb.class);
+    public void stopWfRun(StopWfRunRequest req, StreamObserver<StopWfRunResponse> ctx) {
+        processCommand(req, ctx, StopWfRunRequestModel.class, StopWfRunResponse.class);
     }
 
     @Override
-    public void resumeWfRun(
-        ResumeWfRunPb req,
-        StreamObserver<ResumeWfRunReplyPb> ctx
-    ) {
-        processCommand(req, ctx, ResumeWfRun.class, ResumeWfRunReplyPb.class);
+    public void resumeWfRun(ResumeWfRunRequest req, StreamObserver<ResumeWfRunResponse> ctx) {
+        processCommand(req, ctx, ResumeWfRunRequestModel.class, ResumeWfRunResponse.class);
     }
 
     @Override
-    public void deleteWfRun(
-        DeleteWfRunPb req,
-        StreamObserver<DeleteObjectReplyPb> ctx
-    ) {
-        processCommand(req, ctx, DeleteWfRun.class, DeleteObjectReplyPb.class);
+    public void deleteWfRun(DeleteWfRunRequest req, StreamObserver<DeleteObjectResponse> ctx) {
+        processCommand(req, ctx, DeleteWfRunRequestModel.class, DeleteObjectResponse.class);
     }
 
     @Override
-    public void deleteWfSpec(
-        DeleteWfSpecPb req,
-        StreamObserver<DeleteObjectReplyPb> ctx
-    ) {
-        processCommand(req, ctx, DeleteWfSpec.class, DeleteObjectReplyPb.class);
+    public void deleteWfSpec(DeleteWfSpecRequest req, StreamObserver<DeleteObjectResponse> ctx) {
+        processMetadataCommand(req, ctx, DeleteWfSpecRequestModel.class, DeleteObjectResponse.class);
     }
 
     @Override
-    public void deleteTaskDef(
-        DeleteTaskDefPb req,
-        StreamObserver<DeleteObjectReplyPb> ctx
-    ) {
-        processCommand(req, ctx, DeleteTaskDef.class, DeleteObjectReplyPb.class);
+    public void deleteTaskDef(DeleteTaskDefRequest req, StreamObserver<DeleteObjectResponse> ctx) {
+        processMetadataCommand(req, ctx, DeleteTaskDefRequestModel.class, DeleteObjectResponse.class);
     }
 
     @Override
-    public void deleteUserTaskDef(
-        DeleteUserTaskDefPb req,
-        StreamObserver<DeleteObjectReplyPb> ctx
-    ) {
-        processCommand(req, ctx, DeleteUserTaskDef.class, DeleteObjectReplyPb.class);
+    public void deleteUserTaskDef(DeleteUserTaskDefRequest req, StreamObserver<DeleteObjectResponse> ctx) {
+        processMetadataCommand(req, ctx, DeleteUserTaskDefRequestModel.class, DeleteObjectResponse.class);
     }
 
     @Override
-    public void deleteExternalEventDef(
-        DeleteExternalEventDefPb req,
-        StreamObserver<DeleteObjectReplyPb> ctx
-    ) {
-        processCommand(
-            req,
-            ctx,
-            DeleteExternalEventDef.class,
-            DeleteObjectReplyPb.class
-        );
+    public void deleteExternalEventDef(DeleteExternalEventDefRequest req, StreamObserver<DeleteObjectResponse> ctx) {
+        processMetadataCommand(req, ctx, DeleteExternalEventDefRequestModel.class, DeleteObjectResponse.class);
     }
 
     @Override
-    public void healthCheck(
-        HealthCheckPb req,
-        StreamObserver<HealthCheckReplyPb> ctx
-    ) {
-        ctx.onNext(
-            HealthCheckReplyPb
-                .newBuilder()
+    public void healthCheck(HealthCheckRequest req, StreamObserver<HealthCheckResponse> ctx) {
+        ctx.onNext(HealthCheckResponse.newBuilder()
                 .setCoreState(kafkaStateToLhHealthState(coreState))
                 .setTimerState(kafkaStateToLhHealthState(timerState))
-                .build()
-        );
+                .build());
         ctx.onCompleted();
     }
 
-    private LHHealthResultPb kafkaStateToLhHealthState(State kState) {
+    private LHHealthResult kafkaStateToLhHealthState(State kState) {
         switch (kState) {
             case CREATED:
             case NOT_RUNNING:
             case REBALANCING:
-                return LHHealthResultPb.LH_HEALTH_REBALANCING;
+                return LHHealthResult.LH_HEALTH_REBALANCING;
             case RUNNING:
-                return LHHealthResultPb.LH_HEALTH_RUNNING;
+                return LHHealthResult.LH_HEALTH_RUNNING;
             case PENDING_ERROR:
             case PENDING_SHUTDOWN:
             case ERROR:
-                return LHHealthResultPb.LH_HEALTH_ERROR;
+                return LHHealthResult.LH_HEALTH_ERROR;
             default:
                 throw new RuntimeException("Unknown health status");
         }
     }
 
-    public void returnTaskToClient(
-        ScheduledTask scheduledTask,
-        PollTaskRequestObserver client
-    ) {
+    public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
         TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
         processCommand(
-            claimEvent.toProto().build(),
-            client.getResponseObserver(),
-            TaskClaimEvent.class,
-            PollTaskReplyPb.class,
-            false // it's a stream, so we don't want to complete it.
-        );
+                claimEvent.toProto().build(),
+                client.getResponseObserver(),
+                TaskClaimEvent.class,
+                PollTaskResponse.class,
+                false, // it's a stream, so we don't want to complete it.,
+                config.getCoreCmdTopicName());
     }
 
     public LHProducer getProducer() {
         return internalComms.getProducer();
     }
 
-    public void onResponseReceived(String commandId, WaitForCommandReplyPb response) {
+    public void onResponseReceived(String commandId, WaitForCommandResponse response) {
         internalComms.onResponseReceived(commandId, response);
     }
 
@@ -1036,68 +720,55 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         internalComms.sendErrorToClientForCommand(commandId, caught);
     }
 
-    private <
-        U extends Message, T extends SubCommand<U>, V extends Message
-    > void processCommand(
-        U request,
-        StreamObserver<V> responseObserver,
-        Class<T> subCmdCls,
-        Class<V> responseCls
-    ) {
-        processCommand(request, responseObserver, subCmdCls, responseCls, true);
+    private <U extends Message, T extends SubCommand<U>, V extends Message> void processCommand(
+            U request, StreamObserver<V> responseObserver, Class<T> subCmdCls, Class<V> responseCls) {
+        processCommand(request, responseObserver, subCmdCls, responseCls, true, config.getCoreCmdTopicName());
     }
 
-    private <
-        U extends Message, T extends SubCommand<U>, V extends Message
-    > void processCommand(
-        U request,
-        StreamObserver<V> responseObserver,
-        Class<T> subCmdCls,
-        Class<V> responseCls,
-        boolean shouldComplete // TODO: Document this
-    ) {
+    private <U extends Message, T extends SubCommand<U>, V extends Message> void processMetadataCommand(
+            U request, StreamObserver<V> responseObserver, Class<T> subCmdCls, Class<V> responseCls) {
+        processCommand(request, responseObserver, subCmdCls, responseCls, true, config.getMetadataCmdTopicName());
+    }
+
+    private <U extends Message, T extends SubCommand<U>, V extends Message> void processCommand(
+            U request,
+            StreamObserver<V> responseObserver,
+            Class<T> subCmdCls,
+            Class<V> responseCls,
+            boolean shouldComplete, // TODO: Document this
+            String topicName) {
         T subCmd = LHSerializable.fromProto(request, subCmdCls);
         Command command = new Command(subCmd);
         command.commandId = LHUtil.generateGuid();
-        StreamObserver<WaitForCommandReplyPb> observer = new POSTStreamObserver<>(
-            responseObserver,
-            responseCls,
-            shouldComplete
-        );
+        StreamObserver<WaitForCommandResponse> observer =
+                new POSTStreamObserver<>(responseObserver, responseCls, shouldComplete);
 
         // Now actually record the command.
         internalComms
-            .getProducer()
-            .send(
-                command.getPartitionKey(), // partition key
-                command, // payload
-                config.getCoreCmdTopicName(), // topic name
-                (meta, exn) -> { // callback
-                    if (exn != null) {
-                        // Then we report back to the observer that we failed to record
-                        // the command.
-                        observer.onNext(
-                            WaitForCommandReplyPb
-                                .newBuilder()
-                                .setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE)
-                                .setMessage(
-                                    "Failed recording command to Kafka: " +
-                                    exn.getMessage()
-                                )
-                                .build()
-                        );
-                        // EMPLOYEE_TODO: determine whether or not to use onError()
-                        // instead.
-                        observer.onCompleted();
-                    } else {
-                        // Now we wait for the processing
-                        internalComms.waitForCommand(command, observer);
-                    }
-                }
-            );
+                .getProducer()
+                .send(
+                        command.getPartitionKey(), // partition key
+                        command, // payload
+                        topicName, // topic name
+                        (meta, exn) -> { // callback
+                            if (exn != null) {
+                                // Then we report back to the observer that we failed to record
+                                // the command.
+                                observer.onNext(WaitForCommandResponse.newBuilder()
+                                        .setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE)
+                                        .setMessage("Failed recording command to Kafka: " + exn.getMessage())
+                                        .build());
+                                // EMPLOYEE_TODO: determine whether or not to use onError()
+                                // instead.
+                                observer.onCompleted();
+                            } else {
+                                // Now we wait for the processing
+                                internalComms.waitForCommand(command, observer);
+                            }
+                        });
     }
 
-    public void onTaskScheduled(TaskDefId taskDef, ScheduledTask scheduledTask) {
+    public void onTaskScheduled(TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask) {
         taskQueueManager.onTaskScheduled(taskDef, scheduledTask);
     }
 
@@ -1113,32 +784,32 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         CountDownLatch latch = new CountDownLatch(4);
 
         new Thread(() -> {
-            log.info("Closing timer");
-            timerStreams.close();
-            latch.countDown();
-        })
-            .start();
+                    log.info("Closing timer");
+                    timerStreams.close();
+                    latch.countDown();
+                })
+                .start();
 
         new Thread(() -> {
-            log.info("Closing core");
-            coreStreams.close();
-            latch.countDown();
-        })
-            .start();
+                    log.info("Closing core");
+                    coreStreams.close();
+                    latch.countDown();
+                })
+                .start();
 
         new Thread(() -> {
-            log.info("Closing internalComms");
-            internalComms.close();
-            latch.countDown();
-        })
-            .start();
+                    log.info("Closing internalComms");
+                    internalComms.close();
+                    latch.countDown();
+                })
+                .start();
 
         new Thread(() -> {
-            log.info("Closing health service");
-            healthService.close();
-            latch.countDown();
-        })
-            .start();
+                    log.info("Closing health service");
+                    healthService.close();
+                    latch.countDown();
+                })
+                .start();
 
         log.info("Shutting down main servers");
         listenerManager.close();
@@ -1150,39 +821,33 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         }
     }
 
-    public static void doMain(LHConfig config)
-        throws IOException, InterruptedException {
+    public static void doMain(LHConfig config) throws IOException, InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         KafkaStreamsServerImpl server = new KafkaStreamsServerImpl(config);
-        Runtime
-            .getRuntime()
-            .addShutdownHook(
-                new Thread(() -> {
-                    log.info("Closing now!");
-                    server.close();
-                    config.cleanup();
-                    latch.countDown();
-                })
-            );
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.info("Closing now!");
+            server.close();
+            config.cleanup();
+            latch.countDown();
+        }));
         new Thread(() -> {
-            try {
-                server.start();
-            } catch (IOException exn) {
-                throw new RuntimeException(exn);
-            }
-        })
-            .start();
+                    try {
+                        server.start();
+                    } catch (IOException exn) {
+                        throw new RuntimeException(exn);
+                    }
+                })
+                .start();
 
         latch.await();
         log.info("Done waiting for countdown latch");
     }
 
-    public Set<Host> getAllInternalHosts() {
+    public Set<HostModel> getAllInternalHosts() {
         return internalComms.getAllInternalHosts();
     }
 
-    public HostInfoPb getAdvertisedHost(Host host, String listenerName)
-        throws LHBadRequestError, LHConnectionError {
+    public HostInfo getAdvertisedHost(HostModel host, String listenerName) throws LHBadRequestError, LHConnectionError {
         return internalComms.getAdvertisedHost(host, listenerName);
     }
 }

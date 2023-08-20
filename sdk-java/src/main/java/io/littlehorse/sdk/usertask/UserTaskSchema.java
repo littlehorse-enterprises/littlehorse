@@ -1,15 +1,14 @@
 package io.littlehorse.sdk.usertask;
 
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.PutUserTaskDefPb;
-import io.littlehorse.sdk.common.proto.UserTaskFieldPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
-import io.littlehorse.sdk.usertask.annotations.UserTaskField;
+import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
+import io.littlehorse.sdk.common.proto.UserTaskField;
+import io.littlehorse.sdk.common.proto.VariableType;
 import java.lang.reflect.Field;
 
 public class UserTaskSchema {
 
-    private PutUserTaskDefPb compiled;
+    private PutUserTaskDefRequest compiled;
     private Object taskObject;
     private String userTaskDefName;
 
@@ -18,38 +17,31 @@ public class UserTaskSchema {
         this.userTaskDefName = userTaskDefName;
     }
 
-    public PutUserTaskDefPb compile() {
+    public PutUserTaskDefRequest compile() {
         if (compiled == null) compileHelper();
 
         return compiled;
     }
 
     private void compileHelper() {
-        PutUserTaskDefPb.Builder out = PutUserTaskDefPb.newBuilder();
+        PutUserTaskDefRequest.Builder out = PutUserTaskDefRequest.newBuilder();
         // todo
         Class<?> cls = taskObject.getClass();
         for (Field field : cls.getFields()) {
-            if (!field.isAnnotationPresent(UserTaskField.class)) continue;
+            if (!field.isAnnotationPresent(io.littlehorse.sdk.usertask.annotations.UserTaskField.class)) continue;
 
-            UserTaskField utf = field.getAnnotation(UserTaskField.class);
-            VariableTypePb type = LHLibUtil.javaClassToLHVarType(field.getType());
-            if (
-                type == VariableTypePb.JSON_ARR ||
-                type == VariableTypePb.JSON_OBJ ||
-                type == VariableTypePb.BYTES
-            ) {
-                throw new IllegalArgumentException(
-                    "Only primitive types supported for UserTaskField. Field " +
-                    field.getName() +
-                    " is of type " +
-                    type
-                );
+            io.littlehorse.sdk.usertask.annotations.UserTaskField utf =
+                    field.getAnnotation(io.littlehorse.sdk.usertask.annotations.UserTaskField.class);
+            VariableType type = LHLibUtil.javaClassToLHVarType(field.getType());
+            if (type == VariableType.JSON_ARR || type == VariableType.JSON_OBJ || type == VariableType.BYTES) {
+                throw new IllegalArgumentException("Only primitive types supported for UserTaskField. Field "
+                        + field.getName()
+                        + " is of type "
+                        + type);
             }
 
-            UserTaskFieldPb.Builder fieldBuilder = UserTaskFieldPb
-                .newBuilder()
-                .setName(field.getName())
-                .setType(type);
+            UserTaskField.Builder fieldBuilder =
+                    UserTaskField.newBuilder().setName(field.getName()).setType(type);
 
             if (utf.description() != null && !utf.description().isEmpty()) {
                 fieldBuilder.setDescription(utf.description());

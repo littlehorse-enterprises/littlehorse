@@ -3,8 +3,8 @@ package io.littlehorse.tests.cases.lifecycle;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.WfRunPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
@@ -42,29 +42,16 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
     }
 
     public void test() throws LHApiError, InterruptedException {
-        worker1 =
-            new LHTaskWorker(
-                new TaskWfSpecLifecycleWorker(),
-                TASK_DEF_1,
-                workerConfig
-            );
+        worker1 = new LHTaskWorker(new TaskWfSpecLifecycleWorker(), TASK_DEF_1, workerConfig);
         worker1.registerTaskDef(true);
-        worker2 =
-            new LHTaskWorker(
-                new TaskWfSpecLifecycleWorker(),
-                TASK_DEF_2,
-                workerConfig
-            );
+        worker2 = new LHTaskWorker(new TaskWfSpecLifecycleWorker(), TASK_DEF_2, workerConfig);
         worker2.registerTaskDef(true);
 
-        new WorkflowImpl(
-            WF_SPEC_NAME,
-            thread -> {
-                thread.execute(TASK_DEF_1);
-                thread.execute(TASK_DEF_2);
-            }
-        )
-            .registerWfSpec(client);
+        new WorkflowImpl(WF_SPEC_NAME, thread -> {
+                    thread.execute(TASK_DEF_1);
+                    thread.execute(TASK_DEF_2);
+                })
+                .registerWfSpec(client);
 
         Thread.sleep(100); // Wait for the data to propagate
         worker1.start();
@@ -78,20 +65,13 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
         wfRunId = client.runWf(WF_SPEC_NAME, null, null);
 
         Thread.sleep(120);
-        WfRunPb wfRun = client.getWfRun(wfRunId);
-        if (wfRun.getStatus() != LHStatusPb.ERROR) {
+        WfRun wfRun = client.getWfRun(wfRunId);
+        if (wfRun.getStatus() != LHStatus.ERROR) {
             throw new RuntimeException("Should have failed!");
         }
 
-        if (
-            !wfRun
-                .getThreadRuns(0)
-                .getErrorMessage()
-                .contains("Appears that TaskDef was deleted")
-        ) {
-            throw new RuntimeException(
-                "Should have error message about deleted taskdef! WfRun: " + wfRunId
-            );
+        if (!wfRun.getThreadRuns(0).getErrorMessage().contains("Appears that TaskDef was deleted")) {
+            throw new RuntimeException("Should have error message about deleted taskdef! WfRun: " + wfRunId);
         }
     }
 
@@ -103,7 +83,8 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
             worker1.close();
             worker2.close();
             client.deleteTaskDef(TASK_DEF_2);
-        } catch (Exception exn) {}
+        } catch (Exception exn) {
+        }
     }
 }
 

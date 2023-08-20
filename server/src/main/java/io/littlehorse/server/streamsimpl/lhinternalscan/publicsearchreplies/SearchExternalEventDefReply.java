@@ -1,22 +1,22 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
-import io.littlehorse.common.model.objectId.ExternalEventDefId;
-import io.littlehorse.sdk.common.proto.ExternalEventDefIdPb;
-import io.littlehorse.sdk.common.proto.SearchExternalEventDefReplyPb;
+import io.littlehorse.common.model.objectId.ExternalEventDefIdModel;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
+import io.littlehorse.sdk.common.proto.SearchExternalEventDefResponse;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class SearchExternalEventDefReply
-    extends PublicScanReply<SearchExternalEventDefReplyPb, ExternalEventDefIdPb, ExternalEventDefId> {
+        extends PublicScanReply<SearchExternalEventDefResponse, ExternalEventDefId, ExternalEventDefIdModel> {
 
-    public Class<SearchExternalEventDefReplyPb> getProtoBaseClass() {
-        return SearchExternalEventDefReplyPb.class;
+    public Class<SearchExternalEventDefResponse> getProtoBaseClass() {
+        return SearchExternalEventDefResponse.class;
     }
 
-    public Class<ExternalEventDefId> getResultJavaClass() {
+    public Class<ExternalEventDefIdModel> getResultJavaClass() {
+        return ExternalEventDefIdModel.class;
+    }
+
+    public Class<ExternalEventDefId> getResultProtoClass() {
         return ExternalEventDefId.class;
-    }
-
-    public Class<ExternalEventDefIdPb> getResultProtoClass() {
-        return ExternalEventDefIdPb.class;
     }
 }

@@ -5,23 +5,18 @@ import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
-import io.littlehorse.common.proto.WaitForCommandReplyPb;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.common.proto.WaitForCommandResponse;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class POSTStreamObserver<U extends Message>
-    implements StreamObserver<WaitForCommandReplyPb> {
+public class POSTStreamObserver<U extends Message> implements StreamObserver<WaitForCommandResponse> {
 
     private StreamObserver<U> ctx;
     private Class<U> responseCls;
     private boolean shouldComplete;
 
-    public POSTStreamObserver(
-        StreamObserver<U> responseObserver,
-        Class<U> responseCls,
-        boolean shouldComplete
-    ) {
+    public POSTStreamObserver(StreamObserver<U> responseObserver, Class<U> responseCls, boolean shouldComplete) {
         this.ctx = responseObserver;
         this.responseCls = responseCls;
         this.shouldComplete = shouldComplete;
@@ -29,27 +24,24 @@ public class POSTStreamObserver<U extends Message>
 
     public void onError(Throwable t) {
         log.error(
-            "Got onError() from postObserver. Returning RECORDED_NOT_PROCESSED: {} {}",
-            responseCls,
-            t.getMessage(),
-            t
-        );
+                "Got onError() from postObserver. Returning RECORDED_NOT_PROCESSED: {} {}",
+                responseCls,
+                t.getMessage(),
+                t);
 
         U response = buildErrorResponse(
-            LHResponseCodePb.REPORTED_BUT_NOT_PROCESSED,
-            "Recorded request but processing not verified: " + t.getMessage()
-        );
+                LHResponseCode.REPORTED_BUT_NOT_PROCESSED,
+                "Recorded request but processing not verified: " + t.getMessage());
 
         ctx.onNext(response);
         if (shouldComplete) ctx.onCompleted();
     }
 
-    private U buildErrorResponse(LHResponseCodePb code, String msg) {
+    private U buildErrorResponse(LHResponseCode code, String msg) {
         try {
-            GeneratedMessageV3.Builder<?> b = (GeneratedMessageV3.Builder<?>) responseCls
-                .getMethod("newBuilder")
-                .invoke(null);
-            b.getClass().getMethod("setCode", LHResponseCodePb.class).invoke(b, code);
+            GeneratedMessageV3.Builder<?> b = (GeneratedMessageV3.Builder<?>)
+                    responseCls.getMethod("newBuilder").invoke(null);
+            b.getClass().getMethod("setCode", LHResponseCode.class).invoke(b, code);
 
             b.getClass().getMethod("setMessage", String.class).invoke(b, msg);
 
@@ -66,9 +58,7 @@ public class POSTStreamObserver<U extends Message>
     @SuppressWarnings("unchecked")
     private U buildRespFromBytes(ByteString bytes) {
         try {
-            return (U) responseCls
-                .getMethod("parseFrom", ByteString.class)
-                .invoke(null, bytes);
+            return (U) responseCls.getMethod("parseFrom", ByteString.class).invoke(null, bytes);
         } catch (Exception exn) {
             log.error(exn.getMessage(), exn);
             throw new RuntimeException("Not possible");
@@ -79,7 +69,7 @@ public class POSTStreamObserver<U extends Message>
         // Nothing to do
     }
 
-    public void onNext(WaitForCommandReplyPb reply) {
+    public void onNext(WaitForCommandResponse reply) {
         U response;
 
         if (reply.getCode() == StoreQueryStatusPb.RSQ_OK) {
@@ -88,12 +78,9 @@ public class POSTStreamObserver<U extends Message>
             }
             response = buildRespFromBytes(reply.getResult().getResult());
         } else if (reply.getCode() == StoreQueryStatusPb.RSQ_NOT_AVAILABLE) {
-            response =
-                buildErrorResponse(
-                    LHResponseCodePb.CONNECTION_ERROR,
-                    "Failed connecting to backend: " +
-                    (reply.hasMessage() ? reply.getMessage() : "")
-                );
+            response = buildErrorResponse(
+                    LHResponseCode.CONNECTION_ERROR,
+                    "Failed connecting to backend: " + (reply.hasMessage() ? reply.getMessage() : ""));
         } else {
             throw new RuntimeException("Unexpected RSQ code");
         }

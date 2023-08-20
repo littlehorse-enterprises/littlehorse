@@ -24,7 +24,7 @@ var deployExternalEventDefCmd = &cobra.Command{
 			log.Fatal("You must provide one argument: the filename to deploy from.")
 
 		}
-		peed := &model.PutExternalEventDefPb{}
+		peed := &model.PutExternalEventDefRequest{}
 
 		// First, read the file
 		dat, err := os.ReadFile(args[0])
@@ -66,7 +66,7 @@ var getExternalEventDefCmd = &cobra.Command{
 		common.PrintResp(
 			getGlobalClient(cmd).GetExternalEventDef(
 				context.Background(),
-				&model.ExternalEventDefIdPb{
+				&model.ExternalEventDefId{
 					Name: args[0],
 				},
 			),
@@ -90,7 +90,7 @@ searches for all ExternalEventDefs.
 		common.PrintResp(
 			getGlobalClient(cmd).SearchExternalEventDef(
 				context.Background(),
-				&model.SearchExternalEventDefPb{
+				&model.SearchExternalEventDefRequest{
 					Bookmark: bookmark,
 					Limit:    &limit,
 					Prefix:   &prefix,
@@ -116,7 +116,7 @@ ExternalEventDef to delete.
 		common.PrintResp(
 			getGlobalClient(cmd).DeleteExternalEventDef(
 				context.Background(),
-				&model.DeleteExternalEventDefPb{
+				&model.DeleteExternalEventDefRequest{
 					Name: name,
 				}),
 		)

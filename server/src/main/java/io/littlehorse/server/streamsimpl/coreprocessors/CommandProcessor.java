@@ -6,9 +6,10 @@ import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.proto.CommandResultPb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
-import io.littlehorse.common.proto.WaitForCommandReplyPb;
+import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsimpl.util.WfSpecCache;
 import java.time.Duration;
 import java.util.Date;
@@ -19,8 +20,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 
 @Slf4j
-public class CommandProcessor
-    implements Processor<String, Command, String, CommandProcessorOutput> {
+public class CommandProcessor implements Processor<String, Command, String, CommandProcessorOutput> {
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private KafkaStreamsLHDAOImpl dao;
@@ -28,14 +28,21 @@ public class CommandProcessor
     private KafkaStreamsServerImpl server;
     private final WfSpecCache wfSpecCache;
 
+    private final String storeName;
+
+    private final boolean isMetadataProcessorInstance;
+
     public CommandProcessor(
-        LHConfig config,
-        KafkaStreamsServerImpl server,
-        WfSpecCache wfSpecCache
-    ) {
+            LHConfig config,
+            KafkaStreamsServerImpl server,
+            WfSpecCache wfSpecCache,
+            String storeName,
+            boolean isMetadataProcessorInstance) {
         this.config = config;
         this.server = server;
         this.wfSpecCache = wfSpecCache;
+        this.storeName = storeName;
+        this.isMetadataProcessorInstance = isMetadataProcessorInstance;
     }
 
     @Override
@@ -43,14 +50,11 @@ public class CommandProcessor
         // temporary hack
 
         this.ctx = ctx;
-        dao = new KafkaStreamsLHDAOImpl(this.ctx, config, server, wfSpecCache);
+        final LHStoreWrapper localStore = new LHStoreWrapper(ctx.getStateStore(storeName), config);
+        dao = new KafkaStreamsLHDAOImpl(this.ctx, config, server, wfSpecCache, localStore, isMetadataProcessorInstance);
         dao.onPartitionClaimed();
 
-        ctx.schedule(
-            Duration.ofSeconds(30),
-            PunctuationType.WALL_CLOCK_TIME,
-            this::forwardMetricsUpdates
-        );
+        ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
     }
 
     @Override
@@ -70,28 +74,23 @@ public class CommandProcessor
         dao.setCommand(command);
 
         log.trace(
-            "{} Processing command of type {} with commandId {} on partition {}",
-            config.getLHInstanceId(),
-            command.type,
-            command.commandId,
-            command.getPartitionKey()
-        );
+                "{} Processing command of type {} with commandId {} on partition {}",
+                config.getLHInstanceId(),
+                command.type,
+                command.commandId,
+                command.getPartitionKey());
 
         try {
             AbstractResponse<?> response = command.process(dao, config);
             dao.commitChanges();
             if (command.hasResponse() && command.commandId != null) {
-                WaitForCommandReplyPb cmdReply = WaitForCommandReplyPb
-                    .newBuilder()
-                    .setCode(StoreQueryStatusPb.RSQ_OK)
-                    .setResult(
-                        CommandResultPb
-                            .newBuilder()
-                            .setCommandId(command.commandId)
-                            .setResultTime(LHUtil.fromDate(new Date()))
-                            .setResult(ByteString.copyFrom(response.toBytes(config)))
-                    )
-                    .build();
+                WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
+                        .setCode(StoreQueryStatusPb.RSQ_OK)
+                        .setResult(CommandResultPb.newBuilder()
+                                .setCommandId(command.commandId)
+                                .setResultTime(LHUtil.fromDate(new Date()))
+                                .setResult(ByteString.copyFrom(response.toBytes(config))))
+                        .build();
 
                 server.onResponseReceived(command.commandId, cmdReply);
             }

@@ -4,25 +4,25 @@ import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
-import io.littlehorse.common.model.meta.ExternalEventDef;
-import io.littlehorse.common.model.meta.Host;
-import io.littlehorse.common.model.meta.TaskDef;
-import io.littlehorse.common.model.meta.TaskWorkerGroup;
-import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
-import io.littlehorse.common.model.objectId.NodeRunId;
-import io.littlehorse.common.model.objectId.TaskRunId;
-import io.littlehorse.common.model.objectId.UserTaskRunId;
-import io.littlehorse.common.model.wfrun.ExternalEvent;
+import io.littlehorse.common.model.meta.ExternalEventDefModel;
+import io.littlehorse.common.model.meta.HostModel;
+import io.littlehorse.common.model.meta.TaskDefModel;
+import io.littlehorse.common.model.meta.TaskWorkerGroupModel;
+import io.littlehorse.common.model.meta.WfSpecModel;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
+import io.littlehorse.common.model.wfrun.ExternalEventModel;
 import io.littlehorse.common.model.wfrun.LHTimer;
-import io.littlehorse.common.model.wfrun.NodeRun;
-import io.littlehorse.common.model.wfrun.ScheduledTask;
-import io.littlehorse.common.model.wfrun.UserTaskRun;
-import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
+import io.littlehorse.common.model.wfrun.NodeRunModel;
+import io.littlehorse.common.model.wfrun.ScheduledTaskModel;
+import io.littlehorse.common.model.wfrun.UserTaskRunModel;
+import io.littlehorse.common.model.wfrun.VariableModel;
+import io.littlehorse.common.model.wfrun.WfRunModel;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRunModel;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.sdk.common.proto.HostInfoPb;
+import io.littlehorse.sdk.common.proto.HostInfo;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
 import io.littlehorse.server.streamsimpl.util.InternalHosts;
@@ -47,34 +47,31 @@ public interface LHDAO extends LHGlobalMetaStores {
         return getCommand().time;
     }
 
-    public void putNodeRun(NodeRun nr);
+    public void putNodeRun(NodeRunModel nr);
 
-    public NodeRun getNodeRun(String wfRunId, int threadNum, int position);
+    public NodeRunModel getNodeRun(String wfRunId, int threadNum, int position);
 
-    public default NodeRun getNodeRun(NodeRunId id) {
+    public default NodeRunModel getNodeRun(NodeRunIdModel id) {
         return getNodeRun(id.getWfRunId(), id.getThreadRunNumber(), id.getPosition());
     }
 
-    public void putVariable(Variable var);
+    public void putVariable(VariableModel var);
 
-    public Variable getVariable(String wfRunId, String name, int threadNum);
+    public VariableModel getVariable(String wfRunId, String name, int threadNum);
 
-    public ExternalEvent getUnclaimedEvent(
-        String wfRunId,
-        String externalEventDefName
-    );
+    public ExternalEventModel getUnclaimedEvent(String wfRunId, String externalEventDefName);
 
-    public ExternalEvent getExternalEvent(String externalEventId);
+    public ExternalEventModel getExternalEvent(String externalEventId);
 
-    public void saveExternalEvent(ExternalEvent evt);
+    public void saveExternalEvent(ExternalEventModel evt);
 
-    public void scheduleTask(ScheduledTask scheduledTask);
+    public void scheduleTask(ScheduledTaskModel scheduledTask);
 
     public void scheduleTimer(LHTimer timer);
 
-    public void saveWfRun(WfRun wfRun);
+    public void saveWfRun(WfRunModel wfRunModel);
 
-    public WfRun getWfRun(String id);
+    public WfRunModel getWfRun(String id);
 
     /*
      * Looks up a WfSpec. If in a partitioned environment (eg. KafkaStreams backend),
@@ -83,23 +80,23 @@ public interface LHDAO extends LHGlobalMetaStores {
      * - else, look up from the global store in an eventually-consistent manner.
      * That behavior should be transparent to the caller.
      */
-    public WfSpec getWfSpec(String name, Integer version);
+    public WfSpecModel getWfSpec(String name, Integer version);
 
-    public void putWfSpec(WfSpec spec);
+    public void putWfSpec(WfSpecModel spec);
 
-    public TaskDef getTaskDef(String name);
+    public TaskDefModel getTaskDef(String name);
 
-    public void putTaskDef(TaskDef spec);
+    public void putTaskDef(TaskDefModel spec);
 
-    public UserTaskDef getUserTaskDef(String name, Integer version);
+    public UserTaskDefModel getUserTaskDef(String name, Integer version);
 
-    public void putUserTaskDef(UserTaskDef spec);
+    public void putUserTaskDef(UserTaskDefModel spec);
 
-    public ExternalEventDef getExternalEventDef(String name);
+    public ExternalEventDefModel getExternalEventDef(String name);
 
-    public ScheduledTask markTaskAsScheduled(TaskRunId taskRunId);
+    public ScheduledTaskModel markTaskAsScheduled(TaskRunIdModel taskRunId);
 
-    public void putExternalEventDef(ExternalEventDef eed);
+    public void putExternalEventDef(ExternalEventDefModel eed);
 
     public DeleteObjectReply deleteWfRun(String wfRunId);
 
@@ -113,13 +110,13 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public DeleteObjectReply deleteExternalEvent(String externalEventId);
 
-    public TaskRun getTaskRun(TaskRunId taskRunId);
+    public TaskRunModel getTaskRun(TaskRunIdModel taskRunId);
 
-    public void putTaskRun(TaskRun taskRun);
+    public void putTaskRun(TaskRunModel taskRun);
 
-    public void putUserTaskRun(UserTaskRun taskRun);
+    public void putUserTaskRun(UserTaskRunModel taskRun);
 
-    public UserTaskRun getUserTaskRun(UserTaskRunId userTaskRunId);
+    public UserTaskRunModel getUserTaskRun(UserTaskRunIdModel userTaskRunId);
 
     /*
      * Clear any dirty cache if necessary
@@ -141,18 +138,13 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public List<TaskMetricUpdate> getTaskMetricWindows(String taskDefName, Date time);
 
-    public List<WfMetricUpdate> getWfMetricWindows(
-        String wfSpecName,
-        int wfSpecVersion,
-        Date time
-    );
+    public List<WfMetricUpdate> getWfMetricWindows(String wfSpecName, int wfSpecVersion, Date time);
 
-    public HostInfoPb getAdvertisedHost(Host host, String listenerName)
-        throws LHBadRequestError, LHConnectionError;
+    public HostInfo getAdvertisedHost(HostModel host, String listenerName) throws LHBadRequestError, LHConnectionError;
 
     public InternalHosts getInternalHosts();
 
-    public TaskWorkerGroup getTaskWorkerGroup(String taskDefName);
+    public TaskWorkerGroupModel getTaskWorkerGroup(String taskDefName);
 
-    public void putTaskWorkerGroup(TaskWorkerGroup taskWorkerGroup);
+    public void putTaskWorkerGroup(TaskWorkerGroupModel taskWorkerGroup);
 }

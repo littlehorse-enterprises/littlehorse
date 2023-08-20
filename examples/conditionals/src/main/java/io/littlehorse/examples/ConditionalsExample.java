@@ -3,8 +3,8 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -32,17 +32,14 @@ public class ConditionalsExample {
         return new WorkflowImpl(
             "example-conditionals",
             thread -> {
-                WfRunVariable foo = thread.addVariable(
-                    "foo",
-                    VariableTypePb.JSON_OBJ
-                );
+                WfRunVariable foo = thread.addVariable("foo", VariableType.JSON_OBJ);
 
                 thread.execute("task-a");
 
                 thread.doIfElse(
                     thread.condition(
                         foo.jsonPath("$.bar"),
-                        ComparatorPb.GREATER_THAN,
+                        Comparator.GREATER_THAN,
                         10
                     ),
                     ifHandler -> {

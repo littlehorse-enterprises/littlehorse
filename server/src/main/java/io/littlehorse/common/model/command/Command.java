@@ -3,29 +3,29 @@ package io.littlehorse.common.model.command;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
-import io.littlehorse.common.model.command.subcommand.CancelUserTaskRun;
-import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
-import io.littlehorse.common.model.command.subcommand.DeleteExternalEvent;
-import io.littlehorse.common.model.command.subcommand.DeleteExternalEventDef;
-import io.littlehorse.common.model.command.subcommand.DeleteTaskDef;
-import io.littlehorse.common.model.command.subcommand.DeleteUserTaskDef;
-import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
-import io.littlehorse.common.model.command.subcommand.DeleteWfSpec;
+import io.littlehorse.common.model.command.subcommand.AssignUserTaskRunRequestModel;
+import io.littlehorse.common.model.command.subcommand.CancelUserTaskRunRequestModel;
+import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRunRequestModel;
+import io.littlehorse.common.model.command.subcommand.DeleteExternalEventDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.DeleteExternalEventRequestModel;
+import io.littlehorse.common.model.command.subcommand.DeleteTaskDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.DeleteUserTaskDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.DeleteWfRunRequestModel;
+import io.littlehorse.common.model.command.subcommand.DeleteWfSpecRequestModel;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
-import io.littlehorse.common.model.command.subcommand.PutExternalEvent;
-import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
-import io.littlehorse.common.model.command.subcommand.PutTaskDef;
-import io.littlehorse.common.model.command.subcommand.PutUserTaskDef;
-import io.littlehorse.common.model.command.subcommand.PutWfSpec;
+import io.littlehorse.common.model.command.subcommand.PutExternalEventDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutExternalEventRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutTaskDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutUserTaskDefRequestModel;
+import io.littlehorse.common.model.command.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.model.command.subcommand.ReassignUserTask;
-import io.littlehorse.common.model.command.subcommand.ReportTaskRun;
-import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
-import io.littlehorse.common.model.command.subcommand.RunWf;
+import io.littlehorse.common.model.command.subcommand.ReportTaskRunModel;
+import io.littlehorse.common.model.command.subcommand.ResumeWfRunRequestModel;
+import io.littlehorse.common.model.command.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
-import io.littlehorse.common.model.command.subcommand.StopWfRun;
+import io.littlehorse.common.model.command.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
-import io.littlehorse.common.model.command.subcommand.TaskWorkerHeartBeat;
+import io.littlehorse.common.model.command.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.common.model.command.subcommand.TriggeredTaskRun;
 import io.littlehorse.common.proto.CommandPb;
 import io.littlehorse.common.proto.CommandPb.CommandCase;
@@ -43,30 +43,30 @@ public class Command extends LHSerializable<CommandPb> {
     public Date time;
 
     public CommandCase type;
-    public ReportTaskRun reportTaskRun;
+    public ReportTaskRunModel reportTaskRun;
     public TaskClaimEvent taskClaimEvent;
-    public PutExternalEvent putExternalEvent;
-    public PutWfSpec putWfSpec;
-    public PutTaskDef putTaskDef;
-    public PutExternalEventDef putExternalEventDef;
-    public RunWf runWf;
-    public StopWfRun stopWfRun;
-    public ResumeWfRun resumeWfRun;
+    public PutExternalEventRequestModel putExternalEventRequest;
+    public PutWfSpecRequestModel putWfSpecRequest;
+    public PutTaskDefRequestModel putTaskDefRequest;
+    public PutExternalEventDefRequestModel putExternalEventDefRequest;
+    public RunWfRequestModel runWf;
+    public StopWfRunRequestModel stopWfRun;
+    public ResumeWfRunRequestModel resumeWfRun;
     public SleepNodeMatured sleepNodeMatured;
-    public DeleteWfRun deleteWfRun;
-    public DeleteWfSpec deleteWfSpec;
-    public DeleteTaskDef deleteTaskDef;
-    public DeleteExternalEventDef deleteExternalEventDef;
+    public DeleteWfRunRequestModel deleteWfRun;
+    public DeleteWfSpecRequestModel deleteWfSpec;
+    public DeleteTaskDefRequestModel deleteTaskDef;
+    public DeleteExternalEventDefRequestModel deleteExternalEventDef;
     public ExternalEventTimeout externalEventTimeout;
-    public TaskWorkerHeartBeat taskWorkerHeartBeat;
-    public DeleteExternalEvent deleteExternalEvent;
-    public PutUserTaskDef putUserTaskDef;
-    public AssignUserTaskRun assignUserTaskRun;
-    public CompleteUserTaskRun completeUserTaskRun;
+    public TaskWorkerHeartBeatRequestModel taskWorkerHeartBeat;
+    public DeleteExternalEventRequestModel deleteExternalEvent;
+    public PutUserTaskDefRequestModel putUserTaskDefRequest;
+    public AssignUserTaskRunRequestModel assignUserTaskRun;
+    public CompleteUserTaskRunRequestModel completeUserTaskRun;
     public TriggeredTaskRun triggeredTaskRun;
-    public DeleteUserTaskDef deleteUserTaskDef;
+    public DeleteUserTaskDefRequestModel deleteUserTaskDef;
     private ReassignUserTask reassignUserTask;
-    private CancelUserTaskRun cancelUserTaskRun;
+    private CancelUserTaskRunRequestModel cancelUserTaskRun;
 
     public Class<CommandPb> getProtoBaseClass() {
         return CommandPb.class;
@@ -100,16 +100,16 @@ public class Command extends LHSerializable<CommandPb> {
                 out.setTaskClaimEvent(taskClaimEvent.toProto());
                 break;
             case PUT_EXTERNAL_EVENT:
-                out.setPutExternalEvent(putExternalEvent.toProto());
+                out.setPutExternalEvent(putExternalEventRequest.toProto());
                 break;
             case PUT_WF_SPEC:
-                out.setPutWfSpec(putWfSpec.toProto());
+                out.setPutWfSpec(putWfSpecRequest.toProto());
                 break;
             case PUT_TASK_DEF:
-                out.setPutTaskDef(putTaskDef.toProto());
+                out.setPutTaskDef(putTaskDefRequest.toProto());
                 break;
             case PUT_EXTERNAL_EVENT_DEF:
-                out.setPutExternalEventDef(putExternalEventDef.toProto());
+                out.setPutExternalEventDef(putExternalEventDefRequest.toProto());
                 break;
             case RUN_WF:
                 out.setRunWf(runWf.toProto());
@@ -145,7 +145,7 @@ public class Command extends LHSerializable<CommandPb> {
                 out.setDeleteExternalEvent(deleteExternalEvent.toProto());
                 break;
             case PUT_USER_TASK_DEF:
-                out.setPutUserTaskDef(putUserTaskDef.toProto());
+                out.setPutUserTaskDef(putUserTaskDefRequest.toProto());
                 break;
             case ASSIGN_USER_TASK_RUN:
                 out.setAssignUserTaskRun(assignUserTaskRun.toProto());
@@ -182,111 +182,81 @@ public class Command extends LHSerializable<CommandPb> {
         type = p.getCommandCase();
         switch (type) {
             case REPORT_TASK_RUN:
-                reportTaskRun = ReportTaskRun.fromProto(p.getReportTaskRun());
+                reportTaskRun = ReportTaskRunModel.fromProto(p.getReportTaskRun());
                 break;
             case TASK_CLAIM_EVENT:
                 taskClaimEvent = TaskClaimEvent.fromProto(p.getTaskClaimEvent());
                 break;
             case PUT_EXTERNAL_EVENT:
-                putExternalEvent =
-                    PutExternalEvent.fromProto(p.getPutExternalEvent());
+                putExternalEventRequest = PutExternalEventRequestModel.fromProto(p.getPutExternalEvent());
                 break;
             case PUT_WF_SPEC:
-                putWfSpec = PutWfSpec.fromProto(p.getPutWfSpec());
+                putWfSpecRequest = PutWfSpecRequestModel.fromProto(p.getPutWfSpec());
                 break;
             case PUT_TASK_DEF:
-                putTaskDef = PutTaskDef.fromProto(p.getPutTaskDef());
+                putTaskDefRequest = PutTaskDefRequestModel.fromProto(p.getPutTaskDef());
                 break;
             case PUT_EXTERNAL_EVENT_DEF:
-                putExternalEventDef =
-                    PutExternalEventDef.fromProto(p.getPutExternalEventDef());
+                putExternalEventDefRequest = PutExternalEventDefRequestModel.fromProto(p.getPutExternalEventDef());
                 break;
             case RUN_WF:
-                runWf = RunWf.fromProto(p.getRunWf());
+                runWf = RunWfRequestModel.fromProto(p.getRunWf());
                 break;
             case STOP_WF_RUN:
-                stopWfRun = StopWfRun.fromProto(p.getStopWfRun());
+                stopWfRun = StopWfRunRequestModel.fromProto(p.getStopWfRun());
                 break;
             case RESUME_WF_RUN:
-                resumeWfRun = ResumeWfRun.fromProto(p.getResumeWfRun());
+                resumeWfRun = ResumeWfRunRequestModel.fromProto(p.getResumeWfRun());
                 break;
             case SLEEP_NODE_MATURED:
-                sleepNodeMatured =
-                    SleepNodeMatured.fromProto(p.getSleepNodeMatured());
+                sleepNodeMatured = SleepNodeMatured.fromProto(p.getSleepNodeMatured());
                 break;
             case DELETE_WF_RUN:
-                deleteWfRun = DeleteWfRun.fromProto(p.getDeleteWfRun());
+                deleteWfRun = DeleteWfRunRequestModel.fromProto(p.getDeleteWfRun());
                 break;
             case DELETE_EXTERNAL_EVENT_DEF:
-                deleteExternalEventDef =
-                    DeleteExternalEventDef.fromProto(p.getDeleteExternalEventDef());
+                deleteExternalEventDef = DeleteExternalEventDefRequestModel.fromProto(p.getDeleteExternalEventDef());
                 break;
             case DELETE_TASK_DEF:
-                deleteTaskDef = DeleteTaskDef.fromProto(p.getDeleteTaskDef());
+                deleteTaskDef = DeleteTaskDefRequestModel.fromProto(p.getDeleteTaskDef());
                 break;
             case DELETE_WF_SPEC:
-                deleteWfSpec = DeleteWfSpec.fromProto(p.getDeleteWfSpec());
+                deleteWfSpec = DeleteWfSpecRequestModel.fromProto(p.getDeleteWfSpec());
                 break;
             case EXTERNAL_EVENT_TIMEOUT:
-                externalEventTimeout =
-                    ExternalEventTimeout.fromProto(p.getExternalEventTimeout());
+                externalEventTimeout = ExternalEventTimeout.fromProto(p.getExternalEventTimeout());
                 break;
             case TASK_WORKER_HEART_BEAT:
-                taskWorkerHeartBeat =
-                    TaskWorkerHeartBeat.fromProto(p.getTaskWorkerHeartBeat());
+                taskWorkerHeartBeat = TaskWorkerHeartBeatRequestModel.fromProto(p.getTaskWorkerHeartBeat());
                 break;
             case DELETE_EXTERNAL_EVENT:
-                deleteExternalEvent =
-                    DeleteExternalEvent.fromProto(p.getDeleteExternalEvent());
+                deleteExternalEvent = DeleteExternalEventRequestModel.fromProto(p.getDeleteExternalEvent());
                 break;
             case PUT_USER_TASK_DEF:
-                putUserTaskDef =
-                    LHSerializable.fromProto(
-                        p.getPutUserTaskDef(),
-                        PutUserTaskDef.class
-                    );
+                putUserTaskDefRequest =
+                        LHSerializable.fromProto(p.getPutUserTaskDef(), PutUserTaskDefRequestModel.class);
                 break;
             case ASSIGN_USER_TASK_RUN:
                 assignUserTaskRun =
-                    LHSerializable.fromProto(
-                        p.getAssignUserTaskRun(),
-                        AssignUserTaskRun.class
-                    );
+                        LHSerializable.fromProto(p.getAssignUserTaskRun(), AssignUserTaskRunRequestModel.class);
                 break;
             case COMPLETE_USER_TASK_RUN:
                 completeUserTaskRun =
-                    LHSerializable.fromProto(
-                        p.getCompleteUserTaskRun(),
-                        CompleteUserTaskRun.class
-                    );
+                        LHSerializable.fromProto(p.getCompleteUserTaskRun(), CompleteUserTaskRunRequestModel.class);
                 break;
             case TRIGGERED_TASK_RUN:
-                triggeredTaskRun =
-                    LHSerializable.fromProto(
-                        p.getTriggeredTaskRun(),
-                        TriggeredTaskRun.class
-                    );
+                triggeredTaskRun = LHSerializable.fromProto(p.getTriggeredTaskRun(), TriggeredTaskRun.class);
                 break;
             case DELETE_USER_TASK_DEF:
                 deleteUserTaskDef =
-                    LHSerializable.fromProto(
-                        p.getDeleteUserTaskDef(),
-                        DeleteUserTaskDef.class
-                    );
+                        LHSerializable.fromProto(p.getDeleteUserTaskDef(), DeleteUserTaskDefRequestModel.class);
                 break;
             case REASSIGNED_USER_TASK:
-                reassignUserTask =
-                    LHSerializable.fromProto(
-                        p.getReassignedUserTask(),
-                        ReassignUserTask.class
-                    );
+                reassignUserTask = LHSerializable.fromProto(p.getReassignedUserTask(), ReassignUserTask.class);
                 break;
             case CANCEL_USER_TASK:
                 cancelUserTaskRun =
-                    LHSerializable.fromProto(
-                        p.getCancelUserTask(),
-                        CancelUserTaskRun.class
-                    );
+                        LHSerializable.fromProto(p.getCancelUserTask(), CancelUserTaskRunRequestModel.class);
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -300,13 +270,13 @@ public class Command extends LHSerializable<CommandPb> {
             case TASK_CLAIM_EVENT:
                 return taskClaimEvent;
             case PUT_EXTERNAL_EVENT:
-                return putExternalEvent;
+                return putExternalEventRequest;
             case PUT_WF_SPEC:
-                return putWfSpec;
+                return putWfSpecRequest;
             case PUT_TASK_DEF:
-                return putTaskDef;
+                return putTaskDefRequest;
             case PUT_EXTERNAL_EVENT_DEF:
-                return putExternalEventDef;
+                return putExternalEventDefRequest;
             case RUN_WF:
                 return runWf;
             case STOP_WF_RUN:
@@ -330,7 +300,7 @@ public class Command extends LHSerializable<CommandPb> {
             case DELETE_EXTERNAL_EVENT:
                 return deleteExternalEvent;
             case PUT_USER_TASK_DEF:
-                return putUserTaskDef;
+                return putUserTaskDefRequest;
             case ASSIGN_USER_TASK_RUN:
                 return assignUserTaskRun;
             case COMPLETE_USER_TASK_RUN:
@@ -350,82 +320,80 @@ public class Command extends LHSerializable<CommandPb> {
 
     public void setSubCommand(SubCommand<?> cmd) {
         Class<?> cls = cmd.getClass();
-        if (cls.equals(PutTaskDef.class)) {
+        if (cls.equals(PutTaskDefRequestModel.class)) {
             type = CommandCase.PUT_TASK_DEF;
-            putTaskDef = (PutTaskDef) cmd;
-        } else if (cls.equals(PutExternalEventDef.class)) {
+            putTaskDefRequest = (PutTaskDefRequestModel) cmd;
+        } else if (cls.equals(PutExternalEventDefRequestModel.class)) {
             type = CommandCase.PUT_EXTERNAL_EVENT_DEF;
-            putExternalEventDef = (PutExternalEventDef) cmd;
-        } else if (cls.equals(PutWfSpec.class)) {
+            putExternalEventDefRequest = (PutExternalEventDefRequestModel) cmd;
+        } else if (cls.equals(PutWfSpecRequestModel.class)) {
             type = CommandCase.PUT_WF_SPEC;
-            putWfSpec = (PutWfSpec) cmd;
-        } else if (cls.equals(RunWf.class)) {
+            putWfSpecRequest = (PutWfSpecRequestModel) cmd;
+        } else if (cls.equals(RunWfRequestModel.class)) {
             type = CommandCase.RUN_WF;
-            runWf = (RunWf) cmd;
-        } else if (cls.equals(PutExternalEvent.class)) {
+            runWf = (RunWfRequestModel) cmd;
+        } else if (cls.equals(PutExternalEventRequestModel.class)) {
             type = CommandCase.PUT_EXTERNAL_EVENT;
-            putExternalEvent = (PutExternalEvent) cmd;
-        } else if (cls.equals(ReportTaskRun.class)) {
+            putExternalEventRequest = (PutExternalEventRequestModel) cmd;
+        } else if (cls.equals(ReportTaskRunModel.class)) {
             type = CommandCase.REPORT_TASK_RUN;
-            reportTaskRun = (ReportTaskRun) cmd;
+            reportTaskRun = (ReportTaskRunModel) cmd;
         } else if (cls.equals(TaskClaimEvent.class)) {
             type = CommandCase.TASK_CLAIM_EVENT;
             taskClaimEvent = (TaskClaimEvent) cmd;
-        } else if (cls.equals(StopWfRun.class)) {
+        } else if (cls.equals(StopWfRunRequestModel.class)) {
             type = CommandCase.STOP_WF_RUN;
-            stopWfRun = (StopWfRun) cmd;
-        } else if (cls.equals(ResumeWfRun.class)) {
+            stopWfRun = (StopWfRunRequestModel) cmd;
+        } else if (cls.equals(ResumeWfRunRequestModel.class)) {
             type = CommandCase.RESUME_WF_RUN;
-            resumeWfRun = (ResumeWfRun) cmd;
+            resumeWfRun = (ResumeWfRunRequestModel) cmd;
         } else if (cls.equals(SleepNodeMatured.class)) {
             type = CommandCase.SLEEP_NODE_MATURED;
             sleepNodeMatured = (SleepNodeMatured) cmd;
-        } else if (cls.equals(DeleteWfRun.class)) {
+        } else if (cls.equals(DeleteWfRunRequestModel.class)) {
             type = CommandCase.DELETE_WF_RUN;
-            deleteWfRun = (DeleteWfRun) cmd;
-        } else if (cls.equals(DeleteExternalEventDef.class)) {
+            deleteWfRun = (DeleteWfRunRequestModel) cmd;
+        } else if (cls.equals(DeleteExternalEventDefRequestModel.class)) {
             type = CommandCase.DELETE_EXTERNAL_EVENT_DEF;
-            deleteExternalEventDef = (DeleteExternalEventDef) cmd;
-        } else if (cls.equals(DeleteTaskDef.class)) {
+            deleteExternalEventDef = (DeleteExternalEventDefRequestModel) cmd;
+        } else if (cls.equals(DeleteTaskDefRequestModel.class)) {
             type = CommandCase.DELETE_TASK_DEF;
-            deleteTaskDef = (DeleteTaskDef) cmd;
-        } else if (cls.equals(DeleteWfSpec.class)) {
+            deleteTaskDef = (DeleteTaskDefRequestModel) cmd;
+        } else if (cls.equals(DeleteWfSpecRequestModel.class)) {
             type = CommandCase.DELETE_WF_SPEC;
-            deleteWfSpec = (DeleteWfSpec) cmd;
+            deleteWfSpec = (DeleteWfSpecRequestModel) cmd;
         } else if (cls.equals(ExternalEventTimeout.class)) {
             type = CommandCase.EXTERNAL_EVENT_TIMEOUT;
             externalEventTimeout = (ExternalEventTimeout) cmd;
-        } else if (cls.equals(TaskWorkerHeartBeat.class)) {
+        } else if (cls.equals(TaskWorkerHeartBeatRequestModel.class)) {
             type = CommandCase.TASK_WORKER_HEART_BEAT;
-            taskWorkerHeartBeat = (TaskWorkerHeartBeat) cmd;
-        } else if (cls.equals(DeleteExternalEvent.class)) {
+            taskWorkerHeartBeat = (TaskWorkerHeartBeatRequestModel) cmd;
+        } else if (cls.equals(DeleteExternalEventRequestModel.class)) {
             type = CommandCase.DELETE_EXTERNAL_EVENT;
-            deleteExternalEvent = (DeleteExternalEvent) cmd;
-        } else if (cls.equals(PutUserTaskDef.class)) {
+            deleteExternalEvent = (DeleteExternalEventRequestModel) cmd;
+        } else if (cls.equals(PutUserTaskDefRequestModel.class)) {
             type = CommandCase.PUT_USER_TASK_DEF;
-            putUserTaskDef = (PutUserTaskDef) cmd;
-        } else if (cls.equals(AssignUserTaskRun.class)) {
+            putUserTaskDefRequest = (PutUserTaskDefRequestModel) cmd;
+        } else if (cls.equals(AssignUserTaskRunRequestModel.class)) {
             type = CommandCase.ASSIGN_USER_TASK_RUN;
-            assignUserTaskRun = (AssignUserTaskRun) cmd;
-        } else if (cls.equals(CompleteUserTaskRun.class)) {
+            assignUserTaskRun = (AssignUserTaskRunRequestModel) cmd;
+        } else if (cls.equals(CompleteUserTaskRunRequestModel.class)) {
             type = CommandCase.COMPLETE_USER_TASK_RUN;
-            completeUserTaskRun = (CompleteUserTaskRun) cmd;
+            completeUserTaskRun = (CompleteUserTaskRunRequestModel) cmd;
         } else if (cls.equals(TriggeredTaskRun.class)) {
             type = CommandCase.TRIGGERED_TASK_RUN;
             triggeredTaskRun = (TriggeredTaskRun) cmd;
-        } else if (cls.equals(DeleteUserTaskDef.class)) {
+        } else if (cls.equals(DeleteUserTaskDefRequestModel.class)) {
             type = CommandCase.DELETE_USER_TASK_DEF;
-            deleteUserTaskDef = (DeleteUserTaskDef) cmd;
+            deleteUserTaskDef = (DeleteUserTaskDefRequestModel) cmd;
         } else if (cls.equals(ReassignUserTask.class)) {
             type = CommandCase.REASSIGNED_USER_TASK;
             reassignUserTask = (ReassignUserTask) cmd;
-        } else if (cls.equals(CancelUserTaskRun.class)) {
+        } else if (cls.equals(CancelUserTaskRunRequestModel.class)) {
             type = CommandCase.CANCEL_USER_TASK;
-            cancelUserTaskRun = (CancelUserTaskRun) cmd;
+            cancelUserTaskRun = (CancelUserTaskRunRequestModel) cmd;
         } else {
-            throw new IllegalArgumentException(
-                "Unrecognized SubCommand class: " + cls.getName()
-            );
+            throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }
     }
 

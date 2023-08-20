@@ -3,12 +3,12 @@ package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repa
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.model.metrics.WfSpecMetrics;
-import io.littlehorse.common.model.objectId.WfSpecMetricsId;
+import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
+import io.littlehorse.common.model.objectId.WfSpecMetricsIdModel;
 import io.littlehorse.common.proto.WfMetricUpdatePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
+import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import java.util.Date;
@@ -16,12 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 @Slf4j
-public class WfMetricUpdate
-    extends Storeable<WfMetricUpdatePb>
-    implements RepartitionSubCommand {
+public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements RepartitionSubCommand {
 
     public Date windowStart;
-    public MetricsWindowLengthPb type;
+    public MetricsWindowLength type;
     public long numEntries;
     public long startToCompleteMax;
     public long startToCompleteTotal;
@@ -34,12 +32,7 @@ public class WfMetricUpdate
 
     public WfMetricUpdate() {}
 
-    public WfMetricUpdate(
-        Date windowStart,
-        MetricsWindowLengthPb type,
-        String wfSpecName,
-        int wfSpecVersion
-    ) {
+    public WfMetricUpdate(Date windowStart, MetricsWindowLength type, String wfSpecName, int wfSpecVersion) {
         this.windowStart = windowStart;
         this.type = type;
         this.wfSpecName = wfSpecName;
@@ -51,18 +44,17 @@ public class WfMetricUpdate
     }
 
     public WfMetricUpdatePb.Builder toProto() {
-        WfMetricUpdatePb.Builder out = WfMetricUpdatePb
-            .newBuilder()
-            .setWindowStart(LHLibUtil.fromDate(windowStart))
-            .setType(type)
-            .setWfSpecName(wfSpecName)
-            .setWfSpecVersion(wfSpecVersion)
-            .setTotalCompleted(totalCompleted)
-            .setTotalErrored(totalErrored)
-            .setTotalStarted(totalStarted)
-            .setStartToCompleteTotal(startToCompleteTotal)
-            .setStartToCompleteMax(startToCompleteMax)
-            .setNumEntries(numEntries);
+        WfMetricUpdatePb.Builder out = WfMetricUpdatePb.newBuilder()
+                .setWindowStart(LHLibUtil.fromDate(windowStart))
+                .setType(type)
+                .setWfSpecName(wfSpecName)
+                .setWfSpecVersion(wfSpecVersion)
+                .setTotalCompleted(totalCompleted)
+                .setTotalErrored(totalErrored)
+                .setTotalStarted(totalStarted)
+                .setStartToCompleteTotal(startToCompleteTotal)
+                .setStartToCompleteMax(startToCompleteMax)
+                .setNumEntries(numEntries);
 
         return out;
     }
@@ -104,10 +96,9 @@ public class WfMetricUpdate
         totalStarted += o.totalStarted;
     }
 
-    public WfSpecMetrics toResponse() {
-        WfSpecMetrics out = new WfSpecMetrics();
-        out.startToCompleteAvg =
-            totalCompleted > 0 ? startToCompleteTotal / totalCompleted : 0;
+    public WfSpecMetricsModel toResponse() {
+        WfSpecMetricsModel out = new WfSpecMetricsModel();
+        out.startToCompleteAvg = totalCompleted > 0 ? startToCompleteTotal / totalCompleted : 0;
         out.startToCompleteMax = startToCompleteMax;
         out.wfSpecName = wfSpecName;
         out.wfSpecVersion = wfSpecVersion;
@@ -121,13 +112,7 @@ public class WfMetricUpdate
     }
 
     public String getClusterLevelWindow() {
-        return new WfSpecMetricsId(
-            windowStart,
-            type,
-            LHConstants.CLUSTER_LEVEL_METRIC,
-            0
-        )
-            .getStoreKey();
+        return new WfSpecMetricsIdModel(windowStart, type, LHConstants.CLUSTER_LEVEL_METRIC, 0).getStoreKey();
     }
 
     public void process(LHStoreWrapper store, ProcessorContext<Void, Void> ctx) {
@@ -148,40 +133,23 @@ public class WfMetricUpdate
         return wfSpecName;
     }
 
-    public static String getObjectId(
-        MetricsWindowLengthPb type,
-        Date windowStart,
-        String wfSpecName,
-        int wfSpecVersion
-    ) {
-        return WfSpecMetrics.getObjectId(
-            type,
-            windowStart,
-            wfSpecName,
-            wfSpecVersion
-        );
+    public static String getObjectId(MetricsWindowLength type, Date windowStart, String wfSpecName, int wfSpecVersion) {
+        return WfSpecMetricsModel.getObjectId(type, windowStart, wfSpecName, wfSpecVersion);
     }
 
-    public static String getStoreKey(
-        MetricsWindowLengthPb type,
-        Date windowStart,
-        String wfSpecName,
-        int wfSpecVersion
-    ) {
+    public static String getStoreKey(MetricsWindowLength type, Date windowStart, String wfSpecName, int wfSpecVersion) {
         return LHUtil.getCompositeId(
-            LHUtil.toLhDbFormat(windowStart),
-            type.toString(),
-            wfSpecName,
-            LHUtil.toLHDbVersionFormat(wfSpecVersion)
-        );
+                LHUtil.toLhDbFormat(windowStart),
+                type.toString(),
+                wfSpecName,
+                LHUtil.toLHDbVersionFormat(wfSpecVersion));
     }
 
     public String getStoreKey() {
         return LHUtil.getCompositeId(
-            LHUtil.toLhDbFormat(windowStart),
-            type.toString(),
-            wfSpecName,
-            LHUtil.toLHDbVersionFormat(wfSpecVersion)
-        );
+                LHUtil.toLhDbFormat(windowStart),
+                type.toString(),
+                wfSpecName,
+                LHUtil.toLHDbVersionFormat(wfSpecVersion));
     }
 }

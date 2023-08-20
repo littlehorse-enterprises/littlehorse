@@ -28,8 +28,7 @@ public class LHConstants {
     public static final String VAR_ERROR = "VAR_ERROR";
     public static final String TASK_ERROR = "TASK_ERROR";
     public static final String INTERNAL_ERROR = "INTERNAL_ERROR";
-    public static final Set<String> RESERVED_EXCEPTION_NAMES = new HashSet<>(
-        Arrays.asList(
+    public static final Set<String> RESERVED_EXCEPTION_NAMES = new HashSet<>(Arrays.asList(
             CHILD_FAILURE,
             VAR_SUB_ERROR,
             VAR_MUTATION_ERROR,
@@ -38,9 +37,7 @@ public class LHConstants {
             VAR_ERROR,
             TASK_ERROR,
             INTERNAL_ERROR,
-            USER_TASK_CANCELLED
-        )
-    );
+            USER_TASK_CANCELLED));
 
     public static final int DEFAULT_TASK_TIMEOUT_SECONDS = 15;
 

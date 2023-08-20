@@ -3,37 +3,33 @@ package io.littlehorse.common.model.command.subcommandresponse;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.CancelUserTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.CancelUserTaskRunResponse;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 
-public class CancelUserTaskRunReply
-    extends AbstractResponse<CancelUserTaskRunReplyPb> {
+public class CancelUserTaskRunReply extends AbstractResponse<CancelUserTaskRunResponse> {
 
     private String message;
-    private LHResponseCodePb lhResponseCodePb;
+    private LHResponseCode lhResponseCodePb;
 
-    public CancelUserTaskRunReply(String message, LHResponseCodePb lhResponseCodePb) {
+    public CancelUserTaskRunReply(String message, LHResponseCode lhResponseCodePb) {
         this.message = message;
         this.lhResponseCodePb = lhResponseCodePb;
     }
 
     @Override
-    public CancelUserTaskRunReplyPb.Builder toProto() {
-        return CancelUserTaskRunReplyPb
-            .newBuilder()
-            .setCode(lhResponseCodePb)
-            .setMessage(message);
+    public CancelUserTaskRunResponse.Builder toProto() {
+        return CancelUserTaskRunResponse.newBuilder().setCode(lhResponseCodePb).setMessage(message);
     }
 
     @Override
     public void initFrom(Message proto) throws LHSerdeError {
-        CancelUserTaskRunReplyPb cancelUserTaskRunReplyPb = (CancelUserTaskRunReplyPb) proto;
-        message = cancelUserTaskRunReplyPb.getMessage();
-        lhResponseCodePb = cancelUserTaskRunReplyPb.getCode();
+        CancelUserTaskRunResponse cancelUserTaskRunResponse = (CancelUserTaskRunResponse) proto;
+        message = cancelUserTaskRunResponse.getMessage();
+        lhResponseCodePb = cancelUserTaskRunResponse.getCode();
     }
 
     @Override
-    public Class<CancelUserTaskRunReplyPb> getProtoBaseClass() {
-        return CancelUserTaskRunReplyPb.class;
+    public Class<CancelUserTaskRunResponse> getProtoBaseClass() {
+        return CancelUserTaskRunResponse.class;
     }
 }

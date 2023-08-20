@@ -33,13 +33,9 @@ public class TagsCache extends LHSerializable<TagsCachePb> {
     }
 
     public TagsCachePb.Builder toProto() {
-        List<CachedTagPb> cachedTagPbs = tags
-            .stream()
-            .map(cachedTag -> cachedTag.toProto().build())
-            .toList();
-        TagsCachePb.Builder out = TagsCachePb
-            .newBuilder()
-            .addAllCachedTags(cachedTagPbs);
+        List<CachedTagPb> cachedTagPbs =
+                tags.stream().map(cachedTag -> cachedTag.toProto().build()).toList();
+        TagsCachePb.Builder out = TagsCachePb.newBuilder().addAllCachedTags(cachedTagPbs);
         return out;
     }
 

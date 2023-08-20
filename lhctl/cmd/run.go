@@ -31,7 +31,7 @@ lhctl run my_workflow_id foo '{"bar":"baz"}'
 			log.Fatal("You must provide at least 1 arg: WfSpec Id.")
 		}
 
-		runReq := &model.RunWfPb{}
+		runReq := &model.RunWfRequest{}
 
 		wfSpecName := args[0]
 		runReq.WfSpecName = wfSpecName
@@ -59,18 +59,18 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			}
 
 			// Now, we need to look up the wfSpec and serialize the variables.
-			var wfSpecReply *model.GetWfSpecReplyPb
+			var wfSpecReply *model.GetWfSpecResponse
 			var err error
 
 			if wfSpecVersion == nil {
 				wfSpecReply, err = getGlobalClient(cmd).GetLatestWfSpec(
 					context.Background(),
-					&model.GetLatestWfSpecPb{Name: args[0]},
+					&model.GetLatestWfSpecRequest{Name: args[0]},
 				)
 			} else {
 				wfSpecReply, err = getGlobalClient(cmd).GetWfSpec(
 					context.Background(),
-					&model.WfSpecIdPb{
+					&model.WfSpecId{
 						Name:    args[0],
 						Version: *wfSpecVersion,
 					})
@@ -79,7 +79,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			if err != nil {
 				log.Fatal("Unable to find WfSpec: " + err.Error())
 			}
-			if wfSpecReply.Code != model.LHResponseCodePb_OK {
+			if wfSpecReply.Code != model.LHResponseCode_OK {
 				msg := "Unable to find WfSpec"
 				if wfSpecReply.Message != nil {
 					msg += ": " + *wfSpecReply.Message
@@ -88,7 +88,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			}
 
 			wfSpec := wfSpecReply.Result
-			runReq.Variables = make(map[string]*model.VariableValuePb)
+			runReq.Variables = make(map[string]*model.VariableValue)
 			varDefs := common.GetInputVarDefs(wfSpec)
 
 			for i := 1; i+1 < len(args); i += 2 {

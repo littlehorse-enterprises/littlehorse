@@ -14,11 +14,7 @@ public class CommandProcessorOutput {
 
     public CommandProcessorOutput() {}
 
-    public CommandProcessorOutput(
-        String topic,
-        LHSerializable<?> payload,
-        String partitionKey
-    ) {
+    public CommandProcessorOutput(String topic, LHSerializable<?> payload, String partitionKey) {
         this.topic = topic;
         this.payload = payload;
         this.partitionKey = partitionKey;

@@ -3,9 +3,9 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
 import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
@@ -35,14 +35,14 @@ public class UserTasksExample {
     }
 
     public void wf(ThreadBuilder thread) {
-        WfRunVariable userId = thread.addVariable("user-id", VariableTypePb.STR);
+        WfRunVariable userId = thread.addVariable("user-id", VariableType.STR);
         WfRunVariable itRequest = thread.addVariable(
             "it-request",
-            VariableTypePb.JSON_OBJ
+            VariableType.JSON_OBJ
         );
         WfRunVariable isApproved = thread.addVariable(
             "is-approved",
-            VariableTypePb.BOOL
+            VariableType.BOOL
         );
 
         // Get the IT Request
@@ -59,7 +59,7 @@ public class UserTasksExample {
                 handler.execute(EMAIL_TASK_NAME, email, "Task cancelled");
             }
         );
-        thread.mutate(itRequest, VariableMutationTypePb.ASSIGN, formOutput);
+        thread.mutate(itRequest, VariableMutationType.ASSIGN, formOutput);
 
         // Have Finance approve the request
         UserTaskOutput financeUserTaskOutput = thread
@@ -89,12 +89,12 @@ public class UserTasksExample {
 
         thread.mutate(
             isApproved,
-            VariableMutationTypePb.ASSIGN,
+            VariableMutationType.ASSIGN,
             financeUserTaskOutput.jsonPath("$.isApproved")
         );
 
         thread.doIfElse(
-            thread.condition(isApproved, ComparatorPb.EQUALS, true),
+            thread.condition(isApproved, Comparator.EQUALS, true),
             // Request approved!
             ifBody -> {
                 ifBody.execute(

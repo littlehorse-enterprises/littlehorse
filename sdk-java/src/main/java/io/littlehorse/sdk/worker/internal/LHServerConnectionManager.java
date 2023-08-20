@@ -5,17 +5,17 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.HostInfoPb;
+import io.littlehorse.sdk.common.proto.HostInfo;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.RegisterTaskWorkerPb;
-import io.littlehorse.sdk.common.proto.RegisterTaskWorkerReplyPb;
-import io.littlehorse.sdk.common.proto.ReportTaskRunPb;
-import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
-import io.littlehorse.sdk.common.proto.TaskDefPb;
-import io.littlehorse.sdk.common.proto.TaskStatusPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
-import io.littlehorse.sdk.common.proto.VariableValuePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
+import io.littlehorse.sdk.common.proto.ReportTaskRun;
+import io.littlehorse.sdk.common.proto.ScheduledTask;
+import io.littlehorse.sdk.common.proto.TaskDef;
+import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.sdk.worker.internal.util.ReportTaskObserver;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
@@ -34,14 +34,13 @@ import java.util.concurrent.Semaphore;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class LHServerConnectionManager
-    implements StreamObserver<RegisterTaskWorkerReplyPb>, Closeable {
+public class LHServerConnectionManager implements StreamObserver<RegisterTaskWorkerResponse>, Closeable {
 
     public Object executable;
     public Method taskMethod;
     public LHWorkerConfig config;
     public List<VariableMapping> mappings;
-    public TaskDefPb taskDef;
+    public TaskDef taskDef;
 
     private boolean running;
     private List<LHServerConnection> runningConnections;
@@ -53,12 +52,12 @@ public class LHServerConnectionManager
     private static final int TOTAL_RETRIES = 5;
 
     public LHServerConnectionManager(
-        Method taskMethod,
-        TaskDefPb taskDef,
-        LHWorkerConfig config,
-        List<VariableMapping> mappings,
-        Object executable
-    ) throws IOException {
+            Method taskMethod,
+            TaskDef taskDef,
+            LHWorkerConfig config,
+            List<VariableMapping> mappings,
+            Object executable)
+            throws IOException {
         this.executable = executable;
         this.taskMethod = taskMethod;
         taskMethod.setAccessible(true);
@@ -73,76 +72,58 @@ public class LHServerConnectionManager
         this.workerSemaphore = new Semaphore(config.getWorkerThreads());
         this.threadPool = Executors.newFixedThreadPool(config.getWorkerThreads());
 
-        this.rebalanceThread =
-            new Thread(() -> {
-                while (this.running) {
-                    doHeartbeat();
-                    try {
-                        Thread.sleep(5000);
-                    } catch (Exception ignored) {
-                        // Ignored
-                    }
+        this.rebalanceThread = new Thread(() -> {
+            while (this.running) {
+                doHeartbeat();
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception ignored) {
+                    // Ignored
                 }
-            });
+            }
+        });
     }
 
-    public void submitTaskForExecution(
-        ScheduledTaskPb scheduledTask,
-        LHPublicApiStub specificStub
-    ) {
+    public void submitTaskForExecution(ScheduledTask scheduledTask, LHPublicApiStub specificStub) {
         try {
             this.workerSemaphore.acquire();
         } catch (InterruptedException exn) {
             throw new RuntimeException(exn);
         }
         this.threadPool.submit(() -> {
-                this.doTask(scheduledTask, specificStub);
-            });
+            this.doTask(scheduledTask, specificStub);
+        });
     }
 
-    private void doTask(ScheduledTaskPb scheduledTask, LHPublicApiStub specificStub) {
-        ReportTaskRunPb result = executeTask(
-            scheduledTask,
-            LHLibUtil.fromProtoTs(scheduledTask.getCreatedAt())
-        );
+    private void doTask(ScheduledTask scheduledTask, LHPublicApiStub specificStub) {
+        ReportTaskRun result = executeTask(scheduledTask, LHLibUtil.fromProtoTs(scheduledTask.getCreatedAt()));
         this.workerSemaphore.release();
         String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource());
         try {
             log.debug("Going to report task for wfRun {}", wfRunId);
-            specificStub.reportTask(
-                result,
-                new ReportTaskObserver(this, result, TOTAL_RETRIES)
-            );
-            log.debug(
-                "Successfully contacted LHServer on reportTask for wfRun {}",
-                wfRunId
-            );
+            specificStub.reportTask(result, new ReportTaskObserver(this, result, TOTAL_RETRIES));
+            log.debug("Successfully contacted LHServer on reportTask for wfRun {}", wfRunId);
         } catch (Exception exn) {
-            log.warn(
-                "Failed to report task for wfRun {}: {}",
-                wfRunId,
-                exn.getMessage()
-            );
+            log.warn("Failed to report task for wfRun {}: {}", wfRunId, exn.getMessage());
             retryReportTask(result, TOTAL_RETRIES);
         }
     }
 
     @Override
-    public void onNext(RegisterTaskWorkerReplyPb next) {
-        if (next.getCode() == LHResponseCodePb.BAD_REQUEST_ERROR) {
+    public void onNext(RegisterTaskWorkerResponse next) {
+        if (next.getCode() == LHResponseCode.BAD_REQUEST_ERROR) {
             throw new RuntimeException("Invalid configuration: " + next.getMessage());
         }
         // Reconcile what's running
-        for (HostInfoPb host : next.getYourHostsList()) {
+        for (HostInfo host : next.getYourHostsList()) {
             if (!isAlreadyRunning(host)) {
                 try {
                     runningConnections.add(new LHServerConnection(this, host));
                     log.info(
-                        "Adding connection to: {}:{} for taskdef {}",
-                        host.getHost(),
-                        host.getPort(),
-                        taskDef.getName()
-                    );
+                            "Adding connection to: {}:{} for taskdef {}",
+                            host.getHost(),
+                            host.getPort(),
+                            taskDef.getName());
                 } catch (IOException exn) {
                     log.error("Yikes, caught IOException in onNext", exn);
                     throw new RuntimeException(exn);
@@ -154,24 +135,23 @@ public class LHServerConnectionManager
             LHServerConnection runningThread = runningConnections.get(i);
             if (!shouldBeRunning(runningThread, next.getYourHostsList())) {
                 log.info(
-                    "Stopping worker thread for host {}:{}",
-                    runningThread.getHostInfo().getHost(),
-                    runningThread.getHostInfo().getPort()
-                );
+                        "Stopping worker thread for host {}:{}",
+                        runningThread.getHostInfo().getHost(),
+                        runningThread.getHostInfo().getPort());
                 runningThread.close();
                 runningConnections.remove(i);
             }
         }
     }
 
-    private boolean shouldBeRunning(LHServerConnection ssc, List<HostInfoPb> hosts) {
-        for (HostInfoPb h : hosts) {
+    private boolean shouldBeRunning(LHServerConnection ssc, List<HostInfo> hosts) {
+        for (HostInfo h : hosts) {
             if (ssc.isSameAs(h)) return true;
         }
         return false;
     }
 
-    private boolean isAlreadyRunning(HostInfoPb host) {
+    private boolean isAlreadyRunning(HostInfo host) {
         for (LHServerConnection ssc : runningConnections) {
             if (ssc.isSameAs(host)) {
                 return true;
@@ -183,11 +163,10 @@ public class LHServerConnectionManager
     @Override
     public void onError(Throwable t) {
         log.error(
-            "Failed contacting bootstrap host {}:{}",
-            config.getApiBootstrapHost(),
-            config.getApiBootstrapPort(),
-            t
-        );
+                "Failed contacting bootstrap host {}:{}",
+                config.getApiBootstrapHost(),
+                config.getApiBootstrapPort(),
+                t);
         // We don't close the connections to other hosts here since they will do
         // that themselves if they can't connect.
     }
@@ -199,17 +178,16 @@ public class LHServerConnectionManager
 
     private void doHeartbeat() {
         bootstrapStub.registerTaskWorker(
-            RegisterTaskWorkerPb
-                .newBuilder()
-                .setTaskDefName(taskDef.getName())
-                .setClientId(config.getClientId())
-                .setListenerName(config.getConnectListener())
-                .build(),
-            this // the callbacks come back to this manager.
-        );
+                RegisterTaskWorkerRequest.newBuilder()
+                        .setTaskDefName(taskDef.getName())
+                        .setClientId(config.getClientId())
+                        .setListenerName(config.getConnectListener())
+                        .build(),
+                this // the callbacks come back to this manager.
+                );
     }
 
-    public void retryReportTask(ReportTaskRunPb result, int retriesLeft) {
+    public void retryReportTask(ReportTaskRun result, int retriesLeft) {
         // EMPLOYEE_TODO: create a queue or something that has delay and multiple
         // retries. This thing just tries again with the bootstrap host and hopes
         // that the request finds the right
@@ -218,20 +196,15 @@ public class LHServerConnectionManager
         // That's why we need an employee to fix it ;)
 
         threadPool.submit(() -> {
-            log.debug(
-                "Retrying reportTask rpc on taskRun {}",
-                LHLibUtil.taskRunIdToString(result.getTaskRunId())
-            );
+            log.debug("Retrying reportTask rpc on taskRun {}", LHLibUtil.taskRunIdToString(result.getTaskRunId()));
             try {
                 // This should also slow down progress on tasks too, which should
                 // help prevent tons of overflow.
                 // EMPLOYEE_TODO: make this a bit better oops
                 Thread.sleep(500);
-            } catch (Exception ignored) {}
-            bootstrapStub.reportTask(
-                result,
-                new ReportTaskObserver(this, result, retriesLeft - 1)
-            );
+            } catch (Exception ignored) {
+            }
+            bootstrapStub.reportTask(result, new ReportTaskObserver(this, result, retriesLeft - 1));
         });
     }
 
@@ -256,53 +229,45 @@ public class LHServerConnectionManager
 
     // Below is actual task execution logic
 
-    private ReportTaskRunPb executeTask(
-        ScheduledTaskPb scheduledTask,
-        Date scheduleTime
-    ) {
-        ReportTaskRunPb.Builder taskResult = ReportTaskRunPb
-            .newBuilder()
-            .setTaskRunId(scheduledTask.getTaskRunId())
-            .setAttemptNumber(scheduledTask.getAttemptNumber());
+    private ReportTaskRun executeTask(ScheduledTask scheduledTask, Date scheduleTime) {
+        ReportTaskRun.Builder taskResult = ReportTaskRun.newBuilder()
+                .setTaskRunId(scheduledTask.getTaskRunId())
+                .setAttemptNumber(scheduledTask.getAttemptNumber());
 
         WorkerContext wc = new WorkerContext(scheduledTask, scheduleTime);
 
         try {
             Object rawResult = invoke(scheduledTask, wc);
-            VariableValuePb serialized = LHLibUtil.objToVarVal(rawResult);
-            taskResult
-                .setOutput(serialized.toBuilder())
-                .setStatus(TaskStatusPb.TASK_SUCCESS);
+            VariableValue serialized = LHLibUtil.objToVarVal(rawResult);
+            taskResult.setOutput(serialized.toBuilder()).setStatus(TaskStatus.TASK_SUCCESS);
 
             if (wc.getLogOutput() != null) {
-                taskResult.setLogOutput(
-                    VariableValuePb.newBuilder().setStr(wc.getLogOutput())
-                );
+                taskResult.setLogOutput(VariableValue.newBuilder().setStr(wc.getLogOutput()));
             }
         } catch (InputVarSubstitutionError exn) {
             log.error("Failed calculating task input variables", exn);
             taskResult.setLogOutput(exnToVarVal(exn, wc));
-            taskResult.setStatus(TaskStatusPb.TASK_INPUT_VAR_SUB_ERROR);
+            taskResult.setStatus(TaskStatus.TASK_INPUT_VAR_SUB_ERROR);
         } catch (LHSerdeError exn) {
             log.error("Failed serializing Task Output", exn);
             taskResult.setLogOutput(exnToVarVal(exn, wc));
-            taskResult.setStatus(TaskStatusPb.TASK_OUTPUT_SERIALIZING_ERROR);
+            taskResult.setStatus(TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR);
         } catch (InvocationTargetException exn) {
             log.error("Task Method threw an exception", exn.getCause());
             taskResult.setLogOutput(exnToVarVal(exn.getCause(), wc));
-            taskResult.setStatus(TaskStatusPb.TASK_FAILED);
+            taskResult.setStatus(TaskStatus.TASK_FAILED);
         } catch (Exception exn) {
             log.error("Unexpected exception during task execution", exn);
             taskResult.setLogOutput(exnToVarVal(exn, wc));
-            taskResult.setStatus(TaskStatusPb.TASK_FAILED);
+            taskResult.setStatus(TaskStatus.TASK_FAILED);
         }
 
         taskResult.setTime(LHLibUtil.fromDate(new Date()));
         return taskResult.build();
     }
 
-    private Object invoke(ScheduledTaskPb scheduledTask, WorkerContext context)
-        throws InputVarSubstitutionError, Exception {
+    private Object invoke(ScheduledTask scheduledTask, WorkerContext context)
+            throws InputVarSubstitutionError, Exception {
         List<Object> inputs = new ArrayList<>();
         for (VariableMapping mapping : this.mappings) {
             inputs.add(mapping.assign(scheduledTask, context));
@@ -311,7 +276,7 @@ public class LHServerConnectionManager
         return this.taskMethod.invoke(this.executable, inputs.toArray());
     }
 
-    private VariableValuePb.Builder exnToVarVal(Throwable exn, WorkerContext ctx) {
+    private VariableValue.Builder exnToVarVal(Throwable exn, WorkerContext ctx) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         exn.printStackTrace(pw);
@@ -320,10 +285,7 @@ public class LHServerConnectionManager
             output += "\n\n\n\n" + ctx.getLogOutput();
         }
 
-        return VariableValuePb
-            .newBuilder()
-            .setStr(output)
-            .setType(VariableTypePb.STR);
+        return VariableValue.newBuilder().setStr(output).setType(VariableType.STR);
     }
 
     public int getNumThreads() {

@@ -5,13 +5,13 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.NodeRunPb;
-import io.littlehorse.sdk.common.proto.NodeRunPb.NodeTypeCase;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
-import io.littlehorse.sdk.common.proto.TaskRunPb;
-import io.littlehorse.sdk.common.proto.VariableValuePb;
-import io.littlehorse.sdk.common.proto.WfRunPb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.NodeRun;
+import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.TaskRun;
+import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -29,7 +29,7 @@ public abstract class WorkflowLogicTest extends Test {
     private static Logger log = LoggerFactory.getLogger(WorkflowLogicTest.class);
 
     public abstract List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, LHApiError, InterruptedException;
+            throws TestFailure, LHApiError, InterruptedException;
 
     protected abstract Workflow getWorkflowImpl();
 
@@ -94,50 +94,41 @@ public abstract class WorkflowLogicTest extends Test {
         return result.toString();
     }
 
-    protected void deploy(LHClient client, LHWorkerConfig workerConfig)
-        throws TestFailure {
+    protected void deploy(LHClient client, LHWorkerConfig workerConfig) throws TestFailure {
         workers = new ArrayList<>();
 
         // Now need to create LHTaskWorkers and run them for all worker objects.
         for (Object executable : getTaskWorkerObjects()) {
-            for (LHTaskWorker worker : getWorkersFromExecutable(
-                executable,
-                workerConfig
-            )) {
+            for (LHTaskWorker worker : getWorkersFromExecutable(executable, workerConfig)) {
                 workers.add(worker);
                 try {
                     worker.registerTaskDef(true);
                     worker.start();
                 } catch (LHApiError exn) {
                     exn.printStackTrace();
-                    throw new TestFailure(
-                        this,
-                        "Failed to start worker, failing test."
-                    );
+                    throw new TestFailure(this, "Failed to start worker, failing test.");
                 }
             }
         }
 
-        Set<String> requiredExternalEventDefNames = getWorkflow()
-            .getRequiredExternalEventDefNames();
+        Set<String> requiredExternalEventDefNames = getWorkflow().getRequiredExternalEventDefNames();
 
         for (String externalEvent : requiredExternalEventDefNames) {
             try {
                 client.putExternalEventDef(
-                    PutExternalEventDefPb.newBuilder().setName(externalEvent).build(),
-                    true
-                );
+                        PutExternalEventDefRequest.newBuilder()
+                                .setName(externalEvent)
+                                .build(),
+                        true);
             } catch (LHApiError exn) {
-                throw new TestFailure(
-                    this,
-                    "Failed deploying external event def: " + exn.getMessage()
-                );
+                throw new TestFailure(this, "Failed deploying external event def: " + exn.getMessage());
             }
         }
 
         try {
             Thread.sleep(WAIT_TIME_BETWEEN_REGISTER);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         // Now deploy the WF
         try {
@@ -145,30 +136,24 @@ public abstract class WorkflowLogicTest extends Test {
 
             try {
                 Thread.sleep(WAIT_TIME_BETWEEN_REGISTER);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
 
             wfSpecVersion = client.getWfSpec(getWorkflowName(), null).getVersion();
         } catch (LHApiError exn) {
-            throw new TestFailure(
-                this,
-                "Failed deploying test case: " + exn.getMessage()
-            );
+            throw new TestFailure(this, "Failed deploying test case: " + exn.getMessage());
         }
 
         log.info("Done deploying for testCase " + getWorkflowName());
     }
 
-    private List<LHTaskWorker> getWorkersFromExecutable(
-        Object exe,
-        LHWorkerConfig workerConfig
-    ) throws TestFailure {
+    private List<LHTaskWorker> getWorkersFromExecutable(Object exe, LHWorkerConfig workerConfig) throws TestFailure {
         List<LHTaskWorker> out = new ArrayList<>();
 
         for (Method method : exe.getClass().getMethods()) {
             if (method.isAnnotationPresent(LHTaskMethod.class)) {
-                String taskDefForThisMethod = method
-                    .getAnnotation(LHTaskMethod.class)
-                    .value();
+                String taskDefForThisMethod =
+                        method.getAnnotation(LHTaskMethod.class).value();
 
                 out.add(new LHTaskWorker(exe, taskDefForThisMethod, workerConfig));
             }
@@ -177,19 +162,12 @@ public abstract class WorkflowLogicTest extends Test {
         return out;
     }
 
-    protected String runWf(LHClient client, Arg... params)
-        throws TestFailure, LHApiError {
+    protected String runWf(LHClient client, Arg... params) throws TestFailure, LHApiError {
         return runWf(generateGuid(), client, params);
     }
 
-    protected String runWf(String id, LHClient client, Arg... params)
-        throws TestFailure, LHApiError {
-        String resultingId = client.runWf(
-            getWorkflowName(),
-            wfSpecVersion,
-            id,
-            params
-        );
+    protected String runWf(String id, LHClient client, Arg... params) throws TestFailure, LHApiError {
+        String resultingId = client.runWf(getWorkflowName(), wfSpecVersion, id, params);
 
         log.info("Test {} launched: {}", getWorkflowName(), resultingId);
 
@@ -199,26 +177,21 @@ public abstract class WorkflowLogicTest extends Test {
         return resultingId;
     }
 
-    protected String runWithInputsAndCheckPath(
-        LHClient client,
-        Object input,
-        Object... expectedPath
-    ) throws TestFailure, InterruptedException, LHApiError {
+    protected String runWithInputsAndCheckPath(LHClient client, Object input, Object... expectedPath)
+            throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("input", input));
         Thread.sleep(100 * (expectedPath.length + 1));
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
-        WfRunPb wfRun = getWfRun(client, wfRunId);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
+        WfRun wfRun = getWfRun(client, wfRunId);
 
-        List<VariableValuePb> actualPath = new ArrayList<>();
+        List<VariableValue> actualPath = new ArrayList<>();
         for (int i = 1; i < wfRun.getThreadRuns(0).getCurrentNodePosition(); i++) {
-            NodeRunPb nr = getNodeRun(client, wfRunId, 0, i);
+            NodeRun nr = getNodeRun(client, wfRunId, 0, i);
             if (nr.getNodeTypeCase() != NodeTypeCase.TASK) {
                 continue;
             }
-            TaskRunPb taskRun = getTaskRun(client, nr.getTask().getTaskRunId());
-            actualPath.add(
-                taskRun.getAttempts(taskRun.getAttemptsCount() - 1).getOutput()
-            );
+            TaskRun taskRun = getTaskRun(client, nr.getTask().getTaskRunId());
+            actualPath.add(taskRun.getAttempts(taskRun.getAttemptsCount() - 1).getOutput());
         }
 
         if (expectedPath.length != actualPath.size()) {
@@ -227,14 +200,9 @@ public abstract class WorkflowLogicTest extends Test {
 
         for (int i = 0; i < expectedPath.length; i++) {
             Object expected = expectedPath[i];
-            VariableValuePb actual = actualPath.get(i);
+            VariableValue actual = actualPath.get(i);
             try {
-                if (
-                    !LHLibUtil.areVariableValuesEqual(
-                        actual,
-                        LHLibUtil.objToVarVal(expected)
-                    )
-                ) {
+                if (!LHLibUtil.areVariableValuesEqual(actual, LHLibUtil.objToVarVal(expected))) {
                     fail("Went down the wrong path!", wfRunId, input);
                 }
             } catch (LHSerdeError exn) {

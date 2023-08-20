@@ -4,24 +4,20 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCode;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * RP: The Response Protobuf
- * OP: The Individual Entry Protobuf
- * OJ: The Individual Entry Java Object
+ * RP: The Response Protobuf OP: The Individual Entry Protobuf OJ: The Individual Entry Java Object
  */
-public abstract class PublicScanReply<
-    RP extends Message, OP extends Message, OJ extends LHSerializable<OP>
->
-    extends LHSerializable<RP> {
+public abstract class PublicScanReply<RP extends Message, OP extends Message, OJ extends LHSerializable<OP>>
+        extends LHSerializable<RP> {
 
     public ByteString bookmark;
-    public LHResponseCodePb code;
+    public LHResponseCode code;
     public String message;
     public List<OJ> results;
 
@@ -49,18 +45,14 @@ public abstract class PublicScanReply<
                 setMsg.invoke(builder, message);
             }
 
-            Method setCode = builderCls.getMethod("setCode", LHResponseCodePb.class);
+            Method setCode = builderCls.getMethod("setCode", LHResponseCode.class);
             setCode.invoke(builder, code);
 
             Method addResults = builderCls.getMethod("addResults", resCls);
             for (OJ result : results) {
                 addResults.invoke(builder, result.toProto().build());
             }
-        } catch (
-            InvocationTargetException
-            | NoSuchMethodException
-            | IllegalAccessException exn
-        ) {
+        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException exn) {
             throw new RuntimeException(exn);
         }
         return (GeneratedMessageV3.Builder<?>) builder;
@@ -83,22 +75,16 @@ public abstract class PublicScanReply<
             }
 
             Method getCode = baseCls.getDeclaredMethod("getCode");
-            code = (LHResponseCodePb) getCode.invoke(p);
+            code = (LHResponseCode) getCode.invoke(p);
 
             Method getResults = baseCls.getDeclaredMethod("getResultsList");
             @SuppressWarnings("unchecked")
             List<OP> protoResults = (List<OP>) getResults.invoke(p);
 
             for (OP protoResult : protoResults) {
-                results.add(
-                    LHSerializable.fromProto(protoResult, getResultJavaClass())
-                );
+                results.add(LHSerializable.fromProto(protoResult, getResultJavaClass()));
             }
-        } catch (
-            NoSuchMethodException
-            | InvocationTargetException
-            | IllegalAccessException exn
-        ) {
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException exn) {
             throw new RuntimeException(exn);
         }
     }

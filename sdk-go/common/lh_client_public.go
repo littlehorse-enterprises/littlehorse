@@ -24,10 +24,10 @@ func NewLHClient(config *LHConfig) (*LHClient, error) {
 	}, nil
 }
 
-func (l *LHClient) GetExternalEventDef(name string) (*model.ExternalEventDefPb, error) {
+func (l *LHClient) GetExternalEventDef(name string) (*model.ExternalEventDef, error) {
 	reply, err := l.grpcStub.GetExternalEventDef(
 		context.Background(),
-		&model.ExternalEventDefIdPb{
+		&model.ExternalEventDefId{
 			Name: name,
 		},
 	)
@@ -37,13 +37,13 @@ func (l *LHClient) GetExternalEventDef(name string) (*model.ExternalEventDefPb, 
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return reply.Result, nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return nil, errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		return nil, nil
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return nil, errors.New("bad request: " + *reply.Message)
 	}
 	// other cases not valid for GET requests
@@ -51,10 +51,10 @@ func (l *LHClient) GetExternalEventDef(name string) (*model.ExternalEventDefPb, 
 	return nil, nil
 }
 
-func (l *LHClient) GetTaskDef(name string) (*model.TaskDefPb, error) {
+func (l *LHClient) GetTaskDef(name string) (*model.TaskDef, error) {
 	reply, err := l.grpcStub.GetTaskDef(
 		context.Background(),
-		&model.TaskDefIdPb{
+		&model.TaskDefId{
 			Name: name,
 		},
 	)
@@ -64,13 +64,13 @@ func (l *LHClient) GetTaskDef(name string) (*model.TaskDefPb, error) {
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return reply.Result, nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return nil, errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		return nil, nil
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return nil, errors.New("bad request: " + *reply.Message)
 	}
 	// other cases not valid for GET requests
@@ -78,20 +78,20 @@ func (l *LHClient) GetTaskDef(name string) (*model.TaskDefPb, error) {
 	return nil, nil
 }
 
-func (l *LHClient) GetWfSpec(name string, version *int32) (*model.WfSpecPb, error) {
-	var reply *model.GetWfSpecReplyPb
+func (l *LHClient) GetWfSpec(name string, version *int32) (*model.WfSpec, error) {
+	var reply *model.GetWfSpecResponse
 	var err error
 	if version == nil {
 		reply, err = l.grpcStub.GetLatestWfSpec(
 			context.Background(),
-			&model.GetLatestWfSpecPb{
+			&model.GetLatestWfSpecRequest{
 				Name: name,
 			},
 		)
 	} else {
 		reply, err = l.grpcStub.GetWfSpec(
 			context.Background(),
-			&model.WfSpecIdPb{
+			&model.WfSpecId{
 				Name:    name,
 				Version: *version,
 			},
@@ -103,13 +103,13 @@ func (l *LHClient) GetWfSpec(name string, version *int32) (*model.WfSpecPb, erro
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return reply.Result, nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return nil, errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		return nil, nil
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return nil, errors.New("bad request: " + *reply.Message)
 	}
 	// other cases not valid for GET requests
@@ -117,10 +117,10 @@ func (l *LHClient) GetWfSpec(name string, version *int32) (*model.WfSpecPb, erro
 	return nil, nil
 }
 
-func (l *LHClient) GetNodeRun(wfRunId string, threadRunNumber, position int32) (*model.NodeRunPb, error) {
+func (l *LHClient) GetNodeRun(wfRunId string, threadRunNumber, position int32) (*model.NodeRun, error) {
 	reply, err := l.grpcStub.GetNodeRun(
 		context.Background(),
-		&model.NodeRunIdPb{
+		&model.NodeRunId{
 			WfRunId:         wfRunId,
 			ThreadRunNumber: threadRunNumber,
 			Position:        position,
@@ -132,13 +132,13 @@ func (l *LHClient) GetNodeRun(wfRunId string, threadRunNumber, position int32) (
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return reply.Result, nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return nil, errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		return nil, nil
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return nil, errors.New("bad request: " + *reply.Message)
 	}
 	// other cases not valid for GET requests
@@ -148,10 +148,10 @@ func (l *LHClient) GetNodeRun(wfRunId string, threadRunNumber, position int32) (
 
 func (l *LHClient) GetVariable(
 	wfRunId string, threadRunNumber int32, name string,
-) (*model.VariablePb, error) {
+) (*model.Variable, error) {
 	reply, err := l.grpcStub.GetVariable(
 		context.Background(),
-		&model.VariableIdPb{
+		&model.VariableId{
 			WfRunId:         wfRunId,
 			ThreadRunNumber: threadRunNumber,
 			Name:            name,
@@ -163,13 +163,13 @@ func (l *LHClient) GetVariable(
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return reply.Result, nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return nil, errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		return nil, nil
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return nil, errors.New("bad request: " + *reply.Message)
 	}
 	// other cases not valid for GET requests
@@ -179,10 +179,10 @@ func (l *LHClient) GetVariable(
 
 func (l *LHClient) GetExternalEvent(
 	wfRunId, externalEventDefName, guid string,
-) (*model.ExternalEventPb, error) {
+) (*model.ExternalEvent, error) {
 	reply, err := l.grpcStub.GetExternalEvent(
 		context.Background(),
-		&model.ExternalEventIdPb{
+		&model.ExternalEventId{
 			WfRunId:              wfRunId,
 			ExternalEventDefName: externalEventDefName,
 			Guid:                 guid,
@@ -194,13 +194,13 @@ func (l *LHClient) GetExternalEvent(
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return reply.Result, nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return nil, errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		return nil, nil
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return nil, errors.New("bad request: " + *reply.Message)
 	}
 	// other cases not valid for GET requests
@@ -208,10 +208,10 @@ func (l *LHClient) GetExternalEvent(
 	return nil, nil
 }
 
-func (l *LHClient) GetWfRun(id string) (*model.WfRunPb, error) {
+func (l *LHClient) GetWfRun(id string) (*model.WfRun, error) {
 	reply, err := l.grpcStub.GetWfRun(
 		context.Background(),
-		&model.WfRunIdPb{
+		&model.WfRunId{
 			Id: id,
 		},
 	)
@@ -221,13 +221,13 @@ func (l *LHClient) GetWfRun(id string) (*model.WfRunPb, error) {
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return reply.Result, nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return nil, errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		return nil, nil
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return nil, errors.New("bad request: " + *reply.Message)
 	}
 	// other cases not valid for GET requests
@@ -243,11 +243,11 @@ type WfArg struct {
 func (l *LHClient) RunWf(
 	wfSpecName string, wfSpecVersion *int32, wfRunId *string, args ...WfArg,
 ) (*string, error) {
-	request := &model.RunWfPb{
+	request := &model.RunWfRequest{
 		Id:            wfRunId,
 		WfSpecName:    wfSpecName,
 		WfSpecVersion: wfSpecVersion,
-		Variables:     make(map[string]*model.VariableValuePb),
+		Variables:     make(map[string]*model.VariableValue),
 	}
 
 	for _, arg := range args {
@@ -264,20 +264,20 @@ func (l *LHClient) RunWf(
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return reply.WfRunId, nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return nil, errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		// Means that the WfSpec wasn't found
 		return nil, errors.New("not found: " + *reply.Message)
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return nil, errors.New("bad request: " + *reply.Message)
-	case model.LHResponseCodePb_VALIDATION_ERROR:
+	case model.LHResponseCode_VALIDATION_ERROR:
 		return nil, errors.New("invalid: " + *reply.Message)
-	case model.LHResponseCodePb_ALREADY_EXISTS_ERROR:
+	case model.LHResponseCode_ALREADY_EXISTS_ERROR:
 		return wfRunId, nil
-	case model.LHResponseCodePb_REPORTED_BUT_NOT_PROCESSED:
+	case model.LHResponseCode_REPORTED_BUT_NOT_PROCESSED:
 		return nil, errors.New("event was recorded but not yet processed")
 	}
 	// other cases not valid for Run WF Request
@@ -288,14 +288,14 @@ func (l *LHClient) PutExternalEvent(
 	externalEventDefName, wfRunId string,
 	content interface{},
 	guid *string, threadRunNumber *int32,
-) (*model.ExternalEventIdPb, error) {
+) (*model.ExternalEventId, error) {
 	contentVal, err := InterfaceToVarVal(content)
 	if err != nil {
 		return nil, err
 	}
 	reply, err := l.grpcStub.PutExternalEvent(
 		context.Background(),
-		&model.PutExternalEventPb{
+		&model.PutExternalEventRequest{
 			ExternalEventDefName: externalEventDefName,
 			WfRunId:              wfRunId,
 			Guid:                 guid,
@@ -308,36 +308,36 @@ func (l *LHClient) PutExternalEvent(
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
-		return &model.ExternalEventIdPb{
+	case model.LHResponseCode_OK:
+		return &model.ExternalEventId{
 			WfRunId:              wfRunId,
 			ExternalEventDefName: externalEventDefName,
 			Guid:                 reply.Result.Guid,
 		}, nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return nil, errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		// Means that the ExternalEventDef wasn't found
 		return nil, errors.New("not found: " + *reply.Message)
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return nil, errors.New("bad request: " + *reply.Message)
-	case model.LHResponseCodePb_VALIDATION_ERROR:
+	case model.LHResponseCode_VALIDATION_ERROR:
 		return nil, errors.New("invalid: " + *reply.Message)
-	case model.LHResponseCodePb_ALREADY_EXISTS_ERROR:
-		return &model.ExternalEventIdPb{
+	case model.LHResponseCode_ALREADY_EXISTS_ERROR:
+		return &model.ExternalEventId{
 			WfRunId:              wfRunId,
 			ExternalEventDefName: externalEventDefName,
 			Guid:                 *guid,
 		}, nil
-	case model.LHResponseCodePb_REPORTED_BUT_NOT_PROCESSED:
+	case model.LHResponseCode_REPORTED_BUT_NOT_PROCESSED:
 		return nil, errors.New("event was recorded but not yet processed")
 	}
 	return nil, nil
 }
 
 func (l *LHClient) PutExternalEventDef(
-	request *model.PutExternalEventDefPb, swallowAlreadyExistsError bool,
-) (*model.ExternalEventDefPb, error) {
+	request *model.PutExternalEventDefRequest, swallowAlreadyExistsError bool,
+) (*model.ExternalEventDef, error) {
 	reply, err := l.grpcStub.PutExternalEventDef(
 		context.Background(),
 		request,
@@ -347,18 +347,18 @@ func (l *LHClient) PutExternalEventDef(
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return reply.Result, nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return nil, errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		// Means that the ExternalEventDef wasn't found
 		return nil, errors.New("not found: " + *reply.Message)
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return nil, errors.New("bad request: " + *reply.Message)
-	case model.LHResponseCodePb_VALIDATION_ERROR:
+	case model.LHResponseCode_VALIDATION_ERROR:
 		return nil, errors.New("invalid: " + *reply.Message)
-	case model.LHResponseCodePb_ALREADY_EXISTS_ERROR:
+	case model.LHResponseCode_ALREADY_EXISTS_ERROR:
 		if swallowAlreadyExistsError {
 			getEEDReply, err := l.GetExternalEventDef(request.Name)
 			if err != nil {
@@ -368,15 +368,15 @@ func (l *LHClient) PutExternalEventDef(
 		} else {
 			return nil, errors.New("ExternalEventDef Already Exists")
 		}
-	case model.LHResponseCodePb_REPORTED_BUT_NOT_PROCESSED:
+	case model.LHResponseCode_REPORTED_BUT_NOT_PROCESSED:
 		return nil, errors.New("event was recorded but not yet processed")
 	}
 	return nil, nil
 }
 
 func (l *LHClient) PutTaskDef(
-	request *model.PutTaskDefPb, swallowAlreadyExistsError bool,
-) (*model.TaskDefPb, error) {
+	request *model.PutTaskDefRequest, swallowAlreadyExistsError bool,
+) (*model.TaskDef, error) {
 	reply, err := l.grpcStub.PutTaskDef(
 		context.Background(),
 		request,
@@ -386,18 +386,18 @@ func (l *LHClient) PutTaskDef(
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return reply.Result, nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return nil, errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		// Means that the ExternalEventDef wasn't found
 		return nil, errors.New("not found: " + *reply.Message)
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return nil, errors.New("bad request: " + *reply.Message)
-	case model.LHResponseCodePb_VALIDATION_ERROR:
+	case model.LHResponseCode_VALIDATION_ERROR:
 		return nil, errors.New("invalid: " + *reply.Message)
-	case model.LHResponseCodePb_ALREADY_EXISTS_ERROR:
+	case model.LHResponseCode_ALREADY_EXISTS_ERROR:
 		if swallowAlreadyExistsError {
 			taskDef, err := l.GetTaskDef(request.Name)
 			if err != nil {
@@ -407,13 +407,13 @@ func (l *LHClient) PutTaskDef(
 		} else {
 			return nil, errors.New("TaskDef Already Exists")
 		}
-	case model.LHResponseCodePb_REPORTED_BUT_NOT_PROCESSED:
+	case model.LHResponseCode_REPORTED_BUT_NOT_PROCESSED:
 		return nil, errors.New("event was recorded but not yet processed")
 	}
 	return nil, nil
 }
 
-func (l *LHClient) PutWfSpec(request *model.PutWfSpecPb) (*model.WfSpecPb, error) {
+func (l *LHClient) PutWfSpec(request *model.PutWfSpecRequest) (*model.WfSpec, error) {
 	reply, err := l.grpcStub.PutWfSpec(
 		context.Background(),
 		request,
@@ -423,18 +423,18 @@ func (l *LHClient) PutWfSpec(request *model.PutWfSpecPb) (*model.WfSpecPb, error
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return reply.Result, nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return nil, errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		// Means that the ExternalEventDef wasn't found
 		return nil, errors.New("not found: " + *reply.Message)
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return nil, errors.New("bad request: " + *reply.Message)
-	case model.LHResponseCodePb_VALIDATION_ERROR:
+	case model.LHResponseCode_VALIDATION_ERROR:
 		return nil, errors.New("invalid: " + *reply.Message)
-	case model.LHResponseCodePb_REPORTED_BUT_NOT_PROCESSED:
+	case model.LHResponseCode_REPORTED_BUT_NOT_PROCESSED:
 		return nil, errors.New("event was recorded but not yet processed")
 	}
 	return nil, nil
@@ -443,7 +443,7 @@ func (l *LHClient) PutWfSpec(request *model.PutWfSpecPb) (*model.WfSpecPb, error
 func (l *LHClient) StopWfRun(id string, threadRunNumber int32) error {
 	reply, err := l.grpcStub.StopWfRun(
 		context.Background(),
-		&model.StopWfRunPb{
+		&model.StopWfRunRequest{
 			WfRunId:         id,
 			ThreadRunNumber: threadRunNumber,
 		},
@@ -453,18 +453,18 @@ func (l *LHClient) StopWfRun(id string, threadRunNumber int32) error {
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		// Means that the ExternalEventDef wasn't found
 		return errors.New("not found: " + *reply.Message)
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return errors.New("bad request: " + *reply.Message)
-	case model.LHResponseCodePb_VALIDATION_ERROR:
+	case model.LHResponseCode_VALIDATION_ERROR:
 		return errors.New("invalid: " + *reply.Message)
-	case model.LHResponseCodePb_REPORTED_BUT_NOT_PROCESSED:
+	case model.LHResponseCode_REPORTED_BUT_NOT_PROCESSED:
 		return errors.New("event was recorded but not yet processed")
 	}
 	return nil
@@ -473,7 +473,7 @@ func (l *LHClient) StopWfRun(id string, threadRunNumber int32) error {
 func (l *LHClient) ResumeWfRun(id string, threadRunNumber int32) error {
 	reply, err := l.grpcStub.ResumeWfRun(
 		context.Background(),
-		&model.ResumeWfRunPb{
+		&model.ResumeWfRunRequest{
 			WfRunId:         id,
 			ThreadRunNumber: threadRunNumber,
 		},
@@ -483,18 +483,18 @@ func (l *LHClient) ResumeWfRun(id string, threadRunNumber int32) error {
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		// Means that the ExternalEventDef wasn't found
 		return errors.New("not found: " + *reply.Message)
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return errors.New("bad request: " + *reply.Message)
-	case model.LHResponseCodePb_VALIDATION_ERROR:
+	case model.LHResponseCode_VALIDATION_ERROR:
 		return errors.New("invalid: " + *reply.Message)
-	case model.LHResponseCodePb_REPORTED_BUT_NOT_PROCESSED:
+	case model.LHResponseCode_REPORTED_BUT_NOT_PROCESSED:
 		return errors.New("event was recorded but not yet processed")
 	}
 	return nil
@@ -503,7 +503,7 @@ func (l *LHClient) ResumeWfRun(id string, threadRunNumber int32) error {
 func (l *LHClient) DeleteWfRun(id string) error {
 	reply, err := l.grpcStub.DeleteWfRun(
 		context.Background(),
-		&model.DeleteWfRunPb{
+		&model.DeleteWfRunRequest{
 			WfRunId: id,
 		},
 	)
@@ -513,18 +513,18 @@ func (l *LHClient) DeleteWfRun(id string) error {
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		// Means that the ExternalEventDef wasn't found
 		return errors.New("not found: " + *reply.Message)
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return errors.New("bad request: " + *reply.Message)
-	case model.LHResponseCodePb_VALIDATION_ERROR:
+	case model.LHResponseCode_VALIDATION_ERROR:
 		return errors.New("invalid: " + *reply.Message)
-	case model.LHResponseCodePb_REPORTED_BUT_NOT_PROCESSED:
+	case model.LHResponseCode_REPORTED_BUT_NOT_PROCESSED:
 		return errors.New("event was recorded but not yet processed")
 	}
 	return nil
@@ -533,7 +533,7 @@ func (l *LHClient) DeleteWfRun(id string) error {
 func (l *LHClient) DeleteWfSpec(name string, version int32) error {
 	reply, err := l.grpcStub.DeleteWfSpec(
 		context.Background(),
-		&model.DeleteWfSpecPb{
+		&model.DeleteWfSpecRequest{
 			Name:    name,
 			Version: version,
 		},
@@ -544,18 +544,18 @@ func (l *LHClient) DeleteWfSpec(name string, version int32) error {
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		// Means that the ExternalEventDef wasn't found
 		return errors.New("not found: " + *reply.Message)
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return errors.New("bad request: " + *reply.Message)
-	case model.LHResponseCodePb_VALIDATION_ERROR:
+	case model.LHResponseCode_VALIDATION_ERROR:
 		return errors.New("invalid: " + *reply.Message)
-	case model.LHResponseCodePb_REPORTED_BUT_NOT_PROCESSED:
+	case model.LHResponseCode_REPORTED_BUT_NOT_PROCESSED:
 		return errors.New("event was recorded but not yet processed")
 	}
 	return nil
@@ -564,7 +564,7 @@ func (l *LHClient) DeleteWfSpec(name string, version int32) error {
 func (l *LHClient) DeleteTaskDef(name string) error {
 	reply, err := l.grpcStub.DeleteTaskDef(
 		context.Background(),
-		&model.DeleteTaskDefPb{
+		&model.DeleteTaskDefRequest{
 			Name: name,
 		},
 	)
@@ -574,18 +574,18 @@ func (l *LHClient) DeleteTaskDef(name string) error {
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		// Means that the ExternalEventDef wasn't found
 		return errors.New("not found: " + *reply.Message)
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return errors.New("bad request: " + *reply.Message)
-	case model.LHResponseCodePb_VALIDATION_ERROR:
+	case model.LHResponseCode_VALIDATION_ERROR:
 		return errors.New("invalid: " + *reply.Message)
-	case model.LHResponseCodePb_REPORTED_BUT_NOT_PROCESSED:
+	case model.LHResponseCode_REPORTED_BUT_NOT_PROCESSED:
 		return errors.New("event was recorded but not yet processed")
 	}
 	return nil
@@ -594,7 +594,7 @@ func (l *LHClient) DeleteTaskDef(name string) error {
 func (l *LHClient) DeleteExternalEventDef(name string) error {
 	reply, err := l.grpcStub.DeleteExternalEventDef(
 		context.Background(),
-		&model.DeleteExternalEventDefPb{
+		&model.DeleteExternalEventDefRequest{
 			Name: name,
 		},
 	)
@@ -604,18 +604,18 @@ func (l *LHClient) DeleteExternalEventDef(name string) error {
 	}
 
 	switch reply.Code {
-	case model.LHResponseCodePb_OK:
+	case model.LHResponseCode_OK:
 		return nil
-	case model.LHResponseCodePb_CONNECTION_ERROR:
+	case model.LHResponseCode_CONNECTION_ERROR:
 		return errors.New("connection error: " + *reply.Message)
-	case model.LHResponseCodePb_NOT_FOUND_ERROR:
+	case model.LHResponseCode_NOT_FOUND_ERROR:
 		// Means that the ExternalEventDef wasn't found
 		return errors.New("not found: " + *reply.Message)
-	case model.LHResponseCodePb_BAD_REQUEST_ERROR:
+	case model.LHResponseCode_BAD_REQUEST_ERROR:
 		return errors.New("bad request: " + *reply.Message)
-	case model.LHResponseCodePb_VALIDATION_ERROR:
+	case model.LHResponseCode_VALIDATION_ERROR:
 		return errors.New("invalid: " + *reply.Message)
-	case model.LHResponseCodePb_REPORTED_BUT_NOT_PROCESSED:
+	case model.LHResponseCode_REPORTED_BUT_NOT_PROCESSED:
 		return errors.New("event was recorded but not yet processed")
 	}
 	return nil

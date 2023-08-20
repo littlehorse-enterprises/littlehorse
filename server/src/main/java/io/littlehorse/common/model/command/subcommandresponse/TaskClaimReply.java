@@ -2,23 +2,23 @@ package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.common.model.wfrun.ScheduledTask;
-import io.littlehorse.sdk.common.proto.PollTaskReplyPb;
+import io.littlehorse.common.model.wfrun.ScheduledTaskModel;
+import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class TaskClaimReply extends AbstractResponse<PollTaskReplyPb> {
+public class TaskClaimReply extends AbstractResponse<PollTaskResponse> {
 
-    public ScheduledTask result;
+    public ScheduledTaskModel result;
 
-    public Class<PollTaskReplyPb> getProtoBaseClass() {
-        return PollTaskReplyPb.class;
+    public Class<PollTaskResponse> getProtoBaseClass() {
+        return PollTaskResponse.class;
     }
 
-    public PollTaskReplyPb.Builder toProto() {
-        PollTaskReplyPb.Builder out = PollTaskReplyPb.newBuilder();
+    public PollTaskResponse.Builder toProto() {
+        PollTaskResponse.Builder out = PollTaskResponse.newBuilder();
         out.setCode(code);
         if (result != null) out.setResult(result.toProto());
         if (message != null) out.setMessage(message);
@@ -26,9 +26,9 @@ public class TaskClaimReply extends AbstractResponse<PollTaskReplyPb> {
     }
 
     public void initFrom(Message proto) {
-        PollTaskReplyPb p = (PollTaskReplyPb) proto;
+        PollTaskResponse p = (PollTaskResponse) proto;
         if (p.hasResult()) {
-            result = ScheduledTask.fromProto(p.getResult());
+            result = ScheduledTaskModel.fromProto(p.getResult());
         }
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();

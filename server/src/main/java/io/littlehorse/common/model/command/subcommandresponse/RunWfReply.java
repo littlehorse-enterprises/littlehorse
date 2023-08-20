@@ -2,19 +2,19 @@ package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.sdk.common.proto.RunWfReplyPb;
+import io.littlehorse.sdk.common.proto.RunWfResponse;
 
-public class RunWfReply extends AbstractResponse<RunWfReplyPb> {
+public class RunWfReply extends AbstractResponse<RunWfResponse> {
 
     public Integer wfSpecVersion;
     public String wfRunId;
 
-    public Class<RunWfReplyPb> getProtoBaseClass() {
-        return RunWfReplyPb.class;
+    public Class<RunWfResponse> getProtoBaseClass() {
+        return RunWfResponse.class;
     }
 
-    public RunWfReplyPb.Builder toProto() {
-        RunWfReplyPb.Builder out = RunWfReplyPb.newBuilder().setCode(code);
+    public RunWfResponse.Builder toProto() {
+        RunWfResponse.Builder out = RunWfResponse.newBuilder().setCode(code);
         if (message != null) out.setMessage(message);
         if (wfSpecVersion != null) out.setWfSpecVersion(wfSpecVersion);
         if (wfRunId != null) out.setWfRunId(wfRunId);
@@ -22,7 +22,7 @@ public class RunWfReply extends AbstractResponse<RunWfReplyPb> {
     }
 
     public void initFrom(Message proto) {
-        RunWfReplyPb p = (RunWfReplyPb) proto;
+        RunWfResponse p = (RunWfResponse) proto;
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();
         if (p.hasWfSpecVersion()) wfSpecVersion = p.getWfSpecVersion();

@@ -2,6 +2,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'signing'
+    id 'com.diffplug.spotless' version '6.20.0'
 }
 
 sourceCompatibility=11
@@ -138,4 +139,11 @@ test {
         exceptionFormat = 'full'
     }
     jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
+}
+spotless {
+    java {
+        target('**/*.java')
+        targetExclude('**/proto/*.java')
+        palantirJavaFormat()
+    }
 }

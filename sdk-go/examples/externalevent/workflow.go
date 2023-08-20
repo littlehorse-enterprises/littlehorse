@@ -14,12 +14,12 @@ func SpecificGreeting(name string) string {
 }
 
 func ExternalEventWorkflow(thread *wflib.ThreadBuilder) {
-	nameVar := thread.AddVariable("name", model.VariableTypePb_STR)
+	nameVar := thread.AddVariable("name", model.VariableType_STR)
 	thread.Execute("ask-for-name")
 
 	eventOutput := thread.WaitForEvent("my-name")
 
-	thread.Mutate(nameVar, model.VariableMutationTypePb_ASSIGN, eventOutput)
+	thread.Mutate(nameVar, model.VariableMutationType_ASSIGN, eventOutput)
 
 	thread.Execute("specific-greeting", nameVar)
 }

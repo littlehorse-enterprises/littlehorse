@@ -41,7 +41,7 @@ as your wfSpecName, and 0 as your wfSpecVersion.
 			log.Fatal(err)
 		}
 		windowTypeStr := args[2]
-		windowType, isValid := model.MetricsWindowLengthPb_value[windowTypeStr]
+		windowType, isValid := model.MetricsWindowLength_value[windowTypeStr]
 		if !isValid {
 			log.Fatal("Invalid window type! Supports only 'MINUTES_5', 'HOURS_2', 'DAYS_1'")
 		}
@@ -53,9 +53,9 @@ as your wfSpecName, and 0 as your wfSpecVersion.
 
 		common.PrintResp(getGlobalClient(cmd).ListWfSpecMetrics(
 			context.Background(),
-			&model.ListWfMetricsPb{
+			&model.ListWfMetricsRequest{
 				LastWindowStart: ts,
-				WindowLength:    model.MetricsWindowLengthPb(windowType),
+				WindowLength:    model.MetricsWindowLength(windowType),
 				WfSpecName:      wfSpecName,
 				WfSpecVersion:   int32(wfSpecVersion),
 				NumWindows:      int32(numWindows),

@@ -3,9 +3,9 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -24,89 +24,66 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
     }
 
     public String getDescription() {
-        return (
-            "Tests behavior of interrupts, including zero, one, and two " +
-            "stacked interrupts sent to one WfRun."
-        );
+        return ("Tests behavior of interrupts, including zero, one, and two "
+                + "stacked interrupts sent to one WfRun.");
     }
 
     private static final String INTERRUPT_NAME = "at-my-interrupt-event";
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                WfRunVariable sharedVar = thread.addVariable(
-                    "my-int",
-                    VariableTypePb.INT
-                );
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            WfRunVariable sharedVar = thread.addVariable("my-int", VariableType.INT);
 
-                thread.registerInterruptHandler(
-                    INTERRUPT_NAME,
-                    handler -> {
-                        WfRunVariable interruptInput = handler.addVariable(
-                            ThreadBuilder.HANDLER_INPUT_VAR,
-                            VariableTypePb.INT
-                        );
+            thread.registerInterruptHandler(INTERRUPT_NAME, handler -> {
+                WfRunVariable interruptInput = handler.addVariable(ThreadBuilder.HANDLER_INPUT_VAR, VariableType.INT);
 
-                        handler.execute("at-obiwan");
+                handler.execute("at-obiwan");
 
-                        handler.mutate(
-                            sharedVar,
-                            VariableMutationTypePb.ADD,
-                            interruptInput
-                        );
-                    }
-                );
+                handler.mutate(sharedVar, VariableMutationType.ADD, interruptInput);
+            });
 
-                thread.sleepSeconds(1);
-                thread.execute("at-obiwan");
-            }
-        );
+            thread.sleepSeconds(1);
+            thread.execute("at-obiwan");
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new ATSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
-            runWithoutInterrupt(client),
-            sendEventBefore(client),
-            oneInterrupt(client),
-            twoInterrupts(client),
-            invalidEventTypeShouldFail(client)
-        );
+                runWithoutInterrupt(client),
+                sendEventBefore(client),
+                oneInterrupt(client),
+                twoInterrupts(client),
+                invalidEventTypeShouldFail(client));
     }
 
-    private String runWithoutInterrupt(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+    private String runWithoutInterrupt(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         String id = runWf(client, Arg.of("my-int", 5));
-        assertStatus(client, id, LHStatusPb.RUNNING);
+        assertStatus(client, id, LHStatus.RUNNING);
         Thread.sleep(3 * 1000);
-        assertStatus(client, id, LHStatusPb.COMPLETED);
+        assertStatus(client, id, LHStatus.COMPLETED);
         assertVarEqual(client, id, 0, "my-int", 5);
         return id;
     }
 
-    private String sendEventBefore(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+    private String sendEventBefore(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         String id = generateGuid();
 
         // post an event before running the wf
         sendEvent(client, id, INTERRUPT_NAME, 10, null);
 
         runWf(id, client, Arg.of("my-int", 5));
-        assertStatus(client, id, LHStatusPb.RUNNING);
+        assertStatus(client, id, LHStatus.RUNNING);
         Thread.sleep(3 * 1000);
-        assertStatus(client, id, LHStatusPb.COMPLETED);
+        assertStatus(client, id, LHStatus.COMPLETED);
         assertVarEqual(client, id, 0, "my-int", 5);
         return id;
     }
 
-    private String twoInterrupts(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+    private String twoInterrupts(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         String id = runWf(client, Arg.of("my-int", 5));
 
         sendEvent(client, id, INTERRUPT_NAME, 10, null);
@@ -120,35 +97,33 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
 
         assertTaskOutputsMatch(client, id, 1, "hello there");
         assertTaskOutputsMatch(client, id, 2, "hello there");
-        assertStatus(client, id, LHStatusPb.RUNNING);
+        assertStatus(client, id, LHStatus.RUNNING);
         Thread.sleep(7 * 1000);
-        assertStatus(client, id, LHStatusPb.COMPLETED);
+        assertStatus(client, id, LHStatus.COMPLETED);
         assertVarEqual(client, id, 0, "my-int", 25);
         return id;
     }
 
-    private String oneInterrupt(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+    private String oneInterrupt(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         String id = runWf(client, Arg.of("my-int", 5));
 
         sendEvent(client, id, INTERRUPT_NAME, 10, null);
 
         Thread.sleep(3 * 1000);
 
-        assertStatus(client, id, LHStatusPb.COMPLETED);
+        assertStatus(client, id, LHStatus.COMPLETED);
         assertVarEqual(client, id, 0, "my-int", 15);
         assertTaskOutputsMatch(client, id, 1, "hello there");
         return id;
     }
 
-    private String invalidEventTypeShouldFail(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+    private String invalidEventTypeShouldFail(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         String id = runWf(client, Arg.of("my-int", 5));
         sendEvent(client, id, INTERRUPT_NAME, "bad input should crash", null);
-        assertStatus(client, id, LHStatusPb.ERROR);
+        assertStatus(client, id, LHStatus.ERROR);
         Thread.sleep(3 * 1000);
         // should still be dead after the sleep node expires
-        assertStatus(client, id, LHStatusPb.ERROR);
+        assertStatus(client, id, LHStatus.ERROR);
         return id;
     }
 }

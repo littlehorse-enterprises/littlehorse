@@ -29,13 +29,13 @@ public interface StoredGetablePbOrBuilder extends
   com.google.protobuf.ByteString getGetablePayload();
 
   /**
-   * <code>.littlehorse.GetableClassEnumPb type = 3;</code>
+   * <code>.littlehorse.GetableClassEnum type = 3;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
-   * <code>.littlehorse.GetableClassEnumPb type = 3;</code>
+   * <code>.littlehorse.GetableClassEnum type = 3;</code>
    * @return The type.
    */
-  io.littlehorse.common.proto.GetableClassEnumPb getType();
+  io.littlehorse.common.proto.GetableClassEnum getType();
 }

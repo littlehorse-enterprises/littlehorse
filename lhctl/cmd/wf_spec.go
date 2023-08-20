@@ -50,7 +50,7 @@ var getWfSpecCmd = &cobra.Command{
 			common.PrintResp(
 				getGlobalClient(cmd).GetLatestWfSpec(
 					context.Background(),
-					&model.GetLatestWfSpecPb{
+					&model.GetLatestWfSpecRequest{
 						Name: name,
 					},
 				),
@@ -59,7 +59,7 @@ var getWfSpecCmd = &cobra.Command{
 			common.PrintResp(
 				getGlobalClient(cmd).GetWfSpec(
 					context.Background(),
-					&model.WfSpecIdPb{
+					&model.WfSpecId{
 						Name:    name,
 						Version: version,
 					},
@@ -76,7 +76,7 @@ var deployWfSpecCmd = &cobra.Command{
 		if len(args) != 1 {
 			log.Fatal("You must provide one argument: the filename to deploy from.")
 		}
-		pws := &model.PutWfSpecPb{}
+		pws := &model.PutWfSpecRequest{}
 
 		// First, read the file
 		dat, err := os.ReadFile(args[0])
@@ -120,21 +120,21 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfSpec'.
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
-		search := &model.SearchWfSpecPb{
+		search := &model.SearchWfSpecRequest{
 			Bookmark: bookmark,
 			Limit:    &limit,
 		}
 
 		if name != "" {
-			search.WfSpecCriteria = &model.SearchWfSpecPb_Name{
+			search.WfSpecCriteria = &model.SearchWfSpecRequest_Name{
 				Name: name,
 			}
 		} else if prefix != "" {
-			search.WfSpecCriteria = &model.SearchWfSpecPb_Prefix{
+			search.WfSpecCriteria = &model.SearchWfSpecRequest_Prefix{
 				Prefix: prefix,
 			}
 		} else if taskDef != "" {
-			search.WfSpecCriteria = &model.SearchWfSpecPb_TaskDefName{
+			search.WfSpecCriteria = &model.SearchWfSpecRequest_TaskDefName{
 				TaskDefName: taskDef,
 			}
 		}
@@ -169,7 +169,7 @@ WfSpec to delete.
 		common.PrintResp(
 			getGlobalClient(cmd).DeleteWfSpec(
 				context.Background(),
-				&model.DeleteWfSpecPb{
+				&model.DeleteWfSpecRequest{
 					Name:    name,
 					Version: int32(version),
 				}),

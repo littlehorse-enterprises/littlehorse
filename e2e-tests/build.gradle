@@ -1,6 +1,7 @@
 plugins {
     id 'application'
     id 'java-library'
+    id 'com.diffplug.spotless' version '6.20.0'
 }
 
 sourceCompatibility=17
@@ -40,5 +41,13 @@ test {
     testLogging {
         events 'passed', 'skipped', 'failed'
         exceptionFormat = 'full'
+    }
+}
+
+spotless {
+    java {
+        target('**/*.java')
+        targetExclude('**/proto/*.java')
+        palantirJavaFormat()
     }
 }

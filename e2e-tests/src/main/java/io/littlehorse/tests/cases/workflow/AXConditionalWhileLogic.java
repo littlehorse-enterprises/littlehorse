@@ -3,9 +3,9 @@ package io.littlehorse.tests.cases.workflow;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -26,39 +26,31 @@ public class AXConditionalWhileLogic extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                WfRunVariable input = thread.addVariable("input", VariableTypePb.INT);
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            WfRunVariable input = thread.addVariable("input", VariableType.INT);
 
-                /*
-                while (input > 0) {
-                    execute(input);
-                    input--
-                }
-                 */
-                thread.doWhile(
-                    thread.condition(input, ComparatorPb.GREATER_THAN, 0),
-                    whileBlock -> {
-                        whileBlock.execute("aq-task", input);
-                        whileBlock.mutate(input, VariableMutationTypePb.SUBTRACT, 1);
-                    }
-                );
+            /*
+            while (input > 0) {
+                execute(input);
+                input--
             }
-        );
+             */
+            thread.doWhile(thread.condition(input, Comparator.GREATER_THAN, 0), whileBlock -> {
+                whileBlock.execute("aq-task", input);
+                whileBlock.mutate(input, VariableMutationType.SUBTRACT, 1);
+            });
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new AXSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
-            runWithInputsAndCheckPath(client, 3, 3, 2, 1),
-            runWithInputsAndCheckPath(client, 2, 2, 1),
-            runWithInputsAndCheckPath(client, 0)
-        );
+                runWithInputsAndCheckPath(client, 3, 3, 2, 1),
+                runWithInputsAndCheckPath(client, 2, 2, 1),
+                runWithInputsAndCheckPath(client, 0));
     }
 }
 

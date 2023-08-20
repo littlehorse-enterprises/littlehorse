@@ -16,10 +16,7 @@ public class TestDriverExternal extends TestDriver {
     public void setup() {
         workerConfig = new LHWorkerConfig();
 
-        Path configPath = Path.of(
-            System.getProperty("user.home"),
-            ".config/littlehorse.config"
-        );
+        Path configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config");
 
         if (Files.exists(configPath)) {
             workerConfig = new LHWorkerConfig(configPath.toString());

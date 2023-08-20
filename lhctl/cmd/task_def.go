@@ -24,7 +24,7 @@ var deployTaskDefCmd = &cobra.Command{
 			log.Fatal("You must provide one argument: the filename to deploy from.")
 
 		}
-		ptd := &model.PutTaskDefPb{}
+		ptd := &model.PutTaskDefRequest{}
 
 		// First, read the file
 		dat, err := os.ReadFile(args[0])
@@ -67,7 +67,7 @@ var getTaskDefCmd = &cobra.Command{
 		common.PrintResp(
 			getGlobalClient(cmd).GetTaskDef(
 				context.Background(),
-				&model.TaskDefIdPb{
+				&model.TaskDefId{
 					Name: name,
 				},
 			),
@@ -91,7 +91,7 @@ for all TaskDefs.
 		common.PrintResp(
 			getGlobalClient(cmd).SearchTaskDef(
 				context.Background(),
-				&model.SearchTaskDefPb{
+				&model.SearchTaskDefRequest{
 					Bookmark: bookmark,
 					Limit:    &limit,
 					Prefix:   &prefix,
@@ -116,7 +116,7 @@ var deleteTaskDefCmd = &cobra.Command{
 		common.PrintResp(
 			getGlobalClient(cmd).DeleteTaskDef(
 				context.Background(),
-				&model.DeleteTaskDefPb{
+				&model.DeleteTaskDefRequest{
 					Name: name,
 				}),
 		)

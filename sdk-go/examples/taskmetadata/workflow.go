@@ -25,6 +25,6 @@ func GetInfo(input *InputData, context *common.WorkerContext) string {
 }
 
 func MyWorkflowGet(thread *wflib.ThreadBuilder) {
-	inputVar := thread.AddVariable("input", model.VariableTypePb_JSON_OBJ)
+	inputVar := thread.AddVariable("input", model.VariableType_JSON_OBJ)
 	thread.Execute("greet", inputVar)
 }

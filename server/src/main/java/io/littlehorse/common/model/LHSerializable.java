@@ -21,10 +21,7 @@ public abstract class LHSerializable<T extends Message> {
 
     public String toJson() {
         try {
-            return JsonFormat
-                .printer()
-                .includingDefaultValueFields()
-                .print(toProto());
+            return JsonFormat.printer().includingDefaultValueFields().print(toProto());
         } catch (InvalidProtocolBufferException exn) {
             throw new RuntimeException(exn);
         }
@@ -37,10 +34,7 @@ public abstract class LHSerializable<T extends Message> {
         return toProto().build().toByteArray();
     }
 
-    public static <U extends Message, T extends LHSerializable<U>> T fromProto(
-        U proto,
-        Class<T> cls
-    ) {
+    public static <U extends Message, T extends LHSerializable<U>> T fromProto(U proto, Class<T> cls) {
         try {
             T out = cls.getDeclaredConstructor().newInstance();
             out.initFrom(proto);
@@ -53,34 +47,24 @@ public abstract class LHSerializable<T extends Message> {
 
     // Probably don't want to use reflection for everything, but hey we gotta
     // get a prototype out the door.
-    public static <T extends LHSerializable<?>> T fromBytes(
-        byte[] b,
-        Class<T> cls,
-        LHConfig config
-    ) throws LHSerdeError {
+    public static <T extends LHSerializable<?>> T fromBytes(byte[] b, Class<T> cls, LHConfig config)
+            throws LHSerdeError {
         try {
             T out = load(cls, config);
             Class<? extends GeneratedMessageV3> protoClass = out.getProtoBaseClass();
 
             GeneratedMessageV3 proto = protoClass.cast(
-                protoClass.getMethod("parseFrom", byte[].class).invoke(null, b)
-            );
+                    protoClass.getMethod("parseFrom", byte[].class).invoke(null, b));
             out.initFrom(proto);
             return out;
         } catch (Exception exn) {
             log.error(exn.getMessage(), exn);
-            throw new LHSerdeError(
-                exn,
-                "unable to process bytes for " + cls.getName()
-            );
+            throw new LHSerdeError(exn, "unable to process bytes for " + cls.getName());
         }
     }
 
-    private static <T extends LHSerializable<?>> T load(
-        Class<T> cls,
-        LHConfig config
-    )
-        throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
+    private static <T extends LHSerializable<?>> T load(Class<T> cls, LHConfig config)
+            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
         try {
             return cls.getDeclaredConstructor().newInstance();
         } catch (NoSuchMethodException exn) {
@@ -88,21 +72,15 @@ public abstract class LHSerializable<T extends Message> {
         }
     }
 
-    public static <T extends LHSerializable<?>> T fromJson(
-        String json,
-        Class<T> cls,
-        LHConfig config
-    ) throws LHSerdeError {
+    public static <T extends LHSerializable<?>> T fromJson(String json, Class<T> cls, LHConfig config)
+            throws LHSerdeError {
         GeneratedMessageV3.Builder<?> builder;
         T out;
 
         try {
             out = load(cls, config);
-            builder =
-                (GeneratedMessageV3.Builder<?>) out
-                    .getProtoBaseClass()
-                    .getMethod("newBuilder")
-                    .invoke(null);
+            builder = (GeneratedMessageV3.Builder<?>)
+                    out.getProtoBaseClass().getMethod("newBuilder").invoke(null);
         } catch (Exception exn) {
             throw new LHSerdeError(exn, "Failed to reflect the protobuilder");
         }

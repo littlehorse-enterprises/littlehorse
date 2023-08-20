@@ -1,22 +1,21 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
-import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.sdk.common.proto.ListVariablesReplyPb;
-import io.littlehorse.sdk.common.proto.VariablePb;
+import io.littlehorse.common.model.wfrun.VariableModel;
+import io.littlehorse.sdk.common.proto.ListVariablesResponse;
+import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
-public class ListVariablesReply
-    extends PublicScanReply<ListVariablesReplyPb, VariablePb, Variable> {
+public class ListVariablesReply extends PublicScanReply<ListVariablesResponse, Variable, VariableModel> {
 
-    public Class<Variable> getResultJavaClass() {
+    public Class<VariableModel> getResultJavaClass() {
+        return VariableModel.class;
+    }
+
+    public Class<Variable> getResultProtoClass() {
         return Variable.class;
     }
 
-    public Class<VariablePb> getResultProtoClass() {
-        return VariablePb.class;
-    }
-
-    public Class<ListVariablesReplyPb> getProtoBaseClass() {
-        return ListVariablesReplyPb.class;
+    public Class<ListVariablesResponse> getProtoBaseClass() {
+        return ListVariablesResponse.class;
     }
 }
