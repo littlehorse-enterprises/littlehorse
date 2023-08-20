@@ -2,13 +2,13 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDAO;
-import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.dao.CoreProcessorDAO;
+import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.TaskClaimReply;
-import io.littlehorse.common.model.objectId.TaskRunIdModel;
-import io.littlehorse.common.model.wfrun.ScheduledTaskModel;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRunModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
@@ -22,10 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 /*
- * In certain crash-failure scenarios, it is possible for there to be two in-flight
+ * In certain crash-failure scenarios, it is possible for there to be two
+ * in-flight
  * TaskClaimEvent's. However, that's not a problem, because the processing of
  * a TaskClaimEvent is strictly ordered, so if there are multiple in flight only
- * one will receive the `ScheduledTask`, and therefore the second will be ignored.
+ * one will receive the `ScheduledTask`, and therefore the second will be
+ * ignored.
  */
 public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
 
@@ -34,7 +36,8 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
     private String taskWorkerVersion;
     private String taskWorkerId;
 
-    public TaskClaimEvent() {}
+    public TaskClaimEvent() {
+    }
 
     public TaskClaimEvent(ScheduledTaskModel task, PollTaskRequestObserver taskClaimer) {
         this.taskRunId = task.getTaskRunId();
@@ -65,7 +68,7 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
         return true;
     }
 
-    public TaskClaimReply process(LHDAO dao, LHConfig config) {
+    public TaskClaimReply process(CoreProcessorDAO dao, LHConfig config) {
         TaskClaimReply out = new TaskClaimReply();
 
         TaskRunModel taskRun = dao.getTaskRun(taskRunId);

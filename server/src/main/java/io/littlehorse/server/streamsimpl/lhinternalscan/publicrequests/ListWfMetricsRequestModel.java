@@ -1,11 +1,12 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+
+import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
+import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
 import io.littlehorse.sdk.common.proto.ListWfMetricsResponse;
@@ -18,8 +19,8 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.List
 import java.util.Date;
 
 public class ListWfMetricsRequestModel
-        extends PublicScanRequest<
-                ListWfMetricsRequest, ListWfMetricsResponse, WfSpecMetrics, WfSpecMetricsModel, ListWfMetricsReply> {
+        extends
+        PublicScanRequest<ListWfMetricsRequest, ListWfMetricsResponse, WfSpecMetrics, WfSpecMetricsModel, ListWfMetricsReply> {
 
     public Date lastWindowStart;
     public String wfSpecName;
@@ -57,12 +58,13 @@ public class ListWfMetricsRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
         return null;
     }
 
     @Override
-    public void validate() throws LHValidationError {}
+    public void validate() throws LHValidationError {
+    }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {

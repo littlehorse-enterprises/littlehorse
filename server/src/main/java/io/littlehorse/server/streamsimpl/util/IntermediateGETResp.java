@@ -2,7 +2,8 @@ package io.littlehorse.server.streamsimpl.util;
 
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.LHSerializable;
+
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,8 +24,8 @@ public class IntermediateGETResp<U extends Message, T extends LHSerializable<U>,
     @SuppressWarnings("unchecked")
     public V toProto() {
         try {
-            GeneratedMessageV3.Builder<?> b = (GeneratedMessageV3.Builder<?>)
-                    responseCls.getMethod("newBuilder").invoke(null);
+            GeneratedMessageV3.Builder<?> b = (GeneratedMessageV3.Builder<?>) responseCls.getMethod("newBuilder")
+                    .invoke(null);
             if (message != null) {
                 b.getClass().getMethod("setMessage", String.class).invoke(b, message);
             }

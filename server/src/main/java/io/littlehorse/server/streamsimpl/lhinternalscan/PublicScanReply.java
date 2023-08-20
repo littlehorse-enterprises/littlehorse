@@ -3,7 +3,8 @@ package io.littlehorse.server.streamsimpl.lhinternalscan;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.LHSerializable;
+
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -11,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * RP: The Response Protobuf OP: The Individual Entry Protobuf OJ: The Individual Entry Java Object
+ * RP: The Response Protobuf OP: The Individual Entry Protobuf OJ: The
+ * Individual Entry Java Object
  */
 public abstract class PublicScanReply<RP extends Message, OP extends Message, OJ extends LHSerializable<OP>>
         extends LHSerializable<RP> {

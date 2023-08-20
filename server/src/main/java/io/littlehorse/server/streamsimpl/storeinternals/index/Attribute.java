@@ -1,7 +1,8 @@
 package io.littlehorse.server.streamsimpl.storeinternals.index;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.LHSerializable;
+
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.AttributePb;
 
 public class Attribute extends LHSerializable<AttributePb> {
@@ -39,7 +40,8 @@ public class Attribute extends LHSerializable<AttributePb> {
         this.val = val;
     }
 
-    public Attribute() {}
+    public Attribute() {
+    }
 
     public static Attribute fromProto(AttributePb p) {
         Attribute out = new Attribute();

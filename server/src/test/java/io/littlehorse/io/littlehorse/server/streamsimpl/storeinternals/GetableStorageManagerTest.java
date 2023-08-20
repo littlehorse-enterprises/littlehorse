@@ -1,30 +1,5 @@
 package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 
-import io.littlehorse.TestUtil;
-import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.meta.JsonIndexModel;
-import io.littlehorse.common.model.meta.ThreadSpecModel;
-import io.littlehorse.common.model.meta.VariableDefModel;
-import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.wfrun.ExternalEventModel;
-import io.littlehorse.common.model.wfrun.NodeRunModel;
-import io.littlehorse.common.model.wfrun.VariableModel;
-import io.littlehorse.common.model.wfrun.WfRunModel;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRunModel;
-import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.sdk.common.proto.IndexType;
-import io.littlehorse.sdk.common.proto.NodeRun;
-import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
-import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
-import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
-import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
-import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
-import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
-import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,6 +8,7 @@ import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -50,11 +26,37 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import io.littlehorse.TestUtil;
+import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
+import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.sdk.common.proto.IndexType;
+import io.littlehorse.sdk.common.proto.NodeRun;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
+import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
+import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
+
 @ExtendWith(MockitoExtension.class)
 public class GetableStorageManagerTest {
 
     private final KeyValueStore<String, Bytes> store = Stores.keyValueStoreBuilder(
-                    Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
+            Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
 
@@ -75,12 +77,12 @@ public class GetableStorageManagerTest {
 
     @ParameterizedTest
     @MethodSource("provideGetableObjectsAndIds")
-    void storeNewGetableWithTags(Getable<?> getable, String storeKey, int expectedTagsCount) {
+    void storeNewGetableWithTags(AbstractGetable<?> getable, String storeKey, int expectedTagsCount) {
         geTableStorageManager.store(getable);
         Assertions.assertThat(localStoreWrapper.get(storeKey, getable.getClass()))
                 .isNotNull();
-        TagsCache tagsCacheResult =
-                localStoreWrapper.getTagsCache(getable.getStoreKey(), (Class<? extends Getable<?>>) getable.getClass());
+        TagsCache tagsCacheResult = localStoreWrapper.getTagsCache(getable.getStoreKey(),
+                (Class<? extends AbstractGetable<?>>) getable.getClass());
         Assertions.assertThat(tagsCacheResult).isNotNull();
         Assertions.assertThat(tagsCacheResult.getTagIds()).hasSize(expectedTagsCount);
     }

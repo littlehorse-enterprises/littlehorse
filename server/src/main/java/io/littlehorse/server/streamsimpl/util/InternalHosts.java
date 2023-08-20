@@ -1,8 +1,9 @@
 package io.littlehorse.server.streamsimpl.util;
 
-import io.littlehorse.common.model.meta.HostModel;
 import java.util.Optional;
 import java.util.Set;
+
+import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 
 public class InternalHosts {
 

@@ -1,4 +1,3 @@
-// Timer-related stuff
 syntax = "proto3";
 package littlehorse;
 
@@ -11,6 +10,7 @@ import "object_id.proto";
 import "common_enums.proto";
 import "common_wfspec.proto";
 import "variable.proto";
+import "user_tasks.proto";
 
 
 // This section contains data structures used internally for sending the results of
@@ -328,35 +328,52 @@ message ReassignedUserTaskPb {
 }
 
 // This is the schema of everything that flows through the Central Command topic.
-message CommandPb {
+message Command {
     google.protobuf.Timestamp time = 1;
     optional string command_id = 2;
+
+    reserved 3; // reserved to contain Tenant Id in future versions.
+
     oneof command {
-        ReportTaskRun report_task_run = 3;
-        TaskClaimEventPb task_claim_event = 4;
-        PutWfSpecRequest put_wf_spec = 6;
-        PutTaskDefRequest put_task_def = 7;
-        PutExternalEventDefRequest put_external_event_def = 8;
-        RunWfRequest run_wf = 9;
-        PutExternalEventRequest put_external_event = 10;
-        StopWfRunRequest stop_wf_run = 11;
-        ResumeWfRunRequest resume_wf_run = 12;
-        SleepNodeMaturedPb sleep_node_matured = 13;
-        DeleteWfRunRequest delete_wf_run = 14;
-        DeleteWfSpecRequest delete_wf_spec = 15;
-        DeleteTaskDefRequest delete_task_def = 16;
-        DeleteExternalEventDefRequest delete_external_event_def = 17;
-        ExternalEventNodeTimeoutPb external_event_timeout = 18;
-        TaskWorkerHeartBeatRequest task_worker_heart_beat = 19;
-        DeleteExternalEventRequest delete_external_event = 20;
-        AssignUserTaskRunRequest assign_user_task_run = 21;
-        CompleteUserTaskRunRequest complete_user_task_run = 22;
-        PutUserTaskDefRequest put_user_task_def = 23;
-        TriggeredTaskRunPb triggered_task_run = 24;
-        DeleteUserTaskDefRequest delete_user_task_def = 25;
-        ReassignedUserTaskPb reassigned_user_task = 26;
-        CancelUserTaskRunRequest cancel_user_task = 27;
+        ReportTaskRun report_task_run = 4;
+        TaskClaimEventPb task_claim_event = 5;
+        RunWfRequest run_wf = 6;
+        PutExternalEventRequest put_external_event = 7;
+        StopWfRunRequest stop_wf_run = 8;
+        ResumeWfRunRequest resume_wf_run = 9;
+        SleepNodeMaturedPb sleep_node_matured = 10;
+        DeleteWfRunRequest delete_wf_run = 11;
+        ExternalEventNodeTimeoutPb external_event_timeout = 12;
+        TaskWorkerHeartBeatRequest task_worker_heart_beat = 13;
+        DeleteExternalEventRequest delete_external_event = 14;
+        AssignUserTaskRunRequest assign_user_task_run = 15;
+        CompleteUserTaskRunRequest complete_user_task_run = 16;
+        TriggeredTaskRunPb triggered_task_run = 17;
+        ReassignedUserTaskPb reassigned_user_task = 18;
+        CancelUserTaskRunRequest cancel_user_task = 19;
         // TODO: Add SaveUserTask
+    }
+}
+
+message MetadataCommand {
+    google.protobuf.Timestamp time = 1;
+    optional string command_id = 2;
+
+    reserved 3; // reserved to contain Tenant Id in future versions.
+
+    oneof metadata_command {
+        PutWfSpecRequest put_wf_spec = 4;
+        PutTaskDefRequest put_task_def = 5;
+        PutExternalEventDefRequest put_external_event_def = 6;
+        DeleteWfSpecRequest delete_wf_spec = 7;
+        DeleteTaskDefRequest delete_task_def = 8;
+        DeleteExternalEventDefRequest delete_external_event_def = 9;
+        PutUserTaskDefRequest put_user_task_def = 10;
+        DeleteUserTaskDefRequest delete_user_task_def = 11;
+
+        // TODO: PutNamespace
+        // TODO: PutClient
+        // TODO: DeleteNamespace
     }
 }
 

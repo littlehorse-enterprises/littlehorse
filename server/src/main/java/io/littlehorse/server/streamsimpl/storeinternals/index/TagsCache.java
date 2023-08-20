@@ -1,7 +1,8 @@
 package io.littlehorse.server.streamsimpl.storeinternals.index;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.LHSerializable;
+
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.TagsCachePb;
 import io.littlehorse.common.proto.TagsCachePb.CachedTagPb;
 import java.util.ArrayList;
@@ -15,7 +16,8 @@ public class TagsCache extends LHSerializable<TagsCachePb> {
 
     public List<CachedTag> tags = new ArrayList<>();
 
-    public TagsCache() {}
+    public TagsCache() {
+    }
 
     public TagsCache(List<CachedTag> tags) {
         this.tags = tags;
@@ -33,8 +35,7 @@ public class TagsCache extends LHSerializable<TagsCachePb> {
     }
 
     public TagsCachePb.Builder toProto() {
-        List<CachedTagPb> cachedTagPbs =
-                tags.stream().map(cachedTag -> cachedTag.toProto().build()).toList();
+        List<CachedTagPb> cachedTagPbs = tags.stream().map(cachedTag -> cachedTag.toProto().build()).toList();
         TagsCachePb.Builder out = TagsCachePb.newBuilder().addAllCachedTags(cachedTagPbs);
         return out;
     }
@@ -49,6 +50,6 @@ public class TagsCache extends LHSerializable<TagsCachePb> {
         return this.tags.stream().map(CachedTag::getId).toList();
     }
     // public void setTagIds(List<String> tagIds) {
-    //     this.tagIds = tagIds;
+    // this.tagIds = tagIds;
     // }
 }

@@ -2,7 +2,8 @@ package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repa
 
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.LHSerializable;
+
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.CreateRemoteTagPb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
@@ -14,7 +15,8 @@ public class CreateRemoteTag extends LHSerializable<CreateRemoteTagPb> implement
 
     private Tag tag;
 
-    public CreateRemoteTag() {}
+    public CreateRemoteTag() {
+    }
 
     public CreateRemoteTag(Tag tag) {
         this.tag = tag;

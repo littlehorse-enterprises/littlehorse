@@ -3,10 +3,10 @@ package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.meta.JsonIndexModel;
-import io.littlehorse.common.model.meta.VariableDefModel;
-import io.littlehorse.common.model.wfrun.VariableModel;
-import io.littlehorse.common.model.wfrun.VariableValueModel;
+import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
@@ -37,7 +37,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class JsonVariableStorageManagerTest {
 
     private final KeyValueStore<String, Bytes> store = Stores.keyValueStoreBuilder(
-                    Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
+            Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
 
@@ -114,8 +114,7 @@ public class JsonVariableStorageManagerTest {
 
     @Test
     void storeEmailAttributeValue() {
-        String expectedStoreKey =
-                "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.profile.email_forbesbooth@quarex.com";
+        String expectedStoreKey = "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.profile.email_forbesbooth@quarex.com";
         Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
     }
 
@@ -134,8 +133,8 @@ public class JsonVariableStorageManagerTest {
 
     @Test
     void preventStorageForNonIndexedAttributes() {
-        String expectedStoreKey =
-                "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.registered_2018-09-02T10:37:59" + " +05:00";
+        String expectedStoreKey = "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.registered_2018-09-02T10:37:59"
+                + " +05:00";
         Assertions.assertThat(storedTagPrefixStoreKeys()).doesNotContain(expectedStoreKey);
     }
 }

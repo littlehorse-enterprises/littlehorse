@@ -1,8 +1,8 @@
 package io.littlehorse.server.streamsimpl.coreprocessors;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.metrics.TaskDefMetricsModel;
-import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
+import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
+import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
@@ -52,22 +52,22 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
     }
 
     private void cleanOldTaskMetrics(Date daysAgo) {
-        try (LHKeyValueIterator<TaskMetricUpdate> iter =
-                store.range("", LHUtil.toLhDbFormat(daysAgo), TaskMetricUpdate.class)) {
+        try (LHKeyValueIterator<TaskMetricUpdate> iter = store.range("", LHUtil.toLhDbFormat(daysAgo),
+                TaskMetricUpdate.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<TaskMetricUpdate> next = iter.next();
                 TaskMetricUpdate metric = next.getValue();
                 store.delete(metric.getStoreKey());
-                String taskDefMetricKey =
-                        TaskDefMetricsModel.getObjectId(metric.type, metric.windowStart, metric.taskDefName);
+                String taskDefMetricKey = TaskDefMetricsModel.getObjectId(metric.type, metric.windowStart,
+                        metric.taskDefName);
                 store.delete(taskDefMetricKey, TaskDefMetricsModel.class);
             }
         }
     }
 
     private void cleanOldWfMetrics(Date daysAgo) {
-        try (LHKeyValueIterator<WfMetricUpdate> iter =
-                store.range("", LHUtil.toLhDbFormat(daysAgo), WfMetricUpdate.class)) {
+        try (LHKeyValueIterator<WfMetricUpdate> iter = store.range("", LHUtil.toLhDbFormat(daysAgo),
+                WfMetricUpdate.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<WfMetricUpdate> next = iter.next();
                 WfMetricUpdate metric = next.getValue();

@@ -2,12 +2,12 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDAO;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.ReportTaskReply;
-import io.littlehorse.common.model.objectId.TaskRunIdModel;
-import io.littlehorse.common.model.wfrun.VariableValueModel;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRunModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
+import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
@@ -39,7 +39,7 @@ public class ReportTaskRunModel extends SubCommand<ReportTaskRun> {
         return true;
     }
 
-    public ReportTaskReply process(LHDAO dao, LHConfig config) {
+    public ReportTaskReply process(CoreProcessorDAO dao, LHConfig config) {
         ReportTaskReply out = new ReportTaskReply();
 
         TaskRunModel task = dao.getTaskRun(taskRunId);
@@ -59,8 +59,10 @@ public class ReportTaskRunModel extends SubCommand<ReportTaskRun> {
                 .setStatus(status)
                 .setAttemptNumber(attemptNumber);
 
-        if (stdout != null) b.setOutput(stdout.toProto());
-        if (stderr != null) b.setLogOutput(stderr.toProto());
+        if (stdout != null)
+            b.setOutput(stdout.toProto());
+        if (stderr != null)
+            b.setLogOutput(stderr.toProto());
 
         return b;
     }

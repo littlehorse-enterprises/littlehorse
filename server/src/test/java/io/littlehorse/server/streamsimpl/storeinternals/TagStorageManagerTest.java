@@ -2,7 +2,7 @@ package io.littlehorse.server.streamsimpl.storeinternals;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
@@ -29,7 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TagStorageManagerTest {
 
     private final KeyValueStore<String, Bytes> store = Stores.keyValueStoreBuilder(
-                    Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
+            Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
 
@@ -103,17 +103,16 @@ public class TagStorageManagerTest {
         tag1.setTagType(TagStorageType.REMOTE);
         tags = List.of(tag1, tag2);
         tagStorageManager.storeUsingCache(tags, "test-wfrun-id", WfRunModel.class);
-        List<? extends Record<? extends String, ? extends CommandProcessorOutput>> outputs =
-                mockProcessorContext.forwarded().stream()
-                        .map(MockProcessorContext.CapturedForward::record)
-                        .toList();
+        List<? extends Record<? extends String, ? extends CommandProcessorOutput>> outputs = mockProcessorContext
+                .forwarded().stream()
+                .map(MockProcessorContext.CapturedForward::record)
+                .toList();
         Assertions.assertThat(outputs).hasSize(1);
         outputs.forEach(record -> {
             Assertions.assertThat(record.key()).isEqualTo(expectedPartitionKey);
             Assertions.assertThat(record.value().getPartitionKey()).isEqualTo(expectedPartitionKey);
             Assertions.assertThat(record.value().getPayload()).isInstanceOf(RepartitionCommand.class);
-            RepartitionCommand repartitionCommand =
-                    (RepartitionCommand) record.value().getPayload();
+            RepartitionCommand repartitionCommand = (RepartitionCommand) record.value().getPayload();
             Assertions.assertThat(repartitionCommand.getSubCommand().getPartitionKey())
                     .isEqualTo(expectedPartitionKey);
         });
@@ -136,10 +135,10 @@ public class TagStorageManagerTest {
         localStore.putTagsCache(wfRunId, WfRunModel.class, tagsCache);
 
         tagStorageManager.storeUsingCache(tags, wfRunId, WfRunModel.class);
-        List<? extends Record<? extends String, ? extends CommandProcessorOutput>> outputs =
-                mockProcessorContext.forwarded().stream()
-                        .map(MockProcessorContext.CapturedForward::record)
-                        .toList();
+        List<? extends Record<? extends String, ? extends CommandProcessorOutput>> outputs = mockProcessorContext
+                .forwarded().stream()
+                .map(MockProcessorContext.CapturedForward::record)
+                .toList();
         Assertions.assertThat(outputs).hasSize(2);
     }
 }

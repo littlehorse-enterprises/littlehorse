@@ -2,7 +2,7 @@ package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.common.model.meta.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefResponse;
 
 public class PutExternalEventDefResponseModel extends AbstractResponse<PutExternalEventDefResponse> {
@@ -16,15 +16,19 @@ public class PutExternalEventDefResponseModel extends AbstractResponse<PutExtern
     public PutExternalEventDefResponse.Builder toProto() {
         PutExternalEventDefResponse.Builder out = PutExternalEventDefResponse.newBuilder();
         out.setCode(code);
-        if (message != null) out.setMessage(message);
-        if (result != null) out.setResult(result.toProto());
+        if (message != null)
+            out.setMessage(message);
+        if (result != null)
+            out.setResult(result.toProto());
         return out;
     }
 
     public void initFrom(Message proto) {
         PutExternalEventDefResponse p = (PutExternalEventDefResponse) proto;
         code = p.getCode();
-        if (p.hasMessage()) message = p.getMessage();
-        if (p.hasResult()) result = ExternalEventDefModel.fromProto(p.getResult());
+        if (p.hasMessage())
+            message = p.getMessage();
+        if (p.hasResult())
+            result = ExternalEventDefModel.fromProto(p.getResult());
     }
 }

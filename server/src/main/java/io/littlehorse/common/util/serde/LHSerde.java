@@ -1,7 +1,8 @@
 package io.littlehorse.common.util.serde;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.LHSerializable;
+
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serializer;

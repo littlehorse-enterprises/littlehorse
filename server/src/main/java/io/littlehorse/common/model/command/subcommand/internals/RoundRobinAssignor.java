@@ -3,8 +3,10 @@ package io.littlehorse.common.model.command.subcommand.internals;
 import static io.littlehorse.common.LHConstants.MIN_WORKER_ASSIGNMENT_BY_SERVER;
 
 import com.google.common.collect.Iterables;
-import io.littlehorse.common.model.meta.HostModel;
-import io.littlehorse.common.model.meta.TaskWorkerMetadataModel;
+
+import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -19,8 +21,7 @@ public class RoundRobinAssignor implements TaskWorkerAssignor {
         taskWorkers.forEach(worker -> worker.hosts.clear());
 
         // Create a circular list
-        Iterator<TaskWorkerMetadataModel> roundRobinWorkers =
-                Iterables.cycle(taskWorkers).iterator();
+        Iterator<TaskWorkerMetadataModel> roundRobinWorkers = Iterables.cycle(taskWorkers).iterator();
 
         // Control collection, it is needed to assign remaining worker to a server
         List<TaskWorkerMetadataModel> remainingWorkers = new ArrayList<>(taskWorkers);

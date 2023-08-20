@@ -1,7 +1,7 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
-import io.littlehorse.common.model.objectId.TaskDefIdModel;
-import io.littlehorse.common.model.wfrun.ScheduledTaskModel;
+import io.littlehorse.common.model.ScheduledTaskModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import java.util.HashMap;
 import java.util.Map;

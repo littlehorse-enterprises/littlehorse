@@ -2,9 +2,9 @@ package io.littlehorse.server.streamsimpl.storeinternals;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.Storeable;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
@@ -42,7 +42,7 @@ public class LHROStoreWrapper {
         this.config = config;
     }
 
-    public <U extends Message, T extends Getable<U>> StoredGetable<U, T> getStoredGetable(
+    public <U extends Message, T extends AbstractGetable<U>> StoredGetable<U, T> getStoredGetable(
             String objectId, Class<T> cls) {
         Bytes raw = store.get(StoreUtils.getFullStoreKey(objectId, cls));
         if (raw == null) {
@@ -57,8 +57,10 @@ public class LHROStoreWrapper {
     }
 
     /**
-     * @deprecated Should not use this method because it's not using the StoredGetable class. This
-     *     method will be removed once all entities are migrated to use the StoredGetable class.
+     * @deprecated Should not use this method because it's not using the
+     *             StoredGetable class. This
+     *             method will be removed once all entities are migrated to use the
+     *             StoredGetable class.
      */
     @Deprecated(forRemoval = true)
     public <U extends Message, T extends Storeable<U>> T get(String objectId, Class<T> cls) {
@@ -87,7 +89,7 @@ public class LHROStoreWrapper {
      * Make sure to `.close()` the result!
      */
     @SuppressWarnings("unchecked")
-    public <U extends Message, T extends Getable<U>> LHKeyValueIterator<StoredGetable<U, T>> prefixScanStoredGetable(
+    public <U extends Message, T extends AbstractGetable<U>> LHKeyValueIterator<StoredGetable<U, T>> prefixScanStoredGetable(
             String prefix, Class<T> cls) {
         String compositePrefix = StoreUtils.getFullStoreKey(prefix, cls);
         LHKeyValueIterator<?> iterator = new LHKeyValueIterator<>(
@@ -125,7 +127,8 @@ public class LHROStoreWrapper {
                 return null;
             }
         } finally {
-            if (rawIter != null) rawIter.close();
+            if (rawIter != null)
+                rawIter.close();
         }
     }
 
@@ -142,12 +145,13 @@ public class LHROStoreWrapper {
     }
 
     /**
-     * Does a range scan over the provided object id's (note: these are NOT full store keys.)
+     * Does a range scan over the provided object id's (note: these are NOT full
+     * store keys.)
      *
-     * @param <T> type of object
+     * @param <T>   type of object
      * @param start start object id
-     * @param end end object id
-     * @param cls type
+     * @param end   end object id
+     * @param cls   type
      * @return an iter
      */
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
@@ -156,23 +160,24 @@ public class LHROStoreWrapper {
     }
 }
 /*
-Want to standardize the paginated lookups. Lookup patterns:
-
-* GET (type, object id)
-  - returns an object or null
-
-* Search (type, Tag)
-  - returns a paginated range response
-
-* Search (type, Prefix), eg. NodeRun by wfRunId
-  - returns a non-paginated list of ID's
-
-* Pop Task (taskDefName)
-  - returns an id or null
-  - requires coordination between requests
-
-
-I think it makes sense to just write all the code and have an employee sort through
-it later on.
-
+ * Want to standardize the paginated lookups. Lookup patterns:
+ * 
+ * GET (type, object id)
+ * - returns an object or null
+ * 
+ * Search (type, Tag)
+ * - returns a paginated range response
+ * 
+ * Search (type, Prefix), eg. NodeRun by wfRunId
+ * - returns a non-paginated list of ID's
+ * 
+ * Pop Task (taskDefName)
+ * - returns an id or null
+ * - requires coordination between requests
+ * 
+ * 
+ * I think it makes sense to just write all the code and have an employee sort
+ * through
+ * it later on.
+ * 
  */

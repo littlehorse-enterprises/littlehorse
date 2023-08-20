@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
-import io.littlehorse.common.model.wfrun.VariableModel;
+import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.sdk.common.proto.ListVariablesResponse;
 import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;

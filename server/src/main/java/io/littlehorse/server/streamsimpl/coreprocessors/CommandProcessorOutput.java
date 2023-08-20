@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.coreprocessors;
 
-import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.LHSerializable;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +12,8 @@ public class CommandProcessorOutput {
     public LHSerializable<?> payload;
     public String partitionKey;
 
-    public CommandProcessorOutput() {}
+    public CommandProcessorOutput() {
+    }
 
     public CommandProcessorOutput(String topic, LHSerializable<?> payload, String partitionKey) {
         this.topic = topic;

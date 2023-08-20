@@ -2,7 +2,8 @@ package io.littlehorse.common.model.command;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.Storeable;
+
+import io.littlehorse.common.Storeable;
 import io.littlehorse.common.proto.CommandResultPb;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;

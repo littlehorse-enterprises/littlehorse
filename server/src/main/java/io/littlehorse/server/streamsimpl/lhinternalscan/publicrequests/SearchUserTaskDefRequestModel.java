@@ -2,12 +2,12 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
+import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefRequest.UserTaskDefCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefResponse;
@@ -25,12 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class SearchUserTaskDefRequestModel
-        extends PublicScanRequest<
-                SearchUserTaskDefRequest,
-                SearchUserTaskDefResponse,
-                UserTaskDefId,
-                UserTaskDefIdModel,
-                SearchUserTaskDefReply> {
+        extends
+        PublicScanRequest<SearchUserTaskDefRequest, SearchUserTaskDefResponse, UserTaskDefId, UserTaskDefIdModel, SearchUserTaskDefReply> {
 
     private UserTaskDefCriteriaCase type;
     private String name;
@@ -46,7 +42,8 @@ public class SearchUserTaskDefRequestModel
 
     public void initFrom(Message proto) {
         SearchUserTaskDefRequest p = (SearchUserTaskDefRequest) proto;
-        if (p.hasLimit()) limit = p.getLimit();
+        if (p.hasLimit())
+            limit = p.getLimit();
         if (p.hasBookmark()) {
             try {
                 bookmark = BookmarkPb.parseFrom(p.getBookmark());
@@ -96,12 +93,13 @@ public class SearchUserTaskDefRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
         return TagStorageType.LOCAL;
     }
 
     @Override
-    public void validate() throws LHValidationError {}
+    public void validate() throws LHValidationError {
+    }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {

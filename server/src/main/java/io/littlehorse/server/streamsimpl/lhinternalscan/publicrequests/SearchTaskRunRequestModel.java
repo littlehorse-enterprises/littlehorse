@@ -2,12 +2,13 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
+
+import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest;
@@ -30,8 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class SearchTaskRunRequestModel
-        extends PublicScanRequest<
-                SearchTaskRunRequest, SearchTaskRunResponse, TaskRunId, TaskRunIdModel, SearchTaskRunReply> {
+        extends
+        PublicScanRequest<SearchTaskRunRequest, SearchTaskRunResponse, TaskRunId, TaskRunIdModel, SearchTaskRunReply> {
 
     private TaskRunCriteriaCase type;
     private ByTaskDefRequest taskDef;
@@ -47,7 +48,8 @@ public class SearchTaskRunRequestModel
 
     public void initFrom(Message proto) {
         SearchTaskRunRequest p = (SearchTaskRunRequest) proto;
-        if (p.hasLimit()) limit = p.getLimit();
+        if (p.hasLimit())
+            limit = p.getLimit();
         if (p.hasBookmark()) {
             try {
                 bookmark = BookmarkPb.parseFrom(p.getBookmark());
@@ -134,12 +136,13 @@ public class SearchTaskRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
         return TagStorageType.LOCAL;
     }
 
     @Override
-    public void validate() throws LHValidationError {}
+    public void validate() throws LHValidationError {
+    }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHValidationError {

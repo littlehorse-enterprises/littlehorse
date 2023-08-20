@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
-import io.littlehorse.common.model.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.SearchNodeRunResponse;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;

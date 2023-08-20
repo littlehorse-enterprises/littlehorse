@@ -3,7 +3,7 @@
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 WORK_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 
-set -ex
+set -e
 
 # First, re-compile the public client proto
 rm -rf ${WORK_DIR}/sdk-java/src/main/java/io/littlehorse/sdk/common/proto/

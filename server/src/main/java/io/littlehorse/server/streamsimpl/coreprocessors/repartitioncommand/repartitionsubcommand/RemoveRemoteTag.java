@@ -2,7 +2,8 @@ package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repa
 
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.LHSerializable;
+
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.RemoveRemoteTagPb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
@@ -15,7 +16,8 @@ public class RemoveRemoteTag extends LHSerializable<RemoveRemoteTagPb> implement
     private String storeKey;
     private String partitionKey;
 
-    public RemoveRemoteTag() {}
+    public RemoveRemoteTag() {
+    }
 
     public RemoveRemoteTag(String storeKey, String partitionKey) {
         this.storeKey = storeKey;

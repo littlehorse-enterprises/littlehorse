@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
-import io.littlehorse.common.model.wfrun.ScheduledTaskModel;
+import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.sdk.common.LHLibUtil;
 // import io.littlehorse.common.util.LHUtil;
 import java.util.LinkedList;
@@ -33,10 +33,12 @@ public class OneTaskQueue {
     }
 
     /**
-     * Called when a gRPC client (and its StreamObserver) disconnect, whether due to a clean
+     * Called when a gRPC client (and its StreamObserver) disconnect, whether due to
+     * a clean
      * shutdown (onCompleted()) or connection error (onError()).
      *
-     * @param observer is the TaskQueueStreamObserver for the client whose connection is now gone.
+     * @param observer is the TaskQueueStreamObserver for the client whose
+     *                 connection is now gone.
      */
     public void onRequestDisconnected(PollTaskRequestObserver disconnectedObserver) {
         // Remove the request listener when the gRPC stream is completed (i.e.
@@ -59,24 +61,30 @@ public class OneTaskQueue {
     }
 
     /**
-     * Called in two places: 1. In the CommandProcessorDaoImpl::scheduleTask() 2. In the
+     * Called in two places: 1. In the CommandProcessorDaoImpl::scheduleTask() 2. In
+     * the
      * CommandProcessor::init().
      *
-     * <p>Item 1) is quite self-explanatory.
+     * <p>
+     * Item 1) is quite self-explanatory.
      *
-     * <p>For Item 2), remember that the Task Queue Manager system is only in-memory. Upon a restart
-     * or rebalance, we need to rebuild that state. During the init() call, we iterate through all
+     * <p>
+     * For Item 2), remember that the Task Queue Manager system is only in-memory.
+     * Upon a restart
+     * or rebalance, we need to rebuild that state. During the init() call, we
+     * iterate through all
      * currently scheduled but not started tasks in the state store.
      *
-     * @param scheduledTaskId is the ::getObjectId() for the TaskScheduleRequest that was just
-     *     scheduled.
+     * @param scheduledTaskId is the ::getObjectId() for the TaskScheduleRequest
+     *                        that was just
+     *                        scheduled.
      */
     public void onTaskScheduled(ScheduledTaskModel scheduledTaskId) {
         // There's two cases here:
         // 1. There are clients waiting for requests, in which case we know that
-        //    the pendingTaskIds queue/list must be empty.
+        // the pendingTaskIds queue/list must be empty.
         // 2. There are no clients waiting for requests. In this case, we just
-        //    add the task id to the taskid list.
+        // add the task id to the taskid list.
 
         log.trace(
                 "Instance {}: Task scheduled for wfRun {}, queue is empty? {}",
@@ -113,8 +121,9 @@ public class OneTaskQueue {
     /**
      * Called when a grpc client sends a new PollTaskPb.
      *
-     * @param requestObserver is the grpc StreamObserver representing the channel that talks to the
-     *     client who made the PollTaskRequest.
+     * @param requestObserver is the grpc StreamObserver representing the channel
+     *                        that talks to the
+     *                        client who made the PollTaskRequest.
      */
     public void onPollRequest(PollTaskRequestObserver requestObserver) {
         if (taskDefName == null) {
@@ -128,10 +137,10 @@ public class OneTaskQueue {
 
         // There's two cases here:
         // 1. There are pending Task Id's in the queue, which means that there
-        //    are no "hungry clients" in the queue.
+        // are no "hungry clients" in the queue.
         // 2. There are no pending Taskid's in the queue, in which case we simply
-        //    push the request client observer thing onto the back of the
-        //    `hungryClients` list.
+        // push the request client observer thing onto the back of the
+        // `hungryClients` list.
         ScheduledTaskModel nextTask = null;
 
         try {

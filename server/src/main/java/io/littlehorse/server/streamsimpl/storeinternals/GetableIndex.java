@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.storeinternals;
 
-import io.littlehorse.common.model.Getable;
+import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.proto.TagStorageType;
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +9,7 @@ import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
-public class GetableIndex<T extends Getable<?>> {
+public class GetableIndex<T extends AbstractGetable<?>> {
 
     private List<Pair<String, ValueType>> attributes;
     private Optional<TagStorageType> tagStorageType;
@@ -33,7 +33,7 @@ public class GetableIndex<T extends Getable<?>> {
     }
 
     @SuppressWarnings("unchecked")
-    public <J extends Getable<?>> boolean isValid(J getable) {
+    public <J extends AbstractGetable<?>> boolean isValid(J getable) {
         if (conditional != null) {
             return conditional.test((T) getable);
         } else {

@@ -9,11 +9,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDAO;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.command.subcommand.internals.TaskWorkerAssignor;
-import io.littlehorse.common.model.meta.HostModel;
-import io.littlehorse.common.model.meta.TaskWorkerGroupModel;
-import io.littlehorse.common.model.meta.TaskWorkerMetadataModel;
+import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
+import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;
 import io.littlehorse.server.streamsimpl.util.InternalHosts;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -34,7 +34,7 @@ public class TaskWorkerHeartBeatTest {
 
     private Faker faker = new Faker();
 
-    private LHDAO lhdao = mock(LHDAO.class);
+    private CoreProcessorDAO lhdao = mock(CoreProcessorDAO.class);
     private TaskWorkerAssignor assignor = mock(TaskWorkerAssignor.class);
     private LHConfig lhConfig = mock(LHConfig.class);
     private TaskWorkerHeartBeatRequestModel taskWorkerHeartBeat = new TaskWorkerHeartBeatRequestModel(assignor);
@@ -45,8 +45,8 @@ public class TaskWorkerHeartBeatTest {
         TaskWorkerGroupModel taskWorkerGroup = new TaskWorkerGroupModel();
         taskWorkerGroup.taskWorkers = generateTaskWorkersMetadata(2);
 
-        List<TaskWorkerMetadataModel> taskWorkerMetadatas =
-                taskWorkerGroup.taskWorkers.values().stream().collect(Collectors.toList());
+        List<TaskWorkerMetadataModel> taskWorkerMetadatas = taskWorkerGroup.taskWorkers.values().stream()
+                .collect(Collectors.toList());
 
         TaskWorkerMetadataModel taskWorkerToKeep = taskWorkerMetadatas.get(1);
         taskWorkerHeartBeat.clientId = taskWorkerToKeep.clientId;
@@ -71,8 +71,8 @@ public class TaskWorkerHeartBeatTest {
         TaskWorkerGroupModel taskWorkerGroup = new TaskWorkerGroupModel();
         taskWorkerGroup.taskWorkers = generateTaskWorkersMetadata(2);
 
-        List<TaskWorkerMetadataModel> taskWorkerMetadatas =
-                taskWorkerGroup.taskWorkers.values().stream().collect(Collectors.toList());
+        List<TaskWorkerMetadataModel> taskWorkerMetadatas = taskWorkerGroup.taskWorkers.values().stream()
+                .collect(Collectors.toList());
         Set<HostModel> generateHosts = generateHosts(2);
 
         TaskWorkerMetadataModel taskWorkerToKeep = taskWorkerMetadatas.get(1);
@@ -94,8 +94,8 @@ public class TaskWorkerHeartBeatTest {
         TaskWorkerGroupModel taskWorkerGroup = new TaskWorkerGroupModel();
         taskWorkerGroup.taskWorkers = generateTaskWorkersMetadata(2);
 
-        List<TaskWorkerMetadataModel> taskWorkerMetadatas =
-                taskWorkerGroup.taskWorkers.values().stream().collect(Collectors.toList());
+        List<TaskWorkerMetadataModel> taskWorkerMetadatas = taskWorkerGroup.taskWorkers.values().stream()
+                .collect(Collectors.toList());
         Set<HostModel> generateHosts = generateHosts(2);
 
         TaskWorkerMetadataModel taskWorkerToKeep = taskWorkerMetadatas.get(1);
@@ -119,8 +119,8 @@ public class TaskWorkerHeartBeatTest {
         TaskWorkerGroupModel taskWorkerGroup = new TaskWorkerGroupModel();
         taskWorkerGroup.taskWorkers = generateTaskWorkersMetadata(2);
 
-        List<TaskWorkerMetadataModel> taskWorkerMetadatas =
-                taskWorkerGroup.taskWorkers.values().stream().collect(Collectors.toList());
+        List<TaskWorkerMetadataModel> taskWorkerMetadatas = taskWorkerGroup.taskWorkers.values().stream()
+                .collect(Collectors.toList());
         Set<HostModel> generateHosts = generateHosts(2);
 
         TaskWorkerMetadataModel taskWorkerToKeep = taskWorkerMetadatas.get(1);
@@ -151,8 +151,8 @@ public class TaskWorkerHeartBeatTest {
         TaskWorkerGroupModel taskWorkerGroup = new TaskWorkerGroupModel();
         taskWorkerGroup.taskWorkers = generateTaskWorkersMetadata(2);
 
-        List<TaskWorkerMetadataModel> taskWorkerMetadatas =
-                taskWorkerGroup.taskWorkers.values().stream().collect(Collectors.toList());
+        List<TaskWorkerMetadataModel> taskWorkerMetadatas = taskWorkerGroup.taskWorkers.values().stream()
+                .collect(Collectors.toList());
 
         TaskWorkerMetadataModel taskWorkerToBeRemoved = taskWorkerMetadatas.get(0);
         TaskWorkerMetadataModel taskWorkerToBeKeep = taskWorkerMetadatas.get(1);
@@ -188,8 +188,7 @@ public class TaskWorkerHeartBeatTest {
     public Set<HostModel> generateHosts(int q) {
         Set<HostModel> hosts = new TreeSet<HostModel>();
         for (int i = 0; i < q; i++) {
-            HostModel host =
-                    new HostModel(faker.internet().domainName(), faker.number().numberBetween(5000, 5500));
+            HostModel host = new HostModel(faker.internet().domainName(), faker.number().numberBetween(5000, 5500));
             hosts.add(host);
         }
         return hosts;

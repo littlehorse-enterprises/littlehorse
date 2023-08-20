@@ -4,16 +4,16 @@ import static io.littlehorse.common.LHConstants.MAX_TASK_WORKER_INACTIVITY;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDAO;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommand.internals.RoundRobinAssignor;
 import io.littlehorse.common.model.command.subcommand.internals.TaskWorkerAssignor;
 import io.littlehorse.common.model.command.subcommandresponse.RegisterTaskWorkerReply;
-import io.littlehorse.common.model.meta.HostModel;
-import io.littlehorse.common.model.meta.TaskWorkerGroupModel;
-import io.littlehorse.common.model.meta.TaskWorkerMetadataModel;
+import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
+import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
 import io.littlehorse.server.streamsimpl.util.InternalHosts;
@@ -43,7 +43,7 @@ public class TaskWorkerHeartBeatRequestModel extends SubCommand<TaskWorkerHeartB
     }
 
     @Override
-    public RegisterTaskWorkerReply process(LHDAO dao, LHConfig config) {
+    public RegisterTaskWorkerReply process(CoreProcessorDAO dao, LHConfig config) {
         log.debug("Processing a heartbeat");
 
         // Get the group, a group contains all the task worker for that specific task
@@ -94,13 +94,13 @@ public class TaskWorkerHeartBeatRequestModel extends SubCommand<TaskWorkerHeartB
         return prepareReply(dao, taskWorker.hosts);
     }
 
-    private boolean checkIfNewHostsHasChanges(LHDAO dao) {
+    private boolean checkIfNewHostsHasChanges(CoreProcessorDAO dao) {
         InternalHosts internalHosts = dao.getInternalHosts();
         hosts = internalHosts.getHosts();
         return internalHosts.hasChanges();
     }
 
-    private RegisterTaskWorkerReply prepareReply(LHDAO dao, Set<HostModel> hosts) {
+    private RegisterTaskWorkerReply prepareReply(CoreProcessorDAO dao, Set<HostModel> hosts) {
         RegisterTaskWorkerReply reply = new RegisterTaskWorkerReply();
         for (HostModel hostInfo : hosts) {
             try {
@@ -114,7 +114,8 @@ public class TaskWorkerHeartBeatRequestModel extends SubCommand<TaskWorkerHeartB
                 reply.yourHosts.clear();
                 return reply;
             } catch (LHConnectionError e) {
-                // Continue if it receives an internal error, it is probably that this server is not
+                // Continue if it receives an internal error, it is probably that this server is
+                // not
                 // ready yet
                 log.warn(e.getMessage());
                 continue;
@@ -141,8 +142,7 @@ public class TaskWorkerHeartBeatRequestModel extends SubCommand<TaskWorkerHeartB
 
         taskWorkerGroup.taskWorkers = taskWorkerGroup.taskWorkers.values().stream()
                 .filter(taskWorker -> Duration.between(taskWorker.latestHeartbeat.toInstant(), Instant.now())
-                                        .toSeconds()
-                                < MAX_TASK_WORKER_INACTIVITY
+                        .toSeconds() < MAX_TASK_WORKER_INACTIVITY
                         || taskWorker.clientId == clientId)
                 .collect(Collectors.toMap(taskWorker -> taskWorker.clientId, Function.identity()));
 

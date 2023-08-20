@@ -2,13 +2,14 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
+
+import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.objectId.WfRunIdModel;
-import io.littlehorse.common.model.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest.NameRequest;
@@ -47,7 +48,8 @@ public class SearchWfRunRequestModel
 
     public void initFrom(Message proto) {
         SearchWfRunRequest p = (SearchWfRunRequest) proto;
-        if (p.hasLimit()) limit = p.getLimit();
+        if (p.hasLimit())
+            limit = p.getLimit();
         if (p.hasBookmark()) {
             try {
                 bookmark = BookmarkPb.parseFrom(p.getBookmark());
@@ -144,18 +146,17 @@ public class SearchWfRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
-        List<String> searchAttributeKeys =
-                getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
+        List<String> searchAttributeKeys = getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
         return new WfRunModel()
                 .getIndexConfigurations().stream()
-                        .filter(getableIndexConfiguration ->
-                                getableIndexConfiguration.searchAttributesMatch(searchAttributeKeys))
-                        .map(GetableIndex::getTagStorageType)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .findFirst()
-                        .orElse(null);
+                .filter(getableIndexConfiguration -> getableIndexConfiguration
+                        .searchAttributesMatch(searchAttributeKeys))
+                .map(GetableIndex::getTagStorageType)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst()
+                .orElse(null);
     }
 
     @Override

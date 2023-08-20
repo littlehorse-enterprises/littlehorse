@@ -1,10 +1,11 @@
 package io.littlehorse.server.streamsimpl.storeinternals.utils;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.ObjectId;
-import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.model.wfrun.ScheduledTaskModel;
+
+import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.ScheduledTaskModel;
+import io.littlehorse.common.model.getable.ObjectId;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
@@ -18,7 +19,7 @@ public class StoreUtils {
         return (getSubstorePrefix((Class<? extends Storeable<?>>) thing.getClass()) + thing.getStoreKey());
     }
 
-    public static <T extends Message, U extends Getable<T>> String getFullStoreKey(
+    public static <T extends Message, U extends AbstractGetable<T>> String getFullStoreKey(
             ObjectId<?, T, U> objectId, Class<? extends Storeable<T>> cls) {
         return getSubstorePrefix(cls) + objectId.getStoreKey();
     }
@@ -33,8 +34,8 @@ public class StoreUtils {
 
     @SuppressWarnings("unchecked")
     public static String getSubstorePrefix(Class<? extends Storeable<?>> cls) {
-        if (Getable.class.isAssignableFrom(cls)) {
-            return ("" + Getable.getTypeEnum((Class<? extends Getable<?>>) cls).getNumber() + "/");
+        if (AbstractGetable.class.isAssignableFrom(cls)) {
+            return ("" + AbstractGetable.getTypeEnum((Class<? extends AbstractGetable<?>>) cls).getNumber() + "/");
         }
 
         if (cls.equals(Tag.class)) {
@@ -53,7 +54,7 @@ public class StoreUtils {
     }
 
     public static String getFullStoreKey(String objectId, GetableClassEnum type) {
-        return getFullStoreKey(objectId, Getable.getCls(type));
+        return getFullStoreKey(objectId, AbstractGetable.getCls(type));
     }
 
     /*
@@ -68,12 +69,12 @@ public class StoreUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static String getTagsCacheKey(Getable<?> thing) {
-        Class<Getable<?>> cls = (Class<Getable<?>>) thing.getClass();
+    public static String getTagsCacheKey(AbstractGetable<?> thing) {
+        Class<AbstractGetable<?>> cls = (Class<AbstractGetable<?>>) thing.getClass();
         return getTagsCacheKey(thing.getStoreKey(), cls);
     }
 
-    public static String getTagsCacheKey(String getableId, Class<? extends Getable<?>> cls) {
+    public static String getTagsCacheKey(String getableId, Class<? extends AbstractGetable<?>> cls) {
         return "TC/" + cls.getSimpleName() + "/" + getableId;
     }
 }

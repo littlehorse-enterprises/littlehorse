@@ -2,12 +2,12 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.objectId.TaskDefIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.SearchTaskDefRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskDefResponse;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -19,8 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SearchTaskDefRequestModel
-        extends PublicScanRequest<
-                SearchTaskDefRequest, SearchTaskDefResponse, TaskDefId, TaskDefIdModel, SearchTaskDefReply> {
+        extends
+        PublicScanRequest<SearchTaskDefRequest, SearchTaskDefResponse, TaskDefId, TaskDefIdModel, SearchTaskDefReply> {
 
     public String prefix;
 
@@ -34,7 +34,8 @@ public class SearchTaskDefRequestModel
 
     public void initFrom(Message proto) {
         SearchTaskDefRequest p = (SearchTaskDefRequest) proto;
-        if (p.hasLimit()) limit = p.getLimit();
+        if (p.hasLimit())
+            limit = p.getLimit();
         if (p.hasBookmark()) {
             try {
                 bookmark = BookmarkPb.parseFrom(p.getBookmark());
@@ -42,7 +43,8 @@ public class SearchTaskDefRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
-        if (p.hasPrefix()) prefix = p.getPrefix();
+        if (p.hasPrefix())
+            prefix = p.getPrefix();
     }
 
     public SearchTaskDefRequest.Builder toProto() {
@@ -53,7 +55,8 @@ public class SearchTaskDefRequestModel
         if (limit != null) {
             out.setLimit(limit);
         }
-        if (prefix != null) out.setPrefix(prefix);
+        if (prefix != null)
+            out.setPrefix(prefix);
 
         return out;
     }
@@ -65,12 +68,13 @@ public class SearchTaskDefRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
         return TagStorageType.LOCAL;
     }
 
     @Override
-    public void validate() throws LHValidationError {}
+    public void validate() throws LHValidationError {
+    }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {

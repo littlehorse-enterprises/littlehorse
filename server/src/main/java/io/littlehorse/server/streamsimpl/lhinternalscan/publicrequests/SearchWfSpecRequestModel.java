@@ -3,14 +3,14 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.SearchWfSpecRequest;
 import io.littlehorse.sdk.common.proto.SearchWfSpecRequest.WfSpecCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchWfSpecResponse;
@@ -32,8 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class SearchWfSpecRequestModel
-        extends PublicScanRequest<
-                SearchWfSpecRequest, SearchWfSpecResponse, WfSpecId, WfSpecIdModel, SearchWfSpecReply> {
+        extends
+        PublicScanRequest<SearchWfSpecRequest, SearchWfSpecResponse, WfSpecId, WfSpecIdModel, SearchWfSpecReply> {
 
     private WfSpecCriteriaCase type;
     private String name;
@@ -50,7 +50,8 @@ public class SearchWfSpecRequestModel
 
     public void initFrom(Message proto) {
         SearchWfSpecRequest p = (SearchWfSpecRequest) proto;
-        if (p.hasLimit()) limit = p.getLimit();
+        if (p.hasLimit())
+            limit = p.getLimit();
         if (p.hasBookmark()) {
             try {
                 bookmark = BookmarkPb.parseFrom(p.getBookmark());
@@ -111,11 +112,11 @@ public class SearchWfSpecRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
         if (taskDefName != null) {
-            List<String> attributes =
-                    getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
-            for (GetableIndex<? extends Getable<?>> indexConfiguration : new WfSpecModel().getIndexConfigurations()) {
+            List<String> attributes = getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
+            for (GetableIndex<? extends AbstractGetable<?>> indexConfiguration : new WfSpecModel()
+                    .getIndexConfigurations()) {
                 if (indexConfiguration.searchAttributesMatch(attributes)
                         && indexConfiguration.getTagStorageType().isPresent()) {
                     return indexConfiguration.getTagStorageType().get();
@@ -128,7 +129,8 @@ public class SearchWfSpecRequestModel
     }
 
     @Override
-    public void validate() throws LHValidationError {}
+    public void validate() throws LHValidationError {
+    }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {

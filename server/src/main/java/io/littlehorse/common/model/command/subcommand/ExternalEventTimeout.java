@@ -2,10 +2,10 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDAO;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.proto.ExternalEventNodeTimeoutPb;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;
@@ -44,7 +44,7 @@ public class ExternalEventTimeout extends SubCommand<ExternalEventNodeTimeoutPb>
         return wfRunId;
     }
 
-    public AbstractResponse<?> process(LHDAO dao, LHConfig config) {
+    public AbstractResponse<?> process(CoreProcessorDAO dao, LHConfig config) {
         WfRunModel wfRunModel = dao.getWfRun(wfRunId);
 
         if (wfRunModel == null) {

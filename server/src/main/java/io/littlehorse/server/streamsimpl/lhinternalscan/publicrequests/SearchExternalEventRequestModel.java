@@ -1,14 +1,15 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+
+import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.objectId.ExternalEventIdModel;
-import io.littlehorse.common.model.wfrun.ExternalEventModel;
+import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.sdk.common.proto.SearchExternalEventRequest;
 import io.littlehorse.sdk.common.proto.SearchExternalEventRequest.ExtEvtCriteriaCase;
@@ -28,12 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 public class SearchExternalEventRequestModel
-        extends PublicScanRequest<
-                SearchExternalEventRequest,
-                SearchExternalEventResponse,
-                ExternalEventId,
-                ExternalEventIdModel,
-                SearchExternalEventReply> {
+        extends
+        PublicScanRequest<SearchExternalEventRequest, SearchExternalEventResponse, ExternalEventId, ExternalEventIdModel, SearchExternalEventReply> {
 
     public ExtEvtCriteriaCase type;
     public String wfRunId;
@@ -50,7 +47,8 @@ public class SearchExternalEventRequestModel
 
     public void initFrom(Message proto) {
         SearchExternalEventRequest p = (SearchExternalEventRequest) proto;
-        if (p.hasLimit()) limit = p.getLimit();
+        if (p.hasLimit())
+            limit = p.getLimit();
         if (p.hasBookmark()) {
             try {
                 bookmark = BookmarkPb.parseFrom(p.getBookmark());
@@ -64,8 +62,8 @@ public class SearchExternalEventRequestModel
                 wfRunId = p.getWfRunId();
                 break;
             case EXTERNAL_EVENT_DEF_NAME_AND_STATUS:
-                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest externalEventDefNameAndStatus =
-                        p.getExternalEventDefNameAndStatus();
+                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest externalEventDefNameAndStatus = p
+                        .getExternalEventDefNameAndStatus();
                 externalEventDefName = externalEventDefNameAndStatus.getExternalEventDefName();
                 if (externalEventDefNameAndStatus.hasIsClaimed()) {
                     isClaimed = Optional.of(externalEventDefNameAndStatus.getIsClaimed());
@@ -91,9 +89,9 @@ public class SearchExternalEventRequestModel
                 out.setWfRunId(wfRunId);
                 break;
             case EXTERNAL_EVENT_DEF_NAME_AND_STATUS:
-                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest.Builder byExtEvtDefNameAndStatusPb =
-                        SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest.newBuilder()
-                                .setExternalEventDefName(externalEventDefName);
+                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest.Builder byExtEvtDefNameAndStatusPb = SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest
+                        .newBuilder()
+                        .setExternalEventDefName(externalEventDefName);
                 isClaimed.ifPresent(b -> byExtEvtDefNameAndStatusPb.setIsClaimed(b));
                 out.setExternalEventDefNameAndStatus(byExtEvtDefNameAndStatusPb);
                 break;
@@ -113,12 +111,11 @@ public class SearchExternalEventRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
-        List<String> searchAttributes =
-                getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
-        List<GetableIndex<? extends Getable<?>>> indexConfigurations =
-                new ExternalEventModel().getIndexConfigurations();
-        GetableIndex<? extends Getable<?>> getableIndex = indexConfigurations.stream()
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
+        List<String> searchAttributes = getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
+        List<GetableIndex<? extends AbstractGetable<?>>> indexConfigurations = new ExternalEventModel()
+                .getIndexConfigurations();
+        GetableIndex<? extends AbstractGetable<?>> getableIndex = indexConfigurations.stream()
                 .filter(getableIndexConfiguration -> {
                     return getableIndexConfiguration.searchAttributesMatch(searchAttributes);
                 })
@@ -132,7 +129,8 @@ public class SearchExternalEventRequestModel
     }
 
     @Override
-    public void validate() throws LHValidationError {}
+    public void validate() throws LHValidationError {
+    }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {

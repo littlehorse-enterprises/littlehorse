@@ -1,15 +1,16 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+
+import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.meta.VariableDefModel;
-import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.objectId.VariableIdModel;
-import io.littlehorse.common.model.wfrun.VariableModel;
+import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest;
@@ -30,8 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SearchVariableRequestModel
-        extends PublicScanRequest<
-                SearchVariableRequest, SearchVariableResponse, VariableId, VariableIdModel, SearchVariableReply> {
+        extends
+        PublicScanRequest<SearchVariableRequest, SearchVariableResponse, VariableId, VariableIdModel, SearchVariableReply> {
 
     public VariableCriteriaCase type;
     public NameAndValueRequest value;
@@ -48,7 +49,8 @@ public class SearchVariableRequestModel
 
     public void initFrom(Message proto) {
         SearchVariableRequest p = (SearchVariableRequest) proto;
-        if (p.hasLimit()) limit = p.getLimit();
+        if (p.hasLimit())
+            limit = p.getLimit();
         if (p.hasBookmark()) {
             try {
                 bookmark = BookmarkPb.parseFrom(p.getBookmark());
@@ -100,23 +102,22 @@ public class SearchVariableRequestModel
     private Optional<TagStorageType> getStorageTypeFromVariableIndexConfiguration() {
         return new VariableModel()
                 .getIndexConfigurations().stream()
-                        // Filter matching configuration
-                        .filter(getableIndexConfiguration ->
-                                getableIndexConfiguration.searchAttributesMatch(searchAttributesString()))
-                        .map(GetableIndex::getTagStorageType)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .findFirst();
+                // Filter matching configuration
+                .filter(getableIndexConfiguration -> getableIndexConfiguration
+                        .searchAttributesMatch(searchAttributesString()))
+                .map(GetableIndex::getTagStorageType)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
     }
 
-    private TagStorageType indexTypeForSearchFromWfSpec(LHGlobalMetaStores stores) {
+    private TagStorageType indexTypeForSearchFromWfSpec(ReadOnlyMetadataStore stores) {
         WfSpecModel spec = stores.getWfSpec(value.getWfSpecName(), null);
 
         return spec.getThreadSpecs().entrySet().stream()
                 .flatMap(stringThreadSpecEntry -> stringThreadSpecEntry.getValue().getVariableDefs().stream())
                 .filter(variableDef -> variableDef.getName().equals(value.getVarName()))
-                .filter(variableDef ->
-                        variableDef.getType().equals(value.getValue().getType()))
+                .filter(variableDef -> variableDef.getType().equals(value.getValue().getType()))
                 .map(VariableDefModel::getTagStorageType)
                 .findFirst()
                 .orElse(null);
@@ -130,12 +131,13 @@ public class SearchVariableRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
         return getStorageTypeFromVariableIndexConfiguration().orElse(indexTypeForSearchFromWfSpec(stores));
     }
 
     @Override
-    public void validate() throws LHValidationError {}
+    public void validate() throws LHValidationError {
+    }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {

@@ -1,11 +1,11 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan;
 
+import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import lombok.Getter;
 
@@ -15,13 +15,14 @@ public class GetableSearchImpl implements GetableSearch {
     private GetableClassEnum getableClassEnum;
     private SearchScanBoundaryStrategy searchScanBoundary;
 
-    public GetableSearchImpl(GetableClassEnum getableClassEnum, SearchScanBoundaryStrategy searchScanBoundaryStrategy) {
+    public GetableSearchImpl(GetableClassEnum getableClassEnum,
+            SearchScanBoundaryStrategy searchScanBoundaryStrategy) {
         this.getableClassEnum = getableClassEnum;
         this.searchScanBoundary = searchScanBoundaryStrategy;
     }
 
     @Override
-    public InternalScan buildInternalScan(LHGlobalMetaStores stores, TagStorageType tagStorageType)
+    public InternalScan buildInternalScan(ReadOnlyMetadataStore stores, TagStorageType tagStorageType)
             throws LHValidationError {
         InternalScan out = new InternalScan();
         out.objectType = getableClassEnum;

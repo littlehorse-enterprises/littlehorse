@@ -2,9 +2,9 @@ package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repa
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.model.metrics.TaskDefMetricsModel;
-import io.littlehorse.common.model.objectId.TaskDefMetricsIdModel;
+import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.getable.objectId.TaskDefMetricsIdModel;
+import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
 import io.littlehorse.common.proto.TaskMetricUpdatePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
@@ -30,7 +30,8 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
 
     public String taskDefName;
 
-    public TaskMetricUpdate() {}
+    public TaskMetricUpdate() {
+    }
 
     public TaskMetricUpdate(Date windowStart, MetricsWindowLength type, String taskDefName) {
         this.windowStart = windowStart;
@@ -149,59 +150,59 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
     }
 }
 /*
-
-partition 1:
-// executes 2 tasks "greett"
-
-partition 2:
-// executes 1 task "greet"
-// executes 1 task "foo"
-
-
-Partition 1 sends:
-{
-    "windowStart": 5:00pm
-    "windowLength": MINUTES_5
-    taskDefName: greet
-    numTasks: 2
-}
-
-Partition 2 sends:
-{
-    "windowStart": 5:00pm
-    "windowLength": MINUTES_5
-    taskDefName: greet
-    numTasks: 1
-}
-{
-    "windowStart": 5:00pm
-    "windowLength": MINUTES_5
-    taskDefName: foo
-    numTasks: 1
-}
-
-
-
-repartition processor:
-{
-    "windowStart": 5:00pm
-    "windowLength": MINUTES_5
-    taskDefName: "ALL_TASKS"
-    numTasks: 4
-}
-
-{
-    "windowStart": 5:00pm
-    "windowLength": MINUTES_5
-    taskDefName: greet
-    numTasks: 3
-}
-{
-    "windowStart": 5:00pm
-    "windowLength": MINUTES_5
-    taskDefName: foo
-    numTasks: 1
-}
-
-
+ * 
+ * partition 1:
+ * // executes 2 tasks "greett"
+ * 
+ * partition 2:
+ * // executes 1 task "greet"
+ * // executes 1 task "foo"
+ * 
+ * 
+ * Partition 1 sends:
+ * {
+ * "windowStart": 5:00pm
+ * "windowLength": MINUTES_5
+ * taskDefName: greet
+ * numTasks: 2
+ * }
+ * 
+ * Partition 2 sends:
+ * {
+ * "windowStart": 5:00pm
+ * "windowLength": MINUTES_5
+ * taskDefName: greet
+ * numTasks: 1
+ * }
+ * {
+ * "windowStart": 5:00pm
+ * "windowLength": MINUTES_5
+ * taskDefName: foo
+ * numTasks: 1
+ * }
+ * 
+ * 
+ * 
+ * repartition processor:
+ * {
+ * "windowStart": 5:00pm
+ * "windowLength": MINUTES_5
+ * taskDefName: "ALL_TASKS"
+ * numTasks: 4
+ * }
+ * 
+ * {
+ * "windowStart": 5:00pm
+ * "windowLength": MINUTES_5
+ * taskDefName: greet
+ * numTasks: 3
+ * }
+ * {
+ * "windowStart": 5:00pm
+ * "windowLength": MINUTES_5
+ * taskDefName: foo
+ * numTasks: 1
+ * }
+ * 
+ * 
  */

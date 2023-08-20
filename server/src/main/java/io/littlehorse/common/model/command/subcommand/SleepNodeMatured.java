@@ -2,12 +2,12 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDAO;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.proto.SleepNodeMaturedPb;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,7 +51,7 @@ public class SleepNodeMatured extends SubCommand<SleepNodeMaturedPb> {
         return wfRunId;
     }
 
-    public AbstractResponse<?> process(LHDAO dao, LHConfig config) {
+    public AbstractResponse<?> process(CoreProcessorDAO dao, LHConfig config) {
         WfRunModel wfRunModel = dao.getWfRun(wfRunId);
         if (wfRunModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfRun found.");

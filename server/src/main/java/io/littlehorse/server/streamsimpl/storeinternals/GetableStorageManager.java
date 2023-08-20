@@ -2,7 +2,7 @@ package io.littlehorse.server.streamsimpl.storeinternals;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.Getable;
+import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.storeinternals.index.CachedTag;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
@@ -39,7 +39,7 @@ public class GetableStorageManager {
     }
 
     @SuppressWarnings("unchecked")
-    public <U extends Message, T extends Getable<U>> T get(String key, Class<T> clazz) {
+    public <U extends Message, T extends AbstractGetable<U>> T get(String key, Class<T> clazz) {
         if (uncommittedChanges.containsKey(key)) {
             StoredGetable<U, T> storedGetable = (StoredGetable<U, T>) uncommittedChanges.get(key);
             return storedGetable.getStoredObject();
@@ -56,7 +56,8 @@ public class GetableStorageManager {
     }
 
     @SuppressWarnings("unchecked")
-    public <U extends Message, T extends Getable<U>> void put(T getable, Class<T> clazz) throws IllegalStateException {
+    public <U extends Message, T extends AbstractGetable<U>> void put(T getable, Class<T> clazz)
+            throws IllegalStateException {
         log.trace("Putting {} with key {}", getable.getClass(), getable.getStoreKey());
 
         StoredGetable<U, T> uncommittedEntity = (StoredGetable<U, T>) uncommittedChanges.get(getable.getStoreKey());
@@ -73,12 +74,12 @@ public class GetableStorageManager {
 
         final StoredGetable<U, T> toPut = previousValue != null
                 ? new StoredGetable<>(previousValue.getIndexCache(), getable, previousValue.getObjectType())
-                : new StoredGetable<>(new TagsCache(), getable, Getable.getTypeEnum(clazz));
+                : new StoredGetable<>(new TagsCache(), getable, AbstractGetable.getTypeEnum(clazz));
 
         uncommittedChanges.put(getable.getStoreKey(), toPut);
     }
 
-    public <U extends Message, T extends Getable<U>> void delete(String key, Class<T> clazz)
+    public <U extends Message, T extends AbstractGetable<U>> void delete(String key, Class<T> clazz)
             throws IllegalStateException {
         log.trace("Deleting {} with key {}", clazz, key);
 
@@ -90,22 +91,22 @@ public class GetableStorageManager {
         }
     }
 
-    public <U extends Message, T extends Getable<U>> void abortAndUpdate(T getable) {
+    public <U extends Message, T extends AbstractGetable<U>> void abortAndUpdate(T getable) {
         uncommittedChanges.clear();
 
         @SuppressWarnings("unchecked")
-        StoredGetable<U, T> storedGetable =
-                (StoredGetable<U, T>) localStore.getStoredGetable(getable.getStoreKey(), getable.getClass());
+        StoredGetable<U, T> storedGetable = (StoredGetable<U, T>) localStore.getStoredGetable(getable.getStoreKey(),
+                getable.getClass());
         if (storedGetable != null) {
-            StoredGetable<U, T> toUpdate =
-                    new StoredGetable<>(storedGetable.getIndexCache(), getable, storedGetable.getObjectType());
+            StoredGetable<U, T> toUpdate = new StoredGetable<>(storedGetable.getIndexCache(), getable,
+                    storedGetable.getObjectType());
             insertIntoStore(toUpdate);
         }
     }
 
     public void commit() {
         for (Map.Entry<String, StoredGetable<?, ?>> entry : uncommittedChanges.entrySet()) {
-            StoredGetable<? extends Message, ? extends Getable<?>> storedGetable = entry.getValue();
+            StoredGetable<? extends Message, ? extends AbstractGetable<?>> storedGetable = entry.getValue();
             if (storedGetable.getStoredObject() != null) {
                 insertIntoStore(storedGetable);
             } else {
@@ -115,7 +116,7 @@ public class GetableStorageManager {
         uncommittedChanges.clear();
     }
 
-    private <U extends Message, T extends Getable<U>> void insertIntoStore(StoredGetable<?, ?> getable) {
+    private <U extends Message, T extends AbstractGetable<U>> void insertIntoStore(StoredGetable<?, ?> getable) {
         TagsCache previousTags = getable.getIndexCache();
         List<Tag> newTags = getable.getStoredObject().getIndexEntries();
         List<CachedTag> newCachedTags = newTags.stream()
@@ -123,50 +124,59 @@ public class GetableStorageManager {
                 .toList();
 
         @SuppressWarnings("unchecked")
-        StoredGetable<U, T> entityToStore = (StoredGetable<U, T>)
-                new StoredGetable<>(new TagsCache(newCachedTags), getable.getStoredObject(), getable.getObjectType());
+        StoredGetable<U, T> entityToStore = (StoredGetable<U, T>) new StoredGetable<>(new TagsCache(newCachedTags),
+                getable.getStoredObject(), getable.getObjectType());
         localStore.put(entityToStore);
         tagStorageManager.store(newTags, previousTags);
     }
 
-    private <U extends Message, T extends Getable<U>> void deleteFromStore(String key, StoredGetable<?, ?> getable) {
+    private <U extends Message, T extends AbstractGetable<U>> void deleteFromStore(String key,
+            StoredGetable<?, ?> getable) {
         localStore.delete(key, getable.getStoredClass());
         tagStorageManager.store(List.of(), getable.getIndexCache());
     }
 
     /**
-     * @deprecated Should not use this method because it's not saving/deleting using the
-     *     StoredGetable class. This method will be removed once all entities are migrated to use
-     *     the StoredGetable class.
+     * @deprecated Should not use this method because it's not saving/deleting using
+     *             the
+     *             StoredGetable class. This method will be removed once all
+     *             entities are migrated to use
+     *             the StoredGetable class.
      */
     @Deprecated(forRemoval = true)
     @SuppressWarnings("unchecked")
-    public <T extends Getable<?>> void store(T getable) {
+    public <T extends AbstractGetable<?>> void store(T getable) {
         localStore.put(getable);
         tagStorageManager.storeUsingCache(
-                getable.getIndexEntries(), getable.getStoreKey(), (Class<? extends Getable<?>>) getable.getClass());
+                getable.getIndexEntries(), getable.getStoreKey(),
+                (Class<? extends AbstractGetable<?>>) getable.getClass());
     }
 
     /**
-     * @deprecated Should not use this method because it's not saving/deleting using the
-     *     StoredGetable class. This method will be removed once all entities are migrated to use
-     *     the StoredGetable class.
+     * @deprecated Should not use this method because it's not saving/deleting using
+     *             the
+     *             StoredGetable class. This method will be removed once all
+     *             entities are migrated to use
+     *             the StoredGetable class.
      */
     @Deprecated(forRemoval = true)
-    public <U extends Message, T extends Getable<U>> void deleteGetable(String storeKey, Class<T> getableClass) {
+    public <U extends Message, T extends AbstractGetable<U>> void deleteGetable(String storeKey,
+            Class<T> getableClass) {
         // TODO: I think there might be a cacheing-related bug here.
         T getable = localStore.get(storeKey, getableClass);
         deleteGetable(getable);
     }
 
     /**
-     * @deprecated Should not use this method because it's not saving/deleting using the
-     *     StoredGetable class. This method will be removed once all entities are migrated to use
-     *     the StoredGetable class.
+     * @deprecated Should not use this method because it's not saving/deleting using
+     *             the
+     *             StoredGetable class. This method will be removed once all
+     *             entities are migrated to use
+     *             the StoredGetable class.
      */
     @Deprecated(forRemoval = true)
     @SuppressWarnings("unchecked")
-    public <T extends Getable<?>> void deleteGetable(T getable) {
+    public <T extends AbstractGetable<?>> void deleteGetable(T getable) {
         if (getable == null) {
             log.debug("Tried to delete a thing that didn't exist! Likely because it "
                     + "was created and deleted in the same Command Event.");
@@ -174,15 +184,15 @@ public class GetableStorageManager {
         }
         localStore.delete(getable);
 
-        TagsCache tagsCache =
-                localStore.getTagsCache(getable.getStoreKey(), (Class<? extends Getable<?>>) getable.getClass());
+        TagsCache tagsCache = localStore.getTagsCache(getable.getStoreKey(),
+                (Class<? extends AbstractGetable<?>>) getable.getClass());
         tagsCache.getTags().forEach(tagStoreKey -> {
             tagStorageManager.removeTag(tagStoreKey);
         });
         localStore.deleteTagCache(getable);
     }
 
-    public <U extends Message, T extends Getable<U>> T getFirstByCreatedTimeFromPrefix(
+    public <U extends Message, T extends AbstractGetable<U>> T getFirstByCreatedTimeFromPrefix(
             String prefix, Class<T> cls, Predicate<T> discriminator) {
         for (String extEvtId : uncommittedChanges.keySet()) {
             if (extEvtId.startsWith(prefix)) {
@@ -200,7 +210,7 @@ public class GetableStorageManager {
                 .orElse(null);
     }
 
-    private <U extends Message, T extends Getable<U>> List<StoredGetable<U, T>> getEntityListByPrefix(
+    private <U extends Message, T extends AbstractGetable<U>> List<StoredGetable<U, T>> getEntityListByPrefix(
             String prefix, Class<T> cls) {
         try (LHKeyValueIterator<StoredGetable<U, T>> entityIterator = localStore.prefixScanStoredGetable(prefix, cls)) {
             ArrayList<StoredGetable<U, T>> entityList = new ArrayList<>();

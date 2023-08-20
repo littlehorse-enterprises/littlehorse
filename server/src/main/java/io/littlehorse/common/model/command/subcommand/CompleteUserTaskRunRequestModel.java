@@ -2,13 +2,13 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDAO;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.CompleteUserTaskRunReply;
-import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
-import io.littlehorse.common.model.wfrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.UserTaskResult;
@@ -44,7 +44,7 @@ public class CompleteUserTaskRunRequestModel extends SubCommand<CompleteUserTask
         result = p.getResult();
     }
 
-    public CompleteUserTaskRunReply process(LHDAO dao, LHConfig config) {
+    public CompleteUserTaskRunReply process(CoreProcessorDAO dao, LHConfig config) {
         CompleteUserTaskRunReply out = new CompleteUserTaskRunReply();
 
         UserTaskRunModel utr = dao.getUserTaskRun(userTaskRunId);

@@ -1,7 +1,7 @@
 package io.littlehorse.common.util.serde;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Deserializer;
@@ -20,7 +20,8 @@ public class LHDeserializer<T extends LHSerializable<?>> implements Deserializer
     }
 
     public T deserialize(String topic, byte[] b) {
-        if (b == null) return null;
+        if (b == null)
+            return null;
         try {
             return LHSerializable.fromBytes(b, cls, config);
         } catch (LHSerdeError exn) {

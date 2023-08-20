@@ -1,16 +1,17 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
-import io.littlehorse.common.model.wfrun.UserGroupModel;
-import io.littlehorse.common.model.wfrun.UserModel;
-import io.littlehorse.common.model.wfrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.UserGroupModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.UserModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest.TaskOwnerCase;
@@ -35,12 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class SearchUserTaskRunRequestModel
-        extends PublicScanRequest<
-                SearchUserTaskRunRequest,
-                SearchUserTaskRunResponse,
-                UserTaskRunId,
-                UserTaskRunIdModel,
-                SearchUserTaskRunReply> {
+        extends
+        PublicScanRequest<SearchUserTaskRunRequest, SearchUserTaskRunResponse, UserTaskRunId, UserTaskRunIdModel, SearchUserTaskRunReply> {
 
     private UserTaskRunStatus status;
     private String userTaskDefName;
@@ -63,7 +60,8 @@ public class SearchUserTaskRunRequestModel
 
     public void initFrom(Message proto) {
         SearchUserTaskRunRequest p = (SearchUserTaskRunRequest) proto;
-        if (p.hasLimit()) limit = p.getLimit();
+        if (p.hasLimit())
+            limit = p.getLimit();
         if (p.hasBookmark()) {
             try {
                 bookmark = BookmarkPb.parseFrom(p.getBookmark());
@@ -72,8 +70,10 @@ public class SearchUserTaskRunRequestModel
             }
         }
 
-        if (p.hasStatus()) status = p.getStatus();
-        if (p.hasUserTaskDefName()) userTaskDefName = p.getUserTaskDefName();
+        if (p.hasStatus())
+            status = p.getStatus();
+        if (p.hasUserTaskDefName())
+            userTaskDefName = p.getUserTaskDefName();
 
         ownerCase = p.getTaskOwnerCase();
         // Note: Typically, we would do as above. However, if a client (eg. the
@@ -81,8 +81,10 @@ public class SearchUserTaskRunRequestModel
         // dictates that we would search by userGroup (since it has a higher
         // field number) and ignore userId silently. By using the way below,
         // we can throw an LHValidationError when processing the search.
-        if (p.hasUserGroup()) userGroup = LHSerializable.fromProto(p.getUserGroup(), UserGroupModel.class);
-        if (p.hasUser()) user = LHSerializable.fromProto(p.getUser(), UserModel.class);
+        if (p.hasUserGroup())
+            userGroup = LHSerializable.fromProto(p.getUserGroup(), UserGroupModel.class);
+        if (p.hasUser())
+            user = LHSerializable.fromProto(p.getUser(), UserModel.class);
         if (p.hasLatestStart()) {
             latestStart = LHUtil.fromProtoTs(p.getLatestStart());
         }
@@ -100,8 +102,10 @@ public class SearchUserTaskRunRequestModel
             out.setLimit(limit);
         }
 
-        if (status != null) out.setStatus(status);
-        if (userTaskDefName != null) out.setUserTaskDefName(userTaskDefName);
+        if (status != null)
+            out.setStatus(status);
+        if (userTaskDefName != null)
+            out.setUserTaskDefName(userTaskDefName);
 
         switch (ownerCase) {
             case USER_GROUP:
@@ -175,12 +179,11 @@ public class SearchUserTaskRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
         TagStorageType tagStorageType = tagStorageTypePbByUserId()
                 .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
         if (tagStorageType == null) {
-            List<String> searchAttributes =
-                    getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
+            List<String> searchAttributes = getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
             Optional<TagStorageType> tagStorageTypePbOptional = getStorageTypeForSearchAttributes(searchAttributes);
             if (tagStorageTypePbOptional.isEmpty()) {
                 throw new LHValidationError("There is no index configuration for this search");
@@ -208,10 +211,10 @@ public class SearchUserTaskRunRequestModel
     private Optional<TagStorageType> getStorageTypeForSearchAttributes(List<String> attributes) {
         return new UserTaskRunModel()
                 .getIndexConfigurations().stream()
-                        .filter(getableIndex -> getableIndex.searchAttributesMatch(attributes))
-                        .map(GetableIndex::getTagStorageType)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .findFirst();
+                .filter(getableIndex -> getableIndex.searchAttributesMatch(attributes))
+                .map(GetableIndex::getTagStorageType)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
     }
 }

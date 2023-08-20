@@ -1,7 +1,7 @@
 package io.littlehorse.server.streamsimpl.storeinternals;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.Getable;
+import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
@@ -24,12 +24,15 @@ public class TagStorageManager {
     private LHConfig lhConfig;
 
     /**
-     * @deprecated Should not use this method because it's making an extra get and put to the
-     *     database in order to get the tag cache. This method will be removed once all entities are
-     *     migrated to use the StoredGetable class.
+     * @deprecated Should not use this method because it's making an extra get and
+     *             put to the
+     *             database in order to get the tag cache. This method will be
+     *             removed once all entities are
+     *             migrated to use the StoredGetable class.
      */
     @Deprecated(forRemoval = true)
-    public void storeUsingCache(Collection<Tag> tags, String getableId, Class<? extends Getable<?>> getableCls) {
+    public void storeUsingCache(Collection<Tag> tags, String getableId,
+            Class<? extends AbstractGetable<?>> getableCls) {
         TagsCache tagsCache = localStore.getTagsCache(getableId, getableCls);
         tagsCache = tagsCache != null ? tagsCache : new TagsCache();
         List<String> existingTagIds = tagsCache.getTagIds();
@@ -62,8 +65,10 @@ public class TagStorageManager {
     }
 
     /**
-     * @deprecated Do not use this method outside the TagStorageManager class. This method will
-     *     become private once all entities are migrated to use the StoredGetable class.
+     * @deprecated Do not use this method outside the TagStorageManager class. This
+     *             method will
+     *             become private once all entities are migrated to use the
+     *             StoredGetable class.
      */
     @Deprecated
     public void removeTag(CachedTag cachedTag) {

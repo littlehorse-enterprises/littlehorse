@@ -3,14 +3,14 @@ package io.littlehorse.server.streamsimpl.util;
 import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.proto.CentralStoreQueryResponse;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoredGetable;
 
-public class GETStreamObserverNew<U extends Message, T extends Getable<U>, V extends Message>
+public class GETStreamObserverNew<U extends Message, T extends AbstractGetable<U>, V extends Message>
         implements StreamObserver<CentralStoreQueryResponse> {
 
     private StreamObserver<V> ctx;
@@ -37,14 +37,15 @@ public class GETStreamObserverNew<U extends Message, T extends Getable<U>, V ext
         ctx.onCompleted();
     }
 
-    public void onCompleted() {}
+    public void onCompleted() {
+    }
 
     public void onNext(CentralStoreQueryResponse reply) {
         if (reply.hasResult()) {
             out.code = LHResponseCode.OK;
             try {
-                StoredGetable<U, T> entity = (StoredGetable<U, T>)
-                        LHSerializable.fromBytes(reply.getResult().toByteArray(), StoredGetable.class, config);
+                StoredGetable<U, T> entity = (StoredGetable<U, T>) LHSerializable
+                        .fromBytes(reply.getResult().toByteArray(), StoredGetable.class, config);
                 out.result = entity.getStoredObject();
             } catch (LHSerdeError exn) {
                 out.code = LHResponseCode.CONNECTION_ERROR;

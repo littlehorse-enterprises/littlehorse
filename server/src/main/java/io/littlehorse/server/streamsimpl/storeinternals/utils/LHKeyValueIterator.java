@@ -1,7 +1,8 @@
 package io.littlehorse.server.streamsimpl.storeinternals.utils;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.Storeable;
+import io.littlehorse.common.Storeable;
+
 import java.io.Closeable;
 import java.util.Iterator;
 import org.apache.kafka.common.utils.Bytes;

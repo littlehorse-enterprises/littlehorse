@@ -1,7 +1,8 @@
 package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.LHSerializable;
+
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.RepartitionCommandPb;
 import io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase;
 import io.littlehorse.common.util.LHUtil;
@@ -28,7 +29,8 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
         return RepartitionCommandPb.class;
     }
 
-    public RepartitionCommand() {}
+    public RepartitionCommand() {
+    }
 
     public RepartitionCommand(RepartitionSubCommand command, Date time, String commandId) {
         setSubCommand(command);
@@ -76,7 +78,8 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
     public RepartitionCommandPb.Builder toProto() {
         RepartitionCommandPb.Builder out = RepartitionCommandPb.newBuilder();
         out.setTime(LHUtil.fromDate(time));
-        if (commandId != null) out.setCommandId(commandId);
+        if (commandId != null)
+            out.setCommandId(commandId);
 
         switch (type) {
             case TASK_METRIC_UPDATE:
@@ -101,7 +104,8 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
         RepartitionCommandPb p = (RepartitionCommandPb) proto;
 
         type = p.getRepartitionCommandCase();
-        if (p.hasCommandId()) commandId = p.getCommandId();
+        if (p.hasCommandId())
+            commandId = p.getCommandId();
         time = LHUtil.fromProtoTs(p.getTime());
 
         switch (type) {

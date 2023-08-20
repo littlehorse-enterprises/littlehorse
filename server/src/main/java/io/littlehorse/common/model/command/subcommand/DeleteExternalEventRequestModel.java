@@ -2,11 +2,11 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDAO;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
-import io.littlehorse.common.model.objectId.ExternalEventIdModel;
-import io.littlehorse.common.model.wfrun.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventRequest;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 
@@ -37,7 +37,7 @@ public class DeleteExternalEventRequestModel extends SubCommand<DeleteExternalEv
         return true;
     }
 
-    public DeleteObjectReply process(LHDAO dao, LHConfig config) {
+    public DeleteObjectReply process(CoreProcessorDAO dao, LHConfig config) {
         ExternalEventIdModel eventId = new ExternalEventIdModel(wfRunId, externalEventDefName, guid);
         ExternalEventModel externalEvent = dao.getExternalEvent(eventId.getStoreKey());
         if (!externalEvent.claimed) {

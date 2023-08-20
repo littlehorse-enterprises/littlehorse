@@ -1,7 +1,8 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.LHSerializable;
+
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalScanPb;
@@ -39,7 +40,8 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
                 .setObjectType(objectType)
                 .setResultType(resultType);
 
-        if (bookmark != null) out.setBookmark(bookmark);
+        if (bookmark != null)
+            out.setBookmark(bookmark);
         if (partitionKey != null) {
             out.setPartitionKey(partitionKey);
         }
@@ -62,11 +64,13 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
         InternalScanPb p = (InternalScanPb) proto;
         resultType = p.getResultType();
         limit = p.getLimit();
-        if (p.hasBookmark()) bookmark = p.getBookmark();
+        if (p.hasBookmark())
+            bookmark = p.getBookmark();
         objectType = p.getObjectType();
         storeName = p.getStoreName();
 
-        if (p.hasPartitionKey()) partitionKey = p.getPartitionKey();
+        if (p.hasPartitionKey())
+            partitionKey = p.getPartitionKey();
 
         type = p.getScanBoundaryCase();
         switch (type) {

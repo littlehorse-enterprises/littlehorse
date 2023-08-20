@@ -2,9 +2,9 @@ package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repa
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.model.metrics.WfSpecMetricsModel;
-import io.littlehorse.common.model.objectId.WfSpecMetricsIdModel;
+import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.getable.objectId.WfSpecMetricsIdModel;
+import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
 import io.littlehorse.common.proto.WfMetricUpdatePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
@@ -30,7 +30,8 @@ public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements Repar
     public String wfSpecName;
     public int wfSpecVersion;
 
-    public WfMetricUpdate() {}
+    public WfMetricUpdate() {
+    }
 
     public WfMetricUpdate(Date windowStart, MetricsWindowLength type, String wfSpecName, int wfSpecVersion) {
         this.windowStart = windowStart;

@@ -3,15 +3,17 @@ package io.littlehorse.server.streamsimpl.util;
 import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.Storeable;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.Storeable;
 import io.littlehorse.common.proto.CentralStoreQueryResponse;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 
 /**
- * @deprecated Should not use this class because it's not using the StoredGetable class. This class
- *     will be removed once all entities are migrated to use the StoredGetable class.
+ * @deprecated Should not use this class because it's not using the
+ *             StoredGetable class. This class
+ *             will be removed once all entities are migrated to use the
+ *             StoredGetable class.
  */
 @Deprecated(forRemoval = true)
 public class GETStreamObserver<U extends Message, T extends Storeable<U>, V extends Message>
@@ -41,7 +43,8 @@ public class GETStreamObserver<U extends Message, T extends Storeable<U>, V exte
         ctx.onCompleted();
     }
 
-    public void onCompleted() {}
+    public void onCompleted() {
+    }
 
     public void onNext(CentralStoreQueryResponse reply) {
         // TODO

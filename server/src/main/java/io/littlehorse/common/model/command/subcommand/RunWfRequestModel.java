@@ -2,12 +2,12 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDAO;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.RunWfReply;
-import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.wfrun.VariableValueModel;
-import io.littlehorse.common.model.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -40,8 +40,10 @@ public class RunWfRequestModel extends SubCommand<RunWfRequest> {
 
     public RunWfRequest.Builder toProto() {
         RunWfRequest.Builder out = RunWfRequest.newBuilder().setWfSpecName(wfSpecName);
-        if (id != null) out.setId(id);
-        if (wfSpecVersion != null) out.setWfSpecVersion(wfSpecVersion);
+        if (id != null)
+            out.setId(id);
+        if (wfSpecVersion != null)
+            out.setWfSpecVersion(wfSpecVersion);
 
         for (Map.Entry<String, VariableValueModel> e : variables.entrySet()) {
             out.putVariables(e.getKey(), e.getValue().toProto().build());
@@ -52,8 +54,10 @@ public class RunWfRequestModel extends SubCommand<RunWfRequest> {
     public void initFrom(Message proto) {
         RunWfRequest p = (RunWfRequest) proto;
         wfSpecName = p.getWfSpecName();
-        if (p.hasId()) id = p.getId();
-        if (p.hasWfSpecVersion()) wfSpecVersion = p.getWfSpecVersion();
+        if (p.hasId())
+            id = p.getId();
+        if (p.hasWfSpecVersion())
+            wfSpecVersion = p.getWfSpecVersion();
 
         for (Map.Entry<String, VariableValue> e : p.getVariablesMap().entrySet()) {
             variables.put(e.getKey(), VariableValueModel.fromProto(e.getValue()));
@@ -64,7 +68,7 @@ public class RunWfRequestModel extends SubCommand<RunWfRequest> {
         return true;
     }
 
-    public RunWfReply process(LHDAO dao, LHConfig config) {
+    public RunWfReply process(CoreProcessorDAO dao, LHConfig config) {
         RunWfReply out = new RunWfReply();
 
         WfSpecModel spec = dao.getWfSpec(wfSpecName, wfSpecVersion);
@@ -75,7 +79,8 @@ public class RunWfRequestModel extends SubCommand<RunWfRequest> {
         }
         out.wfSpecVersion = spec.version;
 
-        if (id == null) id = LHUtil.generateGuid();
+        if (id == null)
+            id = LHUtil.generateGuid();
         out.wfRunId = id;
 
         WfRunModel oldWfRunModel = dao.getWfRun(id);

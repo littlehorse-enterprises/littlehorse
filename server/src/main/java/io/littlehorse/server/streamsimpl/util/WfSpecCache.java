@@ -1,7 +1,7 @@
 package io.littlehorse.server.streamsimpl.util;
 
-import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -15,7 +15,8 @@ public class WfSpecCache extends LHCache<WfSpecIdModel, WfSpecModel> {
     private static final Pattern WFSPEC_KEY_PATTERN = Pattern.compile("2\\/(?<name>.+)\\/(?<version>\\d+)");
     public static final int LATEST_VERSION = -1;
 
-    public WfSpecCache() {}
+    public WfSpecCache() {
+    }
 
     public void addToCache(String key, Bytes value) throws LHSerdeError {
         Matcher wfSpecMatcher = WFSPEC_KEY_PATTERN.matcher(key);

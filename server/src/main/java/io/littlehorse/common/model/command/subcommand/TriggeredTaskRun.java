@@ -2,27 +2,27 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDAO;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
-import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.meta.subnode.TaskNodeModel;
-import io.littlehorse.common.model.objectId.NodeRunIdModel;
-import io.littlehorse.common.model.objectId.TaskRunIdModel;
-import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
-import io.littlehorse.common.model.wfrun.NodeRunModel;
-import io.littlehorse.common.model.wfrun.ScheduledTaskModel;
-import io.littlehorse.common.model.wfrun.TaskAttemptModel;
-import io.littlehorse.common.model.wfrun.ThreadRunModel;
-import io.littlehorse.common.model.wfrun.UserTaskRunModel;
-import io.littlehorse.common.model.wfrun.VarNameAndValModel;
-import io.littlehorse.common.model.wfrun.WfRunModel;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRunModel;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRunSourceModel;
-import io.littlehorse.common.model.wfrun.taskrun.UserTaskTriggerReferenceModel;
-import io.littlehorse.common.model.wfrun.usertaskevent.UTETaskExecutedModel;
-import io.littlehorse.common.model.wfrun.usertaskevent.UserTaskEventModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskAttemptModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunSourceModel;
+import io.littlehorse.common.model.getable.core.taskrun.UserTaskTriggerReferenceModel;
+import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTETaskExecutedModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
+import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.proto.TriggeredTaskRunPb;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import java.util.Date;
@@ -39,7 +39,8 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
     private TaskNodeModel taskToSchedule;
     private NodeRunIdModel source;
 
-    public TriggeredTaskRun() {}
+    public TriggeredTaskRun() {
+    }
 
     public TriggeredTaskRun(TaskNodeModel taskToSchedule, NodeRunIdModel source) {
         this.source = source;
@@ -68,7 +69,7 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
     }
 
     @Override
-    public AbstractResponse<?> process(LHDAO dao, LHConfig config) {
+    public AbstractResponse<?> process(CoreProcessorDAO dao, LHConfig config) {
         taskToSchedule.setDao(dao);
         String wfRunId = source.getWfRunId();
 

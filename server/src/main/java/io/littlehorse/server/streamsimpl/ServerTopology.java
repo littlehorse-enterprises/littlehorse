@@ -1,8 +1,8 @@
 package io.littlehorse.server.streamsimpl;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.command.Command;
-import io.littlehorse.common.model.wfrun.LHTimer;
+import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.model.command.CommandModel;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -54,164 +54,168 @@ import org.apache.kafka.streams.state.Stores;
  */
 public class ServerTopology {
 
-    public static final String TIMER_SOURCE = "timer-source";
-    public static final String TIMER_PROCESSOR = "timer-processor";
-    public static final String NEW_TIMER_SINK = "new-timer-sink";
-    public static final String MATURED_TIMER_SINK = "matured-timer-sink";
-    public static final String TIMER_STORE = "timer-store";
+        public static final String TIMER_SOURCE = "timer-source";
+        public static final String TIMER_PROCESSOR = "timer-processor";
+        public static final String NEW_TIMER_SINK = "new-timer-sink";
+        public static final String MATURED_TIMER_SINK = "matured-timer-sink";
+        public static final String TIMER_STORE = "timer-store";
 
-    public static final String CORE_SOURCE = "core-source";
-    public static final String CORE_STORE = "core-store";
-    public static final String CORE_PROCESSOR = "core-processor";
-    public static final String CORE_REPARTITION_SINK = "core-repartition-sink";
-    public static final String CORE_REPARTITION_SOURCE = "core-repartition-source";
-    public static final String CORE_REPARTITION_STORE = "core-repartition-store";
-    public static final String CORE_REPARTITION_PROCESSOR = "core-repartition-processor";
+        public static final String CORE_SOURCE = "core-source";
+        public static final String CORE_STORE = "core-store";
+        public static final String CORE_PROCESSOR = "core-processor";
+        public static final String CORE_REPARTITION_SINK = "core-repartition-sink";
+        public static final String CORE_REPARTITION_SOURCE = "core-repartition-source";
+        public static final String CORE_REPARTITION_STORE = "core-repartition-store";
+        public static final String CORE_REPARTITION_PROCESSOR = "core-repartition-processor";
 
-    public static final String GLOBAL_METADATA_SOURCE = "global-metadata-cl-source";
-    public static final String GLOBAL_STORE = "global-metadata-store";
-    public static final String GLOBAL_METADATA_PROCESSOR = "global-metadata-processor";
+        public static final String GLOBAL_METADATA_SOURCE = "global-metadata-cl-source";
+        public static final String GLOBAL_STORE = "global-metadata-store";
+        public static final String GLOBAL_METADATA_PROCESSOR = "global-metadata-processor";
 
-    public static final String METADATA_SOURCE = "metadata-source";
+        public static final String METADATA_SOURCE = "metadata-source";
 
-    public static final String METADATA_PROCESSOR = "metadata-processor";
+        public static final String METADATA_PROCESSOR = "metadata-processor";
 
-    public static final String METADATA_STORE = "metadata-store";
+        public static final String METADATA_STORE = "metadata-store";
 
-    public static final String GLOBAL_METADATA_SINK = "global-metadata-sink";
+        public static final String GLOBAL_METADATA_SINK = "global-metadata-sink";
 
-    public static Topology initCoreTopology(LHConfig config, KafkaStreamsServerImpl server) {
-        Topology topo = new Topology();
-        WfSpecCache wfSpecCache = new WfSpecCache();
-        Serializer<Object> sinkValueSerializer = (topic, output) -> {
-            CommandProcessorOutput cpo = (CommandProcessorOutput) output;
-            if (cpo.payload == null) {
-                return null;
-            }
+        public static Topology initCoreTopology(LHConfig config, KafkaStreamsServerImpl server) {
+                Topology topo = new Topology();
+                WfSpecCache wfSpecCache = new WfSpecCache();
+                Serializer<Object> sinkValueSerializer = (topic, output) -> {
+                        CommandProcessorOutput cpo = (CommandProcessorOutput) output;
+                        if (cpo.payload == null) {
+                                return null;
+                        }
 
-            return cpo.payload.toBytes(config);
-        };
+                        return cpo.payload.toBytes(config);
+                };
 
-        TopicNameExtractor<String, Object> sinkTopicNameExtractor =
-                (key, coreServerOutput, ctx) -> ((CommandProcessorOutput) coreServerOutput).topic;
+                TopicNameExtractor<String, Object> sinkTopicNameExtractor = (key, coreServerOutput,
+                                ctx) -> ((CommandProcessorOutput) coreServerOutput).topic;
 
-        topo.addSource(
-                CORE_SOURCE, // source name
-                Serdes.String().deserializer(), // key deserializer
-                new LHDeserializer<>(Command.class, config), // value deserializer
-                config.getCoreCmdTopicName() // source topic
+                topo.addSource(
+                                CORE_SOURCE, // source name
+                                Serdes.String().deserializer(), // key deserializer
+                                new LHDeserializer<>(CommandModel.class, config), // value deserializer
+                                config.getCoreCmdTopicName() // source topic
                 );
 
-        topo.addSource(
-                METADATA_SOURCE, // source name
-                Serdes.String().deserializer(), // key deserializer
-                new LHDeserializer<>(Command.class, config), // value deserializer
-                config.getMetadataCmdTopicName() // source topic
+                topo.addSource(
+                                METADATA_SOURCE, // source name
+                                Serdes.String().deserializer(), // key deserializer
+                                new LHDeserializer<>(CommandModel.class, config), // value deserializer
+                                config.getMetadataCmdTopicName() // source topic
                 );
 
-        topo.addProcessor(
-                METADATA_PROCESSOR,
-                () -> new CommandProcessor(config, server, wfSpecCache, METADATA_STORE, true),
-                METADATA_SOURCE);
+                topo.addProcessor(
+                                METADATA_PROCESSOR,
+                                () -> new CommandProcessor(config, server, wfSpecCache, METADATA_STORE, true),
+                                METADATA_SOURCE);
 
-        topo.addSink(
-                GLOBAL_METADATA_SINK,
-                sinkTopicNameExtractor, // topic extractor
-                Serdes.String().serializer(), // key serializer
-                sinkValueSerializer, // value serializer
-                METADATA_PROCESSOR // parent name
+                topo.addSink(
+                                GLOBAL_METADATA_SINK,
+                                sinkTopicNameExtractor, // topic extractor
+                                Serdes.String().serializer(), // key serializer
+                                sinkValueSerializer, // value serializer
+                                METADATA_PROCESSOR // parent name
                 );
 
-        topo.addProcessor(
-                CORE_PROCESSOR,
-                () -> new CommandProcessor(config, server, wfSpecCache, CORE_STORE, false),
-                CORE_SOURCE);
+                topo.addProcessor(
+                                CORE_PROCESSOR,
+                                () -> new CommandProcessor(config, server, wfSpecCache, CORE_STORE, false),
+                                CORE_SOURCE);
 
-        topo.addSink(
-                CORE_REPARTITION_SINK,
-                sinkTopicNameExtractor, // topic extractor
-                Serdes.String().serializer(), // key serializer
-                sinkValueSerializer, // value serializer
-                CORE_PROCESSOR // parent name
+                topo.addSink(
+                                CORE_REPARTITION_SINK,
+                                sinkTopicNameExtractor, // topic extractor
+                                Serdes.String().serializer(), // key serializer
+                                sinkValueSerializer, // value serializer
+                                CORE_PROCESSOR // parent name
                 );
 
-        topo.addSource(
-                CORE_REPARTITION_SOURCE,
-                Serdes.String().deserializer(),
-                new LHDeserializer<>(RepartitionCommand.class, config),
-                config.getRepartitionTopicName());
+                topo.addSource(
+                                CORE_REPARTITION_SOURCE,
+                                Serdes.String().deserializer(),
+                                new LHDeserializer<>(RepartitionCommand.class, config),
+                                config.getRepartitionTopicName());
 
-        topo.addProcessor(
-                CORE_REPARTITION_PROCESSOR, () -> new RepartitionCommandProcessor(config), CORE_REPARTITION_SOURCE);
+                topo.addProcessor(
+                                CORE_REPARTITION_PROCESSOR, () -> new RepartitionCommandProcessor(config),
+                                CORE_REPARTITION_SOURCE);
 
-        StoreBuilder<KeyValueStore<String, Bytes>> rePartitionedStoreBuilder = Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(CORE_REPARTITION_STORE), Serdes.String(), Serdes.Bytes());
-        topo.addStateStore(rePartitionedStoreBuilder, CORE_REPARTITION_PROCESSOR);
+                StoreBuilder<KeyValueStore<String, Bytes>> rePartitionedStoreBuilder = Stores.keyValueStoreBuilder(
+                                Stores.persistentKeyValueStore(CORE_REPARTITION_STORE), Serdes.String(),
+                                Serdes.Bytes());
+                topo.addStateStore(rePartitionedStoreBuilder, CORE_REPARTITION_PROCESSOR);
 
-        StoreBuilder<KeyValueStore<String, Bytes>> coreStoreBuilder = Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(CORE_STORE), Serdes.String(), Serdes.Bytes());
-        topo.addStateStore(coreStoreBuilder, CORE_PROCESSOR);
+                StoreBuilder<KeyValueStore<String, Bytes>> coreStoreBuilder = Stores.keyValueStoreBuilder(
+                                Stores.persistentKeyValueStore(CORE_STORE), Serdes.String(), Serdes.Bytes());
+                topo.addStateStore(coreStoreBuilder, CORE_PROCESSOR);
 
-        StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder = Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(METADATA_STORE), Serdes.String(), Serdes.Bytes());
-        topo.addStateStore(metadataStoreBuilder, METADATA_PROCESSOR);
+                StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder = Stores.keyValueStoreBuilder(
+                                Stores.persistentKeyValueStore(METADATA_STORE), Serdes.String(), Serdes.Bytes());
+                topo.addStateStore(metadataStoreBuilder, METADATA_PROCESSOR);
 
-        // There's a topic for global communication, which is used for two things:
-        // 1. broadcasting global metadata to all instances
-        // 2. (LATER) communicating about how many items are in each queue for
-        //    each partition.
-        // This topic is config.getGlobalMetadatCLTopicName()
-        // topo.addSource(globalMetaSource, Serdes.String().deserializer(), new LHDeserializer<>(),
-        // config))
+                // There's a topic for global communication, which is used for two things:
+                // 1. broadcasting global metadata to all instances
+                // 2. (LATER) communicating about how many items are in each queue for
+                // each partition.
+                // This topic is config.getGlobalMetadatCLTopicName()
+                // topo.addSource(globalMetaSource, Serdes.String().deserializer(), new
+                // LHDeserializer<>(),
+                // config))
 
-        StoreBuilder<KeyValueStore<String, Bytes>> globalStoreBuilder = Stores.keyValueStoreBuilder(
-                        Stores.persistentKeyValueStore(GLOBAL_STORE), Serdes.String(), Serdes.Bytes())
-                .withLoggingDisabled();
+                StoreBuilder<KeyValueStore<String, Bytes>> globalStoreBuilder = Stores.keyValueStoreBuilder(
+                                Stores.persistentKeyValueStore(GLOBAL_STORE), Serdes.String(), Serdes.Bytes())
+                                .withLoggingDisabled();
 
-        topo.addGlobalStore(
-                globalStoreBuilder,
-                GLOBAL_METADATA_SOURCE,
-                Serdes.String().deserializer(),
-                Serdes.Bytes().deserializer(),
-                config.getGlobalMetadataCLTopicName(),
-                GLOBAL_METADATA_PROCESSOR,
-                () -> new GlobalMetadataProcessor(wfSpecCache));
-        return topo;
-    }
+                topo.addGlobalStore(
+                                globalStoreBuilder,
+                                GLOBAL_METADATA_SOURCE,
+                                Serdes.String().deserializer(),
+                                Serdes.Bytes().deserializer(),
+                                config.getGlobalMetadataCLTopicName(),
+                                GLOBAL_METADATA_PROCESSOR,
+                                () -> new GlobalMetadataProcessor(wfSpecCache));
+                return topo;
+        }
 
-    public static Topology initTimerTopology(LHConfig config) {
-        Topology topo = new Topology();
-        Serde<LHTimer> timerSerde = new LHSerde<>(LHTimer.class, config);
+        public static Topology initTimerTopology(LHConfig config) {
+                Topology topo = new Topology();
+                Serde<LHTimer> timerSerde = new LHSerde<>(LHTimer.class, config);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            timerSerde.close();
-        }));
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                        timerSerde.close();
+                }));
 
-        topo.addSource(TIMER_SOURCE, Serdes.String().deserializer(), timerSerde.deserializer(), config.getTimerTopic());
+                topo.addSource(TIMER_SOURCE, Serdes.String().deserializer(), timerSerde.deserializer(),
+                                config.getTimerTopic());
 
-        topo.addProcessor(
-                TIMER_PROCESSOR,
-                () -> {
-                    return new TimerProcessor();
-                },
-                TIMER_SOURCE);
+                topo.addProcessor(
+                                TIMER_PROCESSOR,
+                                () -> {
+                                        return new TimerProcessor();
+                                },
+                                TIMER_SOURCE);
 
-        topo.addSink(
-                MATURED_TIMER_SINK,
-                (key, lhTimer, ctx) -> {
-                    return ((LHTimer) lhTimer).topic;
-                },
-                Serdes.String().serializer(),
-                (topic, lhTimer) -> {
-                    return ((LHTimer) lhTimer).getPayload(config);
-                },
-                TIMER_PROCESSOR);
+                topo.addSink(
+                                MATURED_TIMER_SINK,
+                                (key, lhTimer, ctx) -> {
+                                        return ((LHTimer) lhTimer).topic;
+                                },
+                                Serdes.String().serializer(),
+                                (topic, lhTimer) -> {
+                                        return ((LHTimer) lhTimer).getPayload(config);
+                                },
+                                TIMER_PROCESSOR);
 
-        // Add state store
-        StoreBuilder<KeyValueStore<String, LHTimer>> timerStoreBuilder =
-                Stores.keyValueStoreBuilder(Stores.persistentKeyValueStore(TIMER_STORE), Serdes.String(), timerSerde);
-        topo.addStateStore(timerStoreBuilder, TIMER_PROCESSOR);
+                // Add state store
+                StoreBuilder<KeyValueStore<String, LHTimer>> timerStoreBuilder = Stores.keyValueStoreBuilder(
+                                Stores.persistentKeyValueStore(TIMER_STORE), Serdes.String(), timerSerde);
+                topo.addStateStore(timerStoreBuilder, TIMER_PROCESSOR);
 
-        return topo;
-    }
+                return topo;
+        }
 }

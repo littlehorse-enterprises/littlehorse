@@ -4,8 +4,8 @@ import static io.littlehorse.server.streamsimpl.util.WfSpecCache.LATEST_VERSION;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import io.littlehorse.TestUtil;
-import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import org.apache.kafka.common.utils.Bytes;
@@ -24,8 +24,7 @@ class WfSpecModelCacheTest {
             final int wfSpecVersion = 23;
             final WfSpecModel wfSpecModel = TestUtil.wfSpec(wfSpecName);
             wfSpecModel.setVersion(wfSpecVersion);
-            final String key =
-                    StoreUtils.getFullStoreKey(wfSpecModel.getObjectId().getStoreKey(), WfSpecModel.class);
+            final String key = StoreUtils.getFullStoreKey(wfSpecModel.getObjectId().getStoreKey(), WfSpecModel.class);
             final Bytes value = Bytes.wrap(wfSpecModel.toBytes(null));
 
             wfSpecCache.addToCache(key, value);
@@ -45,8 +44,7 @@ class WfSpecModelCacheTest {
             final int wfSpecVersion = 23;
             final WfSpecModel wfSpecModel = TestUtil.wfSpec(wfSpecName);
             wfSpecModel.setVersion(wfSpecVersion);
-            final String key =
-                    StoreUtils.getFullStoreKey(wfSpecModel.getObjectId().getStoreKey(), WfSpecModel.class);
+            final String key = StoreUtils.getFullStoreKey(wfSpecModel.getObjectId().getStoreKey(), WfSpecModel.class);
             final Bytes value = Bytes.wrap(wfSpecModel.toBytes(null));
 
             wfSpecCache.addToCache(key, value);

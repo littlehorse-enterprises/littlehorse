@@ -2,15 +2,15 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDAO;
-import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.AssignUserTaskRunReply;
-import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
-import io.littlehorse.common.model.wfrun.UserGroupModel;
-import io.littlehorse.common.model.wfrun.UserModel;
-import io.littlehorse.common.model.wfrun.UserTaskRunModel;
-import io.littlehorse.common.model.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.UserGroupModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.UserModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.AssigneeCase;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
@@ -77,7 +77,7 @@ public class AssignUserTaskRunRequestModel extends SubCommand<AssignUserTaskRunR
         return userTaskRunId.getWfRunId();
     }
 
-    public AssignUserTaskRunReply process(LHDAO dao, LHConfig config) {
+    public AssignUserTaskRunReply process(CoreProcessorDAO dao, LHConfig config) {
         AssignUserTaskRunReply out = new AssignUserTaskRunReply();
 
         if (assigneeType == AssigneeCase.ASSIGNEE_NOT_SET) {

@@ -1,11 +1,12 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+
+import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.wfrun.VariableModel;
+import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.ListVariablesRequest;
 import io.littlehorse.sdk.common.proto.ListVariablesResponse;
 import io.littlehorse.sdk.common.proto.Variable;
@@ -15,8 +16,8 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrate
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListVariablesReply;
 
 public class ListVariablesRequestModel
-        extends PublicScanRequest<
-                ListVariablesRequest, ListVariablesResponse, Variable, VariableModel, ListVariablesReply> {
+        extends
+        PublicScanRequest<ListVariablesRequest, ListVariablesResponse, Variable, VariableModel, ListVariablesReply> {
 
     public String wfRunId;
 
@@ -38,12 +39,13 @@ public class ListVariablesRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
         return TagStorageType.LOCAL;
     }
 
     @Override
-    public void validate() throws LHValidationError {}
+    public void validate() throws LHValidationError {
+    }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {

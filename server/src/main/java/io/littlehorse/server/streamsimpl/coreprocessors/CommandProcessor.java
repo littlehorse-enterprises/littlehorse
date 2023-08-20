@@ -3,7 +3,7 @@ package io.littlehorse.server.streamsimpl.coreprocessors;
 import com.google.protobuf.ByteString;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.common.model.command.Command;
+import io.littlehorse.common.model.command.CommandModel;
 import io.littlehorse.common.proto.CommandResultPb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandResponse;
@@ -20,7 +20,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 
 @Slf4j
-public class CommandProcessor implements Processor<String, Command, String, CommandProcessorOutput> {
+public class CommandProcessor implements Processor<String, CommandModel, String, CommandProcessorOutput> {
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private KafkaStreamsLHDAOImpl dao;
@@ -58,7 +58,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     @Override
-    public void process(final Record<String, Command> commandRecord) {
+    public void process(final Record<String, CommandModel> commandRecord) {
         // We have another wrapper here as a guard against a poison pill (even
         // though we test extensively to prevent poison pills, it's better
         // to be safe than sorry.)
@@ -69,8 +69,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         }
     }
 
-    private void processHelper(final Record<String, Command> commandRecord) {
-        Command command = commandRecord.value();
+    private void processHelper(final Record<String, CommandModel> commandRecord) {
+        CommandModel command = commandRecord.value();
         dao.setCommand(command);
 
         log.trace(

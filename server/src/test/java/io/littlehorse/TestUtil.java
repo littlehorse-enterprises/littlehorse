@@ -1,28 +1,28 @@
 package io.littlehorse;
 
-import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.meta.NodeModel;
-import io.littlehorse.common.model.meta.ThreadSpecModel;
-import io.littlehorse.common.model.meta.VariableDefModel;
-import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.meta.subnode.TaskNodeModel;
-import io.littlehorse.common.model.objectId.TaskRunIdModel;
-import io.littlehorse.common.model.objectId.UserTaskDefIdModel;
-import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
-import io.littlehorse.common.model.objectId.WfSpecIdModel;
-import io.littlehorse.common.model.wfrun.ExternalEventModel;
-import io.littlehorse.common.model.wfrun.NodeRunModel;
-import io.littlehorse.common.model.wfrun.UserGroupModel;
-import io.littlehorse.common.model.wfrun.UserModel;
-import io.littlehorse.common.model.wfrun.UserTaskRunModel;
-import io.littlehorse.common.model.wfrun.VariableModel;
-import io.littlehorse.common.model.wfrun.VariableValueModel;
-import io.littlehorse.common.model.wfrun.WfRunModel;
-import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRunModel;
-import io.littlehorse.common.model.wfrun.subnoderun.UserTaskNodeRunModel;
-import io.littlehorse.common.model.wfrun.taskrun.TaskNodeReferenceModel;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRunModel;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRunSourceModel;
+import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskNodeReferenceModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunSourceModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.UserGroupModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.UserModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.subnoderun.TaskNodeRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
+import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -153,7 +153,7 @@ public class TestUtil {
         return taskNode;
     }
 
-    public static Getable<?> getable(Class<?> getableClass, String id) {
+    public static AbstractGetable<?> getable(Class<?> getableClass, String id) {
         if (getableClass.equals(WfRunModel.class)) {
             return wfRun(id);
         } else {

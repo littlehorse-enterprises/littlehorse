@@ -1,10 +1,11 @@
 package io.littlehorse.server.streamsimpl.storeinternals.utils;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.ObjectId;
-import io.littlehorse.common.model.Storeable;
+
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.getable.ObjectId;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
@@ -16,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @Setter
-public class StoredGetable<U extends Message, T extends Getable<U>> extends Storeable<StoredGetablePb> {
+public class StoredGetable<U extends Message, T extends AbstractGetable<U>> extends Storeable<StoredGetablePb> {
 
     private TagsCache indexCache;
     private T storedObject;
@@ -28,7 +29,8 @@ public class StoredGetable<U extends Message, T extends Getable<U>> extends Stor
         this.objectType = objectType;
     }
 
-    public StoredGetable() {}
+    public StoredGetable() {
+    }
 
     @Override
     public Class<StoredGetablePb> getProtoBaseClass() {
@@ -66,6 +68,6 @@ public class StoredGetable<U extends Message, T extends Getable<U>> extends Stor
 
     @SuppressWarnings("unchecked")
     public Class<T> getStoredClass() {
-        return (Class<T>) Getable.getCls(objectType);
+        return (Class<T>) AbstractGetable.getCls(objectType);
     }
 }

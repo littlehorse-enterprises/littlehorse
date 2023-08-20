@@ -2,11 +2,11 @@ package io.littlehorse.server.streamsimpl.storeinternals;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.model.command.Command;
-import io.littlehorse.common.proto.CommandPb.CommandCase;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.command.CommandModel;
+import io.littlehorse.common.proto.Command.CommandCase;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
@@ -61,7 +61,7 @@ public class LHStoreWrapper extends LHROStoreWrapper {
     }
 
     @Override
-    public <U extends Message, T extends Getable<U>> StoredGetable<U, T> getStoredGetable(
+    public <U extends Message, T extends AbstractGetable<U>> StoredGetable<U, T> getStoredGetable(
             String objectId, Class<T> cls) {
         totalGets++;
         return super.getStoredGetable(objectId, cls);
@@ -87,7 +87,7 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         store.delete(rawKey);
     }
 
-    public TagsCache getTagsCache(String getableId, Class<? extends Getable<?>> cls) {
+    public TagsCache getTagsCache(String getableId, Class<? extends AbstractGetable<?>> cls) {
         Bytes raw = getRaw(StoreUtils.getTagsCacheKey(getableId, cls));
         if (raw == null) {
             return null;
@@ -101,16 +101,16 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         }
     }
 
-    public void putTagsCache(String getableId, Class<? extends Getable<?>> getableCls, TagsCache newTagsCache) {
+    public void putTagsCache(String getableId, Class<? extends AbstractGetable<?>> getableCls, TagsCache newTagsCache) {
         putRaw(StoreUtils.getTagsCacheKey(getableId, getableCls), new Bytes(newTagsCache.toBytes(config)));
     }
 
-    public void deleteTagCache(Getable<?> thing) {
+    public void deleteTagCache(AbstractGetable<?> thing) {
         String tagCacheKey = StoreUtils.getTagsCacheKey(thing);
         delete(tagCacheKey);
     }
 
-    public void clearCommandMetrics(Command cmd) {
+    public void clearCommandMetrics(CommandModel cmd) {
         if (cmd.getType() == CommandCase.TASK_WORKER_HEART_BEAT) {
             return;
         }

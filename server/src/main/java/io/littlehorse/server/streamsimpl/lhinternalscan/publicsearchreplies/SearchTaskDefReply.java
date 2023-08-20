@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
-import io.littlehorse.common.model.objectId.TaskDefIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.sdk.common.proto.SearchTaskDefResponse;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
@@ -19,27 +19,27 @@ public class SearchTaskDefReply extends PublicScanReply<SearchTaskDefResponse, T
         return TaskDefId.class;
     }
     // public SearchTaskDefResponse.Builder toProto() {
-    //     SearchTaskDefResponse.Builder out = SearchTaskDefResponse
-    //         .newBuilder()
-    //         .setCode(code);
-    //     if (message != null) out.setMessage(message);
-    //     if (bookmark != null) out.setBookmark(ByteString.copyFrom(bookmark));
+    // SearchTaskDefResponse.Builder out = SearchTaskDefResponse
+    // .newBuilder()
+    // .setCode(code);
+    // if (message != null) out.setMessage(message);
+    // if (bookmark != null) out.setBookmark(ByteString.copyFrom(bookmark));
 
-    //     for (String objectId : objectIds) {
-    //         out.addIds(TaskDef.parseId(objectId));
-    //     }
+    // for (String objectId : objectIds) {
+    // out.addIds(TaskDef.parseId(objectId));
+    // }
 
-    //     return out;
+    // return out;
     // }
 
     // public void initFrom(Message proto) {
-    //     SearchTaskDefResponse p = (SearchTaskDefResponse) proto;
-    //     code = p.getCode();
-    //     if (p.hasMessage()) message = p.getMessage();
-    //     if (p.hasBookmark()) bookmark = p.getBookmark().toByteArray();
+    // SearchTaskDefResponse p = (SearchTaskDefResponse) proto;
+    // code = p.getCode();
+    // if (p.hasMessage()) message = p.getMessage();
+    // if (p.hasBookmark()) bookmark = p.getBookmark().toByteArray();
 
-    //     for (TaskDefId id : p.getIdsList()) {
-    //         objectIds.add(TaskDef.getObjectId(id));
-    //     }
+    // for (TaskDefId id : p.getIdsList()) {
+    // objectIds.add(TaskDef.getObjectId(id));
+    // }
     // }
 }

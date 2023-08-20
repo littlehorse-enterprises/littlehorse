@@ -1,8 +1,9 @@
 package io.littlehorse.server.streamsimpl.storeinternals.index;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.Storeable;
+
+import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagPb;
@@ -109,14 +110,14 @@ public class Tag extends Storeable<TagPb> {
     }
 
     @SafeVarargs
-    public Tag(Getable<?> getable, TagStorageType type, Pair<String, String>... atts) {
+    public Tag(AbstractGetable<?> getable, TagStorageType type, Pair<String, String>... atts) {
         this(getable, type, Arrays.asList(atts));
     }
 
     @SuppressWarnings("unchecked")
-    public Tag(Getable<?> getable, TagStorageType type, Collection<Pair<String, String>> atts) {
+    public Tag(AbstractGetable<?> getable, TagStorageType type, Collection<Pair<String, String>> atts) {
         this();
-        this.objectType = Getable.getTypeEnum((Class<? extends Getable<?>>) getable.getClass());
+        this.objectType = AbstractGetable.getTypeEnum((Class<? extends AbstractGetable<?>>) getable.getClass());
         createdAt = getable.getCreatedAt();
         describedObjectId = getable.getStoreKey();
         this.tagType = type;
@@ -145,8 +146,10 @@ public class Tag extends Storeable<TagPb> {
     }
 
     public boolean equals(Object o) {
-        if (o == null) return false;
-        if (!(o instanceof Tag)) return false;
+        if (o == null)
+            return false;
+        if (!(o instanceof Tag))
+            return false;
         Tag oe = (Tag) o;
         return getStoreKey().equals(oe.getStoreKey());
     }

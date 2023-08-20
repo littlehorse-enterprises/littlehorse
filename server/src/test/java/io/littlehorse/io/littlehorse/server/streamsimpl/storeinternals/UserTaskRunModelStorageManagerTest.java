@@ -2,9 +2,9 @@ package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.objectId.UserTaskRunIdModel;
-import io.littlehorse.common.model.wfrun.UserModel;
-import io.littlehorse.common.model.wfrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.UserModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
@@ -37,7 +37,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class UserTaskRunModelStorageManagerTest {
 
     private final KeyValueStore<String, Bytes> store = Stores.keyValueStoreBuilder(
-                    Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
+            Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
 

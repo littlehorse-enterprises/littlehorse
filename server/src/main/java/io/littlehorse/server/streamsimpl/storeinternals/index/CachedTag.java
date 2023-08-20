@@ -2,7 +2,8 @@ package io.littlehorse.server.streamsimpl.storeinternals.index;
 
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.LHSerializable;
+
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.TagsCachePb;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,8 @@ public class CachedTag extends LHSerializable<TagsCachePb.CachedTagPb> {
     private String id;
     private boolean isRemote;
 
-    public CachedTag() {}
+    public CachedTag() {
+    }
 
     public CachedTag(String id, boolean isRemote) {
         this.id = id;

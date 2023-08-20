@@ -1,26 +1,25 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan;
 
 import com.google.protobuf.Message;
+
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import java.util.List;
 
 /**
- * T : The protobuf for the PublicScanRequest RP: The Response Protobuf OP: The Individual Entry
- * Protobuf OJ: The Individual Entry Java Object R : The protobuf for the resulting response
+ * T : The protobuf for the PublicScanRequest RP: The Response Protobuf OP: The
+ * Individual Entry
+ * Protobuf OJ: The Individual Entry Java Object R : The protobuf for the
+ * resulting response
  */
-public abstract class PublicScanRequest<
-                T extends Message, // This is the actual incoming search proto
-                RP extends Message,
-                OP extends Message,
-                OJ extends LHSerializable<OP>,
-                R extends PublicScanReply<RP, OP, OJ>>
+public abstract class PublicScanRequest<T extends Message, // This is the actual incoming search proto
+        RP extends Message, OP extends Message, OJ extends LHSerializable<OP>, R extends PublicScanReply<RP, OP, OJ>>
         extends LHSerializable<T> {
 
     protected BookmarkPb bookmark;
@@ -36,36 +35,43 @@ public abstract class PublicScanRequest<
         return limit;
     }
 
-    public InternalScan getInternalSearch(LHGlobalMetaStores stores) throws LHValidationError {
+    public InternalScan getInternalSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
         SearchScanBoundaryStrategy searchScanBoundaryStrategy = getScanBoundary(getSearchAttributeString());
         getableSearch = new GetableSearchImpl(getObjectType(), searchScanBoundaryStrategy);
         InternalScan out = getableSearch.buildInternalScan(stores, indexTypeForSearch(stores));
-        if (out.limit == 0) out.limit = getLimit();
+        if (out.limit == 0)
+            out.limit = getLimit();
         out.bookmark = bookmark;
         out.objectType = getObjectType();
         return out;
     }
 
     /**
-     * Retrieves the attribute string used for search operations. The attribute string is intended
+     * Retrieves the attribute string used for search operations. The attribute
+     * string is intended
      * to be used by the {@link
-     * io.littlehorse.server.streamsimpl.BackendInternalComms#doScan(InternalScan)} method to
+     * io.littlehorse.server.streamsimpl.BackendInternalComms#doScan(InternalScan)}
+     * method to
      * perform scans over stored tags.
      *
      * @return The attribute string in the format:
-     *     VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0
-     * @throws LHValidationError if there are invalid options in the input arguments.
+     *         VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0
+     * @throws LHValidationError if there are invalid options in the input
+     *                           arguments.
      */
     public String getSearchAttributeString() throws LHValidationError {
         return Tag.getAttributeString(getObjectType(), getSearchAttributes());
     }
 
     /**
-     * Builds search attributes based on the provided search input arguments. This method is
+     * Builds search attributes based on the provided search input arguments. This
+     * method is
      * intended to be overridden by subclasses to implement custom logic.
      *
-     * @return {@link Attribute} containing attributes associated with the search operation.
-     * @throws LHValidationError if there are invalid options in the input arguments.
+     * @return {@link Attribute} containing attributes associated with the search
+     *         operation.
+     * @throws LHValidationError if there are invalid options in the input
+     *                           arguments.
      */
     public List<Attribute> getSearchAttributes() throws LHValidationError {
         return List.of();
@@ -77,7 +83,7 @@ public abstract class PublicScanRequest<
      * @return The storage type or null if not specified in the configuration.
      * @throws LHValidationError if there are validation errors in the input.
      */
-    public abstract TagStorageType indexTypeForSearch(LHGlobalMetaStores stores) throws LHValidationError;
+    public abstract TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError;
 
     /**
      * Validate input parameters for the search operation

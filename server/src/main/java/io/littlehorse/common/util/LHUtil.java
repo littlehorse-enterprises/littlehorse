@@ -7,7 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
-import io.littlehorse.common.model.LHSerializable;
+
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -25,12 +26,14 @@ public class LHUtil {
     public static final ObjectMapper mapper = new ObjectMapper();
 
     public static Timestamp fromDate(Date date) {
-        if (date == null) return null;
+        if (date == null)
+            return null;
         return fromMillis(date.getTime());
     }
 
     public static Date fromProtoTs(Timestamp proto) {
-        if (proto == null) return null;
+        if (proto == null)
+            return null;
         Date out = Date.from(Instant.ofEpochSecond(proto.getSeconds(), proto.getNanos()));
 
         if (out.getTime() == 0) {
@@ -138,7 +141,8 @@ public class LHUtil {
     }
 
     /**
-     * TODO: THis needs more thought. We want the double to be searchable both positive and
+     * TODO: THis needs more thought. We want the double to be searchable both
+     * positive and
      * negative, and we want to be able to do range queries.
      */
     public static String toLhDbFormat(Double val) {
@@ -175,7 +179,8 @@ public class LHUtil {
     }
 
     public static String objToString(Object obj) {
-        if (obj == null) return null;
+        if (obj == null)
+            return null;
         if (obj instanceof Map || obj instanceof List) {
             try {
                 return mapper.writeValueAsString(obj);
@@ -194,8 +199,10 @@ public class LHUtil {
 
     @SuppressWarnings("all")
     public static boolean deepEquals(Object left, Object right) {
-        if (left == null && right == null) return true;
-        if (left == null || right == null) return false;
+        if (left == null && right == null)
+            return true;
+        if (left == null || right == null)
+            return false;
 
         if (left.getClass() == Long.class) {
             left = Double.valueOf((Long) left);
@@ -223,7 +230,8 @@ public class LHUtil {
         if (left instanceof List) {
             List<Object> lList = (List<Object>) left;
             List<Object> rList = (List<Object>) right;
-            if (rList.size() != lList.size()) return false;
+            if (rList.size() != lList.size())
+                return false;
 
             for (int i = 0; i < lList.size(); i++) {
                 if (!deepEquals(lList.get(i), rList.get(i))) {
