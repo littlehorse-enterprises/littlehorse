@@ -1,10 +1,11 @@
 {
   "java.configuration.updateBuildConfiguration": "automatic",
   "protoc": {
-    "options": ["-I=./proto/"]
+    "options": [
+      "-I=./schemas/"
+    ]
   },
   "[java]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
     "editor.inlayHints.enabled": "off"
   },
@@ -15,10 +16,9 @@
     "editor.formatOnSave": false
   },
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "java.test.defaultConfig": "reflection-alowed",
+  "java.test.defaultConfig": "reflection-allowed",
   "java.test.config": {
-    "name": "reflection-alowed",
+    "name": "reflection-allowed",
     "vmArgs": [
       "--add-opens",
       "java.base/java.lang=ALL-UNNAMED",

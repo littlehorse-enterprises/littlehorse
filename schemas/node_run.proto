@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "common_enums.proto";
+import "variable.proto";
+import "object_id.proto";
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+
+message NodeRun {
+  string wf_run_id = 1;
+  int32 thread_run_number = 2;
+  int32 position = 3;
+
+  LHStatus status = 6;
+
+  google.protobuf.Timestamp arrival_time = 7;
+  optional google.protobuf.Timestamp end_time = 8;
+  WfSpecId wf_spec_id = 9;
+  string thread_spec_name = 10;
+  string node_name = 11;
+
+  optional string error_message = 13;
+
+  repeated Failure failures = 14;
+
+  oneof node_type {
+    TaskNodeRun task = 15;
+    ExternalEventRun external_event = 16;
+    EntrypointRun entrypoint = 17;
+    ExitRun exit = 19;
+    StartThreadRun start_thread = 20;
+    WaitForThreadsRun wait_threads = 21;
+    SleepNodeRun sleep = 22;
+    UserTaskNodeRun user_task = 24;
+  }
+  repeated int32 failure_handler_ids = 23;
+}
+
+message TaskNodeRun {
+  optional TaskRunId task_run_id = 1;
+}
+
+message UserTaskNodeRun {
+  optional UserTaskRunId user_task_run_id = 1;
+}
+
+message EntrypointRun {
+}
+
+message ExitRun {
+} // Later will have info once we add threads
+
+message StartThreadRun {
+  optional int32 child_thread_id = 1;
+  string thread_spec_name = 2;
+}
+
+message WaitForThreadsRun {
+  message WaitForThread {
+    optional google.protobuf.Timestamp thread_end_time = 1;
+    LHStatus thread_status = 2;
+    int32 thread_run_number = 3;
+  }
+
+  repeated WaitForThread threads = 1;
+}
+
+message ExternalEventRun {
+  string external_event_def_name = 1;
+  optional google.protobuf.Timestamp event_time = 2;
+  optional ExternalEventId external_event_id = 3;
+}
+
+message SleepNodeRun {
+  google.protobuf.Timestamp maturation_time = 1;
+}
+
+
+message Failure {
+  string failure_name = 1;
+  string message = 2;
+  optional VariableValue content = 3;
+}

@@ -1,0 +1,136 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "common_enums.proto";
+import "common_wfspec.proto";
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+
+message WfSpec {
+  string name = 1;
+  int32 version = 2;
+  google.protobuf.Timestamp created_at = 3;
+  LHStatus status = 4;
+
+  map<string, ThreadSpec> thread_specs = 5;
+  string entrypoint_thread_name = 6;
+  int32 retention_hours = 7;
+}
+
+message ThreadSpec {
+  map<string, Node> nodes = 1;
+  repeated VariableDef variable_defs = 2;
+  repeated InterruptDef interrupt_defs = 3;
+}
+
+message InterruptDef {
+  string external_event_def_name = 1;
+  string handler_spec_name = 2;
+}
+
+message StartThreadNode {
+  string thread_spec_name = 1;
+  map<string, VariableAssignment> variables = 2;
+}
+
+message FailureHandlerDef {
+  optional string specific_failure = 1;
+  string handler_spec_name = 2;
+}
+
+message WaitForThreadsNode {
+  message ThreadToWaitFor {
+    VariableAssignment thread_run_number = 1;
+  }
+  repeated ThreadToWaitFor threads = 1;
+}
+
+message ExternalEventNode {
+  string external_event_def_name = 1;
+  VariableAssignment timeout_seconds = 2;
+}
+
+message EntrypointNode {
+
+}
+
+message ExitNode {
+  optional FailureDef failure_def = 1;
+}
+
+message FailureDef {
+  string failure_name = 1;
+  string message = 2;
+  optional VariableAssignment content = 3;
+}
+
+message Node {
+  repeated Edge outgoing_edges = 1;
+  repeated VariableMutation variable_mutations = 2;
+  repeated FailureHandlerDef failure_handlers = 4;
+  oneof node {
+    EntrypointNode entrypoint = 5;
+    ExitNode exit = 6;
+    TaskNode task = 7;
+    ExternalEventNode external_event = 8;
+    StartThreadNode start_thread = 9;
+    WaitForThreadsNode wait_for_threads = 10;
+    NopNode nop = 11;
+    SleepNode sleep = 12;
+    UserTaskNode user_task = 13;
+  }
+}
+
+message UserTaskNode {
+  string user_task_def_name = 1;
+
+  message UserAssignment {
+    VariableAssignment user_id = 1;
+    optional VariableAssignment user_group = 2;
+  }
+
+  // to whom should the Node be assigned?
+  oneof assignment {
+    VariableAssignment user_group = 2;
+    UserAssignment user = 3;
+  }
+
+  // This is used to, for example, send a push notification to a mobile app
+  // to remind someone that they need to fill out a task, or to re-assign
+  // the task to another group of people
+  repeated UTActionTrigger actions = 4;
+
+  // So, once the WfSpec is created, this will be pinned to a version. Customer
+  // can optionally specify a specific version or can leave it null, in which
+  // case we just use the latest
+  optional int32 user_task_def_version = 5;
+
+  // Allow WfRun-specific notes for this User Task.
+  optional VariableAssignment notes = 6;
+}
+
+message EdgeCondition {
+  Comparator comparator = 1;
+  VariableAssignment left = 2;
+  VariableAssignment right = 3;
+}
+
+message Edge {
+  string sink_node_name = 1;
+  optional EdgeCondition condition = 2;
+}
+
+message NopNode {
+}
+
+message SleepNode {
+  oneof sleep_length {
+    VariableAssignment raw_seconds = 1;
+    VariableAssignment timestamp = 2;
+    VariableAssignment iso_date = 3;
+  }
+}

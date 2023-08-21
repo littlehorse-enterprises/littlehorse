@@ -1,7 +1,5 @@
 {
     "recommendations": [
-        "esbenp.prettier-vscode",
-        "redhat.java",
-        "zxh404.vscode-proto3"
+        "redhat.java"
     ]
 }

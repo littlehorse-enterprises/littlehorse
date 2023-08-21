@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+package littlehorse;
+
+// import "google/protobuf/timestamp.proto";
+import "common_enums.proto";
+import "variable.proto";
+// import "object_id.proto";
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+
+message VariableAssignment {
+  message FormatString {
+    VariableAssignment format = 1;
+    repeated VariableAssignment args = 2;
+  }
+
+  optional string json_path = 1;
+  oneof source {
+    string variable_name = 2;
+    VariableValue literal_value = 3;
+    FormatString format_string = 4;
+  }
+}
+
+enum VariableMutationType {
+  ASSIGN = 0;
+  ADD = 1;
+  EXTEND = 2;
+  SUBTRACT = 3;
+  MULTIPLY = 4;
+  DIVIDE = 5;
+  REMOVE_IF_PRESENT = 6;
+  REMOVE_INDEX = 7;
+  REMOVE_KEY = 8;
+}
+
+message VariableMutation {
+  message NodeOutputSource {
+    optional string jsonpath = 10;
+  }
+  string lhs_name = 1;
+  optional string lhs_json_path = 2;
+  VariableMutationType operation = 3;
+  oneof rhs_value {
+    VariableAssignment source_variable = 4;
+    VariableValue literal_value = 5;
+    NodeOutputSource node_output = 6;
+  }
+}
+
+enum IndexType {
+  LOCAL_INDEX = 0;
+  REMOTE_INDEX = 1;
+}
+
+message VariableDef {
+  VariableType type = 1;
+  string name = 2;
+  optional IndexType index_type = 3;
+  repeated JsonIndex json_indexes = 4;
+  VariableValue default_value = 5;
+}
+
+message JsonIndex {
+  string path = 1;
+  IndexType index_type = 2;
+}
+
+enum Comparator {
+  LESS_THAN = 0;
+  GREATER_THAN = 1;
+  LESS_THAN_EQ = 2;
+  GREATER_THAN_EQ = 3;
+  EQUALS = 4;
+  NOT_EQUALS = 5;
+  IN = 6;
+  NOT_IN = 7;
+}
+
+// A UTActionTrigger triggers an action upon certain lifecycle hooks
+// in a User Task. Actions include:
+// - re-assign the User Task Run
+// - cancel the User Task Run
+// - execute a Reminder Task
+//
+// Hooks include:
+// - Upon creation of the UserTaskRun
+// - Upon rescheduling the UserTaskRun
+message UTActionTrigger {
+  message UTACancel {
+  }
+
+  message UTATask {
+    TaskNode task = 1;
+    repeated VariableMutation mutations = 2;
+  }
+
+  message UTAReassign {
+    oneof assign_to {
+      VariableAssignment user_id = 1;
+      VariableAssignment user_group = 2;
+    }
+  }
+
+  oneof action {
+    UTATask task = 1;
+    UTACancel cancel = 2;
+    UTAReassign reassign = 3;
+    // later on, might enable scheduling entire ThreadRuns
+  }
+
+  enum UTHook {
+    ON_ARRIVAL = 0;
+    ON_TASK_ASSIGNED = 1;
+  }
+  //Action's delay
+  VariableAssignment delay_seconds = 5;
+  UTHook hook = 6;
+}
+
+message TaskNode {
+  string task_def_name = 1;
+  int32 timeout_seconds = 2;
+  int32 retries = 3;
+  repeated VariableAssignment variables = 4;
+}
