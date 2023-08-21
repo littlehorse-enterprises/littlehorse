@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.repartitioned.taskmetrics;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.RepartitionedGetable;
 import io.littlehorse.common.model.getable.objectId.TaskDefMetricsIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
@@ -15,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public class TaskDefMetricsModel extends AbstractGetable<TaskDefMetrics> {
+public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
 
     public Date windowStart;
     public MetricsWindowLength type;
@@ -88,7 +89,7 @@ public class TaskDefMetricsModel extends AbstractGetable<TaskDefMetrics> {
     }
 
     public static String getObjectId(MetricsWindowLength windowType, Date time, String taskDefName) {
-        return new TaskDefMetricsIdModel(time, windowType, taskDefName).getStoreKey();
+        return new TaskDefMetricsIdModel(time, windowType, taskDefName).getStoreableKey();
     }
 
     public static String getObjectId(TaskDefMetricsQueryRequest request) {
@@ -96,6 +97,6 @@ public class TaskDefMetricsModel extends AbstractGetable<TaskDefMetrics> {
                         LHUtil.getWindowStart(LHLibUtil.fromProtoTs(request.getWindowStart()), request.getWindowType()),
                         request.getWindowType(),
                         request.getTaskDefName())
-                .getStoreKey();
+                .getStoreableKey();
     }
 }

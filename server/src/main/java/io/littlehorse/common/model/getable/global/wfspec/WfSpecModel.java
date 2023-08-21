@@ -65,10 +65,6 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return createdAt;
     }
 
-    public String getPartitionKey() {
-        return LHConstants.META_PARTITION_KEY;
-    }
-
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
         return List.of(new GetableIndex<>(

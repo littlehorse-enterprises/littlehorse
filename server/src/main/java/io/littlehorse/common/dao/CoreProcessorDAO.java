@@ -16,46 +16,51 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.HostInfo;
+import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.util.InternalHosts;
 import java.util.Date;
 
-public interface CoreProcessorDAO extends ReadOnlyMetadataStore {
+public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
+
+    public CoreProcessorDAO(RocksDBWrapper rocksdb) {
+        super(rocksdb);
+    }
 
     /*
      * Lifecycle for processing a Command
      */
 
-    public void initCommand(CommandModel command);
+    public abstract void initCommand(CommandModel command);
 
-    public CommandModel getCommand();
+    public abstract CommandModel getCommand();
 
-    public void commit();
+    public abstract void commit();
 
     /*
      * Basic CRUD for CoreGetables
      */
 
-    public <U extends Message, T extends CoreGetable<U>> T get(ObjectIdModel<?, U, T> id);
+    public abstract <U extends Message, T extends CoreGetable<U>> T get(ObjectIdModel<?, U, T> id);
 
-    public void put(CoreGetable<?> getable);
+    public abstract void put(CoreGetable<?> getable);
 
-    public DeleteObjectReply delete(WfRunIdModel id);
+    public abstract DeleteObjectReply delete(WfRunIdModel id);
 
-    public DeleteObjectReply delete(ExternalEventIdModel id);
+    public abstract DeleteObjectReply delete(ExternalEventIdModel id);
 
     /*
      * One-off operations related to WfRun Processing
      */
 
-    public ExternalEventModel getUnclaimedEvent(String wfRunId, String externalEventDefName);
+    public abstract ExternalEventModel getUnclaimedEvent(String wfRunId, String externalEventDefName);
 
-    public void scheduleTask(ScheduledTaskModel scheduledTask);
+    public abstract void scheduleTask(ScheduledTaskModel scheduledTask);
 
-    public void scheduleTimer(LHTimer timer);
+    public abstract void scheduleTimer(LHTimer timer);
 
-    public ScheduledTaskModel markTaskAsScheduled(TaskRunIdModel taskRunId);
+    public abstract ScheduledTaskModel markTaskAsScheduled(TaskRunIdModel taskRunId);
 
-    default WfRunModel getWfRun(String id) {
+    public WfRunModel getWfRun(String id) {
         return get(new WfRunIdModel(id));
     }
 
@@ -63,15 +68,16 @@ public interface CoreProcessorDAO extends ReadOnlyMetadataStore {
      * Misc. This will be organized further in the future.
      */
 
-    public String getCoreCmdTopic();
+    public abstract String getCoreCmdTopic();
 
-    public default Date getEventTime() {
+    public Date getEventTime() {
         return getCommand().time;
     }
 
-    public AnalyticsRegistry getRegistry();
+    public abstract AnalyticsRegistry getRegistry();
 
-    public HostInfo getAdvertisedHost(HostModel host, String listenerName) throws LHBadRequestError, LHConnectionError;
+    public abstract HostInfo getAdvertisedHost(HostModel host, String listenerName)
+            throws LHBadRequestError, LHConnectionError;
 
-    public InternalHosts getInternalHosts();
+    public abstract InternalHosts getInternalHosts();
 }

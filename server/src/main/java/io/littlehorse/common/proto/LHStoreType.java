@@ -4,29 +4,37 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf enum {@code littlehorse.ServerStatusPb}
+ * Protobuf enum {@code littlehorse.LHStoreType}
  */
-public enum ServerStatusPb
+public enum LHStoreType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>HOST_UP = 0;</code>
+   * <code>CORE = 0;</code>
    */
-  HOST_UP(0),
+  CORE(0),
   /**
-   * <code>HOST_DOWN = 1;</code>
+   * <code>METADATA = 1;</code>
    */
-  HOST_DOWN(1),
+  METADATA(1),
+  /**
+   * <code>REPARTITION = 2;</code>
+   */
+  REPARTITION(2),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>HOST_UP = 0;</code>
+   * <code>CORE = 0;</code>
    */
-  public static final int HOST_UP_VALUE = 0;
+  public static final int CORE_VALUE = 0;
   /**
-   * <code>HOST_DOWN = 1;</code>
+   * <code>METADATA = 1;</code>
    */
-  public static final int HOST_DOWN_VALUE = 1;
+  public static final int METADATA_VALUE = 1;
+  /**
+   * <code>REPARTITION = 2;</code>
+   */
+  public static final int REPARTITION_VALUE = 2;
 
 
   public final int getNumber() {
@@ -43,7 +51,7 @@ public enum ServerStatusPb
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static ServerStatusPb valueOf(int value) {
+  public static LHStoreType valueOf(int value) {
     return forNumber(value);
   }
 
@@ -51,23 +59,24 @@ public enum ServerStatusPb
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static ServerStatusPb forNumber(int value) {
+  public static LHStoreType forNumber(int value) {
     switch (value) {
-      case 0: return HOST_UP;
-      case 1: return HOST_DOWN;
+      case 0: return CORE;
+      case 1: return METADATA;
+      case 2: return REPARTITION;
       default: return null;
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<ServerStatusPb>
+  public static com.google.protobuf.Internal.EnumLiteMap<LHStoreType>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      ServerStatusPb> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<ServerStatusPb>() {
-          public ServerStatusPb findValueByNumber(int number) {
-            return ServerStatusPb.forNumber(number);
+      LHStoreType> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<LHStoreType>() {
+          public LHStoreType findValueByNumber(int number) {
+            return LHStoreType.forNumber(number);
           }
         };
 
@@ -85,12 +94,12 @@ public enum ServerStatusPb
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.getDescriptor().getEnumTypes().get(6);
+    return io.littlehorse.common.proto.InternalServer.getDescriptor().getEnumTypes().get(0);
   }
 
-  private static final ServerStatusPb[] VALUES = values();
+  private static final LHStoreType[] VALUES = values();
 
-  public static ServerStatusPb valueOf(
+  public static LHStoreType valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -104,10 +113,10 @@ public enum ServerStatusPb
 
   private final int value;
 
-  private ServerStatusPb(int value) {
+  private LHStoreType(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:littlehorse.ServerStatusPb)
+  // @@protoc_insertion_point(enum_scope:littlehorse.LHStoreType)
 }
 

@@ -99,10 +99,6 @@ public class VariableModel extends CoreGetable<Variable> {
         return date;
     }
 
-    public String getPartitionKey() {
-        return wfRunId;
-    }
-
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
         return List.of(new GetableIndex<>(

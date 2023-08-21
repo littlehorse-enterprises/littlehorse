@@ -3,6 +3,7 @@ package io.littlehorse.common.model.command;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.command.subcommand.AssignUserTaskRunRequestModel;
 import io.littlehorse.common.model.command.subcommand.CancelUserTaskRunRequestModel;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRunRequestModel;
@@ -22,7 +23,6 @@ import io.littlehorse.common.model.command.subcommand.TriggeredTaskRun;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.Command.CommandCase;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streams.topology.core.CoreProcessorDAOImpl;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -299,7 +299,7 @@ public class CommandModel extends LHSerializable<Command> {
         return getSubCommand().hasResponse();
     }
 
-    public AbstractResponse<?> process(CoreProcessorDAOImpl dao, LHConfig config) {
+    public AbstractResponse<?> process(CoreProcessorDAO dao, LHConfig config) {
         return getSubCommand().process(dao, config);
     }
 }

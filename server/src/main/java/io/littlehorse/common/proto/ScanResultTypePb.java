@@ -103,7 +103,7 @@ public enum ScanResultTypePb
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.getDescriptor().getEnumTypes().get(1);
+    return io.littlehorse.common.proto.InternalServer.getDescriptor().getEnumTypes().get(2);
   }
 
   private static final ScanResultTypePb[] VALUES = values();

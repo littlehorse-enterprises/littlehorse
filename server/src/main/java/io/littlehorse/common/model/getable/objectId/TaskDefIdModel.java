@@ -1,8 +1,7 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.TaskDef;
@@ -12,7 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TaskDefIdModel extends ObjectIdModel<TaskDefId, TaskDef, TaskDefModel> {
+public class TaskDefIdModel extends MetadataId<TaskDefId, TaskDef, TaskDefModel> {
 
     public String name;
 
@@ -22,32 +21,34 @@ public class TaskDefIdModel extends ObjectIdModel<TaskDefId, TaskDef, TaskDefMod
         this.name = name;
     }
 
+    @Override
     public Class<TaskDefId> getProtoBaseClass() {
         return TaskDefId.class;
     }
 
-    public String getPartitionKey() {
-        return LHConstants.META_PARTITION_KEY;
-    }
-
+    @Override
     public void initFrom(Message proto) {
         TaskDefId p = (TaskDefId) proto;
         name = p.getName();
     }
 
+    @Override
     public TaskDefId.Builder toProto() {
         TaskDefId.Builder out = TaskDefId.newBuilder().setName(name);
         return out;
     }
 
-    public String getStoreKey() {
+    @Override
+    public String toString() {
         return name;
     }
 
-    public void initFrom(String storeKey) {
-        name = storeKey;
+    @Override
+    public void initFromString(String key) {
+        name = key;
     }
 
+    @Override
     public GetableClassEnum getType() {
         return GetableClassEnum.TASK_DEF;
     }

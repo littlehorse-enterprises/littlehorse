@@ -430,37 +430,39 @@ public final class InternalServer {
       "tanceStatePb\"\016\n\014LocalTasksPb\"|\n\022LocalTas" +
       "ksResponse\022.\n\014active_tasks\030\001 \003(\0132\030.littl" +
       "ehorse.TaskStatePb\0226\n\rstandby_tasks\030\002 \003(" +
-      "\0132\037.littlehorse.StandByTaskStatePb*7\n\022St" +
-      "oreQueryStatusPb\022\n\n\006RSQ_OK\020\000\022\025\n\021RSQ_NOT_" +
-      "AVAILABLE\020\002*-\n\020ScanResultTypePb\022\r\n\tOBJEC" +
-      "T_ID\020\000\022\n\n\006OBJECT\020\001*|\n\rStoreableType\022\022\n\016S" +
-      "TORED_GETABLE\020\000\022\022\n\016SCHEDULED_TASK\020\001\022\024\n\020W" +
-      "F_METRIC_UPDATE\020\002\022\026\n\022TASK_METRIC_UPDATE\020" +
-      "\003\022\014\n\010LH_TIMER\020\004\022\007\n\003TAG\020\005*\367\001\n\020GetableClas" +
-      "sEnum\022\014\n\010TASK_DEF\020\000\022\026\n\022EXTERNAL_EVENT_DE" +
-      "F\020\001\022\013\n\007WF_SPEC\020\002\022\n\n\006WF_RUN\020\003\022\014\n\010NODE_RUN" +
-      "\020\004\022\014\n\010VARIABLE\020\005\022\022\n\016EXTERNAL_EVENT\020\006\022\024\n\020" +
-      "TASK_DEF_METRICS\020\007\022\023\n\017WF_SPEC_METRICS\020\010\022" +
-      "\025\n\021TASK_WORKER_GROUP\020\t\022\021\n\rUSER_TASK_DEF\020" +
-      "\n\022\014\n\010TASK_RUN\020\013\022\021\n\rUSER_TASK_RUN\020\014*\'\n\016Ta" +
-      "gStorageType\022\t\n\005LOCAL\020\000\022\n\n\006REMOTE\020\001*,\n\016S" +
-      "erverStatusPb\022\013\n\007HOST_UP\020\000\022\r\n\tHOST_DOWN\020" +
-      "\0012\306\004\n\013LHInternals\022_\n\021CentralStoreQuery\022 " +
-      ".littlehorse.CentralStoreQueryPb\032&.littl" +
-      "ehorse.CentralStoreQueryResponse\"\000\022P\n\014In" +
-      "ternalScan\022\033.littlehorse.InternalScanPb\032" +
-      "!.littlehorse.InternalScanResponse\"\000\022V\n\016" +
-      "waitForCommand\022\035.littlehorse.WaitForComm" +
-      "andPb\032#.littlehorse.WaitForCommandRespon" +
-      "se\"\000\022r\n\022GetAdvertisedHosts\022).littlehorse" +
-      ".InternalGetAdvertisedHostsPb\032/.littleho" +
-      "rse.InternalGetAdvertisedHostsResponse\"\000" +
-      "\022l\n\026TopologyInstancesState\022$.littlehorse" +
-      ".TopologyInstanceStatePb\032*.littlehorse.T" +
-      "opologyInstanceStateResponse\"\000\022J\n\nLocalT" +
-      "asks\022\031.littlehorse.LocalTasksPb\032\037.little" +
-      "horse.LocalTasksResponse\"\000B\037\n\033io.littleh" +
-      "orse.common.protoP\001b\006proto3"
+      "\0132\037.littlehorse.StandByTaskStatePb*6\n\013LH" +
+      "StoreType\022\010\n\004CORE\020\000\022\014\n\010METADATA\020\001\022\017\n\013REP" +
+      "ARTITION\020\002*7\n\022StoreQueryStatusPb\022\n\n\006RSQ_" +
+      "OK\020\000\022\025\n\021RSQ_NOT_AVAILABLE\020\002*-\n\020ScanResul" +
+      "tTypePb\022\r\n\tOBJECT_ID\020\000\022\n\n\006OBJECT\020\001*|\n\rSt" +
+      "oreableType\022\022\n\016STORED_GETABLE\020\000\022\022\n\016SCHED" +
+      "ULED_TASK\020\001\022\024\n\020WF_METRIC_UPDATE\020\002\022\026\n\022TAS" +
+      "K_METRIC_UPDATE\020\003\022\014\n\010LH_TIMER\020\004\022\007\n\003TAG\020\005" +
+      "*\367\001\n\020GetableClassEnum\022\014\n\010TASK_DEF\020\000\022\026\n\022E" +
+      "XTERNAL_EVENT_DEF\020\001\022\013\n\007WF_SPEC\020\002\022\n\n\006WF_R" +
+      "UN\020\003\022\014\n\010NODE_RUN\020\004\022\014\n\010VARIABLE\020\005\022\022\n\016EXTE" +
+      "RNAL_EVENT\020\006\022\024\n\020TASK_DEF_METRICS\020\007\022\023\n\017WF" +
+      "_SPEC_METRICS\020\010\022\025\n\021TASK_WORKER_GROUP\020\t\022\021" +
+      "\n\rUSER_TASK_DEF\020\n\022\014\n\010TASK_RUN\020\013\022\021\n\rUSER_" +
+      "TASK_RUN\020\014*\'\n\016TagStorageType\022\t\n\005LOCAL\020\000\022" +
+      "\n\n\006REMOTE\020\001*,\n\016ServerStatusPb\022\013\n\007HOST_UP" +
+      "\020\000\022\r\n\tHOST_DOWN\020\0012\306\004\n\013LHInternals\022_\n\021Cen" +
+      "tralStoreQuery\022 .littlehorse.CentralStor" +
+      "eQueryPb\032&.littlehorse.CentralStoreQuery" +
+      "Response\"\000\022P\n\014InternalScan\022\033.littlehorse" +
+      ".InternalScanPb\032!.littlehorse.InternalSc" +
+      "anResponse\"\000\022V\n\016waitForCommand\022\035.littleh" +
+      "orse.WaitForCommandPb\032#.littlehorse.Wait" +
+      "ForCommandResponse\"\000\022r\n\022GetAdvertisedHos" +
+      "ts\022).littlehorse.InternalGetAdvertisedHo" +
+      "stsPb\032/.littlehorse.InternalGetAdvertise" +
+      "dHostsResponse\"\000\022l\n\026TopologyInstancesSta" +
+      "te\022$.littlehorse.TopologyInstanceStatePb" +
+      "\032*.littlehorse.TopologyInstanceStateResp" +
+      "onse\"\000\022J\n\nLocalTasks\022\031.littlehorse.Local" +
+      "TasksPb\032\037.littlehorse.LocalTasksResponse" +
+      "\"\000B\037\n\033io.littlehorse.common.protoP\001b\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.repartitioned.workflowmetrics;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.RepartitionedGetable;
 import io.littlehorse.common.model.getable.objectId.WfSpecMetricsIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
@@ -15,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public class WfSpecMetricsModel extends AbstractGetable<WfSpecMetrics> {
+public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
 
     public Date windowStart;
     public MetricsWindowLength type;
@@ -63,17 +64,13 @@ public class WfSpecMetricsModel extends AbstractGetable<WfSpecMetrics> {
         return windowStart;
     }
 
-    public String getPartitionKey() {
-        return wfSpecName;
-    }
-
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
         return List.of();
     }
 
     public static String getObjectId(MetricsWindowLength windowType, Date time, String wfSpecName, int wfSpecVersion) {
-        return new WfSpecMetricsIdModel(time, windowType, wfSpecName, wfSpecVersion).getStoreKey();
+        return new WfSpecMetricsIdModel(time, windowType, wfSpecName, wfSpecVersion).getStoreableKey();
     }
 
     public static String getObjectId(WfSpecMetricsQueryRequest request) {
@@ -82,7 +79,7 @@ public class WfSpecMetricsModel extends AbstractGetable<WfSpecMetrics> {
                         request.getWindowType(),
                         request.getWfSpecName(),
                         request.getWfSpecVersion())
-                .getStoreKey();
+                .getStoreableKey();
     }
 
     public WfSpecMetricsIdModel getObjectId() {

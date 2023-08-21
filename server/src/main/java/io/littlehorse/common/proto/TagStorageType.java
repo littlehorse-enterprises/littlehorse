@@ -85,7 +85,7 @@ public enum TagStorageType
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.getDescriptor().getEnumTypes().get(4);
+    return io.littlehorse.common.proto.InternalServer.getDescriptor().getEnumTypes().get(5);
   }
 
   private static final TagStorageType[] VALUES = values();

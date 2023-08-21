@@ -188,7 +188,7 @@ public enum GetableClassEnum
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.getDescriptor().getEnumTypes().get(3);
+    return io.littlehorse.common.proto.InternalServer.getDescriptor().getEnumTypes().get(4);
   }
 
   private static final GetableClassEnum[] VALUES = values();

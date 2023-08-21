@@ -22,6 +22,12 @@ import "user_tasks.proto";
 // request. Server B uses the data structures below to communicate that result
 // back to server A.
 
+enum LHStoreType {
+    CORE = 0;
+    METADATA = 1;
+    REPARTITION = 2;
+}
+
 message CommandResultPb {
     string command_id = 1;
     google.protobuf.Timestamp result_time = 2;

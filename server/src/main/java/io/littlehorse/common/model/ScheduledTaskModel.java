@@ -54,26 +54,15 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         this.context = context;
 
         // This is just the wfRunId.
-        this.taskRunId = new TaskRunIdModel(userTaskRun.getNodeRun().getPartitionKey());
+        this.taskRunId = new TaskRunIdModel(userTaskRun.getNodeRun().getWfRunId());
     }
-
-    // public String getPartitionKey() {
-    // return taskRunId.getPartitionKey();
-    // }
 
     @Override
     public String getStoreKey() {
         // Note: only one ScheduledTask can be active at once for a
         // TaskRun, so we don't need to worry about the attemptNumber.
-        return taskRunId.getStoreKey();
+        return taskRunId.toString();
     }
-
-    // public Date getCreatedAt() {
-    // if (createdAt == null) {
-    // createdAt = new Date();
-    // }
-    // return createdAt;
-    // }
 
     @Override
     public ScheduledTask.Builder toProto() {

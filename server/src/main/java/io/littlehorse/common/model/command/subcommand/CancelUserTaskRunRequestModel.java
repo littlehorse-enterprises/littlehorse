@@ -39,7 +39,7 @@ public class CancelUserTaskRunRequestModel extends SubCommand<CancelUserTaskRunR
             return new CancelUserTaskRunReply("Provided invalid wfRunId", LHResponseCode.BAD_REQUEST_ERROR);
         }
         userTaskRun.cancel();
-        return new CancelUserTaskRunReply(userTaskRun.getId().getPartitionKey(), LHResponseCode.OK);
+        return new CancelUserTaskRunReply(userTaskRun.getId().getPartitionKey().get(), LHResponseCode.OK);
     }
 
     @Override

@@ -63,7 +63,7 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
     }
 
     public static String getStoreKey(ObjectIdModel<?, ?, ?> id) {
-        return id.getType().getNumber() + "/" + id.getStoreKey();
+        return id.getType().getNumber() + "/" + id.toString();
     }
 
     @SuppressWarnings("unchecked")

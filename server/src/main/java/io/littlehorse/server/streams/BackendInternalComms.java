@@ -215,7 +215,7 @@ public class BackendInternalComms implements Closeable {
         Bytes result = store.get(fullStoreKey);
 
         CentralStoreQueryResponse.Builder out =
-                CentralStoreQueryResponse.newBuilder().setCode(StoreQueryStatusPb.RSQ_OK);
+                CentralStoreQueryResponse.newBuilde1r().setCode(StoreQueryStatusPb.RSQ_OK);
         if (result != null) out.setResult(ByteString.copyFrom(result.get()));
 
         observer.onNext(out.build());

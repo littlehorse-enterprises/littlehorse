@@ -121,7 +121,7 @@ public enum StoreableType
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.getDescriptor().getEnumTypes().get(2);
+    return io.littlehorse.common.proto.InternalServer.getDescriptor().getEnumTypes().get(3);
   }
 
   private static final StoreableType[] VALUES = values();

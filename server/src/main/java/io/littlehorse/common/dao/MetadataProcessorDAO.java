@@ -5,24 +5,29 @@ import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
+import io.littlehorse.server.streams.store.RocksDBWrapper;
 
-public interface MetadataProcessorDAO extends ReadOnlyMetadataStore {
+public abstract class MetadataProcessorDAO extends ReadOnlyMetadataStore {
+
+    public MetadataProcessorDAO(RocksDBWrapper rocksdb) {
+        super(rocksdb);
+    }
 
     /*
      * Lifecycle for processing a Command
      */
 
-    public void initCommand(MetadataCommandModel command);
+    public abstract void initCommand(MetadataCommandModel command);
 
-    public MetadataCommandModel getCommand();
+    public abstract MetadataCommandModel getCommand();
 
     /*
      * Read/Write processing.
      */
 
-    public <U extends Message, T extends GlobalGetable<U>> T get(ObjectIdModel<?, U, T> id);
+    public abstract <U extends Message, T extends GlobalGetable<U>> T get(ObjectIdModel<?, U, T> id);
 
-    public <U extends Message, T extends GlobalGetable<U>> void put(T getable);
+    public abstract <U extends Message, T extends GlobalGetable<U>> void put(T getable);
 
-    public <U extends Message, T extends GlobalGetable<U>> DeleteObjectReply delete(ObjectIdModel<?, U, T> id);
+    public abstract <U extends Message, T extends GlobalGetable<U>> DeleteObjectReply delete(ObjectIdModel<?, U, T> id);
 }

@@ -48,7 +48,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 
 @Slf4j
-public class CoreProcessorDAOImpl implements CoreProcessorDAO {
+public class CoreProcessorDAOImpl extends CoreProcessorDAO {
 
     private Map<String, ScheduledTaskModel> scheduledTaskPuts;
     private List<LHTimer> timersToSchedule;
@@ -70,10 +70,13 @@ public class CoreProcessorDAOImpl implements CoreProcessorDAO {
             KafkaStreamsServerImpl server,
             MetadataCache wfSpecCache,
             RocksDBWrapper rocksdb) {
+        super(rocksdb);
+
         this.server = server;
         this.ctx = ctx;
         this.config = config;
         this.rocksdb = rocksdb;
+        this.globalStore = new ReadOnlyMetadataStore(rocksdb);
 
         // At the start, we haven't claimed the partition until the claim event comes
         this.partitionIsClaimed = false;
@@ -195,7 +198,7 @@ public class CoreProcessorDAOImpl implements CoreProcessorDAO {
 
     @Override
     public ScheduledTaskModel markTaskAsScheduled(TaskRunIdModel taskRunId) {
-        ScheduledTaskModel scheduledTask = rocksdb.get(taskRunId.getStoreKey(), ScheduledTaskModel.class);
+        ScheduledTaskModel scheduledTask = rocksdb.get(taskRunId.toString(), ScheduledTaskModel.class);
 
         if (scheduledTask != null) {
             scheduledTaskPuts.put(scheduledTask.getStoreKey(), null);

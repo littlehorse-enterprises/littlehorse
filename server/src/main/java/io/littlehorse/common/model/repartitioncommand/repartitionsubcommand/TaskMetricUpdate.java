@@ -126,7 +126,7 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
     }
 
     public String getClusterLevelWindow() {
-        return new TaskDefMetricsIdModel(windowStart, type, LHConstants.CLUSTER_LEVEL_METRIC).getStoreKey();
+        return new TaskDefMetricsIdModel(windowStart, type, LHConstants.CLUSTER_LEVEL_METRIC).getStoreableKey();
     }
 
     public void process(RocksDBWrapper store, ProcessorContext<Void, Void> ctx) {

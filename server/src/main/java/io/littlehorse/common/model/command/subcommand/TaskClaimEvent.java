@@ -49,8 +49,9 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
         return TaskClaimEventPb.class;
     }
 
+    @Override
     public String getPartitionKey() {
-        return taskRunId.getPartitionKey();
+        return taskRunId.getPartitionKey().get();
     }
 
     public TaskClaimEventPb.Builder toProto() {

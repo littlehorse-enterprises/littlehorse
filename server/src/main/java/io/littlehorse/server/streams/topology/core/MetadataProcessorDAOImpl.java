@@ -22,12 +22,13 @@ import io.littlehorse.server.streams.storeinternals.index.Tag;
  * Therefore, we just do everything manually in this class. It's much simpler that
  * way.
  */
-public class MetadataProcessorDAOImpl implements MetadataProcessorDAO {
+public class MetadataProcessorDAOImpl extends MetadataProcessorDAO {
 
     private RocksDBWrapper rocksdb;
     private MetadataCommandModel command;
 
     public MetadataProcessorDAOImpl(RocksDBWrapper rocksdb) {
+        super(rocksdb);
         this.rocksdb = rocksdb;
     }
 
@@ -43,7 +44,7 @@ public class MetadataProcessorDAOImpl implements MetadataProcessorDAO {
 
     public <U extends Message, T extends GlobalGetable<U>> T get(ObjectIdModel<?, U, T> id) {
         @SuppressWarnings("unchecked")
-        StoredGetable<U, T> storeResult = rocksdb.get(id.getStoreKey(), StoredGetable.class);
+        StoredGetable<U, T> storeResult = rocksdb.get(id.getStoreableKey(), StoredGetable.class);
 
         if (storeResult == null) {
             return null;

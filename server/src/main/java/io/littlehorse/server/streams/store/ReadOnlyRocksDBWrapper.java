@@ -70,7 +70,6 @@ public class ReadOnlyRocksDBWrapper {
 
     // not deprecated, just a warning that the API changed.
     // If this comment shows up on the Pull Request, it shouldn't be merged.
-    @Deprecated
     public <U extends Message, T extends Storeable<U>> T getLastFromPrefix(String prefix, Class<T> cls) {
 
         LHKeyValueIterator<T> iterator = null;

@@ -237,7 +237,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             log.trace(
                     "Ignored {} TaskRunResult on TaskRun {} attempt no. {} w/status {}",
                     ce.getStatus(),
-                    id.getStoreKey(),
+                    id.getStoreableKey(),
                     ce.getAttemptNumber(),
                     attempt.getStatus());
             return new ReportTaskReply(LHResponseCode.OK, null);

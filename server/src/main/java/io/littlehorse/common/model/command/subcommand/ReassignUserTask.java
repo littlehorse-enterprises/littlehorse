@@ -75,6 +75,6 @@ public class ReassignUserTask extends SubCommand<ReassignedUserTaskPb> {
 
     @Override
     public String getPartitionKey() {
-        return this.source.getPartitionKey();
+        return this.source.getPartitionKey().get();
     }
 }

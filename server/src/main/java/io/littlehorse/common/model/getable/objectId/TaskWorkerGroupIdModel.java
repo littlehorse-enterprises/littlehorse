@@ -1,13 +1,14 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.TaskWorkerGroup;
 import io.littlehorse.sdk.common.proto.TaskWorkerGroupId;
+import java.util.Optional;
 
-public class TaskWorkerGroupIdModel extends ObjectIdModel<TaskWorkerGroupId, TaskWorkerGroup, TaskWorkerGroupModel> {
+public class TaskWorkerGroupIdModel extends CoreObjectId<TaskWorkerGroupId, TaskWorkerGroup, TaskWorkerGroupModel> {
 
     public String taskDefName;
 
@@ -17,32 +18,39 @@ public class TaskWorkerGroupIdModel extends ObjectIdModel<TaskWorkerGroupId, Tas
         this.taskDefName = taskDefName;
     }
 
+    @Override
     public Class<TaskWorkerGroupId> getProtoBaseClass() {
         return TaskWorkerGroupId.class;
     }
 
-    public String getPartitionKey() {
-        return taskDefName;
+    @Override
+    public Optional<String> getPartitionKey() {
+        return Optional.of(taskDefName);
     }
 
+    @Override
     public void initFrom(Message proto) {
         TaskWorkerGroupId p = (TaskWorkerGroupId) proto;
         taskDefName = p.getTaskDefName();
     }
 
+    @Override
     public TaskWorkerGroupId.Builder toProto() {
         TaskWorkerGroupId.Builder out = TaskWorkerGroupId.newBuilder().setTaskDefName(taskDefName);
         return out;
     }
 
-    public String getStoreKey() {
+    @Override
+    public String toString() {
         return taskDefName;
     }
 
-    public void initFrom(String storeKey) {
+    @Override
+    public void initFromString(String storeKey) {
         taskDefName = storeKey;
     }
 
+    @Override
     public GetableClassEnum getType() {
         return GetableClassEnum.TASK_WORKER_GROUP;
     }

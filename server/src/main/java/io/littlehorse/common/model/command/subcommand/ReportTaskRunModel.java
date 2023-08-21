@@ -28,7 +28,7 @@ public class ReportTaskRunModel extends SubCommand<ReportTaskRun> {
     private int attemptNumber; // this is CRUCIAL to set properly.
 
     public String getPartitionKey() {
-        return taskRunId.getPartitionKey();
+        return taskRunId.getPartitionKey().get();
     }
 
     public Class<ReportTaskRun> getProtoBaseClass() {

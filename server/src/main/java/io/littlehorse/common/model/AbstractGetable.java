@@ -54,7 +54,7 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
     // when doing processing (not interactive queries).
     private CoreProcessorDAO dao;
 
-    public String getPartitionKey() {
+    public Optional<String> getPartitionKey() {
         return getObjectId().getPartitionKey();
     }
 
@@ -160,10 +160,6 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
     public abstract List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations();
 
     public abstract ObjectIdModel<?, T, ?> getObjectId();
-
-    public String getStoreKey() {
-        return getObjectId().getStoreKey();
-    }
 
     public abstract List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType);
 

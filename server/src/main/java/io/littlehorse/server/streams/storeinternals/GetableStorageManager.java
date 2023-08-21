@@ -56,7 +56,7 @@ public class GetableStorageManager {
      * @return the specified AbstractGetable, or null if it doesn't exist.
      */
     public <U extends Message, T extends CoreGetable<U>> T get(ObjectIdModel<?, U, T> id) {
-        log.trace("Getting {} with key {}", id.getType(), id.getStoreKey());
+        log.trace("Getting {} with key {}", id.getType(), id);
         T out = null;
 
         // First check the cache.
@@ -68,7 +68,7 @@ public class GetableStorageManager {
 
         // Next check the store.
         @SuppressWarnings("unchecked")
-        StoredGetable<U, T> storeResult = (StoredGetable<U, T>) rocksdb.get(id.getStoreKey(), StoredGetable.class);
+        StoredGetable<U, T> storeResult = (StoredGetable<U, T>) rocksdb.get(id.getStoreableKey(), StoredGetable.class);
 
         if (storeResult == null) return null;
 
@@ -95,7 +95,7 @@ public class GetableStorageManager {
      */
     public <U extends Message, T extends CoreGetable<U>> void put(T getable) throws IllegalStateException {
 
-        log.trace("Putting {} with key {}", getable.getClass(), getable.getStoreKey());
+        log.trace("Putting {} with key {}", getable.getClass(), getable.getObjectId());
 
         @SuppressWarnings("unchecked")
         GetableToStore<U, T> bufferedResult = (GetableToStore<U, T>) uncommittedChanges.get(getable.getObjectId());
@@ -120,7 +120,7 @@ public class GetableStorageManager {
 
         @SuppressWarnings("unchecked")
         StoredGetable<U, T> previousValue =
-                (StoredGetable<U, T>) rocksdb.get(getable.getStoreKey(), StoredGetable.class);
+                (StoredGetable<U, T>) rocksdb.get(getable.getObjectId().getStoreableKey(), StoredGetable.class);
 
         @SuppressWarnings("unchecked")
         GetableToStore<U, T> toPut = new GetableToStore<>(previousValue, (Class<T>) getable.getClass());
@@ -199,7 +199,7 @@ public class GetableStorageManager {
      */
     public <U extends Message, T extends CoreGetable<U>> T delete(ObjectIdModel<?, U, T> id) {
 
-        log.trace("Deleting {} with key {}", id.getType(), id.getStoreKey());
+        log.trace("Deleting {} with key {}", id.getType(), id.getStoreableKey());
         T thingToDelete = get(id);
 
         if (thingToDelete == null) {

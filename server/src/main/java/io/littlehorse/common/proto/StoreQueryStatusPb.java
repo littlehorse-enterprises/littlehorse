@@ -105,7 +105,7 @@ public enum StoreQueryStatusPb
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.getDescriptor().getEnumTypes().get(0);
+    return io.littlehorse.common.proto.InternalServer.getDescriptor().getEnumTypes().get(1);
   }
 
   private static final StoreQueryStatusPb[] VALUES = values();
