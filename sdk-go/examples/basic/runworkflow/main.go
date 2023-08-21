@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 )
 
 func main() {
@@ -12,17 +14,28 @@ func main() {
 		log.Fatal(err)
 	}
 
-	client, err := common.NewLHClient(config)
+	client, err := config.GetGrpcClient()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	wfId, err := client.RunWf("my-workflow", nil, nil, common.WfArg{Name: "name", Arg: "bill"})
+	name := "bill"
+	wfId, err := (*client).RunWf(
+		context.Background(),
+		&model.RunWfRequest{
+			WfSpecName: "my-workflow",
+			Variables: map[string]*model.VariableValue{
+				"name": {
+					Str:  &name,
+					Type: model.VariableType_STR,
+				},
+			},
+		})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Default().Println("got wfRunModel Id:", *wfId)
+	log.Default().Println("got wfRunModel Id:", wfId)
 
 }

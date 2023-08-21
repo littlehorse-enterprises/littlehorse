@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
@@ -13,9 +14,11 @@ import (
 func main() {
 	_, client := examples.LoadConfigAndClient()
 
-	client.PutExternalEventDef(&model.PutExternalEventDefRequest{
-		Name: "my-name",
-	}, true)
+	(*client).PutExternalEventDef(context.Background(),
+		&model.PutExternalEventDefRequest{
+			Name: "my-name",
+		},
+	)
 
 	wf := wflib.NewWorkflow(externalevent.ExternalEventWorkflow, "external-event")
 	putWf, err := wf.Compile()
@@ -23,7 +26,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	resp, err := client.PutWfSpec(putWf)
+	resp, err := (*client).PutWfSpec(context.Background(), putWf)
 	if err != nil {
 		log.Fatal(err)
 	}

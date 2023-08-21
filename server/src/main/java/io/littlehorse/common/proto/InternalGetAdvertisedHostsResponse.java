@@ -82,7 +82,7 @@ private static final long serialVersionUID = 0L;
     return internalGetHosts().getMap().size();
   }
   /**
-   * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.LHHostInfo&gt; hosts = 1;</code>
    */
   @java.lang.Override
   public boolean containsHosts(
@@ -99,14 +99,14 @@ private static final long serialVersionUID = 0L;
     return getHostsMap();
   }
   /**
-   * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.LHHostInfo&gt; hosts = 1;</code>
    */
   @java.lang.Override
   public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> getHostsMap() {
     return internalGetHosts().getMap();
   }
   /**
-   * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.LHHostInfo&gt; hosts = 1;</code>
    */
   @java.lang.Override
   public /* nullable */
@@ -120,7 +120,7 @@ io.littlehorse.sdk.common.proto.LHHostInfo defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
-   * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.LHHostInfo&gt; hosts = 1;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.LHHostInfo getHostsOrThrow(
@@ -522,7 +522,7 @@ io.littlehorse.sdk.common.proto.LHHostInfo defaultValue) {
       return internalGetHosts().getMap().size();
     }
     /**
-     * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
+     * <code>map&lt;string, .littlehorse.LHHostInfo&gt; hosts = 1;</code>
      */
     @java.lang.Override
     public boolean containsHosts(
@@ -539,14 +539,14 @@ io.littlehorse.sdk.common.proto.LHHostInfo defaultValue) {
       return getHostsMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
+     * <code>map&lt;string, .littlehorse.LHHostInfo&gt; hosts = 1;</code>
      */
     @java.lang.Override
     public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> getHostsMap() {
       return internalGetHosts().getMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
+     * <code>map&lt;string, .littlehorse.LHHostInfo&gt; hosts = 1;</code>
      */
     @java.lang.Override
     public /* nullable */
@@ -560,7 +560,7 @@ io.littlehorse.sdk.common.proto.LHHostInfo defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
+     * <code>map&lt;string, .littlehorse.LHHostInfo&gt; hosts = 1;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.LHHostInfo getHostsOrThrow(
@@ -580,7 +580,7 @@ io.littlehorse.sdk.common.proto.LHHostInfo defaultValue) {
       return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
+     * <code>map&lt;string, .littlehorse.LHHostInfo&gt; hosts = 1;</code>
      */
     public Builder removeHosts(
         java.lang.String key) {
@@ -599,7 +599,7 @@ io.littlehorse.sdk.common.proto.LHHostInfo defaultValue) {
       return internalGetMutableHosts().getMutableMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
+     * <code>map&lt;string, .littlehorse.LHHostInfo&gt; hosts = 1;</code>
      */
     public Builder putHosts(
         java.lang.String key,
@@ -612,7 +612,7 @@ io.littlehorse.sdk.common.proto.LHHostInfo defaultValue) {
       return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
+     * <code>map&lt;string, .littlehorse.LHHostInfo&gt; hosts = 1;</code>
      */
     public Builder putAllHosts(
         java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> values) {
