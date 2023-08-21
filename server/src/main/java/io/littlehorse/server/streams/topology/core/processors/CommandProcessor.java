@@ -4,8 +4,6 @@ import com.google.protobuf.ByteString;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.CommandModel;
-import io.littlehorse.common.proto.CommandResultPb;
-import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -81,11 +79,9 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
             dao.commit();
             if (command.hasResponse() && command.commandId != null) {
                 WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
-                        .setCode(StoreQueryStatusPb.RSQ_OK)
-                        .setResult(CommandResultPb.newBuilder()
-                                .setCommandId(command.commandId)
-                                .setResultTime(LHUtil.fromDate(new Date()))
-                                .setResult(ByteString.copyFrom(response.toBytes())))
+                        .setCommandId(command.commandId)
+                        .setResultTime(LHUtil.fromDate(new Date()))
+                        .setResult(ByteString.copyFrom(response.toBytes()))
                         .build();
 
                 server.onResponseReceived(command.commandId, cmdReply);

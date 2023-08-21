@@ -8,53 +8,25 @@ public interface ListWfMetricsResponseOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.LHResponseCode code = 1;</code>
-   * @return The enum numeric value on the wire for code.
-   */
-  int getCodeValue();
-  /**
-   * <code>.littlehorse.LHResponseCode code = 1;</code>
-   * @return The code.
-   */
-  io.littlehorse.sdk.common.proto.LHResponseCode getCode();
-
-  /**
-   * <code>optional string message = 2;</code>
-   * @return Whether the message field is set.
-   */
-  boolean hasMessage();
-  /**
-   * <code>optional string message = 2;</code>
-   * @return The message.
-   */
-  java.lang.String getMessage();
-  /**
-   * <code>optional string message = 2;</code>
-   * @return The bytes for message.
-   */
-  com.google.protobuf.ByteString
-      getMessageBytes();
-
-  /**
-   * <code>repeated .littlehorse.WfSpecMetrics results = 3;</code>
+   * <code>repeated .littlehorse.WfSpecMetrics results = 1;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.WfSpecMetrics> 
       getResultsList();
   /**
-   * <code>repeated .littlehorse.WfSpecMetrics results = 3;</code>
+   * <code>repeated .littlehorse.WfSpecMetrics results = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecMetrics getResults(int index);
   /**
-   * <code>repeated .littlehorse.WfSpecMetrics results = 3;</code>
+   * <code>repeated .littlehorse.WfSpecMetrics results = 1;</code>
    */
   int getResultsCount();
   /**
-   * <code>repeated .littlehorse.WfSpecMetrics results = 3;</code>
+   * <code>repeated .littlehorse.WfSpecMetrics results = 1;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.WfSpecMetricsOrBuilder> 
       getResultsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.WfSpecMetrics results = 3;</code>
+   * <code>repeated .littlehorse.WfSpecMetrics results = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecMetricsOrBuilder getResultsOrBuilder(
       int index);

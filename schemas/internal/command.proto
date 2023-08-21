@@ -1,0 +1,192 @@
+syntax = "proto3";
+package littlehorse;
+
+option java_multiple_files = true;
+option java_package = "io.littlehorse.common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "service.proto";
+import "object_id.proto";
+import "common_wfspec.proto";
+import "user_tasks.proto";
+import "common_enums.proto";
+import "storage.proto";
+
+
+// This is the schema of everything that flows through the Central Command topic.
+message Command {
+    google.protobuf.Timestamp time = 1;
+    optional string command_id = 2;
+
+    reserved 3; // reserved to contain Tenant Id in future versions.
+
+    oneof command {
+        ReportTaskRun report_task_run = 4;
+        TaskClaimEventPb task_claim_event = 5;
+        RunWfRequest run_wf = 6;
+        PutExternalEventRequest put_external_event = 7;
+        StopWfRunRequest stop_wf_run = 8;
+        ResumeWfRunRequest resume_wf_run = 9;
+        SleepNodeMaturedPb sleep_node_matured = 10;
+        DeleteWfRunRequest delete_wf_run = 11;
+        ExternalEventNodeTimeoutPb external_event_timeout = 12;
+        TaskWorkerHeartBeatRequest task_worker_heart_beat = 13;
+        DeleteExternalEventRequest delete_external_event = 14;
+        AssignUserTaskRunRequest assign_user_task_run = 15;
+        CompleteUserTaskRunRequest complete_user_task_run = 16;
+        TriggeredTaskRunPb triggered_task_run = 17;
+        ReassignedUserTaskPb reassigned_user_task = 18;
+        CancelUserTaskRunRequest cancel_user_task = 19;
+        // TODO: Add SaveUserTask
+    }
+}
+
+// This flows through the Metadata Command Topic
+message MetadataCommand {
+    google.protobuf.Timestamp time = 1;
+    optional string command_id = 2;
+
+    reserved 3; // reserved to contain Tenant Id in future versions.
+
+    oneof metadata_command {
+        PutWfSpecRequest put_wf_spec = 4;
+        PutTaskDefRequest put_task_def = 5;
+        PutExternalEventDefRequest put_external_event_def = 6;
+        DeleteWfSpecRequest delete_wf_spec = 7;
+        DeleteTaskDefRequest delete_task_def = 8;
+        DeleteExternalEventDefRequest delete_external_event_def = 9;
+        PutUserTaskDefRequest put_user_task_def = 10;
+        DeleteUserTaskDefRequest delete_user_task_def = 11;
+
+        // TODO: PutPrincipal
+        // TODO: DeletePrincipal
+        // TODO: PutTenant
+        // TODO: DeleteTenant
+    }
+}
+
+// This is the repartition command
+message RepartitionCommandPb {
+    google.protobuf.Timestamp time = 1;
+    optional string command_id = 2;
+    oneof repartition_command {
+        TaskMetricUpdatePb task_metric_update = 3;
+        WfMetricUpdatePb wf_metric_update = 4;
+        CreateRemoteTagPb create_remote_tag = 5;
+        RemoveRemoteTagPb remove_remote_tag = 6;
+    }
+}
+
+message TaskMetricUpdatePb {
+    google.protobuf.Timestamp window_start = 1;
+    MetricsWindowLength type = 2;
+    int64 num_entries = 3;
+    int64 schedule_to_start_max = 4;
+    int64 schedule_to_start_total = 5;
+    int64 start_to_complete_max = 6;
+    int64 start_to_complete_total = 7;
+    int64 total_completed = 8;
+    int64 total_errored = 9;
+    int64 total_started = 10;
+
+    string task_def_name = 11;
+    int64 total_scheduled = 12;
+}
+
+message WfMetricUpdatePb {
+    google.protobuf.Timestamp window_start = 1;
+    MetricsWindowLength type = 2;
+    int64 num_entries = 3;
+    int64 start_to_complete_max = 6;
+    int64 start_to_complete_total = 7;
+    int64 total_completed = 8;
+    int64 total_errored = 9;
+    int64 total_started = 10;
+
+    string wf_spec_name = 11;
+    int32 wf_spec_version = 12;
+}
+
+message CreateRemoteTagPb {
+    TagPb tag = 1;
+}
+
+message RemoveRemoteTagPb {
+    string store_key = 1;
+    string partition_key = 2;
+}
+
+// These are internal commands that are sent by the LH Server itself but don't
+// show up in the public api
+message TaskClaimEventPb {
+    TaskRunId task_run_id = 1;
+    google.protobuf.Timestamp time = 2;
+    string task_worker_id = 3;
+    optional string task_worker_version = 4;
+}
+
+message ExternalEventNodeTimeoutPb {
+    string wf_run_id = 1;
+    int32 thread_run_number = 2;
+    int32 node_run_position = 3;
+    google.protobuf.Timestamp time = 4;
+}
+
+message DeleteWfRunRequest {
+    string wf_run_id = 1;
+  }
+  
+  message DeleteTaskDefRequest {
+    string name = 1;
+  }
+  
+  message DeleteUserTaskDefRequest {
+    string name = 1;
+    int32 version = 2;
+  }
+  
+  message DeleteWfSpecRequest {
+    string name = 1;
+    int32 version = 2;
+  }
+  
+  message DeleteExternalEventDefRequest {
+    string name = 1;
+  }
+  
+
+// This section contains commands that originate from the gRPC api. Perhaps they
+// could also go in service.proto...?
+
+message SleepNodeMaturedPb {
+    string wf_run_id = 1;
+    int32 thread_run_number = 2;
+    int32 node_run_position = 3;
+}
+
+// This is currently used by the UserTaskRun ActionTrigger, it could be potentially
+// extended in the future to allow scheduling one-off tasks.
+message TriggeredTaskRunPb {
+    TaskNode task_to_schedule = 1;
+    NodeRunId source = 2;
+}
+
+message ReassignedUserTaskPb {
+    oneof assign_to {
+        string user_id = 1;
+        string user_group = 2;
+    }
+    int32 delay_in_seconds = 3;
+    NodeRunId source = 4;
+}
+
+
+// Timer doesn't warrant its own file, and it is closely related to a Command
+// anyways.
+message LHTimerPb {
+    google.protobuf.Timestamp maturation_time = 1;
+    string key = 2;
+    string topic = 3;
+    bytes payload = 4;
+}
+

@@ -2,7 +2,7 @@
   "java.configuration.updateBuildConfiguration": "automatic",
   "protoc": {
     "options": [
-      "-I=./schemas/"
+      "-I=./schemas/:./schemas/internal"
     ]
   },
   "[java]": {

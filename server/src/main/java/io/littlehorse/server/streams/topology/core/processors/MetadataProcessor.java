@@ -5,8 +5,6 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
-import io.littlehorse.common.proto.CommandResultPb;
-import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -66,11 +64,9 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
             AbstractResponse<?> response = command.process(dao, config);
             if (command.hasResponse() && command.getCommandId() != null) {
                 WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
-                        .setCode(StoreQueryStatusPb.RSQ_OK)
-                        .setResult(CommandResultPb.newBuilder()
-                                .setCommandId(command.getCommandId())
-                                .setResultTime(LHUtil.fromDate(new Date()))
-                                .setResult(ByteString.copyFrom(response.toBytes())))
+                        .setCommandId(command.getCommandId())
+                        .setResultTime(LHUtil.fromDate(new Date()))
+                        .setResult(ByteString.copyFrom(response.toBytes()))
                         .build();
 
                 server.onResponseReceived(command.getCommandId(), cmdReply);
