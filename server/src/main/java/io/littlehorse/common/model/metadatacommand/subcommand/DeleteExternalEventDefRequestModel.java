@@ -5,6 +5,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
+import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
 
@@ -17,7 +18,8 @@ public class DeleteExternalEventDefRequestModel extends MetadataSubCommand<Delet
     }
 
     public DeleteExternalEventDefRequest.Builder toProto() {
-        DeleteExternalEventDefRequest.Builder out = DeleteExternalEventDefRequest.newBuilder().setName(name);
+        DeleteExternalEventDefRequest.Builder out =
+                DeleteExternalEventDefRequest.newBuilder().setName(name);
         return out;
     }
 
@@ -32,7 +34,7 @@ public class DeleteExternalEventDefRequestModel extends MetadataSubCommand<Delet
 
     @Override
     public DeleteObjectReply process(MetadataProcessorDAO dao, LHConfig config) {
-        return dao.deleteExternalEventDef(name);
+        return dao.delete(new ExternalEventDefIdModel(name));
     }
 
     public boolean hasResponse() {

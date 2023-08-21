@@ -14,9 +14,10 @@ import io.littlehorse.common.model.command.subcommandresponse.RegisterTaskWorker
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;
+import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
-import io.littlehorse.server.streamsimpl.util.InternalHosts;
+import io.littlehorse.server.streams.util.InternalHosts;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -47,7 +48,7 @@ public class TaskWorkerHeartBeatRequestModel extends SubCommand<TaskWorkerHeartB
         log.debug("Processing a heartbeat");
 
         // Get the group, a group contains all the task worker for that specific task
-        TaskWorkerGroupModel taskWorkerGroup = dao.getTaskWorkerGroup(taskDefName);
+        TaskWorkerGroupModel taskWorkerGroup = dao.get(new TaskWorkerGroupIdModel(taskDefName));
 
         // If it does not exist then create it with empty workers
         if (taskWorkerGroup == null) {
@@ -87,7 +88,7 @@ public class TaskWorkerHeartBeatRequestModel extends SubCommand<TaskWorkerHeartB
         taskWorker.latestHeartbeat = new Date();
 
         // Save the data
-        dao.putTaskWorkerGroup(taskWorkerGroup);
+        dao.put(taskWorkerGroup);
 
         // Prepare the response with the assigned host for this specific task worker
         // (taskWorker.hosts)
@@ -142,7 +143,8 @@ public class TaskWorkerHeartBeatRequestModel extends SubCommand<TaskWorkerHeartB
 
         taskWorkerGroup.taskWorkers = taskWorkerGroup.taskWorkers.values().stream()
                 .filter(taskWorker -> Duration.between(taskWorker.latestHeartbeat.toInstant(), Instant.now())
-                        .toSeconds() < MAX_TASK_WORKER_INACTIVITY
+                                        .toSeconds()
+                                < MAX_TASK_WORKER_INACTIVITY
                         || taskWorker.clientId == clientId)
                 .collect(Collectors.toMap(taskWorker -> taskWorker.clientId, Function.identity()));
 

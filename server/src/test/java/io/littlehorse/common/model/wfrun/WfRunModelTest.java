@@ -2,10 +2,9 @@ package io.littlehorse.common.model.wfrun;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import org.junit.jupiter.api.Test;
 
 public class WfRunModelTest {
 

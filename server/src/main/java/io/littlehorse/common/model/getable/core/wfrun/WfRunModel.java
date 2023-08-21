@@ -5,6 +5,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.command.CommandModel;
 import io.littlehorse.common.model.command.subcommand.DeleteWfRunRequestModel;
@@ -32,8 +33,8 @@ import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRun;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,7 +52,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Slf4j
 @Setter
 @Getter
-public class WfRunModel extends AbstractGetable<WfRun> {
+public class WfRunModel extends CoreGetable<WfRun> {
 
     public String id;
     public String wfSpecName;
@@ -110,7 +111,7 @@ public class WfRunModel extends AbstractGetable<WfRun> {
         return List.of();
     }
 
-    public WfSpecModel getWfSpecModel() {
+    public WfSpecModel getWfSpec() {
         return wfSpecModel;
     }
 
@@ -314,13 +315,13 @@ public class WfRunModel extends AbstractGetable<WfRun> {
             ThreadSpecModel iSpec = wfSpecModel.threadSpecs.get(pi.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
                 vars = new HashMap<>();
-                ExternalEventModel event = getDao().getExternalEvent(pi.externalEventId.getStoreKey());
+                ExternalEventModel event = getDao().get(pi.externalEventId);
                 vars.put(LHConstants.EXT_EVT_HANDLER_VAR, event.content);
             } else {
                 vars = new HashMap<>();
             }
-            ThreadRunModel interruptor = startThread(pi.handlerSpecName, time, pi.interruptedThreadId, vars,
-                    ThreadType.INTERRUPT);
+            ThreadRunModel interruptor =
+                    startThread(pi.handlerSpecName, time, pi.interruptedThreadId, vars, ThreadType.INTERRUPT);
             interruptor.interruptTriggerId = pi.externalEventId;
 
             if (interruptor.status == LHStatus.ERROR) {
@@ -360,8 +361,8 @@ public class WfRunModel extends AbstractGetable<WfRun> {
                 vars = new HashMap<>();
             }
 
-            ThreadRunModel fh = startThread(pfh.handlerSpecName, time, pfh.failedThreadRun, vars,
-                    ThreadType.FAILURE_HANDLER);
+            ThreadRunModel fh =
+                    startThread(pfh.handlerSpecName, time, pfh.failedThreadRun, vars, ThreadType.FAILURE_HANDLER);
 
             failedThr.getCurrentNodeRun().failureHandlerIds.add(fh.number);
 

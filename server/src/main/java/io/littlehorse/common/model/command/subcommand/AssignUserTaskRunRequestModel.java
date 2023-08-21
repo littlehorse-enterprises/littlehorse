@@ -86,7 +86,7 @@ public class AssignUserTaskRunRequestModel extends SubCommand<AssignUserTaskRunR
             return out;
         }
 
-        UserTaskRunModel utr = dao.getUserTaskRun(userTaskRunId);
+        UserTaskRunModel utr = dao.get(userTaskRunId);
         if (utr == null) {
             out.code = LHResponseCode.BAD_REQUEST_ERROR;
             out.message = "Couldn't find userTaskRun " + userTaskRunId;

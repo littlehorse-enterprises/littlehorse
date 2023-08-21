@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.taskworkergroup;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.HostInfo;
@@ -16,8 +15,7 @@ public class HostModel extends LHSerializable<HostInfo> implements Comparable<Ho
         this.port = port;
     }
 
-    public HostModel() {
-    }
+    public HostModel() {}
 
     @Override
     public HostInfo.Builder toProto() {

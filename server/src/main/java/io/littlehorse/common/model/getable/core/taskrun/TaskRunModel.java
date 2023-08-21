@@ -1,10 +1,10 @@
 package io.littlehorse.common.model.getable.core.taskrun;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.command.CommandModel;
@@ -21,8 +21,8 @@ import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +35,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Getter
 @Setter
 @Slf4j
-public class TaskRunModel extends AbstractGetable<TaskRun> {
+public class TaskRunModel extends CoreGetable<TaskRun> {
 
     private TaskRunIdModel id;
     private List<TaskAttemptModel> attempts;
@@ -104,13 +104,13 @@ public class TaskRunModel extends AbstractGetable<TaskRun> {
                                 Pair.of("taskDefName", GetableIndex.ValueType.SINGLE),
                                 Pair.of("status", GetableIndex.ValueType.SINGLE)),
                         Optional.of(TagStorageType.LOCAL))
-        // NOTE: we're not indexing just based on status because we don't want
-        // to have too many reads/writes in RocksDB as those are expensive.
-        //
-        // Additionally, we could index based on the number of retries, so that
-        // we can find all TaskRun's that have been retried. But that maybe can
-        // be in the 0.1.1 release, not 0.1.0
-        );
+                // NOTE: we're not indexing just based on status because we don't want
+                // to have too many reads/writes in RocksDB as those are expensive.
+                //
+                // Additionally, we could index based on the number of retries, so that
+                // we can find all TaskRun's that have been retried. But that maybe can
+                // be in the 0.1.1 release, not 0.1.0
+                );
     }
 
     @Override
@@ -136,8 +136,8 @@ public class TaskRunModel extends AbstractGetable<TaskRun> {
         attempts = new ArrayList<>();
     }
 
-    public TaskRunModel(CoreProcessorDAO dao, List<VarNameAndValModel> inputVars, TaskRunSourceModel source,
-            TaskNodeModel node) {
+    public TaskRunModel(
+            CoreProcessorDAO dao, List<VarNameAndValModel> inputVars, TaskRunSourceModel source, TaskNodeModel node) {
         this();
         this.inputVariables = inputVars;
         this.taskRunSource = source;
@@ -160,8 +160,7 @@ public class TaskRunModel extends AbstractGetable<TaskRun> {
     }
 
     public TaskAttemptModel getLatestAttempt() {
-        if (attempts.isEmpty())
-            return null;
+        if (attempts.isEmpty()) return null;
         return attempts.get(attempts.size() - 1);
     }
 

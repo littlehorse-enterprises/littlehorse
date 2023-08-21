@@ -9,8 +9,8 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.TaskDefMetrics;
 import io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -93,9 +93,9 @@ public class TaskDefMetricsModel extends AbstractGetable<TaskDefMetrics> {
 
     public static String getObjectId(TaskDefMetricsQueryRequest request) {
         return new TaskDefMetricsIdModel(
-                LHUtil.getWindowStart(LHLibUtil.fromProtoTs(request.getWindowStart()), request.getWindowType()),
-                request.getWindowType(),
-                request.getTaskDefName())
+                        LHUtil.getWindowStart(LHLibUtil.fromProtoTs(request.getWindowStart()), request.getWindowType()),
+                        request.getWindowType(),
+                        request.getTaskDefName())
                 .getStoreKey();
     }
 }

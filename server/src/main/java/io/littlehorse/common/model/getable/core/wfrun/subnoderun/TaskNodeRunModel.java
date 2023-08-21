@@ -39,8 +39,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     public TaskNodeRun.Builder toProto() {
         TaskNodeRun.Builder out = TaskNodeRun.newBuilder();
 
-        if (taskRunId != null)
-            out.setTaskRunId(taskRunId.toProto());
+        if (taskRunId != null) out.setTaskRunId(taskRunId.toProto());
 
         return out;
     }
@@ -78,17 +77,17 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
         }
 
         // Create a TaskRun
-        TaskNodeReferenceModel source = new TaskNodeReferenceModel(nodeRunModel.getObjectId(),
-                nodeRunModel.getWfSpecId());
+        TaskNodeReferenceModel source =
+                new TaskNodeReferenceModel(nodeRunModel.getObjectId(), nodeRunModel.getWfSpecId());
 
-        TaskRunModel task = new TaskRunModel(getDao(), inputVariables, new TaskRunSourceModel(source),
-                node.getTaskNode());
+        TaskRunModel task =
+                new TaskRunModel(getDao(), inputVariables, new TaskRunSourceModel(source), node.getTaskNode());
         this.taskRunId = new TaskRunIdModel(nodeRunModel.getPartitionKey());
         task.setId(taskRunId);
 
         // When creating a new Getable for the first time, we need to explicitly
         // save it.
-        getDao().putTaskRun(task);
+        getDao().put(task);
 
         // TODO: this should update metrics
         task.scheduleAttempt();

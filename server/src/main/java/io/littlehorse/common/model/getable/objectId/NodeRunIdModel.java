@@ -1,8 +1,7 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-
-import io.littlehorse.common.model.getable.ObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
@@ -13,14 +12,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NodeRunIdModel extends ObjectId<NodeRunId, NodeRun, NodeRunModel> {
+public class NodeRunIdModel extends ObjectIdModel<NodeRunId, NodeRun, NodeRunModel> {
 
     private String wfRunId;
     private int threadRunNumber;
     private int position;
 
-    public NodeRunIdModel() {
-    }
+    public NodeRunIdModel() {}
 
     public NodeRunIdModel(String wfRunId, int threadRunNumber, int postion) {
         this.wfRunId = wfRunId;

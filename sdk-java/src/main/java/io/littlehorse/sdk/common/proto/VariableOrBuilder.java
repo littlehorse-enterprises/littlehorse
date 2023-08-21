@@ -66,4 +66,19 @@ public interface VariableOrBuilder extends
    * <code>.google.protobuf.Timestamp date = 5;</code>
    */
   com.google.protobuf.TimestampOrBuilder getDateOrBuilder();
+
+  /**
+   * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+   * @return Whether the wfSpecId field is set.
+   */
+  boolean hasWfSpecId();
+  /**
+   * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+   * @return The wfSpecId.
+   */
+  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
+  /**
+   * <code>.littlehorse.WfSpecId wf_spec_id = 6;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 }

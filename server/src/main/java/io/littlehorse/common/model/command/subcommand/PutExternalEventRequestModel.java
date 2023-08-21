@@ -43,12 +43,9 @@ public class PutExternalEventRequestModel extends SubCommand<PutExternalEventReq
                 .setExternalEventDefName(externalEventDefName)
                 .setContent(content.toProto());
 
-        if (guid != null)
-            out.setGuid(guid);
-        if (threadRunNumber != null)
-            out.setThreadRunNumber(threadRunNumber);
-        if (nodeRunPosition != null)
-            out.setNodeRunPosition(nodeRunPosition);
+        if (guid != null) out.setGuid(guid);
+        if (threadRunNumber != null) out.setThreadRunNumber(threadRunNumber);
+        if (nodeRunPosition != null) out.setNodeRunPosition(nodeRunPosition);
 
         return out;
     }
@@ -67,8 +64,7 @@ public class PutExternalEventRequestModel extends SubCommand<PutExternalEventReq
             return out;
         }
 
-        if (guid == null)
-            guid = LHUtil.generateGuid();
+        if (guid == null) guid = LHUtil.generateGuid();
         ExternalEventModel evt = new ExternalEventModel();
         evt.wfRunId = wfRunId;
         evt.content = content;
@@ -78,7 +74,7 @@ public class PutExternalEventRequestModel extends SubCommand<PutExternalEventReq
         evt.threadRunNumber = threadRunNumber;
         evt.claimed = false;
 
-        dao.saveExternalEvent(evt);
+        dao.put(evt);
 
         LHTimer timer = new LHTimer();
         timer.topic = dao.getCoreCmdTopic();
@@ -100,7 +96,8 @@ public class PutExternalEventRequestModel extends SubCommand<PutExternalEventReq
         if (wfRunModel != null) {
             WfSpecModel spec = dao.getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
             if (spec == null) {
-                wfRunModel.threadRunModels
+                wfRunModel
+                        .threadRunModels
                         .get(0)
                         .fail(new FailureModel("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR), new Date());
                 out.code = LHResponseCode.NOT_FOUND_ERROR;
@@ -110,8 +107,8 @@ public class PutExternalEventRequestModel extends SubCommand<PutExternalEventReq
                 wfRunModel.processExternalEvent(evt);
                 out.code = LHResponseCode.OK;
             }
-            dao.saveWfRun(wfRunModel);
-            dao.saveExternalEvent(evt);
+            dao.put(wfRunModel);
+            dao.put(evt);
         } else {
             // it's a pre-emptive event.
             out.code = LHResponseCode.OK;
@@ -128,12 +125,9 @@ public class PutExternalEventRequestModel extends SubCommand<PutExternalEventReq
         externalEventDefName = p.getExternalEventDefName();
         content = VariableValueModel.fromProto(p.getContent());
 
-        if (p.hasGuid())
-            guid = p.getGuid();
-        if (p.hasThreadRunNumber())
-            threadRunNumber = p.getThreadRunNumber();
-        if (p.hasNodeRunPosition())
-            nodeRunPosition = p.getNodeRunPosition();
+        if (p.hasGuid()) guid = p.getGuid();
+        if (p.hasThreadRunNumber()) threadRunNumber = p.getThreadRunNumber();
+        if (p.hasNodeRunPosition()) nodeRunPosition = p.getNodeRunPosition();
     }
 
     public static PutExternalEventRequestModel fromProto(PutExternalEventRequest p) {

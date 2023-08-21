@@ -3,29 +3,28 @@ package io.littlehorse.common.model.getable.core.taskworkergroup;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskWorkerGroup;
 import io.littlehorse.sdk.common.proto.TaskWorkerMetadata;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class TaskWorkerGroupModel extends AbstractGetable<TaskWorkerGroup> {
+public class TaskWorkerGroupModel extends CoreGetable<TaskWorkerGroup> {
 
     public String taskDefName;
     public Date createdAt;
     public Map<String, TaskWorkerMetadataModel> taskWorkers = new HashMap<String, TaskWorkerMetadataModel>();
 
-    public TaskWorkerGroupModel() {
-    }
+    public TaskWorkerGroupModel() {}
 
     @Override
     public Date getCreatedAt() {
-        if (createdAt == null)
-            createdAt = new Date();
+        if (createdAt == null) createdAt = new Date();
         return createdAt;
     }
 

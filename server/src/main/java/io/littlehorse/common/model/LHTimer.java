@@ -17,8 +17,7 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
     public String key;
     public byte[] payload;
 
-    public LHTimer() {
-    }
+    public LHTimer() {}
 
     public LHTimer(CommandModel command, CoreProcessorDAO dao) {
         maturationTime = command.getTime();

@@ -2,21 +2,24 @@ package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.getable.ObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
+import lombok.Getter;
+import lombok.Setter;
 
 // Used by WfSpec, TaskDef, and ExternalEventDef
-public class WfSpecIdModel extends ObjectId<WfSpecId, WfSpec, WfSpecModel> {
+@Getter
+@Setter
+public class WfSpecIdModel extends ObjectIdModel<WfSpecId, WfSpec, WfSpecModel> {
 
-    public String name;
-    public int version;
+    private String name;
+    private int version;
 
-    public WfSpecIdModel() {
-    }
+    public WfSpecIdModel() {}
 
     public WfSpecIdModel(String name, int version) {
         this.name = name;

@@ -14,8 +14,7 @@ public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
 
     public NodeModel node;
 
-    public FailureHandlerDefModel() {
-    }
+    public FailureHandlerDefModel() {}
 
     public Class<FailureHandlerDef> getProtoBaseClass() {
         return FailureHandlerDef.class;
@@ -24,16 +23,14 @@ public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
     public FailureHandlerDef.Builder toProto() {
         FailureHandlerDef.Builder out = FailureHandlerDef.newBuilder().setHandlerSpecName(handlerSpecName);
 
-        if (specificFailure != null)
-            out.setSpecificFailure(specificFailure);
+        if (specificFailure != null) out.setSpecificFailure(specificFailure);
 
         return out;
     }
 
     public void initFrom(Message proto) {
         FailureHandlerDef p = (FailureHandlerDef) proto;
-        if (p.hasSpecificFailure())
-            specificFailure = p.getSpecificFailure();
+        if (p.hasSpecificFailure()) specificFailure = p.getSpecificFailure();
         handlerSpecName = p.getHandlerSpecName();
     }
 

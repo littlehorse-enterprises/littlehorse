@@ -1,11 +1,6 @@
 package io.littlehorse.common.model.getable.global.wfspec.variable;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -14,6 +9,9 @@ import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutation.RhsValueCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -33,10 +31,10 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
     }
 
     public VariableMutation.Builder toProto() {
-        VariableMutation.Builder out = VariableMutation.newBuilder().setLhsName(lhsName).setOperation(operation);
+        VariableMutation.Builder out =
+                VariableMutation.newBuilder().setLhsName(lhsName).setOperation(operation);
 
-        if (lhsJsonPath != null)
-            out.setLhsJsonPath(lhsJsonPath);
+        if (lhsJsonPath != null) out.setLhsJsonPath(lhsJsonPath);
 
         switch (rhsValueType) {
             case LITERAL_VALUE:
@@ -58,8 +56,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
     public void initFrom(Message proto) {
         VariableMutation p = (VariableMutation) proto;
         lhsName = p.getLhsName();
-        if (p.hasLhsJsonPath())
-            lhsJsonPath = p.getLhsJsonPath();
+        if (p.hasLhsJsonPath()) lhsJsonPath = p.getLhsJsonPath();
         operation = p.getOperation();
 
         rhsValueType = p.getRhsValueCase();
@@ -93,7 +90,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             String varName, ThreadRunModel thread, Map<String, VariableValueModel> txnCache) throws LHVarSubError {
         VariableValueModel lhsVar = txnCache.get(this.lhsName);
         if (lhsVar == null) {
-            lhsVar = thread.getVariable(this.lhsName).value;
+            lhsVar = thread.getVariable(this.lhsName).getValue();
         }
         return lhsVar.getCopy();
     }

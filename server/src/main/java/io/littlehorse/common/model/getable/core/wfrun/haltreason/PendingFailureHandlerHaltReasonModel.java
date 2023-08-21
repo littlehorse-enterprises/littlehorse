@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.wfrun.haltreason;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.PendingFailureHandlerHaltReason;

@@ -17,19 +17,15 @@ public class PutWfSpecResponseModel extends AbstractResponse<PutWfSpecResponse> 
         PutWfSpecResponse p = (PutWfSpecResponse) proto;
 
         code = p.getCode();
-        if (p.hasMessage())
-            message = p.getMessage();
-        if (p.hasResult())
-            result = WfSpecModel.fromProto(p.getResult());
+        if (p.hasMessage()) message = p.getMessage();
+        if (p.hasResult()) result = WfSpecModel.fromProto(p.getResult());
     }
 
     public PutWfSpecResponse.Builder toProto() {
         PutWfSpecResponse.Builder out = PutWfSpecResponse.newBuilder();
         out.setCode(code);
-        if (message != null)
-            out.setMessage(message);
-        if (result != null)
-            out.setResult(result.toProto());
+        if (message != null) out.setMessage(message);
+        if (result != null) out.setResult(result.toProto());
         return out;
     }
 }

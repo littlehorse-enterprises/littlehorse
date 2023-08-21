@@ -2,14 +2,12 @@ package io.littlehorse.common.model.command;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
-
-import io.littlehorse.common.Storeable;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.CommandResultPb;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;
 
-// TODO: May need to find a more appropriate directory for this file.
-public class CommandResult extends Storeable<CommandResultPb> {
+public class CommandResult extends LHSerializable<CommandResultPb> {
 
     public String commandId;
     public Date resultTime;

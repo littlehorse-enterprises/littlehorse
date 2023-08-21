@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.sdk.common.proto.EntrypointRun;
@@ -15,8 +14,7 @@ public class EntrypointRunModel extends SubNodeRun<EntrypointRun> {
         return EntrypointRun.class;
     }
 
-    public void initFrom(Message p) {
-    }
+    public void initFrom(Message p) {}
 
     public EntrypointRun.Builder toProto() {
         return EntrypointRun.newBuilder();

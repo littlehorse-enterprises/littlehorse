@@ -1,26 +1,28 @@
 package io.littlehorse.common.dao;
 
+import com.google.protobuf.Message;
+import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
-import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
-import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
-import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 
 public interface MetadataProcessorDAO extends ReadOnlyMetadataStore {
 
-    public void putWfSpec(WfSpecModel spec);
+    /*
+     * Lifecycle for processing a Command
+     */
 
-    public void putTaskDef(TaskDefModel spec);
+    public void initCommand(MetadataCommandModel command);
 
-    public void putUserTaskDef(UserTaskDefModel spec);
+    public MetadataCommandModel getCommand();
 
-    public void putExternalEventDef(ExternalEventDefModel eed);
+    /*
+     * Read/Write processing.
+     */
 
-    public DeleteObjectReply deleteTaskDef(String name);
+    public <U extends Message, T extends GlobalGetable<U>> T get(ObjectIdModel<?, U, T> id);
 
-    public DeleteObjectReply deleteExternalEventDef(String name);
+    public <U extends Message, T extends GlobalGetable<U>> void put(T getable);
 
-    public DeleteObjectReply deleteWfSpec(String name, int version);
-
-    public DeleteObjectReply deleteUserTaskDef(String name, int version);
+    public <U extends Message, T extends GlobalGetable<U>> DeleteObjectReply delete(ObjectIdModel<?, U, T> id);
 }

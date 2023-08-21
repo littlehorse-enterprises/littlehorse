@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted;
@@ -14,8 +13,7 @@ public class UTETaskExecutedModel extends LHSerializable<UTETaskExecuted> {
 
     private TaskRunIdModel taskRunId;
 
-    public UTETaskExecutedModel() {
-    }
+    public UTETaskExecutedModel() {}
 
     public UTETaskExecutedModel(TaskRunIdModel taskRunId) {
         this.taskRunId = taskRunId;

@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.usertaskrun;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.UserTaskFieldResult;
 import io.littlehorse.sdk.common.proto.UserTaskResult;

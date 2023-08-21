@@ -12,7 +12,7 @@ import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
-import io.littlehorse.server.streamsimpl.taskqueue.PollTaskRequestObserver;
+import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,8 +36,7 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
     private String taskWorkerVersion;
     private String taskWorkerId;
 
-    public TaskClaimEvent() {
-    }
+    public TaskClaimEvent() {}
 
     public TaskClaimEvent(ScheduledTaskModel task, PollTaskRequestObserver taskClaimer) {
         this.taskRunId = task.getTaskRunId();
@@ -71,7 +70,7 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
     public TaskClaimReply process(CoreProcessorDAO dao, LHConfig config) {
         TaskClaimReply out = new TaskClaimReply();
 
-        TaskRunModel taskRun = dao.getTaskRun(taskRunId);
+        TaskRunModel taskRun = dao.get(taskRunId);
         if (taskRun == null) {
             log.warn("Got claimTask for non-existent taskRun {}", taskRunId);
             out.setCode(LHResponseCode.BAD_REQUEST_ERROR);

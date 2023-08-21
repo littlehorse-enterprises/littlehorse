@@ -34,7 +34,7 @@ public class CancelUserTaskRunRequestModel extends SubCommand<CancelUserTaskRunR
 
     @Override
     public CancelUserTaskRunReply process(CoreProcessorDAO dao, LHConfig config) {
-        UserTaskRunModel userTaskRun = dao.getUserTaskRun(userTaskRunId);
+        UserTaskRunModel userTaskRun = dao.get(userTaskRunId);
         if (userTaskRun == null) {
             return new CancelUserTaskRunReply("Provided invalid wfRunId", LHResponseCode.BAD_REQUEST_ERROR);
         }

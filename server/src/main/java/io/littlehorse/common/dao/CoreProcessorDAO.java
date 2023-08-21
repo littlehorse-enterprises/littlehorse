@@ -1,124 +1,77 @@
 package io.littlehorse.common.dao;
 
+import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.command.CommandModel;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
-import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
-import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
-import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
-import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
-import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
-import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
-import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
-import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
-import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
-import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.HostInfo;
-import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
-import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
-import io.littlehorse.server.streamsimpl.util.InternalHosts;
+import io.littlehorse.server.streams.util.InternalHosts;
 import java.util.Date;
-import java.util.List;
 
-/*
- * All PUT() commands throw errors if the processing partition does not match
- * the partition of the resource being PUT.
- *
- * TODO: decide whether it's ugly or not to have this interface extend
- * `LHGlobalMetaStores`.
- */
 public interface CoreProcessorDAO extends ReadOnlyMetadataStore {
-    public String getCoreCmdTopic();
 
-    public void setCommand(CommandModel command);
+    /*
+     * Lifecycle for processing a Command
+     */
+
+    public void initCommand(CommandModel command);
 
     public CommandModel getCommand();
 
-    public default Date getEventTime() {
-        return getCommand().time;
-    }
+    public void commit();
 
-    public void putNodeRun(NodeRunModel nr);
+    /*
+     * Basic CRUD for CoreGetables
+     */
 
-    public NodeRunModel getNodeRun(String wfRunId, int threadNum, int position);
+    public <U extends Message, T extends CoreGetable<U>> T get(ObjectIdModel<?, U, T> id);
 
-    public default NodeRunModel getNodeRun(NodeRunIdModel id) {
-        return getNodeRun(id.getWfRunId(), id.getThreadRunNumber(), id.getPosition());
-    }
+    public void put(CoreGetable<?> getable);
 
-    public void putVariable(VariableModel var);
+    public DeleteObjectReply delete(WfRunIdModel id);
 
-    public VariableModel getVariable(String wfRunId, String name, int threadNum);
+    public DeleteObjectReply delete(ExternalEventIdModel id);
+
+    /*
+     * One-off operations related to WfRun Processing
+     */
 
     public ExternalEventModel getUnclaimedEvent(String wfRunId, String externalEventDefName);
-
-    public ExternalEventModel getExternalEvent(String externalEventId);
-
-    public void saveExternalEvent(ExternalEventModel evt);
 
     public void scheduleTask(ScheduledTaskModel scheduledTask);
 
     public void scheduleTimer(LHTimer timer);
 
-    public void saveWfRun(WfRunModel wfRunModel);
-
-    public WfRunModel getWfRun(String id);
-
-    public WfSpecModel getWfSpec(String name, Integer version);
-
-    public TaskDefModel getTaskDef(String name);
-
-    public UserTaskDefModel getUserTaskDef(String name, Integer version);
-
-    public ExternalEventDefModel getExternalEventDef(String name);
-
     public ScheduledTaskModel markTaskAsScheduled(TaskRunIdModel taskRunId);
 
-    public DeleteObjectReply deleteWfRun(String wfRunId);
-
-    public DeleteObjectReply deleteExternalEvent(String externalEventId);
-
-    public TaskRunModel getTaskRun(TaskRunIdModel taskRunId);
-
-    public void putTaskRun(TaskRunModel taskRun);
-
-    public void putUserTaskRun(UserTaskRunModel taskRun);
-
-    public UserTaskRunModel getUserTaskRun(UserTaskRunIdModel userTaskRunId);
+    default WfRunModel getWfRun(String id) {
+        return get(new WfRunIdModel(id));
+    }
 
     /*
-     * Clear any dirty cache if necessary
+     * Misc. This will be organized further in the future.
      */
-    public void abortChanges();
 
-    /*
-     * Clear any dirty cache if necessary, BUT also mark any wfRun's that were
-     * in processing as ERROR and note an error message.
-     */
-    void abortChangesAndMarkWfRunFailed(Throwable failure, String wfRunId);
+    public String getCoreCmdTopic();
 
-    /*
-     * Commit changes to the backing store.
-     */
-    public void commitChanges();
+    public default Date getEventTime() {
+        return getCommand().time;
+    }
 
-    public List<TaskMetricUpdate> getTaskMetricWindows(String taskDefName, Date time);
-
-    public List<WfMetricUpdate> getWfMetricWindows(String wfSpecName, int wfSpecVersion, Date time);
+    public AnalyticsRegistry getRegistry();
 
     public HostInfo getAdvertisedHost(HostModel host, String listenerName) throws LHBadRequestError, LHConnectionError;
 
     public InternalHosts getInternalHosts();
-
-    public TaskWorkerGroupModel getTaskWorkerGroup(String taskDefName);
-
-    public void putTaskWorkerGroup(TaskWorkerGroupModel taskWorkerGroup);
 }

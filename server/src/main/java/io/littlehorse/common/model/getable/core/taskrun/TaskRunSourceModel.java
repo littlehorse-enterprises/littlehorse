@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.taskrun;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.TaskRunSource.TaskRunSourceCase;
@@ -16,8 +15,7 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
     private TaskNodeReferenceModel taskNode;
     private UserTaskTriggerReferenceModel userTaskTrigger;
 
-    public TaskRunSourceModel() {
-    }
+    public TaskRunSourceModel() {}
 
     public TaskRunSourceModel(TaskRunSubSource<?> source) {
         if (source.getClass().equals(TaskNodeReferenceModel.class)) {

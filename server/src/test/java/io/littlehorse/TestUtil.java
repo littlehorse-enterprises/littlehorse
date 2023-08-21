@@ -32,7 +32,7 @@ import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
+import io.littlehorse.server.streams.storeinternals.index.Tag;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;

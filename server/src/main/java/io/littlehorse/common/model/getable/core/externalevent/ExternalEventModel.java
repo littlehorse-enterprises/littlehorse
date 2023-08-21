@@ -2,13 +2,14 @@ package io.littlehorse.common.model.getable.core.externalevent;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
-public class ExternalEventModel extends AbstractGetable<ExternalEvent> {
+public class ExternalEventModel extends CoreGetable<ExternalEvent> {
 
     // We want Jackson to show the full ID, not this.
     public String guid;

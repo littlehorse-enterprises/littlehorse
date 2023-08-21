@@ -1,8 +1,7 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-
-import io.littlehorse.common.model.getable.ObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
@@ -11,7 +10,7 @@ import io.littlehorse.sdk.common.proto.WfSpecMetrics;
 import io.littlehorse.sdk.common.proto.WfSpecMetricsId;
 import java.util.Date;
 
-public class WfSpecMetricsIdModel extends ObjectId<WfSpecMetricsId, WfSpecMetrics, WfSpecMetricsModel> {
+public class WfSpecMetricsIdModel extends ObjectIdModel<WfSpecMetricsId, WfSpecMetrics, WfSpecMetricsModel> {
 
     public Date windowStart;
     public MetricsWindowLength windowType;
@@ -26,8 +25,7 @@ public class WfSpecMetricsIdModel extends ObjectId<WfSpecMetricsId, WfSpecMetric
         return WfSpecMetricsId.class;
     }
 
-    public WfSpecMetricsIdModel() {
-    }
+    public WfSpecMetricsIdModel() {}
 
     public WfSpecMetricsIdModel(Date windowStart, MetricsWindowLength type, String wfSpecName, int wfSpecVersion) {
         this.windowStart = windowStart;

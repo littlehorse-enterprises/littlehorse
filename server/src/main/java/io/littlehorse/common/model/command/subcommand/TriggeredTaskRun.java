@@ -39,8 +39,7 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
     private TaskNodeModel taskToSchedule;
     private NodeRunIdModel source;
 
-    public TriggeredTaskRun() {
-    }
+    public TriggeredTaskRun() {}
 
     public TriggeredTaskRun(TaskNodeModel taskToSchedule, NodeRunIdModel source) {
         this.source = source;
@@ -90,9 +89,9 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
         }
 
         // Get the NodeRun
-        NodeRunModel userTaskNR = dao.getNodeRun(source);
+        NodeRunModel userTaskNR = dao.get(source);
         UserTaskRunIdModel userTaskRunId = userTaskNR.getUserTaskRun().getUserTaskRunId();
-        UserTaskRunModel userTaskRun = dao.getUserTaskRun(userTaskRunId);
+        UserTaskRunModel userTaskRun = dao.get(userTaskRunId);
 
         if (userTaskNR.status != LHStatus.RUNNING) {
             log.info("NodeRun is not RUNNING anymore, so can't take action!");
@@ -117,12 +116,12 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
                     taskToSchedule);
             taskRun.setId(taskRunId);
             taskRun.getAttempts().add(new TaskAttemptModel());
-            dao.putTaskRun(taskRun);
+            dao.put(taskRun);
             dao.scheduleTask(toSchedule);
 
             userTaskRun.getEvents().add(new UserTaskEventModel(new UTETaskExecutedModel(taskRunId), new Date()));
 
-            dao.putNodeRun(userTaskNR); // should be unnecessary
+            dao.put(userTaskNR); // should be unnecessary
         } catch (LHVarSubError exn) {
             log.error("Failed scheduling a Triggered Task Run, but the WfRun will continue", exn);
         }

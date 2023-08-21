@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserModel;
@@ -26,27 +25,19 @@ public class UTEReassignedModel extends LHSerializable<UTEReassigned> {
     @Override
     public UTEReassigned.Builder toProto() {
         UTEReassigned.Builder out = UTEReassigned.newBuilder();
-        if (oldUserGroup != null)
-            out.setOldUserGroup(oldUserGroup.toProto());
-        if (newUserGroup != null)
-            out.setNewUserGroup(newUserGroup.toProto());
-        if (oldUser != null)
-            out.setOldUser(oldUser.toProto());
-        if (newUser != null)
-            out.setNewUser(newUser.toProto());
+        if (oldUserGroup != null) out.setOldUserGroup(oldUserGroup.toProto());
+        if (newUserGroup != null) out.setNewUserGroup(newUserGroup.toProto());
+        if (oldUser != null) out.setOldUser(oldUser.toProto());
+        if (newUser != null) out.setNewUser(newUser.toProto());
         return out;
     }
 
     @Override
     public void initFrom(Message proto) {
         UTEReassigned p = (UTEReassigned) proto;
-        if (p.hasNewUserGroup())
-            newUserGroup = LHSerializable.fromProto(p.getNewUserGroup(), UserGroupModel.class);
-        if (p.hasOldUserGroup())
-            oldUserGroup = LHSerializable.fromProto(p.getOldUserGroup(), UserGroupModel.class);
-        if (p.hasNewUser())
-            newUser = LHSerializable.fromProto(p.getNewUser(), UserModel.class);
-        if (p.hasOldUser())
-            oldUser = LHSerializable.fromProto(p.getOldUser(), UserModel.class);
+        if (p.hasNewUserGroup()) newUserGroup = LHSerializable.fromProto(p.getNewUserGroup(), UserGroupModel.class);
+        if (p.hasOldUserGroup()) oldUserGroup = LHSerializable.fromProto(p.getOldUserGroup(), UserGroupModel.class);
+        if (p.hasNewUser()) newUser = LHSerializable.fromProto(p.getNewUser(), UserModel.class);
+        if (p.hasOldUser()) oldUser = LHSerializable.fromProto(p.getOldUser(), UserModel.class);
     }
 }

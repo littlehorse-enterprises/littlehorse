@@ -2,29 +2,28 @@ package io.littlehorse.common.model.getable.global.externaleventdef;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public class ExternalEventDefModel extends AbstractGetable<ExternalEventDef> {
+public class ExternalEventDefModel extends GlobalGetable<ExternalEventDef> {
 
     public String name;
     public Date createdAt;
     public Integer retentionHours;
 
-    public ExternalEventDefModel() {
-    }
+    public ExternalEventDefModel() {}
 
     public Date getCreatedAt() {
-        if (createdAt == null)
-            createdAt = new Date();
+        if (createdAt == null) createdAt = new Date();
         return createdAt;
     }
 

@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.usertaskrun;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.UserGroup;
@@ -12,8 +11,7 @@ public class UserGroupModel extends LHSerializable<UserGroup> {
 
     private String id;
 
-    public UserGroupModel() {
-    }
+    public UserGroupModel() {}
 
     public UserGroupModel(String id) {
         this.id = id;

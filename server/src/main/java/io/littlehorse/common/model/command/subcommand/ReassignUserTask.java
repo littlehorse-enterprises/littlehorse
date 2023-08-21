@@ -12,17 +12,14 @@ import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.proto.ReassignedUserTaskPb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ReassignUserTask extends SubCommand<ReassignedUserTaskPb> {
 
     private NodeRunIdModel source;
     private String newOwner;
     private ReassignedUserTaskPb.AssignToCase assignToCase;
 
-    public ReassignUserTask() {
-    }
+    public ReassignUserTask() {}
 
     public ReassignUserTask(NodeRunIdModel source, String newOwner, ReassignedUserTaskPb.AssignToCase assignToCase) {
         this.source = source;
@@ -61,8 +58,8 @@ public class ReassignUserTask extends SubCommand<ReassignedUserTaskPb> {
 
     @Override
     public AbstractResponse<?> process(CoreProcessorDAO dao, LHConfig config) {
-        NodeRunModel nodeRunModel = dao.getNodeRun(source);
-        UserTaskRunModel userTaskRun = dao.getUserTaskRun(nodeRunModel.getUserTaskRun().getUserTaskRunId());
+        NodeRunModel nodeRunModel = dao.get(source);
+        UserTaskRunModel userTaskRun = dao.get(nodeRunModel.getUserTaskRun().getUserTaskRunId());
         if (userTaskRun.getStatus() == UserTaskRunStatus.ASSIGNED) {
             userTaskRun.deadlineReassign(newOwner, assignToCase);
         }

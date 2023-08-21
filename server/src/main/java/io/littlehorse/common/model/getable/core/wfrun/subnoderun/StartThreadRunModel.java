@@ -28,8 +28,7 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
 
     public void initFrom(Message p) {
         StartThreadRun proto = (StartThreadRun) p;
-        if (proto.hasChildThreadId())
-            childThreadId = proto.getChildThreadId();
+        if (proto.hasChildThreadId()) childThreadId = proto.getChildThreadId();
         threadSpecName = proto.getThreadSpecName();
     }
 

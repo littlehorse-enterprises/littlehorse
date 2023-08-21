@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.taskrun;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
@@ -19,8 +18,7 @@ public class UserTaskTriggerReferenceModel extends TaskRunSubSource<UserTaskTrig
     private int userTaskEventNumber;
     private WfSpecIdModel wfSpecId;
 
-    public UserTaskTriggerReferenceModel() {
-    }
+    public UserTaskTriggerReferenceModel() {}
 
     public UserTaskTriggerReferenceModel(UserTaskRunModel utr) {
         nodeRunId = utr.getNodeRunId();

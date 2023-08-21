@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.wfrun.failure;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.Failure;
@@ -19,8 +18,7 @@ public class FailureModel extends LHSerializable<Failure> {
     public Failure.Builder toProto() {
         Failure.Builder out = Failure.newBuilder().setMessage(message).setFailureName(failureName);
 
-        if (content != null)
-            out.setContent(content.toProto());
+        if (content != null) out.setContent(content.toProto());
 
         return out;
     }
@@ -41,8 +39,7 @@ public class FailureModel extends LHSerializable<Failure> {
         return out;
     }
 
-    public FailureModel() {
-    }
+    public FailureModel() {}
 
     public FailureModel(String message, String failureName) {
         this.message = message;

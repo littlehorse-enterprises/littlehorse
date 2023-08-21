@@ -1,13 +1,11 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
-
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,7 +35,7 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
     }
 
     public WfSpecModel getWfSpec() {
-        return getWfRun().getWfSpecModel();
+        return getWfRun().getWfSpec();
     }
 
     public WfRunModel getWfRun() {

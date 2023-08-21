@@ -1,16 +1,6 @@
 package io.littlehorse.common.model.getable.core.variable;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
@@ -19,52 +9,63 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
 @Slf4j
 public class VariableModel extends CoreGetable<Variable> {
 
-    public VariableValueModel value;
-    public String wfRunId;
-    public int threadRunNumber;
-    public String name;
-    public String threadSpecName;
-    public Date date;
+    private VariableValueModel value;
+    private String wfRunId;
+    private int threadRunNumber;
+    private String name;
+    private Date date;
+    private WfSpecIdModel wfSpecId;
 
-    private WfSpecModel wfSpecModel;
+    private WfSpecModel wfSpec;
 
-    public VariableModel() {
-    }
+    public VariableModel() {}
 
     public VariableModel(
-            String name, VariableValueModel value, String wfRunId, int threadRunNumber, WfSpecModel wfSpecModel) {
+            String name, VariableValueModel value, String wfRunId, int threadRunNumber, WfSpecModel wfSpec) {
         this.name = name;
         this.value = value;
         this.wfRunId = wfRunId;
-        this.wfSpecModel = wfSpecModel;
+        this.wfSpec = wfSpec;
         this.threadRunNumber = threadRunNumber;
+        this.wfSpecId = wfSpec.getObjectId();
     }
 
     public Class<Variable> getProtoBaseClass() {
         return Variable.class;
     }
 
-    public WfSpecModel getWfSpecModel() {
-        return wfSpecModel;
+    public WfSpecModel getWfSpec() {
+        if (wfSpec == null) {
+            wfSpec = getDao().getWfSpec(wfSpecId.getName(), wfSpecId.getVersion());
+        }
+        return wfSpec;
     }
 
-    public void setWfSpecModel(WfSpecModel spec) {
-        this.wfSpecModel = spec;
+    public void setWfSpec(WfSpecModel spec) {
+        this.wfSpec = spec;
     }
 
     public void initFrom(Message proto) {
@@ -118,11 +119,11 @@ public class VariableModel extends CoreGetable<Variable> {
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         switch (key) {
             case "wfSpecName" -> {
-                return List.of(new IndexedField(key, this.getWfSpecModel().getName(), TagStorageType.LOCAL));
+                return List.of(new IndexedField(key, this.getWfSpec().getName(), TagStorageType.LOCAL));
             }
             case "wfSpecVersion" -> {
                 return List.of(new IndexedField(
-                        key, LHUtil.toLHDbVersionFormat(this.getWfSpecModel().version), TagStorageType.LOCAL));
+                        key, LHUtil.toLHDbVersionFormat(this.getWfSpec().version), TagStorageType.LOCAL));
             }
             case "variable" -> {
                 return getDynamicFields();
@@ -133,7 +134,7 @@ public class VariableModel extends CoreGetable<Variable> {
 
     private Map<String, VariableDefModel> variableDefMap() {
         Map<String, VariableDefModel> out = new HashMap<>();
-        for (ThreadSpecModel tSpec : getWfSpecModel().getThreadSpecs().values()) {
+        for (ThreadSpecModel tSpec : getWfSpec().getThreadSpecs().values()) {
             for (VariableDefModel varDef : tSpec.getVariableDefs()) {
                 out.put(varDef.getName(), varDef);
             }
@@ -169,7 +170,7 @@ public class VariableModel extends CoreGetable<Variable> {
                 return flattenedMap.entrySet().stream()
                         .map(keyValueJson -> {
                             TagStorageType storageTypePb = findStorageTypeFromVariableDef(
-                                    variableDef, keyValueJson.getKey())
+                                            variableDef, keyValueJson.getKey())
                                     .orElse(null);
                             if (storageTypePb == null) {
                                 return null;
@@ -212,7 +213,7 @@ public class VariableModel extends CoreGetable<Variable> {
 
     @Override
     public TagStorageType getTagType() {
-        return getWfSpecModel().getThreadSpecs().values().stream()
+        return getWfSpec().getThreadSpecs().values().stream()
                 .map(threadSpec -> {
                     VariableDefModel currentVariableDef = threadSpec.getVariableDefs().stream()
                             .filter(variableDef -> variableDef.getName().equals(this.getName()))

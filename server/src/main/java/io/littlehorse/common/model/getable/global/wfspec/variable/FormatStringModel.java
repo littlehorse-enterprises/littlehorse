@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.global.wfspec.variable;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.FormatString;

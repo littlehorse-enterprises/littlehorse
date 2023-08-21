@@ -1,8 +1,7 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-
-import io.littlehorse.common.model.getable.ObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
@@ -13,13 +12,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserTaskRunIdModel extends ObjectId<UserTaskRunId, UserTaskRun, UserTaskRunModel> {
+public class UserTaskRunIdModel extends ObjectIdModel<UserTaskRunId, UserTaskRun, UserTaskRunModel> {
 
     private String wfRunId;
     private String userTaskGuid;
 
-    public UserTaskRunIdModel() {
-    }
+    public UserTaskRunIdModel() {}
 
     public UserTaskRunIdModel(String partitionKey, String guid) {
         this.wfRunId = partitionKey;
@@ -45,7 +43,8 @@ public class UserTaskRunIdModel extends ObjectId<UserTaskRunId, UserTaskRun, Use
     }
 
     public UserTaskRunId.Builder toProto() {
-        UserTaskRunId.Builder out = UserTaskRunId.newBuilder().setWfRunId(wfRunId).setUserTaskGuid(userTaskGuid);
+        UserTaskRunId.Builder out =
+                UserTaskRunId.newBuilder().setWfRunId(wfRunId).setUserTaskGuid(userTaskGuid);
         return out;
     }
 

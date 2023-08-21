@@ -242,8 +242,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             }
 
             for (ThreadSpecModel tspec : wfSpecModel.threadSpecs.values()) {
-                if (tspec.name.equals(name))
-                    continue;
+                if (tspec.name.equals(name)) continue;
 
                 if (tspec.getInterruptExternalEventDefs().contains(eedn)) {
                     throw new LHValidationError(
@@ -337,8 +336,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     public VariableDefModel getVarDef(String varName) {
         // This is tricky...
         VariableDefModel out = localGetVarDef(varName);
-        if (out != null)
-            return out;
+        if (out != null) return out;
 
         Pair<String, VariableDefModel> result = wfSpecModel.lookupVarDef(varName);
         if (result != null) {

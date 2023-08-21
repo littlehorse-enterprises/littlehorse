@@ -1,15 +1,14 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-
-import io.littlehorse.common.model.getable.ObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.sdk.common.proto.VariableId;
 
-public class VariableIdModel extends ObjectId<VariableId, Variable, VariableModel> {
+public class VariableIdModel extends ObjectIdModel<VariableId, Variable, VariableModel> {
 
     public String wfRunId;
     public int threadRunNumber;
@@ -19,8 +18,7 @@ public class VariableIdModel extends ObjectId<VariableId, Variable, VariableMode
         return VariableId.class;
     }
 
-    public VariableIdModel() {
-    }
+    public VariableIdModel() {}
 
     public VariableIdModel(String wfRunId, int threadRunNumber, String name) {
         this.wfRunId = wfRunId;

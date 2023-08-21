@@ -78,7 +78,8 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
         ExternalEventNodeModel eNode = node.externalEventNode;
 
         ExternalEventModel evt = nodeRunModel
-                .getThreadRun().wfRunModel
+                .getThreadRun()
+                .wfRunModel
                 .getDao()
                 .getUnclaimedEvent(nodeRunModel.getThreadRun().wfRunId, eNode.externalEventDefName);
         if (evt == null) {
@@ -115,8 +116,8 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
 
         if (getNode().externalEventNode.timeoutSeconds != null) {
             try {
-                VariableValueModel timeoutSeconds = nodeRunModel.getThreadRun()
-                        .assignVariable(getNode().externalEventNode.timeoutSeconds);
+                VariableValueModel timeoutSeconds =
+                        nodeRunModel.getThreadRun().assignVariable(getNode().externalEventNode.timeoutSeconds);
                 if (timeoutSeconds.type != VariableType.INT) {
                     throw new LHVarSubError(
                             null, "Resulting TimeoutSeconds was of type " + timeoutSeconds.type + " not INT!");

@@ -18,8 +18,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
 
     public ExternalEventDefModel externalEventDef;
 
-    public ExternalEventNodeModel() {
-    }
+    public ExternalEventNodeModel() {}
 
     public Class<ExternalEventNode> getProtoBaseClass() {
         return ExternalEventNode.class;
@@ -36,8 +35,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
     public ExternalEventNode.Builder toProto() {
         ExternalEventNode.Builder out = ExternalEventNode.newBuilder().setExternalEventDefName(externalEventDefName);
 
-        if (timeoutSeconds != null)
-            out.setTimeoutSeconds(timeoutSeconds.toProto());
+        if (timeoutSeconds != null) out.setTimeoutSeconds(timeoutSeconds.toProto());
         return out;
     }
 

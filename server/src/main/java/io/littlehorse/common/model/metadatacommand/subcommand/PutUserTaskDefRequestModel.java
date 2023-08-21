@@ -1,11 +1,6 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
@@ -19,6 +14,9 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.UserTaskField;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDefRequest> {
 
@@ -30,14 +28,12 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         fields = new ArrayList<>();
     }
 
-    public Class<io.littlehorse.sdk.common.proto.PutUserTaskDefRequest> getProtoBaseClass() {
-        return io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.class;
+    public Class<PutUserTaskDefRequest> getProtoBaseClass() {
+        return PutUserTaskDefRequest.class;
     }
 
-    public io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.Builder toProto() {
-        io.littlehorse.sdk.common.proto.PutUserTaskDefRequest.Builder out = io.littlehorse.sdk.common.proto.PutUserTaskDefRequest
-                .newBuilder()
-                .setName(name);
+    public PutUserTaskDefRequest.Builder toProto() {
+        PutUserTaskDefRequest.Builder out = PutUserTaskDefRequest.newBuilder().setName(name);
         if (description != null) {
             out.setDescription(description);
         }
@@ -48,10 +44,9 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
     }
 
     public void initFrom(Message proto) {
-        io.littlehorse.sdk.common.proto.PutUserTaskDefRequest p = (io.littlehorse.sdk.common.proto.PutUserTaskDefRequest) proto;
+        PutUserTaskDefRequest p = (PutUserTaskDefRequest) proto;
         name = p.getName();
-        if (p.hasDescription())
-            description = p.getDescription();
+        if (p.hasDescription()) description = p.getDescription();
         for (UserTaskField utfpb : p.getFieldsList()) {
             fields.add(LHSerializable.fromProto(utfpb, UserTaskFieldModel.class));
         }
@@ -91,7 +86,7 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
             spec.validate(dao, config);
             out.code = LHResponseCode.OK;
             out.result = spec;
-            dao.putUserTaskDef(spec);
+            dao.put(spec);
         } catch (LHValidationError exn) {
             out.code = LHResponseCode.VALIDATION_ERROR;
             out.message = "Invalid UserTaskDef: " + exn.getMessage();

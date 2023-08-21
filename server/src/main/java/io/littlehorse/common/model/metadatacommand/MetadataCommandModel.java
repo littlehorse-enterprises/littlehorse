@@ -1,9 +1,6 @@
 package io.littlehorse.common.model.metadatacommand;
 
-import java.util.Date;
-
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
@@ -20,6 +17,7 @@ import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase;
 import io.littlehorse.common.util.LHUtil;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -117,12 +115,12 @@ public abstract class MetadataCommandModel extends LHSerializable<Command> {
                 deleteWfSpec = DeleteWfSpecRequestModel.fromProto(p.getDeleteWfSpec());
                 break;
             case PUT_USER_TASK_DEF:
-                putUserTaskDefRequest = LHSerializable.fromProto(p.getPutUserTaskDef(),
-                        PutUserTaskDefRequestModel.class);
+                putUserTaskDefRequest =
+                        LHSerializable.fromProto(p.getPutUserTaskDef(), PutUserTaskDefRequestModel.class);
                 break;
             case DELETE_USER_TASK_DEF:
-                deleteUserTaskDef = LHSerializable.fromProto(p.getDeleteUserTaskDef(),
-                        DeleteUserTaskDefRequestModel.class);
+                deleteUserTaskDef =
+                        LHSerializable.fromProto(p.getDeleteUserTaskDef(), DeleteUserTaskDefRequestModel.class);
                 break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");

@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.global.wfspec.node;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.sdk.common.proto.Edge;

@@ -3,7 +3,6 @@ package io.littlehorse.common.model.getable.core.variable;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import com.jayway.jsonpath.JsonPath;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.util.LHUtil;
@@ -122,20 +121,16 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 }
                 break;
             case DOUBLE:
-                if (doubleVal != null)
-                    out.setDouble(doubleVal);
+                if (doubleVal != null) out.setDouble(doubleVal);
                 break;
             case BOOL:
-                if (boolVal != null)
-                    out.setBool(boolVal);
+                if (boolVal != null) out.setBool(boolVal);
                 break;
             case STR:
-                if (strVal != null)
-                    out.setStr(strVal);
+                if (strVal != null) out.setStr(strVal);
                 break;
             case INT:
-                if (intVal != null)
-                    out.setInt(intVal);
+                if (intVal != null) out.setInt(intVal);
                 break;
             case BYTES:
                 if (bytesVal != null) {
@@ -168,8 +163,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         }
 
         if (operation == VariableMutationType.ASSIGN) {
-            if (type == VariableType.NULL)
-                return rhs.coerceToType(typeToCoerceTo);
+            if (type == VariableType.NULL) return rhs.coerceToType(typeToCoerceTo);
 
             return rhs.coerceToType(type);
         } else if (operation == VariableMutationType.ADD) {
@@ -287,11 +281,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         } else if (type == VariableType.BYTES) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try {
-                if (bytesVal != null)
-                    baos.write(bytesVal);
+                if (bytesVal != null) baos.write(bytesVal);
                 rhs = rhs.asBytes();
-                if (rhs.bytesVal != null)
-                    baos.write(rhs.bytesVal);
+                if (rhs.bytesVal != null) baos.write(rhs.bytesVal);
             } catch (IOException exn) {
                 throw new LHVarSubError(exn, "Failed concatenating bytes");
             }

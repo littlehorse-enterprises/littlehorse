@@ -15,13 +15,12 @@ public class LHProducer implements Closeable {
     private KafkaProducer<String, Bytes> prod;
     private LHConfig config;
 
-    public LHProducer(LHConfig config) {
+    public LHProducer() {
         prod = new KafkaProducer<>(config.getKafkaProducerConfig(config.getLHInstanceId()));
-        this.config = config;
     }
 
     public Future<RecordMetadata> send(String key, CommandModel t, String topic, Callback cb) {
-        return sendRecord(new ProducerRecord<>(topic, key, new Bytes(t.toBytes(config))), cb);
+        return sendRecord(new ProducerRecord<>(topic, key, new Bytes(t.toBytes())), cb);
     }
 
     public Future<RecordMetadata> send(String key, CommandModel t, String topic) {
@@ -33,7 +32,7 @@ public class LHProducer implements Closeable {
     }
 
     public Future<RecordMetadata> sendToPartition(String key, CommandModel val, String topic, int partition) {
-        Bytes valBytes = val == null ? null : new Bytes(val.toBytes(config));
+        Bytes valBytes = val == null ? null : new Bytes(val.toBytes());
         return sendRecord(new ProducerRecord<>(topic, partition, key, valBytes), null);
     }
 

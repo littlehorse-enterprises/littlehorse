@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.UserTaskEvent;
@@ -20,8 +19,7 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
     private UTEReassignedModel reassigned;
     private UTECancelledModel cancelled;
 
-    public UserTaskEventModel() {
-    }
+    public UserTaskEventModel() {}
 
     public UserTaskEventModel(UTETaskExecutedModel executed, Date time) {
         this.executed = executed;

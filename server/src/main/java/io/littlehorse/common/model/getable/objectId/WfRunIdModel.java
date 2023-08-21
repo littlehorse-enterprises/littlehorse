@@ -1,19 +1,19 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-
-import io.littlehorse.common.model.getable.ObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import lombok.Getter;
 
-public class WfRunIdModel extends ObjectId<WfRunId, WfRun, WfRunModel> {
+@Getter
+public class WfRunIdModel extends ObjectIdModel<WfRunId, WfRun, WfRunModel> {
 
-    public String id;
+    private String id;
 
-    public WfRunIdModel() {
-    }
+    public WfRunIdModel() {}
 
     public WfRunIdModel(String id) {
         this.id = id;

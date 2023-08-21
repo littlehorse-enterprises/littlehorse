@@ -42,7 +42,7 @@ public class ReportTaskRunModel extends SubCommand<ReportTaskRun> {
     public ReportTaskReply process(CoreProcessorDAO dao, LHConfig config) {
         ReportTaskReply out = new ReportTaskReply();
 
-        TaskRunModel task = dao.getTaskRun(taskRunId);
+        TaskRunModel task = dao.get(taskRunId);
         if (task == null) {
             out.setCode(LHResponseCode.BAD_REQUEST_ERROR);
             out.setMessage("Could not find specified taskrun. Bad client!");
@@ -59,10 +59,8 @@ public class ReportTaskRunModel extends SubCommand<ReportTaskRun> {
                 .setStatus(status)
                 .setAttemptNumber(attemptNumber);
 
-        if (stdout != null)
-            b.setOutput(stdout.toProto());
-        if (stderr != null)
-            b.setLogOutput(stderr.toProto());
+        if (stdout != null) b.setOutput(stdout.toProto());
+        if (stderr != null) b.setLogOutput(stderr.toProto());
 
         return b;
     }

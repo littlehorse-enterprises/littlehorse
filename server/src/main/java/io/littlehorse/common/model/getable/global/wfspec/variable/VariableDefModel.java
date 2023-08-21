@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.global.wfspec.variable;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -40,8 +39,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
             jsonIndices.add(LHSerializable.fromProto(idx, JsonIndexModel.class));
         }
 
-        if (p.hasIndexType())
-            indexType = p.getIndexType();
+        if (p.hasIndexType()) indexType = p.getIndexType();
 
         if (p.hasDefaultValue()) {
             defaultValue = VariableValueModel.fromProto(p.getDefaultValue());
@@ -51,10 +49,8 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     public VariableDef.Builder toProto() {
         VariableDef.Builder out = VariableDef.newBuilder().setType(type).setName(name);
 
-        if (defaultValue != null)
-            out.setDefaultValue(defaultValue.toProto());
-        if (indexType != null)
-            out.setIndexType(indexType);
+        if (defaultValue != null) out.setDefaultValue(defaultValue.toProto());
+        if (indexType != null) out.setIndexType(indexType);
 
         for (JsonIndexModel idx : jsonIndices) {
             out.addJsonIndexes(idx.toProto());
@@ -70,8 +66,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     }
 
     public TagStorageType getTagStorageType() {
-        if (indexType == null)
-            return null;
+        if (indexType == null) return null;
 
         return indexType == IndexType.LOCAL_INDEX ? TagStorageType.LOCAL : TagStorageType.REMOTE;
     }

@@ -21,8 +21,7 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
     private NodeRunIdModel nodeRunId;
     private WfSpecIdModel wfSpecId;
 
-    public TaskNodeReferenceModel() {
-    }
+    public TaskNodeReferenceModel() {}
 
     public TaskNodeReferenceModel(NodeRunIdModel nodeRunId, WfSpecIdModel wfSpecId) {
         this.nodeRunId = nodeRunId;
@@ -34,8 +33,8 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
     }
 
     public TaskNodeReference.Builder toProto() {
-        TaskNodeReference.Builder out = TaskNodeReference.newBuilder().setWfSpecId(wfSpecId.toProto())
-                .setNodeRunId(nodeRunId.toProto());
+        TaskNodeReference.Builder out =
+                TaskNodeReference.newBuilder().setWfSpecId(wfSpecId.toProto()).setNodeRunId(nodeRunId.toProto());
 
         return out;
     }
@@ -47,12 +46,12 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
     }
 
     public void onCompleted(TaskAttemptModel successfulAttept, CoreProcessorDAO dao) {
-        NodeRunModel nodeRunModel = dao.getNodeRun(nodeRunId);
+        NodeRunModel nodeRunModel = dao.get(nodeRunId);
         nodeRunModel.complete(successfulAttept.getOutput(), successfulAttept.getEndTime());
     }
 
     public void onFailed(TaskAttemptModel lastFailure, CoreProcessorDAO dao) {
-        NodeRunModel nodeRunModel = dao.getNodeRun(nodeRunId);
+        NodeRunModel nodeRunModel = dao.get(nodeRunId);
 
         String message = getMessageFor(lastFailure.getStatus());
         VariableValueModel stderr = lastFailure.getLogOutput();
@@ -76,6 +75,7 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
             case TASK_RUNNING:
             case TASK_SCHEDULED:
             case TASK_SUCCESS:
+            case TASK_CANCELLED: // TODO: WTF? This is supposed to be for user task.
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unexpected task status: " + status);

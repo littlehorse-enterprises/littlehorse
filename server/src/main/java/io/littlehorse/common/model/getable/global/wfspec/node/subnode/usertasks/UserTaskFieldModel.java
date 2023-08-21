@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.UserTaskField;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -29,8 +28,7 @@ public class UserTaskFieldModel extends LHSerializable<UserTaskField> {
         displayName = p.getDisplayName();
         required = p.getRequired();
 
-        if (p.hasDescription())
-            description = p.getDescription();
+        if (p.hasDescription()) description = p.getDescription();
     }
 
     public UserTaskField.Builder toProto() {
@@ -40,8 +38,7 @@ public class UserTaskFieldModel extends LHSerializable<UserTaskField> {
                 .setRequired(required)
                 .setDisplayName(displayName);
 
-        if (description != null)
-            out.setDescription(description);
+        if (description != null) out.setDescription(description);
         return out;
     }
 }

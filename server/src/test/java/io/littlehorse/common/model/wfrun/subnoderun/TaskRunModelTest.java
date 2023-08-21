@@ -8,7 +8,6 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
-
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 

@@ -5,15 +5,15 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
+import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
+import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
+import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
-import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
-import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
-import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
-import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
-import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
-import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
+import io.littlehorse.server.streams.store.LHIterKeyValue;
+import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
+import io.littlehorse.server.streams.storeinternals.LHStoreWrapper;
+import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -37,7 +37,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class UserTaskRunModelStorageManagerTest {
 
     private final KeyValueStore<String, Bytes> store = Stores.keyValueStoreBuilder(
-            Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
+                    Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
 

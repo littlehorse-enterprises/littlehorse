@@ -25,7 +25,8 @@ public class FailureDefModel extends LHSerializable<FailureDef> {
     }
 
     public FailureDef.Builder toProto() {
-        FailureDef.Builder out = FailureDef.newBuilder().setFailureName(failureName).setMessage(message);
+        FailureDef.Builder out =
+                FailureDef.newBuilder().setFailureName(failureName).setMessage(message);
 
         if (content != null) {
             out.setContent(content.toProto());

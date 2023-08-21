@@ -1,14 +1,6 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
@@ -39,6 +31,8 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssign
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableMutationModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
@@ -47,6 +41,12 @@ import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -102,8 +102,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         if (proto.hasErrorMessage()) {
             errorMessage = proto.getErrorMessage();
         }
-        if (proto.hasParentThreadId())
-            parentThreadId = proto.getParentThreadId();
+        if (proto.hasParentThreadId()) parentThreadId = proto.getParentThreadId();
         for (Integer childId : proto.getChildThreadIdsList()) {
             childThreadIds.add(childId);
         }
@@ -389,8 +388,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
 
     public boolean canBeInterrupted() {
-        if (getCurrentNodeRun().canBeInterrupted())
-            return true;
+        if (getCurrentNodeRun().canBeInterrupted()) return true;
 
         for (int childId : childThreadIds) {
             if (wfRunModel.threadRunModels.get(childId).isRunning()) {
@@ -621,7 +619,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         cnr.threadSpecName = threadSpecName;
 
         cnr.arrivalTime = arrivalTime;
-        cnr.wfSpecId = wfRunModel.getWfSpecModel().getObjectId();
+        cnr.wfSpecId = wfRunModel.getWfSpec().getObjectId();
 
         cnr.setSubNodeRun(node.getSubNode().createSubNodeRun(arrivalTime));
 
@@ -664,8 +662,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     public ThreadRunModel getParent() {
-        if (parentThreadId == null)
-            return null;
+        if (parentThreadId == null) return null;
         return wfRunModel.threadRunModels.get(parentThreadId);
     }
 
@@ -745,7 +742,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 if (txnCache.containsKey(assn.getVariableName())) {
                     val = txnCache.get(assn.getVariableName());
                 } else {
-                    val = getVariable(assn.getVariableName()).value;
+                    val = getVariable(assn.getVariableName()).getValue();
                 }
 
                 if (val == null) {
@@ -755,7 +752,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 break;
             case FORMAT_STRING:
                 // first, assign the format string
-                VariableValueModel formatStringVarVal = assignVariable(assn.getFormatString().getFormat(), txnCache);
+                VariableValueModel formatStringVarVal =
+                        assignVariable(assn.getFormatString().getFormat(), txnCache);
                 if (formatStringVarVal.getType() != VariableType.STR) {
                     throw new LHVarSubError(
                             null, "Format String template isn't a STR; it's a " + formatStringVarVal.getType());
@@ -783,8 +781,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         // TODO: Refactor this line
-        if (val == null)
-            throw new RuntimeException("Not possible");
+        if (val == null) throw new RuntimeException("Not possible");
 
         if (assn.getJsonPath() != null) {
             val = val.jsonPath(assn.getJsonPath());
@@ -793,12 +790,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return val;
     }
 
-    public void putNodeRun(NodeRunModel task) {
-        wfRunModel.getDao().putNodeRun(task);
+    public void putNodeRun(NodeRunModel nr) {
+        wfRunModel.getDao().put(nr);
     }
 
     public NodeRunModel getNodeRun(int position) {
-        NodeRunModel out = wfRunModel.getDao().getNodeRun(wfRunModel.id, number, position);
+        NodeRunModel out = wfRunModel.getDao().get(new NodeRunIdModel(wfRunModel.id, number, position));
         if (out != null) {
             out.setThreadRun(this);
         }
@@ -843,8 +840,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
     public void createVariable(String varName, VariableValueModel var) throws LHVarSubError {
         VariableMutator createVariable = (wfRunId, threadRunNumber, wfRun) -> {
-            VariableModel variable = new VariableModel(varName, var, wfRunId, threadRunNumber, wfRun.getWfSpecModel());
-            wfRun.getDao().putVariable(variable);
+            VariableModel variable = new VariableModel(varName, var, wfRunId, threadRunNumber, wfRun.getWfSpec());
+            wfRun.getDao().put(variable);
         };
         applyVarMutationOnAppropriateThread(varName, createVariable);
     }
@@ -862,9 +859,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
     public void mutateVariable(String varName, VariableValueModel var) throws LHVarSubError {
         VariableMutator mutateVariable = (wfRunId, threadRunNumber, wfRun) -> {
-            VariableModel variable = wfRun.getDao().getVariable(wfRunId, varName, threadRunNumber);
+            VariableModel variable = wfRun.getDao().get(new VariableIdModel(wfRunId, threadRunNumber, varName));
             variable.setValue(var);
-            wfRun.getDao().putVariable(variable);
+            wfRun.getDao().put(variable);
         };
         applyVarMutationOnAppropriateThread(varName, mutateVariable);
     }
@@ -872,7 +869,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public VariableModel getVariable(String varName) {
         // For now, just do the local one
         // Once we have threads, this will do a backtrack up the thread tree.
-        VariableModel out = wfRunModel.getDao().getVariable(wfRunId, varName, this.number);
+        VariableModel out = wfRunModel.getDao().get(new VariableIdModel(wfRunId, this.number, varName));
         if (out != null) {
             return out;
         }

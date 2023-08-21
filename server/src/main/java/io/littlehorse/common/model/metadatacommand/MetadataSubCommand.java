@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.metadatacommand;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.MetadataProcessorDAO;

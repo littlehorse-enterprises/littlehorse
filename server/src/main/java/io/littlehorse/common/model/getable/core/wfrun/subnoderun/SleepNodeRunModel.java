@@ -19,8 +19,7 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
 
     public Date maturationTime;
 
-    public SleepNodeRunModel() {
-    }
+    public SleepNodeRunModel() {}
 
     public Class<SleepNodeRun> getProtoBaseClass() {
         return SleepNodeRun.class;

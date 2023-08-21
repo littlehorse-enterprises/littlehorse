@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.getable.ObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.TaskDef;
@@ -12,12 +12,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TaskDefIdModel extends ObjectId<TaskDefId, TaskDef, TaskDefModel> {
+public class TaskDefIdModel extends ObjectIdModel<TaskDefId, TaskDef, TaskDefModel> {
 
     public String name;
 
-    public TaskDefIdModel() {
-    }
+    public TaskDefIdModel() {}
 
     public TaskDefIdModel(String name) {
         this.name = name;

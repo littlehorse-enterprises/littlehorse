@@ -39,9 +39,9 @@ public class DeleteExternalEventRequestModel extends SubCommand<DeleteExternalEv
 
     public DeleteObjectReply process(CoreProcessorDAO dao, LHConfig config) {
         ExternalEventIdModel eventId = new ExternalEventIdModel(wfRunId, externalEventDefName, guid);
-        ExternalEventModel externalEvent = dao.getExternalEvent(eventId.getStoreKey());
+        ExternalEventModel externalEvent = dao.get(eventId);
         if (!externalEvent.claimed) {
-            return dao.deleteExternalEvent(eventId.getStoreKey());
+            return dao.delete(eventId);
         } else {
             DeleteObjectReply response = new DeleteObjectReply();
             response.code = LHResponseCode.VALIDATION_ERROR;

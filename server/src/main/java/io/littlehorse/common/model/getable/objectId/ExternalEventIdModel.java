@@ -1,22 +1,20 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-
-import io.littlehorse.common.model.getable.ObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
 
-public class ExternalEventIdModel extends ObjectId<ExternalEventId, ExternalEvent, ExternalEventModel> {
+public class ExternalEventIdModel extends ObjectIdModel<ExternalEventId, ExternalEvent, ExternalEventModel> {
 
     public String wfRunId;
     public String externalEventDefName;
     public String guid;
 
-    public ExternalEventIdModel() {
-    }
+    public ExternalEventIdModel() {}
 
     public ExternalEventIdModel(String wfRunId, String externalEventDefName, String guid) {
         this.wfRunId = wfRunId;

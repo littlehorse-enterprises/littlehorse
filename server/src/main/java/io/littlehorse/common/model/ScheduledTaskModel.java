@@ -1,7 +1,6 @@
 package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunSourceModel;
@@ -11,6 +10,7 @@ import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskTriggerContextModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
@@ -57,23 +57,25 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         this.taskRunId = new TaskRunIdModel(userTaskRun.getNodeRun().getPartitionKey());
     }
 
-    public String getPartitionKey() {
-        return taskRunId.getPartitionKey();
-    }
+    // public String getPartitionKey() {
+    // return taskRunId.getPartitionKey();
+    // }
 
+    @Override
     public String getStoreKey() {
         // Note: only one ScheduledTask can be active at once for a
         // TaskRun, so we don't need to worry about the attemptNumber.
         return taskRunId.getStoreKey();
     }
 
-    public Date getCreatedAt() {
-        if (createdAt == null) {
-            createdAt = new Date();
-        }
-        return createdAt;
-    }
+    // public Date getCreatedAt() {
+    // if (createdAt == null) {
+    // createdAt = new Date();
+    // }
+    // return createdAt;
+    // }
 
+    @Override
     public ScheduledTask.Builder toProto() {
         ScheduledTask.Builder out = ScheduledTask.newBuilder()
                 .setTaskRunId(taskRunId.toProto())
@@ -88,6 +90,7 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         return out;
     }
 
+    @Override
     public Class<ScheduledTask> getProtoBaseClass() {
         return ScheduledTask.class;
     }
@@ -98,6 +101,7 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         return out;
     }
 
+    @Override
     public void initFrom(Message proto) {
         ScheduledTask p = (ScheduledTask) proto;
         taskRunId = LHSerializable.fromProto(p.getTaskRunId(), TaskRunIdModel.class);
@@ -113,5 +117,10 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
             this.createdAt = new Date();
         }
         this.source = LHSerializable.fromProto(p.getSource(), TaskRunSourceModel.class);
+    }
+
+    @Override
+    public StoreableType getType() {
+        return StoreableType.SCHEDULED_TASK;
     }
 }

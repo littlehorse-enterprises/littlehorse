@@ -29,19 +29,17 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         return LHConstants.META_PARTITION_KEY;
     }
 
-    public Class<io.littlehorse.sdk.common.proto.PutWfSpecRequest> getProtoBaseClass() {
-        return io.littlehorse.sdk.common.proto.PutWfSpecRequest.class;
+    public Class<PutWfSpecRequest> getProtoBaseClass() {
+        return PutWfSpecRequest.class;
     }
 
     public PutWfSpecRequestModel() {
         threadSpecs = new HashMap<>();
     }
 
-    public io.littlehorse.sdk.common.proto.PutWfSpecRequest.Builder toProto() {
-        io.littlehorse.sdk.common.proto.PutWfSpecRequest.Builder out = io.littlehorse.sdk.common.proto.PutWfSpecRequest
-                .newBuilder()
-                .setName(name)
-                .setEntrypointThreadName(entrypointThreadName);
+    public PutWfSpecRequest.Builder toProto() {
+        PutWfSpecRequest.Builder out =
+                PutWfSpecRequest.newBuilder().setName(name).setEntrypointThreadName(entrypointThreadName);
         if (retentionHours != null) {
             out.setRetentionHours(retentionHours);
         }
@@ -53,11 +51,10 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
     }
 
     public void initFrom(Message proto) {
-        io.littlehorse.sdk.common.proto.PutWfSpecRequest p = (io.littlehorse.sdk.common.proto.PutWfSpecRequest) proto;
+        PutWfSpecRequest p = (PutWfSpecRequest) proto;
         name = p.getName();
         entrypointThreadName = p.getEntrypointThreadName();
-        if (p.hasRetentionHours())
-            retentionHours = p.getRetentionHours();
+        if (p.hasRetentionHours()) retentionHours = p.getRetentionHours();
         for (Map.Entry<String, ThreadSpec> e : p.getThreadSpecsMap().entrySet()) {
             threadSpecs.put(e.getKey(), ThreadSpecModel.fromProto(e.getValue()));
         }
@@ -99,7 +96,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
             spec.validate(dao, config);
             out.code = LHResponseCode.OK;
             out.result = spec;
-            dao.putWfSpec(spec);
+            dao.put(spec);
         } catch (LHValidationError exn) {
             out.code = LHResponseCode.VALIDATION_ERROR;
             out.message = "Invalid wfSpec: " + exn.getMessage();
@@ -108,7 +105,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         return out;
     }
 
-    public static PutWfSpecRequestModel fromProto(io.littlehorse.sdk.common.proto.PutWfSpecRequest p) {
+    public static PutWfSpecRequestModel fromProto(PutWfSpecRequest p) {
         PutWfSpecRequestModel out = new PutWfSpecRequestModel();
         out.initFrom(p);
         return out;

@@ -1,10 +1,9 @@
 package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
-import io.littlehorse.common.model.getable.ObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -33,9 +32,9 @@ import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetr
 import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
+import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.storeinternals.index.Tag;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -125,7 +124,7 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");
     }
 
-    public static Class<? extends ObjectId<?, ?, ?>> getIdCls(GetableClassEnum type) {
+    public static Class<? extends ObjectIdModel<?, ?, ?>> getIdCls(GetableClassEnum type) {
         switch (type) {
             case WF_RUN:
                 return WfRunIdModel.class;
@@ -160,7 +159,7 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
 
     public abstract List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations();
 
-    public abstract ObjectId<?, T, ?> getObjectId();
+    public abstract ObjectIdModel<?, T, ?> getObjectId();
 
     public String getStoreKey() {
         return getObjectId().getStoreKey();
@@ -188,8 +187,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                     .filter(stringValueTypePair -> {
                         return stringValueTypePair.getValue().equals(GetableIndex.ValueType.DYNAMIC);
                     })
-                    .flatMap(stringValueTypePair -> this.getIndexValues(stringValueTypePair.getKey(), tagStorageType)
-                            .stream())
+                    .flatMap(stringValueTypePair ->
+                            this.getIndexValues(stringValueTypePair.getKey(), tagStorageType).stream())
                     .toList();
             List<List<IndexedField>> combine = combine(singleIndexedValues, dynamicIndexedFields);
             for (List<IndexedField> list : combine) {

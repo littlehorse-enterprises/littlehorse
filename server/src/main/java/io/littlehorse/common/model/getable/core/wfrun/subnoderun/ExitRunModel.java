@@ -22,8 +22,7 @@ public class ExitRunModel extends SubNodeRun<ExitRun> {
         return ExitRun.class;
     }
 
-    public void initFrom(Message p) {
-    }
+    public void initFrom(Message p) {}
 
     public ExitRun.Builder toProto() {
         return ExitRun.newBuilder();

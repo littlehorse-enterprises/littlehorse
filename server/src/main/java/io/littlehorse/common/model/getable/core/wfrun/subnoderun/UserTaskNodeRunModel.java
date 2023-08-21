@@ -21,8 +21,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
 
     private UserTaskRunIdModel userTaskRunId;
 
-    public UserTaskNodeRunModel() {
-    }
+    public UserTaskNodeRunModel() {}
 
     @Override
     public Class<UserTaskNodeRun> getProtoBaseClass() {
@@ -41,8 +40,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     public UserTaskNodeRun.Builder toProto() {
         UserTaskNodeRun.Builder out = UserTaskNodeRun.newBuilder();
 
-        if (userTaskRunId != null)
-            out.setUserTaskRunId(userTaskRunId.toProto());
+        if (userTaskRunId != null) out.setUserTaskRunId(userTaskRunId.toProto());
 
         return out;
     }
@@ -74,6 +72,6 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
 
         userTaskRunId = out.getObjectId();
         out.onArrival(time);
-        getDao().putUserTaskRun(out);
+        getDao().put(out);
     }
 }

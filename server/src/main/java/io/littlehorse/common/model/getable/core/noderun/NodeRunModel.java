@@ -1,9 +1,9 @@
 package io.littlehorse.common.model.getable.core.noderun;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
@@ -27,8 +27,8 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -43,7 +43,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Getter
 @Setter
 @Slf4j
-public class NodeRunModel extends AbstractGetable<NodeRun> {
+public class NodeRunModel extends CoreGetable<NodeRun> {
 
     public String wfRunId;
     public int threadRunNumber;
@@ -104,8 +104,7 @@ public class NodeRunModel extends AbstractGetable<NodeRun> {
     }
 
     public FailureModel getLatestFailure() {
-        if (failures.size() == 0)
-            return null;
+        if (failures.size() == 0) return null;
         return failures.get(failures.size() - 1);
     }
 
@@ -160,8 +159,7 @@ public class NodeRunModel extends AbstractGetable<NodeRun> {
         nodeName = proto.getNodeName();
         status = proto.getStatus();
 
-        if (proto.hasErrorMessage())
-            errorMessage = proto.getErrorMessage();
+        if (proto.hasErrorMessage()) errorMessage = proto.getErrorMessage();
 
         type = proto.getNodeTypeCase();
         switch (type) {
@@ -270,11 +268,9 @@ public class NodeRunModel extends AbstractGetable<NodeRun> {
                 .setThreadSpecName(threadSpecName)
                 .setNodeName(nodeName);
 
-        if (endTime != null)
-            out.setEndTime(LHUtil.fromDate(endTime));
+        if (endTime != null) out.setEndTime(LHUtil.fromDate(endTime));
 
-        if (errorMessage != null)
-            out.setErrorMessage(errorMessage);
+        if (errorMessage != null) out.setErrorMessage(errorMessage);
 
         switch (type) {
             case TASK:
@@ -330,7 +326,8 @@ public class NodeRunModel extends AbstractGetable<NodeRun> {
                     return false;
                 }
                 for (int handlerId : failureHandlerIds) {
-                    ThreadRunModel handler = getThreadRun().wfRunModel.threadRunModels.get(handlerId);
+                    ThreadRunModel handler =
+                            getThreadRun().wfRunModel.threadRunModels.get(handlerId);
                     if (handler.status != LHStatus.COMPLETED) {
                         return false;
                     }

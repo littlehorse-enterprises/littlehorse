@@ -2,7 +2,6 @@ package io.littlehorse.common.model.getable.core.taskworkergroup;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.util.Timestamps;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.HostInfo;

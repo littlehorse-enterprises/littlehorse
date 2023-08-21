@@ -40,10 +40,8 @@ public class RunWfRequestModel extends SubCommand<RunWfRequest> {
 
     public RunWfRequest.Builder toProto() {
         RunWfRequest.Builder out = RunWfRequest.newBuilder().setWfSpecName(wfSpecName);
-        if (id != null)
-            out.setId(id);
-        if (wfSpecVersion != null)
-            out.setWfSpecVersion(wfSpecVersion);
+        if (id != null) out.setId(id);
+        if (wfSpecVersion != null) out.setWfSpecVersion(wfSpecVersion);
 
         for (Map.Entry<String, VariableValueModel> e : variables.entrySet()) {
             out.putVariables(e.getKey(), e.getValue().toProto().build());
@@ -54,10 +52,8 @@ public class RunWfRequestModel extends SubCommand<RunWfRequest> {
     public void initFrom(Message proto) {
         RunWfRequest p = (RunWfRequest) proto;
         wfSpecName = p.getWfSpecName();
-        if (p.hasId())
-            id = p.getId();
-        if (p.hasWfSpecVersion())
-            wfSpecVersion = p.getWfSpecVersion();
+        if (p.hasId()) id = p.getId();
+        if (p.hasWfSpecVersion()) wfSpecVersion = p.getWfSpecVersion();
 
         for (Map.Entry<String, VariableValue> e : p.getVariablesMap().entrySet()) {
             variables.put(e.getKey(), VariableValueModel.fromProto(e.getValue()));
@@ -79,8 +75,7 @@ public class RunWfRequestModel extends SubCommand<RunWfRequest> {
         }
         out.wfSpecVersion = spec.version;
 
-        if (id == null)
-            id = LHUtil.generateGuid();
+        if (id == null) id = LHUtil.generateGuid();
         out.wfRunId = id;
 
         WfRunModel oldWfRunModel = dao.getWfRun(id);

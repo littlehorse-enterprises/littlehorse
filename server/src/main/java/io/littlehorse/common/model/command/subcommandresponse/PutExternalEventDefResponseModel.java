@@ -16,19 +16,15 @@ public class PutExternalEventDefResponseModel extends AbstractResponse<PutExtern
     public PutExternalEventDefResponse.Builder toProto() {
         PutExternalEventDefResponse.Builder out = PutExternalEventDefResponse.newBuilder();
         out.setCode(code);
-        if (message != null)
-            out.setMessage(message);
-        if (result != null)
-            out.setResult(result.toProto());
+        if (message != null) out.setMessage(message);
+        if (result != null) out.setResult(result.toProto());
         return out;
     }
 
     public void initFrom(Message proto) {
         PutExternalEventDefResponse p = (PutExternalEventDefResponse) proto;
         code = p.getCode();
-        if (p.hasMessage())
-            message = p.getMessage();
-        if (p.hasResult())
-            result = ExternalEventDefModel.fromProto(p.getResult());
+        if (p.hasMessage()) message = p.getMessage();
+        if (p.hasResult()) result = ExternalEventDefModel.fromProto(p.getResult());
     }
 }

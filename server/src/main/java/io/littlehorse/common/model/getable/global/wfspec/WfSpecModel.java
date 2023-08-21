@@ -6,6 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.command.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -19,8 +20,8 @@ import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
-public class WfSpecModel extends AbstractGetable<WfSpec> {
+public class WfSpecModel extends GlobalGetable<WfSpec> {
 
     public String name;
     public int version;
@@ -166,11 +167,9 @@ public class WfSpecModel extends AbstractGetable<WfSpec> {
             initializeVarToThreadSpec();
         }
         String tspecName = varToThreadSpec.get(name);
-        if (tspecName == null)
-            return null;
+        if (tspecName == null) return null;
         VariableDefModel out = threadSpecs.get(tspecName).localGetVarDef(name);
-        if (out == null)
-            return null;
+        if (out == null) return null;
         return Pair.of(tspecName, out);
     }
 
@@ -268,7 +267,7 @@ public class WfSpecModel extends AbstractGetable<WfSpec> {
 
         out.startThread(entrypointThreadName, getDao().getEventTime(), null, evt.variables, ThreadType.ENTRYPOINT);
 
-        getDao().saveWfRun(out);
+        getDao().put(out);
 
         return out;
     }

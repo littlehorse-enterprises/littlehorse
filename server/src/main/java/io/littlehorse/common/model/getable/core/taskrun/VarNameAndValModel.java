@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.taskrun;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
@@ -11,8 +10,7 @@ public class VarNameAndValModel extends LHSerializable<VarNameAndVal> {
     String varName;
     VariableValueModel value;
 
-    public VarNameAndValModel() {
-    }
+    public VarNameAndValModel() {}
 
     public VarNameAndValModel(String name, VariableValueModel val) {
         this.varName = name;

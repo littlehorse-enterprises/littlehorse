@@ -433,31 +433,34 @@ public final class InternalServer {
       "\0132\037.littlehorse.StandByTaskStatePb*7\n\022St" +
       "oreQueryStatusPb\022\n\n\006RSQ_OK\020\000\022\025\n\021RSQ_NOT_" +
       "AVAILABLE\020\002*-\n\020ScanResultTypePb\022\r\n\tOBJEC" +
-      "T_ID\020\000\022\n\n\006OBJECT\020\001*\367\001\n\020GetableClassEnum\022" +
-      "\014\n\010TASK_DEF\020\000\022\026\n\022EXTERNAL_EVENT_DEF\020\001\022\013\n" +
-      "\007WF_SPEC\020\002\022\n\n\006WF_RUN\020\003\022\014\n\010NODE_RUN\020\004\022\014\n\010" +
-      "VARIABLE\020\005\022\022\n\016EXTERNAL_EVENT\020\006\022\024\n\020TASK_D" +
-      "EF_METRICS\020\007\022\023\n\017WF_SPEC_METRICS\020\010\022\025\n\021TAS" +
-      "K_WORKER_GROUP\020\t\022\021\n\rUSER_TASK_DEF\020\n\022\014\n\010T" +
-      "ASK_RUN\020\013\022\021\n\rUSER_TASK_RUN\020\014*\'\n\016TagStora" +
-      "geType\022\t\n\005LOCAL\020\000\022\n\n\006REMOTE\020\001*,\n\016ServerS" +
-      "tatusPb\022\013\n\007HOST_UP\020\000\022\r\n\tHOST_DOWN\020\0012\306\004\n\013" +
-      "LHInternals\022_\n\021CentralStoreQuery\022 .littl" +
-      "ehorse.CentralStoreQueryPb\032&.littlehorse" +
-      ".CentralStoreQueryResponse\"\000\022P\n\014Internal" +
-      "Scan\022\033.littlehorse.InternalScanPb\032!.litt" +
-      "lehorse.InternalScanResponse\"\000\022V\n\016waitFo" +
-      "rCommand\022\035.littlehorse.WaitForCommandPb\032" +
-      "#.littlehorse.WaitForCommandResponse\"\000\022r" +
-      "\n\022GetAdvertisedHosts\022).littlehorse.Inter" +
-      "nalGetAdvertisedHostsPb\032/.littlehorse.In" +
-      "ternalGetAdvertisedHostsResponse\"\000\022l\n\026To" +
-      "pologyInstancesState\022$.littlehorse.Topol" +
-      "ogyInstanceStatePb\032*.littlehorse.Topolog" +
-      "yInstanceStateResponse\"\000\022J\n\nLocalTasks\022\031" +
-      ".littlehorse.LocalTasksPb\032\037.littlehorse." +
-      "LocalTasksResponse\"\000B\037\n\033io.littlehorse.c" +
-      "ommon.protoP\001b\006proto3"
+      "T_ID\020\000\022\n\n\006OBJECT\020\001*|\n\rStoreableType\022\022\n\016S" +
+      "TORED_GETABLE\020\000\022\022\n\016SCHEDULED_TASK\020\001\022\024\n\020W" +
+      "F_METRIC_UPDATE\020\002\022\026\n\022TASK_METRIC_UPDATE\020" +
+      "\003\022\014\n\010LH_TIMER\020\004\022\007\n\003TAG\020\005*\367\001\n\020GetableClas" +
+      "sEnum\022\014\n\010TASK_DEF\020\000\022\026\n\022EXTERNAL_EVENT_DE" +
+      "F\020\001\022\013\n\007WF_SPEC\020\002\022\n\n\006WF_RUN\020\003\022\014\n\010NODE_RUN" +
+      "\020\004\022\014\n\010VARIABLE\020\005\022\022\n\016EXTERNAL_EVENT\020\006\022\024\n\020" +
+      "TASK_DEF_METRICS\020\007\022\023\n\017WF_SPEC_METRICS\020\010\022" +
+      "\025\n\021TASK_WORKER_GROUP\020\t\022\021\n\rUSER_TASK_DEF\020" +
+      "\n\022\014\n\010TASK_RUN\020\013\022\021\n\rUSER_TASK_RUN\020\014*\'\n\016Ta" +
+      "gStorageType\022\t\n\005LOCAL\020\000\022\n\n\006REMOTE\020\001*,\n\016S" +
+      "erverStatusPb\022\013\n\007HOST_UP\020\000\022\r\n\tHOST_DOWN\020" +
+      "\0012\306\004\n\013LHInternals\022_\n\021CentralStoreQuery\022 " +
+      ".littlehorse.CentralStoreQueryPb\032&.littl" +
+      "ehorse.CentralStoreQueryResponse\"\000\022P\n\014In" +
+      "ternalScan\022\033.littlehorse.InternalScanPb\032" +
+      "!.littlehorse.InternalScanResponse\"\000\022V\n\016" +
+      "waitForCommand\022\035.littlehorse.WaitForComm" +
+      "andPb\032#.littlehorse.WaitForCommandRespon" +
+      "se\"\000\022r\n\022GetAdvertisedHosts\022).littlehorse" +
+      ".InternalGetAdvertisedHostsPb\032/.littleho" +
+      "rse.InternalGetAdvertisedHostsResponse\"\000" +
+      "\022l\n\026TopologyInstancesState\022$.littlehorse" +
+      ".TopologyInstanceStatePb\032*.littlehorse.T" +
+      "opologyInstanceStateResponse\"\000\022J\n\nLocalT" +
+      "asks\022\031.littlehorse.LocalTasksPb\032\037.little" +
+      "horse.LocalTasksResponse\"\000B\037\n\033io.littleh" +
+      "orse.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

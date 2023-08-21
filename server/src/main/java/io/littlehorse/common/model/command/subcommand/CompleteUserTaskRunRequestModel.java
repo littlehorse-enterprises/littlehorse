@@ -47,7 +47,7 @@ public class CompleteUserTaskRunRequestModel extends SubCommand<CompleteUserTask
     public CompleteUserTaskRunReply process(CoreProcessorDAO dao, LHConfig config) {
         CompleteUserTaskRunReply out = new CompleteUserTaskRunReply();
 
-        UserTaskRunModel utr = dao.getUserTaskRun(userTaskRunId);
+        UserTaskRunModel utr = dao.get(userTaskRunId);
         if (utr == null) {
             out.setCode(LHResponseCode.NOT_FOUND_ERROR);
             out.setMessage("Couldn't find userTaskRun " + userTaskRunId);

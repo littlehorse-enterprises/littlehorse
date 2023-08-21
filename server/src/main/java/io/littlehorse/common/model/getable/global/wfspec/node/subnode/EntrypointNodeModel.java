@@ -19,11 +19,9 @@ public class EntrypointNodeModel extends SubNode<EntrypointNode> {
         return EntrypointNode.newBuilder();
     }
 
-    public void initFrom(Message proto) {
-    }
+    public void initFrom(Message proto) {}
 
-    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHValidationError {
-    }
+    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHValidationError {}
 
     public EntrypointRunModel createSubNodeRun(Date time) {
         return new EntrypointRunModel();

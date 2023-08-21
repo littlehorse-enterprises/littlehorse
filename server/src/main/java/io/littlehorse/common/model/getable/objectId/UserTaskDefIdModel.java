@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.getable.ObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
@@ -13,13 +13,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserTaskDefIdModel extends ObjectId<UserTaskDefId, UserTaskDef, UserTaskDefModel> {
+public class UserTaskDefIdModel extends ObjectIdModel<UserTaskDefId, UserTaskDef, UserTaskDefModel> {
 
     private String name;
     private int version;
 
-    public UserTaskDefIdModel() {
-    }
+    public UserTaskDefIdModel() {}
 
     public UserTaskDefIdModel(String name, int version) {
         this.name = name;

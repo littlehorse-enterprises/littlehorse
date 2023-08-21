@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.wfrun.haltreason;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
@@ -26,10 +25,10 @@ public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailu
         if (handlerThread.status == LHStatus.COMPLETED) {
             // Need to figure out if the handler thread was handling another
             // failed thread.
-            ThreadRunModel originalThatFailed = wfRunModel.threadRunModels
-                    .get(handlerThread.failureBeingHandled.getThreadRunNumber());
-            NodeRunModel handledNode = originalThatFailed
-                    .getNodeRun(handlerThread.failureBeingHandled.getNodeRunPosition());
+            ThreadRunModel originalThatFailed =
+                    wfRunModel.threadRunModels.get(handlerThread.failureBeingHandled.getThreadRunNumber());
+            NodeRunModel handledNode =
+                    originalThatFailed.getNodeRun(handlerThread.failureBeingHandled.getNodeRunPosition());
 
             if (handledNode.type == NodeTypeCase.WAIT_THREADS) {
                 // The current implementation of failure handlers for wait_thread nodes

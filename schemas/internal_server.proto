@@ -171,6 +171,15 @@ service LHInternals {
     // rpc TagScan(TagScanPb) returns (TagScanResponse) {}
 }
 
+enum StoreableType {
+    STORED_GETABLE = 0;
+    SCHEDULED_TASK = 1;
+    WF_METRIC_UPDATE = 2;
+    TASK_METRIC_UPDATE = 3;
+    LH_TIMER = 4;
+    TAG = 5;
+}
+
 // Stuff for the metrics topology
 message TaskMetricUpdatePb {
     google.protobuf.Timestamp window_start = 1;

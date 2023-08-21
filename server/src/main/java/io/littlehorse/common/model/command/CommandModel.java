@@ -1,9 +1,6 @@
 package io.littlehorse.common.model.command;
 
-import java.util.Date;
-
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.command.subcommand.AssignUserTaskRunRequestModel;
@@ -25,7 +22,8 @@ import io.littlehorse.common.model.command.subcommand.TriggeredTaskRun;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.Command.CommandCase;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streamsimpl.coreprocessors.KafkaStreamsLHDAOImpl;
+import io.littlehorse.server.streams.topology.core.CoreProcessorDAOImpl;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -58,8 +56,7 @@ public class CommandModel extends LHSerializable<Command> {
         return Command.class;
     }
 
-    public CommandModel() {
-    }
+    public CommandModel() {}
 
     public CommandModel(SubCommand<?> cmd) {
         this.time = new Date();
@@ -178,12 +175,12 @@ public class CommandModel extends LHSerializable<Command> {
                 deleteExternalEvent = DeleteExternalEventRequestModel.fromProto(p.getDeleteExternalEvent());
                 break;
             case ASSIGN_USER_TASK_RUN:
-                assignUserTaskRun = LHSerializable.fromProto(p.getAssignUserTaskRun(),
-                        AssignUserTaskRunRequestModel.class);
+                assignUserTaskRun =
+                        LHSerializable.fromProto(p.getAssignUserTaskRun(), AssignUserTaskRunRequestModel.class);
                 break;
             case COMPLETE_USER_TASK_RUN:
-                completeUserTaskRun = LHSerializable.fromProto(p.getCompleteUserTaskRun(),
-                        CompleteUserTaskRunRequestModel.class);
+                completeUserTaskRun =
+                        LHSerializable.fromProto(p.getCompleteUserTaskRun(), CompleteUserTaskRunRequestModel.class);
                 break;
             case TRIGGERED_TASK_RUN:
                 triggeredTaskRun = LHSerializable.fromProto(p.getTriggeredTaskRun(), TriggeredTaskRun.class);
@@ -192,8 +189,8 @@ public class CommandModel extends LHSerializable<Command> {
                 reassignUserTask = LHSerializable.fromProto(p.getReassignedUserTask(), ReassignUserTask.class);
                 break;
             case CANCEL_USER_TASK:
-                cancelUserTaskRun = LHSerializable.fromProto(p.getCancelUserTask(),
-                        CancelUserTaskRunRequestModel.class);
+                cancelUserTaskRun =
+                        LHSerializable.fromProto(p.getCancelUserTask(), CancelUserTaskRunRequestModel.class);
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -302,7 +299,7 @@ public class CommandModel extends LHSerializable<Command> {
         return getSubCommand().hasResponse();
     }
 
-    public AbstractResponse<?> process(KafkaStreamsLHDAOImpl dao, LHConfig config) {
+    public AbstractResponse<?> process(CoreProcessorDAOImpl dao, LHConfig config) {
         return getSubCommand().process(dao, config);
     }
 }

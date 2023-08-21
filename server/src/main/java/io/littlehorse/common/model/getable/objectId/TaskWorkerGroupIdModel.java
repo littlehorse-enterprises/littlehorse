@@ -1,19 +1,17 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-
-import io.littlehorse.common.model.getable.ObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.TaskWorkerGroup;
 import io.littlehorse.sdk.common.proto.TaskWorkerGroupId;
 
-public class TaskWorkerGroupIdModel extends ObjectId<TaskWorkerGroupId, TaskWorkerGroup, TaskWorkerGroupModel> {
+public class TaskWorkerGroupIdModel extends ObjectIdModel<TaskWorkerGroupId, TaskWorkerGroup, TaskWorkerGroupModel> {
 
     public String taskDefName;
 
-    public TaskWorkerGroupIdModel() {
-    }
+    public TaskWorkerGroupIdModel() {}
 
     public TaskWorkerGroupIdModel(String taskDefName) {
         this.taskDefName = taskDefName;

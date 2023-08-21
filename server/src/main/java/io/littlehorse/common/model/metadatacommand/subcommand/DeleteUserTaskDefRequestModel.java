@@ -5,6 +5,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
+import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest;
 
@@ -18,7 +19,8 @@ public class DeleteUserTaskDefRequestModel extends MetadataSubCommand<DeleteUser
     }
 
     public DeleteUserTaskDefRequest.Builder toProto() {
-        DeleteUserTaskDefRequest.Builder out = DeleteUserTaskDefRequest.newBuilder().setName(name).setVersion(version);
+        DeleteUserTaskDefRequest.Builder out =
+                DeleteUserTaskDefRequest.newBuilder().setName(name).setVersion(version);
         return out;
     }
 
@@ -33,7 +35,7 @@ public class DeleteUserTaskDefRequestModel extends MetadataSubCommand<DeleteUser
     }
 
     public DeleteObjectReply process(MetadataProcessorDAO dao, LHConfig config) {
-        return dao.deleteUserTaskDef(name, version);
+        return dao.delete(new UserTaskDefIdModel(name, version));
     }
 
     public boolean hasResponse() {

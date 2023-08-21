@@ -22,8 +22,7 @@ public class ExitNodeModel extends SubNode<ExitNode> {
 
     public void initFrom(Message proto) {
         ExitNode p = (ExitNode) proto;
-        if (p.hasFailureDef())
-            failureDef = FailureDefModel.fromProto(p.getFailureDef());
+        if (p.hasFailureDef()) failureDef = FailureDefModel.fromProto(p.getFailureDef());
     }
 
     public ExitNode.Builder toProto() {
@@ -35,8 +34,7 @@ public class ExitNodeModel extends SubNode<ExitNode> {
     }
 
     public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHValidationError {
-        if (failureDef != null)
-            failureDef.validate();
+        if (failureDef != null) failureDef.validate();
     }
 
     public ExitRunModel createSubNodeRun(Date time) {

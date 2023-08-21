@@ -6,20 +6,21 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskField;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 
-public class UserTaskDefModel extends AbstractGetable<UserTaskDef> {
+public class UserTaskDefModel extends GlobalGetable<UserTaskDef> {
 
     public String name;
     public Date createdAt;
@@ -44,8 +45,7 @@ public class UserTaskDefModel extends AbstractGetable<UserTaskDef> {
                 .setCreatedAt(LHUtil.fromDate(createdAt))
                 .setVersion(version);
 
-        if (description != null)
-            out.setDescription(description);
+        if (description != null) out.setDescription(description);
 
         for (UserTaskFieldModel utf : fields) {
             out.addFields(utf.toProto());
@@ -58,8 +58,7 @@ public class UserTaskDefModel extends AbstractGetable<UserTaskDef> {
         name = p.getName();
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         version = p.getVersion();
-        if (p.hasDescription())
-            description = p.getDescription();
+        if (p.hasDescription()) description = p.getDescription();
 
         for (UserTaskField utf : p.getFieldsList()) {
             fields.add(LHSerializable.fromProto(utf, UserTaskFieldModel.class));

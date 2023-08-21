@@ -16,15 +16,13 @@ public class AssignUserTaskRunReply extends AbstractResponse<AssignUserTaskRunRe
     public AssignUserTaskRunResponse.Builder toProto() {
         AssignUserTaskRunResponse.Builder out = AssignUserTaskRunResponse.newBuilder();
         out.setCode(code);
-        if (message != null)
-            out.setMessage(message);
+        if (message != null) out.setMessage(message);
         return out;
     }
 
     public void initFrom(Message proto) {
         AssignUserTaskRunResponse p = (AssignUserTaskRunResponse) proto;
         code = p.getCode();
-        if (p.hasMessage())
-            message = p.getMessage();
+        if (p.hasMessage()) message = p.getMessage();
     }
 }

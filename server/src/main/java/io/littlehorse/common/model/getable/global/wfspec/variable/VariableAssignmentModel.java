@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.global.wfspec.variable;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -29,8 +28,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
 
     public void initFrom(Message proto) {
         VariableAssignment p = (VariableAssignment) proto;
-        if (p.hasJsonPath())
-            jsonPath = p.getJsonPath();
+        if (p.hasJsonPath()) jsonPath = p.getJsonPath();
 
         rhsSourceType = p.getSourceCase();
         switch (rhsSourceType) {
@@ -51,8 +49,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public VariableAssignment.Builder toProto() {
         VariableAssignment.Builder out = VariableAssignment.newBuilder();
 
-        if (jsonPath != null)
-            out.setJsonPath(jsonPath);
+        if (jsonPath != null) out.setJsonPath(jsonPath);
 
         switch (rhsSourceType) {
             case VARIABLE_NAME:
@@ -92,8 +89,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     }
 
     public boolean canBeType(VariableType type, ThreadSpecModel tspec) {
-        if (jsonPath != null)
-            return true;
+        if (jsonPath != null) return true;
 
         VariableType baseType;
 

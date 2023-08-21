@@ -6,7 +6,6 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;

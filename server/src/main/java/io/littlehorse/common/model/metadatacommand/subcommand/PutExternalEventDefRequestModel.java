@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
@@ -10,10 +9,9 @@ import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEvent
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 
-public class PutExternalEventDefRequestModel
-        extends MetadataSubCommand<PutExternalEventDefRequest> {
+public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExternalEventDefRequest> {
 
     public String name;
     public Integer retentionHours;
@@ -22,26 +20,23 @@ public class PutExternalEventDefRequestModel
         return LHConstants.META_PARTITION_KEY;
     }
 
-    public Class<io.littlehorse.sdk.common.proto.PutExternalEventDefRequest> getProtoBaseClass() {
-        return io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.class;
+    public Class<PutExternalEventDefRequest> getProtoBaseClass() {
+        return PutExternalEventDefRequest.class;
     }
 
-    public io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.Builder toProto() {
-        io.littlehorse.sdk.common.proto.PutExternalEventDefRequest.Builder out = io.littlehorse.sdk.common.proto.PutExternalEventDefRequest
-                .newBuilder();
+    public PutExternalEventDefRequest.Builder toProto() {
+        PutExternalEventDefRequest.Builder out = PutExternalEventDefRequest.newBuilder();
         out.setName(name);
 
-        if (retentionHours != null)
-            out.setRetentionHours(retentionHours);
+        if (retentionHours != null) out.setRetentionHours(retentionHours);
 
         return out;
     }
 
     public void initFrom(Message proto) {
-        io.littlehorse.sdk.common.proto.PutExternalEventDefRequest p = (io.littlehorse.sdk.common.proto.PutExternalEventDefRequest) proto;
+        PutExternalEventDefRequest p = (PutExternalEventDefRequest) proto;
         name = p.getName();
-        if (p.hasRetentionHours())
-            retentionHours = p.getRetentionHours();
+        if (p.hasRetentionHours()) retentionHours = p.getRetentionHours();
     }
 
     public boolean hasResponse() {
@@ -65,10 +60,10 @@ public class PutExternalEventDefRequestModel
         } else {
             ExternalEventDefModel spec = new ExternalEventDefModel();
             spec.name = name;
-            spec.retentionHours = retentionHours == null ? config.getDefaultExternalEventRetentionHours()
-                    : retentionHours;
+            spec.retentionHours =
+                    retentionHours == null ? config.getDefaultExternalEventRetentionHours() : retentionHours;
 
-            dao.putExternalEventDef(spec);
+            dao.put(spec);
 
             out.code = LHResponseCode.OK;
             out.result = spec;
@@ -76,8 +71,7 @@ public class PutExternalEventDefRequestModel
         return out;
     }
 
-    public static PutExternalEventDefRequestModel fromProto(
-            io.littlehorse.sdk.common.proto.PutExternalEventDefRequest p) {
+    public static PutExternalEventDefRequestModel fromProto(PutExternalEventDefRequest p) {
         PutExternalEventDefRequestModel out = new PutExternalEventDefRequestModel();
         out.initFrom(p);
         return out;

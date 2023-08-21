@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.global.taskdef;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -9,8 +10,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.VariableDef;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +21,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TaskDefModel extends AbstractGetable<TaskDef> {
+public class TaskDefModel extends GlobalGetable<TaskDef> {
 
     @Getter
     public String name;
@@ -33,8 +34,7 @@ public class TaskDefModel extends AbstractGetable<TaskDef> {
     }
 
     public Date getCreatedAt() {
-        if (createdAt == null)
-            createdAt = new Date();
+        if (createdAt == null) createdAt = new Date();
         return createdAt;
     }
 

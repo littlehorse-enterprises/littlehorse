@@ -6,13 +6,13 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.command.CommandModel;
 import io.littlehorse.common.model.command.subcommand.AssignUserTaskRunRequestModel;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRunRequestModel;
 import io.littlehorse.common.model.command.subcommand.ReassignUserTask;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
-import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTEReassignedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -37,8 +37,8 @@ import io.littlehorse.sdk.common.proto.UserTaskFieldResult;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Slf4j
 @Getter
 @Setter
-public class UserTaskRunModel extends AbstractGetable<UserTaskRun> {
+public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
 
     private UserTaskRunIdModel id;
     private UserTaskDefIdModel userTaskDefId;
@@ -82,8 +82,7 @@ public class UserTaskRunModel extends AbstractGetable<UserTaskRun> {
     // a change would be fine from the API Compatibility perspective.
     private NodeRunIdModel nodeRunId;
 
-    public UserTaskRunModel() {
-    }
+    public UserTaskRunModel() {}
 
     public UserTaskRunModel(UserTaskDefModel utd, UserTaskNodeModel userTaskNode, NodeRunModel nodeRunModel) {
         this.userTaskDefId = utd.getObjectId();
@@ -94,8 +93,7 @@ public class UserTaskRunModel extends AbstractGetable<UserTaskRun> {
         ownerCase = switch (userTaskNode.getAssignmentType()) {
             case USER -> UserTaskRun.OwnerCase.USER;
             case USER_GROUP -> UserTaskRun.OwnerCase.USER_GROUP;
-            default -> throw new IllegalArgumentException("Assignment Type not supported");
-        };
+            default -> throw new IllegalArgumentException("Assignment Type not supported");};
     }
 
     public Class<UserTaskRun> getProtoBaseClass() {
@@ -111,17 +109,14 @@ public class UserTaskRunModel extends AbstractGetable<UserTaskRun> {
                 .setNodeRunId(nodeRunId.toProto());
 
         if (ownerCase.equals(UserTaskRun.OwnerCase.USER)) {
-            if (user != null)
-                out.setUser(user.toProto());
+            if (user != null) out.setUser(user.toProto());
         } else if (ownerCase.equals(UserTaskRun.OwnerCase.USER_GROUP)) {
-            if (userGroup != null)
-                out.setUserGroup(userGroup.toProto());
+            if (userGroup != null) out.setUserGroup(userGroup.toProto());
         } else {
             throw new IllegalArgumentException("Owner case not supported yet");
         }
 
-        if (notes != null)
-            out.setNotes(notes);
+        if (notes != null) out.setNotes(notes);
 
         for (UserTaskEventModel event : events) {
             out.addEvents(event.toProto());
@@ -153,8 +148,7 @@ public class UserTaskRunModel extends AbstractGetable<UserTaskRun> {
             throw new IllegalArgumentException("Owner case not supported yet");
         }
 
-        if (p.hasNotes())
-            notes = p.getNotes();
+        if (p.hasNotes()) notes = p.getNotes();
 
         for (UserTaskEvent ute : p.getEventsList()) {
             events.add(LHSerializable.fromProto(ute, UserTaskEventModel.class));
@@ -217,7 +211,8 @@ public class UserTaskRunModel extends AbstractGetable<UserTaskRun> {
 
     private void assignToSpecificUser(NodeModel node) throws LHVarSubError {
         ThreadRunModel threadRunModel = getNodeRun().getThreadRun();
-        VariableValueModel userIdVal = threadRunModel.assignVariable(node.userTaskNode.getUser().getUserId());
+        VariableValueModel userIdVal =
+                threadRunModel.assignVariable(node.userTaskNode.getUser().getUserId());
         VariableValueModel userGroupVal = node.userTaskNode.getUser().getUserGroup() != null
                 ? threadRunModel.assignVariable(node.userTaskNode.getUser().getUserGroup())
                 : null;
@@ -339,7 +334,8 @@ public class UserTaskRunModel extends AbstractGetable<UserTaskRun> {
     private void scheduleTaskReassign(UTActionTriggerModel action) {
         long delayInSeconds = action.getDelaySeconds().getRhsLiteralValue().intVal;
         LocalDateTime localDateTime = LocalDateTime.now().plusSeconds(delayInSeconds);
-        Date maturationTime = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        Date maturationTime =
+                Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
         ReassignedUserTaskPb.AssignToCase assignToCase = null;
         switch (action.getReassign().getAssignToCase()) {
             case USER_ID:
@@ -348,6 +344,9 @@ public class UserTaskRunModel extends AbstractGetable<UserTaskRun> {
             case USER_GROUP:
                 assignToCase = ReassignedUserTaskPb.AssignToCase.USER_GROUP;
                 break;
+            case ASSIGNTO_NOT_SET:
+                log.warn("Invalid reassignment: no reassign_to set!");
+                return;
         }
         LHTimer timer = new LHTimer(
                 new CommandModel(
@@ -376,7 +375,7 @@ public class UserTaskRunModel extends AbstractGetable<UserTaskRun> {
         // TODO LH-309: Validate this vs the schema
         Map<String, Object> raw = new HashMap<>();
         UserTaskDefModel userTaskDef = getDao().getUserTaskDef(
-                getUserTaskDefId().getName(), getUserTaskDefId().getVersion());
+                        getUserTaskDefId().getName(), getUserTaskDefId().getVersion());
         Map<String, UserTaskFieldModel> userTaskFieldsGroupedByName = userTaskDef.getFields().stream()
                 .collect(Collectors.toMap(UserTaskFieldModel::getName, Function.identity()));
         for (UserTaskFieldResult inputField : event.getResult().getFieldsList()) {
@@ -416,7 +415,7 @@ public class UserTaskRunModel extends AbstractGetable<UserTaskRun> {
     }
 
     public NodeRunModel getNodeRun() {
-        return getDao().getNodeRun(nodeRunId);
+        return getDao().get(nodeRunId);
     }
 
     // TODO: LH-314
@@ -489,13 +488,8 @@ public class UserTaskRunModel extends AbstractGetable<UserTaskRun> {
         return new UserTaskTriggerContextModel(user, userGroup);
     }
 
-    private VarNameAndValModel getVarNameAndValue(String varName, String varValue) {
-        VariableValueModel variableValue = new VariableValueModel(varValue);
-        return new VarNameAndValModel(varName, variableValue);
-    }
-
-    public static boolean isRemote(UserTaskRunStatus UserTaskRunStatus) {
-        return (UserTaskRunStatus == UserTaskRunStatus.ASSIGNED || UserTaskRunStatus == UserTaskRunStatus.UNASSIGNED);
+    public static boolean isRemote(UserTaskRunStatus status) {
+        return (status == UserTaskRunStatus.ASSIGNED || status == UserTaskRunStatus.UNASSIGNED);
     }
 
     @Override
@@ -507,7 +501,7 @@ public class UserTaskRunModel extends AbstractGetable<UserTaskRun> {
             case "userTaskDefName" -> {
                 return List.of(new IndexedField(
                         key, this.getUserTaskDefId().getName(), tagStorageType.get() // Is this right?
-                ));
+                        ));
             }
             case "userId" -> {
                 return List.of(new IndexedField(key, this.getUser().getId(), TagStorageType.REMOTE));

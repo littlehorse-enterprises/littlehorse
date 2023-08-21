@@ -1,8 +1,7 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-
-import io.littlehorse.common.model.getable.ObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
@@ -11,14 +10,13 @@ import io.littlehorse.sdk.common.proto.TaskDefMetrics;
 import io.littlehorse.sdk.common.proto.TaskDefMetricsId;
 import java.util.Date;
 
-public class TaskDefMetricsIdModel extends ObjectId<TaskDefMetricsId, TaskDefMetrics, TaskDefMetricsModel> {
+public class TaskDefMetricsIdModel extends ObjectIdModel<TaskDefMetricsId, TaskDefMetrics, TaskDefMetricsModel> {
 
     public Date windowStart;
     public MetricsWindowLength windowType;
     public String taskDefName;
 
-    public TaskDefMetricsIdModel() {
-    }
+    public TaskDefMetricsIdModel() {}
 
     public TaskDefMetricsIdModel(Date w, MetricsWindowLength t, String tdn) {
         windowStart = w;

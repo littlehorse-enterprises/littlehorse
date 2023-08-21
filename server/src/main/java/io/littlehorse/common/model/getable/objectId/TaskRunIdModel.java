@@ -1,21 +1,19 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-
-import io.littlehorse.common.model.getable.ObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 
-public class TaskRunIdModel extends ObjectId<TaskRunId, TaskRun, TaskRunModel> {
+public class TaskRunIdModel extends ObjectIdModel<TaskRunId, TaskRun, TaskRunModel> {
 
     public String wfRunId;
     public String taskGuid;
 
-    public TaskRunIdModel() {
-    }
+    public TaskRunIdModel() {}
 
     public TaskRunIdModel(String partitionKey, String guid) {
         this.wfRunId = partitionKey;

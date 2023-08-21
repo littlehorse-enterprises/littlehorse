@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.global.wfspec.variable;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource;
 
@@ -15,8 +14,7 @@ public class NodeOutputSourceModel extends LHSerializable<NodeOutputSource> {
 
     public NodeOutputSource.Builder toProto() {
         NodeOutputSource.Builder out = NodeOutputSource.newBuilder();
-        if (jsonPath != null)
-            out.setJsonpath(this.jsonPath);
+        if (jsonPath != null) out.setJsonpath(this.jsonPath);
         return out;
     }
 
