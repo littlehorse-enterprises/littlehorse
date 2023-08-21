@@ -10,7 +10,7 @@ public abstract class CoreObjectId<T extends Message, U extends Message, V exten
 
     @Override
     public LHStoreType getStore() {
-        return LHStoreType.METADATA;
+        return LHStoreType.CORE;
     }
 
     // Force the implementation.

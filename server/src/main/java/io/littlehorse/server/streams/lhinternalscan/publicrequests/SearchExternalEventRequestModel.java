@@ -10,9 +10,9 @@ import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
+import io.littlehorse.sdk.common.proto.ExternalEventIdList;
 import io.littlehorse.sdk.common.proto.SearchExternalEventRequest;
 import io.littlehorse.sdk.common.proto.SearchExternalEventRequest.ExtEvtCriteriaCase;
-import io.littlehorse.sdk.common.proto.SearchExternalEventResponse;
 import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SearchExternalEventRequestModel
         extends PublicScanRequest<
                 SearchExternalEventRequest,
-                SearchExternalEventResponse,
+                ExternalEventIdList,
                 ExternalEventId,
                 ExternalEventIdModel,
                 SearchExternalEventReply> {

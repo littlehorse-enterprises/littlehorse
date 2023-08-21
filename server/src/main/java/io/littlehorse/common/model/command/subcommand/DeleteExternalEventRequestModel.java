@@ -1,23 +1,23 @@
 package io.littlehorse.common.model.command.subcommand;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventRequest;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
 
 public class DeleteExternalEventRequestModel extends SubCommand<DeleteExternalEventRequest> {
 
-    public String wfRunId;
-    public String externalEventDefName;
-    public String guid;
+    private ExternalEventIdModel id;
 
     public String getPartitionKey() {
-        return wfRunId;
+        return id.getPartitionKey().get();
     }
 
     public Class<DeleteExternalEventRequest> getProtoBaseClass() {
@@ -25,10 +25,8 @@ public class DeleteExternalEventRequestModel extends SubCommand<DeleteExternalEv
     }
 
     public DeleteExternalEventRequest.Builder toProto() {
-        DeleteExternalEventRequest.Builder out = DeleteExternalEventRequest.newBuilder()
-                .setWfRunId(wfRunId)
-                .setExternalEventDefName(externalEventDefName)
-                .setGuid(guid);
+        DeleteExternalEventRequest.Builder out =
+                DeleteExternalEventRequest.newBuilder().setId(id.toProto());
 
         return out;
     }
@@ -37,24 +35,19 @@ public class DeleteExternalEventRequestModel extends SubCommand<DeleteExternalEv
         return true;
     }
 
-    public DeleteObjectReply process(CoreProcessorDAO dao, LHConfig config) {
-        ExternalEventIdModel eventId = new ExternalEventIdModel(wfRunId, externalEventDefName, guid);
-        ExternalEventModel externalEvent = dao.get(eventId);
+    public Empty process(CoreProcessorDAO dao, LHConfig config) {
+        ExternalEventModel externalEvent = dao.get(id);
         if (!externalEvent.claimed) {
-            return dao.delete(eventId);
+            dao.delete(id);
+            return Empty.getDefaultInstance();
         } else {
-            DeleteObjectReply response = new DeleteObjectReply();
-            response.code = LHResponseCode.VALIDATION_ERROR;
-            response.message = "ExternalEvent already claimed by WfRun " + externalEvent.wfRunId;
-            return response;
+            throw new LHApiException(Status.FAILED_PRECONDITION, "ExternalEvent already claimed!");
         }
     }
 
     public void initFrom(Message proto) {
         DeleteExternalEventRequest p = (DeleteExternalEventRequest) proto;
-        wfRunId = p.getWfRunId();
-        externalEventDefName = p.getExternalEventDefName();
-        guid = p.getGuid();
+        id = LHSerializable.fromProto(p.getId(), ExternalEventIdModel.class);
     }
 
     public static DeleteExternalEventRequestModel fromProto(DeleteExternalEventRequest p) {

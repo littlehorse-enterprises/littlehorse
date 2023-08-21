@@ -1,17 +1,18 @@
 package io.littlehorse.server.streams.topology.core;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.AnalyticsRegistry;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.command.CommandModel;
-import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
@@ -29,7 +30,6 @@ import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.proto.HostInfo;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
@@ -128,19 +128,18 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     }
 
     @Override
-    public DeleteObjectReply delete(WfRunIdModel id) {
+    public void delete(WfRunIdModel id) {
         WfRunModel wfRun = get(id);
         if (wfRun == null) {
-            return new DeleteObjectReply(LHResponseCode.NOT_FOUND_ERROR, "Couldn't find specified WfRun");
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfRun");
         }
+
         storageManager.delete(id);
         storageManager.deleteAllByPrefix(id.getId(), NodeRunModel.class);
         storageManager.deleteAllByPrefix(id.getId(), TaskRunModel.class);
         storageManager.deleteAllByPrefix(id.getId(), ExternalEventModel.class);
         storageManager.deleteAllByPrefix(id.getId(), VariableModel.class);
         storageManager.deleteAllByPrefix(id.getId(), UserTaskRunModel.class);
-
-        return null;
     }
 
     @Override
@@ -164,17 +163,15 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     }
 
     @Override
-    public DeleteObjectReply delete(ExternalEventIdModel id) {
+    public void delete(ExternalEventIdModel id) {
         ExternalEventModel eev = get(id);
         if (eev == null) {
-            return new DeleteObjectReply(LHResponseCode.NOT_FOUND_ERROR, "Couldn't find specified ExternalEvent");
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified ExternalEvent");
         }
         if (eev.isClaimed()) {
-            return new DeleteObjectReply(
-                    LHResponseCode.BAD_REQUEST_ERROR, "Specified ExternalEvent already claimed by WfRun");
+            throw new LHApiException(Status.FAILED_PRECONDITION, "Specified ExternalEvent already claimed by WfRun");
         }
         storageManager.delete(id);
-        return new DeleteObjectReply(LHResponseCode.OK, null);
     }
 
     @Override

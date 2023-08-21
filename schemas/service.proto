@@ -59,9 +59,27 @@ message PutExternalEventRequest {
 }
 
 message DeleteExternalEventRequest {
-  string wf_run_id = 1;
-  string external_event_def_name = 2;
-  string guid = 3;
+  ExternalEventId id = 1;
+}
+
+message DeleteWfRunRequest {
+  WfRunId id = 1;
+}
+
+message DeleteTaskDefRequest {
+  TaskDefId id = 1;
+}
+
+message DeleteUserTaskDefRequest {
+  UserTaskDefId id = 1;
+}
+
+message DeleteWfSpecRequest {
+  WfSpecId id = 1;
+}
+
+message DeleteExternalEventDefRequest {
+  ExternalEventDefId id = 1;
 }
 
 message RunWfRequest {
@@ -484,11 +502,11 @@ service LHPublicApi {
   rpc StopWfRun(StopWfRunRequest) returns (google.protobuf.Empty) {}
   rpc ResumeWfRun(ResumeWfRunRequest) returns (google.protobuf.Empty) {}
 
-  rpc DeleteWfRun(WfRunId) returns (google.protobuf.Empty) {}
-  rpc DeleteTaskDef(TaskDefId) returns (google.protobuf.Empty) {}
-  rpc DeleteWfSpec(WfSpecId) returns (google.protobuf.Empty) {}
-  rpc DeleteUserTaskDef(UserTaskDefId) returns (google.protobuf.Empty) {}
-  rpc DeleteExternalEventDef(ExternalEventDefId) returns (google.protobuf.Empty) {}
+  rpc DeleteWfRun(DeleteWfRunRequest) returns (google.protobuf.Empty) {}
+  rpc DeleteTaskDef(DeleteTaskDefRequest) returns (google.protobuf.Empty) {}
+  rpc DeleteWfSpec(DeleteWfSpecRequest) returns (google.protobuf.Empty) {}
+  rpc DeleteUserTaskDef(DeleteUserTaskDefRequest) returns (google.protobuf.Empty) {}
+  rpc DeleteExternalEventDef(DeleteExternalEventDefRequest) returns (google.protobuf.Empty) {}
 
   rpc HealthCheck(google.protobuf.Empty) returns (HealthCheckResponse) {}
 

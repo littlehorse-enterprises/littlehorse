@@ -13,8 +13,8 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.SearchWfSpecRequest;
 import io.littlehorse.sdk.common.proto.SearchWfSpecRequest.WfSpecCriteriaCase;
-import io.littlehorse.sdk.common.proto.SearchWfSpecResponse;
 import io.littlehorse.sdk.common.proto.WfSpecId;
+import io.littlehorse.sdk.common.proto.WfSpecIdList;
 import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
@@ -32,8 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class SearchWfSpecRequestModel
-        extends PublicScanRequest<
-                SearchWfSpecRequest, SearchWfSpecResponse, WfSpecId, WfSpecIdModel, SearchWfSpecReply> {
+        extends PublicScanRequest<SearchWfSpecRequest, WfSpecIdList, WfSpecId, WfSpecIdModel, SearchWfSpecReply> {
 
     private WfSpecCriteriaCase type;
     private String name;

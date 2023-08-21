@@ -15,8 +15,8 @@ import io.littlehorse.sdk.common.proto.SearchWfRunRequest.NameRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest.StatusAndNameRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest.StatusAndSpecRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest.WfrunCriteriaCase;
-import io.littlehorse.sdk.common.proto.SearchWfRunResponse;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SearchWfRunRequestModel
-        extends PublicScanRequest<SearchWfRunRequest, SearchWfRunResponse, WfRunId, WfRunIdModel, SearchWfRunReply> {
+        extends PublicScanRequest<SearchWfRunRequest, WfRunIdList, WfRunId, WfRunIdModel, SearchWfRunReply> {
 
     public WfrunCriteriaCase type;
     public StatusAndSpecRequest statusAndSpec;

@@ -49,9 +49,8 @@ public abstract class ObjectIdModel<T extends Message, U extends Message, V exte
         return getStoreableKey().hashCode();
     }
 
-    @Deprecated(forRemoval = true)
-    public static <T extends Message, U extends Message, V extends LHSerializable<U>>
-            ObjectIdModel<?, ?, ?> fromStoreableKey(String key, Class<? extends ObjectIdModel<?, ?, ?>> cls) {
+    public static <T extends Message, U extends Message, V extends LHSerializable<U>> ObjectIdModel<?, ?, ?> fromString(
+            String key, Class<? extends ObjectIdModel<?, ?, ?>> cls) {
         try {
             ObjectIdModel<?, ?, ?> id = cls.getDeclaredConstructor().newInstance();
             id.initFromString(key);

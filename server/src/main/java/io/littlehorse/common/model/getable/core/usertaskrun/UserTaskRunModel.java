@@ -1,9 +1,10 @@
 package io.littlehorse.common.model.getable.core.usertaskrun;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
@@ -362,7 +363,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         getDao().scheduleTimer(timer);
     }
 
-    public void processTaskCompletedEvent(CompleteUserTaskRunRequestModel event) throws LHValidationError {
+    public void processTaskCompletedEvent(CompleteUserTaskRunRequestModel event) throws LHApiException {
         if (getNodeRun().getStatus() != LHStatus.STARTING && getNodeRun().getStatus() != LHStatus.RUNNING) {
             log.warn("Tried to complete a user task that was not running");
             return;
@@ -376,16 +377,23 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         Map<String, Object> raw = new HashMap<>();
         UserTaskDefModel userTaskDef = getDao().getUserTaskDef(
                         getUserTaskDefId().getName(), getUserTaskDefId().getVersion());
+
         Map<String, UserTaskFieldModel> userTaskFieldsGroupedByName = userTaskDef.getFields().stream()
                 .collect(Collectors.toMap(UserTaskFieldModel::getName, Function.identity()));
+
         for (UserTaskFieldResult inputField : event.getResult().getFieldsList()) {
             UserTaskFieldModel userTaskFieldFromTaskDef = userTaskFieldsGroupedByName.get(inputField.getName());
             if (userTaskFieldFromTaskDef == null
                     || !userTaskFieldFromTaskDef
                             .getType()
                             .equals(inputField.getValue().getType())) {
-                throw new LHValidationError("Field [name = %s, type = %s] is not defined in UserTask schema"
-                        .formatted(inputField.getName(), inputField.getValue().getType()));
+
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Field [name = %s, type = %s] is not defined in UserTask schema or has different type"
+                                .formatted(
+                                        inputField.getName(),
+                                        inputField.getValue().getType()));
             }
             results.add(inputField);
             VariableValueModel fieldVal = VariableValueModel.fromProto(inputField.getValue());
@@ -401,7 +409,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
 
     private void validateMandatoryFieldsFromCompletedEvent(
             Collection<UserTaskFieldModel> userTaskFieldsFromTaskDef, Collection<String> inputFieldNames)
-            throws LHValidationError {
+            throws LHApiException {
         List<String> mandatoryFieldNames = userTaskFieldsFromTaskDef.stream()
                 .filter(UserTaskFieldModel::isRequired)
                 .map(UserTaskFieldModel::getName)
@@ -410,7 +418,8 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
                 .filter(Predicate.not(inputFieldNames::contains))
                 .collect(Collectors.joining(","));
         if (!mandatoryFieldsNotFound.isEmpty()) {
-            throw new LHValidationError("[%s] are mandatory fields".formatted(mandatoryFieldsNotFound));
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "[%s] are mandatory fields".formatted(mandatoryFieldsNotFound));
         }
     }
 

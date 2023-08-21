@@ -7,8 +7,8 @@ import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
+import io.littlehorse.sdk.common.proto.ExternalEventList;
 import io.littlehorse.sdk.common.proto.ListExternalEventsRequest;
-import io.littlehorse.sdk.common.proto.ListExternalEventsResponse;
 import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
@@ -17,7 +17,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExte
 public class ListExternalEventsRequestModel
         extends PublicScanRequest<
                 ListExternalEventsRequest,
-                ListExternalEventsResponse,
+                ExternalEventList,
                 ExternalEvent,
                 ExternalEventModel,
                 ListExternalEventsReply> {

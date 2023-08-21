@@ -142,7 +142,7 @@ public class ServerTopology {
                 Stores.persistentKeyValueStore(CORE_REPARTITION_STORE), Serdes.String(), Serdes.Bytes());
         topo.addStateStore(repartitionedStoreBuilder, CORE_REPARTITION_PROCESSOR);
 
-        //
+        // Metadata Global Store
         StoreBuilder<KeyValueStore<String, Bytes>> globalStoreBuilder = Stores.keyValueStoreBuilder(
                         Stores.persistentKeyValueStore(GLOBAL_STORE), Serdes.String(), Serdes.Bytes())
                 .withLoggingDisabled();

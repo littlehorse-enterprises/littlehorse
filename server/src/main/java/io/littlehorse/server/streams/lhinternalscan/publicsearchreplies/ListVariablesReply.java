@@ -1,11 +1,11 @@
 package io.littlehorse.server.streams.lhinternalscan.publicsearchreplies;
 
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
-import io.littlehorse.sdk.common.proto.ListVariablesResponse;
 import io.littlehorse.sdk.common.proto.Variable;
+import io.littlehorse.sdk.common.proto.VariableList;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanReply;
 
-public class ListVariablesReply extends PublicScanReply<ListVariablesResponse, Variable, VariableModel> {
+public class ListVariablesReply extends PublicScanReply<VariableList, Variable, VariableModel> {
 
     public Class<VariableModel> getResultJavaClass() {
         return VariableModel.class;
@@ -15,7 +15,7 @@ public class ListVariablesReply extends PublicScanReply<ListVariablesResponse, V
         return Variable.class;
     }
 
-    public Class<ListVariablesResponse> getProtoBaseClass() {
-        return ListVariablesResponse.class;
+    public Class<VariableList> getProtoBaseClass() {
+        return VariableList.class;
     }
 }

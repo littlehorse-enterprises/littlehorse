@@ -1,14 +1,14 @@
 package io.littlehorse.server.streams.lhinternalscan.publicsearchreplies;
 
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
-import io.littlehorse.sdk.common.proto.SearchWfSpecResponse;
 import io.littlehorse.sdk.common.proto.WfSpecId;
+import io.littlehorse.sdk.common.proto.WfSpecIdList;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanReply;
 
-public class SearchWfSpecReply extends PublicScanReply<SearchWfSpecResponse, WfSpecId, WfSpecIdModel> {
+public class SearchWfSpecReply extends PublicScanReply<WfSpecIdList, WfSpecId, WfSpecIdModel> {
 
-    public Class<SearchWfSpecResponse> getProtoBaseClass() {
-        return SearchWfSpecResponse.class;
+    public Class<WfSpecIdList> getProtoBaseClass() {
+        return WfSpecIdList.class;
     }
 
     public Class<WfSpecIdModel> getResultJavaClass() {
@@ -18,28 +18,4 @@ public class SearchWfSpecReply extends PublicScanReply<SearchWfSpecResponse, WfS
     public Class<WfSpecId> getResultProtoClass() {
         return WfSpecId.class;
     }
-    // public SearchWfSpecResponse.Builder toProto() {
-    // SearchWfSpecResponse.Builder out = SearchWfSpecResponse
-    // .newBuilder()
-    // .setCode(code);
-    // if (message != null) out.setMessage(message);
-    // if (bookmark != null) out.setBookmark(ByteString.copyFrom(bookmark));
-
-    // for (String objectId : objectIds) {
-    // out.addIds(WfSpec.parseId(objectId));
-    // }
-
-    // return out;
-    // }
-
-    // public void initFrom(Message proto) {
-    // SearchWfSpecResponse p = (SearchWfSpecResponse) proto;
-    // code = p.getCode();
-    // if (p.hasMessage()) message = p.getMessage();
-    // if (p.hasBookmark()) bookmark = p.getBookmark().toByteArray();
-
-    // for (WfSpecId id : p.getIdsList()) {
-    // objectIds.add(WfSpec.getObjectId(id));
-    // }
-    // }
 }

@@ -153,11 +153,11 @@ public interface CommandOrBuilder extends
    * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 11;</code>
    * @return The deleteWfRun.
    */
-  io.littlehorse.common.proto.DeleteWfRunRequest getDeleteWfRun();
+  io.littlehorse.sdk.common.proto.DeleteWfRunRequest getDeleteWfRun();
   /**
    * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 11;</code>
    */
-  io.littlehorse.common.proto.DeleteWfRunRequestOrBuilder getDeleteWfRunOrBuilder();
+  io.littlehorse.sdk.common.proto.DeleteWfRunRequestOrBuilder getDeleteWfRunOrBuilder();
 
   /**
    * <code>.littlehorse.ExternalEventNodeTimeoutPb external_event_timeout = 12;</code>

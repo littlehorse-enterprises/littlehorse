@@ -1,12 +1,9 @@
 package io.littlehorse.server.streams.util;
 
 import com.google.protobuf.ByteString;
-import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandResponse;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -23,36 +20,7 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
     }
 
     public void onError(Throwable t) {
-        log.error(
-                "Got onError() from postObserver. Returning RECORDED_NOT_PROCESSED: {} {}",
-                responseCls,
-                t.getMessage(),
-                t);
-
-        U response = buildErrorResponse(
-                LHResponseCode.REPORTED_BUT_NOT_PROCESSED,
-                "Recorded request but processing not verified: " + t.getMessage());
-
-        ctx.onNext(response);
-        if (shouldComplete) ctx.onCompleted();
-    }
-
-    private U buildErrorResponse(LHResponseCode code, String msg) {
-        try {
-            GeneratedMessageV3.Builder<?> b = (GeneratedMessageV3.Builder<?>)
-                    responseCls.getMethod("newBuilder").invoke(null);
-            b.getClass().getMethod("setCode", LHResponseCode.class).invoke(b, code);
-
-            b.getClass().getMethod("setMessage", String.class).invoke(b, msg);
-
-            @SuppressWarnings("unchecked")
-            U response = (U) b.getClass().getMethod("build").invoke(b);
-
-            return response;
-        } catch (Exception exn) {
-            log.error(exn.getMessage(), exn);
-            throw new RuntimeException("Yikerz, not possible");
-        }
+        ctx.onError(t);
     }
 
     @SuppressWarnings("unchecked")
@@ -66,26 +34,12 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
     }
 
     public void onCompleted() {
-        // Nothing to do
+        if (shouldComplete) {
+            ctx.onCompleted();
+        }
     }
 
     public void onNext(WaitForCommandResponse reply) {
-        U response;
-
-        if (reply.getCode() == StoreQueryStatusPb.RSQ_OK) {
-            if (!reply.hasResult()) {
-                throw new RuntimeException("This should be impossible");
-            }
-            response = buildRespFromBytes(reply.getResult().getResult());
-        } else if (reply.getCode() == StoreQueryStatusPb.RSQ_NOT_AVAILABLE) {
-            response = buildErrorResponse(
-                    LHResponseCode.CONNECTION_ERROR,
-                    "Failed connecting to backend: " + (reply.hasMessage() ? reply.getMessage() : ""));
-        } else {
-            throw new RuntimeException("Unexpected RSQ code");
-        }
-
-        ctx.onNext(response);
-        if (shouldComplete) ctx.onCompleted();
+        ctx.onNext(buildRespFromBytes(reply.getResult()));
     }
 }

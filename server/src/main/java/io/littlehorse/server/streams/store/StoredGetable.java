@@ -75,4 +75,8 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
     public StoreableType getType() {
         return StoreableType.STORED_GETABLE;
     }
+
+    public static String getRocksDBKey(String key, GetableClassEnum objType) {
+        return objType.getNumber() + "/" + key;
+    }
 }

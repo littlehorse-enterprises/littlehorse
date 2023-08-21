@@ -1,16 +1,16 @@
 package io.littlehorse.common.model.command.subcommand;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.command.subcommandresponse.CompleteUserTaskRunReply;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.UserTaskResult;
 import java.util.Date;
 import lombok.Getter;
@@ -44,26 +44,14 @@ public class CompleteUserTaskRunRequestModel extends SubCommand<CompleteUserTask
         result = p.getResult();
     }
 
-    public CompleteUserTaskRunReply process(CoreProcessorDAO dao, LHConfig config) {
-        CompleteUserTaskRunReply out = new CompleteUserTaskRunReply();
-
+    public Empty process(CoreProcessorDAO dao, LHConfig config) {
         UserTaskRunModel utr = dao.get(userTaskRunId);
         if (utr == null) {
-            out.setCode(LHResponseCode.NOT_FOUND_ERROR);
-            out.setMessage("Couldn't find userTaskRun " + userTaskRunId);
-            return out;
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find provided UserTaskRun");
         }
 
-        try {
-            utr.processTaskCompletedEvent(this);
-        } catch (LHValidationError validationError) {
-            out.code = LHResponseCode.BAD_REQUEST_ERROR;
-            out.message = validationError.getMessage();
-            return out;
-        }
-
-        out.code = LHResponseCode.OK;
-        return out;
+        utr.processTaskCompletedEvent(this);
+        return Empty.getDefaultInstance();
     }
 
     public boolean hasResponse() {

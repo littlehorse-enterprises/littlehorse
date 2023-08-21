@@ -132,29 +132,6 @@ message ExternalEventNodeTimeoutPb {
     google.protobuf.Timestamp time = 4;
 }
 
-message DeleteWfRunRequest {
-    string wf_run_id = 1;
-  }
-  
-  message DeleteTaskDefRequest {
-    string name = 1;
-  }
-  
-  message DeleteUserTaskDefRequest {
-    string name = 1;
-    int32 version = 2;
-  }
-  
-  message DeleteWfSpecRequest {
-    string name = 1;
-    int32 version = 2;
-  }
-  
-  message DeleteExternalEventDefRequest {
-    string name = 1;
-  }
-  
-
 // This section contains commands that originate from the gRPC api. Perhaps they
 // could also go in service.proto...?
 

@@ -4,21 +4,20 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * RP: The Response Protobuf OP: The Individual Entry Protobuf OJ: The
- * Individual Entry Java Object
+ * RP: The Response Protobuf
+ * OP: The Individual Entry Protobuf
+ * OJ: The Individual Entry Java Object
  */
 public abstract class PublicScanReply<RP extends Message, OP extends Message, OJ extends LHSerializable<OP>>
         extends LHSerializable<RP> {
 
     public ByteString bookmark;
-    public LHResponseCode code;
     public String message;
     public List<OJ> results;
 
@@ -26,7 +25,6 @@ public abstract class PublicScanReply<RP extends Message, OP extends Message, OJ
         results = new ArrayList<>();
     }
 
-    // EMPLOYEE_TODO: Optimize this a bit since reflection is "slow".
     public GeneratedMessageV3.Builder<?> toProto() {
         Class<? extends GeneratedMessageV3> base = getProtoBaseClass();
         Class<OP> resCls = getResultProtoClass();
@@ -40,14 +38,6 @@ public abstract class PublicScanReply<RP extends Message, OP extends Message, OJ
                 Method setBm = builderCls.getMethod("setBookmark", ByteString.class);
                 setBm.invoke(builder, bookmark);
             }
-
-            if (message != null) {
-                Method setMsg = builderCls.getMethod("setMessage", String.class);
-                setMsg.invoke(builder, message);
-            }
-
-            Method setCode = builderCls.getMethod("setCode", LHResponseCode.class);
-            setCode.invoke(builder, code);
 
             Method addResults = builderCls.getMethod("addResults", resCls);
             for (OJ result : results) {
@@ -68,15 +58,6 @@ public abstract class PublicScanReply<RP extends Message, OP extends Message, OJ
                 Method getBm = baseCls.getDeclaredMethod("getBookmark");
                 bookmark = (ByteString) getBm.invoke(p);
             }
-
-            Method hasMsg = baseCls.getDeclaredMethod("hasMessage");
-            if ((boolean) hasMsg.invoke(p)) {
-                Method getMsg = baseCls.getDeclaredMethod("getMessage");
-                message = (String) getMsg.invoke(p);
-            }
-
-            Method getCode = baseCls.getDeclaredMethod("getCode");
-            code = (LHResponseCode) getCode.invoke(p);
 
             Method getResults = baseCls.getDeclaredMethod("getResultsList");
             @SuppressWarnings("unchecked")

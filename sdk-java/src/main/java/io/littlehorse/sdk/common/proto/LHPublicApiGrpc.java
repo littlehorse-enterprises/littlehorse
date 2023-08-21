@@ -1224,27 +1224,27 @@ public final class LHPublicApiGrpc {
     return getResumeWfRunMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfRunId,
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteWfRunRequest,
       com.google.protobuf.Empty> getDeleteWfRunMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "DeleteWfRun",
-      requestType = io.littlehorse.sdk.common.proto.WfRunId.class,
+      requestType = io.littlehorse.sdk.common.proto.DeleteWfRunRequest.class,
       responseType = com.google.protobuf.Empty.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfRunId,
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteWfRunRequest,
       com.google.protobuf.Empty> getDeleteWfRunMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfRunId, com.google.protobuf.Empty> getDeleteWfRunMethod;
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteWfRunRequest, com.google.protobuf.Empty> getDeleteWfRunMethod;
     if ((getDeleteWfRunMethod = LHPublicApiGrpc.getDeleteWfRunMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
         if ((getDeleteWfRunMethod = LHPublicApiGrpc.getDeleteWfRunMethod) == null) {
           LHPublicApiGrpc.getDeleteWfRunMethod = getDeleteWfRunMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.WfRunId, com.google.protobuf.Empty>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteWfRunRequest, com.google.protobuf.Empty>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteWfRun"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.DeleteWfRunRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
               .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("DeleteWfRun"))
@@ -1255,27 +1255,27 @@ public final class LHPublicApiGrpc {
     return getDeleteWfRunMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefId,
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteTaskDefRequest,
       com.google.protobuf.Empty> getDeleteTaskDefMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "DeleteTaskDef",
-      requestType = io.littlehorse.sdk.common.proto.TaskDefId.class,
+      requestType = io.littlehorse.sdk.common.proto.DeleteTaskDefRequest.class,
       responseType = com.google.protobuf.Empty.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefId,
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteTaskDefRequest,
       com.google.protobuf.Empty> getDeleteTaskDefMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefId, com.google.protobuf.Empty> getDeleteTaskDefMethod;
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteTaskDefRequest, com.google.protobuf.Empty> getDeleteTaskDefMethod;
     if ((getDeleteTaskDefMethod = LHPublicApiGrpc.getDeleteTaskDefMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
         if ((getDeleteTaskDefMethod = LHPublicApiGrpc.getDeleteTaskDefMethod) == null) {
           LHPublicApiGrpc.getDeleteTaskDefMethod = getDeleteTaskDefMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.TaskDefId, com.google.protobuf.Empty>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteTaskDefRequest, com.google.protobuf.Empty>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteTaskDef"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.DeleteTaskDefRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
               .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("DeleteTaskDef"))
@@ -1286,27 +1286,27 @@ public final class LHPublicApiGrpc {
     return getDeleteTaskDefMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfSpecId,
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteWfSpecRequest,
       com.google.protobuf.Empty> getDeleteWfSpecMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "DeleteWfSpec",
-      requestType = io.littlehorse.sdk.common.proto.WfSpecId.class,
+      requestType = io.littlehorse.sdk.common.proto.DeleteWfSpecRequest.class,
       responseType = com.google.protobuf.Empty.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfSpecId,
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteWfSpecRequest,
       com.google.protobuf.Empty> getDeleteWfSpecMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfSpecId, com.google.protobuf.Empty> getDeleteWfSpecMethod;
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteWfSpecRequest, com.google.protobuf.Empty> getDeleteWfSpecMethod;
     if ((getDeleteWfSpecMethod = LHPublicApiGrpc.getDeleteWfSpecMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
         if ((getDeleteWfSpecMethod = LHPublicApiGrpc.getDeleteWfSpecMethod) == null) {
           LHPublicApiGrpc.getDeleteWfSpecMethod = getDeleteWfSpecMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.WfSpecId, com.google.protobuf.Empty>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteWfSpecRequest, com.google.protobuf.Empty>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteWfSpec"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.DeleteWfSpecRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
               .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("DeleteWfSpec"))
@@ -1317,27 +1317,27 @@ public final class LHPublicApiGrpc {
     return getDeleteWfSpecMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.UserTaskDefId,
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest,
       com.google.protobuf.Empty> getDeleteUserTaskDefMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "DeleteUserTaskDef",
-      requestType = io.littlehorse.sdk.common.proto.UserTaskDefId.class,
+      requestType = io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.class,
       responseType = com.google.protobuf.Empty.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.UserTaskDefId,
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest,
       com.google.protobuf.Empty> getDeleteUserTaskDefMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.UserTaskDefId, com.google.protobuf.Empty> getDeleteUserTaskDefMethod;
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest, com.google.protobuf.Empty> getDeleteUserTaskDefMethod;
     if ((getDeleteUserTaskDefMethod = LHPublicApiGrpc.getDeleteUserTaskDefMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
         if ((getDeleteUserTaskDefMethod = LHPublicApiGrpc.getDeleteUserTaskDefMethod) == null) {
           LHPublicApiGrpc.getDeleteUserTaskDefMethod = getDeleteUserTaskDefMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.UserTaskDefId, com.google.protobuf.Empty>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest, com.google.protobuf.Empty>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteUserTaskDef"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.UserTaskDefId.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
               .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("DeleteUserTaskDef"))
@@ -1348,27 +1348,27 @@ public final class LHPublicApiGrpc {
     return getDeleteUserTaskDefMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventDefId,
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest,
       com.google.protobuf.Empty> getDeleteExternalEventDefMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "DeleteExternalEventDef",
-      requestType = io.littlehorse.sdk.common.proto.ExternalEventDefId.class,
+      requestType = io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest.class,
       responseType = com.google.protobuf.Empty.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventDefId,
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest,
       com.google.protobuf.Empty> getDeleteExternalEventDefMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ExternalEventDefId, com.google.protobuf.Empty> getDeleteExternalEventDefMethod;
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest, com.google.protobuf.Empty> getDeleteExternalEventDefMethod;
     if ((getDeleteExternalEventDefMethod = LHPublicApiGrpc.getDeleteExternalEventDefMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
         if ((getDeleteExternalEventDefMethod = LHPublicApiGrpc.getDeleteExternalEventDefMethod) == null) {
           LHPublicApiGrpc.getDeleteExternalEventDefMethod = getDeleteExternalEventDefMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ExternalEventDefId, com.google.protobuf.Empty>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest, com.google.protobuf.Empty>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteExternalEventDef"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
               .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("DeleteExternalEventDef"))
@@ -1857,35 +1857,35 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    default void deleteWfRun(io.littlehorse.sdk.common.proto.WfRunId request,
+    default void deleteWfRun(io.littlehorse.sdk.common.proto.DeleteWfRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteWfRunMethod(), responseObserver);
     }
 
     /**
      */
-    default void deleteTaskDef(io.littlehorse.sdk.common.proto.TaskDefId request,
+    default void deleteTaskDef(io.littlehorse.sdk.common.proto.DeleteTaskDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteTaskDefMethod(), responseObserver);
     }
 
     /**
      */
-    default void deleteWfSpec(io.littlehorse.sdk.common.proto.WfSpecId request,
+    default void deleteWfSpec(io.littlehorse.sdk.common.proto.DeleteWfSpecRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteWfSpecMethod(), responseObserver);
     }
 
     /**
      */
-    default void deleteUserTaskDef(io.littlehorse.sdk.common.proto.UserTaskDefId request,
+    default void deleteUserTaskDef(io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteUserTaskDefMethod(), responseObserver);
     }
 
     /**
      */
-    default void deleteExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefId request,
+    default void deleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteExternalEventDefMethod(), responseObserver);
     }
@@ -2267,7 +2267,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public void deleteWfRun(io.littlehorse.sdk.common.proto.WfRunId request,
+    public void deleteWfRun(io.littlehorse.sdk.common.proto.DeleteWfRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getDeleteWfRunMethod(), getCallOptions()), request, responseObserver);
@@ -2275,7 +2275,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public void deleteTaskDef(io.littlehorse.sdk.common.proto.TaskDefId request,
+    public void deleteTaskDef(io.littlehorse.sdk.common.proto.DeleteTaskDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getDeleteTaskDefMethod(), getCallOptions()), request, responseObserver);
@@ -2283,7 +2283,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public void deleteWfSpec(io.littlehorse.sdk.common.proto.WfSpecId request,
+    public void deleteWfSpec(io.littlehorse.sdk.common.proto.DeleteWfSpecRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getDeleteWfSpecMethod(), getCallOptions()), request, responseObserver);
@@ -2291,7 +2291,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public void deleteUserTaskDef(io.littlehorse.sdk.common.proto.UserTaskDefId request,
+    public void deleteUserTaskDef(io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getDeleteUserTaskDefMethod(), getCallOptions()), request, responseObserver);
@@ -2299,7 +2299,7 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public void deleteExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefId request,
+    public void deleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getDeleteExternalEventDefMethod(), getCallOptions()), request, responseObserver);
@@ -2630,35 +2630,35 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public com.google.protobuf.Empty deleteWfRun(io.littlehorse.sdk.common.proto.WfRunId request) {
+    public com.google.protobuf.Empty deleteWfRun(io.littlehorse.sdk.common.proto.DeleteWfRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteWfRunMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.google.protobuf.Empty deleteTaskDef(io.littlehorse.sdk.common.proto.TaskDefId request) {
+    public com.google.protobuf.Empty deleteTaskDef(io.littlehorse.sdk.common.proto.DeleteTaskDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteTaskDefMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.google.protobuf.Empty deleteWfSpec(io.littlehorse.sdk.common.proto.WfSpecId request) {
+    public com.google.protobuf.Empty deleteWfSpec(io.littlehorse.sdk.common.proto.DeleteWfSpecRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteWfSpecMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.google.protobuf.Empty deleteUserTaskDef(io.littlehorse.sdk.common.proto.UserTaskDefId request) {
+    public com.google.protobuf.Empty deleteUserTaskDef(io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteUserTaskDefMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.google.protobuf.Empty deleteExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefId request) {
+    public com.google.protobuf.Empty deleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteExternalEventDefMethod(), getCallOptions(), request);
     }
@@ -3022,7 +3022,7 @@ public final class LHPublicApiGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteWfRun(
-        io.littlehorse.sdk.common.proto.WfRunId request) {
+        io.littlehorse.sdk.common.proto.DeleteWfRunRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getDeleteWfRunMethod(), getCallOptions()), request);
     }
@@ -3030,7 +3030,7 @@ public final class LHPublicApiGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteTaskDef(
-        io.littlehorse.sdk.common.proto.TaskDefId request) {
+        io.littlehorse.sdk.common.proto.DeleteTaskDefRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getDeleteTaskDefMethod(), getCallOptions()), request);
     }
@@ -3038,7 +3038,7 @@ public final class LHPublicApiGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteWfSpec(
-        io.littlehorse.sdk.common.proto.WfSpecId request) {
+        io.littlehorse.sdk.common.proto.DeleteWfSpecRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getDeleteWfSpecMethod(), getCallOptions()), request);
     }
@@ -3046,7 +3046,7 @@ public final class LHPublicApiGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteUserTaskDef(
-        io.littlehorse.sdk.common.proto.UserTaskDefId request) {
+        io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getDeleteUserTaskDefMethod(), getCallOptions()), request);
     }
@@ -3054,7 +3054,7 @@ public final class LHPublicApiGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteExternalEventDef(
-        io.littlehorse.sdk.common.proto.ExternalEventDefId request) {
+        io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getDeleteExternalEventDefMethod(), getCallOptions()), request);
     }
@@ -3320,23 +3320,23 @@ public final class LHPublicApiGrpc {
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_DELETE_WF_RUN:
-          serviceImpl.deleteWfRun((io.littlehorse.sdk.common.proto.WfRunId) request,
+          serviceImpl.deleteWfRun((io.littlehorse.sdk.common.proto.DeleteWfRunRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_DELETE_TASK_DEF:
-          serviceImpl.deleteTaskDef((io.littlehorse.sdk.common.proto.TaskDefId) request,
+          serviceImpl.deleteTaskDef((io.littlehorse.sdk.common.proto.DeleteTaskDefRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_DELETE_WF_SPEC:
-          serviceImpl.deleteWfSpec((io.littlehorse.sdk.common.proto.WfSpecId) request,
+          serviceImpl.deleteWfSpec((io.littlehorse.sdk.common.proto.DeleteWfSpecRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_DELETE_USER_TASK_DEF:
-          serviceImpl.deleteUserTaskDef((io.littlehorse.sdk.common.proto.UserTaskDefId) request,
+          serviceImpl.deleteUserTaskDef((io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_DELETE_EXTERNAL_EVENT_DEF:
-          serviceImpl.deleteExternalEventDef((io.littlehorse.sdk.common.proto.ExternalEventDefId) request,
+          serviceImpl.deleteExternalEventDef((io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_HEALTH_CHECK:
@@ -3657,35 +3657,35 @@ public final class LHPublicApiGrpc {
           getDeleteWfRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.WfRunId,
+              io.littlehorse.sdk.common.proto.DeleteWfRunRequest,
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_WF_RUN)))
         .addMethod(
           getDeleteTaskDefMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.TaskDefId,
+              io.littlehorse.sdk.common.proto.DeleteTaskDefRequest,
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_TASK_DEF)))
         .addMethod(
           getDeleteWfSpecMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.WfSpecId,
+              io.littlehorse.sdk.common.proto.DeleteWfSpecRequest,
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_WF_SPEC)))
         .addMethod(
           getDeleteUserTaskDefMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.UserTaskDefId,
+              io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest,
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_USER_TASK_DEF)))
         .addMethod(
           getDeleteExternalEventDefMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.ExternalEventDefId,
+              io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest,
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_EXTERNAL_EVENT_DEF)))
         .addMethod(

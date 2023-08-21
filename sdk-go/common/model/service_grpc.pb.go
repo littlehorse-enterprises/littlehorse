@@ -114,11 +114,11 @@ type LHPublicApiClient interface {
 	ReportTask(ctx context.Context, in *ReportTaskRun, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	StopWfRun(ctx context.Context, in *StopWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	ResumeWfRun(ctx context.Context, in *ResumeWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	DeleteWfRun(ctx context.Context, in *WfRunId, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	DeleteTaskDef(ctx context.Context, in *TaskDefId, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	DeleteWfSpec(ctx context.Context, in *WfSpecId, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	DeleteUserTaskDef(ctx context.Context, in *UserTaskDefId, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	DeleteExternalEventDef(ctx context.Context, in *ExternalEventDefId, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteWfRun(ctx context.Context, in *DeleteWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteTaskDef(ctx context.Context, in *DeleteTaskDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteWfSpec(ctx context.Context, in *DeleteWfSpecRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteUserTaskDef(ctx context.Context, in *DeleteUserTaskDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteExternalEventDef(ctx context.Context, in *DeleteExternalEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	HealthCheck(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*HealthCheckResponse, error)
 	GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error)
 	GetWfSpecMetricsWindow(ctx context.Context, in *WfSpecMetricsQueryRequest, opts ...grpc.CallOption) (*WfSpecMetrics, error)
@@ -507,7 +507,7 @@ func (c *lHPublicApiClient) ResumeWfRun(ctx context.Context, in *ResumeWfRunRequ
 	return out, nil
 }
 
-func (c *lHPublicApiClient) DeleteWfRun(ctx context.Context, in *WfRunId, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *lHPublicApiClient) DeleteWfRun(ctx context.Context, in *DeleteWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LHPublicApi_DeleteWfRun_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -516,7 +516,7 @@ func (c *lHPublicApiClient) DeleteWfRun(ctx context.Context, in *WfRunId, opts .
 	return out, nil
 }
 
-func (c *lHPublicApiClient) DeleteTaskDef(ctx context.Context, in *TaskDefId, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *lHPublicApiClient) DeleteTaskDef(ctx context.Context, in *DeleteTaskDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LHPublicApi_DeleteTaskDef_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -525,7 +525,7 @@ func (c *lHPublicApiClient) DeleteTaskDef(ctx context.Context, in *TaskDefId, op
 	return out, nil
 }
 
-func (c *lHPublicApiClient) DeleteWfSpec(ctx context.Context, in *WfSpecId, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *lHPublicApiClient) DeleteWfSpec(ctx context.Context, in *DeleteWfSpecRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LHPublicApi_DeleteWfSpec_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -534,7 +534,7 @@ func (c *lHPublicApiClient) DeleteWfSpec(ctx context.Context, in *WfSpecId, opts
 	return out, nil
 }
 
-func (c *lHPublicApiClient) DeleteUserTaskDef(ctx context.Context, in *UserTaskDefId, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *lHPublicApiClient) DeleteUserTaskDef(ctx context.Context, in *DeleteUserTaskDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LHPublicApi_DeleteUserTaskDef_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -543,7 +543,7 @@ func (c *lHPublicApiClient) DeleteUserTaskDef(ctx context.Context, in *UserTaskD
 	return out, nil
 }
 
-func (c *lHPublicApiClient) DeleteExternalEventDef(ctx context.Context, in *ExternalEventDefId, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *lHPublicApiClient) DeleteExternalEventDef(ctx context.Context, in *DeleteExternalEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LHPublicApi_DeleteExternalEventDef_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -640,11 +640,11 @@ type LHPublicApiServer interface {
 	ReportTask(context.Context, *ReportTaskRun) (*emptypb.Empty, error)
 	StopWfRun(context.Context, *StopWfRunRequest) (*emptypb.Empty, error)
 	ResumeWfRun(context.Context, *ResumeWfRunRequest) (*emptypb.Empty, error)
-	DeleteWfRun(context.Context, *WfRunId) (*emptypb.Empty, error)
-	DeleteTaskDef(context.Context, *TaskDefId) (*emptypb.Empty, error)
-	DeleteWfSpec(context.Context, *WfSpecId) (*emptypb.Empty, error)
-	DeleteUserTaskDef(context.Context, *UserTaskDefId) (*emptypb.Empty, error)
-	DeleteExternalEventDef(context.Context, *ExternalEventDefId) (*emptypb.Empty, error)
+	DeleteWfRun(context.Context, *DeleteWfRunRequest) (*emptypb.Empty, error)
+	DeleteTaskDef(context.Context, *DeleteTaskDefRequest) (*emptypb.Empty, error)
+	DeleteWfSpec(context.Context, *DeleteWfSpecRequest) (*emptypb.Empty, error)
+	DeleteUserTaskDef(context.Context, *DeleteUserTaskDefRequest) (*emptypb.Empty, error)
+	DeleteExternalEventDef(context.Context, *DeleteExternalEventDefRequest) (*emptypb.Empty, error)
 	HealthCheck(context.Context, *emptypb.Empty) (*HealthCheckResponse, error)
 	GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error)
 	GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error)
@@ -774,19 +774,19 @@ func (UnimplementedLHPublicApiServer) StopWfRun(context.Context, *StopWfRunReque
 func (UnimplementedLHPublicApiServer) ResumeWfRun(context.Context, *ResumeWfRunRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ResumeWfRun not implemented")
 }
-func (UnimplementedLHPublicApiServer) DeleteWfRun(context.Context, *WfRunId) (*emptypb.Empty, error) {
+func (UnimplementedLHPublicApiServer) DeleteWfRun(context.Context, *DeleteWfRunRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteWfRun not implemented")
 }
-func (UnimplementedLHPublicApiServer) DeleteTaskDef(context.Context, *TaskDefId) (*emptypb.Empty, error) {
+func (UnimplementedLHPublicApiServer) DeleteTaskDef(context.Context, *DeleteTaskDefRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteTaskDef not implemented")
 }
-func (UnimplementedLHPublicApiServer) DeleteWfSpec(context.Context, *WfSpecId) (*emptypb.Empty, error) {
+func (UnimplementedLHPublicApiServer) DeleteWfSpec(context.Context, *DeleteWfSpecRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteWfSpec not implemented")
 }
-func (UnimplementedLHPublicApiServer) DeleteUserTaskDef(context.Context, *UserTaskDefId) (*emptypb.Empty, error) {
+func (UnimplementedLHPublicApiServer) DeleteUserTaskDef(context.Context, *DeleteUserTaskDefRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserTaskDef not implemented")
 }
-func (UnimplementedLHPublicApiServer) DeleteExternalEventDef(context.Context, *ExternalEventDefId) (*emptypb.Empty, error) {
+func (UnimplementedLHPublicApiServer) DeleteExternalEventDef(context.Context, *DeleteExternalEventDefRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteExternalEventDef not implemented")
 }
 func (UnimplementedLHPublicApiServer) HealthCheck(context.Context, *emptypb.Empty) (*HealthCheckResponse, error) {
@@ -1528,7 +1528,7 @@ func _LHPublicApi_ResumeWfRun_Handler(srv interface{}, ctx context.Context, dec 
 }
 
 func _LHPublicApi_DeleteWfRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WfRunId)
+	in := new(DeleteWfRunRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1540,13 +1540,13 @@ func _LHPublicApi_DeleteWfRun_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: LHPublicApi_DeleteWfRun_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LHPublicApiServer).DeleteWfRun(ctx, req.(*WfRunId))
+		return srv.(LHPublicApiServer).DeleteWfRun(ctx, req.(*DeleteWfRunRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _LHPublicApi_DeleteTaskDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TaskDefId)
+	in := new(DeleteTaskDefRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1558,13 +1558,13 @@ func _LHPublicApi_DeleteTaskDef_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: LHPublicApi_DeleteTaskDef_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LHPublicApiServer).DeleteTaskDef(ctx, req.(*TaskDefId))
+		return srv.(LHPublicApiServer).DeleteTaskDef(ctx, req.(*DeleteTaskDefRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _LHPublicApi_DeleteWfSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WfSpecId)
+	in := new(DeleteWfSpecRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1576,13 +1576,13 @@ func _LHPublicApi_DeleteWfSpec_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: LHPublicApi_DeleteWfSpec_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LHPublicApiServer).DeleteWfSpec(ctx, req.(*WfSpecId))
+		return srv.(LHPublicApiServer).DeleteWfSpec(ctx, req.(*DeleteWfSpecRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _LHPublicApi_DeleteUserTaskDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserTaskDefId)
+	in := new(DeleteUserTaskDefRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1594,13 +1594,13 @@ func _LHPublicApi_DeleteUserTaskDef_Handler(srv interface{}, ctx context.Context
 		FullMethod: LHPublicApi_DeleteUserTaskDef_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LHPublicApiServer).DeleteUserTaskDef(ctx, req.(*UserTaskDefId))
+		return srv.(LHPublicApiServer).DeleteUserTaskDef(ctx, req.(*DeleteUserTaskDefRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _LHPublicApi_DeleteExternalEventDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ExternalEventDefId)
+	in := new(DeleteExternalEventDefRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1612,7 +1612,7 @@ func _LHPublicApi_DeleteExternalEventDef_Handler(srv interface{}, ctx context.Co
 		FullMethod: LHPublicApi_DeleteExternalEventDef_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LHPublicApiServer).DeleteExternalEventDef(ctx, req.(*ExternalEventDefId))
+		return srv.(LHPublicApiServer).DeleteExternalEventDef(ctx, req.(*DeleteExternalEventDefRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

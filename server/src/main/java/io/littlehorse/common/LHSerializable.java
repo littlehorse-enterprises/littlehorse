@@ -16,6 +16,8 @@ public abstract class LHSerializable<T extends Message> {
 
     public abstract void initFrom(Message proto) throws LHSerdeError;
 
+    // TODO: should this be:
+    // public abstract Class<T> getProtoBaseClass(); ?
     public abstract Class<? extends GeneratedMessageV3> getProtoBaseClass();
 
     public String toJson() {

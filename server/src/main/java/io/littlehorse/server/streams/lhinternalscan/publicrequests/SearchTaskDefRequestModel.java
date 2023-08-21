@@ -9,8 +9,8 @@ import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.SearchTaskDefRequest;
-import io.littlehorse.sdk.common.proto.SearchTaskDefResponse;
 import io.littlehorse.sdk.common.proto.TaskDefId;
+import io.littlehorse.sdk.common.proto.TaskDefIdList;
 import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
@@ -19,8 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SearchTaskDefRequestModel
-        extends PublicScanRequest<
-                SearchTaskDefRequest, SearchTaskDefResponse, TaskDefId, TaskDefIdModel, SearchTaskDefReply> {
+        extends PublicScanRequest<SearchTaskDefRequest, TaskDefIdList, TaskDefId, TaskDefIdModel, SearchTaskDefReply> {
 
     public String prefix;
 

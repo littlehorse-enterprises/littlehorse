@@ -14,8 +14,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest.VariableCriteriaCase;
-import io.littlehorse.sdk.common.proto.SearchVariableResponse;
 import io.littlehorse.sdk.common.proto.VariableId;
+import io.littlehorse.sdk.common.proto.VariableIdList;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SearchVariableRequestModel
         extends PublicScanRequest<
-                SearchVariableRequest, SearchVariableResponse, VariableId, VariableIdModel, SearchVariableReply> {
+                SearchVariableRequest, VariableIdList, VariableId, VariableIdModel, SearchVariableReply> {
 
     public VariableCriteriaCase type;
     public NameAndValueRequest value;

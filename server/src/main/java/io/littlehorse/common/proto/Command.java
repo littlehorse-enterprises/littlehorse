@@ -422,21 +422,21 @@ private static final long serialVersionUID = 0L;
    * @return The deleteWfRun.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.DeleteWfRunRequest getDeleteWfRun() {
+  public io.littlehorse.sdk.common.proto.DeleteWfRunRequest getDeleteWfRun() {
     if (commandCase_ == 11) {
-       return (io.littlehorse.common.proto.DeleteWfRunRequest) command_;
+       return (io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_;
     }
-    return io.littlehorse.common.proto.DeleteWfRunRequest.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeleteWfRunRequest.getDefaultInstance();
   }
   /**
    * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 11;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.DeleteWfRunRequestOrBuilder getDeleteWfRunOrBuilder() {
+  public io.littlehorse.sdk.common.proto.DeleteWfRunRequestOrBuilder getDeleteWfRunOrBuilder() {
     if (commandCase_ == 11) {
-       return (io.littlehorse.common.proto.DeleteWfRunRequest) command_;
+       return (io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_;
     }
-    return io.littlehorse.common.proto.DeleteWfRunRequest.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.DeleteWfRunRequest.getDefaultInstance();
   }
 
   public static final int EXTERNAL_EVENT_TIMEOUT_FIELD_NUMBER = 12;
@@ -741,7 +741,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(10, (io.littlehorse.common.proto.SleepNodeMaturedPb) command_);
     }
     if (commandCase_ == 11) {
-      output.writeMessage(11, (io.littlehorse.common.proto.DeleteWfRunRequest) command_);
+      output.writeMessage(11, (io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_);
     }
     if (commandCase_ == 12) {
       output.writeMessage(12, (io.littlehorse.common.proto.ExternalEventNodeTimeoutPb) command_);
@@ -813,7 +813,7 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 11) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(11, (io.littlehorse.common.proto.DeleteWfRunRequest) command_);
+        .computeMessageSize(11, (io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_);
     }
     if (commandCase_ == 12) {
       size += com.google.protobuf.CodedOutputStream
@@ -2829,7 +2829,7 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.DeleteWfRunRequest, io.littlehorse.common.proto.DeleteWfRunRequest.Builder, io.littlehorse.common.proto.DeleteWfRunRequestOrBuilder> deleteWfRunBuilder_;
+        io.littlehorse.sdk.common.proto.DeleteWfRunRequest, io.littlehorse.sdk.common.proto.DeleteWfRunRequest.Builder, io.littlehorse.sdk.common.proto.DeleteWfRunRequestOrBuilder> deleteWfRunBuilder_;
     /**
      * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 11;</code>
      * @return Whether the deleteWfRun field is set.
@@ -2843,23 +2843,23 @@ private static final long serialVersionUID = 0L;
      * @return The deleteWfRun.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.DeleteWfRunRequest getDeleteWfRun() {
+    public io.littlehorse.sdk.common.proto.DeleteWfRunRequest getDeleteWfRun() {
       if (deleteWfRunBuilder_ == null) {
         if (commandCase_ == 11) {
-          return (io.littlehorse.common.proto.DeleteWfRunRequest) command_;
+          return (io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_;
         }
-        return io.littlehorse.common.proto.DeleteWfRunRequest.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteWfRunRequest.getDefaultInstance();
       } else {
         if (commandCase_ == 11) {
           return deleteWfRunBuilder_.getMessage();
         }
-        return io.littlehorse.common.proto.DeleteWfRunRequest.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteWfRunRequest.getDefaultInstance();
       }
     }
     /**
      * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 11;</code>
      */
-    public Builder setDeleteWfRun(io.littlehorse.common.proto.DeleteWfRunRequest value) {
+    public Builder setDeleteWfRun(io.littlehorse.sdk.common.proto.DeleteWfRunRequest value) {
       if (deleteWfRunBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2876,7 +2876,7 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 11;</code>
      */
     public Builder setDeleteWfRun(
-        io.littlehorse.common.proto.DeleteWfRunRequest.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.DeleteWfRunRequest.Builder builderForValue) {
       if (deleteWfRunBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -2889,11 +2889,11 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 11;</code>
      */
-    public Builder mergeDeleteWfRun(io.littlehorse.common.proto.DeleteWfRunRequest value) {
+    public Builder mergeDeleteWfRun(io.littlehorse.sdk.common.proto.DeleteWfRunRequest value) {
       if (deleteWfRunBuilder_ == null) {
         if (commandCase_ == 11 &&
-            command_ != io.littlehorse.common.proto.DeleteWfRunRequest.getDefaultInstance()) {
-          command_ = io.littlehorse.common.proto.DeleteWfRunRequest.newBuilder((io.littlehorse.common.proto.DeleteWfRunRequest) command_)
+            command_ != io.littlehorse.sdk.common.proto.DeleteWfRunRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.DeleteWfRunRequest.newBuilder((io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -2931,36 +2931,36 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 11;</code>
      */
-    public io.littlehorse.common.proto.DeleteWfRunRequest.Builder getDeleteWfRunBuilder() {
+    public io.littlehorse.sdk.common.proto.DeleteWfRunRequest.Builder getDeleteWfRunBuilder() {
       return getDeleteWfRunFieldBuilder().getBuilder();
     }
     /**
      * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 11;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.DeleteWfRunRequestOrBuilder getDeleteWfRunOrBuilder() {
+    public io.littlehorse.sdk.common.proto.DeleteWfRunRequestOrBuilder getDeleteWfRunOrBuilder() {
       if ((commandCase_ == 11) && (deleteWfRunBuilder_ != null)) {
         return deleteWfRunBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 11) {
-          return (io.littlehorse.common.proto.DeleteWfRunRequest) command_;
+          return (io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_;
         }
-        return io.littlehorse.common.proto.DeleteWfRunRequest.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.DeleteWfRunRequest.getDefaultInstance();
       }
     }
     /**
      * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 11;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.DeleteWfRunRequest, io.littlehorse.common.proto.DeleteWfRunRequest.Builder, io.littlehorse.common.proto.DeleteWfRunRequestOrBuilder> 
+        io.littlehorse.sdk.common.proto.DeleteWfRunRequest, io.littlehorse.sdk.common.proto.DeleteWfRunRequest.Builder, io.littlehorse.sdk.common.proto.DeleteWfRunRequestOrBuilder> 
         getDeleteWfRunFieldBuilder() {
       if (deleteWfRunBuilder_ == null) {
         if (!(commandCase_ == 11)) {
-          command_ = io.littlehorse.common.proto.DeleteWfRunRequest.getDefaultInstance();
+          command_ = io.littlehorse.sdk.common.proto.DeleteWfRunRequest.getDefaultInstance();
         }
         deleteWfRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.DeleteWfRunRequest, io.littlehorse.common.proto.DeleteWfRunRequest.Builder, io.littlehorse.common.proto.DeleteWfRunRequestOrBuilder>(
-                (io.littlehorse.common.proto.DeleteWfRunRequest) command_,
+            io.littlehorse.sdk.common.proto.DeleteWfRunRequest, io.littlehorse.sdk.common.proto.DeleteWfRunRequest.Builder, io.littlehorse.sdk.common.proto.DeleteWfRunRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.DeleteWfRunRequest) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;

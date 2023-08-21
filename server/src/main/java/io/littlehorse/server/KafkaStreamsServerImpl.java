@@ -173,7 +173,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchVariabl
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfSpecRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
-import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListNodeRunsReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListNodeRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskMetricsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListVariablesReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
@@ -609,7 +609,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     @Override
     public void listNodeRuns(ListNodeRunsRequest req, StreamObserver<ListNodeRunsResponse> ctx) {
         ListNodeRunsRequestModel lnr = LHSerializable.fromProto(req, ListNodeRunsRequestModel.class);
-        handleScan(lnr, ctx, ListNodeRunsReply.class);
+        handleScan(lnr, ctx, ListNodeRunReply.class);
     }
 
     @Override

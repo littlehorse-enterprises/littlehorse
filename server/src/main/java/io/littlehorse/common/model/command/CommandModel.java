@@ -299,7 +299,7 @@ public class CommandModel extends LHSerializable<Command> {
         return getSubCommand().hasResponse();
     }
 
-    public AbstractResponse<?> process(CoreProcessorDAO dao, LHConfig config) {
+    public Message process(CoreProcessorDAO dao, LHConfig config) {
         return getSubCommand().process(dao, config);
     }
 }

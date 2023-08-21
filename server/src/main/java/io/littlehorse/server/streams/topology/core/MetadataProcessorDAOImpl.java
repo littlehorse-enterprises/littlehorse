@@ -1,11 +1,13 @@
 package io.littlehorse.server.streams.topology.core;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.GlobalGetable;
-import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
+import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
@@ -62,7 +64,7 @@ public class MetadataProcessorDAOImpl extends MetadataProcessorDAO {
         @SuppressWarnings("unchecked")
         GlobalGetable<?> old = get((ObjectIdModel<?, U, T>) getable.getObjectId());
 
-        if (old == null) {
+        if (old != null) {
             throw new IllegalStateException(
                     "As of now, metadata processor does not support editing values. Coming in future.");
         }
@@ -74,7 +76,21 @@ public class MetadataProcessorDAOImpl extends MetadataProcessorDAO {
         }
     }
 
-    public <U extends Message, T extends GlobalGetable<U>> DeleteObjectReply delete(ObjectIdModel<?, U, T> id) {
-        return null;
+    public <U extends Message, T extends GlobalGetable<U>> void delete(ObjectIdModel<?, U, T> id) {
+        @SuppressWarnings("unchecked")
+        StoredGetable<U, T> storeResult = rocksdb.get(id.getStoreableKey(), StoredGetable.class);
+
+        if (storeResult == null) {
+            throw new LHApiException(
+                    Status.NOT_FOUND,
+                    "Couldn't find provided " + id.getObjectClass().getSimpleName());
+        }
+
+        rocksdb.delete(id.getStoreableKey(), StoreableType.STORED_GETABLE);
+
+        // Now delete all the tags
+        for (String tagId : storeResult.getIndexCache().getTagIds()) {
+            rocksdb.delete(tagId, StoreableType.TAG);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Empty;
 import io.grpc.ChannelCredentials;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannel;
@@ -8,31 +9,22 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.ServerCredentials;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.command.CommandModel;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
-import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
-import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
-import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
-import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
-import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
-import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
-import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.CentralStoreQueryPb;
-import io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb;
-import io.littlehorse.common.proto.CentralStoreQueryResponse;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.InternalGetAdvertisedHostsPb;
 import io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse;
 import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
@@ -42,28 +34,23 @@ import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsStub;
-import io.littlehorse.common.proto.LocalTasksPb;
 import io.littlehorse.common.proto.LocalTasksResponse;
 import io.littlehorse.common.proto.PartitionBookmarkPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
-import io.littlehorse.common.proto.ServerStatePb;
-import io.littlehorse.common.proto.ServerStatusPb;
 import io.littlehorse.common.proto.StandByTaskStatePb;
-import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.TaskStatePb;
-import io.littlehorse.common.proto.TopologyInstanceStatePb;
 import io.littlehorse.common.proto.TopologyInstanceStateResponse;
-import io.littlehorse.common.proto.WaitForCommandPb;
+import io.littlehorse.common.proto.WaitForCommandRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.streams.lhinternalscan.InternalScan;
+import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
-import io.littlehorse.server.streams.storeinternals.LHROStoreWrapper;
+import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
-import io.littlehorse.server.streams.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import java.io.Closeable;
 import java.io.IOException;
@@ -79,6 +66,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.TopicPartition;
@@ -101,7 +89,11 @@ public class BackendInternalComms implements Closeable {
     private Server internalGrpcServer;
     private KafkaStreams coreStreams;
     private KafkaStreams timerStreams;
+    private StreamsClusterHealthTracker streamsHealth;
+
+    @Getter
     private HostInfo thisHost;
+
     private LHProducer producer;
 
     private ChannelCredentials clientCreds;
@@ -140,6 +132,8 @@ public class BackendInternalComms implements Closeable {
         this.producer = config.getProducer();
         this.asyncWaiters = new AsyncWaiters();
 
+        this.streamsHealth = new StreamsClusterHealthTracker(this, config);
+
         // TODO: Optimize this later.
         new Thread(() -> {
                     while (true) {
@@ -171,81 +165,6 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    /**
-     * Performs a distributed point query by hashing the partition key and querying
-     * the backing
-     * RocksDB store on the resulting host. This method is asynchronous; so you
-     * provide a
-     * StreamObserver (which is a handy interface by grpc) which is callback'ed once
-     * the data is
-     * available.
-     *
-     * <p>
-     * Internally, this method uses the grpc async client.
-     *
-     * @param fullStoreKey is the FULL store key to query.
-     * @param partitionKey is the partition key.
-     * @param observer     is the callback-able object.
-     */
-    public void getStoreBytesAsync(
-            String storeName,
-            String fullStoreKey,
-            String partitionKey,
-            StreamObserver<CentralStoreQueryResponse> observer) {
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-                storeName, partitionKey, Serdes.String().serializer());
-
-        if (meta.activeHost().equals(thisHost)) {
-            localGetBytesAsync(storeName, fullStoreKey, observer);
-        } else {
-            queryRemoteAsync(
-                    meta,
-                    CentralStoreSubQueryPb.newBuilder().setKey(fullStoreKey).build(),
-                    observer,
-                    storeName);
-        }
-    }
-
-    private void localGetBytesAsync(
-            String storeName, String fullStoreKey, StreamObserver<CentralStoreQueryResponse> observer) {
-        // TODO: We should actually pass in the partition key so that we can
-        // improve performance and also safety by getting the store for a specific
-        // partition rather than all.
-        ReadOnlyKeyValueStore<String, Bytes> store = getRawStore(null, false, storeName);
-        Bytes result = store.get(fullStoreKey);
-
-        CentralStoreQueryResponse.Builder out =
-                CentralStoreQueryResponse.newBuilde1r().setCode(StoreQueryStatusPb.RSQ_OK);
-        if (result != null) out.setResult(ByteString.copyFrom(result.get()));
-
-        observer.onNext(out.build());
-    }
-
-    public void getLastFromPrefixAsync(
-            String prefix, String partitionKey, StreamObserver<CentralStoreQueryResponse> observer, String storeName) {
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-                storeName, partitionKey, Serdes.String().serializer());
-
-        if (meta.activeHost().equals(thisHost)) {
-            ReadOnlyRocksDBWrapper wrapper = new ReadOnlyRocksDBWrapper(getRawStore(null, false, storeName), config);
-            Bytes result = wrapper.getLastBytesFromFullPrefix(prefix);
-            CentralStoreQueryResponse.Builder out = CentralStoreQueryResponse.newBuilder();
-            out.setCode(StoreQueryStatusPb.RSQ_OK);
-            if (result != null) {
-                out.setResult(ByteString.copyFrom(result.get()));
-            }
-            observer.onNext(out.build());
-        } else {
-            queryRemoteAsync(
-                    meta,
-                    CentralStoreSubQueryPb.newBuilder()
-                            .setLastFromPrefix(prefix)
-                            .build(),
-                    observer,
-                    storeName);
-        }
-    }
-
     public void waitForCommand(CommandModel command, StreamObserver<WaitForCommandResponse> observer) {
         KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
                 ServerTopology.CORE_STORE,
@@ -262,7 +181,7 @@ public class BackendInternalComms implements Closeable {
         } else {
             getInternalAsyncClient(meta.activeHost())
                     .waitForCommand(
-                            WaitForCommandPb.newBuilder()
+                            WaitForCommandRequest.newBuilder()
                                     .setCommandId(command.commandId)
                                     .build(),
                             observer);
@@ -327,9 +246,8 @@ public class BackendInternalComms implements Closeable {
         }
 
         try {
-            InternalGetAdvertisedHostsResponse info = getInternalClient(streamsHost)
-                    .getAdvertisedHosts(
-                            InternalGetAdvertisedHostsPb.newBuilder().build());
+            InternalGetAdvertisedHostsResponse info =
+                    getInternalClient(streamsHost).getAdvertisedHosts(Empty.getDefaultInstance());
 
             otherHosts.put(streamsHost, info);
             return info;
@@ -374,49 +292,12 @@ public class BackendInternalComms implements Closeable {
         return coreStreams.store(params);
     }
 
-    private LHROStoreWrapper getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
+    private ReadOnlyRocksDBWrapper getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, enableStaleStores, storeName);
-        return new LHROStoreWrapper(rawStore, config);
+        return new ReadOnlyRocksDBWrapper(rawStore, config);
     }
 
-    /**
-     * Performs an RPC call to remotely query the host specified by the provided
-     * KeyQueryMetadata,
-     * and calls the callback provided in the StreamObserver upon completion of the
-     * call.
-     *
-     * <p>
-     * This method uses the gRPC async client.
-     *
-     * <p>
-     * The original version was synchronous and included rpc's to the standby hosts
-     * in the case
-     * that the active host was unavailable.
-     *
-     * <p>
-     * EMPLOYEE_TODO: re-enable that functionality in the async environment.
-     *
-     * @param meta     is the metadata for the partion-key that we're searching for.
-     * @param subQuery is the actual subquery we want to ask.
-     */
-    private void queryRemoteAsync(
-            KeyQueryMetadata meta,
-            CentralStoreSubQueryPb subQuery,
-            StreamObserver<CentralStoreQueryResponse> observer,
-            String storeName) {
-        // todo
-        LHInternalsStub client = getInternalAsyncClient(meta.activeHost());
-        client.centralStoreQuery(
-                CentralStoreQueryPb.newBuilder()
-                        .setEnableStaleStores(false)
-                        .setSpecificPartition(meta.partition())
-                        .setQuery(subQuery)
-                        .setStore(storeName)
-                        .build(),
-                observer);
-    }
-
-    private LHInternalsBlockingStub getInternalClient(HostInfo host) {
+    public LHInternalsBlockingStub getInternalClient(HostInfo host) {
         return LHInternalsGrpc.newBlockingStub(getChannel(host));
     }
 
@@ -448,10 +329,9 @@ public class BackendInternalComms implements Closeable {
     private class InterBrokerCommServer extends LHInternalsImplBase {
 
         @Override
-        public void topologyInstancesState(
-                TopologyInstanceStatePb request, StreamObserver<TopologyInstanceStateResponse> ctx) {
-            var coreServerStates = buildServerStates(coreStreams, "core");
-            var timerServerStates = buildServerStates(timerStreams, "timer");
+        public void topologyInstancesState(Empty req, StreamObserver<TopologyInstanceStateResponse> ctx) {
+            var coreServerStates = streamsHealth.buildServerStates(coreStreams, "core");
+            var timerServerStates = streamsHealth.buildServerStates(timerStreams, "timer");
 
             TopologyInstanceStateResponse response = TopologyInstanceStateResponse.newBuilder()
                     .addAllServersCore(coreServerStates)
@@ -462,53 +342,16 @@ public class BackendInternalComms implements Closeable {
             ctx.onCompleted();
         }
 
-        private List<ServerStatePb> buildServerStates(KafkaStreams kafkaStreams, String name) {
-            List<ServerStatePb> serverStates = new ArrayList<>();
-            kafkaStreams.metadataForAllStreamsClients().forEach(streamsClient -> {
-                var hostInfo = streamsClient.hostInfo();
-                var internalClient = getInternalClient(hostInfo);
-
-                try {
-                    LocalTasksResponse hostTask =
-                            internalClient.localTasks(LocalTasksPb.newBuilder().build());
-                    ServerStatePb serverState = ServerStatePb.newBuilder()
-                            .addAllActiveTasks(hostTask.getActiveTasksList())
-                            .addAllStandbyTasks(hostTask.getStandbyTasksList())
-                            .setHost(hostInfo.host())
-                            .setPort(hostInfo.port())
-                            .setServerStatus(ServerStatusPb.HOST_UP)
-                            .setTopologyName(name)
-                            .build();
-
-                    serverStates.add(serverState);
-                } catch (Exception e) {
-                    log.warn("Host {} not available to get info", hostInfo);
-                    ServerStatePb serverState = ServerStatePb.newBuilder()
-                            .addAllActiveTasks(List.of())
-                            .addAllStandbyTasks(List.of())
-                            .setHost(hostInfo.host())
-                            .setPort(hostInfo.port())
-                            .setServerStatus(ServerStatusPb.HOST_DOWN)
-                            .setTopologyName(name)
-                            .setErrorMessage(e.getMessage())
-                            .build();
-
-                    serverStates.add(serverState);
-                }
-            });
-            return serverStates;
-        }
-
         @Override
-        public void localTasks(LocalTasksPb request, StreamObserver<LocalTasksResponse> ctx) {
+        public void localTasks(Empty req, StreamObserver<LocalTasksResponse> ctx) {
             List<TaskStatePb> activeTasks = coreStreams.metadataForLocalThreads().stream()
                     .flatMap(threadMetadata -> threadMetadata.activeTasks().stream())
-                    .flatMap(taskMetadata -> this.buildActiveTasksStatePb(taskMetadata).stream())
+                    .flatMap(taskMetadata -> streamsHealth.buildActiveTasksStatePb(taskMetadata).stream())
                     .collect(Collectors.toList());
 
             List<StandByTaskStatePb> standbyTasks = coreStreams.metadataForLocalThreads().stream()
                     .flatMap(threadMetadata -> threadMetadata.standbyTasks().stream())
-                    .flatMap(taskMetadata -> this.buildStandbyTasksStatePb(taskMetadata).stream())
+                    .flatMap(taskMetadata -> streamsHealth.buildStandbyTasksStatePb(taskMetadata).stream())
                     .collect(Collectors.toList());
 
             LocalTasksResponse response = LocalTasksResponse.newBuilder()
@@ -520,139 +363,27 @@ public class BackendInternalComms implements Closeable {
             ctx.onCompleted();
         }
 
-        private List<TaskStatePb> buildActiveTasksStatePb(TaskMetadata taskMetadata) {
-            return taskMetadata.topicPartitions().stream()
-                    .map(topicPartition -> {
-                        Long currentOffset = getCurrentOffset(taskMetadata, topicPartition);
-                        Long endOffset = getEndOffset(taskMetadata, topicPartition);
-                        return TaskStatePb.newBuilder()
-                                .setTaskId(taskMetadata.taskId().toString())
-                                .setTopic(topicPartition.topic())
-                                .setPartition(topicPartition.partition())
-                                .setHost(thisHost.host())
-                                .setPort(thisHost.port())
-                                .setCurrentOffset(currentOffset)
-                                .setLag(calculateLag(currentOffset, endOffset))
-                                .setRackId(config.getRackId())
-                                .build();
-                    })
-                    .collect(Collectors.toList());
-        }
-
-        private List<StandByTaskStatePb> buildStandbyTasksStatePb(TaskMetadata taskMetadata) {
-            return taskMetadata.topicPartitions().stream()
-                    .map(topicPartition -> {
-                        Long currentOffset = getCurrentOffset(taskMetadata, topicPartition);
-
-                        Long endOffset = getEndOffset(taskMetadata, topicPartition);
-
-                        return StandByTaskStatePb.newBuilder()
-                                .setTaskId(taskMetadata.taskId().toString())
-                                .setHost(thisHost.host())
-                                .setPort(thisHost.port())
-                                .setCurrentOffset(currentOffset)
-                                .setLag(calculateLag(currentOffset, endOffset))
-                                .setRackId(config.getRackId())
-                                .build();
-                    })
-                    .collect(Collectors.toList());
-        }
-
-        private Long calculateLag(Long currentOffset, Long endOffset) {
-            if (currentOffset < 0) {
-                return endOffset + 1;
-            }
-            return endOffset - currentOffset;
-        }
-
-        private Long getCurrentOffset(TaskMetadata taskMetadata, TopicPartition topicPartition) {
-            return taskMetadata.committedOffsets().containsKey(topicPartition)
-                    ? taskMetadata.committedOffsets().get(topicPartition)
-                    : -1;
-        }
-
-        private Long getEndOffset(TaskMetadata taskMetadata, TopicPartition topicPartition) {
-            return taskMetadata.endOffsets().containsKey(topicPartition)
-                    ? taskMetadata.endOffsets().get(topicPartition)
-                    : -1;
-        }
-
-        /*
-         * Need to investigate:
-         * - Behavior when not owner of partition
-         * - What exception is thrown when the store is unavailable (eg. REBALANCING)?
-         *
-         * TODO for first hire: Figure out how to set the "approximateLag" field on
-         * the response.
-         */
-        @Override
-        public void centralStoreQuery(CentralStoreQueryPb req, StreamObserver<CentralStoreQueryResponse> ctx) {
-            Integer specificPartition = null;
-            if (req.hasSpecificPartition()) {
-                specificPartition = req.getSpecificPartition();
-            }
-
-            CentralStoreQueryResponse.Builder out = CentralStoreQueryResponse.newBuilder();
-
-            ReadOnlyKeyValueStore<String, Bytes> rawStore;
-            try {
-                rawStore = getRawStore(specificPartition, req.getEnableStaleStores(), req.getStore());
-            } catch (Exception exn) {
-                log.error(exn.getMessage(), exn);
-                out.setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE);
-                ctx.onNext(out.build());
-                ctx.onCompleted();
-                return;
-            }
-            Bytes result = null;
-
-            switch (req.getQuery().getQueryCase()) {
-                case KEY:
-                    result = rawStore.get(req.getQuery().getKey());
-                    break;
-                case LAST_FROM_PREFIX:
-                    result = new LHROStoreWrapper(rawStore, config)
-                            .getLastBytesFromFullPrefix(req.getQuery().getLastFromPrefix());
-                    break;
-                case QUERY_NOT_SET:
-                default:
-                    throw new RuntimeException("Not possible");
-            }
-
-            out.setCode(StoreQueryStatusPb.RSQ_OK);
-            if (result != null) {
-                out.setResult(ByteString.copyFrom(result.get()));
-            }
-
-            ctx.onNext(out.build());
-            ctx.onCompleted();
-        }
-
         @Override
         public void internalScan(InternalScanPb req, StreamObserver<InternalScanResponse> ctx) {
             InternalScan lhis = LHSerializable.fromProto(req, InternalScan.class);
-
             try {
                 InternalScanResponse reply = doScan(lhis);
                 ctx.onNext(reply);
-            } catch (LHConnectionError exn) {
-                ctx.onNext(InternalScanResponse.newBuilder()
-                        .setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE)
-                        .setMessage("Internal connection error: " + exn.getMessage())
-                        .build());
+                ctx.onCompleted();
+            } catch (LHApiException exn) {
+                ctx.onError(exn);
+            } catch (Exception exn) {
+                ctx.onError(new LHApiException(Status.UNKNOWN, exn));
             }
-
-            ctx.onCompleted();
         }
 
         @Override
-        public void waitForCommand(WaitForCommandPb req, StreamObserver<WaitForCommandResponse> ctx) {
+        public void waitForCommand(WaitForCommandRequest req, StreamObserver<WaitForCommandResponse> ctx) {
             localWaitForCommand(req.getCommandId(), ctx);
         }
 
         @Override
-        public void getAdvertisedHosts(
-                InternalGetAdvertisedHostsPb req, StreamObserver<InternalGetAdvertisedHostsResponse> ctx) {
+        public void getAdvertisedHosts(Empty req, StreamObserver<InternalGetAdvertisedHostsResponse> ctx) {
             Map<String, io.littlehorse.sdk.common.proto.HostInfo> hosts = config.getAdvertisedListeners().stream()
                     .collect(Collectors.toMap(
                             AdvertisedListenerConfig::getName,
@@ -694,21 +425,21 @@ public class BackendInternalComms implements Closeable {
         HostInfo activeHost = meta.activeHost();
 
         if (activeHost.equals(thisHost)) {
-            LHROStoreWrapper store = getStore(meta.partition(), false, search.getStoreName());
 
+            ReadOnlyRocksDBWrapper store = getStore(meta.partition(), false, search.getStoreName());
             String prefix = search.getTagScan().getKeyPrefix() + "/";
+
             try (LHKeyValueIterator<Tag> tagScanResultIterator = store.prefixScan(prefix, Tag.class)) {
                 List<ByteString> matchingObjectIds = new ArrayList<>();
+
                 while (tagScanResultIterator.hasNext()) {
                     LHIterKeyValue<Tag> currentItem = tagScanResultIterator.next();
                     Tag matchingTag = currentItem.getValue();
-                    ByteString matchingObjectId = ObjectIdModel.fromString(
-                                    matchingTag.getDescribedObjectId(),
-                                    AbstractGetable.getIdCls(search.getObjectType()))
-                            .toProto()
-                            .build()
-                            .toByteString();
-                    matchingObjectIds.add(matchingObjectId);
+
+                    ObjectIdModel<?, ?, ?> matchingObjectId = ObjectIdModel.fromString(
+                            matchingTag.getDescribedObjectId(), AbstractGetable.getIdCls(search.getObjectType()));
+                    matchingObjectIds.add(ByteString.copyFrom(matchingObjectId.toBytes()));
+
                     if (matchingObjectIds.size() == search.getLimit()) {
                         break;
                     }
@@ -724,31 +455,18 @@ public class BackendInternalComms implements Closeable {
         return out.build();
     }
 
-    private InternalScanResponse objectIdPrefixScan(InternalScan search) throws LHConnectionError {
+    private InternalScanResponse objectIdPrefixScan(InternalScan search) throws StatusRuntimeException {
         HostInfo correctHost = getHostForKey(search.storeName, search.partitionKey);
 
         if (getHostForKey(search.storeName, search.partitionKey).equals(thisHost)) {
             return objectIdPrefixScanOnThisHost(search);
         } else {
-            try {
-                return getInternalClient(correctHost)
-                        .internalScan(search.toProto().build());
-            } catch (Exception exn) {
-                // EMPLOYEE_TODO: make the caught exn specific to grpc
-                // EMPLOYEE_TODO: use standby hosts
-                return InternalScanResponse.newBuilder()
-                        .setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE)
-                        .setMessage("Failed contacting host: " + exn.getMessage())
-                        .build();
-            }
+            return getInternalClient(correctHost).internalScan(search.toProto().build());
         }
     }
 
+    @SuppressWarnings("unchecked")
     private InternalScanResponse objectIdPrefixScanOnThisHost(InternalScan req) {
-        /*
-         * TODO: There's some things we need to verify here.
-         * 1) It's a prerequisite that the request has a partition key set.
-         */
         int curLimit = req.limit;
         BookmarkPb reqBookmark = req.bookmark;
         if (reqBookmark == null) {
@@ -760,7 +478,7 @@ public class BackendInternalComms implements Closeable {
                 req.storeName, req.partitionKey, Serdes.String().serializer());
         int partition = meta.partition();
 
-        LHROStoreWrapper store = getStore(partition, false, req.storeName);
+        ReadOnlyRocksDBWrapper store = getStore(partition, false, req.storeName);
         PartitionBookmarkPb partBookmark = reqBookmark.getInProgressPartitionsOrDefault(partition, null);
 
         String endKey = req.boundedObjectIdScan.getEndObjectId() + "~";
@@ -773,8 +491,11 @@ public class BackendInternalComms implements Closeable {
         String bookmarkKey = null;
         boolean brokenBecauseOutOfData = true;
 
-        try (LHKeyValueIterator<? extends Storeable<?>> iter =
-                store.range(startKey, endKey, AbstractGetable.getCls(req.objectType))) {
+        try (LHKeyValueIterator<? extends Storeable<?>> iter = (LHKeyValueIterator<? extends Storeable<?>>) store.range(
+                StoredGetable.getRocksDBKey(startKey, req.getObjectType()),
+                StoredGetable.getRocksDBKey(endKey, req.getObjectType()),
+                Storeable.class)) {
+
             while (iter.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iter.next();
                 if (--curLimit < 0) {
@@ -812,12 +533,12 @@ public class BackendInternalComms implements Closeable {
     private ByteString iterKeyValueToInternalScanResult(
             LHIterKeyValue<? extends Storeable<?>> next, ScanResultTypePb resultType, GetableClassEnum objectType) {
         if (resultType == ScanResultTypePb.OBJECT) {
-            return ByteString.copyFrom(next.getValue().toBytes(config));
+            return ByteString.copyFrom(next.getValue().toBytes());
         } else if (resultType == ScanResultTypePb.OBJECT_ID) {
             Class<? extends ObjectIdModel<?, ?, ?>> idCls = AbstractGetable.getIdCls(objectType);
 
             return ByteString.copyFrom(
-                    ObjectIdModel.fromString(next.getKey(), idCls).toBytes(config));
+                    ObjectIdModel.fromString(next.getKey(), idCls).toBytes());
         } else {
             throw new RuntimeException("Impossible: unknown result type");
         }
@@ -857,7 +578,8 @@ public class BackendInternalComms implements Closeable {
         while (out.hasUpdatedBookmark() && out.getResultsCount() < search.limit) {
             HostInfo otherHost = getHostForPartition(getRandomUnfinishedPartition(out.getUpdatedBookmark()));
             if (otherHost.equals(thisHost)) {
-                throw new RuntimeException("wtf, host the same");
+                throw new IllegalStateException(
+                        "Exhausted local partitions but getRandomUnfinishedPartition returned local partition");
             }
             LHInternalsBlockingStub stub = getInternalClient(otherHost);
 
@@ -961,7 +683,7 @@ public class BackendInternalComms implements Closeable {
 
         // iterate through all active and standby local partitions
         for (int partition : getLocalActiveCommandProcessorPartitions()) {
-            LHROStoreWrapper partStore = getStore(partition, false, req.storeName);
+            ReadOnlyRocksDBWrapper partStore = getStore(partition, false, req.storeName);
             if (reqBookmark.getCompletedPartitionsList().contains(partition)) {
                 // This partition has already been accounted for
                 continue;
@@ -1014,7 +736,7 @@ public class BackendInternalComms implements Closeable {
             int limit,
             GetableClassEnum objectType,
             int partition,
-            LHROStoreWrapper store) {
+            ReadOnlyRocksDBWrapper store) {
         PartitionBookmarkPb bookmarkOut = null;
         List<ByteString> idsOut = new ArrayList<>();
 
@@ -1093,37 +815,5 @@ public class BackendInternalComms implements Closeable {
 
     private static boolean isCommandProcessor(TopicPartition tPart, LHConfig config) {
         return tPart.topic().equals(config.getCoreCmdTopicName());
-    }
-}
-
-class GlobalMetaStoresServerImpl implements ReadOnlyMetadataStore {
-
-    private LHROStoreWrapper store;
-
-    public GlobalMetaStoresServerImpl(KafkaStreams coreStreams, LHConfig config) {
-        StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
-                StoreQueryParameters.fromNameAndType(ServerTopology.GLOBAL_STORE, QueryableStoreTypes.keyValueStore());
-
-        store = new LHROStoreWrapper(coreStreams.store(params), config);
-    }
-
-    public WfSpecModel getWfSpec(String name, Integer version) {
-        if (version != null) {
-            return store.get(new WfSpecIdModel(name, version).toString(), WfSpecModel.class);
-        } else {
-            return store.getLastFromPrefix(name, WfSpecModel.class);
-        }
-    }
-
-    public TaskDefModel getTaskDef(String name) {
-        return store.get(new TaskDefIdModel(name).toString(), TaskDefModel.class);
-    }
-
-    public ExternalEventDefModel getExternalEventDef(String name) {
-        return store.get(new ExternalEventDefIdModel(name).toString(), ExternalEventDefModel.class);
-    }
-
-    public UserTaskDefModel getUserTaskDef(String name, Integer version) {
-        return (store.get(new UserTaskDefIdModel(name, version).getStoreKey(), UserTaskDefModel.class));
     }
 }

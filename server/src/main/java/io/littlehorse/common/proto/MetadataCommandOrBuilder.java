@@ -93,11 +93,11 @@ public interface MetadataCommandOrBuilder extends
    * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 7;</code>
    * @return The deleteWfSpec.
    */
-  io.littlehorse.common.proto.DeleteWfSpecRequest getDeleteWfSpec();
+  io.littlehorse.sdk.common.proto.DeleteWfSpecRequest getDeleteWfSpec();
   /**
    * <code>.littlehorse.DeleteWfSpecRequest delete_wf_spec = 7;</code>
    */
-  io.littlehorse.common.proto.DeleteWfSpecRequestOrBuilder getDeleteWfSpecOrBuilder();
+  io.littlehorse.sdk.common.proto.DeleteWfSpecRequestOrBuilder getDeleteWfSpecOrBuilder();
 
   /**
    * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 8;</code>
@@ -108,11 +108,11 @@ public interface MetadataCommandOrBuilder extends
    * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 8;</code>
    * @return The deleteTaskDef.
    */
-  io.littlehorse.common.proto.DeleteTaskDefRequest getDeleteTaskDef();
+  io.littlehorse.sdk.common.proto.DeleteTaskDefRequest getDeleteTaskDef();
   /**
    * <code>.littlehorse.DeleteTaskDefRequest delete_task_def = 8;</code>
    */
-  io.littlehorse.common.proto.DeleteTaskDefRequestOrBuilder getDeleteTaskDefOrBuilder();
+  io.littlehorse.sdk.common.proto.DeleteTaskDefRequestOrBuilder getDeleteTaskDefOrBuilder();
 
   /**
    * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 9;</code>
@@ -123,11 +123,11 @@ public interface MetadataCommandOrBuilder extends
    * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 9;</code>
    * @return The deleteExternalEventDef.
    */
-  io.littlehorse.common.proto.DeleteExternalEventDefRequest getDeleteExternalEventDef();
+  io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest getDeleteExternalEventDef();
   /**
    * <code>.littlehorse.DeleteExternalEventDefRequest delete_external_event_def = 9;</code>
    */
-  io.littlehorse.common.proto.DeleteExternalEventDefRequestOrBuilder getDeleteExternalEventDefOrBuilder();
+  io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequestOrBuilder getDeleteExternalEventDefOrBuilder();
 
   /**
    * <code>.littlehorse.PutUserTaskDefRequest put_user_task_def = 10;</code>
@@ -153,11 +153,11 @@ public interface MetadataCommandOrBuilder extends
    * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 11;</code>
    * @return The deleteUserTaskDef.
    */
-  io.littlehorse.common.proto.DeleteUserTaskDefRequest getDeleteUserTaskDef();
+  io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest getDeleteUserTaskDef();
   /**
    * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 11;</code>
    */
-  io.littlehorse.common.proto.DeleteUserTaskDefRequestOrBuilder getDeleteUserTaskDefOrBuilder();
+  io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequestOrBuilder getDeleteUserTaskDefOrBuilder();
 
   public io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }

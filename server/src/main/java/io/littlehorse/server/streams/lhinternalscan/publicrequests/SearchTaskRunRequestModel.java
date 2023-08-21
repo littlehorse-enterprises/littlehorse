@@ -13,8 +13,8 @@ import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskRunRequest.TaskRunCriteriaCase;
-import io.littlehorse.sdk.common.proto.SearchTaskRunResponse;
 import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.sdk.common.proto.TaskRunIdList;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
@@ -30,8 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class SearchTaskRunRequestModel
-        extends PublicScanRequest<
-                SearchTaskRunRequest, SearchTaskRunResponse, TaskRunId, TaskRunIdModel, SearchTaskRunReply> {
+        extends PublicScanRequest<SearchTaskRunRequest, TaskRunIdList, TaskRunId, TaskRunIdModel, SearchTaskRunReply> {
 
     private TaskRunCriteriaCase type;
     private ByTaskDefRequest taskDef;

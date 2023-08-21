@@ -10,8 +10,8 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefRequest.UserTaskDefCriteriaCase;
-import io.littlehorse.sdk.common.proto.SearchUserTaskDefResponse;
 import io.littlehorse.sdk.common.proto.UserTaskDefId;
+import io.littlehorse.sdk.common.proto.UserTaskDefIdList;
 import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SearchUserTaskDefRequestModel
         extends PublicScanRequest<
                 SearchUserTaskDefRequest,
-                SearchUserTaskDefResponse,
+                UserTaskDefIdList,
                 UserTaskDefId,
                 UserTaskDefIdModel,
                 SearchUserTaskDefReply> {

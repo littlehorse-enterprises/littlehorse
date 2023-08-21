@@ -1,8 +1,7 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
-import com.google.protobuf.ByteString;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.CommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
@@ -75,13 +74,13 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
                 command.getPartitionKey());
 
         try {
-            AbstractResponse<?> response = command.process(dao, config);
+            Message response = command.process(dao, config);
             dao.commit();
             if (command.hasResponse() && command.commandId != null) {
                 WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
                         .setCommandId(command.commandId)
                         .setResultTime(LHUtil.fromDate(new Date()))
-                        .setResult(ByteString.copyFrom(response.toBytes()))
+                        .setResult(response.toByteString())
                         .build();
 
                 server.onResponseReceived(command.commandId, cmdReply);

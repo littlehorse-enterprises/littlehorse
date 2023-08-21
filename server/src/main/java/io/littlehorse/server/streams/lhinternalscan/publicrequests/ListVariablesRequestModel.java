@@ -7,16 +7,15 @@ import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.ListVariablesRequest;
-import io.littlehorse.sdk.common.proto.ListVariablesResponse;
 import io.littlehorse.sdk.common.proto.Variable;
+import io.littlehorse.sdk.common.proto.VariableList;
 import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListVariablesReply;
 
 public class ListVariablesRequestModel
-        extends PublicScanRequest<
-                ListVariablesRequest, ListVariablesResponse, Variable, VariableModel, ListVariablesReply> {
+        extends PublicScanRequest<ListVariablesRequest, VariableList, Variable, VariableModel, ListVariablesReply> {
 
     public String wfRunId;
 

@@ -52,6 +52,7 @@ public class AsyncWaiter {
             observer.onNext(response);
             observer.onCompleted();
         } else {
+            // TODO: Throw IllegalStateException?
             log.warn("Impossible: neither response nor exception set.");
         }
     }

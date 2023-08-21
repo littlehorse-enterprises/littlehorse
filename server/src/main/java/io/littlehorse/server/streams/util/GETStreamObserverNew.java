@@ -4,13 +4,13 @@ import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.proto.CentralStoreQueryResponse;
+import io.littlehorse.common.proto.GetObjectResponse;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.server.streams.store.StoredGetable;
 
+@Deprecated(forRemoval = true)
 public class GETStreamObserverNew<U extends Message, T extends AbstractGetable<U>, V extends Message>
-        implements StreamObserver<CentralStoreQueryResponse> {
+        implements StreamObserver<GetObjectResponse> {
 
     private StreamObserver<V> ctx;
 
@@ -22,12 +22,7 @@ public class GETStreamObserverNew<U extends Message, T extends AbstractGetable<U
     }
 
     public void onError(Throwable t) {
-        Throwable cause = t.getCause() != null ? t.getCause() : t;
-
-        out.code = LHResponseCode.CONNECTION_ERROR;
-        out.message = "Failed connecting to backend: " + cause.getMessage();
-        ctx.onNext(out.toProto());
-        ctx.onCompleted();
+        ctx.onError(t);
     }
 
     public void onCompleted() {}

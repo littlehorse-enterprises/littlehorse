@@ -14,8 +14,8 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest.TaskOwnerCase;
-import io.littlehorse.sdk.common.proto.SearchUserTaskRunResponse;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
+import io.littlehorse.sdk.common.proto.UserTaskRunIdList;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SearchUserTaskRunRequestModel
         extends PublicScanRequest<
                 SearchUserTaskRunRequest,
-                SearchUserTaskRunResponse,
+                UserTaskRunIdList,
                 UserTaskRunId,
                 UserTaskRunIdModel,
                 SearchUserTaskRunReply> {

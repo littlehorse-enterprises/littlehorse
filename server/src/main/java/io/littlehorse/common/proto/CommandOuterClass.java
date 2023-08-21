@@ -60,31 +60,6 @@ public final class CommandOuterClass {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_ExternalEventNodeTimeoutPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_DeleteWfRunRequest_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_DeleteWfRunRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_DeleteTaskDefRequest_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_DeleteTaskDefRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_DeleteUserTaskDefRequest_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_DeleteUserTaskDefRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_DeleteWfSpecRequest_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_DeleteWfSpecRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_DeleteExternalEventDefRequest_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_DeleteExternalEventDefRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_SleepNodeMaturedPb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -200,25 +175,19 @@ public final class CommandOuterClass {
       "alEventNodeTimeoutPb\022\021\n\twf_run_id\030\001 \001(\t\022" +
       "\031\n\021thread_run_number\030\002 \001(\005\022\031\n\021node_run_p" +
       "osition\030\003 \001(\005\022(\n\004time\030\004 \001(\0132\032.google.pro" +
-      "tobuf.Timestamp\"\'\n\022DeleteWfRunRequest\022\021\n" +
-      "\twf_run_id\030\001 \001(\t\"$\n\024DeleteTaskDefRequest" +
-      "\022\014\n\004name\030\001 \001(\t\"9\n\030DeleteUserTaskDefReque" +
-      "st\022\014\n\004name\030\001 \001(\t\022\017\n\007version\030\002 \001(\005\"4\n\023Del" +
-      "eteWfSpecRequest\022\014\n\004name\030\001 \001(\t\022\017\n\007versio" +
-      "n\030\002 \001(\005\"-\n\035DeleteExternalEventDefRequest" +
-      "\022\014\n\004name\030\001 \001(\t\"]\n\022SleepNodeMaturedPb\022\021\n\t" +
-      "wf_run_id\030\001 \001(\t\022\031\n\021thread_run_number\030\002 \001" +
-      "(\005\022\031\n\021node_run_position\030\003 \001(\005\"m\n\022Trigger" +
-      "edTaskRunPb\022/\n\020task_to_schedule\030\001 \001(\0132\025." +
-      "littlehorse.TaskNode\022&\n\006source\030\002 \001(\0132\026.l" +
-      "ittlehorse.NodeRunId\"\216\001\n\024ReassignedUserT" +
-      "askPb\022\021\n\007user_id\030\001 \001(\tH\000\022\024\n\nuser_group\030\002" +
-      " \001(\tH\000\022\030\n\020delay_in_seconds\030\003 \001(\005\022&\n\006sour" +
-      "ce\030\004 \001(\0132\026.littlehorse.NodeRunIdB\013\n\tassi" +
-      "gn_to\"m\n\tLHTimerPb\0223\n\017maturation_time\030\001 " +
-      "\001(\0132\032.google.protobuf.Timestamp\022\013\n\003key\030\002" +
-      " \001(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007payload\030\004 \001(\014B\037\n\033" +
-      "io.littlehorse.common.protoP\001b\006proto3"
+      "tobuf.Timestamp\"]\n\022SleepNodeMaturedPb\022\021\n" +
+      "\twf_run_id\030\001 \001(\t\022\031\n\021thread_run_number\030\002 " +
+      "\001(\005\022\031\n\021node_run_position\030\003 \001(\005\"m\n\022Trigge" +
+      "redTaskRunPb\022/\n\020task_to_schedule\030\001 \001(\0132\025" +
+      ".littlehorse.TaskNode\022&\n\006source\030\002 \001(\0132\026." +
+      "littlehorse.NodeRunId\"\216\001\n\024ReassignedUser" +
+      "TaskPb\022\021\n\007user_id\030\001 \001(\tH\000\022\024\n\nuser_group\030" +
+      "\002 \001(\tH\000\022\030\n\020delay_in_seconds\030\003 \001(\005\022&\n\006sou" +
+      "rce\030\004 \001(\0132\026.littlehorse.NodeRunIdB\013\n\tass" +
+      "ign_to\"m\n\tLHTimerPb\0223\n\017maturation_time\030\001" +
+      " \001(\0132\032.google.protobuf.Timestamp\022\013\n\003key\030" +
+      "\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007payload\030\004 \001(\014B\037\n" +
+      "\033io.littlehorse.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -285,56 +254,26 @@ public final class CommandOuterClass {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ExternalEventNodeTimeoutPb_descriptor,
         new java.lang.String[] { "WfRunId", "ThreadRunNumber", "NodeRunPosition", "Time", });
-    internal_static_littlehorse_DeleteWfRunRequest_descriptor =
-      getDescriptor().getMessageTypes().get(9);
-    internal_static_littlehorse_DeleteWfRunRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_DeleteWfRunRequest_descriptor,
-        new java.lang.String[] { "WfRunId", });
-    internal_static_littlehorse_DeleteTaskDefRequest_descriptor =
-      getDescriptor().getMessageTypes().get(10);
-    internal_static_littlehorse_DeleteTaskDefRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_DeleteTaskDefRequest_descriptor,
-        new java.lang.String[] { "Name", });
-    internal_static_littlehorse_DeleteUserTaskDefRequest_descriptor =
-      getDescriptor().getMessageTypes().get(11);
-    internal_static_littlehorse_DeleteUserTaskDefRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_DeleteUserTaskDefRequest_descriptor,
-        new java.lang.String[] { "Name", "Version", });
-    internal_static_littlehorse_DeleteWfSpecRequest_descriptor =
-      getDescriptor().getMessageTypes().get(12);
-    internal_static_littlehorse_DeleteWfSpecRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_DeleteWfSpecRequest_descriptor,
-        new java.lang.String[] { "Name", "Version", });
-    internal_static_littlehorse_DeleteExternalEventDefRequest_descriptor =
-      getDescriptor().getMessageTypes().get(13);
-    internal_static_littlehorse_DeleteExternalEventDefRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_DeleteExternalEventDefRequest_descriptor,
-        new java.lang.String[] { "Name", });
     internal_static_littlehorse_SleepNodeMaturedPb_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_littlehorse_SleepNodeMaturedPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_SleepNodeMaturedPb_descriptor,
         new java.lang.String[] { "WfRunId", "ThreadRunNumber", "NodeRunPosition", });
     internal_static_littlehorse_TriggeredTaskRunPb_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_littlehorse_TriggeredTaskRunPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_TriggeredTaskRunPb_descriptor,
         new java.lang.String[] { "TaskToSchedule", "Source", });
     internal_static_littlehorse_ReassignedUserTaskPb_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_littlehorse_ReassignedUserTaskPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ReassignedUserTaskPb_descriptor,
         new java.lang.String[] { "UserId", "UserGroup", "DelayInSeconds", "Source", "AssignTo", });
     internal_static_littlehorse_LHTimerPb_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_littlehorse_LHTimerPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_LHTimerPb_descriptor,

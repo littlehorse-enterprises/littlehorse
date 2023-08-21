@@ -1,13 +1,10 @@
 package io.littlehorse.common.dao;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.exceptions.LHBadRequestError;
-import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.command.CommandModel;
-import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
@@ -44,9 +41,9 @@ public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
 
     public abstract void put(CoreGetable<?> getable);
 
-    public abstract DeleteObjectReply delete(WfRunIdModel id);
+    public abstract void delete(WfRunIdModel id);
 
-    public abstract DeleteObjectReply delete(ExternalEventIdModel id);
+    public abstract void delete(ExternalEventIdModel id);
 
     /*
      * One-off operations related to WfRun Processing
@@ -76,8 +73,7 @@ public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
 
     public abstract AnalyticsRegistry getRegistry();
 
-    public abstract HostInfo getAdvertisedHost(HostModel host, String listenerName)
-            throws LHBadRequestError, LHConnectionError;
+    public abstract HostInfo getAdvertisedHost(HostModel host, String listenerName);
 
     public abstract InternalHosts getInternalHosts();
 }

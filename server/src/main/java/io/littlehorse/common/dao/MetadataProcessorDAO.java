@@ -2,7 +2,6 @@ package io.littlehorse.common.dao;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.GlobalGetable;
-import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
@@ -29,5 +28,5 @@ public abstract class MetadataProcessorDAO extends ReadOnlyMetadataStore {
 
     public abstract <U extends Message, T extends GlobalGetable<U>> void put(T getable);
 
-    public abstract <U extends Message, T extends GlobalGetable<U>> DeleteObjectReply delete(ObjectIdModel<?, U, T> id);
+    public abstract <U extends Message, T extends GlobalGetable<U>> void delete(ObjectIdModel<?, U, T> id);
 }
