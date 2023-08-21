@@ -11,6 +11,7 @@ import "service.proto";
 message GetObjectRequest {
     GetableClassEnum object_type = 1;
     string object_id = 2;
+    int32 partition = 3;
 }
 
 message GetObjectResponse {

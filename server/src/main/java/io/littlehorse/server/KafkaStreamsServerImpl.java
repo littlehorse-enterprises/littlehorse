@@ -4,19 +4,15 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.grpc.health.v1.HealthCheckRequest;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHBadRequestError;
-import io.littlehorse.common.exceptions.LHConnectionError;
-import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
-import io.littlehorse.common.model.corecommand.SubCommand;
 import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
@@ -49,7 +45,6 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
 import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
-import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
@@ -103,7 +98,6 @@ import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.GETStreamObserverNew;
 import io.littlehorse.server.streams.util.HealthService;
 import io.littlehorse.server.streams.util.POSTStreamObserver;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListNodeRunsReply;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
@@ -330,9 +324,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public void getTaskRun(TaskRunId req, StreamObserver<TaskRun> ctx) {
         TaskRunIdModel id = LHSerializable.fromProto(req, TaskRunIdModel.class);
         try {
-            ctx.onNext(internalComms.getObject(id).toProto().build());
+            TaskRunModel taskRun = internalComms.getObject(id, TaskRunModel.class);
+            ctx.onNext(taskRun.toProto().build());
             ctx.onCompleted();
-        } catch(Exception exn) {
+        } catch (Exception exn) {
             ctx.onError(exn);
         }
     }
@@ -435,8 +430,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
-    public void searchTaskDef(
-            SearchTaskDefRequest req, StreamObserver<TaskDefIdList> ctx) {
+    public void searchTaskDef(SearchTaskDefRequest req, StreamObserver<TaskDefIdList> ctx) {
         handleScan(SearchTaskDefRequestModel.fromProto(req), ctx, SearchTaskDefReply.class);
     }
 
@@ -451,8 +445,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
-    public void searchExternalEventDef(
-            SearchExternalEventDefRequest req, StreamObserver<ExternalEventDefIdList> ctx) {
+    public void searchExternalEventDef(SearchExternalEventDefRequest req, StreamObserver<ExternalEventDefIdList> ctx) {
         handleScan(SearchExternalEventDefRequestModel.fromProto(req), ctx, SearchExternalEventDefReply.class);
     }
 
@@ -490,8 +483,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 out.bookmark = raw.getUpdatedBookmark().toByteString();
             }
             for (ByteString responseEntry : raw.getResultsList()) {
-                out.results.add(
-                        LHSerializable.fromBytes(responseEntry.toByteArray(), out.getResultJavaClass()));
+                out.results.add(LHSerializable.fromBytes(responseEntry.toByteArray(), out.getResultJavaClass()));
             }
             ctx.onNext((RP) out.toProto().build());
             ctx.onCompleted();
@@ -533,71 +525,44 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     @Override
     public void stopWfRun(StopWfRunRequest req, StreamObserver<Empty> ctx) {
         StopWfRunRequestModel reqModel = LHSerializable.fromProto(req, StopWfRunRequestModel.class);
-        processCommand(
-                new CommandModel(reqModel),
-                ctx,
-                Empty.class,
-                true);
+        processCommand(new CommandModel(reqModel), ctx, Empty.class, true);
     }
 
     @Override
     public void resumeWfRun(ResumeWfRunRequest req, StreamObserver<Empty> ctx) {
         ResumeWfRunRequestModel reqModel = LHSerializable.fromProto(req, ResumeWfRunRequestModel.class);
-        processCommand(
-                new CommandModel(reqModel),
-                ctx,
-                Empty.class,
-                true);
+        processCommand(new CommandModel(reqModel), ctx, Empty.class, true);
     }
 
     @Override
     public void deleteWfRun(DeleteWfRunRequest req, StreamObserver<Empty> ctx) {
         DeleteWfRunRequestModel reqModel = LHSerializable.fromProto(req, DeleteWfRunRequestModel.class);
-        processCommand(
-                new CommandModel(reqModel),
-                ctx,
-                Empty.class,
-                true);
+        processCommand(new CommandModel(reqModel), ctx, Empty.class, true);
     }
 
     @Override
     public void deleteWfSpec(DeleteWfSpecRequest req, StreamObserver<Empty> ctx) {
         DeleteWfSpecRequestModel reqModel = LHSerializable.fromProto(req, DeleteWfSpecRequestModel.class);
-        processCommand(
-                new MetadataCommandModel(reqModel),
-                ctx,
-                Empty.class,
-                true);
+        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class, true);
     }
 
     @Override
     public void deleteTaskDef(DeleteTaskDefRequest req, StreamObserver<Empty> ctx) {
         DeleteTaskDefRequestModel reqModel = LHSerializable.fromProto(req, DeleteTaskDefRequestModel.class);
-        processCommand(
-                new MetadataCommandModel(reqModel),
-                ctx,
-                Empty.class,
-                true);
+        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class, true);
     }
 
     @Override
     public void deleteUserTaskDef(DeleteUserTaskDefRequest req, StreamObserver<Empty> ctx) {
         DeleteUserTaskDefRequestModel reqModel = LHSerializable.fromProto(req, DeleteUserTaskDefRequestModel.class);
-        processCommand(
-                new MetadataCommandModel(reqModel),
-                ctx,
-                Empty.class,
-                true);
+        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class, true);
     }
 
     @Override
     public void deleteExternalEventDef(DeleteExternalEventDefRequest req, StreamObserver<Empty> ctx) {
-        DeleteExternalEventDefRequestModel deedr = LHSerializable.fromProto(req, DeleteExternalEventDefRequestModel.class);
-        processCommand(
-                new MetadataCommandModel(deedr),
-                ctx,
-                Empty.class,
-                true);
+        DeleteExternalEventDefRequestModel deedr =
+                LHSerializable.fromProto(req, DeleteExternalEventDefRequestModel.class);
+        processCommand(new MetadataCommandModel(deedr), ctx, Empty.class, true);
     }
 
     @Override
@@ -628,11 +593,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
         TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
-        processCommand(
-                new CommandModel(claimEvent),
-                client.getResponseObserver(),
-                PollTaskResponse.class,
-                false);
+        processCommand(new CommandModel(claimEvent), client.getResponseObserver(), PollTaskResponse.class, false);
     }
 
     public LHProducer getProducer() {

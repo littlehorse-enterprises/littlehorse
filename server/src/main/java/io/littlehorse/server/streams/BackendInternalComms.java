@@ -1,9 +1,10 @@
 package io.littlehorse.server.streams;
 
+import static io.littlehorse.common.model.getable.ObjectIdModel.fromString;
+
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
-
 import io.grpc.ChannelCredentials;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannel;
@@ -25,27 +26,15 @@ import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
-import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse;
-import io.littlehorse.common.proto.InternalScanPb;
+import io.littlehorse.common.proto.*;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
-import io.littlehorse.common.proto.InternalScanResponse;
-import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsStub;
-import io.littlehorse.common.proto.LocalTasksResponse;
-import io.littlehorse.common.proto.PartitionBookmarkPb;
-import io.littlehorse.common.proto.ScanResultTypePb;
-import io.littlehorse.common.proto.StandByTaskStatePb;
-import io.littlehorse.common.proto.TaskStatePb;
-import io.littlehorse.common.proto.TopologyInstanceStateResponse;
-import io.littlehorse.common.proto.WaitForCommandRequest;
-import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.streams.lhinternalscan.InternalScan;
@@ -71,8 +60,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.Serdes;
@@ -170,17 +157,32 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    public <U extends Message, T extends AbstractGetable<U>> T getObject(ObjectIdModel<?, U, T> objectId) {
-        // First, get the store from objectId
+    public <U extends Message, T extends AbstractGetable<U>> T getObject(
+            ObjectIdModel<?, U, T> objectId, Class<T> clazz) throws LHSerdeError {
 
-        // Second, get the partition key from object id
+        if (objectId.getPartitionKey().isEmpty()) {
+            throw new IllegalArgumentException("Can't getObject without partition key");
+        }
 
-        // third, get the host from streams.metadataForKey()
+        KeyQueryMetadata metadata = coreStreams.queryMetadataForKey(
+                objectId.getStore(),
+                objectId.getPartitionKey().get(),
+                Serdes.String().serializer());
 
-        // if local host: do a get
+        if (metadata.activeHost().equals(thisHost)) {
+            ReadOnlyRocksDBWrapper store = getStore(metadata.partition(), false, ServerTopology.CORE_STORE);
+            return ((StoredGetable<U, T>) store.get(objectId.getStoreableKey(), StoredGetable.class)).getStoredObject();
+        }
 
-        // else: use the getObject() internal grpc.
-        throw new NotImplementedException();
+        return LHSerializable.fromBytes(
+                getInternalClient(metadata.activeHost())
+                        .getObject(GetObjectRequest.newBuilder()
+                                .setObjectType(objectId.getType())
+                                .setObjectId(objectId.toString())
+                                .build())
+                        .getResponse()
+                        .toByteArray(),
+                clazz);
     }
 
     public void waitForCommand(AbstractCommand<?> command, StreamObserver<WaitForCommandResponse> observer) {
@@ -344,6 +346,15 @@ public class BackendInternalComms implements Closeable {
     private class InterBrokerCommServer extends LHInternalsImplBase {
 
         @Override
+        public void getObject(GetObjectRequest request, StreamObserver<GetObjectResponse> responseObserver) {
+            ObjectIdModel<?, ?, ?> id =
+                    fromString(request.getObjectId(), AbstractGetable.getIdCls(request.getObjectType()));
+            ReadOnlyRocksDBWrapper store = getStore(request.getPartition(), false, id.getStore());
+            AbstractGetable entity = store.get(id.getStoreableKey(), StoredGetable.class);
+            responseObserver.onNext(GetObjectResponse.newBuilder().setResponse().build());
+        }
+
+        @Override
         public void topologyInstancesState(Empty req, StreamObserver<TopologyInstanceStateResponse> ctx) {
             var coreServerStates = streamsHealth.buildServerStates(coreStreams, "core");
             var timerServerStates = streamsHealth.buildServerStates(timerStreams, "timer");
@@ -451,7 +462,7 @@ public class BackendInternalComms implements Closeable {
                     LHIterKeyValue<Tag> currentItem = tagScanResultIterator.next();
                     Tag matchingTag = currentItem.getValue();
 
-                    ObjectIdModel<?, ?, ?> matchingObjectId = ObjectIdModel.fromString(
+                    ObjectIdModel<?, ?, ?> matchingObjectId = fromString(
                             matchingTag.getDescribedObjectId(), AbstractGetable.getIdCls(search.getObjectType()));
                     matchingObjectIds.add(ByteString.copyFrom(matchingObjectId.toBytes()));
 
@@ -552,8 +563,7 @@ public class BackendInternalComms implements Closeable {
         } else if (resultType == ScanResultTypePb.OBJECT_ID) {
             Class<? extends ObjectIdModel<?, ?, ?>> idCls = AbstractGetable.getIdCls(objectType);
 
-            return ByteString.copyFrom(
-                    ObjectIdModel.fromString(next.getKey(), idCls).toBytes());
+            return ByteString.copyFrom(fromString(next.getKey(), idCls).toBytes());
         } else {
             throw new RuntimeException("Impossible: unknown result type");
         }
@@ -785,7 +795,7 @@ public class BackendInternalComms implements Closeable {
                 // Turn the ID String into the ObjectId structure, then serialize it
                 // to proto
                 Class<? extends ObjectIdModel<?, ?, ?>> idCls = AbstractGetable.getIdCls(objectType);
-                idsOut.add(ObjectIdModel.fromString(next.getValue().describedObjectId, idCls)
+                idsOut.add(fromString(next.getValue().describedObjectId, idCls)
                         .toProto()
                         .build()
                         .toByteString());
