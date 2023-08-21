@@ -37,12 +37,12 @@ public interface TaskWorkerMetadataOrBuilder extends
   /**
    * <code>repeated .littlehorse.HostInfo hosts = 3;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.HostInfo> 
+  java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo> 
       getHostsList();
   /**
    * <code>repeated .littlehorse.HostInfo hosts = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.HostInfo getHosts(int index);
+  io.littlehorse.sdk.common.proto.LHHostInfo getHosts(int index);
   /**
    * <code>repeated .littlehorse.HostInfo hosts = 3;</code>
    */

@@ -6,10 +6,10 @@
     ]
   },
   "[java]": {
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle",
     "editor.inlayHints.enabled": "off",
-    "spotlessGradle.format.enable": true
+    "spotlessGradle.format.enable": false
   },
   "[markdown]": {
     "editor.formatOnSave": false

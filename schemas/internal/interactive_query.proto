@@ -56,7 +56,7 @@ message InternalScanPb {
 }
 
 message InternalGetAdvertisedHostsResponse {
-    map<string, HostInfo> hosts = 1;
+    map<string, LHHostInfo> hosts = 1;
 }
 
 enum ScanResultTypePb {

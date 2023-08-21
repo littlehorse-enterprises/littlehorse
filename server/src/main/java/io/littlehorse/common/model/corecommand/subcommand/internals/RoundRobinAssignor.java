@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.command.subcommand.internals;
+package io.littlehorse.common.model.corecommand.subcommand.internals;
 
 import static io.littlehorse.common.LHConstants.MIN_WORKER_ASSIGNMENT_BY_SERVER;
 

@@ -1,11 +1,11 @@
-package io.littlehorse.common.model.command.subcommand;
+package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
-import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.common.model.command.SubCommand;
+import io.littlehorse.common.model.corecommand.AbstractResponse;
+import io.littlehorse.common.model.corecommand.SubCommand;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;

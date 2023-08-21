@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
-import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefResponseModel;
+import io.littlehorse.common.model.corecommand.subcommandresponse.PutTaskDefResponseModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;

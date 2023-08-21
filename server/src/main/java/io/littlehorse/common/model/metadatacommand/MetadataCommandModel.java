@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
-import io.littlehorse.common.model.command.AbstractResponse;
+import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
@@ -13,7 +13,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDe
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
-import io.littlehorse.common.proto.Command;
+import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase;
 import io.littlehorse.common.util.LHUtil;
@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @Setter
-public abstract class MetadataCommandModel extends LHSerializable<Command> {
+public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
 
     private String commandId;
     private Date time;
@@ -39,6 +39,15 @@ public abstract class MetadataCommandModel extends LHSerializable<Command> {
     private DeleteExternalEventDefRequestModel deleteExternalEventDef;
     private PutUserTaskDefRequestModel putUserTaskDefRequest;
     private DeleteUserTaskDefRequestModel deleteUserTaskDef;
+
+    public MetadataCommandModel() {
+        super();
+    }
+
+    public MetadataCommandModel(MetadataSubCommand<?> cmd) {
+        super();
+        setSubCommand(cmd);
+    }
 
     @Override
     public Class<MetadataCommand> getProtoBaseClass() {
@@ -182,7 +191,22 @@ public abstract class MetadataCommandModel extends LHSerializable<Command> {
         return getSubCommand().hasResponse();
     }
 
-    public AbstractResponse<?> process(MetadataProcessorDAO dao, LHConfig config) {
+    public Message process(MetadataProcessorDAO dao, LHConfig config) {
         return getSubCommand().process(dao, config);
+    }
+
+    @Override
+    public String getTopic(LHConfig config) {
+        return config.getMetadataCmdTopicName();
+    }
+
+    @Override
+    public LHStoreType getStore() {
+        return LHStoreType.METADATA;
+    }
+
+    @Override
+    public String getPartitionKey() {
+        return "partition-key-not-needed-only-one-partition";
     }
 }

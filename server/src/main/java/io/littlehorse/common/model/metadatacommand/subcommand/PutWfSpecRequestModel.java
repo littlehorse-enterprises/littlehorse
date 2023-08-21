@@ -5,7 +5,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.command.subcommandresponse.PutWfSpecResponseModel;
+import io.littlehorse.common.model.corecommand.subcommandresponse.PutWfSpecResponseModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;

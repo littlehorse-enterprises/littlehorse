@@ -3,9 +3,9 @@ package io.littlehorse.common.model.getable.core.taskworkergroup;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.HostInfo;
+import io.littlehorse.sdk.common.proto.LHHostInfo;
 
-public class HostModel extends LHSerializable<HostInfo> implements Comparable<HostModel> {
+public class HostModel extends LHSerializable<LHHostInfo> implements Comparable<HostModel> {
 
     public String host;
     public int port;
@@ -18,20 +18,20 @@ public class HostModel extends LHSerializable<HostInfo> implements Comparable<Ho
     public HostModel() {}
 
     @Override
-    public HostInfo.Builder toProto() {
-        return HostInfo.newBuilder().setHost(host).setPort(port);
+    public LHHostInfo.Builder toProto() {
+        return LHHostInfo.newBuilder().setHost(host).setPort(port);
     }
 
     @Override
     public void initFrom(Message proto) throws LHSerdeError {
-        HostInfo hostInfo = (HostInfo) proto;
+        LHHostInfo hostInfo = (LHHostInfo) proto;
         host = hostInfo.getHost();
         port = hostInfo.getPort();
     }
 
     @Override
-    public Class<HostInfo> getProtoBaseClass() {
-        return HostInfo.class;
+    public Class<LHHostInfo> getProtoBaseClass() {
+        return LHHostInfo.class;
     }
 
     public String getKey() {

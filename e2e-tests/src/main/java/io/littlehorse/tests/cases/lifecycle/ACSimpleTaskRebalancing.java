@@ -3,7 +3,7 @@ package io.littlehorse.tests.cases.lifecycle;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.HostInfo;
+import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
@@ -51,7 +51,7 @@ public class ACSimpleTaskRebalancing extends Test {
 
         // This is the first worker to connect, so it should get ALL of the hosts
         RegisterTaskWorkerResponse reply1 = stub.registerTaskWorker(register(client1));
-        for (HostInfo host : reply1.getYourHostsList()) {
+        for (LHHostInfo host : reply1.getYourHostsList()) {
             allHosts.add(hostToString(host));
         }
 
@@ -81,7 +81,7 @@ public class ACSimpleTaskRebalancing extends Test {
         }
     }
 
-    private String hostToString(HostInfo host) {
+    private String hostToString(LHHostInfo host) {
         return host.getHost() + ":" + host.getPort();
     }
 

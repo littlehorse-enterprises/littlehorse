@@ -316,10 +316,10 @@ message TaskWorkerHeartBeatRequest {
 }
 
 message RegisterTaskWorkerResponse {
-  repeated HostInfo your_hosts = 1;
+  repeated LHHostInfo your_hosts = 1;
 }
 
-message HostInfo {
+message LHHostInfo {
   string host = 1;
   int32 port = 2;
 }
@@ -327,7 +327,7 @@ message HostInfo {
 message TaskWorkerMetadata {
   string client_id = 1;
   google.protobuf.Timestamp latest_heartbeat = 2;
-  repeated HostInfo hosts = 3;
+  repeated LHHostInfo hosts = 3;
 }
 
 message TaskWorkerGroup {

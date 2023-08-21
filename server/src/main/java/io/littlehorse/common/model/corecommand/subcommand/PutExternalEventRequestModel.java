@@ -1,13 +1,13 @@
-package io.littlehorse.common.model.command.subcommand;
+package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.LHTimer;
-import io.littlehorse.common.model.command.CommandModel;
-import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventResponseModel;
+import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.subcommandresponse.PutExternalEventResponseModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;

@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.command.subcommand;
+package io.littlehorse.common.model.corecommand.subcommand;
 
 import static io.littlehorse.common.LHConstants.MAX_TASK_WORKER_INACTIVITY;
 
@@ -7,10 +7,10 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.exceptions.LHConnectionError;
-import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.command.subcommand.internals.RoundRobinAssignor;
-import io.littlehorse.common.model.command.subcommand.internals.TaskWorkerAssignor;
-import io.littlehorse.common.model.command.subcommandresponse.RegisterTaskWorkerReply;
+import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.subcommand.internals.RoundRobinAssignor;
+import io.littlehorse.common.model.corecommand.subcommand.internals.TaskWorkerAssignor;
+import io.littlehorse.common.model.corecommand.subcommandresponse.RegisterTaskWorkerReply;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;

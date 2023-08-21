@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.topology.core.processors;
 import com.google.protobuf.ByteString;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
-import io.littlehorse.common.model.command.AbstractResponse;
+import io.littlehorse.common.model.corecommand.AbstractResponse;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;

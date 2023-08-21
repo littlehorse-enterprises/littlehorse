@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.HostInfo;
+import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.TaskWorkerMetadata;
 import java.util.Date;
 import java.util.List;
@@ -41,7 +41,7 @@ public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata> 
         return TaskWorkerMetadata.class;
     }
 
-    public List<HostInfo> hostsToProto() {
+    public List<LHHostInfo> hostsToProto() {
         return hosts.stream().map(host -> host.toProto().build()).collect(Collectors.toList());
     }
 }

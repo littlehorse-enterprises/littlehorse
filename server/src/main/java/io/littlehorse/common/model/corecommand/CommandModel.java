@@ -1,27 +1,29 @@
-package io.littlehorse.common.model.command;
+package io.littlehorse.common.model.corecommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
-import io.littlehorse.common.model.command.subcommand.AssignUserTaskRunRequestModel;
-import io.littlehorse.common.model.command.subcommand.CancelUserTaskRunRequestModel;
-import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRunRequestModel;
-import io.littlehorse.common.model.command.subcommand.DeleteExternalEventRequestModel;
-import io.littlehorse.common.model.command.subcommand.DeleteWfRunRequestModel;
-import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
-import io.littlehorse.common.model.command.subcommand.PutExternalEventRequestModel;
-import io.littlehorse.common.model.command.subcommand.ReassignUserTask;
-import io.littlehorse.common.model.command.subcommand.ReportTaskRunModel;
-import io.littlehorse.common.model.command.subcommand.ResumeWfRunRequestModel;
-import io.littlehorse.common.model.command.subcommand.RunWfRequestModel;
-import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
-import io.littlehorse.common.model.command.subcommand.StopWfRunRequestModel;
-import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
-import io.littlehorse.common.model.command.subcommand.TaskWorkerHeartBeatRequestModel;
-import io.littlehorse.common.model.command.subcommand.TriggeredTaskRun;
+import io.littlehorse.common.model.AbstractCommand;
+import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.DeleteExternalEventRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeout;
+import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.ReassignUserTask;
+import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
+import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMatured;
+import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
+import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.TriggeredTaskRun;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.Command.CommandCase;
+import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;
 import lombok.Getter;
@@ -29,7 +31,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CommandModel extends LHSerializable<Command> {
+public class CommandModel extends AbstractCommand<Command> {
 
     public String commandId;
     public Date time;
@@ -68,6 +70,7 @@ public class CommandModel extends LHSerializable<Command> {
         this.setSubCommand(cmd);
     }
 
+    @Override
     public Command.Builder toProto() {
         Command.Builder out = Command.newBuilder();
         out.setTime(LHUtil.fromDate(time));
@@ -131,6 +134,7 @@ public class CommandModel extends LHSerializable<Command> {
         return out;
     }
 
+    @Override
     public void initFrom(Message proto) {
         Command p = (Command) proto;
         time = LHUtil.fromProtoTs(p.getTime());
@@ -291,8 +295,19 @@ public class CommandModel extends LHSerializable<Command> {
         }
     }
 
+    @Override
     public String getPartitionKey() {
         return getSubCommand().getPartitionKey();
+    }
+
+    @Override
+    public LHStoreType getStore() {
+        return LHStoreType.CORE;
+    }
+
+    @Override
+    public String getTopic(LHConfig config) {
+        return config.getCoreCmdTopicName();
     }
 
     public boolean hasResponse() {

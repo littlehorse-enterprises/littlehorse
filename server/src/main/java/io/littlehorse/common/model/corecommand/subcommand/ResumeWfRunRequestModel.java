@@ -1,33 +1,34 @@
-package io.littlehorse.common.model.command.subcommand;
+package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.command.subcommandresponse.StopWfRunReply;
+import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.subcommandresponse.ResumeWfRunReply;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.sdk.common.proto.LHResponseCode;
-import io.littlehorse.sdk.common.proto.StopWfRunRequest;
+import io.littlehorse.sdk.common.proto.ResumeWfRunRequest;
 
-public class StopWfRunRequestModel extends SubCommand<StopWfRunRequest> {
+public class ResumeWfRunRequestModel extends SubCommand<ResumeWfRunRequest> {
 
     public String wfRunId;
     public int threadRunNumber;
 
-    public Class<StopWfRunRequest> getProtoBaseClass() {
-        return StopWfRunRequest.class;
+    public Class<ResumeWfRunRequest> getProtoBaseClass() {
+        return ResumeWfRunRequest.class;
     }
 
-    public StopWfRunRequest.Builder toProto() {
-        StopWfRunRequest.Builder out =
-                StopWfRunRequest.newBuilder().setWfRunId(wfRunId).setThreadRunNumber(threadRunNumber);
+    public ResumeWfRunRequest.Builder toProto() {
+        ResumeWfRunRequest.Builder out = ResumeWfRunRequest.newBuilder();
+        out.setWfRunId(wfRunId);
+        out.setThreadRunNumber(threadRunNumber);
         return out;
     }
 
     public void initFrom(Message proto) {
-        StopWfRunRequest p = (StopWfRunRequest) proto;
+        ResumeWfRunRequest p = (ResumeWfRunRequest) proto;
         wfRunId = p.getWfRunId();
         threadRunNumber = p.getThreadRunNumber();
     }
@@ -36,8 +37,8 @@ public class StopWfRunRequestModel extends SubCommand<StopWfRunRequest> {
         return wfRunId;
     }
 
-    public StopWfRunReply process(CoreProcessorDAO dao, LHConfig config) {
-        StopWfRunReply out = new StopWfRunReply();
+    public ResumeWfRunReply process(CoreProcessorDAO dao, LHConfig config) {
+        ResumeWfRunReply out = new ResumeWfRunReply();
         WfRunModel wfRunModel = dao.getWfRun(wfRunId);
         if (wfRunModel == null) {
             out.code = LHResponseCode.BAD_REQUEST_ERROR;
@@ -54,13 +55,12 @@ public class StopWfRunRequestModel extends SubCommand<StopWfRunRequest> {
 
         wfRunModel.wfSpecModel = wfSpecModel;
         try {
-            wfRunModel.processStopRequest(this);
+            wfRunModel.processResumeRequest(this);
             out.code = LHResponseCode.OK;
         } catch (LHValidationError exn) {
             out.code = LHResponseCode.BAD_REQUEST_ERROR;
             out.message = exn.getMessage();
         }
-
         return out;
     }
 
@@ -68,8 +68,8 @@ public class StopWfRunRequestModel extends SubCommand<StopWfRunRequest> {
         return true;
     }
 
-    public static StopWfRunRequestModel fromProto(StopWfRunRequest p) {
-        StopWfRunRequestModel out = new StopWfRunRequestModel();
+    public static ResumeWfRunRequestModel fromProto(ResumeWfRunRequest p) {
+        ResumeWfRunRequestModel out = new ResumeWfRunRequestModel();
         out.initFrom(p);
         return out;
     }

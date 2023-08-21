@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.command;
+package io.littlehorse.common.model.corecommand;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;

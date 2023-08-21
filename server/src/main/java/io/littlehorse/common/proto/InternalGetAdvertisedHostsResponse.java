@@ -58,19 +58,19 @@ private static final long serialVersionUID = 0L;
   public static final int HOSTS_FIELD_NUMBER = 1;
   private static final class HostsDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
-        java.lang.String, io.littlehorse.sdk.common.proto.HostInfo> defaultEntry =
+        java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> defaultEntry =
             com.google.protobuf.MapEntry
-            .<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo>newDefaultInstance(
+            .<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo>newDefaultInstance(
                 io.littlehorse.common.proto.InteractiveQuery.internal_static_littlehorse_InternalGetAdvertisedHostsResponse_HostsEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                io.littlehorse.sdk.common.proto.HostInfo.getDefaultInstance());
+                io.littlehorse.sdk.common.proto.LHHostInfo.getDefaultInstance());
   }
   @SuppressWarnings("serial")
   private com.google.protobuf.MapField<
-      java.lang.String, io.littlehorse.sdk.common.proto.HostInfo> hosts_;
-  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo>
+      java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> hosts_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo>
   internalGetHosts() {
     if (hosts_ == null) {
       return com.google.protobuf.MapField.emptyMapField(
@@ -95,14 +95,14 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   @java.lang.Deprecated
-  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo> getHosts() {
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> getHosts() {
     return getHostsMap();
   }
   /**
    * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
    */
   @java.lang.Override
-  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo> getHostsMap() {
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> getHostsMap() {
     return internalGetHosts().getMap();
   }
   /**
@@ -110,12 +110,12 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public /* nullable */
-io.littlehorse.sdk.common.proto.HostInfo getHostsOrDefault(
+io.littlehorse.sdk.common.proto.LHHostInfo getHostsOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.sdk.common.proto.HostInfo defaultValue) {
+io.littlehorse.sdk.common.proto.LHHostInfo defaultValue) {
     if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo> map =
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> map =
         internalGetHosts().getMap();
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
@@ -123,10 +123,10 @@ io.littlehorse.sdk.common.proto.HostInfo defaultValue) {
    * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.HostInfo getHostsOrThrow(
+  public io.littlehorse.sdk.common.proto.LHHostInfo getHostsOrThrow(
       java.lang.String key) {
     if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo> map =
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> map =
         internalGetHosts().getMap();
     if (!map.containsKey(key)) {
       throw new java.lang.IllegalArgumentException();
@@ -163,9 +163,9 @@ io.littlehorse.sdk.common.proto.HostInfo defaultValue) {
     if (size != -1) return size;
 
     size = 0;
-    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo> entry
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> entry
          : internalGetHosts().getMap().entrySet()) {
-      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo>
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo>
       hosts__ = HostsDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
@@ -470,7 +470,7 @@ io.littlehorse.sdk.common.proto.HostInfo defaultValue) {
               done = true;
               break;
             case 10: {
-              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo>
+              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo>
               hosts__ = input.readMessage(
                   HostsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               internalGetMutableHosts().getMutableMap().put(
@@ -496,8 +496,8 @@ io.littlehorse.sdk.common.proto.HostInfo defaultValue) {
     private int bitField0_;
 
     private com.google.protobuf.MapField<
-        java.lang.String, io.littlehorse.sdk.common.proto.HostInfo> hosts_;
-    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo>
+        java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> hosts_;
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo>
         internalGetHosts() {
       if (hosts_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
@@ -505,7 +505,7 @@ io.littlehorse.sdk.common.proto.HostInfo defaultValue) {
       }
       return hosts_;
     }
-    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo>
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo>
         internalGetMutableHosts() {
       if (hosts_ == null) {
         hosts_ = com.google.protobuf.MapField.newMapField(
@@ -535,14 +535,14 @@ io.littlehorse.sdk.common.proto.HostInfo defaultValue) {
      */
     @java.lang.Override
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo> getHosts() {
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> getHosts() {
       return getHostsMap();
     }
     /**
      * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
      */
     @java.lang.Override
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo> getHostsMap() {
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> getHostsMap() {
       return internalGetHosts().getMap();
     }
     /**
@@ -550,12 +550,12 @@ io.littlehorse.sdk.common.proto.HostInfo defaultValue) {
      */
     @java.lang.Override
     public /* nullable */
-io.littlehorse.sdk.common.proto.HostInfo getHostsOrDefault(
+io.littlehorse.sdk.common.proto.LHHostInfo getHostsOrDefault(
         java.lang.String key,
         /* nullable */
-io.littlehorse.sdk.common.proto.HostInfo defaultValue) {
+io.littlehorse.sdk.common.proto.LHHostInfo defaultValue) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo> map =
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> map =
           internalGetHosts().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
@@ -563,10 +563,10 @@ io.littlehorse.sdk.common.proto.HostInfo defaultValue) {
      * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.HostInfo getHostsOrThrow(
+    public io.littlehorse.sdk.common.proto.LHHostInfo getHostsOrThrow(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo> map =
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> map =
           internalGetHosts().getMap();
       if (!map.containsKey(key)) {
         throw new java.lang.IllegalArgumentException();
@@ -593,7 +593,7 @@ io.littlehorse.sdk.common.proto.HostInfo defaultValue) {
      * Use alternate mutation accessors instead.
      */
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo>
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo>
         getMutableHosts() {
       bitField0_ |= 0x00000001;
       return internalGetMutableHosts().getMutableMap();
@@ -603,7 +603,7 @@ io.littlehorse.sdk.common.proto.HostInfo defaultValue) {
      */
     public Builder putHosts(
         java.lang.String key,
-        io.littlehorse.sdk.common.proto.HostInfo value) {
+        io.littlehorse.sdk.common.proto.LHHostInfo value) {
       if (key == null) { throw new NullPointerException("map key"); }
       if (value == null) { throw new NullPointerException("map value"); }
       internalGetMutableHosts().getMutableMap()
@@ -615,7 +615,7 @@ io.littlehorse.sdk.common.proto.HostInfo defaultValue) {
      * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
      */
     public Builder putAllHosts(
-        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo> values) {
+        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo> values) {
       internalGetMutableHosts().getMutableMap()
           .putAll(values);
       bitField0_ |= 0x00000001;

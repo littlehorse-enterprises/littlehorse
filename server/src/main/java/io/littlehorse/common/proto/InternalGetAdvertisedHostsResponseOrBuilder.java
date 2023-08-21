@@ -20,24 +20,24 @@ public interface InternalGetAdvertisedHostsResponseOrBuilder extends
    * Use {@link #getHostsMap()} instead.
    */
   @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo>
   getHosts();
   /**
    * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
    */
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfo>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.LHHostInfo>
   getHostsMap();
   /**
    * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
    */
   /* nullable */
-io.littlehorse.sdk.common.proto.HostInfo getHostsOrDefault(
+io.littlehorse.sdk.common.proto.LHHostInfo getHostsOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.sdk.common.proto.HostInfo defaultValue);
+io.littlehorse.sdk.common.proto.LHHostInfo defaultValue);
   /**
    * <code>map&lt;string, .littlehorse.HostInfo&gt; hosts = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.HostInfo getHostsOrThrow(
+  io.littlehorse.sdk.common.proto.LHHostInfo getHostsOrThrow(
       java.lang.String key);
 }

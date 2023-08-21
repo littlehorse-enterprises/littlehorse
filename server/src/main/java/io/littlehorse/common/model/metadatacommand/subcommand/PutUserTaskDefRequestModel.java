@@ -6,7 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.command.subcommandresponse.PutUserTaskDefResponseModel;
+import io.littlehorse.common.model.corecommand.subcommandresponse.PutUserTaskDefResponseModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskFieldModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;

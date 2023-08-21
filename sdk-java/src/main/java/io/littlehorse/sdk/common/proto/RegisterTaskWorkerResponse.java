@@ -46,41 +46,41 @@ private static final long serialVersionUID = 0L;
 
   public static final int YOUR_HOSTS_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.HostInfo> yourHosts_;
+  private java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo> yourHosts_;
   /**
-   * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+   * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.HostInfo> getYourHostsList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo> getYourHostsList() {
     return yourHosts_;
   }
   /**
-   * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+   * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.HostInfoOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder> 
       getYourHostsOrBuilderList() {
     return yourHosts_;
   }
   /**
-   * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+   * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   @java.lang.Override
   public int getYourHostsCount() {
     return yourHosts_.size();
   }
   /**
-   * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+   * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.HostInfo getYourHosts(int index) {
+  public io.littlehorse.sdk.common.proto.LHHostInfo getYourHosts(int index) {
     return yourHosts_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+   * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.HostInfoOrBuilder getYourHostsOrBuilder(
+  public io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder getYourHostsOrBuilder(
       int index) {
     return yourHosts_.get(index);
   }
@@ -428,9 +428,9 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              io.littlehorse.sdk.common.proto.HostInfo m =
+              io.littlehorse.sdk.common.proto.LHHostInfo m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.HostInfo.parser(),
+                      io.littlehorse.sdk.common.proto.LHHostInfo.parser(),
                       extensionRegistry);
               if (yourHostsBuilder_ == null) {
                 ensureYourHostsIsMutable();
@@ -457,22 +457,22 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.util.List<io.littlehorse.sdk.common.proto.HostInfo> yourHosts_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo> yourHosts_ =
       java.util.Collections.emptyList();
     private void ensureYourHostsIsMutable() {
       if (!((bitField0_ & 0x00000001) != 0)) {
-        yourHosts_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.HostInfo>(yourHosts_);
+        yourHosts_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.LHHostInfo>(yourHosts_);
         bitField0_ |= 0x00000001;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.HostInfo, io.littlehorse.sdk.common.proto.HostInfo.Builder, io.littlehorse.sdk.common.proto.HostInfoOrBuilder> yourHostsBuilder_;
+        io.littlehorse.sdk.common.proto.LHHostInfo, io.littlehorse.sdk.common.proto.LHHostInfo.Builder, io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder> yourHostsBuilder_;
 
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.HostInfo> getYourHostsList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo> getYourHostsList() {
       if (yourHostsBuilder_ == null) {
         return java.util.Collections.unmodifiableList(yourHosts_);
       } else {
@@ -480,7 +480,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public int getYourHostsCount() {
       if (yourHostsBuilder_ == null) {
@@ -490,9 +490,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.HostInfo getYourHosts(int index) {
+    public io.littlehorse.sdk.common.proto.LHHostInfo getYourHosts(int index) {
       if (yourHostsBuilder_ == null) {
         return yourHosts_.get(index);
       } else {
@@ -500,10 +500,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder setYourHosts(
-        int index, io.littlehorse.sdk.common.proto.HostInfo value) {
+        int index, io.littlehorse.sdk.common.proto.LHHostInfo value) {
       if (yourHostsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -517,10 +517,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder setYourHosts(
-        int index, io.littlehorse.sdk.common.proto.HostInfo.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.LHHostInfo.Builder builderForValue) {
       if (yourHostsBuilder_ == null) {
         ensureYourHostsIsMutable();
         yourHosts_.set(index, builderForValue.build());
@@ -531,9 +531,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
-    public Builder addYourHosts(io.littlehorse.sdk.common.proto.HostInfo value) {
+    public Builder addYourHosts(io.littlehorse.sdk.common.proto.LHHostInfo value) {
       if (yourHostsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -547,10 +547,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder addYourHosts(
-        int index, io.littlehorse.sdk.common.proto.HostInfo value) {
+        int index, io.littlehorse.sdk.common.proto.LHHostInfo value) {
       if (yourHostsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -564,10 +564,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder addYourHosts(
-        io.littlehorse.sdk.common.proto.HostInfo.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.LHHostInfo.Builder builderForValue) {
       if (yourHostsBuilder_ == null) {
         ensureYourHostsIsMutable();
         yourHosts_.add(builderForValue.build());
@@ -578,10 +578,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder addYourHosts(
-        int index, io.littlehorse.sdk.common.proto.HostInfo.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.LHHostInfo.Builder builderForValue) {
       if (yourHostsBuilder_ == null) {
         ensureYourHostsIsMutable();
         yourHosts_.add(index, builderForValue.build());
@@ -592,10 +592,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder addAllYourHosts(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.HostInfo> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.LHHostInfo> values) {
       if (yourHostsBuilder_ == null) {
         ensureYourHostsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -607,7 +607,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder clearYourHosts() {
       if (yourHostsBuilder_ == null) {
@@ -620,7 +620,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
     public Builder removeYourHosts(int index) {
       if (yourHostsBuilder_ == null) {
@@ -633,16 +633,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.HostInfo.Builder getYourHostsBuilder(
+    public io.littlehorse.sdk.common.proto.LHHostInfo.Builder getYourHostsBuilder(
         int index) {
       return getYourHostsFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.HostInfoOrBuilder getYourHostsOrBuilder(
+    public io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder getYourHostsOrBuilder(
         int index) {
       if (yourHostsBuilder_ == null) {
         return yourHosts_.get(index);  } else {
@@ -650,9 +650,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.HostInfoOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder> 
          getYourHostsOrBuilderList() {
       if (yourHostsBuilder_ != null) {
         return yourHostsBuilder_.getMessageOrBuilderList();
@@ -661,33 +661,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.HostInfo.Builder addYourHostsBuilder() {
+    public io.littlehorse.sdk.common.proto.LHHostInfo.Builder addYourHostsBuilder() {
       return getYourHostsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.HostInfo.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.LHHostInfo.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.HostInfo.Builder addYourHostsBuilder(
+    public io.littlehorse.sdk.common.proto.LHHostInfo.Builder addYourHostsBuilder(
         int index) {
       return getYourHostsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.HostInfo.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.LHHostInfo.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
+     * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.HostInfo.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo.Builder> 
          getYourHostsBuilderList() {
       return getYourHostsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.HostInfo, io.littlehorse.sdk.common.proto.HostInfo.Builder, io.littlehorse.sdk.common.proto.HostInfoOrBuilder> 
+        io.littlehorse.sdk.common.proto.LHHostInfo, io.littlehorse.sdk.common.proto.LHHostInfo.Builder, io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder> 
         getYourHostsFieldBuilder() {
       if (yourHostsBuilder_ == null) {
         yourHostsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.HostInfo, io.littlehorse.sdk.common.proto.HostInfo.Builder, io.littlehorse.sdk.common.proto.HostInfoOrBuilder>(
+            io.littlehorse.sdk.common.proto.LHHostInfo, io.littlehorse.sdk.common.proto.LHHostInfo.Builder, io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder>(
                 yourHosts_,
                 ((bitField0_ & 0x00000001) != 0),
                 getParentForChildren(),

@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface HostInfoOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.HostInfo)
+public interface LHHostInfoOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.LHHostInfo)
     com.google.protobuf.MessageOrBuilder {
 
   /**

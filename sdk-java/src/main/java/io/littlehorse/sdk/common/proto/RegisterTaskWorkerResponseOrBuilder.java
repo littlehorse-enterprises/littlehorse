@@ -10,12 +10,12 @@ public interface RegisterTaskWorkerResponseOrBuilder extends
   /**
    * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.HostInfo> 
+  java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo> 
       getYourHostsList();
   /**
    * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.HostInfo getYourHosts(int index);
+  io.littlehorse.sdk.common.proto.LHHostInfo getYourHosts(int index);
   /**
    * <code>repeated .littlehorse.HostInfo your_hosts = 1;</code>
    */

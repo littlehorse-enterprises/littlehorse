@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
-import io.littlehorse.common.model.command.CommandModel;
+import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
@@ -12,7 +12,7 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
-import io.littlehorse.sdk.common.proto.HostInfo;
+import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.util.InternalHosts;
 import java.util.Date;
@@ -73,7 +73,7 @@ public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
 
     public abstract AnalyticsRegistry getRegistry();
 
-    public abstract HostInfo getAdvertisedHost(HostModel host, String listenerName);
+    public abstract LHHostInfo getAdvertisedHost(HostModel host, String listenerName);
 
     public abstract InternalHosts getInternalHosts();
 }

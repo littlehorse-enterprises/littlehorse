@@ -2,7 +2,7 @@ package io.littlehorse.server.streams;
 
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHTimer;
-import io.littlehorse.common.model.command.CommandModel;
+import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;

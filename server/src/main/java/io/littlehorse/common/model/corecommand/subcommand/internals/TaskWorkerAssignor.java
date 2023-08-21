@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.command.subcommand.internals;
+package io.littlehorse.common.model.corecommand.subcommand.internals;
 
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;

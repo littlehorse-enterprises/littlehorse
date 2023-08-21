@@ -115,24 +115,24 @@ public final class InteractiveQuery {
       "create_time\032^\n\025BoundedObjectIdScanPb\022\027\n\017" +
       "start_object_id\030\001 \001(\t\022\032\n\rend_object_id\030\002" +
       " \001(\tH\000\210\001\001B\020\n\016_end_object_idB\017\n\rscan_boun" +
-      "daryB\013\n\t_bookmarkB\020\n\016_partition_key\"\264\001\n\"" +
+      "daryB\013\n\t_bookmarkB\020\n\016_partition_key\"\266\001\n\"" +
       "InternalGetAdvertisedHostsResponse\022I\n\005ho" +
       "sts\030\001 \003(\0132:.littlehorse.InternalGetAdver" +
-      "tisedHostsResponse.HostsEntry\032C\n\nHostsEn" +
-      "try\022\013\n\003key\030\001 \001(\t\022$\n\005value\030\002 \001(\0132\025.little" +
-      "horse.HostInfo:\0028\001\"Z\n\024InternalScanRespon" +
-      "se\022\017\n\007results\030\001 \003(\014\0221\n\020updated_bookmark\030" +
-      "\002 \001(\0132\027.littlehorse.BookmarkPb\"K\n\023Partit" +
-      "ionBookmarkPb\022\020\n\010parttion\030\001 \001(\005\022\025\n\010last_" +
-      "key\030\002 \001(\tH\000\210\001\001B\013\n\t_last_key\"\334\001\n\nBookmark" +
-      "Pb\022Q\n\026in_progress_partitions\030\001 \003(\01321.lit" +
-      "tlehorse.BookmarkPb.InProgressPartitions" +
-      "Entry\022\034\n\024completed_partitions\030\002 \003(\005\032]\n\031I" +
-      "nProgressPartitionsEntry\022\013\n\003key\030\001 \001(\005\022/\n" +
-      "\005value\030\002 \001(\0132 .littlehorse.PartitionBook" +
-      "markPb:\0028\001*-\n\020ScanResultTypePb\022\r\n\tOBJECT" +
-      "_ID\020\000\022\n\n\006OBJECT\020\001B\037\n\033io.littlehorse.comm" +
-      "on.protoP\001b\006proto3"
+      "tisedHostsResponse.HostsEntry\032E\n\nHostsEn" +
+      "try\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.little" +
+      "horse.LHHostInfo:\0028\001\"Z\n\024InternalScanResp" +
+      "onse\022\017\n\007results\030\001 \003(\014\0221\n\020updated_bookmar" +
+      "k\030\002 \001(\0132\027.littlehorse.BookmarkPb\"K\n\023Part" +
+      "itionBookmarkPb\022\020\n\010parttion\030\001 \001(\005\022\025\n\010las" +
+      "t_key\030\002 \001(\tH\000\210\001\001B\013\n\t_last_key\"\334\001\n\nBookma" +
+      "rkPb\022Q\n\026in_progress_partitions\030\001 \003(\01321.l" +
+      "ittlehorse.BookmarkPb.InProgressPartitio" +
+      "nsEntry\022\034\n\024completed_partitions\030\002 \003(\005\032]\n" +
+      "\031InProgressPartitionsEntry\022\013\n\003key\030\001 \001(\005\022" +
+      "/\n\005value\030\002 \001(\0132 .littlehorse.PartitionBo" +
+      "okmarkPb:\0028\001*-\n\020ScanResultTypePb\022\r\n\tOBJE" +
+      "CT_ID\020\000\022\n\n\006OBJECT\020\001B\037\n\033io.littlehorse.co" +
+      "mmon.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

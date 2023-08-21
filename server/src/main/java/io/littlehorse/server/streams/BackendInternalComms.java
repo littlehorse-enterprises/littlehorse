@@ -2,6 +2,8 @@ package io.littlehorse.server.streams;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
+import com.google.protobuf.Message;
+
 import io.grpc.ChannelCredentials;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannel;
@@ -19,8 +21,8 @@ import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.command.CommandModel;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -44,6 +46,7 @@ import io.littlehorse.common.proto.WaitForCommandRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.streams.lhinternalscan.InternalScan;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
@@ -68,6 +71,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.Serdes;
@@ -165,7 +170,20 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    public void waitForCommand(CommandModel command, StreamObserver<WaitForCommandResponse> observer) {
+    public <U extends Message, T extends AbstractGetable<U>> T getObject(ObjectIdModel<?, U, T> objectId) {
+        // First, get the store from objectId
+
+        // Second, get the partition key from object id
+
+        // third, get the host from streams.metadataForKey()
+
+        // if local host: do a get
+
+        // else: use the getObject() internal grpc.
+        throw new NotImplementedException();
+    }
+
+    public void waitForCommand(AbstractCommand<?> command, StreamObserver<WaitForCommandResponse> observer) {
         KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
                 ServerTopology.CORE_STORE,
                 command.getPartitionKey(),
@@ -177,14 +195,12 @@ public class BackendInternalComms implements Closeable {
          * of the in-sync replicas).
          */
         if (meta.activeHost().equals(thisHost)) {
-            localWaitForCommand(command.commandId, observer);
+            localWaitForCommand(command.getCommandId(), observer);
         } else {
-            getInternalAsyncClient(meta.activeHost())
-                    .waitForCommand(
-                            WaitForCommandRequest.newBuilder()
-                                    .setCommandId(command.commandId)
-                                    .build(),
-                            observer);
+            WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
+                    .setCommandId(command.getCommandId())
+                    .build();
+            getInternalAsyncClient(meta.activeHost()).waitForCommand(req, observer);
         }
     }
 
@@ -196,12 +212,11 @@ public class BackendInternalComms implements Closeable {
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
-    public io.littlehorse.sdk.common.proto.HostInfo getAdvertisedHost(HostModel host, String listenerName)
-            throws LHBadRequestError, LHConnectionError {
+    public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) {
         InternalGetAdvertisedHostsResponse advertisedHostsForHost =
                 getPublicListenersForHost(new HostInfo(host.host, host.port));
 
-        io.littlehorse.sdk.common.proto.HostInfo desiredHost =
+        io.littlehorse.sdk.common.proto.LHHostInfo desiredHost =
                 advertisedHostsForHost.getHostsOrDefault(listenerName, null);
         if (desiredHost == null) {
             String message = String.format(
@@ -216,11 +231,11 @@ public class BackendInternalComms implements Closeable {
         return desiredHost;
     }
 
-    public List<io.littlehorse.sdk.common.proto.HostInfo> getAllAdvertisedHosts(String listenerName)
+    public List<io.littlehorse.sdk.common.proto.LHHostInfo> getAllAdvertisedHosts(String listenerName)
             throws LHBadRequestError {
         Set<HostModel> hosts = getAllInternalHosts();
 
-        List<io.littlehorse.sdk.common.proto.HostInfo> out = new ArrayList<>();
+        List<io.littlehorse.sdk.common.proto.LHHostInfo> out = new ArrayList<>();
 
         for (HostModel host : hosts) {
             try {
@@ -384,10 +399,10 @@ public class BackendInternalComms implements Closeable {
 
         @Override
         public void getAdvertisedHosts(Empty req, StreamObserver<InternalGetAdvertisedHostsResponse> ctx) {
-            Map<String, io.littlehorse.sdk.common.proto.HostInfo> hosts = config.getAdvertisedListeners().stream()
+            Map<String, io.littlehorse.sdk.common.proto.LHHostInfo> hosts = config.getAdvertisedListeners().stream()
                     .collect(Collectors.toMap(
                             AdvertisedListenerConfig::getName,
-                            listenerConfig -> io.littlehorse.sdk.common.proto.HostInfo.newBuilder()
+                            listenerConfig -> io.littlehorse.sdk.common.proto.LHHostInfo.newBuilder()
                                     .setHost(listenerConfig.getHost())
                                     .setPort(listenerConfig.getPort())
                                     .build()));
@@ -406,7 +421,7 @@ public class BackendInternalComms implements Closeable {
      *
      * EMPLOYEE_TODO: Failover to Standby replicas if the leader is down.
      */
-    public InternalScanResponse doScan(InternalScan search) throws LHConnectionError {
+    public InternalScanResponse doScan(InternalScan search) {
         if (search.partitionKey != null && search.type == ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN) {
             return objectIdPrefixScan(search);
         } else if (search.partitionKey != null && search.type == ScanBoundaryCase.TAG_SCAN) {
@@ -544,7 +559,7 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    private InternalScanResponse allPartitionTagScan(InternalScan search) throws LHConnectionError {
+    private InternalScanResponse allPartitionTagScan(InternalScan search) {
         int limit = search.limit;
 
         // First, see what results we have locally. Then if we need more results
@@ -593,14 +608,7 @@ public class BackendInternalComms implements Closeable {
             newReq.resultType = ScanResultTypePb.OBJECT_ID;
 
             InternalScanResponse reply;
-            try {
-                reply = stub.internalScan(newReq.toProto().build());
-            } catch (Exception exn) {
-                throw new LHConnectionError(exn, "Failed connecting to backend.");
-            }
-            if (reply.getCode() != StoreQueryStatusPb.RSQ_OK) {
-                throw new LHConnectionError(null, "Failed connecting to backend.");
-            }
+            reply = stub.internalScan(newReq.toProto().build());
             InternalScanResponse.Builder newOutBuilder = InternalScanResponse.newBuilder()
                     .addAllResults(out.getResultsList())
                     .addAllResults(reply.getResultsList());
