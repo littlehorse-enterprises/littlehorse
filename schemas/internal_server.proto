@@ -11,6 +11,7 @@ import "object_id.proto";
 import "common_enums.proto";
 import "common_wfspec.proto";
 import "variable.proto";
+import "user_tasks.proto";
 
 
 // This section contains data structures used internally for sending the results of
