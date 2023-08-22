@@ -1,23 +1,29 @@
 package io.littlehorse.server.streams.storeinternals;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.function.Predicate;
+
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+
 import com.google.protobuf.Message;
+
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.Storeable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.StoreableType;
+import io.littlehorse.server.streams.store.LHIterKeyValue;
+import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 @Slf4j
 public class GetableStorageManager {
@@ -26,7 +32,7 @@ public class GetableStorageManager {
     private RocksDBWrapper rocksdb;
     private CoreProcessorDAO dao;
     private final TagStorageManager tagStorageManager;
-    private Map<ObjectIdModel<?, ?, ?>, GetableToStore<?, ?>> uncommittedChanges;
+    private Map<String, GetableToStore<?, ?>> uncommittedChanges;
 
     public GetableStorageManager(
             RocksDBWrapper rocksdb,
@@ -61,7 +67,7 @@ public class GetableStorageManager {
 
         // First check the cache.
         @SuppressWarnings("unchecked")
-        GetableToStore<U, T> bufferedResult = (GetableToStore<U, T>) uncommittedChanges.get(id);
+        GetableToStore<U, T> bufferedResult = (GetableToStore<U, T>) uncommittedChanges.get(id.getStoreableKey());
         if (bufferedResult != null) {
             return bufferedResult.getObjectToStore();
         }
@@ -79,7 +85,7 @@ public class GetableStorageManager {
         out = storeResult.getStoredObject();
         out.setDao(dao);
 
-        uncommittedChanges.put(id, new GetableToStore<>(storeResult, id.getObjectClass()));
+        uncommittedChanges.put(id.getStoreableKey(), new GetableToStore<>(storeResult, id.getObjectClass()));
         return out;
     }
 
@@ -98,7 +104,8 @@ public class GetableStorageManager {
         log.trace("Putting {} with key {}", getable.getClass(), getable.getObjectId());
 
         @SuppressWarnings("unchecked")
-        GetableToStore<U, T> bufferedResult = (GetableToStore<U, T>) uncommittedChanges.get(getable.getObjectId());
+        GetableToStore<U, T> bufferedResult = (GetableToStore<U, T>)
+                uncommittedChanges.get(getable.getObjectId().getStoreableKey());
 
         if (bufferedResult != null) {
             if (bufferedResult.getObjectToStore() != getable) {
@@ -126,7 +133,7 @@ public class GetableStorageManager {
         GetableToStore<U, T> toPut = new GetableToStore<>(previousValue, (Class<T>) getable.getClass());
 
         toPut.setObjectToStore(getable);
-        uncommittedChanges.put(getable.getObjectId(), toPut);
+        uncommittedChanges.put(getable.getObjectId().getStoreableKey(), toPut);
     }
 
     /**
@@ -210,7 +217,7 @@ public class GetableStorageManager {
         // going to delete it. Also note that since we called get(), we know
         // that the thing is already in the buffer.
         @SuppressWarnings("unchecked")
-        GetableToStore<U, T> bufferEntry = (GetableToStore<U, T>) uncommittedChanges.get(id);
+        GetableToStore<U, T> bufferEntry = (GetableToStore<U, T>) uncommittedChanges.get(id.getStoreableKey());
 
         if (bufferEntry == null) {
             throw new IllegalStateException("Impossible to get null buffer entry after successfull this#get()");
@@ -234,12 +241,12 @@ public class GetableStorageManager {
     public void flush() {
         log.trace("Flushing for command {}", command.getType());
 
-        for (Map.Entry<ObjectIdModel<?, ?, ?>, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
-            ObjectIdModel<?, ?, ?> id = entry.getKey();
+        for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
+            String storeableKey = entry.getKey();
             GetableToStore<?, ?> entity = entry.getValue();
 
             if (entity.getObjectToStore() == null) {
-                rocksdb.delete(StoredGetable.getStoreKey(id), StoreableType.STORED_GETABLE);
+                rocksdb.delete(storeableKey, StoreableType.STORED_GETABLE);
 
                 tagStorageManager.store(List.of(), entity.getTagsPresentBeforeUpdate());
             } else {
@@ -251,8 +258,8 @@ public class GetableStorageManager {
     }
 
     public void commit() {
-        for (Map.Entry<ObjectIdModel<?, ?, ?>, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
-            ObjectIdModel<?, ?, ?> id = entry.getKey();
+        for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
+            String storeableKey = entry.getKey();
             GetableToStore<?, ?> entity = entry.getValue();
 
             if (entity.getObjectToStore() != null) {
@@ -265,7 +272,7 @@ public class GetableStorageManager {
 
             } else {
                 // Do a deletion!
-                rocksdb.delete(StoredGetable.getStoreKey(id), StoreableType.STORED_GETABLE);
+                rocksdb.delete(storeableKey, StoreableType.STORED_GETABLE);
                 tagStorageManager.store(List.of(), entity.getTagsPresentBeforeUpdate());
             }
         }
@@ -274,13 +281,50 @@ public class GetableStorageManager {
         // Command, we create a completely new GetableStorageManager.
     }
 
+    // Note that this is an expensive operation. It's used when deleting a WfRun.
     private <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefixAndPutInBuffer(
             String prefix, Class<T> cls) {
-        throw new NotImplementedException();
+
+        List<GetableToStore<U, T>> out = iterateOverPrefix(prefix, cls);
+
+        // put everything in the buffer.
+        for (GetableToStore<U, T> thing : out) {
+            uncommittedChanges.put(thing.getObjectToStore().getObjectId().getStoreableKey(), thing);
+        }
+
+        return out;
     }
 
+    // Note that this is an expensive operation. It's used by External Event Nodes.
+    // @SuppressWarnings("all")
     private <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefix(
             String prefix, Class<T> cls) {
-        throw new NotImplementedException();
+        Map<String, GetableToStore<U, T>> all = new HashMap<>();
+
+        // First iterate over what's in the store.
+        String storePrefix = StoredGetable.getRocksDBKey(prefix, AbstractGetable.getTypeEnum(cls));
+
+        try (LHKeyValueIterator<? super Storeable<?>> iterator =
+                rocksdb.range(storePrefix, storePrefix + "~", Storeable.class)) {
+
+            while (iterator.hasNext()) {
+                LHIterKeyValue<? super Storeable<?>> next = iterator.next();
+
+                StoredGetable<U, T> item = (StoredGetable<U, T>) next.getValue();
+                all.put(item.getStoreKey(), new GetableToStore<>(item, cls));
+            }
+        }
+
+        // Overwrite what's in the store with what's in the buffer.
+        for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
+            if (entry.getKey().startsWith(storePrefix)) {
+                all.put(entry.getKey(), (GetableToStore<U, T>) entry.getValue());
+            }
+        }
+
+        return all.entrySet().stream()
+                .map(entry -> entry.getValue())
+                .filter(x -> x != null)
+                .toList();
     }
 }

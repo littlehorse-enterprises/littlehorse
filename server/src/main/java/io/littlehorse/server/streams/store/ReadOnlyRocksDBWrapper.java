@@ -4,8 +4,13 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -43,7 +48,6 @@ public class ReadOnlyRocksDBWrapper {
     }
 
     public <U extends Message, T extends Storeable<U>> T get(String storeableKey, Class<T> cls) {
-
         String fullKey = Storeable.getFullStoreKey(cls, storeableKey);
         log.trace("Getting {} from rocksdb", fullKey);
         Bytes raw = rocksdb.get(fullKey);
@@ -57,19 +61,28 @@ public class ReadOnlyRocksDBWrapper {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public <U extends Message, T extends AbstractGetable<U>> StoredGetable<U, T> get(ObjectIdModel<?, U, T> id) {
+        String key = Storeable.getSubstorePrefix(StoreableType.STORED_GETABLE) + id.getType().getNumber() + "/";
+        key += id.toString();
+        return (StoredGetable<U, T>) get(key, StoredGetable.class);
+    }
+
     /**
      * Make sure to `.close()` the result!
      */
     public <T extends Storeable<?>> LHKeyValueIterator<T> prefixScan(String prefix, Class<T> cls) {
-
         String compositePrefix = Storeable.getFullStoreKey(cls, prefix);
-
         return new LHKeyValueIterator<>(
                 rocksdb.prefixScan(compositePrefix, Serdes.String().serializer()), cls);
     }
 
-    // not deprecated, just a warning that the API changed.
-    // If this comment shows up on the Pull Request, it shouldn't be merged.
+    public <U extends Message, T extends AbstractGetable<U>> LHKeyValueIterator<StoredGetable<U, T>> getablePrefixScan(String prefix, Class<T> cls) {
+        String realPrefix = Storeable.getSubstorePrefix(StoreableType.STORED_GETABLE) + AbstractGetable.getTypeEnum(cls).getNumber() + "/";
+
+        throw new NotImplementedException();
+    }
+
     public <U extends Message, T extends Storeable<U>> T getLastFromPrefix(String prefix, Class<T> cls) {
 
         LHKeyValueIterator<T> iterator = null;

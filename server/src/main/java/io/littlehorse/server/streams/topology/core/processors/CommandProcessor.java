@@ -46,7 +46,8 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
         // CoreProcessorDAOImpl.
         this.rocksdb = new RocksDBWrapper(ctx.getStateStore(ServerTopology.CORE_STORE), config);
 
-        ReadOnlyRocksDBWrapper globalStore = new ReadOnlyRocksDBWrapper(ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), config);
+        ReadOnlyRocksDBWrapper globalStore =
+                new ReadOnlyRocksDBWrapper(ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), config);
 
         dao = new CoreProcessorDAOImpl(this.ctx, config, server, wfSpecCache, rocksdb, globalStore);
         dao.onPartitionClaimed();

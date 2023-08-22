@@ -136,7 +136,8 @@ public class LHTaskWorker implements Closeable {
 
     private void validateTaskDefAndExecutable() throws TaskSchemaMismatchError {
         if (this.taskDef == null) {
-            this.taskDef = grpcClient.getTaskDef(TaskDefId.newBuilder().setName(taskDefName).build());
+            this.taskDef = grpcClient.getTaskDef(
+                    TaskDefId.newBuilder().setName(taskDefName).build());
         }
         LHTaskSignature signature = new LHTaskSignature(taskDef.getName(), executable);
         taskMethod = signature.getTaskMethod();

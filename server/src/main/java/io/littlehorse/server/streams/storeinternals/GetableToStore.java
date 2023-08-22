@@ -1,12 +1,11 @@
 package io.littlehorse.server.streams.storeinternals;
 
-import java.util.List;
-
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
