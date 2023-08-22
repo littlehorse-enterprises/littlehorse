@@ -29,11 +29,14 @@ class LHWorkerContextTest(unittest.TestCase):
 
     def test_log_output(self):
         ctx = LHWorkerContext(ScheduledTaskPb())
+        self.assertEqual(ctx.log_output(), "")
         ctx.log("my log 1")
         ctx.log("my log 2")
+        ctx.log(Exception("my exception"))
         output = ctx.log_output()
         self.assertTrue("my log 1" in output)
         self.assertTrue("my log 2" in output)
+        self.assertTrue("my exception" in output)
 
     def test_get_right_node(self):
         wf_id = str(uuid.uuid4())

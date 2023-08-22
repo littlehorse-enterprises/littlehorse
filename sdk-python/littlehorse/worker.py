@@ -22,11 +22,8 @@ from littlehorse.model.service_pb2 import (
     TaskDefIdPb,
     TaskDefPb,
     TaskStatusPb,
-    VariableTypePb,
-    VariableValuePb,
 )
-from littlehorse.utils import parse_type, parse_value
-from google.protobuf.timestamp_pb2 import Timestamp
+from littlehorse.utils import parse_value, parse_type, extract_value, timestamp_now
 
 REPORT_TASK_DEFAULT_RETRIES = 5
 
@@ -121,7 +118,7 @@ class LHWorkerContext:
             else source.user_task_trigger.node_run_id
         )
 
-    def log(self, entry: str) -> None:
+    def log(self, entry: Any) -> None:
         """Provides a way to push data into the log output. Any object may be passed in;
         its String representation will be appended to the logOutput of this NodeRun.
 
@@ -260,24 +257,38 @@ class LHConnection:
         await self._schedule_task_semaphore.acquire()
         asyncio.create_task(self._execute_task(task))
 
-    # TODO send the returned object form the callable
     async def _execute_task(self, task: ScheduledTaskPb) -> None:
-        args: Any = [parse_value(var.value) for var in task.variables]
-        if self._task.has_context():
-            args.append(LHWorkerContext(task))
+        context = LHWorkerContext(task)
+        args: Any = [extract_value(var.value) for var in task.variables]
 
-        await self._task._callable(*args)
+        if self._task.has_context():
+            args.append(context)
+
+        try:
+            output = parse_value(await self._task._callable(*args))
+            status = TaskStatusPb.TASK_SUCCESS
+        except TypeError as te:
+            output = None
+            context.log(te)
+            status = TaskStatusPb.TASK_OUTPUT_SERIALIZING_ERROR
+        except BaseException as be:
+            output = None
+            context.log(be)
+            status = TaskStatusPb.TASK_FAILED
+
         self._schedule_task_semaphore.release()
 
-        current_time = Timestamp()
-        current_time.GetCurrentTime()
         task_result = ReportTaskRunPb(
             task_run_id=task.task_run_id,
-            time=current_time,
+            time=timestamp_now(),
             attempt_number=task.attempt_number,
-            status=TaskStatusPb.TASK_SUCCESS,
-            output=VariableValuePb(type=VariableTypePb.STR, str="Hello world!"),
+            status=status,
+            output=output,
+            log_output=parse_value(context.log_output())
+            if context.log_output()
+            else None,
         )
+
         asyncio.create_task(self._report_task(task_result, REPORT_TASK_DEFAULT_RETRIES))
 
     async def _report_task(
@@ -305,7 +316,7 @@ class LHConnection:
                 )
             elif reply.code == LHResponseCodePb.REPORTED_BUT_NOT_PROCESSED:
                 self._log.warning(
-                    "Reported task but processor was down. No action required"
+                    "Task was reported but processor was down. No action required"
                 )
             else:
                 self._log.warning(

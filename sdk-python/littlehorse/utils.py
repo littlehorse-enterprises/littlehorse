@@ -7,11 +7,12 @@ import sys
 from typing import TYPE_CHECKING, Any, Union
 
 from littlehorse.model.service_pb2 import VariableTypePb, VariableValuePb
+from google.protobuf.timestamp_pb2 import Timestamp
 
 if TYPE_CHECKING:
     from littlehorse.worker import LHTaskWorker
 
-VARIABLE_TYPES_MAP = {
+VARIABLE_TYPE_MAP = {
     VariableTypePb.JSON_OBJ: dict[str, Any],
     VariableTypePb.JSON_ARR: list[Any],
     VariableTypePb.DOUBLE: float,
@@ -21,15 +22,61 @@ VARIABLE_TYPES_MAP = {
     VariableTypePb.BYTES: bytes,
 }
 
-VALUE_TYPES_MAP = {
-    VariableTypePb.JSON_OBJ: lambda v: json.loads(v.json_obj),
-    VariableTypePb.JSON_ARR: lambda v: json.loads(v.json_arr),
-    VariableTypePb.DOUBLE: lambda v: v.float,
-    VariableTypePb.BOOL: lambda v: v.bool,
-    VariableTypePb.STR: lambda v: v.str,
-    VariableTypePb.INT: lambda v: v.int,
-    VariableTypePb.BYTES: lambda v: v.bytes,
-}
+TYPE_VARIABLE_MAP = {value: key for key, value in VARIABLE_TYPE_MAP.items()}
+
+
+def timestamp_now() -> Timestamp:
+    """Return a Timestamp protobuf object.
+
+    Returns:
+        Timestamp: Timestamp protobuf object.
+    """
+    current_time = Timestamp()
+    current_time.GetCurrentTime()
+    return current_time
+
+
+def parse_value(value: Any) -> VariableValuePb:
+    """Receives a python variable and return a VariableValuePb.
+
+    Args:
+        value (Any): Any value returned by a method.
+
+    Returns:
+        VariableValuePb: LH Variable.
+    """
+
+    def json_encoder(value: Any) -> Any:
+        if hasattr(value, "__dict__"):
+            return vars(value)
+        return value
+
+    if value is None:
+        return VariableValuePb(type=VariableTypePb.NULL)
+    if isinstance(value, bool):
+        return VariableValuePb(type=VariableTypePb.BOOL, bool=value)
+    if isinstance(value, str):
+        return VariableValuePb(type=VariableTypePb.STR, str=value)
+    if isinstance(value, int):
+        return VariableValuePb(type=VariableTypePb.INT, int=value)
+    if isinstance(value, float):
+        return VariableValuePb(type=VariableTypePb.DOUBLE, double=value)
+    if isinstance(value, bytes):
+        return VariableValuePb(type=VariableTypePb.BYTES, bytes=value)
+    if isinstance(value, dict):
+        return VariableValuePb(
+            type=VariableTypePb.JSON_OBJ,
+            json_obj=json.dumps(value, default=json_encoder),
+        )
+    if isinstance(value, list):
+        return VariableValuePb(
+            type=VariableTypePb.JSON_ARR,
+            json_arr=json.dumps(value, default=json_encoder),
+        )
+
+    return VariableValuePb(
+        type=VariableTypePb.JSON_OBJ, json_obj=json.dumps(value, default=json_encoder)
+    )
 
 
 def parse_type(lh_type: VariableTypePb) -> Any:
@@ -41,10 +88,10 @@ def parse_type(lh_type: VariableTypePb) -> Any:
     Returns:
         Any: Python type.
     """
-    return VARIABLE_TYPES_MAP[lh_type]
+    return VARIABLE_TYPE_MAP[lh_type]
 
 
-def parse_value(lh_value: VariableValuePb) -> Any:
+def extract_value(lh_value: VariableValuePb) -> Any:
     """Receives a LH value and maps it to a python object.
 
     Args:
@@ -53,7 +100,23 @@ def parse_value(lh_value: VariableValuePb) -> Any:
     Returns:
         Any: Python value.
     """
-    return VALUE_TYPES_MAP[lh_value.type](lh_value)
+    if lh_value.type == VariableTypePb.STR:
+        return lh_value.str
+    if lh_value.type == VariableTypePb.INT:
+        return lh_value.int
+    if lh_value.type == VariableTypePb.DOUBLE:
+        return lh_value.double
+    if lh_value.type == VariableTypePb.BYTES:
+        return lh_value.bytes
+    if lh_value.type == VariableTypePb.BOOL:
+        return lh_value.bool
+    if lh_value.type == VariableTypePb.JSON_OBJ:
+        return json.loads(lh_value.json_obj)
+    if lh_value.type == VariableTypePb.JSON_ARR:
+        return json.loads(lh_value.json_arr)
+
+    # VariableTypePb.NULL
+    return None
 
 
 def read_binary(file_path: Union[str, Path]) -> bytes:

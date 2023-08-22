@@ -26,6 +26,7 @@ ruff = "*"
 grpcio-tools = "^1.56"
 types-protobuf = "^4.24"
 types-requests = "^2.31"
+faker = "^19.3"
 
 [build-system]
 requires = ["poetry-core"]
