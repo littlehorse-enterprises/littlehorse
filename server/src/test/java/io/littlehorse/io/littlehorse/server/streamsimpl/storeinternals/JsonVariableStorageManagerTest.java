@@ -10,8 +10,8 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefMod
 import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
+import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
-import io.littlehorse.server.streams.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import java.nio.file.Paths;
@@ -33,6 +33,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.mockito.Mockito.mock;
+
 @ExtendWith(MockitoExtension.class)
 public class JsonVariableStorageManagerTest {
 
@@ -44,10 +46,10 @@ public class JsonVariableStorageManagerTest {
     @Mock
     private LHConfig lhConfig;
 
-    private LHStoreWrapper localStoreWrapper;
+    private RocksDBWrapper storeWrapper;
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
-    private GetableStorageManager geTableStorageManager;
+    private GetableStorageManager getableStorageManager;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
@@ -71,12 +73,13 @@ public class JsonVariableStorageManagerTest {
         variableValue.setType(VariableType.JSON_OBJ);
         variableValue.setJsonObjVal(map);
         variable.setValue(variableValue);
-        geTableStorageManager.store(variable);
+        getableStorageManager.put(variable);
+        getableStorageManager.commit();
     }
 
     private void initializeDependencies() {
-        localStoreWrapper = new LHStoreWrapper(store, lhConfig);
-        geTableStorageManager = new GetableStorageManager(localStoreWrapper, lhConfig, mockProcessorContext);
+        storeWrapper = new RocksDBWrapper(store, lhConfig);
+        getableStorageManager = new GetableStorageManager(storeWrapper, mockProcessorContext, lhConfig, mock(), mock());
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
@@ -87,7 +90,7 @@ public class JsonVariableStorageManagerTest {
     private Stream<LHIterKeyValue<Tag>> localTagScan(String keyPrefix) {
         return StreamSupport.stream(
                 Spliterators.spliteratorUnknownSize(
-                        localStoreWrapper.prefixScan(keyPrefix, Tag.class), Spliterator.ORDERED),
+                        storeWrapper.prefixScan(keyPrefix, Tag.class), Spliterator.ORDERED),
                 false);
     }
 
