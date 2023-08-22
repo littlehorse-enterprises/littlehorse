@@ -63,7 +63,6 @@ public class SleepNodeMatured extends SubCommand<SleepNodeMaturedPb> {
             log.debug("Uh oh, invalid timer event, no associated WfSpec found.");
             return null;
         }
-        wfRunModel.wfSpecModel = wfSpecModel;
 
         try {
             wfRunModel.processSleepNodeMatured(this, dao.getEventTime());

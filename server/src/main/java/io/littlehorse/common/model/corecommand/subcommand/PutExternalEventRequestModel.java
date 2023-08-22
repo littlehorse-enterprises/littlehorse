@@ -104,7 +104,6 @@ public class PutExternalEventRequestModel extends SubCommand<PutExternalEventReq
                 dao.commit();
                 throw new LHApiException(Status.DATA_LOSS, "Appears wfSpec was deleted");
             } else {
-                wfRunModel.wfSpecModel = spec;
                 wfRunModel.processExternalEvent(evt);
             }
             dao.put(wfRunModel);

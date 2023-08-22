@@ -185,7 +185,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public ThreadSpecModel getThreadSpecModel() {
         if (threadSpecModel == null) {
-            threadSpecModel = wfRunModel.wfSpecModel.threadSpecs.get(threadSpecName);
+            threadSpecModel = wfRunModel.getWfSpec().threadSpecs.get(threadSpecName);
         }
         return threadSpecModel;
     }

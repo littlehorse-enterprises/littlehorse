@@ -114,11 +114,14 @@ public class WfRunModel extends CoreGetable<WfRun> {
     }
 
     public WfSpecModel getWfSpec() {
-        return wfSpecModel;
+        if (wfSpec == null) {
+            wfSpec = getDao().getWfSpec(wfSpecName, wfSpecVersion);
+        }
+        return wfSpec;
     }
 
-    public void setWfSpecModel(WfSpecModel spec) {
-        this.wfSpecModel = spec;
+    public void setWfSpec(WfSpecModel spec) {
+        this.wfSpec = spec;
     }
 
     public ThreadRunModel getThreadRun(int threadRunNumber) {
@@ -199,7 +202,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     // Below is used by scheduler
 
-    public WfSpecModel wfSpecModel;
+    private WfSpecModel wfSpec;
 
     public ThreadRunModel startThread(
             String threadName,
@@ -207,7 +210,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             Integer parentThreadId,
             Map<String, VariableValueModel> variables,
             ThreadType type) {
-        ThreadSpecModel tspec = wfSpecModel.threadSpecs.get(threadName);
+        ThreadSpecModel tspec = wfSpec.threadSpecs.get(threadName);
         if (tspec == null) {
             throw new RuntimeException("Invalid thread name, should be impossible");
         }
@@ -314,7 +317,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             ThreadRunModel toInterrupt = threadRunModels.get(pi.interruptedThreadId);
             Map<String, VariableValueModel> vars;
 
-            ThreadSpecModel iSpec = wfSpecModel.threadSpecs.get(pi.handlerSpecName);
+            ThreadSpecModel iSpec = wfSpec.threadSpecs.get(pi.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
                 vars = new HashMap<>();
                 ExternalEventModel event = getDao().get(pi.externalEventId);
@@ -354,7 +357,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             pendingFailures.remove(i);
             Map<String, VariableValueModel> vars;
 
-            ThreadSpecModel iSpec = wfSpecModel.threadSpecs.get(pfh.handlerSpecName);
+            ThreadSpecModel iSpec = wfSpec.threadSpecs.get(pfh.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
                 vars = new HashMap<>();
                 FailureModel failure = failedThr.getCurrentNodeRun().getLatestFailure();
@@ -502,7 +505,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             timer.topic = this.getDao().getCoreCmdTopic();
             timer.key = id;
             Date now = new Date();
-            timer.maturationTime = DateUtils.addHours(now, this.wfSpecModel.retentionHours);
+            timer.maturationTime = DateUtils.addHours(now, this.wfSpec.retentionHours);
             DeleteWfRunRequestModel deleteWfRun = new DeleteWfRunRequestModel();
             deleteWfRun.wfRunId = new WfRunIdModel(id);
 

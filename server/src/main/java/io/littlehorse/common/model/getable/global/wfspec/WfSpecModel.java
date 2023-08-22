@@ -256,7 +256,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         out.setDao(getDao());
         out.id = evt.id;
 
-        out.wfSpecModel = this;
+        out.setWfSpec(this);
         out.wfSpecVersion = version;
         out.wfSpecName = name;
         out.startTime = getDao().getEventTime();
