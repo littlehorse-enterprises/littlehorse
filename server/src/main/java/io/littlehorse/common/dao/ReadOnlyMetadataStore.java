@@ -13,7 +13,6 @@ import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.store.StoredGetable;
 
 /*
@@ -24,7 +23,7 @@ public class ReadOnlyMetadataStore {
 
     private ReadOnlyRocksDBWrapper rocksdb;
 
-    public ReadOnlyMetadataStore(RocksDBWrapper rocksdb) {
+    public ReadOnlyMetadataStore(ReadOnlyRocksDBWrapper rocksdb) {
         this.rocksdb = rocksdb;
     }
 

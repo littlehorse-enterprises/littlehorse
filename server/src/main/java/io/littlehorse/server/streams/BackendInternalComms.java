@@ -157,6 +157,7 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public <U extends Message, T extends AbstractGetable<U>> T getObject(
             ObjectIdModel<?, U, T> objectId, Class<T> clazz) throws LHSerdeError {
 
@@ -214,12 +215,11 @@ public class BackendInternalComms implements Closeable {
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
-    public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) throws LHBadRequestError {
+    public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) {
         InternalGetAdvertisedHostsResponse advertisedHostsForHost =
                 getPublicListenersForHost(new HostInfo(host.host, host.port));
 
-        io.littlehorse.sdk.common.proto.LHHostInfo desiredHost =
-                advertisedHostsForHost.getHostsOrDefault(listenerName, null);
+        LHHostInfo desiredHost = advertisedHostsForHost.getHostsOrDefault(listenerName, null);
         if (desiredHost == null) {
             String message = String.format(
                     """
@@ -227,7 +227,7 @@ public class BackendInternalComms implements Closeable {
                             LH Server and check the LHW_SERVER_CONNECT_LISTENER config on task worker.
                             """,
                     listenerName);
-            throw new LHBadRequestError(message);
+            throw new LHApiException(Status.INVALID_ARGUMENT, message);
         }
 
         return desiredHost;
@@ -242,9 +242,9 @@ public class BackendInternalComms implements Closeable {
         for (HostModel host : hosts) {
             try {
                 out.add(getAdvertisedHost(host, listenerName));
-            } catch (LHConnectionError e) {
-                log.warn("Host '{}:{}' unreachable", host.host, host.port);
-                // The reason why we don't throw an Exception when the host is unreachable is
+            } catch (StatusRuntimeException exn) {
+                log.warn("Host '{}:{}' unreachable: ", host.host, host.port, exn);
+                // The reason why we don'swallow the exception when one host is unreachable is
                 // that, when bootstrapping, other hosts could be in various states of degradation
                 // (rebalancing, crashed, running, starting up, etc).
                 // Just because one host is down doesn't mean that the entire call to discover
@@ -256,22 +256,16 @@ public class BackendInternalComms implements Closeable {
         return out;
     }
 
-    private InternalGetAdvertisedHostsResponse getPublicListenersForHost(HostInfo streamsHost)
-            throws LHConnectionError {
+    private InternalGetAdvertisedHostsResponse getPublicListenersForHost(HostInfo streamsHost) {
         if (otherHosts.get(streamsHost) != null) {
             return otherHosts.get(streamsHost);
         }
 
-        try {
-            InternalGetAdvertisedHostsResponse info =
-                    getInternalClient(streamsHost).getAdvertisedHosts(Empty.getDefaultInstance());
+        InternalGetAdvertisedHostsResponse info =
+                getInternalClient(streamsHost).getAdvertisedHosts(Empty.getDefaultInstance());
 
-            otherHosts.put(streamsHost, info);
-            return info;
-        } catch (Exception exn) {
-            throw new LHConnectionError(
-                    exn, String.format("Host '{}:{}' unreachable", streamsHost.host(), streamsHost.port()));
-        }
+        otherHosts.put(streamsHost, info);
+        return info;
     }
 
     public LHProducer getProducer() {
@@ -350,7 +344,10 @@ public class BackendInternalComms implements Closeable {
             ObjectIdModel<?, ?, ?> id = fromString(request.getObjectId(), getIdCls(request.getObjectType()));
             String storeName = id.getStore().getStoreName();
             ReadOnlyRocksDBWrapper store = getStore(request.getPartition(), false, storeName);
-            StoredGetable entity = store.get(id.getStoreableKey(), StoredGetable.class);
+            
+            @SuppressWarnings("unchecked")
+            StoredGetable<?, ?> entity = store.get(id.getStoreableKey(), StoredGetable.class);
+
             if (entity == null) {
                 observer.onError(new LHApiException(Status.NOT_FOUND, "Requested object was not found"));
             } else {
@@ -687,7 +684,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     public ReadOnlyMetadataStore getGlobalStoreImpl() {
-        return new GlobalMetaStoresServerImpl(coreStreams, config);
+        return new ReadOnlyMetadataStore(getStore(null, true, ServerTopology.GLOBAL_METADATA_STORE));
     }
 
     private InternalScanResponse localAllPartitionTagScan(InternalScan req) {

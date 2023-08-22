@@ -9,7 +9,6 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -681,7 +680,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         return internalComms.getAllInternalHosts();
     }
 
-    public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) throws LHBadRequestError {
+    public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) {
         return internalComms.getAdvertisedHost(host, listenerName);
     }
 }

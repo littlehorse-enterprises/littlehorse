@@ -29,4 +29,10 @@ public interface GetObjectRequestOrBuilder extends
    */
   com.google.protobuf.ByteString
       getObjectIdBytes();
+
+  /**
+   * <code>int32 partition = 3;</code>
+   * @return The partition.
+   */
+  int getPartition();
 }

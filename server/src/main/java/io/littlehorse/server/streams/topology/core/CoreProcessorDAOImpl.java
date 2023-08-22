@@ -7,7 +7,6 @@ import io.littlehorse.common.dao.AnalyticsRegistry;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
@@ -273,7 +272,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     }
 
     @Override
-    public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) throws LHBadRequestError {
+    public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) {
         return server.getAdvertisedHost(host, listenerName);
     }
 

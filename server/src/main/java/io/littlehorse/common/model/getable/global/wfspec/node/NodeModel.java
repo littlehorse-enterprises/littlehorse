@@ -1,13 +1,11 @@
 package io.littlehorse.common.model.getable.global.wfspec.node;
 
 import com.google.protobuf.Message;
-
 import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.EntrypointNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExitNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExternalEventNodeModel;
@@ -207,7 +205,8 @@ public class NodeModel extends LHSerializable<Node> {
             NodeModel sink = threadSpecModel.nodes.get(e.sinkNodeName);
             if (sink == null) {
                 throw new LHApiException(
-                        Status.INVALID_ARGUMENT, String.format("Outgoing edge referring to missing node %s!", e.sinkNodeName));
+                        Status.INVALID_ARGUMENT,
+                        String.format("Outgoing edge referring to missing node %s!", e.sinkNodeName));
             }
 
             if (sink.type == NodeCase.ENTRYPOINT) {

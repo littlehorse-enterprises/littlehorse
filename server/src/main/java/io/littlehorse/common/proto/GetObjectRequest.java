@@ -102,6 +102,17 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int PARTITION_FIELD_NUMBER = 3;
+  private int partition_ = 0;
+  /**
+   * <code>int32 partition = 3;</code>
+   * @return The partition.
+   */
+  @java.lang.Override
+  public int getPartition() {
+    return partition_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -122,6 +133,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(objectId_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, objectId_);
     }
+    if (partition_ != 0) {
+      output.writeInt32(3, partition_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -137,6 +151,10 @@ private static final long serialVersionUID = 0L;
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(objectId_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, objectId_);
+    }
+    if (partition_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(3, partition_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -156,6 +174,8 @@ private static final long serialVersionUID = 0L;
     if (objectType_ != other.objectType_) return false;
     if (!getObjectId()
         .equals(other.getObjectId())) return false;
+    if (getPartition()
+        != other.getPartition()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -171,6 +191,8 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + objectType_;
     hash = (37 * hash) + OBJECT_ID_FIELD_NUMBER;
     hash = (53 * hash) + getObjectId().hashCode();
+    hash = (37 * hash) + PARTITION_FIELD_NUMBER;
+    hash = (53 * hash) + getPartition();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -302,6 +324,7 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       objectType_ = 0;
       objectId_ = "";
+      partition_ = 0;
       return this;
     }
 
@@ -340,6 +363,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.objectId_ = objectId_;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.partition_ = partition_;
       }
     }
 
@@ -395,6 +421,9 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000002;
         onChanged();
       }
+      if (other.getPartition() != 0) {
+        setPartition(other.getPartition());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -431,6 +460,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 24: {
+              partition_ = input.readInt32();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -569,6 +603,38 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       objectId_ = value;
       bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+
+    private int partition_ ;
+    /**
+     * <code>int32 partition = 3;</code>
+     * @return The partition.
+     */
+    @java.lang.Override
+    public int getPartition() {
+      return partition_;
+    }
+    /**
+     * <code>int32 partition = 3;</code>
+     * @param value The partition to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPartition(int value) {
+      
+      partition_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 partition = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPartition() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      partition_ = 0;
       onChanged();
       return this;
     }

@@ -1,7 +1,6 @@
 package io.littlehorse.common.dao;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
@@ -74,7 +73,7 @@ public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
 
     public abstract AnalyticsRegistry getRegistry();
 
-    public abstract LHHostInfo getAdvertisedHost(HostModel host, String listenerName) throws LHBadRequestError;
+    public abstract LHHostInfo getAdvertisedHost(HostModel host, String listenerName);
 
     public abstract InternalHosts getInternalHosts();
 }
