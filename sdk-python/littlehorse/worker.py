@@ -62,21 +62,6 @@ class LHWorkerContext:
         """
         return self._scheduled_task.task_run_id.wf_run_id
 
-    def to_dict(self) -> dict[str, Any]:
-        """This Worker context to a dictionary.
-
-        Returns:
-            dict[str, Any]: A dict.
-        """
-        return {
-            "wf_run_id": self.wf_run_id(),
-            "task_guid": self.task_guid(),
-            "task_def_name": self.task_def_name(),
-            "scheduled_time": self.scheduled_time(),
-            "attempt_number": self.attempt_number(),
-            "idempotency_key": self.idempotency_key(),
-        }
-
     def attempt_number(self) -> int:
         """Returns the attemptNumber of the NodeRun
         that's being executed. If this is the
@@ -136,7 +121,16 @@ class LHWorkerContext:
         return "\n".join(self._log_entries)
 
     def __str__(self) -> str:
-        return str(self.to_dict())
+        return str(
+            {
+                "wf_run_id": self.wf_run_id(),
+                "task_guid": self.task_guid(),
+                "task_def_name": self.task_def_name(),
+                "scheduled_time": str(self.scheduled_time()),
+                "attempt_number": self.attempt_number(),
+                "idempotency_key": self.idempotency_key(),
+            }
+        )
 
 
 class LHTask:
