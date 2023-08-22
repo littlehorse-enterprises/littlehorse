@@ -12,6 +12,7 @@ import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import org.awaitility.Awaitility;
@@ -30,13 +31,13 @@ public class WfRunVerifier extends AbstractVerifier {
     public WfRunVerifier thenVerifyTaskRunResult(
             int threadRunNumber, int nodeRunNumber, Consumer<VariableValue> expectedOutput) {
         Consumer<TaskRun> taskRunConsumer = taskRun -> {
-            TaskAttempt taskAttempt1 = taskRun.getAttemptsList().stream()
+            TaskAttempt completedTask = taskRun.getAttemptsList().stream()
                     .filter(taskAttempt -> taskAttempt.getStatus().equals(TaskStatus.TASK_SUCCESS))
                     .findFirst()
                     .orElse(null);
             VariableValue actualOutput = null;
-            if (taskAttempt1 != null) {
-                actualOutput = taskAttempt1.getOutput();
+            if (completedTask != null) {
+                actualOutput = completedTask.getOutput();
             }
             expectedOutput.accept(actualOutput);
         };
@@ -45,8 +46,8 @@ public class WfRunVerifier extends AbstractVerifier {
     }
 
     public WfRunVerifier waitForStatus(LHStatus lhStatus) {
-        Function<Object, LHStatus> objectLHStatusFunction = o -> {
-            String wfRunId = o.toString();
+        Function<Object, LHStatus> objectLHStatusFunction = context -> {
+            String wfRunId = context.toString();
             return lhClientTestWrapper.getWfRunStatus(wfRunId);
         };
         steps.add(new WaitForStatusStep<>(objectLHStatusFunction, lhStatus));
@@ -54,10 +55,9 @@ public class WfRunVerifier extends AbstractVerifier {
     }
 
     public WfRunVerifier waitForTaskStatus(int threadRunNumber, int nodeRunNumber, TaskStatus taskStatus) {
-        Function<Object, TaskStatus> objectLHStatusFunction = o -> {
-            NodeRun nodeRun = lhClientTestWrapper.getNodeRun(o.toString(), threadRunNumber, nodeRunNumber);
+        Function<Object, TaskStatus> objectLHStatusFunction = context -> {
+            NodeRun nodeRun = lhClientTestWrapper.getNodeRun(context.toString(), threadRunNumber, nodeRunNumber);
             TaskRun taskRun = lhClientTestWrapper.getTaskRun(nodeRun.getTask().getTaskRunId());
-            System.out.println(taskRun.getStatus());
             return taskRun.getStatus();
         };
         steps.add(new WaitForStatusStep<>(objectLHStatusFunction, taskStatus));
@@ -70,18 +70,18 @@ public class WfRunVerifier extends AbstractVerifier {
 
     private class WaitForStatusStep<V> implements Step {
 
-        private final Function<Object, V> function;
+        private final Function<Object, V> statusFunction;
         private final V expectedStatus;
 
-        WaitForStatusStep(Function<Object, V> function, V expectedStatus) {
-            this.function = function;
+        WaitForStatusStep(Function<Object, V> statusFunction, V expectedStatus) {
+            this.statusFunction = statusFunction;
             this.expectedStatus = expectedStatus;
         }
 
         @Override
         public void execute(Object context) {
-            Awaitility.await()
-                    .until(() -> function.apply(context), currentStatus -> currentStatus.equals(expectedStatus));
+            Callable<V> statusFunctionExecution = () -> statusFunction.apply(context);
+            Awaitility.await().until(statusFunctionExecution, currentStatus -> currentStatus.equals(expectedStatus));
         }
     }
 
@@ -100,13 +100,12 @@ public class WfRunVerifier extends AbstractVerifier {
         @Override
         public void execute(Object context) {
             String wfRunId = (String) context;
-            NodeRun nodeRun = Awaitility.await()
-                    .until(
-                            () -> lhClientTestWrapper.getNodeRun(wfRunId, threadRunNumber, nodeRunNumber),
-                            Objects::nonNull);
+            Callable<NodeRun> getNodeRunExecution =
+                    () -> lhClientTestWrapper.getNodeRun(wfRunId, threadRunNumber, nodeRunNumber);
+            NodeRun nodeRun = Awaitility.await().until(getNodeRunExecution, Objects::nonNull);
             TaskRunId taskRunId = nodeRun.getTask().getTaskRunId();
-            TaskRun taskRun =
-                    Awaitility.await().until(() -> lhClientTestWrapper.getTaskRun(taskRunId), Objects::nonNull);
+            Callable<TaskRun> getTaskRunExecution = () -> lhClientTestWrapper.getTaskRun(taskRunId);
+            TaskRun taskRun = Awaitility.await().until(getTaskRunExecution, Objects::nonNull);
             matcher.accept(taskRun);
         }
     }

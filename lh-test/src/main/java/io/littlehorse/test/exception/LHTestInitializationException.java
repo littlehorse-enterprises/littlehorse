@@ -6,6 +6,10 @@ public class LHTestInitializationException extends RuntimeException {
         super(message);
     }
 
+    public LHTestInitializationException(Throwable throwable) {
+        super(throwable);
+    }
+
     public LHTestInitializationException(String message, Throwable throwable) {
         super(message, throwable);
     }

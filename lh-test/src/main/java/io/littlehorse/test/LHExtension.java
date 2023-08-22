@@ -2,6 +2,7 @@ package io.littlehorse.test;
 
 import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.ExternalTestBootstrapper;
 import io.littlehorse.test.internal.TestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
@@ -19,7 +20,7 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
     private TestBootstrapper testBootstrapper = new ExternalTestBootstrapper();
 
     @Override
-    public void beforeAll(ExtensionContext context) throws Exception {
+    public void beforeAll(ExtensionContext context) {
         getStore(context)
                 .getOrComputeIfAbsent(LH_TEST_CONTEXT, s -> new TestContext(testBootstrapper), TestContext.class);
     }
@@ -39,11 +40,10 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
                 worker.registerTaskDef(true);
                 worker.start();
             } catch (LHApiError e) {
-                throw new RuntimeException(e);
+                throw new LHTestInitializationException(
+                        "Something went wrong registering task worker " + worker.getTaskDefName(), e);
             }
         }
-        // testContext.registerWorkers();
-        // testContext.runTaskWorkers();
         testContext.instrument(testInstance);
     }
 }

@@ -10,6 +10,7 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.test.exception.LHTestInitializationException;
 import java.util.Collection;
 
 public class LHClientTestWrapper {
@@ -24,7 +25,7 @@ public class LHClientTestWrapper {
         try {
             return lhClient.getNodeRun(wfRunId, threadRunNumber, nodeRunNumber);
         } catch (LHApiError e) {
-            throw new RuntimeException(e);
+            throw new LHTestInitializationException(e);
         }
     }
 
@@ -32,7 +33,7 @@ public class LHClientTestWrapper {
         try {
             return lhClient.getTaskRun(taskRunId);
         } catch (LHApiError e) {
-            throw new RuntimeException(e);
+            throw new LHTestInitializationException(e);
         }
     }
 
@@ -44,7 +45,7 @@ public class LHClientTestWrapper {
             }
             return null;
         } catch (LHApiError e) {
-            throw new RuntimeException(e);
+            throw new LHTestInitializationException(e);
         }
     }
 
@@ -52,7 +53,7 @@ public class LHClientTestWrapper {
         try {
             return lhClient.getWfRun(wfId);
         } catch (LHApiError e) {
-            throw new RuntimeException(e);
+            throw new LHTestInitializationException(e);
         }
     }
 
@@ -65,7 +66,7 @@ public class LHClientTestWrapper {
         try {
             workflow.registerWfSpec(lhClient);
         } catch (LHApiError e) {
-            throw new RuntimeException(e);
+            throw new LHTestInitializationException(e);
         }
     }
 
@@ -73,7 +74,7 @@ public class LHClientTestWrapper {
         try {
             return lhClient.getWfSpec(workflow.getName());
         } catch (LHApiError e) {
-            throw new RuntimeException(e);
+            throw new LHTestInitializationException(e);
         }
     }
 }
