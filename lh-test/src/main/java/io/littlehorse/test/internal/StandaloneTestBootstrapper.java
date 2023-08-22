@@ -67,7 +67,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
                 .start();
 
         // wait until the server is up
-        TimeUnit.SECONDS.sleep(5);
+        TimeUnit.SECONDS.sleep(10);
     }
 
     @Override

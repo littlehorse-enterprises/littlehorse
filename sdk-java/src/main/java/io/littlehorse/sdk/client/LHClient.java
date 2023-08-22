@@ -42,8 +42,6 @@ import io.littlehorse.sdk.common.proto.PutWfSpecResponse;
 import io.littlehorse.sdk.common.proto.ResumeWfRunRequest;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.RunWfResponse;
-import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;
-import io.littlehorse.sdk.common.proto.SearchTaskRunResponse;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest.StatusAndSpecRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunResponse;
@@ -226,24 +224,6 @@ public class LHClient {
             return reply.getResult();
         }
         return null;
-    }
-
-    /**
-     * TODO(eduwer) doc
-     */
-    public List<TaskRunId> getUserTaskRun(String taskDefName) throws LHApiError {
-        SearchTaskRunResponse response = (SearchTaskRunResponse) doRequest(() -> {
-            SearchTaskRunRequest searchTaskRunRequest = SearchTaskRunRequest.newBuilder()
-                    .setTaskDef(SearchTaskRunRequest.ByTaskDefRequest.newBuilder()
-                            .setTaskDefName(taskDefName)
-                            .build())
-                    .build();
-            return getGrpcClient().searchTaskRun(searchTaskRunRequest);
-        });
-        if (!response.getResultsList().isEmpty()) {
-            return response.getResultsList();
-        }
-        return List.of();
     }
 
     /**
