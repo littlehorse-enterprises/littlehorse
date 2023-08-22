@@ -1,9 +1,12 @@
 package io.littlehorse.common.model.getable.global.wfspec.node;
 
 import com.google.protobuf.Message;
+
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.EntrypointNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExitNodeModel;
@@ -195,21 +198,21 @@ public class NodeModel extends LHSerializable<Node> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataStore client, LHConfig config) throws LHValidationError {
+    public void validate(ReadOnlyMetadataStore client, LHConfig config) throws LHApiException {
         for (EdgeModel e : outgoingEdges) {
             if (e.sinkNodeName.equals(name)) {
-                throw new LHValidationError(null, "Self loop not allowed!");
+                throw new LHApiException(Status.INVALID_ARGUMENT, "Self loop not allowed!");
             }
 
             NodeModel sink = threadSpecModel.nodes.get(e.sinkNodeName);
             if (sink == null) {
-                throw new LHValidationError(
-                        null, String.format("Outgoing edge referring to missing node %s!", e.sinkNodeName));
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT, String.format("Outgoing edge referring to missing node %s!", e.sinkNodeName));
             }
 
             if (sink.type == NodeCase.ENTRYPOINT) {
-                throw new LHValidationError(
-                        null,
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
                         String.format("Entrypoint node has incoming edge from node %s.", threadSpecModel.name, name));
             }
             if (e.condition != null) {
@@ -235,10 +238,9 @@ public class NodeModel extends LHSerializable<Node> {
 
         try {
             getSubNode().validate(client, config);
-        } catch (LHValidationError exn) {
+        } catch (LHApiException exn) {
             // Decorate the exception with contextual info
-            exn.addPrefix("Sub Node");
-            throw exn;
+            throw exn.getCopyWithPrefix("Sub Node");
         }
     }
 
