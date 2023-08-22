@@ -195,12 +195,16 @@ class LHConnection:
     ) -> None:
         if retries_left <= 0:
             self._log.error(
-                "Retries exhausted when trying to report a task: '%s'",
+                "Retries exhausted when reporting task: '%s'",
                 task_result.task_run_id,
             )
             return
 
-        self._log.debug("Reporting task '%s'", self._task.task_name())
+        self._log.debug(
+            "Reporting task '%s', retries left: %s",
+            self._task.task_name(),
+            retries_left,
+        )
 
         try:
             reply: ReportTaskReplyPb = await self._stub.ReportTask(task_result)
