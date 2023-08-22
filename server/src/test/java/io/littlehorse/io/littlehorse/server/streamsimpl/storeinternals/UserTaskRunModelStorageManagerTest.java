@@ -10,8 +10,8 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
+import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
-import io.littlehorse.server.streams.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import java.util.List;
@@ -33,6 +33,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.mockito.Mockito.mock;
+
 @ExtendWith(MockitoExtension.class)
 public class UserTaskRunModelStorageManagerTest {
 
@@ -44,10 +46,10 @@ public class UserTaskRunModelStorageManagerTest {
     @Mock
     private LHConfig lhConfig;
 
-    private LHStoreWrapper localStoreWrapper;
+    private RocksDBWrapper localStoreWrapper;
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
-    private GetableStorageManager geTableStorageManager;
+    private GetableStorageManager getableStorageManager;
     private String wfRunId = "1234567890";
 
     @BeforeEach
@@ -62,13 +64,14 @@ public class UserTaskRunModelStorageManagerTest {
             userTaskRun.setStatus(UserTaskRunStatus);
             userTaskRun.setId(
                     new UserTaskRunIdModel(wfRunId + "1", UUID.randomUUID().toString()));
-            geTableStorageManager.store(userTaskRun);
+            getableStorageManager.put(userTaskRun);
+            getableStorageManager.commit();
         }
     }
 
     private void initializeDependencies() {
-        localStoreWrapper = new LHStoreWrapper(store, lhConfig);
-        geTableStorageManager = new GetableStorageManager(localStoreWrapper, lhConfig, mockProcessorContext);
+        localStoreWrapper = new RocksDBWrapper(store, lhConfig);
+        getableStorageManager = new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mock());
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
