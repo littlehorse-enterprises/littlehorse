@@ -70,7 +70,7 @@ public class ServerTopology {
     public static final String CORE_REPARTITION_PROCESSOR = "core-repartition-processor";
 
     public static final String GLOBAL_METADATA_SOURCE = "global-metadata-cl-source";
-    public static final String GLOBAL_STORE = "global-metadata-store";
+    public static final String GLOBAL_METADATA_STORE = "global-metadata-store";
     public static final String GLOBAL_METADATA_PROCESSOR = "global-metadata-processor";
 
     public static final String METADATA_SOURCE = "metadata-source";
@@ -144,7 +144,7 @@ public class ServerTopology {
 
         // Metadata Global Store
         StoreBuilder<KeyValueStore<String, Bytes>> globalStoreBuilder = Stores.keyValueStoreBuilder(
-                        Stores.persistentKeyValueStore(GLOBAL_STORE), Serdes.String(), Serdes.Bytes())
+                        Stores.persistentKeyValueStore(GLOBAL_METADATA_STORE), Serdes.String(), Serdes.Bytes())
                 .withLoggingDisabled();
 
         String metadataStoreChangelog = LHConfig.getMetadataStoreChangelogTopic(config.getLHClusterId());

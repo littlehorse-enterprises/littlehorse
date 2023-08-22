@@ -1,5 +1,6 @@
 package io.littlehorse.server.streams;
 
+import static io.littlehorse.common.model.AbstractGetable.getIdCls;
 import static io.littlehorse.common.model.getable.ObjectIdModel.fromString;
 
 import com.google.protobuf.ByteString;
@@ -21,7 +22,6 @@ import io.littlehorse.common.Storeable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHBadRequestError;
-import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
@@ -161,16 +161,16 @@ public class BackendInternalComms implements Closeable {
             ObjectIdModel<?, U, T> objectId, Class<T> clazz) throws LHSerdeError {
 
         if (objectId.getPartitionKey().isEmpty()) {
-            throw new IllegalArgumentException("Can't getObject without partition key");
+            throw new IllegalArgumentException("Can't get object without partition key");
         }
 
+        String storeName = objectId.getStore().getStoreName();
+
         KeyQueryMetadata metadata = coreStreams.queryMetadataForKey(
-                objectId.getStore(),
-                objectId.getPartitionKey().get(),
-                Serdes.String().serializer());
+                storeName, objectId.getPartitionKey().get(), Serdes.String().serializer());
 
         if (metadata.activeHost().equals(thisHost)) {
-            ReadOnlyRocksDBWrapper store = getStore(metadata.partition(), false, ServerTopology.CORE_STORE);
+            ReadOnlyRocksDBWrapper store = getStore(metadata.partition(), false, storeName);
             return ((StoredGetable<U, T>) store.get(objectId.getStoreableKey(), StoredGetable.class)).getStoredObject();
         }
 
@@ -214,7 +214,7 @@ public class BackendInternalComms implements Closeable {
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
-    public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) {
+    public LHHostInfo getAdvertisedHost(HostModel host, String listenerName) throws LHBadRequestError {
         InternalGetAdvertisedHostsResponse advertisedHostsForHost =
                 getPublicListenersForHost(new HostInfo(host.host, host.port));
 
@@ -346,12 +346,19 @@ public class BackendInternalComms implements Closeable {
     private class InterBrokerCommServer extends LHInternalsImplBase {
 
         @Override
-        public void getObject(GetObjectRequest request, StreamObserver<GetObjectResponse> responseObserver) {
-            ObjectIdModel<?, ?, ?> id =
-                    fromString(request.getObjectId(), AbstractGetable.getIdCls(request.getObjectType()));
-            ReadOnlyRocksDBWrapper store = getStore(request.getPartition(), false, id.getStore());
-            AbstractGetable entity = store.get(id.getStoreableKey(), StoredGetable.class);
-            responseObserver.onNext(GetObjectResponse.newBuilder().setResponse().build());
+        public void getObject(GetObjectRequest request, StreamObserver<GetObjectResponse> observer) {
+            ObjectIdModel<?, ?, ?> id = fromString(request.getObjectId(), getIdCls(request.getObjectType()));
+            String storeName = id.getStore().getStoreName();
+            ReadOnlyRocksDBWrapper store = getStore(request.getPartition(), false, storeName);
+            StoredGetable entity = store.get(id.getStoreableKey(), StoredGetable.class);
+            if (entity == null) {
+                observer.onError(new LHApiException(Status.NOT_FOUND, "Requested object was not found"));
+            } else {
+                observer.onNext(GetObjectResponse.newBuilder()
+                        .setResponse(entity.getStoredObject().toProto().build().toByteString())
+                        .build());
+                observer.onCompleted();
+            }
         }
 
         @Override
@@ -462,8 +469,8 @@ public class BackendInternalComms implements Closeable {
                     LHIterKeyValue<Tag> currentItem = tagScanResultIterator.next();
                     Tag matchingTag = currentItem.getValue();
 
-                    ObjectIdModel<?, ?, ?> matchingObjectId = fromString(
-                            matchingTag.getDescribedObjectId(), AbstractGetable.getIdCls(search.getObjectType()));
+                    ObjectIdModel<?, ?, ?> matchingObjectId =
+                            fromString(matchingTag.getDescribedObjectId(), getIdCls(search.getObjectType()));
                     matchingObjectIds.add(ByteString.copyFrom(matchingObjectId.toBytes()));
 
                     if (matchingObjectIds.size() == search.getLimit()) {
@@ -561,7 +568,7 @@ public class BackendInternalComms implements Closeable {
         if (resultType == ScanResultTypePb.OBJECT) {
             return ByteString.copyFrom(next.getValue().toBytes());
         } else if (resultType == ScanResultTypePb.OBJECT_ID) {
-            Class<? extends ObjectIdModel<?, ?, ?>> idCls = AbstractGetable.getIdCls(objectType);
+            Class<? extends ObjectIdModel<?, ?, ?>> idCls = getIdCls(objectType);
 
             return ByteString.copyFrom(fromString(next.getKey(), idCls).toBytes());
         } else {
@@ -794,7 +801,7 @@ public class BackendInternalComms implements Closeable {
 
                 // Turn the ID String into the ObjectId structure, then serialize it
                 // to proto
-                Class<? extends ObjectIdModel<?, ?, ?>> idCls = AbstractGetable.getIdCls(objectType);
+                Class<? extends ObjectIdModel<?, ?, ?>> idCls = getIdCls(objectType);
                 idsOut.add(fromString(next.getValue().describedObjectId, idCls)
                         .toProto()
                         .build()

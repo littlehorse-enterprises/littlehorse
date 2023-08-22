@@ -2,9 +2,9 @@ package io.littlehorse.common.model.getable;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHStore;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.server.streams.store.StoredGetable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
@@ -29,7 +29,7 @@ public abstract class ObjectIdModel<T extends Message, U extends Message, V exte
         return Optional.empty();
     }
 
-    public abstract LHStoreType getStore();
+    public abstract LHStore getStore();
 
     @SuppressWarnings("unchecked")
     public Class<V> getObjectClass() {

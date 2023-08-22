@@ -20,7 +20,7 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
     }
 
     public void init(final ProcessorContext<Void, Void> ctx) {
-        store = ctx.getStateStore(ServerTopology.GLOBAL_STORE);
+        store = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
     }
 
     /*

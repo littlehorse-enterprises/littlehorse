@@ -5,11 +5,9 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.RepartitionedGetable;
 import io.littlehorse.common.model.getable.objectId.TaskDefMetricsIdModel;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.TaskDefMetrics;
-import io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.Date;
@@ -90,13 +88,5 @@ public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
 
     public static String getObjectId(MetricsWindowLength windowType, Date time, String taskDefName) {
         return new TaskDefMetricsIdModel(time, windowType, taskDefName).getStoreableKey();
-    }
-
-    public static String getObjectId(TaskDefMetricsQueryRequest request) {
-        return new TaskDefMetricsIdModel(
-                        LHUtil.getWindowStart(LHLibUtil.fromProtoTs(request.getWindowStart()), request.getWindowType()),
-                        request.getWindowType(),
-                        request.getTaskDefName())
-                .getStoreableKey();
     }
 }
