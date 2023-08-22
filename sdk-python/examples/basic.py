@@ -22,8 +22,7 @@ def get_config() -> LHConfig:
 async def greeting(name: str, ctx: LHWorkerContext) -> str:
     greeting = f"Hello {name}!. Context {ctx}"
     print(greeting)
-    await asyncio.sleep(random.uniform(2.0, 5.0))
-    print(f"After sleep {name}")
+    await asyncio.sleep(random.uniform(0.5, 2.0))
     return greeting
 
 
@@ -32,8 +31,9 @@ async def describe_car(car: dict[str, Any], ctx: LHWorkerContext) -> None:
 
 
 async def main() -> None:
-    greet_worker = LHTaskWorker(greeting, "greet", get_config())
-    car_worker = LHTaskWorker(describe_car, "describe-car", get_config())
+    config = get_config()
+    greet_worker = LHTaskWorker(greeting, "greet", config)
+    car_worker = LHTaskWorker(describe_car, "describe-car", config)
     await start_workers(greet_worker, car_worker)
 
 

@@ -15,12 +15,19 @@ from littlehorse.model.service_pb2 import (
     PollTaskPb,
     RegisterTaskWorkerPb,
     RegisterTaskWorkerReplyPb,
+    ReportTaskReplyPb,
+    ReportTaskRunPb,
     ScheduledTaskPb,
     TaskDefIdPb,
     TaskDefPb,
+    TaskStatusPb,
+    VariableTypePb,
+    VariableValuePb,
 )
-from littlehorse.model.service_pb2_grpc import LHPublicApiStub
 from littlehorse.utils import parse_type, parse_value
+from google.protobuf.timestamp_pb2 import Timestamp
+
+REPORT_TASK_DEFAULT_RETRIES = 5
 
 
 class LHWorkerContext:
@@ -43,17 +50,14 @@ class LHWorkerContext:
         )
 
 
-class LHTaskExecutor:
-    _log = logging.getLogger("LHTaskExecutor")
+class LHTask:
+    _log = logging.getLogger("LHTask")
 
-    def __init__(
-        self, callable: Callable[..., Any], task_def: TaskDefPb, size: int
-    ) -> None:
+    def __init__(self, callable: Callable[..., Any], task_def: TaskDefPb) -> None:
         self.task_def = task_def
 
         self._callable = callable
         self._signature = signature(callable)
-        self._ask_for_work_semaphore = asyncio.Semaphore(size)
 
         self._validate_callable()
         self._validate_match()
@@ -142,58 +146,111 @@ class LHTaskExecutor:
         last_parameter = list(self._signature.parameters.values())[-1]
         return last_parameter.annotation is LHWorkerContext
 
-    async def schedule_task(self, task: ScheduledTaskPb) -> None:
-        await self._ask_for_work_semaphore.acquire()
-        asyncio.create_task(self._execute_task(task))
-
-    async def _execute_task(self, task: ScheduledTaskPb) -> None:
-        args: Any = [parse_value(var.value) for var in task.variables]
-        if self.has_context():
-            args.append(LHWorkerContext(task))
-        await self._callable(*args)
-        self._ask_for_work_semaphore.release()
-
 
 class LHConnection:
     _log = logging.getLogger("LHConnection")
 
-    def __init__(
-        self, server: str, config: LHConfig, task_executor: LHTaskExecutor
-    ) -> None:
+    def __init__(self, server: str, config: LHConfig, task: LHTask) -> None:
         self.server = server
         self.running = False
-        self._task_executor = task_executor
+        self._task = task
         self._config = config
         self._ask_for_work_semaphore = asyncio.Semaphore()
+        self._schedule_task_semaphore = asyncio.Semaphore(config.num_worker_threads())
+        _, self._stub = self._config.stub(
+            server=self.server, async_channel=True, name=self._task.task_name()
+        )
+
+    async def _schedule_task(self, task: ScheduledTaskPb) -> None:
+        self._log.debug(
+            "Scheduling task '%s' for WfRun '%s'",
+            task.task_def_id.name,
+            task.task_run_id.wf_run_id,
+        )
+        await self._schedule_task_semaphore.acquire()
+        asyncio.create_task(self._execute_task(task))
+
+    # TODO send the returned object form the callable
+    async def _execute_task(self, task: ScheduledTaskPb) -> None:
+        args: Any = [parse_value(var.value) for var in task.variables]
+        if self._task.has_context():
+            args.append(LHWorkerContext(task))
+
+        await self._task._callable(*args)
+        self._schedule_task_semaphore.release()
+
+        current_time = Timestamp()
+        current_time.GetCurrentTime()
+        task_result = ReportTaskRunPb(
+            task_run_id=task.task_run_id,
+            time=current_time,
+            attempt_number=task.attempt_number,
+            status=TaskStatusPb.TASK_SUCCESS,
+            output=VariableValuePb(type=VariableTypePb.STR, str="Hello world!"),
+        )
+        asyncio.create_task(self._report_task(task_result, REPORT_TASK_DEFAULT_RETRIES))
+
+    async def _report_task(
+        self, task_result: ReportTaskRunPb, retries_left: int
+    ) -> None:
+        if retries_left <= 0:
+            self._log.error(
+                "Retries exhausted when trying to report a task: '%s'",
+                task_result.task_run_id,
+            )
+            return
+
+        self._log.debug("Reporting task '%s'", self._task.task_name())
+
+        try:
+            reply: ReportTaskReplyPb = await self._stub.ReportTask(task_result)
+
+            if reply.code == LHResponseCodePb.OK:
+                self._log.debug(
+                    "Task '%s' successfully reported", self._task.task_name()
+                )
+            elif reply.code == LHResponseCodePb.REPORTED_BUT_NOT_PROCESSED:
+                self._log.warn(
+                    "Reported task but processor was down. No action required"
+                )
+            else:
+                self._log.warn(
+                    "Error '%s' reporting task: '%s'. Retrying.",
+                    reply.message,
+                    self._task.task_name(),
+                )
+                await self._report_task(task_result, retries_left - 1)
+        except Exception as e:
+            self._log.warn(
+                "Error '%s' reporting task: '%s'. Retrying.",
+                str(e),
+                self._task.task_name(),
+            )
+            await self._report_task(task_result, retries_left - 1)
 
     async def _ask_for_work(self) -> None:
-        async with self._config.establish_channel(
-            server=self.server, async_channel=True
-        ) as channel:
-            stub = LHPublicApiStub(channel)
+        self._log.debug(
+            "Connection: %s is asking for work for %s at %s",
+            self.server,
+            self._task.task_name(),
+            datetime.now(),
+        )
 
-            self._log.debug(
-                "Connection: %s is asking for work for %s at %s",
-                self.server,
-                self._task_executor.task_name(),
-                datetime.now(),
-            )
+        async def generator() -> AsyncIterator[PollTaskPb]:
+            while self.running:
+                await self._ask_for_work_semaphore.acquire()
+                if self.running:
+                    yield PollTaskPb(
+                        client_id=self._config.client_id(),
+                        task_worker_version=self._config.worker_version(),
+                        task_def_name=self._task.task_name(),
+                    )
 
-            async def generator() -> AsyncIterator[PollTaskPb]:
-                while self.running:
-                    await self._ask_for_work_semaphore.acquire()
-                    if self.running:
-                        yield PollTaskPb(
-                            client_id=self._config.client_id(),
-                            task_worker_version=self._config.worker_version(),
-                            task_def_name=self._task_executor.task_name(),
-                        )
-
-            async for reply in stub.PollTask(generator()):
-                if reply.code != LHResponseCodePb.OK:
-                    raise UnknownApiException(message=reply.message)
-                await self._task_executor.schedule_task(reply.result)
-                self._ask_for_work_semaphore.release()
+        async for reply in self._stub.PollTask(generator()):
+            if reply.code != LHResponseCodePb.OK:
+                raise UnknownApiException(message=reply.message)
+            await self._schedule_task(reply.result)
+            self._ask_for_work_semaphore.release()
 
     async def start(self) -> None:
         self._log.info(f"Starting server connection {self.server}")
@@ -220,81 +277,75 @@ class LHTaskWorker:
         self._connections: dict[str, LHConnection] = {}
 
         # get the task definition from the server
-        stub = config.blocking_stub()
+        _, stub = config.stub()
         reply: GetTaskDefReplyPb = stub.GetTaskDef(TaskDefIdPb(name=task_def_name))
 
         if reply.code is not LHResponseCodePb.OK:
             raise InvalidTaskDefNameException(f"Couldn't find TaskDef: {task_def_name}")
 
         # initialize internal task and parameters
-        self._task_executor = LHTaskExecutor(
-            callable, reply.result, config.num_worker_threads()
-        )
+        self._task = LHTask(callable, reply.result)
         self.running = False
 
     async def _heartbeat(self) -> None:
-        async with self._config.establish_channel(async_channel=True) as channel:
-            stub = LHPublicApiStub(channel)
-            while self.running:
-                self._log.debug(
-                    "Sending heart beat (%s) at %s",
-                    self._task_executor.task_name(),
-                    datetime.now(),
-                )
+        _, stub = self._config.stub(async_channel=True, name="heartbeat")
 
-                request = RegisterTaskWorkerPb(
-                    client_id=self._config.client_id(),
-                    listener_name=self._config.server_listener(),
-                    task_def_name=self._task_executor.task_name(),
-                )
-                reply: RegisterTaskWorkerReplyPb = await stub.RegisterTaskWorker(
-                    request
-                )
+        while self.running:
+            self._log.debug(
+                "Sending heart beat (%s) at %s",
+                self._task.task_name(),
+                datetime.now(),
+            )
 
-                if reply.code != LHResponseCodePb.OK:
-                    raise UnknownApiException(message=reply.message)
+            request = RegisterTaskWorkerPb(
+                client_id=self._config.client_id(),
+                listener_name=self._config.server_listener(),
+                task_def_name=self._task.task_name(),
+            )
+            reply: RegisterTaskWorkerReplyPb = await stub.RegisterTaskWorker(request)
 
-                hosts = [f"{host.host}:{host.port}" for host in reply.your_hosts]
+            if reply.code != LHResponseCodePb.OK:
+                raise UnknownApiException(message=reply.message)
 
-                # add new connections
-                hosts_to_be_added = [
-                    host for host in hosts if host not in self._connections.keys()
-                ]
+            hosts = [f"{host.host}:{host.port}" for host in reply.your_hosts]
 
-                if hosts_to_be_added:
-                    self._log.info("Connections to be added: %s", hosts_to_be_added)
+            # add new connections
+            hosts_to_be_added = [
+                host for host in hosts if host not in self._connections.keys()
+            ]
 
-                for host in hosts_to_be_added:
-                    new_connection = LHConnection(
-                        host, self._config, self._task_executor
-                    )
-                    self._connections[host] = new_connection
-                    asyncio.create_task(new_connection.start())
+            if hosts_to_be_added:
+                self._log.info("Connections to be added: %s", hosts_to_be_added)
 
-                # remove invalid connections
-                hosts_to_be_removed = {
-                    host for host in self._connections.keys() if host not in hosts
-                }
+            for host in hosts_to_be_added:
+                new_connection = LHConnection(host, self._config, self._task)
+                self._connections[host] = new_connection
+                asyncio.create_task(new_connection.start())
 
-                if hosts_to_be_removed:
-                    self._log.info("Connections to be removed: %s", hosts_to_be_removed)
+            # remove invalid connections
+            hosts_to_be_removed = {
+                host for host in self._connections.keys() if host not in hosts
+            }
 
-                for host in hosts_to_be_removed:
-                    connection_to_be_removed = self._connections.pop(host)
-                    connection_to_be_removed.stop()
+            if hosts_to_be_removed:
+                self._log.info("Connections to be removed: %s", hosts_to_be_removed)
 
-                await asyncio.sleep(5)
+            for host in hosts_to_be_removed:
+                connection_to_be_removed = self._connections.pop(host)
+                connection_to_be_removed.stop()
+
+            await asyncio.sleep(5)
 
     async def start(self) -> None:
         """Starts polling for and executing tasks."""
-        self._log.info(f"Starting worker '{self._task_executor.task_name()}'")
+        self._log.info(f"Starting worker '{self._task.task_name()}'")
         self.running = True
 
         await self._heartbeat()
 
     def stop(self) -> None:
         """Cleanly shuts down the Task Worker."""
-        self._log.info(f"Stopping worker '{self._task_executor.task_name()}'")
+        self._log.info(f"Stopping worker '{self._task.task_name()}'")
         self.running = False
 
         for connection in self._connections.values():

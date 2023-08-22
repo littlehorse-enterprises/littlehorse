@@ -1,7 +1,7 @@
 import os
 import uuid
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional, Tuple, Union
 from grpc import CallCredentials, Channel, ChannelCredentials
 import grpc
 from jproperties import Properties
@@ -25,6 +25,29 @@ SERVER_CONNECT_LISTENER = "LHW_SERVER_CONNECT_LISTENER"
 TASK_WORKER_VERSION = "LHW_TASK_WORKER_VERSION"
 
 
+class ChannelId:
+    def __init__(self, server: str, name: str, is_async: bool) -> None:
+        self.server = server
+        self.is_async = is_async
+        self.name = name
+
+    def __eq__(self, __value: object) -> bool:
+        return (
+            hasattr(__value, "server")
+            and hasattr(__value, "is_async")
+            and hasattr(__value, "name")
+            and self.server == __value.server
+            and self.is_async == __value.is_async
+            and self.name == __value.name
+        )
+
+    def __hash__(self) -> int:
+        return hash(str(self))
+
+    def __str__(self) -> str:
+        return str(vars(self))
+
+
 class LHConfig:
     """Littlehorse Client/Worker configuration.
     A property configured using an environment property
@@ -39,7 +62,7 @@ class LHConfig:
             for key, value in os.environ.items()
             if key.startswith(PREFIXES)
         }
-        self._blocking_stub_channel: Channel = None
+        self._opened_channels: dict[ChannelId, Channel] = {}
 
     def __str__(self) -> str:
         return "\n".join(
@@ -271,15 +294,33 @@ class LHConfig:
 
         return insecure_channel(server)
 
-    def blocking_stub(self) -> LHPublicApiStub:
-        """Gets a Blocking gRPC stub for the LH Public API
+    def stub(
+        self,
+        server: Optional[str] = None,
+        name: str = "default",
+        async_channel: bool = False,
+    ) -> Tuple[Channel, LHPublicApiStub]:
+        """Gets a gRPC stub for the LH Public API
         on the configured bootstrap server. It creates a new LHPublicApiStub,
         but reuse a grpc.Channel.
 
+        Args:
+            server (Optional[str], optional): Target, it will use the
+            bootstrap server in case of None. Defaults to None.
+            name (str, optional): An optional name. Defaults to "default".
+            async_channel (bool, optional): Defines if the channel
+            will use asyncio. Defaults to False.
+
         Returns:
-            LHPublicApiStub: A blocking gRPC stub.
+            Tuple[Channel, LHPublicApiStub]: A channel plus its gRPC stub.
         """
-        self._blocking_stub_channel = (
-            self._blocking_stub_channel or self.establish_channel()
-        )
-        return LHPublicApiStub(self._blocking_stub_channel)
+        channel_id = ChannelId(server or self.bootstrap_server(), name, async_channel)
+        channel = self._opened_channels.get(channel_id)
+
+        if channel is None:
+            channel = self.establish_channel(channel_id.server, channel_id.is_async)
+            self._opened_channels[channel_id] = channel
+        else:
+            self._log.info("Reusing channel %s", channel_id)
+
+        return (channel, LHPublicApiStub(channel))
