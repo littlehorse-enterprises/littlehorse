@@ -1,9 +1,6 @@
 package io.littlehorse.server.streams.storeinternals;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Predicate;
 
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -181,17 +178,17 @@ public class GetableStorageManager {
      */
     public <U extends Message, T extends CoreGetable<U>> T getFirstByCreatedTimeFromPrefix(
             String prefix, Class<T> cls, Predicate<T> discriminator) {
-        T result = iterateOverPrefix(prefix, cls).stream()
-                .map(getableToStore -> getableToStore.getObjectToStore())
+        return iterateOverPrefix(prefix, cls).stream()
+                .map(GetableToStore::getObjectToStore)
                 .filter(discriminator)
-                .min((t1, t2) -> t1.getCreatedAt().compareTo(t2.getCreatedAt()))
+                .min(Comparator.comparing(AbstractGetable::getCreatedAt))
+                .map(entity -> {
+                    // iterateOverPrefix doesn't put in the buffer. We do that here, but only
+                    // for the one we return.
+                    put(entity);
+                    return entity;
+                })
                 .orElse(null);
-
-        // iterateOverPrefix doesn't put in the buffer. We do that here, but only
-        // for the one we return.
-        put(result);
-
-        return result;
     }
 
     /**
@@ -304,11 +301,10 @@ public class GetableStorageManager {
         // First iterate over what's in the store.
         String storePrefix = StoredGetable.getRocksDBKey(prefix, AbstractGetable.getTypeEnum(cls));
 
-        try (LHKeyValueIterator<? super Storeable<?>> iterator =
-                rocksdb.range(storePrefix, storePrefix + "~", Storeable.class)) {
+        try (LHKeyValueIterator<?> iterator = rocksdb.range(storePrefix, storePrefix + "~", StoredGetable.class)) {
 
             while (iterator.hasNext()) {
-                LHIterKeyValue<? super Storeable<?>> next = iterator.next();
+                LHIterKeyValue<? extends Storeable<?>> next = iterator.next();
 
                 StoredGetable<U, T> item = (StoredGetable<U, T>) next.getValue();
                 all.put(item.getStoreKey(), new GetableToStore<>(item, cls));
