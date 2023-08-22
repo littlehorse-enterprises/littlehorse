@@ -6,7 +6,6 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
@@ -184,9 +183,8 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
             ThreadSpecModel ts = e.getValue();
             try {
                 ts.validate(dbClient, config);
-            } catch (LHValidationError exn) {
-                exn.addPrefix("Thread " + ts.name);
-                throw exn;
+            } catch (LHApiException exn) {
+                throw exn.getCopyWithPrefix("Thread " + ts.name);
             }
         }
     }
