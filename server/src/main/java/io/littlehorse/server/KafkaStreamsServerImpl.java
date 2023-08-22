@@ -47,6 +47,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestMo
 import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
 import io.littlehorse.server.listener.ListenersManager;
@@ -588,6 +589,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 new POSTStreamObserver<>(responseObserver, responseCls, shouldCompleteStream);
 
         Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command);
+
+        command.setCommandId(LHUtil.generateGuid());
 
         internalComms.getProducer().send(command.getPartitionKey(), command, command.getTopic(config), callback);
     }

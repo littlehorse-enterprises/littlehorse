@@ -163,6 +163,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
                 config.getApiBootstrapHost(),
                 config.getApiBootstrapPort(),
                 t);
+        this.running = false;
         // We don't close the connections to other hosts here since they will do
         // that themselves if they can't connect.
     }
