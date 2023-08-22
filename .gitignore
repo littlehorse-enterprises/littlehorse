@@ -24,6 +24,13 @@ lhctl/lhctl
 .vscode/launch.json
 *.code-workspace
 
+#Visual Studio
+sdk-dotnet/src/LittleHorseSDK/LittleHorse.Common/bin/
+sdk-dotnet/src/LittleHorseSDK/LittleHorse.Common/obj/
+sdk-dotnet/src/LittleHorseSDK/LittleHorse.Test/bin/
+sdk-dotnet/src/LittleHorseSDK/LittleHorse.Test/obj/
+sdk-dotnet/src/LittleHorseSDK/.vs/
+
 # Others
 local-dev/certs/
 build/

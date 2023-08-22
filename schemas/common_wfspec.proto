@@ -10,6 +10,7 @@ import "variable.proto";
 option go_package = ".;model";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorseSDK.Common.proto";
 
 message VariableAssignment {
   message FormatString {
