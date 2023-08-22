@@ -31,7 +31,7 @@ public class InputVarsTest {
     @Test
     public void simpleIntegerVarInput() {
         workflowVerifier
-                .prepare(workflow, Arg.of("my-var", 10))
+                .prepareRun(workflow, Arg.of("my-var", 10))
                 .waitForStatus(LHStatus.COMPLETED)
                 .waitForTaskStatus(0, 1, TaskStatus.TASK_SUCCESS)
                 .waitForTaskStatus(0, 2, TaskStatus.TASK_SUCCESS)
@@ -59,7 +59,7 @@ public class InputVarsTest {
         };
 
         workflowVerifier
-                .prepare(jsonWorkflow, Arg.of("my-json-var", inputVar))
+                .prepareRun(jsonWorkflow, Arg.of("my-json-var", inputVar))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyTaskRunResult(0, 1, verifyProcessSubObjectOutput)
                 .thenVerifyTaskRunResult(0, 2, verifyProcessBigObjectOutput)

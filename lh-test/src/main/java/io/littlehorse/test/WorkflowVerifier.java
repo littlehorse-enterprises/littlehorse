@@ -13,7 +13,7 @@ public class WorkflowVerifier {
         this.lhClient = lhClient;
     }
 
-    public WfRunVerifier prepare(Workflow workflow, Arg... args) {
+    public WfRunVerifier prepareRun(Workflow workflow, Arg... args) {
         return new WfRunVerifier(lhClient, workflow, List.of(args));
     }
 }

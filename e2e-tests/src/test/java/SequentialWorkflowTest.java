@@ -21,7 +21,7 @@ public class SequentialWorkflowTest {
     @Test
     public void simpleSequentialWorkflowExecution() {
         workflowVerifier
-                .prepare(workflow)
+                .prepareRun(workflow)
                 .waitForStatus(LHStatus.COMPLETED)
                 .waitForTaskStatus(0, 1, TaskStatus.TASK_SUCCESS)
                 .waitForTaskStatus(0, 2, TaskStatus.TASK_SUCCESS)
