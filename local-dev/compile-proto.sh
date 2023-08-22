@@ -15,6 +15,11 @@ INTERNAL_PROTOS=$(ls $WORK_DIR/schemas/internal | grep '\.proto')
 
 cd $WORK_DIR/schemas
 
+PUBLIC_PROTOS=$(ls $WORK_DIR/schemas | grep '\.proto' | grep -v internal_server.proto)
+# PUBLIC_PROTOS="object_id.proto service.proto enums.proto"
+
+cd $WORK_DIR/schemas
+
 protoc --grpc-java_out="${WORK_DIR}/sdk-java/src/main/java/" \
     --java_out="${WORK_DIR}/sdk-java/src/main/java/" \
     --go-grpc_out=${WORK_DIR}/sdk-go/common/model \

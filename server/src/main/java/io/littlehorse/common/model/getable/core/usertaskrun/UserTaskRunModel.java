@@ -383,18 +383,17 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
 
         for (UserTaskFieldResult inputField : event.getResult().getFieldsList()) {
             UserTaskFieldModel userTaskFieldFromTaskDef = userTaskFieldsGroupedByName.get(inputField.getName());
-            if (userTaskFieldFromTaskDef == null
+            boolean isUndefined = userTaskFieldFromTaskDef == null
                     || !userTaskFieldFromTaskDef
                             .getType()
-                            .equals(inputField.getValue().getType())) {
-
+                            .equals(inputField.getValue().getType());
+            if (isUndefined) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
                         "Field [name = %s, type = %s] is not defined in UserTask schema or has different type"
                                 .formatted(
                                         inputField.getName(),
-                                        inputField.getValue().getType()));
-            }
+                                        inputField.getValue().getType()));            }
             results.add(inputField);
             VariableValueModel fieldVal = VariableValueModel.fromProto(inputField.getValue());
             raw.put(inputField.getName(), fieldVal.getVal());
