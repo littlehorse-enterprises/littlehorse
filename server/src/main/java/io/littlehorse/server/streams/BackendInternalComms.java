@@ -344,7 +344,7 @@ public class BackendInternalComms implements Closeable {
             ObjectIdModel<?, ?, ?> id = fromString(request.getObjectId(), getIdCls(request.getObjectType()));
             String storeName = id.getStore().getStoreName();
             ReadOnlyRocksDBWrapper store = getStore(request.getPartition(), false, storeName);
-            
+
             @SuppressWarnings("unchecked")
             StoredGetable<?, ?> entity = store.get(id.getStoreableKey(), StoredGetable.class);
 

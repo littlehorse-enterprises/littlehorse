@@ -42,10 +42,12 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
 
     public MetadataCommandModel() {
         super();
+        time = new Date();
+        commandId = LHUtil.generateGuid();
     }
 
     public MetadataCommandModel(MetadataSubCommand<?> cmd) {
-        super();
+        this();
         setSubCommand(cmd);
     }
 

@@ -3,6 +3,7 @@ package io.littlehorse.server.streams;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
@@ -104,7 +105,7 @@ public class ServerTopology {
         topo.addSource(
                 METADATA_SOURCE, // source name
                 Serdes.String().deserializer(), // key deserializer
-                new LHDeserializer<>(CommandModel.class), // value deserializer
+                new LHDeserializer<>(MetadataCommandModel.class), // value deserializer
                 config.getMetadataCmdTopicName() // source topic
                 );
         topo.addProcessor(METADATA_PROCESSOR, () -> new MetadataProcessor(config, server), METADATA_SOURCE);

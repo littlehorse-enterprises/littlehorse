@@ -7,6 +7,7 @@ import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorDAOImpl;
@@ -45,7 +46,9 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
         // CoreProcessorDAOImpl.
         this.rocksdb = new RocksDBWrapper(ctx.getStateStore(ServerTopology.CORE_STORE), config);
 
-        dao = new CoreProcessorDAOImpl(this.ctx, config, server, wfSpecCache, rocksdb);
+        ReadOnlyRocksDBWrapper globalStore = new ReadOnlyRocksDBWrapper(ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), config);
+
+        dao = new CoreProcessorDAOImpl(this.ctx, config, server, wfSpecCache, rocksdb, globalStore);
         dao.onPartitionClaimed();
         ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
     }
@@ -86,7 +89,7 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
                 server.onResponseReceived(command.commandId, cmdReply);
             }
         } catch (Exception exn) {
-            log.error("Caught exception processing command: {}", exn);
+            log.error("Caught exception processing command:", exn);
             if (command.hasResponse() && command.getCommandId() != null) {
                 server.sendErrorToClient(command.getCommandId(), exn);
             }

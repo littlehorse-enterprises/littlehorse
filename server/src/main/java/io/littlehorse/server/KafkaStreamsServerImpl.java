@@ -116,7 +116,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     private ListenersManager listenerManager;
     private HealthService healthService;
-    private ReadOnlyMetadataStore metaStore;
+
+    private ReadOnlyMetadataStore getMetaStore() {
+        return internalComms.getGlobalStoreImpl();
+    }
 
     public KafkaStreamsServerImpl(LHConfig config) {
         this.config = config;
@@ -149,7 +152,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getWfSpec(WfSpecId req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = metaStore.getWfSpec(req.getName(), req.getVersion());
+        WfSpecModel wfSpec = getMetaStore().getWfSpec(req.getName(), req.getVersion());
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -160,7 +163,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getLatestWfSpec(GetLatestWfSpecRequest req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = metaStore.getWfSpec(req.getName(), null);
+        WfSpecModel wfSpec = getMetaStore().getWfSpec(req.getName(), null);
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -171,7 +174,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getLatestUserTaskDef(GetLatestUserTaskDefRequest req, StreamObserver<UserTaskDef> ctx) {
-        UserTaskDefModel utd = metaStore.getUserTaskDef(req.getName(), null);
+        UserTaskDefModel utd = getMetaStore().getUserTaskDef(req.getName(), null);
         if (utd == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskDef"));
         } else {
@@ -182,7 +185,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getUserTaskDef(UserTaskDefId req, StreamObserver<UserTaskDef> ctx) {
-        UserTaskDefModel utd = metaStore.getUserTaskDef(req.getName(), req.getVersion());
+        UserTaskDefModel utd = getMetaStore().getUserTaskDef(req.getName(), req.getVersion());
         if (utd == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskDef"));
         } else {
@@ -193,7 +196,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getTaskDef(TaskDefId req, StreamObserver<TaskDef> ctx) {
-        TaskDefModel td = metaStore.getTaskDef(req.getName());
+        TaskDefModel td = getMetaStore().getTaskDef(req.getName());
         if (td == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified TaskDef"));
         } else {
@@ -204,7 +207,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getExternalEventDef(ExternalEventDefId req, StreamObserver<ExternalEventDef> ctx) {
-        ExternalEventDefModel eed = metaStore.getExternalEventDef(req.getName());
+        ExternalEventDefModel eed = getMetaStore().getExternalEventDef(req.getName());
         if (eed == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified ExternalEventDef"));
         } else {

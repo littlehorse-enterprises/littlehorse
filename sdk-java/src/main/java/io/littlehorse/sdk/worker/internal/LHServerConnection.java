@@ -59,8 +59,7 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
 
             log.info("Scheduled task on threadpool for wfRun {}", wfRunId);
         } else {
-            log.error(
-                    "Didn't successfully claim task, likely due to server restart.");
+            log.error("Didn't successfully claim task, likely due to server restart.");
         }
 
         if (stillRunning) {

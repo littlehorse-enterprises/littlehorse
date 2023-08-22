@@ -31,6 +31,7 @@ import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
+import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.util.InternalHosts;
@@ -67,13 +68,14 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
             LHConfig config,
             KafkaStreamsServerImpl server,
             MetadataCache wfSpecCache,
-            RocksDBWrapper rocksdb) {
-        super(rocksdb);
+            RocksDBWrapper localStore,
+            ReadOnlyRocksDBWrapper globalStore) {
+        super(globalStore);
 
         this.server = server;
         this.ctx = ctx;
         this.config = config;
-        this.rocksdb = rocksdb;
+        this.rocksdb = localStore;
         this.globalStore = new ReadOnlyMetadataStore(rocksdb);
 
         // At the start, we haven't claimed the partition until the claim event comes

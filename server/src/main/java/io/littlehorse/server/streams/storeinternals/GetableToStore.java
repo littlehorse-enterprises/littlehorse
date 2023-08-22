@@ -1,5 +1,7 @@
 package io.littlehorse.server.streams.storeinternals;
 
+import java.util.List;
+
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -28,7 +30,7 @@ public class GetableToStore<U extends Message, T extends AbstractGetable<U>> {
             this.tagsPresentBeforeUpdate = thingInStore.getIndexCache();
             this.objectToStore = thingInStore.getStoredObject();
         } else {
-            this.tagsPresentBeforeUpdate = null;
+            this.tagsPresentBeforeUpdate = new TagsCache(List.of());
         }
     }
 }

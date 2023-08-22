@@ -1,7 +1,6 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;

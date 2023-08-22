@@ -3,16 +3,15 @@ package io.littlehorse.sdk.wfsdk;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.util.JsonFormat;
-
-import io.grpc.Status;
+import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.WfSpecId;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import java.io.File;
 import java.io.IOException;
@@ -163,10 +162,11 @@ public abstract class Workflow {
      */
     public boolean doesWfSpecExist(LHPublicApiBlockingStub client) {
         try {
-            client.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder().setName(name).build());
+            client.getLatestWfSpec(
+                    GetLatestWfSpecRequest.newBuilder().setName(name).build());
             return true;
-        } catch(StatusRuntimeException exn) {
-            if (exn.getStatus() == Status.NOT_FOUND) {
+        } catch (StatusRuntimeException exn) {
+            if (exn.getStatus().getCode() == Code.NOT_FOUND) {
                 return false;
             }
 
@@ -186,10 +186,11 @@ public abstract class Workflow {
         if (version == null) return doesWfSpecExist(client);
 
         try {
-            client.getWfSpec(WfSpecId.newBuilder().setName(name).setVersion(version).build());
+            client.getWfSpec(
+                    WfSpecId.newBuilder().setName(name).setVersion(version).build());
             return true;
-        } catch(StatusRuntimeException exn) {
-            if (exn.getStatus() == Status.NOT_FOUND) {
+        } catch (StatusRuntimeException exn) {
+            if (exn.getStatus().getCode() == Code.NOT_FOUND) {
                 return false;
             }
 

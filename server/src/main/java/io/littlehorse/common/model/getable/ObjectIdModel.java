@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 public abstract class ObjectIdModel<T extends Message, U extends Message, V extends AbstractGetable<U>>
-        extends LHSerializable<T> {
+        extends LHSerializable<T> implements Comparable<ObjectIdModel<?, ?, ?>> {
 
     // Force the user to implement toString
     public abstract String toString();
@@ -47,6 +47,11 @@ public abstract class ObjectIdModel<T extends Message, U extends Message, V exte
     @Override
     public int hashCode() {
         return getStoreableKey().hashCode();
+    }
+
+    @Override
+    public int compareTo(ObjectIdModel<?, ?, ?> other) {
+        return toString().compareTo(other.toString());
     }
 
     public static <T extends Message, U extends Message, V extends LHSerializable<U>> ObjectIdModel<?, ?, ?> fromString(

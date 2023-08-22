@@ -13,13 +13,13 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
 import io.littlehorse.server.streams.util.InternalHosts;
 import java.util.Date;
 
 public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
 
-    public CoreProcessorDAO(RocksDBWrapper rocksdb) {
+    public CoreProcessorDAO(ReadOnlyRocksDBWrapper rocksdb) {
         super(rocksdb);
     }
 

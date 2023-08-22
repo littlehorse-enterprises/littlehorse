@@ -1,7 +1,6 @@
 package io.littlehorse.sdk.worker.internal.util;
 
 import com.google.protobuf.Empty;
-
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;

@@ -2,7 +2,6 @@ package io.littlehorse.sdk.common.config;
 
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -69,7 +68,8 @@ public class LHWorkerConfig extends LHClientConfig {
      * @return the specified TaskDefPb.
      */
     public TaskDef getTaskDef(String taskDefName) throws IOException {
-        return getBlockingStub().getTaskDef(TaskDefId.newBuilder().setName(taskDefName).build());
+        return getBlockingStub()
+                .getTaskDef(TaskDefId.newBuilder().setName(taskDefName).build());
     }
 
     /**

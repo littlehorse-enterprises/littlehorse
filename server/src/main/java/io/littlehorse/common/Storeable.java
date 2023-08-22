@@ -7,7 +7,7 @@ import io.littlehorse.common.proto.StoreableType;
 public abstract class Storeable<T extends Message> extends LHSerializable<T> {
 
     public String getFullStoreKey() {
-        return getFullStoreKey(getType(), getFullStoreKey());
+        return getFullStoreKey(getType(), getStoreKey());
     }
 
     public static String getSubstorePrefix(StoreableType storeableType) {
@@ -46,7 +46,7 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.SCHEDULED_TASK;
             case "WfMetricUpdate":
                 return StoreableType.WF_METRIC_UPDATE;
-            case "TaskMericUpdate":
+            case "TaskMetricUpdate":
                 return StoreableType.TASK_METRIC_UPDATE;
         }
         throw new IllegalArgumentException("Unrecognized Storeable class: " + cls);
