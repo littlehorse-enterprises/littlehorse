@@ -76,7 +76,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
         this.ctx = ctx;
         this.config = config;
         this.rocksdb = localStore;
-        this.globalStore = new ReadOnlyMetadataStore(rocksdb);
+        this.globalStore = new ReadOnlyMetadataStore(globalStore);
 
         // At the start, we haven't claimed the partition until the claim event comes
         this.partitionIsClaimed = false;
@@ -144,7 +144,11 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
 
     @Override
     public WfSpecModel getWfSpec(String name, Integer version) {
-        return globalStore.getWfSpec(name, version);
+        WfSpecModel wfSpec = globalStore.getWfSpec(name, version);
+        if (wfSpec != null) {
+            wfSpec.setDao(this);
+        }
+        return wfSpec;
     }
 
     @Override
