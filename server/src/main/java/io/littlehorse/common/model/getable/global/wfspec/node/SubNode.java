@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import java.util.Date;
 import java.util.HashSet;
@@ -14,7 +14,7 @@ public abstract class SubNode<T extends Message> extends LHSerializable<T> {
 
     public abstract SubNodeRun<?> createSubNodeRun(Date time);
 
-    public abstract void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHValidationError;
+    public abstract void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHApiException;
 
     protected NodeModel node;
 

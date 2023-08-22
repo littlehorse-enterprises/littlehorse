@@ -1,15 +1,16 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.SubCommand;
-import io.littlehorse.common.model.corecommand.subcommandresponse.ReportTaskReply;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import java.util.Date;
@@ -39,17 +40,14 @@ public class ReportTaskRunModel extends SubCommand<ReportTaskRun> {
         return true;
     }
 
-    public ReportTaskReply process(CoreProcessorDAO dao, LHConfig config) {
-        ReportTaskReply out = new ReportTaskReply();
-
+    public Empty process(CoreProcessorDAO dao, LHConfig config) {
         TaskRunModel task = dao.get(taskRunId);
         if (task == null) {
-            out.setCode(LHResponseCode.BAD_REQUEST_ERROR);
-            out.setMessage("Could not find specified taskrun. Bad client!");
-            return out;
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Provided taskRunId was invalid");
         }
 
-        return task.updateTaskResult(this);
+        task.updateTaskResult(this);
+        return Empty.getDefaultInstance();
     }
 
     public ReportTaskRun.Builder toProto() {

@@ -1,17 +1,18 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
-import io.littlehorse.common.model.corecommand.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
 
 public class DeleteExternalEventDefRequestModel extends MetadataSubCommand<DeleteExternalEventDefRequest> {
 
-    public String name;
+    public ExternalEventDefIdModel id;
 
     public Class<DeleteExternalEventDefRequest> getProtoBaseClass() {
         return DeleteExternalEventDefRequest.class;
@@ -19,13 +20,13 @@ public class DeleteExternalEventDefRequestModel extends MetadataSubCommand<Delet
 
     public DeleteExternalEventDefRequest.Builder toProto() {
         DeleteExternalEventDefRequest.Builder out =
-                DeleteExternalEventDefRequest.newBuilder().setName(name);
+                DeleteExternalEventDefRequest.newBuilder().setId(id.toProto());
         return out;
     }
 
     public void initFrom(Message proto) {
         DeleteExternalEventDefRequest p = (DeleteExternalEventDefRequest) proto;
-        name = p.getName();
+        id = LHSerializable.fromProto(p.getId(), ExternalEventDefIdModel.class);
     }
 
     public String getPartitionKey() {
@@ -33,8 +34,9 @@ public class DeleteExternalEventDefRequestModel extends MetadataSubCommand<Delet
     }
 
     @Override
-    public DeleteObjectReply process(MetadataProcessorDAO dao, LHConfig config) {
-        return dao.delete(new ExternalEventDefIdModel(name));
+    public Empty process(MetadataProcessorDAO dao, LHConfig config) {
+        dao.delete(id);
+        return Empty.getDefaultInstance();
     }
 
     public boolean hasResponse() {

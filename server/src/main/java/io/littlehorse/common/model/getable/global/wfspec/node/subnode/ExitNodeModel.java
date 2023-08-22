@@ -3,7 +3,7 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExitRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
@@ -33,7 +33,7 @@ public class ExitNodeModel extends SubNode<ExitNode> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHValidationError {
+    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHApiException {
         if (failureDef != null) failureDef.validate();
     }
 

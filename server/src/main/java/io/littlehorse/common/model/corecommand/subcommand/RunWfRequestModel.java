@@ -1,18 +1,18 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.SubCommand;
-import io.littlehorse.common.model.corecommand.subcommandresponse.RunWfReply;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
-import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WfRun;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,25 +64,19 @@ public class RunWfRequestModel extends SubCommand<RunWfRequest> {
         return true;
     }
 
-    public RunWfReply process(CoreProcessorDAO dao, LHConfig config) {
-        RunWfReply out = new RunWfReply();
-
+    public WfRun process(CoreProcessorDAO dao, LHConfig config) {
         WfSpecModel spec = dao.getWfSpec(wfSpecName, wfSpecVersion);
         if (spec == null) {
-            out.code = LHResponseCode.NOT_FOUND_ERROR;
-            out.message = "Could not find specified WfSpec.";
-            return out;
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec");
         }
-        out.wfSpecVersion = spec.version;
 
-        if (id == null) id = LHUtil.generateGuid();
-        out.wfRunId = id;
-
-        WfRunModel oldWfRunModel = dao.getWfRun(id);
-        if (oldWfRunModel != null) {
-            out.code = LHResponseCode.ALREADY_EXISTS_ERROR;
-            out.message = "WfRun with id " + id + " already exists!";
-            return out;
+        if (id == null) {
+            id = LHUtil.generateGuid();
+        } else {
+            WfRunModel oldWfRun = dao.getWfRun(id);
+            if (oldWfRun != null) {
+                throw new LHApiException(Status.ALREADY_EXISTS, "WfRun with id " + id + " already exists!");
+            }
         }
 
         // TODO: Add WfRun Start Metrics
@@ -90,13 +84,7 @@ public class RunWfRequestModel extends SubCommand<RunWfRequest> {
         WfRunModel newRun = spec.startNewRun(this);
         newRun.advance(dao.getEventTime());
 
-        if (newRun.status == LHStatus.ERROR) {
-            out.code = LHResponseCode.BAD_REQUEST_ERROR;
-            out.message = newRun.threadRunModels.get(0).errorMessage;
-        } else {
-            out.code = LHResponseCode.OK;
-        }
-        return out;
+        return newRun.toProto().build();
     }
 
     public static RunWfRequestModel fromProto(RunWfRequest p) {

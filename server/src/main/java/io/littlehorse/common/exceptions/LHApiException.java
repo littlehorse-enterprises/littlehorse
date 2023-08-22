@@ -20,4 +20,8 @@ public class LHApiException extends StatusRuntimeException {
     public LHApiException(Status status, Throwable cause) {
         super(status.withCause(cause));
     }
+
+    public LHApiException getCopyWithPrefix(String prefix) {
+        return new LHApiException(getStatus().withCause(getCause()), prefix + getMessage());
+    }
 }

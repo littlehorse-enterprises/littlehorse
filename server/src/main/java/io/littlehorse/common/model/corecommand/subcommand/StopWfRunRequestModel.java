@@ -1,14 +1,13 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.SubCommand;
-import io.littlehorse.common.model.corecommand.subcommandresponse.StopWfRunReply;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
-import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.StopWfRunRequest;
 
 public class StopWfRunRequestModel extends SubCommand<StopWfRunRequest> {
@@ -36,32 +35,14 @@ public class StopWfRunRequestModel extends SubCommand<StopWfRunRequest> {
         return wfRunId;
     }
 
-    public StopWfRunReply process(CoreProcessorDAO dao, LHConfig config) {
-        StopWfRunReply out = new StopWfRunReply();
+    public Empty process(CoreProcessorDAO dao, LHConfig config) {
         WfRunModel wfRunModel = dao.getWfRun(wfRunId);
         if (wfRunModel == null) {
-            out.code = LHResponseCode.BAD_REQUEST_ERROR;
-            out.message = "Provided invalid wfRunId";
-            return out;
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfRun");
         }
 
-        WfSpecModel wfSpecModel = dao.getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
-        if (wfSpecModel == null) {
-            out.code = LHResponseCode.BAD_REQUEST_ERROR;
-            out.message = "Somehow missing wfSpec for wfRun";
-            return out;
-        }
-
-        wfRunModel.wfSpecModel = wfSpecModel;
-        try {
-            wfRunModel.processStopRequest(this);
-            out.code = LHResponseCode.OK;
-        } catch (LHValidationError exn) {
-            out.code = LHResponseCode.BAD_REQUEST_ERROR;
-            out.message = exn.getMessage();
-        }
-
-        return out;
+        wfRunModel.processStopRequest(this);
+        return Empty.getDefaultInstance();
     }
 
     public boolean hasResponse() {

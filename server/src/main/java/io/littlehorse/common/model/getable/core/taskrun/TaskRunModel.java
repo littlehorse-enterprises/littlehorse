@@ -1,8 +1,10 @@
 package io.littlehorse.common.model.getable.core.taskrun;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
@@ -10,13 +12,11 @@ import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
-import io.littlehorse.common.model.corecommand.subcommandresponse.ReportTaskReply;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
@@ -217,10 +217,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         attempt.setStatus(TaskStatus.TASK_RUNNING);
     }
 
-    public ReportTaskReply updateTaskResult(ReportTaskRunModel ce) {
+    public void updateTaskResult(ReportTaskRunModel ce) {
         if (ce.getAttemptNumber() >= attempts.size()) {
-            return new ReportTaskReply(
-                    LHResponseCode.BAD_REQUEST_ERROR, "Couldn't find specified Task Attempt. Bad client!");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Specified Task Attempt does not exist!");
         }
 
         TaskAttemptModel attempt = attempts.get(ce.getAttemptNumber());
@@ -240,7 +239,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
                     id.getStoreableKey(),
                     ce.getAttemptNumber(),
                     attempt.getStatus());
-            return new ReportTaskReply(LHResponseCode.OK, null);
+            return;
         }
 
         attempt.setOutput(ce.getStdout());
@@ -252,16 +251,12 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             // Tell the WfRun that the TaskRun is done.
             taskRunSource.getSubSource().onCompleted(attempt, getDao());
             status = TaskStatus.TASK_SUCCESS;
-            return new ReportTaskReply(LHResponseCode.OK, null);
-        }
-
-        if (shouldRetry()) {
+        } else if (shouldRetry()) {
             status = TaskStatus.TASK_SCHEDULED;
             scheduleAttempt();
         } else {
             status = ce.getStatus();
             taskRunSource.getSubSource().onFailed(attempt, getDao());
         }
-        return new ReportTaskReply(LHResponseCode.OK, null);
     }
 }

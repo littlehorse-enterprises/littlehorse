@@ -1,9 +1,10 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartThreadRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
@@ -48,16 +49,16 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHValidationError {
+    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHApiException {
         WfSpecModel wfSpecModel = node.threadSpecModel.wfSpecModel;
 
         if (threadSpecName.equals(node.threadSpecModel.name)) {
-            throw new LHValidationError(null, "Tried to start same thread");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to start same thread");
         }
 
         ThreadSpecModel childThreadSpecModel = wfSpecModel.threadSpecs.get(threadSpecName);
         if (childThreadSpecModel == null) {
-            throw new LHValidationError(null, "Tried to start nonexistent thread " + threadSpecName);
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to start nonexistent thread " + threadSpecName);
         }
 
         childThreadSpecModel.validateStartVariablesByType(variables);

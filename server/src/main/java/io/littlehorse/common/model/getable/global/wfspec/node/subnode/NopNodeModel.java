@@ -3,7 +3,7 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.EntrypointRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.sdk.common.proto.NopNode;
@@ -21,7 +21,7 @@ public class NopNodeModel extends SubNode<NopNode> {
 
     public void initFrom(Message proto) {}
 
-    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHValidationError {}
+    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHApiException {}
 
     public EntrypointRunModel createSubNodeRun(Date time) {
         return new EntrypointRunModel();

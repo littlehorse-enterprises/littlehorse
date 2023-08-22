@@ -1,9 +1,11 @@
 package io.littlehorse.common.model.getable.global.wfspec;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
@@ -169,9 +171,9 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return Pair.of(tspecName, out);
     }
 
-    public void validate(ReadOnlyMetadataStore dbClient, LHConfig config) throws LHValidationError {
+    public void validate(ReadOnlyMetadataStore dbClient, LHConfig config) throws LHApiException {
         if (threadSpecs.get(entrypointThreadName) == null) {
-            throw new LHValidationError(null, "Unknown entrypoint thread");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Unknown entrypoint thread");
         }
 
         // Validate the variable definitions.
@@ -215,7 +217,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
      * 2. Validating variable types for mutations, assignments, and task input.
      * 3. Incorporation of JsonSchema or Protobuf Schema for further validation.
      */
-    private void validateVariablesHelper() throws LHValidationError {
+    private void validateVariablesHelper() throws LHApiException {
         varToThreadSpec = new HashMap<>();
         for (ThreadSpecModel tspec : threadSpecs.values()) {
             // for (Map.Entry<String, VariableDef> e : tspec.variableDefs.entrySet()) {
@@ -224,8 +226,8 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
 
                 if (varToThreadSpec.containsKey(varName)) {
                     if (!varName.equals(LHConstants.EXT_EVT_HANDLER_VAR)) {
-                        throw new LHValidationError(
-                                null,
+                        throw new LHApiException(
+                                Status.INVALID_ARGUMENT,
                                 "Var name "
                                         + varName
                                         + " defined in threads "
@@ -244,7 +246,8 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         for (ThreadSpecModel tspec : threadSpecs.values()) {
             for (String varName : tspec.getRequiredVariableNames()) {
                 if (!varToThreadSpec.containsKey(varName)) {
-                    throw new LHValidationError(null, "Thread " + tspec.name + " refers to missing var " + varName);
+                    throw new LHApiException(
+                            Status.INVALID_ARGUMENT, "Thread " + tspec.name + " refers to missing var " + varName);
                 }
             }
         }

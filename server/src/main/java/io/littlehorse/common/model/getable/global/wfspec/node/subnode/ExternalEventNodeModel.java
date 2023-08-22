@@ -1,9 +1,10 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventRunModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
@@ -39,7 +40,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHValidationError {
+    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHApiException {
         // Want to be able to release new versions of ExternalEventDef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the EED to ensure that this isn't an issue.
@@ -48,7 +49,8 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         // TODO: validate the timeout
 
         if (eed == null) {
-            throw new LHValidationError(null, "Refers to nonexistent ExternalEventDef " + externalEventDefName);
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Refers to nonexistent ExternalEventDef " + externalEventDefName);
         }
     }
 

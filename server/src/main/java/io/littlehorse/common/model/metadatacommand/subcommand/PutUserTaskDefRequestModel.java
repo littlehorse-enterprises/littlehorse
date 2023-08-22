@@ -1,18 +1,18 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
-import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.corecommand.subcommandresponse.PutUserTaskDefResponseModel;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskFieldModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
+import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskField;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,13 +60,9 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         return true;
     }
 
-    public PutUserTaskDefResponseModel process(MetadataProcessorDAO dao, LHConfig config) {
-        PutUserTaskDefResponseModel out = new PutUserTaskDefResponseModel();
-
+    public UserTaskDef process(MetadataProcessorDAO dao, LHConfig config) {
         if (!LHUtil.isValidLHName(name)) {
-            out.code = LHResponseCode.VALIDATION_ERROR;
-            out.message = "UserTaskDef name must be a valid hostname";
-            return out;
+            throw new LHApiException(Status.INVALID_ARGUMENT, "UserTaskDefName must be a valid hostname");
         }
 
         UserTaskDefModel spec = new UserTaskDefModel();
@@ -82,17 +78,9 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
             spec.version = 0;
         }
 
-        try {
-            spec.validate(dao, config);
-            out.code = LHResponseCode.OK;
-            out.result = spec;
-            dao.put(spec);
-        } catch (LHValidationError exn) {
-            out.code = LHResponseCode.VALIDATION_ERROR;
-            out.message = "Invalid UserTaskDef: " + exn.getMessage();
-        }
+        spec.validate(dao, config);
 
-        return out;
+        return spec.toProto().build();
     }
 
     public String getPartitionKey() {

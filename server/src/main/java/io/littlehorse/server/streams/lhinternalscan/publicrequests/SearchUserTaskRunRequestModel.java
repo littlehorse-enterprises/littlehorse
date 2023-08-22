@@ -132,7 +132,7 @@ public class SearchUserTaskRunRequestModel
 
     private void validateUserGroupAndUserId() throws LHValidationError {
         if (userGroup != null && user != null) {
-            throw new LHValidationError(null, "Cannot specify UserID and User Group in same search!");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Cannot specify UserID and User Group in same search!");
         }
     }
 

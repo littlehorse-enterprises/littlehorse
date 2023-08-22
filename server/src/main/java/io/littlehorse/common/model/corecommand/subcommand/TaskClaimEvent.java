@@ -1,17 +1,18 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.SubCommand;
-import io.littlehorse.common.model.corecommand.subcommandresponse.TaskClaimReply;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
+import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import java.util.Date;
 import lombok.Getter;
@@ -68,35 +69,30 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
         return true;
     }
 
-    public TaskClaimReply process(CoreProcessorDAO dao, LHConfig config) {
-        TaskClaimReply out = new TaskClaimReply();
-
+    public PollTaskResponse process(CoreProcessorDAO dao, LHConfig config) {
         TaskRunModel taskRun = dao.get(taskRunId);
         if (taskRun == null) {
             log.warn("Got claimTask for non-existent taskRun {}", taskRunId);
-            out.setCode(LHResponseCode.BAD_REQUEST_ERROR);
-            out.setMessage("Couldn't find specified TaskRun");
-            return out;
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Got claimTask for nonexistent taskRun {}" + taskRunId);
         }
 
         // Needs to be done before we process the event, since processing the event
         // will delete the task schedule request.
         ScheduledTaskModel scheduledTask = dao.markTaskAsScheduled(taskRunId);
 
+        // It's totally fine for the scheduledTask to be null. That happens when someone already
+        // claimed that task. This happens when a server is recovering from a crash. The fact that it
+        // is null prevents it from being scheduled twice.
+        //
+        // We shouldn't throw an error on this, we just return an empty optional.
         if (scheduledTask == null) {
-            // That means the task has been taken already.
-            out.setMessage("Unable to claim this task, someone beat you to it");
-            out.setCode(LHResponseCode.NOT_FOUND_ERROR);
-            return out;
+            return PollTaskResponse.newBuilder().build();
+        } else {
+            taskRun.processStart(this);
+            return PollTaskResponse.newBuilder()
+                    .setResult(scheduledTask.toProto())
+                    .build();
         }
-
-        taskRun.processStart(this);
-
-        out.result = scheduledTask;
-        out.code = LHResponseCode.OK;
-
-        // TODO: Task Started Metrics
-        return out;
     }
 
     public static TaskClaimEvent fromProto(TaskClaimEventPb proto) {

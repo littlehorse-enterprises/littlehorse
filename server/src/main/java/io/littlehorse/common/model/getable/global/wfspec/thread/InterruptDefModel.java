@@ -1,11 +1,12 @@
 package io.littlehorse.common.model.getable.global.wfspec.thread;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.sdk.common.proto.InterruptDef;
@@ -44,16 +45,17 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataStore client, LHConfig config) throws LHValidationError {
+    public void validate(ReadOnlyMetadataStore client, LHConfig config) throws LHApiException {
         eed = client.getExternalEventDef(externalEventDefName);
 
         if (eed == null) {
-            throw new LHValidationError(null, "Refers to missing ExternalEventDef " + externalEventDefName);
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Refers to missing ExternalEventDef " + externalEventDefName);
         }
 
         handler = ownerThreadSpecModel.wfSpecModel.threadSpecs.get(handlerSpecName);
         if (handler == null) {
-            throw new LHValidationError(null, "Refers to missing ThreadSpec: " + handlerSpecName);
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Refers to missing ThreadSpec: " + handlerSpecName);
         }
 
         // As of now, Interrupt Handler Threads can only have one input variable.
@@ -61,12 +63,13 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
         // which is named as INPUT (a reserved word).
 
         if (handler.variableDefs.size() > 1) {
-            throw new LHValidationError(null, "Handler thread " + handler.name + " should only have 'INPUT' var.");
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Handler thread " + handler.name + " should only have 'INPUT' var.");
         } else if (handler.variableDefs.size() == 1) {
             VariableDefModel theVarDef = handler.variableDefs.get(0);
             if (!theVarDef.name.equals(LHConstants.EXT_EVT_HANDLER_VAR)) {
-                throw new LHValidationError(
-                        null,
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
                         "Handler thread "
                                 + handler.name
                                 + " can only have '"

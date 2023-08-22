@@ -1,9 +1,9 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
-import io.littlehorse.common.model.corecommand.AbstractResponse;
 import io.littlehorse.common.model.corecommand.SubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.proto.ExternalEventNodeTimeoutPb;
@@ -44,7 +44,7 @@ public class ExternalEventTimeout extends SubCommand<ExternalEventNodeTimeoutPb>
         return wfRunId;
     }
 
-    public AbstractResponse<?> process(CoreProcessorDAO dao, LHConfig config) {
+    public Empty process(CoreProcessorDAO dao, LHConfig config) {
         WfRunModel wfRunModel = dao.getWfRun(wfRunId);
 
         if (wfRunModel == null) {
@@ -55,7 +55,7 @@ public class ExternalEventTimeout extends SubCommand<ExternalEventNodeTimeoutPb>
         wfRunModel.wfSpecModel = dao.getWfSpec(wfRunModel.wfSpecName, wfRunModel.wfSpecVersion);
         wfRunModel.processExtEvtTimeout(this);
 
-        return null;
+        return Empty.getDefaultInstance();
     }
 
     public boolean hasResponse() {

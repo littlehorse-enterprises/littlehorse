@@ -1,16 +1,17 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.SubCommand;
-import io.littlehorse.common.model.corecommand.subcommandresponse.CancelUserTaskRunReply;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
 
 public class CancelUserTaskRunRequestModel extends SubCommand<CancelUserTaskRunRequest> {
 
@@ -33,13 +34,13 @@ public class CancelUserTaskRunRequestModel extends SubCommand<CancelUserTaskRunR
     }
 
     @Override
-    public CancelUserTaskRunReply process(CoreProcessorDAO dao, LHConfig config) {
+    public Empty process(CoreProcessorDAO dao, LHConfig config) {
         UserTaskRunModel userTaskRun = dao.get(userTaskRunId);
         if (userTaskRun == null) {
-            return new CancelUserTaskRunReply("Provided invalid wfRunId", LHResponseCode.BAD_REQUEST_ERROR);
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskRun");
         }
         userTaskRun.cancel();
-        return new CancelUserTaskRunReply(userTaskRun.getId().getPartitionKey().get(), LHResponseCode.OK);
+        return Empty.getDefaultInstance();
     }
 
     @Override

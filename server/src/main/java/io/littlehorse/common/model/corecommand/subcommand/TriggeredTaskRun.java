@@ -1,12 +1,12 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.ScheduledTaskModel;
-import io.littlehorse.common.model.corecommand.AbstractResponse;
 import io.littlehorse.common.model.corecommand.SubCommand;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskAttemptModel;
@@ -68,7 +68,7 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
     }
 
     @Override
-    public AbstractResponse<?> process(CoreProcessorDAO dao, LHConfig config) {
+    public Empty process(CoreProcessorDAO dao, LHConfig config) {
         taskToSchedule.setDao(dao);
         String wfRunId = source.getWfRunId();
 
@@ -125,7 +125,7 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
         } catch (LHVarSubError exn) {
             log.error("Failed scheduling a Triggered Task Run, but the WfRun will continue", exn);
         }
-        return null;
+        return Empty.getDefaultInstance();
     }
 
     @Override

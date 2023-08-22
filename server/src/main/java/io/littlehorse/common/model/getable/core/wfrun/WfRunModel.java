@@ -1,7 +1,9 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.AbstractGetable;
@@ -438,9 +440,9 @@ public class WfRunModel extends CoreGetable<WfRun> {
         advance(event.getCreatedAt());
     }
 
-    public void processStopRequest(StopWfRunRequestModel req) throws LHValidationError {
+    public void processStopRequest(StopWfRunRequestModel req) {
         if (req.threadRunNumber >= threadRunModels.size() || req.threadRunNumber < 0) {
-            throw new LHValidationError(null, "Tried to stop a non-existent thread id.");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to stop a non-existent thread id.");
         }
 
         ThreadRunModel thread = threadRunModels.get(req.threadRunNumber);
@@ -461,9 +463,9 @@ public class WfRunModel extends CoreGetable<WfRun> {
         this.advance(new Date()); // Seems like a good idea, why not?
     }
 
-    public void processResumeRequest(ResumeWfRunRequestModel req) throws LHValidationError {
+    public void processResumeRequest(ResumeWfRunRequestModel req) {
         if (req.threadRunNumber >= threadRunModels.size() || req.threadRunNumber < 0) {
-            throw new LHValidationError(null, "Tried to resume a non-existent thread id.");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to resume a non-existent thread id.");
         }
 
         ThreadRunModel thread = threadRunModels.get(req.threadRunNumber);
@@ -502,7 +504,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
             Date now = new Date();
             timer.maturationTime = DateUtils.addHours(now, this.wfSpecModel.retentionHours);
             DeleteWfRunRequestModel deleteWfRun = new DeleteWfRunRequestModel();
-            deleteWfRun.wfRunId = id;
+            deleteWfRun.wfRunId = new WfRunIdModel(id);
 
             CommandModel deleteWfRunCmd = new CommandModel();
             deleteWfRunCmd.setSubCommand(deleteWfRun);

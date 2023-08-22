@@ -1,19 +1,19 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
-import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.corecommand.subcommandresponse.PutWfSpecResponseModel;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
+import io.littlehorse.sdk.common.proto.WfSpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,13 +64,9 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         return true;
     }
 
-    public PutWfSpecResponseModel process(MetadataProcessorDAO dao, LHConfig config) {
-        PutWfSpecResponseModel out = new PutWfSpecResponseModel();
-
+    public WfSpec process(MetadataProcessorDAO dao, LHConfig config) {
         if (!LHUtil.isValidLHName(name)) {
-            out.code = LHResponseCode.VALIDATION_ERROR;
-            out.message = "WfSpec name must be a valid hostname";
-            return out;
+            throw new LHApiException(Status.INVALID_ARGUMENT, "WfSpecName must be a valid hostname");
         }
 
         WfSpecModel spec = new WfSpecModel();
@@ -86,23 +82,15 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
             tspec.name = entry.getKey();
         }
 
-        try {
-            WfSpecModel oldVersion = dao.getWfSpec(name, null);
-            if (oldVersion != null) {
-                spec.version = oldVersion.version + 1;
-            } else {
-                spec.version = 0;
-            }
-            spec.validate(dao, config);
-            out.code = LHResponseCode.OK;
-            out.result = spec;
-            dao.put(spec);
-        } catch (LHValidationError exn) {
-            out.code = LHResponseCode.VALIDATION_ERROR;
-            out.message = "Invalid wfSpec: " + exn.getMessage();
+        WfSpecModel oldVersion = dao.getWfSpec(name, null);
+        if (oldVersion != null) {
+            spec.version = oldVersion.version + 1;
+        } else {
+            spec.version = 0;
         }
-
-        return out;
+        spec.validate(dao, config);
+        dao.put(spec);
+        return spec.toProto().build();
     }
 
     public static PutWfSpecRequestModel fromProto(PutWfSpecRequest p) {

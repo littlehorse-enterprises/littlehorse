@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.global.wfspec.node;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.EdgeCondition;
@@ -43,7 +43,7 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
 
     public EdgeModel edge;
 
-    public void validate() throws LHValidationError {
+    public void validate() throws LHApiException {
         // TODO: do some type checking here...
     }
 

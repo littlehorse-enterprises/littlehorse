@@ -1,10 +1,11 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.ThreadToWaitForModel;
@@ -63,10 +64,11 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHValidationError {
+    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHApiException {
         for (ThreadToWaitForModel ttwf : threads) {
             if (!ttwf.getThreadRunNumber().canBeType(VariableType.INT, node.threadSpecModel)) {
-                throw new LHValidationError(null, "`threadRunNumber` for WAIT_FOR_THREAD node must resolve to INT!");
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT, "`threadRunNumber` for WAIT_FOR_THREAD node must resolve to INT!");
             }
         }
     }

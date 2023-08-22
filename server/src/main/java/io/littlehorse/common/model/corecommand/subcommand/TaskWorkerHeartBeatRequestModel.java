@@ -3,19 +3,18 @@ package io.littlehorse.common.model.corecommand.subcommand;
 import static io.littlehorse.common.LHConstants.MAX_TASK_WORKER_INACTIVITY;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
-import io.littlehorse.common.exceptions.LHBadRequestError;
-import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.SubCommand;
 import io.littlehorse.common.model.corecommand.subcommand.internals.RoundRobinAssignor;
 import io.littlehorse.common.model.corecommand.subcommand.internals.TaskWorkerAssignor;
-import io.littlehorse.common.model.corecommand.subcommandresponse.RegisterTaskWorkerReply;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;
 import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
 import io.littlehorse.server.streams.util.InternalHosts;
 import java.time.Duration;
@@ -44,7 +43,7 @@ public class TaskWorkerHeartBeatRequestModel extends SubCommand<TaskWorkerHeartB
     }
 
     @Override
-    public RegisterTaskWorkerReply process(CoreProcessorDAO dao, LHConfig config) {
+    public RegisterTaskWorkerResponse process(CoreProcessorDAO dao, LHConfig config) {
         log.debug("Processing a heartbeat");
 
         // Get the group, a group contains all the task worker for that specific task
@@ -101,41 +100,20 @@ public class TaskWorkerHeartBeatRequestModel extends SubCommand<TaskWorkerHeartB
         return internalHosts.hasChanges();
     }
 
-    private RegisterTaskWorkerReply prepareReply(CoreProcessorDAO dao, Set<HostModel> hosts) {
-        RegisterTaskWorkerReply reply = new RegisterTaskWorkerReply();
+    private RegisterTaskWorkerResponse prepareReply(CoreProcessorDAO dao, Set<HostModel> hosts) {
+        RegisterTaskWorkerResponse.Builder reply = RegisterTaskWorkerResponse.newBuilder();
         for (HostModel hostInfo : hosts) {
-            try {
-                // Validate the host is reachable
-                reply.yourHosts.add(dao.getAdvertisedHost(hostInfo, listenerName));
-            } catch (LHBadRequestError e) {
-                // Reply error if the listener name is not correct
-                log.error(e.getMessage(), e);
-                reply.code = LHResponseCode.BAD_REQUEST_ERROR;
-                reply.message = e.getMessage();
-                reply.yourHosts.clear();
-                return reply;
-            } catch (LHConnectionError e) {
-                // Continue if it receives an internal error, it is probably that this server is
-                // not
-                // ready yet
-                log.warn(e.getMessage());
-                continue;
-            }
+            reply.addYourHosts(dao.getAdvertisedHost(hostInfo, listenerName));
         }
 
         // If there are no hosts for any reason, then reply an error.
         // This SHOULD be impossible unless there's a bug in LittleHorse.
-        if (reply.yourHosts.isEmpty()) {
+        if (reply.getYourHostsCount() == 0) {
             log.error("Server hosts unavailable, this SHOULD be impossible");
-            reply.code = LHResponseCode.CONNECTION_ERROR;
-            reply.message = "Server hosts unavailable";
-            return reply;
+            throw new LHApiException(Status.INTERNAL, "Should be impossible to have no server hosts");
         }
 
-        // Everything went well so reply with ok
-        reply.code = LHResponseCode.OK;
-
-        return reply;
+        return reply.build();
     }
 
     private boolean removeInactiveWorkers(TaskWorkerGroupModel taskWorkerGroup) {

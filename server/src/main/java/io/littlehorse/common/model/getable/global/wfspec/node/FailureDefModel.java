@@ -1,9 +1,10 @@
 package io.littlehorse.common.model.getable.global.wfspec.node;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
@@ -58,9 +59,9 @@ public class FailureDefModel extends LHSerializable<FailureDef> {
         return out;
     }
 
-    public void validate() throws LHValidationError {
+    public void validate() throws LHApiException {
         if (LHConstants.RESERVED_EXCEPTION_NAMES.contains(failureName)) {
-            throw new LHValidationError(null, "Failure name " + failureName + " is reserved!");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Failure name " + failureName + " is reserved!");
         }
     }
 

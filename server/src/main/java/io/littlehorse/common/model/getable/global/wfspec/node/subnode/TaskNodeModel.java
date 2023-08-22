@@ -1,11 +1,12 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -91,22 +92,22 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHValidationError {
+    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHApiException {
         // Want to be able to release new versions of taskdef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the taskdef to ensure that this isn't an issue.
         TaskDefModel taskDef = stores.getTaskDef(taskDefName);
         if (taskDef == null) {
-            throw new LHValidationError(null, "Refers to nonexistent TaskDef " + taskDefName);
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Refers to nonexistent TaskDef " + taskDefName);
         }
         if (retries < 0) {
-            throw new LHValidationError(null, "has negative " + "number of retries!");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "has negative " + "number of retries!");
         }
 
         // Now need to validate that all of the variables are provided.
         if (variables.size() != taskDef.inputVars.size()) {
-            throw new LHValidationError(
-                    null,
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
                     "For TaskDef "
                             + taskDef.name
                             + " we need "
@@ -124,8 +125,9 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             VariableDefModel taskDefVar = taskDef.getInputVars().get(i);
             VariableAssignmentModel assn = variables.get(i);
             if (!assn.canBeType(taskDefVar.getType(), this.node.getThreadSpecModel())) {
-                throw new LHValidationError(
-                        null, "Input variable " + i + " needs to be " + taskDefVar.getType() + " but cannot be!");
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Input variable " + i + " needs to be " + taskDefVar.getType() + " but cannot be!");
             }
         }
 

@@ -11,7 +11,11 @@ import io.littlehorse.common.model.corecommand.SubCommand;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventRequest;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class DeleteExternalEventRequestModel extends SubCommand<DeleteExternalEventRequest> {
 
     private ExternalEventIdModel id;

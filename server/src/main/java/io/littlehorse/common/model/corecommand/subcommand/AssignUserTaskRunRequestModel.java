@@ -90,14 +90,13 @@ public class AssignUserTaskRunRequestModel extends SubCommand<AssignUserTaskRunR
         }
 
         if (!overrideClaim && utr.getUser() != null) {
-            out.code = LHResponseCode.ALREADY_EXISTS_ERROR;
-            out.message = "User Task Run already assigned to " + utr.getUser();
-            return out;
+            throw new LHApiException(Status.FAILED_PRECONDITION, "User Task Run already assigned to " + utr.getUser());
         }
 
         if (utr.getStatus() != UserTaskRunStatus.ASSIGNED && utr.getStatus() != UserTaskRunStatus.UNASSIGNED) {
-            out.code = LHResponseCode.BAD_REQUEST_ERROR;
-            out.message = "Couldn't reassign User Task Run since it  is in terminal status " + utr.getStatus();
+            throw new LHApiException(
+                    Status.FAILED_PRECONDITION,
+                    "Couldn't reassign User Task Run since it  is in terminal status " + utr.getStatus());
         }
 
         // In the future, we could add some verification to make sure that the
@@ -105,14 +104,12 @@ public class AssignUserTaskRunRequestModel extends SubCommand<AssignUserTaskRunR
         utr.reassignTo(this);
         WfRunModel wfRunModel = dao.getWfRun(getWfRunId());
         if (wfRunModel == null) {
-            log.error("Impossible: Got the UserTaskRun but WfRun missing {}", getWfRunId());
-            return out;
+            throw new LHApiException(Status.DATA_LOSS, "Impossible: got UserTaskRun but missing WfRun");
         }
 
         wfRunModel.advance(new Date());
 
-        out.code = LHResponseCode.OK;
-        return out;
+        return Empty.getDefaultInstance();
     }
 
     public boolean hasResponse() {
