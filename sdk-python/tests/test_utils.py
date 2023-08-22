@@ -123,8 +123,12 @@ class UtilsTest(unittest.TestCase):
         )
 
         # JSON_OBJ (class)
+        class Shape:
+            def __init__(self, points):
+                self.points = points
+
         class Point:
-            def __init__(self, x, y) -> None:
+            def __init__(self, x, y):
                 self.x = x
                 self.y = y
 
@@ -134,6 +138,21 @@ class UtilsTest(unittest.TestCase):
             result,
             VariableValuePb(
                 type=VariableTypePb.JSON_OBJ, json_obj=json.dumps(vars(value))
+            ),
+        )
+
+        value = Shape(
+            [
+                Point(self.faker.random_int(), self.faker.random_int()),
+                Point(self.faker.random_int(), self.faker.random_int()),
+            ]
+        )
+        result = parse_value(value)
+        self.assertEqual(
+            result,
+            VariableValuePb(
+                type=VariableTypePb.JSON_OBJ,
+                json_obj=json.dumps({"points": [vars(p) for p in value.points]}),
             ),
         )
 
