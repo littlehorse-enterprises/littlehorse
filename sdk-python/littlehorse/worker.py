@@ -12,6 +12,7 @@ from littlehorse.exceptions import (
 from littlehorse.model.service_pb2 import (
     GetTaskDefReplyPb,
     LHResponseCodePb,
+    NodeRunIdPb,
     PollTaskPb,
     RegisterTaskWorkerPb,
     RegisterTaskWorkerReplyPb,
@@ -33,26 +34,115 @@ REPORT_TASK_DEFAULT_RETRIES = 5
 class LHWorkerContext:
     def __init__(self, scheduled_task: ScheduledTaskPb) -> None:
         self._scheduled_task = scheduled_task
+        self._log_entries: list[str] = []
 
     def scheduled_time(self) -> datetime:
+        """Returns the time at which the task was scheduled
+        by the processor. May be useful in certain customer
+        edge cases, eg. to determine whether it's too
+        late to actually perform an action, when
+        (datetime.now() - ctx.scheduled_time()) is
+        above some threshold, etc.
+
+        Returns:
+            datetime: The time at which the current NodeRun was scheduled.
+        """
         return datetime.fromtimestamp(float(self._scheduled_task.created_at.seconds))
 
-    def task_run_id(self) -> str:
+    def task_guid(self) -> str:
+        """Task global unique identifier.
+
+        Returns:
+            str: An identifier.
+        """
         return self._scheduled_task.task_run_id.task_guid
 
     def wf_run_id(self) -> str:
+        """Get the associated workflow run id.
+
+        Returns:
+            str: Workflow run id.
+        """
         return self._scheduled_task.task_run_id.wf_run_id
 
-    def __str__(self) -> str:
+    def to_dict(self) -> dict[str, Any]:
+        """This Worker context to a dictionary.
+
+        Returns:
+            dict[str, Any]: A dict.
+        """
+        return {
+            "wf_run_id": self.wf_run_id(),
+            "task_guid": self.task_guid(),
+            "task_def_name": self.task_def_name(),
+            "scheduled_time": self.scheduled_time(),
+            "attempt_number": self.attempt_number(),
+            "idempotency_key": self.idempotency_key(),
+        }
+
+    def attempt_number(self) -> int:
+        """Returns the attemptNumber of the NodeRun
+        that's being executed. If this is the
+        first attempt, returns zero. If this is the
+        first retry, returns 1, and so on.
+
+        Returns:
+            int: The attempt number of the NodeRun that's being executed.
+        """
+        return self._scheduled_task.attempt_number
+
+    def idempotency_key(self) -> str:
+        """Returns an idempotency key that can be used to make calls t
+        o upstream api's idempotent across TaskRun Retries.
+
+        Returns:
+            str: An idempotency key.
+        """
+        return f"{self.wf_run_id()}/{self.task_guid()}"
+
+    def task_def_name(self) -> str:
+        """Name of this task.
+
+        Returns:
+            str: Name.
+        """
+        return self._scheduled_task.task_def_id.name
+
+    def node_run_id(self) -> NodeRunIdPb:
+        """Returns the NodeRun ID for the Task that was just scheduled.
+
+        Returns:
+            NodeRunIdPb: A NodeRunIdPb object.
+        """
+        source = self._scheduled_task.source
         return (
-            f"WfRunId: {self.wf_run_id()}, TaskRunId: {self.task_run_id()}, "
-            f"ScheduledTime: {self.scheduled_time()}"
+            source.task_node.node_run_id
+            if source.WhichOneof("task_run_source") == "task_node"
+            else source.user_task_trigger.node_run_id
         )
+
+    def log(self, entry: str) -> None:
+        """Provides a way to push data into the log output. Any object may be passed in;
+        its String representation will be appended to the logOutput of this NodeRun.
+
+           Args:
+               entry (str): Message to log to the NodeRun's logOutput.
+        """
+        self._log_entries.append(f"[{datetime.now()}] {entry}")
+
+    def log_output(self) -> str:
+        """Returns the current log output.
+
+        Returns:
+            str: Log output.
+        """
+        return "\n".join(self._log_entries)
+
+    def __str__(self) -> str:
+        return str(self.to_dict())
 
 
 class LHTask:
-    _log = logging.getLogger("LHTask")
-
     def __init__(self, callable: Callable[..., Any], task_def: TaskDefPb) -> None:
         self.task_def = task_def
 
@@ -214,18 +304,18 @@ class LHConnection:
                     "Task '%s' successfully reported", self._task.task_name()
                 )
             elif reply.code == LHResponseCodePb.REPORTED_BUT_NOT_PROCESSED:
-                self._log.warn(
+                self._log.warning(
                     "Reported task but processor was down. No action required"
                 )
             else:
-                self._log.warn(
+                self._log.warning(
                     "Error '%s' reporting task: '%s'. Retrying.",
                     reply.message,
                     self._task.task_name(),
                 )
                 await self._report_task(task_result, retries_left - 1)
         except Exception as e:
-            self._log.warn(
+            self._log.warning(
                 "Error '%s' reporting task: '%s'. Retrying.",
                 str(e),
                 self._task.task_name(),

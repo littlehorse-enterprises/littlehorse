@@ -290,7 +290,7 @@ class LHConfig:
             )
 
         if not self.is_secure():
-            self._log.warn("Establishing insecure channel at %s", server)
+            self._log.warning("Establishing insecure channel at %s", server)
 
         return insecure_channel(server)
 

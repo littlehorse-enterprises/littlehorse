@@ -4,8 +4,8 @@ from pathlib import Path
 import random
 from typing import Any
 
+import littlehorse
 from littlehorse.config import LHConfig
-from littlehorse.utils import start_workers
 from littlehorse.worker import LHTaskWorker, LHWorkerContext
 
 logging.basicConfig(level=logging.DEBUG)
@@ -34,7 +34,7 @@ async def main() -> None:
     config = get_config()
     greet_worker = LHTaskWorker(greeting, "greet", config)
     car_worker = LHTaskWorker(describe_car, "describe-car", config)
-    await start_workers(greet_worker, car_worker)
+    await littlehorse.start(greet_worker, car_worker)
 
 
 if __name__ == "__main__":

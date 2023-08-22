@@ -1,12 +1,65 @@
 from typing import Any
 import unittest
+import uuid
 from littlehorse.exceptions import TaskSchemaMismatchException
-from littlehorse.model.service_pb2 import TaskDefPb, VariableDefPb, VariableTypePb
+from littlehorse.model.service_pb2 import (
+    NodeRunIdPb,
+    ScheduledTaskPb,
+    TaskDefPb,
+    TaskNodeReferencePb,
+    TaskRunIdPb,
+    TaskRunSourcePb,
+    UserTaskTriggerReferencePb,
+    VariableDefPb,
+    VariableTypePb,
+)
 
 from littlehorse.worker import LHTask, LHWorkerContext
 
 
-class LHTaskExecutorTest(unittest.TestCase):
+class LHWorkerContextTest(unittest.TestCase):
+    def test_idempotency_key(self):
+        wf_id = str(uuid.uuid4())
+        task_id = str(uuid.uuid4())
+        scheduled_task = ScheduledTaskPb(
+            task_run_id=TaskRunIdPb(task_guid=task_id, wf_run_id=wf_id)
+        )
+        ctx = LHWorkerContext(scheduled_task)
+        self.assertEqual(ctx.idempotency_key(), f"{wf_id}/{task_id}")
+
+    def test_log_output(self):
+        ctx = LHWorkerContext(ScheduledTaskPb())
+        ctx.log("my log 1")
+        ctx.log("my log 2")
+        output = ctx.log_output()
+        self.assertTrue("my log 1" in output)
+        self.assertTrue("my log 2" in output)
+
+    def test_get_right_node(self):
+        wf_id = str(uuid.uuid4())
+        node_run_task = NodeRunIdPb(wf_run_id=wf_id)
+        scheduled_task_task = ScheduledTaskPb(
+            source=TaskRunSourcePb(
+                task_node=TaskNodeReferencePb(node_run_id=node_run_task)
+            )
+        )
+        ctx = LHWorkerContext(scheduled_task_task)
+
+        self.assertEqual(ctx.node_run_id(), node_run_task)
+
+        wf_id = str(uuid.uuid4())
+        node_run_user = NodeRunIdPb(wf_run_id=wf_id)
+        scheduled_task_user = ScheduledTaskPb(
+            source=TaskRunSourcePb(
+                user_task_trigger=UserTaskTriggerReferencePb(node_run_id=node_run_user)
+            )
+        )
+        ctx = LHWorkerContext(scheduled_task_user)
+
+        self.assertEqual(ctx.node_run_id(), node_run_user)
+
+
+class LHTaskTest(unittest.TestCase):
     def test_raise_exception_if_it_is_not_a_callable(self):
         not_a_callable = 3
         with self.assertRaises(TypeError) as exception_context:
