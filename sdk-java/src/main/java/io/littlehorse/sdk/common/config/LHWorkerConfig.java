@@ -1,9 +1,9 @@
 package io.littlehorse.sdk.common.config;
 
-import io.littlehorse.sdk.common.proto.GetTaskDefResponse;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
+
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
@@ -68,18 +68,8 @@ public class LHWorkerConfig extends LHClientConfig {
      * @param taskDefName is the TaskDef's name.
      * @return the specified TaskDefPb.
      */
-    public TaskDef getTaskDef(String taskDefName) {
-        try {
-            GetTaskDefResponse reply = getBlockingStub()
-                    .getTaskDef(TaskDefId.newBuilder().setName(taskDefName).build());
-            if (reply.getCode() != LHResponseCode.OK) {
-                throw new RuntimeException("Failed loading taskDef: " + reply.getMessage());
-            }
-
-            return reply.getResult();
-        } catch (Exception exn) {
-            throw new RuntimeException(exn);
-        }
+    public TaskDef getTaskDef(String taskDefName) throws IOException {
+        return getBlockingStub().getTaskDef(TaskDefId.newBuilder().setName(taskDefName).build());
     }
 
     /**

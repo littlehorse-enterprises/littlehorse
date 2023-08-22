@@ -3,12 +3,16 @@ package io.littlehorse.sdk.wfsdk;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.util.JsonFormat;
-import io.littlehorse.sdk.client.LHClient;
+
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.WfSpecId;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import java.io.File;
 import java.io.IOException;
@@ -157,8 +161,17 @@ public abstract class Workflow {
      * @return true if the workflow spec is registered or false otherwise
      * @throws LHApiError if the call fails.
      */
-    public boolean doesWfSpecExist(LHClient client) throws LHApiError {
-        return client.getWfSpec(name) != null;
+    public boolean doesWfSpecExist(LHPublicApiBlockingStub client) {
+        try {
+            client.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder().setName(name).build());
+            return true;
+        } catch(StatusRuntimeException exn) {
+            if (exn.getStatus() == Status.NOT_FOUND) {
+                return false;
+            }
+
+            throw exn;
+        }
     }
 
     /**
@@ -169,8 +182,19 @@ public abstract class Workflow {
      * @return true if the workflow spec is registered for this version or false otherwise
      * @throws LHApiError
      */
-    public boolean doesWfSpecExist(LHClient client, Integer version) throws LHApiError {
-        return client.getWfSpec(name, version) != null;
+    public boolean doesWfSpecExist(LHPublicApiBlockingStub client, Integer version) {
+        if (version == null) return doesWfSpecExist(client);
+
+        try {
+            client.getWfSpec(WfSpecId.newBuilder().setName(name).setVersion(version).build());
+            return true;
+        } catch(StatusRuntimeException exn) {
+            if (exn.getStatus() == Status.NOT_FOUND) {
+                return false;
+            }
+
+            throw exn;
+        }
     }
 
     /**
@@ -180,7 +204,7 @@ public abstract class Workflow {
      * @param client is an LHClient.
      * @throws LHApiError if the call fails.
      */
-    public void registerWfSpec(LHClient client) throws LHApiError {
+    public void registerWfSpec(LHPublicApiBlockingStub client) {
         log.info("Creating wfSpec:\n {}", LHLibUtil.protoToJson(client.putWfSpec(compileWorkflow())));
     }
 

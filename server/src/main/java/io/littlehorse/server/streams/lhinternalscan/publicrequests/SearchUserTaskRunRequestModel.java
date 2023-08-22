@@ -1,8 +1,11 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+
+import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserModel;
@@ -130,7 +133,7 @@ public class SearchUserTaskRunRequestModel
         return out;
     }
 
-    private void validateUserGroupAndUserId() throws LHValidationError {
+    private void validateUserGroupAndUserId() throws LHApiException {
         if (userGroup != null && user != null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Cannot specify UserID and User Group in same search!");
         }

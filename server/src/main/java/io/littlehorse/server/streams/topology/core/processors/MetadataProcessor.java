@@ -1,9 +1,9 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
-import com.google.protobuf.ByteString;
+import com.google.protobuf.Message;
+
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
-import io.littlehorse.common.model.corecommand.AbstractResponse;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
@@ -61,12 +61,12 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
 
         try {
             dao.initCommand(command);
-            AbstractResponse<?> response = command.process(dao, config);
+            Message response = command.process(dao, config);
             if (command.hasResponse() && command.getCommandId() != null) {
                 WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
                         .setCommandId(command.getCommandId())
                         .setResultTime(LHUtil.fromDate(new Date()))
-                        .setResult(ByteString.copyFrom(response.toBytes()))
+                        .setResult(response.toByteString())
                         .build();
 
                 server.onResponseReceived(command.getCommandId(), cmdReply);

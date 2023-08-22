@@ -7,7 +7,6 @@ import io.littlehorse.sdk.common.exception.InputVarSubstitutionError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
@@ -111,9 +110,6 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
 
     @Override
     public void onNext(RegisterTaskWorkerResponse next) {
-        if (next.getCode() == LHResponseCode.BAD_REQUEST_ERROR) {
-            throw new RuntimeException("Invalid configuration: " + next.getMessage());
-        }
         // Reconcile what's running
         for (LHHostInfo host : next.getYourHostsList()) {
             if (!isAlreadyRunning(host)) {
