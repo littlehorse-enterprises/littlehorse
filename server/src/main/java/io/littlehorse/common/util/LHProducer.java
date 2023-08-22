@@ -13,9 +13,8 @@ import org.apache.kafka.common.utils.Bytes;
 public class LHProducer implements Closeable {
 
     private KafkaProducer<String, Bytes> prod;
-    private LHConfig config;
 
-    public LHProducer() {
+    public LHProducer(LHConfig config) {
         prod = new KafkaProducer<>(config.getKafkaProducerConfig(config.getLHInstanceId()));
     }
 

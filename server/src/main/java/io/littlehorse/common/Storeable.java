@@ -42,7 +42,7 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.LH_TIMER;
             case "Tag":
                 return StoreableType.TAG;
-            case "ScheduledTask":
+            case "ScheduledTaskModel":
                 return StoreableType.SCHEDULED_TASK;
             case "WfMetricUpdate":
                 return StoreableType.WF_METRIC_UPDATE;

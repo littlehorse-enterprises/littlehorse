@@ -514,7 +514,7 @@ public class LHConfig extends ConfigBase {
 
     public LHProducer getProducer() {
         if (producer == null) {
-            producer = new LHProducer();
+            producer = new LHProducer(this);
         }
         return producer;
     }
