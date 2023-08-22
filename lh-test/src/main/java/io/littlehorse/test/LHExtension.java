@@ -1,22 +1,16 @@
 package io.littlehorse.test;
 
-import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.internal.ExternalTestBootstrapper;
 import io.littlehorse.test.internal.TestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 
 public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor {
 
-    private static final ExtensionContext.Namespace LH_TEST_NAMESPACE = ExtensionContext.Namespace.create(
-        LHExtension.class
-    );
+    private static final ExtensionContext.Namespace LH_TEST_NAMESPACE =
+            ExtensionContext.Namespace.create(LHExtension.class);
     private static final String LH_TEST_CONTEXT = "LH-test-context";
 
     private TestBootstrapper testBootstrapper = new ExternalTestBootstrapper();
@@ -24,11 +18,7 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         getStore(context)
-            .getOrComputeIfAbsent(
-                LH_TEST_CONTEXT,
-                s -> new TestContext(testBootstrapper),
-                TestContext.class
-            );
+                .getOrComputeIfAbsent(LH_TEST_CONTEXT, s -> new TestContext(testBootstrapper), TestContext.class);
     }
 
     private ExtensionContext.Store getStore(ExtensionContext context) {
@@ -36,14 +26,11 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
     }
 
     @Override
-    public void postProcessTestInstance(
-        Object testInstance,
-        ExtensionContext context
-    ) {
-        TestContext testContext = getStore(context)
-            .get(LH_TEST_CONTEXT, TestContext.class);
+    public void postProcessTestInstance(Object testInstance, ExtensionContext context) {
+        TestContext testContext = getStore(context).get(LH_TEST_CONTEXT, TestContext.class);
         testContext.discoverTaskWorkers(testInstance);
         testContext.registerWorkers();
+        testContext.runTaskWorkers();
         testContext.instrument(testInstance);
     }
 }

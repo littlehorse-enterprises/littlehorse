@@ -8,6 +8,7 @@
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
+    id 'com.diffplug.spotless' version '6.20.0'
 }
 
 repositories {
@@ -19,6 +20,8 @@ dependencies {
     // Use JUnit Jupiter for testing.
     implementation(project(':sdk-java'))
     implementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    implementation group: 'org.awaitility', name: 'awaitility', version: '4.2.0'
+
 
 }
 
@@ -32,4 +35,11 @@ java {
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+spotless {
+    java {
+        target('**/*.java')
+        palantirJavaFormat()
+    }
 }

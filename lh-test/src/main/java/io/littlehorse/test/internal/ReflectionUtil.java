@@ -7,10 +7,7 @@ import java.util.List;
 
 public class ReflectionUtil {
 
-    public static <T extends Annotation> List<T> findAnnotatedMethods(
-        Class<?> clazz,
-        Class<T> annotationClass
-    ) {
+    public static <T extends Annotation> List<T> findAnnotatedMethods(Class<?> clazz, Class<T> annotationClass) {
         List<T> annotations = new ArrayList<>();
         for (Method method : clazz.getMethods()) {
             if (method.isAnnotationPresent(annotationClass)) {

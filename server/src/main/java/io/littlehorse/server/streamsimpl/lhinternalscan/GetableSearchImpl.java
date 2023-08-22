@@ -7,7 +7,6 @@ import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.server.streamsimpl.ServerTopology;
-import java.util.List;
 import lombok.Getter;
 
 @Getter

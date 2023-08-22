@@ -8,19 +8,14 @@ import java.nio.file.Path;
 public class ExternalTestBootstrapper implements TestBootstrapper {
 
     private static final String LH_CONFIG_FILE = ".config/littlehorse.config";
-    private Path configPath = Path.of(
-        System.getProperty("user.home"),
-        LH_CONFIG_FILE
-    );
+    private Path configPath = Path.of(System.getProperty("user.home"), LH_CONFIG_FILE);
 
     private final LHWorkerConfig workerConfig;
     private final LHClient lhClient;
 
     public ExternalTestBootstrapper() {
         if (Files.notExists(configPath)) {
-            throw new IllegalStateException(
-                String.format("Configuration file %s doesn't exist", LH_CONFIG_FILE)
-            );
+            throw new IllegalStateException(String.format("Configuration file %s doesn't exist", LH_CONFIG_FILE));
         }
         workerConfig = new LHWorkerConfig(configPath.toString());
         lhClient = new LHClient(workerConfig);

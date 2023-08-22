@@ -23,17 +23,10 @@ public class WorkflowDefinitionDiscover {
                 String value = declaredMethod.getAnnotation(LHWorkflow.class).value();
                 try {
                     Workflow workflow = (Workflow) declaredMethod.invoke(target);
-                    discoveredWorkflowDefinitions.add(
-                        new DiscoveredWorkflowDefinition(value, workflow)
-                    );
+                    discoveredWorkflowDefinitions.add(new DiscoveredWorkflowDefinition(value, workflow));
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new LHTestInitializationException(
-                        String.format(
-                            "Not possible to read %s method",
-                            declaredMethod.getName()
-                        ),
-                        e
-                    );
+                            String.format("Not possible to read %s method", declaredMethod.getName()), e);
                 }
             }
         }

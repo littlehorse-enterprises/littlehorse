@@ -16,11 +16,7 @@ public class FieldDependencyInjector {
 
     private final Object target;
 
-    public FieldDependencyInjector(
-        Supplier<Object> dependency,
-        Object target,
-        Predicate<Field> condition
-    ) {
+    public FieldDependencyInjector(Supplier<Object> dependency, Object target, Predicate<Field> condition) {
         candidates = Arrays.asList(target.getClass().getDeclaredFields());
         this.dependency = dependency;
         this.condition = condition;
@@ -37,12 +33,7 @@ public class FieldDependencyInjector {
             targetField.set(target, dependency.get());
         } catch (IllegalAccessException e) {
             throw new LHTestInitializationException(
-                String.format(
-                    "Not possible to write %s field",
-                    targetField.getName()
-                ),
-                e
-            );
+                    String.format("Not possible to write %s field", targetField.getName()), e);
         }
     }
 }

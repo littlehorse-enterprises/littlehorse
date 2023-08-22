@@ -371,10 +371,11 @@ public class UserTaskRunModel extends Getable<UserTaskRun> {
                 .collect(Collectors.toMap(UserTaskFieldModel::getName, Function.identity()));
         for (UserTaskFieldResult inputField : event.getResult().getFieldsList()) {
             UserTaskFieldModel userTaskFieldFromTaskDef = userTaskFieldsGroupedByName.get(inputField.getName());
-            if (userTaskFieldFromTaskDef == null
+            boolean isUndefined = userTaskFieldFromTaskDef == null
                     || !userTaskFieldFromTaskDef
                             .getType()
-                            .equals(inputField.getValue().getType())) {
+                            .equals(inputField.getValue().getType());
+            if (isUndefined) {
                 throw new LHValidationError("Field [name = %s, type = %s] is not defined in UserTask schema"
                         .formatted(inputField.getName(), inputField.getValue().getType()));
             }
