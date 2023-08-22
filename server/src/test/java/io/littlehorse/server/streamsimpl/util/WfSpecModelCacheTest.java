@@ -7,7 +7,7 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.server.streams.storeinternals.utils.StoreUtils;
+import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.util.MetadataCache;
 import org.apache.kafka.common.utils.Bytes;
 import org.junit.jupiter.api.Nested;
@@ -25,9 +25,8 @@ class WfSpecModelCacheTest {
             final int wfSpecVersion = 23;
             final WfSpecModel wfSpecModel = TestUtil.wfSpec(wfSpecName);
             wfSpecModel.setVersion(wfSpecVersion);
-            final String key =
-                    StoreUtils.getFullStoreKey(wfSpecModel.getObjectId().getStoreKey(), WfSpecModel.class);
-            final Bytes value = Bytes.wrap(wfSpecModel.toBytes(null));
+            final String key = StoredGetable.getStoreKey(wfSpecModel.getObjectId());
+            final Bytes value = Bytes.wrap(wfSpecModel.toBytes());
 
             wfSpecCache.addToCache(key, value);
 
@@ -46,9 +45,8 @@ class WfSpecModelCacheTest {
             final int wfSpecVersion = 23;
             final WfSpecModel wfSpecModel = TestUtil.wfSpec(wfSpecName);
             wfSpecModel.setVersion(wfSpecVersion);
-            final String key =
-                    StoreUtils.getFullStoreKey(wfSpecModel.getObjectId().getStoreKey(), WfSpecModel.class);
-            final Bytes value = Bytes.wrap(wfSpecModel.toBytes(null));
+            final String key = StoredGetable.getStoreKey(wfSpecModel.getObjectId());
+            final Bytes value = Bytes.wrap(wfSpecModel.toBytes());
 
             wfSpecCache.addToCache(key, value);
 
@@ -93,7 +91,7 @@ class WfSpecModelCacheTest {
             final MetadataCache wfSpecCache = new MetadataCache();
             final String nonWfSpecKey = "11/WF1/123/0b80d81e-8984-4da5-8312-f19e3fbfa780";
             final WfSpecIdModel cacheKey = new WfSpecIdModel("WF1", 23);
-            final Bytes value = Bytes.wrap(TestUtil.taskRun().toBytes(null));
+            final Bytes value = Bytes.wrap(TestUtil.taskRun().toBytes());
 
             wfSpecCache.addToCache(nonWfSpecKey, value);
 
