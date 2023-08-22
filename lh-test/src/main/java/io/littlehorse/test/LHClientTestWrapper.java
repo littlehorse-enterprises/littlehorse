@@ -10,7 +10,6 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
-
 import java.util.Collection;
 
 public class LHClientTestWrapper {
@@ -21,7 +20,7 @@ public class LHClientTestWrapper {
         this.lhClient = lhClient;
     }
 
-    public NodeRun getNodeRun(String wfRunId, int threadRunNumber, int nodeRunNumber){
+    public NodeRun getNodeRun(String wfRunId, int threadRunNumber, int nodeRunNumber) {
         try {
             return lhClient.getNodeRun(wfRunId, threadRunNumber, nodeRunNumber);
         } catch (LHApiError e) {
@@ -29,7 +28,7 @@ public class LHClientTestWrapper {
         }
     }
 
-    public TaskRun getTaskRun(TaskRunId taskRunId){
+    public TaskRun getTaskRun(TaskRunId taskRunId) {
         try {
             return lhClient.getTaskRun(taskRunId);
         } catch (LHApiError e) {
@@ -37,10 +36,10 @@ public class LHClientTestWrapper {
         }
     }
 
-    public LHStatus getWfRunStatus(String wfRunId){
+    public LHStatus getWfRunStatus(String wfRunId) {
         try {
             WfRun wfRun = lhClient.getWfRun(wfRunId);
-            if(wfRun != null) {
+            if (wfRun != null) {
                 return wfRun.getStatus();
             }
             return null;
@@ -49,7 +48,7 @@ public class LHClientTestWrapper {
         }
     }
 
-    public WfRun getWfRun(String wfId){
+    public WfRun getWfRun(String wfId) {
         try {
             return lhClient.getWfRun(wfId);
         } catch (LHApiError e) {
@@ -58,11 +57,11 @@ public class LHClientTestWrapper {
     }
 
     public boolean runWf(WfSpec wfSpec, String wfId, Collection<Arg> args) throws LHApiError {
-        lhClient.runWf(wfSpec.getName(), wfSpec.getVersion(), wfId, args.toArray(new Arg[]{}));
+        lhClient.runWf(wfSpec.getName(), wfSpec.getVersion(), wfId, args.toArray(new Arg[] {}));
         return true;
     }
 
-    public void registerWfSpec(Workflow workflow){
+    public void registerWfSpec(Workflow workflow) {
         try {
             workflow.registerWfSpec(lhClient);
         } catch (LHApiError e) {
@@ -70,12 +69,11 @@ public class LHClientTestWrapper {
         }
     }
 
-    public WfSpec getWfSpec(Workflow workflow){
+    public WfSpec getWfSpec(Workflow workflow) {
         try {
             return lhClient.getWfSpec(workflow.getName());
         } catch (LHApiError e) {
             throw new RuntimeException(e);
         }
     }
-
 }

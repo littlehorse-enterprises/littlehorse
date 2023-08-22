@@ -2,7 +2,6 @@ package io.littlehorse.test.internal;
 
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.LHWorkflow;
@@ -16,22 +15,22 @@ public class TestContext {
     private final LHWorkerConfig lhWorkerConfig;
     private final LHClient lhClient;
 
-    private final List<LHTaskWorker> workers = new ArrayList<>();
-
     public TestContext(TestBootstrapper bootstrapper) {
         this.lhWorkerConfig = bootstrapper.getWorkerConfig();
         this.lhClient = bootstrapper.getLhClient();
     }
 
-    public void discoverTaskWorkers(Object testInstance) {
+    public List<LHTaskWorker> discoverTaskWorkers(Object testInstance) {
+        List<LHTaskWorker> workers = new ArrayList<>();
         List<LHTaskMethod> annotatedMethods =
                 ReflectionUtil.findAnnotatedMethods(testInstance.getClass(), LHTaskMethod.class);
         for (LHTaskMethod annotatedMethod : annotatedMethods) {
             workers.add(new LHTaskWorker(testInstance, annotatedMethod.value(), lhWorkerConfig));
         }
+        return workers;
     }
 
-    public void registerWorkers() {
+    /*public void registerWorkers() {
         for (LHTaskWorker worker : workers) {
             try {
                 worker.registerTaskDef(true);
@@ -49,7 +48,7 @@ public class TestContext {
                 throw new RuntimeException(e);
             }
         }
-    }
+    }*/
 
     public void instrument(Object testInstance) {
         injectWorkflowExecutors(testInstance);

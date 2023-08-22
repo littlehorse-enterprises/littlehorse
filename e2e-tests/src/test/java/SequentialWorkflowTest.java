@@ -5,7 +5,6 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.test.*;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -16,17 +15,22 @@ public class SequentialWorkflowTest {
 
     @LHWorkflow("simple-sequential-wf")
     private Workflow workflow;
+
     private WorkerContext context;
 
     @Test
     public void simpleSequentialWorkflowExecution() {
         workflowVerifier
-            .prepare(workflow)
-            .waitForStatus(LHStatus.COMPLETED)
-            .waitForTaskStatus(0, 1, TaskStatus.TASK_SUCCESS)
-            .waitForTaskStatus(0, 2, TaskStatus.TASK_SUCCESS)
-            .thenVerifyTaskRunResult(0, 1, variableValue -> Assertions.assertTrue(variableValue.getStr().contains("hello there from wfRun")))
-            .start();
+                .prepare(workflow)
+                .waitForStatus(LHStatus.COMPLETED)
+                .waitForTaskStatus(0, 1, TaskStatus.TASK_SUCCESS)
+                .waitForTaskStatus(0, 2, TaskStatus.TASK_SUCCESS)
+                .thenVerifyTaskRunResult(
+                        0,
+                        1,
+                        variableValue ->
+                                Assertions.assertTrue(variableValue.getStr().contains("hello there from wfRun")))
+                .start();
     }
 
     @LHWorkflow("simple-sequential-wf")
@@ -36,6 +40,7 @@ public class SequentialWorkflowTest {
             thread.execute("aa-simple");
         });
     }
+
     @LHTaskMethod("aa-simple")
     public String obiWan(WorkerContext context) {
 

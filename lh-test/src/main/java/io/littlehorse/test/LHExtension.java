@@ -1,8 +1,11 @@
 package io.littlehorse.test;
 
+import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.internal.ExternalTestBootstrapper;
 import io.littlehorse.test.internal.TestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
+import java.util.List;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
@@ -27,10 +30,20 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
 
     @Override
     public void postProcessTestInstance(Object testInstance, ExtensionContext context) {
-        TestContext testContext = getStore(context).get(LH_TEST_CONTEXT, TestContext.class);
-        testContext.discoverTaskWorkers(testInstance);
-        testContext.registerWorkers();
-        testContext.runTaskWorkers();
+        ExtensionContext.Store store = getStore(context);
+        TestContext testContext = store.get(LH_TEST_CONTEXT, TestContext.class);
+        List<LHTaskWorker> workers = testContext.discoverTaskWorkers(testInstance);
+        for (LHTaskWorker worker : workers) {
+            store.put(worker.getTaskDefName(), worker);
+            try {
+                worker.registerTaskDef(true);
+                worker.start();
+            } catch (LHApiError e) {
+                throw new RuntimeException(e);
+            }
+        }
+        // testContext.registerWorkers();
+        // testContext.runTaskWorkers();
         testContext.instrument(testInstance);
     }
 }
