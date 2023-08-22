@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
+import io.littlehorse.test.exception.LHTestInitializationException;
 import org.awaitility.Awaitility;
 
 public class AbstractVerifier implements Verifier {
@@ -36,7 +38,7 @@ public class AbstractVerifier implements Verifier {
             WfRun wfRun = Awaitility.await().until(() -> lhClientTestWrapper.getWfRun(wfId), Objects::nonNull);
             steps.forEach(step -> step.execute(wfRun.getId()));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new LHTestInitializationException(e);
         }
     }
 }
