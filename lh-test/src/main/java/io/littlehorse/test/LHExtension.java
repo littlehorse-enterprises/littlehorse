@@ -3,8 +3,7 @@ package io.littlehorse.test;
 import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestInitializationException;
-import io.littlehorse.test.internal.ExternalTestBootstrapper;
-import io.littlehorse.test.internal.TestBootstrapper;
+import io.littlehorse.test.internal.StandaloneTestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
 import java.util.List;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -17,12 +16,11 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
             ExtensionContext.Namespace.create(LHExtension.class);
     private static final String LH_TEST_CONTEXT = "LH-test-context";
 
-    private TestBootstrapper testBootstrapper = new ExternalTestBootstrapper();
-
     @Override
     public void beforeAll(ExtensionContext context) {
         getStore(context)
-                .getOrComputeIfAbsent(LH_TEST_CONTEXT, s -> new TestContext(testBootstrapper), TestContext.class);
+                .getOrComputeIfAbsent(
+                        LH_TEST_CONTEXT, s -> new TestContext(new StandaloneTestBootstrapper()), TestContext.class);
     }
 
     private ExtensionContext.Store getStore(ExtensionContext context) {

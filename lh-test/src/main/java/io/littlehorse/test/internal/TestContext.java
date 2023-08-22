@@ -30,26 +30,6 @@ public class TestContext {
         return workers;
     }
 
-    /*public void registerWorkers() {
-        for (LHTaskWorker worker : workers) {
-            try {
-                worker.registerTaskDef(true);
-            } catch (LHApiError e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    public void runTaskWorkers() {
-        for (LHTaskWorker worker : workers) {
-            try {
-                worker.start();
-            } catch (LHApiError e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }*/
-
     public void instrument(Object testInstance) {
         injectWorkflowExecutors(testInstance);
         WorkflowDefinitionDiscover workflowDefinitionDiscover = new WorkflowDefinitionDiscover(testInstance);

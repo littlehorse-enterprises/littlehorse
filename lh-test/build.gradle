@@ -16,19 +16,24 @@ repositories {
     mavenCentral()
 }
 
+sourceCompatibility=17
+targetCompatibility=17
+
 dependencies {
     // Use JUnit Jupiter for testing.
     implementation(project(':sdk-java'))
-    implementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    implementation(project(':server'))
+    implementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
+    implementation "org.apache.kafka:kafka-clients:${kafkaVersion}"
+    implementation 'org.testcontainers:kafka:1.18.3'
     implementation group: 'org.awaitility', name: 'awaitility', version: '4.2.0'
-
 
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
