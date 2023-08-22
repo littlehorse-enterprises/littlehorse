@@ -86,11 +86,7 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
                         .setResult(response.toByteString())
                         .build();
 
-                log.trace("Sending command response {} to client", command.getCommandId());
                 server.onResponseReceived(command.commandId, cmdReply);
-                log.trace("Sent command response {} to client", command.getCommandId());
-            } else {
-                log.trace("Not sending response; command doesn't have a commandId");
             }
         } catch (Exception exn) {
             log.error("Caught exception processing command:", exn);

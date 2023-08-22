@@ -119,6 +119,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
 
     @Override
     public <U extends Message, T extends CoreGetable<U>> T get(ObjectIdModel<?, U, T> id) {
+        System.out.println(id);
         return storageManager.get(id);
     }
 

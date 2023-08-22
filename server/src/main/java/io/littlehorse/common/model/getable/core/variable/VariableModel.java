@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.core.variable;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -75,6 +76,7 @@ public class VariableModel extends CoreGetable<Variable> {
         name = p.getName();
         threadRunNumber = p.getThreadRunNumber();
         date = LHUtil.fromProtoTs(p.getDate());
+        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class);
     }
 
     public Variable.Builder toProto() {
@@ -83,7 +85,8 @@ public class VariableModel extends CoreGetable<Variable> {
                 .setThreadRunNumber(threadRunNumber)
                 .setWfRunId(wfRunId)
                 .setDate(LHUtil.fromDate(getCreatedAt()))
-                .setValue(value.toProto());
+                .setValue(value.toProto())
+                .setWfSpecId(wfSpecId.toProto());
 
         return out;
     }
