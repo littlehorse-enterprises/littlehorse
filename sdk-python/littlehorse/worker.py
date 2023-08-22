@@ -7,7 +7,6 @@ from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     InvalidTaskDefNameException,
     TaskSchemaMismatchException,
-    UnknownApiException,
 )
 from littlehorse.model.service_pb2 import (
     GetTaskDefReplyPb,
@@ -26,6 +25,7 @@ from littlehorse.model.service_pb2 import (
 from littlehorse.utils import parse_value, parse_type, extract_value, timestamp_now
 
 REPORT_TASK_DEFAULT_RETRIES = 5
+HEARTBEAT_DEFAULT_INTERVAL = 5
 
 
 class LHWorkerContext:
@@ -328,13 +328,6 @@ class LHConnection:
             await self._report_task(task_result, retries_left - 1)
 
     async def _ask_for_work(self) -> None:
-        self._log.debug(
-            "Connection: %s is asking for work for %s at %s",
-            self.server,
-            self._task.task_name(),
-            datetime.now(),
-        )
-
         async def generator() -> AsyncIterator[PollTaskPb]:
             while self.running:
                 await self._ask_for_work_semaphore.acquire()
@@ -344,20 +337,41 @@ class LHConnection:
                         task_worker_version=self._config.worker_version(),
                         task_def_name=self._task.task_name(),
                     )
+                    self._log.debug(
+                        "Connection: %s is asking for work '%s' '%s'",
+                        self.server,
+                        self._task.task_name(),
+                        datetime.now(),
+                    )
 
-        async for reply in self._stub.PollTask(generator()):
-            if reply.code != LHResponseCodePb.OK:
-                raise UnknownApiException(message=reply.message)
-            await self._schedule_task(reply.result)
-            self._ask_for_work_semaphore.release()
+        try:
+            async for reply in self._stub.PollTask(generator()):
+                if reply.code != LHResponseCodePb.OK:
+                    self._log.error(
+                        "Didn't successfully claim task: %s %s",
+                        reply.code,
+                        reply.message,
+                    )
+                    continue
+                await self._schedule_task(reply.result)
+                self._ask_for_work_semaphore.release()
+        except Exception as e:
+            self._log.error("Api Connection Error, stopping: %s", str(e))
+            self.stop()
 
     async def start(self) -> None:
-        self._log.info(f"Starting server connection {self.server}")
+        self._log.info(
+            f"Starting server connection {self.server} "
+            f"for task '{self._task.task_name()}'"
+        )
         self.running = True
         await self._ask_for_work()
 
     def stop(self) -> None:
-        self._log.info(f"Stopping server connection {self.server}")
+        self._log.info(
+            f"Stopping server connection {self.server} "
+            f"for task '{self._task.task_name()}'"
+        )
         self.running = False
         self._ask_for_work_semaphore.release()
 
@@ -404,7 +418,13 @@ class LHTaskWorker:
             reply: RegisterTaskWorkerReplyPb = await stub.RegisterTaskWorker(request)
 
             if reply.code != LHResponseCodePb.OK:
-                raise UnknownApiException(message=reply.message)
+                self._log.error(
+                    "Error when registering task worker: %s %s",
+                    reply.code,
+                    reply.message,
+                )
+                await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
+                continue
 
             hosts = [f"{host.host}:{host.port}" for host in reply.your_hosts]
 
@@ -433,7 +453,7 @@ class LHTaskWorker:
                 connection_to_be_removed = self._connections.pop(host)
                 connection_to_be_removed.stop()
 
-            await asyncio.sleep(5)
+            await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
 
     async def start(self) -> None:
         """Starts polling for and executing tasks."""

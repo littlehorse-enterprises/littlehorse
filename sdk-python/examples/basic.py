@@ -20,7 +20,7 @@ def get_config() -> LHConfig:
 
 
 async def greeting(name: str, ctx: LHWorkerContext) -> str:
-    greeting = f"Hello {name}!. Context {ctx}"
+    greeting = f"Hello {name}!. WfRun {ctx.wf_run_id()}"
     print(greeting)
     await asyncio.sleep(random.uniform(0.5, 2.0))
     return greeting
