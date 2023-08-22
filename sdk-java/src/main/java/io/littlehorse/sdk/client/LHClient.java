@@ -228,18 +228,15 @@ public class LHClient {
         return null;
     }
 
-
     /**
      * TODO(eduwer) doc
      */
     public List<TaskRunId> getUserTaskRun(String taskDefName) throws LHApiError {
         SearchTaskRunResponse response = (SearchTaskRunResponse) doRequest(() -> {
             SearchTaskRunRequest searchTaskRunRequest = SearchTaskRunRequest.newBuilder()
-                    .setTaskDef(
-                            SearchTaskRunRequest.ByTaskDefRequest.newBuilder()
-                                    .setTaskDefName(taskDefName)
-                                    .build()
-                    )
+                    .setTaskDef(SearchTaskRunRequest.ByTaskDefRequest.newBuilder()
+                            .setTaskDefName(taskDefName)
+                            .build())
                     .build();
             return getGrpcClient().searchTaskRun(searchTaskRunRequest);
         });
