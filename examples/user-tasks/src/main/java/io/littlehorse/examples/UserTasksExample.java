@@ -1,12 +1,6 @@
 package io.littlehorse.examples;
 
-<<<<<<< Updated upstream
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-=======
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import java.io.IOException;
->>>>>>> Stashed changes
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -146,19 +140,11 @@ public class UserTasksExample {
         return worker;
     }
 
-<<<<<<< Updated upstream
     public static void main(String[] args) throws IOException {
         new UserTasksExample().doMain();
     }
 
     public void doMain() throws IOException {
-=======
-    public static void main(String[] args) throws IOException, IOException {
-        new UserTasksExample().doMain();
-    }
-
-    public void doMain() throws IOException, IOException {
->>>>>>> Stashed changes
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);

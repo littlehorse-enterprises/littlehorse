@@ -1,19 +1,13 @@
 package io.littlehorse.examples;
 
-<<<<<<< Updated upstream
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
-=======
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import java.io.IOException;
->>>>>>> Stashed changes
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
@@ -81,15 +75,11 @@ public class InterruptHandlerExample {
         return workers;
     }
 
-<<<<<<< Updated upstream
     public static void main(String[] args) throws IOException {
-=======
-    public static void main(String[] args) throws IOException, IOException {
->>>>>>> Stashed changes
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
+        LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();
