@@ -91,6 +91,8 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         slowWorker = new LHTaskWorker(new AFSearchWorker(), SLOW_TASK, workerConfig);
         failWorker.registerTaskDef(true);
         slowWorker.registerTaskDef(true);
+
+        Thread.sleep(200);
         slowWorker.start();
         // will start the failWorker later so we can catch the STARTING tasks
 
@@ -264,7 +266,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
                 return;
             }
         }
-        throw new RuntimeException("Should NOT have found WfRun " + id);
+        throw new RuntimeException("Should have found WfRun " + id);
     }
 
     public void cleanup() {

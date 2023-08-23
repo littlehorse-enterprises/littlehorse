@@ -122,6 +122,8 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
                 break;
             }
         }
+        assertThat(userTaskRunId != null, "Should have found the userTaskRun when searching for the group");
+
         client.assignUserTaskRun(AssignUserTaskRunRequest.newBuilder()
                 .setUser(User.newBuilder().setId("unavailable-user").build())
                 .setUserTaskRunId(userTaskRunId)
@@ -155,14 +157,19 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
             } catch (StatusRuntimeException exn) {
                 caught = exn;
             }
+
+            assertThat(caught != null, "should have thrown exception!");
+            if (caught == null) throw new RuntimeException("impossible");
+
             assertThat(
                     caught.getStatus().getCode() == Code.INVALID_ARGUMENT,
                     "UserTaskRun Fields validation not working as expected");
             assertThat(
-                    caught.getStatus()
-                            .getDescription()
-                            .equals("Field [name = nonExistingStringField, type = STR] is not"
-                                    + " defined in UserTask schema"),
+                    caught.getStatus().getDescription() != null
+                            && caught.getStatus()
+                                    .getDescription()
+                                    .equals("Field [name = nonExistingStringField, type = STR] is not"
+                                            + " defined in UserTask schema or has different type"),
                     "Actual output message: " + caught.getStatus().getDescription());
 
             caught = null;

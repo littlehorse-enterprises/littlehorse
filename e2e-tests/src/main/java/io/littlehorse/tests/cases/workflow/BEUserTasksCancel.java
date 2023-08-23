@@ -19,11 +19,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class AZUserTaskCancel extends UserTaskWorkflowTest {
+public class BEUserTasksCancel extends UserTaskWorkflowTest {
 
-    private static final String USER_TASK_DEF_NAME = "some-usertask";
+    private static final String USER_TASK_DEF_NAME = "be-some-usertask";
 
-    public AZUserTaskCancel(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
+    public BEUserTasksCancel(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -43,13 +43,13 @@ public class AZUserTaskCancel extends UserTaskWorkflowTest {
 
             thread.assignUserTaskToUser(USER_TASK_DEF_NAME, "test-user");
 
-            thread.execute("az-unreachable-task", formVar);
+            thread.execute("be-unreachable-task", formVar);
         });
     }
 
     @Override
     public List<Object> getTaskWorkerObjects() {
-        return Arrays.asList(new AZCancelTask());
+        return Arrays.asList(new BECancelTask());
     }
 
     public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
@@ -71,14 +71,14 @@ public class AZUserTaskCancel extends UserTaskWorkflowTest {
     }
 }
 
-class AZCancelTask {
+class BECancelTask {
 
-    @LHTaskMethod("az-task-cancelled")
+    @LHTaskMethod("be-task-cancelled")
     public String obiwan(AZUserTaskForm formData) {
         return "String was " + formData.myStr + " and int was " + formData.myInt;
     }
 
-    @LHTaskMethod("az-unreachable-task")
+    @LHTaskMethod("be-unreachable-task")
     public String unreachable(AZUserTaskForm formData) {
         return "Nothing to do...";
     }

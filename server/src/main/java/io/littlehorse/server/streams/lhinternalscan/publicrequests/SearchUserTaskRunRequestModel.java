@@ -207,16 +207,6 @@ public class SearchUserTaskRunRequestModel
     }
 
     public LHStore getStore(ReadOnlyMetadataStore metaStore) {
-        List<String> searchAttributes =
-                getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
-        Optional<TagStorageType> searchType = getStorageTypeForSearchAttributes(searchAttributes);
-
-        if (searchType.isEmpty()) {
-            throw new LHApiException(Status.INTERNAL, "Unable to determine index to use for your search");
-        }
-
-        TagStorageType type = searchType.get();
-
-        return type == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
+        return indexTypeForSearch(metaStore) == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
     }
 }

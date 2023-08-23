@@ -306,6 +306,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             ctx.onNext(wfRun.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
+            log.error("Error handling request", exn);
             ctx.onError(exn);
         }
     }
@@ -318,6 +319,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             ctx.onNext(nodeRun.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
+            log.error("Error handling request", exn);
             ctx.onError(exn);
         }
     }
@@ -330,6 +332,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             ctx.onNext(taskRun.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
+            log.error("Error handling request", exn);
             ctx.onError(exn);
         }
     }
@@ -342,6 +345,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             ctx.onNext(userTaskRun.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
+            log.error("Error handling request", exn);
             ctx.onError(exn);
         }
     }
@@ -354,6 +358,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             ctx.onNext(variable.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
+            log.error("Error handling request", exn);
             ctx.onError(exn);
         }
     }
@@ -366,6 +371,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             ctx.onNext(externalEvent.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
+            log.error("Error handling request", exn);
             ctx.onError(exn);
         }
     }

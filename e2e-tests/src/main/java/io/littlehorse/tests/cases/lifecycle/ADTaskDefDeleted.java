@@ -60,7 +60,7 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
                 })
                 .registerWfSpec(client);
 
-        Thread.sleep(100); // Wait for the data to propagate
+        Thread.sleep(200); // Wait for the data to propagate
         worker1.start();
         worker2.start();
 

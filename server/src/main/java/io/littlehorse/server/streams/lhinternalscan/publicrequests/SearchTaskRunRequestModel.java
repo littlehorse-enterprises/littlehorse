@@ -141,7 +141,7 @@ public class SearchTaskRunRequestModel
 
     @Override
     public LHStore getStore(ReadOnlyMetadataStore metaStore) {
-        return LHStore.REPARTITION;
+        return LHStore.CORE;
     }
 
     @Override

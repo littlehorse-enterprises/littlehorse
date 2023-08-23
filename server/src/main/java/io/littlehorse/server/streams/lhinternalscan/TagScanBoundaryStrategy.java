@@ -27,7 +27,7 @@ public class TagScanBoundaryStrategy implements SearchScanBoundaryStrategy {
             prefixScanBuilder.setLatestCreateTime(LHUtil.fromDate(date));
         };
         Consumer<Date> setEarliestStartToBuilder = date -> {
-            prefixScanBuilder.setLatestCreateTime(LHUtil.fromDate(date));
+            prefixScanBuilder.setEarliestCreateTime(LHUtil.fromDate(date));
         };
         earliestStart.ifPresent(setEarliestStartToBuilder);
         latestStart.ifPresent(setLatestStartToBuilder);

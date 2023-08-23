@@ -1,9 +1,6 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
-import java.util.Date;
-
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -20,6 +17,7 @@ import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
+import java.util.Date;
 
 public class ListWfMetricsRequestModel
         extends PublicScanRequest<

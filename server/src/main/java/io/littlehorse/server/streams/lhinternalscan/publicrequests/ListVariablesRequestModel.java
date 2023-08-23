@@ -1,7 +1,6 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -43,6 +42,7 @@ public class ListVariablesRequestModel
     public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
         return TagStorageType.LOCAL;
     }
+
     @Override
     public ScanResultTypePb getResultType() {
         return ScanResultTypePb.OBJECT;
