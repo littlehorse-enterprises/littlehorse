@@ -61,8 +61,7 @@ public class ReadOnlyRocksDBWrapper {
 
     @SuppressWarnings("unchecked")
     public <U extends Message, T extends AbstractGetable<U>> StoredGetable<U, T> get(ObjectIdModel<?, U, T> id) {
-        String key = Storeable.getSubstorePrefix(StoreableType.STORED_GETABLE)
-                + id.getType().getNumber() + "/";
+        String key = id.getType().getNumber() + "/";
         key += id.toString();
         return (StoredGetable<U, T>) get(key, StoredGetable.class);
     }
