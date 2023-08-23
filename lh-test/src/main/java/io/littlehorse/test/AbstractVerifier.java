@@ -35,7 +35,9 @@ public class AbstractVerifier implements Verifier {
     public void start() {
         try {
             lhClientTestWrapper.registerWfSpec(workflow);
-            WfSpec wfSpec = Awaitility.await().ignoreException(LHMisconfigurationException.class).until(() -> lhClientTestWrapper.getWfSpec(workflow), Objects::nonNull);
+            WfSpec wfSpec = Awaitility.await()
+                    .ignoreException(StatusRuntimeException.class)
+                    .until(() -> lhClientTestWrapper.getWfSpec(workflow), Objects::nonNull);
             String wfId = UUID.randomUUID().toString();
 
             Awaitility.await()

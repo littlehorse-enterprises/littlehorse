@@ -4,7 +4,6 @@ import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestInitializationException;
-import io.littlehorse.test.internal.ExternalTestBootstrapper;
 import io.littlehorse.test.internal.StandaloneTestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
 

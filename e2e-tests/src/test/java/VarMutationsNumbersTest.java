@@ -12,11 +12,9 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @LHTest
-@Disabled
 public class VarMutationsNumbersTest {
 
     private WorkflowVerifier workflowVerifier;
