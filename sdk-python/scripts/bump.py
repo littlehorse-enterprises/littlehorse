@@ -101,6 +101,9 @@ class Bump:
 
         try:
             # validate
+            if self.run_command("git branch --show-current") != "master":
+                raise Exception("To increase the version you must be in 'master'")
+
             self.run_command("git diff --exit-code", "There are unstaged changes")
             self.run_command(
                 "git diff --staged --exit-code", "There are staged changes"
@@ -145,6 +148,7 @@ class Bump:
         except Exception as e:
             self.console.print(f"[red]ERROR![/] [orange3]{e}[/]")
             self.run_command("git checkout " + str(project_path))
+            sys.exit(1)
 
 
 @click.command(context_settings=CONTEXT_SETTINGS)
