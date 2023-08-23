@@ -92,6 +92,10 @@ class Bump:
     def bump(self, release, prerelease):
         self.console.print(f"Current version: [dodger_blue1]{self.current}[/]")
 
+        project_path = Path(__file__, "../../../").resolve()
+        gradle_properties_path = project_path.joinpath("gradle.properties").resolve()
+        python_toml_path = project_path.joinpath("sdk-python/pyproject.toml").resolve()
+
         try:
             # get next version
             next_version = self.next_version(release, prerelease)
@@ -108,21 +112,17 @@ class Bump:
                 sys.exit(0)
 
             # save java version
-            java_properties_path = Path(
-                __file__, "../../../gradle.properties"
-            ).resolve()
             java_properties = Properties()
 
-            with open(java_properties_path, "rb") as f:
+            with open(gradle_properties_path, "rb") as f:
                 java_properties.load(f, "utf-8")
 
             java_properties["version"] = str(next_version)
 
-            with open(java_properties_path, "wb") as f:
+            with open(gradle_properties_path, "wb") as f:
                 java_properties.store(f, encoding="utf-8", timestamp=False)
 
             # save python version
-            python_toml_path = Path(__file__, "../../pyproject.toml").resolve()
             toml_data = toml.load(python_toml_path)
             toml_data["tool"]["poetry"]["version"] = str(next_version)
 
@@ -130,6 +130,7 @@ class Bump:
                 toml.dump(toml_data, f)
         except Exception as e:
             self.console.print(f"[red]ERROR![/] [orange3]{e}[/]")
+            self.run_command("git checkout " + str(project_path))
 
 
 @click.command(context_settings=CONTEXT_SETTINGS)
