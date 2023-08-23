@@ -28,7 +28,7 @@ class TestLHConfig(unittest.TestCase):
         with self.assertRaises(ValueError) as exception_context:
             bump.next_version(None, "rc")
         self.assertEqual(
-            "You have to provide an option 'release'"
+            "You have to provide the option 'release'"
             ", or both 'release' and 'prerelease'",
             str(exception_context.exception),
         )

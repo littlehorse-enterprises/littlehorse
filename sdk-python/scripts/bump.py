@@ -13,11 +13,6 @@ import toml
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 
-def print_help():
-    with click.Context(main) as ctx:
-        click.echo(main.get_help(ctx))
-
-
 class Release(Enum):
     MAJOR = "major"
     MINOR = "minor"
@@ -81,7 +76,7 @@ class Bump:
 
         if not release:
             raise ValueError(
-                "You have to provide an option 'release', or both"
+                "You have to provide the option 'release', or both"
                 " 'release' and 'prerelease'"
             )
 
