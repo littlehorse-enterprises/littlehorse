@@ -90,7 +90,7 @@ class Bump:
         return next_version
 
     def bump(self, release, prerelease):
-        self.console.print(f"Current version: [blue]{self.current}[/]")
+        self.console.print(f"Current version: [dodger_blue1]{self.current}[/]")
 
         try:
             # get next version
@@ -98,7 +98,8 @@ class Bump:
 
             # get confirmation
             confirmation = self.console.input(
-                f"[bold]Do you want to release a new version [blue]{next_version}[/]"
+                "[bold]Do you want to release a new version"
+                f" [dodger_blue1]{next_version}[/]"
                 " of LH :racehorse: ([green]yes[/]/[red]no[/])? [/]"
             )
 
