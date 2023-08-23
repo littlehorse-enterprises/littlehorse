@@ -36,7 +36,7 @@ class Bump:
         self.debug = debug
         self.current = self.current_version()
 
-    def run_command(self, command):
+    def run_command(self, command, error_message=None):
         if self.debug:
             self.console.print(f"[bright_black italic]{command}[/]")
         result = subprocess.run(shlex.split(command), capture_output=True)
@@ -44,9 +44,12 @@ class Bump:
             self.console.print(
                 f"[red]Error executing: [bold italic]{command}[/][/]",
             )
-            self.console.print(
-                f"[orange3]{result.stderr.decode('utf-8').strip()}[/]",
-            )
+            if error_message:
+                self.console.print(f"[orange3]{error_message}[/]")
+            else:
+                self.console.print(
+                    f"[orange3]{result.stderr.decode('utf-8').strip()}[/]"
+                )
             sys.exit(result.returncode)
         return result.stdout.decode("utf-8").strip()
 
@@ -97,6 +100,15 @@ class Bump:
         python_toml_path = project_path.joinpath("sdk-python/pyproject.toml").resolve()
 
         try:
+            # validate
+            self.run_command("git diff --exit-code", "There are unstaged changes")
+            self.run_command(
+                "git diff --staged --exit-code", "There are staged changes"
+            )
+            self.run_command(
+                "git diff --exit-code master origin/master", "First push your commits"
+            )
+
             # get next version
             next_version = self.next_version(release, prerelease)
 
@@ -128,6 +140,8 @@ class Bump:
 
             with open(python_toml_path, "w") as f:
                 toml.dump(toml_data, f)
+
+            # commit changes
         except Exception as e:
             self.console.print(f"[red]ERROR![/] [orange3]{e}[/]")
             self.run_command("git checkout " + str(project_path))
