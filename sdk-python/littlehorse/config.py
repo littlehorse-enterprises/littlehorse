@@ -1,7 +1,7 @@
 import os
 import uuid
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 from grpc import CallCredentials, Channel, ChannelCredentials
 import grpc
 from jproperties import Properties
@@ -299,7 +299,7 @@ class LHConfig:
         server: Optional[str] = None,
         name: str = "default",
         async_channel: bool = False,
-    ) -> Tuple[Channel, LHPublicApiStub]:
+    ) -> LHPublicApiStub:
         """Gets a gRPC stub for the LH Public API
         on the configured bootstrap server. It creates a new LHPublicApiStub,
         but reuse a grpc.Channel.
@@ -312,7 +312,7 @@ class LHConfig:
             will use asyncio. Defaults to False.
 
         Returns:
-            Tuple[Channel, LHPublicApiStub]: A channel plus its gRPC stub.
+            LHPublicApiStub: A gRPC stub.
         """
         channel_id = ChannelId(server or self.bootstrap_server(), name, async_channel)
         channel = self._opened_channels.get(channel_id)
@@ -323,4 +323,4 @@ class LHConfig:
         else:
             self._log.info("Reusing channel %s", channel_id)
 
-        return (channel, LHPublicApiStub(channel))
+        return LHPublicApiStub(channel)

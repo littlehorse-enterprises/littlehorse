@@ -238,7 +238,7 @@ class LHConnection:
         self._config = config
         self._ask_for_work_semaphore = asyncio.Semaphore()
         self._schedule_task_semaphore = asyncio.Semaphore(config.num_worker_threads())
-        _, self._stub = self._config.stub(
+        self._stub = self._config.stub(
             server=self.server, async_channel=True, name=self._task.task_name()
         )
 
@@ -390,7 +390,7 @@ class LHTaskWorker:
         self._connections: dict[str, LHConnection] = {}
 
         # get the task definition from the server
-        _, stub = config.stub()
+        stub = config.stub()
         reply: GetTaskDefReplyPb = stub.GetTaskDef(TaskDefIdPb(name=task_def_name))
 
         if reply.code is not LHResponseCodePb.OK:
@@ -401,7 +401,7 @@ class LHTaskWorker:
         self.running = False
 
     async def _heartbeat(self) -> None:
-        _, stub = self._config.stub(async_channel=True, name="heartbeat")
+        stub = self._config.stub(async_channel=True, name="heartbeat")
 
         while self.running:
             self._log.debug(
