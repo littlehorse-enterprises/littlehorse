@@ -1,10 +1,10 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.client.LHClient;
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
+import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -53,7 +53,7 @@ public class RunWfExample {
         return props;
     }
 
-    public static LHTaskWorker getTaskWorker(LHWorkerConfig config) {
+    public static LHTaskWorker getTaskWorker(LHWorkerConfig config) throws IOException {
         MyWorker executable = new MyWorker();
         LHTaskWorker worker = new LHTaskWorker(
             executable,
@@ -66,11 +66,11 @@ public class RunWfExample {
         return worker;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
+        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();
@@ -117,12 +117,12 @@ public class RunWfExample {
                     log.debug("Requesting wf run execution, n = {}", n);
                     try {
                         client.runWf(
-                            "example-run-wf", // wf name
-                            null, // Version = null (latest version)
-                            null, // RunId = null (a random run id)
-                            Arg.of("n", n) // Input variable
+                            RunWfRequest.newBuilder()
+                                .setWfSpecName("example-run-wf")
+                                .putVariables("n", LHLibUtil.objToVarVal(n))
+                                .build()
                         );
-                    } catch (LHApiError e) {
+                    } catch (Exception e) {
                         log.error("Error when calling the API", e);
                     }
                     n++;
