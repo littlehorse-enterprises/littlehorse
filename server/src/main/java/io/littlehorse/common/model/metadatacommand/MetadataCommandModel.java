@@ -169,6 +169,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(PutExternalEventDefRequestModel.class)) {
             type = MetadataCommandCase.PUT_EXTERNAL_EVENT_DEF;
             putExternalEventDefRequest = (PutExternalEventDefRequestModel) cmd;
+        } else if (cls.equals(PutUserTaskDefRequestModel.class)) {
+            type = MetadataCommandCase.PUT_USER_TASK_DEF;
+            putUserTaskDefRequest = (PutUserTaskDefRequestModel) cmd;
         } else if (cls.equals(PutWfSpecRequestModel.class)) {
             type = MetadataCommandCase.PUT_WF_SPEC;
             putWfSpecRequest = (PutWfSpecRequestModel) cmd;

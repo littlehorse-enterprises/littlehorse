@@ -79,6 +79,7 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         }
 
         spec.validate(dao, config);
+        dao.put(spec);
 
         return spec.toProto().build();
     }
