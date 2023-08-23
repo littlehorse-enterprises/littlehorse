@@ -1,8 +1,7 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
@@ -48,7 +47,7 @@ public class MutationExample {
         return props;
     }
 
-    public static LHTaskWorker getTaskWorker(LHWorkerConfig config) {
+    public static LHTaskWorker getTaskWorker(LHWorkerConfig config) throws IOException {
         SpiderManMutator executable = new SpiderManMutator();
         LHTaskWorker worker = new LHTaskWorker(executable, "spider-bite", config);
 
@@ -57,11 +56,11 @@ public class MutationExample {
         return worker;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
+        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();

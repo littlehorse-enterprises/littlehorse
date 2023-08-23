@@ -2,8 +2,9 @@ package io.littlehorse.common.model.command.subcommand.internals;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import io.littlehorse.common.model.meta.HostModel;
-import io.littlehorse.common.model.meta.TaskWorkerMetadataModel;
+import io.littlehorse.common.model.corecommand.subcommand.internals.RoundRobinAssignor;
+import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

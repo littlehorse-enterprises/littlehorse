@@ -8,14 +8,17 @@ public interface DeleteWfRunRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The wfRunId.
+   * <code>.littlehorse.WfRunId id = 1;</code>
+   * @return Whether the id field is set.
    */
-  java.lang.String getWfRunId();
+  boolean hasId();
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
+   * <code>.littlehorse.WfRunId id = 1;</code>
+   * @return The id.
    */
-  com.google.protobuf.ByteString
-      getWfRunIdBytes();
+  io.littlehorse.sdk.common.proto.WfRunId getId();
+  /**
+   * <code>.littlehorse.WfRunId id = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getIdOrBuilder();
 }

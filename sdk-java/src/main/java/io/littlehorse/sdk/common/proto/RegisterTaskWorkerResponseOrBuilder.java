@@ -8,54 +8,26 @@ public interface RegisterTaskWorkerResponseOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.LHResponseCode code = 1;</code>
-   * @return The enum numeric value on the wire for code.
+   * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
-  int getCodeValue();
-  /**
-   * <code>.littlehorse.LHResponseCode code = 1;</code>
-   * @return The code.
-   */
-  io.littlehorse.sdk.common.proto.LHResponseCode getCode();
-
-  /**
-   * <code>optional string message = 2;</code>
-   * @return Whether the message field is set.
-   */
-  boolean hasMessage();
-  /**
-   * <code>optional string message = 2;</code>
-   * @return The message.
-   */
-  java.lang.String getMessage();
-  /**
-   * <code>optional string message = 2;</code>
-   * @return The bytes for message.
-   */
-  com.google.protobuf.ByteString
-      getMessageBytes();
-
-  /**
-   * <code>repeated .littlehorse.HostInfo your_hosts = 3;</code>
-   */
-  java.util.List<io.littlehorse.sdk.common.proto.HostInfo> 
+  java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo> 
       getYourHostsList();
   /**
-   * <code>repeated .littlehorse.HostInfo your_hosts = 3;</code>
+   * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.HostInfo getYourHosts(int index);
+  io.littlehorse.sdk.common.proto.LHHostInfo getYourHosts(int index);
   /**
-   * <code>repeated .littlehorse.HostInfo your_hosts = 3;</code>
+   * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
   int getYourHostsCount();
   /**
-   * <code>repeated .littlehorse.HostInfo your_hosts = 3;</code>
+   * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.HostInfoOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder> 
       getYourHostsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.HostInfo your_hosts = 3;</code>
+   * <code>repeated .littlehorse.LHHostInfo your_hosts = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.HostInfoOrBuilder getYourHostsOrBuilder(
+  io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder getYourHostsOrBuilder(
       int index);
 }

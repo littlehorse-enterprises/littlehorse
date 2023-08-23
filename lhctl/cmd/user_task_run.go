@@ -314,14 +314,7 @@ func promptFor(prompt string, varType model.VariableType) (*model.VariableValue,
 }
 
 func getUserTaskDef(userTaskRun *model.UserTaskRun, client *model.LHPublicApiClient) (*model.UserTaskDef, error) {
-	resp, err := (*client).GetUserTaskDef(context.Background(), userTaskRun.UserTaskDefId)
-	if err != nil {
-		return nil, err
-	}
-	if resp.Code != model.LHResponseCode_OK {
-		return nil, errors.New(*resp.Message)
-	}
-	return resp.Result, nil
+	return (*client).GetUserTaskDef(context.Background(), userTaskRun.UserTaskDefId)
 }
 
 func getUserTaskRun(wfRunId, userTaskGuid string, client *model.LHPublicApiClient) (*model.UserTaskRun, error) {
@@ -332,14 +325,11 @@ func getUserTaskRun(wfRunId, userTaskGuid string, client *model.LHPublicApiClien
 	if err != nil {
 		return nil, err
 	}
-	if resp.Code != model.LHResponseCode_OK {
-		return nil, errors.New(*resp.Message)
-	}
-	if resp.Result.Status == model.UserTaskRunStatus_DONE || resp.Result.Status == model.UserTaskRunStatus_CANCELLED {
+	if resp.Status == model.UserTaskRunStatus_DONE || resp.Status == model.UserTaskRunStatus_CANCELLED {
 		return nil, errors.New("userTaskRun already in terminated state")
 	}
 
-	return resp.Result, nil
+	return resp, nil
 }
 
 func init() {

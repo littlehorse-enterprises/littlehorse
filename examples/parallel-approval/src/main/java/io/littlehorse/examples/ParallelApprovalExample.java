@@ -1,12 +1,7 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.Comparator;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
-import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -160,7 +155,7 @@ public class ParallelApprovalExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) {
+    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) throws IOException {
         Notifier executable = new Notifier();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "calculate-next-notification", config),
@@ -181,11 +176,11 @@ public class ParallelApprovalExample {
         return workers;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
+        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();
@@ -218,8 +213,7 @@ public class ParallelApprovalExample {
                 PutExternalEventDefRequest
                     .newBuilder()
                     .setName(externalEventName)
-                    .build(),
-                true
+                    .build()
             );
         }
 

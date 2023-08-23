@@ -8,45 +8,17 @@ public interface PollTaskResponseOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.LHResponseCode code = 1;</code>
-   * @return The enum numeric value on the wire for code.
-   */
-  int getCodeValue();
-  /**
-   * <code>.littlehorse.LHResponseCode code = 1;</code>
-   * @return The code.
-   */
-  io.littlehorse.sdk.common.proto.LHResponseCode getCode();
-
-  /**
-   * <code>optional string message = 2;</code>
-   * @return Whether the message field is set.
-   */
-  boolean hasMessage();
-  /**
-   * <code>optional string message = 2;</code>
-   * @return The message.
-   */
-  java.lang.String getMessage();
-  /**
-   * <code>optional string message = 2;</code>
-   * @return The bytes for message.
-   */
-  com.google.protobuf.ByteString
-      getMessageBytes();
-
-  /**
-   * <code>optional .littlehorse.ScheduledTask result = 3;</code>
+   * <code>optional .littlehorse.ScheduledTask result = 1;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>optional .littlehorse.ScheduledTask result = 3;</code>
+   * <code>optional .littlehorse.ScheduledTask result = 1;</code>
    * @return The result.
    */
   io.littlehorse.sdk.common.proto.ScheduledTask getResult();
   /**
-   * <code>optional .littlehorse.ScheduledTask result = 3;</code>
+   * <code>optional .littlehorse.ScheduledTask result = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ScheduledTaskOrBuilder getResultOrBuilder();
 }

@@ -8,38 +8,17 @@ public interface DeleteExternalEventRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The wfRunId.
+   * <code>.littlehorse.ExternalEventId id = 1;</code>
+   * @return Whether the id field is set.
    */
-  java.lang.String getWfRunId();
+  boolean hasId();
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
+   * <code>.littlehorse.ExternalEventId id = 1;</code>
+   * @return The id.
    */
-  com.google.protobuf.ByteString
-      getWfRunIdBytes();
-
+  io.littlehorse.sdk.common.proto.ExternalEventId getId();
   /**
-   * <code>string external_event_def_name = 2;</code>
-   * @return The externalEventDefName.
+   * <code>.littlehorse.ExternalEventId id = 1;</code>
    */
-  java.lang.String getExternalEventDefName();
-  /**
-   * <code>string external_event_def_name = 2;</code>
-   * @return The bytes for externalEventDefName.
-   */
-  com.google.protobuf.ByteString
-      getExternalEventDefNameBytes();
-
-  /**
-   * <code>string guid = 3;</code>
-   * @return The guid.
-   */
-  java.lang.String getGuid();
-  /**
-   * <code>string guid = 3;</code>
-   * @return The bytes for guid.
-   */
-  com.google.protobuf.ByteString
-      getGuidBytes();
+  io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getIdOrBuilder();
 }

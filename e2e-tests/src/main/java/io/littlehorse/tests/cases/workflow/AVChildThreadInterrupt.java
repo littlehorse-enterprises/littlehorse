@@ -1,8 +1,7 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -15,13 +14,14 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class AVChildThreadInterrupt extends WorkflowLogicTest {
 
-    public AVChildThreadInterrupt(LHClient client, LHWorkerConfig workerConfig) {
+    public AVChildThreadInterrupt(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -73,12 +73,14 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
         return Arrays.asList(new AVSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         return Arrays.asList(
                 runWithNoInterrupts(client), interruptChild(client), interruptParent(client), interruptBoth(client));
     }
 
-    private String runWithNoInterrupts(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String runWithNoInterrupts(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client, Arg.of("parent-int", 0));
         Thread.sleep(1000 * 3);
         assertStatus(client, wfRunId, LHStatus.COMPLETED);
@@ -89,7 +91,8 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
         return wfRunId;
     }
 
-    private String interruptChild(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String interruptChild(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client, Arg.of("parent-int", 0));
 
         sendEvent(client, wfRunId, CHILD_EVENT, 10, null);
@@ -110,7 +113,8 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
         return wfRunId;
     }
 
-    private String interruptParent(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String interruptParent(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client, Arg.of("parent-int", 0));
 
         sendEvent(client, wfRunId, PARENT_EVENT, 10, null);
@@ -132,7 +136,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
         return wfRunId;
     }
 
-    private String interruptBoth(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String interruptBoth(LHPublicApiBlockingStub client) throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client, Arg.of("parent-int", 0));
 
         sendEvent(client, wfRunId, PARENT_EVENT, 10, null);

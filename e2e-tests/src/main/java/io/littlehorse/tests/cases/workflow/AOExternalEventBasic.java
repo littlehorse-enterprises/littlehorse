@@ -1,11 +1,11 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.StopWfRunRequest;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -14,12 +14,13 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class AOExternalEventBasic extends WorkflowLogicTest {
 
-    public AOExternalEventBasic(LHClient client, LHWorkerConfig workerConfig) {
+    public AOExternalEventBasic(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -40,7 +41,8 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         return Arrays.asList(new AOSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         return Arrays.asList(
                 sendEventBeforeWfRun(client),
                 sendEventAfterWfRun(client),
@@ -48,7 +50,8 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
                 dontSendEvent(client));
     }
 
-    private String sendEventBeforeWfRun(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String sendEventBeforeWfRun(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         String wfRunId = generateGuid();
         ExternalEventId extEvtId = sendEvent(client, wfRunId, "ao-my-event", "evt-content", null);
         Thread.sleep(10);
@@ -66,7 +69,8 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         return wfRunId;
     }
 
-    private String sendEventAfterWfRun(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String sendEventAfterWfRun(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         String wfRunId = generateGuid();
         // here only difference is we run the workflow first
         runWf(wfRunId, client);
@@ -90,7 +94,8 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         return wfRunId;
     }
 
-    private String sendTwoEventsBefore(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String sendTwoEventsBefore(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         String wfRunId = generateGuid();
         ExternalEventId extEvtIdOne = sendEvent(client, wfRunId, "ao-my-event", "evt-content", null);
         ExternalEventId extEvtIdTwo = sendEvent(client, wfRunId, "ao-my-event", "evt-content-two", null);
@@ -114,14 +119,17 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         return wfRunId;
     }
 
-    private String dontSendEvent(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String dontSendEvent(LHPublicApiBlockingStub client) throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client);
         Thread.sleep(500);
         // TODO: Inspect the node run a bit
         assertStatus(client, wfRunId, LHStatus.RUNNING);
 
         // This is so that we can delete it in the cleanup() method.
-        client.stopWfRun(wfRunId, 0);
+        client.stopWfRun(StopWfRunRequest.newBuilder()
+                .setWfRunId(wfRunId)
+                .setThreadRunNumber(0)
+                .build());
         return wfRunId;
     }
 }

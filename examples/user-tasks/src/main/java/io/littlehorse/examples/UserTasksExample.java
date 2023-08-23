@@ -1,9 +1,8 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
@@ -132,7 +131,7 @@ public class UserTasksExample {
         return props;
     }
 
-    public LHTaskWorker getTaskWorker(LHWorkerConfig config) {
+    public LHTaskWorker getTaskWorker(LHWorkerConfig config) throws IOException {
         EmailSender executable = new EmailSender();
         LHTaskWorker worker = new LHTaskWorker(executable, "send-email", config);
 
@@ -141,15 +140,15 @@ public class UserTasksExample {
         return worker;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         new UserTasksExample().doMain();
     }
 
-    public void doMain() throws IOException, LHApiError {
+    public void doMain() throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
+        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();
@@ -176,12 +175,12 @@ public class UserTasksExample {
             new ItemRequestForm(),
             IT_REQUEST_FORM
         );
-        client.putUserTaskDef(requestForm.compile(), true);
+        client.putUserTaskDef(requestForm.compile());
         UserTaskSchema approvalForm = new UserTaskSchema(
             new ApprovalForm(),
             APPROVAL_FORM
         );
-        client.putUserTaskDef(approvalForm.compile(), true);
+        client.putUserTaskDef(approvalForm.compile());
 
         // Register a workflow if it does not exist
         if (workflow.doesWfSpecExist(client)) {

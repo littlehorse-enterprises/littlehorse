@@ -8,20 +8,17 @@ public interface DeleteWfSpecRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string name = 1;</code>
-   * @return The name.
+   * <code>.littlehorse.WfSpecId id = 1;</code>
+   * @return Whether the id field is set.
    */
-  java.lang.String getName();
+  boolean hasId();
   /**
-   * <code>string name = 1;</code>
-   * @return The bytes for name.
+   * <code>.littlehorse.WfSpecId id = 1;</code>
+   * @return The id.
    */
-  com.google.protobuf.ByteString
-      getNameBytes();
-
+  io.littlehorse.sdk.common.proto.WfSpecId getId();
   /**
-   * <code>int32 version = 2;</code>
-   * @return The version.
+   * <code>.littlehorse.WfSpecId id = 1;</code>
    */
-  int getVersion();
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getIdOrBuilder();
 }

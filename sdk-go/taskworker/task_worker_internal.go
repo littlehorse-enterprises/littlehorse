@@ -29,7 +29,7 @@ func (tw *LHTaskWorker) registerTaskDef(ignoreAlreadyExistsError bool) error {
 		})
 	}
 
-	_, err := tw.client.PutTaskDef(ptd, ignoreAlreadyExistsError)
+	_, err := (*tw.grpcStub).PutTaskDef(context.Background(), ptd)
 	return err
 }
 
@@ -47,14 +47,14 @@ func (tw *LHTaskWorker) close() error {
 // ///////////////////////////////////////////////////////////
 type serverConnection struct {
 	manager        *serverConnectionManager
-	host           *model.HostInfo
+	host           *model.LHHostInfo
 	running        bool
 	pollTaskClient *model.LHPublicApi_PollTaskClient
 	grpcClient     *model.LHPublicApiClient
 }
 
 func newServerConnection(
-	manager *serverConnectionManager, host *model.HostInfo,
+	manager *serverConnectionManager, host *model.LHHostInfo,
 ) (*serverConnection, error) {
 	grpcClient, err := manager.tw.config.GetGrpcClientForHost(
 		host.Host + ":" + strconv.Itoa(int(host.Port)),
@@ -99,7 +99,7 @@ func newServerConnection(
 				)
 				manager.submitTaskForExecution(task, out.grpcClient)
 			} else {
-				log.Default().Print("Didn't get task: " + *pollTaskReply.Message)
+				log.Default().Print("Didn't get task")
 			}
 
 			if out.running {
@@ -186,17 +186,9 @@ func (m *serverConnectionManager) start() {
 			},
 		)
 		if err != nil {
-			fmt.Println("Closing connection, heartbeat failed: " + err.Error())
+			fmt.Println("Closing Task Worker since heartbeat failed: " + err.Error())
 			m.close()
 			return
-		}
-
-		if reply.Code != model.LHResponseCode_OK {
-			log.Println("Got a bad response, but ignoring it: " + *reply.Message)
-			// each 'serverConnection' will close itself if it can't talk to LH
-
-			time.Sleep(time.Duration(time.Second * 5))
-			continue
 		}
 
 		for _, host := range reply.YourHosts {
@@ -233,7 +225,7 @@ func (m *serverConnectionManager) start() {
 
 }
 
-func (m *serverConnectionManager) isAlreadyRunning(host *model.HostInfo) bool {
+func (m *serverConnectionManager) isAlreadyRunning(host *model.LHHostInfo) bool {
 	for _, connection := range m.connections {
 		if connection.host.Host == host.Host && connection.host.Port == host.Port {
 			return true
@@ -243,7 +235,7 @@ func (m *serverConnectionManager) isAlreadyRunning(host *model.HostInfo) bool {
 }
 
 func (m *serverConnectionManager) shouldBeRunning(
-	conn *serverConnection, hosts []*model.HostInfo,
+	conn *serverConnection, hosts []*model.LHHostInfo,
 ) bool {
 	for _, host := range hosts {
 		if conn.host.Host == host.Host && conn.host.Port == host.Port {

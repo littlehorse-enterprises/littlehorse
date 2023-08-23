@@ -1,9 +1,8 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
@@ -13,13 +12,14 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class AGConditionalsEquals extends WorkflowLogicTest {
 
-    public AGConditionalsEquals(LHClient client, LHWorkerConfig workerConfig) {
+    public AGConditionalsEquals(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -50,8 +50,8 @@ public class AGConditionalsEquals extends WorkflowLogicTest {
         });
     }
 
-    private String assertThatFails(LHClient client, Object lhs, Object rhs)
-            throws TestFailure, InterruptedException, LHApiError {
+    private String assertThatFails(LHPublicApiBlockingStub client, Object lhs, Object rhs)
+            throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client, Arg.of("input", new InputObj(lhs, rhs)));
         Thread.sleep(100);
         assertStatus(client, wfRunId, LHStatus.ERROR);
@@ -62,7 +62,8 @@ public class AGConditionalsEquals extends WorkflowLogicTest {
         return Arrays.asList(new AGSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         return Arrays.asList(
                 runWithInputsAndCheckPath(client, Map.of("lhs", 1, "rhs", 2), true, false),
                 runWithInputsAndCheckPath(client, Map.of("lhs", 2, "rhs", 2), true, true),
