@@ -21,12 +21,22 @@ const width=936;
 const height=900;
 
 const conditionsRender = (cond:any) => {
-    let left=`${cond.condition.left.variableName}${cond.condition.left.jsonPath ? `.jsonPath(${cond.condition.left.jsonPath})` : ''}`;
+    console.log('cond',cond)
+    let left=``;
+    if(cond?.condition?.left){
+        left=`${cond.condition.left.variableName}${cond.condition.left.jsonPath ? `.jsonPath(${cond.condition.left.jsonPath})` : ''}`;
+    }
     let right=''
-    if( cond.condition.right.literalValue.type==='BOOL') right = cond.condition.right.literalValue.bool
-    if( cond.condition.right.literalValue.type==='INT') right = cond.condition.right.literalValue.int
-    if( cond.condition.right.literalValue.type==='STR') right = cond.condition.right.literalValue.str
-    return `${left} ${conditions[cond.condition.comparator]} ${right}`
+    if(cond?.condition?.right){
+        if( cond.condition.right.literalValue.type==='BOOL') right = cond.condition.right.literalValue.bool
+        if( cond.condition.right.literalValue.type==='INT') right = cond.condition.right.literalValue.int
+        if( cond.condition.right.literalValue.type==='STR') right = cond.condition.right.literalValue.str
+    }
+    let comparator=''
+    if(cond?.condition?.comparator){
+        comparator=conditions[cond.condition.comparator];
+    }
+    return `${left} ${comparator} ${right}`
 }
 let nodes:any[] = [];
   nodes.push([width / 2, boxHeight / 1.5]);
