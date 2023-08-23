@@ -1,5 +1,6 @@
 package io.littlehorse.test;
 
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.util.Arg;
@@ -19,7 +20,7 @@ public class AbstractVerifier implements Verifier {
     protected final List<WfRunVerifier.Step> steps = new ArrayList<>();
 
     public AbstractVerifier(
-            LHPublicApiBlockingStubTestWrapper lhClientTestWrapper, Workflow workflow, Collection<Arg> workflowArgs) {
+            LHClientTestWrapper lhClientTestWrapper, Workflow workflow, Collection<Arg> workflowArgs) {
         this.lhClientTestWrapper = lhClientTestWrapper;
         this.workflow = workflow;
         this.workflowArgs = workflowArgs;
@@ -31,9 +32,11 @@ public class AbstractVerifier implements Verifier {
             lhClientTestWrapper.registerWfSpec(workflow);
             WfSpec wfSpec = Awaitility.await().until(() -> lhClientTestWrapper.getWfSpec(workflow), Objects::nonNull);
             String wfId = UUID.randomUUID().toString();
+
             Awaitility.await()
-                    .ignoreException(LHApiError.class)
+                    .ignoreException(StatusRuntimeException.class)
                     .until(() -> lhClientTestWrapper.runWf(wfSpec, wfId, workflowArgs));
+
             WfRun wfRun = Awaitility.await().until(() -> lhClientTestWrapper.getWfRun(wfId), Objects::nonNull);
             steps.forEach(step -> step.execute(wfRun.getId()));
         } catch (Exception e) {

@@ -20,7 +20,7 @@ import org.awaitility.Awaitility;
 public class WfRunVerifier extends AbstractVerifier {
 
     public WfRunVerifier(LHPublicApiBlockingStub lhClient, Workflow workflow, Collection<Arg> workflowArgs) {
-        super(new LHClientTestWrapper(LHPublicApiBlockingStub), workflow, workflowArgs);
+        super(new LHClientTestWrapper(lhClient), workflow, workflowArgs);
     }
 
     public WfRunVerifier thenVerifyTaskRun(int threadRunNumber, int nodeRunNumber, Consumer<TaskRun> matcher) {
