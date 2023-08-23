@@ -62,7 +62,7 @@ class Bump:
         if self.current.prerelease:
             if release:
                 raise ValueError(
-                    "Current version is a prerelease option 'release' is not"
+                    "Current version is a prerelease, option 'release' is not"
                     " allowed, pass 'prerelease' or empty"
                 )
             if prerelease:
@@ -74,14 +74,14 @@ class Bump:
                     else:
                         raise ValueError(
                             "It's not possible to bump to a lower"
-                            " version 'alpha' < 'beta' < 'rc'"
+                            " version, 'alpha' < 'beta' < 'rc'"
                         )
                 return next_version.bump_prerelease(prerelease)
             return next_version.finalize_version()
 
         if not release:
             raise ValueError(
-                "You have to provide an option 'release' or both"
+                "You have to provide an option 'release', or both"
                 " 'release' and 'prerelease'"
             )
 
@@ -152,7 +152,7 @@ class Bump:
             self.run_command("git push --tags")
         except Exception as e:
             self.console.print(f"[red]ERROR![/] [orange3]{e}[/]")
-            self.run_command("git checkout " + str(project_path))
+            self.run_command(f"git checkout {project_path}")
             sys.exit(1)
 
 

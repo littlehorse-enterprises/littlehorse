@@ -29,7 +29,7 @@ class TestLHConfig(unittest.TestCase):
             bump.next_version(None, "rc")
         self.assertEqual(
             "You have to provide an option 'release'"
-            " or both 'release' and 'prerelease'",
+            ", or both 'release' and 'prerelease'",
             str(exception_context.exception),
         )
 
@@ -41,7 +41,7 @@ class TestLHConfig(unittest.TestCase):
             bump.next_version("minor", None)
 
         self.assertEqual(
-            "Current version is a prerelease option 'release'"
+            "Current version is a prerelease, option 'release'"
             " is not allowed, pass 'prerelease' or empty",
             str(exception_context.exception),
         )
@@ -105,7 +105,7 @@ class TestLHConfig(unittest.TestCase):
     def test_raise_error_if_bump_lower_prerelease(self):
         bump = Bump()
         bump.current = Version.parse("0.1.0-rc.1")
-        msg = "It's not possible to bump to a lower version 'alpha' < 'beta' < 'rc'"
+        msg = "It's not possible to bump to a lower version, 'alpha' < 'beta' < 'rc'"
 
         with self.assertRaises(ValueError) as exception_context:
             bump.next_version(None, "alpha")
