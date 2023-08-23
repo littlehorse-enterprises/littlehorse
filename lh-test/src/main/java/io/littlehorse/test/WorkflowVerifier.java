@@ -7,13 +7,13 @@ import java.util.List;
 
 public class WorkflowVerifier {
 
-    private final LHClient lhClient;
+    private final LHPublicApiBlockingStub lhClient;
 
     public WorkflowVerifier(LHPublicApiBlockingStub lhClient) {
         this.lhClient = lhClient;
     }
 
     public WfRunVerifier prepareRun(Workflow workflow, Arg... args) {
-        return new WfRunVerifier(LHPublicApiBlockingStub, workflow, List.of(args));
+        return new WfRunVerifier(lhClient, workflow, List.of(args));
     }
 }
