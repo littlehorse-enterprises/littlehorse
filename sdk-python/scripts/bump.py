@@ -145,6 +145,11 @@ class Bump:
                 toml.dump(toml_data, f)
 
             # commit changes
+            self.run_command("git add --all")
+            self.run_command(f"git commit -m '[skip main] New release {next_version}'")
+            self.run_command(f"git tag {next_version}")
+            self.run_command("git push origin master")
+            self.run_command("git push --tags")
         except Exception as e:
             self.console.print(f"[red]ERROR![/] [orange3]{e}[/]")
             self.run_command("git checkout " + str(project_path))
