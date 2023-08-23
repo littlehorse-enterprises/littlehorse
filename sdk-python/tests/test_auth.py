@@ -86,3 +86,7 @@ class TestGrpcAuth(unittest.TestCase):
             ]
         )
         self.assertIsNot(token1, token2)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -7,7 +7,7 @@ from littlehorse.model.service_pb2 import VariableTypePb, VariableValuePb
 from littlehorse.utils import extract_value, parse_value
 
 
-class UtilsTest(unittest.TestCase):
+class TestUtils(unittest.TestCase):
     faker = Faker()
 
     def test_extract_value(self):
@@ -180,3 +180,7 @@ class UtilsTest(unittest.TestCase):
                 json_arr=json.dumps([vars(v) for v in value]),
             ),
         )
+
+
+if __name__ == "__main__":
+    unittest.main()

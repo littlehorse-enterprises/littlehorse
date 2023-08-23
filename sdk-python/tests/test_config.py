@@ -6,7 +6,7 @@ import uuid
 from littlehorse.config import LHConfig
 
 
-class TestLHConfig(unittest.TestCase):
+class TestConfig(unittest.TestCase):
     def tearDown(self):
         os.environ.clear()
 
@@ -158,3 +158,7 @@ class TestLHConfig(unittest.TestCase):
             grpc_auth_class_mock.return_value
         )
         grpc_package_mock.secure_channel.assert_called_once_with("localhost:2023", ANY)
+
+
+if __name__ == "__main__":
+    unittest.main()

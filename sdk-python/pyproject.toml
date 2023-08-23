@@ -27,6 +27,10 @@ grpcio-tools = "^1.56"
 types-protobuf = "^4.24"
 types-requests = "^2.31"
 faker = "^19.3"
+semver = "^3.0"
+click = "^8.1"
+toml = "^0.10"
+rich = "^13.5"
 
 [build-system]
 requires = ["poetry-core"]
@@ -43,7 +47,7 @@ line-length = 88
 exclude = ["littlehorse/model/"]
 
 [tool.mypy]
-exclude = ["littlehorse/model/", "tests/"]
+exclude = ["littlehorse/model/", "tests/", "scripts/"]
 strict = true
 ignore_missing_imports = true
 disallow_untyped_calls = false

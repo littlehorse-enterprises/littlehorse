@@ -17,7 +17,7 @@ from littlehorse.model.service_pb2 import (
 from littlehorse.worker import LHTask, LHWorkerContext
 
 
-class LHWorkerContextTest(unittest.TestCase):
+class TestWorkerContext(unittest.TestCase):
     def test_idempotency_key(self):
         wf_id = str(uuid.uuid4())
         task_id = str(uuid.uuid4())
@@ -62,7 +62,7 @@ class LHWorkerContextTest(unittest.TestCase):
         self.assertEqual(ctx.node_run_id(), node_run_user)
 
 
-class LHTaskTest(unittest.TestCase):
+class TestTask(unittest.TestCase):
     def test_raise_exception_if_it_is_not_a_callable(self):
         not_a_callable = 3
         with self.assertRaises(TypeError) as exception_context:
@@ -299,3 +299,7 @@ class LHTaskTest(unittest.TestCase):
             VariableTypePb.BYTES: bytes,
         }.items():
             test(variable_type, callable_type)
+
+
+if __name__ == "__main__":
+    unittest.main()
