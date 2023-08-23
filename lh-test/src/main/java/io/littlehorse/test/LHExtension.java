@@ -3,6 +3,7 @@ package io.littlehorse.test;
 import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestInitializationException;
+import io.littlehorse.test.internal.ExternalTestBootstrapper;
 import io.littlehorse.test.internal.StandaloneTestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
 import java.util.List;
@@ -20,7 +21,7 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
     public void beforeAll(ExtensionContext context) {
         getStore(context)
                 .getOrComputeIfAbsent(
-                        LH_TEST_CONTEXT, s -> new TestContext(new StandaloneTestBootstrapper()), TestContext.class);
+                        LH_TEST_CONTEXT, s -> new TestContext(new ExternalTestBootstrapper()), TestContext.class);
     }
 
     private ExtensionContext.Store getStore(ExtensionContext context) {

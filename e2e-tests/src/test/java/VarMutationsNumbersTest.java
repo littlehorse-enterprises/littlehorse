@@ -1,3 +1,5 @@
+import static org.junit.jupiter.api.Assertions.*;
+
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -10,34 +12,36 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 @LHTest
 public class VarMutationsNumbersTest {
 
-
     private WorkflowVerifier workflowVerifier;
+
     @LHWorkflow("test-mutation-workflow")
     private Workflow workflow;
 
     @Test
-    void shouldApplyMathMutationsOverNumberVariables(){
+    void shouldApplyMathMutationsOverNumberVariables() {
         Arg myInt = Arg.of("my-int", 5);
         Arg myDouble = Arg.of("my-double", 24.2);
-        workflowVerifier.prepareRun(workflow, myInt, myDouble)
+        workflowVerifier
+                .prepareRun(workflow, myInt, myDouble)
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "my-int", variableValue -> assertEquals(13, variableValue.getInt()))
                 .thenVerifyVariable(0, "my-double", variableValue -> assertEquals(24.2, variableValue.getDouble()))
-                .thenVerifyVariable(0, "my-other-int", variableValue -> assertEquals((int) (24.2 / 13), variableValue.getInt()))
+                .thenVerifyVariable(
+                        0, "my-other-int", variableValue -> assertEquals((int) (24.2 / 13), variableValue.getInt()))
                 .start();
     }
 
     @Test
-    void shouldRollbackVariablesWhenMutationsFailed(){
+    void shouldRollbackVariablesWhenMutationsFailed() {
         Arg myInt = Arg.of("my-int", -8);
         Arg myDouble = Arg.of("my-double", 10.0);
-        workflowVerifier.prepareRun(workflow, myInt, myDouble)
+        workflowVerifier
+                .prepareRun(workflow, myInt, myDouble)
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyVariable(0, "my-int", variableValue -> assertEquals(-8, variableValue.getInt()))
                 .thenVerifyVariable(0, "my-double", variableValue -> assertEquals(10.0, variableValue.getDouble()))
@@ -65,10 +69,9 @@ public class VarMutationsNumbersTest {
             thread.mutate(myOtherInt, VariableMutationType.DIVIDE, myInt);
         });
     }
+
     @LHTaskMethod("ad-simple")
     public Integer obiWan() {
         return 10;
     }
-
-
 }
