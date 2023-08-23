@@ -94,6 +94,7 @@ test {
 
 task e2e(type: Test, dependsOn: compileJava){
     useJUnitPlatform()
+    maxParallelForks = Runtime.runtime.availableProcessors()
     filter {
         includeTestsMatching "io.littlehorse.e2e.**"
     }

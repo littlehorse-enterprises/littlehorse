@@ -44,7 +44,7 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
             }
             store.put(worker.getTaskDefName(), worker);
             worker.registerTaskDef(true);
-            Awaitility.await().ignoreException(StatusRuntimeException.class).ignoreException(LHMisconfigurationException.class).until(() -> {
+            Awaitility.await().ignoreException(LHMisconfigurationException.class).until(() -> {
                 try {
                     worker.start();
                     return true;
