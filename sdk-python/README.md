@@ -28,7 +28,6 @@ poetry install
 ## Run tests
 
 ```
-cd sdk-python
 poetry shell
 python -m unittest -v
 ```

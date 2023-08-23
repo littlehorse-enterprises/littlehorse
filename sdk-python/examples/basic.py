@@ -26,7 +26,7 @@ async def greeting(name: str, ctx: LHWorkerContext) -> str:
     return greeting
 
 
-async def describe_car(car: dict[str, Any], ctx: LHWorkerContext) -> None:
+async def describe_car(car: dict[str, Any]) -> None:
     print(f"You drive a {car['brand']} model {car['model']}")
 
 
