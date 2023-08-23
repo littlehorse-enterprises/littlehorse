@@ -6,7 +6,6 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
-import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;

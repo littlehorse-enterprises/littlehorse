@@ -1,5 +1,8 @@
 package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.CoreGetable;
@@ -22,7 +25,6 @@ import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-
 import java.util.*;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
@@ -43,9 +45,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
 @ExtendWith(MockitoExtension.class)
 public class GetableStorageManagerTest {
 
@@ -59,13 +58,15 @@ public class GetableStorageManagerTest {
 
     private RocksDBWrapper localStoreWrapper;
 
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
+    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
+            new MockProcessorContext<>();
     private GetableStorageManager getableStorageManager;
 
     @BeforeEach
     void setup() {
         localStoreWrapper = new RocksDBWrapper(store, lhConfig);
-        getableStorageManager = new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mock());
+        getableStorageManager =
+                new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mock());
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
@@ -128,7 +129,8 @@ public class GetableStorageManagerTest {
         getableStorageManager.put(variable);
         getableStorageManager.commit();
 
-        assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class)).isNotNull();
+        assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class))
+                .isNotNull();
 
         final var keys = getAllKeys(store);
         assertThat(keys)
@@ -157,13 +159,15 @@ public class GetableStorageManagerTest {
         getableStorageManager.put(variable);
         getableStorageManager.commit();
 
-        assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class)).isNotNull();
+        assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class))
+                .isNotNull();
 
         final var keys = getAllKeys(store);
         assertThat(keys)
                 .hasSize(2)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
-                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_ThisShouldBeLocal"));
+                .anyMatch(key -> key.contains(
+                        "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_ThisShouldBeLocal"));
     }
 
     @Test
@@ -196,8 +200,7 @@ public class GetableStorageManagerTest {
                 .toList();
         assertThat(repartitionCommands).hasSize(1);
         RepartitionCommand repartitionCommand = repartitionCommands.get(0);
-        assertThat(repartitionCommand.getSubCommand().getPartitionKey())
-                .isEqualTo(expectedTagKey);
+        assertThat(repartitionCommand.getSubCommand().getPartitionKey()).isEqualTo(expectedTagKey);
     }
 
     @Test
@@ -220,7 +223,8 @@ public class GetableStorageManagerTest {
         getableStorageManager.put(variable);
         getableStorageManager.commit();
 
-        assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class)).isNotNull();
+        assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class))
+                .isNotNull();
 
         final var keys = getAllKeys(store);
         assertThat(keys)
@@ -259,8 +263,7 @@ public class GetableStorageManagerTest {
                 .toList();
         assertThat(repartitionCommands).hasSize(1);
         RepartitionCommand repartitionCommand = repartitionCommands.get(0);
-        assertThat(repartitionCommand.getSubCommand().getPartitionKey())
-                .isEqualTo(expectedTagKey);
+        assertThat(repartitionCommand.getSubCommand().getPartitionKey()).isEqualTo(expectedTagKey);
     }
 
     @Test
@@ -283,7 +286,8 @@ public class GetableStorageManagerTest {
         getableStorageManager.put(variable);
         getableStorageManager.commit();
 
-        assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class)).isNotNull();
+        assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class))
+                .isNotNull();
 
         final var keys = getAllKeys(store);
         assertThat(keys)
@@ -322,8 +326,7 @@ public class GetableStorageManagerTest {
                 .toList();
         assertThat(repartitionCommands).hasSize(1);
         RepartitionCommand repartitionCommand = repartitionCommands.get(0);
-        assertThat(repartitionCommand.getSubCommand().getPartitionKey())
-                .isEqualTo(expectedStoreKey);
+        assertThat(repartitionCommand.getSubCommand().getPartitionKey()).isEqualTo(expectedStoreKey);
     }
 
     private List<RepartitionCommand> remoteTagsCreated() {
@@ -362,7 +365,8 @@ public class GetableStorageManagerTest {
         getableStorageManager.put(variable);
         getableStorageManager.commit();
 
-        assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class)).isNotNull();
+        assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class))
+                .isNotNull();
 
         final var keys = getAllKeys(store);
         assertThat(keys)
@@ -371,7 +375,8 @@ public class GetableStorageManagerTest {
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.name_test"))
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.age_20"))
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.brand_Ford"))
-                .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.model_Escape"));
+                .anyMatch(
+                        key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.model_Escape"));
     }
 
     @Test
@@ -400,7 +405,8 @@ public class GetableStorageManagerTest {
         getableStorageManager.put(variable);
         getableStorageManager.commit();
 
-        assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class)).isNotNull();
+        assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class))
+                .isNotNull();
 
         final var storedKeys = getAllKeys(store);
         assertThat(storedKeys)
@@ -415,15 +421,14 @@ public class GetableStorageManagerTest {
                 .map(RepartitionSubCommand::getPartitionKey)
                 .toList();
 
-        assertThat(remoteTagsCreated).containsExactlyInAnyOrder("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.model_Escape");
+        assertThat(remoteTagsCreated)
+                .containsExactlyInAnyOrder("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.model_Escape");
     }
 
     @ParameterizedTest
     @MethodSource("provideNodeRunObjects")
     void storeNodeRun(
-            NodeRunModel nodeRunModel,
-            List<Pair<String, TagStorageType>> expectedTagKeys,
-            String expectedStoreKey) {
+            NodeRunModel nodeRunModel, List<Pair<String, TagStorageType>> expectedTagKeys, String expectedStoreKey) {
 
         List<String> expectedLocalTagKeys = expectedTagKeys.stream()
                 .filter(stringTagStorageTypePbPair -> stringTagStorageTypePbPair.getValue() == TagStorageType.LOCAL)
@@ -439,10 +444,9 @@ public class GetableStorageManagerTest {
         getableStorageManager.commit();
 
         final var storedKeys = getAllKeys(store);
-        assertThat(storedKeys)
-                .hasSize(expectedLocalTagKeys.size() + 1)
-                .anyMatch(key -> key.contains(expectedStoreKey));
-        expectedLocalTagKeys.forEach(expectedTagKey -> assertThat(storedKeys).anyMatch(key -> key.contains(expectedStoreKey)));
+        assertThat(storedKeys).hasSize(expectedLocalTagKeys.size() + 1).anyMatch(key -> key.contains(expectedStoreKey));
+        expectedLocalTagKeys.forEach(
+                expectedTagKey -> assertThat(storedKeys).anyMatch(key -> key.contains(expectedStoreKey)));
 
         List<String> remoteTags = remoteTagsCreated().stream()
                 .map(RepartitionCommand::getSubCommand)
@@ -454,13 +458,10 @@ public class GetableStorageManagerTest {
     private static Stream<Arguments> provideNodeRunObjects() {
         NodeRunModel nodeRunModel = TestUtil.nodeRun();
         nodeRunModel.setType(NodeRun.NodeTypeCase.TASK);
-        return Stream.of(
-                Arguments.of(
-                        nodeRunModel,
-                        List.of(Pair.of("4/__status_RUNNING__type_TASK", TagStorageType.LOCAL)),
-                        "4/0000000/1/0"
-                )
-        );
+        return Stream.of(Arguments.of(
+                nodeRunModel,
+                List.of(Pair.of("4/__status_RUNNING__type_TASK", TagStorageType.LOCAL)),
+                "4/0000000/1/0"));
     }
 
     private static Stream<Arguments> provideGetableObjectsAndIds() {
@@ -489,7 +490,6 @@ public class GetableStorageManagerTest {
                 Arguments.of(wfRunModel, 3),
                 Arguments.of(taskRun, 2),
                 Arguments.of(variable, 1),
-                Arguments.of(externalEvent, 2)
-        );
+                Arguments.of(externalEvent, 2));
     }
 }
