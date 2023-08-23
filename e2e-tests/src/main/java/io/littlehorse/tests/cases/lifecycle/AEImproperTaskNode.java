@@ -1,20 +1,32 @@
 package io.littlehorse.tests.cases.lifecycle;
 
-import io.littlehorse.sdk.client.LHClient;
+import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
+import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
+import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
 import io.littlehorse.sdk.common.proto.Failure;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
+import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
+import io.littlehorse.sdk.common.proto.NodeRunId;
+import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRun;
+import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.tests.Test;
+import java.io.IOException;
 import java.util.Map;
 
 public class AEImproperTaskNode extends Test {
@@ -25,7 +37,7 @@ public class AEImproperTaskNode extends Test {
     private String successWfRun;
     private LHTaskWorker worker;
 
-    public AEImproperTaskNode(LHClient client, LHWorkerConfig config) {
+    public AEImproperTaskNode(LHPublicApiBlockingStub client, LHWorkerConfig config) {
         super(client, config);
     }
 
@@ -40,28 +52,37 @@ public class AEImproperTaskNode extends Test {
     """;
     }
 
-    public void test() throws LHApiError, InterruptedException {
+    public void test() throws InterruptedException, IOException {
         worker = new LHTaskWorker(new AETaskNodeValidationWorker(), TASK_DEF_NAME, workerConfig);
         worker.registerTaskDef(true);
 
         // First, verify that we get an error when trying to create a WfRun that
         // has a definitive variable mismatch.
-        LHApiError caught = null;
+        StatusRuntimeException caught = null;
         try {
             new WorkflowImpl("ae-invalid-asdf", thread -> {
                         thread.execute(TASK_DEF_NAME, "not-an-int");
                     })
                     .registerWfSpec(client);
-        } catch (LHApiError exn) {
+        } catch (StatusRuntimeException exn) {
             caught = exn;
         }
         if (caught == null
-                || caught.getCode() != LHResponseCode.VALIDATION_ERROR
+                || caught.getStatus().getCode() != Code.INVALID_ARGUMENT
                 || !caught.getMessage().contains("needs to be INT")) {
             throw new RuntimeException("Should have got task input var type error!");
         }
+
         // check to ensure the WfSpec wasn't actually saved
-        if (client.getWfSpec("ae-invalid-adf", null) != null) {
+        caught = null;
+        try {
+            client.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder()
+                    .setName("ae-invalid-adf")
+                    .build());
+        } catch (StatusRuntimeException exn) {
+            caught = exn;
+        }
+        if (caught == null) {
             throw new RuntimeException("shouldn't have saved invalid wfSpec!");
         }
 
@@ -81,15 +102,15 @@ public class AEImproperTaskNode extends Test {
         Thread.sleep(200); // Wait for the data to propagate
         worker.start();
 
-        this.failWfRun = client.runWf(VALID_WF_SPEC_NAME, null, null, Arg.of("var", Map.of("theField", "not-an-int")));
-        this.successWfRun = client.runWf(VALID_WF_SPEC_NAME, null, null, Arg.of("var", Map.of("theField", 1776)));
+        this.failWfRun = runWf(VALID_WF_SPEC_NAME, Arg.of("var", Map.of("theField", "not-an-int")));
+        this.successWfRun = runWf(VALID_WF_SPEC_NAME, Arg.of("var", Map.of("theField", 1776)));
         Thread.sleep(120);
 
-        WfRun wfRun = client.getWfRun(failWfRun);
+        WfRun wfRun = client.getWfRun(WfRunId.newBuilder().setId(failWfRun).build());
         if (wfRun.getStatus() != LHStatus.ERROR) {
             throw new RuntimeException("Wf " + failWfRun + " should have failed!");
         }
-        NodeRun nodeRun = client.getNodeRun(failWfRun, 0, 2);
+        NodeRun nodeRun = getNodeRun(failWfRun, 0, 2);
         Failure failure = nodeRun.getFailures(0);
         if (!failure.getFailureName().equals("VAR_SUB_ERROR")) {
             throw new RuntimeException("Expected VAR_SUB_ERROR!");
@@ -99,20 +120,48 @@ public class AEImproperTaskNode extends Test {
         }
 
         // Now verify the other one succeeded.
-        if (client.getWfRun(successWfRun).getStatus() != LHStatus.COMPLETED) {
+        if (client.getWfRun(WfRunId.newBuilder().setId(successWfRun).build()).getStatus() != LHStatus.COMPLETED) {
             throw new RuntimeException("Wf " + successWfRun + " should have succeeded!");
         }
     }
 
-    public void cleanup() throws LHApiError {
-        try {
-            client.deleteWfRun(successWfRun);
-            client.deleteWfRun(failWfRun);
-            client.deleteTaskDef(TASK_DEF_NAME);
-            client.deleteWfSpec(VALID_WF_SPEC_NAME, 0);
-            worker.close();
-        } catch (Exception exn) {
+    public void cleanup() {
+        client.deleteWfRun(DeleteWfRunRequest.newBuilder()
+                .setId(WfRunId.newBuilder().setId(successWfRun))
+                .build());
+        client.deleteWfRun(DeleteWfRunRequest.newBuilder()
+                .setId(WfRunId.newBuilder().setId(failWfRun))
+                .build());
+        client.deleteWfSpec(DeleteWfSpecRequest.newBuilder()
+                .setId(WfSpecId.newBuilder().setName(VALID_WF_SPEC_NAME))
+                .build());
+
+        client.deleteTaskDef(DeleteTaskDefRequest.newBuilder()
+                .setId(TaskDefId.newBuilder().setName(TASK_DEF_NAME))
+                .build());
+        worker.close();
+    }
+
+    private String runWf(String wfSpecName, Arg... args) {
+        RunWfRequest.Builder b = RunWfRequest.newBuilder().setWfSpecName(wfSpecName);
+
+        for (Arg arg : args) {
+            try {
+                b.putVariables(arg.name, LHLibUtil.objToVarVal(arg.value));
+            } catch (LHSerdeError exn) {
+                throw new RuntimeException(exn);
+            }
         }
+
+        return client.runWf(b.build()).getId();
+    }
+
+    private NodeRun getNodeRun(String wfRunId, int threadRunNumber, int position) {
+        return client.getNodeRun(NodeRunId.newBuilder()
+                .setWfRunId(wfRunId)
+                .setThreadRunNumber(threadRunNumber)
+                .setPosition(position)
+                .build());
     }
 }
 

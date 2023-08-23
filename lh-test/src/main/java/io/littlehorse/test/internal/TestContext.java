@@ -1,11 +1,13 @@
 package io.littlehorse.test.internal;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +15,14 @@ import java.util.List;
 public class TestContext {
 
     private final LHWorkerConfig lhWorkerConfig;
-    private final LHClient lhClient;
+    private final LHPublicApiBlockingStub lhClient;
 
     public TestContext(TestBootstrapper bootstrapper) {
         this.lhWorkerConfig = bootstrapper.getWorkerConfig();
         this.lhClient = bootstrapper.getLhClient();
     }
 
-    public List<LHTaskWorker> discoverTaskWorkers(Object testInstance) {
+    public List<LHTaskWorker> discoverTaskWorkers(Object testInstance) throws IOException {
         List<LHTaskWorker> workers = new ArrayList<>();
         List<LHTaskMethod> annotatedMethods =
                 ReflectionUtil.findAnnotatedMethods(testInstance.getClass(), LHTaskMethod.class);
@@ -57,8 +59,9 @@ public class TestContext {
     }
 
     private void injectWorkflowExecutors(Object testInstance) {
-        new FieldDependencyInjector(() -> new WorkflowVerifier(lhClient), testInstance, field -> field.getType()
-                        .isAssignableFrom(WorkflowVerifier.class))
+        new FieldDependencyInjector(
+                        () -> new WorkflowVerifier(lhClient), testInstance, field -> field.getType()
+                                .isAssignableFrom(WorkflowVerifier.class))
                 .inject();
     }
 }

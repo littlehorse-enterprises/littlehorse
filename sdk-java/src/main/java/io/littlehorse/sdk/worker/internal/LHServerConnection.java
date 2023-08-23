@@ -2,7 +2,7 @@ package io.littlehorse.sdk.worker.internal;
 
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.HostInfo;
+import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
@@ -15,13 +15,13 @@ import lombok.extern.slf4j.Slf4j;
 public class LHServerConnection implements Closeable, StreamObserver<PollTaskResponse> {
 
     private LHServerConnectionManager manager;
-    private HostInfo host;
+    private LHHostInfo host;
 
     private boolean stillRunning;
     private StreamObserver<PollTaskRequest> pollClient;
     private LHPublicApiStub stub;
 
-    public LHServerConnection(LHServerConnectionManager manager, HostInfo host) throws IOException {
+    public LHServerConnection(LHServerConnectionManager manager, LHHostInfo host) throws IOException {
         stillRunning = true;
         this.manager = manager;
         this.host = host;
@@ -59,8 +59,7 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
 
             log.info("Scheduled task on threadpool for wfRun {}", wfRunId);
         } else {
-            log.error(
-                    "Didn't successfully claim task: {} {}", taskToDo.getCode().toString(), taskToDo.getMessage());
+            log.error("Didn't successfully claim task, likely due to server restart.");
         }
 
         if (stillRunning) {
@@ -72,11 +71,11 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
         }
     }
 
-    public HostInfo getHostInfo() {
+    public LHHostInfo getHostInfo() {
         return host;
     }
 
-    public boolean isSameAs(HostInfo other) {
+    public boolean isSameAs(LHHostInfo other) {
         return (this.host.getHost().equals(other.getHost()) && this.host.getPort() == other.getPort());
     }
 

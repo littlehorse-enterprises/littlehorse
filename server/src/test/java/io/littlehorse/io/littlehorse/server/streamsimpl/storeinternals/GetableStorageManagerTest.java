@@ -2,29 +2,29 @@ package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.meta.JsonIndexModel;
-import io.littlehorse.common.model.meta.ThreadSpecModel;
-import io.littlehorse.common.model.meta.VariableDefModel;
-import io.littlehorse.common.model.meta.WfSpecModel;
-import io.littlehorse.common.model.wfrun.ExternalEventModel;
-import io.littlehorse.common.model.wfrun.NodeRunModel;
-import io.littlehorse.common.model.wfrun.VariableModel;
-import io.littlehorse.common.model.wfrun.WfRunModel;
-import io.littlehorse.common.model.wfrun.taskrun.TaskRunModel;
+import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
+import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
+import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
+import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
-import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
-import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
-import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
-import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
-import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
-import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
+import io.littlehorse.server.streams.store.LHIterKeyValue;
+import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
+import io.littlehorse.server.streams.storeinternals.LHStoreWrapper;
+import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.storeinternals.index.TagsCache;
+import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -75,12 +75,12 @@ public class GetableStorageManagerTest {
 
     @ParameterizedTest
     @MethodSource("provideGetableObjectsAndIds")
-    void storeNewGetableWithTags(Getable<?> getable, String storeKey, int expectedTagsCount) {
+    void storeNewGetableWithTags(AbstractGetable<?> getable, String storeKey, int expectedTagsCount) {
         geTableStorageManager.store(getable);
         Assertions.assertThat(localStoreWrapper.get(storeKey, getable.getClass()))
                 .isNotNull();
-        TagsCache tagsCacheResult =
-                localStoreWrapper.getTagsCache(getable.getStoreKey(), (Class<? extends Getable<?>>) getable.getClass());
+        TagsCache tagsCacheResult = localStoreWrapper.getTagsCache(
+                getable.getStoreKey(), (Class<? extends AbstractGetable<?>>) getable.getClass());
         Assertions.assertThat(tagsCacheResult).isNotNull();
         Assertions.assertThat(tagsCacheResult.getTagIds()).hasSize(expectedTagsCount);
     }
@@ -141,7 +141,7 @@ public class GetableStorageManagerTest {
         variable.setName("variableName");
         variable.getValue().setType(VariableType.BOOL);
         variable.getValue().setBoolVal(true);
-        variable.getWfSpecModel().getThreadSpecs().forEach((s, threadSpec) -> {
+        variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.BOOL);
@@ -164,7 +164,7 @@ public class GetableStorageManagerTest {
         variable.setName("variableName");
         variable.getValue().setType(VariableType.STR);
         variable.getValue().setStrVal("ThisShouldBeLocal");
-        variable.getWfSpecModel().getThreadSpecs().forEach((s, threadSpec) -> {
+        variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.STR);
@@ -188,7 +188,7 @@ public class GetableStorageManagerTest {
         variable.setName("variableName");
         variable.getValue().setType(VariableType.STR);
         variable.getValue().setStrVal("ThisShouldBeRemote");
-        variable.getWfSpecModel().getThreadSpecs().forEach((s, threadSpec) -> {
+        variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.STR);
@@ -219,7 +219,7 @@ public class GetableStorageManagerTest {
         variable.setName("variableName");
         variable.getValue().setType(VariableType.INT);
         variable.getValue().setIntVal(20L);
-        variable.getWfSpecModel().getThreadSpecs().forEach((s, threadSpec) -> {
+        variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.INT);
@@ -243,7 +243,7 @@ public class GetableStorageManagerTest {
         variable.setName("variableName");
         variable.getValue().setType(VariableType.INT);
         variable.getValue().setIntVal(20L);
-        variable.getWfSpecModel().getThreadSpecs().forEach((s, threadSpec) -> {
+        variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.INT);
@@ -274,7 +274,7 @@ public class GetableStorageManagerTest {
         variable.setName("variableName");
         variable.getValue().setType(VariableType.DOUBLE);
         variable.getValue().setDoubleVal(21.0);
-        variable.getWfSpecModel().getThreadSpecs().forEach((s, threadSpec) -> {
+        variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.DOUBLE);
@@ -298,7 +298,7 @@ public class GetableStorageManagerTest {
         variable.setName("variableName");
         variable.getValue().setType(VariableType.DOUBLE);
         variable.getValue().setDoubleVal(21.0);
-        variable.getWfSpecModel().getThreadSpecs().forEach((s, threadSpec) -> {
+        variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.DOUBLE);
@@ -340,7 +340,7 @@ public class GetableStorageManagerTest {
         variable.getValue().setType(VariableType.JSON_OBJ);
         variable.getValue()
                 .setJsonObjVal(Map.of("name", "test", "age", 20, "car", Map.of("brand", "Ford", "model", "Escape")));
-        variable.getWfSpecModel().getThreadSpecs().forEach((s, threadSpec) -> {
+        variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.JSON_OBJ);
@@ -377,7 +377,7 @@ public class GetableStorageManagerTest {
         variable.getValue().setType(VariableType.JSON_OBJ);
         variable.getValue()
                 .setJsonObjVal(Map.of("name", "test", "age", 20, "car", Map.of("brand", "Ford", "model", "Escape")));
-        variable.getWfSpecModel().getThreadSpecs().forEach((s, threadSpec) -> {
+        variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.JSON_OBJ);
@@ -465,7 +465,7 @@ public class GetableStorageManagerTest {
         variable.setName("variableName");
         variable.getValue().setType(VariableType.STR);
         variable.getValue().setStrVal("ThisShouldBeLocal");
-        variable.getWfSpecModel().getThreadSpecs().forEach((s, threadSpec) -> {
+        variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             VariableDefModel variableDef1 = new VariableDefModel();
             variableDef1.setName("variableName");
             variableDef1.setType(VariableType.STR);

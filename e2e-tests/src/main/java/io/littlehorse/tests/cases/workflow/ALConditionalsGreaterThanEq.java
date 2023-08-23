@@ -1,9 +1,8 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -11,12 +10,13 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class ALConditionalsGreaterThanEq extends WorkflowLogicTest {
 
-    public ALConditionalsGreaterThanEq(LHClient client, LHWorkerConfig workerConfig) {
+    public ALConditionalsGreaterThanEq(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -48,7 +48,8 @@ public class ALConditionalsGreaterThanEq extends WorkflowLogicTest {
         return Arrays.asList(new ALSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         return Arrays.asList(
                 runWithInputsAndCheckPath(client, new ALInputObj(1, 2), true, false),
                 runWithInputsAndCheckPath(client, new ALInputObj(1, 1), true, true),

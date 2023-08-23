@@ -1,6 +1,6 @@
 package io.littlehorse.sdk.common.exception;
 
-public class TaskSchemaMismatchError extends Exception {
+public class TaskSchemaMismatchError extends RuntimeException {
 
     private String message;
 

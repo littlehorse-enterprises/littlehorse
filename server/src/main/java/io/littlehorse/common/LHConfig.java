@@ -16,7 +16,7 @@ import io.littlehorse.server.listener.ListenerProtocol;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.listener.TlsConfig;
 import io.littlehorse.server.listener.TlsConfig.TlsConfigBuilder;
-import io.littlehorse.server.streamsimpl.ServerTopology;
+import io.littlehorse.server.streams.ServerTopology;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -195,12 +195,15 @@ public class LHConfig extends ConfigBase {
     }
 
     // Internal topics are manually created because:
-    // 1.- It makes it possible to manage/create topics using an external tool (e.g terraform,
+    // 1.- It makes it possible to manage/create topics using an external tool (e.g
+    // terraform,
     // strimzi, etc.)
     // 2.- It allows to explicitly manage the configuration of the topics
-    // Note: Kafka streams doesn't support disabling automatic internal topic creation. Thus,
+    // Note: Kafka streams doesn't support disabling automatic internal topic
+    // creation. Thus,
     // internal topics
-    // that are not explicitly created here will be automatically created by Kafka Stream. Please
+    // that are not explicitly created here will be automatically created by Kafka
+    // Stream. Please
     // make sure to
     // manually create all internal topics. Kafka has opened KIP-698 to solve this.
     public static List<NewTopic> getAllTopics(String clusterId, short replicationFactor, int clusterPartitions) {
@@ -337,9 +340,9 @@ public class LHConfig extends ConfigBase {
         if (clientId == null || clientSecret == null || authorizationServer == null) {
             throw new LHMisconfigurationException(
                     """
-                OAuth configuration called but not provided.
-                Check missing client id, client secret or authorization server endpoint
-                """);
+                            OAuth configuration called but not provided.
+                            Check missing client id, client secret or authorization server endpoint
+                            """);
         }
 
         try {

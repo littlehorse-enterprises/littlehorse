@@ -39,7 +39,6 @@ compileJava {
 
 test {
     useJUnitPlatform()
-    maxParallelForks = Runtime.runtime.availableProcessors()
     testLogging {
         events 'passed', 'skipped', 'failed'
         exceptionFormat = 'full'

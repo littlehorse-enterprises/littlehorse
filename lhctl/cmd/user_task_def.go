@@ -163,8 +163,10 @@ UserTaskDef to delete.
 			getGlobalClient(cmd).DeleteUserTaskDef(
 				context.Background(),
 				&model.DeleteUserTaskDefRequest{
-					Name:    name,
-					Version: int32(version),
+					Id: &model.UserTaskDefId{
+						Name:    name,
+						Version: int32(version),
+					},
 				}),
 		)
 	},

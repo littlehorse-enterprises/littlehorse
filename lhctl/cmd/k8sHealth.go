@@ -11,6 +11,7 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 // k8sHealthCmd represents the k8sHealth command
@@ -31,7 +32,7 @@ to report whether the pod is currently ready to accept requests.`,
 
 		resp, err := getGlobalClient(cmd).HealthCheck(
 			context.Background(),
-			&model.HealthCheckRequest{},
+			&emptypb.Empty{},
 		)
 		common.PrintResp(resp, err)
 

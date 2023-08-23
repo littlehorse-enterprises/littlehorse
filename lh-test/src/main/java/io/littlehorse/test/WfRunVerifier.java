@@ -1,6 +1,6 @@
 package io.littlehorse.test;
 
-import io.littlehorse.sdk.client.LHClient;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
@@ -18,7 +18,7 @@ import java.util.function.Function;
 
 public class WfRunVerifier extends AbstractVerifier {
 
-    public WfRunVerifier(LHClient lhClient, Workflow workflow, Collection<Arg> workflowArgs) {
+    public WfRunVerifier(LHPublicApiBlockingStub lhClient, Workflow workflow, Collection<Arg> workflowArgs) {
         super(new LHClientTestWrapper(lhClient), workflow, workflowArgs);
     }
 

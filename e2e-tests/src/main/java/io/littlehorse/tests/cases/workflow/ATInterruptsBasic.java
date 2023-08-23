@@ -1,8 +1,7 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -14,12 +13,13 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class ATInterruptsBasic extends WorkflowLogicTest {
 
-    public ATInterruptsBasic(LHClient client, LHWorkerConfig workerConfig) {
+    public ATInterruptsBasic(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -51,7 +51,8 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
         return Arrays.asList(new ATSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         return Arrays.asList(
                 runWithoutInterrupt(client),
                 sendEventBefore(client),
@@ -60,7 +61,8 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
                 invalidEventTypeShouldFail(client));
     }
 
-    private String runWithoutInterrupt(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String runWithoutInterrupt(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         String id = runWf(client, Arg.of("my-int", 5));
         assertStatus(client, id, LHStatus.RUNNING);
         Thread.sleep(3 * 1000);
@@ -69,7 +71,8 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
         return id;
     }
 
-    private String sendEventBefore(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String sendEventBefore(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         String id = generateGuid();
 
         // post an event before running the wf
@@ -83,7 +86,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
         return id;
     }
 
-    private String twoInterrupts(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String twoInterrupts(LHPublicApiBlockingStub client) throws TestFailure, InterruptedException, IOException {
         String id = runWf(client, Arg.of("my-int", 5));
 
         sendEvent(client, id, INTERRUPT_NAME, 10, null);
@@ -104,7 +107,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
         return id;
     }
 
-    private String oneInterrupt(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String oneInterrupt(LHPublicApiBlockingStub client) throws TestFailure, InterruptedException, IOException {
         String id = runWf(client, Arg.of("my-int", 5));
 
         sendEvent(client, id, INTERRUPT_NAME, 10, null);
@@ -117,7 +120,8 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
         return id;
     }
 
-    private String invalidEventTypeShouldFail(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String invalidEventTypeShouldFail(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         String id = runWf(client, Arg.of("my-int", 5));
         sendEvent(client, id, INTERRUPT_NAME, "bad input should crash", null);
         assertStatus(client, id, LHStatus.ERROR);

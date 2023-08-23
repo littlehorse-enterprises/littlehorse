@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
@@ -13,9 +14,11 @@ import (
 func main() {
 	_, client := examples.LoadConfigAndClient()
 
-	client.PutExternalEventDef(&model.PutExternalEventDefRequest{
-		Name: "update-tally",
-	}, true)
+	(*client).PutExternalEventDef(context.Background(),
+		&model.PutExternalEventDefRequest{
+			Name: "update-tally",
+		},
+	)
 
 	wf := wflib.NewWorkflow(interrupt.InterruptWorkflow, "interrupt-example")
 	putWf, err := wf.Compile()
@@ -23,7 +26,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	resp, err := client.PutWfSpec(putWf)
+	resp, err := (*client).PutWfSpec(context.Background(), putWf)
 	if err != nil {
 		log.Fatal(err)
 	}

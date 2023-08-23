@@ -117,7 +117,9 @@ var deleteTaskDefCmd = &cobra.Command{
 			getGlobalClient(cmd).DeleteTaskDef(
 				context.Background(),
 				&model.DeleteTaskDefRequest{
-					Name: name,
+					Id: &model.TaskDefId{
+						Name: name,
+					},
 				}),
 		)
 	},

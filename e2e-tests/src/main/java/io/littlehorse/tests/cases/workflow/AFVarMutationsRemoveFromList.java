@@ -1,8 +1,7 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -13,12 +12,13 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class AFVarMutationsRemoveFromList extends WorkflowLogicTest {
 
-    public AFVarMutationsRemoveFromList(LHClient client, LHWorkerConfig workerConfig) {
+    public AFVarMutationsRemoveFromList(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -42,7 +42,8 @@ public class AFVarMutationsRemoveFromList extends WorkflowLogicTest {
         return Arrays.asList(new AFSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         // Workflow removes number 5, then removes "hello", then removes
         // index 3. That should throw index out of bounds exception here
         List<?> wfOneInput = Arrays.asList(5, "hello", 3, 4);

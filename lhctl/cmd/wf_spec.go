@@ -170,9 +170,12 @@ WfSpec to delete.
 			getGlobalClient(cmd).DeleteWfSpec(
 				context.Background(),
 				&model.DeleteWfSpecRequest{
-					Name:    name,
-					Version: int32(version),
-				}),
+					Id: &model.WfSpecId{
+						Name:    name,
+						Version: int32(version),
+					},
+				},
+			),
 		)
 	},
 }

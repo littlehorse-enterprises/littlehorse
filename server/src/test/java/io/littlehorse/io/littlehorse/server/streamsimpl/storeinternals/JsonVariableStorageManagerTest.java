@@ -1,19 +1,21 @@
 package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 
+import static org.mockito.Mockito.mock;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.meta.JsonIndexModel;
-import io.littlehorse.common.model.meta.VariableDefModel;
-import io.littlehorse.common.model.wfrun.VariableModel;
-import io.littlehorse.common.model.wfrun.VariableValueModel;
+import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
-import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
-import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
+import io.littlehorse.server.streams.store.LHIterKeyValue;
+import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
+import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
@@ -44,10 +46,10 @@ public class JsonVariableStorageManagerTest {
     @Mock
     private LHConfig lhConfig;
 
-    private LHStoreWrapper localStoreWrapper;
+    private RocksDBWrapper storeWrapper;
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
-    private GetableStorageManager geTableStorageManager;
+    private GetableStorageManager getableStorageManager;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
@@ -64,19 +66,20 @@ public class JsonVariableStorageManagerTest {
                 new JsonIndexModel("$.tags", IndexType.LOCAL_INDEX),
                 new JsonIndexModel("$.balance", IndexType.LOCAL_INDEX));
         variableDef.setJsonIndices(indices);
-        variable.getWfSpecModel().getThreadSpecs().forEach((s, threadSpec) -> {
+        variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
             threadSpec.setVariableDefs(List.of(variableDef));
         });
         VariableValueModel variableValue = new VariableValueModel();
         variableValue.setType(VariableType.JSON_OBJ);
         variableValue.setJsonObjVal(map);
         variable.setValue(variableValue);
-        geTableStorageManager.store(variable);
+        getableStorageManager.put(variable);
+        getableStorageManager.commit();
     }
 
     private void initializeDependencies() {
-        localStoreWrapper = new LHStoreWrapper(store, lhConfig);
-        geTableStorageManager = new GetableStorageManager(localStoreWrapper, lhConfig, mockProcessorContext);
+        storeWrapper = new RocksDBWrapper(store, lhConfig);
+        getableStorageManager = new GetableStorageManager(storeWrapper, mockProcessorContext, lhConfig, mock(), mock());
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
@@ -86,8 +89,7 @@ public class JsonVariableStorageManagerTest {
 
     private Stream<LHIterKeyValue<Tag>> localTagScan(String keyPrefix) {
         return StreamSupport.stream(
-                Spliterators.spliteratorUnknownSize(
-                        localStoreWrapper.prefixScan(keyPrefix, Tag.class), Spliterator.ORDERED),
+                Spliterators.spliteratorUnknownSize(storeWrapper.prefixScan(keyPrefix, Tag.class), Spliterator.ORDERED),
                 false);
     }
 

@@ -1,0 +1,80 @@
+syntax = "proto3";
+package littlehorse;
+
+option java_multiple_files = true;
+option java_package = "io.littlehorse.common.proto";
+
+import "google/protobuf/timestamp.proto";
+
+
+enum LHStoreType {
+    CORE = 0;
+    METADATA = 1;
+    REPARTITION = 2;
+}
+
+enum StoreableType {
+    STORED_GETABLE = 0;
+    SCHEDULED_TASK = 1;
+    WF_METRIC_UPDATE = 2;
+    TASK_METRIC_UPDATE = 3;
+    LH_TIMER = 4;
+    TAG = 5;
+}
+
+enum GetableClassEnum {
+    TASK_DEF = 0;
+    EXTERNAL_EVENT_DEF = 1;
+    WF_SPEC = 2;
+    WF_RUN = 3;
+    NODE_RUN = 4;
+    VARIABLE = 5;
+    EXTERNAL_EVENT = 6;
+    TASK_DEF_METRICS = 7;
+    WF_SPEC_METRICS = 8;
+    TASK_WORKER_GROUP = 9;
+    USER_TASK_DEF = 10;
+    TASK_RUN = 11;
+    USER_TASK_RUN = 12;
+}
+
+message AttributePb {
+    string key = 1;
+    string val = 2;
+}
+
+enum TagStorageType {
+    LOCAL = 0;
+    REMOTE = 1;
+}
+
+message TagPb {
+    // The following info is also stored in the key of the Tag in the store.
+    GetableClassEnum object_type = 1;
+    repeated AttributePb attributes = 2;
+    string described_object_id = 3;
+    google.protobuf.Timestamp created = 4;
+
+    // The following is not stored in the key.
+    TagStorageType tag_type = 5;
+
+    string store_key = 7;
+
+    // Observation: it's possible that we could optimize by removing fields 1-4
+    // and only relying upon the store key. However, that would complicate
+    // the code a bit and may just be premature optimization.
+}
+
+message TagsCachePb {
+    message CachedTagPb {
+        string id = 1;
+        bool is_remote = 2;
+    }
+    repeated CachedTagPb cached_tags = 1;
+}
+
+message StoredGetablePb {
+    TagsCachePb index_cache = 1;
+    bytes getable_payload = 2;
+    GetableClassEnum type = 3;
+}
