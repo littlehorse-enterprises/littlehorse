@@ -158,7 +158,8 @@ public class BackendInternalComms implements Closeable {
             ObjectIdModel<?, U, T> objectId, Class<T> clazz) throws LHSerdeError {
 
         if (objectId.getPartitionKey().isEmpty()) {
-            throw new IllegalArgumentException("Can't get object without partition key; metadata objects have their own store");
+            throw new IllegalArgumentException(
+                    "Can't get object without partition key; metadata objects have their own store");
         }
 
         String storeName = objectId.getStore().getStoreName();
@@ -170,14 +171,14 @@ public class BackendInternalComms implements Closeable {
             return getObjectLocal(objectId, clazz, metadata.partition());
         } else {
             return LHSerializable.fromBytes(
-                getInternalClient(metadata.activeHost())
-                        .getObject(GetObjectRequest.newBuilder()
-                                .setObjectType(objectId.getType())
-                                .setObjectId(objectId.toString())
-                                .build())
-                        .getResponse()
-                        .toByteArray(),
-                clazz);
+                    getInternalClient(metadata.activeHost())
+                            .getObject(GetObjectRequest.newBuilder()
+                                    .setObjectType(objectId.getType())
+                                    .setObjectId(objectId.toString())
+                                    .build())
+                            .getResponse()
+                            .toByteArray(),
+                    clazz);
         }
     }
 
@@ -332,8 +333,10 @@ public class BackendInternalComms implements Closeable {
     private <U extends Message, T extends AbstractGetable<U>> T getObjectLocal(
             ObjectIdModel<?, U, T> objectId, Class<T> clazz, int partition) {
 
-        ReadOnlyRocksDBWrapper store = getStore(partition, false, objectId.getStore().getStoreName());
-        StoredGetable<U, T> storeResult = (StoredGetable<U, T>) store.get(objectId.getStoreableKey(), StoredGetable.class);
+        ReadOnlyRocksDBWrapper store =
+                getStore(partition, false, objectId.getStore().getStoreName());
+        StoredGetable<U, T> storeResult =
+                (StoredGetable<U, T>) store.get(objectId.getStoreableKey(), StoredGetable.class);
         if (storeResult == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified " + clazz.getSimpleName());
         }
@@ -447,7 +450,6 @@ public class BackendInternalComms implements Closeable {
      * EMPLOYEE_TODO: Failover to Standby replicas if the leader is down.
      */
     public InternalScanResponse doScan(InternalScan search) {
-        System.out.println(search);
         if (search.partitionKey != null && search.type == ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN) {
             return objectIdPrefixScan(search);
         } else if (search.partitionKey != null && search.type == ScanBoundaryCase.TAG_SCAN) {
@@ -575,8 +577,6 @@ public class BackendInternalComms implements Closeable {
 
         if (resultType == ScanResultTypePb.OBJECT) {
             StoredGetable<?, ?> storedGetable = (StoredGetable<?, ?>) next.getValue();
-
-            System.out.println(storedGetable.getStoredObject());
 
             return ByteString.copyFrom(storedGetable.getStoredObject().toBytes());
 

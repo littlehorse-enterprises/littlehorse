@@ -76,15 +76,6 @@ public class ReadOnlyRocksDBWrapper {
                 rocksdb.prefixScan(compositePrefix, Serdes.String().serializer()), cls);
     }
 
-    // public <U extends Message, T extends AbstractGetable<U>> LHKeyValueIterator<StoredGetable<U, T>>
-    // getablePrefixScan(
-    //         String prefix, Class<T> cls) {
-    //     String realPrefix = Storeable.getSubstorePrefix(StoreableType.STORED_GETABLE)
-    //             + AbstractGetable.getTypeEnum(cls).getNumber() + "/";
-
-    //     throw new NotImplementedException();
-    // }
-
     public <U extends Message, T extends Storeable<U>> T getLastFromPrefix(String prefix, Class<T> cls) {
 
         LHKeyValueIterator<T> iterator = null;
