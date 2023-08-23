@@ -271,6 +271,8 @@ public class GetableStorageManager {
             }
         }
 
+        uncommittedChanges.clear();
+
         // Note: no need to call uncommittedChanges.clear() because on every
         // Command, we create a completely new GetableStorageManager.
     }
