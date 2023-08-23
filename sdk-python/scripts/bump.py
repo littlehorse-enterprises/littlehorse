@@ -178,6 +178,7 @@ def main(release, prerelease, debug):
                 (it returns 0.1.0-alpha.2)
             python -m scripts.bump
                 (it returns 0.1.0)
+    \b
         If current version is a 'release' (0.1.0):
             python -m scripts.bump --release minor
                 (it returns 0.2.0)
