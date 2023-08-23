@@ -2,8 +2,10 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
+import io.grpc.Status;
+import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -144,7 +146,7 @@ public class SearchWfRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
         List<String> searchAttributeKeys =
                 getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
         return new WfRunModel()
@@ -159,14 +161,15 @@ public class SearchWfRunRequestModel
     }
 
     @Override
-    public void validate() throws LHValidationError {
-        if (!supportedCriteriaCases().contains(type)) {
-            throw new LHValidationError("Search case not supported yet");
-        }
+    public LHStore getStore(ReadOnlyMetadataStore metadataStore) {
+        return indexTypeForSearch(metadataStore) == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
     }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
+        if (!supportedCriteriaCases().contains(type)) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Search case not supported yet");
+        }
         return new TagScanBoundaryStrategy(
                 searchAttributeString,
                 Optional.ofNullable(LHUtil.fromProtoTs(getEarliestStart())),

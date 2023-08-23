@@ -124,7 +124,7 @@ public class Tag extends Storeable<TagPb> {
         this();
         this.objectType = AbstractGetable.getTypeEnum((Class<? extends AbstractGetable<?>>) getable.getClass());
         createdAt = getable.getCreatedAt();
-        describedObjectId = getable.getObjectId().getStoreableKey();
+        describedObjectId = getable.getObjectId().toString();
         this.tagType = type;
 
         for (Pair<String, String> p : atts) {

@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
-	"github.com/ztrue/tracerr"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
@@ -41,8 +40,6 @@ func GetWfRunIdFromTaskSource(source *model.TaskRunSource) *string {
 
 func PrintResp(resp proto.Message, err error) {
 	if err != nil {
-		tracerr.PrintSourceColor(err)
-		fmt.Printf("Failed to connect: " + err.Error())
 		log.Fatal(err)
 	}
 

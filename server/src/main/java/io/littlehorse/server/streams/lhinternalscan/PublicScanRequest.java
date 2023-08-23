@@ -2,10 +2,12 @@ package io.littlehorse.server.streams.lhinternalscan;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
@@ -31,6 +33,12 @@ public abstract class PublicScanRequest<
 
     public abstract GetableClassEnum getObjectType();
 
+    public ScanResultTypePb getResultType() {
+        return ScanResultTypePb.OBJECT_ID;
+    }
+
+    public abstract LHStore getStore(ReadOnlyMetadataStore metaStore);
+
     public int getLimit() {
         if (limit == null) {
             limit = 100;
@@ -38,13 +46,18 @@ public abstract class PublicScanRequest<
         return limit;
     }
 
-    public InternalScan getInternalSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
+    public InternalScan getInternalSearch(ReadOnlyMetadataStore stores) throws LHApiException {
         SearchScanBoundaryStrategy searchScanBoundaryStrategy = getScanBoundary(getSearchAttributeString());
         getableSearch = new GetableSearchImpl(getObjectType(), searchScanBoundaryStrategy);
         InternalScan out = getableSearch.buildInternalScan(stores, indexTypeForSearch(stores));
         if (out.limit == 0) out.limit = getLimit();
         out.bookmark = bookmark;
+
         out.objectType = getObjectType();
+
+        out.resultType = getResultType();
+
+        out.storeName = getStore(stores).getStoreName();
         return out;
     }
 
@@ -58,10 +71,10 @@ public abstract class PublicScanRequest<
      *
      * @return The attribute string in the format:
      *         VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0
-     * @throws LHValidationError if there are invalid options in the input
+     * @throws LHApiException if there are invalid options in the input
      *                           arguments.
      */
-    public String getSearchAttributeString() throws LHValidationError {
+    public String getSearchAttributeString() throws LHApiException {
         return Tag.getAttributeString(getObjectType(), getSearchAttributes());
     }
 
@@ -72,10 +85,10 @@ public abstract class PublicScanRequest<
      *
      * @return {@link Attribute} containing attributes associated with the search
      *         operation.
-     * @throws LHValidationError if there are invalid options in the input
+     * @throws LHApiException if there are invalid options in the input
      *                           arguments.
      */
-    public List<Attribute> getSearchAttributes() throws LHValidationError {
+    public List<Attribute> getSearchAttributes() throws LHApiException {
         return List.of();
     }
 
@@ -83,16 +96,9 @@ public abstract class PublicScanRequest<
      * Returns the storage type to be used by this search operation.
      *
      * @return The storage type or null if not specified in the configuration.
-     * @throws LHValidationError if there are validation errors in the input.
+     * @throws LHApiException if there are validation errors in the input.
      */
-    public abstract TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError;
+    public abstract TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException;
 
-    /**
-     * Validate input parameters for the search operation
-     *
-     * @throws LHValidationError if there are validation errors in the input.
-     */
-    public abstract void validate() throws LHValidationError;
-
-    public abstract SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHValidationError;
+    public abstract SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException;
 }

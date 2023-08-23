@@ -1,10 +1,12 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.ListVariablesRequest;
 import io.littlehorse.sdk.common.proto.Variable;
@@ -37,15 +39,22 @@ public class ListVariablesRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
         return TagStorageType.LOCAL;
     }
 
     @Override
-    public void validate() throws LHValidationError {}
+    public ScanResultTypePb getResultType() {
+        return ScanResultTypePb.OBJECT;
+    }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         return new ObjectIdScanBoundaryStrategy(wfRunId);
+    }
+
+    @Override
+    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+        return LHStore.CORE;
     }
 }

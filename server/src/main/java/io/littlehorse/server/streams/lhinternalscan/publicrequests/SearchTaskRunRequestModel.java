@@ -2,8 +2,10 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
+import io.grpc.Status;
+import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -133,22 +135,24 @@ public class SearchTaskRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
         return TagStorageType.LOCAL;
     }
 
     @Override
-    public void validate() throws LHValidationError {}
+    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+        return LHStore.CORE;
+    }
 
     @Override
-    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHValidationError {
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException {
         if (type == TaskRunCriteriaCase.TASK_DEF || type == TaskRunCriteriaCase.STATUS_AND_TASK_DEF) {
             return new TagScanBoundaryStrategy(
                     searchAttributeString,
                     Optional.ofNullable(LHUtil.fromProtoTs(getEarliestStart())),
                     Optional.ofNullable(LHUtil.fromProtoTs(getLatestStart())));
         } else {
-            throw new LHValidationError("Unimplemented search type: " + type);
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Unimplemented search type: " + type);
         }
     }
 }

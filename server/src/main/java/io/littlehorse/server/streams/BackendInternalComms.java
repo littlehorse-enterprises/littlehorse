@@ -1,8 +1,5 @@
 package io.littlehorse.server.streams;
 
-import static io.littlehorse.common.model.AbstractGetable.getIdCls;
-import static io.littlehorse.common.model.getable.ObjectIdModel.fromString;
-
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
@@ -157,12 +154,12 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public <U extends Message, T extends AbstractGetable<U>> T getObject(
             ObjectIdModel<?, U, T> objectId, Class<T> clazz) throws LHSerdeError {
 
         if (objectId.getPartitionKey().isEmpty()) {
-            throw new IllegalArgumentException("Can't get object without partition key");
+            throw new IllegalArgumentException(
+                    "Can't get object without partition key; metadata objects have their own store");
         }
 
         String storeName = objectId.getStore().getStoreName();
@@ -171,19 +168,18 @@ public class BackendInternalComms implements Closeable {
                 storeName, objectId.getPartitionKey().get(), Serdes.String().serializer());
 
         if (metadata.activeHost().equals(thisHost)) {
-            ReadOnlyRocksDBWrapper store = getStore(metadata.partition(), false, storeName);
-            return ((StoredGetable<U, T>) store.get(objectId.getStoreableKey(), StoredGetable.class)).getStoredObject();
+            return getObjectLocal(objectId, clazz, metadata.partition());
+        } else {
+            return LHSerializable.fromBytes(
+                    getInternalClient(metadata.activeHost())
+                            .getObject(GetObjectRequest.newBuilder()
+                                    .setObjectType(objectId.getType())
+                                    .setObjectId(objectId.toString())
+                                    .build())
+                            .getResponse()
+                            .toByteArray(),
+                    clazz);
         }
-
-        return LHSerializable.fromBytes(
-                getInternalClient(metadata.activeHost())
-                        .getObject(GetObjectRequest.newBuilder()
-                                .setObjectType(objectId.getType())
-                                .setObjectId(objectId.toString())
-                                .build())
-                        .getResponse()
-                        .toByteArray(),
-                clazz);
     }
 
     public void waitForCommand(AbstractCommand<?> command, StreamObserver<WaitForCommandResponse> observer) {
@@ -333,6 +329,21 @@ public class BackendInternalComms implements Closeable {
         return channel;
     }
 
+    @SuppressWarnings("unchecked")
+    private <U extends Message, T extends AbstractGetable<U>> T getObjectLocal(
+            ObjectIdModel<?, U, T> objectId, Class<T> clazz, int partition) {
+
+        ReadOnlyRocksDBWrapper store =
+                getStore(partition, false, objectId.getStore().getStoreName());
+        StoredGetable<U, T> storeResult =
+                (StoredGetable<U, T>) store.get(objectId.getStoreableKey(), StoredGetable.class);
+        if (storeResult == null) {
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified " + clazz.getSimpleName());
+        }
+
+        return storeResult.getStoredObject();
+    }
+
     /*
      * Implements the internal_server.proto service, which is used
      * for communication between the LH servers to do distributed lookups etc.
@@ -341,7 +352,9 @@ public class BackendInternalComms implements Closeable {
 
         @Override
         public void getObject(GetObjectRequest request, StreamObserver<GetObjectResponse> observer) {
-            ObjectIdModel<?, ?, ?> id = fromString(request.getObjectId(), getIdCls(request.getObjectType()));
+            ObjectIdModel<?, ?, ?> id =
+                    ObjectIdModel.fromString(request.getObjectId(), AbstractGetable.getIdCls(request.getObjectType()));
+
             String storeName = id.getStore().getStoreName();
             ReadOnlyRocksDBWrapper store = getStore(request.getPartition(), false, storeName);
 
@@ -466,8 +479,8 @@ public class BackendInternalComms implements Closeable {
                     LHIterKeyValue<Tag> currentItem = tagScanResultIterator.next();
                     Tag matchingTag = currentItem.getValue();
 
-                    ObjectIdModel<?, ?, ?> matchingObjectId =
-                            fromString(matchingTag.getDescribedObjectId(), getIdCls(search.getObjectType()));
+                    ObjectIdModel<?, ?, ?> matchingObjectId = ObjectIdModel.fromString(
+                            matchingTag.getDescribedObjectId(), AbstractGetable.getIdCls(search.getObjectType()));
                     matchingObjectIds.add(ByteString.copyFrom(matchingObjectId.toBytes()));
 
                     if (matchingObjectIds.size() == search.getLimit()) {
@@ -495,7 +508,6 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private InternalScanResponse objectIdPrefixScanOnThisHost(InternalScan req) {
         int curLimit = req.limit;
         BookmarkPb reqBookmark = req.bookmark;
@@ -521,10 +533,10 @@ public class BackendInternalComms implements Closeable {
         String bookmarkKey = null;
         boolean brokenBecauseOutOfData = true;
 
-        try (LHKeyValueIterator<? super Storeable<?>> iter = store.range(
+        try (LHKeyValueIterator<?> iter = store.range(
                 StoredGetable.getRocksDBKey(startKey, req.getObjectType()),
                 StoredGetable.getRocksDBKey(endKey, req.getObjectType()),
-                Storeable.class)) {
+                StoredGetable.class)) {
 
             while (iter.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iter.next();
@@ -562,12 +574,21 @@ public class BackendInternalComms implements Closeable {
 
     private ByteString iterKeyValueToInternalScanResult(
             LHIterKeyValue<? extends Storeable<?>> next, ScanResultTypePb resultType, GetableClassEnum objectType) {
-        if (resultType == ScanResultTypePb.OBJECT) {
-            return ByteString.copyFrom(next.getValue().toBytes());
-        } else if (resultType == ScanResultTypePb.OBJECT_ID) {
-            Class<? extends ObjectIdModel<?, ?, ?>> idCls = getIdCls(objectType);
 
-            return ByteString.copyFrom(fromString(next.getKey(), idCls).toBytes());
+        if (resultType == ScanResultTypePb.OBJECT) {
+            StoredGetable<?, ?> storedGetable = (StoredGetable<?, ?>) next.getValue();
+
+            return ByteString.copyFrom(storedGetable.getStoredObject().toBytes());
+
+        } else if (resultType == ScanResultTypePb.OBJECT_ID) {
+            Class<? extends ObjectIdModel<?, ?, ?>> idCls = AbstractGetable.getIdCls(objectType);
+
+            // TODO: This is a leaky abstraction.
+            String storeableKey = next.getKey();
+            String objectIdStr = storeableKey.substring(storeableKey.indexOf("/") + 1);
+
+            return ByteString.copyFrom(
+                    ObjectIdModel.fromString(objectIdStr, idCls).toBytes());
         } else {
             throw new RuntimeException("Impossible: unknown result type");
         }
@@ -798,8 +819,8 @@ public class BackendInternalComms implements Closeable {
 
                 // Turn the ID String into the ObjectId structure, then serialize it
                 // to proto
-                Class<? extends ObjectIdModel<?, ?, ?>> idCls = getIdCls(objectType);
-                idsOut.add(fromString(next.getValue().describedObjectId, idCls)
+                Class<? extends ObjectIdModel<?, ?, ?>> idCls = AbstractGetable.getIdCls(objectType);
+                idsOut.add(ObjectIdModel.fromString(next.getValue().describedObjectId, idCls)
                         .toProto()
                         .build()
                         .toByteString());

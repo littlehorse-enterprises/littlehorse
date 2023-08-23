@@ -1,8 +1,10 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
+import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
@@ -113,7 +115,7 @@ public class SearchExternalEventRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
         List<String> searchAttributes =
                 getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
         List<GetableIndex<? extends AbstractGetable<?>>> indexConfigurations =
@@ -132,14 +134,22 @@ public class SearchExternalEventRequestModel
     }
 
     @Override
-    public void validate() throws LHValidationError {}
-
-    @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         if (type == ExtEvtCriteriaCase.WF_RUN_ID) {
             return new ObjectIdScanBoundaryStrategy(wfRunId);
         } else if (type.equals(ExtEvtCriteriaCase.EXTERNAL_EVENT_DEF_NAME_AND_STATUS)) {
             return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
+        } else {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Unrecognized search criteria: %s".formatted(type));
+        }
+    }
+
+    @Override
+    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+        if (type == ExtEvtCriteriaCase.WF_RUN_ID) {
+            return LHStore.CORE;
+        } else if (type.equals(ExtEvtCriteriaCase.EXTERNAL_EVENT_DEF_NAME_AND_STATUS)) {
+            return LHStore.REPARTITION;
         } else {
             throw new IllegalArgumentException("%s type is not supported yet".formatted(type));
         }

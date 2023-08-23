@@ -123,9 +123,11 @@ public abstract class WorkflowLogicTest extends Test {
                 for (LHTaskWorker worker : getWorkersFromExecutable(executable, workerConfig)) {
                     workers.add(worker);
                     worker.registerTaskDef(true);
+                    Thread.sleep(WAIT_TIME_BETWEEN_REGISTER);
+
                     worker.start();
                 }
-            } catch (IOException exn) {
+            } catch (IOException | InterruptedException exn) {
                 throw new RuntimeException(exn);
             }
         }

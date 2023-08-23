@@ -1,10 +1,12 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventList;
@@ -42,15 +44,22 @@ public class ListExternalEventsRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
         return TagStorageType.LOCAL;
     }
 
     @Override
-    public void validate() throws LHValidationError {}
-
-    @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         return new ObjectIdScanBoundaryStrategy(wfRunId);
+    }
+
+    @Override
+    public ScanResultTypePb getResultType() {
+        return ScanResultTypePb.OBJECT;
+    }
+
+    @Override
+    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+        return LHStore.CORE;
     }
 }

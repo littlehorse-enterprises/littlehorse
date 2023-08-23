@@ -2,8 +2,9 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -25,6 +26,11 @@ public class SearchTaskDefRequestModel
 
     public Class<SearchTaskDefRequest> getProtoBaseClass() {
         return SearchTaskDefRequest.class;
+    }
+
+    @Override
+    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+        return LHStore.GLOBAL_METADATA;
     }
 
     public GetableClassEnum getObjectType() {
@@ -64,12 +70,9 @@ public class SearchTaskDefRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
         return TagStorageType.LOCAL;
     }
-
-    @Override
-    public void validate() throws LHValidationError {}
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {

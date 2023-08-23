@@ -1,10 +1,12 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ListTaskMetricsRequest;
@@ -34,6 +36,11 @@ public class ListTaskMetricsRequestModel
         return ListTaskMetricsRequest.class;
     }
 
+    @Override
+    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+        return LHStore.REPARTITION;
+    }
+
     public ListTaskMetricsRequest.Builder toProto() {
         ListTaskMetricsRequest.Builder out = ListTaskMetricsRequest.newBuilder()
                 .setLastWindowStart(LHUtil.fromDate(lastWindowStart))
@@ -58,12 +65,14 @@ public class ListTaskMetricsRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
         return TagStorageType.LOCAL;
     }
 
     @Override
-    public void validate() throws LHValidationError {}
+    public ScanResultTypePb getResultType() {
+        return ScanResultTypePb.OBJECT;
+    }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {

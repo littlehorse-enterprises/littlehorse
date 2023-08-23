@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.lhinternalscan;
 
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
@@ -22,7 +22,7 @@ public class GetableSearchImpl implements GetableSearch {
 
     @Override
     public InternalScan buildInternalScan(ReadOnlyMetadataStore stores, TagStorageType tagStorageType)
-            throws LHValidationError {
+            throws LHApiException {
         InternalScan out = new InternalScan();
         out.objectType = getableClassEnum;
         if (isTagScan()) {
