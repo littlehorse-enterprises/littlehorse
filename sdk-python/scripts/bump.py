@@ -1,11 +1,14 @@
 from enum import Enum
+from pathlib import Path
 import sys
 import click
 from semver import Version
 import shlex
 import subprocess
 
+from jproperties import Properties
 from rich.console import Console
+import toml
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
@@ -90,7 +93,10 @@ class Bump:
         self.console.print(f"Current version: [blue]{self.current}[/]")
 
         try:
+            # get next version
             next_version = self.next_version(release, prerelease)
+
+            # get confirmation
             confirmation = self.console.input(
                 f"[bold]Do you want to release a new version [blue]{next_version}[/]"
                 " of LH :racehorse: ([green]yes[/]/[red]no[/])? [/]"
@@ -99,6 +105,28 @@ class Bump:
             if not confirmation.startswith("y"):
                 self.console.print("Aborting!")
                 sys.exit(0)
+
+            # save java version
+            java_properties_path = Path(
+                __file__, "../../../gradle.properties"
+            ).resolve()
+            java_properties = Properties()
+
+            with open(java_properties_path, "rb") as f:
+                java_properties.load(f, "utf-8")
+
+            java_properties["version"] = str(next_version)
+
+            with open(java_properties_path, "wb") as f:
+                java_properties.store(f, encoding="utf-8", timestamp=False)
+
+            # save python version
+            python_toml_path = Path(__file__, "../../pyproject.toml").resolve()
+            toml_data = toml.load(python_toml_path)
+            toml_data["tool"]["poetry"]["version"] = str(next_version)
+
+            with open(python_toml_path, "w") as f:
+                toml.dump(toml_data, f)
         except Exception as e:
             self.console.print(f"[red]ERROR![/] [orange3]{e}[/]")
 
@@ -137,10 +165,6 @@ def main(release, prerelease, debug):
     More info at https://github.com/python-semver/python-semver
     and https://semver.org/.
     """
-    if release is None and prerelease is None:
-        print_help()
-        sys.exit(0)
-
     bump = Bump(debug)
     bump.bump(release, prerelease)
 

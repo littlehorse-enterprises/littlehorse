@@ -1,15 +1,36 @@
+[build-system]
+requires = [ "poetry-core",]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry]
 name = "littlehorse-client"
 version = "0.1.0"
 description = "LittleHorse is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications"
-authors = ["LittleHorse Engineering <engineering@littlehorse.io>"]
-readme = "README.md"
+authors = [ "LittleHorse Engineering <engineering@littlehorse.io>",]
+readme = "../README.md"
 license = "SSPL-1.0"
-packages = [{ include = "littlehorse" }]
 homepage = "https://littlehorse.dev"
 repository = "https://github.com/littlehorse-enterprises/littlehorse"
 documentation = "https://littlehorse.dev/docs/Overview"
-keywords = ["littlehorse"]
+keywords = [ "littlehorse",]
+[[tool.poetry.packages]]
+include = "littlehorse"
+
+[tool.black]
+line-length = 88
+exclude = "littlehorse/model/"
+
+[tool.ruff]
+line-length = 88
+exclude = [ "littlehorse/model/",]
+
+[tool.mypy]
+exclude = [ "littlehorse/model/", "tests/", "scripts/",]
+strict = true
+ignore_missing_imports = true
+disallow_untyped_calls = false
+warn_return_any = false
+disallow_subclassing_any = false
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -31,25 +52,3 @@ semver = "^3.0"
 click = "^8.1"
 toml = "^0.10"
 rich = "^13.5"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.black]
-line-length = 88
-exclude = """
-littlehorse/model/
-"""
-
-[tool.ruff]
-line-length = 88
-exclude = ["littlehorse/model/"]
-
-[tool.mypy]
-exclude = ["littlehorse/model/", "tests/", "scripts/"]
-strict = true
-ignore_missing_imports = true
-disallow_untyped_calls = false
-warn_return_any = false
-disallow_subclassing_any = false
