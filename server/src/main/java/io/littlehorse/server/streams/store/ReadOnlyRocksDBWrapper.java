@@ -9,7 +9,6 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -63,7 +62,8 @@ public class ReadOnlyRocksDBWrapper {
 
     @SuppressWarnings("unchecked")
     public <U extends Message, T extends AbstractGetable<U>> StoredGetable<U, T> get(ObjectIdModel<?, U, T> id) {
-        String key = Storeable.getSubstorePrefix(StoreableType.STORED_GETABLE) + id.getType().getNumber() + "/";
+        String key = Storeable.getSubstorePrefix(StoreableType.STORED_GETABLE)
+                + id.getType().getNumber() + "/";
         key += id.toString();
         return (StoredGetable<U, T>) get(key, StoredGetable.class);
     }
@@ -77,8 +77,10 @@ public class ReadOnlyRocksDBWrapper {
                 rocksdb.prefixScan(compositePrefix, Serdes.String().serializer()), cls);
     }
 
-    public <U extends Message, T extends AbstractGetable<U>> LHKeyValueIterator<StoredGetable<U, T>> getablePrefixScan(String prefix, Class<T> cls) {
-        String realPrefix = Storeable.getSubstorePrefix(StoreableType.STORED_GETABLE) + AbstractGetable.getTypeEnum(cls).getNumber() + "/";
+    public <U extends Message, T extends AbstractGetable<U>> LHKeyValueIterator<StoredGetable<U, T>> getablePrefixScan(
+            String prefix, Class<T> cls) {
+        String realPrefix = Storeable.getSubstorePrefix(StoreableType.STORED_GETABLE)
+                + AbstractGetable.getTypeEnum(cls).getNumber() + "/";
 
         throw new NotImplementedException();
     }

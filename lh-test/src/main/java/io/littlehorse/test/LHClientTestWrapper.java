@@ -1,7 +1,6 @@
 package io.littlehorse.test;
 
-import io.littlehorse.sdk.client.LHClient;
-import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.TaskRun;
@@ -17,7 +16,7 @@ public class LHClientTestWrapper {
 
     private final LHClient lhClient;
 
-    public LHClientTestWrapper(LHClient lhClient) {
+    public LHClientTestWrapper(LHPublicApiBlockingStub lhClient) {
         this.lhClient = lhClient;
     }
 
@@ -64,7 +63,7 @@ public class LHClientTestWrapper {
 
     public void registerWfSpec(Workflow workflow) {
         try {
-            workflow.registerWfSpec(lhClient);
+            workflow.registerWfSpec(LHPublicApiBlockingStub);
         } catch (LHApiError e) {
             throw new LHTestInitializationException(e);
         }

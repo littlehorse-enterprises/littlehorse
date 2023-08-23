@@ -1,7 +1,7 @@
 package io.littlehorse.test.internal;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.LHWorkflow;
@@ -57,8 +57,9 @@ public class TestContext {
     }
 
     private void injectWorkflowExecutors(Object testInstance) {
-        new FieldDependencyInjector(() -> new WorkflowVerifier(lhClient), testInstance, field -> field.getType()
-                        .isAssignableFrom(WorkflowVerifier.class))
+        new FieldDependencyInjector(
+                        () -> new WorkflowVerifier(LHPublicApiBlockingStub), testInstance, field -> field.getType()
+                                .isAssignableFrom(WorkflowVerifier.class))
                 .inject();
     }
 }

@@ -182,7 +182,8 @@ public class TaskWorkerHeartBeatTest {
         return generateTaskWorkersMetadata(numberOfTaskWorkers, 0);
     }
 
-    public Map<String, TaskWorkerMetadataModel> generateTaskWorkersMetadata(int numberOfTaskWorkers, int numberOfHosts) {
+    public Map<String, TaskWorkerMetadataModel> generateTaskWorkersMetadata(
+            int numberOfTaskWorkers, int numberOfHosts) {
         Map<String, TaskWorkerMetadataModel> taskWorkersMetadata = new HashMap<>();
         for (int i = 0; i < numberOfTaskWorkers; i++) {
             TaskWorkerMetadataModel taskWorker = new TaskWorkerMetadataModel();

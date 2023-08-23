@@ -1,10 +1,9 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
@@ -22,6 +21,7 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +31,7 @@ import java.util.Map;
 // safeguards of the java wf sdk. But we might do that test in the future.
 public class BBWaitMultipleChildren extends WorkflowLogicTest {
 
-    public BBWaitMultipleChildren(LHClient client, LHWorkerConfig workerConfig) {
+    public BBWaitMultipleChildren(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -82,7 +82,8 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
         return Arrays.asList(new BBSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         return Arrays.asList(happyPath(client), firstThreadFails(client), secondThreadFails(client));
     }
 
@@ -97,7 +98,7 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
     /*
      * This tests the happy path case where thread 1 finishes first.
      */
-    private String happyPath(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String happyPath(LHPublicApiBlockingStub client) throws TestFailure, InterruptedException, IOException {
         String id = runWf(null, client);
         assertStatus(client, id, LHStatus.RUNNING);
 
@@ -163,7 +164,8 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
         return id;
     }
 
-    private String firstThreadFails(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String firstThreadFails(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         String id = runWf(null, client);
         assertStatus(client, id, LHStatus.RUNNING);
 
@@ -223,7 +225,8 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
         return id;
     }
 
-    private String secondThreadFails(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    private String secondThreadFails(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         String id = runWf(null, client);
         assertStatus(client, id, LHStatus.RUNNING);
 

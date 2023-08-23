@@ -1,11 +1,8 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
-import io.littlehorse.sdk.common.proto.CancelUserTaskRunResponse;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
@@ -16,6 +13,7 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.UserTaskWorkflowTest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +23,7 @@ public class AZUserTaskCancel extends UserTaskWorkflowTest {
 
     private static final String USER_TASK_DEF_NAME = "some-usertask";
 
-    public AZUserTaskCancel(LHClient client, LHWorkerConfig workerConfig) {
+    public AZUserTaskCancel(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -54,7 +52,8 @@ public class AZUserTaskCancel extends UserTaskWorkflowTest {
         return Arrays.asList(new AZCancelTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         List<String> out = new ArrayList<>();
 
         String wfRunId = runWf(client);
@@ -66,11 +65,7 @@ public class AZUserTaskCancel extends UserTaskWorkflowTest {
         CancelUserTaskRunRequest cancelUserTaskRun = CancelUserTaskRunRequest.newBuilder()
                 .setUserTaskRunId(utr.getId())
                 .build();
-        CancelUserTaskRunResponse cancelUserTaskRunResponse =
-                client.getGrpcClient().cancelUserTaskRun(cancelUserTaskRun);
-        assertThat(
-                cancelUserTaskRunResponse.getCode().equals(LHResponseCode.OK),
-                "Error processing cancel UserTaskRun request");
+        client.cancelUserTaskRun(cancelUserTaskRun);
         assertStatus(client, wfRunId, LHStatus.ERROR);
         return out;
     }

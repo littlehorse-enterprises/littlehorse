@@ -1,7 +1,17 @@
 package io.littlehorse.examples;
 
+<<<<<<< Updated upstream
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.proto.*;
+=======
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import java.io.IOException;
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
+>>>>>>> Stashed changes
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -176,7 +186,11 @@ public class ParallelApprovalExample {
         return workers;
     }
 
+<<<<<<< Updated upstream
     public static void main(String[] args) throws IOException {
+=======
+    public static void main(String[] args) throws IOException, IOException {
+>>>>>>> Stashed changes
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);

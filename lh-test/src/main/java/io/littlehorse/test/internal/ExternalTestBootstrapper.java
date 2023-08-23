@@ -1,6 +1,5 @@
 package io.littlehorse.test.internal;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import java.nio.file.Files;
 import java.nio.file.Path;

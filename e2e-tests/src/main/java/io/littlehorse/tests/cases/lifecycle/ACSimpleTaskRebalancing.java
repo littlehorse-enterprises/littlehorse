@@ -1,13 +1,13 @@
 package io.littlehorse.tests.cases.lifecycle;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
+import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.tests.Test;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +19,7 @@ public class ACSimpleTaskRebalancing extends Test {
     private Set<String> allHosts;
     private LHWorkerConfig config;
 
-    public ACSimpleTaskRebalancing(LHClient client, LHWorkerConfig config) {
+    public ACSimpleTaskRebalancing(LHPublicApiBlockingStub client, LHWorkerConfig config) {
         super(client, config);
         this.config = config;
         taskDefName = "rebalancing-test-" + UUID.randomUUID().toString();
@@ -35,14 +35,12 @@ public class ACSimpleTaskRebalancing extends Test {
                 """;
     }
 
-    public void test() throws LHApiError, InterruptedException {
+    public void test() throws InterruptedException {
         // Create taskdef
-        client.putTaskDef(PutTaskDefRequest.newBuilder().setName(taskDefName).build(), false);
+        client.putTaskDef(PutTaskDefRequest.newBuilder().setName(taskDefName).build());
 
         // Taskdef needs to propagate to all servers
         Thread.sleep(50);
-
-        LHPublicApiBlockingStub stub = client.getGrpcClient();
 
         String client1 = "client-1";
         String client2 = "client-2";
@@ -50,7 +48,7 @@ public class ACSimpleTaskRebalancing extends Test {
         String client4 = "client-4";
 
         // This is the first worker to connect, so it should get ALL of the hosts
-        RegisterTaskWorkerResponse reply1 = stub.registerTaskWorker(register(client1));
+        RegisterTaskWorkerResponse reply1 = client.registerTaskWorker(register(client1));
         for (LHHostInfo host : reply1.getYourHostsList()) {
             allHosts.add(hostToString(host));
         }
@@ -58,22 +56,22 @@ public class ACSimpleTaskRebalancing extends Test {
         // Since we require that each server has at least two connections on it,
         // we should check that when we add the worker #2, then it still gets all
         // the hosts.
-        RegisterTaskWorkerResponse reply2 = stub.registerTaskWorker(register(client2));
+        RegisterTaskWorkerResponse reply2 = client.registerTaskWorker(register(client2));
         if (reply2.getYourHostsCount() != allHosts.size()) {
             throw new RuntimeException("Second worker should still get all hosts!");
         }
 
-        reply1 = stub.registerTaskWorker(register(client1));
+        reply1 = client.registerTaskWorker(register(client1));
         if (reply1.getYourHostsCount() != allHosts.size()) {
             throw new RuntimeException("First worker should still get all hosts when only one other!");
         }
 
         // When we add a third and fourth worker, if there are more than one server,
         // then they shouldn't all get all the hosts
-        stub.registerTaskWorker(register(client3));
-        stub.registerTaskWorker(register(client4));
+        client.registerTaskWorker(register(client3));
+        client.registerTaskWorker(register(client4));
 
-        reply1 = stub.registerTaskWorker(register(client1));
+        reply1 = client.registerTaskWorker(register(client1));
         int newCount = reply1.getYourHostsCount();
 
         if (newCount > 1 && newCount == allHosts.size()) {
@@ -93,7 +91,9 @@ public class ACSimpleTaskRebalancing extends Test {
                 .build();
     }
 
-    public void cleanup() throws LHApiError {
-        client.deleteTaskDef(taskDefName);
+    public void cleanup() {
+        client.deleteTaskDef(DeleteTaskDefRequest.newBuilder()
+                .setId(TaskDefId.newBuilder().setName(taskDefName))
+                .build());
     }
 }

@@ -1,9 +1,8 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -11,12 +10,13 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class AJConditionalsLessThanEq extends WorkflowLogicTest {
 
-    public AJConditionalsLessThanEq(LHClient client, LHWorkerConfig workerConfig) {
+    public AJConditionalsLessThanEq(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -47,8 +47,8 @@ public class AJConditionalsLessThanEq extends WorkflowLogicTest {
         });
     }
 
-    private String runWithInputsAndCheck(LHClient client, Object lhs, Object rhs, boolean shouldEqual)
-            throws TestFailure, InterruptedException, LHApiError {
+    private String runWithInputsAndCheck(LHPublicApiBlockingStub client, Object lhs, Object rhs, boolean shouldEqual)
+            throws TestFailure, InterruptedException, IOException {
         AJInputObj input = new AJInputObj(lhs, rhs);
 
         if (shouldEqual) {
@@ -64,7 +64,8 @@ public class AJConditionalsLessThanEq extends WorkflowLogicTest {
 
     // private String twoInts() throws TestFailure
 
-    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         return Arrays.asList(
                 runWithInputsAndCheck(client, 1, 2, true),
                 runWithInputsAndCheck(client, 1, 1, true),

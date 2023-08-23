@@ -393,7 +393,8 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
                         "Field [name = %s, type = %s] is not defined in UserTask schema or has different type"
                                 .formatted(
                                         inputField.getName(),
-                                        inputField.getValue().getType()));            }
+                                        inputField.getValue().getType()));
+            }
             results.add(inputField);
             VariableValueModel fieldVal = VariableValueModel.fromProto(inputField.getValue());
             raw.put(inputField.getName(), fieldVal.getVal());

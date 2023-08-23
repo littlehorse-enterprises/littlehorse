@@ -1,5 +1,7 @@
 package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 
+import static org.mockito.Mockito.mock;
+
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserModel;
@@ -32,8 +34,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 public class UserTaskRunModelStorageManagerTest {
@@ -71,7 +71,8 @@ public class UserTaskRunModelStorageManagerTest {
 
     private void initializeDependencies() {
         localStoreWrapper = new RocksDBWrapper(store, lhConfig);
-        getableStorageManager = new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mock());
+        getableStorageManager =
+                new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mock());
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 

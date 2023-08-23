@@ -3,8 +3,14 @@ package io.littlehorse.examples;
 import static io.littlehorse.sdk.common.proto.IndexType.LOCAL_INDEX;
 import static io.littlehorse.sdk.common.proto.IndexType.REMOTE_INDEX;
 
+<<<<<<< Updated upstream
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
+=======
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import java.io.IOException;
+>>>>>>> Stashed changes
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
@@ -106,7 +112,11 @@ public class VariablesExample {
         return workers;
     }
 
+<<<<<<< Updated upstream
     public static void main(String[] args) throws IOException {
+=======
+    public static void main(String[] args) throws IOException, IOException {
+>>>>>>> Stashed changes
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);

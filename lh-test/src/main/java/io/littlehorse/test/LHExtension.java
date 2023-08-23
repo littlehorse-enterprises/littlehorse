@@ -1,6 +1,5 @@
 package io.littlehorse.test;
 
-import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.StandaloneTestBootstrapper;

@@ -1,5 +1,7 @@
 package io.littlehorse.server.streamsimpl.storeinternals;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
@@ -24,8 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class TagStorageManagerTest {
@@ -104,8 +104,7 @@ public class TagStorageManagerTest {
             assertThat(record.value().getPayload()).isInstanceOf(RepartitionCommand.class);
             RepartitionCommand repartitionCommand =
                     (RepartitionCommand) record.value().getPayload();
-            assertThat(repartitionCommand.getSubCommand().getPartitionKey())
-                    .isEqualTo(expectedPartitionKey);
+            assertThat(repartitionCommand.getSubCommand().getPartitionKey()).isEqualTo(expectedPartitionKey);
         });
     }
 

@@ -1,5 +1,7 @@
 package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 
+import static org.mockito.Mockito.mock;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
@@ -32,8 +34,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 public class JsonVariableStorageManagerTest {
@@ -89,8 +89,7 @@ public class JsonVariableStorageManagerTest {
 
     private Stream<LHIterKeyValue<Tag>> localTagScan(String keyPrefix) {
         return StreamSupport.stream(
-                Spliterators.spliteratorUnknownSize(
-                        storeWrapper.prefixScan(keyPrefix, Tag.class), Spliterator.ORDERED),
+                Spliterators.spliteratorUnknownSize(storeWrapper.prefixScan(keyPrefix, Tag.class), Spliterator.ORDERED),
                 false);
     }
 
