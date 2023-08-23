@@ -1,10 +1,15 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
+import java.util.Date;
+
 import com.google.protobuf.Message;
+
+import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
@@ -15,7 +20,6 @@ import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
-import java.util.Date;
 
 public class ListWfMetricsRequestModel
         extends PublicScanRequest<
@@ -26,6 +30,11 @@ public class ListWfMetricsRequestModel
     public int wfSpecVersion;
     public int numWindows;
     public MetricsWindowLength windowLength;
+
+    @Override
+    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+        return LHStore.REPARTITION;
+    }
 
     public Class<ListWfMetricsRequest> getProtoBaseClass() {
         return ListWfMetricsRequest.class;
@@ -57,12 +66,14 @@ public class ListWfMetricsRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
         return null;
     }
 
     @Override
-    public void validate() throws LHValidationError {}
+    public ScanResultTypePb getResultType() {
+        return ScanResultTypePb.OBJECT;
+    }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {

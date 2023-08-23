@@ -3,9 +3,9 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
@@ -132,12 +132,6 @@ public class SearchUserTaskRunRequestModel
         return out;
     }
 
-    private void validateUserGroupAndUserId() throws LHApiException {
-        if (userGroup != null && user != null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Cannot specify UserID and User Group in same search!");
-        }
-    }
-
     private Optional<TagStorageType> tagStorageTypePbByStatus() {
         return Optional.ofNullable(status).map(userTaskRunStatusPb -> {
             if (UserTaskRunModel.isRemote(userTaskRunStatusPb)) {
@@ -154,6 +148,10 @@ public class SearchUserTaskRunRequestModel
 
     @Override
     public List<Attribute> getSearchAttributes() {
+        if (userGroup != null && user != null) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Cannot specify UserID and User Group in same search!");
+        }
+
         List<Attribute> attributes = new ArrayList<>();
         if (status != null) {
             attributes.add(new Attribute("status", this.getStatus().toString()));
@@ -177,7 +175,7 @@ public class SearchUserTaskRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
         TagStorageType tagStorageType = tagStorageTypePbByUserId()
                 .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
         if (tagStorageType == null) {
@@ -185,20 +183,11 @@ public class SearchUserTaskRunRequestModel
                     getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
             Optional<TagStorageType> tagStorageTypePbOptional = getStorageTypeForSearchAttributes(searchAttributes);
             if (tagStorageTypePbOptional.isEmpty()) {
-                throw new LHValidationError("There is no index configuration for this search");
+                throw new LHApiException(Status.INVALID_ARGUMENT, "There is no index configuration for this search");
             }
             tagStorageType = tagStorageTypePbOptional.get();
         }
         return tagStorageType;
-    }
-
-    @Override
-    public void validate() throws LHValidationError {
-        this.validateUserGroupAndUserId();
-        if (getSearchAttributes().isEmpty()) {
-            throw new LHValidationError(
-                    null, "Must specify at least one of: [status, userTaskDefName, userGroup, userId]");
-        }
     }
 
     @Override
@@ -215,5 +204,19 @@ public class SearchUserTaskRunRequestModel
                         .filter(Optional::isPresent)
                         .map(Optional::get)
                         .findFirst();
+    }
+
+    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+        List<String> searchAttributes =
+                getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
+        Optional<TagStorageType> searchType = getStorageTypeForSearchAttributes(searchAttributes);
+
+        if (searchType.isEmpty()) {
+            throw new LHApiException(Status.INTERNAL, "Unable to determine index to use for your search");
+        }
+
+        TagStorageType type = searchType.get();
+
+        return type == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
     }
 }

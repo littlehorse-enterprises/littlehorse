@@ -445,7 +445,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 | InvocationTargetException
                 | InstantiationException
                 | IllegalAccessException exn) {
-            ctx.onError(exn);
+            log.error("Failed constructing search reply class", exn);
+            ctx.onError(LHUtil.toGrpcError(exn));
             return;
         }
 
@@ -460,7 +461,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             ctx.onNext((RP) out.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
-            ctx.onError(exn);
+            log.error("Failed handling a search", exn);
+            ctx.onError(LHUtil.toGrpcError(exn));
         }
     }
 

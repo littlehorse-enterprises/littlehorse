@@ -1,8 +1,10 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
+import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
@@ -122,7 +124,7 @@ public class SearchVariableRequestModel
                 .orElse(null);
     }
 
-    public List<Attribute> getSearchAttributes() throws LHValidationError {
+    public List<Attribute> getSearchAttributes() throws LHApiException {
         return List.of(
                 new Attribute("wfSpecName", value.getWfSpecName()),
                 new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(wfSpecVersion)),
@@ -130,12 +132,27 @@ public class SearchVariableRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
-        return getStorageTypeFromVariableIndexConfiguration().orElse(indexTypeForSearchFromWfSpec(stores));
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) {
+        return getStorageTypeFromVariableIndexConfiguration().orElseGet(() -> {
+            TagStorageType result = indexTypeForSearchFromWfSpec(stores);
+            if (result == null) {
+                throw new LHApiException(Status.INVALID_ARGUMENT, "No index configured for this variable search");
+            }
+            return result;
+        });
     }
 
     @Override
-    public void validate() throws LHValidationError {}
+    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+        switch (type) {
+            case WF_RUN_ID:
+                return LHStore.CORE;
+            case VALUE:
+                return indexTypeForSearch(metaStore) == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
+            case VARIABLECRITERIA_NOT_SET:
+        }
+        throw new LHApiException(Status.INVALID_ARGUMENT, "Didn't provide variable criteria");
+    }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
@@ -147,14 +164,15 @@ public class SearchVariableRequestModel
         return null;
     }
 
-    private String getVariableValue(VariableValue value) throws LHValidationError {
+    private String getVariableValue(VariableValue value) throws LHApiException {
         return switch (value.getType()) {
             case STR -> value.getStr();
             case BOOL -> String.valueOf(value.getBool());
             case INT -> String.valueOf(value.getInt());
             case DOUBLE -> String.valueOf(value.getDouble());
             default -> {
-                throw new LHValidationError("Search for %s not supported".formatted(value.getType()));
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT, "Search for %s not supported".formatted(value.getType()));
             }
         };
     }

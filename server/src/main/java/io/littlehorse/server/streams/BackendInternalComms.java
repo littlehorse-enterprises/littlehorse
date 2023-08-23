@@ -1,8 +1,5 @@
 package io.littlehorse.server.streams;
 
-import static io.littlehorse.common.model.AbstractGetable.getIdCls;
-import static io.littlehorse.common.model.getable.ObjectIdModel.fromString;
-
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
@@ -341,7 +338,8 @@ public class BackendInternalComms implements Closeable {
 
         @Override
         public void getObject(GetObjectRequest request, StreamObserver<GetObjectResponse> observer) {
-            ObjectIdModel<?, ?, ?> id = fromString(request.getObjectId(), getIdCls(request.getObjectType()));
+            ObjectIdModel<?, ?, ?> id = ObjectIdModel.fromString(request.getObjectId(), AbstractGetable.getIdCls(request.getObjectType()));
+
             String storeName = id.getStore().getStoreName();
             ReadOnlyRocksDBWrapper store = getStore(request.getPartition(), false, storeName);
 
@@ -467,7 +465,7 @@ public class BackendInternalComms implements Closeable {
                     Tag matchingTag = currentItem.getValue();
 
                     ObjectIdModel<?, ?, ?> matchingObjectId =
-                            fromString(matchingTag.getDescribedObjectId(), getIdCls(search.getObjectType()));
+                            ObjectIdModel.fromString(matchingTag.getDescribedObjectId(), AbstractGetable.getIdCls(search.getObjectType()));
                     matchingObjectIds.add(ByteString.copyFrom(matchingObjectId.toBytes()));
 
                     if (matchingObjectIds.size() == search.getLimit()) {
@@ -495,7 +493,6 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private InternalScanResponse objectIdPrefixScanOnThisHost(InternalScan req) {
         int curLimit = req.limit;
         BookmarkPb reqBookmark = req.bookmark;
@@ -521,10 +518,10 @@ public class BackendInternalComms implements Closeable {
         String bookmarkKey = null;
         boolean brokenBecauseOutOfData = true;
 
-        try (LHKeyValueIterator<? super Storeable<?>> iter = store.range(
+        try (LHKeyValueIterator<?> iter = store.range(
                 StoredGetable.getRocksDBKey(startKey, req.getObjectType()),
                 StoredGetable.getRocksDBKey(endKey, req.getObjectType()),
-                Storeable.class)) {
+                StoredGetable.class)) {
 
             while (iter.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iter.next();
@@ -562,12 +559,22 @@ public class BackendInternalComms implements Closeable {
 
     private ByteString iterKeyValueToInternalScanResult(
             LHIterKeyValue<? extends Storeable<?>> next, ScanResultTypePb resultType, GetableClassEnum objectType) {
-        if (resultType == ScanResultTypePb.OBJECT) {
-            return ByteString.copyFrom(next.getValue().toBytes());
-        } else if (resultType == ScanResultTypePb.OBJECT_ID) {
-            Class<? extends ObjectIdModel<?, ?, ?>> idCls = getIdCls(objectType);
 
-            return ByteString.copyFrom(fromString(next.getKey(), idCls).toBytes());
+        if (resultType == ScanResultTypePb.OBJECT) {
+            StoredGetable<?, ?> storedGetable = (StoredGetable<?, ?>) next.getValue();
+
+            System.out.println(storedGetable.getStoredObject());
+
+            return ByteString.copyFrom(storedGetable.getStoredObject().toBytes());
+
+        } else if (resultType == ScanResultTypePb.OBJECT_ID) {
+            Class<? extends ObjectIdModel<?, ?, ?>> idCls = AbstractGetable.getIdCls(objectType);
+
+            // TODO: This is a leaky abstraction.
+            String storeableKey = next.getKey();
+            String objectIdStr = storeableKey.substring(storeableKey.indexOf("/") + 1);
+
+            return ByteString.copyFrom(ObjectIdModel.fromString(objectIdStr, idCls).toBytes());
         } else {
             throw new RuntimeException("Impossible: unknown result type");
         }
@@ -798,8 +805,8 @@ public class BackendInternalComms implements Closeable {
 
                 // Turn the ID String into the ObjectId structure, then serialize it
                 // to proto
-                Class<? extends ObjectIdModel<?, ?, ?>> idCls = getIdCls(objectType);
-                idsOut.add(fromString(next.getValue().describedObjectId, idCls)
+                Class<? extends ObjectIdModel<?, ?, ?>> idCls = AbstractGetable.getIdCls(objectType);
+                idsOut.add(ObjectIdModel.fromString(next.getValue().describedObjectId, idCls)
                         .toProto()
                         .build()
                         .toByteString());

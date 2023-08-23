@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import java.nio.charset.StandardCharsets;
@@ -38,6 +40,11 @@ public class LHUtil {
         }
 
         return out;
+    }
+
+    public static StatusRuntimeException toGrpcError(Throwable exn) {
+        return new StatusRuntimeException(
+                Status.INTERNAL.withCause(exn).withDescription("Unexpected internal failure: " + exn.getMessage()));
     }
 
     public static String generateGuid() {

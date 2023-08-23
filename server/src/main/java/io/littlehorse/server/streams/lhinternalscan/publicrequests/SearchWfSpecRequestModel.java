@@ -3,8 +3,9 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
@@ -110,7 +111,7 @@ public class SearchWfSpecRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
         if (taskDefName != null) {
             List<String> attributes =
                     getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
@@ -128,7 +129,9 @@ public class SearchWfSpecRequestModel
     }
 
     @Override
-    public void validate() throws LHValidationError {}
+    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+        return LHStore.GLOBAL_METADATA;
+    }
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {

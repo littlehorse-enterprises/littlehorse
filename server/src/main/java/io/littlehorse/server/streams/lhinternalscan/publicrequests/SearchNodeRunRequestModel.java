@@ -1,8 +1,10 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
+import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
-import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -49,7 +51,7 @@ public class SearchNodeRunRequestModel
                 wfRunId = p.getWfRunId();
                 break;
             case NODERUNCRITERIA_NOT_SET:
-                throw new RuntimeException("Not possible");
+                throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid or missing node_run_criteria");
         }
     }
 
@@ -66,7 +68,7 @@ public class SearchNodeRunRequestModel
                 out.setWfRunId(wfRunId);
                 break;
             case NODERUNCRITERIA_NOT_SET:
-                throw new RuntimeException("not possible");
+                throw new LHApiException(Status.INVALID_ARGUMENT, "SearchNodeRun requires wfRunId");
         }
 
         return out;
@@ -79,19 +81,21 @@ public class SearchNodeRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHValidationError {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
         return TagStorageType.LOCAL;
     }
 
     @Override
-    public void validate() throws LHValidationError {}
+    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+        return LHStore.CORE; // only object id prefix scan supported.
+    }
 
     @Override
-    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHValidationError {
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException {
         if (type == NoderunCriteriaCase.WF_RUN_ID) {
             return new ObjectIdScanBoundaryStrategy(wfRunId);
         } else {
-            throw new LHValidationError("Unimplemented type: " + type);
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid or missing search type");
         }
     }
 }
