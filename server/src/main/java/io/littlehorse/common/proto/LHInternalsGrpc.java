@@ -15,60 +15,60 @@ public final class LHInternalsGrpc {
   public static final String SERVICE_NAME = "littlehorse.LHInternals";
 
   // Static method descriptors that strictly reflect the proto.
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.CentralStoreQueryPb,
-      io.littlehorse.common.proto.CentralStoreQueryReplyPb> getCentralStoreQueryMethod;
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.GetObjectRequest,
+      io.littlehorse.common.proto.GetObjectResponse> getGetObjectMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "CentralStoreQuery",
-      requestType = io.littlehorse.common.proto.CentralStoreQueryPb.class,
-      responseType = io.littlehorse.common.proto.CentralStoreQueryReplyPb.class,
+      fullMethodName = SERVICE_NAME + '/' + "GetObject",
+      requestType = io.littlehorse.common.proto.GetObjectRequest.class,
+      responseType = io.littlehorse.common.proto.GetObjectResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.CentralStoreQueryPb,
-      io.littlehorse.common.proto.CentralStoreQueryReplyPb> getCentralStoreQueryMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.common.proto.CentralStoreQueryPb, io.littlehorse.common.proto.CentralStoreQueryReplyPb> getCentralStoreQueryMethod;
-    if ((getCentralStoreQueryMethod = LHInternalsGrpc.getCentralStoreQueryMethod) == null) {
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.GetObjectRequest,
+      io.littlehorse.common.proto.GetObjectResponse> getGetObjectMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.GetObjectRequest, io.littlehorse.common.proto.GetObjectResponse> getGetObjectMethod;
+    if ((getGetObjectMethod = LHInternalsGrpc.getGetObjectMethod) == null) {
       synchronized (LHInternalsGrpc.class) {
-        if ((getCentralStoreQueryMethod = LHInternalsGrpc.getCentralStoreQueryMethod) == null) {
-          LHInternalsGrpc.getCentralStoreQueryMethod = getCentralStoreQueryMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.CentralStoreQueryPb, io.littlehorse.common.proto.CentralStoreQueryReplyPb>newBuilder()
+        if ((getGetObjectMethod = LHInternalsGrpc.getGetObjectMethod) == null) {
+          LHInternalsGrpc.getGetObjectMethod = getGetObjectMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.GetObjectRequest, io.littlehorse.common.proto.GetObjectResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "CentralStoreQuery"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetObject"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.CentralStoreQueryPb.getDefaultInstance()))
+                  io.littlehorse.common.proto.GetObjectRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.CentralStoreQueryReplyPb.getDefaultInstance()))
-              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("CentralStoreQuery"))
+                  io.littlehorse.common.proto.GetObjectResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("GetObject"))
               .build();
         }
       }
     }
-    return getCentralStoreQueryMethod;
+    return getGetObjectMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalScanPb,
-      io.littlehorse.common.proto.InternalScanReplyPb> getInternalScanMethod;
+      io.littlehorse.common.proto.InternalScanResponse> getInternalScanMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "InternalScan",
       requestType = io.littlehorse.common.proto.InternalScanPb.class,
-      responseType = io.littlehorse.common.proto.InternalScanReplyPb.class,
+      responseType = io.littlehorse.common.proto.InternalScanResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalScanPb,
-      io.littlehorse.common.proto.InternalScanReplyPb> getInternalScanMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalScanPb, io.littlehorse.common.proto.InternalScanReplyPb> getInternalScanMethod;
+      io.littlehorse.common.proto.InternalScanResponse> getInternalScanMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalScanPb, io.littlehorse.common.proto.InternalScanResponse> getInternalScanMethod;
     if ((getInternalScanMethod = LHInternalsGrpc.getInternalScanMethod) == null) {
       synchronized (LHInternalsGrpc.class) {
         if ((getInternalScanMethod = LHInternalsGrpc.getInternalScanMethod) == null) {
           LHInternalsGrpc.getInternalScanMethod = getInternalScanMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.InternalScanPb, io.littlehorse.common.proto.InternalScanReplyPb>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.InternalScanPb, io.littlehorse.common.proto.InternalScanResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "InternalScan"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.common.proto.InternalScanPb.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.InternalScanReplyPb.getDefaultInstance()))
+                  io.littlehorse.common.proto.InternalScanResponse.getDefaultInstance()))
               .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("InternalScan"))
               .build();
         }
@@ -77,30 +77,30 @@ public final class LHInternalsGrpc {
     return getInternalScanMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForCommandPb,
-      io.littlehorse.common.proto.WaitForCommandReplyPb> getWaitForCommandMethod;
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForCommandRequest,
+      io.littlehorse.common.proto.WaitForCommandResponse> getWaitForCommandMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "waitForCommand",
-      requestType = io.littlehorse.common.proto.WaitForCommandPb.class,
-      responseType = io.littlehorse.common.proto.WaitForCommandReplyPb.class,
+      fullMethodName = SERVICE_NAME + '/' + "WaitForCommand",
+      requestType = io.littlehorse.common.proto.WaitForCommandRequest.class,
+      responseType = io.littlehorse.common.proto.WaitForCommandResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForCommandPb,
-      io.littlehorse.common.proto.WaitForCommandReplyPb> getWaitForCommandMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForCommandPb, io.littlehorse.common.proto.WaitForCommandReplyPb> getWaitForCommandMethod;
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForCommandRequest,
+      io.littlehorse.common.proto.WaitForCommandResponse> getWaitForCommandMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForCommandRequest, io.littlehorse.common.proto.WaitForCommandResponse> getWaitForCommandMethod;
     if ((getWaitForCommandMethod = LHInternalsGrpc.getWaitForCommandMethod) == null) {
       synchronized (LHInternalsGrpc.class) {
         if ((getWaitForCommandMethod = LHInternalsGrpc.getWaitForCommandMethod) == null) {
           LHInternalsGrpc.getWaitForCommandMethod = getWaitForCommandMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.WaitForCommandPb, io.littlehorse.common.proto.WaitForCommandReplyPb>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.WaitForCommandRequest, io.littlehorse.common.proto.WaitForCommandResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "waitForCommand"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "WaitForCommand"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.WaitForCommandPb.getDefaultInstance()))
+                  io.littlehorse.common.proto.WaitForCommandRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.WaitForCommandReplyPb.getDefaultInstance()))
-              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("waitForCommand"))
+                  io.littlehorse.common.proto.WaitForCommandResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("WaitForCommand"))
               .build();
         }
       }
@@ -108,29 +108,29 @@ public final class LHInternalsGrpc {
     return getWaitForCommandMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalGetAdvertisedHostsPb,
-      io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb> getGetAdvertisedHostsMethod;
+  private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse> getGetAdvertisedHostsMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "GetAdvertisedHosts",
-      requestType = io.littlehorse.common.proto.InternalGetAdvertisedHostsPb.class,
-      responseType = io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb.class,
+      requestType = com.google.protobuf.Empty.class,
+      responseType = io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalGetAdvertisedHostsPb,
-      io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb> getGetAdvertisedHostsMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalGetAdvertisedHostsPb, io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb> getGetAdvertisedHostsMethod;
+  public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse> getGetAdvertisedHostsMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse> getGetAdvertisedHostsMethod;
     if ((getGetAdvertisedHostsMethod = LHInternalsGrpc.getGetAdvertisedHostsMethod) == null) {
       synchronized (LHInternalsGrpc.class) {
         if ((getGetAdvertisedHostsMethod = LHInternalsGrpc.getGetAdvertisedHostsMethod) == null) {
           LHInternalsGrpc.getGetAdvertisedHostsMethod = getGetAdvertisedHostsMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.InternalGetAdvertisedHostsPb, io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb>newBuilder()
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetAdvertisedHosts"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.InternalGetAdvertisedHostsPb.getDefaultInstance()))
+                  com.google.protobuf.Empty.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb.getDefaultInstance()))
+                  io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse.getDefaultInstance()))
               .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("GetAdvertisedHosts"))
               .build();
         }
@@ -139,29 +139,29 @@ public final class LHInternalsGrpc {
     return getGetAdvertisedHostsMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.TopologyInstanceStatePb,
-      io.littlehorse.common.proto.TopologyInstanceStateReplyPb> getTopologyInstancesStateMethod;
+  private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      io.littlehorse.common.proto.TopologyInstanceStateResponse> getTopologyInstancesStateMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "TopologyInstancesState",
-      requestType = io.littlehorse.common.proto.TopologyInstanceStatePb.class,
-      responseType = io.littlehorse.common.proto.TopologyInstanceStateReplyPb.class,
+      requestType = com.google.protobuf.Empty.class,
+      responseType = io.littlehorse.common.proto.TopologyInstanceStateResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.TopologyInstanceStatePb,
-      io.littlehorse.common.proto.TopologyInstanceStateReplyPb> getTopologyInstancesStateMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.common.proto.TopologyInstanceStatePb, io.littlehorse.common.proto.TopologyInstanceStateReplyPb> getTopologyInstancesStateMethod;
+  public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      io.littlehorse.common.proto.TopologyInstanceStateResponse> getTopologyInstancesStateMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, io.littlehorse.common.proto.TopologyInstanceStateResponse> getTopologyInstancesStateMethod;
     if ((getTopologyInstancesStateMethod = LHInternalsGrpc.getTopologyInstancesStateMethod) == null) {
       synchronized (LHInternalsGrpc.class) {
         if ((getTopologyInstancesStateMethod = LHInternalsGrpc.getTopologyInstancesStateMethod) == null) {
           LHInternalsGrpc.getTopologyInstancesStateMethod = getTopologyInstancesStateMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.TopologyInstanceStatePb, io.littlehorse.common.proto.TopologyInstanceStateReplyPb>newBuilder()
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, io.littlehorse.common.proto.TopologyInstanceStateResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "TopologyInstancesState"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.TopologyInstanceStatePb.getDefaultInstance()))
+                  com.google.protobuf.Empty.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.TopologyInstanceStateReplyPb.getDefaultInstance()))
+                  io.littlehorse.common.proto.TopologyInstanceStateResponse.getDefaultInstance()))
               .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("TopologyInstancesState"))
               .build();
         }
@@ -170,29 +170,29 @@ public final class LHInternalsGrpc {
     return getTopologyInstancesStateMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.LocalTasksPb,
-      io.littlehorse.common.proto.LocalTasksReplyPb> getLocalTasksMethod;
+  private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      io.littlehorse.common.proto.LocalTasksResponse> getLocalTasksMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "LocalTasks",
-      requestType = io.littlehorse.common.proto.LocalTasksPb.class,
-      responseType = io.littlehorse.common.proto.LocalTasksReplyPb.class,
+      requestType = com.google.protobuf.Empty.class,
+      responseType = io.littlehorse.common.proto.LocalTasksResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.LocalTasksPb,
-      io.littlehorse.common.proto.LocalTasksReplyPb> getLocalTasksMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.common.proto.LocalTasksPb, io.littlehorse.common.proto.LocalTasksReplyPb> getLocalTasksMethod;
+  public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      io.littlehorse.common.proto.LocalTasksResponse> getLocalTasksMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, io.littlehorse.common.proto.LocalTasksResponse> getLocalTasksMethod;
     if ((getLocalTasksMethod = LHInternalsGrpc.getLocalTasksMethod) == null) {
       synchronized (LHInternalsGrpc.class) {
         if ((getLocalTasksMethod = LHInternalsGrpc.getLocalTasksMethod) == null) {
           LHInternalsGrpc.getLocalTasksMethod = getLocalTasksMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.LocalTasksPb, io.littlehorse.common.proto.LocalTasksReplyPb>newBuilder()
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, io.littlehorse.common.proto.LocalTasksResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "LocalTasks"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.LocalTasksPb.getDefaultInstance()))
+                  com.google.protobuf.Empty.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.LocalTasksReplyPb.getDefaultInstance()))
+                  io.littlehorse.common.proto.LocalTasksResponse.getDefaultInstance()))
               .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("LocalTasks"))
               .build();
         }
@@ -251,43 +251,43 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    default void centralStoreQuery(io.littlehorse.common.proto.CentralStoreQueryPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.CentralStoreQueryReplyPb> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCentralStoreQueryMethod(), responseObserver);
+    default void getObject(io.littlehorse.common.proto.GetObjectRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.GetObjectResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetObjectMethod(), responseObserver);
     }
 
     /**
      */
     default void internalScan(io.littlehorse.common.proto.InternalScanPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalScanReplyPb> responseObserver) {
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalScanResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getInternalScanMethod(), responseObserver);
     }
 
     /**
      */
-    default void waitForCommand(io.littlehorse.common.proto.WaitForCommandPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandReplyPb> responseObserver) {
+    default void waitForCommand(io.littlehorse.common.proto.WaitForCommandRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getWaitForCommandMethod(), responseObserver);
     }
 
     /**
      */
-    default void getAdvertisedHosts(io.littlehorse.common.proto.InternalGetAdvertisedHostsPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb> responseObserver) {
+    default void getAdvertisedHosts(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetAdvertisedHostsMethod(), responseObserver);
     }
 
     /**
      */
-    default void topologyInstancesState(io.littlehorse.common.proto.TopologyInstanceStatePb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.TopologyInstanceStateReplyPb> responseObserver) {
+    default void topologyInstancesState(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.TopologyInstanceStateResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getTopologyInstancesStateMethod(), responseObserver);
     }
 
     /**
      */
-    default void localTasks(io.littlehorse.common.proto.LocalTasksPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.LocalTasksReplyPb> responseObserver) {
+    default void localTasks(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.LocalTasksResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getLocalTasksMethod(), responseObserver);
     }
   }
@@ -321,48 +321,48 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public void centralStoreQuery(io.littlehorse.common.proto.CentralStoreQueryPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.CentralStoreQueryReplyPb> responseObserver) {
+    public void getObject(io.littlehorse.common.proto.GetObjectRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.GetObjectResponse> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getCentralStoreQueryMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getGetObjectMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
     public void internalScan(io.littlehorse.common.proto.InternalScanPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalScanReplyPb> responseObserver) {
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalScanResponse> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getInternalScanMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void waitForCommand(io.littlehorse.common.proto.WaitForCommandPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandReplyPb> responseObserver) {
+    public void waitForCommand(io.littlehorse.common.proto.WaitForCommandRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandResponse> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getWaitForCommandMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void getAdvertisedHosts(io.littlehorse.common.proto.InternalGetAdvertisedHostsPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb> responseObserver) {
+    public void getAdvertisedHosts(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetAdvertisedHostsMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void topologyInstancesState(io.littlehorse.common.proto.TopologyInstanceStatePb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.TopologyInstanceStateReplyPb> responseObserver) {
+    public void topologyInstancesState(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.TopologyInstanceStateResponse> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getTopologyInstancesStateMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void localTasks(io.littlehorse.common.proto.LocalTasksPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.LocalTasksReplyPb> responseObserver) {
+    public void localTasks(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.LocalTasksResponse> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getLocalTasksMethod(), getCallOptions()), request, responseObserver);
     }
@@ -386,42 +386,42 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public io.littlehorse.common.proto.CentralStoreQueryReplyPb centralStoreQuery(io.littlehorse.common.proto.CentralStoreQueryPb request) {
+    public io.littlehorse.common.proto.GetObjectResponse getObject(io.littlehorse.common.proto.GetObjectRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getCentralStoreQueryMethod(), getCallOptions(), request);
+          getChannel(), getGetObjectMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public io.littlehorse.common.proto.InternalScanReplyPb internalScan(io.littlehorse.common.proto.InternalScanPb request) {
+    public io.littlehorse.common.proto.InternalScanResponse internalScan(io.littlehorse.common.proto.InternalScanPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getInternalScanMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public io.littlehorse.common.proto.WaitForCommandReplyPb waitForCommand(io.littlehorse.common.proto.WaitForCommandPb request) {
+    public io.littlehorse.common.proto.WaitForCommandResponse waitForCommand(io.littlehorse.common.proto.WaitForCommandRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getWaitForCommandMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb getAdvertisedHosts(io.littlehorse.common.proto.InternalGetAdvertisedHostsPb request) {
+    public io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse getAdvertisedHosts(com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetAdvertisedHostsMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public io.littlehorse.common.proto.TopologyInstanceStateReplyPb topologyInstancesState(io.littlehorse.common.proto.TopologyInstanceStatePb request) {
+    public io.littlehorse.common.proto.TopologyInstanceStateResponse topologyInstancesState(com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getTopologyInstancesStateMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public io.littlehorse.common.proto.LocalTasksReplyPb localTasks(io.littlehorse.common.proto.LocalTasksPb request) {
+    public io.littlehorse.common.proto.LocalTasksResponse localTasks(com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getLocalTasksMethod(), getCallOptions(), request);
     }
@@ -445,15 +445,15 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.CentralStoreQueryReplyPb> centralStoreQuery(
-        io.littlehorse.common.proto.CentralStoreQueryPb request) {
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.GetObjectResponse> getObject(
+        io.littlehorse.common.proto.GetObjectRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getCentralStoreQueryMethod(), getCallOptions()), request);
+          getChannel().newCall(getGetObjectMethod(), getCallOptions()), request);
     }
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.InternalScanReplyPb> internalScan(
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.InternalScanResponse> internalScan(
         io.littlehorse.common.proto.InternalScanPb request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getInternalScanMethod(), getCallOptions()), request);
@@ -461,38 +461,38 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.WaitForCommandReplyPb> waitForCommand(
-        io.littlehorse.common.proto.WaitForCommandPb request) {
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.WaitForCommandResponse> waitForCommand(
+        io.littlehorse.common.proto.WaitForCommandRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getWaitForCommandMethod(), getCallOptions()), request);
     }
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb> getAdvertisedHosts(
-        io.littlehorse.common.proto.InternalGetAdvertisedHostsPb request) {
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse> getAdvertisedHosts(
+        com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetAdvertisedHostsMethod(), getCallOptions()), request);
     }
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.TopologyInstanceStateReplyPb> topologyInstancesState(
-        io.littlehorse.common.proto.TopologyInstanceStatePb request) {
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.TopologyInstanceStateResponse> topologyInstancesState(
+        com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getTopologyInstancesStateMethod(), getCallOptions()), request);
     }
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.LocalTasksReplyPb> localTasks(
-        io.littlehorse.common.proto.LocalTasksPb request) {
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.LocalTasksResponse> localTasks(
+        com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getLocalTasksMethod(), getCallOptions()), request);
     }
   }
 
-  private static final int METHODID_CENTRAL_STORE_QUERY = 0;
+  private static final int METHODID_GET_OBJECT = 0;
   private static final int METHODID_INTERNAL_SCAN = 1;
   private static final int METHODID_WAIT_FOR_COMMAND = 2;
   private static final int METHODID_GET_ADVERTISED_HOSTS = 3;
@@ -516,29 +516,29 @@ public final class LHInternalsGrpc {
     @java.lang.SuppressWarnings("unchecked")
     public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
-        case METHODID_CENTRAL_STORE_QUERY:
-          serviceImpl.centralStoreQuery((io.littlehorse.common.proto.CentralStoreQueryPb) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.CentralStoreQueryReplyPb>) responseObserver);
+        case METHODID_GET_OBJECT:
+          serviceImpl.getObject((io.littlehorse.common.proto.GetObjectRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.GetObjectResponse>) responseObserver);
           break;
         case METHODID_INTERNAL_SCAN:
           serviceImpl.internalScan((io.littlehorse.common.proto.InternalScanPb) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalScanReplyPb>) responseObserver);
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalScanResponse>) responseObserver);
           break;
         case METHODID_WAIT_FOR_COMMAND:
-          serviceImpl.waitForCommand((io.littlehorse.common.proto.WaitForCommandPb) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandReplyPb>) responseObserver);
+          serviceImpl.waitForCommand((io.littlehorse.common.proto.WaitForCommandRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandResponse>) responseObserver);
           break;
         case METHODID_GET_ADVERTISED_HOSTS:
-          serviceImpl.getAdvertisedHosts((io.littlehorse.common.proto.InternalGetAdvertisedHostsPb) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb>) responseObserver);
+          serviceImpl.getAdvertisedHosts((com.google.protobuf.Empty) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse>) responseObserver);
           break;
         case METHODID_TOPOLOGY_INSTANCES_STATE:
-          serviceImpl.topologyInstancesState((io.littlehorse.common.proto.TopologyInstanceStatePb) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.TopologyInstanceStateReplyPb>) responseObserver);
+          serviceImpl.topologyInstancesState((com.google.protobuf.Empty) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.TopologyInstanceStateResponse>) responseObserver);
           break;
         case METHODID_LOCAL_TASKS:
-          serviceImpl.localTasks((io.littlehorse.common.proto.LocalTasksPb) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.LocalTasksReplyPb>) responseObserver);
+          serviceImpl.localTasks((com.google.protobuf.Empty) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.LocalTasksResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -559,46 +559,46 @@ public final class LHInternalsGrpc {
   public static final io.grpc.ServerServiceDefinition bindService(AsyncService service) {
     return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
         .addMethod(
-          getCentralStoreQueryMethod(),
+          getGetObjectMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.common.proto.CentralStoreQueryPb,
-              io.littlehorse.common.proto.CentralStoreQueryReplyPb>(
-                service, METHODID_CENTRAL_STORE_QUERY)))
+              io.littlehorse.common.proto.GetObjectRequest,
+              io.littlehorse.common.proto.GetObjectResponse>(
+                service, METHODID_GET_OBJECT)))
         .addMethod(
           getInternalScanMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               io.littlehorse.common.proto.InternalScanPb,
-              io.littlehorse.common.proto.InternalScanReplyPb>(
+              io.littlehorse.common.proto.InternalScanResponse>(
                 service, METHODID_INTERNAL_SCAN)))
         .addMethod(
           getWaitForCommandMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.common.proto.WaitForCommandPb,
-              io.littlehorse.common.proto.WaitForCommandReplyPb>(
+              io.littlehorse.common.proto.WaitForCommandRequest,
+              io.littlehorse.common.proto.WaitForCommandResponse>(
                 service, METHODID_WAIT_FOR_COMMAND)))
         .addMethod(
           getGetAdvertisedHostsMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.common.proto.InternalGetAdvertisedHostsPb,
-              io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb>(
+              com.google.protobuf.Empty,
+              io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse>(
                 service, METHODID_GET_ADVERTISED_HOSTS)))
         .addMethod(
           getTopologyInstancesStateMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.common.proto.TopologyInstanceStatePb,
-              io.littlehorse.common.proto.TopologyInstanceStateReplyPb>(
+              com.google.protobuf.Empty,
+              io.littlehorse.common.proto.TopologyInstanceStateResponse>(
                 service, METHODID_TOPOLOGY_INSTANCES_STATE)))
         .addMethod(
           getLocalTasksMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.common.proto.LocalTasksPb,
-              io.littlehorse.common.proto.LocalTasksReplyPb>(
+              com.google.protobuf.Empty,
+              io.littlehorse.common.proto.LocalTasksResponse>(
                 service, METHODID_LOCAL_TASKS)))
         .build();
   }
@@ -648,7 +648,7 @@ public final class LHInternalsGrpc {
         if (result == null) {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new LHInternalsFileDescriptorSupplier())
-              .addMethod(getCentralStoreQueryMethod())
+              .addMethod(getGetObjectMethod())
               .addMethod(getInternalScanMethod())
               .addMethod(getWaitForCommandMethod())
               .addMethod(getGetAdvertisedHostsMethod())

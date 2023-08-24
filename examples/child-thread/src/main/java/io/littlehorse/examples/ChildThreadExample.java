@@ -1,10 +1,9 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -36,12 +35,12 @@ public class ChildThreadExample {
             thread -> {
                 WfRunVariable parentVar = thread.addVariable(
                     "parent-var",
-                    VariableTypePb.INT
+                    VariableType.INT
                 );
 
                 thread.mutate(
                     parentVar,
-                    VariableMutationTypePb.ASSIGN,
+                    VariableMutationType.ASSIGN,
                     thread.execute("parent-task-1", parentVar)
                 );
 
@@ -49,7 +48,7 @@ public class ChildThreadExample {
                     child -> { // this is the child workflow thread
                         WfRunVariable childVar = child.addVariable(
                             "child-var",
-                            VariableTypePb.INT
+                            VariableType.INT
                         );
                         child.execute("child-task", childVar);
                     },
@@ -74,7 +73,7 @@ public class ChildThreadExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) {
+    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) throws IOException {
         ChildThreadWorker executable = new ChildThreadWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "parent-task-1", config),
@@ -96,11 +95,11 @@ public class ChildThreadExample {
         return workers;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
+        LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();

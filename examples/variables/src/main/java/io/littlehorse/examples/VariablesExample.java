@@ -1,13 +1,12 @@
 package io.littlehorse.examples;
 
-import static io.littlehorse.sdk.common.proto.IndexTypePb.LOCAL_INDEX;
-import static io.littlehorse.sdk.common.proto.IndexTypePb.REMOTE_INDEX;
+import static io.littlehorse.sdk.common.proto.IndexType.LOCAL_INDEX;
+import static io.littlehorse.sdk.common.proto.IndexType.REMOTE_INDEX;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -35,20 +34,20 @@ public class VariablesExample {
             "example-variables",
             thread -> {
                 WfRunVariable inputText = thread
-                    .addVariable("input-text", VariableTypePb.STR)
+                    .addVariable("input-text", VariableType.STR)
                     .withIndex(LOCAL_INDEX);
                 WfRunVariable addLength = thread.addVariable(
                     "add-length",
-                    VariableTypePb.BOOL
+                    VariableType.BOOL
                 );
                 WfRunVariable userId = thread
-                    .addVariable("user-id", VariableTypePb.INT)
+                    .addVariable("user-id", VariableType.INT)
                     .withIndex(REMOTE_INDEX);
                 WfRunVariable sentimentScore = thread
-                    .addVariable("sentiment-score", VariableTypePb.DOUBLE)
+                    .addVariable("sentiment-score", VariableType.DOUBLE)
                     .withIndex(LOCAL_INDEX);
                 WfRunVariable processedResult = thread
-                    .addVariable("processed-result", VariableTypePb.JSON_OBJ)
+                    .addVariable("processed-result", VariableType.JSON_OBJ)
                     .withJsonIndex("$.sentimentScore", REMOTE_INDEX);
                 NodeOutput sentimentAnalysisOutput = thread.execute(
                     "sentiment-analysis",
@@ -56,7 +55,7 @@ public class VariablesExample {
                 );
                 thread.mutate(
                     sentimentScore,
-                    VariableMutationTypePb.ASSIGN,
+                    VariableMutationType.ASSIGN,
                     sentimentAnalysisOutput
                 );
                 NodeOutput processedTextOutput = thread.execute(
@@ -68,7 +67,7 @@ public class VariablesExample {
                 );
                 thread.mutate(
                     processedResult,
-                    VariableMutationTypePb.ASSIGN,
+                    VariableMutationType.ASSIGN,
                     processedTextOutput
                 );
                 thread.execute("send", processedResult);
@@ -86,7 +85,7 @@ public class VariablesExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorker(LHWorkerConfig config) {
+    public static List<LHTaskWorker> getTaskWorker(LHWorkerConfig config) throws IOException {
         MyWorker executable = new MyWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "sentiment-analysis", config),
@@ -107,11 +106,11 @@ public class VariablesExample {
         return workers;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
+        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();

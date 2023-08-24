@@ -1,10 +1,9 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -28,15 +27,12 @@ public class MutationExample {
         return new WorkflowImpl(
             "example-mutation",
             thread -> {
-                WfRunVariable theName = thread.addVariable(
-                    "name",
-                    VariableTypePb.STR
-                );
+                WfRunVariable theName = thread.addVariable("name", VariableType.STR);
                 // We pass the name of the person and receive if it is spider-man or not
                 NodeOutput output = thread.execute("spider-bite", theName);
 
                 // We save the output in the variable
-                thread.mutate(theName, VariableMutationTypePb.ASSIGN, output);
+                thread.mutate(theName, VariableMutationType.ASSIGN, output);
             }
         );
     }
@@ -51,7 +47,7 @@ public class MutationExample {
         return props;
     }
 
-    public static LHTaskWorker getTaskWorker(LHWorkerConfig config) {
+    public static LHTaskWorker getTaskWorker(LHWorkerConfig config) throws IOException {
         SpiderManMutator executable = new SpiderManMutator();
         LHTaskWorker worker = new LHTaskWorker(executable, "spider-bite", config);
 
@@ -60,11 +56,11 @@ public class MutationExample {
         return worker;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
+        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();

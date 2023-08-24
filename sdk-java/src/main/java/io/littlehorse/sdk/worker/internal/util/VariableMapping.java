@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionError;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
-import io.littlehorse.sdk.common.proto.TaskDefPb;
-import io.littlehorse.sdk.common.proto.VarNameAndValPb;
-import io.littlehorse.sdk.common.proto.VariableDefPb;
-import io.littlehorse.sdk.common.proto.VariableValuePb;
+import io.littlehorse.sdk.common.proto.ScheduledTask;
+import io.littlehorse.sdk.common.proto.TaskDef;
+import io.littlehorse.sdk.common.proto.VarNameAndVal;
+import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,24 +19,18 @@ public class VariableMapping {
     private Class<?> type;
     private int position;
 
-    public VariableMapping(
-        TaskDefPb taskDef,
-        int position,
-        Class<?> type,
-        String javaParamName
-    ) throws TaskSchemaMismatchError {
+    public VariableMapping(TaskDef taskDef, int position, Class<?> type, String javaParamName)
+            throws TaskSchemaMismatchError {
         this.type = type;
 
         if (type.equals(WorkerContext.class)) return;
         this.position = position;
 
         if (position >= taskDef.getInputVarsCount()) {
-            throw new TaskSchemaMismatchError(
-                "Provided Java function has more parameters than the TaskDef."
-            );
+            throw new TaskSchemaMismatchError("Provided Java function has more parameters than the TaskDef.");
         }
         this.name = javaParamName;
-        VariableDefPb input = taskDef.getInputVars(position);
+        VariableDef input = taskDef.getInputVars(position);
 
         String msg = null;
 
@@ -68,10 +62,7 @@ public class VariableMapping {
                 break;
             case JSON_ARR:
             case JSON_OBJ:
-                log.info(
-                    "Info: Will use Jackson to deserialize Json into {}",
-                    type.getName()
-                );
+                log.info("Info: Will use Jackson to deserialize Json into {}", type.getName());
                 break;
             case NULL:
             case UNRECOGNIZED:
@@ -79,21 +70,18 @@ public class VariableMapping {
         }
 
         if (msg != null) {
-            throw new TaskSchemaMismatchError(
-                "Invalid assignment for var " + name + ": " + msg
-            );
+            throw new TaskSchemaMismatchError("Invalid assignment for var " + name + ": " + msg);
         }
     }
 
-    public Object assign(ScheduledTaskPb taskInstance, WorkerContext context)
-        throws InputVarSubstitutionError {
+    public Object assign(ScheduledTask taskInstance, WorkerContext context) throws InputVarSubstitutionError {
         if (type.equals(WorkerContext.class)) {
             return context;
         }
 
-        VarNameAndValPb assignment = taskInstance.getVariables(position);
+        VarNameAndVal assignment = taskInstance.getVariables(position);
         String taskDefParamName = assignment.getVarName();
-        VariableValuePb val = assignment.getValue();
+        VariableValue val = assignment.getValue();
 
         String jsonStr = null;
 
@@ -133,10 +121,7 @@ public class VariableMapping {
             return LHLibUtil.deserializeFromjson(jsonStr, type);
         } catch (JsonProcessingException exn) {
             throw new InputVarSubstitutionError(
-                "Failed deserializing the Java object for variable " +
-                taskDefParamName,
-                exn
-            );
+                    "Failed deserializing the Java object for variable " + taskDefParamName, exn);
         }
     }
 }

@@ -1,31 +1,36 @@
 package io.littlehorse.tests;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.ExternalEventIdPb;
-import io.littlehorse.sdk.common.proto.ExternalEventPb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.NodeRunPb;
-import io.littlehorse.sdk.common.proto.NodeRunPb.NodeTypeCase;
-import io.littlehorse.sdk.common.proto.PutExternalEventPb;
-import io.littlehorse.sdk.common.proto.SearchTaskRunPb;
-import io.littlehorse.sdk.common.proto.SearchTaskRunPb.StatusAndTaskDefPb;
-import io.littlehorse.sdk.common.proto.SearchTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.SearchUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.SearchUserTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.TaskRunIdPb;
-import io.littlehorse.sdk.common.proto.TaskRunPb;
-import io.littlehorse.sdk.common.proto.TaskStatusPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
-import io.littlehorse.sdk.common.proto.VariablePb;
-import io.littlehorse.sdk.common.proto.VariableValuePb;
-import io.littlehorse.sdk.common.proto.WfRunPb;
+import io.littlehorse.sdk.common.proto.ExternalEvent;
+import io.littlehorse.sdk.common.proto.ExternalEventId;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.NodeRun;
+import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
+import io.littlehorse.sdk.common.proto.NodeRunId;
+import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
+import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;
+import io.littlehorse.sdk.common.proto.SearchTaskRunRequest.StatusAndTaskDefRequest;
+import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.TaskRun;
+import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.sdk.common.proto.TaskRunIdList;
+import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.sdk.common.proto.User;
+import io.littlehorse.sdk.common.proto.UserGroup;
+import io.littlehorse.sdk.common.proto.UserTaskRun;
+import io.littlehorse.sdk.common.proto.UserTaskRunId;
+import io.littlehorse.sdk.common.proto.UserTaskRunIdList;
+import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
+import io.littlehorse.sdk.common.proto.Variable;
+import io.littlehorse.sdk.common.proto.VariableId;
+import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WfRun;
+import io.littlehorse.sdk.common.proto.WfRunId;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -57,10 +62,10 @@ import java.util.UUID;
  */
 public abstract class Test {
 
-    protected LHClient client;
+    protected LHPublicApiBlockingStub client;
     protected LHWorkerConfig workerConfig;
 
-    public Test(LHClient client, LHWorkerConfig workerConfig) {
+    public Test(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         this.client = client;
         this.workerConfig = workerConfig;
     }
@@ -71,32 +76,22 @@ public abstract class Test {
 
     public abstract void test() throws Exception;
 
-    public void assertStatus(LHClient client, String wfRunId, LHStatusPb status)
-        throws TestFailure, LHApiError {
-        WfRunPb wfRun = getWfRun(client, wfRunId);
+    public void assertStatus(LHPublicApiBlockingStub client, String wfRunId, LHStatus status)
+            throws TestFailure, IOException {
+        WfRun wfRun = getWfRun(client, wfRunId);
         if (wfRun.getStatus() != status) {
             throw new TestFailure(
-                this,
-                "Expected status " +
-                status +
-                " for wfRun " +
-                wfRunId +
-                " but got status " +
-                wfRun.getStatus()
-            );
+                    this,
+                    "Expected status " + status + " for wfRun " + wfRunId + " but got status " + wfRun.getStatus());
         }
     }
 
-    public WfRunPb getWfRun(LHClient client, String id)
-        throws TestFailure, LHApiError {
-        WfRunPb result;
+    public WfRun getWfRun(LHPublicApiBlockingStub client, String id) throws TestFailure, IOException {
+        WfRun result;
         try {
-            result = client.getWfRun(id);
+            result = client.getWfRun(WfRunId.newBuilder().setId(id).build());
         } catch (Exception exn) {
-            throw new TestFailure(
-                this,
-                "Couldn't connect to get wfRun: " + exn.getMessage()
-            );
+            throw new TestFailure(this, "Couldn't connect to get wfRun: " + exn.getMessage());
         }
 
         if (result == null) {
@@ -106,8 +101,7 @@ public abstract class Test {
         return result;
     }
 
-    protected VariableValuePb objToVarVal(Object o, String exnMessage)
-        throws TestFailure {
+    protected VariableValue objToVarVal(Object o, String exnMessage) throws TestFailure {
         try {
             return LHLibUtil.objToVarVal(o);
         } catch (LHSerdeError exn) {
@@ -116,176 +110,111 @@ public abstract class Test {
     }
 
     public void assertVarEqual(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber,
-        String name,
-        Object desiredValue
-    ) throws TestFailure {
-        VariableValuePb var = getVariable(client, wfRunId, threadRunNumber, name)
-            .getValue();
+            LHPublicApiBlockingStub client, String wfRunId, int threadRunNumber, String name, Object desiredValue)
+            throws TestFailure {
+        VariableValue var = getVariable(client, wfRunId, threadRunNumber, name).getValue();
 
-        if (
-            !LHLibUtil.areVariableValuesEqual(
-                objToVarVal(desiredValue, "Couldn't convert desiredValue to var val"),
-                var
-            )
-        ) {
+        if (!LHLibUtil.areVariableValuesEqual(
+                objToVarVal(desiredValue, "Couldn't convert desiredValue to var val"), var)) {
             throw new TestFailure(
-                this,
-                "WfRun " +
-                wfRunId +
-                " Variable " +
-                name +
-                " thread " +
-                threadRunNumber +
-                " wrong value"
-            );
+                    this, "WfRun " + wfRunId + " Variable " + name + " thread " + threadRunNumber + " wrong value");
         }
     }
 
     // Soon we will put a similar method to this in the LHClient for convenience.
     // However, we'll have to be very careful about it since we will need to support
-    // pagination via BookmarkPb's.
-    public SearchTaskRunReplyPb searchTaskRuns(
-        String taskDefName,
-        TaskStatusPb status
-    ) throws LHApiError {
-        return client
-            .getGrpcClient()
-            .searchTaskRun(
-                SearchTaskRunPb
-                    .newBuilder()
-                    .setStatusAndTaskDef(
-                        StatusAndTaskDefPb
-                            .newBuilder()
-                            .setStatus(status)
-                            .setTaskDefName(taskDefName)
-                            .build()
-                    )
-                    .build()
-            );
+    // pagination via Bookmark's.
+    public TaskRunIdList searchTaskRuns(String taskDefName, TaskStatus status) {
+        return client.searchTaskRun(SearchTaskRunRequest.newBuilder()
+                .setStatusAndTaskDef(StatusAndTaskDefRequest.newBuilder()
+                        .setStatus(status)
+                        .setTaskDefName(taskDefName)
+                        .build())
+                .build());
     }
 
-    public SearchUserTaskRunReplyPb searchUserTaskRunsUserGroup(
-        String userGroup,
-        String userTaskDefName,
-        UserTaskRunStatusPb status
-    ) throws LHApiError {
-        SearchUserTaskRunPb req = SearchUserTaskRunPb
-            .newBuilder()
-            .setUserGroup(userGroup)
-            .setUserTaskDefName(userTaskDefName)
-            .setStatus(status)
-            .build();
-        return client.getGrpcClient().searchUserTaskRun(req);
+    public UserTaskRunIdList searchUserTaskRunsUserGroup(
+            String userGroup, String userTaskDefName, UserTaskRunStatus status) {
+        SearchUserTaskRunRequest req = SearchUserTaskRunRequest.newBuilder()
+                .setUserGroup(UserGroup.newBuilder().setId(userGroup).build())
+                .setUserTaskDefName(userTaskDefName)
+                .setStatus(status)
+                .build();
+        return client.searchUserTaskRun(req);
     }
 
-    public SearchUserTaskRunReplyPb searchUserTaskRunsUserGroup(
-        String userGroup,
-        UserTaskRunStatusPb status
-    ) throws LHApiError {
-        SearchUserTaskRunPb req = SearchUserTaskRunPb
-            .newBuilder()
-            .setUserGroup(userGroup)
-            .setStatus(status)
-            .build();
-        return client.getGrpcClient().searchUserTaskRun(req);
+    public UserTaskRunIdList searchUserTaskRunsUserGroup(String userGroup, UserTaskRunStatus status) {
+        SearchUserTaskRunRequest req = SearchUserTaskRunRequest.newBuilder()
+                .setUserGroup(UserGroup.newBuilder().setId(userGroup).build())
+                .setStatus(status)
+                .build();
+        return client.searchUserTaskRun(req);
     }
 
-    public SearchUserTaskRunReplyPb searchUserTaskRunsUserGroup(String userGroup)
-        throws LHApiError {
-        SearchUserTaskRunPb req = SearchUserTaskRunPb
-            .newBuilder()
-            .setUserGroup(userGroup)
-            .build();
-        return client.getGrpcClient().searchUserTaskRun(req);
+    public UserTaskRunIdList searchUserTaskRunsUserGroup(String userGroup) {
+        SearchUserTaskRunRequest req = SearchUserTaskRunRequest.newBuilder()
+                .setUserGroup(UserGroup.newBuilder().setId(userGroup).build())
+                .build();
+        return client.searchUserTaskRun(req);
     }
 
-    public SearchUserTaskRunReplyPb searchUserTaskRunsUserId(
-        String userId,
-        String userTaskDefName,
-        UserTaskRunStatusPb status
-    ) throws LHApiError {
-        SearchUserTaskRunPb req = SearchUserTaskRunPb
-            .newBuilder()
-            .setUserId(userId)
-            .setUserTaskDefName(userTaskDefName)
-            .setStatus(status)
-            .build();
-        return client.getGrpcClient().searchUserTaskRun(req);
+    public UserTaskRunIdList searchUserTaskRunsUserId(String userId, String userTaskDefName, UserTaskRunStatus status) {
+        SearchUserTaskRunRequest req = SearchUserTaskRunRequest.newBuilder()
+                .setUser(User.newBuilder().setId(userId).build())
+                .setUserTaskDefName(userTaskDefName)
+                .setStatus(status)
+                .build();
+        return client.searchUserTaskRun(req);
     }
 
-    public SearchUserTaskRunReplyPb searchUserTaskRunsUserId(
-        String userId,
-        UserTaskRunStatusPb status
-    ) throws LHApiError {
-        SearchUserTaskRunPb req = SearchUserTaskRunPb
-            .newBuilder()
-            .setUserId(userId)
-            .setStatus(status)
-            .build();
-        return client.getGrpcClient().searchUserTaskRun(req);
+    public UserTaskRunIdList searchUserTaskRunsUserId(String userId, UserTaskRunStatus status) {
+        SearchUserTaskRunRequest req = SearchUserTaskRunRequest.newBuilder()
+                .setUser(User.newBuilder().setId(userId).build())
+                .setStatus(status)
+                .build();
+        return client.searchUserTaskRun(req);
     }
 
-    public SearchUserTaskRunReplyPb searchUserTaskRunsUserId(String userId)
-        throws LHApiError {
-        SearchUserTaskRunPb req = SearchUserTaskRunPb
-            .newBuilder()
-            .setUserId(userId)
-            .build();
-        return client.getGrpcClient().searchUserTaskRun(req);
+    public UserTaskRunIdList searchUserTaskRunsUserId(String userId) {
+        SearchUserTaskRunRequest req = SearchUserTaskRunRequest.newBuilder()
+                .setUser(User.newBuilder().setId(userId).build())
+                .build();
+        return client.searchUserTaskRun(req);
     }
 
     public void assertTaskOutput(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber,
-        int nodeRunPosition,
-        Object expectedOutput
-    ) throws TestFailure, LHApiError {
-        NodeRunPb nodeRun = getNodeRun(
-            client,
-            wfRunId,
-            threadRunNumber,
-            nodeRunPosition
-        );
-        VariableValuePb expectedVarVal = objToVarVal(
-            expectedOutput,
-            "Couldn't convert expected output to varval"
-        );
+            LHPublicApiBlockingStub client,
+            String wfRunId,
+            int threadRunNumber,
+            int nodeRunPosition,
+            Object expectedOutput)
+            throws TestFailure, IOException {
+        NodeRun nodeRun = getNodeRun(client, wfRunId, threadRunNumber, nodeRunPosition);
+        VariableValue expectedVarVal = objToVarVal(expectedOutput, "Couldn't convert expected output to varval");
 
-        TaskRunPb taskRun = getTaskRun(client, nodeRun.getTask().getTaskRunId());
-        if (
-            !LHLibUtil.areVariableValuesEqual(
+        TaskRun taskRun = getTaskRun(client, nodeRun.getTask().getTaskRunId());
+        if (!LHLibUtil.areVariableValuesEqual(
                 expectedVarVal,
-                taskRun.getAttempts(taskRun.getAttemptsCount() - 1).getOutput()
-            )
-        ) {
+                taskRun.getAttempts(taskRun.getAttemptsCount() - 1).getOutput())) {
             throw new TestFailure(
-                this,
-                "Did not get expected node output on " +
-                wfRunId +
-                ", " +
-                threadRunNumber +
-                ", " +
-                nodeRunPosition +
-                ", expected:\n" +
-                expectedOutput
-            );
+                    this,
+                    "Did not get expected node output on "
+                            + wfRunId
+                            + ", "
+                            + threadRunNumber
+                            + ", "
+                            + nodeRunPosition
+                            + ", expected:\n"
+                            + expectedOutput);
         }
     }
 
-    public TaskRunPb getTaskRun(LHClient client, TaskRunIdPb taskRunId)
-        throws TestFailure, LHApiError {
-        TaskRunPb result;
+    public TaskRun getTaskRun(LHPublicApiBlockingStub client, TaskRunId taskRunId) throws TestFailure, IOException {
+        TaskRun result;
         try {
             result = client.getTaskRun(taskRunId);
         } catch (Exception exn) {
-            throw new TestFailure(
-                this,
-                "Couldn't connect to get taskrun: " + exn.getMessage()
-            );
+            throw new TestFailure(this, "Couldn't connect to get taskrun: " + exn.getMessage());
         }
 
         if (result == null) {
@@ -294,138 +223,84 @@ public abstract class Test {
         return result;
     }
 
-    public NodeRunPb getNodeRun(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber,
-        int nodeRunPosition
-    ) throws TestFailure, LHApiError {
-        NodeRunPb result;
+    public NodeRun getNodeRun(LHPublicApiBlockingStub client, String wfRunId, int threadRunNumber, int nodeRunPosition)
+            throws TestFailure, IOException {
+        NodeRun result;
         try {
-            result = client.getNodeRun(wfRunId, threadRunNumber, nodeRunPosition);
+            result = client.getNodeRun(NodeRunId.newBuilder()
+                    .setWfRunId(wfRunId)
+                    .setThreadRunNumber(threadRunNumber)
+                    .setPosition(nodeRunPosition)
+                    .build());
         } catch (Exception exn) {
-            throw new TestFailure(
-                this,
-                "Couldn't connect to get wfRun: " + exn.getMessage()
-            );
+            throw new TestFailure(this, "Couldn't connect to get wfRun: " + exn.getMessage());
         }
 
         if (result == null) {
             throw new TestFailure(
-                this,
-                "Couldn't find nodeRun " +
-                wfRunId +
-                " " +
-                threadRunNumber +
-                " " +
-                nodeRunPosition
-            );
+                    this, "Couldn't find nodeRun " + wfRunId + " " + threadRunNumber + " " + nodeRunPosition);
         }
 
         return result;
     }
 
-    public UserTaskRunPb getUserTaskRun(LHClient client, UserTaskRunIdPb id)
-        throws TestFailure, LHApiError {
-        UserTaskRunPb result;
+    public UserTaskRun getUserTaskRun(LHPublicApiBlockingStub client, UserTaskRunId id)
+            throws TestFailure, IOException {
+        UserTaskRun result;
         try {
             result = client.getUserTaskRun(id);
         } catch (Exception exn) {
-            throw new TestFailure(
-                this,
-                "Couldn't connect to get UserTaskRun: " + exn.getMessage()
-            );
+            throw new TestFailure(this, "Couldn't connect to get UserTaskRun: " + exn.getMessage());
         }
 
         if (result == null) {
-            throw new TestFailure(
-                this,
-                "Couldn't find userTaskRun " +
-                id.getWfRunId() +
-                "/" +
-                id.getUserTaskGuid()
-            );
+            throw new TestFailure(this, "Couldn't find userTaskRun " + id.getWfRunId() + "/" + id.getUserTaskGuid());
         }
 
         return result;
     }
 
-    public VariablePb getVariable(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber,
-        String name
-    ) throws TestFailure {
-        VariablePb result;
+    public Variable getVariable(LHPublicApiBlockingStub client, String wfRunId, int threadRunNumber, String name)
+            throws TestFailure {
+        Variable result;
 
         try {
-            result = client.getVariable(wfRunId, threadRunNumber, name);
+            result = client.getVariable(VariableId.newBuilder()
+                    .setWfRunId(wfRunId)
+                    .setThreadRunNumber(threadRunNumber)
+                    .setName(name)
+                    .build());
         } catch (Exception exn) {
-            throw new TestFailure(
-                this,
-                "Couldn't connect to server: " + exn.getMessage()
-            );
+            throw new TestFailure(this, "Couldn't connect to server: " + exn.getMessage());
         }
 
         if (result == null) {
-            throw new TestFailure(
-                this,
-                "Couldn't find variable " +
-                wfRunId +
-                " " +
-                threadRunNumber +
-                " " +
-                name
-            );
+            throw new TestFailure(this, "Couldn't find variable " + wfRunId + " " + threadRunNumber + " " + name);
         }
 
         return result;
     }
 
-    public List<?> getVarAsList(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber,
-        String varName
-    ) throws TestFailure {
-        VariableValuePb varVal = getVariable(
-            client,
-            wfRunId,
-            threadRunNumber,
-            varName
-        )
-            .getValue();
+    public List<?> getVarAsList(LHPublicApiBlockingStub client, String wfRunId, int threadRunNumber, String varName)
+            throws TestFailure {
+        VariableValue varVal =
+                getVariable(client, wfRunId, threadRunNumber, varName).getValue();
         try {
             return LHLibUtil.deserializeFromjson(varVal.getJsonArr(), List.class);
         } catch (JsonProcessingException exn) {
-            throw new TestFailure(
-                this,
-                "Couldn't deserialize variable " + varName + ":" + exn.getMessage()
-            );
+            throw new TestFailure(this, "Couldn't deserialize variable " + varName + ":" + exn.getMessage());
         }
     }
 
     public <T> T getVarAsObj(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber,
-        String varName,
-        Class<T> cls
-    ) throws TestFailure {
-        VariableValuePb varVal = getVariable(
-            client,
-            wfRunId,
-            threadRunNumber,
-            varName
-        )
-            .getValue();
+            LHPublicApiBlockingStub client, String wfRunId, int threadRunNumber, String varName, Class<T> cls)
+            throws TestFailure {
+        VariableValue varVal =
+                getVariable(client, wfRunId, threadRunNumber, varName).getValue();
         try {
             return LHLibUtil.deserializeFromjson(varVal.getJsonObj(), cls);
         } catch (JsonProcessingException exn) {
-            throw new TestFailure(
-                this,
-                "Couldn't deserialize variable " + varName + ":" + exn.getMessage()
-            );
+            throw new TestFailure(this, "Couldn't deserialize variable " + varName + ":" + exn.getMessage());
         }
     }
 
@@ -433,102 +308,68 @@ public abstract class Test {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    protected ExternalEventIdPb sendEvent(
-        LHClient client,
-        String wfRunId,
-        String eventName,
-        Object content,
-        String guid
-    ) throws TestFailure, LHApiError {
-        VariableValuePb varVal = objToVarVal(
-            content,
-            "Failed converting event input"
-        );
+    protected ExternalEventId sendEvent(
+            LHPublicApiBlockingStub client, String wfRunId, String eventName, Object content, String guid)
+            throws TestFailure, IOException {
+        VariableValue varVal = objToVarVal(content, "Failed converting event input");
         if (guid == null) {
             guid = generateGuid();
         }
-        PutExternalEventPb.Builder req = PutExternalEventPb
-            .newBuilder()
-            .setContent(varVal)
-            .setWfRunId(wfRunId)
-            .setExternalEventDefName(eventName)
-            .setGuid(guid);
+        PutExternalEventRequest.Builder req = PutExternalEventRequest.newBuilder()
+                .setContent(varVal)
+                .setWfRunId(wfRunId)
+                .setExternalEventDefName(eventName)
+                .setGuid(guid);
         try {
             client.putExternalEvent(req.build());
         } catch (Exception exn) {
-            throw new TestFailure(
-                this,
-                "Failed posting external event: " + exn.getMessage()
-            );
+            throw new TestFailure(this, "Failed posting external event: " + exn.getMessage());
         }
 
-        return ExternalEventIdPb
-            .newBuilder()
-            .setExternalEventDefName(eventName)
-            .setGuid(guid)
-            .setWfRunId(wfRunId)
-            .build();
+        return ExternalEventId.newBuilder()
+                .setExternalEventDefName(eventName)
+                .setGuid(guid)
+                .setWfRunId(wfRunId)
+                .build();
     }
 
-    protected ExternalEventPb getExternalEvent(
-        LHClient client,
-        ExternalEventIdPb eventId
-    ) throws TestFailure, LHApiError {
-        ExternalEventPb reply;
+    protected ExternalEvent getExternalEvent(LHPublicApiBlockingStub client, ExternalEventId eventId)
+            throws TestFailure, IOException {
+        ExternalEvent reply;
         try {
-            reply =
-                client.getExternalEvent(
-                    eventId.getWfRunId(),
-                    eventId.getExternalEventDefName(),
-                    eventId.getGuid()
-                );
+            reply = client.getExternalEvent(eventId);
         } catch (Exception exn) {
-            throw new TestFailure(
-                this,
-                "Failed getting ExternalEvent: " + exn.getMessage()
-            );
+            throw new TestFailure(this, "Failed getting ExternalEvent: " + exn.getMessage());
         }
         return reply;
     }
 
-    public void assertThreadStatus(
-        LHClient client,
-        String wfRunId,
-        int threadRunId,
-        LHStatusPb status
-    ) throws TestFailure, LHApiError {
-        WfRunPb wfRun = getWfRun(client, wfRunId);
+    public void assertThreadStatus(LHPublicApiBlockingStub client, String wfRunId, int threadRunId, LHStatus status)
+            throws TestFailure, IOException {
+        WfRun wfRun = getWfRun(client, wfRunId);
         if (wfRun.getThreadRuns(threadRunId).getStatus() != status) {
             throw new TestFailure(
-                this,
-                "Expected status " +
-                status +
-                " for wfRun " +
-                wfRunId +
-                " but got status " +
-                wfRun.getThreadRuns(threadRunId).getStatus()
-            );
+                    this,
+                    "Expected status "
+                            + status
+                            + " for wfRun "
+                            + wfRunId
+                            + " but got status "
+                            + wfRun.getThreadRuns(threadRunId).getStatus());
         }
     }
 
-    public List<VariableValuePb> getTaskRunOutputs(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber
-    ) throws TestFailure, LHApiError {
-        List<VariableValuePb> out = new ArrayList<>();
+    public List<VariableValue> getTaskRunOutputs(LHPublicApiBlockingStub client, String wfRunId, int threadRunNumber)
+            throws TestFailure, IOException {
+        List<VariableValue> out = new ArrayList<>();
 
-        int numNodes = getWfRun(client, wfRunId)
-            .getThreadRuns(threadRunNumber)
-            .getCurrentNodePosition();
+        int numNodes = getWfRun(client, wfRunId).getThreadRuns(threadRunNumber).getCurrentNodePosition();
         // skip entrypoint node
         for (int i = 1; i <= numNodes; i++) {
-            NodeRunPb nr = getNodeRun(client, wfRunId, threadRunNumber, i);
+            NodeRun nr = getNodeRun(client, wfRunId, threadRunNumber, i);
             if (nr.getNodeTypeCase() == NodeTypeCase.TASK) {
-                TaskRunPb taskRun = getTaskRun(client, nr.getTask().getTaskRunId());
-                out.add(
-                    taskRun.getAttempts(taskRun.getAttemptsCount() - 1).getOutput()
-                );
+                TaskRun taskRun = getTaskRun(client, nr.getTask().getTaskRunId());
+                out.add(taskRun.getAttempts(taskRun.getAttemptsCount() - 1).getOutput());
             }
         }
         return out;
@@ -541,56 +382,35 @@ public abstract class Test {
     }
 
     public void assertTaskOutputsMatch(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber,
-        Object... desiredOutputs
-    ) throws TestFailure, LHApiError {
-        List<VariableValuePb> actual = getTaskRunOutputs(
-            client,
-            wfRunId,
-            threadRunNumber
-        );
+            LHPublicApiBlockingStub client, String wfRunId, int threadRunNumber, Object... desiredOutputs)
+            throws TestFailure, IOException {
+        List<VariableValue> actual = getTaskRunOutputs(client, wfRunId, threadRunNumber);
 
         if (actual.size() != desiredOutputs.length) {
             throw new TestFailure(
-                this,
-                "Expected " +
-                desiredOutputs.length +
-                " task runs but got " +
-                actual.size() +
-                " on wfRun " +
-                wfRunId +
-                " thread " +
-                threadRunNumber
-            );
+                    this,
+                    "Expected "
+                            + desiredOutputs.length
+                            + " task runs but got "
+                            + actual.size()
+                            + " on wfRun "
+                            + wfRunId
+                            + " thread "
+                            + threadRunNumber);
         }
 
         for (int i = 0; i < desiredOutputs.length; i++) {
-            VariableValuePb desired = objToVarVal(
-                desiredOutputs[i],
-                "Yikes couldn't convert"
-            );
+            VariableValue desired = objToVarVal(desiredOutputs[i], "Yikes couldn't convert");
 
             if (!LHLibUtil.areVariableValuesEqual(desired, actual.get(i))) {
-                throw new TestFailure(
-                    this,
-                    "Node outputs didn't match on the " + i + " th task execution!"
-                );
+                throw new TestFailure(this, "Node outputs didn't match on the " + i + " th task execution!");
             }
         }
     }
 
-    protected void fail(String message, String wfRunId, Object input)
-        throws TestFailure {
+    protected void fail(String message, String wfRunId, Object input) throws TestFailure {
         throw new TestFailure(
-            this,
-            "WfRun " +
-            wfRunId +
-            " Evaluated conditions wrong: " +
-            message +
-            "\n with input " +
-            input.toString()
-        );
+                this,
+                "WfRun " + wfRunId + " Evaluated conditions wrong: " + message + "\n with input " + input.toString());
     }
 }

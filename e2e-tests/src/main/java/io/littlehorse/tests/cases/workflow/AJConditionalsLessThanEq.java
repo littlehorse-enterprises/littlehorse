@@ -1,22 +1,22 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class AJConditionalsLessThanEq extends WorkflowLogicTest {
 
-    public AJConditionalsLessThanEq(LHClient client, LHWorkerConfig workerConfig) {
+    public AJConditionalsLessThanEq(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -25,45 +25,30 @@ public class AJConditionalsLessThanEq extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                // Use an input JSON blob with two fields, LHS and RHS.
-                // This allows us to test with various types on the left and the
-                // right, since right now the JSON_OBJ var type does not have a
-                // schema.
-                WfRunVariable input = thread.addVariable(
-                    "input",
-                    VariableTypePb.JSON_OBJ
-                );
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            // Use an input JSON blob with two fields, LHS and RHS.
+            // This allows us to test with various types on the left and the
+            // right, since right now the JSON_OBJ var type does not have a
+            // schema.
+            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-                // So that the run request succeeds even on workflows where we want
-                // a crash.
-                thread.execute("aj-one");
+            // So that the run request succeeds even on workflows where we want
+            // a crash.
+            thread.execute("aj-one");
 
-                thread.doIfElse(
-                    thread.condition(
-                        input.jsonPath("$.lhs"),
-                        ComparatorPb.LESS_THAN_EQ,
-                        input.jsonPath("$.rhs")
-                    ),
+            thread.doIfElse(
+                    thread.condition(input.jsonPath("$.lhs"), Comparator.LESS_THAN_EQ, input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("aj-one");
                     },
                     elseBlock -> {
                         elseBlock.execute("aj-two");
-                    }
-                );
-            }
-        );
+                    });
+        });
     }
 
-    private String runWithInputsAndCheck(
-        LHClient client,
-        Object lhs,
-        Object rhs,
-        boolean shouldEqual
-    ) throws TestFailure, InterruptedException, LHApiError {
+    private String runWithInputsAndCheck(LHPublicApiBlockingStub client, Object lhs, Object rhs, boolean shouldEqual)
+            throws TestFailure, InterruptedException, IOException {
         AJInputObj input = new AJInputObj(lhs, rhs);
 
         if (shouldEqual) {
@@ -79,16 +64,15 @@ public class AJConditionalsLessThanEq extends WorkflowLogicTest {
 
     // private String twoInts() throws TestFailure
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         return Arrays.asList(
-            runWithInputsAndCheck(client, 1, 2, true),
-            runWithInputsAndCheck(client, 1, 1, true),
-            runWithInputsAndCheck(client, "hi", "hi", true),
-            runWithInputsAndCheck(client, "a", "b", true),
-            runWithInputsAndCheck(client, 1.0, 1.0, true),
-            runWithInputsAndCheck(client, 5, 4, false)
-        );
+                runWithInputsAndCheck(client, 1, 2, true),
+                runWithInputsAndCheck(client, 1, 1, true),
+                runWithInputsAndCheck(client, "hi", "hi", true),
+                runWithInputsAndCheck(client, "a", "b", true),
+                runWithInputsAndCheck(client, 1.0, 1.0, true),
+                runWithInputsAndCheck(client, 5, 4, false));
     }
 }
 

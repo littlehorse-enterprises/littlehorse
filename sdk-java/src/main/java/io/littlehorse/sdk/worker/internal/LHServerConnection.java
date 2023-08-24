@@ -2,28 +2,26 @@ package io.littlehorse.sdk.worker.internal;
 
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.HostInfoPb;
+import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
-import io.littlehorse.sdk.common.proto.PollTaskPb;
-import io.littlehorse.sdk.common.proto.PollTaskReplyPb;
-import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
+import io.littlehorse.sdk.common.proto.PollTaskRequest;
+import io.littlehorse.sdk.common.proto.PollTaskResponse;
+import io.littlehorse.sdk.common.proto.ScheduledTask;
 import java.io.Closeable;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class LHServerConnection
-    implements Closeable, StreamObserver<PollTaskReplyPb> {
+public class LHServerConnection implements Closeable, StreamObserver<PollTaskResponse> {
 
     private LHServerConnectionManager manager;
-    private HostInfoPb host;
+    private LHHostInfo host;
 
     private boolean stillRunning;
-    private StreamObserver<PollTaskPb> pollClient;
+    private StreamObserver<PollTaskRequest> pollClient;
     private LHPublicApiStub stub;
 
-    public LHServerConnection(LHServerConnectionManager manager, HostInfoPb host)
-        throws IOException {
+    public LHServerConnection(LHServerConnectionManager manager, LHHostInfo host) throws IOException {
         stillRunning = true;
         this.manager = manager;
         this.host = host;
@@ -51,9 +49,9 @@ public class LHServerConnection
     }
 
     @Override
-    public void onNext(PollTaskReplyPb taskToDo) {
+    public void onNext(PollTaskResponse taskToDo) {
         if (taskToDo.hasResult()) {
-            ScheduledTaskPb scheduledTask = taskToDo.getResult();
+            ScheduledTask scheduledTask = taskToDo.getResult();
             String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource());
             log.info("Received task schedule request for wfRun {}", wfRunId);
 
@@ -61,11 +59,7 @@ public class LHServerConnection
 
             log.info("Scheduled task on threadpool for wfRun {}", wfRunId);
         } else {
-            log.error(
-                "Didn't successfully claim task: {} {}",
-                taskToDo.getCode().toString(),
-                taskToDo.getMessage()
-            );
+            log.error("Didn't successfully claim task, likely due to server restart.");
         }
 
         if (stillRunning) {
@@ -77,27 +71,21 @@ public class LHServerConnection
         }
     }
 
-    public HostInfoPb getHostInfo() {
+    public LHHostInfo getHostInfo() {
         return host;
     }
 
-    public boolean isSameAs(HostInfoPb other) {
-        return (
-            this.host.getHost().equals(other.getHost()) &&
-            this.host.getPort() == other.getPort()
-        );
+    public boolean isSameAs(LHHostInfo other) {
+        return (this.host.getHost().equals(other.getHost()) && this.host.getPort() == other.getPort());
     }
 
     private void askForMoreWork() {
         log.debug("Asking for more work on {}:{}", host.getHost(), host.getPort());
-        pollClient.onNext(
-            PollTaskPb
-                .newBuilder()
+        pollClient.onNext(PollTaskRequest.newBuilder()
                 .setClientId(manager.config.getClientId())
                 .setTaskDefName(manager.taskDef.getName())
                 .setTaskWorkerVersion(manager.config.getTaskWorkerVersion())
-                .build()
-        );
+                .build());
     }
 
     public void close() {

@@ -26,10 +26,8 @@ import org.junit.jupiter.api.Test;
 
 public class LHConfigTest {
 
-    private static final String LHS_LISTENERS_AUTHORIZATION_MAP =
-        "LHS_LISTENERS_AUTHORIZATION_MAP";
-    private static final String LHS_LISTENERS_PROTOCOL_MAP =
-        "LHS_LISTENERS_PROTOCOL_MAP";
+    private static final String LHS_LISTENERS_AUTHORIZATION_MAP = "LHS_LISTENERS_AUTHORIZATION_MAP";
+    private static final String LHS_LISTENERS_PROTOCOL_MAP = "LHS_LISTENERS_PROTOCOL_MAP";
     private static final String LHS_LISTENERS = "LHS_LISTENERS";
     private static final String LHS_ADVERTISED_LISTENERS = "LHS_ADVERTISED_LISTENERS";
 
@@ -46,16 +44,13 @@ public class LHConfigTest {
         List<ServerListenerConfig> result = assertDoesNotThrow(config::getListeners);
 
         assertThat(result)
-            .containsExactly(
-                ServerListenerConfig
-                    .builder()
-                    .name("PLAIN")
-                    .port(5000)
-                    .protocol(ListenerProtocol.PLAIN)
-                    .config(config)
-                    .authorizationProtocol(AuthorizationProtocol.NONE)
-                    .build()
-            );
+                .containsExactly(ServerListenerConfig.builder()
+                        .name("PLAIN")
+                        .port(5000)
+                        .protocol(ListenerProtocol.PLAIN)
+                        .config(config)
+                        .authorizationProtocol(AuthorizationProtocol.NONE)
+                        .build());
     }
 
     @Test
@@ -65,50 +60,37 @@ public class LHConfigTest {
 
         LHConfig config = new LHConfig(properties);
 
-        List<AdvertisedListenerConfig> result = assertDoesNotThrow(
-            config::getAdvertisedListeners
-        );
+        List<AdvertisedListenerConfig> result = assertDoesNotThrow(config::getAdvertisedListeners);
 
         assertThat(result)
-            .containsExactly(
-                AdvertisedListenerConfig
-                    .builder()
-                    .name("PLAIN")
-                    .host("localhost")
-                    .port(5000)
-                    .build()
-            );
+                .containsExactly(AdvertisedListenerConfig.builder()
+                        .name("PLAIN")
+                        .host("localhost")
+                        .port(5000)
+                        .build());
     }
 
     @Test
     void itAllowsAdvertisedListenersWithTheSamePort() {
         Properties properties = new Properties();
-        properties.put(
-            LHS_ADVERTISED_LISTENERS,
-            "PLAIN://localhost:5000,EXTERNAL://insecure.external.com:5000"
-        );
+        properties.put(LHS_ADVERTISED_LISTENERS, "PLAIN://localhost:5000,EXTERNAL://insecure.external.com:5000");
 
         LHConfig config = new LHConfig(properties);
 
-        List<AdvertisedListenerConfig> result = assertDoesNotThrow(
-            config::getAdvertisedListeners
-        );
+        List<AdvertisedListenerConfig> result = assertDoesNotThrow(config::getAdvertisedListeners);
 
         assertThat(result)
-            .containsExactly(
-                AdvertisedListenerConfig
-                    .builder()
-                    .name("PLAIN")
-                    .host("localhost")
-                    .port(5000)
-                    .build(),
-                AdvertisedListenerConfig
-                    .builder()
-                    .name("EXTERNAL")
-                    .host("insecure.external.com")
-                    .port(5000)
-                    .build()
-            );
+                .containsExactly(
+                        AdvertisedListenerConfig.builder()
+                                .name("PLAIN")
+                                .host("localhost")
+                                .port(5000)
+                                .build(),
+                        AdvertisedListenerConfig.builder()
+                                .name("EXTERNAL")
+                                .host("insecure.external.com")
+                                .port(5000)
+                                .build());
     }
 
     @Test
@@ -123,8 +105,7 @@ public class LHConfigTest {
         List<ServerListenerConfig> result = assertDoesNotThrow(config::getListeners);
 
         assertThat(result.get(0).getProtocol()).isEqualTo(ListenerProtocol.PLAIN);
-        assertThat(result.get(0).getAuthorizationProtocol())
-            .isEqualTo(AuthorizationProtocol.OAUTH);
+        assertThat(result.get(0).getAuthorizationProtocol()).isEqualTo(AuthorizationProtocol.OAUTH);
     }
 
     @Test
@@ -134,10 +115,7 @@ public class LHConfigTest {
 
         LHConfig config = new LHConfig(properties);
 
-        assertThrows(
-            LHMisconfigurationException.class,
-            config::getListenersProtocolMap
-        );
+        assertThrows(LHMisconfigurationException.class, config::getListenersProtocolMap);
     }
 
     @Test
@@ -147,26 +125,17 @@ public class LHConfigTest {
 
         LHConfig config = new LHConfig(properties);
 
-        assertThrows(
-            LHMisconfigurationException.class,
-            config::getListenersProtocolMap
-        );
+        assertThrows(LHMisconfigurationException.class, config::getListenersProtocolMap);
     }
 
     @Test
     void validateProtocolDoesNotExists() {
         Properties properties = new Properties();
-        properties.put(
-            LHS_LISTENERS_PROTOCOL_MAP,
-            "PLAIN:PLAIN,MTLS:MTLS,NOT_EXISTS:NOT_EXISTS"
-        );
+        properties.put(LHS_LISTENERS_PROTOCOL_MAP, "PLAIN:PLAIN,MTLS:MTLS,NOT_EXISTS:NOT_EXISTS");
 
         LHConfig config = new LHConfig(properties);
 
-        assertThrows(
-            LHMisconfigurationException.class,
-            config::getListenersProtocolMap
-        );
+        assertThrows(LHMisconfigurationException.class, config::getListenersProtocolMap);
     }
 
     @Test
@@ -176,9 +145,7 @@ public class LHConfigTest {
 
         LHConfig config = new LHConfig(properties);
 
-        Map<String, ListenerProtocol> result = assertDoesNotThrow(
-            config::getListenersProtocolMap
-        );
+        Map<String, ListenerProtocol> result = assertDoesNotThrow(config::getListenersProtocolMap);
 
         assertThat(result.get("PLAIN")).isEqualTo(ListenerProtocol.PLAIN);
     }
@@ -186,17 +153,11 @@ public class LHConfigTest {
     @Test
     void validateAuthProtocolDoesNotExists() {
         Properties properties = new Properties();
-        properties.put(
-            LHS_LISTENERS_AUTHORIZATION_MAP,
-            "OAUTH:OAUTH,NOT_EXISTS:NOT_EXISTS"
-        );
+        properties.put(LHS_LISTENERS_AUTHORIZATION_MAP, "OAUTH:OAUTH,NOT_EXISTS:NOT_EXISTS");
 
         LHConfig config = new LHConfig(properties);
 
-        assertThrows(
-            LHMisconfigurationException.class,
-            config::getListenersAuthorizationMap
-        );
+        assertThrows(LHMisconfigurationException.class, config::getListenersAuthorizationMap);
     }
 
     @Test
@@ -206,9 +167,7 @@ public class LHConfigTest {
 
         LHConfig config = new LHConfig(properties);
 
-        Map<String, AuthorizationProtocol> result = assertDoesNotThrow(
-            config::getListenersAuthorizationMap
-        );
+        Map<String, AuthorizationProtocol> result = assertDoesNotThrow(config::getListenersAuthorizationMap);
 
         assertThat(result.get("BASIC")).isEqualTo(AuthorizationProtocol.BASIC);
     }
@@ -217,39 +176,30 @@ public class LHConfigTest {
     void validateSeveralAdvertisedListeners() {
         Properties properties = new Properties();
         properties.put(
-            LHS_ADVERTISED_LISTENERS,
-            "PLAIN://localhost:5000,MTLS://secure.localhost:6000,OAUTH://oauth.localhost:7000"
-        );
+                LHS_ADVERTISED_LISTENERS,
+                "PLAIN://localhost:5000,MTLS://secure.localhost:6000,OAUTH://oauth.localhost:7000");
 
         LHConfig config = new LHConfig(properties);
 
-        List<AdvertisedListenerConfig> result = assertDoesNotThrow(
-            config::getAdvertisedListeners
-        );
+        List<AdvertisedListenerConfig> result = assertDoesNotThrow(config::getAdvertisedListeners);
 
         assertThat(result)
-            .containsAll(
-                List.of(
-                    AdvertisedListenerConfig
-                        .builder()
-                        .name("PLAIN")
-                        .host("localhost")
-                        .port(5000)
-                        .build(),
-                    AdvertisedListenerConfig
-                        .builder()
-                        .name("MTLS")
-                        .host("secure.localhost")
-                        .port(6000)
-                        .build(),
-                    AdvertisedListenerConfig
-                        .builder()
-                        .name("OAUTH")
-                        .host("oauth.localhost")
-                        .port(7000)
-                        .build()
-                )
-            );
+                .containsAll(List.of(
+                        AdvertisedListenerConfig.builder()
+                                .name("PLAIN")
+                                .host("localhost")
+                                .port(5000)
+                                .build(),
+                        AdvertisedListenerConfig.builder()
+                                .name("MTLS")
+                                .host("secure.localhost")
+                                .port(6000)
+                                .build(),
+                        AdvertisedListenerConfig.builder()
+                                .name("OAUTH")
+                                .host("oauth.localhost")
+                                .port(7000)
+                                .build()));
     }
 
     @Test
@@ -263,34 +213,28 @@ public class LHConfigTest {
         List<ServerListenerConfig> result = assertDoesNotThrow(config::getListeners);
 
         assertThat(result)
-            .containsAll(
-                List.of(
-                    ServerListenerConfig
-                        .builder()
-                        .name("PLAIN")
-                        .port(5000)
-                        .protocol(ListenerProtocol.PLAIN)
-                        .config(config)
-                        .authorizationProtocol(AuthorizationProtocol.NONE)
-                        .build(),
-                    ServerListenerConfig
-                        .builder()
-                        .name("MTLS")
-                        .port(6000)
-                        .protocol(ListenerProtocol.MTLS)
-                        .config(config)
-                        .authorizationProtocol(AuthorizationProtocol.NONE)
-                        .build(),
-                    ServerListenerConfig
-                        .builder()
-                        .name("OAUTH")
-                        .port(7000)
-                        .protocol(ListenerProtocol.TLS)
-                        .config(config)
-                        .authorizationProtocol(AuthorizationProtocol.NONE)
-                        .build()
-                )
-            );
+                .containsAll(List.of(
+                        ServerListenerConfig.builder()
+                                .name("PLAIN")
+                                .port(5000)
+                                .protocol(ListenerProtocol.PLAIN)
+                                .config(config)
+                                .authorizationProtocol(AuthorizationProtocol.NONE)
+                                .build(),
+                        ServerListenerConfig.builder()
+                                .name("MTLS")
+                                .port(6000)
+                                .protocol(ListenerProtocol.MTLS)
+                                .config(config)
+                                .authorizationProtocol(AuthorizationProtocol.NONE)
+                                .build(),
+                        ServerListenerConfig.builder()
+                                .name("OAUTH")
+                                .port(7000)
+                                .protocol(ListenerProtocol.TLS)
+                                .config(config)
+                                .authorizationProtocol(AuthorizationProtocol.NONE)
+                                .build()));
     }
 
     @Test
@@ -310,10 +254,7 @@ public class LHConfigTest {
 
         LHConfig config = new LHConfig(properties);
 
-        assertThrows(
-            LHMisconfigurationException.class,
-            config::getAdvertisedListeners
-        );
+        assertThrows(LHMisconfigurationException.class, config::getAdvertisedListeners);
     }
 
     @Test
@@ -329,17 +270,11 @@ public class LHConfigTest {
     @Test
     void throwsAnExceptionIfOneAdvertisedListenerInNotValid() {
         Properties properties = new Properties();
-        properties.put(
-            LHS_ADVERTISED_LISTENERS,
-            "PLAIN://localhost:5000,MTLS:/localhost:6000"
-        );
+        properties.put(LHS_ADVERTISED_LISTENERS, "PLAIN://localhost:5000,MTLS:/localhost:6000");
 
         LHConfig config = new LHConfig(properties);
 
-        assertThrows(
-            LHMisconfigurationException.class,
-            config::getAdvertisedListeners
-        );
+        assertThrows(LHMisconfigurationException.class, config::getAdvertisedListeners);
     }
 
     @Test
@@ -363,26 +298,21 @@ public class LHConfigTest {
         List<ServerListenerConfig> result = assertDoesNotThrow(config::getListeners);
 
         assertThat(result)
-            .containsAll(
-                List.of(
-                    ServerListenerConfig
-                        .builder()
-                        .name("PLAIN_1")
-                        .port(5000)
-                        .protocol(ListenerProtocol.PLAIN)
-                        .config(config)
-                        .authorizationProtocol(AuthorizationProtocol.NONE)
-                        .build(),
-                    ServerListenerConfig
-                        .builder()
-                        .name("PLAIN_2")
-                        .port(6000)
-                        .protocol(ListenerProtocol.PLAIN)
-                        .config(config)
-                        .authorizationProtocol(AuthorizationProtocol.NONE)
-                        .build()
-                )
-            );
+                .containsAll(List.of(
+                        ServerListenerConfig.builder()
+                                .name("PLAIN_1")
+                                .port(5000)
+                                .protocol(ListenerProtocol.PLAIN)
+                                .config(config)
+                                .authorizationProtocol(AuthorizationProtocol.NONE)
+                                .build(),
+                        ServerListenerConfig.builder()
+                                .name("PLAIN_2")
+                                .port(6000)
+                                .protocol(ListenerProtocol.PLAIN)
+                                .config(config)
+                                .authorizationProtocol(AuthorizationProtocol.NONE)
+                                .build()));
     }
 
     @Test
@@ -391,7 +321,7 @@ public class LHConfigTest {
         String clientId = UUID.randomUUID().toString();
         String clientSecret = UUID.randomUUID().toString();
         String server =
-            "https://" + faker.internet().url() + "/" + faker.internet().slug();
+                "https://" + faker.internet().url() + "/" + faker.internet().slug();
 
         properties.put("LHS_LISTENER_TEST_CLIENT_ID", clientId);
         properties.put("LHS_LISTENER_TEST_CLIENT_SECRET", clientSecret);
@@ -400,14 +330,11 @@ public class LHConfigTest {
         LHConfig config = new LHConfig(properties);
 
         assertThat(config.getOAuthConfigByListener("TEST"))
-            .isEqualTo(
-                OAuthConfig
-                    .builder()
-                    .authorizationServer(URI.create(server))
-                    .clientId(clientId)
-                    .clientSecret(clientSecret)
-                    .build()
-            );
+                .isEqualTo(OAuthConfig.builder()
+                        .authorizationServer(URI.create(server))
+                        .clientId(clientId)
+                        .clientSecret(clientSecret)
+                        .build());
     }
 
     @Test
@@ -423,10 +350,8 @@ public class LHConfigTest {
 
         LHConfig config = new LHConfig(properties);
 
-        LHMisconfigurationException error = assertThrows(
-            LHMisconfigurationException.class,
-            () -> config.getOAuthConfigByListener("TEST")
-        );
+        LHMisconfigurationException error =
+                assertThrows(LHMisconfigurationException.class, () -> config.getOAuthConfigByListener("TEST"));
 
         assertThat(error.getMessage()).contains("Malformed URL");
     }
@@ -436,7 +361,7 @@ public class LHConfigTest {
         String clientId = UUID.randomUUID().toString();
         String clientSecret = UUID.randomUUID().toString();
         String server =
-            "https://" + faker.internet().url() + "/" + faker.internet().slug();
+                "https://" + faker.internet().url() + "/" + faker.internet().slug();
         String fileClientId = "/tmp/test-" + UUID.randomUUID() + ".txt";
         String fileClientSecret = "/tmp/test-" + UUID.randomUUID() + ".txt";
 
@@ -450,14 +375,11 @@ public class LHConfigTest {
 
         LHConfig config = new LHConfig(properties);
         assertThat(config.getOAuthConfigByListener("TEST"))
-            .isEqualTo(
-                OAuthConfig
-                    .builder()
-                    .clientId(clientId)
-                    .clientSecret(clientSecret)
-                    .authorizationServer(URI.create(server))
-                    .build()
-            );
+                .isEqualTo(OAuthConfig.builder()
+                        .clientId(clientId)
+                        .clientSecret(clientSecret)
+                        .authorizationServer(URI.create(server))
+                        .build());
     }
 
     @Test
@@ -465,7 +387,7 @@ public class LHConfigTest {
         String clientId = UUID.randomUUID().toString();
         String clientSecret = UUID.randomUUID().toString();
         String server =
-            "https://" + faker.internet().url() + "/" + faker.internet().slug();
+                "https://" + faker.internet().url() + "/" + faker.internet().slug();
 
         Properties properties = new Properties();
         properties.put("LHS_LISTENER_TEST_CLIENT_ID", clientId);
@@ -474,14 +396,11 @@ public class LHConfigTest {
 
         LHConfig config = new LHConfig(properties);
         assertThat(config.getOAuthConfigByListener("TEST"))
-            .isEqualTo(
-                OAuthConfig
-                    .builder()
-                    .clientId(clientId)
-                    .clientSecret(clientSecret)
-                    .authorizationServer(URI.create(server))
-                    .build()
-            );
+                .isEqualTo(OAuthConfig.builder()
+                        .clientId(clientId)
+                        .clientSecret(clientSecret)
+                        .authorizationServer(URI.create(server))
+                        .build());
     }
 
     @Test
@@ -489,13 +408,10 @@ public class LHConfigTest {
         Properties properties = new Properties();
         LHConfig config = new LHConfig(properties);
 
-        LHMisconfigurationException error = assertThrows(
-            LHMisconfigurationException.class,
-            () -> config.getOAuthConfigByListener("TEST")
-        );
+        LHMisconfigurationException error =
+                assertThrows(LHMisconfigurationException.class, () -> config.getOAuthConfigByListener("TEST"));
 
-        assertThat(error.getMessage())
-            .contains("OAuth configuration called but not provided");
+        assertThat(error.getMessage()).contains("OAuth configuration called but not provided");
     }
 
     @Test
@@ -513,14 +429,11 @@ public class LHConfigTest {
         LHConfig config = new LHConfig(properties);
 
         assertThat(config.getTlsConfigByListener("TEST"))
-            .isEqualTo(
-                TlsConfig
-                    .builder()
-                    .caCert(new File(ca))
-                    .cert(new File(cert))
-                    .key(new File(key))
-                    .build()
-            );
+                .isEqualTo(TlsConfig.builder()
+                        .caCert(new File(ca))
+                        .cert(new File(cert))
+                        .key(new File(key))
+                        .build());
     }
 
     @Test
@@ -536,9 +449,10 @@ public class LHConfigTest {
         LHConfig config = new LHConfig(properties);
 
         assertThat(config.getTlsConfigByListener("TEST"))
-            .isEqualTo(
-                TlsConfig.builder().cert(new File(cert)).key(new File(key)).build()
-            );
+                .isEqualTo(TlsConfig.builder()
+                        .cert(new File(cert))
+                        .key(new File(key))
+                        .build());
     }
 
     @Test
@@ -546,12 +460,9 @@ public class LHConfigTest {
         Properties properties = new Properties();
         LHConfig config = new LHConfig(properties);
 
-        LHMisconfigurationException error = assertThrows(
-            LHMisconfigurationException.class,
-            () -> config.getTlsConfigByListener("TEST")
-        );
+        LHMisconfigurationException error =
+                assertThrows(LHMisconfigurationException.class, () -> config.getTlsConfigByListener("TEST"));
 
-        assertThat(error.getMessage())
-            .contains("TLS configuration called but not provided");
+        assertThat(error.getMessage()).contains("TLS configuration called but not provided");
     }
 }

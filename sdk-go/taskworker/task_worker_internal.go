@@ -17,19 +17,19 @@ import (
 const TOTAL_RETRIES = 5
 
 func (tw *LHTaskWorker) registerTaskDef(ignoreAlreadyExistsError bool) error {
-	ptd := &model.PutTaskDefPb{
+	ptd := &model.PutTaskDefRequest{
 		Name:      tw.taskDefName,
-		InputVars: make([]*model.VariableDefPb, 0),
+		InputVars: make([]*model.VariableDef, 0),
 	}
 
 	for i, arg := range tw.taskSig.Args {
-		ptd.InputVars = append(ptd.InputVars, &model.VariableDefPb{
+		ptd.InputVars = append(ptd.InputVars, &model.VariableDef{
 			Name: strconv.Itoa(i) + "-" + arg.Name,
 			Type: common.ReflectTypeToVarType(arg.Type),
 		})
 	}
 
-	_, err := tw.client.PutTaskDef(ptd, ignoreAlreadyExistsError)
+	_, err := (*tw.grpcStub).PutTaskDef(context.Background(), ptd)
 	return err
 }
 
@@ -47,14 +47,14 @@ func (tw *LHTaskWorker) close() error {
 // ///////////////////////////////////////////////////////////
 type serverConnection struct {
 	manager        *serverConnectionManager
-	host           *model.HostInfoPb
+	host           *model.LHHostInfo
 	running        bool
 	pollTaskClient *model.LHPublicApi_PollTaskClient
 	grpcClient     *model.LHPublicApiClient
 }
 
 func newServerConnection(
-	manager *serverConnectionManager, host *model.HostInfoPb,
+	manager *serverConnectionManager, host *model.LHHostInfo,
 ) (*serverConnection, error) {
 	grpcClient, err := manager.tw.config.GetGrpcClientForHost(
 		host.Host + ":" + strconv.Itoa(int(host.Port)),
@@ -76,7 +76,7 @@ func newServerConnection(
 		grpcClient:     grpcClient,
 	}
 
-	stream.Send(&model.PollTaskPb{
+	stream.Send(&model.PollTaskRequest{
 		ClientId:          manager.tw.config.ClientId,
 		TaskDefName:       manager.tw.taskDefName,
 		TaskWorkerVersion: &manager.tw.config.TaskWorkerVersion,
@@ -99,11 +99,11 @@ func newServerConnection(
 				)
 				manager.submitTaskForExecution(task, out.grpcClient)
 			} else {
-				log.Default().Print("Didn't get task: " + *pollTaskReply.Message)
+				log.Default().Print("Didn't get task")
 			}
 
 			if out.running {
-				req := model.PollTaskPb{
+				req := model.PollTaskRequest{
 					ClientId:          manager.tw.config.ClientId,
 					TaskDefName:       manager.tw.taskDefName,
 					TaskWorkerVersion: &manager.tw.config.TaskWorkerVersion,
@@ -179,24 +179,16 @@ func (m *serverConnectionManager) start() {
 	for m.running {
 		reply, err := (*m.tw.grpcStub).RegisterTaskWorker(
 			context.Background(),
-			&model.RegisterTaskWorkerPb{
+			&model.RegisterTaskWorkerRequest{
 				TaskDefName:  m.tw.taskDefName,
 				ClientId:     m.tw.config.ClientId,
 				ListenerName: m.tw.config.ServerConnectListener,
 			},
 		)
 		if err != nil {
-			fmt.Println("Closing connection, heartbeat failed: " + err.Error())
+			fmt.Println("Closing Task Worker since heartbeat failed: " + err.Error())
 			m.close()
 			return
-		}
-
-		if reply.Code != model.LHResponseCodePb_OK {
-			log.Println("Got a bad response, but ignoring it: " + *reply.Message)
-			// each 'serverConnection' will close itself if it can't talk to LH
-
-			time.Sleep(time.Duration(time.Second * 5))
-			continue
 		}
 
 		for _, host := range reply.YourHosts {
@@ -233,7 +225,7 @@ func (m *serverConnectionManager) start() {
 
 }
 
-func (m *serverConnectionManager) isAlreadyRunning(host *model.HostInfoPb) bool {
+func (m *serverConnectionManager) isAlreadyRunning(host *model.LHHostInfo) bool {
 	for _, connection := range m.connections {
 		if connection.host.Host == host.Host && connection.host.Port == host.Port {
 			return true
@@ -243,7 +235,7 @@ func (m *serverConnectionManager) isAlreadyRunning(host *model.HostInfoPb) bool 
 }
 
 func (m *serverConnectionManager) shouldBeRunning(
-	conn *serverConnection, hosts []*model.HostInfoPb,
+	conn *serverConnection, hosts []*model.LHHostInfo,
 ) bool {
 	for _, host := range hosts {
 		if conn.host.Host == host.Host && conn.host.Port == host.Port {
@@ -275,10 +267,10 @@ func (m *serverConnectionManager) onConnectionClosed(conn *serverConnection) {
 // stores the info related to the task and which stub it should connect to
 type taskExecutionInfo struct {
 	specificStub *model.LHPublicApiClient
-	task         *model.ScheduledTaskPb
+	task         *model.ScheduledTask
 }
 
-func (m *serverConnectionManager) submitTaskForExecution(task *model.ScheduledTaskPb, specificStub *model.LHPublicApiClient) {
+func (m *serverConnectionManager) submitTaskForExecution(task *model.ScheduledTask, specificStub *model.LHPublicApiClient) {
 	taskToExecution := &taskExecutionInfo{
 		specificStub: specificStub,
 		task:         task,
@@ -295,7 +287,7 @@ func (m *serverConnectionManager) doTask(taskToExec *taskExecutionInfo) {
 	}
 }
 
-func (m *serverConnectionManager) retryReportTask(ctx context.Context, taskResult *model.ReportTaskRunPb, retries int) {
+func (m *serverConnectionManager) retryReportTask(ctx context.Context, taskResult *model.ReportTaskRun, retries int) {
 	log.Println("Retrying reportTask rpc on wfRun {}", taskResult.TaskRunId.WfRunId)
 
 	// TODO: Is this a Really Bad Idea? I forget whether this runs in the main
@@ -314,9 +306,9 @@ func (m *serverConnectionManager) retryReportTask(ctx context.Context, taskResul
 	}
 }
 
-func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTaskPb) *model.ReportTaskRunPb {
+func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTask) *model.ReportTaskRun {
 	var reflectArgs []reflect.Value
-	taskResult := &model.ReportTaskRunPb{
+	taskResult := &model.ReportTaskRun{
 		TaskRunId: task.TaskRunId,
 	}
 
@@ -329,11 +321,11 @@ func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTaskPb) *mod
 		goValue, err := taskFuncArg.Assign(task, workerContext)
 		if err != nil {
 			msg := "Failed calculating input variable " + taskFuncArg.Name + ": " + err.Error()
-			taskResult.LogOutput = &model.VariableValuePb{
+			taskResult.LogOutput = &model.VariableValue{
 				Str:  &msg,
-				Type: model.VariableTypePb_STR,
+				Type: model.VariableType_STR,
 			}
-			taskResult.Status = model.TaskStatusPb_TASK_INPUT_VAR_SUB_ERROR
+			taskResult.Status = model.TaskStatus_TASK_INPUT_VAR_SUB_ERROR
 			return taskResult
 		}
 		reflectArgs = append(reflectArgs, *goValue)
@@ -356,22 +348,22 @@ func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTaskPb) *mod
 				if workerContext.GetLogOutput() != "" {
 					msg += "\n\n\n\n" + workerContext.GetLogOutput()
 				}
-				taskResult.LogOutput = &model.VariableValuePb{
+				taskResult.LogOutput = &model.VariableValue{
 					Str:  &msg,
-					Type: model.VariableTypePb_STR,
+					Type: model.VariableType_STR,
 				}
-				taskResult.Status = model.TaskStatusPb_TASK_OUTPUT_SERIALIZING_ERROR
+				taskResult.Status = model.TaskStatus_TASK_OUTPUT_SERIALIZING_ERROR
 				return taskResult
 			}
 			taskResult.Output = taskOutputVarVal
 			if workerContext.GetLogOutput() != "" {
 				msg := workerContext.GetLogOutput()
-				taskResult.LogOutput = &model.VariableValuePb{
+				taskResult.LogOutput = &model.VariableValue{
 					Str:  &msg,
-					Type: model.VariableTypePb_STR,
+					Type: model.VariableType_STR,
 				}
 			}
-			taskResult.Status = model.TaskStatusPb_TASK_SUCCESS
+			taskResult.Status = model.TaskStatus_TASK_SUCCESS
 		}
 	}
 
@@ -385,7 +377,7 @@ func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTaskPb) *mod
 			} else {
 				taskResult.LogOutput = errorVarVal
 			}
-			taskResult.Status = model.TaskStatusPb_TASK_FAILED
+			taskResult.Status = model.TaskStatus_TASK_FAILED
 		}
 	}
 

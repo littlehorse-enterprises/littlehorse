@@ -1,6 +1,7 @@
 plugins {
     id 'application'
     id 'java-library'
+    id 'com.diffplug.spotless' version '6.20.0'
 }
 
 sourceCompatibility=17
@@ -19,6 +20,8 @@ dependencies {
     implementation 'org.reflections:reflections:0.10.2' // This reflection API isNOT under active development or maintenance, look for an alternative
     implementation 'commons-cli:commons-cli:1.5.0'
     implementation 'org.testcontainers:kafka:1.18.3'
+    testImplementation project(':lh-test')
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
 }
 
 application {
@@ -31,4 +34,21 @@ application {
 // less descriptive.
 compileJava {
     options.compilerArgs << '-parameters'
+}
+
+test {
+    useJUnitPlatform()
+    maxParallelForks = Runtime.runtime.availableProcessors()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+}
+
+spotless {
+    java {
+        target('**/*.java')
+        targetExclude('**/proto/*.java')
+        palantirJavaFormat()
+    }
 }

@@ -1,8 +1,8 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
-import io.littlehorse.sdk.common.proto.PutTaskDefPb;
-import io.littlehorse.sdk.common.proto.PutWfSpecPb;
+import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
+import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class WorkflowImpl extends Workflow {
 
-    private PutWfSpecPb compiledWorkflow;
+    private PutWfSpecRequest compiledWorkflow;
     private Map<String, TaskDefBuilder> taskDefBuilders;
     private Set<String> requiredTaskDefNames;
     private Set<String> requiredEedNames;
@@ -26,16 +26,16 @@ public class WorkflowImpl extends Workflow {
         requiredEedNames = new HashSet<>();
     }
 
-    public Set<PutTaskDefPb> compileTaskDefs() {
+    public Set<PutTaskDefRequest> compileTaskDefs() {
         compileWorkflow();
-        Set<PutTaskDefPb> out = new HashSet<>();
+        Set<PutTaskDefRequest> out = new HashSet<>();
         for (TaskDefBuilder tdb : taskDefBuilders.values()) {
-            out.add(tdb.toPutTaskDefPb());
+            out.add(tdb.toPutTaskDefRequest());
         }
         return out;
     }
 
-    public PutWfSpecPb compileWorkflow() {
+    public PutWfSpecRequest compileWorkflow() {
         if (compiledWorkflow == null) {
             compiledWorkflow = compileWorkflowHelper();
         }
@@ -54,9 +54,7 @@ public class WorkflowImpl extends Workflow {
         TaskDefBuilder previous = taskDefBuilders.get(tdb.taskDefName);
         if (previous != null) {
             if (!previous.signature.equals(tdb.signature)) {
-                throw new RuntimeException(
-                    "Tried to register two DIFFERENT tasks named " + tdb.taskDefName
-                );
+                throw new RuntimeException("Tried to register two DIFFERENT tasks named " + tdb.taskDefName);
             }
         } else {
             taskDefBuilders.put(tdb.taskDefName, tdb);
@@ -79,10 +77,9 @@ public class WorkflowImpl extends Workflow {
         return requiredEedNames;
     }
 
-    private PutWfSpecPb compileWorkflowHelper() {
+    private PutWfSpecRequest compileWorkflowHelper() {
         Set<String> seenThreads = new HashSet<>();
-        String entrypointThreadName =
-            this.addSubThread("entrypoint", entrypointThread);
+        String entrypointThreadName = this.addSubThread("entrypoint", entrypointThread);
         spec.setEntrypointThreadName(entrypointThreadName);
 
         while (true) {
@@ -121,9 +118,7 @@ public class WorkflowImpl extends Workflow {
     // so we don't need to pass in the name.
     public String addSubThread(String subThreadName, ThreadFunc subThreadFunc) {
         if (threadFuncs.containsKey(subThreadName)) {
-            throw new LHMisconfigurationException(
-                String.format("Thread %s already exists", subThreadName)
-            );
+            throw new LHMisconfigurationException(String.format("Thread %s already exists", subThreadName));
         }
         threadFuncs.put(subThreadName, subThreadFunc);
         return subThreadName;

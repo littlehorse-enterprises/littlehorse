@@ -1,10 +1,9 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
@@ -34,11 +33,11 @@ public class SagaExample {
             thread -> {
                 WfRunVariable flightConfirmationNumber = thread.addVariable(
                     "flight-confirmation-number",
-                    VariableTypePb.STR
+                    VariableType.STR
                 );
                 WfRunVariable hotelConfirmationNumber = thread.addVariable(
                     "hotel-confirmation-number",
-                    VariableTypePb.STR
+                    VariableType.STR
                 );
 
                 SpawnedThread sagaThread = thread.spawnThread(
@@ -74,14 +73,14 @@ public class SagaExample {
             NodeOutput bookFlightOutput = bookThread.execute("book-flight");
             bookThread.mutate(
                 flightConfirmationNumber,
-                VariableMutationTypePb.ASSIGN,
+                VariableMutationType.ASSIGN,
                 bookFlightOutput
             );
 
             NodeOutput bookHotelOutput = bookThread.execute("book-hotel");
             bookThread.mutate(
                 hotelConfirmationNumber,
-                VariableMutationTypePb.ASSIGN,
+                VariableMutationType.ASSIGN,
                 bookHotelOutput
             );
         };
@@ -97,7 +96,7 @@ public class SagaExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) {
+    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) throws IOException {
         ReservationBooker executable = new ReservationBooker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "book-flight", config),
@@ -119,11 +118,11 @@ public class SagaExample {
         return workers;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
+        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();

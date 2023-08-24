@@ -29,9 +29,23 @@ UserTaskRun. At the end, the UserTaskRun is submitted`,
 	},
 }
 
+var cancelUserTaskRunCmd = &cobra.Command{
+	Use:   "userTaskRun <wfRunId> <userTaskGuid>",
+	Short: "Cancel a UserTaskRun",
+	Long: `Given a provided wfRunId and UserTaskGuid, this command allows you to
+	cancel the specified UserTaskRun. Cancelling a UserTaskRun will halt the entire WfRun execution.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) != 2 {
+			log.Fatal("You must provide the wfRunId and userTaskGuid")
+		}
+		client := getGlobalClient(cmd)
+		cancelUserTask(args[0], args[1], &client)
+	},
+}
+
 var assignUserTaskRunCmd = &cobra.Command{
 	Use:   "userTaskRun <wfRunId> <userTaskGuid> [options]",
-	Short: "Reassign a UserTaskRun to a group or specific userId",
+	Short: "Reassign a UserTaskRun to a userGroup or specific userId",
 	Long: `Given a provided wfRunId and UserTaskGuid, this utility allows you
 to reassign the specified UserTaskRun.
 
@@ -40,7 +54,7 @@ is already claimedby a specific UserId.
 
 The following option groups are supported:
 [userId] -> assign to a specific userId.
-[userGroup] -> assign to a group of users
+[userGroup] -> assign to a userGroup of users
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
@@ -53,8 +67,8 @@ The following option groups are supported:
 		// userId and userGroup can't both be non-empty because the flags are
 		// mutually exclusive.
 
-		reassign := &model.AssignUserTaskRunPb{
-			UserTaskRunId: &model.UserTaskRunIdPb{
+		reassign := &model.AssignUserTaskRunRequest{
+			UserTaskRunId: &model.UserTaskRunId{
 				WfRunId:      args[0],
 				UserTaskGuid: args[1],
 			},
@@ -62,12 +76,18 @@ The following option groups are supported:
 		}
 
 		if userId != "" {
-			reassign.Assignee = &model.AssignUserTaskRunPb_UserId{
-				UserId: userId,
+			var user = &model.User{
+				Id: userId,
+			}
+			reassign.Assignee = &model.AssignUserTaskRunRequest_User{
+				User: user,
 			}
 		} else if userGroup != "" {
-			reassign.Assignee = &model.AssignUserTaskRunPb_UserGroup{
-				UserGroup: userGroup,
+			var userGroupPb = &model.UserGroup{
+				Id: userGroup,
+			}
+			reassign.Assignee = &model.AssignUserTaskRunRequest_UserGroup{
+				UserGroup: userGroupPb,
 			}
 		} else {
 			log.Fatal("Must specify either --userId or --userGroup")
@@ -110,7 +130,7 @@ var getUserTaskRunCmd = &cobra.Command{
 
 		common.PrintResp(getGlobalClient(cmd).GetUserTaskRun(
 			context.Background(),
-			&model.UserTaskRunIdPb{
+			&model.UserTaskRunId{
 				WfRunId:      wfRunId,
 				UserTaskGuid: userTaskGuid,
 			},
@@ -146,7 +166,7 @@ Choose one of the following option groups:
 
 		earliest, latest := loadEarliestAndLatestStart(cmd)
 
-		search := &model.SearchUserTaskRunPb{
+		search := &model.SearchUserTaskRunRequest{
 			EarliestStart: earliest,
 			LatestStart:   latest,
 			Bookmark:      bookmark,
@@ -155,25 +175,43 @@ Choose one of the following option groups:
 
 		statusStr, _ := cmd.Flags().GetString("userTaskStatus")
 		if statusStr != "" {
-			statusInt, ok := model.UserTaskRunStatusPb_value[statusStr]
+			statusInt, ok := model.UserTaskRunStatus_value[statusStr]
 			if !ok {
 				log.Fatal("Invalid value provided for userTaskStatus")
 			}
-			statusVal := model.UserTaskRunStatusPb(statusInt)
+			statusVal := model.UserTaskRunStatus(statusInt)
 			search.Status = &statusVal
 		}
 
 		userIdStr, _ := cmd.Flags().GetString("userId")
+		userGroupStr, _ := cmd.Flags().GetString("userGroup")
 		if userIdStr != "" {
-			search.TaskOwner = &model.SearchUserTaskRunPb_UserId{
-				UserId: userIdStr,
+			if userGroupStr != "" {
+				var userGroup = &model.UserGroup{
+					Id: userGroupStr,
+				}
+				search.TaskOwner = &model.SearchUserTaskRunRequest_User{
+					User: &model.User{
+						Id:        userIdStr,
+						UserGroup: userGroup,
+					},
+				}
+			} else {
+				search.TaskOwner = &model.SearchUserTaskRunRequest_User{
+					User: &model.User{
+						Id: userIdStr,
+					},
+				}
 			}
+
 		}
 
-		userGroupStr, _ := cmd.Flags().GetString("userGroup")
 		if userGroupStr != "" {
-			search.TaskOwner = &model.SearchUserTaskRunPb_UserGroup{
-				UserGroup: userGroupStr,
+			var userGroupPb = &model.UserGroup{
+				Id: userGroupStr,
+			}
+			search.TaskOwner = &model.SearchUserTaskRunRequest_UserGroup{
+				UserGroup: userGroupPb,
 			}
 		}
 
@@ -193,11 +231,11 @@ Choose one of the following option groups:
 func executeUserTask(wfRunId string, userTaskGuid string, client *model.LHPublicApiClient) {
 	fmt.Println("Executing UserTaskRun ", wfRunId, " ", userTaskGuid)
 
-	completeUserTask := &model.CompleteUserTaskRunPb{
-		Result: &model.UserTaskResultPb{
-			Fields: make([]*model.UserTaskFieldResultPb, 0),
+	completeUserTask := &model.CompleteUserTaskRunRequest{
+		Result: &model.UserTaskResult{
+			Fields: make([]*model.UserTaskFieldResult, 0),
 		},
-		UserTaskRunId: &model.UserTaskRunIdPb{
+		UserTaskRunId: &model.UserTaskRunId{
 			WfRunId:      wfRunId,
 			UserTaskGuid: userTaskGuid,
 		},
@@ -222,7 +260,7 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LHPublic
 	// Next, prompt for the userId.
 	userIdVarVal, err := promptFor(
 		"Enter the userId of the person completing the task",
-		model.VariableTypePb_STR,
+		model.VariableType_STR,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -240,7 +278,7 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LHPublic
 			log.Fatal(err)
 		}
 		completeUserTask.Result.Fields = append(completeUserTask.Result.Fields,
-			&model.UserTaskFieldResultPb{
+			&model.UserTaskFieldResult{
 				Name:  field.Name,
 				Value: resultVal,
 			},
@@ -254,7 +292,17 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LHPublic
 	)
 }
 
-func promptFor(prompt string, varType model.VariableTypePb) (*model.VariableValuePb, error) {
+func cancelUserTask(wfRunId string, userTaskGuid string, client *model.LHPublicApiClient) {
+	cancelUserTask := &model.CancelUserTaskRunRequest{
+		UserTaskRunId: &model.UserTaskRunId{
+			WfRunId:      wfRunId,
+			UserTaskGuid: userTaskGuid,
+		},
+	}
+	(*client).CancelUserTaskRun(context.Background(), cancelUserTask)
+}
+
+func promptFor(prompt string, varType model.VariableType) (*model.VariableValue, error) {
 	fmt.Print(prompt + ": ")
 	// Create a new buffered reader to read from standard input
 	reader := bufio.NewReader(os.Stdin)
@@ -265,33 +313,23 @@ func promptFor(prompt string, varType model.VariableTypePb) (*model.VariableValu
 	return common.StrToVarVal(userInput[:len(userInput)-1], varType)
 }
 
-func getUserTaskDef(userTaskRun *model.UserTaskRunPb, client *model.LHPublicApiClient) (*model.UserTaskDefPb, error) {
-	resp, err := (*client).GetUserTaskDef(context.Background(), userTaskRun.UserTaskDefId)
-	if err != nil {
-		return nil, err
-	}
-	if resp.Code != model.LHResponseCodePb_OK {
-		return nil, errors.New(*resp.Message)
-	}
-	return resp.Result, nil
+func getUserTaskDef(userTaskRun *model.UserTaskRun, client *model.LHPublicApiClient) (*model.UserTaskDef, error) {
+	return (*client).GetUserTaskDef(context.Background(), userTaskRun.UserTaskDefId)
 }
 
-func getUserTaskRun(wfRunId, userTaskGuid string, client *model.LHPublicApiClient) (*model.UserTaskRunPb, error) {
-	resp, err := (*client).GetUserTaskRun(context.Background(), &model.UserTaskRunIdPb{
+func getUserTaskRun(wfRunId, userTaskGuid string, client *model.LHPublicApiClient) (*model.UserTaskRun, error) {
+	resp, err := (*client).GetUserTaskRun(context.Background(), &model.UserTaskRunId{
 		WfRunId:      wfRunId,
 		UserTaskGuid: userTaskGuid,
 	})
 	if err != nil {
 		return nil, err
 	}
-	if resp.Code != model.LHResponseCodePb_OK {
-		return nil, errors.New(*resp.Message)
-	}
-	if resp.Result.Status == model.UserTaskRunStatusPb_DONE || resp.Result.Status == model.UserTaskRunStatusPb_CANCELLED {
+	if resp.Status == model.UserTaskRunStatus_DONE || resp.Status == model.UserTaskRunStatus_CANCELLED {
 		return nil, errors.New("userTaskRun already in terminated state")
 	}
 
-	return resp.Result, nil
+	return resp, nil
 }
 
 func init() {
@@ -299,6 +337,7 @@ func init() {
 	searchCmd.AddCommand(searchUserTaskRunCmd)
 	executeCmd.AddCommand(executeUserTaskRunCmd)
 	assignCmd.AddCommand(assignUserTaskRunCmd)
+	cancelUserTaskCmd.AddCommand(cancelUserTaskRunCmd)
 
 	assignUserTaskRunCmd.Flags().String("userId", "", "User Id to assign to.")
 	assignUserTaskRunCmd.Flags().String("userGroup", "", "User Group to assign to.")
@@ -312,5 +351,4 @@ func init() {
 	searchUserTaskRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for User Task Runs that started no more than this number of minutes ago")
 	searchUserTaskRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for User Task Runs that started at least this number of minutes ago")
 
-	searchUserTaskRunCmd.MarkFlagsMutuallyExclusive("userId", "userGroup")
 }

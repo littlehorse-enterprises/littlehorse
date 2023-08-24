@@ -1,9 +1,8 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -31,7 +30,7 @@ public class WorkerContextExample {
             thread -> {
                 WfRunVariable theName = thread.addVariable(
                     "request-time",
-                    VariableTypePb.INT
+                    VariableType.INT
                 );
                 thread.execute("task", theName);
             }
@@ -48,7 +47,7 @@ public class WorkerContextExample {
         return props;
     }
 
-    public static LHTaskWorker getTaskWorker(LHWorkerConfig config) {
+    public static LHTaskWorker getTaskWorker(LHWorkerConfig config) throws IOException {
         MyWorker executable = new MyWorker();
         LHTaskWorker worker = new LHTaskWorker(executable, "task", config);
 
@@ -57,11 +56,11 @@ public class WorkerContextExample {
         return worker;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
+        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();

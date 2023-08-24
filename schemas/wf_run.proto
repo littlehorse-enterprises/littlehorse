@@ -1,0 +1,112 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "common_enums.proto";
+import "object_id.proto";
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+
+message WfRun {
+  string id = 1;
+  string wf_spec_name = 2;
+  int32 wf_spec_version = 3;
+  LHStatus status = 4;
+
+  google.protobuf.Timestamp start_time = 6;
+  optional google.protobuf.Timestamp end_time = 7;
+  repeated ThreadRun thread_runs = 8;
+
+  repeated PendingInterrupt pending_interrupts = 9;
+  repeated PendingFailureHandler pending_failures = 10;
+}
+
+enum ThreadType {
+  ENTRYPOINT = 0;
+  CHILD = 1;
+  INTERRUPT = 2;
+  FAILURE_HANDLER = 3;
+}
+
+message ThreadRun {
+  string wf_run_id = 1;
+  int32 number = 2;
+
+  LHStatus status = 3;
+  string wf_spec_name = 4;
+  int32 wf_spec_version = 5;
+  string thread_spec_name = 6;
+
+  google.protobuf.Timestamp start_time = 7;
+  optional google.protobuf.Timestamp end_time = 8;
+
+  optional string error_message = 9;
+
+  repeated int32 child_thread_ids = 11;
+  optional int32 parent_thread_id = 12;
+
+  repeated ThreadHaltReason halt_reasons = 13;
+  optional ExternalEventId interrupt_trigger_id = 14;
+  optional FailureBeingHandled failure_being_handled = 15;
+
+  int32 current_node_position = 16;
+  repeated int32 handled_failed_children = 17;
+
+  ThreadType type = 18;
+}
+
+message FailureBeingHandled {
+  int32 thread_run_number = 1;
+  int32 node_run_position = 2;
+  int32 failure_number = 3;
+}
+
+message PendingInterrupt {
+  ExternalEventId external_event_id = 1;
+  string handler_spec_name = 2;
+  int32 interrupted_thread_id = 3;
+}
+
+message PendingFailureHandler {
+  int32 failed_thread_run = 1;
+  string handler_spec_name = 2;
+}
+
+message PendingInterruptHaltReason {
+  ExternalEventId external_event_id = 1;
+}
+
+message PendingFailureHandlerHaltReason {
+  int32 node_run_position = 1;
+}
+
+message HandlingFailureHaltReason {
+  int32 handler_thread_id = 1;
+}
+
+message ParentHalted {
+  int32 parent_thread_id = 1;
+}
+
+message Interrupted {
+  int32 interrupt_thread_id = 1;
+}
+
+message ManualHalt {
+  // Nothing to store.
+  bool meaning_of_life = 137;
+}
+
+message ThreadHaltReason {
+  oneof reason {
+    ParentHalted parent_halted = 1;
+    Interrupted interrupted = 2;
+    PendingInterruptHaltReason pending_interrupt = 3;
+    PendingFailureHandlerHaltReason pending_failure = 4;
+    HandlingFailureHaltReason handling_failure = 5;
+    ManualHalt manual_halt = 6;
+  }
+}

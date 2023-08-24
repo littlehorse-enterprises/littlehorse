@@ -17,14 +17,14 @@ type LHWorkflow struct {
 	EntrypointThread ThreadFunc
 	Name             string
 
-	spec  model.PutWfSpecPb
+	spec  model.PutWfSpecRequest
 	funcs map[string]ThreadFunc
 }
 
 type ThreadBuilder struct {
 	Name              string
 	isActive          bool
-	spec              model.ThreadSpecPb
+	spec              model.ThreadSpec
 	wf                *LHWorkflow
 	lastNodeName      *string
 	lastNodeCondition *WorkflowCondition
@@ -32,7 +32,7 @@ type ThreadBuilder struct {
 
 type WfRunVariable struct {
 	Name    string
-	VarType *model.VariableTypePb
+	VarType *model.VariableType
 
 	thread   *ThreadBuilder
 	jsonPath *string
@@ -45,7 +45,7 @@ type NodeOutput struct {
 }
 
 type WorkflowCondition struct {
-	spec          *model.EdgeConditionPb
+	spec          *model.EdgeCondition
 	createdAtNode string
 }
 
@@ -62,12 +62,12 @@ func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
 	return w.jsonPathImpl(path)
 }
 
-func (l *LHWorkflow) Compile() (*model.PutWfSpecPb, error) {
+func (l *LHWorkflow) Compile() (*model.PutWfSpecRequest, error) {
 	return l.compile()
 }
 
 func (t *ThreadBuilder) AddVariable(
-	name string, varType model.VariableTypePb,
+	name string, varType model.VariableType,
 ) *WfRunVariable {
 	return t.addVariable(name, varType)
 }
@@ -78,14 +78,14 @@ func (t *ThreadBuilder) Execute(name string, args ...interface{}) NodeOutput {
 
 func (t *ThreadBuilder) Mutate(
 	lhs *WfRunVariable,
-	mutation model.VariableMutationTypePb,
+	mutation model.VariableMutationType,
 	rhs interface{},
 ) {
 	t.mutate(lhs, mutation, rhs)
 }
 
 func (t *ThreadBuilder) Condition(
-	lhs interface{}, op model.ComparatorPb, rhs interface{},
+	lhs interface{}, op model.Comparator, rhs interface{},
 ) *WorkflowCondition {
 	return t.condition(lhs, op, rhs)
 }

@@ -1,11 +1,10 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -13,15 +12,13 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class AFVarMutationsRemoveFromList extends WorkflowLogicTest {
 
-    public AFVarMutationsRemoveFromList(
-        LHClient client,
-        LHWorkerConfig workerConfig
-    ) {
+    public AFVarMutationsRemoveFromList(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -30,48 +27,35 @@ public class AFVarMutationsRemoveFromList extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                WfRunVariable listOne = thread.addVariable(
-                    "list-one",
-                    VariableTypePb.JSON_ARR
-                );
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            WfRunVariable listOne = thread.addVariable("list-one", VariableType.JSON_ARR);
 
-                thread.execute("af-simple");
+            thread.execute("af-simple");
 
-                thread.mutate(listOne, VariableMutationTypePb.REMOVE_IF_PRESENT, 5);
-                thread.mutate(
-                    listOne,
-                    VariableMutationTypePb.REMOVE_IF_PRESENT,
-                    "hello"
-                );
-                thread.mutate(listOne, VariableMutationTypePb.REMOVE_INDEX, 3);
-            }
-        );
+            thread.mutate(listOne, VariableMutationType.REMOVE_IF_PRESENT, 5);
+            thread.mutate(listOne, VariableMutationType.REMOVE_IF_PRESENT, "hello");
+            thread.mutate(listOne, VariableMutationType.REMOVE_INDEX, 3);
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new AFSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         // Workflow removes number 5, then removes "hello", then removes
         // index 3. That should throw index out of bounds exception here
         List<?> wfOneInput = Arrays.asList(5, "hello", 3, 4);
         String wfOne = runWf(client, Arg.of("list-one", wfOneInput));
 
         // Workflow should pass here and just remove number 4.
-        String wfTwo = runWf(
-            client,
-            Arg.of("list-one", Arrays.asList("asdf", "asdf", 3, 4, 9))
-        );
+        String wfTwo = runWf(client, Arg.of("list-one", Arrays.asList("asdf", "asdf", 3, 4, 9)));
 
         Thread.sleep(500);
 
-        assertStatus(client, wfOne, LHStatusPb.ERROR);
-        assertStatus(client, wfTwo, LHStatusPb.COMPLETED);
+        assertStatus(client, wfOne, LHStatus.ERROR);
+        assertStatus(client, wfTwo, LHStatus.COMPLETED);
 
         List<?> removed = getVarAsList(client, wfOne, 0, "list-one");
         for (int i = 0; i < wfOneInput.size(); i++) {

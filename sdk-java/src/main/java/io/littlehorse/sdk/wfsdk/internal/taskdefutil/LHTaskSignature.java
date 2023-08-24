@@ -2,7 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
 import java.lang.reflect.Method;
@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LHTaskSignature {
 
-    List<VariableTypePb> paramTypes;
+    List<VariableType> paramTypes;
     List<String> varNames;
     Method taskMethod;
     boolean hasWorkerContextAtEnd;
@@ -22,8 +22,7 @@ public class LHTaskSignature {
 
     Object executable;
 
-    public LHTaskSignature(String taskDefName, Object executable)
-        throws TaskSchemaMismatchError {
+    public LHTaskSignature(String taskDefName, Object executable) throws TaskSchemaMismatchError {
         paramTypes = new ArrayList<>();
         varNames = new ArrayList<>();
         hasWorkerContextAtEnd = false;
@@ -32,55 +31,43 @@ public class LHTaskSignature {
 
         for (Method method : executable.getClass().getMethods()) {
             if (method.isAnnotationPresent(LHTaskMethod.class)) {
-                String taskDefForThisMethod = method
-                    .getAnnotation(LHTaskMethod.class)
-                    .value();
+                String taskDefForThisMethod =
+                        method.getAnnotation(LHTaskMethod.class).value();
 
                 if (!taskDefForThisMethod.equals(taskDefName)) {
                     continue;
                 }
 
                 if (taskMethod != null) {
-                    throw new TaskSchemaMismatchError(
-                        "Found two annotated task methods!"
-                    );
+                    throw new TaskSchemaMismatchError("Found two annotated task methods!");
                 }
                 taskMethod = method;
             }
         }
 
         if (taskMethod == null) {
-            throw new TaskSchemaMismatchError(
-                "Couldn't find annotated @LHTaskMethod for taskDef " +
-                taskDefName +
-                " on " +
-                executable.getClass()
-            );
+            throw new TaskSchemaMismatchError("Couldn't find annotated @LHTaskMethod for taskDef "
+                    + taskDefName
+                    + " on "
+                    + executable.getClass());
         }
 
         for (int i = 0; i < taskMethod.getParameterCount(); i++) {
             Parameter param = taskMethod.getParameters()[i];
             if (param.getType().equals(WorkerContext.class)) {
                 if (i + 1 != taskMethod.getParameterCount()) {
-                    throw new TaskSchemaMismatchError(
-                        "Can only have WorkerContext as the last parameter."
-                    );
+                    throw new TaskSchemaMismatchError("Can only have WorkerContext as the last parameter.");
                 } else {
                     hasWorkerContextAtEnd = true;
                     continue; // could also be `break;`
                 }
             }
-            VariableTypePb paramLHType = LHLibUtil.javaClassToLHVarType(
-                param.getType()
-            );
+            VariableType paramLHType = LHLibUtil.javaClassToLHVarType(param.getType());
 
             if (!param.isNamePresent()) {
-                log.warn(
-                    "Was unable to inspect parameter names using" +
-                    "reflection; please compile with `javac -Parameters` to enable that." +
-                    "Will use param position as its name, which makes resulting TaskDef" +
-                    "harder to understand."
-                );
+                log.warn("Was unable to inspect parameter names usingreflection; please compile with"
+                        + " `javac -Parameters` to enable that.Will use param position as its"
+                        + " name, which makes resulting TaskDefharder to understand.");
             }
             paramTypes.add(paramLHType);
             varNames.add(param.getName());
@@ -91,7 +78,7 @@ public class LHTaskSignature {
         return hasWorkerContextAtEnd;
     }
 
-    public List<VariableTypePb> getParamTypes() {
+    public List<VariableType> getParamTypes() {
         return paramTypes;
     }
 
@@ -116,7 +103,7 @@ public class LHTaskSignature {
         if (!(other instanceof LHTaskSignature)) return false;
         LHTaskSignature o = (LHTaskSignature) other;
 
-        List<VariableTypePb> otherTypes = o.getParamTypes();
+        List<VariableType> otherTypes = o.getParamTypes();
         if (otherTypes.size() != paramTypes.size()) return false;
 
         for (int i = 0; i < otherTypes.size(); i++) {

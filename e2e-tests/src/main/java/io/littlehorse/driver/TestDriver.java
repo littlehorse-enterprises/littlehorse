@@ -1,7 +1,7 @@
 package io.littlehorse.driver;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.tests.Test;
 import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
@@ -15,7 +15,7 @@ public abstract class TestDriver {
     protected Set<Class<?>> tests;
     protected int threads;
     protected LHWorkerConfig workerConfig;
-    protected LHClient client;
+    protected LHPublicApiBlockingStub client;
     private int executedTest;
 
     public TestDriver(Set<Class<?>> tests, int threads) {
@@ -29,37 +29,24 @@ public abstract class TestDriver {
         ForkJoinPool customThreadPool = new ForkJoinPool(threads);
 
         customThreadPool
-            .submit(() ->
-                tests
-                    .parallelStream()
-                    .forEach(testClass -> {
-                        execTest(workerConfig, client, testClass);
-                    })
-            )
-            .get();
+                .submit(() -> tests.parallelStream().forEach(testClass -> {
+                    execTest(workerConfig, client, testClass);
+                }))
+                .get();
         customThreadPool.shutdown();
 
-        log.info(
-            "\u001B[32mPlanned tests: {}. Executed tests: {}.\u001B[0m",
-            tests.size(),
-            executedTest
-        );
+        log.info("\u001B[32mPlanned tests: {}. Executed tests: {}.\u001B[0m", tests.size(), executedTest);
     }
 
-    private void execTest(
-        LHWorkerConfig workerConfig,
-        LHClient client,
-        Class<?> testClass
-    ) {
+    private void execTest(LHWorkerConfig workerConfig, LHPublicApiBlockingStub client, Class<?> testClass) {
         try {
             Test test = (Test) testClass
-                .getDeclaredConstructor(LHClient.class, LHWorkerConfig.class)
-                .newInstance(client, workerConfig);
+                    .getDeclaredConstructor(LHPublicApiBlockingStub.class, LHWorkerConfig.class)
+                    .newInstance(client, workerConfig);
             log.info(
-                "\u001B[32mStarting test:\n\tName:        {}.\n\tDescription: {}.\u001B[0m",
-                testClass.getName(),
-                test.getDescription()
-            );
+                    "\u001B[32mStarting test:\n\tName:        {}.\n\tDescription: {}.\u001B[0m",
+                    testClass.getName(),
+                    test.getDescription());
             test.test();
             test.cleanup();
             executedTest++;
@@ -70,12 +57,7 @@ public abstract class TestDriver {
                 exnMessage += " / " + exn.getCause().getMessage();
             }
 
-            log.error(
-                "\u001B[31mTest {} failed: {}.\u001B[0m",
-                testClass.getName(),
-                exnMessage,
-                exn
-            );
+            log.error("\u001B[31mTest {} failed: {}.\u001B[0m", testClass.getName(), exnMessage, exn);
             System.exit(1);
         }
     }

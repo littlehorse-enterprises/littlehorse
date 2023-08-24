@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "common_enums.proto";
+import "object_id.proto";
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+
+message VariableValue {
+  VariableType type = 1;
+  optional string json_obj = 2;
+  optional string json_arr = 3;
+  optional double double = 4;
+  optional bool bool = 5;
+  optional string str = 6;
+  optional int64 int = 7;
+  optional bytes bytes = 8;
+}
+ 
+message Variable {
+  VariableValue value = 1;
+  string wf_run_id = 2;
+  int32 thread_run_number = 3;
+  string name = 4;
+  google.protobuf.Timestamp date = 5;
+  WfSpecId wf_spec_id = 6;
+}

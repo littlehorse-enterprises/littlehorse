@@ -1,9 +1,8 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -34,7 +33,7 @@ public class JsonExample {
             thread -> {
                 WfRunVariable person = thread.addVariable(
                     "person",
-                    VariableTypePb.JSON_OBJ
+                    VariableType.JSON_OBJ
                 );
 
                 thread.execute("greet", person.jsonPath("$.name"));
@@ -53,7 +52,7 @@ public class JsonExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) {
+    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) throws IOException {
         CarTaskWorker executable = new CarTaskWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "greet", config),
@@ -74,11 +73,11 @@ public class JsonExample {
         return workers;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
+        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();

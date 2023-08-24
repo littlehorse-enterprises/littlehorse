@@ -8,9 +8,11 @@ import java.lang.annotation.Target;
 
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD })
+@Target({ElementType.FIELD})
 public @interface UserTaskField {
     String description() default "";
 
     String displayName() default "";
+
+    boolean required() default true;
 }

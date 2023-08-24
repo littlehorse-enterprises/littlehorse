@@ -1,11 +1,10 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -14,71 +13,54 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class ADVarMutationsNumbers extends WorkflowLogicTest {
 
-    public ADVarMutationsNumbers(LHClient client, LHWorkerConfig workerConfig) {
+    public ADVarMutationsNumbers(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
     public String getDescription() {
-        return (
-            "Tests various Variable Mutations with INT and DOUBLE, including " +
-            "ADD, SUBTRACT, DIVIDE, and ASSIGN."
-        );
+        return ("Tests various Variable Mutations with INT and DOUBLE, including "
+                + "ADD, SUBTRACT, DIVIDE, and ASSIGN.");
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                WfRunVariable myInt = thread.addVariable(
-                    "my-int",
-                    VariableTypePb.INT
-                );
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            WfRunVariable myInt = thread.addVariable("my-int", VariableType.INT);
 
-                WfRunVariable myDouble = thread.addVariable(
-                    "my-double",
-                    VariableTypePb.DOUBLE
-                );
+            WfRunVariable myDouble = thread.addVariable("my-double", VariableType.DOUBLE);
 
-                WfRunVariable myOtherInt = thread.addVariable(
-                    "my-other-int",
-                    VariableTypePb.INT
-                );
+            WfRunVariable myOtherInt = thread.addVariable("my-other-int", VariableType.INT);
 
-                NodeOutput output = thread.execute("ad-simple");
-                thread.mutate(myInt, VariableMutationTypePb.ADD, output);
-                thread.mutate(myInt, VariableMutationTypePb.SUBTRACT, 2);
+            NodeOutput output = thread.execute("ad-simple");
+            thread.mutate(myInt, VariableMutationType.ADD, output);
+            thread.mutate(myInt, VariableMutationType.SUBTRACT, 2);
 
-                // ensure that we can cast from double to int, and that the
-                // original type is respected
-                thread.mutate(myOtherInt, VariableMutationTypePb.ASSIGN, myDouble);
+            // ensure that we can cast from double to int, and that the
+            // original type is respected
+            thread.mutate(myOtherInt, VariableMutationType.ASSIGN, myDouble);
 
-                // Do some math, and divide by zero to show that failures work
-                thread.mutate(myOtherInt, VariableMutationTypePb.DIVIDE, myInt);
-            }
-        );
+            // Do some math, and divide by zero to show that failures work
+            thread.mutate(myOtherInt, VariableMutationType.DIVIDE, myInt);
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new ADSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
-        String happyWf = runWf(
-            client,
-            Arg.of("my-int", 5),
-            Arg.of("my-double", 24.2)
-        );
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
+        String happyWf = runWf(client, Arg.of("my-int", 5), Arg.of("my-double", 24.2));
 
         // this should fail with divide by zero
         String sadWf = runWf(client, Arg.of("my-int", -8), Arg.of("my-double", 10.0));
         Thread.sleep(500);
-        assertStatus(client, happyWf, LHStatusPb.COMPLETED);
+        assertStatus(client, happyWf, LHStatus.COMPLETED);
 
         assertVarEqual(client, happyWf, 0, "my-int", 13);
         // the my-double var isn't mutated
@@ -86,7 +68,7 @@ public class ADVarMutationsNumbers extends WorkflowLogicTest {
         assertVarEqual(client, happyWf, 0, "my-other-int", (int) (24.2 / 13));
 
         // Should fail due to division by zero
-        assertStatus(client, sadWf, LHStatusPb.ERROR);
+        assertStatus(client, sadWf, LHStatus.ERROR);
 
         // Since the mutations failed, all should be rolled back.
         assertVarEqual(client, sadWf, 0, "my-int", -8);

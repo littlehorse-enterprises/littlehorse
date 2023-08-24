@@ -1,0 +1,111 @@
+package io.littlehorse.common.model.corecommand.subcommand;
+
+import com.google.protobuf.Message;
+import io.grpc.Status;
+import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.dao.CoreProcessorDAO;
+import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.ScheduledTaskModel;
+import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.proto.TaskClaimEventPb;
+import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.PollTaskResponse;
+import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
+import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Getter
+@Setter
+/*
+ * In certain crash-failure scenarios, it is possible for there to be two
+ * in-flight
+ * TaskClaimEvent's. However, that's not a problem, because the processing of
+ * a TaskClaimEvent is strictly ordered, so if there are multiple in flight only
+ * one will receive the `ScheduledTask`, and therefore the second will be
+ * ignored.
+ */
+public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
+
+    private TaskRunIdModel taskRunId;
+    private Date time;
+    private String taskWorkerVersion;
+    private String taskWorkerId;
+
+    public TaskClaimEvent() {}
+
+    public TaskClaimEvent(ScheduledTaskModel task, PollTaskRequestObserver taskClaimer) {
+        this.taskRunId = task.getTaskRunId();
+        this.time = new Date();
+        this.taskWorkerId = taskClaimer.getClientId();
+        this.taskWorkerVersion = taskClaimer.getTaskWorkerVersion();
+    }
+
+    public Class<TaskClaimEventPb> getProtoBaseClass() {
+        return TaskClaimEventPb.class;
+    }
+
+    @Override
+    public String getPartitionKey() {
+        return taskRunId.getPartitionKey().get();
+    }
+
+    public TaskClaimEventPb.Builder toProto() {
+        TaskClaimEventPb.Builder b = TaskClaimEventPb.newBuilder()
+                .setTaskRunId(taskRunId.toProto())
+                .setTaskWorkerVersion(taskWorkerVersion)
+                .setTaskWorkerId(taskWorkerId)
+                .setTime(LHUtil.fromDate(time));
+        return b;
+    }
+
+    public boolean hasResponse() {
+        // TaskClaimEvents are always due to a Task Worker's poll request.
+        return true;
+    }
+
+    public PollTaskResponse process(CoreProcessorDAO dao, LHConfig config) {
+        TaskRunModel taskRun = dao.get(taskRunId);
+        if (taskRun == null) {
+            log.warn("Got claimTask for non-existent taskRun {}", taskRunId);
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Got claimTask for nonexistent taskRun {}" + taskRunId);
+        }
+
+        // Needs to be done before we process the event, since processing the event
+        // will delete the task schedule request.
+        ScheduledTaskModel scheduledTask = dao.markTaskAsScheduled(taskRunId);
+
+        // It's totally fine for the scheduledTask to be null. That happens when someone already
+        // claimed that task. This happens when a server is recovering from a crash. The fact that it
+        // is null prevents it from being scheduled twice.
+        //
+        // We shouldn't throw an error on this, we just return an empty optional.
+        if (scheduledTask == null) {
+            return PollTaskResponse.newBuilder().build();
+        } else {
+            taskRun.processStart(this);
+            return PollTaskResponse.newBuilder()
+                    .setResult(scheduledTask.toProto())
+                    .build();
+        }
+    }
+
+    public static TaskClaimEvent fromProto(TaskClaimEventPb proto) {
+        TaskClaimEvent out = new TaskClaimEvent();
+        out.initFrom(proto);
+        return out;
+    }
+
+    public void initFrom(Message p) {
+        TaskClaimEventPb proto = (TaskClaimEventPb) p;
+        taskRunId = LHSerializable.fromProto(proto.getTaskRunId(), TaskRunIdModel.class);
+        this.taskWorkerVersion = proto.getTaskWorkerVersion();
+        this.taskWorkerId = proto.getTaskWorkerId();
+        this.time = LHUtil.fromProtoTs(proto.getTime());
+    }
+}

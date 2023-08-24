@@ -1,7 +1,6 @@
 package io.littlehorse.driver;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import java.io.IOException;
@@ -17,9 +16,7 @@ import org.testcontainers.utility.DockerImageName;
 
 public class TestDriverStandalone extends TestDriver {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        TestDriverStandalone.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(TestDriverStandalone.class);
 
     private KafkaContainer kafka;
     private KafkaStreamsServerImpl server;
@@ -30,25 +27,23 @@ public class TestDriverStandalone extends TestDriver {
 
     @Override
     public void setup() throws Exception {
-        kafka =
-            new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.0"));
+        kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.0"));
         log.info("Starting kafka");
         kafka.start();
         startServer();
         workerConfig = new LHWorkerConfig();
-        client = new LHClient(workerConfig);
+
+        try {
+            client = workerConfig.getBlockingStub();
+        } catch (IOException exn) {
+            throw new RuntimeException(exn);
+        }
     }
 
     private void startServer() throws Exception {
         Properties serverProperties = new Properties();
-        serverProperties.put(
-            LHConfig.KAFKA_BOOTSTRAP_KEY,
-            kafka.getBootstrapServers()
-        );
-        serverProperties.put(
-            LHConfig.KAFKA_STATE_DIR_KEY,
-            "/tmp/" + UUID.randomUUID()
-        );
+        serverProperties.put(LHConfig.KAFKA_BOOTSTRAP_KEY, kafka.getBootstrapServers());
+        serverProperties.put(LHConfig.KAFKA_STATE_DIR_KEY, "/tmp/" + UUID.randomUUID());
         serverProperties.put(LHConfig.CLUSTER_PARTITIONS_KEY, "3");
 
         LHConfig serverConfig = new LHConfig(serverProperties);
@@ -64,14 +59,14 @@ public class TestDriverStandalone extends TestDriver {
         server = new KafkaStreamsServerImpl(serverConfig);
 
         new Thread(() -> {
-            try {
-                log.info("Starting server");
-                server.start();
-            } catch (IOException exn) {
-                throw new RuntimeException(exn);
-            }
-        })
-            .start();
+                    try {
+                        log.info("Starting server");
+                        server.start();
+                    } catch (IOException exn) {
+                        throw new RuntimeException(exn);
+                    }
+                })
+                .start();
 
         // wait until the server is up
         TimeUnit.SECONDS.sleep(5);

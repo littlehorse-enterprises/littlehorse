@@ -7,12 +7,11 @@ import (
 	"strconv"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
-	"github.com/ztrue/tracerr"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
-func GetInputVarDefs(w *model.WfSpecPb) map[string]*model.VariableDefPb {
+func GetInputVarDefs(w *model.WfSpec) map[string]*model.VariableDef {
 	// First, find the entrypoint threadspec
 	tspec := w.ThreadSpecs[w.EntrypointThreadName]
 
@@ -20,7 +19,7 @@ func GetInputVarDefs(w *model.WfSpecPb) map[string]*model.VariableDefPb {
 		panic("Not possible.")
 	}
 
-	out := make(map[string]*model.VariableDefPb)
+	out := make(map[string]*model.VariableDef)
 
 	for _, vd := range tspec.VariableDefs {
 		out[vd.Name] = vd
@@ -29,11 +28,11 @@ func GetInputVarDefs(w *model.WfSpecPb) map[string]*model.VariableDefPb {
 	return out
 }
 
-func GetWfRunIdFromTaskSource(source *model.TaskRunSourcePb) *string {
+func GetWfRunIdFromTaskSource(source *model.TaskRunSource) *string {
 	switch s := source.TaskRunSource.(type) {
-	case *model.TaskRunSourcePb_UserTaskTrigger:
+	case *model.TaskRunSource_UserTaskTrigger:
 		return &s.UserTaskTrigger.NodeRunId.WfRunId
-	case *model.TaskRunSourcePb_TaskNode:
+	case *model.TaskRunSource_TaskNode:
 		return &s.TaskNode.NodeRunId.WfRunId
 	}
 	return nil
@@ -41,8 +40,6 @@ func GetWfRunIdFromTaskSource(source *model.TaskRunSourcePb) *string {
 
 func PrintResp(resp proto.Message, err error) {
 	if err != nil {
-		tracerr.PrintSourceColor(err)
-		fmt.Printf("Failed to connect: " + err.Error())
 		log.Fatal(err)
 	}
 

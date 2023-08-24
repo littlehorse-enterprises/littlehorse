@@ -1,22 +1,22 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class ALConditionalsGreaterThanEq extends WorkflowLogicTest {
 
-    public ALConditionalsGreaterThanEq(LHClient client, LHWorkerConfig workerConfig) {
+    public ALConditionalsGreaterThanEq(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -25,50 +25,38 @@ public class ALConditionalsGreaterThanEq extends WorkflowLogicTest {
     }
 
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                // Use an input JSON blob with two fields, LHS and RHS.
-                // This allows us to test with various types on the left and the
-                // right, since right now the JSON_OBJ var type does not have a
-                // schema.
-                WfRunVariable input = thread.addVariable(
-                    "input",
-                    VariableTypePb.JSON_OBJ
-                );
-                thread.execute("al-one");
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            // Use an input JSON blob with two fields, LHS and RHS.
+            // This allows us to test with various types on the left and the
+            // right, since right now the JSON_OBJ var type does not have a
+            // schema.
+            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+            thread.execute("al-one");
 
-                thread.doIfElse(
-                    thread.condition(
-                        input.jsonPath("$.lhs"),
-                        ComparatorPb.GREATER_THAN_EQ,
-                        input.jsonPath("$.rhs")
-                    ),
+            thread.doIfElse(
+                    thread.condition(input.jsonPath("$.lhs"), Comparator.GREATER_THAN_EQ, input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("al-one");
                     },
                     elseBlock -> {
                         elseBlock.execute("al-two");
-                    }
-                );
-            }
-        );
+                    });
+        });
     }
 
     public List<Object> getTaskWorkerObjects() {
         return Arrays.asList(new ALSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         return Arrays.asList(
-            runWithInputsAndCheckPath(client, new ALInputObj(1, 2), true, false),
-            runWithInputsAndCheckPath(client, new ALInputObj(1, 1), true, true),
-            runWithInputsAndCheckPath(client, new ALInputObj("hi", "hi"), true, true),
-            runWithInputsAndCheckPath(client, new ALInputObj("a", "b"), true, false),
-            runWithInputsAndCheckPath(client, new ALInputObj(1.0, 1.0), true, true),
-            runWithInputsAndCheckPath(client, new ALInputObj(5, 4), true, true)
-        );
+                runWithInputsAndCheckPath(client, new ALInputObj(1, 2), true, false),
+                runWithInputsAndCheckPath(client, new ALInputObj(1, 1), true, true),
+                runWithInputsAndCheckPath(client, new ALInputObj("hi", "hi"), true, true),
+                runWithInputsAndCheckPath(client, new ALInputObj("a", "b"), true, false),
+                runWithInputsAndCheckPath(client, new ALInputObj(1.0, 1.0), true, true),
+                runWithInputsAndCheckPath(client, new ALInputObj(5, 4), true, true));
     }
 }
 

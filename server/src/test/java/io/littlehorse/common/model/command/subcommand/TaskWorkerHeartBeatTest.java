@@ -3,18 +3,17 @@ package io.littlehorse.common.model.command.subcommand;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDAO;
-import io.littlehorse.common.model.command.subcommand.internals.TaskWorkerAssignor;
-import io.littlehorse.common.model.meta.Host;
-import io.littlehorse.common.model.meta.TaskWorkerGroup;
-import io.littlehorse.common.model.meta.TaskWorkerMetadata;
-import io.littlehorse.server.streamsimpl.util.InternalHosts;
+import io.littlehorse.common.dao.CoreProcessorDAO;
+import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.internals.RoundRobinAssignor;
+import io.littlehorse.common.model.corecommand.subcommand.internals.TaskWorkerAssignor;
+import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
+import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;
+import io.littlehorse.server.streams.util.InternalHosts;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -34,95 +33,82 @@ public class TaskWorkerHeartBeatTest {
 
     private Faker faker = new Faker();
 
-    private LHDAO lhdao = mock(LHDAO.class);
-    private TaskWorkerAssignor assignor = mock(TaskWorkerAssignor.class);
+    private CoreProcessorDAO lhdao = mock(CoreProcessorDAO.class);
+    private TaskWorkerAssignor assignor = spy(new RoundRobinAssignor());
     private LHConfig lhConfig = mock(LHConfig.class);
-    private TaskWorkerHeartBeat taskWorkerHeartBeat = new TaskWorkerHeartBeat(
-        assignor
-    );
-    private ArgumentCaptor<TaskWorkerGroup> taskWorkerCaptor = ArgumentCaptor.forClass(
-        TaskWorkerGroup.class
-    );
+    private TaskWorkerHeartBeatRequestModel taskWorkerHeartBeat = new TaskWorkerHeartBeatRequestModel(assignor);
+    private ArgumentCaptor<TaskWorkerGroupModel> taskWorkerCaptor = ArgumentCaptor.forClass(TaskWorkerGroupModel.class);
 
     @Test
     void doNotRemoveTaskWorkerIfItJustSentAHeartbeat() {
-        TaskWorkerGroup taskWorkerGroup = new TaskWorkerGroup();
+        TaskWorkerGroupModel taskWorkerGroup = new TaskWorkerGroupModel();
         taskWorkerGroup.taskWorkers = generateTaskWorkersMetadata(2);
 
-        List<TaskWorkerMetadata> taskWorkerMetadatas = taskWorkerGroup.taskWorkers
-            .values()
-            .stream()
-            .collect(Collectors.toList());
+        List<TaskWorkerMetadataModel> taskWorkerMetadatas =
+                taskWorkerGroup.taskWorkers.values().stream().collect(Collectors.toList());
 
-        TaskWorkerMetadata taskWorkerToKeep = taskWorkerMetadatas.get(1);
+        TaskWorkerMetadataModel taskWorkerToKeep = taskWorkerMetadatas.get(1);
         taskWorkerHeartBeat.clientId = taskWorkerToKeep.clientId;
 
-        taskWorkerToKeep.latestHeartbeat =
-            Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
+        taskWorkerToKeep.latestHeartbeat = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
 
-        Set<Host> generateHosts = generateHosts(2);
+        Set<HostModel> generateHosts = generateHosts(2);
 
-        when(lhdao.getTaskWorkerGroup(any())).thenReturn(taskWorkerGroup);
-        when(lhdao.getInternalHosts())
-            .thenReturn(new InternalHosts(null, generateHosts));
+        when(lhdao.get(any())).thenReturn(taskWorkerGroup);
+        when(lhdao.getInternalHosts()).thenReturn(new InternalHosts(null, generateHosts));
+        when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());
 
         taskWorkerHeartBeat.process(lhdao, lhConfig);
 
-        verify(lhdao).putTaskWorkerGroup(taskWorkerCaptor.capture());
+        verify(lhdao).put(taskWorkerCaptor.capture());
 
-        assertThat(taskWorkerGroup.taskWorkers)
-            .contains(Map.entry(taskWorkerToKeep.clientId, taskWorkerToKeep));
+        assertThat(taskWorkerGroup.taskWorkers).contains(Map.entry(taskWorkerToKeep.clientId, taskWorkerToKeep));
         assertThat(taskWorkerGroup.taskWorkers).hasSize(2);
     }
 
     @Test
     void triggerRebalanceIfThereIsNewHosts() {
-        TaskWorkerGroup taskWorkerGroup = new TaskWorkerGroup();
+        TaskWorkerGroupModel taskWorkerGroup = new TaskWorkerGroupModel();
         taskWorkerGroup.taskWorkers = generateTaskWorkersMetadata(2);
 
-        List<TaskWorkerMetadata> taskWorkerMetadatas = taskWorkerGroup.taskWorkers
-            .values()
-            .stream()
-            .collect(Collectors.toList());
-        Set<Host> generateHosts = generateHosts(2);
+        List<TaskWorkerMetadataModel> taskWorkerMetadatas =
+                taskWorkerGroup.taskWorkers.values().stream().collect(Collectors.toList());
+        Set<HostModel> generateHosts = generateHosts(2);
 
-        TaskWorkerMetadata taskWorkerToKeep = taskWorkerMetadatas.get(1);
+        TaskWorkerMetadataModel taskWorkerToKeep = taskWorkerMetadatas.get(1);
         taskWorkerHeartBeat.clientId = taskWorkerToKeep.clientId;
 
-        taskWorkerToKeep.latestHeartbeat =
-            Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
+        taskWorkerToKeep.latestHeartbeat = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
 
-        when(lhdao.getTaskWorkerGroup(any())).thenReturn(taskWorkerGroup);
-        when(lhdao.getInternalHosts())
-            .thenReturn(new InternalHosts(null, generateHosts));
+        when(lhdao.get(any())).thenReturn(taskWorkerGroup);
+        when(lhdao.getInternalHosts()).thenReturn(new InternalHosts(null, generateHosts));
+        when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());
 
         taskWorkerHeartBeat.process(lhdao, lhConfig);
 
-        verify(lhdao).putTaskWorkerGroup(taskWorkerCaptor.capture());
+        verify(lhdao).put(taskWorkerCaptor.capture());
         verify(assignor).assign(anyCollection(), anyCollection());
     }
 
     @Test
     void triggerRebalanceOnly0neTimeIfTheHostsAreTheSame() {
-        TaskWorkerGroup taskWorkerGroup = new TaskWorkerGroup();
+        TaskWorkerGroupModel taskWorkerGroup = new TaskWorkerGroupModel();
         taskWorkerGroup.taskWorkers = generateTaskWorkersMetadata(2);
 
-        List<TaskWorkerMetadata> taskWorkerMetadatas = taskWorkerGroup.taskWorkers
-            .values()
-            .stream()
-            .collect(Collectors.toList());
-        Set<Host> generateHosts = generateHosts(2);
+        List<TaskWorkerMetadataModel> taskWorkerMetadatas =
+                taskWorkerGroup.taskWorkers.values().stream().collect(Collectors.toList());
+        Set<HostModel> generateHosts = generateHosts(2);
 
-        TaskWorkerMetadata taskWorkerToKeep = taskWorkerMetadatas.get(1);
+        TaskWorkerMetadataModel taskWorkerToKeep = taskWorkerMetadatas.get(1);
         taskWorkerHeartBeat.clientId = taskWorkerToKeep.clientId;
 
-        taskWorkerToKeep.latestHeartbeat =
-            Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
+        taskWorkerToKeep.latestHeartbeat = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
 
-        when(lhdao.getTaskWorkerGroup(any())).thenReturn(taskWorkerGroup);
+        when(lhdao.get(any())).thenReturn(taskWorkerGroup);
         when(lhdao.getInternalHosts())
-            .thenReturn(new InternalHosts(null, generateHosts))
-            .thenReturn(new InternalHosts(generateHosts, generateHosts));
+                .thenReturn(new InternalHosts(null, generateHosts))
+                .thenReturn(new InternalHosts(generateHosts, generateHosts));
+        when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());
 
         taskWorkerHeartBeat.process(lhdao, lhConfig);
         taskWorkerHeartBeat.process(lhdao, lhConfig);
@@ -132,35 +118,32 @@ public class TaskWorkerHeartBeatTest {
 
     @Test
     void triggerRebalanceTwiceIfFirstTheHostsAreTheSameButThenTheAreNewHosts() {
-        TaskWorkerGroup taskWorkerGroup = new TaskWorkerGroup();
+        TaskWorkerGroupModel taskWorkerGroup = new TaskWorkerGroupModel();
         taskWorkerGroup.taskWorkers = generateTaskWorkersMetadata(2);
 
-        List<TaskWorkerMetadata> taskWorkerMetadatas = taskWorkerGroup.taskWorkers
-            .values()
-            .stream()
-            .collect(Collectors.toList());
-        Set<Host> generateHosts = generateHosts(2);
+        List<TaskWorkerMetadataModel> taskWorkerMetadatas =
+                taskWorkerGroup.taskWorkers.values().stream().collect(Collectors.toList());
+        Set<HostModel> generateHosts = generateHosts(2);
 
-        TaskWorkerMetadata taskWorkerToKeep = taskWorkerMetadatas.get(1);
+        TaskWorkerMetadataModel taskWorkerToKeep = taskWorkerMetadatas.get(1);
         taskWorkerHeartBeat.clientId = taskWorkerToKeep.clientId;
 
-        taskWorkerToKeep.latestHeartbeat =
-            Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
+        taskWorkerToKeep.latestHeartbeat = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
 
-        when(lhdao.getTaskWorkerGroup(any())).thenReturn(taskWorkerGroup);
+        when(lhdao.get(any())).thenReturn(taskWorkerGroup);
         when(lhdao.getInternalHosts())
-            .thenReturn(new InternalHosts(null, generateHosts))
-            .thenReturn(new InternalHosts(generateHosts, generateHosts));
+                .thenReturn(new InternalHosts(null, generateHosts))
+                .thenReturn(new InternalHosts(generateHosts, generateHosts));
+        when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());
 
         taskWorkerHeartBeat.process(lhdao, lhConfig);
         taskWorkerHeartBeat.process(lhdao, lhConfig);
         verify(assignor).assign(anyCollection(), anyCollection());
 
-        Set<Host> newHost = new HashSet<>(generateHosts);
+        Set<HostModel> newHost = new HashSet<>(generateHosts);
         newHost.addAll(generateHosts(1));
 
-        when(lhdao.getInternalHosts())
-            .thenReturn(new InternalHosts(generateHosts, newHost));
+        when(lhdao.getInternalHosts()).thenReturn(new InternalHosts(generateHosts, newHost));
         taskWorkerHeartBeat.process(lhdao, lhConfig);
 
         verify(assignor, times(2)).assign(anyCollection(), anyCollection());
@@ -168,56 +151,55 @@ public class TaskWorkerHeartBeatTest {
 
     @Test
     void removeTaskWorkerIfItIsConsideredDead() {
-        TaskWorkerGroup taskWorkerGroup = new TaskWorkerGroup();
-        taskWorkerGroup.taskWorkers = generateTaskWorkersMetadata(2);
+        TaskWorkerGroupModel taskWorkerGroup = new TaskWorkerGroupModel();
+        taskWorkerGroup.taskWorkers = generateTaskWorkersMetadata(2, 2);
 
-        List<TaskWorkerMetadata> taskWorkerMetadatas = taskWorkerGroup.taskWorkers
-            .values()
-            .stream()
-            .collect(Collectors.toList());
+        List<TaskWorkerMetadataModel> taskWorkerMetadatas =
+                taskWorkerGroup.taskWorkers.values().stream().collect(Collectors.toList());
 
-        TaskWorkerMetadata taskWorkerToBeRemoved = taskWorkerMetadatas.get(0);
-        TaskWorkerMetadata taskWorkerToBeKeep = taskWorkerMetadatas.get(1);
+        TaskWorkerMetadataModel taskWorkerToBeRemoved = taskWorkerMetadatas.get(0);
+        TaskWorkerMetadataModel taskWorkerToBeKeep = taskWorkerMetadatas.get(1);
         taskWorkerHeartBeat.clientId = taskWorkerToBeKeep.clientId;
 
-        taskWorkerToBeRemoved.latestHeartbeat =
-            Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
+        taskWorkerToBeRemoved.latestHeartbeat = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
 
-        Set<Host> generateHosts = generateHosts(2);
+        Set<HostModel> generateHosts = generateHosts(2);
 
-        when(lhdao.getTaskWorkerGroup(any())).thenReturn(taskWorkerGroup);
-        when(lhdao.getInternalHosts())
-            .thenReturn(new InternalHosts(null, generateHosts));
+        when(lhdao.get(any())).thenReturn(taskWorkerGroup);
+        when(lhdao.getInternalHosts()).thenReturn(new InternalHosts(null, generateHosts));
+        when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());
 
         taskWorkerHeartBeat.process(lhdao, lhConfig);
 
-        verify(lhdao).putTaskWorkerGroup(taskWorkerCaptor.capture());
+        verify(lhdao).put(taskWorkerCaptor.capture());
         verify(assignor).assign(anyCollection(), anyCollection());
         assertThat(taskWorkerGroup.taskWorkers)
-            .doesNotContain(
-                Map.entry(taskWorkerToBeRemoved.clientId, taskWorkerToBeRemoved)
-            );
+                .doesNotContain(Map.entry(taskWorkerToBeRemoved.clientId, taskWorkerToBeRemoved));
         assertThat(taskWorkerGroup.taskWorkers).hasSize(1);
     }
 
-    public Map<String, TaskWorkerMetadata> generateTaskWorkersMetadata(int q) {
-        Map<String, TaskWorkerMetadata> taskWorkersMetadata = new HashMap<>();
-        for (int i = 0; i < q; i++) {
-            TaskWorkerMetadata taskWorker = new TaskWorkerMetadata();
+    public Map<String, TaskWorkerMetadataModel> generateTaskWorkersMetadata(int numberOfTaskWorkers) {
+        return generateTaskWorkersMetadata(numberOfTaskWorkers, 0);
+    }
+
+    public Map<String, TaskWorkerMetadataModel> generateTaskWorkersMetadata(
+            int numberOfTaskWorkers, int numberOfHosts) {
+        Map<String, TaskWorkerMetadataModel> taskWorkersMetadata = new HashMap<>();
+        for (int i = 0; i < numberOfTaskWorkers; i++) {
+            TaskWorkerMetadataModel taskWorker = new TaskWorkerMetadataModel();
             taskWorker.clientId = UUID.randomUUID().toString();
             taskWorker.latestHeartbeat = new Date();
             taskWorkersMetadata.put(taskWorker.clientId, taskWorker);
+            taskWorker.hosts = generateHosts(numberOfHosts);
         }
         return taskWorkersMetadata;
     }
 
-    public Set<Host> generateHosts(int q) {
-        Set<Host> hosts = new TreeSet<Host>();
-        for (int i = 0; i < q; i++) {
-            Host host = new Host(
-                faker.internet().domainName(),
-                faker.number().numberBetween(5000, 5500)
-            );
+    public Set<HostModel> generateHosts(int numberOfHosts) {
+        Set<HostModel> hosts = new TreeSet<>();
+        for (int i = 0; i < numberOfHosts; i++) {
+            HostModel host =
+                    new HostModel(faker.internet().domainName(), faker.number().numberBetween(5000, 5500));
             hosts.add(host);
         }
         return hosts;

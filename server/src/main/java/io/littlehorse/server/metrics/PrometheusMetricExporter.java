@@ -26,11 +26,9 @@ public class PrometheusMetricExporter implements Closeable {
 
     public PrometheusMetricExporter(LHConfig config) {
         this.config = config;
-        this.prometheusRegistry =
-            new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+        this.prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
 
-        new ServerMetricFilter(prometheusRegistry, ServerFilterRules.RULES)
-            .initialize();
+        new ServerMetricFilter(prometheusRegistry, ServerFilterRules.RULES).initialize();
     }
 
     public MeterRegistry getMeterRegistry() {
@@ -38,11 +36,9 @@ public class PrometheusMetricExporter implements Closeable {
     }
 
     public void bind(KafkaStreams coreStreams, KafkaStreams timerStreams) {
-        this.kafkaStreamsMeters =
-            List.of(
+        this.kafkaStreamsMeters = List.of(
                 new KafkaStreamsMetrics(coreStreams, Tags.of("topology", "core")),
-                new KafkaStreamsMetrics(timerStreams, Tags.of("topology", "timer"))
-            );
+                new KafkaStreamsMetrics(timerStreams, Tags.of("topology", "timer")));
         for (KafkaStreamsMetrics ksm : kafkaStreamsMeters) {
             ksm.bindTo(prometheusRegistry);
         }
@@ -53,9 +49,7 @@ public class PrometheusMetricExporter implements Closeable {
         JvmThreadMetrics jvmThreadMetrics = new JvmThreadMetrics();
         jvmThreadMetrics.bindTo(prometheusRegistry);
 
-        DiskSpaceMetrics diskSpaceMetrics = new DiskSpaceMetrics(
-            new File(config.getStateDirectory())
-        );
+        DiskSpaceMetrics diskSpaceMetrics = new DiskSpaceMetrics(new File(config.getStateDirectory()));
         diskSpaceMetrics.bindTo(prometheusRegistry);
 
         ProcessorMetrics processorMetrics = new ProcessorMetrics();

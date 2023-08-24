@@ -1,9 +1,7 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -30,7 +28,7 @@ public class BasicExample {
             thread -> {
                 WfRunVariable theName = thread.addVariable(
                     "input-name",
-                    VariableTypePb.STR
+                    VariableType.STR
                 );
                 thread.execute("greet", theName);
             }
@@ -47,7 +45,7 @@ public class BasicExample {
         return props;
     }
 
-    public static LHTaskWorker getTaskWorker(LHWorkerConfig config) {
+    public static LHTaskWorker getTaskWorker(LHWorkerConfig config) throws IOException {
         MyWorker executable = new MyWorker();
         LHTaskWorker worker = new LHTaskWorker(executable, "greet", config);
 
@@ -56,11 +54,10 @@ public class BasicExample {
         return worker;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
 
         // New workflow
         Workflow workflow = getWorkflow();
@@ -83,7 +80,7 @@ public class BasicExample {
         }
 
         // Register a workflow if it does not exist
-        if (workflow.doesWfSpecExist(client)) {
+        if (workflow.doesWfSpecExist(config.getBlockingStub())) {
             log.debug(
                 "Workflow {} already exists, skipping creation",
                 workflow.getName()
@@ -93,7 +90,7 @@ public class BasicExample {
                 "Workflow {} does not exist, registering it",
                 workflow.getName()
             );
-            workflow.registerWfSpec(client);
+            workflow.registerWfSpec(config.getBlockingStub());
         }
 
         // Run the worker

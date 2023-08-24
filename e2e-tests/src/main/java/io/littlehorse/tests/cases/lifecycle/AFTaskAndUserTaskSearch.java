@@ -1,26 +1,30 @@
 package io.littlehorse.tests.cases.lifecycle;
 
-import io.littlehorse.sdk.client.LHClient;
+import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.AssignUserTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.SearchTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.SearchUserTaskRunReplyPb;
-import io.littlehorse.sdk.common.proto.TaskRunIdPb;
-import io.littlehorse.sdk.common.proto.TaskStatusPb;
-import io.littlehorse.sdk.common.proto.UserTaskFieldResultPb;
-import io.littlehorse.sdk.common.proto.UserTaskResultPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
-import io.littlehorse.sdk.common.proto.WfRunIdPb;
-import io.littlehorse.sdk.common.proto.WfSpecPb;
+import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
+import io.littlehorse.sdk.common.proto.SearchWfRunRequest.StatusAndNameRequest;
+import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.sdk.common.proto.TaskRunIdList;
+import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.sdk.common.proto.User;
+import io.littlehorse.sdk.common.proto.UserGroup;
+import io.littlehorse.sdk.common.proto.UserTaskFieldResult;
+import io.littlehorse.sdk.common.proto.UserTaskResult;
+import io.littlehorse.sdk.common.proto.UserTaskRunId;
+import io.littlehorse.sdk.common.proto.UserTaskRunIdList;
+import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
 import io.littlehorse.sdk.usertask.annotations.UserTaskField;
@@ -31,6 +35,7 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.tests.Test;
 import io.littlehorse.tests.TestFailure;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,7 +47,6 @@ public class AFTaskAndUserTaskSearch extends Test {
     public static final String FAIL_TASK = "af-fail-if-true";
     public static final String WF_SPEC_NAME = "af-wf";
 
-    private int wfSpecVersion;
     private LHTaskWorker failWorker;
     private LHTaskWorker slowWorker;
     private List<String> wfRunIds;
@@ -61,10 +65,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
     }
 
     public void wf(ThreadBuilder thread) {
-        WfRunVariable shouldFail = thread.addVariable(
-            "should-fail",
-            VariableTypePb.BOOL
-        );
+        WfRunVariable shouldFail = thread.addVariable("should-fail", VariableType.BOOL);
 
         thread.execute(FAIL_TASK, shouldFail);
         thread.execute(SLOW_TASK);
@@ -72,41 +73,34 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         thread.assignUserTaskToUser(USER_TASK, "obiwan");
     }
 
-    public AFTaskAndUserTaskSearch(LHClient client, LHWorkerConfig config) {
+    public AFTaskAndUserTaskSearch(LHPublicApiBlockingStub client, LHWorkerConfig config) {
         super(client, config);
     }
 
-    public void test()
-        throws LHApiError, InterruptedException, TestFailure, LHSerdeError {
+    public void test() throws InterruptedException, TestFailure, LHSerdeError, IOException {
         wfRunIds = new ArrayList<>();
         UserTaskSchema uts = new UserTaskSchema(new UserTaskForm(), USER_TASK);
-        client.putUserTaskDef(uts.compile(), true);
+        try {
+            client.putUserTaskDef(uts.compile());
+        } catch (StatusRuntimeException exn) {
+            if (exn.getStatus().getCode() != Code.ALREADY_EXISTS) {
+                throw exn;
+            }
+        }
         failWorker = new LHTaskWorker(new AFSearchWorker(), FAIL_TASK, workerConfig);
         slowWorker = new LHTaskWorker(new AFSearchWorker(), SLOW_TASK, workerConfig);
         failWorker.registerTaskDef(true);
         slowWorker.registerTaskDef(true);
+
+        Thread.sleep(200);
         slowWorker.start();
         // will start the failWorker later so we can catch the STARTING tasks
 
-        WfSpecPb result = client.putWfSpec(
-            new WorkflowImpl(WF_SPEC_NAME, this::wf).compileWorkflow()
-        );
-        wfSpecVersion = result.getVersion();
-
+        client.putWfSpec(new WorkflowImpl(WF_SPEC_NAME, this::wf).compileWorkflow());
         Thread.sleep(150);
 
-        String failWf = client.runWf(
-            WF_SPEC_NAME,
-            wfSpecVersion,
-            null,
-            Arg.of("should-fail", true)
-        );
-        String succeedWf = client.runWf(
-            WF_SPEC_NAME,
-            wfSpecVersion,
-            null,
-            Arg.of("should-fail", false)
-        );
+        String failWf = runWf(WF_SPEC_NAME, Arg.of("should-fail", true));
+        String succeedWf = runWf(WF_SPEC_NAME, Arg.of("should-fail", false));
         wfRunIds.add(failWf);
         wfRunIds.add(succeedWf);
 
@@ -115,200 +109,125 @@ Tests various aspects of TaskRun and UserTaskRun searc:
 
         // Since we haven't started the first TaskWorker, the tasks should both
         // be STARTING. We'll test out pagination.
-        List<WfRunIdPb> runningWfs = client.searchWfRun(
-            WF_SPEC_NAME,
-            wfSpecVersion,
-            LHStatusPb.RUNNING,
-            new Date(System.currentTimeMillis() - 5000),
-            new Date()
-        );
+        WfRunIdList runningWfs = client.searchWfRun(SearchWfRunRequest.newBuilder()
+                .setStatusAndName(StatusAndNameRequest.newBuilder()
+                        .setWfSpecName(WF_SPEC_NAME)
+                        .setStatus(LHStatus.RUNNING)
+                        .setEarliestStart(LHLibUtil.fromDate(new Date(System.currentTimeMillis() - 5000))))
+                .build());
         assertContainsWfRun(runningWfs, succeedWf);
         assertContainsWfRun(runningWfs, failWf);
 
         failWorker.start();
         Thread.sleep(800); // wait for worker to do its thing
 
-        assertStatus(client, succeedWf, LHStatusPb.RUNNING);
-        assertStatus(client, failWf, LHStatusPb.ERROR);
-        SearchTaskRunReplyPb failedTasks = searchTaskRuns(
-            FAIL_TASK,
-            TaskStatusPb.TASK_FAILED
-        );
+        assertStatus(client, succeedWf, LHStatus.RUNNING);
+        assertStatus(client, failWf, LHStatus.ERROR);
+        TaskRunIdList failedTasks = searchTaskRuns(FAIL_TASK, TaskStatus.TASK_FAILED);
         assertContainsWfRun(failedTasks, failWf);
         assertNotContainsWfRun(failedTasks, succeedWf);
 
-        SearchTaskRunReplyPb runningFailTasks = searchTaskRuns(
-            FAIL_TASK,
-            TaskStatusPb.TASK_RUNNING
-        );
+        TaskRunIdList runningFailTasks = searchTaskRuns(FAIL_TASK, TaskStatus.TASK_RUNNING);
         assertNotContainsWfRun(runningFailTasks, failWf);
         assertNotContainsWfRun(runningFailTasks, succeedWf);
-        SearchTaskRunReplyPb runningSlowTasks = searchTaskRuns(
-            SLOW_TASK,
-            TaskStatusPb.TASK_RUNNING
-        );
+        TaskRunIdList runningSlowTasks = searchTaskRuns(SLOW_TASK, TaskStatus.TASK_RUNNING);
         assertContainsWfRun(runningSlowTasks, succeedWf);
         assertNotContainsWfRun(runningSlowTasks, failWf);
         Thread.sleep(1100);
-        runningSlowTasks = searchTaskRuns(SLOW_TASK, TaskStatusPb.TASK_RUNNING);
+        runningSlowTasks = searchTaskRuns(SLOW_TASK, TaskStatus.TASK_RUNNING);
         assertNotContainsWfRun(runningSlowTasks, succeedWf);
         assertNotContainsWfRun(runningSlowTasks, failWf);
 
-        SearchTaskRunReplyPb succeededSlowTasks = searchTaskRuns(
-            SLOW_TASK,
-            TaskStatusPb.TASK_SUCCESS
-        );
+        TaskRunIdList succeededSlowTasks = searchTaskRuns(SLOW_TASK, TaskStatus.TASK_SUCCESS);
         assertContainsWfRun(succeededSlowTasks, succeedWf);
 
         // Ok, now we look for the UserTaskRuns
         assertContainsWfRun(searchUserTaskRunsUserId("obiwan"), succeedWf);
-        assertContainsWfRun(
-            searchUserTaskRunsUserId("obiwan", UserTaskRunStatusPb.CLAIMED),
-            succeedWf
-        );
-        assertContainsWfRun(
-            searchUserTaskRunsUserId(
-                "obiwan",
-                USER_TASK,
-                UserTaskRunStatusPb.CLAIMED
-            ),
-            succeedWf
-        );
+        assertContainsWfRun(searchUserTaskRunsUserId("obiwan", UserTaskRunStatus.ASSIGNED), succeedWf);
+        assertContainsWfRun(searchUserTaskRunsUserId("obiwan", USER_TASK, UserTaskRunStatus.ASSIGNED), succeedWf);
 
-        UserTaskRunIdPb userTaskId = searchUserTaskRunsUserId("obiwan")
-            .getResultsList()
-            .stream()
-            .filter(id -> id.getWfRunId().equals(succeedWf))
-            .findFirst()
-            .orElseThrow();
+        UserTaskRunId userTaskId = searchUserTaskRunsUserId("obiwan").getResultsList().stream()
+                .filter(id -> id.getWfRunId().equals(succeedWf))
+                .findFirst()
+                .orElseThrow();
 
-        AssignUserTaskRunReplyPb assignReply = client
-            .getGrpcClient()
-            .assignUserTaskRun(
-                AssignUserTaskRunPb
-                    .newBuilder()
-                    .setUserId("fdsa")
+        StatusRuntimeException caught = null;
+        try {
+            client.assignUserTaskRun(AssignUserTaskRunRequest.newBuilder()
+                    .setUser(User.newBuilder().setId("fdsa").build())
                     .setOverrideClaim(false)
                     .setUserTaskRunId(userTaskId)
-                    .build()
-            );
+                    .build());
+        } catch (StatusRuntimeException exn) {
+            caught = exn;
+        }
         assertThat(
-            assignReply.getCode() == LHResponseCodePb.ALREADY_EXISTS_ERROR,
-            "should be unable to reassign without override claim"
-        );
-        assignReply =
-            client
-                .getGrpcClient()
-                .assignUserTaskRun(
-                    AssignUserTaskRunPb
-                        .newBuilder()
-                        .setUserId("fdsa")
-                        .setOverrideClaim(true)
-                        .setUserTaskRunId(userTaskId)
-                        .build()
-                );
-        assertThat(
-            assignReply.getCode() == LHResponseCodePb.OK,
-            "should be able to reassign with override claim"
-        );
+                caught != null && caught.getStatus().getCode() == Code.FAILED_PRECONDITION,
+                "should be unable to reassign without override claim");
+        client.assignUserTaskRun(AssignUserTaskRunRequest.newBuilder()
+                .setUser(User.newBuilder().setId("fdsa").build())
+                .setOverrideClaim(true)
+                .setUserTaskRunId(userTaskId)
+                .build());
         Thread.sleep(150); // allow remote tag to propagate
 
         // Shouldn't be obiwan's task anymore
-        assertNotContainsWfRun(
-            searchUserTaskRunsUserId("obiwan", UserTaskRunStatusPb.CLAIMED),
-            succeedWf
-        );
-        assertContainsWfRun(
-            searchUserTaskRunsUserId("fdsa", UserTaskRunStatusPb.CLAIMED),
-            succeedWf
-        );
+        assertNotContainsWfRun(searchUserTaskRunsUserId("obiwan", UserTaskRunStatus.ASSIGNED), succeedWf);
+        assertContainsWfRun(searchUserTaskRunsUserId("fdsa", UserTaskRunStatus.ASSIGNED), succeedWf);
 
-        AssignUserTaskRunReplyPb reAssignReply = client
-            .getGrpcClient()
-            .assignUserTaskRun(
-                AssignUserTaskRunPb
-                    .newBuilder()
-                    .setUserGroup("mygroup")
-                    .setOverrideClaim(true)
-                    .setUserTaskRunId(userTaskId)
-                    .build()
-            );
-        System.out.println(LHLibUtil.protoToJson(reAssignReply));
-        assertThat(
-            reAssignReply.getCode() == LHResponseCodePb.OK,
-            "should be able to reassign"
-        );
-        Thread.sleep(150); //allow remote indexes to propagate
-        assertContainsWfRun(
-            searchUserTaskRunsUserGroup(
-                "mygroup",
-                UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED
-            ),
-            succeedWf
-        );
-        assertNotContainsWfRun(
-            searchUserTaskRunsUserId("fdsa", UserTaskRunStatusPb.CLAIMED),
-            succeedWf
-        );
+        client.assignUserTaskRun(AssignUserTaskRunRequest.newBuilder()
+                .setUserGroup(UserGroup.newBuilder().setId("mygroup").build())
+                .setOverrideClaim(true)
+                .setUserTaskRunId(userTaskId)
+                .build());
+
+        Thread.sleep(150); // allow remote indexes to propagate
+        assertContainsWfRun(searchUserTaskRunsUserGroup("mygroup", UserTaskRunStatus.UNASSIGNED), succeedWf);
+        assertNotContainsWfRun(searchUserTaskRunsUserId("fdsa", UserTaskRunStatus.ASSIGNED), succeedWf);
 
         // Now we claim it once more
-        client
-            .getGrpcClient()
-            .assignUserTaskRun(
-                AssignUserTaskRunPb
-                    .newBuilder()
-                    .setUserId("yoda")
-                    .setOverrideClaim(true)
-                    .setUserTaskRunId(userTaskId)
-                    .build()
-            );
+        client.assignUserTaskRun(AssignUserTaskRunRequest.newBuilder()
+                .setUser(User.newBuilder().setId("yoda").build())
+                .setOverrideClaim(true)
+                .setUserTaskRunId(userTaskId)
+                .build());
         Thread.sleep(150); // allow remote tag to propagate
 
         assertContainsWfRun(searchUserTaskRunsUserId("yoda"), succeedWf);
-        assertContainsWfRun(
-            searchUserTaskRunsUserId("yoda", UserTaskRunStatusPb.CLAIMED),
-            succeedWf
-        );
-        assertNotContainsWfRun(
-            searchUserTaskRunsUserGroup(
-                "mygroup",
-                UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED
-            ),
-            succeedWf
-        );
+        assertContainsWfRun(searchUserTaskRunsUserId("yoda", UserTaskRunStatus.ASSIGNED), succeedWf);
+        assertNotContainsWfRun(searchUserTaskRunsUserGroup("mygroup", UserTaskRunStatus.UNASSIGNED), succeedWf);
 
         // Finally, complete the TaskRun
-        client
-            .getGrpcClient()
-            .completeUserTaskRun(
-                CompleteUserTaskRunPb
-                    .newBuilder()
-                    .setUserTaskRunId(userTaskId)
-                    .setUserId("yoda")
-                    .setResult(
-                        UserTaskResultPb
-                            .newBuilder()
-                            .addFields(
-                                UserTaskFieldResultPb
-                                    .newBuilder()
-                                    .setName("foo")
-                                    .setValue(LHLibUtil.objToVarVal("bar"))
-                            )
-                    )
-                    .build()
-            );
+        client.completeUserTaskRun(CompleteUserTaskRunRequest.newBuilder()
+                .setUserTaskRunId(userTaskId)
+                .setUserId("yoda")
+                .setResult(UserTaskResult.newBuilder()
+                        .addFields(
+                                UserTaskFieldResult.newBuilder().setName("foo").setValue(LHLibUtil.objToVarVal("bar"))))
+                .build());
         Thread.sleep(150);
 
-        assertContainsWfRun(
-            searchUserTaskRunsUserId("yoda", UserTaskRunStatusPb.DONE),
-            succeedWf
-        );
+        assertContainsWfRun(searchUserTaskRunsUserId("yoda", UserTaskRunStatus.DONE), succeedWf);
 
-        assertStatus(client, succeedWf, LHStatusPb.COMPLETED);
+        assertStatus(client, succeedWf, LHStatus.COMPLETED);
     }
 
-    private void assertContainsWfRun(List<WfRunIdPb> wfRuns, String id) {
-        for (WfRunIdPb wfRunId : wfRuns) {
+    private String runWf(String wfSpecName, Arg... args) {
+        RunWfRequest.Builder b = RunWfRequest.newBuilder().setWfSpecName(wfSpecName);
+
+        for (Arg arg : args) {
+            try {
+                b.putVariables(arg.name, LHLibUtil.objToVarVal(arg.value));
+            } catch (LHSerdeError exn) {
+                throw new RuntimeException(exn);
+            }
+        }
+
+        return client.runWf(b.build()).getId();
+    }
+
+    private void assertContainsWfRun(WfRunIdList wfRuns, String id) {
+        for (WfRunId wfRunId : wfRuns.getResultsList()) {
             if (id.equals(wfRunId.getId())) {
                 return;
             }
@@ -316,8 +235,8 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         throw new RuntimeException("Should have found WfRun " + id);
     }
 
-    private void assertContainsWfRun(SearchUserTaskRunReplyPb results, String id) {
-        for (UserTaskRunIdPb trid : results.getResultsList()) {
+    private void assertContainsWfRun(UserTaskRunIdList results, String id) {
+        for (UserTaskRunId trid : results.getResultsList()) {
             if (trid.getWfRunId().equals(id)) {
                 return;
             }
@@ -325,32 +244,32 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         throw new RuntimeException("Should have found WfRun " + id);
     }
 
-    private void assertNotContainsWfRun(SearchUserTaskRunReplyPb results, String id) {
-        for (UserTaskRunIdPb trid : results.getResultsList()) {
+    private void assertNotContainsWfRun(UserTaskRunIdList results, String id) {
+        for (UserTaskRunId trid : results.getResultsList()) {
             if (trid.getWfRunId().equals(id)) {
                 throw new RuntimeException("Should NOT have found WfRun " + id);
             }
         }
     }
 
-    private void assertNotContainsWfRun(SearchTaskRunReplyPb results, String id) {
-        for (TaskRunIdPb trid : results.getResultsList()) {
+    private void assertNotContainsWfRun(TaskRunIdList results, String id) {
+        for (TaskRunId trid : results.getResultsList()) {
             if (trid.getWfRunId().equals(id)) {
                 throw new RuntimeException("Should NOT have found WfRun " + id);
             }
         }
     }
 
-    private void assertContainsWfRun(SearchTaskRunReplyPb results, String id) {
-        for (TaskRunIdPb trid : results.getResultsList()) {
+    private void assertContainsWfRun(TaskRunIdList results, String id) {
+        for (TaskRunId trid : results.getResultsList()) {
             if (trid.getWfRunId().equals(id)) {
                 return;
             }
         }
-        throw new RuntimeException("Should NOT have found WfRun " + id);
+        throw new RuntimeException("Should have found WfRun " + id);
     }
 
-    public void cleanup() throws LHApiError {
+    public void cleanup() {
         // for (String wfRunId : wfRunIds) {
         //     client.deleteWfRun(wfRunId);
         // }

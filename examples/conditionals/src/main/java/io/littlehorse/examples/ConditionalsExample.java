@@ -1,10 +1,9 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -32,17 +31,14 @@ public class ConditionalsExample {
         return new WorkflowImpl(
             "example-conditionals",
             thread -> {
-                WfRunVariable foo = thread.addVariable(
-                    "foo",
-                    VariableTypePb.JSON_OBJ
-                );
+                WfRunVariable foo = thread.addVariable("foo", VariableType.JSON_OBJ);
 
                 thread.execute("task-a");
 
                 thread.doIfElse(
                     thread.condition(
                         foo.jsonPath("$.bar"),
-                        ComparatorPb.GREATER_THAN,
+                        Comparator.GREATER_THAN,
                         10
                     ),
                     ifHandler -> {
@@ -68,7 +64,7 @@ public class ConditionalsExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) {
+    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) throws IOException {
         ConditionalsTaskWorker executable = new ConditionalsTaskWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "task-a", config),
@@ -91,11 +87,11 @@ public class ConditionalsExample {
         return workers;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
+        LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();

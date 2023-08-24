@@ -29,5 +29,5 @@ lhctl run exception-handler
 Then you can see all of the `ThreadRuns` in the `WfRun` by:
 
 ```
-lhctl get wfRun <wfRunId>
+lhctl get wfRunModel <wfRunId>
 ```

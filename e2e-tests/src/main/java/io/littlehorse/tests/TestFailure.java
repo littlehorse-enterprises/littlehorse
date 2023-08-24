@@ -12,8 +12,6 @@ public class TestFailure extends Exception {
 
     @Override
     public String getMessage() {
-        return (
-            "Test case " + testCase.getClass().getSimpleName() + " failed: " + message
-        );
+        return ("Test case " + testCase.getClass().getSimpleName() + " failed: " + message);
     }
 }

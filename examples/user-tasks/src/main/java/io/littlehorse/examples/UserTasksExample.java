@@ -1,11 +1,10 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.ComparatorPb;
-import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
-import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
 import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
@@ -35,22 +34,31 @@ public class UserTasksExample {
     }
 
     public void wf(ThreadBuilder thread) {
-        WfRunVariable userId = thread.addVariable("user-id", VariableTypePb.STR);
+        WfRunVariable userId = thread.addVariable("user-id", VariableType.STR);
         WfRunVariable itRequest = thread.addVariable(
             "it-request",
-            VariableTypePb.JSON_OBJ
+            VariableType.JSON_OBJ
         );
         WfRunVariable isApproved = thread.addVariable(
             "is-approved",
-            VariableTypePb.BOOL
+            VariableType.BOOL
         );
 
         // Get the IT Request
         UserTaskOutput formOutput = thread.assignUserTaskToUser(
             IT_REQUEST_FORM,
-            userId
+            userId,
+            "testGroup"
         );
-        thread.mutate(itRequest, VariableMutationTypePb.ASSIGN, formOutput);
+        thread.handleException(
+            formOutput,
+            "USER_TASK_CANCELLED",
+            handler -> {
+                String email = "test-ut-support@gmail.com";
+                handler.execute(EMAIL_TASK_NAME, email, "Task cancelled");
+            }
+        );
+        thread.mutate(itRequest, VariableMutationType.ASSIGN, formOutput);
 
         // Have Finance approve the request
         UserTaskOutput financeUserTaskOutput = thread
@@ -75,17 +83,17 @@ public class UserTasksExample {
         thread.scheduleReassignmentToUserOnDeadline(
             financeUserTaskOutput,
             "test-eduwer",
-            2
+            60
         );
 
         thread.mutate(
             isApproved,
-            VariableMutationTypePb.ASSIGN,
+            VariableMutationType.ASSIGN,
             financeUserTaskOutput.jsonPath("$.isApproved")
         );
 
         thread.doIfElse(
-            thread.condition(isApproved, ComparatorPb.EQUALS, true),
+            thread.condition(isApproved, Comparator.EQUALS, true),
             // Request approved!
             ifBody -> {
                 ifBody.execute(
@@ -123,7 +131,7 @@ public class UserTasksExample {
         return props;
     }
 
-    public LHTaskWorker getTaskWorker(LHWorkerConfig config) {
+    public LHTaskWorker getTaskWorker(LHWorkerConfig config) throws IOException {
         EmailSender executable = new EmailSender();
         LHTaskWorker worker = new LHTaskWorker(executable, "send-email", config);
 
@@ -132,15 +140,15 @@ public class UserTasksExample {
         return worker;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         new UserTasksExample().doMain();
     }
 
-    public void doMain() throws IOException, LHApiError {
+    public void doMain() throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
+        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();
@@ -167,12 +175,12 @@ public class UserTasksExample {
             new ItemRequestForm(),
             IT_REQUEST_FORM
         );
-        client.putUserTaskDef(requestForm.compile(), true);
+        client.putUserTaskDef(requestForm.compile());
         UserTaskSchema approvalForm = new UserTaskSchema(
             new ApprovalForm(),
             APPROVAL_FORM
         );
-        client.putUserTaskDef(approvalForm.compile(), true);
+        client.putUserTaskDef(approvalForm.compile());
 
         // Register a workflow if it does not exist
         if (workflow.doesWfSpecExist(client)) {

@@ -1,9 +1,8 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -11,6 +10,7 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,15 +19,12 @@ import java.util.List;
 // safeguards of the java wf sdk. But we might do that test in the future.
 public class BCChildFinishesFirst extends WorkflowLogicTest {
 
-    public BCChildFinishesFirst(LHClient client, LHWorkerConfig workerConfig) {
+    public BCChildFinishesFirst(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
     public String getDescription() {
-        return (
-            "Tests happy path behavior of WAIT_FOR_THREADS node with " +
-            "multiple threads to wait for."
-        );
+        return ("Tests happy path behavior of WAIT_FOR_THREADS node with " + "multiple threads to wait for.");
     }
 
     /*
@@ -45,14 +42,11 @@ public class BCChildFinishesFirst extends WorkflowLogicTest {
      * are in progress that the status is properly reflected in the workflow.
      */
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl(
-            getWorkflowName(),
-            thread -> {
-                SpawnedThread child = thread.spawnThread(this::child, "child", null);
-                thread.sleepSeconds(1);
-                thread.waitForThreads(child);
-            }
-        );
+        return new WorkflowImpl(getWorkflowName(), thread -> {
+            SpawnedThread child = thread.spawnThread(this::child, "child", null);
+            thread.sleepSeconds(1);
+            thread.waitForThreads(child);
+        });
     }
 
     private void child(ThreadBuilder thread) {
@@ -63,15 +57,15 @@ public class BCChildFinishesFirst extends WorkflowLogicTest {
         return Arrays.asList(new BCSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client)
-        throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client);
         Thread.sleep(100);
-        assertStatus(client, wfRunId, LHStatusPb.RUNNING);
-        assertThreadStatus(client, wfRunId, 1, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.RUNNING);
+        assertThreadStatus(client, wfRunId, 1, LHStatus.COMPLETED);
 
         Thread.sleep(5000); // wait for entrypoint
-        assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
+        assertStatus(client, wfRunId, LHStatus.COMPLETED);
 
         return Arrays.asList(wfRunId);
     }

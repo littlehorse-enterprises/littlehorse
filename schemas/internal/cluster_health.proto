@@ -1,0 +1,51 @@
+syntax = "proto3";
+package littlehorse;
+
+option java_multiple_files = true;
+option java_package = "io.littlehorse.common.proto";
+
+message TopologyInstanceStateResponse {
+    repeated ServerStatePb servers_core = 1;
+    repeated ServerStatePb servers_timer = 2;
+}
+
+enum ServerStatusPb {
+    HOST_UP = 0;
+    HOST_DOWN = 1;
+}
+
+message ServerStatePb {
+    repeated TaskStatePb active_tasks = 1;
+    repeated StandByTaskStatePb standby_tasks = 2;
+    string host = 3;
+    int32 port = 4;
+    string topology_name = 5;
+    ServerStatusPb server_status = 6;
+    optional string error_message = 7;
+}
+
+message TaskStatePb {
+    string host = 1;
+    string task_id = 2;
+    string topic = 3;
+    int32 partition = 4;
+    int64 current_offset = 5;
+    int32 port = 6;
+    int64 lag = 7;
+    string rack_id = 8;
+}
+
+message StandByTaskStatePb {
+    string host = 1;
+    string task_id = 2;
+    int32 port = 3;
+    int64 current_offset = 4;
+    int64 lag = 5;
+    string rack_id = 6;
+}
+
+
+message LocalTasksResponse {
+    repeated TaskStatePb active_tasks = 1;
+    repeated StandByTaskStatePb standby_tasks = 2;
+}

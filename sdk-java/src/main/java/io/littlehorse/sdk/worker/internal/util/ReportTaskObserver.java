@@ -1,24 +1,19 @@
 package io.littlehorse.sdk.worker.internal.util;
 
+import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.ReportTaskReplyPb;
-import io.littlehorse.sdk.common.proto.ReportTaskRunPb;
+import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ReportTaskObserver implements StreamObserver<ReportTaskReplyPb> {
+public class ReportTaskObserver implements StreamObserver<Empty> {
 
     private LHServerConnectionManager manager;
-    private ReportTaskRunPb reportedTask;
+    private ReportTaskRun reportedTask;
     private int retriesLeft;
 
-    public ReportTaskObserver(
-        LHServerConnectionManager manager,
-        ReportTaskRunPb reportedTask,
-        int retriesLeft
-    ) {
+    public ReportTaskObserver(LHServerConnectionManager manager, ReportTaskRun reportedTask, int retriesLeft) {
         this.manager = manager;
         this.reportedTask = reportedTask;
         this.retriesLeft = retriesLeft;
@@ -38,18 +33,5 @@ public class ReportTaskObserver implements StreamObserver<ReportTaskReplyPb> {
         }
     }
 
-    public void onNext(ReportTaskReplyPb reply) {
-        if (reply.getCode() == LHResponseCodePb.OK) {
-            // Nothing to do
-        } else if (reply.getCode() == LHResponseCodePb.REPORTED_BUT_NOT_PROCESSED) {
-            log.warn("Reported task but processor was down. No action required");
-            // Nothing to do
-        } else {
-            // Failed to report, should retry.
-            log.error("Error reporting task: {}", reply.getCode());
-            if (reportedTask != null) {
-                manager.retryReportTask(reportedTask, retriesLeft - 1);
-            }
-        }
-    }
+    public void onNext(Empty reply) {}
 }

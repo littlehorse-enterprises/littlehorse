@@ -50,7 +50,7 @@ var getVariableCmd = &cobra.Command{
 		common.PrintResp(
 			getGlobalClient(cmd).GetVariable(
 				context.Background(),
-				&model.VariableIdPb{
+				&model.VariableId{
 					WfRunId:         args[0],
 					ThreadRunNumber: int32(threadRunNumber),
 					Name:            args[2],
@@ -83,7 +83,7 @@ Choose one of the following option groups:
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
-		var search model.SearchVariablePb
+		var search model.SearchVariableRequest
 		wfRunId, _ := cmd.Flags().GetString("wfRunId")
 		name, _ := cmd.Flags().GetString("name")
 		varTypeStr, _ := cmd.Flags().GetString("varType")
@@ -92,20 +92,20 @@ Choose one of the following option groups:
 		wfSpecVersion, _ := cmd.Flags().GetInt32("wfSpecVersion")
 
 		if wfRunId != "" {
-			search = model.SearchVariablePb{
-				VariableCriteria: &model.SearchVariablePb_WfRunId{
+			search = model.SearchVariableRequest{
+				VariableCriteria: &model.SearchVariableRequest_WfRunId{
 					WfRunId: wfRunId,
 				},
 			}
 		} else {
-			varType, validVarType := model.VariableTypePb_value[varTypeStr]
+			varType, validVarType := model.VariableType_value[varTypeStr]
 			if !validVarType {
 				log.Fatal(
 					"Unrecognized varType. Valid options: INT, STR, BYTES, BOOL, JSON_OBJ, JSON_ARR, DOUBLE.",
 				)
 
 			}
-			varTypeEnum := model.VariableTypePb(varType)
+			varTypeEnum := model.VariableType(varType)
 			content, err := common.StrToVarVal(valueStr, varTypeEnum)
 			if err != nil {
 				log.Fatal("Failed deserializing payload: " + err.Error())
@@ -117,9 +117,9 @@ Choose one of the following option groups:
 				v = nil
 			}
 
-			search = model.SearchVariablePb{
-				VariableCriteria: &model.SearchVariablePb_Value{
-					Value: &model.SearchVariablePb_NameAndValuePb{
+			search = model.SearchVariableRequest{
+				VariableCriteria: &model.SearchVariableRequest_Value{
+					Value: &model.SearchVariableRequest_NameAndValueRequest{
 						Value:         content,
 						VarName:       name,
 						WfSpecVersion: v,
@@ -153,7 +153,7 @@ Lists all Variable's for a given WfRun Id.
 		}
 		wfRunId := args[0]
 
-		req := &model.ListVariablesPb{
+		req := &model.ListVariablesRequest{
 			WfRunId: wfRunId,
 		}
 

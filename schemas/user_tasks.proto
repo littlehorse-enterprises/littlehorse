@@ -1,0 +1,152 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "common_enums.proto";
+import "object_id.proto";
+import "variable.proto";
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+
+message UserTaskDef {
+  string name = 1;
+  int32 version = 2;
+  optional string description = 3;
+  repeated UserTaskField fields = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
+message UserTaskField {
+  string name = 1;
+  VariableType type = 2;
+  optional string description = 3;
+  string display_name = 4;
+  bool required = 5;
+  // Later versions will allow stuff such as:
+  // 1. Validation (eg. email address, integer between 1-10, etc)
+  // 2. Nested object structures
+  // 3. Multi-Page forms (survey-js style)
+  // 4. Conditional rendering of forms based on input (surveyjs style)
+  // 5. Default values and optional fields
+}
+
+message UserTaskRun {
+  UserTaskRunId id = 1;
+  UserTaskDefId user_task_def_id = 2;
+
+  repeated UserTaskFieldResult results = 6;
+  UserTaskRunStatus status = 7;
+  repeated UserTaskEvent events = 8;
+  optional string notes = 9;
+  google.protobuf.Timestamp scheduled_time = 10;
+
+  // If we ever allow ad-hoc User Tasks, this will move to an optional
+  // field, or a `oneof user_task_source` field. However, note that such
+  // a change would be fine from the API Compatibility perspective.
+  NodeRunId node_run_id = 11;
+
+  oneof owner {
+    UserGroup user_group = 12;
+    User user = 13;
+  }
+}
+
+message AssignUserTaskRunRequest {
+  UserTaskRunId user_task_run_id = 1;
+
+  bool override_claim = 2;
+
+  oneof assignee {
+    User user = 3;
+    UserGroup user_group = 4;
+  }
+}
+
+message UserTaskFieldResult {
+  string name = 1;
+  optional VariableValue value = 2;
+}
+
+message UserTaskResult {
+  repeated UserTaskFieldResult fields = 1;
+}
+
+message SaveUserTaskRun {
+  UserTaskResult result = 1;
+  string user_id = 2;
+  repeated UserTaskFieldResult results = 3;
+}
+
+message CompleteUserTaskRunRequest {
+  UserTaskRunId user_task_run_id = 1;
+
+  UserTaskResult result = 2;
+  string user_id = 3;
+}
+
+message CancelUserTaskRunRequest {
+  UserTaskRunId user_task_run_id = 1;
+}
+
+message UserTaskTriggerContext {
+  oneof owner {
+    UserGroup user_group = 1;
+    User user = 2;
+  }
+}
+
+message UserTaskTriggerReference {
+  NodeRunId node_run_id = 1;
+  int32 user_task_event_number = 2;
+  WfSpecId wf_spec_id = 3;
+  optional UserTaskTriggerContext context = 4;
+}
+
+message UserGroup {
+  string id = 1;
+}
+
+message User {
+  string id = 1;
+  optional UserGroup user_group = 2;
+}
+
+enum UserTaskRunStatus {
+  UNASSIGNED = 0;
+  ASSIGNED = 1;
+  DONE = 3;
+  CANCELLED = 4;
+}
+
+message UserTaskEvent {
+  google.protobuf.Timestamp time = 1;
+
+  message UTECancelled {
+  }
+
+  message UTETaskExecuted {
+    TaskRunId task_run = 1;
+  }
+
+  message UTEReassigned {
+    oneof old_owner {
+      User old_user= 5;
+      UserGroup old_user_group = 6;
+    }
+    oneof new_owner {
+      User new_user = 7;
+      UserGroup new_user_group = 8;
+    }
+  }
+
+  oneof event {
+    UTETaskExecuted task_executed = 2;
+    UTEReassigned reassigned = 3;
+    UTECancelled cancelled = 4;
+    // TODO: Add "save user task" and "complete user task" to the
+    // audit log
+  }
+}
