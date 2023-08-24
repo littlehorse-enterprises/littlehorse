@@ -41,6 +41,8 @@ public class ConditionalsTest {
 
     @LHWorkflow("test-conditionals-greater-than-equals-workflow")
     private Workflow workflowGreaterThanEquals;
+    @LHWorkflow("test-conditionals-is-in-workflow")
+    private Workflow workflowIsIn;
 
     private WorkflowVerifier workflowVerifier;
 
@@ -217,7 +219,7 @@ public class ConditionalsTest {
     class GreaterThanEquals {
         @ParameterizedTest
         @MethodSource("provideSuccessArguments")
-        void shouldCompleteGreaterThanWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
+        void shouldCompleteGreaterThanEqualsWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
             workflowVerifier
                     .prepareRun(workflowGreaterThanEquals, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
@@ -237,6 +239,35 @@ public class ConditionalsTest {
                     Arguments.of(new ConditionalsTest.InputObj("a", "b"), false),
                     Arguments.of(new ConditionalsTest.InputObj("b", "a"), true),
                     Arguments.of(new ConditionalsTest.InputObj(5.4, 4.0), true));
+        }
+    }
+
+    @Nested
+    class IsIn {
+        @ParameterizedTest
+        @MethodSource("provideSuccessArguments")
+        void shouldCompleteGreaterThanEqualsWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
+            workflowVerifier
+                    .prepareRun(workflowIsIn, Arg.of("input", inputObject))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(true))
+                    .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(expectedOutput))
+                    .start();
+        }
+
+        private static Stream<Arguments> provideSuccessArguments() {
+            return Stream.of(
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("a", 1), Map.of("a", 1)), false),
+                    Arguments.of(new ConditionalsTest.InputObj("hi", Map.of("hi", 2)), true),
+                    Arguments.of(new ConditionalsTest.InputObj(2, Map.of("hi", 2)), false),
+                    Arguments.of(new ConditionalsTest.InputObj(Arrays.asList(0), Arrays.asList(0)), false), // Will check for '[0]'
+                    Arguments.of(new ConditionalsTest.InputObj(0, Arrays.asList(0)), true),
+                    Arguments.of(new ConditionalsTest.InputObj(1, "one"), false),
+                    Arguments.of(new ConditionalsTest.InputObj("o", "one"), true),
+                    Arguments.of(new ConditionalsTest.InputObj(2, "2"), true),
+                    Arguments.of(new ConditionalsTest.InputObj(2, Map.of("a", 1)), false));
         }
     }
 
@@ -375,6 +406,30 @@ public class ConditionalsTest {
 
             thread.doIfElse(
                     thread.condition(input.jsonPath("$.lhs"), Comparator.GREATER_THAN_EQ, input.jsonPath("$.rhs")),
+                    ifBlock -> {
+                        ifBlock.execute("ag-one");
+                    },
+                    elseBlock -> {
+                        elseBlock.execute("ag-two");
+                    });
+        });
+    }
+
+    @LHWorkflow("test-conditionals-is-in-workflow")
+    public Workflow getIsInWorkflow() {
+        return new WorkflowImpl("test-conditionals-is-in-workflow", thread -> {
+            // Use an input JSON blob with two fields, LHS and RHS.
+            // This allows us to test with various types on the left and the
+            // right, since right now the JSON_OBJ var type does not have a
+            // schema.
+            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+
+            // So that the run request succeeds even on workflows where we want
+            // a crash.
+            thread.execute("ag-one");
+
+            thread.doIfElse(
+                    thread.condition(input.jsonPath("$.lhs"), Comparator.IN, input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
