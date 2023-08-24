@@ -1,5 +1,7 @@
 package io.littlehorse.e2e;
 
+import static org.assertj.core.api.Assertions.*;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -13,12 +15,10 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
-import static org.assertj.core.api.Assertions.*;
-import org.junit.jupiter.api.Test;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import org.junit.jupiter.api.Test;
 
 @LHTest
 public class VarMutationListsTest {
@@ -29,7 +29,7 @@ public class VarMutationListsTest {
     private Workflow workflow;
 
     @Test
-    public void shouldCompleteRemoveListVariableMutations(){
+    public void shouldCompleteRemoveListVariableMutations() {
         List<Object> workflowInput = Arrays.asList("asdf", "asdf", 3, 4, 9);
         List<Object> expectedOutput = Arrays.asList("asdf", "asdf", 3, 9);
 
@@ -41,13 +41,14 @@ public class VarMutationListsTest {
                 throw new RuntimeException(exn);
             }
         };
-        workflowVerifier.prepareRun(workflow, Arg.of("list-one", workflowInput))
+        workflowVerifier
+                .prepareRun(workflow, Arg.of("list-one", workflowInput))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "list-one", verifyVariableListMutation);
     }
 
     @Test
-    public void shouldThrowOutOfIndexException(){
+    public void shouldThrowOutOfIndexException() {
         List<Object> workflowInput = Arrays.asList(5, "hello", 3, 4);
         Consumer<VariableValue> assertVariableValueRollback = variableValue -> {
             try {
@@ -57,12 +58,11 @@ public class VarMutationListsTest {
                 throw new RuntimeException(exn);
             }
         };
-        workflowVerifier.prepareRun(workflow, Arg.of("list-one", workflowInput))
+        workflowVerifier
+                .prepareRun(workflow, Arg.of("list-one", workflowInput))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyVariable(0, "list-one", assertVariableValueRollback);
     }
-
-
 
     @LHWorkflow("workflow-test-lists")
     public Workflow getWorkflowImpl() {
@@ -76,5 +76,4 @@ public class VarMutationListsTest {
             thread.mutate(listOne, VariableMutationType.REMOVE_INDEX, 3);
         });
     }
-
 }
