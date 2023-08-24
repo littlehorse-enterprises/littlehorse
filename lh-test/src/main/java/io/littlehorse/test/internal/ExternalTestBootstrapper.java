@@ -2,6 +2,7 @@ package io.littlehorse.test.internal;
 
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.test.exception.LHTestInitializationException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,12 +15,16 @@ public class ExternalTestBootstrapper implements TestBootstrapper {
     private final LHWorkerConfig workerConfig;
     private final LHPublicApiBlockingStub lhClient;
 
-    public ExternalTestBootstrapper() throws IOException {
+    public ExternalTestBootstrapper() {
         if (Files.notExists(configPath)) {
             throw new IllegalStateException(String.format("Configuration file %s doesn't exist", LH_CONFIG_FILE));
         }
         workerConfig = new LHWorkerConfig(configPath.toString());
-        lhClient = workerConfig.getBlockingStub();
+        try {
+            lhClient = workerConfig.getBlockingStub();
+        } catch (IOException e) {
+            throw new LHTestInitializationException(e);
+        }
     }
 
     @Override

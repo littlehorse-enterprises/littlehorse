@@ -22,6 +22,7 @@ dependencies {
     implementation 'org.testcontainers:kafka:1.18.3'
     testImplementation project(':lh-test')
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
 }
 
 application {

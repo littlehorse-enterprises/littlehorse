@@ -1,11 +1,13 @@
 package io.littlehorse.test;
 
+import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.StandaloneTestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
 import java.io.IOException;
 import java.util.List;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
@@ -34,9 +36,21 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
         try {
             List<LHTaskWorker> workers = testContext.discoverTaskWorkers(testInstance);
             for (LHTaskWorker worker : workers) {
+                if (store.get(worker.getTaskDefName()) != null) {
+                    continue;
+                }
                 store.put(worker.getTaskDefName(), worker);
                 worker.registerTaskDef(true);
-                worker.start();
+                Awaitility.await()
+                        .ignoreException(LHMisconfigurationException.class)
+                        .until(() -> {
+                            try {
+                                worker.start();
+                                return true;
+                            } catch (IOException e) {
+                                throw new IllegalStateException(e);
+                            }
+                        });
             }
         } catch (IOException e) {
             throw new LHTestInitializationException("Something went wrong registering task workers", e);

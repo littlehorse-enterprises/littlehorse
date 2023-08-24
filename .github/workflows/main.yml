@@ -68,7 +68,7 @@ jobs:
           distribution: "corretto"
           java-version: 17
       - name: Tests
-        run: ./gradlew server:test server:build
+        run: ./gradlew server:test server:e2e server:build
   tests-e2e:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
     runs-on: ubuntu-latest

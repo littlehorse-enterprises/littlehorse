@@ -12,6 +12,8 @@ import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.sdk.common.proto.VariableId;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfSpec;
@@ -61,17 +63,24 @@ public class LHClientTestWrapper {
         }
     }
 
+    public VariableValue getVariableValue(String wfRunId, int threadRunNumber, String variableName) {
+        VariableId variableId = VariableId.newBuilder()
+                .setName(variableName)
+                .setWfRunId(wfRunId)
+                .setThreadRunNumber(threadRunNumber)
+                .build();
+        return lhClient.getVariable(variableId).getValue();
+    }
+
     public WfRun getWfRun(String wfRunId) {
-        try {
-            return lhClient.getWfRun(WfRunId.newBuilder().setId(wfRunId).build());
-        } catch (StatusRuntimeException e) {
-            throw new LHTestInitializationException(e);
-        }
+        return lhClient.getWfRun(WfRunId.newBuilder().setId(wfRunId).build());
     }
 
     public boolean runWf(WfSpec wfSpec, String wfId, Collection<Arg> args) throws StatusRuntimeException {
-        RunWfRequest.Builder req =
-                RunWfRequest.newBuilder().setWfSpecName(wfSpec.getName()).setWfSpecVersion(wfSpec.getVersion());
+        RunWfRequest.Builder req = RunWfRequest.newBuilder()
+                .setWfSpecName(wfSpec.getName())
+                .setId(wfId)
+                .setWfSpecVersion(wfSpec.getVersion());
 
         for (Arg arg : args) {
             try {
@@ -96,12 +105,7 @@ public class LHClientTestWrapper {
     }
 
     public WfSpec getWfSpec(Workflow workflow) {
-        try {
-            return lhClient.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder()
-                    .setName(workflow.getName())
-                    .build());
-        } catch (StatusRuntimeException e) {
-            throw new LHTestInitializationException(e);
-        }
+        return lhClient.getLatestWfSpec(
+                GetLatestWfSpecRequest.newBuilder().setName(workflow.getName()).build());
     }
 }
