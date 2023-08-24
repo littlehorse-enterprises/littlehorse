@@ -6,7 +6,6 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
-
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -59,9 +58,8 @@ public class TestContext {
     }
 
     private void injectWorkflowExecutors(Object testInstance) {
-        new FieldDependencyInjector(
-                        () -> new WorkflowVerifier(lhClient), testInstance, field -> field.getType()
-                                .isAssignableFrom(WorkflowVerifier.class))
+        new FieldDependencyInjector(() -> new WorkflowVerifier(lhClient), testInstance, field -> field.getType()
+                        .isAssignableFrom(WorkflowVerifier.class))
                 .inject();
     }
 }

@@ -2,17 +2,14 @@ from typing import Any
 import unittest
 import uuid
 from littlehorse.exceptions import TaskSchemaMismatchException
-from littlehorse.model.service_pb2 import (
-    NodeRunIdPb,
-    ScheduledTaskPb,
-    TaskDefPb,
-    TaskNodeReferencePb,
-    TaskRunIdPb,
-    TaskRunSourcePb,
-    UserTaskTriggerReferencePb,
-    VariableDefPb,
-    VariableTypePb,
-)
+from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.model.common_wfspec_pb2 import VariableDef
+from littlehorse.model.object_id_pb2 import NodeRunId, TaskRunId
+from littlehorse.model.service_pb2 import ScheduledTask
+from littlehorse.model.task_def_pb2 import TaskDef
+from littlehorse.model.task_run_pb2 import TaskNodeReference, TaskRunSource
+from littlehorse.model.user_tasks_pb2 import UserTaskTriggerReference
+
 
 from littlehorse.worker import LHTask, LHWorkerContext
 
@@ -21,14 +18,14 @@ class TestWorkerContext(unittest.TestCase):
     def test_idempotency_key(self):
         wf_id = str(uuid.uuid4())
         task_id = str(uuid.uuid4())
-        scheduled_task = ScheduledTaskPb(
-            task_run_id=TaskRunIdPb(task_guid=task_id, wf_run_id=wf_id)
+        scheduled_task = ScheduledTask(
+            task_run_id=TaskRunId(task_guid=task_id, wf_run_id=wf_id)
         )
         ctx = LHWorkerContext(scheduled_task)
         self.assertEqual(ctx.idempotency_key(), f"{wf_id}/{task_id}")
 
     def test_log_output(self):
-        ctx = LHWorkerContext(ScheduledTaskPb())
+        ctx = LHWorkerContext(ScheduledTask())
         self.assertEqual(ctx.log_output(), "")
         ctx.log("my log 1")
         ctx.log("my log 2")
@@ -40,21 +37,19 @@ class TestWorkerContext(unittest.TestCase):
 
     def test_get_right_node(self):
         wf_id = str(uuid.uuid4())
-        node_run_task = NodeRunIdPb(wf_run_id=wf_id)
-        scheduled_task_task = ScheduledTaskPb(
-            source=TaskRunSourcePb(
-                task_node=TaskNodeReferencePb(node_run_id=node_run_task)
-            )
+        node_run_task = NodeRunId(wf_run_id=wf_id)
+        scheduled_task_task = ScheduledTask(
+            source=TaskRunSource(task_node=TaskNodeReference(node_run_id=node_run_task))
         )
         ctx = LHWorkerContext(scheduled_task_task)
 
         self.assertEqual(ctx.node_run_id(), node_run_task)
 
         wf_id = str(uuid.uuid4())
-        node_run_user = NodeRunIdPb(wf_run_id=wf_id)
-        scheduled_task_user = ScheduledTaskPb(
-            source=TaskRunSourcePb(
-                user_task_trigger=UserTaskTriggerReferencePb(node_run_id=node_run_user)
+        node_run_user = NodeRunId(wf_run_id=wf_id)
+        scheduled_task_user = ScheduledTask(
+            source=TaskRunSource(
+                user_task_trigger=UserTaskTriggerReference(node_run_id=node_run_user)
             )
         )
         ctx = LHWorkerContext(scheduled_task_user)
@@ -66,7 +61,7 @@ class TestTask(unittest.TestCase):
     def test_raise_exception_if_it_is_not_a_callable(self):
         not_a_callable = 3
         with self.assertRaises(TypeError) as exception_context:
-            LHTask(not_a_callable, TaskDefPb())
+            LHTask(not_a_callable, TaskDef())
         self.assertEqual(
             f"{not_a_callable} is not a callable object",
             str(exception_context.exception),
@@ -77,7 +72,7 @@ class TestTask(unittest.TestCase):
             pass
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, TaskDefPb())
+            LHTask(my_method, TaskDef())
 
         self.assertEqual(
             "The WorkerContext should be the last parameter",
@@ -89,7 +84,7 @@ class TestTask(unittest.TestCase):
             pass
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, TaskDefPb())
+            LHTask(my_method, TaskDef())
 
         self.assertEqual(
             "Is not a coroutine function",
@@ -101,7 +96,7 @@ class TestTask(unittest.TestCase):
             pass
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, TaskDefPb())
+            LHTask(my_method, TaskDef())
 
         self.assertEqual(
             "Too many context arguments (expected 1): ['ctx1', 'ctx2']",
@@ -113,7 +108,7 @@ class TestTask(unittest.TestCase):
             pass
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, TaskDefPb())
+            LHTask(my_method, TaskDef())
 
         self.assertEqual(
             "Not annotated parameters found: ['param2']",
@@ -125,7 +120,7 @@ class TestTask(unittest.TestCase):
             pass
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, TaskDefPb())
+            LHTask(my_method, TaskDef())
 
         self.assertEqual(
             "Any is not allowed: ['param']",
@@ -137,7 +132,7 @@ class TestTask(unittest.TestCase):
             pass
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, TaskDefPb())
+            LHTask(my_method, TaskDef())
 
         self.assertEqual(
             "Positional parameters (*args) not allowed: ['param']",
@@ -149,7 +144,7 @@ class TestTask(unittest.TestCase):
             pass
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
-            LHTask(my_method, TaskDefPb())
+            LHTask(my_method, TaskDef())
 
         self.assertEqual(
             "Keyword parameters (*kwargs) not allowed: ['param']",
@@ -162,9 +157,7 @@ class TestTask(unittest.TestCase):
 
         task = LHTask(
             my_method,
-            TaskDefPb(
-                input_vars=[VariableDefPb(name="param", type=VariableTypePb.STR)]
-            ),
+            TaskDef(input_vars=[VariableDef(name="param", type=VariableType.STR)]),
         )
 
         self.assertFalse(task.has_context())
@@ -173,7 +166,7 @@ class TestTask(unittest.TestCase):
         async def my_method(ctx: LHWorkerContext):
             pass
 
-        task = LHTask(my_method, TaskDefPb())
+        task = LHTask(my_method, TaskDef())
 
         self.assertTrue(task.has_context())
 
@@ -181,10 +174,10 @@ class TestTask(unittest.TestCase):
         async def my_method(param1: str, param2: int, ctx: LHWorkerContext = None):
             pass
 
-        task_def = TaskDefPb(
+        task_def = TaskDef(
             input_vars=[
-                VariableDefPb(name="paramA", type=VariableTypePb.STR),
-                VariableDefPb(name="paramB", type=VariableTypePb.INT),
+                VariableDef(name="paramA", type=VariableType.STR),
+                VariableDef(name="paramB", type=VariableType.INT),
             ]
         )
 
@@ -197,10 +190,10 @@ class TestTask(unittest.TestCase):
         async def my_method(param1: str, param2: int, ctx: LHWorkerContext):
             pass
 
-        task_def = TaskDefPb(
+        task_def = TaskDef(
             input_vars=[
-                VariableDefPb(name="param2", type=VariableTypePb.INT),
-                VariableDefPb(name="param1", type=VariableTypePb.STR),
+                VariableDef(name="param2", type=VariableType.INT),
+                VariableDef(name="param1", type=VariableType.STR),
             ]
         )
 
@@ -216,10 +209,10 @@ class TestTask(unittest.TestCase):
         async def my_method(param1: int, param2: str, ctx: LHWorkerContext):
             pass
 
-        task_def = TaskDefPb(
+        task_def = TaskDef(
             input_vars=[
-                VariableDefPb(name="param1", type=VariableTypePb.STR),
-                VariableDefPb(name="param2", type=VariableTypePb.INT),
+                VariableDef(name="param1", type=VariableType.STR),
+                VariableDef(name="param2", type=VariableType.INT),
             ]
         )
 
@@ -235,10 +228,10 @@ class TestTask(unittest.TestCase):
         async def my_method(param: str):
             pass
 
-        task_def = TaskDefPb(
+        task_def = TaskDef(
             input_vars=[
-                VariableDefPb(name="param1", type=VariableTypePb.STR),
-                VariableDefPb(name="param2", type=VariableTypePb.INT),
+                VariableDef(name="param1", type=VariableType.STR),
+                VariableDef(name="param2", type=VariableType.INT),
             ]
         )
 
@@ -255,21 +248,21 @@ class TestTask(unittest.TestCase):
             async def my_method(param: callable_type):
                 pass
 
-            task_def = TaskDefPb(
-                input_vars=[VariableDefPb(name="param", type=variable_type)]
+            task_def = TaskDef(
+                input_vars=[VariableDef(name="param", type=variable_type)]
             )
 
             with self.assertRaises(TaskSchemaMismatchException):
                 LHTask(my_method, task_def)
 
         for variable_type, callable_type in {
-            VariableTypePb.JSON_OBJ: dict,
-            VariableTypePb.JSON_ARR: list,
-            VariableTypePb.DOUBLE: str,
-            VariableTypePb.BOOL: str,
-            VariableTypePb.STR: int,
-            VariableTypePb.INT: str,
-            VariableTypePb.BYTES: str,
+            VariableType.JSON_OBJ: dict,
+            VariableType.JSON_ARR: list,
+            VariableType.DOUBLE: str,
+            VariableType.BOOL: str,
+            VariableType.STR: int,
+            VariableType.INT: str,
+            VariableType.BYTES: str,
         }.items():
             test(variable_type, callable_type)
 
@@ -278,9 +271,9 @@ class TestTask(unittest.TestCase):
             async def my_method(param: callable_type):
                 pass
 
-            task_def = TaskDefPb(
+            task_def = TaskDef(
                 input_vars=[
-                    VariableDefPb(name="param", type=variable_type),
+                    VariableDef(name="param", type=variable_type),
                 ]
             )
 
@@ -290,13 +283,13 @@ class TestTask(unittest.TestCase):
                 self.fail(f"Unexpected exception {e}")
 
         for variable_type, callable_type in {
-            VariableTypePb.JSON_OBJ: dict[str, Any],
-            VariableTypePb.JSON_ARR: list[Any],
-            VariableTypePb.DOUBLE: float,
-            VariableTypePb.BOOL: bool,
-            VariableTypePb.STR: str,
-            VariableTypePb.INT: int,
-            VariableTypePb.BYTES: bytes,
+            VariableType.JSON_OBJ: dict[str, Any],
+            VariableType.JSON_ARR: list[Any],
+            VariableType.DOUBLE: float,
+            VariableType.BOOL: bool,
+            VariableType.STR: str,
+            VariableType.INT: int,
+            VariableType.BYTES: bytes,
         }.items():
             test(variable_type, callable_type)
 

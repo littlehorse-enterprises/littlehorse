@@ -5,23 +5,18 @@ import logging
 from typing import Any, AsyncIterator, Callable
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
-    InvalidTaskDefNameException,
     TaskSchemaMismatchException,
 )
+from littlehorse.model.common_enums_pb2 import TaskStatus
+from littlehorse.model.object_id_pb2 import NodeRunId, TaskDefId
 from littlehorse.model.service_pb2 import (
-    GetTaskDefReplyPb,
-    LHResponseCodePb,
-    NodeRunIdPb,
-    PollTaskPb,
-    RegisterTaskWorkerPb,
-    RegisterTaskWorkerReplyPb,
-    ReportTaskReplyPb,
-    ReportTaskRunPb,
-    ScheduledTaskPb,
-    TaskDefIdPb,
-    TaskDefPb,
-    TaskStatusPb,
+    PollTaskRequest,
+    RegisterTaskWorkerRequest,
+    RegisterTaskWorkerResponse,
+    ReportTaskRun,
+    ScheduledTask,
 )
+from littlehorse.model.task_def_pb2 import TaskDef
 from littlehorse.utils import parse_value, parse_type, extract_value, timestamp_now
 
 REPORT_TASK_DEFAULT_RETRIES = 5
@@ -29,7 +24,7 @@ HEARTBEAT_DEFAULT_INTERVAL = 5
 
 
 class LHWorkerContext:
-    def __init__(self, scheduled_task: ScheduledTaskPb) -> None:
+    def __init__(self, scheduled_task: ScheduledTask) -> None:
         self._scheduled_task = scheduled_task
         self._log_entries: list[str] = []
 
@@ -90,11 +85,11 @@ class LHWorkerContext:
         """
         return self._scheduled_task.task_def_id.name
 
-    def node_run_id(self) -> NodeRunIdPb:
+    def node_run_id(self) -> NodeRunId:
         """Returns the NodeRun ID for the Task that was just scheduled.
 
         Returns:
-            NodeRunIdPb: A NodeRunIdPb object.
+            NodeRunId: A NodeRunId object.
         """
         source = self._scheduled_task.source
         return (
@@ -134,7 +129,7 @@ class LHWorkerContext:
 
 
 class LHTask:
-    def __init__(self, callable: Callable[..., Any], task_def: TaskDefPb) -> None:
+    def __init__(self, callable: Callable[..., Any], task_def: TaskDef) -> None:
         self.task_def = task_def
 
         self._callable = callable
@@ -242,7 +237,7 @@ class LHConnection:
             server=self.server, async_channel=True, name=self._task.task_name()
         )
 
-    async def _schedule_task(self, task: ScheduledTaskPb) -> None:
+    async def _schedule_task(self, task: ScheduledTask) -> None:
         self._log.debug(
             "Scheduling task '%s' for WfRun '%s'",
             task.task_def_id.name,
@@ -251,7 +246,7 @@ class LHConnection:
         await self._schedule_task_semaphore.acquire()
         asyncio.create_task(self._execute_task(task))
 
-    async def _execute_task(self, task: ScheduledTaskPb) -> None:
+    async def _execute_task(self, task: ScheduledTask) -> None:
         context = LHWorkerContext(task)
         args: Any = [extract_value(var.value) for var in task.variables]
 
@@ -260,19 +255,19 @@ class LHConnection:
 
         try:
             output = parse_value(await self._task._callable(*args))
-            status = TaskStatusPb.TASK_SUCCESS
+            status = TaskStatus.TASK_SUCCESS
         except TypeError as te:
             output = None
             context.log(te)
-            status = TaskStatusPb.TASK_OUTPUT_SERIALIZING_ERROR
+            status = TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR
         except BaseException as be:
             output = None
             context.log(be)
-            status = TaskStatusPb.TASK_FAILED
+            status = TaskStatus.TASK_FAILED
 
         self._schedule_task_semaphore.release()
 
-        task_result = ReportTaskRunPb(
+        task_result = ReportTaskRun(
             task_run_id=task.task_run_id,
             time=timestamp_now(),
             attempt_number=task.attempt_number,
@@ -285,9 +280,7 @@ class LHConnection:
 
         asyncio.create_task(self._report_task(task_result, REPORT_TASK_DEFAULT_RETRIES))
 
-    async def _report_task(
-        self, task_result: ReportTaskRunPb, retries_left: int
-    ) -> None:
+    async def _report_task(self, task_result: ReportTaskRun, retries_left: int) -> None:
         if retries_left <= 0:
             self._log.error(
                 "Retries exhausted when reporting task: '%s'",
@@ -302,23 +295,8 @@ class LHConnection:
         )
 
         try:
-            reply: ReportTaskReplyPb = await self._stub.ReportTask(task_result)
-
-            if reply.code == LHResponseCodePb.OK:
-                self._log.debug(
-                    "Task '%s' successfully reported", self._task.task_name()
-                )
-            elif reply.code == LHResponseCodePb.REPORTED_BUT_NOT_PROCESSED:
-                self._log.warning(
-                    "Task was reported but processor was down. No action required"
-                )
-            else:
-                self._log.warning(
-                    "Error '%s' reporting task: '%s'. Retrying.",
-                    reply.message,
-                    self._task.task_name(),
-                )
-                await self._report_task(task_result, retries_left - 1)
+            await self._stub.ReportTask(task_result)
+            self._log.debug("Task '%s' successfully reported", self._task.task_name())
         except Exception as e:
             self._log.warning(
                 "Error '%s' reporting task: '%s'. Retrying.",
@@ -328,11 +306,11 @@ class LHConnection:
             await self._report_task(task_result, retries_left - 1)
 
     async def _ask_for_work(self) -> None:
-        async def generator() -> AsyncIterator[PollTaskPb]:
+        async def generator() -> AsyncIterator[PollTaskRequest]:
             while self.running:
                 await self._ask_for_work_semaphore.acquire()
                 if self.running:
-                    yield PollTaskPb(
+                    yield PollTaskRequest(
                         client_id=self._config.client_id(),
                         task_worker_version=self._config.worker_version(),
                         task_def_name=self._task.task_name(),
@@ -346,13 +324,6 @@ class LHConnection:
 
         try:
             async for reply in self._stub.PollTask(generator()):
-                if reply.code != LHResponseCodePb.OK:
-                    self._log.error(
-                        "Didn't successfully claim task: %s %s",
-                        reply.code,
-                        reply.message,
-                    )
-                    continue
                 await self._schedule_task(reply.result)
                 self._ask_for_work_semaphore.release()
         except Exception as e:
@@ -391,13 +362,10 @@ class LHTaskWorker:
 
         # get the task definition from the server
         stub = config.stub()
-        reply: GetTaskDefReplyPb = stub.GetTaskDef(TaskDefIdPb(name=task_def_name))
-
-        if reply.code is not LHResponseCodePb.OK:
-            raise InvalidTaskDefNameException(f"Couldn't find TaskDef: {task_def_name}")
+        reply: TaskDef = stub.GetTaskDef(TaskDefId(name=task_def_name))
 
         # initialize internal task and parameters
-        self._task = LHTask(callable, reply.result)
+        self._task = LHTask(callable, reply)
         self.running = False
 
     async def _heartbeat(self) -> None:
@@ -410,19 +378,17 @@ class LHTaskWorker:
                 datetime.now(),
             )
 
-            request = RegisterTaskWorkerPb(
+            request = RegisterTaskWorkerRequest(
                 client_id=self._config.client_id(),
                 listener_name=self._config.server_listener(),
                 task_def_name=self._task.task_name(),
             )
-            reply: RegisterTaskWorkerReplyPb = await stub.RegisterTaskWorker(request)
-
-            if reply.code != LHResponseCodePb.OK:
-                self._log.error(
-                    "Error when registering task worker: %s %s",
-                    reply.code,
-                    reply.message,
+            try:
+                reply: RegisterTaskWorkerResponse = await stub.RegisterTaskWorker(
+                    request
                 )
+            except Exception as e:
+                self._log.error("Error when registering task worker: %s", str(e))
                 await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
                 continue
 

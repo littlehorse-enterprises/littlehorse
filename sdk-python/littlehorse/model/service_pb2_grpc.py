@@ -2,7 +2,17 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
+import littlehorse.model.external_event_pb2 as external__event__pb2
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
+import littlehorse.model.node_run_pb2 as node__run__pb2
+import littlehorse.model.object_id_pb2 as object__id__pb2
 import littlehorse.model.service_pb2 as service__pb2
+import littlehorse.model.task_def_pb2 as task__def__pb2
+import littlehorse.model.task_run_pb2 as task__run__pb2
+import littlehorse.model.user_tasks_pb2 as user__tasks__pb2
+import littlehorse.model.variable_pb2 as variable__pb2
+import littlehorse.model.wf_run_pb2 as wf__run__pb2
+import littlehorse.model.wf_spec_pb2 as wf__spec__pb2
 
 
 class LHPublicApiStub(object):
@@ -16,243 +26,248 @@ class LHPublicApiStub(object):
         """
         self.PutTaskDef = channel.unary_unary(
                 '/littlehorse.LHPublicApi/PutTaskDef',
-                request_serializer=service__pb2.PutTaskDefPb.SerializeToString,
-                response_deserializer=service__pb2.PutTaskDefReplyPb.FromString,
+                request_serializer=service__pb2.PutTaskDefRequest.SerializeToString,
+                response_deserializer=task__def__pb2.TaskDef.FromString,
                 )
         self.GetTaskDef = channel.unary_unary(
                 '/littlehorse.LHPublicApi/GetTaskDef',
-                request_serializer=service__pb2.TaskDefIdPb.SerializeToString,
-                response_deserializer=service__pb2.GetTaskDefReplyPb.FromString,
+                request_serializer=object__id__pb2.TaskDefId.SerializeToString,
+                response_deserializer=task__def__pb2.TaskDef.FromString,
                 )
         self.PutExternalEventDef = channel.unary_unary(
                 '/littlehorse.LHPublicApi/PutExternalEventDef',
-                request_serializer=service__pb2.PutExternalEventDefPb.SerializeToString,
-                response_deserializer=service__pb2.PutExternalEventDefReplyPb.FromString,
+                request_serializer=service__pb2.PutExternalEventDefRequest.SerializeToString,
+                response_deserializer=external__event__pb2.ExternalEventDef.FromString,
                 )
         self.GetExternalEventDef = channel.unary_unary(
                 '/littlehorse.LHPublicApi/GetExternalEventDef',
-                request_serializer=service__pb2.ExternalEventDefIdPb.SerializeToString,
-                response_deserializer=service__pb2.GetExternalEventDefReplyPb.FromString,
+                request_serializer=object__id__pb2.ExternalEventDefId.SerializeToString,
+                response_deserializer=external__event__pb2.ExternalEventDef.FromString,
                 )
         self.PutWfSpec = channel.unary_unary(
                 '/littlehorse.LHPublicApi/PutWfSpec',
-                request_serializer=service__pb2.PutWfSpecPb.SerializeToString,
-                response_deserializer=service__pb2.PutWfSpecReplyPb.FromString,
+                request_serializer=service__pb2.PutWfSpecRequest.SerializeToString,
+                response_deserializer=wf__spec__pb2.WfSpec.FromString,
                 )
         self.GetWfSpec = channel.unary_unary(
                 '/littlehorse.LHPublicApi/GetWfSpec',
-                request_serializer=service__pb2.WfSpecIdPb.SerializeToString,
-                response_deserializer=service__pb2.GetWfSpecReplyPb.FromString,
+                request_serializer=object__id__pb2.WfSpecId.SerializeToString,
+                response_deserializer=wf__spec__pb2.WfSpec.FromString,
                 )
         self.GetLatestWfSpec = channel.unary_unary(
                 '/littlehorse.LHPublicApi/GetLatestWfSpec',
-                request_serializer=service__pb2.GetLatestWfSpecPb.SerializeToString,
-                response_deserializer=service__pb2.GetWfSpecReplyPb.FromString,
+                request_serializer=object__id__pb2.GetLatestWfSpecRequest.SerializeToString,
+                response_deserializer=wf__spec__pb2.WfSpec.FromString,
                 )
         self.PutUserTaskDef = channel.unary_unary(
                 '/littlehorse.LHPublicApi/PutUserTaskDef',
-                request_serializer=service__pb2.PutUserTaskDefPb.SerializeToString,
-                response_deserializer=service__pb2.PutUserTaskDefReplyPb.FromString,
+                request_serializer=service__pb2.PutUserTaskDefRequest.SerializeToString,
+                response_deserializer=user__tasks__pb2.UserTaskDef.FromString,
                 )
         self.GetUserTaskDef = channel.unary_unary(
                 '/littlehorse.LHPublicApi/GetUserTaskDef',
-                request_serializer=service__pb2.UserTaskDefIdPb.SerializeToString,
-                response_deserializer=service__pb2.GetUserTaskDefReplyPb.FromString,
+                request_serializer=object__id__pb2.UserTaskDefId.SerializeToString,
+                response_deserializer=user__tasks__pb2.UserTaskDef.FromString,
                 )
         self.GetLatestUserTaskDef = channel.unary_unary(
                 '/littlehorse.LHPublicApi/GetLatestUserTaskDef',
-                request_serializer=service__pb2.GetLatestUserTaskDefPb.SerializeToString,
-                response_deserializer=service__pb2.GetUserTaskDefReplyPb.FromString,
-                )
-        self.GetUserTaskRun = channel.unary_unary(
-                '/littlehorse.LHPublicApi/GetUserTaskRun',
-                request_serializer=service__pb2.UserTaskRunIdPb.SerializeToString,
-                response_deserializer=service__pb2.GetUserTaskRunReplyPb.FromString,
+                request_serializer=service__pb2.GetLatestUserTaskDefRequest.SerializeToString,
+                response_deserializer=user__tasks__pb2.UserTaskDef.FromString,
                 )
         self.RunWf = channel.unary_unary(
                 '/littlehorse.LHPublicApi/RunWf',
-                request_serializer=service__pb2.RunWfPb.SerializeToString,
-                response_deserializer=service__pb2.RunWfReplyPb.FromString,
+                request_serializer=service__pb2.RunWfRequest.SerializeToString,
+                response_deserializer=wf__run__pb2.WfRun.FromString,
                 )
         self.GetWfRun = channel.unary_unary(
                 '/littlehorse.LHPublicApi/GetWfRun',
-                request_serializer=service__pb2.WfRunIdPb.SerializeToString,
-                response_deserializer=service__pb2.GetWfRunReplyPb.FromString,
+                request_serializer=object__id__pb2.WfRunId.SerializeToString,
+                response_deserializer=wf__run__pb2.WfRun.FromString,
+                )
+        self.GetUserTaskRun = channel.unary_unary(
+                '/littlehorse.LHPublicApi/GetUserTaskRun',
+                request_serializer=object__id__pb2.UserTaskRunId.SerializeToString,
+                response_deserializer=user__tasks__pb2.UserTaskRun.FromString,
                 )
         self.AssignUserTaskRun = channel.unary_unary(
                 '/littlehorse.LHPublicApi/AssignUserTaskRun',
-                request_serializer=service__pb2.AssignUserTaskRunPb.SerializeToString,
-                response_deserializer=service__pb2.AssignUserTaskRunReplyPb.FromString,
+                request_serializer=user__tasks__pb2.AssignUserTaskRunRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.CompleteUserTaskRun = channel.unary_unary(
                 '/littlehorse.LHPublicApi/CompleteUserTaskRun',
-                request_serializer=service__pb2.CompleteUserTaskRunPb.SerializeToString,
-                response_deserializer=service__pb2.CompleteUserTaskRunReplyPb.FromString,
+                request_serializer=user__tasks__pb2.CompleteUserTaskRunRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                )
+        self.CancelUserTaskRun = channel.unary_unary(
+                '/littlehorse.LHPublicApi/CancelUserTaskRun',
+                request_serializer=user__tasks__pb2.CancelUserTaskRunRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.GetNodeRun = channel.unary_unary(
                 '/littlehorse.LHPublicApi/GetNodeRun',
-                request_serializer=service__pb2.NodeRunIdPb.SerializeToString,
-                response_deserializer=service__pb2.GetNodeRunReplyPb.FromString,
+                request_serializer=object__id__pb2.NodeRunId.SerializeToString,
+                response_deserializer=node__run__pb2.NodeRun.FromString,
                 )
         self.ListNodeRuns = channel.unary_unary(
                 '/littlehorse.LHPublicApi/ListNodeRuns',
-                request_serializer=service__pb2.ListNodeRunsPb.SerializeToString,
-                response_deserializer=service__pb2.ListNodeRunsReplyPb.FromString,
+                request_serializer=service__pb2.ListNodeRunsRequest.SerializeToString,
+                response_deserializer=service__pb2.NodeRunList.FromString,
                 )
         self.GetTaskRun = channel.unary_unary(
                 '/littlehorse.LHPublicApi/GetTaskRun',
-                request_serializer=service__pb2.TaskRunIdPb.SerializeToString,
-                response_deserializer=service__pb2.GetTaskRunReplyPb.FromString,
+                request_serializer=object__id__pb2.TaskRunId.SerializeToString,
+                response_deserializer=task__run__pb2.TaskRun.FromString,
                 )
         self.GetVariable = channel.unary_unary(
                 '/littlehorse.LHPublicApi/GetVariable',
-                request_serializer=service__pb2.VariableIdPb.SerializeToString,
-                response_deserializer=service__pb2.GetVariableReplyPb.FromString,
+                request_serializer=object__id__pb2.VariableId.SerializeToString,
+                response_deserializer=variable__pb2.Variable.FromString,
                 )
         self.ListVariables = channel.unary_unary(
                 '/littlehorse.LHPublicApi/ListVariables',
-                request_serializer=service__pb2.ListVariablesPb.SerializeToString,
-                response_deserializer=service__pb2.ListVariablesReplyPb.FromString,
+                request_serializer=service__pb2.ListVariablesRequest.SerializeToString,
+                response_deserializer=service__pb2.VariableList.FromString,
                 )
         self.PutExternalEvent = channel.unary_unary(
                 '/littlehorse.LHPublicApi/PutExternalEvent',
-                request_serializer=service__pb2.PutExternalEventPb.SerializeToString,
-                response_deserializer=service__pb2.PutExternalEventReplyPb.FromString,
+                request_serializer=service__pb2.PutExternalEventRequest.SerializeToString,
+                response_deserializer=external__event__pb2.ExternalEvent.FromString,
                 )
         self.GetExternalEvent = channel.unary_unary(
                 '/littlehorse.LHPublicApi/GetExternalEvent',
-                request_serializer=service__pb2.ExternalEventIdPb.SerializeToString,
-                response_deserializer=service__pb2.GetExternalEventReplyPb.FromString,
+                request_serializer=object__id__pb2.ExternalEventId.SerializeToString,
+                response_deserializer=external__event__pb2.ExternalEvent.FromString,
                 )
         self.ListExternalEvents = channel.unary_unary(
                 '/littlehorse.LHPublicApi/ListExternalEvents',
-                request_serializer=service__pb2.ListExternalEventsPb.SerializeToString,
-                response_deserializer=service__pb2.ListExternalEventsReplyPb.FromString,
+                request_serializer=service__pb2.ListExternalEventsRequest.SerializeToString,
+                response_deserializer=service__pb2.ExternalEventList.FromString,
                 )
         self.SearchWfRun = channel.unary_unary(
                 '/littlehorse.LHPublicApi/SearchWfRun',
-                request_serializer=service__pb2.SearchWfRunPb.SerializeToString,
-                response_deserializer=service__pb2.SearchWfRunReplyPb.FromString,
+                request_serializer=service__pb2.SearchWfRunRequest.SerializeToString,
+                response_deserializer=service__pb2.WfRunIdList.FromString,
                 )
         self.SearchNodeRun = channel.unary_unary(
                 '/littlehorse.LHPublicApi/SearchNodeRun',
-                request_serializer=service__pb2.SearchNodeRunPb.SerializeToString,
-                response_deserializer=service__pb2.SearchNodeRunReplyPb.FromString,
+                request_serializer=service__pb2.SearchNodeRunRequest.SerializeToString,
+                response_deserializer=service__pb2.NodeRunIdList.FromString,
                 )
         self.SearchTaskRun = channel.unary_unary(
                 '/littlehorse.LHPublicApi/SearchTaskRun',
-                request_serializer=service__pb2.SearchTaskRunPb.SerializeToString,
-                response_deserializer=service__pb2.SearchTaskRunReplyPb.FromString,
+                request_serializer=service__pb2.SearchTaskRunRequest.SerializeToString,
+                response_deserializer=service__pb2.TaskRunIdList.FromString,
                 )
         self.SearchUserTaskRun = channel.unary_unary(
                 '/littlehorse.LHPublicApi/SearchUserTaskRun',
-                request_serializer=service__pb2.SearchUserTaskRunPb.SerializeToString,
-                response_deserializer=service__pb2.SearchUserTaskRunReplyPb.FromString,
+                request_serializer=service__pb2.SearchUserTaskRunRequest.SerializeToString,
+                response_deserializer=service__pb2.UserTaskRunIdList.FromString,
                 )
         self.SearchVariable = channel.unary_unary(
                 '/littlehorse.LHPublicApi/SearchVariable',
-                request_serializer=service__pb2.SearchVariablePb.SerializeToString,
-                response_deserializer=service__pb2.SearchVariableReplyPb.FromString,
-                )
-        self.SearchTaskDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/SearchTaskDef',
-                request_serializer=service__pb2.SearchTaskDefPb.SerializeToString,
-                response_deserializer=service__pb2.SearchTaskDefReplyPb.FromString,
-                )
-        self.SearchUserTaskDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/SearchUserTaskDef',
-                request_serializer=service__pb2.SearchUserTaskDefPb.SerializeToString,
-                response_deserializer=service__pb2.SearchUserTaskDefReplyPb.FromString,
-                )
-        self.SearchWfSpec = channel.unary_unary(
-                '/littlehorse.LHPublicApi/SearchWfSpec',
-                request_serializer=service__pb2.SearchWfSpecPb.SerializeToString,
-                response_deserializer=service__pb2.SearchWfSpecReplyPb.FromString,
-                )
-        self.SearchExternalEventDef = channel.unary_unary(
-                '/littlehorse.LHPublicApi/SearchExternalEventDef',
-                request_serializer=service__pb2.SearchExternalEventDefPb.SerializeToString,
-                response_deserializer=service__pb2.SearchExternalEventDefReplyPb.FromString,
+                request_serializer=service__pb2.SearchVariableRequest.SerializeToString,
+                response_deserializer=service__pb2.VariableIdList.FromString,
                 )
         self.SearchExternalEvent = channel.unary_unary(
                 '/littlehorse.LHPublicApi/SearchExternalEvent',
-                request_serializer=service__pb2.SearchExternalEventPb.SerializeToString,
-                response_deserializer=service__pb2.SearchExternalEventReplyPb.FromString,
+                request_serializer=service__pb2.SearchExternalEventRequest.SerializeToString,
+                response_deserializer=service__pb2.ExternalEventIdList.FromString,
+                )
+        self.SearchTaskDef = channel.unary_unary(
+                '/littlehorse.LHPublicApi/SearchTaskDef',
+                request_serializer=service__pb2.SearchTaskDefRequest.SerializeToString,
+                response_deserializer=service__pb2.TaskDefIdList.FromString,
+                )
+        self.SearchUserTaskDef = channel.unary_unary(
+                '/littlehorse.LHPublicApi/SearchUserTaskDef',
+                request_serializer=service__pb2.SearchUserTaskDefRequest.SerializeToString,
+                response_deserializer=service__pb2.UserTaskDefIdList.FromString,
+                )
+        self.SearchWfSpec = channel.unary_unary(
+                '/littlehorse.LHPublicApi/SearchWfSpec',
+                request_serializer=service__pb2.SearchWfSpecRequest.SerializeToString,
+                response_deserializer=service__pb2.WfSpecIdList.FromString,
+                )
+        self.SearchExternalEventDef = channel.unary_unary(
+                '/littlehorse.LHPublicApi/SearchExternalEventDef',
+                request_serializer=service__pb2.SearchExternalEventDefRequest.SerializeToString,
+                response_deserializer=service__pb2.ExternalEventDefIdList.FromString,
                 )
         self.RegisterTaskWorker = channel.unary_unary(
                 '/littlehorse.LHPublicApi/RegisterTaskWorker',
-                request_serializer=service__pb2.RegisterTaskWorkerPb.SerializeToString,
-                response_deserializer=service__pb2.RegisterTaskWorkerReplyPb.FromString,
+                request_serializer=service__pb2.RegisterTaskWorkerRequest.SerializeToString,
+                response_deserializer=service__pb2.RegisterTaskWorkerResponse.FromString,
                 )
         self.PollTask = channel.stream_stream(
                 '/littlehorse.LHPublicApi/PollTask',
-                request_serializer=service__pb2.PollTaskPb.SerializeToString,
-                response_deserializer=service__pb2.PollTaskReplyPb.FromString,
+                request_serializer=service__pb2.PollTaskRequest.SerializeToString,
+                response_deserializer=service__pb2.PollTaskResponse.FromString,
                 )
         self.ReportTask = channel.unary_unary(
                 '/littlehorse.LHPublicApi/ReportTask',
-                request_serializer=service__pb2.ReportTaskRunPb.SerializeToString,
-                response_deserializer=service__pb2.ReportTaskReplyPb.FromString,
+                request_serializer=service__pb2.ReportTaskRun.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.StopWfRun = channel.unary_unary(
                 '/littlehorse.LHPublicApi/StopWfRun',
-                request_serializer=service__pb2.StopWfRunPb.SerializeToString,
-                response_deserializer=service__pb2.StopWfRunReplyPb.FromString,
+                request_serializer=service__pb2.StopWfRunRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.ResumeWfRun = channel.unary_unary(
                 '/littlehorse.LHPublicApi/ResumeWfRun',
-                request_serializer=service__pb2.ResumeWfRunPb.SerializeToString,
-                response_deserializer=service__pb2.ResumeWfRunReplyPb.FromString,
+                request_serializer=service__pb2.ResumeWfRunRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.DeleteWfRun = channel.unary_unary(
                 '/littlehorse.LHPublicApi/DeleteWfRun',
-                request_serializer=service__pb2.DeleteWfRunPb.SerializeToString,
-                response_deserializer=service__pb2.DeleteObjectReplyPb.FromString,
+                request_serializer=service__pb2.DeleteWfRunRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.DeleteTaskDef = channel.unary_unary(
                 '/littlehorse.LHPublicApi/DeleteTaskDef',
-                request_serializer=service__pb2.DeleteTaskDefPb.SerializeToString,
-                response_deserializer=service__pb2.DeleteObjectReplyPb.FromString,
+                request_serializer=service__pb2.DeleteTaskDefRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.DeleteWfSpec = channel.unary_unary(
                 '/littlehorse.LHPublicApi/DeleteWfSpec',
-                request_serializer=service__pb2.DeleteWfSpecPb.SerializeToString,
-                response_deserializer=service__pb2.DeleteObjectReplyPb.FromString,
+                request_serializer=service__pb2.DeleteWfSpecRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.DeleteUserTaskDef = channel.unary_unary(
                 '/littlehorse.LHPublicApi/DeleteUserTaskDef',
-                request_serializer=service__pb2.DeleteUserTaskDefPb.SerializeToString,
-                response_deserializer=service__pb2.DeleteObjectReplyPb.FromString,
+                request_serializer=service__pb2.DeleteUserTaskDefRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.DeleteExternalEventDef = channel.unary_unary(
                 '/littlehorse.LHPublicApi/DeleteExternalEventDef',
-                request_serializer=service__pb2.DeleteExternalEventDefPb.SerializeToString,
-                response_deserializer=service__pb2.DeleteObjectReplyPb.FromString,
+                request_serializer=service__pb2.DeleteExternalEventDefRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.HealthCheck = channel.unary_unary(
                 '/littlehorse.LHPublicApi/HealthCheck',
-                request_serializer=service__pb2.HealthCheckPb.SerializeToString,
-                response_deserializer=service__pb2.HealthCheckReplyPb.FromString,
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                response_deserializer=service__pb2.HealthCheckResponse.FromString,
                 )
-        self.TaskDefMetrics = channel.unary_unary(
-                '/littlehorse.LHPublicApi/TaskDefMetrics',
-                request_serializer=service__pb2.TaskDefMetricsQueryPb.SerializeToString,
-                response_deserializer=service__pb2.TaskDefMetricsReplyPb.FromString,
+        self.GetTaskDefMetricsWindow = channel.unary_unary(
+                '/littlehorse.LHPublicApi/GetTaskDefMetricsWindow',
+                request_serializer=service__pb2.TaskDefMetricsQueryRequest.SerializeToString,
+                response_deserializer=service__pb2.TaskDefMetrics.FromString,
                 )
-        self.WfSpecMetrics = channel.unary_unary(
-                '/littlehorse.LHPublicApi/WfSpecMetrics',
-                request_serializer=service__pb2.WfSpecMetricsQueryPb.SerializeToString,
-                response_deserializer=service__pb2.WfSpecMetricsReplyPb.FromString,
+        self.GetWfSpecMetricsWindow = channel.unary_unary(
+                '/littlehorse.LHPublicApi/GetWfSpecMetricsWindow',
+                request_serializer=service__pb2.WfSpecMetricsQueryRequest.SerializeToString,
+                response_deserializer=service__pb2.WfSpecMetrics.FromString,
                 )
         self.ListTaskDefMetrics = channel.unary_unary(
                 '/littlehorse.LHPublicApi/ListTaskDefMetrics',
-                request_serializer=service__pb2.ListTaskMetricsPb.SerializeToString,
-                response_deserializer=service__pb2.ListTaskMetricsReplyPb.FromString,
+                request_serializer=service__pb2.ListTaskMetricsRequest.SerializeToString,
+                response_deserializer=service__pb2.ListTaskMetricsResponse.FromString,
                 )
         self.ListWfSpecMetrics = channel.unary_unary(
                 '/littlehorse.LHPublicApi/ListWfSpecMetrics',
-                request_serializer=service__pb2.ListWfMetricsPb.SerializeToString,
-                response_deserializer=service__pb2.ListWfMetricsReplyPb.FromString,
+                request_serializer=service__pb2.ListWfMetricsRequest.SerializeToString,
+                response_deserializer=service__pb2.ListWfMetricsResponse.FromString,
                 )
 
 
@@ -319,12 +334,6 @@ class LHPublicApiServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def GetUserTaskRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def RunWf(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -337,6 +346,12 @@ class LHPublicApiServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetUserTaskRun(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def AssignUserTaskRun(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -344,6 +359,12 @@ class LHPublicApiServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def CompleteUserTaskRun(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CancelUserTaskRun(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -427,6 +448,12 @@ class LHPublicApiServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SearchExternalEvent(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def SearchTaskDef(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -446,12 +473,6 @@ class LHPublicApiServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def SearchExternalEventDef(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def SearchExternalEvent(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -523,13 +544,13 @@ class LHPublicApiServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def TaskDefMetrics(self, request, context):
+    def GetTaskDefMetricsWindow(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def WfSpecMetrics(self, request, context):
+    def GetWfSpecMetricsWindow(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -552,243 +573,248 @@ def add_LHPublicApiServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'PutTaskDef': grpc.unary_unary_rpc_method_handler(
                     servicer.PutTaskDef,
-                    request_deserializer=service__pb2.PutTaskDefPb.FromString,
-                    response_serializer=service__pb2.PutTaskDefReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.PutTaskDefRequest.FromString,
+                    response_serializer=task__def__pb2.TaskDef.SerializeToString,
             ),
             'GetTaskDef': grpc.unary_unary_rpc_method_handler(
                     servicer.GetTaskDef,
-                    request_deserializer=service__pb2.TaskDefIdPb.FromString,
-                    response_serializer=service__pb2.GetTaskDefReplyPb.SerializeToString,
+                    request_deserializer=object__id__pb2.TaskDefId.FromString,
+                    response_serializer=task__def__pb2.TaskDef.SerializeToString,
             ),
             'PutExternalEventDef': grpc.unary_unary_rpc_method_handler(
                     servicer.PutExternalEventDef,
-                    request_deserializer=service__pb2.PutExternalEventDefPb.FromString,
-                    response_serializer=service__pb2.PutExternalEventDefReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.PutExternalEventDefRequest.FromString,
+                    response_serializer=external__event__pb2.ExternalEventDef.SerializeToString,
             ),
             'GetExternalEventDef': grpc.unary_unary_rpc_method_handler(
                     servicer.GetExternalEventDef,
-                    request_deserializer=service__pb2.ExternalEventDefIdPb.FromString,
-                    response_serializer=service__pb2.GetExternalEventDefReplyPb.SerializeToString,
+                    request_deserializer=object__id__pb2.ExternalEventDefId.FromString,
+                    response_serializer=external__event__pb2.ExternalEventDef.SerializeToString,
             ),
             'PutWfSpec': grpc.unary_unary_rpc_method_handler(
                     servicer.PutWfSpec,
-                    request_deserializer=service__pb2.PutWfSpecPb.FromString,
-                    response_serializer=service__pb2.PutWfSpecReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.PutWfSpecRequest.FromString,
+                    response_serializer=wf__spec__pb2.WfSpec.SerializeToString,
             ),
             'GetWfSpec': grpc.unary_unary_rpc_method_handler(
                     servicer.GetWfSpec,
-                    request_deserializer=service__pb2.WfSpecIdPb.FromString,
-                    response_serializer=service__pb2.GetWfSpecReplyPb.SerializeToString,
+                    request_deserializer=object__id__pb2.WfSpecId.FromString,
+                    response_serializer=wf__spec__pb2.WfSpec.SerializeToString,
             ),
             'GetLatestWfSpec': grpc.unary_unary_rpc_method_handler(
                     servicer.GetLatestWfSpec,
-                    request_deserializer=service__pb2.GetLatestWfSpecPb.FromString,
-                    response_serializer=service__pb2.GetWfSpecReplyPb.SerializeToString,
+                    request_deserializer=object__id__pb2.GetLatestWfSpecRequest.FromString,
+                    response_serializer=wf__spec__pb2.WfSpec.SerializeToString,
             ),
             'PutUserTaskDef': grpc.unary_unary_rpc_method_handler(
                     servicer.PutUserTaskDef,
-                    request_deserializer=service__pb2.PutUserTaskDefPb.FromString,
-                    response_serializer=service__pb2.PutUserTaskDefReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.PutUserTaskDefRequest.FromString,
+                    response_serializer=user__tasks__pb2.UserTaskDef.SerializeToString,
             ),
             'GetUserTaskDef': grpc.unary_unary_rpc_method_handler(
                     servicer.GetUserTaskDef,
-                    request_deserializer=service__pb2.UserTaskDefIdPb.FromString,
-                    response_serializer=service__pb2.GetUserTaskDefReplyPb.SerializeToString,
+                    request_deserializer=object__id__pb2.UserTaskDefId.FromString,
+                    response_serializer=user__tasks__pb2.UserTaskDef.SerializeToString,
             ),
             'GetLatestUserTaskDef': grpc.unary_unary_rpc_method_handler(
                     servicer.GetLatestUserTaskDef,
-                    request_deserializer=service__pb2.GetLatestUserTaskDefPb.FromString,
-                    response_serializer=service__pb2.GetUserTaskDefReplyPb.SerializeToString,
-            ),
-            'GetUserTaskRun': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetUserTaskRun,
-                    request_deserializer=service__pb2.UserTaskRunIdPb.FromString,
-                    response_serializer=service__pb2.GetUserTaskRunReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.GetLatestUserTaskDefRequest.FromString,
+                    response_serializer=user__tasks__pb2.UserTaskDef.SerializeToString,
             ),
             'RunWf': grpc.unary_unary_rpc_method_handler(
                     servicer.RunWf,
-                    request_deserializer=service__pb2.RunWfPb.FromString,
-                    response_serializer=service__pb2.RunWfReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.RunWfRequest.FromString,
+                    response_serializer=wf__run__pb2.WfRun.SerializeToString,
             ),
             'GetWfRun': grpc.unary_unary_rpc_method_handler(
                     servicer.GetWfRun,
-                    request_deserializer=service__pb2.WfRunIdPb.FromString,
-                    response_serializer=service__pb2.GetWfRunReplyPb.SerializeToString,
+                    request_deserializer=object__id__pb2.WfRunId.FromString,
+                    response_serializer=wf__run__pb2.WfRun.SerializeToString,
+            ),
+            'GetUserTaskRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetUserTaskRun,
+                    request_deserializer=object__id__pb2.UserTaskRunId.FromString,
+                    response_serializer=user__tasks__pb2.UserTaskRun.SerializeToString,
             ),
             'AssignUserTaskRun': grpc.unary_unary_rpc_method_handler(
                     servicer.AssignUserTaskRun,
-                    request_deserializer=service__pb2.AssignUserTaskRunPb.FromString,
-                    response_serializer=service__pb2.AssignUserTaskRunReplyPb.SerializeToString,
+                    request_deserializer=user__tasks__pb2.AssignUserTaskRunRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'CompleteUserTaskRun': grpc.unary_unary_rpc_method_handler(
                     servicer.CompleteUserTaskRun,
-                    request_deserializer=service__pb2.CompleteUserTaskRunPb.FromString,
-                    response_serializer=service__pb2.CompleteUserTaskRunReplyPb.SerializeToString,
+                    request_deserializer=user__tasks__pb2.CompleteUserTaskRunRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'CancelUserTaskRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.CancelUserTaskRun,
+                    request_deserializer=user__tasks__pb2.CancelUserTaskRunRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'GetNodeRun': grpc.unary_unary_rpc_method_handler(
                     servicer.GetNodeRun,
-                    request_deserializer=service__pb2.NodeRunIdPb.FromString,
-                    response_serializer=service__pb2.GetNodeRunReplyPb.SerializeToString,
+                    request_deserializer=object__id__pb2.NodeRunId.FromString,
+                    response_serializer=node__run__pb2.NodeRun.SerializeToString,
             ),
             'ListNodeRuns': grpc.unary_unary_rpc_method_handler(
                     servicer.ListNodeRuns,
-                    request_deserializer=service__pb2.ListNodeRunsPb.FromString,
-                    response_serializer=service__pb2.ListNodeRunsReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.ListNodeRunsRequest.FromString,
+                    response_serializer=service__pb2.NodeRunList.SerializeToString,
             ),
             'GetTaskRun': grpc.unary_unary_rpc_method_handler(
                     servicer.GetTaskRun,
-                    request_deserializer=service__pb2.TaskRunIdPb.FromString,
-                    response_serializer=service__pb2.GetTaskRunReplyPb.SerializeToString,
+                    request_deserializer=object__id__pb2.TaskRunId.FromString,
+                    response_serializer=task__run__pb2.TaskRun.SerializeToString,
             ),
             'GetVariable': grpc.unary_unary_rpc_method_handler(
                     servicer.GetVariable,
-                    request_deserializer=service__pb2.VariableIdPb.FromString,
-                    response_serializer=service__pb2.GetVariableReplyPb.SerializeToString,
+                    request_deserializer=object__id__pb2.VariableId.FromString,
+                    response_serializer=variable__pb2.Variable.SerializeToString,
             ),
             'ListVariables': grpc.unary_unary_rpc_method_handler(
                     servicer.ListVariables,
-                    request_deserializer=service__pb2.ListVariablesPb.FromString,
-                    response_serializer=service__pb2.ListVariablesReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.ListVariablesRequest.FromString,
+                    response_serializer=service__pb2.VariableList.SerializeToString,
             ),
             'PutExternalEvent': grpc.unary_unary_rpc_method_handler(
                     servicer.PutExternalEvent,
-                    request_deserializer=service__pb2.PutExternalEventPb.FromString,
-                    response_serializer=service__pb2.PutExternalEventReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.PutExternalEventRequest.FromString,
+                    response_serializer=external__event__pb2.ExternalEvent.SerializeToString,
             ),
             'GetExternalEvent': grpc.unary_unary_rpc_method_handler(
                     servicer.GetExternalEvent,
-                    request_deserializer=service__pb2.ExternalEventIdPb.FromString,
-                    response_serializer=service__pb2.GetExternalEventReplyPb.SerializeToString,
+                    request_deserializer=object__id__pb2.ExternalEventId.FromString,
+                    response_serializer=external__event__pb2.ExternalEvent.SerializeToString,
             ),
             'ListExternalEvents': grpc.unary_unary_rpc_method_handler(
                     servicer.ListExternalEvents,
-                    request_deserializer=service__pb2.ListExternalEventsPb.FromString,
-                    response_serializer=service__pb2.ListExternalEventsReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.ListExternalEventsRequest.FromString,
+                    response_serializer=service__pb2.ExternalEventList.SerializeToString,
             ),
             'SearchWfRun': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchWfRun,
-                    request_deserializer=service__pb2.SearchWfRunPb.FromString,
-                    response_serializer=service__pb2.SearchWfRunReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.SearchWfRunRequest.FromString,
+                    response_serializer=service__pb2.WfRunIdList.SerializeToString,
             ),
             'SearchNodeRun': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchNodeRun,
-                    request_deserializer=service__pb2.SearchNodeRunPb.FromString,
-                    response_serializer=service__pb2.SearchNodeRunReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.SearchNodeRunRequest.FromString,
+                    response_serializer=service__pb2.NodeRunIdList.SerializeToString,
             ),
             'SearchTaskRun': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchTaskRun,
-                    request_deserializer=service__pb2.SearchTaskRunPb.FromString,
-                    response_serializer=service__pb2.SearchTaskRunReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.SearchTaskRunRequest.FromString,
+                    response_serializer=service__pb2.TaskRunIdList.SerializeToString,
             ),
             'SearchUserTaskRun': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchUserTaskRun,
-                    request_deserializer=service__pb2.SearchUserTaskRunPb.FromString,
-                    response_serializer=service__pb2.SearchUserTaskRunReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.SearchUserTaskRunRequest.FromString,
+                    response_serializer=service__pb2.UserTaskRunIdList.SerializeToString,
             ),
             'SearchVariable': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchVariable,
-                    request_deserializer=service__pb2.SearchVariablePb.FromString,
-                    response_serializer=service__pb2.SearchVariableReplyPb.SerializeToString,
-            ),
-            'SearchTaskDef': grpc.unary_unary_rpc_method_handler(
-                    servicer.SearchTaskDef,
-                    request_deserializer=service__pb2.SearchTaskDefPb.FromString,
-                    response_serializer=service__pb2.SearchTaskDefReplyPb.SerializeToString,
-            ),
-            'SearchUserTaskDef': grpc.unary_unary_rpc_method_handler(
-                    servicer.SearchUserTaskDef,
-                    request_deserializer=service__pb2.SearchUserTaskDefPb.FromString,
-                    response_serializer=service__pb2.SearchUserTaskDefReplyPb.SerializeToString,
-            ),
-            'SearchWfSpec': grpc.unary_unary_rpc_method_handler(
-                    servicer.SearchWfSpec,
-                    request_deserializer=service__pb2.SearchWfSpecPb.FromString,
-                    response_serializer=service__pb2.SearchWfSpecReplyPb.SerializeToString,
-            ),
-            'SearchExternalEventDef': grpc.unary_unary_rpc_method_handler(
-                    servicer.SearchExternalEventDef,
-                    request_deserializer=service__pb2.SearchExternalEventDefPb.FromString,
-                    response_serializer=service__pb2.SearchExternalEventDefReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.SearchVariableRequest.FromString,
+                    response_serializer=service__pb2.VariableIdList.SerializeToString,
             ),
             'SearchExternalEvent': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchExternalEvent,
-                    request_deserializer=service__pb2.SearchExternalEventPb.FromString,
-                    response_serializer=service__pb2.SearchExternalEventReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.SearchExternalEventRequest.FromString,
+                    response_serializer=service__pb2.ExternalEventIdList.SerializeToString,
+            ),
+            'SearchTaskDef': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchTaskDef,
+                    request_deserializer=service__pb2.SearchTaskDefRequest.FromString,
+                    response_serializer=service__pb2.TaskDefIdList.SerializeToString,
+            ),
+            'SearchUserTaskDef': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchUserTaskDef,
+                    request_deserializer=service__pb2.SearchUserTaskDefRequest.FromString,
+                    response_serializer=service__pb2.UserTaskDefIdList.SerializeToString,
+            ),
+            'SearchWfSpec': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchWfSpec,
+                    request_deserializer=service__pb2.SearchWfSpecRequest.FromString,
+                    response_serializer=service__pb2.WfSpecIdList.SerializeToString,
+            ),
+            'SearchExternalEventDef': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchExternalEventDef,
+                    request_deserializer=service__pb2.SearchExternalEventDefRequest.FromString,
+                    response_serializer=service__pb2.ExternalEventDefIdList.SerializeToString,
             ),
             'RegisterTaskWorker': grpc.unary_unary_rpc_method_handler(
                     servicer.RegisterTaskWorker,
-                    request_deserializer=service__pb2.RegisterTaskWorkerPb.FromString,
-                    response_serializer=service__pb2.RegisterTaskWorkerReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.RegisterTaskWorkerRequest.FromString,
+                    response_serializer=service__pb2.RegisterTaskWorkerResponse.SerializeToString,
             ),
             'PollTask': grpc.stream_stream_rpc_method_handler(
                     servicer.PollTask,
-                    request_deserializer=service__pb2.PollTaskPb.FromString,
-                    response_serializer=service__pb2.PollTaskReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.PollTaskRequest.FromString,
+                    response_serializer=service__pb2.PollTaskResponse.SerializeToString,
             ),
             'ReportTask': grpc.unary_unary_rpc_method_handler(
                     servicer.ReportTask,
-                    request_deserializer=service__pb2.ReportTaskRunPb.FromString,
-                    response_serializer=service__pb2.ReportTaskReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.ReportTaskRun.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'StopWfRun': grpc.unary_unary_rpc_method_handler(
                     servicer.StopWfRun,
-                    request_deserializer=service__pb2.StopWfRunPb.FromString,
-                    response_serializer=service__pb2.StopWfRunReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.StopWfRunRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'ResumeWfRun': grpc.unary_unary_rpc_method_handler(
                     servicer.ResumeWfRun,
-                    request_deserializer=service__pb2.ResumeWfRunPb.FromString,
-                    response_serializer=service__pb2.ResumeWfRunReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.ResumeWfRunRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'DeleteWfRun': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteWfRun,
-                    request_deserializer=service__pb2.DeleteWfRunPb.FromString,
-                    response_serializer=service__pb2.DeleteObjectReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.DeleteWfRunRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'DeleteTaskDef': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteTaskDef,
-                    request_deserializer=service__pb2.DeleteTaskDefPb.FromString,
-                    response_serializer=service__pb2.DeleteObjectReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.DeleteTaskDefRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'DeleteWfSpec': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteWfSpec,
-                    request_deserializer=service__pb2.DeleteWfSpecPb.FromString,
-                    response_serializer=service__pb2.DeleteObjectReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.DeleteWfSpecRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'DeleteUserTaskDef': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteUserTaskDef,
-                    request_deserializer=service__pb2.DeleteUserTaskDefPb.FromString,
-                    response_serializer=service__pb2.DeleteObjectReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.DeleteUserTaskDefRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'DeleteExternalEventDef': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteExternalEventDef,
-                    request_deserializer=service__pb2.DeleteExternalEventDefPb.FromString,
-                    response_serializer=service__pb2.DeleteObjectReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.DeleteExternalEventDefRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'HealthCheck': grpc.unary_unary_rpc_method_handler(
                     servicer.HealthCheck,
-                    request_deserializer=service__pb2.HealthCheckPb.FromString,
-                    response_serializer=service__pb2.HealthCheckReplyPb.SerializeToString,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    response_serializer=service__pb2.HealthCheckResponse.SerializeToString,
             ),
-            'TaskDefMetrics': grpc.unary_unary_rpc_method_handler(
-                    servicer.TaskDefMetrics,
-                    request_deserializer=service__pb2.TaskDefMetricsQueryPb.FromString,
-                    response_serializer=service__pb2.TaskDefMetricsReplyPb.SerializeToString,
+            'GetTaskDefMetricsWindow': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetTaskDefMetricsWindow,
+                    request_deserializer=service__pb2.TaskDefMetricsQueryRequest.FromString,
+                    response_serializer=service__pb2.TaskDefMetrics.SerializeToString,
             ),
-            'WfSpecMetrics': grpc.unary_unary_rpc_method_handler(
-                    servicer.WfSpecMetrics,
-                    request_deserializer=service__pb2.WfSpecMetricsQueryPb.FromString,
-                    response_serializer=service__pb2.WfSpecMetricsReplyPb.SerializeToString,
+            'GetWfSpecMetricsWindow': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetWfSpecMetricsWindow,
+                    request_deserializer=service__pb2.WfSpecMetricsQueryRequest.FromString,
+                    response_serializer=service__pb2.WfSpecMetrics.SerializeToString,
             ),
             'ListTaskDefMetrics': grpc.unary_unary_rpc_method_handler(
                     servicer.ListTaskDefMetrics,
-                    request_deserializer=service__pb2.ListTaskMetricsPb.FromString,
-                    response_serializer=service__pb2.ListTaskMetricsReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.ListTaskMetricsRequest.FromString,
+                    response_serializer=service__pb2.ListTaskMetricsResponse.SerializeToString,
             ),
             'ListWfSpecMetrics': grpc.unary_unary_rpc_method_handler(
                     servicer.ListWfSpecMetrics,
-                    request_deserializer=service__pb2.ListWfMetricsPb.FromString,
-                    response_serializer=service__pb2.ListWfMetricsReplyPb.SerializeToString,
+                    request_deserializer=service__pb2.ListWfMetricsRequest.FromString,
+                    response_serializer=service__pb2.ListWfMetricsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -812,8 +838,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutTaskDef',
-            service__pb2.PutTaskDefPb.SerializeToString,
-            service__pb2.PutTaskDefReplyPb.FromString,
+            service__pb2.PutTaskDefRequest.SerializeToString,
+            task__def__pb2.TaskDef.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -829,8 +855,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetTaskDef',
-            service__pb2.TaskDefIdPb.SerializeToString,
-            service__pb2.GetTaskDefReplyPb.FromString,
+            object__id__pb2.TaskDefId.SerializeToString,
+            task__def__pb2.TaskDef.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -846,8 +872,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutExternalEventDef',
-            service__pb2.PutExternalEventDefPb.SerializeToString,
-            service__pb2.PutExternalEventDefReplyPb.FromString,
+            service__pb2.PutExternalEventDefRequest.SerializeToString,
+            external__event__pb2.ExternalEventDef.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -863,8 +889,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetExternalEventDef',
-            service__pb2.ExternalEventDefIdPb.SerializeToString,
-            service__pb2.GetExternalEventDefReplyPb.FromString,
+            object__id__pb2.ExternalEventDefId.SerializeToString,
+            external__event__pb2.ExternalEventDef.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -880,8 +906,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutWfSpec',
-            service__pb2.PutWfSpecPb.SerializeToString,
-            service__pb2.PutWfSpecReplyPb.FromString,
+            service__pb2.PutWfSpecRequest.SerializeToString,
+            wf__spec__pb2.WfSpec.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -897,8 +923,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetWfSpec',
-            service__pb2.WfSpecIdPb.SerializeToString,
-            service__pb2.GetWfSpecReplyPb.FromString,
+            object__id__pb2.WfSpecId.SerializeToString,
+            wf__spec__pb2.WfSpec.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -914,8 +940,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetLatestWfSpec',
-            service__pb2.GetLatestWfSpecPb.SerializeToString,
-            service__pb2.GetWfSpecReplyPb.FromString,
+            object__id__pb2.GetLatestWfSpecRequest.SerializeToString,
+            wf__spec__pb2.WfSpec.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -931,8 +957,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutUserTaskDef',
-            service__pb2.PutUserTaskDefPb.SerializeToString,
-            service__pb2.PutUserTaskDefReplyPb.FromString,
+            service__pb2.PutUserTaskDefRequest.SerializeToString,
+            user__tasks__pb2.UserTaskDef.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -948,8 +974,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetUserTaskDef',
-            service__pb2.UserTaskDefIdPb.SerializeToString,
-            service__pb2.GetUserTaskDefReplyPb.FromString,
+            object__id__pb2.UserTaskDefId.SerializeToString,
+            user__tasks__pb2.UserTaskDef.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -965,25 +991,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetLatestUserTaskDef',
-            service__pb2.GetLatestUserTaskDefPb.SerializeToString,
-            service__pb2.GetUserTaskDefReplyPb.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def GetUserTaskRun(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetUserTaskRun',
-            service__pb2.UserTaskRunIdPb.SerializeToString,
-            service__pb2.GetUserTaskRunReplyPb.FromString,
+            service__pb2.GetLatestUserTaskDefRequest.SerializeToString,
+            user__tasks__pb2.UserTaskDef.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -999,8 +1008,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/RunWf',
-            service__pb2.RunWfPb.SerializeToString,
-            service__pb2.RunWfReplyPb.FromString,
+            service__pb2.RunWfRequest.SerializeToString,
+            wf__run__pb2.WfRun.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1016,8 +1025,25 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetWfRun',
-            service__pb2.WfRunIdPb.SerializeToString,
-            service__pb2.GetWfRunReplyPb.FromString,
+            object__id__pb2.WfRunId.SerializeToString,
+            wf__run__pb2.WfRun.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetUserTaskRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetUserTaskRun',
+            object__id__pb2.UserTaskRunId.SerializeToString,
+            user__tasks__pb2.UserTaskRun.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1033,8 +1059,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/AssignUserTaskRun',
-            service__pb2.AssignUserTaskRunPb.SerializeToString,
-            service__pb2.AssignUserTaskRunReplyPb.FromString,
+            user__tasks__pb2.AssignUserTaskRunRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1050,8 +1076,25 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/CompleteUserTaskRun',
-            service__pb2.CompleteUserTaskRunPb.SerializeToString,
-            service__pb2.CompleteUserTaskRunReplyPb.FromString,
+            user__tasks__pb2.CompleteUserTaskRunRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def CancelUserTaskRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/CancelUserTaskRun',
+            user__tasks__pb2.CancelUserTaskRunRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1067,8 +1110,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetNodeRun',
-            service__pb2.NodeRunIdPb.SerializeToString,
-            service__pb2.GetNodeRunReplyPb.FromString,
+            object__id__pb2.NodeRunId.SerializeToString,
+            node__run__pb2.NodeRun.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1084,8 +1127,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ListNodeRuns',
-            service__pb2.ListNodeRunsPb.SerializeToString,
-            service__pb2.ListNodeRunsReplyPb.FromString,
+            service__pb2.ListNodeRunsRequest.SerializeToString,
+            service__pb2.NodeRunList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1101,8 +1144,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetTaskRun',
-            service__pb2.TaskRunIdPb.SerializeToString,
-            service__pb2.GetTaskRunReplyPb.FromString,
+            object__id__pb2.TaskRunId.SerializeToString,
+            task__run__pb2.TaskRun.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1118,8 +1161,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetVariable',
-            service__pb2.VariableIdPb.SerializeToString,
-            service__pb2.GetVariableReplyPb.FromString,
+            object__id__pb2.VariableId.SerializeToString,
+            variable__pb2.Variable.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1135,8 +1178,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ListVariables',
-            service__pb2.ListVariablesPb.SerializeToString,
-            service__pb2.ListVariablesReplyPb.FromString,
+            service__pb2.ListVariablesRequest.SerializeToString,
+            service__pb2.VariableList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1152,8 +1195,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutExternalEvent',
-            service__pb2.PutExternalEventPb.SerializeToString,
-            service__pb2.PutExternalEventReplyPb.FromString,
+            service__pb2.PutExternalEventRequest.SerializeToString,
+            external__event__pb2.ExternalEvent.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1169,8 +1212,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetExternalEvent',
-            service__pb2.ExternalEventIdPb.SerializeToString,
-            service__pb2.GetExternalEventReplyPb.FromString,
+            object__id__pb2.ExternalEventId.SerializeToString,
+            external__event__pb2.ExternalEvent.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1186,8 +1229,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ListExternalEvents',
-            service__pb2.ListExternalEventsPb.SerializeToString,
-            service__pb2.ListExternalEventsReplyPb.FromString,
+            service__pb2.ListExternalEventsRequest.SerializeToString,
+            service__pb2.ExternalEventList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1203,8 +1246,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchWfRun',
-            service__pb2.SearchWfRunPb.SerializeToString,
-            service__pb2.SearchWfRunReplyPb.FromString,
+            service__pb2.SearchWfRunRequest.SerializeToString,
+            service__pb2.WfRunIdList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1220,8 +1263,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchNodeRun',
-            service__pb2.SearchNodeRunPb.SerializeToString,
-            service__pb2.SearchNodeRunReplyPb.FromString,
+            service__pb2.SearchNodeRunRequest.SerializeToString,
+            service__pb2.NodeRunIdList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1237,8 +1280,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchTaskRun',
-            service__pb2.SearchTaskRunPb.SerializeToString,
-            service__pb2.SearchTaskRunReplyPb.FromString,
+            service__pb2.SearchTaskRunRequest.SerializeToString,
+            service__pb2.TaskRunIdList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1254,8 +1297,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchUserTaskRun',
-            service__pb2.SearchUserTaskRunPb.SerializeToString,
-            service__pb2.SearchUserTaskRunReplyPb.FromString,
+            service__pb2.SearchUserTaskRunRequest.SerializeToString,
+            service__pb2.UserTaskRunIdList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1271,76 +1314,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchVariable',
-            service__pb2.SearchVariablePb.SerializeToString,
-            service__pb2.SearchVariableReplyPb.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def SearchTaskDef(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchTaskDef',
-            service__pb2.SearchTaskDefPb.SerializeToString,
-            service__pb2.SearchTaskDefReplyPb.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def SearchUserTaskDef(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchUserTaskDef',
-            service__pb2.SearchUserTaskDefPb.SerializeToString,
-            service__pb2.SearchUserTaskDefReplyPb.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def SearchWfSpec(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchWfSpec',
-            service__pb2.SearchWfSpecPb.SerializeToString,
-            service__pb2.SearchWfSpecReplyPb.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def SearchExternalEventDef(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchExternalEventDef',
-            service__pb2.SearchExternalEventDefPb.SerializeToString,
-            service__pb2.SearchExternalEventDefReplyPb.FromString,
+            service__pb2.SearchVariableRequest.SerializeToString,
+            service__pb2.VariableIdList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1356,8 +1331,76 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchExternalEvent',
-            service__pb2.SearchExternalEventPb.SerializeToString,
-            service__pb2.SearchExternalEventReplyPb.FromString,
+            service__pb2.SearchExternalEventRequest.SerializeToString,
+            service__pb2.ExternalEventIdList.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SearchTaskDef(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchTaskDef',
+            service__pb2.SearchTaskDefRequest.SerializeToString,
+            service__pb2.TaskDefIdList.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SearchUserTaskDef(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchUserTaskDef',
+            service__pb2.SearchUserTaskDefRequest.SerializeToString,
+            service__pb2.UserTaskDefIdList.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SearchWfSpec(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchWfSpec',
+            service__pb2.SearchWfSpecRequest.SerializeToString,
+            service__pb2.WfSpecIdList.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SearchExternalEventDef(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/SearchExternalEventDef',
+            service__pb2.SearchExternalEventDefRequest.SerializeToString,
+            service__pb2.ExternalEventDefIdList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1373,8 +1416,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/RegisterTaskWorker',
-            service__pb2.RegisterTaskWorkerPb.SerializeToString,
-            service__pb2.RegisterTaskWorkerReplyPb.FromString,
+            service__pb2.RegisterTaskWorkerRequest.SerializeToString,
+            service__pb2.RegisterTaskWorkerResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1390,8 +1433,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.stream_stream(request_iterator, target, '/littlehorse.LHPublicApi/PollTask',
-            service__pb2.PollTaskPb.SerializeToString,
-            service__pb2.PollTaskReplyPb.FromString,
+            service__pb2.PollTaskRequest.SerializeToString,
+            service__pb2.PollTaskResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1407,8 +1450,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ReportTask',
-            service__pb2.ReportTaskRunPb.SerializeToString,
-            service__pb2.ReportTaskReplyPb.FromString,
+            service__pb2.ReportTaskRun.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1424,8 +1467,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/StopWfRun',
-            service__pb2.StopWfRunPb.SerializeToString,
-            service__pb2.StopWfRunReplyPb.FromString,
+            service__pb2.StopWfRunRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1441,8 +1484,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ResumeWfRun',
-            service__pb2.ResumeWfRunPb.SerializeToString,
-            service__pb2.ResumeWfRunReplyPb.FromString,
+            service__pb2.ResumeWfRunRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1458,8 +1501,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/DeleteWfRun',
-            service__pb2.DeleteWfRunPb.SerializeToString,
-            service__pb2.DeleteObjectReplyPb.FromString,
+            service__pb2.DeleteWfRunRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1475,8 +1518,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/DeleteTaskDef',
-            service__pb2.DeleteTaskDefPb.SerializeToString,
-            service__pb2.DeleteObjectReplyPb.FromString,
+            service__pb2.DeleteTaskDefRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1492,8 +1535,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/DeleteWfSpec',
-            service__pb2.DeleteWfSpecPb.SerializeToString,
-            service__pb2.DeleteObjectReplyPb.FromString,
+            service__pb2.DeleteWfSpecRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1509,8 +1552,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/DeleteUserTaskDef',
-            service__pb2.DeleteUserTaskDefPb.SerializeToString,
-            service__pb2.DeleteObjectReplyPb.FromString,
+            service__pb2.DeleteUserTaskDefRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1526,8 +1569,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/DeleteExternalEventDef',
-            service__pb2.DeleteExternalEventDefPb.SerializeToString,
-            service__pb2.DeleteObjectReplyPb.FromString,
+            service__pb2.DeleteExternalEventDefRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1543,13 +1586,13 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/HealthCheck',
-            service__pb2.HealthCheckPb.SerializeToString,
-            service__pb2.HealthCheckReplyPb.FromString,
+            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            service__pb2.HealthCheckResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def TaskDefMetrics(request,
+    def GetTaskDefMetricsWindow(request,
             target,
             options=(),
             channel_credentials=None,
@@ -1559,14 +1602,14 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/TaskDefMetrics',
-            service__pb2.TaskDefMetricsQueryPb.SerializeToString,
-            service__pb2.TaskDefMetricsReplyPb.FromString,
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetTaskDefMetricsWindow',
+            service__pb2.TaskDefMetricsQueryRequest.SerializeToString,
+            service__pb2.TaskDefMetrics.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def WfSpecMetrics(request,
+    def GetWfSpecMetricsWindow(request,
             target,
             options=(),
             channel_credentials=None,
@@ -1576,9 +1619,9 @@ class LHPublicApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/WfSpecMetrics',
-            service__pb2.WfSpecMetricsQueryPb.SerializeToString,
-            service__pb2.WfSpecMetricsReplyPb.FromString,
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetWfSpecMetricsWindow',
+            service__pb2.WfSpecMetricsQueryRequest.SerializeToString,
+            service__pb2.WfSpecMetrics.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1594,8 +1637,8 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ListTaskDefMetrics',
-            service__pb2.ListTaskMetricsPb.SerializeToString,
-            service__pb2.ListTaskMetricsReplyPb.FromString,
+            service__pb2.ListTaskMetricsRequest.SerializeToString,
+            service__pb2.ListTaskMetricsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1611,7 +1654,7 @@ class LHPublicApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ListWfSpecMetrics',
-            service__pb2.ListWfMetricsPb.SerializeToString,
-            service__pb2.ListWfMetricsReplyPb.FromString,
+            service__pb2.ListWfMetricsRequest.SerializeToString,
+            service__pb2.ListWfMetricsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

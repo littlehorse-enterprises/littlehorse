@@ -2,7 +2,6 @@ package io.littlehorse.test.internal;
 
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

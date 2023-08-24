@@ -6,20 +6,21 @@ import signal
 import sys
 from typing import TYPE_CHECKING, Any, Union
 
-from littlehorse.model.service_pb2 import VariableTypePb, VariableValuePb
 from google.protobuf.timestamp_pb2 import Timestamp
+from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.model.variable_pb2 import VariableValue
 
 if TYPE_CHECKING:
     from littlehorse.worker import LHTaskWorker
 
 VARIABLE_TYPE_MAP = {
-    VariableTypePb.JSON_OBJ: dict[str, Any],
-    VariableTypePb.JSON_ARR: list[Any],
-    VariableTypePb.DOUBLE: float,
-    VariableTypePb.BOOL: bool,
-    VariableTypePb.STR: str,
-    VariableTypePb.INT: int,
-    VariableTypePb.BYTES: bytes,
+    VariableType.JSON_OBJ: dict[str, Any],
+    VariableType.JSON_ARR: list[Any],
+    VariableType.DOUBLE: float,
+    VariableType.BOOL: bool,
+    VariableType.STR: str,
+    VariableType.INT: int,
+    VariableType.BYTES: bytes,
 }
 
 TYPE_VARIABLE_MAP = {value: key for key, value in VARIABLE_TYPE_MAP.items()}
@@ -36,14 +37,14 @@ def timestamp_now() -> Timestamp:
     return current_time
 
 
-def parse_value(value: Any) -> VariableValuePb:
-    """Receives a python variable and return a VariableValuePb.
+def parse_value(value: Any) -> VariableValue:
+    """Receives a python variable and return a VariableValue.
 
     Args:
         value (Any): Any value returned by a method.
 
     Returns:
-        VariableValuePb: LH Variable.
+        VariableValue: LH Variable.
     """
 
     def json_encoder(value: Any) -> Any:
@@ -52,38 +53,38 @@ def parse_value(value: Any) -> VariableValuePb:
         return value
 
     if value is None:
-        return VariableValuePb(type=VariableTypePb.NULL)
+        return VariableValue(type=VariableType.NULL)
     if isinstance(value, bool):
-        return VariableValuePb(type=VariableTypePb.BOOL, bool=value)
+        return VariableValue(type=VariableType.BOOL, bool=value)
     if isinstance(value, str):
-        return VariableValuePb(type=VariableTypePb.STR, str=value)
+        return VariableValue(type=VariableType.STR, str=value)
     if isinstance(value, int):
-        return VariableValuePb(type=VariableTypePb.INT, int=value)
+        return VariableValue(type=VariableType.INT, int=value)
     if isinstance(value, float):
-        return VariableValuePb(type=VariableTypePb.DOUBLE, double=value)
+        return VariableValue(type=VariableType.DOUBLE, double=value)
     if isinstance(value, bytes):
-        return VariableValuePb(type=VariableTypePb.BYTES, bytes=value)
+        return VariableValue(type=VariableType.BYTES, bytes=value)
     if isinstance(value, dict):
-        return VariableValuePb(
-            type=VariableTypePb.JSON_OBJ,
+        return VariableValue(
+            type=VariableType.JSON_OBJ,
             json_obj=json.dumps(value, default=json_encoder),
         )
     if isinstance(value, list):
-        return VariableValuePb(
-            type=VariableTypePb.JSON_ARR,
+        return VariableValue(
+            type=VariableType.JSON_ARR,
             json_arr=json.dumps(value, default=json_encoder),
         )
 
-    return VariableValuePb(
-        type=VariableTypePb.JSON_OBJ, json_obj=json.dumps(value, default=json_encoder)
+    return VariableValue(
+        type=VariableType.JSON_OBJ, json_obj=json.dumps(value, default=json_encoder)
     )
 
 
-def parse_type(lh_type: VariableTypePb) -> Any:
+def parse_type(lh_type: VariableType) -> Any:
     """Receives a LH type and return a python type.
 
     Args:
-        lh_type (VariableTypePb): LH Type.
+        lh_type (VariableType): LH Type.
 
     Returns:
         Any: Python type.
@@ -91,31 +92,31 @@ def parse_type(lh_type: VariableTypePb) -> Any:
     return VARIABLE_TYPE_MAP[lh_type]
 
 
-def extract_value(lh_value: VariableValuePb) -> Any:
+def extract_value(lh_value: VariableValue) -> Any:
     """Receives a LH value and maps it to a python object.
 
     Args:
-        lh_value (VariableValuePb): LH Value.
+        lh_value (VariableValue): LH Value.
 
     Returns:
         Any: Python value.
     """
-    if lh_value.type == VariableTypePb.STR:
+    if lh_value.type == VariableType.STR:
         return lh_value.str
-    if lh_value.type == VariableTypePb.INT:
+    if lh_value.type == VariableType.INT:
         return lh_value.int
-    if lh_value.type == VariableTypePb.DOUBLE:
+    if lh_value.type == VariableType.DOUBLE:
         return lh_value.double
-    if lh_value.type == VariableTypePb.BYTES:
+    if lh_value.type == VariableType.BYTES:
         return lh_value.bytes
-    if lh_value.type == VariableTypePb.BOOL:
+    if lh_value.type == VariableType.BOOL:
         return lh_value.bool
-    if lh_value.type == VariableTypePb.JSON_OBJ:
+    if lh_value.type == VariableType.JSON_OBJ:
         return json.loads(lh_value.json_obj)
-    if lh_value.type == VariableTypePb.JSON_ARR:
+    if lh_value.type == VariableType.JSON_ARR:
         return json.loads(lh_value.json_arr)
 
-    # VariableTypePb.NULL
+    # VariableType.NULL
     return None
 
 

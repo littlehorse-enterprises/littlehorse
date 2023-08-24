@@ -2,7 +2,8 @@ import json
 from random import random
 import unittest
 from faker import Faker
-from littlehorse.model.service_pb2 import VariableTypePb, VariableValuePb
+from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.model.variable_pb2 import VariableValue
 
 from littlehorse.utils import extract_value, parse_value
 
@@ -13,36 +14,34 @@ class TestUtils(unittest.TestCase):
     def test_extract_value(self):
         # STR
         value = self.faker.word()
-        result = extract_value(VariableValuePb(type=VariableTypePb.STR, str=value))
+        result = extract_value(VariableValue(type=VariableType.STR, str=value))
         self.assertEqual(result, value)
 
         # INT
         value = self.faker.random_int()
-        result = extract_value(VariableValuePb(type=VariableTypePb.INT, int=value))
+        result = extract_value(VariableValue(type=VariableType.INT, int=value))
         self.assertEqual(result, value)
 
         # DOUBLE
         value = random()
-        result = extract_value(
-            VariableValuePb(type=VariableTypePb.DOUBLE, double=value)
-        )
+        result = extract_value(VariableValue(type=VariableType.DOUBLE, double=value))
         self.assertEqual(result, value)
 
         # BOOLEAN
         value = self.faker.boolean()
-        result = extract_value(VariableValuePb(type=VariableTypePb.BOOL, bool=value))
+        result = extract_value(VariableValue(type=VariableType.BOOL, bool=value))
         self.assertEqual(result, value)
 
         # BYTES
         value = self.faker.binary()
-        result = extract_value(VariableValuePb(type=VariableTypePb.BYTES, bytes=value))
+        result = extract_value(VariableValue(type=VariableType.BYTES, bytes=value))
         self.assertEqual(result, value)
 
         # JSON_OBJ
         input_dict = {"name": self.faker.name(), "income": self.faker.random_int()}
         value = json.dumps(input_dict)
         result = extract_value(
-            VariableValuePb(type=VariableTypePb.JSON_OBJ, json_obj=value)
+            VariableValue(type=VariableType.JSON_OBJ, json_obj=value)
         )
         self.assertEqual(result, input_dict)
 
@@ -53,62 +52,58 @@ class TestUtils(unittest.TestCase):
         ]
         value = json.dumps(input_list)
         result = extract_value(
-            VariableValuePb(type=VariableTypePb.JSON_ARR, json_arr=value)
+            VariableValue(type=VariableType.JSON_ARR, json_arr=value)
         )
         self.assertEqual(result, input_list)
 
         # NULL
-        result = extract_value(VariableValuePb(type=VariableTypePb.NULL))
+        result = extract_value(VariableValue(type=VariableType.NULL))
         self.assertIsNone(result)
 
     def test_parse_value(self):
         # STR
         value = self.faker.word()
         result = parse_value(value)
-        self.assertEqual(result, VariableValuePb(type=VariableTypePb.STR, str=value))
+        self.assertEqual(result, VariableValue(type=VariableType.STR, str=value))
 
         # INT
         value = self.faker.random_int()
         result = parse_value(value)
-        self.assertEqual(result, VariableValuePb(type=VariableTypePb.INT, int=value))
+        self.assertEqual(result, VariableValue(type=VariableType.INT, int=value))
 
         value = 0
         result = parse_value(value)
-        self.assertEqual(result, VariableValuePb(type=VariableTypePb.INT, int=value))
+        self.assertEqual(result, VariableValue(type=VariableType.INT, int=value))
 
         value = 1
         result = parse_value(value)
-        self.assertEqual(result, VariableValuePb(type=VariableTypePb.INT, int=value))
+        self.assertEqual(result, VariableValue(type=VariableType.INT, int=value))
 
         # DOUBLE
         value = random()
         result = parse_value(value)
-        self.assertEqual(
-            result, VariableValuePb(type=VariableTypePb.DOUBLE, double=value)
-        )
+        self.assertEqual(result, VariableValue(type=VariableType.DOUBLE, double=value))
 
         # BOOLEAN
         value = self.faker.boolean()
         result = parse_value(value)
-        self.assertEqual(result, VariableValuePb(type=VariableTypePb.BOOL, bool=value))
+        self.assertEqual(result, VariableValue(type=VariableType.BOOL, bool=value))
 
         # BYTES
         value = self.faker.binary()
         result = parse_value(value)
-        self.assertEqual(
-            result, VariableValuePb(type=VariableTypePb.BYTES, bytes=value)
-        )
+        self.assertEqual(result, VariableValue(type=VariableType.BYTES, bytes=value))
 
         # NULL
         result = parse_value(None)
-        self.assertEqual(result, VariableValuePb(type=VariableTypePb.NULL))
+        self.assertEqual(result, VariableValue(type=VariableType.NULL))
 
         # JSON_OBJ
         value = {"name": self.faker.name(), "income": self.faker.random_int()}
         result = parse_value(value)
         self.assertEqual(
             result,
-            VariableValuePb(type=VariableTypePb.JSON_OBJ, json_obj=json.dumps(value)),
+            VariableValue(type=VariableType.JSON_OBJ, json_obj=json.dumps(value)),
         )
 
         # JSON_ARR
@@ -119,7 +114,7 @@ class TestUtils(unittest.TestCase):
         result = parse_value(value)
         self.assertEqual(
             result,
-            VariableValuePb(type=VariableTypePb.JSON_ARR, json_arr=json.dumps(value)),
+            VariableValue(type=VariableType.JSON_ARR, json_arr=json.dumps(value)),
         )
 
         # JSON_OBJ (class)
@@ -136,9 +131,7 @@ class TestUtils(unittest.TestCase):
         result = parse_value(value)
         self.assertEqual(
             result,
-            VariableValuePb(
-                type=VariableTypePb.JSON_OBJ, json_obj=json.dumps(vars(value))
-            ),
+            VariableValue(type=VariableType.JSON_OBJ, json_obj=json.dumps(vars(value))),
         )
 
         value = Shape(
@@ -150,8 +143,8 @@ class TestUtils(unittest.TestCase):
         result = parse_value(value)
         self.assertEqual(
             result,
-            VariableValuePb(
-                type=VariableTypePb.JSON_OBJ,
+            VariableValue(
+                type=VariableType.JSON_OBJ,
                 json_obj=json.dumps({"points": [vars(p) for p in value.points]}),
             ),
         )
@@ -161,8 +154,8 @@ class TestUtils(unittest.TestCase):
         result = parse_value(value)
         self.assertEqual(
             result,
-            VariableValuePb(
-                type=VariableTypePb.JSON_OBJ,
+            VariableValue(
+                type=VariableType.JSON_OBJ,
                 json_obj=json.dumps({k: vars(v) for k, v in value.items()}),
             ),
         )
@@ -175,8 +168,8 @@ class TestUtils(unittest.TestCase):
         result = parse_value(value)
         self.assertEqual(
             result,
-            VariableValuePb(
-                type=VariableTypePb.JSON_ARR,
+            VariableValue(
+                type=VariableType.JSON_ARR,
                 json_arr=json.dumps([vars(v) for v in value]),
             ),
         )

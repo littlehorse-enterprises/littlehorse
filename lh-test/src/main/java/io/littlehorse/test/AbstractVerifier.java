@@ -19,8 +19,7 @@ public class AbstractVerifier implements Verifier {
     private final Collection<Arg> workflowArgs;
     protected final List<WfRunVerifier.Step> steps = new ArrayList<>();
 
-    public AbstractVerifier(
-            LHClientTestWrapper lhClientTestWrapper, Workflow workflow, Collection<Arg> workflowArgs) {
+    public AbstractVerifier(LHClientTestWrapper lhClientTestWrapper, Workflow workflow, Collection<Arg> workflowArgs) {
         this.lhClientTestWrapper = lhClientTestWrapper;
         this.workflow = workflow;
         this.workflowArgs = workflowArgs;
