@@ -2,8 +2,6 @@ package io.littlehorse.unit.storeinternals;
 
 import static org.mockito.Mockito.mock;
 
-import static org.mockito.Mockito.mock;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;

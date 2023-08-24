@@ -2,8 +2,6 @@ package io.littlehorse.unit.server.streamsimpl.storeinternals;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;

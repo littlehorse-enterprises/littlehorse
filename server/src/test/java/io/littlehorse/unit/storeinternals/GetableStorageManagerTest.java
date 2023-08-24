@@ -3,9 +3,6 @@ package io.littlehorse.unit.storeinternals;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.CoreGetable;
