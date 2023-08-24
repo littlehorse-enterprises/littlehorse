@@ -91,7 +91,7 @@ public class LHConfig extends ConfigBase {
     public static final String ADVERTISED_LISTENERS_KEY = "LHS_ADVERTISED_LISTENERS";
     public static final String LISTENERS_KEY = "LHS_LISTENERS";
     public static final String LISTENERS_PROTOCOL_MAP_KEY = "LHS_LISTENERS_PROTOCOL_MAP";
-    public static final String LISTENERS_AUTHORIZATION_MAP_KEY = "LHS_LISTENERS_AUTHORIZATION_MAP";
+    public static final String LISTENERS_AUTHENTICATION_MAP_KEY = "LHS_LISTENERS_AUTHENTICATION_MAP";
     private List<ServerListenerConfig> listenerConfigs;
     private List<AdvertisedListenerConfig> advertisedListenerConfigs;
     private Map<String, ListenerProtocol> listenersProtocolMap;
@@ -381,7 +381,7 @@ public class LHConfig extends ConfigBase {
             return listenersAuthorizationMap;
         }
 
-        String rawAuthProtocolMap = getOrSetDefault(LHConfig.LISTENERS_AUTHORIZATION_MAP_KEY, null);
+        String rawAuthProtocolMap = getOrSetDefault(LHConfig.LISTENERS_AUTHENTICATION_MAP_KEY, null);
 
         if (Strings.isNullOrEmpty(rawAuthProtocolMap)) {
             return listenersAuthorizationMap = Map.of();
@@ -391,7 +391,8 @@ public class LHConfig extends ConfigBase {
                 Arrays.stream(AuthorizationProtocol.values()).map(Enum::name).collect(Collectors.joining("|"));
 
         if (!rawAuthProtocolMap.matches("([a-zA-Z0-9_-]+:(" + regexAllAuthProtocols + ")+,?)+")) {
-            throw new LHMisconfigurationException("Invalid configuration: " + LHConfig.LISTENERS_AUTHORIZATION_MAP_KEY);
+            throw new LHMisconfigurationException(
+                    "Invalid configuration: " + LHConfig.LISTENERS_AUTHENTICATION_MAP_KEY);
         }
 
         List<String> rawAuthProtocols = Arrays.asList(rawAuthProtocolMap.split(","));
@@ -447,6 +448,12 @@ public class LHConfig extends ConfigBase {
                             protocolMap.get(name) == null ? ListenerProtocol.PLAIN : protocolMap.get(name);
                     AuthorizationProtocol authProtocol =
                             authMap.get(name) == null ? AuthorizationProtocol.NONE : authMap.get(name);
+
+                    if (authProtocol == AuthorizationProtocol.MTLS && protocol != ListenerProtocol.MTLS) {
+                        throw new LHMisconfigurationException(
+                                "Invalid configuration: Listener " + name
+                                        + " LHS_LISTENERS_PROTOCOL_MAP has to be MTLS in order to support MTLS for authentication");
+                    }
 
                     return ServerListenerConfig.builder()
                             .name(name)

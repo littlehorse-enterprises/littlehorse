@@ -21,7 +21,7 @@
     - [`LHS_LISTENER_<LISTENER NAME>_CERT`](#lhs_listener_listener-name_cert)
     - [`LHS_LISTENER_<LISTENER NAME>_KEY`](#lhs_listener_listener-name_key)
     - [`LHS_LISTENER_<LISTENER NAME>_CA_CERT`](#lhs_listener_listener-name_ca_cert)
-    - [`LHS_LISTENERS_AUTHORIZATION_MAP`](#lhs_listeners_authorization_map)
+    - [`LHS_LISTENERS_AUTHENTICATION_MAP`](#lhs_listeners_authentication_map)
     - [`LHS_LISTENER_<LISTENER NAME>_AUTHORIZATION_SERVER`](#lhs_listener_listener-name_authorization_server)
     - [`LHS_LISTENER_<LISTENER NAME>_CLIENT_ID`](#lhs_listener_listener-name_client_id)
     - [`LHS_LISTENER_<LISTENER NAME>_CLIENT_ID_FILE`](#lhs_listener_listener-name_client_id_file)
@@ -278,15 +278,17 @@ LHS_LISTENER_MY_LISTENER_CA_CERT=/tmp/ca
 
 ---
 
-### `LHS_LISTENERS_AUTHORIZATION_MAP`
+### `LHS_LISTENERS_AUTHENTICATION_MAP`
 
-Map between listener names and authorization protocols. Depends on `LHS_LISTENERS`.
+Map between listener names and authentication protocols. Depends on `LHS_LISTENERS`.
+
+> Note: `LHS_LISTENERS_PROTOCOL_MAP` should be set to `MTLS` for a listener in order to use `MTLS` as authentication protocol.
 
 Format: `<LISTENER NAME>:<AUTH PROTOCOL>`
 
 Examples of a legal list: `SECURE:OAUTH,INSECURE:NONE`
 
-Allowed protocols: `NONE`, `OAUTH`
+Allowed protocols: `NONE`, `OAUTH`, `MTLS`
 
 - **Type:** map
 - **Default:** null
@@ -303,7 +305,7 @@ Example:
 
 ```
 LHS_LISTENERS=MY_LISTENER:2023
-LHS_LISTENERS_AUTHORIZATION_MAP=MY_LISTENER:OAUTH
+LHS_LISTENERS_AUTHENTICATION_MAP=MY_LISTENER:OAUTH
 LHS_LISTENER_MY_LISTENER_AUTHORIZATION_SERVER=http://localhost:8888/realms/lh
 ...
 ```
@@ -323,7 +325,7 @@ Example:
 
 ```
 LHS_LISTENERS=MY_LISTENER:2023
-LHS_LISTENERS_AUTHORIZATION_MAP=MY_LISTENER:OAUTH
+LHS_LISTENERS_AUTHENTICATION_MAP=MY_LISTENER:OAUTH
 LHS_LISTENER_MY_LISTENER_CLIENT_ID=server
 ...
 ```
@@ -344,7 +346,7 @@ Example:
 
 ```
 LHS_LISTENERS=MY_LISTENER:2023
-LHS_LISTENERS_AUTHORIZATION_MAP=MY_LISTENER:OAUTH
+LHS_LISTENERS_AUTHENTICATION_MAP=MY_LISTENER:OAUTH
 LHS_LISTENER_MY_LISTENER_CLIENT_ID_FILE=/temp/client_id
 ...
 ```
@@ -364,7 +366,7 @@ Example:
 
 ```
 LHS_LISTENERS=MY_LISTENER:2023
-LHS_LISTENERS_AUTHORIZATION_MAP=MY_LISTENER:OAUTH
+LHS_LISTENERS_AUTHENTICATION_MAP=MY_LISTENER:OAUTH
 LHS_LISTENER_MY_LISTENER_CLIENT_SECRET=3bdca420cf6c48e2aa4f56d46d6327e0
 ...
 ```
@@ -385,7 +387,7 @@ Example:
 
 ```
 LHS_LISTENERS=MY_LISTENER:2023
-LHS_LISTENERS_AUTHORIZATION_MAP=MY_LISTENER:OAUTH
+LHS_LISTENERS_AUTHENTICATION_MAP=MY_LISTENER:OAUTH
 LHS_LISTENER_MY_LISTENER_CLIENT_SECRET_FILE=/temp/client_secret
 ...
 ```
