@@ -20,7 +20,7 @@
     - [`LHS_LISTENERS_PROTOCOL_MAP`](#lhs_listeners_protocol_map)
     - [`LHS_LISTENER_<LISTENER NAME>_CERT`](#lhs_listener_listener-name_cert)
     - [`LHS_LISTENER_<LISTENER NAME>_KEY`](#lhs_listener_listener-name_key)
-    - [`LHS_LISTENER_<LISTENER NAME>_CA_CERT`](#lhs_listener_listener-name_ca_cert)
+    - [`LHS_CLIENTS_CA_CERT`](#lhs_clients_ca_cert)
     - [`LHS_LISTENERS_AUTHENTICATION_MAP`](#lhs_listeners_authentication_map)
     - [`LHS_LISTENER_<LISTENER NAME>_AUTHORIZATION_SERVER`](#lhs_listener_listener-name_authorization_server)
     - [`LHS_LISTENER_<LISTENER NAME>_CLIENT_ID`](#lhs_listener_listener-name_client_id)
@@ -257,9 +257,10 @@ LHS_LISTENER_MY_LISTENER_KEY=/tmp/key
 
 ---
 
-### `LHS_LISTENER_<LISTENER NAME>_CA_CERT`
+### `LHS_CLIENTS_CA_CERT`
 
-Optional location of CA Cert file that issued the client side certificates, used by mTLS connection. Depends on `LHS_LISTENERS`.
+Optional location of CA Cert file that issued the client side certificates, used by mTLS connections.
+This CA Cert is applied to all the listeners.
 
 Example:
 
@@ -268,7 +269,7 @@ LHS_LISTENERS=MY_LISTENER:2023
 LHS_LISTENERS_PROTOCOL_MAP=MY_LISTENER:MTLS
 LHS_LISTENER_MY_LISTENER_CERT=/tmp/certificate
 LHS_LISTENER_MY_LISTENER_KEY=/tmp/key
-LHS_LISTENER_MY_LISTENER_CA_CERT=/tmp/ca
+LHS_CLIENTS_CA_CERT=/tmp/ca
 ...
 ```
 

@@ -14,20 +14,13 @@ import io.littlehorse.server.auth.AuthorizationProtocol;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.listener.ListenerProtocol;
 import io.littlehorse.server.listener.ServerListenerConfig;
-import io.littlehorse.server.listener.TlsConfig;
-import io.littlehorse.server.listener.TlsConfig.TlsConfigBuilder;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +34,7 @@ import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.StreamsConfig;
+import org.jetbrains.annotations.Nullable;
 
 @Slf4j
 public class LHConfig extends ConfigBase {
@@ -92,6 +86,7 @@ public class LHConfig extends ConfigBase {
     public static final String LISTENERS_KEY = "LHS_LISTENERS";
     public static final String LISTENERS_PROTOCOL_MAP_KEY = "LHS_LISTENERS_PROTOCOL_MAP";
     public static final String LISTENERS_AUTHENTICATION_MAP_KEY = "LHS_LISTENERS_AUTHENTICATION_MAP";
+    public static final String CLIENTS_CA_CERT = "LHS_CLIENTS_CA_CERT";
     private List<ServerListenerConfig> listenerConfigs;
     private List<AdvertisedListenerConfig> advertisedListenerConfigs;
     private Map<String, ListenerProtocol> listenersProtocolMap;
@@ -353,27 +348,36 @@ public class LHConfig extends ConfigBase {
         }
     }
 
-    public TlsConfig getTlsConfigByListener(String listenerName) {
-        String configPrefix = "LHS_LISTENER_" + listenerName;
+    public File getServerKey(String listenerName) {
+        String configName = "LHS_LISTENER_" + listenerName + "_KEY";
+        return getFile(configName);
+    }
 
-        String caCertFile = getOrSetDefault(configPrefix + "_CA_CERT", null);
-        String serverCertFile = getOrSetDefault(configPrefix + "_CERT", null);
-        String serverKeyFile = getOrSetDefault(configPrefix + "_KEY", null);
+    public File getServerCert(String listenerName) {
+        String configName = "LHS_LISTENER_" + listenerName + "_CERT";
+        return getFile(configName);
+    }
 
-        TlsConfigBuilder builder = TlsConfig.builder();
+    public File getClientsCACert() {
+        return getFile(CLIENTS_CA_CERT);
+    }
 
-        if (caCertFile != null) {
-            builder.caCert(new File(caCertFile));
+    @Nullable
+    private File getFile(String configName) {
+        String serverCertLocation = getOrSetDefault(configName, null);
+
+        if (Strings.isNullOrEmpty(serverCertLocation)) {
+            return null;
         }
 
-        if (serverCertFile == null || serverKeyFile == null) {
+        File clientsCACert = new File(serverCertLocation);
+
+        if (!clientsCACert.isFile()) {
             throw new LHMisconfigurationException(
-                    "TLS configuration called but not provided. Check missing cert or key");
+                    "Invalid configuration: File location specified on " + configName + " is invalid");
         }
 
-        return builder.cert(new File(serverCertFile))
-                .key(new File(serverKeyFile))
-                .build();
+        return clientsCACert;
     }
 
     public Map<String, AuthorizationProtocol> getListenersAuthorizationMap() {
@@ -439,6 +443,8 @@ public class LHConfig extends ConfigBase {
 
         List<String> rawListenersConfigs = Arrays.asList(rawListenersConfig.split(","));
 
+        File clientsCACert = getClientsCACert();
+
         listenerConfigs = rawListenersConfigs.stream()
                 .map(listener -> {
                     String[] split = listener.split(":");
@@ -455,12 +461,18 @@ public class LHConfig extends ConfigBase {
                                         + " LHS_LISTENERS_PROTOCOL_MAP has to be MTLS in order to support MTLS for authentication");
                     }
 
+                    File certificate = getServerCert(name);
+                    File certificateKey = getServerKey(name);
+
                     return ServerListenerConfig.builder()
                             .name(name)
                             .port(Integer.parseInt(port))
                             .protocol(protocol)
-                            .config(this)
+                            .clientsCACert(clientsCACert)
+                            .certificate(certificate)
+                            .certificateKey(certificateKey)
                             .authorizationProtocol(authProtocol)
+                            .config(this)
                             .build();
                 })
                 .toList();

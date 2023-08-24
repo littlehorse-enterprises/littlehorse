@@ -10,7 +10,6 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class TlsConfig {
 
-    private File caCert;
     private File cert;
     private File key;
 }

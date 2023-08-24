@@ -1,6 +1,7 @@
 package io.littlehorse.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -10,7 +11,6 @@ import io.littlehorse.server.auth.AuthorizationProtocol;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.listener.ListenerProtocol;
 import io.littlehorse.server.listener.ServerListenerConfig;
-import io.littlehorse.server.listener.TlsConfig;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -30,6 +30,7 @@ public class LHConfigTest {
     private static final String LHS_LISTENERS_PROTOCOL_MAP = "LHS_LISTENERS_PROTOCOL_MAP";
     private static final String LHS_LISTENERS = "LHS_LISTENERS";
     private static final String LHS_ADVERTISED_LISTENERS = "LHS_ADVERTISED_LISTENERS";
+    private static final String LHS_CLIENTS_CA_CERT = "LHS_CLIENTS_CA_CERT";
 
     Faker faker = new Faker();
 
@@ -38,9 +39,15 @@ public class LHConfigTest {
 
         @Test
         void validateListeners() {
+            String mockFilePath =
+                    getClass().getClassLoader().getResource("MockCert.pem").getPath();
+
             Properties properties = new Properties();
             properties.put(LHS_LISTENERS, "PLAIN:5000");
             properties.put(LHS_LISTENERS_PROTOCOL_MAP, "PLAIN:PLAIN");
+            properties.put(LHS_CLIENTS_CA_CERT, mockFilePath);
+            properties.put("LHS_LISTENER_PLAIN_CERT", mockFilePath);
+            properties.put("LHS_LISTENER_PLAIN_KEY", mockFilePath);
 
             LHConfig config = new LHConfig(properties);
 
@@ -50,6 +57,9 @@ public class LHConfigTest {
                     .containsExactly(ServerListenerConfig.builder()
                             .name("PLAIN")
                             .port(5000)
+                            .clientsCACert(new File(mockFilePath))
+                            .certificate(new File(mockFilePath))
+                            .certificateKey(new File(mockFilePath))
                             .protocol(ListenerProtocol.PLAIN)
                             .config(config)
                             .authorizationProtocol(AuthorizationProtocol.NONE)
@@ -72,7 +82,7 @@ public class LHConfigTest {
         }
 
         @Test
-        void shouldThrowExceptionIfAuthenticationProtocolIsMTLSButListenerProtocolIsNot() {
+        void throwsExceptionIfAuthenticationProtocolIsMTLSButListenerProtocolIsNot() {
             Properties properties = new Properties();
             properties.put(LHS_LISTENERS, "LISTENER_1:5000");
             properties.put(LHS_LISTENERS_PROTOCOL_MAP, "LISTENER_1:PLAIN");
@@ -107,9 +117,18 @@ public class LHConfigTest {
 
         @Test
         void validateSeveralListeners() {
+            String mockFilePath =
+                    getClass().getClassLoader().getResource("MockCert.pem").getPath();
+            String mockFilePath2 =
+                    getClass().getClassLoader().getResource("MockCert2.pem").getPath();
             Properties properties = new Properties();
             properties.put(LHS_LISTENERS, "PLAIN:5000,MTLS:6000,OAUTH:7000");
             properties.put(LHS_LISTENERS_PROTOCOL_MAP, "PLAIN:PLAIN,MTLS:MTLS,OAUTH:TLS");
+            properties.put(LHS_CLIENTS_CA_CERT, mockFilePath);
+            properties.put("LHS_LISTENER_MTLS_CERT", mockFilePath);
+            properties.put("LHS_LISTENER_MTLS_KEY", mockFilePath);
+            properties.put("LHS_LISTENER_OAUTH_CERT", mockFilePath2);
+            properties.put("LHS_LISTENER_OAUTH_KEY", mockFilePath2);
 
             LHConfig config = new LHConfig(properties);
 
@@ -121,6 +140,7 @@ public class LHConfigTest {
                                     .name("PLAIN")
                                     .port(5000)
                                     .protocol(ListenerProtocol.PLAIN)
+                                    .clientsCACert(new File(mockFilePath))
                                     .config(config)
                                     .authorizationProtocol(AuthorizationProtocol.NONE)
                                     .build(),
@@ -128,6 +148,9 @@ public class LHConfigTest {
                                     .name("MTLS")
                                     .port(6000)
                                     .protocol(ListenerProtocol.MTLS)
+                                    .clientsCACert(new File(mockFilePath))
+                                    .certificate(new File(mockFilePath))
+                                    .certificateKey(new File(mockFilePath))
                                     .config(config)
                                     .authorizationProtocol(AuthorizationProtocol.NONE)
                                     .build(),
@@ -135,6 +158,9 @@ public class LHConfigTest {
                                     .name("OAUTH")
                                     .port(7000)
                                     .protocol(ListenerProtocol.TLS)
+                                    .clientsCACert(new File(mockFilePath))
+                                    .certificate(new File(mockFilePath2))
+                                    .certificateKey(new File(mockFilePath2))
                                     .config(config)
                                     .authorizationProtocol(AuthorizationProtocol.NONE)
                                     .build()));
@@ -196,6 +222,48 @@ public class LHConfigTest {
                                     .config(config)
                                     .authorizationProtocol(AuthorizationProtocol.NONE)
                                     .build()));
+        }
+
+        @Test
+        void throwsAnExceptionIfProvidedClientsCACertPathIsNotValid() {
+            Properties properties = new Properties();
+
+            properties.put(LHS_LISTENERS, "PLAIN:5000");
+            properties.put(LHS_CLIENTS_CA_CERT, "/path-that-doesn't-exist/some-cert.pem");
+
+            LHConfig config = new LHConfig(properties);
+
+            assertThatThrownBy(config::getListeners)
+                    .isExactlyInstanceOf(LHMisconfigurationException.class)
+                    .hasMessage("Invalid configuration: File location specified on LHS_CLIENTS_CA_CERT is invalid");
+        }
+
+        @Test
+        void throwsAnExceptionIfProvidedCertificatePathIsNotValid() {
+            Properties properties = new Properties();
+
+            properties.put(LHS_LISTENERS, "PLAIN:5000");
+            properties.put("LHS_LISTENER_PLAIN_CERT", "/path-that-doesn't-exist/some-cert.pem");
+
+            LHConfig config = new LHConfig(properties);
+
+            assertThatThrownBy(config::getListeners)
+                    .isExactlyInstanceOf(LHMisconfigurationException.class)
+                    .hasMessage("Invalid configuration: File location specified on LHS_LISTENER_PLAIN_CERT is invalid");
+        }
+
+        @Test
+        void throwsAnExceptionIfProvidedCertificateKeyPathIsNotValid() {
+            Properties properties = new Properties();
+
+            properties.put(LHS_LISTENERS, "PLAIN:5000");
+            properties.put("LHS_LISTENER_PLAIN_KEY", "/path-that-doesn't-exist/some-cert.pem");
+
+            LHConfig config = new LHConfig(properties);
+
+            assertThatThrownBy(config::getListeners)
+                    .isExactlyInstanceOf(LHMisconfigurationException.class)
+                    .hasMessage("Invalid configuration: File location specified on LHS_LISTENER_PLAIN_KEY is invalid");
         }
     }
 
@@ -467,62 +535,6 @@ public class LHConfigTest {
                     assertThrows(LHMisconfigurationException.class, () -> config.getOAuthConfigByListener("TEST"));
 
             assertThat(error.getMessage()).contains("OAuth configuration called but not provided");
-        }
-    }
-
-    @Nested
-    class GetTlsConfigByListener {
-
-        @Test
-        void loadCertConfigByListenerName() {
-            Properties properties = new Properties();
-
-            String ca = faker.file().fileName();
-            String cert = faker.file().fileName();
-            String key = faker.file().fileName();
-
-            properties.put("LHS_LISTENER_TEST_CA_CERT", ca);
-            properties.put("LHS_LISTENER_TEST_CERT", cert);
-            properties.put("LHS_LISTENER_TEST_KEY", key);
-
-            LHConfig config = new LHConfig(properties);
-
-            assertThat(config.getTlsConfigByListener("TEST"))
-                    .isEqualTo(TlsConfig.builder()
-                            .caCert(new File(ca))
-                            .cert(new File(cert))
-                            .key(new File(key))
-                            .build());
-        }
-
-        @Test
-        void loadCertConfigByListenerNameWithoutCA() {
-            Properties properties = new Properties();
-
-            String cert = faker.file().fileName();
-            String key = faker.file().fileName();
-
-            properties.put("LHS_LISTENER_TEST_CERT", cert);
-            properties.put("LHS_LISTENER_TEST_KEY", key);
-
-            LHConfig config = new LHConfig(properties);
-
-            assertThat(config.getTlsConfigByListener("TEST"))
-                    .isEqualTo(TlsConfig.builder()
-                            .cert(new File(cert))
-                            .key(new File(key))
-                            .build());
-        }
-
-        @Test
-        void throwsExceptionIfTlsConfigIsMissing() {
-            Properties properties = new Properties();
-            LHConfig config = new LHConfig(properties);
-
-            LHMisconfigurationException error =
-                    assertThrows(LHMisconfigurationException.class, () -> config.getTlsConfigByListener("TEST"));
-
-            assertThat(error.getMessage()).contains("TLS configuration called but not provided");
         }
     }
 }
