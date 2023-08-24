@@ -2,6 +2,8 @@ package io.littlehorse.unit.storeinternals;
 
 import static org.mockito.Mockito.mock;
 
+import static org.mockito.Mockito.mock;
+
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserModel;
