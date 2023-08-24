@@ -304,6 +304,7 @@ class LHConnection:
                 retries_left,
                 e,
             )
+            await asyncio.sleep(1.5)
             await self._report_task(task_result, retries_left)
 
     async def _ask_for_work(self) -> None:
