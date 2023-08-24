@@ -273,7 +273,7 @@ class LHConfig:
             )
 
         if self.is_secure() and self.needs_credentials():
-            self._log.info("Establishing secure channel with OAuth at %s", server)
+            self._log.debug("Establishing secure channel with OAuth at %s", server)
             return secure_channel(
                 server,
                 grpc.composite_channel_credentials(
@@ -283,7 +283,7 @@ class LHConfig:
             )
 
         if self.is_secure():
-            self._log.info("Establishing secure channel at %s", server)
+            self._log.debug("Establishing secure channel at %s", server)
             return secure_channel(
                 server,
                 get_ssl_config(),
@@ -321,6 +321,6 @@ class LHConfig:
             channel = self.establish_channel(channel_id.server, channel_id.is_async)
             self._opened_channels[channel_id] = channel
         else:
-            self._log.info("Reusing channel %s", channel_id)
+            self._log.debug("Reusing channel %s", channel_id)
 
         return LHPublicApiStub(channel)

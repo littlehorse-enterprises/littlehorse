@@ -289,21 +289,22 @@ class LHConnection:
             return
 
         self._log.debug(
-            "Reporting task '%s', retries left: %s",
+            "Reporting task '%s'",
             self._task.task_name(),
-            retries_left,
         )
 
         try:
             await self._stub.ReportTask(task_result)
             self._log.debug("Task '%s' successfully reported", self._task.task_name())
         except Exception as e:
+            retries_left -= 1
             self._log.warning(
-                "Error '%s' reporting task: '%s'. Retrying.",
-                str(e),
+                "Error reporting task: '%s'. Retrying [%s]. %s",
                 self._task.task_name(),
+                retries_left,
+                e,
             )
-            await self._report_task(task_result, retries_left - 1)
+            await self._report_task(task_result, retries_left)
 
     async def _ask_for_work(self) -> None:
         async def generator() -> AsyncIterator[PollTaskRequest]:
@@ -316,7 +317,7 @@ class LHConnection:
                         task_def_name=self._task.task_name(),
                     )
                     self._log.debug(
-                        "Connection: %s is asking for work '%s' '%s'",
+                        "Connection '%s' is asking for work '%s' '%s'",
                         self.server,
                         self._task.task_name(),
                         datetime.now(),
@@ -324,10 +325,20 @@ class LHConnection:
 
         try:
             async for reply in self._stub.PollTask(generator()):
-                await self._schedule_task(reply.result)
+                if reply.HasField("result"):
+                    await self._schedule_task(reply.result)
+                else:
+                    self._log.warning(
+                        "Didn't successfully claim task,"
+                        "likely due to server ('%s') restart.",
+                        self.server,
+                    )
+                    await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
                 self._ask_for_work_semaphore.release()
         except Exception as e:
-            self._log.error("Api Connection Error, stopping: %s", str(e))
+            self._log.error(
+                "Api Connection Error at '%s', stopping: %s", self.server, e
+            )
             self.stop()
 
     async def start(self) -> None:
@@ -359,14 +370,12 @@ class LHTaskWorker:
     ) -> None:
         self._config = config
         self._connections: dict[str, LHConnection] = {}
+        self.running = False
 
         # get the task definition from the server
         stub = config.stub()
         reply: TaskDef = stub.GetTaskDef(TaskDefId(name=task_def_name))
-
-        # initialize internal task and parameters
         self._task = LHTask(callable, reply)
-        self.running = False
 
     async def _heartbeat(self) -> None:
         stub = self._config.stub(async_channel=True, name="heartbeat")
@@ -388,11 +397,41 @@ class LHTaskWorker:
                     request
                 )
             except Exception as e:
-                self._log.error("Error when registering task worker: %s", str(e))
+                self._log.error(
+                    "Error when registering task worker: %s. Closing. %s",
+                    self._task.task_name(),
+                    e,
+                )
                 await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
                 continue
 
             hosts = [f"{host.host}:{host.port}" for host in reply.your_hosts]
+
+            # remove invalid connections
+            hosts_to_be_removed = {
+                host for host in self._connections.keys() if host not in hosts
+            }
+
+            if hosts_to_be_removed:
+                self._log.info("Connections to be removed: %s", hosts_to_be_removed)
+
+            for host in hosts_to_be_removed:
+                connection_to_be_removed = self._connections.pop(host)
+                connection_to_be_removed.stop()
+
+            # removing deads
+            dead_connections = {
+                host
+                for host, connection in self._connections.items()
+                if not connection.running
+            }
+
+            if dead_connections:
+                self._log.info("Dead connections: %s", dead_connections)
+
+            for host in dead_connections:
+                connection_to_be_removed = self._connections.pop(host)
+                connection_to_be_removed.stop()
 
             # add new connections
             hosts_to_be_added = [
@@ -406,18 +445,6 @@ class LHTaskWorker:
                 new_connection = LHConnection(host, self._config, self._task)
                 self._connections[host] = new_connection
                 asyncio.create_task(new_connection.start())
-
-            # remove invalid connections
-            hosts_to_be_removed = {
-                host for host in self._connections.keys() if host not in hosts
-            }
-
-            if hosts_to_be_removed:
-                self._log.info("Connections to be removed: %s", hosts_to_be_removed)
-
-            for host in hosts_to_be_removed:
-                connection_to_be_removed = self._connections.pop(host)
-                connection_to_be_removed.stop()
 
             await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
 

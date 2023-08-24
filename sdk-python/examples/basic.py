@@ -8,7 +8,7 @@ import littlehorse
 from littlehorse.config import LHConfig
 from littlehorse.worker import LHTaskWorker, LHWorkerContext
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 def get_config() -> LHConfig:
@@ -20,21 +20,25 @@ def get_config() -> LHConfig:
 
 
 async def greeting(name: str, ctx: LHWorkerContext) -> str:
-    greeting = f"Hello {name}!. WfRun {ctx.wf_run_id()}"
-    print(greeting)
-    await asyncio.sleep(random.uniform(0.5, 2.0))
-    return greeting
+    msg = f"Hello {name}!. WfRun {ctx.wf_run_id()}"
+    print(msg)
+    await asyncio.sleep(random.uniform(0.5, 1.5))
+    return msg
 
 
-async def describe_car(car: dict[str, Any]) -> None:
-    print(f"You drive a {car['brand']} model {car['model']}")
+async def describe_car(car: dict[str, Any]) -> str:
+    msg = f"You drive a {car['brand']} model {car['model']}"
+    print(msg)
+    await asyncio.sleep(random.uniform(0.5, 1.5))
+    return msg
 
 
 async def main() -> None:
     config = get_config()
-    greet_worker = LHTaskWorker(greeting, "greet", config)
-    car_worker = LHTaskWorker(describe_car, "describe-car", config)
-    await littlehorse.start(greet_worker, car_worker)
+    await littlehorse.start(
+        LHTaskWorker(greeting, "greet", config),
+        LHTaskWorker(describe_car, "describe-car", config),
+    )
 
 
 if __name__ == "__main__":
