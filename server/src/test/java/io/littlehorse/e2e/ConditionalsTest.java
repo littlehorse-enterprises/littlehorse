@@ -33,6 +33,9 @@ public class ConditionalsTest {
     @LHWorkflow("test-conditionals-less-than-workflow")
     private Workflow workflowLessThan;
 
+    @LHWorkflow("test-conditionals-less-than-equals-workflow")
+    private Workflow workflowLessThanEquals;
+
     private WorkflowVerifier workflowVerifier;
 
     @Nested
@@ -151,6 +154,32 @@ public class ConditionalsTest {
         }
     }
 
+    @Nested
+    class LessThanEquals {
+        @ParameterizedTest
+        @MethodSource("provideSuccessArguments")
+        void shouldCompleteLessThanWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
+            workflowVerifier
+                    .prepareRun(workflowLessThanEquals, Arg.of("input", inputObject))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(true))
+                    .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(expectedOutput))
+                    .start();
+        }
+
+        private static Stream<Arguments> provideSuccessArguments() {
+            return Stream.of(
+                    Arguments.of(new ConditionalsTest.InputObj(1, 2), true),
+                    Arguments.of(new ConditionalsTest.InputObj(1, 1), true),
+                    Arguments.of(new ConditionalsTest.InputObj("hi", "hi"), true),
+                    Arguments.of(new ConditionalsTest.InputObj("a", "b"), true),
+                    Arguments.of(new ConditionalsTest.InputObj(1.0, 1.0), true),
+                    Arguments.of(new ConditionalsTest.InputObj(5, 4), false));
+        }
+    }
+
     @LHWorkflow("test-conditionals-equals-workflow")
     public Workflow getEqualsWorkflowImpl() {
         return new WorkflowImpl("test-conditionals-equals-workflow", thread -> {
@@ -214,6 +243,30 @@ public class ConditionalsTest {
 
             thread.doIfElse(
                     thread.condition(input.jsonPath("$.lhs"), Comparator.LESS_THAN, input.jsonPath("$.rhs")),
+                    ifBlock -> {
+                        ifBlock.execute("ag-one");
+                    },
+                    elseBlock -> {
+                        elseBlock.execute("ag-two");
+                    });
+        });
+    }
+
+    @LHWorkflow("test-conditionals-less-than-equals-workflow")
+    public Workflow getLessThanEqualsWorkflow() {
+        return new WorkflowImpl("test-conditionals-less-than-equals-workflow", thread -> {
+            // Use an input JSON blob with two fields, LHS and RHS.
+            // This allows us to test with various types on the left and the
+            // right, since right now the JSON_OBJ var type does not have a
+            // schema.
+            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+
+            // So that the run request succeeds even on workflows where we want
+            // a crash.
+            thread.execute("ag-one");
+
+            thread.doIfElse(
+                    thread.condition(input.jsonPath("$.lhs"), Comparator.LESS_THAN_EQ, input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
