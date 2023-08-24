@@ -41,6 +41,7 @@ public class ConditionalsTest {
 
     @LHWorkflow("test-conditionals-greater-than-equals-workflow")
     private Workflow workflowGreaterThanEquals;
+
     @LHWorkflow("test-conditionals-is-in-workflow")
     private Workflow workflowIsIn;
 
@@ -262,7 +263,9 @@ public class ConditionalsTest {
                     Arguments.of(new ConditionalsTest.InputObj(Map.of("a", 1), Map.of("a", 1)), false),
                     Arguments.of(new ConditionalsTest.InputObj("hi", Map.of("hi", 2)), true),
                     Arguments.of(new ConditionalsTest.InputObj(2, Map.of("hi", 2)), false),
-                    Arguments.of(new ConditionalsTest.InputObj(Arrays.asList(0), Arrays.asList(0)), false), // Will check for '[0]'
+                    Arguments.of(
+                            new ConditionalsTest.InputObj(Arrays.asList(0), Arrays.asList(0)),
+                            false), // Will check for '[0]'
                     Arguments.of(new ConditionalsTest.InputObj(0, Arrays.asList(0)), true),
                     Arguments.of(new ConditionalsTest.InputObj(1, "one"), false),
                     Arguments.of(new ConditionalsTest.InputObj("o", "one"), true),
