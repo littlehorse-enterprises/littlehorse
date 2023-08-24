@@ -26,12 +26,12 @@ class PreRelease(Enum):
 
 
 class Bump:
-    def __init__(self, debug=False):
+    def __init__(self, debug: bool = False, dryrun: bool = False) -> None:
         self.console = Console()
         self.debug = debug
-        self.current = self.current_version()
+        self.dryrun = dryrun
 
-    def run_command(self, command, error_message=None):
+    def run_command(self, command: str, error_message: str = None) -> str:
         if self.debug:
             self.console.print(f"[bright_black italic]{command}[/]")
         result = subprocess.run(shlex.split(command), capture_output=True)
@@ -48,21 +48,23 @@ class Bump:
             sys.exit(result.returncode)
         return result.stdout.decode("utf-8").strip()
 
-    def current_version(self):
+    def current_version(self) -> Version:
         return Version.parse(self.run_command("git describe --abbrev=0 --tag"))
 
-    def next_version(self, release, prerelease):
-        next_version = Version.parse(str(self.current))
+    def next_version(
+        self, current_version: Version, release: str, prerelease: str
+    ) -> Version:
+        next_version = Version.parse(str(current_version))
 
-        if self.current.prerelease:
+        if current_version.prerelease:
             if release:
                 raise ValueError(
                     "Current version is a prerelease, option 'release' is not"
                     " allowed, pass 'prerelease' or empty"
                 )
             if prerelease:
-                if prerelease not in self.current.prerelease:
-                    if prerelease[0] > self.current.prerelease[0]:
+                if prerelease not in current_version.prerelease:
+                    if prerelease[0] > current_version.prerelease[0]:
                         next_version = next_version.replace(
                             prerelease=prerelease + ".0"
                         )
@@ -80,21 +82,29 @@ class Bump:
                 " 'release' and 'prerelease'"
             )
 
-        next_version = self.current.next_version(part=release)
+        next_version = current_version.next_version(part=release)
 
         if prerelease:
             next_version = next_version.bump_prerelease(prerelease)
 
         return next_version
 
-    def bump(self, release, prerelease):
-        self.console.print(f"Current version: [dodger_blue1]{self.current}[/]")
+    def bump(self, release: str, prerelease: str) -> None:
+        current_version = self.current_version()
+        self.console.print(f"Current version: [dodger_blue1]{current_version}[/]")
 
         project_path = Path(__file__, "../../../").resolve()
         gradle_properties_path = project_path.joinpath("gradle.properties").resolve()
         python_toml_path = project_path.joinpath("sdk-python/pyproject.toml").resolve()
 
         try:
+            # get next version
+            next_version = self.next_version(current_version, release, prerelease)
+
+            if self.dryrun:
+                self.console.print(f"Nex version is: [dodger_blue1]{next_version}[/]")
+                sys.exit(0)
+
             # validate
             if self.run_command("git branch --show-current") != "master":
                 raise Exception("To increase the version you must be in 'master'")
@@ -106,9 +116,6 @@ class Bump:
             self.run_command(
                 "git diff --exit-code master origin/master", "First push your commits"
             )
-
-            # get next version
-            next_version = self.next_version(release, prerelease)
 
             # get confirmation
             confirmation = self.console.input(
@@ -152,7 +159,10 @@ class Bump:
 
 
 @click.command(context_settings=CONTEXT_SETTINGS)
-@click.option("--debug", is_flag=True, help="Show the executed internal commands")
+@click.option("--debug", is_flag=True, help="Show the executed internal commands.")
+@click.option(
+    "--dryrun", is_flag=True, help="Show the next version without releasing it."
+)
 @click.option(
     "--prerelease",
     "-p",
@@ -165,7 +175,7 @@ class Bump:
     type=click.Choice([r.value for r in Release]),
     help="Define the next release version.",
 )
-def main(release, prerelease, debug):
+def main(release: str, prerelease: str, debug: bool, dryrun: bool) -> None:
     """\b
     Examples:
         If current version is a 'prerelease' (0.1.0-alpha.1):
@@ -186,7 +196,7 @@ def main(release, prerelease, debug):
     More info at https://github.com/python-semver/python-semver
     and https://semver.org/.
     """
-    bump = Bump(debug)
+    bump = Bump(debug, dryrun)
     bump.bump(release, prerelease)
 
 
