@@ -170,7 +170,9 @@ var deleteWfRunCmd = &cobra.Command{
 		common.PrintResp(getGlobalClient(cmd).DeleteWfRun(
 			context.Background(),
 			&model.DeleteWfRunRequest{
-				WfRunId: args[0],
+				Id: &model.WfRunId{
+					Id: args[0],
+				},
 			},
 		))
 	},

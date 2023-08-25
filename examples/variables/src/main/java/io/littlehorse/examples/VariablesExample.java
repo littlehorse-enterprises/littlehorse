@@ -3,9 +3,8 @@ package io.littlehorse.examples;
 import static io.littlehorse.sdk.common.proto.IndexType.LOCAL_INDEX;
 import static io.littlehorse.sdk.common.proto.IndexType.REMOTE_INDEX;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
@@ -86,7 +85,7 @@ public class VariablesExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorker(LHWorkerConfig config) {
+    public static List<LHTaskWorker> getTaskWorker(LHWorkerConfig config) throws IOException {
         MyWorker executable = new MyWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "sentiment-analysis", config),
@@ -107,11 +106,11 @@ public class VariablesExample {
         return workers;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
+        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();

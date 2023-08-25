@@ -1,0 +1,85 @@
+syntax = "proto3";
+package littlehorse;
+
+option java_multiple_files = true;
+option java_package = "io.littlehorse.common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "storage.proto";
+import "service.proto";
+
+message GetObjectRequest {
+    GetableClassEnum object_type = 1;
+    string object_id = 2;
+    int32 partition = 3;
+}
+
+message GetObjectResponse {
+    bytes response = 1;
+}
+
+message WaitForCommandRequest {
+    string command_id = 1;
+}
+
+message WaitForCommandResponse {
+    string command_id = 1;
+    google.protobuf.Timestamp result_time = 2;
+    bytes result = 3;
+}
+
+message InternalScanPb {
+    message TagScanPb {
+        optional google.protobuf.Timestamp earliest_create_time = 1;
+        optional google.protobuf.Timestamp latest_create_time = 2;
+        string key_prefix = 3;
+    }
+
+    message BoundedObjectIdScanPb {
+        string start_object_id = 1;
+        optional string end_object_id = 2;
+    }
+
+    ScanResultTypePb result_type = 1;
+    int32 limit = 2;
+    optional BookmarkPb bookmark = 3;
+    GetableClassEnum object_type = 4;
+    string store_name = 5;
+
+    // If this is set: Remote Tag Scan
+    // Else: Local Tag Scan
+    optional string partition_key = 6;
+
+    oneof scan_boundary {
+        BoundedObjectIdScanPb bounded_object_id_scan = 7;
+        TagScanPb tag_scan = 8;
+    }
+}
+
+message InternalGetAdvertisedHostsResponse {
+    map<string, LHHostInfo> hosts = 1;
+}
+
+enum ScanResultTypePb {
+    // Just return the IDs of the objects.
+    OBJECT_ID = 0;
+
+    // Return the objects themselves. This can only be done for the object id prefix
+    // scan type.
+    OBJECT = 1;
+}
+
+message InternalScanResponse {
+    repeated bytes results = 1;
+    BookmarkPb updated_bookmark = 2;
+}
+
+message PartitionBookmarkPb { // used for paginated responses
+    int32 parttion = 1;
+    optional string last_key = 2;
+}
+
+message BookmarkPb { // Used for paginated responses
+    map<int32, PartitionBookmarkPb> in_progress_partitions = 1;
+    repeated int32 completed_partitions = 2;
+}

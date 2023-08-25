@@ -2,30 +2,19 @@
   "java.configuration.updateBuildConfiguration": "automatic",
   "protoc": {
     "options": [
-      "-I=./schemas/"
+      "-I=./schemas/:./schemas/internal"
     ]
   },
   "[java]": {
-    "editor.formatOnSave": true,
-    "editor.inlayHints.enabled": "off"
-  },
-  "[yaml]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": false,
+    "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle",
+    "editor.inlayHints.enabled": "off",
+    "spotlessGradle.format.enable": false
   },
   "[markdown]": {
     "editor.formatOnSave": false
   },
   "editor.formatOnSave": true,
-  "java.test.defaultConfig": "reflection-allowed",
-  "java.test.config": {
-    "name": "reflection-allowed",
-    "vmArgs": [
-      "--add-opens",
-      "java.base/java.lang=ALL-UNNAMED",
-      "--add-opens",
-      "java.base/java.util=ALL-UNNAMED"
-    ]
-  },
   "java.compile.nullAnalysis.mode": "automatic",
   "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx8G -Xms100m -Xlog:disable",
   "[go]": {

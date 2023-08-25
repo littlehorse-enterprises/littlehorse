@@ -16,8 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ListTaskMetricsResponse() {
-    code_ = 0;
-    message_ = "";
     results_ = java.util.Collections.emptyList();
   }
 
@@ -46,84 +44,18 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.ListTaskMetricsResponse.class, io.littlehorse.sdk.common.proto.ListTaskMetricsResponse.Builder.class);
   }
 
-  private int bitField0_;
-  public static final int CODE_FIELD_NUMBER = 1;
-  private int code_ = 0;
-  /**
-   * <code>.littlehorse.LHResponseCode code = 1;</code>
-   * @return The enum numeric value on the wire for code.
-   */
-  @java.lang.Override public int getCodeValue() {
-    return code_;
-  }
-  /**
-   * <code>.littlehorse.LHResponseCode code = 1;</code>
-   * @return The code.
-   */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.LHResponseCode getCode() {
-    io.littlehorse.sdk.common.proto.LHResponseCode result = io.littlehorse.sdk.common.proto.LHResponseCode.forNumber(code_);
-    return result == null ? io.littlehorse.sdk.common.proto.LHResponseCode.UNRECOGNIZED : result;
-  }
-
-  public static final int MESSAGE_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object message_ = "";
-  /**
-   * <code>optional string message = 2;</code>
-   * @return Whether the message field is set.
-   */
-  @java.lang.Override
-  public boolean hasMessage() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <code>optional string message = 2;</code>
-   * @return The message.
-   */
-  @java.lang.Override
-  public java.lang.String getMessage() {
-    java.lang.Object ref = message_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      message_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>optional string message = 2;</code>
-   * @return The bytes for message.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getMessageBytes() {
-    java.lang.Object ref = message_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      message_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int RESULTS_FIELD_NUMBER = 3;
+  public static final int RESULTS_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.TaskDefMetrics> results_;
   /**
-   * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+   * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
    */
   @java.lang.Override
   public java.util.List<io.littlehorse.sdk.common.proto.TaskDefMetrics> getResultsList() {
     return results_;
   }
   /**
-   * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+   * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
    */
   @java.lang.Override
   public java.util.List<? extends io.littlehorse.sdk.common.proto.TaskDefMetricsOrBuilder> 
@@ -131,21 +63,21 @@ private static final long serialVersionUID = 0L;
     return results_;
   }
   /**
-   * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+   * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
    */
   @java.lang.Override
   public int getResultsCount() {
     return results_.size();
   }
   /**
-   * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+   * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.TaskDefMetrics getResults(int index) {
     return results_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+   * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.TaskDefMetricsOrBuilder getResultsOrBuilder(
@@ -167,14 +99,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCode.OK.getNumber()) {
-      output.writeEnum(1, code_);
-    }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
-    }
     for (int i = 0; i < results_.size(); i++) {
-      output.writeMessage(3, results_.get(i));
+      output.writeMessage(1, results_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -185,16 +111,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCode.OK.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, code_);
-    }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
-    }
     for (int i = 0; i < results_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, results_.get(i));
+        .computeMessageSize(1, results_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -211,12 +130,6 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.ListTaskMetricsResponse other = (io.littlehorse.sdk.common.proto.ListTaskMetricsResponse) obj;
 
-    if (code_ != other.code_) return false;
-    if (hasMessage() != other.hasMessage()) return false;
-    if (hasMessage()) {
-      if (!getMessage()
-          .equals(other.getMessage())) return false;
-    }
     if (!getResultsList()
         .equals(other.getResultsList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -230,12 +143,6 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + CODE_FIELD_NUMBER;
-    hash = (53 * hash) + code_;
-    if (hasMessage()) {
-      hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
-      hash = (53 * hash) + getMessage().hashCode();
-    }
     if (getResultsCount() > 0) {
       hash = (37 * hash) + RESULTS_FIELD_NUMBER;
       hash = (53 * hash) + getResultsList().hashCode();
@@ -369,15 +276,13 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      code_ = 0;
-      message_ = "";
       if (resultsBuilder_ == null) {
         results_ = java.util.Collections.emptyList();
       } else {
         results_ = null;
         resultsBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
 
@@ -412,9 +317,9 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.ListTaskMetricsResponse result) {
       if (resultsBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0)) {
+        if (((bitField0_ & 0x00000001) != 0)) {
           results_ = java.util.Collections.unmodifiableList(results_);
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000001);
         }
         result.results_ = results_;
       } else {
@@ -424,15 +329,6 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.ListTaskMetricsResponse result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.code_ = code_;
-      }
-      int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.message_ = message_;
-        to_bitField0_ |= 0x00000001;
-      }
-      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -479,19 +375,11 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.ListTaskMetricsResponse other) {
       if (other == io.littlehorse.sdk.common.proto.ListTaskMetricsResponse.getDefaultInstance()) return this;
-      if (other.code_ != 0) {
-        setCodeValue(other.getCodeValue());
-      }
-      if (other.hasMessage()) {
-        message_ = other.message_;
-        bitField0_ |= 0x00000002;
-        onChanged();
-      }
       if (resultsBuilder_ == null) {
         if (!other.results_.isEmpty()) {
           if (results_.isEmpty()) {
             results_ = other.results_;
-            bitField0_ = (bitField0_ & ~0x00000004);
+            bitField0_ = (bitField0_ & ~0x00000001);
           } else {
             ensureResultsIsMutable();
             results_.addAll(other.results_);
@@ -504,7 +392,7 @@ private static final long serialVersionUID = 0L;
             resultsBuilder_.dispose();
             resultsBuilder_ = null;
             results_ = other.results_;
-            bitField0_ = (bitField0_ & ~0x00000004);
+            bitField0_ = (bitField0_ & ~0x00000001);
             resultsBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getResultsFieldBuilder() : null;
@@ -539,17 +427,7 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 8: {
-              code_ = input.readEnum();
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 8
-            case 18: {
-              message_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 18
-            case 26: {
+            case 10: {
               io.littlehorse.sdk.common.proto.TaskDefMetrics m =
                   input.readMessage(
                       io.littlehorse.sdk.common.proto.TaskDefMetrics.parser(),
@@ -561,7 +439,7 @@ private static final long serialVersionUID = 0L;
                 resultsBuilder_.addMessage(m);
               }
               break;
-            } // case 26
+            } // case 10
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -579,144 +457,12 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private int code_ = 0;
-    /**
-     * <code>.littlehorse.LHResponseCode code = 1;</code>
-     * @return The enum numeric value on the wire for code.
-     */
-    @java.lang.Override public int getCodeValue() {
-      return code_;
-    }
-    /**
-     * <code>.littlehorse.LHResponseCode code = 1;</code>
-     * @param value The enum numeric value on the wire for code to set.
-     * @return This builder for chaining.
-     */
-    public Builder setCodeValue(int value) {
-      code_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.LHResponseCode code = 1;</code>
-     * @return The code.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.LHResponseCode getCode() {
-      io.littlehorse.sdk.common.proto.LHResponseCode result = io.littlehorse.sdk.common.proto.LHResponseCode.forNumber(code_);
-      return result == null ? io.littlehorse.sdk.common.proto.LHResponseCode.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.littlehorse.LHResponseCode code = 1;</code>
-     * @param value The code to set.
-     * @return This builder for chaining.
-     */
-    public Builder setCode(io.littlehorse.sdk.common.proto.LHResponseCode value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      bitField0_ |= 0x00000001;
-      code_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.LHResponseCode code = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearCode() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      code_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object message_ = "";
-    /**
-     * <code>optional string message = 2;</code>
-     * @return Whether the message field is set.
-     */
-    public boolean hasMessage() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>optional string message = 2;</code>
-     * @return The message.
-     */
-    public java.lang.String getMessage() {
-      java.lang.Object ref = message_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        message_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>optional string message = 2;</code>
-     * @return The bytes for message.
-     */
-    public com.google.protobuf.ByteString
-        getMessageBytes() {
-      java.lang.Object ref = message_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        message_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>optional string message = 2;</code>
-     * @param value The message to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMessage(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      message_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional string message = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearMessage() {
-      message_ = getDefaultInstance().getMessage();
-      bitField0_ = (bitField0_ & ~0x00000002);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional string message = 2;</code>
-     * @param value The bytes for message to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMessageBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      message_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-
     private java.util.List<io.littlehorse.sdk.common.proto.TaskDefMetrics> results_ =
       java.util.Collections.emptyList();
     private void ensureResultsIsMutable() {
-      if (!((bitField0_ & 0x00000004) != 0)) {
+      if (!((bitField0_ & 0x00000001) != 0)) {
         results_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.TaskDefMetrics>(results_);
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000001;
        }
     }
 
@@ -724,7 +470,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.TaskDefMetrics, io.littlehorse.sdk.common.proto.TaskDefMetrics.Builder, io.littlehorse.sdk.common.proto.TaskDefMetricsOrBuilder> resultsBuilder_;
 
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.TaskDefMetrics> getResultsList() {
       if (resultsBuilder_ == null) {
@@ -734,7 +480,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public int getResultsCount() {
       if (resultsBuilder_ == null) {
@@ -744,7 +490,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefMetrics getResults(int index) {
       if (resultsBuilder_ == null) {
@@ -754,7 +500,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder setResults(
         int index, io.littlehorse.sdk.common.proto.TaskDefMetrics value) {
@@ -771,7 +517,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder setResults(
         int index, io.littlehorse.sdk.common.proto.TaskDefMetrics.Builder builderForValue) {
@@ -785,7 +531,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder addResults(io.littlehorse.sdk.common.proto.TaskDefMetrics value) {
       if (resultsBuilder_ == null) {
@@ -801,7 +547,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder addResults(
         int index, io.littlehorse.sdk.common.proto.TaskDefMetrics value) {
@@ -818,7 +564,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder addResults(
         io.littlehorse.sdk.common.proto.TaskDefMetrics.Builder builderForValue) {
@@ -832,7 +578,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder addResults(
         int index, io.littlehorse.sdk.common.proto.TaskDefMetrics.Builder builderForValue) {
@@ -846,7 +592,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder addAllResults(
         java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.TaskDefMetrics> values) {
@@ -861,12 +607,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder clearResults() {
       if (resultsBuilder_ == null) {
         results_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
       } else {
         resultsBuilder_.clear();
@@ -874,7 +620,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public Builder removeResults(int index) {
       if (resultsBuilder_ == null) {
@@ -887,14 +633,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefMetrics.Builder getResultsBuilder(
         int index) {
       return getResultsFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefMetricsOrBuilder getResultsOrBuilder(
         int index) {
@@ -904,7 +650,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.TaskDefMetricsOrBuilder> 
          getResultsOrBuilderList() {
@@ -915,14 +661,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefMetrics.Builder addResultsBuilder() {
       return getResultsFieldBuilder().addBuilder(
           io.littlehorse.sdk.common.proto.TaskDefMetrics.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefMetrics.Builder addResultsBuilder(
         int index) {
@@ -930,7 +676,7 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.TaskDefMetrics.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.TaskDefMetrics results = 3;</code>
+     * <code>repeated .littlehorse.TaskDefMetrics results = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.TaskDefMetrics.Builder> 
          getResultsBuilderList() {
@@ -943,7 +689,7 @@ private static final long serialVersionUID = 0L;
         resultsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.sdk.common.proto.TaskDefMetrics, io.littlehorse.sdk.common.proto.TaskDefMetrics.Builder, io.littlehorse.sdk.common.proto.TaskDefMetricsOrBuilder>(
                 results_,
-                ((bitField0_ & 0x00000004) != 0),
+                ((bitField0_ & 0x00000001) != 0),
                 getParentForChildren(),
                 isClean());
         results_ = null;

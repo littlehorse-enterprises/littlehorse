@@ -35,25 +35,27 @@ public final class VariableOuterClass {
     java.lang.String[] descriptorData = {
       "\n\016variable.proto\022\013littlehorse\032\037google/pr" +
       "otobuf/timestamp.proto\032\022common_enums.pro" +
-      "to\"\216\002\n\rVariableValue\022\'\n\004type\030\001 \001(\0162\031.lit" +
-      "tlehorse.VariableType\022\025\n\010json_obj\030\002 \001(\tH" +
-      "\000\210\001\001\022\025\n\010json_arr\030\003 \001(\tH\001\210\001\001\022\023\n\006double\030\004 " +
-      "\001(\001H\002\210\001\001\022\021\n\004bool\030\005 \001(\010H\003\210\001\001\022\020\n\003str\030\006 \001(\t" +
-      "H\004\210\001\001\022\020\n\003int\030\007 \001(\003H\005\210\001\001\022\022\n\005bytes\030\010 \001(\014H\006" +
-      "\210\001\001B\013\n\t_json_objB\013\n\t_json_arrB\t\n\007_double" +
-      "B\007\n\005_boolB\006\n\004_strB\006\n\004_intB\010\n\006_bytes\"\233\001\n\010" +
-      "Variable\022)\n\005value\030\001 \001(\0132\032.littlehorse.Va" +
-      "riableValue\022\021\n\twf_run_id\030\002 \001(\t\022\031\n\021thread" +
-      "_run_number\030\003 \001(\005\022\014\n\004name\030\004 \001(\t\022(\n\004date\030" +
-      "\005 \001(\0132\032.google.protobuf.TimestampB,\n\037io." +
-      "littlehorse.sdk.common.protoP\001Z\007.;modelb" +
-      "\006proto3"
+      "to\032\017object_id.proto\"\216\002\n\rVariableValue\022\'\n" +
+      "\004type\030\001 \001(\0162\031.littlehorse.VariableType\022\025" +
+      "\n\010json_obj\030\002 \001(\tH\000\210\001\001\022\025\n\010json_arr\030\003 \001(\tH" +
+      "\001\210\001\001\022\023\n\006double\030\004 \001(\001H\002\210\001\001\022\021\n\004bool\030\005 \001(\010H" +
+      "\003\210\001\001\022\020\n\003str\030\006 \001(\tH\004\210\001\001\022\020\n\003int\030\007 \001(\003H\005\210\001\001" +
+      "\022\022\n\005bytes\030\010 \001(\014H\006\210\001\001B\013\n\t_json_objB\013\n\t_js" +
+      "on_arrB\t\n\007_doubleB\007\n\005_boolB\006\n\004_strB\006\n\004_i" +
+      "ntB\010\n\006_bytes\"\306\001\n\010Variable\022)\n\005value\030\001 \001(\013" +
+      "2\032.littlehorse.VariableValue\022\021\n\twf_run_i" +
+      "d\030\002 \001(\t\022\031\n\021thread_run_number\030\003 \001(\005\022\014\n\004na" +
+      "me\030\004 \001(\t\022(\n\004date\030\005 \001(\0132\032.google.protobuf" +
+      ".Timestamp\022)\n\nwf_spec_id\030\006 \001(\0132\025.littleh" +
+      "orse.WfSpecIdB,\n\037io.littlehorse.sdk.comm" +
+      "on.protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.TimestampProto.getDescriptor(),
           io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor(),
+          io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
         });
     internal_static_littlehorse_VariableValue_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -66,9 +68,10 @@ public final class VariableOuterClass {
     internal_static_littlehorse_Variable_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_Variable_descriptor,
-        new java.lang.String[] { "Value", "WfRunId", "ThreadRunNumber", "Name", "Date", });
+        new java.lang.String[] { "Value", "WfRunId", "ThreadRunNumber", "Name", "Date", "WfSpecId", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
+    io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

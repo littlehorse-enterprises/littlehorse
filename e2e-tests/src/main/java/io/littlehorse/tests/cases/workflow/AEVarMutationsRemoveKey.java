@@ -1,8 +1,7 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -13,13 +12,14 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class AEVarMutationsRemoveKey extends WorkflowLogicTest {
 
-    public AEVarMutationsRemoveKey(LHClient client, LHWorkerConfig workerConfig) {
+    public AEVarMutationsRemoveKey(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -40,7 +40,8 @@ public class AEVarMutationsRemoveKey extends WorkflowLogicTest {
         return Arrays.asList(new AESimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         String wfWithFoo = runWf(client, Arg.of("my-obj", Map.of("foo", "bar", "baz", 2)));
         String wfWithoutFoo = runWf(client, Arg.of("my-obj", Map.of("baz", 2)));
 

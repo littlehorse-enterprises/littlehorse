@@ -35,26 +35,26 @@ public interface TaskWorkerMetadataOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getLatestHeartbeatOrBuilder();
 
   /**
-   * <code>repeated .littlehorse.HostInfo hosts = 3;</code>
+   * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.HostInfo> 
+  java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo> 
       getHostsList();
   /**
-   * <code>repeated .littlehorse.HostInfo hosts = 3;</code>
+   * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.HostInfo getHosts(int index);
+  io.littlehorse.sdk.common.proto.LHHostInfo getHosts(int index);
   /**
-   * <code>repeated .littlehorse.HostInfo hosts = 3;</code>
+   * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
    */
   int getHostsCount();
   /**
-   * <code>repeated .littlehorse.HostInfo hosts = 3;</code>
+   * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.HostInfoOrBuilder> 
+  java.util.List<? extends io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder> 
       getHostsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.HostInfo hosts = 3;</code>
+   * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.HostInfoOrBuilder getHostsOrBuilder(
+  io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder getHostsOrBuilder(
       int index);
 }

@@ -46,5 +46,7 @@ public class LHConstants {
     public static final long MAX_TASK_WORKER_INACTIVITY = 15L;
 
     public static final String CLUSTER_LEVEL_METRIC = "CLUSTER_LEVEL_METRIC";
+
+    public static final int INFINITE_RETENTION = -1;
 }
 // NOTE: Use m6a.4xlarge

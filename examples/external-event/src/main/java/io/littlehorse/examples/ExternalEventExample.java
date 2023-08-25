@@ -1,11 +1,13 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.client.LHClient;
+import io.grpc.StatusRuntimeException;
+import io.grpc.Status.Code;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -34,7 +36,7 @@ public class ExternalEventExample {
         return new WorkflowImpl(
             "example-external-event",
             thread -> {
-                WfRunVariable name = thread.addVariable("name", VariableType.STR);
+                WfRunVariable name = thread.addVariable("name", VariableType.STR).withIndex(IndexType.REMOTE_INDEX);
 
                 thread.execute("ask-for-name");
 
@@ -59,7 +61,7 @@ public class ExternalEventExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) {
+    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) throws IOException {
         WaitForExternalEventWorker executable = new WaitForExternalEventWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "ask-for-name", config),
@@ -80,11 +82,11 @@ public class ExternalEventExample {
         return workers;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
+        LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
         Workflow workflow = getWorkflow();
@@ -113,13 +115,20 @@ public class ExternalEventExample {
 
         for (String externalEventName : externalEventNames) {
             log.debug("Registering external event {}", externalEventName);
-            client.putExternalEventDef(
-                PutExternalEventDefRequest
-                    .newBuilder()
-                    .setName(externalEventName)
-                    .build(),
-                true
-            );
+            try {
+                client.putExternalEventDef(
+                    PutExternalEventDefRequest
+                        .newBuilder()
+                        .setName(externalEventName)
+                        .build()
+                );
+            } catch(StatusRuntimeException exn) {
+                if (exn.getStatus().getCode() == Code.ALREADY_EXISTS) {
+                    log.debug("External event already exists!");
+                } else {
+                    throw exn;
+                }
+            }
         }
 
         // Register a workflow if it does not exist

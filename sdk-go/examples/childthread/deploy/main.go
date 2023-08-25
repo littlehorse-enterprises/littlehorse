@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
@@ -18,7 +19,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	resp, err := client.PutWfSpec(putWf)
+	resp, err := (*client).PutWfSpec(context.Background(), putWf)
 	if err != nil {
 		log.Fatal(err)
 	}

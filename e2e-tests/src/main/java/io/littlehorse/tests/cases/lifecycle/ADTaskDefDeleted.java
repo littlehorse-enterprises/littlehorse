@@ -1,14 +1,21 @@
 package io.littlehorse.tests.cases.lifecycle;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
+import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
+import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.WfRun;
+import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.tests.Test;
+import java.io.IOException;
 
 /*
  * This test involves deploying a WfSpec, then deleting a TaskDef, then
@@ -28,7 +35,7 @@ public class ADTaskDefDeleted extends Test {
     private LHTaskWorker worker1;
     private LHTaskWorker worker2;
 
-    public ADTaskDefDeleted(LHClient client, LHWorkerConfig config) {
+    public ADTaskDefDeleted(LHPublicApiBlockingStub client, LHWorkerConfig config) {
         super(client, config);
     }
 
@@ -41,7 +48,7 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
                 """;
     }
 
-    public void test() throws LHApiError, InterruptedException {
+    public void test() throws InterruptedException, IOException {
         worker1 = new LHTaskWorker(new TaskWfSpecLifecycleWorker(), TASK_DEF_1, workerConfig);
         worker1.registerTaskDef(true);
         worker2 = new LHTaskWorker(new TaskWfSpecLifecycleWorker(), TASK_DEF_2, workerConfig);
@@ -53,19 +60,23 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
                 })
                 .registerWfSpec(client);
 
-        Thread.sleep(100); // Wait for the data to propagate
+        Thread.sleep(200); // Wait for the data to propagate
         worker1.start();
         worker2.start();
 
         // Delete the TaskDef
-        client.deleteTaskDef(TASK_DEF_2);
+        client.deleteTaskDef(DeleteTaskDefRequest.newBuilder()
+                .setId(TaskDefId.newBuilder().setName(TASK_DEF_2))
+                .build());
 
         Thread.sleep(120);
 
-        wfRunId = client.runWf(WF_SPEC_NAME, null, null);
+        wfRunId = client.runWf(
+                        RunWfRequest.newBuilder().setWfSpecName(WF_SPEC_NAME).build())
+                .getId();
 
         Thread.sleep(120);
-        WfRun wfRun = client.getWfRun(wfRunId);
+        WfRun wfRun = client.getWfRun(WfRunId.newBuilder().setId(wfRunId).build());
         if (wfRun.getStatus() != LHStatus.ERROR) {
             throw new RuntimeException("Should have failed!");
         }
@@ -75,14 +86,22 @@ Tests that when we run a WfRun after deleting one of the necessary TaskDef's:
         }
     }
 
-    public void cleanup() throws LHApiError {
+    public void cleanup() {
         try {
-            client.deleteWfRun(wfRunId);
-            client.deleteWfSpec(WF_SPEC_NAME, 0);
-            client.deleteTaskDef(TASK_DEF_1);
+            client.deleteWfRun(DeleteWfRunRequest.newBuilder()
+                    .setId(WfRunId.newBuilder().setId(wfRunId))
+                    .build());
+            client.deleteWfSpec(DeleteWfSpecRequest.newBuilder()
+                    .setId(WfSpecId.newBuilder().setName(WF_SPEC_NAME))
+                    .build());
+            client.deleteTaskDef(DeleteTaskDefRequest.newBuilder()
+                    .setId(TaskDefId.newBuilder().setName(TASK_DEF_1))
+                    .build());
             worker1.close();
             worker2.close();
-            client.deleteTaskDef(TASK_DEF_2);
+            client.deleteTaskDef(DeleteTaskDefRequest.newBuilder()
+                    .setId(TaskDefId.newBuilder().setName(TASK_DEF_2))
+                    .build());
         } catch (Exception exn) {
         }
     }
