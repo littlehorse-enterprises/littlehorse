@@ -46,16 +46,16 @@ public class ServerListenerConfig {
         try {
             return switch (protocol) {
                 case TLS -> {
-                    TlsConfig tlsConfig = config.getTlsConfigByListener(name);
+                    TLSConfig tlsConfig = config.getTLSConfiguration(name);
                     yield TlsServerCredentials.newBuilder()
-                            .keyManager(tlsConfig.getCert(), tlsConfig.getKey())
+                            .keyManager(tlsConfig.getCertChain(), tlsConfig.getPrivateKey())
                             .build();
                 }
                 case MTLS -> {
-                    TlsConfig mtlsConfig = config.getTlsConfigByListener(name);
+                    MTLSConfig mtlsConfig = config.getMTLSConfiguration(name);
                     yield TlsServerCredentials.newBuilder()
-                            .keyManager(mtlsConfig.getCert(), mtlsConfig.getKey())
-                            .trustManager(mtlsConfig.getCaCert())
+                            .keyManager(mtlsConfig.getCertChain(), mtlsConfig.getPrivateKey())
+                            .trustManager(mtlsConfig.getCaCertificate())
                             .clientAuth(TlsServerCredentials.ClientAuth.REQUIRE)
                             .build();
                 }
@@ -68,7 +68,7 @@ public class ServerListenerConfig {
 
     public ServerAuthorizer getAuthorizer() {
         return switch (authorizationProtocol) {
-            case OAUTH -> new OAuthServerAuthorizer(config.getOAuthConfigByListener(name));
+            case OAUTH -> new OAuthServerAuthorizer(config.getOAuthConfig());
             default -> InsecureServerAuthorizer.create();
         };
     }

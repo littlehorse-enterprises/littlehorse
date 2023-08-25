@@ -13,21 +13,16 @@ import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.server.auth.AuthorizationProtocol;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.listener.ListenerProtocol;
+import io.littlehorse.server.listener.MTLSConfig;
 import io.littlehorse.server.listener.ServerListenerConfig;
-import io.littlehorse.server.listener.TlsConfig;
-import io.littlehorse.server.listener.TlsConfig.TlsConfigBuilder;
+import io.littlehorse.server.listener.TLSConfig;
 import io.littlehorse.server.streams.ServerTopology;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +36,7 @@ import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.StreamsConfig;
+import org.jetbrains.annotations.Nullable;
 
 @Slf4j
 public class LHConfig extends ConfigBase {
@@ -91,7 +87,13 @@ public class LHConfig extends ConfigBase {
     public static final String ADVERTISED_LISTENERS_KEY = "LHS_ADVERTISED_LISTENERS";
     public static final String LISTENERS_KEY = "LHS_LISTENERS";
     public static final String LISTENERS_PROTOCOL_MAP_KEY = "LHS_LISTENERS_PROTOCOL_MAP";
-    public static final String LISTENERS_AUTHORIZATION_MAP_KEY = "LHS_LISTENERS_AUTHORIZATION_MAP";
+    public static final String LISTENERS_AUTHENTICATION_MAP_KEY = "LHS_LISTENERS_AUTHENTICATION_MAP";
+    public static final String CA_CERT = "LHS_CA_CERT";
+    public static final String OAUTH_CLIENT_ID = "LHS_OAUTH_CLIENT_ID";
+    public static final String OAUTH_CLIENT_SECRET = "LHS_OAUTH_CLIENT_SECRET";
+    public static final String OAUTH_SERVER_URL = "LHS_OAUTH_SERVER_URL";
+    public static final String OAUTH_CLIENT_ID_FILE = "LHS_OAUTH_CLIENT_ID_FILE";
+    public static final String OAUTH_CLIENT_SECRET_FILE = "LHS_OAUTH_CLIENT_SECRET_FILE";
     private List<ServerListenerConfig> listenerConfigs;
     private List<AdvertisedListenerConfig> advertisedListenerConfigs;
     private Map<String, ListenerProtocol> listenersProtocolMap;
@@ -196,16 +198,12 @@ public class LHConfig extends ConfigBase {
 
     // Internal topics are manually created because:
     // 1.- It makes it possible to manage/create topics using an external tool (e.g
-    // terraform,
-    // strimzi, etc.)
+    // terraform, strimzi, etc.)
     // 2.- It allows to explicitly manage the configuration of the topics
     // Note: Kafka streams doesn't support disabling automatic internal topic
-    // creation. Thus,
-    // internal topics
-    // that are not explicitly created here will be automatically created by Kafka
-    // Stream. Please
-    // make sure to
-    // manually create all internal topics. Kafka has opened KIP-698 to solve this.
+    // creation. Thus, internal topics that are not explicitly created here will be
+    // automatically created by Kafka Stream. Please make sure to manually create all internal topics.
+    // Kafka has opened KIP-698 to solve this.
     public static List<NewTopic> getAllTopics(String clusterId, short replicationFactor, int clusterPartitions) {
         HashMap<String, String> compactedTopicConfig = new HashMap<>() {
             {
@@ -317,66 +315,92 @@ public class LHConfig extends ConfigBase {
         return Integer.parseInt(getOrSetDefault(LHConfig.INTERNAL_BIND_PORT_KEY, "2011"));
     }
 
-    public OAuthConfig getOAuthConfigByListener(String listenerName) {
-        String configPrefix = "LHS_LISTENER_" + listenerName;
+    public OAuthConfig getOAuthConfig() {
 
-        String clientId = getOrSetDefault(configPrefix + "_CLIENT_ID", null);
-        String clientSecret = getOrSetDefault(configPrefix + "_CLIENT_SECRET", null);
-        String authorizationServer = getOrSetDefault(configPrefix + "_AUTHORIZATION_SERVER", null);
+        String clientId = getOrSetDefault(OAUTH_CLIENT_ID, null);
+        String clientSecret = getOrSetDefault(OAUTH_CLIENT_SECRET, null);
+        String authorizationServer = getOrSetDefault(OAUTH_SERVER_URL, null);
 
-        String clientIdFile = getOrSetDefault(configPrefix + "_CLIENT_ID_FILE", null);
-        String clientSecretFile = getOrSetDefault(configPrefix + "_CLIENT_SECRET_FILE", null);
+        String clientIdFile = getOrSetDefault(OAUTH_CLIENT_ID_FILE, null);
+        String clientSecretFile = getOrSetDefault(OAUTH_CLIENT_SECRET_FILE, null);
 
         if (clientSecretFile != null) {
-            log.info("Loading OAuth2 Client Secret form file");
+            log.info("Loading OAuth2 Client Secret from file");
             clientSecret = loadSettingFromFile(clientSecretFile);
         }
 
         if (clientIdFile != null) {
-            log.info("Loading OAuth2 Client Id form files");
+            log.info("Loading OAuth2 Client Id from file");
             clientId = loadSettingFromFile(clientIdFile);
         }
 
         if (clientId == null || clientSecret == null || authorizationServer == null) {
             throw new LHMisconfigurationException(
-                    """
-                            OAuth configuration called but not provided.
-                            Check missing client id, client secret or authorization server endpoint
-                            """);
+                    "OAuth configuration called but not provided. Check missing client id, client secret or authorization server endpoint");
         }
 
+        final URI parsedUrl;
         try {
-            return OAuthConfig.builder()
-                    .authorizationServer(URI.create(authorizationServer))
-                    .clientId(clientId)
-                    .clientSecret(clientSecret)
-                    .build();
+            parsedUrl = URI.create(authorizationServer);
         } catch (IllegalArgumentException e) {
-            throw new LHMisconfigurationException("Malformed URL check: " + configPrefix + "_AUTHORIZATION_SERVER");
+            throw new LHMisconfigurationException("Malformed URL check " + OAUTH_SERVER_URL);
         }
+
+        return OAuthConfig.builder()
+                .authorizationServer(parsedUrl)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .build();
     }
 
-    public TlsConfig getTlsConfigByListener(String listenerName) {
-        String configPrefix = "LHS_LISTENER_" + listenerName;
+    public MTLSConfig getMTLSConfiguration(String listenerName) {
+        String keyConfigName = "LHS_LISTENER_" + listenerName + "_KEY";
+        String certConfigName = "LHS_LISTENER_" + listenerName + "_CERT";
 
-        String caCertFile = getOrSetDefault(configPrefix + "_CA_CERT", null);
-        String serverCertFile = getOrSetDefault(configPrefix + "_CERT", null);
-        String serverKeyFile = getOrSetDefault(configPrefix + "_KEY", null);
+        File certChain = getFile(certConfigName);
+        File privateKey = getFile(keyConfigName);
+        File caCertificate = getFile(CA_CERT);
 
-        TlsConfigBuilder builder = TlsConfig.builder();
-
-        if (caCertFile != null) {
-            builder.caCert(new File(caCertFile));
-        }
-
-        if (serverCertFile == null || serverKeyFile == null) {
+        if (certChain == null || privateKey == null || caCertificate == null) {
             throw new LHMisconfigurationException(
-                    "TLS configuration called but not provided. Check missing cert or key");
+                    "Invalid configuration: Listener " + listenerName + " was configured to use MTLS but "
+                            + keyConfigName + ", " + certConfigName + " and/or " + CA_CERT + " are missing");
         }
 
-        return builder.cert(new File(serverCertFile))
-                .key(new File(serverKeyFile))
-                .build();
+        return new MTLSConfig(caCertificate, certChain, privateKey);
+    }
+
+    public TLSConfig getTLSConfiguration(String listenerName) {
+        String keyConfigName = "LHS_LISTENER_" + listenerName + "_KEY";
+        String certConfigName = "LHS_LISTENER_" + listenerName + "_CERT";
+
+        File certChain = getFile(certConfigName);
+        File privateKey = getFile(keyConfigName);
+
+        if (certChain == null || privateKey == null) {
+            throw new LHMisconfigurationException("Invalid configuration: Listener " + listenerName
+                    + " was configured to use TLS but " + keyConfigName + " and/or " + certConfigName + " are missing");
+        }
+
+        return new TLSConfig(certChain, privateKey);
+    }
+
+    @Nullable
+    private File getFile(String configName) {
+        String fileLocation = getOrSetDefault(configName, null);
+
+        if (Strings.isNullOrEmpty(fileLocation)) {
+            return null;
+        }
+
+        File file = new File(fileLocation);
+
+        if (!file.isFile()) {
+            throw new LHMisconfigurationException(
+                    "Invalid configuration: File location specified on " + configName + " is invalid");
+        }
+
+        return file;
     }
 
     public Map<String, AuthorizationProtocol> getListenersAuthorizationMap() {
@@ -384,7 +408,7 @@ public class LHConfig extends ConfigBase {
             return listenersAuthorizationMap;
         }
 
-        String rawAuthProtocolMap = getOrSetDefault(LHConfig.LISTENERS_AUTHORIZATION_MAP_KEY, null);
+        String rawAuthProtocolMap = getOrSetDefault(LHConfig.LISTENERS_AUTHENTICATION_MAP_KEY, null);
 
         if (Strings.isNullOrEmpty(rawAuthProtocolMap)) {
             return listenersAuthorizationMap = Map.of();
@@ -394,7 +418,8 @@ public class LHConfig extends ConfigBase {
                 Arrays.stream(AuthorizationProtocol.values()).map(Enum::name).collect(Collectors.joining("|"));
 
         if (!rawAuthProtocolMap.matches("([a-zA-Z0-9_-]+:(" + regexAllAuthProtocols + ")+,?)+")) {
-            throw new LHMisconfigurationException("Invalid configuration: " + LHConfig.LISTENERS_AUTHORIZATION_MAP_KEY);
+            throw new LHMisconfigurationException(
+                    "Invalid configuration: " + LHConfig.LISTENERS_AUTHENTICATION_MAP_KEY);
         }
 
         List<String> rawAuthProtocols = Arrays.asList(rawAuthProtocolMap.split(","));
@@ -451,12 +476,18 @@ public class LHConfig extends ConfigBase {
                     AuthorizationProtocol authProtocol =
                             authMap.get(name) == null ? AuthorizationProtocol.NONE : authMap.get(name);
 
+                    if (authProtocol == AuthorizationProtocol.MTLS && protocol != ListenerProtocol.MTLS) {
+                        throw new LHMisconfigurationException(
+                                "Invalid configuration: Listener " + name
+                                        + " LHS_LISTENERS_PROTOCOL_MAP has to be MTLS in order to support MTLS for authentication");
+                    }
+
                     return ServerListenerConfig.builder()
                             .name(name)
                             .port(Integer.parseInt(port))
                             .protocol(protocol)
-                            .config(this)
                             .authorizationProtocol(authProtocol)
+                            .config(this)
                             .build();
                 })
                 .toList();

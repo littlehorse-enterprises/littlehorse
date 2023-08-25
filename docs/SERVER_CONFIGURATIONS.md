@@ -20,13 +20,13 @@
     - [`LHS_LISTENERS_PROTOCOL_MAP`](#lhs_listeners_protocol_map)
     - [`LHS_LISTENER_<LISTENER NAME>_CERT`](#lhs_listener_listener-name_cert)
     - [`LHS_LISTENER_<LISTENER NAME>_KEY`](#lhs_listener_listener-name_key)
-    - [`LHS_LISTENER_<LISTENER NAME>_CA_CERT`](#lhs_listener_listener-name_ca_cert)
-    - [`LHS_LISTENERS_AUTHORIZATION_MAP`](#lhs_listeners_authorization_map)
-    - [`LHS_LISTENER_<LISTENER NAME>_AUTHORIZATION_SERVER`](#lhs_listener_listener-name_authorization_server)
-    - [`LHS_LISTENER_<LISTENER NAME>_CLIENT_ID`](#lhs_listener_listener-name_client_id)
-    - [`LHS_LISTENER_<LISTENER NAME>_CLIENT_ID_FILE`](#lhs_listener_listener-name_client_id_file)
-    - [`LHS_LISTENER_<LISTENER NAME>_CLIENT_SECRET`](#lhs_listener_listener-name_client_secret)
-    - [`LHS_LISTENER_<LISTENER NAME>_CLIENT_SECRET_FILE`](#lhs_listener_listener-name_client_secret_file)
+    - [`LHS_CA_CERT`](#lhs_ca_cert)
+    - [`LHS_LISTENERS_AUTHENTICATION_MAP`](#lhs_listeners_authentication_map)
+    - [`LHS_OAUTH_SERVER_URL`](#lhs_oauth_server_url)
+    - [`LHS_OAUTH_CLIENT_ID`](#lhs_oauth_client_id)
+    - [`LHS_OAUTH_CLIENT_ID_FILE`](#lhs_oauth_client_id_file)
+    - [`LHS_OAUTH_CLIENT_SECRET`](#lhs_oauth_client_secret)
+    - [`LHS_OAUTH_CLIENT_SECRET_FILE`](#lhs_oauth_client_secret_file)
     - [`LHS_ADVERTISED_LISTENERS`](#lhs_advertised_listeners)
   - [Server Behavior](#server-behavior)
     - [`LHS_CLUSTER_ID`](#lhs_cluster_id)
@@ -257,9 +257,10 @@ LHS_LISTENER_MY_LISTENER_KEY=/tmp/key
 
 ---
 
-### `LHS_LISTENER_<LISTENER NAME>_CA_CERT`
+### `LHS_CA_CERT`
 
-Optional location of CA Cert file that issued the client side certificates, used by mTLS connection. Depends on `LHS_LISTENERS`.
+Optional location of CA Cert file that issued the client side certificates, used by mTLS connections. Refers to the
+Certificate Authority to trust to sign certs for the clients. This CA Cert is applied to all the listeners.
 
 Example:
 
@@ -268,7 +269,7 @@ LHS_LISTENERS=MY_LISTENER:2023
 LHS_LISTENERS_PROTOCOL_MAP=MY_LISTENER:MTLS
 LHS_LISTENER_MY_LISTENER_CERT=/tmp/certificate
 LHS_LISTENER_MY_LISTENER_KEY=/tmp/key
-LHS_LISTENER_MY_LISTENER_CA_CERT=/tmp/ca
+LHS_CA_CERT=/tmp/ca
 ...
 ```
 
@@ -278,15 +279,17 @@ LHS_LISTENER_MY_LISTENER_CA_CERT=/tmp/ca
 
 ---
 
-### `LHS_LISTENERS_AUTHORIZATION_MAP`
+### `LHS_LISTENERS_AUTHENTICATION_MAP`
 
-Map between listener names and authorization protocols. Depends on `LHS_LISTENERS`.
+Map between listener names and authentication mechanisms. Depends on `LHS_LISTENERS`.
+
+> `LHS_LISTENERS_PROTOCOL_MAP` should be set to `MTLS` for a listener in order to use `MTLS` as the authentication mechanism.
 
 Format: `<LISTENER NAME>:<AUTH PROTOCOL>`
 
 Examples of a legal list: `SECURE:OAUTH,INSECURE:NONE`
 
-Allowed protocols: `NONE`, `OAUTH`
+Allowed protocols: `NONE`, `OAUTH`, `MTLS`
 
 - **Type:** map
 - **Default:** null
@@ -294,17 +297,19 @@ Allowed protocols: `NONE`, `OAUTH`
 
 ---
 
-### `LHS_LISTENER_<LISTENER NAME>_AUTHORIZATION_SERVER`
+### `LHS_OAUTH_SERVER_URL`
 
-Optional Authorization Server URL. Used by the server to know the OpenId Connect endpoints.
-Depends on `LHS_LISTENERS`.
+Optional OAuth server URL. Used by the server to authenticate incoming calls.
+This OAuth server url is used by all `OAUTH` listeners.
+
+> Needs to be set if any listener specifies `OAUTH` as an authentication mechanism in `LHS_LISTENERS_AUTHENTICATION_MAP`
 
 Example:
 
 ```
 LHS_LISTENERS=MY_LISTENER:2023
-LHS_LISTENERS_AUTHORIZATION_MAP=MY_LISTENER:OAUTH
-LHS_LISTENER_MY_LISTENER_AUTHORIZATION_SERVER=http://localhost:8888/realms/lh
+LHS_LISTENERS_AUTHENTICATION_MAP=MY_LISTENER:OAUTH
+LHS_OAUTH_SERVER_URL=http://localhost:8888/realms/lh
 ...
 ```
 
@@ -314,17 +319,16 @@ LHS_LISTENER_MY_LISTENER_AUTHORIZATION_SERVER=http://localhost:8888/realms/lh
 
 ---
 
-### `LHS_LISTENER_<LISTENER NAME>_CLIENT_ID`
+### `LHS_OAUTH_CLIENT_ID`
 
-Optional OAuth2 Client Id. Used by the Worker to identify itself at an Authorization Server. Client Credentials Flow.
-Depends on `LHS_LISTENERS`.
+Optional OAuth2 Client Id. This OAuth client id is used by all `OAUTH` listeners, and authenticates all incoming calls against the OAuth server.
 
 Example:
 
 ```
 LHS_LISTENERS=MY_LISTENER:2023
-LHS_LISTENERS_AUTHORIZATION_MAP=MY_LISTENER:OAUTH
-LHS_LISTENER_MY_LISTENER_CLIENT_ID=server
+LHS_LISTENERS_AUTHENTICATION_MAP=MY_LISTENER:OAUTH
+LHS_OAUTH_CLIENT_ID=server
 ...
 ```
 
@@ -334,18 +338,17 @@ LHS_LISTENER_MY_LISTENER_CLIENT_ID=server
 
 ---
 
-### `LHS_LISTENER_<LISTENER NAME>_CLIENT_ID_FILE`
+### `LHS_OAUTH_CLIENT_ID_FILE`
 
-Optional OAuth2 Client Id. Used by the Worker to identify itself at an Authorization Server. Client Credentials Flow.
-Depends on `LHS_LISTENERS`. If it is different to null it overrides the `LHS_LISTENER_<LISTENER NAME>_CLIENT_ID` config
-and load the client id from the file.
+Optional OAuth2 Client Id. This OAuth client id is used by all `OAUTH` listeners, and authenticates all incoming calls against the OAuth server. 
+If it is different to null it overrides the `LHS_OAUTH_CLIENT_ID` config and loads the client id from the file.
 
 Example:
 
 ```
 LHS_LISTENERS=MY_LISTENER:2023
-LHS_LISTENERS_AUTHORIZATION_MAP=MY_LISTENER:OAUTH
-LHS_LISTENER_MY_LISTENER_CLIENT_ID_FILE=/temp/client_id
+LHS_LISTENERS_AUTHENTICATION_MAP=MY_LISTENER:OAUTH
+LHS_OAUTH_CLIENT_ID_FILE=/temp/client_id
 ...
 ```
 
@@ -355,17 +358,16 @@ LHS_LISTENER_MY_LISTENER_CLIENT_ID_FILE=/temp/client_id
 
 ---
 
-### `LHS_LISTENER_<LISTENER NAME>_CLIENT_SECRET`
+### `LHS_OAUTH_CLIENT_SECRET`
 
-Optional OAuth2 Client Secret. Used by the Worker to identify itself at an Authorization Server. Client Credentials Flow.
-Depends on `LHS_LISTENERS`.
+Optional OAuth2 Client Secret. This OAuth client secret is used by all `OAUTH` listeners, and authenticates all incoming calls against the OAuth server.
 
 Example:
 
 ```
 LHS_LISTENERS=MY_LISTENER:2023
-LHS_LISTENERS_AUTHORIZATION_MAP=MY_LISTENER:OAUTH
-LHS_LISTENER_MY_LISTENER_CLIENT_SECRET=3bdca420cf6c48e2aa4f56d46d6327e0
+LHS_LISTENERS_AUTHENTICATION_MAP=MY_LISTENER:OAUTH
+LHS_OAUTH_CLIENT_SECRET=3bdca420cf6c48e2aa4f56d46d6327e0
 ...
 ```
 
@@ -375,18 +377,17 @@ LHS_LISTENER_MY_LISTENER_CLIENT_SECRET=3bdca420cf6c48e2aa4f56d46d6327e0
 
 ---
 
-### `LHS_LISTENER_<LISTENER NAME>_CLIENT_SECRET_FILE`
+### `LHS_OAUTH_CLIENT_SECRET_FILE`
 
-Optional OAuth2 Client Secret. Used by the Worker to identify itself at an Authorization Server. Client Credentials Flow.
-Depends on `LHS_LISTENERS`. If it is different to null it overrides the `LHS_LISTENER_<LISTENER NAME>_CLIENT_SECRET` config
-and load the secret from the file.
+Optional OAuth2 Client Secret. This OAuth client secret is used by all `OAUTH` listeners, and authenticates all incoming calls against the OAuth server.
+If it is different to null it overrides the `LHS_OAUTH_CLIENT_SECRET` config and loads the secret from the file.
 
 Example:
 
 ```
 LHS_LISTENERS=MY_LISTENER:2023
-LHS_LISTENERS_AUTHORIZATION_MAP=MY_LISTENER:OAUTH
-LHS_LISTENER_MY_LISTENER_CLIENT_SECRET_FILE=/temp/client_secret
+LHS_LISTENERS_AUTHENTICATION_MAP=MY_LISTENER:OAUTH
+LHS_OAUTH_CLIENT_SECRET_FILE=/temp/client_secret
 ...
 ```
 
