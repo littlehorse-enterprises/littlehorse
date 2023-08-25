@@ -5,12 +5,10 @@ import io.grpc.InsecureServerCredentials;
 import io.grpc.ServerCredentials;
 import io.grpc.TlsServerCredentials;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.server.auth.AuthorizationProtocol;
 import io.littlehorse.server.auth.InsecureServerAuthorizer;
 import io.littlehorse.server.auth.OAuthServerAuthorizer;
 import io.littlehorse.server.auth.ServerAuthorizer;
-import java.io.File;
 import java.io.IOException;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,9 +24,6 @@ public class ServerListenerConfig {
     private int port;
     private ListenerProtocol protocol;
     private AuthorizationProtocol authorizationProtocol;
-    private File clientsCACert;
-    private File certificate;
-    private File certificateKey;
     private LHConfig config;
 
     @Override
@@ -39,9 +34,6 @@ public class ServerListenerConfig {
         return (port == that.port
                 && Objects.equal(name, that.name)
                 && protocol == that.protocol
-                && Objects.equal(clientsCACert, that.clientsCACert)
-                && Objects.equal(certificate, that.certificate)
-                && Objects.equal(certificateKey, that.certificateKey)
                 && authorizationProtocol == that.authorizationProtocol);
     }
 
@@ -54,22 +46,16 @@ public class ServerListenerConfig {
         try {
             return switch (protocol) {
                 case TLS -> {
-                    if (certificate == null || certificateKey == null) {
-                        throw new LHMisconfigurationException("Invalid configuration: Listener " + name
-                                + " was configured to use TLS but certificate and/or key are missing");
-                    }
+                    TLSConfig tlsConfig = config.getTLSConfiguration(name);
                     yield TlsServerCredentials.newBuilder()
-                            .keyManager(certificate, certificateKey)
+                            .keyManager(tlsConfig.getCertChain(), tlsConfig.getPrivateKey())
                             .build();
                 }
                 case MTLS -> {
-                    if (certificate == null || certificateKey == null | clientsCACert == null) {
-                        throw new LHMisconfigurationException("Invalid configuration: Listener " + name
-                                + " was configured to use MTLS but certificate, key and/or client CA cert are missing");
-                    }
+                    MTLSConfig mtlsConfig = config.getMTLSConfiguration(name);
                     yield TlsServerCredentials.newBuilder()
-                            .keyManager(certificate, certificateKey)
-                            .trustManager(clientsCACert)
+                            .keyManager(mtlsConfig.getCertChain(), mtlsConfig.getPrivateKey())
+                            .trustManager(mtlsConfig.getCaCertificate())
                             .clientAuth(TlsServerCredentials.ClientAuth.REQUIRE)
                             .build();
                 }
@@ -82,7 +68,7 @@ public class ServerListenerConfig {
 
     public ServerAuthorizer getAuthorizer() {
         return switch (authorizationProtocol) {
-            case OAUTH -> new OAuthServerAuthorizer(config.getOAuthConfigByListener(name));
+            case OAUTH -> new OAuthServerAuthorizer(config.getOAuthConfig());
             default -> InsecureServerAuthorizer.create();
         };
     }

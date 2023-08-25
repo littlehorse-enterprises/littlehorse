@@ -10,7 +10,7 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class OAuthConfig {
 
-    private String clientId;
-    private String clientSecret;
-    private URI authorizationServer;
+    final private String clientId;
+    final private String clientSecret;
+    final private URI authorizationServer;
 }

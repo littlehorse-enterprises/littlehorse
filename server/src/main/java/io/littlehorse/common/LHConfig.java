@@ -13,7 +13,9 @@ import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.server.auth.AuthorizationProtocol;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.listener.ListenerProtocol;
+import io.littlehorse.server.listener.MTLSConfig;
 import io.littlehorse.server.listener.ServerListenerConfig;
+import io.littlehorse.server.listener.TLSConfig;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import java.io.File;
 import java.io.IOException;
@@ -86,7 +88,12 @@ public class LHConfig extends ConfigBase {
     public static final String LISTENERS_KEY = "LHS_LISTENERS";
     public static final String LISTENERS_PROTOCOL_MAP_KEY = "LHS_LISTENERS_PROTOCOL_MAP";
     public static final String LISTENERS_AUTHENTICATION_MAP_KEY = "LHS_LISTENERS_AUTHENTICATION_MAP";
-    public static final String CLIENTS_CA_CERT = "LHS_CLIENTS_CA_CERT";
+    public static final String CA_CERT = "LHS_CA_CERT";
+    public static final String OAUTH_CLIENT_ID = "LHS_OAUTH_CLIENT_ID";
+    public static final String OAUTH_CLIENT_SECRET = "LHS_OAUTH_CLIENT_SECRET";
+    public static final String OAUTH_SERVER_URL = "LHS_OAUTH_SERVER_URL";
+    public static final String OAUTH_CLIENT_ID_FILE = "LHS_OAUTH_CLIENT_ID_FILE";
+    public static final String OAUTH_CLIENT_SECRET_FILE = "LHS_OAUTH_CLIENT_SECRET_FILE";
     private List<ServerListenerConfig> listenerConfigs;
     private List<AdvertisedListenerConfig> advertisedListenerConfigs;
     private Map<String, ListenerProtocol> listenersProtocolMap;
@@ -309,75 +316,92 @@ public class LHConfig extends ConfigBase {
         return Integer.parseInt(getOrSetDefault(LHConfig.INTERNAL_BIND_PORT_KEY, "2011"));
     }
 
-    public OAuthConfig getOAuthConfigByListener(String listenerName) {
-        String configPrefix = "LHS_LISTENER_" + listenerName;
+    public OAuthConfig getOAuthConfig() {
 
-        String clientId = getOrSetDefault(configPrefix + "_CLIENT_ID", null);
-        String clientSecret = getOrSetDefault(configPrefix + "_CLIENT_SECRET", null);
-        String authorizationServer = getOrSetDefault(configPrefix + "_AUTHORIZATION_SERVER", null);
+        String clientId = getOrSetDefault(OAUTH_CLIENT_ID, null);
+        String clientSecret = getOrSetDefault(OAUTH_CLIENT_SECRET, null);
+        String authorizationServer = getOrSetDefault(OAUTH_SERVER_URL, null);
 
-        String clientIdFile = getOrSetDefault(configPrefix + "_CLIENT_ID_FILE", null);
-        String clientSecretFile = getOrSetDefault(configPrefix + "_CLIENT_SECRET_FILE", null);
+        String clientIdFile = getOrSetDefault(OAUTH_CLIENT_ID_FILE, null);
+        String clientSecretFile = getOrSetDefault(OAUTH_CLIENT_SECRET_FILE, null);
 
         if (clientSecretFile != null) {
-            log.info("Loading OAuth2 Client Secret form file");
+            log.info("Loading OAuth2 Client Secret from file");
             clientSecret = loadSettingFromFile(clientSecretFile);
         }
 
         if (clientIdFile != null) {
-            log.info("Loading OAuth2 Client Id form files");
+            log.info("Loading OAuth2 Client Id from file");
             clientId = loadSettingFromFile(clientIdFile);
         }
 
         if (clientId == null || clientSecret == null || authorizationServer == null) {
             throw new LHMisconfigurationException(
-                    """
-                OAuth configuration called but not provided.
-                Check missing client id, client secret or authorization server endpoint
-                """);
+                    "OAuth configuration called but not provided. Check missing client id, client secret or authorization server endpoint");
         }
 
+        final URI parsedUrl;
         try {
-            return OAuthConfig.builder()
-                    .authorizationServer(URI.create(authorizationServer))
-                    .clientId(clientId)
-                    .clientSecret(clientSecret)
-                    .build();
+            parsedUrl = URI.create(authorizationServer);
         } catch (IllegalArgumentException e) {
-            throw new LHMisconfigurationException("Malformed URL check: " + configPrefix + "_AUTHORIZATION_SERVER");
+            throw new LHMisconfigurationException("Malformed URL check " + OAUTH_SERVER_URL);
         }
+
+        return OAuthConfig.builder()
+                .authorizationServer(parsedUrl)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .build();
     }
 
-    public File getServerKey(String listenerName) {
-        String configName = "LHS_LISTENER_" + listenerName + "_KEY";
-        return getFile(configName);
+    public MTLSConfig getMTLSConfiguration(String listenerName) {
+        String keyConfigName = "LHS_LISTENER_" + listenerName + "_KEY";
+        String certConfigName = "LHS_LISTENER_" + listenerName + "_CERT";
+
+        File certChain = getFile(certConfigName);
+        File privateKey = getFile(keyConfigName);
+        File caCertificate = getFile(CA_CERT);
+
+        if (certChain == null || privateKey == null || caCertificate == null) {
+            throw new LHMisconfigurationException(
+                    "Invalid configuration: Listener " + listenerName + " was configured to use MTLS but "
+                            + keyConfigName + ", " + certConfigName + " and/or " + CA_CERT + " are missing");
+        }
+
+        return new MTLSConfig(caCertificate, certChain, privateKey);
     }
 
-    public File getServerCert(String listenerName) {
-        String configName = "LHS_LISTENER_" + listenerName + "_CERT";
-        return getFile(configName);
-    }
+    public TLSConfig getTLSConfiguration(String listenerName) {
+        String keyConfigName = "LHS_LISTENER_" + listenerName + "_KEY";
+        String certConfigName = "LHS_LISTENER_" + listenerName + "_CERT";
 
-    public File getClientsCACert() {
-        return getFile(CLIENTS_CA_CERT);
+        File certChain = getFile(certConfigName);
+        File privateKey = getFile(keyConfigName);
+
+        if (certChain == null || privateKey == null) {
+            throw new LHMisconfigurationException("Invalid configuration: Listener " + listenerName
+                    + " was configured to use TLS but " + keyConfigName + " and/or " + certConfigName + " are missing");
+        }
+
+        return new TLSConfig(certChain, privateKey);
     }
 
     @Nullable
     private File getFile(String configName) {
-        String serverCertLocation = getOrSetDefault(configName, null);
+        String fileLocation = getOrSetDefault(configName, null);
 
-        if (Strings.isNullOrEmpty(serverCertLocation)) {
+        if (Strings.isNullOrEmpty(fileLocation)) {
             return null;
         }
 
-        File clientsCACert = new File(serverCertLocation);
+        File file = new File(fileLocation);
 
-        if (!clientsCACert.isFile()) {
+        if (!file.isFile()) {
             throw new LHMisconfigurationException(
                     "Invalid configuration: File location specified on " + configName + " is invalid");
         }
 
-        return clientsCACert;
+        return file;
     }
 
     public Map<String, AuthorizationProtocol> getListenersAuthorizationMap() {
@@ -443,8 +467,6 @@ public class LHConfig extends ConfigBase {
 
         List<String> rawListenersConfigs = Arrays.asList(rawListenersConfig.split(","));
 
-        File clientsCACert = getClientsCACert();
-
         listenerConfigs = rawListenersConfigs.stream()
                 .map(listener -> {
                     String[] split = listener.split(":");
@@ -461,16 +483,10 @@ public class LHConfig extends ConfigBase {
                                         + " LHS_LISTENERS_PROTOCOL_MAP has to be MTLS in order to support MTLS for authentication");
                     }
 
-                    File certificate = getServerCert(name);
-                    File certificateKey = getServerKey(name);
-
                     return ServerListenerConfig.builder()
                             .name(name)
                             .port(Integer.parseInt(port))
                             .protocol(protocol)
-                            .clientsCACert(clientsCACert)
-                            .certificate(certificate)
-                            .certificateKey(certificateKey)
                             .authorizationProtocol(authProtocol)
                             .config(this)
                             .build();
