@@ -82,17 +82,17 @@ class TestConfig(unittest.TestCase):
 
     def test_get_bootstrap_server(self):
         config = LHConfig()
-        self.assertEqual(config.bootstrap_server(), "localhost:2023")
+        self.assertEqual(config.bootstrap_server, "localhost:2023")
 
     def test_get_bootstrap_server_with_dns(self):
         os.environ["LHC_API_HOST"] = "my-dns"
         config = LHConfig()
-        self.assertEqual(config.bootstrap_server(), "my-dns:2023")
+        self.assertEqual(config.bootstrap_server, "my-dns:2023")
 
     def test_get_bootstrap_server_with_port(self):
         os.environ["LHC_API_PORT"] = "5050"
         config = LHConfig()
-        self.assertEqual(config.bootstrap_server(), "localhost:5050")
+        self.assertEqual(config.bootstrap_server, "localhost:5050")
 
     def test_is_secure(self):
         os.environ["LHC_CA_CERT"] = "my-path"

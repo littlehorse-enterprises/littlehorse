@@ -120,6 +120,7 @@ class LHConfig:
 
         return value
 
+    @property
     def bootstrap_server(self) -> str:
         """Returns the LH Bootstrap server address.
 
@@ -130,6 +131,7 @@ class LHConfig:
         port = self.get_or_set_default(API_PORT, "2023")
         return f"{host}:{port}"
 
+    @property
     def ca_cert(self) -> Optional[bytes]:
         """Returns the CA Certificates.
 
@@ -140,6 +142,7 @@ class LHConfig:
         cert_path = self.get(CA_CERT)
         return None if cert_path is None else read_binary(cert_path)
 
+    @property
     def client_key(self) -> Optional[bytes]:
         """Returns the client certificate key. For MTLS.
 
@@ -149,6 +152,7 @@ class LHConfig:
         client_key_path = self.get(CLIENT_KEY)
         return None if client_key_path is None else read_binary(client_key_path)
 
+    @property
     def client_cert(self) -> Optional[bytes]:
         """Returns the client certificate. For MTLS.
 
@@ -166,6 +170,7 @@ class LHConfig:
         """
         return bool(self.get(CA_CERT))
 
+    @property
     def client_id(self) -> str:
         """Returns a client id to identify an instance.
 
@@ -175,6 +180,7 @@ class LHConfig:
         random_id = f"client-{str(uuid.uuid4()).replace('-', '')}"
         return str(self.get_or_set_default(CLIENT_ID, random_id))
 
+    @property
     def oauth_client_id(self) -> Optional[str]:
         """Returns the configured OAuth2 client id. Used for OIDC authorization.
 
@@ -191,6 +197,7 @@ class LHConfig:
         """
         return bool(self.get(OAUTH_CLIENT_ID))
 
+    @property
     def oauth_client_secret(self) -> Optional[str]:
         """Returns the configured OAuth2 client secret. Used for OIDC authorization.
 
@@ -199,6 +206,7 @@ class LHConfig:
         """
         return self.get(OAUTH_CLIENT_SECRET)
 
+    @property
     def oauth_authorization_server(self) -> Optional[str]:
         """Returns the OAuth2 authorization server endpoint.
         Used for OIDC authorization.
@@ -208,6 +216,7 @@ class LHConfig:
         """
         return self.get(OAUTH_AUTHORIZATION_SERVER)
 
+    @property
     def num_worker_threads(self) -> int:
         """Returns the number of worker threads to run.
 
@@ -216,6 +225,7 @@ class LHConfig:
         """
         return int(self.get_or_set_default(NUM_WORKER_THREADS, "8"))
 
+    @property
     def server_listener(self) -> str:
         """Returns the name of the listener to connect to.
 
@@ -225,6 +235,7 @@ class LHConfig:
         """
         return self.get_or_set_default(SERVER_CONNECT_LISTENER, "PLAIN")
 
+    @property
     def worker_version(self) -> str:
         """Returns the version of this worker.
 
@@ -247,7 +258,7 @@ class LHConfig:
         Returns:
             Channel: A closable channel. Use 'with' or channel.close().
         """
-        server = server or self.bootstrap_server()
+        server = server or self.bootstrap_server
         secure_channel = grpc.secure_channel
         insecure_channel = grpc.insecure_channel
 
@@ -258,17 +269,17 @@ class LHConfig:
 
         def get_ssl_config() -> ChannelCredentials:
             return grpc.ssl_channel_credentials(
-                root_certificates=self.ca_cert(),
-                private_key=self.client_key(),
-                certificate_chain=self.client_cert(),
+                root_certificates=self.ca_cert,
+                private_key=self.client_key,
+                certificate_chain=self.client_cert,
             )
 
         def get_oauth_config() -> CallCredentials:
             return grpc.metadata_call_credentials(
                 GrpcAuth(
-                    client_id=self.oauth_client_id(),
-                    client_secret=self.oauth_client_secret(),
-                    authorization_server=self.oauth_authorization_server(),
+                    client_id=self.oauth_client_id,
+                    client_secret=self.oauth_client_secret,
+                    authorization_server=self.oauth_authorization_server,
                 )
             )
 
@@ -314,7 +325,7 @@ class LHConfig:
         Returns:
             LHPublicApiStub: A gRPC stub.
         """
-        channel_id = ChannelId(server or self.bootstrap_server(), name, async_channel)
+        channel_id = ChannelId(server or self.bootstrap_server, name, async_channel)
         channel = self._opened_channels.get(channel_id)
 
         if channel is None:

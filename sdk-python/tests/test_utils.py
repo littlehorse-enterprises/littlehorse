@@ -1,7 +1,9 @@
+from datetime import datetime
 import json
 from random import random
 import unittest
 from faker import Faker
+from littlehorse.exceptions import SerdeException
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.variable_pb2 import VariableValue
 
@@ -172,6 +174,30 @@ class TestUtils(unittest.TestCase):
                 type=VariableType.JSON_ARR,
                 json_arr=json.dumps([vars(v) for v in value]),
             ),
+        )
+
+    def test_serde_error_when_serializing(self):
+        value = datetime.now()
+
+        with self.assertRaises(SerdeException) as exception_context:
+            parse_value(value)
+
+        self.assertEqual(
+            f"Error when serializing value: '{value}' of type '{type(value)}'",
+            str(exception_context.exception),
+        )
+
+    def test_serde_error_when_deserializing(self):
+        variable_value = VariableValue(
+            type=VariableType.JSON_OBJ, json_obj='{"timestamp": 79797689'  # not closed
+        )
+
+        with self.assertRaises(SerdeException) as exception_context:
+            extract_value(variable_value)
+
+        self.assertEqual(
+            f"Error when deserializing {variable_value}",
+            str(exception_context.exception),
         )
 
 

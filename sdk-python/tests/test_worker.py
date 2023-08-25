@@ -22,15 +22,15 @@ class TestWorkerContext(unittest.TestCase):
             task_run_id=TaskRunId(task_guid=task_id, wf_run_id=wf_id)
         )
         ctx = LHWorkerContext(scheduled_task)
-        self.assertEqual(ctx.idempotency_key(), f"{wf_id}/{task_id}")
+        self.assertEqual(ctx.idempotency_key, f"{wf_id}/{task_id}")
 
     def test_log_output(self):
         ctx = LHWorkerContext(ScheduledTask())
-        self.assertEqual(ctx.log_output(), "")
+        self.assertEqual(ctx.log_output, "")
         ctx.log("my log 1")
         ctx.log("my log 2")
         ctx.log(Exception("my exception"))
-        output = ctx.log_output()
+        output = ctx.log_output
         self.assertTrue("my log 1" in output)
         self.assertTrue("my log 2" in output)
         self.assertTrue("my exception" in output)
@@ -43,7 +43,7 @@ class TestWorkerContext(unittest.TestCase):
         )
         ctx = LHWorkerContext(scheduled_task_task)
 
-        self.assertEqual(ctx.node_run_id(), node_run_task)
+        self.assertEqual(ctx.node_run_id, node_run_task)
 
         wf_id = str(uuid.uuid4())
         node_run_user = NodeRunId(wf_run_id=wf_id)
@@ -54,7 +54,7 @@ class TestWorkerContext(unittest.TestCase):
         )
         ctx = LHWorkerContext(scheduled_task_user)
 
-        self.assertEqual(ctx.node_run_id(), node_run_user)
+        self.assertEqual(ctx.node_run_id, node_run_user)
 
 
 class TestTask(unittest.TestCase):

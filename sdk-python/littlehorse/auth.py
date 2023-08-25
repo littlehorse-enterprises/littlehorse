@@ -11,6 +11,7 @@ class Issuer:
     def __init__(self, data: dict[str, str]) -> None:
         self.data = data
 
+    @property
     def token_endpoint(self) -> str:
         return self.data["token_endpoint"]
 
@@ -22,15 +23,17 @@ class AccessToken:
     def __init__(self, data: dict[str, str]) -> None:
         self.data = data
 
+    @property
     def token(self) -> str:
         return self.data["access_token"]
 
     def __str__(self) -> str:
-        return self.token()
+        return self.token
 
     def is_expired(self) -> bool:
-        return self.expiration() < datetime.now()
+        return self.expiration < datetime.now()
 
+    @property
     def expiration(self) -> datetime:
         return datetime.fromtimestamp(float(self.data["expires_at"]))
 
@@ -55,7 +58,7 @@ class GrpcAuth(grpc.AuthMetadataPlugin):
 
     def __call__(self, context: Any, callback: Any) -> None:
         access_token = self.access_token()
-        callback((("authorization", access_token.token()),), None)
+        callback((("authorization", access_token.token),), None)
 
     def issuer(self) -> Issuer:
         if self.authorization_server is None:
@@ -81,12 +84,12 @@ class GrpcAuth(grpc.AuthMetadataPlugin):
             )
 
             token_data = client.fetch_token(
-                url=issuer.token_endpoint(),
+                url=issuer.token_endpoint,
                 grant_type="client_credentials",
             )
 
             self._token = AccessToken(token_data)
-            self._log.debug("New token expires at: %s", self._token.expiration())
+            self._log.debug("New token expires at: %s", self._token.expiration)
         else:
             self._log.debug("Using token from cache")
 

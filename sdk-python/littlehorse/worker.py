@@ -28,6 +28,7 @@ class LHWorkerContext:
         self._scheduled_task = scheduled_task
         self._log_entries: list[str] = []
 
+    @property
     def scheduled_time(self) -> datetime:
         """Returns the time at which the task was scheduled
         by the processor. May be useful in certain customer
@@ -41,6 +42,7 @@ class LHWorkerContext:
         """
         return datetime.fromtimestamp(float(self._scheduled_task.created_at.seconds))
 
+    @property
     def task_guid(self) -> str:
         """Task global unique identifier.
 
@@ -49,6 +51,7 @@ class LHWorkerContext:
         """
         return self._scheduled_task.task_run_id.task_guid
 
+    @property
     def wf_run_id(self) -> str:
         """Get the associated workflow run id.
 
@@ -57,6 +60,7 @@ class LHWorkerContext:
         """
         return self._scheduled_task.task_run_id.wf_run_id
 
+    @property
     def attempt_number(self) -> int:
         """Returns the attemptNumber of the NodeRun
         that's being executed. If this is the
@@ -68,6 +72,7 @@ class LHWorkerContext:
         """
         return self._scheduled_task.attempt_number
 
+    @property
     def idempotency_key(self) -> str:
         """Returns an idempotency key that can be used to make calls t
         o upstream api's idempotent across TaskRun Retries.
@@ -75,8 +80,9 @@ class LHWorkerContext:
         Returns:
             str: An idempotency key.
         """
-        return f"{self.wf_run_id()}/{self.task_guid()}"
+        return f"{self.wf_run_id}/{self.task_guid}"
 
+    @property
     def task_def_name(self) -> str:
         """Name of this task.
 
@@ -85,6 +91,7 @@ class LHWorkerContext:
         """
         return self._scheduled_task.task_def_id.name
 
+    @property
     def node_run_id(self) -> NodeRunId:
         """Returns the NodeRun ID for the Task that was just scheduled.
 
@@ -107,6 +114,7 @@ class LHWorkerContext:
         """
         self._log_entries.append(f"[{datetime.now()}] {entry}")
 
+    @property
     def log_output(self) -> str:
         """Returns the current log output.
 
@@ -118,12 +126,12 @@ class LHWorkerContext:
     def __str__(self) -> str:
         return str(
             {
-                "wf_run_id": self.wf_run_id(),
-                "task_guid": self.task_guid(),
-                "task_def_name": self.task_def_name(),
-                "scheduled_time": str(self.scheduled_time()),
-                "attempt_number": self.attempt_number(),
-                "idempotency_key": self.idempotency_key(),
+                "wf_run_id": self.wf_run_id,
+                "task_guid": self.task_guid,
+                "task_def_name": self.task_def_name,
+                "scheduled_time": str(self.scheduled_time),
+                "attempt_number": self.attempt_number,
+                "idempotency_key": self.idempotency_key,
             }
         )
 
@@ -215,6 +223,7 @@ class LHTask:
                     "The WorkerContext should be the last parameter"
                 )
 
+    @property
     def task_name(self) -> str:
         return self.task_def.name
 
@@ -232,9 +241,9 @@ class LHConnection:
         self._task = task
         self._config = config
         self._ask_for_work_semaphore = asyncio.Semaphore()
-        self._schedule_task_semaphore = asyncio.Semaphore(config.num_worker_threads())
+        self._schedule_task_semaphore = asyncio.Semaphore(config.num_worker_threads)
         self._stub = self._config.stub(
-            server=self.server, async_channel=True, name=self._task.task_name()
+            server=self.server, async_channel=True, name=self._task.task_name
         )
 
     async def _schedule_task(self, task: ScheduledTask) -> None:
@@ -273,9 +282,7 @@ class LHConnection:
             attempt_number=task.attempt_number,
             status=status,
             output=output,
-            log_output=parse_value(context.log_output())
-            if context.log_output()
-            else None,
+            log_output=parse_value(context.log_output) if context.log_output else None,
         )
 
         asyncio.create_task(self._report_task(task_result, REPORT_TASK_DEFAULT_RETRIES))
@@ -290,17 +297,17 @@ class LHConnection:
 
         self._log.debug(
             "Reporting task '%s'",
-            self._task.task_name(),
+            self._task.task_name,
         )
 
         try:
             await self._stub.ReportTask(task_result)
-            self._log.debug("Task '%s' successfully reported", self._task.task_name())
+            self._log.debug("Task '%s' successfully reported", self._task.task_name)
         except Exception as e:
             retries_left -= 1
             self._log.warning(
                 "Error reporting task: '%s'. Retrying [%s]. %s",
-                self._task.task_name(),
+                self._task.task_name,
                 retries_left,
                 e,
             )
@@ -313,14 +320,14 @@ class LHConnection:
                 await self._ask_for_work_semaphore.acquire()
                 if self.running:
                     yield PollTaskRequest(
-                        client_id=self._config.client_id(),
-                        task_worker_version=self._config.worker_version(),
-                        task_def_name=self._task.task_name(),
+                        client_id=self._config.client_id,
+                        task_worker_version=self._config.worker_version,
+                        task_def_name=self._task.task_name,
                     )
                     self._log.debug(
                         "Connection '%s' is asking for work '%s' '%s'",
                         self.server,
-                        self._task.task_name(),
+                        self._task.task_name,
                         datetime.now(),
                     )
 
@@ -345,7 +352,7 @@ class LHConnection:
     async def start(self) -> None:
         self._log.info(
             f"Starting server connection {self.server} "
-            f"for task '{self._task.task_name()}'"
+            f"for task '{self._task.task_name}'"
         )
         self.running = True
         await self._ask_for_work()
@@ -353,7 +360,7 @@ class LHConnection:
     def stop(self) -> None:
         self._log.info(
             f"Stopping server connection {self.server} "
-            f"for task '{self._task.task_name()}'"
+            f"for task '{self._task.task_name}'"
         )
         self.running = False
         self._ask_for_work_semaphore.release()
@@ -384,14 +391,14 @@ class LHTaskWorker:
         while self.running:
             self._log.debug(
                 "Sending heart beat (%s) at %s",
-                self._task.task_name(),
+                self._task.task_name,
                 datetime.now(),
             )
 
             request = RegisterTaskWorkerRequest(
-                client_id=self._config.client_id(),
-                listener_name=self._config.server_listener(),
-                task_def_name=self._task.task_name(),
+                client_id=self._config.client_id,
+                listener_name=self._config.server_listener,
+                task_def_name=self._task.task_name,
             )
             try:
                 reply: RegisterTaskWorkerResponse = await stub.RegisterTaskWorker(
@@ -400,7 +407,7 @@ class LHTaskWorker:
             except Exception as e:
                 self._log.error(
                     "Error when registering task worker: %s. Closing. %s",
-                    self._task.task_name(),
+                    self._task.task_name,
                     e,
                 )
                 await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
@@ -451,14 +458,14 @@ class LHTaskWorker:
 
     async def start(self) -> None:
         """Starts polling for and executing tasks."""
-        self._log.info(f"Starting worker '{self._task.task_name()}'")
+        self._log.info(f"Starting worker '{self._task.task_name}'")
         self.running = True
 
         await self._heartbeat()
 
     def stop(self) -> None:
         """Cleanly shuts down the Task Worker."""
-        self._log.info(f"Stopping worker '{self._task.task_name()}'")
+        self._log.info(f"Stopping worker '{self._task.task_name}'")
         self.running = False
 
         for connection in self._connections.values():

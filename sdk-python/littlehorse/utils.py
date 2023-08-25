@@ -7,6 +7,7 @@ import sys
 from typing import TYPE_CHECKING, Any, Union
 
 from google.protobuf.timestamp_pb2 import Timestamp
+from littlehorse.exceptions import SerdeException
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.variable_pb2 import VariableValue
 
@@ -64,20 +65,26 @@ def parse_value(value: Any) -> VariableValue:
         return VariableValue(type=VariableType.DOUBLE, double=value)
     if isinstance(value, bytes):
         return VariableValue(type=VariableType.BYTES, bytes=value)
-    if isinstance(value, dict):
-        return VariableValue(
-            type=VariableType.JSON_OBJ,
-            json_obj=json.dumps(value, default=json_encoder),
-        )
-    if isinstance(value, list):
-        return VariableValue(
-            type=VariableType.JSON_ARR,
-            json_arr=json.dumps(value, default=json_encoder),
-        )
 
-    return VariableValue(
-        type=VariableType.JSON_OBJ, json_obj=json.dumps(value, default=json_encoder)
-    )
+    try:
+        if isinstance(value, dict):
+            return VariableValue(
+                type=VariableType.JSON_OBJ,
+                json_obj=json.dumps(value, default=json_encoder),
+            )
+        if isinstance(value, list):
+            return VariableValue(
+                type=VariableType.JSON_ARR,
+                json_arr=json.dumps(value, default=json_encoder),
+            )
+
+        return VariableValue(
+            type=VariableType.JSON_OBJ, json_obj=json.dumps(value, default=json_encoder)
+        )
+    except Exception as e:
+        raise SerdeException(
+            f"Error when serializing value: '{value}' of type '{type(value)}'"
+        ) from e
 
 
 def parse_type(lh_type: VariableType) -> Any:
@@ -111,10 +118,14 @@ def extract_value(lh_value: VariableValue) -> Any:
         return lh_value.bytes
     if lh_value.type == VariableType.BOOL:
         return lh_value.bool
-    if lh_value.type == VariableType.JSON_OBJ:
-        return json.loads(lh_value.json_obj)
-    if lh_value.type == VariableType.JSON_ARR:
-        return json.loads(lh_value.json_arr)
+
+    try:
+        if lh_value.type == VariableType.JSON_OBJ:
+            return json.loads(lh_value.json_obj)
+        if lh_value.type == VariableType.JSON_ARR:
+            return json.loads(lh_value.json_arr)
+    except Exception as e:
+        raise SerdeException(f"Error when deserializing {lh_value}") from e
 
     # VariableType.NULL
     return None
