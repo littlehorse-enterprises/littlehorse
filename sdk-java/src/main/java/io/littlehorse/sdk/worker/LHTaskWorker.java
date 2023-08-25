@@ -92,7 +92,6 @@ public class LHTaskWorker implements Closeable {
             grpcClient.getTaskDef(TaskDefId.newBuilder().setName(taskDefName).build());
             return true;
         } catch (StatusRuntimeException exn) {
-            System.out.println("Status: " + exn.getStatus());
             if (exn.getStatus().getCode() == Code.NOT_FOUND) {
                 return false;
             }

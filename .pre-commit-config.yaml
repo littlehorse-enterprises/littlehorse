@@ -1,44 +1,114 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 define: &exclude |
-              (?x)(
-                  ^server/src/main/java/io/littlehorse/common/proto/|
-                  ^sdk-java/src/main/java/io/littlehorse/sdk/common/proto/|
-                  ^sdk-go/common/model/
-              )
+  (?x)(
+      ^server/src/main/java/io/littlehorse/common/proto/|
+      ^sdk-java/src/main/java/io/littlehorse/sdk/common/proto/|
+      ^sdk-go/common/model/|
+      ^sdk-python/littlehorse/model/
+  )
 
 repos:
-    - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v4.4.0
-      hooks:
-          - id: trailing-whitespace
-            exclude: *exclude
-          - id: end-of-file-fixer
-            exclude: *exclude
-          - id: check-yaml
-          - id: check-added-large-files
-    - repo: https://github.com/shellcheck-py/shellcheck-py
-      rev: v0.9.0.2
-      hooks:
-        - id: shellcheck
-          args: [-x]
-    - repo: local
-      hooks:
-          - id: compile-proto
-            name: Compile proto files
-            language: system
-            always_run: true
-            pass_filenames: false
-            entry: ./local-dev/compile-proto.sh
-          - id: tests
-            name: Running Java Tests
-            language: system
-            always_run: true
-            pass_filenames: false
-            entry: ./gradlew test
-          - id: test
-            name: Running Go Tests
-            language: system
-            always_run: true
-            pass_filenames: false
-            entry: go test ./...
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+        name: Trailing Whitespace
+        exclude: *exclude
+      - id: end-of-file-fixer
+        name: Check End of Files
+        exclude: *exclude
+      - id: check-added-large-files
+        name: Check For Any Large Added File
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.2
+    hooks:
+      - id: shellcheck
+        name: List Shell Scripts
+        args: ['-x', '--severity=error']
+  - repo: local
+    hooks:
+      # Dependencies
+
+      - id: compile-proto
+        name: Compile Proto Files
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: ./local-dev/compile-proto.sh
+
+      - id: install-python
+        name: Install Python Dependencies
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python install
+
+      # Formatters
+
+      - id: format-java
+        name: Format Java Code
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: ./gradlew spotlessApply
+
+      - id: format-python
+        name: Format Python Code
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python run black sdk-python/
+
+      - id: format-go
+        name: Format Go Code
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: gofmt -s -w ./sdk-go
+
+      # Linters
+
+      - id: lint-python
+        name: Lint Python Code
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python run ruff --fix sdk-python/
+
+      - id: mypy
+        name: Validating Python Types
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python run mypy --config-file sdk-python/pyproject.toml sdk-python/
+
+      # Tests
+
+      - id: server-tests
+        name: Running Server Tests
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: ./gradlew server:test
+
+      - id: java-tests
+        name: Running SDK Java Tests
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: ./gradlew sdk-java:test
+
+      - id: go-tests
+        name: Running SDK Go Tests
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: go test ./...
+
+      - id: python-tests
+        name: Running SDK Python Tests
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python run python -m unittest discover -s sdk-python/

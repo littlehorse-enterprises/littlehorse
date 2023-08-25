@@ -27,3 +27,9 @@ lhctl/lhctl
 # Others
 local-dev/certs/
 build/
+
+# Python
+__pycache__
+.ruff_cache
+.mypy_cache
+dist/

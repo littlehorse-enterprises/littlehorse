@@ -1,11 +1,11 @@
 package io.littlehorse.test;
 
-import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
@@ -32,8 +32,11 @@ public class LHClientTestWrapper {
 
     public NodeRun getNodeRun(String wfRunId, int threadRunNumber, int nodeRunNumber) {
         try {
-            return lhClient.getNodeRun(
-                NodeRunId.newBuilder().setWfRunId(wfRunId).setThreadRunNumber(threadRunNumber).setPosition(nodeRunNumber).build());
+            return lhClient.getNodeRun(NodeRunId.newBuilder()
+                    .setWfRunId(wfRunId)
+                    .setThreadRunNumber(threadRunNumber)
+                    .setPosition(nodeRunNumber)
+                    .build());
 
         } catch (StatusRuntimeException e) {
             throw new LHTestInitializationException(e);
@@ -61,7 +64,11 @@ public class LHClientTestWrapper {
     }
 
     public VariableValue getVariableValue(String wfRunId, int threadRunNumber, String variableName) {
-        VariableId variableId = VariableId.newBuilder().setName(variableName).setWfRunId(wfRunId).setThreadRunNumber(threadRunNumber).build();
+        VariableId variableId = VariableId.newBuilder()
+                .setName(variableName)
+                .setWfRunId(wfRunId)
+                .setThreadRunNumber(threadRunNumber)
+                .build();
         return lhClient.getVariable(variableId).getValue();
     }
 
@@ -71,15 +78,16 @@ public class LHClientTestWrapper {
 
     public boolean runWf(WfSpec wfSpec, String wfId, Collection<Arg> args) throws StatusRuntimeException {
         RunWfRequest.Builder req = RunWfRequest.newBuilder()
-            .setWfSpecName(wfSpec.getName())
-            .setId(wfId)
-            .setWfSpecVersion(wfSpec.getVersion());
+                .setWfSpecName(wfSpec.getName())
+                .setId(wfId)
+                .setWfSpecVersion(wfSpec.getVersion());
 
         for (Arg arg : args) {
             try {
                 req.putVariables(arg.name, LHLibUtil.objToVarVal(arg.value));
-            } catch(LHSerdeError exn) {
-                throw new StatusRuntimeException(Status.INVALID_ARGUMENT.withCause(exn).withDescription("Couldn't serialize workflow input"));
+            } catch (LHSerdeError exn) {
+                throw new StatusRuntimeException(
+                        Status.INVALID_ARGUMENT.withCause(exn).withDescription("Couldn't serialize workflow input"));
             }
         }
         lhClient.runWf(req.build());
@@ -97,6 +105,7 @@ public class LHClientTestWrapper {
     }
 
     public WfSpec getWfSpec(Workflow workflow) {
-        return lhClient.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder().setName(workflow.getName()).build());
+        return lhClient.getLatestWfSpec(
+                GetLatestWfSpecRequest.newBuilder().setName(workflow.getName()).build());
     }
 }

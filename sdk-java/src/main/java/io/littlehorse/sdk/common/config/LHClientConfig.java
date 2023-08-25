@@ -230,6 +230,10 @@ public class LHClientConfig extends ConfigBase {
             return false;
         }
 
+        if (clientId == null || clientSecret == null || authServer == null) {
+            throw new IllegalArgumentException("OAuth Configuration is Missing");
+        }
+
         log.info("OAuth is enable");
 
         if (oauthConfig == null) {

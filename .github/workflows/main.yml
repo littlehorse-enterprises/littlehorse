@@ -34,6 +34,28 @@ jobs:
           go-version: "stable"
       - name: Tests
         run: go test ./...
+  tests-sdk-python:
+    if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install poetry
+      - name: Tests
+        working-directory: ./sdk-python
+        run: |
+          poetry install
+          poetry run python -m unittest -v
   tests-server:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
     runs-on: ubuntu-latest
