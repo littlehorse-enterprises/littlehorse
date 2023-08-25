@@ -283,7 +283,7 @@ LHS_CA_CERT=/tmp/ca
 
 Map between listener names and authentication mechanisms. Depends on `LHS_LISTENERS`.
 
-> `LHS_LISTENERS_PROTOCOL_MAP` should be set to `MTLS` for a listener in order to use `MTLS` as authentication mechanisms.
+> `LHS_LISTENERS_PROTOCOL_MAP` should be set to `MTLS` for a listener in order to use `MTLS` as the authentication mechanism.
 
 Format: `<LISTENER NAME>:<AUTH PROTOCOL>`
 
@@ -299,8 +299,8 @@ Allowed protocols: `NONE`, `OAUTH`, `MTLS`
 
 ### `LHS_OAUTH_SERVER_URL`
 
-Optional OAuth server URL. Used by the server to identify the OpenId Connect endpoints and validate incoming calls.
-This OAuth server URL is used by all the listeners.
+Optional OAuth server URL. Used by the server to authenticate incoming calls.
+This OAuth server url is used by all `OAUTH` listeners.
 
 > Needs to be set if any listener specifies `OAUTH` as an authentication mechanism in `LHS_LISTENERS_AUTHENTICATION_MAP`
 
@@ -321,8 +321,7 @@ LHS_OAUTH_SERVER_URL=http://localhost:8888/realms/lh
 
 ### `LHS_OAUTH_CLIENT_ID`
 
-Optional OAuth2 Client Id. Used by the server to identify incoming calls against an Authorization Server.
-This OAuth client id is used by all the listeners.
+Optional OAuth2 Client Id. This OAuth client id is used by all `OAUTH` listeners, and authenticates all incoming calls against the OAuth server.
 
 Example:
 
@@ -341,9 +340,8 @@ LHS_OAUTH_CLIENT_ID=server
 
 ### `LHS_OAUTH_CLIENT_ID_FILE`
 
-Optional OAuth2 Client Id. Used by the server to identify incoming calls against an Authorization Server.
-This OAuth client id is used by all the listeners. If it is different to null it overrides the `LHS_OAUTH_CLIENT_ID` config
-and loads the client id from the file.
+Optional OAuth2 Client Id. This OAuth client id is used by all `OAUTH` listeners, and authenticates all incoming calls against the OAuth server. 
+If it is different to null it overrides the `LHS_OAUTH_CLIENT_ID` config and loads the client id from the file.
 
 Example:
 
@@ -362,8 +360,7 @@ LHS_OAUTH_CLIENT_ID_FILE=/temp/client_id
 
 ### `LHS_OAUTH_CLIENT_SECRET`
 
-Optional OAuth2 Client Secret. Used by the server to identify incoming calls against an Authorization Server.
-This OAuth client secret is used by all the listeners.
+Optional OAuth2 Client Secret. This OAuth client secret is used by all `OAUTH` listeners, and authenticates all incoming calls against the OAuth server.
 
 Example:
 
@@ -382,9 +379,8 @@ LHS_OAUTH_CLIENT_SECRET=3bdca420cf6c48e2aa4f56d46d6327e0
 
 ### `LHS_OAUTH_CLIENT_SECRET_FILE`
 
-Optional OAuth2 Client Secret. Used by the server to identify incoming calls against an Authorization Server.
-This OAuth client secret is used by all the listeners. If it is different to null it overrides the `LHS_OAUTH_CLIENT_SECRET` config
-and loads the secret from the file.
+Optional OAuth2 Client Secret. This OAuth client secret is used by all `OAUTH` listeners, and authenticates all incoming calls against the OAuth server.
+If it is different to null it overrides the `LHS_OAUTH_CLIENT_SECRET` config and loads the secret from the file.
 
 Example:
 
