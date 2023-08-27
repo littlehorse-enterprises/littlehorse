@@ -11,6 +11,7 @@ import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.util.MetadataCache;
 
 /*
  * Note that this class is a MUCH SIMPLER version of the CoreProcessorDAO. This class
@@ -29,8 +30,8 @@ public class MetadataProcessorDAOImpl extends MetadataProcessorDAO {
     private RocksDBWrapper rocksdb;
     private MetadataCommandModel command;
 
-    public MetadataProcessorDAOImpl(RocksDBWrapper rocksdb) {
-        super(rocksdb);
+    public MetadataProcessorDAOImpl(RocksDBWrapper rocksdb, MetadataCache wfSpecCache) {
+        super(rocksdb, wfSpecCache);
         this.rocksdb = rocksdb;
     }
 

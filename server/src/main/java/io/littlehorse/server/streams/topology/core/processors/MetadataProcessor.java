@@ -10,6 +10,7 @@ import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorDAOImpl;
+import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
@@ -28,14 +29,17 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
     private LHConfig config;
     private KafkaStreamsServerImpl server;
 
-    public MetadataProcessor(LHConfig config, KafkaStreamsServerImpl server) {
+    private MetadataCache wfSpecCache;
+
+    public MetadataProcessor(LHConfig config, KafkaStreamsServerImpl server, MetadataCache wfSpecCache) {
         this.config = config;
         this.server = server;
+        this.wfSpecCache = wfSpecCache;
     }
 
     public void init(final ProcessorContext<String, Bytes> ctx) {
         this.dao = new MetadataProcessorDAOImpl(
-                new RocksDBWrapper(ctx.getStateStore(ServerTopology.METADATA_STORE), config));
+                new RocksDBWrapper(ctx.getStateStore(ServerTopology.METADATA_STORE), config), wfSpecCache);
     }
 
     @Override

@@ -14,6 +14,8 @@ import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.function.Supplier;
 
 /*
  * There is no cacheing implemented in this store. All cacheing is the responsibility
@@ -21,23 +23,28 @@ import io.littlehorse.server.streams.store.StoredGetable;
  */
 public class ReadOnlyMetadataStore {
 
-    private ReadOnlyRocksDBWrapper rocksdb;
+    private final ReadOnlyRocksDBWrapper rocksdb;
 
-    public ReadOnlyMetadataStore(ReadOnlyRocksDBWrapper rocksdb) {
+    private final MetadataCache wfSpecCache;
+
+    public ReadOnlyMetadataStore(ReadOnlyRocksDBWrapper rocksdb, MetadataCache wfSpecCache) {
         this.rocksdb = rocksdb;
+        this.wfSpecCache = wfSpecCache;
     }
 
     @SuppressWarnings("unchecked")
     public WfSpecModel getWfSpec(String name, Integer version) {
-        StoredGetable<WfSpec, WfSpecModel> storedResult;
-        if (version != null) {
-            WfSpecIdModel id = new WfSpecIdModel(name, version);
-            storedResult = (StoredGetable<WfSpec, WfSpecModel>) rocksdb.get(id.getStoreableKey(), StoredGetable.class);
-        } else {
-            storedResult = rocksdb.getLastFromPrefix(WfSpecIdModel.getPrefix(name), StoredGetable.class);
-        }
-
-        return storedResult == null ? null : storedResult.getStoredObject();
+        Supplier<WfSpecModel> findWfSpec = () -> {
+            final StoredGetable<WfSpec, WfSpecModel> storedResult;
+            if (version != null) {
+                storedResult = (StoredGetable<WfSpec, WfSpecModel>)
+                        rocksdb.get(new WfSpecIdModel(name, version).getStoreableKey(), StoredGetable.class);
+            } else {
+                storedResult = rocksdb.getLastFromPrefix(WfSpecIdModel.getPrefix(name), StoredGetable.class);
+            }
+            return storedResult == null ? null : storedResult.getStoredObject();
+        };
+        return wfSpecCache.getOrCache(name, version, findWfSpec);
     }
 
     public TaskDefModel getTaskDef(String name) {

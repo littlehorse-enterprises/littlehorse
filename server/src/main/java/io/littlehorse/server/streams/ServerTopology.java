@@ -82,9 +82,8 @@ public class ServerTopology {
 
     public static final String GLOBAL_METADATA_SINK = "global-metadata-sink";
 
-    public static Topology initCoreTopology(LHConfig config, KafkaStreamsServerImpl server) {
+    public static Topology initCoreTopology(LHConfig config, KafkaStreamsServerImpl server, MetadataCache wfSpecCache) {
         Topology topo = new Topology();
-        MetadataCache wfSpecCache = new MetadataCache();
         Serializer<Object> sinkValueSerializer = (topic, output) -> {
             CommandProcessorOutput cpo = (CommandProcessorOutput) output;
             if (cpo.payload == null) {
@@ -108,7 +107,8 @@ public class ServerTopology {
                 new LHDeserializer<>(MetadataCommandModel.class), // value deserializer
                 config.getMetadataCmdTopicName() // source topic
                 );
-        topo.addProcessor(METADATA_PROCESSOR, () -> new MetadataProcessor(config, server), METADATA_SOURCE);
+        topo.addProcessor(
+                METADATA_PROCESSOR, () -> new MetadataProcessor(config, server, wfSpecCache), METADATA_SOURCE);
         StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(METADATA_STORE), Serdes.String(), Serdes.Bytes());
         topo.addStateStore(metadataStoreBuilder, METADATA_PROCESSOR);

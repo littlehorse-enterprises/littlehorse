@@ -5,7 +5,6 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.dao.AnalyticsRegistry;
 import io.littlehorse.common.dao.CoreProcessorDAO;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
@@ -19,8 +18,6 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
-import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
-import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
@@ -56,7 +53,6 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     private Set<HostModel> currentHosts;
 
     private RocksDBWrapper rocksdb;
-    private ReadOnlyMetadataStore globalStore;
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private LHConfig config;
     private boolean partitionIsClaimed;
@@ -70,13 +66,12 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
             MetadataCache wfSpecCache,
             RocksDBWrapper localStore,
             ReadOnlyRocksDBWrapper globalStore) {
-        super(globalStore);
+        super(globalStore, wfSpecCache);
 
         this.server = server;
         this.ctx = ctx;
         this.config = config;
         this.rocksdb = localStore;
-        this.globalStore = new ReadOnlyMetadataStore(globalStore);
 
         // At the start, we haven't claimed the partition until the claim event comes
         this.partitionIsClaimed = false;
@@ -119,7 +114,6 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
 
     @Override
     public <U extends Message, T extends CoreGetable<U>> T get(ObjectIdModel<?, U, T> id) {
-        System.out.println(id);
         return storageManager.get(id);
     }
 
@@ -145,26 +139,11 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
 
     @Override
     public WfSpecModel getWfSpec(String name, Integer version) {
-        WfSpecModel wfSpec = globalStore.getWfSpec(name, version);
+        WfSpecModel wfSpec = super.getWfSpec(name, version);
         if (wfSpec != null) {
             wfSpec.setDao(this);
         }
         return wfSpec;
-    }
-
-    @Override
-    public TaskDefModel getTaskDef(String name) {
-        return globalStore.getTaskDef(name);
-    }
-
-    @Override
-    public ExternalEventDefModel getExternalEventDef(String name) {
-        return globalStore.getExternalEventDef(name);
-    }
-
-    @Override
-    public UserTaskDefModel getUserTaskDef(String name, Integer version) {
-        return globalStore.getUserTaskDef(name, version);
     }
 
     @Override

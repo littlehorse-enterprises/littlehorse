@@ -88,6 +88,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWf
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.HealthService;
+import io.littlehorse.server.streams.util.MetadataCache;
 import io.littlehorse.server.streams.util.POSTStreamObserver;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -123,10 +124,11 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     public KafkaStreamsServerImpl(LHConfig config) {
+        MetadataCache wfSpecCache = new MetadataCache();
         this.config = config;
         this.taskQueueManager = new TaskQueueManager(this);
         this.coreStreams = new KafkaStreams(
-                ServerTopology.initCoreTopology(config, this),
+                ServerTopology.initCoreTopology(config, this, wfSpecCache),
                 // Core topology must be EOS
                 config.getStreamsConfig("core", true));
         this.timerStreams = new KafkaStreams(
@@ -144,7 +146,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
         this.listenerManager = new ListenersManager(config, this, networkThreadpool, healthService.getMeterRegistry());
 
-        this.internalComms = new BackendInternalComms(config, coreStreams, timerStreams, networkThreadpool);
+        this.internalComms =
+                new BackendInternalComms(config, coreStreams, timerStreams, networkThreadpool, wfSpecCache);
     }
 
     public String getInstanceId() {
