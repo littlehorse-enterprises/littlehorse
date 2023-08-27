@@ -48,11 +48,12 @@ public class ReadOnlyMetadataStore {
     }
 
     public TaskDefModel getTaskDef(String name) {
-        @SuppressWarnings("unchecked")
-        StoredGetable<TaskDef, TaskDefModel> storedResult = (StoredGetable<TaskDef, TaskDefModel>)
-                rocksdb.get(new TaskDefIdModel(name).getStoreableKey(), StoredGetable.class);
-
-        return storedResult == null ? null : storedResult.getStoredObject();
+        TaskDefIdModel id = new TaskDefIdModel(name);
+        Supplier<TaskDefModel> findTaskDef = () -> {
+            StoredGetable<TaskDef, TaskDefModel> storedResult = rocksdb.get(id.getStoreableKey(), StoredGetable.class);
+            return storedResult == null ? null : storedResult.getStoredObject();
+        };
+        return (TaskDefModel) wfSpecCache.getOrCache(id, findTaskDef::get);
     }
 
     public ExternalEventDefModel getExternalEventDef(String name) {
