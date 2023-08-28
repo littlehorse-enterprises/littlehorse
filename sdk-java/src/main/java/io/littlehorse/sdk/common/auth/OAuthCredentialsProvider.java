@@ -23,10 +23,10 @@ public class OAuthCredentialsProvider extends CallCredentials {
         executor.execute(() -> {
             try {
                 if (currentToken == null || currentToken.isExpired()) {
-                    log.debug("Token expired, requesting a new one");
                     currentToken = oauthClient.getAccessToken();
+                    log.debug("Token was expired. New token: {}", currentToken);
                 } else {
-                    log.debug("Using cached token");
+                    log.debug("Using cached token: {}", currentToken);
                 }
 
                 Metadata headers = new Metadata();

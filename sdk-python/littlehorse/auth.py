@@ -78,9 +78,7 @@ class GrpcAuth(grpc.AuthMetadataPlugin):
             issuer = self.issuer()
 
             client = OAuth2Session(
-                client_id=self.client_id,
-                client_secret=self.client_secret,
-                scope="openid",
+                client_id=self.client_id, client_secret=self.client_secret
             )
 
             token_data = client.fetch_token(
