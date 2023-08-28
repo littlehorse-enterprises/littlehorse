@@ -20,8 +20,8 @@ import java.util.Date;
 
 public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
 
-    public CoreProcessorDAO(ReadOnlyRocksDBWrapper rocksdb, MetadataCache wfSpecCache) {
-        super(rocksdb, wfSpecCache);
+    public CoreProcessorDAO(ReadOnlyRocksDBWrapper rocksdb, MetadataCache metadataCache) {
+        super(rocksdb, metadataCache);
     }
 
     /*

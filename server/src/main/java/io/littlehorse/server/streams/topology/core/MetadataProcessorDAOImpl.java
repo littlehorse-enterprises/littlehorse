@@ -30,8 +30,8 @@ public class MetadataProcessorDAOImpl extends MetadataProcessorDAO {
     private RocksDBWrapper rocksdb;
     private MetadataCommandModel command;
 
-    public MetadataProcessorDAOImpl(RocksDBWrapper rocksdb, MetadataCache wfSpecCache) {
-        super(rocksdb, wfSpecCache);
+    public MetadataProcessorDAOImpl(RocksDBWrapper rocksdb, MetadataCache metadataCache) {
+        super(rocksdb, metadataCache);
         this.rocksdb = rocksdb;
     }
 

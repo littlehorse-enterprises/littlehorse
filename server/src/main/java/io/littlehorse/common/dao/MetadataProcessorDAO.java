@@ -9,8 +9,8 @@ import io.littlehorse.server.streams.util.MetadataCache;
 
 public abstract class MetadataProcessorDAO extends ReadOnlyMetadataStore {
 
-    public MetadataProcessorDAO(RocksDBWrapper rocksdb, MetadataCache wfSpecCache) {
-        super(rocksdb, wfSpecCache);
+    public MetadataProcessorDAO(RocksDBWrapper rocksdb, MetadataCache metadataCache) {
+        super(rocksdb, metadataCache);
     }
 
     /*

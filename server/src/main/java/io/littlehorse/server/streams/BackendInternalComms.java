@@ -92,18 +92,18 @@ public class BackendInternalComms implements Closeable {
     private AsyncWaiters asyncWaiters;
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
-    private MetadataCache wfSpecCache;
+    private MetadataCache metadataCache;
 
     public BackendInternalComms(
             LHConfig config,
             KafkaStreams coreStreams,
             KafkaStreams timerStreams,
             Executor executor,
-            MetadataCache wfSpecCache) {
+            MetadataCache metadataCache) {
         this.config = config;
         this.coreStreams = coreStreams;
         this.timerStreams = timerStreams;
-        this.wfSpecCache = wfSpecCache;
+        this.metadataCache = metadataCache;
         this.channels = new HashMap<>();
         otherHosts = new ConcurrentHashMap<>();
 
@@ -713,7 +713,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     public ReadOnlyMetadataStore getGlobalStoreImpl() {
-        return new ReadOnlyMetadataStore(getStore(null, true, ServerTopology.GLOBAL_METADATA_STORE), wfSpecCache);
+        return new ReadOnlyMetadataStore(getStore(null, true, ServerTopology.GLOBAL_METADATA_STORE), metadataCache);
     }
 
     private InternalScanResponse localAllPartitionTagScan(InternalScan req) {

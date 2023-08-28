@@ -25,11 +25,11 @@ public class ReadOnlyMetadataStore {
 
     private final ReadOnlyRocksDBWrapper rocksdb;
 
-    private final MetadataCache wfSpecCache;
+    private final MetadataCache metadataCache;
 
-    public ReadOnlyMetadataStore(ReadOnlyRocksDBWrapper rocksdb, MetadataCache wfSpecCache) {
+    public ReadOnlyMetadataStore(ReadOnlyRocksDBWrapper rocksdb, MetadataCache metadataCache) {
         this.rocksdb = rocksdb;
-        this.wfSpecCache = wfSpecCache;
+        this.metadataCache = metadataCache;
     }
 
     @SuppressWarnings("unchecked")
@@ -44,7 +44,7 @@ public class ReadOnlyMetadataStore {
             }
             return storedResult == null ? null : storedResult.getStoredObject();
         };
-        return wfSpecCache.getOrCache(name, version, findWfSpec);
+        return metadataCache.getOrCache(name, version, findWfSpec);
     }
 
     public TaskDefModel getTaskDef(String name) {
@@ -53,7 +53,7 @@ public class ReadOnlyMetadataStore {
             StoredGetable<TaskDef, TaskDefModel> storedResult = rocksdb.get(id.getStoreableKey(), StoredGetable.class);
             return storedResult == null ? null : storedResult.getStoredObject();
         };
-        return (TaskDefModel) wfSpecCache.getOrCache(id, findTaskDef::get);
+        return (TaskDefModel) metadataCache.getOrCache(id, findTaskDef::get);
     }
 
     public ExternalEventDefModel getExternalEventDef(String name) {

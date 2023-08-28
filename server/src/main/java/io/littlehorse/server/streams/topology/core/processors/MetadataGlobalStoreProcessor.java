@@ -13,10 +13,10 @@ import org.apache.kafka.streams.state.KeyValueStore;
 public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Void, Void> {
 
     private KeyValueStore<String, Bytes> store;
-    private final MetadataCache wfSpecCache;
+    private final MetadataCache metadataCache;
 
-    public MetadataGlobalStoreProcessor(MetadataCache wfSpecCache) {
-        this.wfSpecCache = wfSpecCache;
+    public MetadataGlobalStoreProcessor(MetadataCache metadataCache) {
+        this.metadataCache = metadataCache;
     }
 
     public void init(final ProcessorContext<Void, Void> ctx) {
@@ -40,9 +40,8 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
         String key = record.key();
         Bytes value = record.value();
 
-        // TODO: add to wfSpecCache.
         try {
-            wfSpecCache.addToCache(key, value);
+            metadataCache.addToCache(key, value);
         } catch (Exception ex) {
             log.error("Failed to cache on WfSpec cache", ex);
         }

@@ -124,11 +124,11 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     public KafkaStreamsServerImpl(LHConfig config) {
-        MetadataCache wfSpecCache = new MetadataCache();
+        MetadataCache metadataCache = new MetadataCache();
         this.config = config;
         this.taskQueueManager = new TaskQueueManager(this);
         this.coreStreams = new KafkaStreams(
-                ServerTopology.initCoreTopology(config, this, wfSpecCache),
+                ServerTopology.initCoreTopology(config, this, metadataCache),
                 // Core topology must be EOS
                 config.getStreamsConfig("core", true));
         this.timerStreams = new KafkaStreams(
@@ -147,7 +147,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         this.listenerManager = new ListenersManager(config, this, networkThreadpool, healthService.getMeterRegistry());
 
         this.internalComms =
-                new BackendInternalComms(config, coreStreams, timerStreams, networkThreadpool, wfSpecCache);
+                new BackendInternalComms(config, coreStreams, timerStreams, networkThreadpool, metadataCache);
     }
 
     public String getInstanceId() {

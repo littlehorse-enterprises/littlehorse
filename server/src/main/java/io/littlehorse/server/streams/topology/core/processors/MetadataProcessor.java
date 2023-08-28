@@ -26,20 +26,19 @@ import org.apache.kafka.streams.processor.api.Record;
 public class MetadataProcessor implements Processor<String, MetadataCommandModel, String, Bytes> {
 
     private MetadataProcessorDAO dao;
-    private LHConfig config;
-    private KafkaStreamsServerImpl server;
+    private final LHConfig config;
+    private final KafkaStreamsServerImpl server;
+    private final MetadataCache metadataCache;
 
-    private MetadataCache wfSpecCache;
-
-    public MetadataProcessor(LHConfig config, KafkaStreamsServerImpl server, MetadataCache wfSpecCache) {
+    public MetadataProcessor(LHConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         this.config = config;
         this.server = server;
-        this.wfSpecCache = wfSpecCache;
+        this.metadataCache = metadataCache;
     }
 
     public void init(final ProcessorContext<String, Bytes> ctx) {
         this.dao = new MetadataProcessorDAOImpl(
-                new RocksDBWrapper(ctx.getStateStore(ServerTopology.METADATA_STORE), config), wfSpecCache);
+                new RocksDBWrapper(ctx.getStateStore(ServerTopology.METADATA_STORE), config), metadataCache);
     }
 
     @Override

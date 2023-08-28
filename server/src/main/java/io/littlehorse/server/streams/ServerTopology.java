@@ -82,7 +82,7 @@ public class ServerTopology {
 
     public static final String GLOBAL_METADATA_SINK = "global-metadata-sink";
 
-    public static Topology initCoreTopology(LHConfig config, KafkaStreamsServerImpl server, MetadataCache wfSpecCache) {
+    public static Topology initCoreTopology(LHConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         Topology topo = new Topology();
         Serializer<Object> sinkValueSerializer = (topic, output) -> {
             CommandProcessorOutput cpo = (CommandProcessorOutput) output;
@@ -108,7 +108,7 @@ public class ServerTopology {
                 config.getMetadataCmdTopicName() // source topic
                 );
         topo.addProcessor(
-                METADATA_PROCESSOR, () -> new MetadataProcessor(config, server, wfSpecCache), METADATA_SOURCE);
+                METADATA_PROCESSOR, () -> new MetadataProcessor(config, server, metadataCache), METADATA_SOURCE);
         StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(METADATA_STORE), Serdes.String(), Serdes.Bytes());
         topo.addStateStore(metadataStoreBuilder, METADATA_PROCESSOR);
@@ -120,7 +120,7 @@ public class ServerTopology {
                 new LHDeserializer<>(CommandModel.class), // value deserializer
                 config.getCoreCmdTopicName() // source topic
                 );
-        topo.addProcessor(CORE_PROCESSOR, () -> new CommandProcessor(config, server, wfSpecCache), CORE_SOURCE);
+        topo.addProcessor(CORE_PROCESSOR, () -> new CommandProcessor(config, server, metadataCache), CORE_SOURCE);
         topo.addSink(
                 CORE_PROCESSOR_SINK,
                 sinkTopicNameExtractor, // topic extractor
@@ -156,7 +156,7 @@ public class ServerTopology {
                 Serdes.Bytes().deserializer(),
                 metadataStoreChangelog, // input topic
                 GLOBAL_METADATA_PROCESSOR,
-                () -> new MetadataGlobalStoreProcessor(wfSpecCache));
+                () -> new MetadataGlobalStoreProcessor(metadataCache));
         return topo;
     }
 

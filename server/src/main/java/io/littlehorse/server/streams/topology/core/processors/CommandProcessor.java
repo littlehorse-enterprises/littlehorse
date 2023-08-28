@@ -28,12 +28,12 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
     private LHConfig config;
     private KafkaStreamsServerImpl server;
     private RocksDBWrapper rocksdb;
-    private final MetadataCache wfSpecCache;
+    private final MetadataCache metadataCache;
 
-    public CommandProcessor(LHConfig config, KafkaStreamsServerImpl server, MetadataCache wfSpecCache) {
+    public CommandProcessor(LHConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         this.config = config;
         this.server = server;
-        this.wfSpecCache = wfSpecCache;
+        this.metadataCache = metadataCache;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
         ReadOnlyRocksDBWrapper globalStore =
                 new ReadOnlyRocksDBWrapper(ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), config);
 
-        dao = new CoreProcessorDAOImpl(this.ctx, config, server, wfSpecCache, rocksdb, globalStore);
+        dao = new CoreProcessorDAOImpl(this.ctx, config, server, metadataCache, rocksdb, globalStore);
         dao.onPartitionClaimed();
         ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
     }

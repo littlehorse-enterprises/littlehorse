@@ -62,10 +62,10 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
             final ProcessorContext<String, CommandProcessorOutput> ctx,
             LHConfig config,
             KafkaStreamsServerImpl server,
-            MetadataCache wfSpecCache,
+            MetadataCache metadataCache,
             RocksDBWrapper localStore,
             ReadOnlyRocksDBWrapper globalStore) {
-        super(globalStore, wfSpecCache);
+        super(globalStore, metadataCache);
 
         this.server = server;
         this.ctx = ctx;
