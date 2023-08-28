@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.store;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
@@ -35,11 +35,11 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 public class ReadOnlyRocksDBWrapper {
 
     protected ReadOnlyKeyValueStore<String, Bytes> rocksdb;
-    protected LHConfig config;
+    protected LHServerConfig config;
 
     // NOTE: we will pass in a Tenant ID to this in the future when we implement
     // multi-tenancy.
-    public ReadOnlyRocksDBWrapper(ReadOnlyKeyValueStore<String, Bytes> rocksdb, LHConfig config) {
+    public ReadOnlyRocksDBWrapper(ReadOnlyKeyValueStore<String, Bytes> rocksdb, LHServerConfig config) {
         this.rocksdb = rocksdb;
         this.config = config;
     }

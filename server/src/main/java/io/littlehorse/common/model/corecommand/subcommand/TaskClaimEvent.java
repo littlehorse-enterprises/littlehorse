@@ -2,7 +2,7 @@ package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -69,7 +69,7 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
         return true;
     }
 
-    public PollTaskResponse process(CoreProcessorDAO dao, LHConfig config) {
+    public PollTaskResponse process(CoreProcessorDAO dao, LHServerConfig config) {
         TaskRunModel taskRun = dao.get(taskRunId);
         if (taskRun == null) {
             log.warn("Got claimTask for non-existent taskRun {}", taskRunId);

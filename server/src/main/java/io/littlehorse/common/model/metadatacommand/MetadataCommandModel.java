@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.metadatacommand;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.model.AbstractCommand;
@@ -196,12 +196,12 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         return getSubCommand().hasResponse();
     }
 
-    public Message process(MetadataProcessorDAO dao, LHConfig config) {
+    public Message process(MetadataProcessorDAO dao, LHServerConfig config) {
         return getSubCommand().process(dao, config);
     }
 
     @Override
-    public String getTopic(LHConfig config) {
+    public String getTopic(LHServerConfig config) {
         return config.getMetadataCmdTopicName();
     }
 

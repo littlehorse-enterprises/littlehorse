@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
@@ -25,12 +25,12 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private CoreProcessorDAOImpl dao;
-    private LHConfig config;
+    private LHServerConfig config;
     private KafkaStreamsServerImpl server;
     private RocksDBWrapper rocksdb;
     private final MetadataCache wfSpecCache;
 
-    public CommandProcessor(LHConfig config, KafkaStreamsServerImpl server, MetadataCache wfSpecCache) {
+    public CommandProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache wfSpecCache) {
         this.config = config;
         this.server = server;
         this.wfSpecCache = wfSpecCache;

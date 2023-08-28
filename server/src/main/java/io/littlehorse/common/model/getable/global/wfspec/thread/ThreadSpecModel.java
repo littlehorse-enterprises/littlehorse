@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.global.wfspec.thread;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -183,7 +183,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         return wfSpecModel.lookupVarDef(name);
     }
 
-    public void validate(ReadOnlyMetadataStore dbClient, LHConfig config) throws LHApiException {
+    public void validate(ReadOnlyMetadataStore dbClient, LHServerConfig config) throws LHApiException {
         if (entrypointNodeName == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "missing ENTRYPOITNT node!");
         }

@@ -1,6 +1,6 @@
 package io.littlehorse;
 
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -11,7 +11,7 @@ import org.apache.kafka.clients.admin.NewTopic;
 @Slf4j
 public class App {
 
-    public static void doIdempotentSetup(LHConfig config) throws InterruptedException, ExecutionException {
+    public static void doIdempotentSetup(LHServerConfig config) throws InterruptedException, ExecutionException {
         log.info("Creating topics!!");
 
         boolean createdATopic = false;
@@ -33,14 +33,14 @@ public class App {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
-        LHConfig config;
+        LHServerConfig config;
 
         if (args.length > 0) {
             log.info("Loading configuration from file '{}'", args[0]);
-            config = new LHConfig(args[0]);
+            config = new LHServerConfig(args[0]);
         } else {
             log.info("Loading configuration from env variables");
-            config = new LHConfig();
+            config = new LHServerConfig();
         }
 
         log.info("Settings:\n{}", config);

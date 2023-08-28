@@ -1,7 +1,7 @@
 package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.util.LHUtil;
@@ -20,7 +20,7 @@ public abstract class AbstractCommand<T extends Message> extends LHSerializable<
 
     public abstract LHStoreType getStore();
 
-    public abstract String getTopic(LHConfig config);
+    public abstract String getTopic(LHServerConfig config);
 
     // Metadata commands will return a dummy value
     public abstract String getPartitionKey();

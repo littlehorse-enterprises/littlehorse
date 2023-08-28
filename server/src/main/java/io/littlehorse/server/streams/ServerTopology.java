@@ -1,6 +1,6 @@
 package io.littlehorse.server.streams;
 
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
@@ -82,7 +82,7 @@ public class ServerTopology {
 
     public static final String GLOBAL_METADATA_SINK = "global-metadata-sink";
 
-    public static Topology initCoreTopology(LHConfig config, KafkaStreamsServerImpl server) {
+    public static Topology initCoreTopology(LHServerConfig config, KafkaStreamsServerImpl server) {
         Topology topo = new Topology();
         MetadataCache wfSpecCache = new MetadataCache();
         Serializer<Object> sinkValueSerializer = (topic, output) -> {
@@ -148,7 +148,7 @@ public class ServerTopology {
                         Stores.persistentKeyValueStore(GLOBAL_METADATA_STORE), Serdes.String(), Serdes.Bytes())
                 .withLoggingDisabled();
 
-        String metadataStoreChangelog = LHConfig.getMetadataStoreChangelogTopic(config.getLHClusterId());
+        String metadataStoreChangelog = LHServerConfig.getMetadataStoreChangelogTopic(config.getLHClusterId());
         topo.addGlobalStore(
                 globalStoreBuilder,
                 GLOBAL_METADATA_SOURCE, // source created by Streams internally
@@ -160,7 +160,7 @@ public class ServerTopology {
         return topo;
     }
 
-    public static Topology initTimerTopology(LHConfig config) {
+    public static Topology initTimerTopology(LHServerConfig config) {
         Topology topo = new Topology();
         Serde<LHTimer> timerSerde = new LHSerde<>(LHTimer.class);
 

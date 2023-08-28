@@ -1,6 +1,6 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
@@ -21,10 +21,10 @@ import org.apache.kafka.streams.processor.api.Record;
 public class RepartitionCommandProcessor implements Processor<String, RepartitionCommand, Void, Void> {
 
     private RocksDBWrapper store;
-    private LHConfig config;
+    private LHServerConfig config;
     private ProcessorContext<Void, Void> ctx;
 
-    public RepartitionCommandProcessor(LHConfig config) {
+    public RepartitionCommandProcessor(LHServerConfig config) {
         this.config = config;
     }
 

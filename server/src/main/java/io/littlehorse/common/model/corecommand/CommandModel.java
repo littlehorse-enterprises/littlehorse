@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.corecommand;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.AbstractCommand;
@@ -306,7 +306,7 @@ public class CommandModel extends AbstractCommand<Command> {
     }
 
     @Override
-    public String getTopic(LHConfig config) {
+    public String getTopic(LHServerConfig config) {
         return config.getCoreCmdTopicName();
     }
 
@@ -314,7 +314,7 @@ public class CommandModel extends AbstractCommand<Command> {
         return getSubCommand().hasResponse();
     }
 
-    public Message process(CoreProcessorDAO dao, LHConfig config) {
+    public Message process(CoreProcessorDAO dao, LHServerConfig config) {
         return getSubCommand().process(dao, config);
     }
 }

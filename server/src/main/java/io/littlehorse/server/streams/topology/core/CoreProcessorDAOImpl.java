@@ -2,7 +2,7 @@ package io.littlehorse.server.streams.topology.core;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.AnalyticsRegistry;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
@@ -58,14 +58,14 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     private RocksDBWrapper rocksdb;
     private ReadOnlyMetadataStore globalStore;
     private ProcessorContext<String, CommandProcessorOutput> ctx;
-    private LHConfig config;
+    private LHServerConfig config;
     private boolean partitionIsClaimed;
 
     private GetableStorageManager storageManager;
 
     public CoreProcessorDAOImpl(
             final ProcessorContext<String, CommandProcessorOutput> ctx,
-            LHConfig config,
+            LHServerConfig config,
             KafkaStreamsServerImpl server,
             MetadataCache wfSpecCache,
             RocksDBWrapper localStore,

@@ -2,7 +2,7 @@ package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
@@ -68,7 +68,7 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
     }
 
     @Override
-    public Empty process(CoreProcessorDAO dao, LHConfig config) {
+    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
         taskToSchedule.setDao(dao);
         String wfRunId = source.getWfRunId();
 

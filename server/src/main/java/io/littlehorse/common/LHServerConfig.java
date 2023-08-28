@@ -39,7 +39,7 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.jetbrains.annotations.Nullable;
 
 @Slf4j
-public class LHConfig extends ConfigBase {
+public class LHServerConfig extends ConfigBase {
 
     // Kafka and Kafka Streams-Specific Configuration Env Vars
     public static final String KAFKA_BOOTSTRAP_KEY = "LHS_KAFKA_BOOTSTRAP_SERVERS";
@@ -258,15 +258,15 @@ public class LHConfig extends ConfigBase {
     // TODO: Determine how and where to set the topic names for TaskDef queues
 
     public String getBootstrapServers() {
-        return getOrSetDefault(LHConfig.KAFKA_BOOTSTRAP_KEY, "localhost:9092");
+        return getOrSetDefault(LHServerConfig.KAFKA_BOOTSTRAP_KEY, "localhost:9092");
     }
 
     public short getReplicationFactor() {
-        return Short.valueOf(String.class.cast(props.getOrDefault(LHConfig.REPLICATION_FACTOR_KEY, "1")));
+        return Short.valueOf(String.class.cast(props.getOrDefault(LHServerConfig.REPLICATION_FACTOR_KEY, "1")));
     }
 
     public int getClusterPartitions() {
-        return Integer.valueOf(String.class.cast(props.getOrDefault(LHConfig.CLUSTER_PARTITIONS_KEY, "12")));
+        return Integer.valueOf(String.class.cast(props.getOrDefault(LHServerConfig.CLUSTER_PARTITIONS_KEY, "12")));
     }
 
     public String getKafkaGroupId(String component) {
@@ -274,25 +274,25 @@ public class LHConfig extends ConfigBase {
     }
 
     public String getLHClusterId() {
-        return getOrSetDefault(LHConfig.LHS_CLUSTER_ID_KEY, "cluster1");
+        return getOrSetDefault(LHServerConfig.LHS_CLUSTER_ID_KEY, "cluster1");
     }
 
     public String getLHInstanceId() {
-        return getOrSetDefault(LHConfig.LHS_INSTANCE_ID_KEY, "server1");
+        return getOrSetDefault(LHServerConfig.LHS_INSTANCE_ID_KEY, "server1");
     }
 
     public String getStateDirectory() {
-        return getOrSetDefault(LHConfig.KAFKA_STATE_DIR_KEY, "/tmp/kafkaState");
+        return getOrSetDefault(LHServerConfig.KAFKA_STATE_DIR_KEY, "/tmp/kafkaState");
     }
 
     public String getInternalAdvertisedHost() {
-        return getOrSetDefault(LHConfig.INTERNAL_ADVERTISED_HOST_KEY, "localhost");
+        return getOrSetDefault(LHServerConfig.INTERNAL_ADVERTISED_HOST_KEY, "localhost");
     }
 
     // If INTERNAL_ADVERTISED_PORT isn't set, we return INTERNAL_BIND_PORT.
     public int getInternalAdvertisedPort() {
         return Integer.valueOf(
-                getOrSetDefault(LHConfig.INTERNAL_ADVERTISED_PORT_KEY, String.valueOf(getInternalBindPort())));
+                getOrSetDefault(LHServerConfig.INTERNAL_ADVERTISED_PORT_KEY, String.valueOf(getInternalBindPort())));
     }
 
     public int getHealthServicePort() {
@@ -300,19 +300,19 @@ public class LHConfig extends ConfigBase {
     }
 
     public String getPrometheusExporterPath() {
-        return getOrSetDefault(LHConfig.HEALTH_PATH_METRICS_KEY, "/metrics");
+        return getOrSetDefault(LHServerConfig.HEALTH_PATH_METRICS_KEY, "/metrics");
     }
 
     public String getReadinessPath() {
-        return getOrSetDefault(LHConfig.HEALTH_PATH_READINESS_KEY, "/readiness");
+        return getOrSetDefault(LHServerConfig.HEALTH_PATH_READINESS_KEY, "/readiness");
     }
 
     public String getLivenessPath() {
-        return getOrSetDefault(LHConfig.HEALTH_PATH_LIVENESS_KEY, "/liveness");
+        return getOrSetDefault(LHServerConfig.HEALTH_PATH_LIVENESS_KEY, "/liveness");
     }
 
     public int getInternalBindPort() {
-        return Integer.parseInt(getOrSetDefault(LHConfig.INTERNAL_BIND_PORT_KEY, "2011"));
+        return Integer.parseInt(getOrSetDefault(LHServerConfig.INTERNAL_BIND_PORT_KEY, "2011"));
     }
 
     public OAuthConfig getOAuthConfig() {
@@ -408,7 +408,7 @@ public class LHConfig extends ConfigBase {
             return listenersAuthorizationMap;
         }
 
-        String rawAuthProtocolMap = getOrSetDefault(LHConfig.LISTENERS_AUTHENTICATION_MAP_KEY, null);
+        String rawAuthProtocolMap = getOrSetDefault(LHServerConfig.LISTENERS_AUTHENTICATION_MAP_KEY, null);
 
         if (Strings.isNullOrEmpty(rawAuthProtocolMap)) {
             return listenersAuthorizationMap = Map.of();
@@ -419,7 +419,7 @@ public class LHConfig extends ConfigBase {
 
         if (!rawAuthProtocolMap.matches("([a-zA-Z0-9_-]+:(" + regexAllAuthProtocols + ")+,?)+")) {
             throw new LHMisconfigurationException(
-                    "Invalid configuration: " + LHConfig.LISTENERS_AUTHENTICATION_MAP_KEY);
+                    "Invalid configuration: " + LHServerConfig.LISTENERS_AUTHENTICATION_MAP_KEY);
         }
 
         List<String> rawAuthProtocols = Arrays.asList(rawAuthProtocolMap.split(","));
@@ -435,13 +435,13 @@ public class LHConfig extends ConfigBase {
             return listenersProtocolMap;
         }
 
-        String rawProtocolMap = getOrSetDefault(LHConfig.LISTENERS_PROTOCOL_MAP_KEY, "PLAIN:PLAIN");
+        String rawProtocolMap = getOrSetDefault(LHServerConfig.LISTENERS_PROTOCOL_MAP_KEY, "PLAIN:PLAIN");
 
         String regexAllProtocols =
                 Arrays.stream(ListenerProtocol.values()).map(Enum::name).collect(Collectors.joining("|"));
 
         if (!rawProtocolMap.matches("([a-zA-Z0-9_-]+:(" + regexAllProtocols + ")+,?)+")) {
-            throw new LHMisconfigurationException("Invalid configuration: " + LHConfig.LISTENERS_PROTOCOL_MAP_KEY);
+            throw new LHMisconfigurationException("Invalid configuration: " + LHServerConfig.LISTENERS_PROTOCOL_MAP_KEY);
         }
 
         List<String> rawProtocols = Arrays.asList(rawProtocolMap.split(","));
@@ -456,12 +456,12 @@ public class LHConfig extends ConfigBase {
             return listenerConfigs;
         }
 
-        String rawListenersConfig = getOrSetDefault(LHConfig.LISTENERS_KEY, "PLAIN:2023");
+        String rawListenersConfig = getOrSetDefault(LHServerConfig.LISTENERS_KEY, "PLAIN:2023");
         Map<String, ListenerProtocol> protocolMap = getListenersProtocolMap();
         Map<String, AuthorizationProtocol> authMap = getListenersAuthorizationMap();
 
         if (!rawListenersConfig.matches("([a-zA-Z0-9_-]+:\\d+,?)+")) {
-            throw new LHMisconfigurationException("Invalid configuration: " + LHConfig.LISTENERS_KEY);
+            throw new LHMisconfigurationException("Invalid configuration: " + LHServerConfig.LISTENERS_KEY);
         }
 
         List<String> rawListenersConfigs = Arrays.asList(rawListenersConfig.split(","));
@@ -500,7 +500,7 @@ public class LHConfig extends ConfigBase {
         if (totalDifferentPorts != listenerConfigs.size()) {
             listenerConfigs = null;
             throw new LHMisconfigurationException(
-                    "Invalid configuration: " + LHConfig.LISTENERS_KEY + ". Ports should be different");
+                    "Invalid configuration: " + LHServerConfig.LISTENERS_KEY + ". Ports should be different");
         }
 
         return listenerConfigs;
@@ -511,10 +511,10 @@ public class LHConfig extends ConfigBase {
             return advertisedListenerConfigs;
         }
 
-        String rawListenersConfig = getOrSetDefault(LHConfig.ADVERTISED_LISTENERS_KEY, "PLAIN://localhost:2023");
+        String rawListenersConfig = getOrSetDefault(LHServerConfig.ADVERTISED_LISTENERS_KEY, "PLAIN://localhost:2023");
 
         if (!rawListenersConfig.matches("([a-zA-Z0-9_-]+://[a-zA-Z0-9.\\-]+:\\d+,?)+")) {
-            throw new LHMisconfigurationException("Invalid configuration: " + LHConfig.ADVERTISED_LISTENERS_KEY);
+            throw new LHMisconfigurationException("Invalid configuration: " + LHServerConfig.ADVERTISED_LISTENERS_KEY);
         }
 
         List<String> rawAdvertisedListenerConfigs = Arrays.asList(rawListenersConfig.split(","));
@@ -666,11 +666,11 @@ public class LHConfig extends ConfigBase {
                 org.apache.kafka.streams.errors.DefaultProductionExceptionHandler.class);
         props.put(
                 StreamsConfig.consumerPrefix(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG),
-                Integer.valueOf(getOrSetDefault(LHConfig.SESSION_TIMEOUT_KEY, "30000")));
+                Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "30000")));
         props.put(StreamsConfig.METADATA_MAX_AGE_CONFIG, 1000 * 30);
         props.put(
                 StreamsConfig.NUM_STREAM_THREADS_CONFIG,
-                Integer.valueOf(getOrSetDefault(LHConfig.NUM_STREAM_THREADS_KEY, "1")));
+                Integer.valueOf(getOrSetDefault(LHServerConfig.NUM_STREAM_THREADS_KEY, "1")));
         props.put(StreamsConfig.TASK_TIMEOUT_MS_CONFIG, 10 * 1000);
         props.put(StreamsConfig.producerPrefix(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG), 10 * 1000);
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName());
@@ -699,27 +699,27 @@ public class LHConfig extends ConfigBase {
     }
 
     public String getRackId() {
-        return getOrSetDefault(LHConfig.RACK_ID_KEY, "unset-rack-id");
+        return getOrSetDefault(LHServerConfig.RACK_ID_KEY, "unset-rack-id");
     }
 
     public int getStreamsCommitInterval() {
-        return Integer.valueOf(getOrSetDefault(LHConfig.COMMIT_INTERVAL_KEY, "100"));
+        return Integer.valueOf(getOrSetDefault(LHServerConfig.COMMIT_INTERVAL_KEY, "100"));
     }
 
     public int getDefaultWfRunRetentionHours() {
-        return Integer.valueOf(getOrSetDefault(LHConfig.DEFAULT_WFRUN_RETENTION_HOURS, "168"));
+        return Integer.valueOf(getOrSetDefault(LHServerConfig.DEFAULT_WFRUN_RETENTION_HOURS, "168"));
     }
 
     public int getDefaultExternalEventRetentionHours() {
-        return Integer.valueOf(getOrSetDefault(LHConfig.DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS, "168"));
+        return Integer.valueOf(getOrSetDefault(LHServerConfig.DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS, "168"));
     }
 
     public int getStandbyReplicas() {
-        return Integer.valueOf(getOrSetDefault(LHConfig.NUM_STANDBY_REPLICAS_KEY, "0"));
+        return Integer.valueOf(getOrSetDefault(LHServerConfig.NUM_STANDBY_REPLICAS_KEY, "0"));
     }
 
     public int getWarmupReplicas() {
-        return Integer.valueOf(getOrSetDefault(LHConfig.NUM_WARMUP_REPLICAS_KEY, "12"));
+        return Integer.valueOf(getOrSetDefault(LHServerConfig.NUM_WARMUP_REPLICAS_KEY, "12"));
     }
 
     public boolean createKafkaTopic(NewTopic topic) throws InterruptedException, ExecutionException {
@@ -738,17 +738,17 @@ public class LHConfig extends ConfigBase {
         }
     }
 
-    public LHConfig() {
+    public LHServerConfig() {
         super();
         initKafkaAdmin();
     }
 
-    public LHConfig(String propertiesPath) {
+    public LHServerConfig(String propertiesPath) {
         super(propertiesPath);
         initKafkaAdmin();
     }
 
-    public LHConfig(Properties props) {
+    public LHServerConfig(Properties props) {
         super(props);
         initKafkaAdmin();
     }

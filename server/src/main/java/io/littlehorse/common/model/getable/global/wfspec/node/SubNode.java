@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.getable.global.wfspec.node;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -14,7 +14,7 @@ public abstract class SubNode<T extends Message> extends LHSerializable<T> {
 
     public abstract SubNodeRun<?> createSubNodeRun(Date time);
 
-    public abstract void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHApiException;
+    public abstract void validate(ReadOnlyMetadataStore stores, LHServerConfig config) throws LHApiException;
 
     protected NodeModel node;
 

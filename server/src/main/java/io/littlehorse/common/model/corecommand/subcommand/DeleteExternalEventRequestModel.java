@@ -3,7 +3,7 @@ package io.littlehorse.common.model.corecommand.subcommand;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -39,7 +39,7 @@ public class DeleteExternalEventRequestModel extends SubCommand<DeleteExternalEv
         return true;
     }
 
-    public Empty process(CoreProcessorDAO dao, LHConfig config) {
+    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
         ExternalEventModel externalEvent = dao.get(id);
         if (!externalEvent.claimed) {
             dao.delete(id);
