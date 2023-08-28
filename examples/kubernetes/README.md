@@ -11,7 +11,7 @@ This example is intended to be used in development environments.
 ## 1. Build the Image
 
 ```
-docker build --file ../../docker/Dockerfile --tag littlehorse.io/littlehorse-server:latest ../../
+docker build --file ../../docker/Dockerfile --tag littlehorse/lh-server:latest ../../
 ```
 
 > Take into account that the image has to be loaded into your kubernetes cluster

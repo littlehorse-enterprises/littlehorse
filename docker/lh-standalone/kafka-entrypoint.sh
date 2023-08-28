@@ -25,6 +25,8 @@ for var in ${!KAFKA_@}; do
     echo $key"="$value >> ${CONFIG_PATH}
 done
 
-rm -f ${KAFKA_LOG_DIR}/__cluster_metadata-0/quorum-state
-kafka-storage.sh format --ignore-formatted --config ${CONFIG_PATH} --cluster-id $(kafka-storage.sh random-uuid)
+if [[ ! -f "${KAFKA_DATA_DIR}/__cluster_metadata-0/quorum-state" ]]; then
+    kafka-storage.sh format --ignore-formatted --config ${CONFIG_PATH} --cluster-id $(kafka-storage.sh random-uuid)
+fi
+
 kafka-server-start.sh ${CONFIG_PATH}
