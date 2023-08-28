@@ -37,8 +37,7 @@ public class ReadOnlyMetadataStore {
         Supplier<WfSpecModel> findWfSpec = () -> {
             final StoredGetable<WfSpec, WfSpecModel> storedResult;
             if (version != null) {
-                storedResult = (StoredGetable<WfSpec, WfSpecModel>)
-                        rocksdb.get(new WfSpecIdModel(name, version).getStoreableKey(), StoredGetable.class);
+                storedResult = rocksdb.get(new WfSpecIdModel(name, version).getStoreableKey(), StoredGetable.class);
             } else {
                 storedResult = rocksdb.getLastFromPrefix(WfSpecIdModel.getPrefix(name), StoredGetable.class);
             }
@@ -47,6 +46,7 @@ public class ReadOnlyMetadataStore {
         return metadataCache.getOrCache(name, version, findWfSpec);
     }
 
+    @SuppressWarnings("unchecked")
     public TaskDefModel getTaskDef(String name) {
         TaskDefIdModel id = new TaskDefIdModel(name);
         Supplier<TaskDefModel> findTaskDef = () -> {

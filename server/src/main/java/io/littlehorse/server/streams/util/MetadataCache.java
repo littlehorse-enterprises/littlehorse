@@ -1,14 +1,16 @@
 package io.littlehorse.server.streams.util;
 
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.MetadataId;
-import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.TaskDef;
-import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.store.StoredGetable;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -17,48 +19,46 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 
 @Slf4j
-public class MetadataCache extends LHCache<MetadataId<?, ?, ?>, Object> {
+public class MetadataCache extends LHCache<MetadataId<?, ?, ?>, GlobalGetable<?>> {
 
-    private static final Pattern WFSPEC_KEY_PATTERN = Pattern.compile("0\\/2\\/(?<name>.+)\\/(?<version>\\d+)");
-    private static final Pattern TASKDEF_KEY_PATTERN = Pattern.compile("0\\/0\\/(?<name>.+)");
+    private static final Pattern CACHEABLE_KEY_PATTERN =
+            Pattern.compile(StoreableType.STORED_GETABLE_VALUE + "\\/(?<getableType>\\d+)\\/(?<key>.+)");
     public static final int LATEST_VERSION = -1;
 
     public MetadataCache() {}
 
-    public void addToCache(String key, Bytes value) throws LHSerdeError {
-        Matcher wfSpecMatcher = WFSPEC_KEY_PATTERN.matcher(key);
-        Matcher taskDefMatcher = TASKDEF_KEY_PATTERN.matcher(key);
-        boolean isWfSpec = wfSpecMatcher.matches();
-        boolean isTaskDef = taskDefMatcher.matches();
+    public void updateCache(String storeKey, Bytes value) throws LHSerdeError {
+        Matcher keyMatcher = CACHEABLE_KEY_PATTERN.matcher(storeKey);
+        boolean isCacheableKey = keyMatcher.matches();
 
-        if (isWfSpec) {
-            String name = wfSpecMatcher.group("name");
-            int version = Integer.parseInt(wfSpecMatcher.group("version"));
-            WfSpecIdModel cacheVersionKey = new WfSpecIdModel(name, version);
-            WfSpecIdModel cacheLatestKey = new WfSpecIdModel(name, LATEST_VERSION);
-            if (value == null) {
-                log.trace("Evicting wfSpecCache for {}", cacheVersionKey);
-                evictCache(cacheVersionKey);
-                evictCache(cacheLatestKey);
-            } else {
-                StoredGetable<WfSpec, WfSpecModel> wfSpecModel =
-                        LHSerializable.fromBytes(value.get(), StoredGetable.class);
-                log.trace("Updating wfSpecCache for {}", cacheVersionKey);
-                updateCache(cacheVersionKey, wfSpecModel.getStoredObject());
-                updateCache(cacheLatestKey, wfSpecModel.getStoredObject());
+        if (isCacheableKey) {
+            String key = keyMatcher.group("key");
+            int getableType = Integer.parseInt(keyMatcher.group("getableType"));
+            switch (GetableClassEnum.forNumber(getableType)) {
+                case WF_SPEC -> {
+                    WfSpecIdModel id = (WfSpecIdModel) ObjectIdModel.fromString(key, WfSpecIdModel.class);
+                    WfSpecIdModel latestVersionId = new WfSpecIdModel(id.getName(), LATEST_VERSION);
+                    evictOrUpdate(value, id);
+                    evictOrUpdate(value, latestVersionId);
+                }
+                case TASK_DEF -> {
+                    TaskDefIdModel id = (TaskDefIdModel) ObjectIdModel.fromString(key, TaskDefIdModel.class);
+                    evictOrUpdate(value, id);
+                }
             }
-        } else if (isTaskDef) {
-            String name = taskDefMatcher.group("name");
-            TaskDefIdModel cacheKey = new TaskDefIdModel(name);
-            if (value == null) {
-                log.trace("Evicting taskDefCache for {}", cacheKey);
-                evictCache(cacheKey);
-            } else {
-                StoredGetable<TaskDef, TaskDefModel> taskDef =
-                        LHSerializable.fromBytes(value.get(), StoredGetable.class);
-                log.trace("Updating taskDefCache for {}", cacheKey);
-                updateCache(cacheKey, taskDef.getStoredObject());
-            }
+        }
+    }
+
+    private <U extends Message, V extends GlobalGetable<U>> void evictOrUpdate(
+            Bytes value, MetadataId<?, U, V> cacheKey) throws LHSerdeError {
+        String keyType = cacheKey.getObjectClass().getSimpleName();
+        if (value == null) {
+            log.trace("Evicting cache for {} with key {}", keyType, cacheKey);
+            evictCache(cacheKey);
+        } else {
+            log.trace("Updating cache for {} with key {}", keyType, cacheKey);
+            StoredGetable<U, V> storedGetable = LHSerializable.fromBytes(value.get(), StoredGetable.class);
+            updateCache(cacheKey, storedGetable.getStoredObject());
         }
     }
 

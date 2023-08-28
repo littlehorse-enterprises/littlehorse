@@ -41,9 +41,9 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
         Bytes value = record.value();
 
         try {
-            metadataCache.addToCache(key, value);
+            metadataCache.updateCache(key, value);
         } catch (Exception ex) {
-            log.error("Failed to cache on WfSpec cache", ex);
+            log.error("Failed to update metadata cache", ex);
         }
 
         if (value == null) {

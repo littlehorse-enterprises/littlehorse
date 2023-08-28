@@ -82,7 +82,8 @@ public class ServerTopology {
 
     public static final String GLOBAL_METADATA_SINK = "global-metadata-sink";
 
-    public static Topology initCoreTopology(LHConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
+    public static Topology initCoreTopology(
+            LHConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         Topology topo = new Topology();
         Serializer<Object> sinkValueSerializer = (topic, output) -> {
             CommandProcessorOutput cpo = (CommandProcessorOutput) output;

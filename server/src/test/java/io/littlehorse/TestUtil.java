@@ -14,6 +14,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.TaskNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
+import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
@@ -25,13 +26,7 @@ import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.Node;
-import io.littlehorse.sdk.common.proto.NodeRun;
-import io.littlehorse.sdk.common.proto.TaskStatus;
-import io.littlehorse.sdk.common.proto.UserTaskRun;
-import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
-import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import java.util.Date;
 import java.util.Map;
@@ -47,6 +42,13 @@ public class TestUtil {
         wfRunModel.status = LHStatus.RUNNING;
         wfRunModel.setStartTime(new Date());
         return wfRunModel;
+    }
+
+    public static TaskDefModel taskDef(String name) {
+        TaskDefModel taskDef = new TaskDefModel();
+        taskDef.setName(name);
+        taskDef.setCreatedAt(new Date());
+        return taskDef;
     }
 
     public static VariableModel variable(String wfRunId) {
