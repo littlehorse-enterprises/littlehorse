@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -44,6 +45,9 @@ public class ConditionalsTest {
 
     @LHWorkflow("test-conditionals-is-in-workflow")
     private Workflow workflowIsIn;
+
+    @LHWorkflow("test-conditionals-not-in-workflow")
+    private Workflow workflowNotIn;
 
     private WorkflowVerifier workflowVerifier;
 
@@ -96,7 +100,7 @@ public class ConditionalsTest {
     class NotEquals {
         @ParameterizedTest
         @MethodSource("provideSuccessArguments")
-        void shouldCompleteEqualsWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
+        void shouldCompleteNotEqualsWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
             workflowVerifier
                     .prepareRun(workflowNotEquals, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
@@ -167,7 +171,7 @@ public class ConditionalsTest {
     class LessThanEquals {
         @ParameterizedTest
         @MethodSource("provideSuccessArguments")
-        void shouldCompleteLessThanWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
+        void shouldCompleteLessThanEqualsWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
             workflowVerifier
                     .prepareRun(workflowLessThanEquals, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
@@ -247,7 +251,7 @@ public class ConditionalsTest {
     class IsIn {
         @ParameterizedTest
         @MethodSource("provideSuccessArguments")
-        void shouldCompleteGreaterThanEqualsWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
+        void shouldCompleteIsInWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
             workflowVerifier
                     .prepareRun(workflowIsIn, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
@@ -271,6 +275,46 @@ public class ConditionalsTest {
                     Arguments.of(new ConditionalsTest.InputObj("o", "one"), true),
                     Arguments.of(new ConditionalsTest.InputObj(2, "2"), true),
                     Arguments.of(new ConditionalsTest.InputObj(2, Map.of("a", 1)), false));
+        }
+    }
+
+    @Nested
+    class NotIn {
+        @ParameterizedTest
+        @MethodSource("provideSuccessArguments")
+        void shouldCompleteNotInWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
+            workflowVerifier
+                    .prepareRun(workflowNotIn, Arg.of("input", inputObject))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(true))
+                    .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(expectedOutput))
+                    .start();
+        }
+
+        @Test
+        void shouldFailNotInWorkflowWithInvalidArguments() {
+            InputObj inputObject = new InputObj(1, 1.0);
+            workflowVerifier
+                    .prepareRun(workflowNotIn, Arg.of("input", inputObject))
+                    .waitForStatus(LHStatus.ERROR)
+                    .start();
+        }
+
+        private static Stream<Arguments> provideSuccessArguments() {
+            return Stream.of(
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("a", 1), Map.of("a", 1)), true),
+                    Arguments.of(new ConditionalsTest.InputObj("hi", Map.of("hi", 2)), false),
+                    Arguments.of(new ConditionalsTest.InputObj(2, Map.of("hi", 2)), true),
+                    Arguments.of(
+                            new ConditionalsTest.InputObj(Arrays.asList(0), Arrays.asList(0)),
+                            true), // Will check for '[0]'
+                    Arguments.of(new ConditionalsTest.InputObj(0, Arrays.asList(0)), false),
+                    Arguments.of(new ConditionalsTest.InputObj(1, "one"), true),
+                    Arguments.of(new ConditionalsTest.InputObj("o", "one"), false),
+                    Arguments.of(new ConditionalsTest.InputObj(2, "2"), false),
+                    Arguments.of(new ConditionalsTest.InputObj(2, Map.of("a", 1)), true));
         }
     }
 
@@ -433,6 +477,30 @@ public class ConditionalsTest {
 
             thread.doIfElse(
                     thread.condition(input.jsonPath("$.lhs"), Comparator.IN, input.jsonPath("$.rhs")),
+                    ifBlock -> {
+                        ifBlock.execute("ag-one");
+                    },
+                    elseBlock -> {
+                        elseBlock.execute("ag-two");
+                    });
+        });
+    }
+
+    @LHWorkflow("test-conditionals-not-in-workflow")
+    public Workflow getNotInWorkflow() {
+        return new WorkflowImpl("test-conditionals-not-in-workflow", thread -> {
+            // Use an input JSON blob with two fields, LHS and RHS.
+            // This allows us to test with various types on the left and the
+            // right, since right now the JSON_OBJ var type does not have a
+            // schema.
+            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+
+            // So that the run request succeeds even on workflows where we want
+            // a crash.
+            thread.execute("ag-one");
+
+            thread.doIfElse(
+                    thread.condition(input.jsonPath("$.lhs"), Comparator.NOT_IN, input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
