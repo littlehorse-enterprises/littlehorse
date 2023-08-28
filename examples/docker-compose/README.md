@@ -1,6 +1,13 @@
 # Docker Compose Sandbox
 
-This example is intended to be used in development environments.
+### Prerequisites
+
+- `docker` and `docker-compose-plugin`.
+- `go`.
+
+### Quickstart
+
+> This example is intended to be used in development environments.
 
 Run docker compose:
 
