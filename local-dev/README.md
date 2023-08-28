@@ -20,9 +20,13 @@ You can confirm that the Server is running via:
 
 ```
 lhctl search wfSpec
+```
+
+Result:
+
+```
 {
-  "code":  "OK",
-  "objectIds":  []
+  "results": []
 }
 ```
 
