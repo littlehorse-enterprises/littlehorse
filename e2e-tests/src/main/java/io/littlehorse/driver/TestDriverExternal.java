@@ -1,6 +1,6 @@
 package io.littlehorse.driver;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,12 +14,12 @@ public class TestDriverExternal extends TestDriver {
 
     @Override
     public void setup() {
-        workerConfig = new LHWorkerConfig();
+        workerConfig = new LHConfig();
 
         Path configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config");
 
         if (Files.exists(configPath)) {
-            workerConfig = new LHWorkerConfig(configPath.toString());
+            workerConfig = new LHConfig(configPath.toString());
         }
         try {
             client = workerConfig.getBlockingStub();

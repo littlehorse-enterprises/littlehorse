@@ -1,7 +1,7 @@
 package io.littlehorse.tests.cases.workflow;
 
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -31,7 +31,7 @@ import java.util.Map;
 // safeguards of the java wf sdk. But we might do that test in the future.
 public class BBWaitMultipleChildren extends WorkflowLogicTest {
 
-    public BBWaitMultipleChildren(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
+    public BBWaitMultipleChildren(LHPublicApiBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 

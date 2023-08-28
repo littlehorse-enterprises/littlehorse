@@ -3,7 +3,7 @@ package io.littlehorse.tests.cases.lifecycle;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
@@ -37,7 +37,7 @@ public class AEImproperTaskNode extends Test {
     private String successWfRun;
     private LHTaskWorker worker;
 
-    public AEImproperTaskNode(LHPublicApiBlockingStub client, LHWorkerConfig config) {
+    public AEImproperTaskNode(LHPublicApiBlockingStub client, LHConfig config) {
         super(client, config);
     }
 

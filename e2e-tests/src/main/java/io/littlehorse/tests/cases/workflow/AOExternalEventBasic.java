@@ -1,6 +1,6 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
@@ -20,7 +20,7 @@ import java.util.List;
 
 public class AOExternalEventBasic extends WorkflowLogicTest {
 
-    public AOExternalEventBasic(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
+    public AOExternalEventBasic(LHPublicApiBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 

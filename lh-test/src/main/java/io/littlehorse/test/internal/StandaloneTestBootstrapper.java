@@ -1,7 +1,7 @@
 package io.littlehorse.test.internal;
 
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.test.exception.LHTestInitializationException;
@@ -15,7 +15,7 @@ import org.testcontainers.utility.DockerImageName;
 
 public class StandaloneTestBootstrapper implements TestBootstrapper {
 
-    private LHWorkerConfig workerConfig;
+    private LHConfig workerConfig;
     private LHPublicApiBlockingStub client;
 
     private KafkaContainer kafka;
@@ -33,7 +33,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.0"));
         kafka.start();
         startServer();
-        workerConfig = new LHWorkerConfig();
+        workerConfig = new LHConfig();
         client = workerConfig.getBlockingStub();
     }
 
@@ -69,7 +69,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
     }
 
     @Override
-    public LHWorkerConfig getWorkerConfig() {
+    public LHConfig getWorkerConfig() {
         return workerConfig;
     }
 

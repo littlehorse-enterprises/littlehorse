@@ -1,7 +1,7 @@
 package io.littlehorse.driver;
 
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import java.io.IOException;
 import java.util.Properties;
@@ -31,7 +31,7 @@ public class TestDriverStandalone extends TestDriver {
         log.info("Starting kafka");
         kafka.start();
         startServer();
-        workerConfig = new LHWorkerConfig();
+        workerConfig = new LHConfig();
 
         try {
             client = workerConfig.getBlockingStub();

@@ -1,8 +1,8 @@
 package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.util.LHUtil;
 import lombok.Getter;

@@ -1,8 +1,8 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;

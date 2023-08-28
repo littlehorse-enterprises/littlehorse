@@ -1,8 +1,8 @@
 package io.littlehorse.server.streams.store;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;

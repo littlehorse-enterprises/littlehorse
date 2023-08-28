@@ -441,7 +441,8 @@ public class LHServerConfig extends ConfigBase {
                 Arrays.stream(ListenerProtocol.values()).map(Enum::name).collect(Collectors.joining("|"));
 
         if (!rawProtocolMap.matches("([a-zA-Z0-9_-]+:(" + regexAllProtocols + ")+,?)+")) {
-            throw new LHMisconfigurationException("Invalid configuration: " + LHServerConfig.LISTENERS_PROTOCOL_MAP_KEY);
+            throw new LHMisconfigurationException(
+                    "Invalid configuration: " + LHServerConfig.LISTENERS_PROTOCOL_MAP_KEY);
         }
 
         List<String> rawProtocols = Arrays.asList(rawProtocolMap.split(","));

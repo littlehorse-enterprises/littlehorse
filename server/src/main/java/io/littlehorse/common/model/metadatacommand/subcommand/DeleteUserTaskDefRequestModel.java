@@ -2,9 +2,9 @@ package io.littlehorse.common.model.metadatacommand.subcommand;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;

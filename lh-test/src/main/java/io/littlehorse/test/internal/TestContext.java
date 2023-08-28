@@ -1,6 +1,6 @@
 package io.littlehorse.test.internal;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
@@ -13,11 +13,11 @@ import java.util.List;
 
 public class TestContext {
 
-    private final LHWorkerConfig lhWorkerConfig;
+    private final LHConfig LHConfig;
     private final LHPublicApiBlockingStub lhClient;
 
     public TestContext(TestBootstrapper bootstrapper) {
-        this.lhWorkerConfig = bootstrapper.getWorkerConfig();
+        this.LHConfig = bootstrapper.getWorkerConfig();
         this.lhClient = bootstrapper.getLhClient();
     }
 
@@ -26,7 +26,7 @@ public class TestContext {
         List<LHTaskMethod> annotatedMethods =
                 ReflectionUtil.findAnnotatedMethods(testInstance.getClass(), LHTaskMethod.class);
         for (LHTaskMethod annotatedMethod : annotatedMethods) {
-            workers.add(new LHTaskWorker(testInstance, annotatedMethod.value(), lhWorkerConfig));
+            workers.add(new LHTaskWorker(testInstance, annotatedMethod.value(), LHConfig));
         }
         return workers;
     }
