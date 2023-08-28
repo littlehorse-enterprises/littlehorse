@@ -5,11 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Properties;
-
+import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
-
-import net.datafaker.Faker;
 
 public class LHClientConfigTest {
 
@@ -56,7 +54,6 @@ public class LHClientConfigTest {
 
         assertEquals("", result);
     }
-
 
     @Test
     void getOnlyOneRandomId() {
