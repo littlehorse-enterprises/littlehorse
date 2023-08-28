@@ -49,8 +49,7 @@ Result:
 
 ```
 {
-  "code":  "OK",
-  "objectIds":  []
+  "results": []
 }
 ```
 
