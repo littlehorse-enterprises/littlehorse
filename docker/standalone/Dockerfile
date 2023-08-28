@@ -16,10 +16,10 @@ RUN mkdir /kafka /lh \
     && tar -xzf /tmp/kafka.tgz --strip-components 1 -C /kafka \
     && rm /tmp/kafka.tgz
 
-COPY ./docker/lh-standalone/kafka-entrypoint.sh /lh
-COPY ./docker/lh-standalone/littlehorse-entrypoint.sh /lh
-COPY ./docker/lh-standalone/docker-entrypoint.sh /lh
-COPY ./docker/lh-standalone/log4j2.properties /lh
+COPY ./docker/standalone/kafka-entrypoint.sh /lh
+COPY ./docker/standalone/littlehorse-entrypoint.sh /lh
+COPY ./docker/standalone/docker-entrypoint.sh /lh
+COPY ./docker/standalone/log4j2.properties /lh
 
 COPY --from=builder /lh/server/build/libs/server-*-all.jar /lh/server.jar
 

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: littlehorse-sandbox
-          image: littlehorse/lh-server:latest
+          image: littlehorse/littlehorse-server:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 2023
