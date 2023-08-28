@@ -1,4 +1,4 @@
-## Quick Start for Java
+## Quick Start for Docker
 
 ### Prerequisites
 
