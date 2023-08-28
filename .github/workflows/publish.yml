@@ -4,9 +4,61 @@ on:
   push:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+*" # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
+    branches:
+      - "**"
 
 jobs:
-  publish-sdk-java:
+  # publish-sdk-java:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Setup Java
+  #       uses: actions/setup-java@v3
+  #       with:
+  #         distribution: "corretto"
+  #         java-version: "11"
+  #     - name: Tests
+  #       run: ./gradlew sdk-java:test
+  #     - name: Import GPG key
+  #       uses: crazy-max/ghaction-import-gpg@v5
+  #       with:
+  #         gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+  #         passphrase: ${{ secrets.GPG_PASSPHRASE }}
+  #     - name: Generate KeyRing
+  #       run: |
+  #         gpg --keyring secring.gpg --export-secret-keys --passphrase ${{ secrets.GPG_PASSPHRASE }} --batch --yes --pinentry-mode=loopback > ~/.gnupg/secring.gpg
+  #         ls ~/.gnupg/
+  #     - name: Publish
+  #       run: |
+  #         ./gradlew sdk-java:publish -Psigning.secretKeyRingFile=/home/runner/.gnupg/secring.gpg -Psigning.password=${{ secrets.GPG_PASSPHRASE }} -Psigning.keyId=${{ vars.GPG_KEY_ID }} -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
+  #         echo Login at https://s01.oss.sonatype.org/
+  # publish-sdk-python:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: '3.9'
+  #     - name: Install Dependencies
+  #       run: |
+  #         python -m pip install --upgrade pip setuptools wheel
+  #         pip install poetry
+  #     - name: Tests
+  #       working-directory: ./sdk-python
+  #       run: |
+  #         poetry install
+  #         poetry run python -m unittest -v
+  #         poetry build
+  #     - name: Publish Package
+  #       uses: pypa/gh-action-pypi-publish@release/v1
+  #       with:
+  #         user: __token__
+  #         password: ${{ secrets.PYPI_API_TOKEN }}
+  #         packages-dir: ./sdk-python/dist/
+  publish-docker-image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -15,44 +67,40 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: "corretto"
-          java-version: "11"
+          java-version: 17
       - name: Tests
-        run: ./gradlew sdk-java:test
-      - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v5
+        run: ./gradlew server:test
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-      - name: Generate KeyRing
-        run: |
-          gpg --keyring secring.gpg --export-secret-keys --passphrase ${{ secrets.GPG_PASSPHRASE }} --batch --yes --pinentry-mode=loopback > ~/.gnupg/secring.gpg
-          ls ~/.gnupg/
-      - name: Publish
-        run: |
-          ./gradlew sdk-java:publish -Psigning.secretKeyRingFile=/home/runner/.gnupg/secring.gpg -Psigning.password=${{ secrets.GPG_PASSPHRASE }} -Psigning.keyId=${{ vars.GPG_KEY_ID }} -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
-          echo Login at https://s01.oss.sonatype.org/
-  publish-sdk-python:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-duration-seconds: 1200
+      - name: Login to Amazon ECR Public
+        id: login-ecr-public
+        uses: aws-actions/amazon-ecr-login@v1
         with:
-          python-version: '3.9'
-      - name: Install Dependencies
+          mask-password: 'true'
+          registry-type: public
+      - name: Push Server Image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
+          ECR_REGISTRY_ALIAS: k7z9g8i4
+          ECR_REPOSITORY: littlehorse-server
+          IMAGE_TAG: ${{ github.ref_name }}
         run: |
-          python -m pip install --upgrade pip setuptools wheel
-          pip install poetry
-      - name: Tests
-        working-directory: ./sdk-python
+          export IMAGE_TAG=branch-$(echo "${{ github.ref_name }}" | sed -e 's/\//-/g')
+          docker build -f docker/server/Dockerfile -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
+      - name: Push Standalone Image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
+          ECR_REGISTRY_ALIAS: k7z9g8i4
+          ECR_REPOSITORY: littlehorse-standalone
+          IMAGE_TAG: ${{ github.ref_name }}
         run: |
-          poetry install
-          poetry run python -m unittest -v
-          poetry build
-      - name: Publish Package
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
-          packages-dir: ./sdk-python/dist/
+          export IMAGE_TAG=branch-$(echo "${{ github.ref_name }}" | sed -e 's/\//-/g')
+          docker build -f docker/standalone/Dockerfile -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
