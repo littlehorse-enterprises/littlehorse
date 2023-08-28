@@ -2,7 +2,7 @@ package io.littlehorse.tests;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
@@ -63,9 +63,9 @@ import java.util.UUID;
 public abstract class Test {
 
     protected LHPublicApiBlockingStub client;
-    protected LHWorkerConfig workerConfig;
+    protected LHConfig workerConfig;
 
-    public Test(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
+    public Test(LHPublicApiBlockingStub client, LHConfig workerConfig) {
         this.client = client;
         this.workerConfig = workerConfig;
     }

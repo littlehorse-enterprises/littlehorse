@@ -1,7 +1,7 @@
 package io.littlehorse.server.metrics;
 
 import io.javalin.http.Handler;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
@@ -22,9 +22,9 @@ public class PrometheusMetricExporter implements Closeable {
 
     private List<KafkaStreamsMetrics> kafkaStreamsMeters;
     private PrometheusMeterRegistry prometheusRegistry;
-    private LHConfig config;
+    private LHServerConfig config;
 
-    public PrometheusMetricExporter(LHConfig config) {
+    public PrometheusMetricExporter(LHServerConfig config) {
         this.config = config;
         this.prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
 

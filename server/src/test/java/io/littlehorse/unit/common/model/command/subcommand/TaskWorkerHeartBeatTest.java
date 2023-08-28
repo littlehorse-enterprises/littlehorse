@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.*;
 
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.internals.RoundRobinAssignor;
@@ -35,7 +35,7 @@ public class TaskWorkerHeartBeatTest {
 
     private CoreProcessorDAO lhdao = mock(CoreProcessorDAO.class);
     private TaskWorkerAssignor assignor = spy(new RoundRobinAssignor());
-    private LHConfig lhConfig = mock(LHConfig.class);
+    private LHServerConfig lhConfig = mock(LHServerConfig.class);
     private TaskWorkerHeartBeatRequestModel taskWorkerHeartBeat = new TaskWorkerHeartBeatRequestModel(assignor);
     private ArgumentCaptor<TaskWorkerGroupModel> taskWorkerCaptor = ArgumentCaptor.forClass(TaskWorkerGroupModel.class);
 

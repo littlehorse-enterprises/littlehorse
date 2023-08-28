@@ -3,7 +3,7 @@ package io.littlehorse.tests.cases.workflow;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
@@ -47,7 +47,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
 
     private static final String USER_TASK_DEF_NAME = "some-usertask";
 
-    public AZUserTasksBasic(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
+    public AZUserTasksBasic(LHPublicApiBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 

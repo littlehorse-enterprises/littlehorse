@@ -1,6 +1,6 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
@@ -155,7 +155,7 @@ public class ParallelApprovalExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) throws IOException {
+    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) throws IOException {
         Notifier executable = new Notifier();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "calculate-next-notification", config),
@@ -179,7 +179,7 @@ public class ParallelApprovalExample {
     public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
-        LHWorkerConfig config = new LHWorkerConfig(props);
+        LHConfig config = new LHConfig(props);
         LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow

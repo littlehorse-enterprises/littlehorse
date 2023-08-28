@@ -4,7 +4,7 @@ import static org.mockito.Mockito.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.littlehorse.TestUtil;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
@@ -44,7 +44,7 @@ public class JsonVariableStorageManagerTest {
             .build();
 
     @Mock
-    private LHConfig lhConfig;
+    private LHServerConfig lhConfig;
 
     private RocksDBWrapper storeWrapper;
 

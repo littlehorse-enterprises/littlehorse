@@ -5,8 +5,8 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
@@ -104,7 +104,7 @@ import org.apache.kafka.streams.KafkaStreams.State;
 @Slf4j
 public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
-    private LHConfig config;
+    private LHServerConfig config;
     private TaskQueueManager taskQueueManager;
 
     private KafkaStreams coreStreams;
@@ -122,7 +122,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         return internalComms.getGlobalStoreImpl();
     }
 
-    public KafkaStreamsServerImpl(LHConfig config) {
+    public KafkaStreamsServerImpl(LHServerConfig config) {
         this.config = config;
         this.taskQueueManager = new TaskQueueManager(this);
         this.coreStreams = new KafkaStreams(
@@ -668,7 +668,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         }
     }
 
-    public static void doMain(LHConfig config) throws IOException, InterruptedException {
+    public static void doMain(LHServerConfig config) throws IOException, InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         KafkaStreamsServerImpl server = new KafkaStreamsServerImpl(config);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

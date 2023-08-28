@@ -3,8 +3,8 @@ package io.littlehorse.common.model.corecommand.subcommand;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.SubCommand;
@@ -44,7 +44,7 @@ public class CompleteUserTaskRunRequestModel extends SubCommand<CompleteUserTask
         result = p.getResult();
     }
 
-    public Empty process(CoreProcessorDAO dao, LHConfig config) {
+    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
         UserTaskRunModel utr = dao.get(userTaskRunId);
         if (utr == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find provided UserTaskRun");

@@ -3,7 +3,7 @@ package io.littlehorse.examples;
 import static io.littlehorse.sdk.common.proto.IndexType.LOCAL_INDEX;
 import static io.littlehorse.sdk.common.proto.IndexType.REMOTE_INDEX;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -85,7 +85,7 @@ public class VariablesExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorker(LHWorkerConfig config) throws IOException {
+    public static List<LHTaskWorker> getTaskWorker(LHConfig config) throws IOException {
         MyWorker executable = new MyWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "sentiment-analysis", config),
@@ -109,7 +109,7 @@ public class VariablesExample {
     public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
-        LHWorkerConfig config = new LHWorkerConfig(props);
+        LHConfig config = new LHConfig(props);
         LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow

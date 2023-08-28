@@ -10,6 +10,8 @@ import io.littlehorse.sdk.common.auth.OAuthCredentialsProvider;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
+import io.littlehorse.sdk.common.proto.TaskDef;
+import io.littlehorse.sdk.common.proto.TaskDefId;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -23,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /** This class is used to configure the LHClient class. */
 @Slf4j
-public class LHClientConfig extends ConfigBase {
+public class LHConfig extends ConfigBase {
 
     /** The bootstrap host for the LH Server. */
     public static final String API_HOST_KEY = "LHC_API_HOST";
@@ -47,16 +49,28 @@ public class LHClientConfig extends ConfigBase {
     public static final String OAUTH_CLIENT_SECRET_KEY = "LHC_OAUTH_CLIENT_SECRET";
     public static final String OAUTH_AUTHORIZATION_SERVER_KEY = "LHC_OAUTH_AUTHORIZATION_SERVER";
 
+    /** The number of worker threads to run. */
+    public static final String NUM_WORKER_THREADS_KEY = "LHW_NUM_WORKER_THREADS";
+
+    /** Listener to connect to. */
+    public static final String SERVER_CONNECT_LISTENER_KEY = "LHW_SERVER_CONNECT_LISTENER";
+
+    public static final String TASK_WORKER_VERSION_KEY = "LHW_TASK_WORKER_VERSION";
+    public static final String DEFAULT_PUBLIC_LISTENER = "PLAIN";
+
     private static final Set<String> configNames = Collections.unmodifiableSet(Set.of(
-            LHClientConfig.API_HOST_KEY,
-            LHClientConfig.API_PORT_KEY,
-            LHClientConfig.CLIENT_ID_KEY,
-            LHClientConfig.CLIENT_CERT_KEY,
-            LHClientConfig.CLIENT_KEY_KEY,
-            LHClientConfig.CA_CERT_KEY,
-            LHClientConfig.OAUTH_AUTHORIZATION_SERVER_KEY,
-            LHClientConfig.OAUTH_CLIENT_ID_KEY,
-            LHClientConfig.OAUTH_CLIENT_SECRET_KEY));
+            LHConfig.API_HOST_KEY,
+            LHConfig.API_PORT_KEY,
+            LHConfig.CLIENT_ID_KEY,
+            LHConfig.CLIENT_CERT_KEY,
+            LHConfig.CLIENT_KEY_KEY,
+            LHConfig.CA_CERT_KEY,
+            LHConfig.OAUTH_AUTHORIZATION_SERVER_KEY,
+            LHConfig.OAUTH_CLIENT_ID_KEY,
+            LHConfig.OAUTH_CLIENT_SECRET_KEY,
+            LHConfig.NUM_WORKER_THREADS_KEY,
+            LHConfig.SERVER_CONNECT_LISTENER_KEY,
+            LHConfig.TASK_WORKER_VERSION_KEY));
 
     /**
      * Returns a set of all config names.
@@ -64,7 +78,7 @@ public class LHClientConfig extends ConfigBase {
      * @return A Set of all config names.
      */
     public static Set<String> configNames() {
-        return LHClientConfig.configNames;
+        return LHConfig.configNames;
     }
 
     private Map<String, Channel> createdChannels;
@@ -74,7 +88,7 @@ public class LHClientConfig extends ConfigBase {
     private OAuthCredentialsProvider oauthCredentialsProvider;
 
     /** Creates an LHClientConfig. Loads default values for config from env vars. */
-    public LHClientConfig() {
+    public LHConfig() {
         super();
         createdChannels = new HashMap<>();
     }
@@ -84,7 +98,7 @@ public class LHClientConfig extends ConfigBase {
      *
      * @param props configuration values.
      */
-    public LHClientConfig(Properties props) {
+    public LHConfig(Properties props) {
         super(props);
         createdChannels = new HashMap<>();
     }
@@ -94,7 +108,7 @@ public class LHClientConfig extends ConfigBase {
      *
      * @param propLocation the location of the .properties file.
      */
-    public LHClientConfig(String propLocation) {
+    public LHConfig(String propLocation) {
         super(propLocation);
         createdChannels = new HashMap<>();
     }
@@ -104,7 +118,7 @@ public class LHClientConfig extends ConfigBase {
      *
      * @param configs configuration values.
      */
-    public LHClientConfig(Map<String, Object> configs) {
+    public LHConfig(Map<String, Object> configs) {
         super(configs);
         createdChannels = new HashMap<>();
     }
@@ -129,6 +143,35 @@ public class LHClientConfig extends ConfigBase {
      */
     public LHPublicApiStub getAsyncStub() throws IOException {
         return getAsyncStub(getApiBootstrapHost(), getApiBootstrapPort());
+    }
+
+    /**
+     * Gets the `TaskDefPb` for a given taskDefName.
+     *
+     * @param taskDefName is the TaskDef's name.
+     * @return the specified TaskDefPb.
+     */
+    public TaskDef getTaskDef(String taskDefName) throws IOException {
+        return getBlockingStub()
+                .getTaskDef(TaskDefId.newBuilder().setName(taskDefName).build());
+    }
+
+    /**
+     * Returns the TaskWorker Version of this worker.
+     *
+     * @return Task Worker Version.
+     */
+    public String getTaskWorkerVersion() {
+        return getOrSetDefault(TASK_WORKER_VERSION_KEY, "");
+    }
+
+    /**
+     * Returns the name of the listener to connect to.
+     *
+     * @return the name of the listener on the LH Server to connect to.
+     */
+    public String getConnectListener() {
+        return getOrSetDefault(SERVER_CONNECT_LISTENER_KEY, LHConfig.DEFAULT_PUBLIC_LISTENER);
     }
 
     /**
@@ -258,6 +301,15 @@ public class LHClientConfig extends ConfigBase {
 
     @Override
     protected String[] getEnvKeyPrefixes() {
-        return new String[] {"LHC_"};
+        return new String[] {"LHC_", "LHW_"};
+    }
+
+    /**
+     * Returns the number of worker threads to run.
+     *
+     * @return the number of worker threads to run.
+     */
+    public int getWorkerThreads() {
+        return Integer.valueOf(getOrSetDefault(NUM_WORKER_THREADS_KEY, "8"));
     }
 }

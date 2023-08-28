@@ -13,8 +13,8 @@ import io.grpc.ServerCredentials;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -74,7 +74,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 @Slf4j
 public class BackendInternalComms implements Closeable {
 
-    private LHConfig config;
+    private LHServerConfig config;
     private Server internalGrpcServer;
     private KafkaStreams coreStreams;
     private KafkaStreams timerStreams;
@@ -92,7 +92,7 @@ public class BackendInternalComms implements Closeable {
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
     public BackendInternalComms(
-            LHConfig config, KafkaStreams coreStreams, KafkaStreams timerStreams, Executor executor) {
+            LHServerConfig config, KafkaStreams coreStreams, KafkaStreams timerStreams, Executor executor) {
         this.config = config;
         this.coreStreams = coreStreams;
         this.timerStreams = timerStreams;
@@ -849,14 +849,14 @@ public class BackendInternalComms implements Closeable {
         return out;
     }
 
-    private static boolean isCommandProcessor(TaskMetadata task, LHConfig config) {
+    private static boolean isCommandProcessor(TaskMetadata task, LHServerConfig config) {
         for (TopicPartition tPart : task.topicPartitions()) {
             if (isCommandProcessor(tPart, config)) return true;
         }
         return false;
     }
 
-    private static boolean isCommandProcessor(TopicPartition tPart, LHConfig config) {
+    private static boolean isCommandProcessor(TopicPartition tPart, LHServerConfig config) {
         return tPart.topic().equals(config.getCoreCmdTopicName());
     }
 }

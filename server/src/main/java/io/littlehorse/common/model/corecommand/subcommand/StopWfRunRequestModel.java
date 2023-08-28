@@ -3,7 +3,7 @@ package io.littlehorse.common.model.corecommand.subcommand;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.SubCommand;
@@ -35,7 +35,7 @@ public class StopWfRunRequestModel extends SubCommand<StopWfRunRequest> {
         return wfRunId;
     }
 
-    public Empty process(CoreProcessorDAO dao, LHConfig config) {
+    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
         WfRunModel wfRunModel = dao.getWfRun(wfRunId);
         if (wfRunModel == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfRun");

@@ -2,7 +2,7 @@ package io.littlehorse.tests;
 
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.UserTaskDefId;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 public abstract class UserTaskWorkflowTest extends WorkflowLogicTest {
 
-    public UserTaskWorkflowTest(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
+    public UserTaskWorkflowTest(LHPublicApiBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -27,7 +27,7 @@ public abstract class UserTaskWorkflowTest extends WorkflowLogicTest {
         super.cleanup();
     }
 
-    public void deploy(LHPublicApiBlockingStub client, LHWorkerConfig config) throws TestFailure {
+    public void deploy(LHPublicApiBlockingStub client, LHConfig config) throws TestFailure {
         // Deploy the UserTaskDef's
         for (Map.Entry<String, Object> pair : getRequiredUserTaskForms().entrySet()) {
             UserTaskSchema schema = new UserTaskSchema(pair.getValue(), pair.getKey());

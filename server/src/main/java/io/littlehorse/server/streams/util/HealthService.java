@@ -2,7 +2,7 @@ package io.littlehorse.server.streams.util;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.metrics.PrometheusMetricExporter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.io.Closeable;
@@ -15,12 +15,12 @@ public class HealthService implements Closeable {
 
     private PrometheusMetricExporter prom;
     private Javalin server;
-    private LHConfig config;
+    private LHServerConfig config;
 
     private State coreState;
     private State timerState;
 
-    public HealthService(LHConfig config, KafkaStreams coreStreams, KafkaStreams timerStreams) {
+    public HealthService(LHServerConfig config, KafkaStreams coreStreams, KafkaStreams timerStreams) {
         this.prom = new PrometheusMetricExporter(config);
         this.prom.bind(coreStreams, timerStreams);
         this.server = Javalin.create();

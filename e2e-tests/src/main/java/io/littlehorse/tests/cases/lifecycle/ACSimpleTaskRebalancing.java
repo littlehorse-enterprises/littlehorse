@@ -1,6 +1,6 @@
 package io.littlehorse.tests.cases.lifecycle;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
@@ -17,9 +17,9 @@ public class ACSimpleTaskRebalancing extends Test {
 
     private String taskDefName;
     private Set<String> allHosts;
-    private LHWorkerConfig config;
+    private LHConfig config;
 
-    public ACSimpleTaskRebalancing(LHPublicApiBlockingStub client, LHWorkerConfig config) {
+    public ACSimpleTaskRebalancing(LHPublicApiBlockingStub client, LHConfig config) {
         super(client, config);
         this.config = config;
         taskDefName = "rebalancing-test-" + UUID.randomUUID().toString();

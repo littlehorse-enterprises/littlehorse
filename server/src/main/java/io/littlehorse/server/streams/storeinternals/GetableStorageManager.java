@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.storeinternals;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.AbstractGetable;
@@ -31,7 +31,7 @@ public class GetableStorageManager {
     public GetableStorageManager(
             RocksDBWrapper rocksdb,
             final ProcessorContext<String, CommandProcessorOutput> ctx,
-            LHConfig config,
+            LHServerConfig config,
             CommandModel command,
             CoreProcessorDAO dao) {
 

@@ -13,7 +13,7 @@ public class LHClientConfigTest {
 
     @Test
     void getRandomIdIfItIsUnset() {
-        LHClientConfig config = new LHClientConfig();
+        LHConfig config = new LHConfig();
 
         String result = config.getClientId();
 
@@ -25,9 +25,9 @@ public class LHClientConfigTest {
         String expectedClientId = faker.app().name();
 
         Properties properties = new Properties();
-        properties.put(LHClientConfig.CLIENT_ID_KEY, expectedClientId);
+        properties.put(LHConfig.CLIENT_ID_KEY, expectedClientId);
 
-        LHClientConfig config = new LHClientConfig(properties);
+        LHConfig config = new LHConfig(properties);
 
         String result = config.getClientId();
 
@@ -36,7 +36,7 @@ public class LHClientConfigTest {
 
     @Test
     void getOnlyOneRandomId() {
-        LHClientConfig config = new LHClientConfig();
+        LHConfig config = new LHConfig();
 
         String result1 = config.getClientId();
         String result2 = config.getClientId();
@@ -46,12 +46,12 @@ public class LHClientConfigTest {
 
     @Test
     void haveAllConfigs() {
-        assertThat(LHClientConfig.configNames().size()).isEqualTo(9);
+        assertThat(LHConfig.configNames().size()).isEqualTo(9);
     }
 
     @Test
     void shouldThrowAnExceptionIfTryToModifyConfigNames() {
-        assertThrows(UnsupportedOperationException.class, () -> LHClientConfig.configNames()
+        assertThrows(UnsupportedOperationException.class, () -> LHConfig.configNames()
                 .add(faker.regexify("[a-z]{10}")));
     }
 }

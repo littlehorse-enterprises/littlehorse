@@ -3,7 +3,7 @@ package io.littlehorse.tests.cases.lifecycle;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
@@ -73,7 +73,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         thread.assignUserTaskToUser(USER_TASK, "obiwan");
     }
 
-    public AFTaskAndUserTaskSearch(LHPublicApiBlockingStub client, LHWorkerConfig config) {
+    public AFTaskAndUserTaskSearch(LHPublicApiBlockingStub client, LHConfig config) {
         super(client, config);
     }
 

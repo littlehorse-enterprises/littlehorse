@@ -3,7 +3,7 @@ package io.littlehorse.unit.storeinternals;
 import static org.mockito.Mockito.mock;
 
 import io.littlehorse.TestUtil;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
@@ -44,7 +44,7 @@ public class UserTaskRunModelStorageManagerTest {
             .build();
 
     @Mock
-    private LHConfig lhConfig;
+    private LHServerConfig lhConfig;
 
     private RocksDBWrapper localStoreWrapper;
 

@@ -2,8 +2,8 @@ package io.littlehorse.common.model.metadatacommand.subcommand;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
@@ -56,7 +56,7 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         return true;
     }
 
-    public TaskDef process(MetadataProcessorDAO dao, LHConfig config) {
+    public TaskDef process(MetadataProcessorDAO dao, LHServerConfig config) {
         if (!LHUtil.isValidLHName(name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "TaskDefName must be a valid hostname");
         }

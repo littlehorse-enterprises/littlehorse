@@ -1,6 +1,6 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
@@ -73,7 +73,7 @@ public class ChildThreadExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) throws IOException {
+    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) throws IOException {
         ChildThreadWorker executable = new ChildThreadWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "parent-task-1", config),
@@ -98,7 +98,7 @@ public class ChildThreadExample {
     public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
-        LHWorkerConfig config = new LHWorkerConfig(props);
+        LHConfig config = new LHConfig(props);
         LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
