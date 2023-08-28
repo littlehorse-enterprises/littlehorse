@@ -27,6 +27,12 @@ public class TokenStatusTest {
     }
 
     @Test
+    void isExpiredIfNowAndExpirationAreTheSame() {
+        TokenStatus status = TokenStatus.builder().expiration(Instant.now()).build();
+        assertTrue(status.isExpired());
+    }
+
+    @Test
     void getNotExpired() {
         TokenStatus status = TokenStatus.builder().expiration(Instant.MAX).build();
         assertFalse(status.isExpired());
