@@ -29,6 +29,8 @@ Start a LH Server with:
 docker run --rm -it -d -p 2023:2023 public.ecr.aws/k7z9g8i4/littlehorse-standalone:latest
 ```
 
+> To persist the data, add an option volume: `-v lh-data:/data`.
+
 When you run the LH Server according to the command above, the API Host is `localhost` and the API Port is `2023`.
 
 Now configure open the configuration `~/.config/littlehorse.config`:
