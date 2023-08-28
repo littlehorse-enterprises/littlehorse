@@ -131,7 +131,6 @@ func (oauthConfig *OauthConfig) GetTokenSource() credentials.PerRPCCredentials {
 		config := &clientcredentials.Config{
 			ClientID:     oauthConfig.ClientId,
 			ClientSecret: oauthConfig.ClientSecret,
-			Scopes:       []string{oidc.ScopeOpenID},
 			TokenURL:     provider.Endpoint().TokenURL,
 		}
 		return oauth.TokenSource{TokenSource: oauth2.ReuseTokenSource(nil, config.TokenSource(context.TODO()))}
