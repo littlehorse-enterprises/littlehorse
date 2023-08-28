@@ -11,8 +11,10 @@ This example is intended to be used in development environments.
 ## Deploying
 
 ```
-kubectl apply -f deployment.yaml
+kubectl apply -f deployment.yaml -n <namespace>
 ```
+
+> Notice the `<namespace>` variable.
 
 Check your `~/.config/littlehorse.config` file:
 
