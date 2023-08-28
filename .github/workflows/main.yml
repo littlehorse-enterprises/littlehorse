@@ -105,6 +105,6 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: littlehorse-server
         run: |
-          export IMAGE_TAG=branch-$(echo "${{ github.ref_name }}" | sed -e 's/-//g')
-          docker build -f docker/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          export IMAGE_TAG=branch-$(echo "${{ github.ref_name }}" | sed -e 's/\//-/g')
+          docker build -f docker/server/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
