@@ -124,5 +124,5 @@ public interface InternalScanPbOrBuilder extends
    */
   io.littlehorse.common.proto.InternalScanPb.TagScanPbOrBuilder getTagScanOrBuilder();
 
-  public io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase getScanBoundaryCase();
+  io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase getScanBoundaryCase();
 }

@@ -191,5 +191,5 @@ public interface UserTaskRunOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.UserOrBuilder getUserOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.UserTaskRun.OwnerCase getOwnerCase();
+  io.littlehorse.sdk.common.proto.UserTaskRun.OwnerCase getOwnerCase();
 }
