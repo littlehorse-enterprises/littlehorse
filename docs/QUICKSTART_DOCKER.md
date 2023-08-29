@@ -26,7 +26,7 @@ lhctl
 Start a LH Server with:
 
 ```
-docker run --rm -it -d -p 2023:2023 public.ecr.aws/k7z9g8i4/littlehorse-standalone:latest
+docker run --name littlehorse -d -p 2023:2023 public.ecr.aws/k7z9g8i4/littlehorse-standalone:latest
 ```
 
 > This example is intended to be used in development environments.
