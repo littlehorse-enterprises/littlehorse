@@ -291,5 +291,5 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.CancelUserTaskRunRequestOrBuilder getCancelUserTaskOrBuilder();
 
-  public io.littlehorse.common.proto.Command.CommandCase getCommandCase();
+  io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

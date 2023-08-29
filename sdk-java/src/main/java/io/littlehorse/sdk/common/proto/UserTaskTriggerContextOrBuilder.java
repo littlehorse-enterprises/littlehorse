@@ -37,5 +37,5 @@ public interface UserTaskTriggerContextOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.UserOrBuilder getUserOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.UserTaskTriggerContext.OwnerCase getOwnerCase();
+  io.littlehorse.sdk.common.proto.UserTaskTriggerContext.OwnerCase getOwnerCase();
 }

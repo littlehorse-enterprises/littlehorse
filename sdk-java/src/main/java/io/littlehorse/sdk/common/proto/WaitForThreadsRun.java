@@ -26,11 +26,6 @@ private static final long serialVersionUID = 0L;
     return new WaitForThreadsRun();
   }
 
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.sdk.common.proto.NodeRunOuterClass.internal_static_littlehorse_WaitForThreadsRun_descriptor;
@@ -103,11 +98,6 @@ private static final long serialVersionUID = 0L;
       return new WaitForThread();
     }
 
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return io.littlehorse.sdk.common.proto.NodeRunOuterClass.internal_static_littlehorse_WaitForThreadsRun_WaitForThread_descriptor;
@@ -312,11 +302,13 @@ private static final long serialVersionUID = 0L;
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
+
     public static io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -754,7 +746,7 @@ private static final long serialVersionUID = 0L;
        * @return This builder for chaining.
        */
       public Builder setThreadRunNumber(int value) {
-        
+
         threadRunNumber_ = value;
         bitField0_ |= 0x00000004;
         onChanged();
@@ -986,11 +978,13 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
+
   public static io.littlehorse.sdk.common.proto.WaitForThreadsRun parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
+
   public static io.littlehorse.sdk.common.proto.WaitForThreadsRun parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)

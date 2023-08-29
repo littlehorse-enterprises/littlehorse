@@ -61,5 +61,5 @@ public interface SearchVariableRequestOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequestOrBuilder getValueOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.SearchVariableRequest.VariableCriteriaCase getVariableCriteriaCase();
+  io.littlehorse.sdk.common.proto.SearchVariableRequest.VariableCriteriaCase getVariableCriteriaCase();
 }

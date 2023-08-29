@@ -46,5 +46,5 @@ public interface SearchNodeRunRequestOrBuilder extends
   com.google.protobuf.ByteString
       getWfRunIdBytes();
 
-  public io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NoderunCriteriaCase getNoderunCriteriaCase();
+  io.littlehorse.sdk.common.proto.SearchNodeRunRequest.NoderunCriteriaCase getNoderunCriteriaCase();
 }
