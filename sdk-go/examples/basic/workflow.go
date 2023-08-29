@@ -14,6 +14,6 @@ func Greet(name string) string {
 }
 
 func MyWorkflow(thread *wflib.ThreadBuilder) {
-	nameVar := thread.AddVariable("name", model.VariableType_STR)
+	nameVar := thread.AddVariableWithDefault("name", model.VariableType_STR, "Qui-Gon Jinn")
 	thread.Execute("greet", nameVar)
 }

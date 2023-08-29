@@ -2,6 +2,7 @@ package wflib
 
 import (
 	"errors"
+	"log"
 	"strconv"
 	"strings"
 	"unicode"
@@ -304,13 +305,25 @@ func (t *ThreadBuilder) mutate(
 }
 
 func (t *ThreadBuilder) addVariable(
-	name string, varType model.VariableType,
+	name string, varType model.VariableType, defaultValue interface{},
 ) *WfRunVariable {
 	t.checkIfIsActive()
 	varDef := &model.VariableDef{
 		Type: varType,
 		Name: name,
 	}
+
+	if defaultValue != nil {
+		defaultVarVal, err := common.InterfaceToVarVal(defaultValue)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if defaultVarVal.Type != varType {
+			log.Fatal("provided default value for variable " + name + " didn't match type " + varType.String())
+		}
+		varDef.DefaultValue = defaultVarVal
+	}
+
 	t.spec.VariableDefs = append(t.spec.VariableDefs, varDef)
 
 	return &WfRunVariable{
@@ -508,7 +521,7 @@ func (t *ThreadBuilder) spawnThread(
 	threadName = t.wf.addSubThread(threadName, tFunc)
 
 	nodeName, node := t.createBlankNode(threadName, "SPAWN_THREAD")
-	cachedThreadVar := t.addVariable(nodeName, model.VariableType_INT)
+	cachedThreadVar := t.addVariable(nodeName, model.VariableType_INT, nil)
 
 	node.Node = &model.Node_StartThread{
 		StartThread: &model.StartThreadNode{
