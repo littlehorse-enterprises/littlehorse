@@ -159,5 +159,5 @@ public interface MetadataCommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequestOrBuilder getDeleteUserTaskDefOrBuilder();
 
-  public io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
+  io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }

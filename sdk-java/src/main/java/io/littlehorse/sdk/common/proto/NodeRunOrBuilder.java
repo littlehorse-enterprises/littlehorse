@@ -289,5 +289,5 @@ public interface NodeRunOrBuilder extends
    */
   int getFailureHandlerIds(int index);
 
-  public io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase getNodeTypeCase();
+  io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase getNodeTypeCase();
 }

@@ -37,5 +37,5 @@ public interface TaskRunSourceOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.UserTaskTriggerReferenceOrBuilder getUserTaskTriggerOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.TaskRunSource.TaskRunSourceCase getTaskRunSourceCase();
+  io.littlehorse.sdk.common.proto.TaskRunSource.TaskRunSourceCase getTaskRunSourceCase();
 }
