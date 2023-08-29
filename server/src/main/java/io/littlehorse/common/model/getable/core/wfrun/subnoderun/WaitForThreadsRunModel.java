@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
@@ -62,6 +63,11 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     public boolean advanceIfPossible(Date time) {
         for (WaitForThreadModel wft : threads) {
             ThreadRunModel thread = getWfRun().getThreadRun(wft.getThreadRunNumber());
+            if (wft.getThreadStatus() != thread.getStatus() && thread.getStatus() == LHStatus.ERROR) {
+                NodeRunModel nodeRun = thread.getNodeRun(thread.getCurrentNodePosition());
+                FailureModel latestFailure = nodeRun.getLatestFailure();
+                nodeRunModel.handleSubNodeFailure(latestFailure, time);
+            }
             wft.setThreadStatus(thread.getStatus());
             if (thread.getEndTime() != null) {
                 wft.setThreadEndTime(thread.getEndTime());
