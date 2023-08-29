@@ -235,10 +235,6 @@ public class LHServerConfig extends ConfigBase {
         NewTopic metadataStoreChangelog = new NewTopic(getMetadataStoreChangelogTopic(clusterId), 1, replicationFactor)
                 .configs(compactedTopicConfig);
 
-        NewTopic globalMetadataStoreChangelog = new NewTopic(
-                        getGlobalMetadataCLTopicName(clusterId), 1, replicationFactor)
-                .configs(compactedTopicConfig);
-
         NewTopic metadataCommand =
                 new NewTopic(getMetadataCmdTopicName(clusterId), 1, replicationFactor).configs(compactedTopicConfig);
 
@@ -251,8 +247,7 @@ public class LHServerConfig extends ConfigBase {
                 coreStoreChangelog,
                 repartitionStoreChangelog,
                 timerStoreChangelog,
-                metadataStoreChangelog,
-                globalMetadataStoreChangelog);
+                metadataStoreChangelog);
     }
 
     // TODO: Determine how and where to set the topic names for TaskDef queues

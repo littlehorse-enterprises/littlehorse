@@ -15,12 +15,13 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
 import io.littlehorse.server.streams.util.InternalHosts;
+import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
 
 public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
 
-    public CoreProcessorDAO(ReadOnlyRocksDBWrapper rocksdb) {
-        super(rocksdb);
+    public CoreProcessorDAO(ReadOnlyRocksDBWrapper rocksdb, MetadataCache metadataCache) {
+        super(rocksdb, metadataCache);
     }
 
     /*
