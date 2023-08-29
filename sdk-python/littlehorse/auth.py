@@ -7,18 +7,6 @@ from littlehorse.exceptions import OAuthException
 import requests
 
 
-class Issuer:
-    def __init__(self, data: dict[str, str]) -> None:
-        self.data = data
-
-    @property
-    def token_endpoint(self) -> str:
-        return self.data["token_endpoint"]
-
-    def __str__(self) -> str:
-        return self.data["issuer"]
-
-
 class AccessToken:
     def __init__(self, data: dict[str, str]) -> None:
         self.data = data
@@ -47,42 +35,37 @@ class GrpcAuth(grpc.AuthMetadataPlugin):
         self,
         client_id: Optional[str],
         client_secret: Optional[str],
-        authorization_server: Optional[str],
+        token_endpoint_url: Optional[str],
     ) -> None:
         self.client_id = client_id
         self.client_secret = client_secret
-        self.authorization_server = authorization_server
+        self.token_endpoint_url = token_endpoint_url
 
         self._token: Optional[AccessToken] = None
-        self._issuer: Optional[Issuer] = None
 
     def __call__(self, context: Any, callback: Any) -> None:
         access_token = self.access_token()
         callback((("authorization", access_token.token),), None)
 
-    def issuer(self) -> Issuer:
-        if self.authorization_server is None:
-            raise OAuthException("LHC_OAUTH_AUTHORIZATION_SERVER required")
-
-        if self._issuer is None:
-            well_known_response = requests.get(
-                f"{self.authorization_server.rstrip('/')}/.well-known/openid-configuration"
-            )
-            self._issuer = Issuer(well_known_response.json())
-
-        return self._issuer
-
     def access_token(self) -> AccessToken:
         if self._token is None or self._token.is_expired():
             self._log.debug("Obtaining a new access token")
-            issuer = self.issuer()
+
+            if self.token_endpoint_url is None:
+                raise OAuthException("LHC_OAUTH_ACCESS_TOKEN_URL required")
+
+            if self.client_id is None:
+                raise OAuthException("LHC_OAUTH_CLIENT_ID required")
+
+            if self.client_secret is None:
+                raise OAuthException("LHC_OAUTH_CLIENT_SECRET required")
 
             client = OAuth2Session(
                 client_id=self.client_id, client_secret=self.client_secret
             )
 
             token_data = client.fetch_token(
-                url=issuer.token_endpoint,
+                url=self.token_endpoint_url,
                 grant_type="client_credentials",
             )
 

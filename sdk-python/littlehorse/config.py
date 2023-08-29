@@ -19,7 +19,7 @@ CLIENT_KEY = "LHC_CLIENT_KEY"
 CA_CERT = "LHC_CA_CERT"
 OAUTH_CLIENT_ID = "LHC_OAUTH_CLIENT_ID"
 OAUTH_CLIENT_SECRET = "LHC_OAUTH_CLIENT_SECRET"
-OAUTH_AUTHORIZATION_SERVER = "LHC_OAUTH_AUTHORIZATION_SERVER"
+OAUTH_TOKEN_ENDPOINT_URL = "LHC_OAUTH_ACCESS_TOKEN_URL"
 NUM_WORKER_THREADS = "LHW_NUM_WORKER_THREADS"
 SERVER_CONNECT_LISTENER = "LHW_SERVER_CONNECT_LISTENER"
 TASK_WORKER_VERSION = "LHW_TASK_WORKER_VERSION"
@@ -207,14 +207,14 @@ class LHConfig:
         return self.get(OAUTH_CLIENT_SECRET)
 
     @property
-    def oauth_authorization_server(self) -> Optional[str]:
-        """Returns the OAuth2 authorization server endpoint.
-        Used for OIDC authorization.
+    def oauth_token_endpoint_url(self) -> Optional[str]:
+        """Returns the OAuth2 authorization access token endpoint.
+        Used by to obtain a token with the client credentials flow.
 
         Returns:
             str: The OAuth2 authorization server endpoint.
         """
-        return self.get(OAUTH_AUTHORIZATION_SERVER)
+        return self.get(OAUTH_TOKEN_ENDPOINT_URL)
 
     @property
     def num_worker_threads(self) -> int:
@@ -279,7 +279,7 @@ class LHConfig:
                 GrpcAuth(
                     client_id=self.oauth_client_id,
                     client_secret=self.oauth_client_secret,
-                    authorization_server=self.oauth_authorization_server,
+                    token_endpoint_url=self.oauth_token_endpoint_url,
                 )
             )
 
