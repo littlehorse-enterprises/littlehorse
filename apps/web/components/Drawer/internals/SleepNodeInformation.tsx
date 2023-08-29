@@ -1,5 +1,6 @@
 import moment from "moment"
 import { useEffect, useState } from "react"
+import { FailureInformation } from "./FailureInformation"
 
 interface Props {
     isWFRun:boolean
@@ -70,8 +71,8 @@ export const SleepNodeInformation = ({isWFRun, data, wfRunId, run}:Props) => {
                 </div>
             </div>
         )}
-
+        {/* <FailureInformation data={errorData} openError={onParseError} /> */}
+        {/* data.node.failureHandlers */}
         </>
-        // data.node.failureHandlers
     )
 }

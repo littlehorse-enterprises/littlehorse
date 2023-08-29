@@ -1,33 +1,28 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import externalEventSvg from './external-event.svg'
 import { FailureInformation, LH_EXCEPTION } from './FailureInformation'
 import { NodeData, NodeDataProps } from './NodeData'
 import { parseKey } from './drawerInternals'
+import moment from 'moment'
 
 interface ExternalEventInformationProps {
-	data: { mutatedVariable: string; mutatedType: string; literalValue: string }[]
+	isWFRun:boolean
+	run?: any
+	data: any
 	nodeName: any
+	wfRunId?:string
 	errorData: {
 		handlerSpecName: string
 		exception: LH_EXCEPTION | string
 	}[]
-	wfRunData?: {
-		nodeData: NodeDataProps
-		guid: string
-		arrivedTime: string
-		arrived: string
-		content: {
-			type: string
-			value: string
-		}
-	}
 	setToggleSideBar: (value: boolean, isError: boolean, code: string, language?: string) => void;
 }
 
 export const ExternalEventInformation = (
 	props: ExternalEventInformationProps
 ) => {
+	console.log('PPD',props.data)
 	const onParseError = (data: any) => {
 
 		if (typeof data  == 'string') {
@@ -38,6 +33,34 @@ export const ExternalEventInformation = (
 		const error = data[key];
 		props.setToggleSideBar(true, true, error, key)
 	}
+	const parseliteralValue = (v:any) => {
+		return 'Literal Value'
+		if(v.type === 'BOOL') return  v.bool.toString()
+	}
+	const parsenodeOutput = (n:any) => {
+		return  n.jsonpath
+	}
+
+
+	const [node, setNode] = useState<any>()
+    const getNodeRun = async () => {
+        const res = await fetch('/api/drawer/nodeRun', {
+			method: 'POST',
+			body: JSON.stringify({
+				wfRunId:props.wfRunId,
+				threadRunNumber: props.run?.number || 0,
+                name:props.data?.name?.split('-')[0] || 0
+			})
+		})
+        if (res.ok) {
+			const {result} = await res.json()
+            setNode(result)
+			console.log('NODE',result)
+		}
+    }
+	useEffect( () => {
+        if(props.isWFRun) getNodeRun()
+    },[props.isWFRun])
 
 	return (
 		<>
@@ -53,23 +76,24 @@ export const ExternalEventInformation = (
 					<p className='component-header__subheader'>{props.nodeName}</p>
 				</div>
 			</div>
-			{props.wfRunData ? (
+			{props.isWFRun ? (
 				<>
-					<NodeData {...props.wfRunData.nodeData} />
+
+					<NodeData reachTime={node?.arrivalTime} completionTime={node?.endTime} status={node?.status}/>
 					<div className='drawer__externalEvent__table'>
 						<div className='drawer__externalEvent__table__header'>
 							ExternalEvent info
 						</div>
 						<div className='grid-3'>
 							<p className='drawer__nodeData__header'>GUID</p>
-							<p className='drawer__nodeData__data'>{props.wfRunData.guid}</p>
+							<p className='drawer__nodeData__data'>{node?.externalEvent?.externalEventId?.guid}</p>
 							<p className='drawer__nodeData__header'>ARRIVED TIME</p>
 							<p className='drawer__nodeData__data'>
-								{props.wfRunData.arrivedTime}
+								{node?.externalEvent?.eventTime ? moment(node.externalEvent?.eventTime).format('MMMM DD, HH:mm:ss') : ''}
 							</p>
-							<p className='drawer__nodeData__headerSimple'>ARRIVED</p>
+							<p className='drawer__nodeData__header'>ARRIVED</p>
 							<p className='drawer__nodeData__dataSimple'>
-								{props.wfRunData.arrived}
+								{node?.externalEvent?.eventTime ? 'YES' : 'NO'}
 							</p>
 						</div>
 					</div>
@@ -104,16 +128,16 @@ export const ExternalEventInformation = (
 						</p>
 					</div>
 					{props.data &&
-						props.data.map(
+						props.data.node?.variableMutations?.map(
 							(
-								{ mutatedVariable, mutatedType, literalValue },
+								{ lhsName, operation, literalValue, nodeOutput },
 								index: number
 							) => {
 								return (
 									<div key={index} className='grid-3'>
-										<p className='center'>{mutatedVariable}</p>
-										<p className='center'>{mutatedType}</p>
-										<p className='center'>{literalValue}</p>
+										<p className='center'>{lhsName}</p>
+										<p className='center'>{operation}</p>
+										<p className='center'>{literalValue ? parseliteralValue(literalValue) : parsenodeOutput(nodeOutput) }</p>
 									</div>
 								)
 							}

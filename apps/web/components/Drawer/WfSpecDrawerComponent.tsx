@@ -121,7 +121,7 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
         },
         externalEvent: () => {
 
-
+          console.log(selectedNode?.variableMutations)
           const processedData = selectedNode?.variableMutations.map(
             (element: {
               lhsName: string;
@@ -131,16 +131,16 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
               let literalValue =
                 selectedNode.externalEvent.externalEventDefName;
 
-              if (element.nodeOutput.hasOwnProperty("jsonpath"))
+              if (element.nodeOutput?.hasOwnProperty("jsonpath"))
                 console.warn("Missing fix of property: jsonpath");
 
-              if (element.nodeOutput.hasOwnProperty("jsonPath"))
+              if (element.nodeOutput?.hasOwnProperty("jsonPath"))
                 console.warn(
                   "Property fixed: jsonPath; NEED TO SUBSTITUTE ON CODE"
                 );
 
               //TODO: verify that the jsonPath property is right spelled
-              const jsonPath = element.nodeOutput.jsonpath?.replace("$", "");
+              const jsonPath = element.nodeOutput?.jsonpath?.replace("$", "");
 
               if (jsonPath) literalValue = literalValue + jsonPath;
 
@@ -279,10 +279,10 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
         {props.internalComponent === "externalEvent" && (
           <ExternalEventInformation
             {...{
-              data: selectedNodeData,
+              isWFRun : false,
+              data: props.datao.find((d : any) => d.name === props.nodeName),
               nodeName: props.nodeName,
               errorData: errorData,
-              wfRunData: wfRunData,
               setToggleSideBar: setToggleSideBar,
             }}
           />

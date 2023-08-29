@@ -279,16 +279,16 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
               let literalValue =
                 selectedNode.externalEvent.externalEventDefName;
 
-              if (element.nodeOutput.hasOwnProperty("jsonpath"))
+              if (element.nodeOutput?.hasOwnProperty("jsonpath"))
                 console.warn("Missing fix of property: jsonpath");
 
-              if (element.nodeOutput.hasOwnProperty("jsonPath"))
+              if (element.nodeOutput?.hasOwnProperty("jsonPath"))
                 console.warn(
                   "Property fixed: jsonPath; NEED TO SUBSTITUTE ON CODE"
                 );
 
               //TODO: verify that the jsonPath property is right spelled
-              const jsonPath = element.nodeOutput.jsonpath?.replace("$", "");
+              const jsonPath = element.nodeOutput?.jsonpath?.replace("$", "");
 
               if (jsonPath) literalValue = literalValue + jsonPath;
 
@@ -467,10 +467,12 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
         {props.internalComponent === "externalEvent" && (
           <ExternalEventInformation
             {...{
-              data: selectedNodeData,
+              isWFRun : true,
+              run: current_run,
+              data:props.datao.find((d : any) => d.name === props.nodeName),
+              wfRunId: props.wfRunId,
               nodeName: props.nodeName,
               errorData: errorData,
-              wfRunData: wfRunData,
               setToggleSideBar: setToggleSideBar,
             }}
           />

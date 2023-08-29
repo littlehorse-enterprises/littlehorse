@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Value } from "../wfVariable";
 
 interface TaskDefInformationProps {
-  linkedThread: (thread:string) => void;
+  linkedThread: (string) => void;
   data:
     | { name: string; type: string; variableName: string; value?: string }[]
     | undefined;
