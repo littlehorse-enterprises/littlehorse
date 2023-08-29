@@ -2,8 +2,8 @@ package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.LHTimer;
@@ -56,7 +56,7 @@ public class PutExternalEventRequestModel extends SubCommand<PutExternalEventReq
         return true;
     }
 
-    public ExternalEvent process(CoreProcessorDAO dao, LHConfig config) {
+    public ExternalEvent process(CoreProcessorDAO dao, LHServerConfig config) {
         ExternalEventDefModel eed = dao.getExternalEventDef(externalEventDefName);
         if (eed == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "No ExternalEventDef named " + externalEventDefName);

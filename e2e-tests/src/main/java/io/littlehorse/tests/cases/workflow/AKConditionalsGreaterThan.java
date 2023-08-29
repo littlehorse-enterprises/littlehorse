@@ -1,6 +1,6 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class AKConditionalsGreaterThan extends WorkflowLogicTest {
 
-    public AKConditionalsGreaterThan(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
+    public AKConditionalsGreaterThan(LHPublicApiBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 

@@ -1,11 +1,13 @@
 package io.littlehorse.sdk.common.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Properties;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 public class LHClientConfigTest {
 
@@ -13,7 +15,7 @@ public class LHClientConfigTest {
 
     @Test
     void getRandomIdIfItIsUnset() {
-        LHClientConfig config = new LHClientConfig();
+        LHConfig config = new LHConfig();
 
         String result = config.getClientId();
 
@@ -25,9 +27,9 @@ public class LHClientConfigTest {
         String expectedClientId = faker.app().name();
 
         Properties properties = new Properties();
-        properties.put(LHClientConfig.CLIENT_ID_KEY, expectedClientId);
+        properties.put(LHConfig.CLIENT_ID_KEY, expectedClientId);
 
-        LHClientConfig config = new LHClientConfig(properties);
+        LHConfig config = new LHConfig(properties);
 
         String result = config.getClientId();
 
@@ -35,8 +37,27 @@ public class LHClientConfigTest {
     }
 
     @Test
+    @SetEnvironmentVariable(key = "LHW_TASK_WORKER_VERSION", value = "v1.0.2")
+    void getTaskWorkerVersionFromEnvVariable() {
+        LHConfig config = new LHConfig();
+
+        String result = config.getTaskWorkerVersion();
+
+        assertEquals("v1.0.2", result);
+    }
+
+    @Test
+    void setEmptyTaskWorkerVersionIfEnvVariableDoesNotExist() {
+        LHConfig config = new LHConfig();
+
+        String result = config.getTaskWorkerVersion();
+
+        assertEquals("", result);
+    }
+
+    @Test
     void getOnlyOneRandomId() {
-        LHClientConfig config = new LHClientConfig();
+        LHConfig config = new LHConfig();
 
         String result1 = config.getClientId();
         String result2 = config.getClientId();
@@ -46,12 +67,12 @@ public class LHClientConfigTest {
 
     @Test
     void haveAllConfigs() {
-        assertThat(LHClientConfig.configNames().size()).isEqualTo(9);
+        assertThat(LHConfig.configNames().size()).isEqualTo(12);
     }
 
     @Test
     void shouldThrowAnExceptionIfTryToModifyConfigNames() {
-        assertThrows(UnsupportedOperationException.class, () -> LHClientConfig.configNames()
+        assertThrows(UnsupportedOperationException.class, () -> LHConfig.configNames()
                 .add(faker.regexify("[a-z]{10}")));
     }
 }

@@ -1,6 +1,6 @@
 package io.littlehorse.driver;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.tests.Test;
 import java.util.Set;
@@ -14,7 +14,7 @@ public abstract class TestDriver {
 
     protected Set<Class<?>> tests;
     protected int threads;
-    protected LHWorkerConfig workerConfig;
+    protected LHConfig workerConfig;
     protected LHPublicApiBlockingStub client;
     private int executedTest;
 
@@ -38,10 +38,10 @@ public abstract class TestDriver {
         log.info("\u001B[32mPlanned tests: {}. Executed tests: {}.\u001B[0m", tests.size(), executedTest);
     }
 
-    private void execTest(LHWorkerConfig workerConfig, LHPublicApiBlockingStub client, Class<?> testClass) {
+    private void execTest(LHConfig workerConfig, LHPublicApiBlockingStub client, Class<?> testClass) {
         try {
             Test test = (Test) testClass
-                    .getDeclaredConstructor(LHPublicApiBlockingStub.class, LHWorkerConfig.class)
+                    .getDeclaredConstructor(LHPublicApiBlockingStub.class, LHConfig.class)
                     .newInstance(client, workerConfig);
             log.info(
                     "\u001B[32mStarting test:\n\tName:        {}.\n\tDescription: {}.\u001B[0m",

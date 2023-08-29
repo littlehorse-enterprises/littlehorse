@@ -21,4 +21,4 @@ You can use this for a *highly informal* performance benchmark. To see the numbe
 100,000 / (<number of seconds> * <number of stream threads>)
 ```
 
-`number of seconds` is determined by the process above. `number of stream threads` depends on your server config, but if you use the Docker Compose quickstart or `./local-dev/do-server.sh` without any fancy config, it's just one stream thread.
+`number of seconds` is determined by the process above. `number of stream threads` depends on your server config, but if you use the [Docker Quickstart](../../docs/QUICKSTART_DOCKER.md), [Docker Compose Quickstart](../docker-compose/) or `./local-dev/do-server.sh` without any fancy config, it's just one stream thread.

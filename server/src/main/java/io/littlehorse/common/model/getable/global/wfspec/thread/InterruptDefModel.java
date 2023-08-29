@@ -2,9 +2,9 @@ package io.littlehorse.common.model.getable.global.wfspec.thread;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
@@ -45,7 +45,7 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataStore client, LHConfig config) throws LHApiException {
+    public void validate(ReadOnlyMetadataStore client, LHServerConfig config) throws LHApiException {
         eed = client.getExternalEventDef(externalEventDefName);
 
         if (eed == null) {

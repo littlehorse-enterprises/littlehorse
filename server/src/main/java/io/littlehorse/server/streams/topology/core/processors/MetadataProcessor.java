@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
@@ -26,11 +26,11 @@ import org.apache.kafka.streams.processor.api.Record;
 public class MetadataProcessor implements Processor<String, MetadataCommandModel, String, Bytes> {
 
     private MetadataProcessorDAO dao;
-    private final LHConfig config;
+    private final LHServerConfig config;
     private final KafkaStreamsServerImpl server;
     private final MetadataCache metadataCache;
 
-    public MetadataProcessor(LHConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
+    public MetadataProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;

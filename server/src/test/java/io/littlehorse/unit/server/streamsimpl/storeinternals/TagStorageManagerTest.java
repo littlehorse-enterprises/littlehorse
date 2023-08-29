@@ -3,7 +3,7 @@ package io.littlehorse.unit.server.streamsimpl.storeinternals;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.TestUtil;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
@@ -36,7 +36,7 @@ public class TagStorageManagerTest {
             .build();
 
     @Mock
-    private LHConfig lhConfig;
+    private LHServerConfig lhConfig;
 
     private RocksDBWrapper localStore = new RocksDBWrapper(store, lhConfig);
 

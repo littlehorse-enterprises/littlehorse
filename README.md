@@ -4,7 +4,7 @@
 
 # LittleHorse
 
-<a href="https://littlehorse.dev/"><img alt="littlehorse.dev" src="https://img.shields.io/badge/-LittleHorse.dev-512BD4"></a>
+<a href="https://littlehorse.dev/"><img alt="littlehorse.dev" src="https://img.shields.io/badge/-LittleHorse.dev-7f7aff"></a>
 <a href="https://github.com/littlehorse-enterprises/littlehorse"><img alt="github" src="https://img.shields.io/badge/-LittleHorse-gray?logo=github&logoColor=white"></a>
 
 <a href="https://central.sonatype.com/artifact/io.littlehorse/littlehorse-client"><img alt="java" src="https://img.shields.io/maven-central/v/io.littlehorse/littlehorse-client?logo=openjdk&logoColor=white&color=orange&label=java"></a>
@@ -48,7 +48,7 @@ The LittleHorse repository contains the following components:
 
 ## Getting Started
 
-To get started *using* LittleHorse, check out the [Java Quickstart](docs/QUICKSTART_JAVA.md) or the [GoLang Quickstart](docs/QUICKSTART_GO.md).
+To get started *using* LittleHorse, check out the [Java Quickstart](docs/QUICKSTART_JAVA.md) or the [GoLang Quickstart](docs/QUICKSTART_GO.md). Also, if you want to run a docker sandbox go to the [Docker Quickstart](docs/QUICKSTART_DOCKER.md).
 
 To get started *developing* LittleHorse, check out the [Development Guide](docs/DEVELOPING.md).
 

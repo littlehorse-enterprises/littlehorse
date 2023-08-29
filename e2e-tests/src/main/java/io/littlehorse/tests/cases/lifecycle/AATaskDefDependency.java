@@ -2,7 +2,7 @@ package io.littlehorse.tests.cases.lifecycle;
 
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
@@ -26,7 +26,7 @@ public class AATaskDefDependency extends Test {
     private String taskDefName;
     private String wfSpecName;
 
-    public AATaskDefDependency(LHPublicApiBlockingStub client, LHWorkerConfig config) {
+    public AATaskDefDependency(LHPublicApiBlockingStub client, LHConfig config) {
         super(client, config);
         taskDefName = "task-def-" + UUID.randomUUID().toString();
         wfSpecName = "wf-spec-" + UUID.randomUUID().toString();

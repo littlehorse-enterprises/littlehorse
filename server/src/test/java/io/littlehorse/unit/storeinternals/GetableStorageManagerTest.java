@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import io.littlehorse.TestUtil;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
@@ -54,7 +54,7 @@ public class GetableStorageManagerTest {
             .build();
 
     @Mock
-    private LHConfig lhConfig;
+    private LHServerConfig lhConfig;
 
     private RocksDBWrapper localStoreWrapper;
 

@@ -3,7 +3,7 @@ package io.littlehorse.sdk.worker;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
@@ -42,7 +42,7 @@ public class LHTaskWorker implements Closeable {
     };
 
     private Object executable;
-    private LHWorkerConfig config;
+    private LHConfig config;
     private TaskDef taskDef;
     private Method taskMethod;
     private List<VariableMapping> mappings;
@@ -57,9 +57,9 @@ public class LHTaskWorker implements Closeable {
      * @param executable is any Object which has exactly one method annotated with '@LHTaskMethod'.
      *     That method will be used to execute the tasks.
      * @param taskDefName is the name of the `TaskDef` to execute.
-     * @param config is a valid LHWorkerConfig.
+     * @param config is a valid LHConfig.
      */
-    public LHTaskWorker(Object executable, String taskDefName, LHWorkerConfig config) throws IOException {
+    public LHTaskWorker(Object executable, String taskDefName, LHConfig config) throws IOException {
         this.config = config;
         this.executable = executable;
         this.mappings = new ArrayList<>();

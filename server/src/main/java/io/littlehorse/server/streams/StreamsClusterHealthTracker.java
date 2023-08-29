@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams;
 
 import com.google.protobuf.Empty;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LocalTasksResponse;
 import io.littlehorse.common.proto.ServerStatePb;
@@ -20,9 +20,9 @@ import org.apache.kafka.streams.TaskMetadata;
 public class StreamsClusterHealthTracker {
 
     private BackendInternalComms comms;
-    private LHConfig config;
+    private LHServerConfig config;
 
-    public StreamsClusterHealthTracker(BackendInternalComms comms, LHConfig config) {
+    public StreamsClusterHealthTracker(BackendInternalComms comms, LHServerConfig config) {
         this.comms = comms;
     }
 

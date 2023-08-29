@@ -1,6 +1,6 @@
 package io.littlehorse.server.streams.store;
 
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.proto.StoreableType;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ public class RocksDBWrapper extends ReadOnlyRocksDBWrapper {
     // note that super has ReadOnlyKeyValueStore<String, Bytes>
     private KeyValueStore<String, Bytes> rocksdb;
 
-    public RocksDBWrapper(KeyValueStore<String, Bytes> rocksdb, LHConfig config) {
+    public RocksDBWrapper(KeyValueStore<String, Bytes> rocksdb, LHServerConfig config) {
         super(rocksdb, config);
         this.rocksdb = rocksdb;
     }

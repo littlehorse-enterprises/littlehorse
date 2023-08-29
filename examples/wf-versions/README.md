@@ -52,7 +52,7 @@ we also highly recommend to use the `LHClient` to perform action over the wf spe
 
 ```
 Properties props = getConfigProps();
-LHWorkerConfig config = new LHWorkerConfig(props);
+LHConfig config = new LHConfig(props);
 LHClient client = new LHClient(config);
 
 WfSpecPb wfSpec = client.getWfSpec("example-wf-versions");

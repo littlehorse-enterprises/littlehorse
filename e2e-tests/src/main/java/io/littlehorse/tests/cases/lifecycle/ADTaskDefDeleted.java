@@ -1,6 +1,6 @@
 package io.littlehorse.tests.cases.lifecycle;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
@@ -35,7 +35,7 @@ public class ADTaskDefDeleted extends Test {
     private LHTaskWorker worker1;
     private LHTaskWorker worker2;
 
-    public ADTaskDefDeleted(LHPublicApiBlockingStub client, LHWorkerConfig config) {
+    public ADTaskDefDeleted(LHPublicApiBlockingStub client, LHConfig config) {
         super(client, config);
     }
 

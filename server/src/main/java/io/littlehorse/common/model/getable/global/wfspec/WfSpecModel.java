@@ -2,8 +2,8 @@ package io.littlehorse.common.model.getable.global.wfspec;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
@@ -170,7 +170,7 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return Pair.of(tspecName, out);
     }
 
-    public void validate(ReadOnlyMetadataStore dbClient, LHConfig config) throws LHApiException {
+    public void validate(ReadOnlyMetadataStore dbClient, LHServerConfig config) throws LHApiException {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Unknown entrypoint thread");
         }

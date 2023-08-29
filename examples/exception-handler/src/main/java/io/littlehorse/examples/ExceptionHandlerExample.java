@@ -1,6 +1,6 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -55,7 +55,7 @@ public class ExceptionHandlerExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) throws IOException {
+    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) throws IOException {
         ExceptionHandlerWorker executable = new ExceptionHandlerWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "fail", config),
@@ -79,7 +79,7 @@ public class ExceptionHandlerExample {
     public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
-        LHWorkerConfig config = new LHWorkerConfig(props);
+        LHConfig config = new LHConfig(props);
         LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow

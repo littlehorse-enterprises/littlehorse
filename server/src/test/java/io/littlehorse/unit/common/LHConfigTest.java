@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.sdk.common.auth.OAuthConfig;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.server.auth.AuthorizationProtocol;
@@ -41,7 +41,7 @@ public class LHConfigTest {
             properties.put(LHS_LISTENERS, "PLAIN:5000");
             properties.put(LHS_LISTENERS_PROTOCOL_MAP, "PLAIN:PLAIN");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             List<ServerListenerConfig> result = assertDoesNotThrow(config::getListeners);
 
@@ -62,7 +62,7 @@ public class LHConfigTest {
             properties.put(LHS_LISTENERS_AUTHENTICATION_MAP, "PLAIN_1:OAUTH");
             properties.put(LHS_LISTENERS_PROTOCOL_MAP, "PLAIN_1:PLAIN");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             List<ServerListenerConfig> result = assertDoesNotThrow(config::getListeners);
 
@@ -77,7 +77,7 @@ public class LHConfigTest {
             properties.put(LHS_LISTENERS_PROTOCOL_MAP, "LISTENER_1:PLAIN");
             properties.put(LHS_LISTENERS_AUTHENTICATION_MAP, "LISTENER_1:MTLS");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThrows(LHMisconfigurationException.class, config::getListeners);
         }
@@ -89,7 +89,7 @@ public class LHConfigTest {
             properties.put(LHS_LISTENERS_PROTOCOL_MAP, "LISTENER_1:MTLS");
             properties.put(LHS_LISTENERS_AUTHENTICATION_MAP, "LISTENER_1:MTLS");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             List<ServerListenerConfig> result = assertDoesNotThrow(config::getListeners);
 
@@ -110,7 +110,7 @@ public class LHConfigTest {
             properties.put(LHS_LISTENERS, "PLAIN:5000,MTLS:6000,OAUTH:7000");
             properties.put(LHS_LISTENERS_PROTOCOL_MAP, "PLAIN:PLAIN,MTLS:MTLS,OAUTH:TLS");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             List<ServerListenerConfig> result = assertDoesNotThrow(config::getListeners);
 
@@ -144,7 +144,7 @@ public class LHConfigTest {
             Properties properties = new Properties();
             properties.put(LHS_LISTENERS, "PLAIN:5000,MTLS:5000");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThrows(LHMisconfigurationException.class, config::getListeners);
         }
@@ -154,7 +154,7 @@ public class LHConfigTest {
             Properties properties = new Properties();
             properties.put(LHS_LISTENERS, "localhost5000");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThrows(LHMisconfigurationException.class, config::getListeners);
         }
@@ -164,7 +164,7 @@ public class LHConfigTest {
             Properties properties = new Properties();
             properties.put(LHS_LISTENERS, "localhost:5000,localhost6000");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThrows(LHMisconfigurationException.class, config::getListeners);
         }
@@ -175,7 +175,7 @@ public class LHConfigTest {
             properties.put(LHS_LISTENERS, "PLAIN_1:5000,PLAIN_2:6000");
             properties.put(LHS_LISTENERS_PROTOCOL_MAP, "PLAIN_1:PLAIN");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             List<ServerListenerConfig> result = assertDoesNotThrow(config::getListeners);
 
@@ -206,7 +206,7 @@ public class LHConfigTest {
             Properties properties = new Properties();
             properties.put(LHS_ADVERTISED_LISTENERS, "PLAIN://localhost:5000");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             List<AdvertisedListenerConfig> result = assertDoesNotThrow(config::getAdvertisedListeners);
 
@@ -223,7 +223,7 @@ public class LHConfigTest {
             Properties properties = new Properties();
             properties.put(LHS_ADVERTISED_LISTENERS, "PLAIN://localhost:5000,EXTERNAL://insecure.external.com:5000");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             List<AdvertisedListenerConfig> result = assertDoesNotThrow(config::getAdvertisedListeners);
 
@@ -248,7 +248,7 @@ public class LHConfigTest {
                     LHS_ADVERTISED_LISTENERS,
                     "PLAIN://localhost:5000,MTLS://secure.localhost:6000,OAUTH://oauth.localhost:7000");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             List<AdvertisedListenerConfig> result = assertDoesNotThrow(config::getAdvertisedListeners);
 
@@ -276,7 +276,7 @@ public class LHConfigTest {
             Properties properties = new Properties();
             properties.put(LHS_ADVERTISED_LISTENERS, "PLAIN://localhost5000");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThrows(LHMisconfigurationException.class, config::getAdvertisedListeners);
         }
@@ -286,7 +286,7 @@ public class LHConfigTest {
             Properties properties = new Properties();
             properties.put(LHS_ADVERTISED_LISTENERS, "PLAIN://localhost:5000,MTLS:/localhost:6000");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThrows(LHMisconfigurationException.class, config::getAdvertisedListeners);
         }
@@ -300,7 +300,7 @@ public class LHConfigTest {
             Properties properties = new Properties();
             properties.put(LHS_LISTENERS_PROTOCOL_MAP, "PLAIN:PLAIN,MTLS");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThrows(LHMisconfigurationException.class, config::getListenersProtocolMap);
         }
@@ -310,7 +310,7 @@ public class LHConfigTest {
             Properties properties = new Properties();
             properties.put(LHS_LISTENERS_PROTOCOL_MAP, "PLAIN:PLAIN$MTLS:MTLS");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThrows(LHMisconfigurationException.class, config::getListenersProtocolMap);
         }
@@ -320,7 +320,7 @@ public class LHConfigTest {
             Properties properties = new Properties();
             properties.put(LHS_LISTENERS_PROTOCOL_MAP, "PLAIN:PLAIN,MTLS:MTLS,NOT_EXISTS:NOT_EXISTS");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThrows(LHMisconfigurationException.class, config::getListenersProtocolMap);
         }
@@ -330,7 +330,7 @@ public class LHConfigTest {
             Properties properties = new Properties();
             properties.put(LHS_LISTENERS_PROTOCOL_MAP, "PLAIN:PLAIN");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             Map<String, ListenerProtocol> result = assertDoesNotThrow(config::getListenersProtocolMap);
 
@@ -346,7 +346,7 @@ public class LHConfigTest {
             Properties properties = new Properties();
             properties.put(LHS_LISTENERS_AUTHENTICATION_MAP, "LISTENER_1:OAUTH,LISTENER_2:NOT_EXISTS");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThrows(LHMisconfigurationException.class, config::getListenersAuthorizationMap);
         }
@@ -356,7 +356,7 @@ public class LHConfigTest {
             Properties properties = new Properties();
             properties.put(LHS_LISTENERS_AUTHENTICATION_MAP, "LISTENER_1:OAUTH,LISTENER_2:MTLS,LISTENER_3:NONE");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             Map<String, AuthorizationProtocol> result = assertDoesNotThrow(config::getListenersAuthorizationMap);
 
@@ -381,7 +381,7 @@ public class LHConfigTest {
             properties.put("LHS_OAUTH_CLIENT_SECRET", clientSecret);
             properties.put("LHS_OAUTH_SERVER_URL", server);
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThat(config.getOAuthConfig())
                     .isEqualTo(OAuthConfig.builder()
@@ -402,7 +402,7 @@ public class LHConfigTest {
             properties.put("LHS_OAUTH_CLIENT_SECRET", clientSecret);
             properties.put("LHS_OAUTH_SERVER_URL", server);
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThatThrownBy(config::getOAuthConfig)
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
@@ -428,7 +428,7 @@ public class LHConfigTest {
             properties.put("LHS_OAUTH_CLIENT_ID", "some-random-id");
             properties.put("LHS_OAUTH_CLIENT_SECRET", "some-random-secret");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
             assertThat(config.getOAuthConfig())
                     .isEqualTo(OAuthConfig.builder()
                             .clientId(clientId)
@@ -446,7 +446,7 @@ public class LHConfigTest {
             properties.put("LHS_OAUTH_CLIENT_ID", clientId);
             properties.put("LHS_OAUTH_CLIENT_SECRET", clientSecret);
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThatThrownBy(config::getOAuthConfig)
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
@@ -464,7 +464,7 @@ public class LHConfigTest {
             properties.put("LHS_OAUTH_CLIENT_SECRET", clientSecret);
             properties.put("LHS_OAUTH_SERVER_URL", server);
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThatThrownBy(config::getOAuthConfig)
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
@@ -482,7 +482,7 @@ public class LHConfigTest {
             properties.put("LHS_OAUTH_CLIENT_ID", clientId);
             properties.put("LHS_OAUTH_SERVER_URL", server);
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThatThrownBy(config::getOAuthConfig)
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
@@ -503,7 +503,7 @@ public class LHConfigTest {
 
             properties.put("LHS_LISTENER_TEST_KEY", mockFilePath);
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThatThrownBy(() -> config.getTLSConfiguration("TEST"))
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
@@ -520,7 +520,7 @@ public class LHConfigTest {
 
             properties.put("LHS_LISTENER_TEST_CERT", mockFilePath);
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThatThrownBy(() -> config.getTLSConfiguration("TEST"))
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
@@ -534,7 +534,7 @@ public class LHConfigTest {
 
             properties.put("LHS_LISTENER_TEST_CERT", "/path-that-doesn't-exist/some-cert.pem");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThatThrownBy(() -> config.getTLSConfiguration("TEST"))
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
@@ -553,7 +553,7 @@ public class LHConfigTest {
             properties.put("LHS_LISTENER_TEST_CERT", mockCertPath);
             properties.put("LHS_LISTENER_TEST_KEY", mockKeyPath);
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             TLSConfig tlsConfig = config.getTLSConfiguration("TEST");
 
@@ -574,7 +574,7 @@ public class LHConfigTest {
             properties.put("LHS_LISTENER_TEST_KEY", mockFilePath);
             properties.put("LHS_CA_CERT", mockFilePath);
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThatThrownBy(() -> config.getMTLSConfiguration("TEST"))
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
@@ -592,7 +592,7 @@ public class LHConfigTest {
             properties.put("LHS_LISTENER_TEST_CERT", mockFilePath);
             properties.put("LHS_CA_CERT", mockFilePath);
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThatThrownBy(() -> config.getMTLSConfiguration("TEST"))
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
@@ -610,7 +610,7 @@ public class LHConfigTest {
             properties.put("LHS_LISTENER_TEST_KEY", mockFilePath);
             properties.put("LHS_LISTENER_TEST_CERT", mockFilePath);
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThatThrownBy(() -> config.getMTLSConfiguration("TEST"))
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
@@ -633,7 +633,7 @@ public class LHConfigTest {
             properties.put("LHS_LISTENER_TEST_KEY", mockKeyPath);
             properties.put("LHS_CA_CERT", mockCACertPath);
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             TLSConfig tlsConfig = config.getMTLSConfiguration("TEST");
 
@@ -647,7 +647,7 @@ public class LHConfigTest {
 
             properties.put("LHS_LISTENER_TEST_CERT", "/path-that-doesn't-exist/some-cert.pem");
 
-            LHConfig config = new LHConfig(properties);
+            LHServerConfig config = new LHServerConfig(properties);
 
             assertThatThrownBy(() -> config.getMTLSConfiguration("TEST"))
                     .isExactlyInstanceOf(LHMisconfigurationException.class)

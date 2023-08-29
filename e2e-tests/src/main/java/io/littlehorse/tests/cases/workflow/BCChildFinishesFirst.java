@@ -1,6 +1,6 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
@@ -19,7 +19,7 @@ import java.util.List;
 // safeguards of the java wf sdk. But we might do that test in the future.
 public class BCChildFinishesFirst extends WorkflowLogicTest {
 
-    public BCChildFinishesFirst(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
+    public BCChildFinishesFirst(LHPublicApiBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
