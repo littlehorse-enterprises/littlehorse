@@ -14,6 +14,10 @@ func Greet(name string) string {
 }
 
 func MyWorkflow(thread *wflib.ThreadBuilder) {
-	nameVar := thread.AddVariable("name", model.VariableType_STR)
+	nameVar := thread.AddVariableWithDefault("name", model.VariableType_STR, "Qui-Gon Jinn")
+
+	// Make it searchable
+	nameVar.WithIndex(model.IndexType_REMOTE_INDEX)
+
 	thread.Execute("greet", nameVar)
 }

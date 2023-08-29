@@ -38,7 +38,6 @@ public class SearchVariableRequestModel
     public VariableCriteriaCase type;
     public NameAndValueRequest value;
     public String wfRunId;
-    private int wfSpecVersion;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.VARIABLE;
@@ -112,7 +111,11 @@ public class SearchVariableRequestModel
     }
 
     private TagStorageType indexTypeForSearchFromWfSpec(ReadOnlyMetadataStore stores) {
-        WfSpecModel spec = stores.getWfSpec(value.getWfSpecName(), null);
+        WfSpecModel spec = stores.getWfSpec(value.getWfSpecName(), value.getWfSpecVersion());
+
+        if (spec == null) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Couldn't find WfSpec");
+        }
 
         return spec.getThreadSpecs().entrySet().stream()
                 .flatMap(stringThreadSpecEntry -> stringThreadSpecEntry.getValue().getVariableDefs().stream())
@@ -127,7 +130,7 @@ public class SearchVariableRequestModel
     public List<Attribute> getSearchAttributes() throws LHApiException {
         return List.of(
                 new Attribute("wfSpecName", value.getWfSpecName()),
-                new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(wfSpecVersion)),
+                new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(value.getWfSpecVersion())),
                 new Attribute(value.getVarName(), getVariableValue(value.getValue())));
     }
 
@@ -135,6 +138,7 @@ public class SearchVariableRequestModel
     public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) {
         return getStorageTypeFromVariableIndexConfiguration().orElseGet(() -> {
             TagStorageType result = indexTypeForSearchFromWfSpec(stores);
+            log.trace("Doing a {} search", result);
             if (result == null) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "No index configured for this variable search");
             }

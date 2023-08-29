@@ -8,7 +8,7 @@ from littlehorse.exceptions import (
     TaskSchemaMismatchException,
 )
 from littlehorse.model.common_enums_pb2 import TaskStatus
-from littlehorse.model.object_id_pb2 import NodeRunId, TaskDefId
+from littlehorse.model.object_id_pb2 import NodeRunId, TaskDefId, TaskRunId
 from littlehorse.model.service_pb2 import (
     PollTaskRequest,
     RegisterTaskWorkerRequest,
@@ -43,13 +43,13 @@ class LHWorkerContext:
         return datetime.fromtimestamp(float(self._scheduled_task.created_at.seconds))
 
     @property
-    def task_guid(self) -> str:
-        """Task global unique identifier.
+    def task_run_id(self) -> TaskRunId:
+        """Task Run Id.
 
         Returns:
-            str: An identifier.
+            TaskRunId: the ID of the associated TaskRun.
         """
-        return self._scheduled_task.task_run_id.task_guid
+        return self._scheduled_task.task_run_id
 
     @property
     def wf_run_id(self) -> str:
@@ -80,7 +80,7 @@ class LHWorkerContext:
         Returns:
             str: An idempotency key.
         """
-        return f"{self.wf_run_id}/{self.task_guid}"
+        return self.task_run_id.task_guid
 
     @property
     def task_def_name(self) -> str:
@@ -127,11 +127,10 @@ class LHWorkerContext:
         return str(
             {
                 "wf_run_id": self.wf_run_id,
-                "task_guid": self.task_guid,
+                "idempotency_key": self.idempotency_key,
                 "task_def_name": self.task_def_name,
                 "scheduled_time": str(self.scheduled_time),
                 "attempt_number": self.attempt_number,
-                "idempotency_key": self.idempotency_key,
             }
         )
 
