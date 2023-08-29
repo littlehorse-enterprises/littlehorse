@@ -21,10 +21,4 @@ public class TokenStatus {
         }
         return expiration.isBefore(Instant.now().truncatedTo(ChronoUnit.SECONDS).plusSeconds(1));
     }
-
-    @Override
-    public String toString() {
-        return String.format(
-                "TokenStatus [client id=%s, expired=%s, expiration date=%s]", clientId, isExpired(), expiration);
-    }
 }

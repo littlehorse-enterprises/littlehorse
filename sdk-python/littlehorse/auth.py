@@ -1,5 +1,4 @@
 from datetime import datetime
-import logging
 from typing import Any, Optional
 from authlib.integrations.requests_client import OAuth2Session
 import grpc
@@ -28,8 +27,6 @@ class AccessToken:
 # https://grpc.io/docs/guides/auth/#python
 # https://docs.authlib.org/en/latest/client/oauth2.html#oauth2session-for-client-credentials
 class GrpcAuth(grpc.AuthMetadataPlugin):
-    _log = logging.getLogger("GrpcAuth")
-
     def __init__(
         self,
         client_id: Optional[str],
@@ -48,8 +45,6 @@ class GrpcAuth(grpc.AuthMetadataPlugin):
 
     def access_token(self) -> AccessToken:
         if self._token is None or self._token.is_expired():
-            self._log.debug("Obtaining a new access token")
-
             if self.token_endpoint_url is None:
                 raise OAuthException("LHC_OAUTH_ACCESS_TOKEN_URL required")
 
@@ -69,8 +64,5 @@ class GrpcAuth(grpc.AuthMetadataPlugin):
             )
 
             self._token = AccessToken(token_data)
-            self._log.debug("New token expires at: %s", self._token.expiration)
-        else:
-            self._log.debug("Using token from cache")
 
         return self._token

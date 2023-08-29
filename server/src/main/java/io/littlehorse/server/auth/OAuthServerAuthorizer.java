@@ -69,12 +69,7 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
         if (tokenStatus == null) {
             tokenStatus = client.introspect(token);
             tokenCache.put(token, tokenStatus);
-            log.debug("New token received: {}", tokenStatus);
-        } else {
-            log.debug("Using cached token: {}", tokenStatus);
         }
-
-        log.debug("{}", tokenStatus);
 
         if (tokenStatus.isExpired()) {
             throw new PermissionDeniedException("Token is not active");
