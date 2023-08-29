@@ -8,7 +8,7 @@ from littlehorse.exceptions import (
     TaskSchemaMismatchException,
 )
 from littlehorse.model.common_enums_pb2 import TaskStatus
-from littlehorse.model.object_id_pb2 import NodeRunId, TaskDefId
+from littlehorse.model.object_id_pb2 import NodeRunId, TaskDefId, TaskRunId
 from littlehorse.model.service_pb2 import (
     PollTaskRequest,
     RegisterTaskWorkerRequest,
@@ -43,13 +43,13 @@ class LHWorkerContext:
         return datetime.fromtimestamp(float(self._scheduled_task.created_at.seconds))
 
     @property
-    def task_guid(self) -> str:
-        """Task global unique identifier.
+    def task_run_id(self) -> TaskRunId:
+        """Task Run Id.
 
         Returns:
-            str: An identifier.
+            TaskRunId: the ID of the associated TaskRun.
         """
-        return self._scheduled_task.task_run_id.task_guid
+        return self._scheduled_task.task_run_id
 
     @property
     def wf_run_id(self) -> str:
