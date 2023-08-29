@@ -4,9 +4,13 @@ import static io.littlehorse.server.streams.util.MetadataCache.LATEST_VERSION;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import io.littlehorse.TestUtil;
+import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.TaskDef;
+import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.util.MetadataCache;
 import org.apache.kafka.common.utils.Bytes;
@@ -16,21 +20,23 @@ import org.junit.jupiter.api.Test;
 class WfSpecModelCacheTest {
 
     @Nested
-    class AddToCache {
+    class UpdateCache {
 
         @Test
         public void shouldAddDeserializedWfSpecWithVersionToCache() throws LHSerdeError {
-            final MetadataCache wfSpecCache = new MetadataCache();
+            final MetadataCache metadataCache = new MetadataCache();
             final String wfSpecName = "WF1";
             final int wfSpecVersion = 23;
             final WfSpecModel wfSpecModel = TestUtil.wfSpec(wfSpecName);
             wfSpecModel.setVersion(wfSpecVersion);
-            final String key = StoredGetable.getStoreKey(wfSpecModel.getObjectId());
-            final Bytes value = Bytes.wrap(wfSpecModel.toBytes());
+            final StoredGetable<WfSpec, WfSpecModel> storedGetable = new StoredGetable<>(wfSpecModel);
+            final String key = storedGetable.getFullStoreKey();
+            final Bytes value = Bytes.wrap(storedGetable.toBytes());
 
-            wfSpecCache.addToCache(key, value);
+            metadataCache.updateCache(key, value);
 
-            WfSpecModel cachedWfSpecModel = wfSpecCache.get(new WfSpecIdModel(wfSpecName, wfSpecVersion));
+            WfSpecModel cachedWfSpecModel =
+                    (WfSpecModel) metadataCache.get(new WfSpecIdModel(wfSpecName, wfSpecVersion));
 
             assertThat(cachedWfSpecModel)
                     .usingRecursiveComparison()
@@ -39,18 +45,36 @@ class WfSpecModelCacheTest {
         }
 
         @Test
+        public void shouldAddDeserializedTaskDefToCache() throws LHSerdeError {
+            final MetadataCache metadataCache = new MetadataCache();
+            final String taskName = "task-something";
+            final TaskDefModel taskDef = TestUtil.taskDef(taskName);
+            final StoredGetable<TaskDef, TaskDefModel> storedGetable = new StoredGetable<>(taskDef);
+            final String key = storedGetable.getFullStoreKey();
+            final Bytes value = Bytes.wrap(storedGetable.toBytes());
+
+            metadataCache.updateCache(key, value);
+
+            TaskDefModel cachedTaskDef = (TaskDefModel) metadataCache.get(new TaskDefIdModel(taskName));
+
+            assertThat(cachedTaskDef).usingRecursiveComparison().isEqualTo(taskDef);
+        }
+
+        @Test
         public void shouldAddDeserializedWfSpecWithLatestToCache() throws LHSerdeError {
-            final MetadataCache wfSpecCache = new MetadataCache();
+            final MetadataCache metadataCache = new MetadataCache();
             final String wfSpecName = "WF1";
             final int wfSpecVersion = 23;
             final WfSpecModel wfSpecModel = TestUtil.wfSpec(wfSpecName);
             wfSpecModel.setVersion(wfSpecVersion);
-            final String key = StoredGetable.getStoreKey(wfSpecModel.getObjectId());
-            final Bytes value = Bytes.wrap(wfSpecModel.toBytes());
+            final StoredGetable<WfSpec, WfSpecModel> storedGetable = new StoredGetable<>(wfSpecModel);
+            final String key = storedGetable.getFullStoreKey();
+            final Bytes value = Bytes.wrap(storedGetable.toBytes());
 
-            wfSpecCache.addToCache(key, value);
+            metadataCache.updateCache(key, value);
 
-            WfSpecModel cachedLatestWfSpecModel = wfSpecCache.get(new WfSpecIdModel(wfSpecName, LATEST_VERSION));
+            WfSpecModel cachedLatestWfSpecModel =
+                    (WfSpecModel) metadataCache.get(new WfSpecIdModel(wfSpecName, LATEST_VERSION));
 
             assertThat(cachedLatestWfSpecModel)
                     .usingRecursiveComparison()
@@ -60,42 +84,56 @@ class WfSpecModelCacheTest {
 
         @Test
         public void shouldEvictWfSpecWithVersionFromCacheWhenValueIsNull() throws LHSerdeError {
-            final MetadataCache wfSpecCache = new MetadataCache();
-            final String key = "2/WF1/23";
+            final MetadataCache metadataCache = new MetadataCache();
+            final String key = "0/2/WF1/23";
             final WfSpecIdModel cacheKey = new WfSpecIdModel("WF1", 23);
             final Bytes value = null;
 
-            wfSpecCache.updateCache(cacheKey, TestUtil.wfSpec("WF1"));
+            metadataCache.updateCache(cacheKey, TestUtil.wfSpec("WF1"));
 
-            wfSpecCache.addToCache(key, value);
+            metadataCache.updateCache(key, value);
 
-            assertThat(wfSpecCache.get(cacheKey)).isNull();
+            assertThat(metadataCache.get(cacheKey)).isNull();
+        }
+
+        @Test
+        public void shouldEvictTaskDefFromCacheWhenValueIsNull() throws LHSerdeError {
+            final MetadataCache metadataCache = new MetadataCache();
+            final String key = "0/0/task-something";
+            final TaskDefIdModel cacheKey = new TaskDefIdModel("task-something");
+            final Bytes value = null;
+
+            metadataCache.updateCache(cacheKey, TestUtil.taskDef("task-something"));
+
+            metadataCache.updateCache(key, value);
+
+            assertThat(metadataCache.get(cacheKey)).isNull();
         }
 
         @Test
         public void shouldEvictLatestWfSpecFromCacheWhenValueIsNull() throws LHSerdeError {
-            final MetadataCache wfSpecCache = new MetadataCache();
-            final String key = "2/WF1/23";
+            final MetadataCache metadataCache = new MetadataCache();
+            final String key = "0/2/WF1/23";
             final WfSpecIdModel latestCacheKey = new WfSpecIdModel("WF1", LATEST_VERSION);
             final Bytes value = null;
 
-            wfSpecCache.updateCache(latestCacheKey, TestUtil.wfSpec("WF1"));
+            metadataCache.updateCache(latestCacheKey, TestUtil.wfSpec("WF1"));
 
-            wfSpecCache.addToCache(key, value);
+            metadataCache.updateCache(key, value);
 
-            assertThat(wfSpecCache.get(latestCacheKey)).isNull();
+            assertThat(metadataCache.get(latestCacheKey)).isNull();
         }
 
         @Test
         public void shouldNotCacheKeysThatAreNotWfSpec() throws LHSerdeError {
-            final MetadataCache wfSpecCache = new MetadataCache();
-            final String nonWfSpecKey = "11/WF1/123/0b80d81e-8984-4da5-8312-f19e3fbfa780";
+            final MetadataCache metadataCache = new MetadataCache();
+            final String nonWfSpecKey = "0/11/WF1/123/0b80d81e-8984-4da5-8312-f19e3fbfa780";
             final WfSpecIdModel cacheKey = new WfSpecIdModel("WF1", 23);
             final Bytes value = Bytes.wrap(TestUtil.taskRun().toBytes());
 
-            wfSpecCache.addToCache(nonWfSpecKey, value);
+            metadataCache.updateCache(nonWfSpecKey, value);
 
-            assertThat(wfSpecCache.get(cacheKey)).isNull();
+            assertThat(metadataCache.get(cacheKey)).isNull();
         }
     }
 
@@ -104,27 +142,28 @@ class WfSpecModelCacheTest {
 
         @Test
         public void shouldNotCacheNullValues() {
-            final MetadataCache wfSpecCache = new MetadataCache();
+            final MetadataCache metadataCache = new MetadataCache();
             String name = "WF1";
             int version = 23;
             final WfSpecIdModel cacheKey = new WfSpecIdModel(name, version);
 
-            wfSpecCache.getOrCache(cacheKey, () -> null);
-            wfSpecCache.getOrCache(name, version, () -> null);
+            metadataCache.getOrCache(cacheKey, () -> null);
+            metadataCache.getOrCache(name, version, () -> null);
 
-            assertThat(wfSpecCache.get(cacheKey)).isNull();
+            assertThat(metadataCache.get(cacheKey)).isNull();
         }
 
         @Test
         public void shouldCreateLatestVersionWhenVersionIsNull() {
-            final MetadataCache wfSpecCache = new MetadataCache();
+            final MetadataCache metadataCache = new MetadataCache();
             String name = "WF1";
             Integer version = null;
             WfSpecModel wfSpecModel = TestUtil.wfSpec(name);
 
-            wfSpecCache.getOrCache(name, version, () -> wfSpecModel);
+            metadataCache.getOrCache(name, version, () -> wfSpecModel);
 
-            WfSpecModel cachedLatestWfSpecModel = wfSpecCache.get(new WfSpecIdModel(name, LATEST_VERSION));
+            WfSpecModel cachedLatestWfSpecModel =
+                    (WfSpecModel) metadataCache.get(new WfSpecIdModel(name, LATEST_VERSION));
 
             assertThat(cachedLatestWfSpecModel)
                     .usingRecursiveComparison()

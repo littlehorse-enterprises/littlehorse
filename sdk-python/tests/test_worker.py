@@ -22,7 +22,7 @@ class TestWorkerContext(unittest.TestCase):
             task_run_id=TaskRunId(task_guid=task_id, wf_run_id=wf_id)
         )
         ctx = LHWorkerContext(scheduled_task)
-        self.assertEqual(ctx.idempotency_key, f"{wf_id}/{task_id}")
+        self.assertEqual(ctx.idempotency_key, f"{task_id}")
 
     def test_log_output(self):
         ctx = LHWorkerContext(ScheduledTask())

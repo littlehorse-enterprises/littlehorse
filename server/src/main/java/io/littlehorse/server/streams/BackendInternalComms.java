@@ -41,6 +41,7 @@ import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.util.AsyncWaiters;
+import io.littlehorse.server.streams.util.MetadataCache;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -91,11 +92,18 @@ public class BackendInternalComms implements Closeable {
     private AsyncWaiters asyncWaiters;
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
+    private MetadataCache metadataCache;
+
     public BackendInternalComms(
-            LHServerConfig config, KafkaStreams coreStreams, KafkaStreams timerStreams, Executor executor) {
+            LHServerConfig config,
+            KafkaStreams coreStreams,
+            KafkaStreams timerStreams,
+            Executor executor,
+            MetadataCache metadataCache) {
         this.config = config;
         this.coreStreams = coreStreams;
         this.timerStreams = timerStreams;
+        this.metadataCache = metadataCache;
         this.channels = new HashMap<>();
         otherHosts = new ConcurrentHashMap<>();
 
@@ -705,7 +713,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     public ReadOnlyMetadataStore getGlobalStoreImpl() {
-        return new ReadOnlyMetadataStore(getStore(null, true, ServerTopology.GLOBAL_METADATA_STORE));
+        return new ReadOnlyMetadataStore(getStore(null, true, ServerTopology.GLOBAL_METADATA_STORE), metadataCache);
     }
 
     private InternalScanResponse localAllPartitionTagScan(InternalScan req) {

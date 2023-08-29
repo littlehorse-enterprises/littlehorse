@@ -5,11 +5,12 @@ import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.util.MetadataCache;
 
 public abstract class MetadataProcessorDAO extends ReadOnlyMetadataStore {
 
-    public MetadataProcessorDAO(RocksDBWrapper rocksdb) {
-        super(rocksdb);
+    public MetadataProcessorDAO(RocksDBWrapper rocksdb, MetadataCache metadataCache) {
+        super(rocksdb, metadataCache);
     }
 
     /*

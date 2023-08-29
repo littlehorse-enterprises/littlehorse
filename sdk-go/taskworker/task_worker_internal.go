@@ -11,6 +11,8 @@ import (
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -30,7 +32,12 @@ func (tw *LHTaskWorker) registerTaskDef(ignoreAlreadyExistsError bool) error {
 	}
 
 	_, err := (*tw.grpcStub).PutTaskDef(context.Background(), ptd)
-	return err
+
+	if ignoreAlreadyExistsError && status.Code(err) == codes.AlreadyExists {
+		return nil
+	} else {
+		return err
+	}
 }
 
 func (tw *LHTaskWorker) start() error {
