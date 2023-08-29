@@ -810,7 +810,6 @@ type SearchWfRunRequest struct {
 	Bookmark []byte `protobuf:"bytes,1,opt,name=bookmark,proto3,oneof" json:"bookmark,omitempty"`
 	Limit    *int32 `protobuf:"varint,2,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
 	// Types that are assignable to WfrunCriteria:
-	//
 	//	*SearchWfRunRequest_StatusAndSpec
 	//	*SearchWfRunRequest_Name
 	//	*SearchWfRunRequest_StatusAndName
@@ -976,7 +975,6 @@ type SearchTaskRunRequest struct {
 	Bookmark []byte `protobuf:"bytes,1,opt,name=bookmark,proto3,oneof" json:"bookmark,omitempty"`
 	Limit    *int32 `protobuf:"varint,2,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
 	// Types that are assignable to TaskRunCriteria:
-	//
 	//	*SearchTaskRunRequest_StatusAndTaskDef
 	//	*SearchTaskRunRequest_TaskDef
 	TaskRunCriteria isSearchTaskRunRequest_TaskRunCriteria `protobuf_oneof:"task_run_criteria"`
@@ -1128,7 +1126,6 @@ type SearchNodeRunRequest struct {
 	Bookmark []byte `protobuf:"bytes,1,opt,name=bookmark,proto3,oneof" json:"bookmark,omitempty"`
 	Limit    *int32 `protobuf:"varint,2,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
 	// Types that are assignable to NoderunCriteria:
-	//
 	//	*SearchNodeRunRequest_WfRunId
 	NoderunCriteria isSearchNodeRunRequest_NoderunCriteria `protobuf_oneof:"noderun_criteria"`
 }
@@ -1268,7 +1265,6 @@ type SearchUserTaskRunRequest struct {
 	Status          *UserTaskRunStatus `protobuf:"varint,3,opt,name=status,proto3,enum=littlehorse.UserTaskRunStatus,oneof" json:"status,omitempty"`
 	UserTaskDefName *string            `protobuf:"bytes,4,opt,name=user_task_def_name,json=userTaskDefName,proto3,oneof" json:"user_task_def_name,omitempty"`
 	// Types that are assignable to TaskOwner:
-	//
 	//	*SearchUserTaskRunRequest_User
 	//	*SearchUserTaskRunRequest_UserGroup
 	TaskOwner     isSearchUserTaskRunRequest_TaskOwner `protobuf_oneof:"task_owner"`
@@ -1450,7 +1446,6 @@ type SearchVariableRequest struct {
 	Bookmark []byte `protobuf:"bytes,1,opt,name=bookmark,proto3,oneof" json:"bookmark,omitempty"`
 	Limit    *int32 `protobuf:"varint,2,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
 	// Types that are assignable to VariableCriteria:
-	//
 	//	*SearchVariableRequest_WfRunId
 	//	*SearchVariableRequest_Value
 	VariableCriteria isSearchVariableRequest_VariableCriteria `protobuf_oneof:"variable_criteria"`
@@ -1720,7 +1715,6 @@ type SearchUserTaskDefRequest struct {
 	Bookmark []byte `protobuf:"bytes,1,opt,name=bookmark,proto3,oneof" json:"bookmark,omitempty"`
 	Limit    *int32 `protobuf:"varint,2,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
 	// Types that are assignable to UserTaskDefCriteria:
-	//
 	//	*SearchUserTaskDefRequest_Prefix
 	//	*SearchUserTaskDefRequest_Name
 	UserTaskDefCriteria isSearchUserTaskDefRequest_UserTaskDefCriteria `protobuf_oneof:"user_task_def_criteria"`
@@ -1872,7 +1866,6 @@ type SearchWfSpecRequest struct {
 	Bookmark []byte `protobuf:"bytes,1,opt,name=bookmark,proto3,oneof" json:"bookmark,omitempty"`
 	Limit    *int32 `protobuf:"varint,2,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
 	// Types that are assignable to WfSpecCriteria:
-	//
 	//	*SearchWfSpecRequest_Name
 	//	*SearchWfSpecRequest_Prefix
 	//	*SearchWfSpecRequest_TaskDefName
@@ -2156,7 +2149,6 @@ type SearchExternalEventRequest struct {
 	Bookmark []byte `protobuf:"bytes,1,opt,name=bookmark,proto3,oneof" json:"bookmark,omitempty"`
 	Limit    *int32 `protobuf:"varint,2,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
 	// Types that are assignable to ExtEvtCriteria:
-	//
 	//	*SearchExternalEventRequest_WfRunId
 	//	*SearchExternalEventRequest_ExternalEventDefNameAndStatus
 	ExtEvtCriteria isSearchExternalEventRequest_ExtEvtCriteria `protobuf_oneof:"ext_evt_criteria"`

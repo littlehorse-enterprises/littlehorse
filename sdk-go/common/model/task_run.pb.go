@@ -296,7 +296,6 @@ type TaskRunSource struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to TaskRunSource:
-	//
 	//	*TaskRunSource_TaskNode
 	//	*TaskRunSource_UserTaskTrigger
 	TaskRunSource isTaskRunSource_TaskRunSource `protobuf_oneof:"task_run_source"`

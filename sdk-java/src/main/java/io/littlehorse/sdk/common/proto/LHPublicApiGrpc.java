@@ -5,14 +5,14 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
 /**
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.54.0)",
+    value = "by gRPC proto compiler (version 1.57.2)",
     comments = "Source: service.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class LHPublicApiGrpc {
 
   private LHPublicApiGrpc() {}
 
-  public static final String SERVICE_NAME = "littlehorse.LHPublicApi";
+  public static final java.lang.String SERVICE_NAME = "littlehorse.LHPublicApi";
 
   // Static method descriptors that strictly reflect the proto.
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutTaskDefRequest,
@@ -3749,9 +3749,9 @@ public final class LHPublicApiGrpc {
   private static final class LHPublicApiMethodDescriptorSupplier
       extends LHPublicApiBaseDescriptorSupplier
       implements io.grpc.protobuf.ProtoMethodDescriptorSupplier {
-    private final String methodName;
+    private final java.lang.String methodName;
 
-    LHPublicApiMethodDescriptorSupplier(String methodName) {
+    LHPublicApiMethodDescriptorSupplier(java.lang.String methodName) {
       this.methodName = methodName;
     }
 

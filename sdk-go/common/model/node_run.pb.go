@@ -38,7 +38,6 @@ type NodeRun struct {
 	ErrorMessage    *string                `protobuf:"bytes,13,opt,name=error_message,json=errorMessage,proto3,oneof" json:"error_message,omitempty"`
 	Failures        []*Failure             `protobuf:"bytes,14,rep,name=failures,proto3" json:"failures,omitempty"`
 	// Types that are assignable to NodeType:
-	//
 	//	*NodeRun_Task
 	//	*NodeRun_ExternalEvent
 	//	*NodeRun_Entrypoint
