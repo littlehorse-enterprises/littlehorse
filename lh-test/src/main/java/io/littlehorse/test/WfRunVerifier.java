@@ -1,14 +1,20 @@
 package io.littlehorse.test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.test.exception.LHTestInitializationException;
+import io.littlehorse.test.internal.step.SendExternalEventStep;
+import io.littlehorse.test.internal.step.VerifyNodeRunStep;
 import io.littlehorse.test.internal.step.VerifyTaskExecution;
 import io.littlehorse.test.internal.step.VerifyVariableStep;
 import io.littlehorse.test.internal.step.WaitForStatusStep;
@@ -50,12 +56,42 @@ public class WfRunVerifier extends AbstractVerifier {
         return this;
     }
 
-    public WfRunVerifier waitForStatus(LHStatus lhStatus) {
+    public WfRunVerifier thenSendExternalEventJsonContent(String externalEventName, Object content) {
+        try {
+            String json = LHLibUtil.serializeToJson(content);
+            VariableValue externalEventContent = VariableValue.newBuilder()
+                    .setType(VariableType.JSON_OBJ)
+                    .setJsonObj(json)
+                    .build();
+            steps.add(new SendExternalEventStep(externalEventName, externalEventContent));
+        } catch (JsonProcessingException e) {
+            throw new LHTestInitializationException(e);
+        }
+        return this;
+    }
+
+    public WfRunVerifier waitForStatus(LHStatus status) {
         Function<Object, LHStatus> objectLHStatusFunction = context -> {
             String wfRunId = context.toString();
             return lhClientTestWrapper.getWfRunStatus(wfRunId);
         };
-        steps.add(new WaitForStatusStep<>(objectLHStatusFunction, lhStatus));
+        steps.add(new WaitForStatusStep<>(objectLHStatusFunction, status));
+        return this;
+    }
+
+    public WfRunVerifier waitForNodeRunStatus(int threadRunNumber, int nodeRunNumber, LHStatus status) {
+        Function<Object, LHStatus> objectLHStatusFunction = context -> {
+            String wfRunId = context.toString();
+            return lhClientTestWrapper
+                    .getNodeRun(wfRunId, threadRunNumber, nodeRunNumber)
+                    .getStatus();
+        };
+        steps.add(new WaitForStatusStep<>(objectLHStatusFunction, status));
+        return this;
+    }
+
+    public WfRunVerifier thenVerifyNodeRun(int threadRunNumber, int nodeRunNumber, Consumer<NodeRun> matcher) {
+        steps.add(new VerifyNodeRunStep(threadRunNumber, nodeRunNumber, matcher));
         return this;
     }
 
