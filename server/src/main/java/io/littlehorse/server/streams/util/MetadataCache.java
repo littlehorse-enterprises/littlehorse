@@ -33,18 +33,27 @@ public class MetadataCache extends LHCache<MetadataId<?, ?, ?>, GlobalGetable<?>
 
         if (isCacheableKey) {
             String key = keyMatcher.group("key");
-            int getableType = Integer.parseInt(keyMatcher.group("getableType"));
-            switch (GetableClassEnum.forNumber(getableType)) {
-                case WF_SPEC -> {
-                    WfSpecIdModel id = (WfSpecIdModel) ObjectIdModel.fromString(key, WfSpecIdModel.class);
-                    WfSpecIdModel latestVersionId = new WfSpecIdModel(id.getName(), LATEST_VERSION);
-                    evictOrUpdate(value, id);
-                    evictOrUpdate(value, latestVersionId);
-                }
-                case TASK_DEF -> {
-                    TaskDefIdModel id = (TaskDefIdModel) ObjectIdModel.fromString(key, TaskDefIdModel.class);
-                    evictOrUpdate(value, id);
-                }
+            int getableTypeNumber = Integer.parseInt(keyMatcher.group("getableType"));
+            GetableClassEnum getableType = GetableClassEnum.forNumber(getableTypeNumber);
+            if (getableType != null) {
+                updateCache(value, getableType, key);
+            } else {
+                log.warn("No GetableClassEnum found for number: {}", getableTypeNumber);
+            }
+        }
+    }
+
+    private void updateCache(Bytes value, GetableClassEnum getableType, String key) throws LHSerdeError {
+        switch (getableType) {
+            case WF_SPEC -> {
+                WfSpecIdModel id = (WfSpecIdModel) ObjectIdModel.fromString(key, WfSpecIdModel.class);
+                WfSpecIdModel latestVersionId = new WfSpecIdModel(id.getName(), LATEST_VERSION);
+                evictOrUpdate(value, id);
+                evictOrUpdate(value, latestVersionId);
+            }
+            case TASK_DEF -> {
+                TaskDefIdModel id = (TaskDefIdModel) ObjectIdModel.fromString(key, TaskDefIdModel.class);
+                evictOrUpdate(value, id);
             }
         }
     }
