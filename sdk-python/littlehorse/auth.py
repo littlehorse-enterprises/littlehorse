@@ -4,7 +4,6 @@ from typing import Any, Optional
 from authlib.integrations.requests_client import OAuth2Session
 import grpc
 from littlehorse.exceptions import OAuthException
-import requests
 
 
 class AccessToken:

@@ -340,7 +340,7 @@ LHS_OAUTH_CLIENT_ID=server
 
 ### `LHS_OAUTH_CLIENT_ID_FILE`
 
-Optional OAuth2 Client Id. This OAuth client id is used by all `OAUTH` listeners, and authenticates all incoming calls against the OAuth server. 
+Optional OAuth2 Client Id. This OAuth client id is used by all `OAUTH` listeners, and authenticates all incoming calls against the OAuth server.
 If it is different to null it overrides the `LHS_OAUTH_CLIENT_ID` config and loads the client id from the file.
 
 Example:
