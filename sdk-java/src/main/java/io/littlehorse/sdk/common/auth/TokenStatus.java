@@ -23,9 +23,6 @@ public class TokenStatus {
     }
 
     public boolean isExpired() {
-        if (expiration == null) {
-            return true;
-        }
         return expiration.isBefore(Instant.now().truncatedTo(ChronoUnit.SECONDS).plusSeconds(1));
     }
 }
