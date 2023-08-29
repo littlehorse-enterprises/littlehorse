@@ -2,6 +2,7 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.proto.*;
+import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -80,7 +81,11 @@ public class ParallelApprovalExample {
                     null
                 );
 
-                thread.waitForThreads(p1Thread, p2Thread, p3Thread);
+                NodeOutput nodeOutput = thread.waitForThreads(p1Thread, p2Thread, p3Thread);
+
+                thread.handleException(nodeOutput, "denied-by-user", xnHandler -> {
+                    xnHandler.execute("exc-handler");
+                });
 
                 // Tell the reminder workflow to stop
                 thread.mutate(allApproved, VariableMutationType.ASSIGN, true);
@@ -90,22 +95,47 @@ public class ParallelApprovalExample {
 
     private static ThreadFunc waitForPerson3(WfRunVariable person3Approved) {
         return approvalThread -> {
-            approvalThread.waitForEvent("person-3-approves");
-            approvalThread.mutate(person3Approved, VariableMutationType.ASSIGN, true);
+            WfRunVariable jsonVariable = approvalThread.addVariable("person-3-response", VariableType.JSON_OBJ);
+            approvalThread.mutate(jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-3-approves"));
+            approvalThread.doIfElse(
+                    approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
+                    ifHandler -> {
+                        approvalThread.mutate(person3Approved, VariableMutationType.ASSIGN, true);
+                    },
+                    elseHandler -> {
+                        approvalThread.fail("denied-by-user", "message here");
+                    });
         };
     }
 
     private static ThreadFunc waitForPerson2(WfRunVariable person2Approved) {
         return approvalThread -> {
-            approvalThread.waitForEvent("person-2-approves");
-            approvalThread.mutate(person2Approved, VariableMutationType.ASSIGN, true);
+            WfRunVariable jsonVariable = approvalThread.addVariable("person-2-response", VariableType.JSON_OBJ);
+            approvalThread.mutate(jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-2-approves"));
+            approvalThread.doIfElse(
+                    approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
+                    ifHandler -> {
+                        approvalThread.mutate(person2Approved, VariableMutationType.ASSIGN, true);
+                    },
+                    elseHandler -> {
+                        approvalThread.fail("denied-by-user", "message here");
+                    });
         };
     }
 
     private static ThreadFunc waitForPerson1(WfRunVariable person1Approved) {
         return approvalThread -> {
-            approvalThread.waitForEvent("person-1-approves");
-            approvalThread.mutate(person1Approved, VariableMutationType.ASSIGN, true);
+            WfRunVariable jsonVariable = approvalThread.addVariable("person-1-response", VariableType.JSON_OBJ);
+            approvalThread.mutate(jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-1-approves"));
+            approvalThread.doIfElse(
+                    approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
+                    ifHandler -> {
+                        approvalThread.mutate(person1Approved, VariableMutationType.ASSIGN, true);
+                    },
+                    elseHandler -> {
+                        approvalThread.fail("denied-by-user", "message here");
+                    });
+
         };
     }
 
@@ -159,7 +189,8 @@ public class ParallelApprovalExample {
         Notifier executable = new Notifier();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "calculate-next-notification", config),
-            new LHTaskWorker(executable, "reminder-task", config)
+            new LHTaskWorker(executable, "reminder-task", config),
+            new LHTaskWorker(executable, "exc-handler", config)
         );
 
         // Gracefully shutdown

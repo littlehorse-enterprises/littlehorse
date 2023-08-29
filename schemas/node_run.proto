@@ -60,11 +60,16 @@ message StartThreadRun {
   string thread_spec_name = 2;
 }
 
+enum FailureMode {
+  FAST = 0;
+}
+
 message WaitForThreadsRun {
   message WaitForThread {
     optional google.protobuf.Timestamp thread_end_time = 1;
     LHStatus thread_status = 2;
     int32 thread_run_number = 3;
+    FailureMode failure_mode = 4;
   }
 
   repeated WaitForThread threads = 1;
