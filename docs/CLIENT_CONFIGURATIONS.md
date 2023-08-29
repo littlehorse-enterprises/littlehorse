@@ -10,6 +10,8 @@
     - [`LHC_OAUTH_CLIENT_ID`](#lhc_oauth_client_id)
     - [`LHC_OAUTH_CLIENT_SECRET`](#lhc_oauth_client_secret)
     - [`LHC_OAUTH_ACCESS_TOKEN_URL`](#lhc_oauth_access_token_url)
+  - [LHCTL](#lhctl)
+    - [`LHC_OAUTH_SERVER_URL`](#lhc_oauth_server_url)
   - [Worker](#worker)
     - [`LHW_SERVER_CONNECT_LISTENER`](#lhw_server_connect_listener)
     - [`LHW_NUM_WORKER_THREADS`](#lhw_num_worker_threads)
@@ -100,8 +102,20 @@ Optional OAuth2 Client Secret. Used by the Worker to identify itself at an Autho
 
 ### `LHC_OAUTH_ACCESS_TOKEN_URL`
 
-Optional Authorization Server access token URL. Used by the Worker to obtain a token using client credentials flow.
+Optional Access Token URL provided by the OAuth Authorization Server. Used by the Worker to obtain a token using client credentials flow.
 It is mandatory if `LHC_OAUTH_CLIENT_ID` and `LHC_OAUTH_CLIENT_SECRET` are provided.
+
+- **Type:** url
+- **Default:** null
+- **Importance:** low
+
+## LHCTL
+
+### `LHC_OAUTH_SERVER_URL`
+
+Optional Authorization Server URL. Used by the client to obtain a token using OAuth 2 authorization code credentials flow. It is used by OIDC to discover the server endpoints.
+
+It is mandatory if `LHC_OAUTH_CLIENT_ID` is provided.
 
 - **Type:** url
 - **Default:** null
