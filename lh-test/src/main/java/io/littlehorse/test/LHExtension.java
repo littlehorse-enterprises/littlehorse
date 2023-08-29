@@ -1,6 +1,7 @@
 package io.littlehorse.test;
 
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
+import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.StandaloneTestBootstrapper;
@@ -52,6 +53,9 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
                             }
                         });
             }
+            List<ExternalEventDef> externalEventDefinitions =
+                    testContext.discoverExternalEventDefinitions(testInstance);
+            externalEventDefinitions.forEach(testContext::registerExternalEventDef);
         } catch (IOException e) {
             throw new LHTestInitializationException("Something went wrong registering task workers", e);
         }

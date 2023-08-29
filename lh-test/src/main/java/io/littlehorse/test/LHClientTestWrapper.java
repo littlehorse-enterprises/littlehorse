@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
+import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
@@ -102,6 +103,10 @@ public class LHClientTestWrapper {
         } catch (StatusRuntimeException e) {
             throw new LHTestInitializationException(e);
         }
+    }
+
+    public void putExternalEvent(PutExternalEventRequest externalEventRequest) {
+        lhClient.putExternalEvent(externalEventRequest);
     }
 
     public WfSpec getWfSpec(Workflow workflow) {
