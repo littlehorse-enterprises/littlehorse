@@ -119,10 +119,10 @@ Creates client at keycloak:
 Clients:
 
 | Client Id | Client Secret                    | Description                                                    |
-| --------- | -------------------------------- | -------------------------------------------------------------- |
+| --------- |----------------------------------| -------------------------------------------------------------- |
 | server    | 3bdca420cf6c48e2aa4f56d46d6327e0 | Server Introspection                                           |
 | worker    | 40317ab43bd34a9e93499c7ea03ad398 | For Workers to issue access tokens (Client Credentials FLow)   |
-| lhctl     | ee96a53af0034437bee816e63944e0f0 | For lhctl cli to issue access tokens (Authorization Code Flow) |
+| lhctl     | N/A                              | For lhctl cli to issue access tokens (Authorization Code Flow) |
 
 Creates certificates:
 
@@ -142,7 +142,7 @@ LHS_LISTENER_OAUTH_KEY=local-dev/certs/server/server.key
 
 LHS_OAUTH_CLIENT_ID=server
 LHS_OAUTH_CLIENT_SECRET=3bdca420cf6c48e2aa4f56d46d6327e0
-LHS_OAUTH_SERVER_URL=http://localhost:8888/realms/lh
+LHS_OAUTH_INTROSPECT_URL=http://localhost:8888/realms/lh/protocol/openid-connect/token/introspect
 ```
 
 > Check file [oauth.config](configs/oauth.config)

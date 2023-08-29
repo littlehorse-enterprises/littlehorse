@@ -20,9 +20,9 @@ func TestIfOauthIsEnableForAuthorizationCode(t *testing.T) {
 
 func TestIfOauthIsEnableForClientCredentials(t *testing.T) {
 	oauthConfig := OauthConfig{
-		ClientId:     "myclientid",
-		ClientSecret: "myclientsecret",
-		AuthServer:   "myclientserver",
+		ClientId:         "myclientid",
+		ClientSecret:     "myclientsecret",
+		TokenEndpointUrl: "myclientserver",
 	}
 
 	assert.True(t, oauthConfig.IsEnabled())
@@ -31,7 +31,7 @@ func TestIfOauthIsEnableForClientCredentials(t *testing.T) {
 	assert.True(t, oauthConfig.IsClientCredentials())
 }
 
-func GetUndefinedFlowIfConfigsAreEmpty(t *testing.T) {
+func TestGetUndefinedFlowIfConfigsAreEmpty(t *testing.T) {
 	oauthConfig := OauthConfig{}
 	assert.False(t, oauthConfig.IsEnabled())
 	assert.Equal(t, oauthConfig.DeduceFlow(), Undefined)

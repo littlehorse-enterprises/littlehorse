@@ -1,18 +1,15 @@
-package io.littlehorse.sdk.common.auth;
+package io.littlehorse.server.auth;
 
-import com.nimbusds.oauth2.sdk.AccessTokenResponse;
-import com.nimbusds.oauth2.sdk.ClientCredentialsGrant;
-import com.nimbusds.oauth2.sdk.ParseException;
-import com.nimbusds.oauth2.sdk.TokenRequest;
-import com.nimbusds.oauth2.sdk.TokenResponse;
+import com.nimbusds.oauth2.sdk.*;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
-import com.nimbusds.oauth2.sdk.token.AccessToken;
+import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
+import io.littlehorse.sdk.common.auth.AuthorizationServerException;
+import io.littlehorse.sdk.common.auth.TokenStatus;
 import java.io.IOException;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import lombok.extern.slf4j.Slf4j;
 
 // https://connect2id.com/products/nimbus-oauth-openid-connect-sdk/examples/oauth/token-introspection
@@ -31,25 +28,28 @@ public class OAuthClient {
                 new ClientSecretBasic(new ClientID(config.getClientId()), new Secret(config.getClientSecret()));
     }
 
-    public TokenStatus getAccessToken() {
+    public TokenStatus introspect(String token) {
         try {
-            TokenRequest request =
-                    new TokenRequest(config.getTokenEndpointURI(), credentials, new ClientCredentialsGrant());
+            TokenIntrospectionRequest request = new TokenIntrospectionRequest(
+                    config.getIntrospectionEndpointURI(), credentials, new BearerAccessToken(token));
 
-            TokenResponse response = TokenResponse.parse(request.toHTTPRequest().send());
+            TokenIntrospectionResponse response =
+                    TokenIntrospectionResponse.parse(request.toHTTPRequest().send());
 
             if (!response.indicatesSuccess()) {
                 throw new AuthorizationServerException("Error getting the token status: "
                         + response.toErrorResponse().getErrorObject());
             }
 
-            AccessTokenResponse successResponse = response.toSuccessResponse();
-            AccessToken accessToken = successResponse.getTokens().getAccessToken();
-            Instant expiration = Instant.now().truncatedTo(ChronoUnit.SECONDS).plusSeconds(accessToken.getLifetime());
+            TokenIntrospectionSuccessResponse successResponse = response.toSuccessResponse();
+
+            Instant expiration = successResponse.getExpirationTime() != null
+                    ? successResponse.getExpirationTime().toInstant()
+                    : Instant.MIN;
 
             return TokenStatus.builder()
-                    .clientId(config.getClientId())
-                    .token(accessToken.getValue())
+                    .clientId(successResponse.getClientID().getValue())
+                    .token(token)
                     .expiration(expiration)
                     .build();
         } catch (ParseException | IOException e) {

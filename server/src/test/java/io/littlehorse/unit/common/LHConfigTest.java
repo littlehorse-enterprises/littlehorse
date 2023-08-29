@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.sdk.common.auth.OAuthConfig;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.server.auth.AuthorizationProtocol;
+import io.littlehorse.server.auth.OAuthConfig;
 import io.littlehorse.server.listener.*;
 import java.io.File;
 import java.io.IOException;
@@ -379,13 +379,13 @@ public class LHConfigTest {
 
             properties.put("LHS_OAUTH_CLIENT_ID", clientId);
             properties.put("LHS_OAUTH_CLIENT_SECRET", clientSecret);
-            properties.put("LHS_OAUTH_SERVER_URL", server);
+            properties.put("LHS_OAUTH_INTROSPECT_URL", server);
 
             LHServerConfig config = new LHServerConfig(properties);
 
             assertThat(config.getOAuthConfig())
                     .isEqualTo(OAuthConfig.builder()
-                            .authorizationServer(URI.create(server))
+                            .introspectionEndpointURI(URI.create(server))
                             .clientId(clientId)
                             .clientSecret(clientSecret)
                             .build());
@@ -400,13 +400,13 @@ public class LHConfigTest {
             Properties properties = new Properties();
             properties.put("LHS_OAUTH_CLIENT_ID", clientId);
             properties.put("LHS_OAUTH_CLIENT_SECRET", clientSecret);
-            properties.put("LHS_OAUTH_SERVER_URL", server);
+            properties.put("LHS_OAUTH_INTROSPECT_URL", server);
 
             LHServerConfig config = new LHServerConfig(properties);
 
             assertThatThrownBy(config::getOAuthConfig)
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
-                    .hasMessage("Malformed URL check LHS_OAUTH_SERVER_URL");
+                    .hasMessage("Malformed URL check LHS_OAUTH_INTROSPECT_URL");
         }
 
         @Test
@@ -424,7 +424,7 @@ public class LHConfigTest {
             Properties properties = new Properties();
             properties.put("LHS_OAUTH_CLIENT_ID_FILE", fileClientId);
             properties.put("LHS_OAUTH_CLIENT_SECRET_FILE", fileClientSecret);
-            properties.put("LHS_OAUTH_SERVER_URL", server);
+            properties.put("LHS_OAUTH_INTROSPECT_URL", server);
             properties.put("LHS_OAUTH_CLIENT_ID", "some-random-id");
             properties.put("LHS_OAUTH_CLIENT_SECRET", "some-random-secret");
 
@@ -433,7 +433,7 @@ public class LHConfigTest {
                     .isEqualTo(OAuthConfig.builder()
                             .clientId(clientId)
                             .clientSecret(clientSecret)
-                            .authorizationServer(URI.create(server))
+                            .introspectionEndpointURI(URI.create(server))
                             .build());
         }
 
@@ -451,7 +451,7 @@ public class LHConfigTest {
             assertThatThrownBy(config::getOAuthConfig)
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
                     .hasMessage(
-                            "OAuth configuration called but not provided. Check missing client id, client secret or authorization server endpoint");
+                            "OAuth configuration called but not provided. Check missing client id, client secret or introspection endpoint url");
         }
 
         @Test
@@ -462,14 +462,14 @@ public class LHConfigTest {
                     "https://" + faker.internet().url() + "/" + faker.internet().slug();
 
             properties.put("LHS_OAUTH_CLIENT_SECRET", clientSecret);
-            properties.put("LHS_OAUTH_SERVER_URL", server);
+            properties.put("LHS_OAUTH_INTROSPECT_URL", server);
 
             LHServerConfig config = new LHServerConfig(properties);
 
             assertThatThrownBy(config::getOAuthConfig)
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
                     .hasMessage(
-                            "OAuth configuration called but not provided. Check missing client id, client secret or authorization server endpoint");
+                            "OAuth configuration called but not provided. Check missing client id, client secret or introspection endpoint url");
         }
 
         @Test
@@ -480,14 +480,14 @@ public class LHConfigTest {
                     "https://" + faker.internet().url() + "/" + faker.internet().slug();
 
             properties.put("LHS_OAUTH_CLIENT_ID", clientId);
-            properties.put("LHS_OAUTH_SERVER_URL", server);
+            properties.put("LHS_OAUTH_INTROSPECT_URL", server);
 
             LHServerConfig config = new LHServerConfig(properties);
 
             assertThatThrownBy(config::getOAuthConfig)
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
                     .hasMessage(
-                            "OAuth configuration called but not provided. Check missing client id, client secret or authorization server endpoint");
+                            "OAuth configuration called but not provided. Check missing client id, client secret or introspection endpoint url");
         }
     }
 

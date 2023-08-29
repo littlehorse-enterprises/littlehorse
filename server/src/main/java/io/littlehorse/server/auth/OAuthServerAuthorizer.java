@@ -7,8 +7,6 @@ import io.grpc.Metadata;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.Status;
-import io.littlehorse.sdk.common.auth.OAuthClient;
-import io.littlehorse.sdk.common.auth.OAuthConfig;
 import io.littlehorse.sdk.common.auth.TokenStatus;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -69,14 +67,9 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
         TokenStatus tokenStatus = tokenCache.getIfPresent(token);
 
         if (tokenStatus == null) {
-            log.debug("Introspecting a new token");
             tokenStatus = client.introspect(token);
             tokenCache.put(token, tokenStatus);
-        } else {
-            log.debug("Using cached token");
         }
-
-        log.debug("{}", tokenStatus);
 
         if (tokenStatus.isExpired()) {
             throw new PermissionDeniedException("Token is not active");
