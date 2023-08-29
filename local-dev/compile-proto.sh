@@ -4,6 +4,9 @@ set -e
 # define variable
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 WORK_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
+PUBLIC_PROTOS=$(ls "$WORK_DIR"/schemas | grep -v -E "^internal")
+INTERNAL_PROTOS=$(ls "$WORK_DIR"/schemas/internal)
+docker_run="docker run --rm -it -v ${WORK_DIR}:/littlehorse protoc:23.4"
 
 # compile protoc
 echo "Compiling docker image 'protoc:23.4'"
@@ -23,7 +26,9 @@ RUN apt update && \
     chmod +x /usr/local/bin/* && \
     rm -f /tmp/*
 EOF
-echo "Docker image compiled, protoc --version: " $(docker run --rm -it protoc protoc --version)
+
+# create docker run command
+echo "Docker image compiled, protoc --version: " $($docker_run protoc --version)
 
 # clean old objects
 echo "Cleaning objects"
@@ -34,9 +39,7 @@ rm -rf "${WORK_DIR}"/server/src/main/java/io/littlehorse/common/proto/*
 
 # compile protobuf
 echo "Compiling protobuf objects"
-PUBLIC_PROTOS=$(ls "$WORK_DIR"/schemas | grep -v -E "^internal")
-INTERNAL_PROTOS=$(ls "$WORK_DIR"/schemas/internal)
-docker run --rm -it -v ${WORK_DIR}:/littlehorse protoc protoc \
+$docker_run protoc \
     --java_out=/littlehorse/sdk-java/src/main/java \
     --python_out=/littlehorse/sdk-python/littlehorse/model \
     --pyi_out=/littlehorse/sdk-python/littlehorse/model \
@@ -48,7 +51,7 @@ docker run --rm -it -v ${WORK_DIR}:/littlehorse protoc protoc \
 
 # compile internal
 echo "Compiling internal protobuf objects"
-docker run --rm -it -v ${WORK_DIR}:/littlehorse protoc protoc \
+$docker_run protoc \
     --java_out=/littlehorse/server/src/main/java \
     --grpc-java_out=/littlehorse/server/src/main/java \
     -I=/littlehorse/schemas:/littlehorse/schemas/internal \
@@ -56,7 +59,7 @@ docker run --rm -it -v ${WORK_DIR}:/littlehorse protoc protoc \
 
 # grpc in python
 echo "Compiling python grpc"
-docker run --rm -it -v ${WORK_DIR}:/littlehorse protoc python3 -m grpc_tools.protoc \
+$docker_run python3 -m grpc_tools.protoc \
     --grpc_python_out=/littlehorse/sdk-python/littlehorse/model \
     -I=/littlehorse/schemas/ \
     service.proto
