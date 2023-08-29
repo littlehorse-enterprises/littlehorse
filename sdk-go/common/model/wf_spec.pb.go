@@ -603,7 +603,6 @@ type Node struct {
 	VariableMutations []*VariableMutation  `protobuf:"bytes,2,rep,name=variable_mutations,json=variableMutations,proto3" json:"variable_mutations,omitempty"`
 	FailureHandlers   []*FailureHandlerDef `protobuf:"bytes,4,rep,name=failure_handlers,json=failureHandlers,proto3" json:"failure_handlers,omitempty"`
 	// Types that are assignable to Node:
-	//
 	//	*Node_Entrypoint
 	//	*Node_Exit
 	//	*Node_Task
@@ -806,7 +805,6 @@ type UserTaskNode struct {
 	// to whom should the Node be assigned?
 	//
 	// Types that are assignable to Assignment:
-	//
 	//	*UserTaskNode_UserGroup
 	//	*UserTaskNode_User
 	Assignment isUserTaskNode_Assignment `protobuf_oneof:"assignment"`
@@ -1081,7 +1079,6 @@ type SleepNode struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to SleepLength:
-	//
 	//	*SleepNode_RawSeconds
 	//	*SleepNode_Timestamp
 	//	*SleepNode_IsoDate

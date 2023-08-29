@@ -829,7 +829,6 @@ type ThreadHaltReason struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Reason:
-	//
 	//	*ThreadHaltReason_ParentHalted
 	//	*ThreadHaltReason_Interrupted
 	//	*ThreadHaltReason_PendingInterrupt
