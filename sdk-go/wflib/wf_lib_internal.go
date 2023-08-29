@@ -197,6 +197,10 @@ func (w *LHWorkflow) addSubThread(threadName string, tf ThreadFunc) string {
 	return threadName
 }
 
+func (w *WfRunVariable) setIndex(indexType model.IndexType) {
+	w.varDef.IndexType = &indexType
+}
+
 func (w *WfRunVariable) jsonPathImpl(path string) WfRunVariable {
 	if w.jsonPath != nil {
 		w.thread.throwError(
@@ -330,6 +334,7 @@ func (t *ThreadBuilder) addVariable(
 		Name:    name,
 		VarType: &varType,
 		thread:  t,
+		varDef:  varDef,
 	}
 }
 

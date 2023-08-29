@@ -36,6 +36,7 @@ type WfRunVariable struct {
 
 	thread   *ThreadBuilder
 	jsonPath *string
+	varDef   *model.VariableDef
 }
 
 type NodeOutput struct {
@@ -60,6 +61,11 @@ func (n *NodeOutput) JsonPath(path string) NodeOutput {
 
 func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
 	return w.jsonPathImpl(path)
+}
+
+func (w *WfRunVariable) WithIndex(indexType model.IndexType) *WfRunVariable {
+	w.setIndex(indexType)
+	return w
 }
 
 func (l *LHWorkflow) Compile() (*model.PutWfSpecRequest, error) {
