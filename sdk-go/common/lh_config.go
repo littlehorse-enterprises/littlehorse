@@ -32,7 +32,8 @@ const (
 
 	OAUTH_CLIENT_ID_KEY            = "LHC_OAUTH_CLIENT_ID"
 	OAUTH_CLIENT_SECRET_KEY        = "LHC_OAUTH_CLIENT_SECRET"
-	OAUTH_AUTHORIZATION_SERVER_KEY = "LHC_OAUTH_AUTHORIZATION_SERVER"
+	OAUTH_SERVER_URL               = "LHC_OAUTH_SERVER_URL"
+	OAUTH_ACCESS_TOKEN_URL         = "LHC_OAUTH_ACCESS_TOKEN_URL"
 
 	OAUTH_CALLBACK_PORT_KEY        = "LHC_OAUTH_CALLBACK_PORT"
 	OAUTH_CREDENTIALS_LOCATION_KEY = "LHC_OAUTH_CREDENTIALS_LOCATION"
@@ -135,7 +136,8 @@ func NewConfigFromEnv() *LHConfig {
 		OauthConfig: &auth.OauthConfig{
 			ClientId:            getEnvOrDefault(OAUTH_CLIENT_ID_KEY, ""),
 			ClientSecret:        getEnvOrDefault(OAUTH_CLIENT_SECRET_KEY, ""),
-			AuthServer:          getEnvOrDefault(OAUTH_AUTHORIZATION_SERVER_KEY, ""),
+			AuthServer:          getEnvOrDefault(OAUTH_SERVER_URL, ""),
+			TokenEndpointUrl:    getEnvOrDefault(OAUTH_ACCESS_TOKEN_URL, ""),
 			CallbackPort:        int32FromEnv(OAUTH_CALLBACK_PORT_KEY, DEFAULT_OAUTH_CALLBACK_PORT),
 			CredentialsLocation: getEnvOrDefault(OAUTH_CREDENTIALS_LOCATION_KEY, homeDir("/.config/littlehorse.credentials")),
 		},
@@ -167,7 +169,8 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 		OauthConfig: &auth.OauthConfig{
 			ClientId:            p.GetString(OAUTH_CLIENT_ID_KEY, ""),
 			ClientSecret:        p.GetString(OAUTH_CLIENT_SECRET_KEY, ""),
-			AuthServer:          p.GetString(OAUTH_AUTHORIZATION_SERVER_KEY, ""),
+			AuthServer:          p.GetString(OAUTH_SERVER_URL, ""),
+			TokenEndpointUrl:    p.GetString(OAUTH_ACCESS_TOKEN_URL, ""),
 			CallbackPort:        int32FromProp(p, NUM_WORKER_THREADS_KEY, DEFAULT_OAUTH_CALLBACK_PORT),
 			CredentialsLocation: p.GetString(OAUTH_CREDENTIALS_LOCATION_KEY, homeDir("/.config/littlehorse.credentials")),
 		},
