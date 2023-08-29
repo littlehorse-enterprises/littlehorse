@@ -47,7 +47,7 @@ public class LHConfig extends ConfigBase {
 
     public static final String OAUTH_CLIENT_ID_KEY = "LHC_OAUTH_CLIENT_ID";
     public static final String OAUTH_CLIENT_SECRET_KEY = "LHC_OAUTH_CLIENT_SECRET";
-    public static final String OAUTH_AUTHORIZATION_SERVER_KEY = "LHC_OAUTH_AUTHORIZATION_SERVER";
+    public static final String OAUTH_ACCESS_TOKEN_URL = "LHC_OAUTH_ACCESS_TOKEN_URL";
 
     /** The number of worker threads to run. */
     public static final String NUM_WORKER_THREADS_KEY = "LHW_NUM_WORKER_THREADS";
@@ -65,7 +65,7 @@ public class LHConfig extends ConfigBase {
             LHConfig.CLIENT_CERT_KEY,
             LHConfig.CLIENT_KEY_KEY,
             LHConfig.CA_CERT_KEY,
-            LHConfig.OAUTH_AUTHORIZATION_SERVER_KEY,
+            LHConfig.OAUTH_ACCESS_TOKEN_URL,
             LHConfig.OAUTH_CLIENT_ID_KEY,
             LHConfig.OAUTH_CLIENT_SECRET_KEY,
             LHConfig.NUM_WORKER_THREADS_KEY,
@@ -266,14 +266,14 @@ public class LHConfig extends ConfigBase {
     public boolean isOauth() {
         String clientId = getOrSetDefault(OAUTH_CLIENT_ID_KEY, null);
         String clientSecret = getOrSetDefault(OAUTH_CLIENT_SECRET_KEY, null);
-        String authServer = getOrSetDefault(OAUTH_AUTHORIZATION_SERVER_KEY, null);
+        String tokenEndpointUrl = getOrSetDefault(OAUTH_ACCESS_TOKEN_URL, null);
 
-        if (clientId == null && clientSecret == null && authServer == null) {
+        if (clientId == null && clientSecret == null && tokenEndpointUrl == null) {
             log.info("OAuth is disable");
             return false;
         }
 
-        if (clientId == null || clientSecret == null || authServer == null) {
+        if (clientId == null || clientSecret == null || tokenEndpointUrl == null) {
             throw new IllegalArgumentException("OAuth Configuration is Missing");
         }
 
@@ -281,7 +281,7 @@ public class LHConfig extends ConfigBase {
 
         if (oauthConfig == null) {
             oauthConfig = OAuthConfig.builder()
-                    .authorizationServer(URI.create(authServer))
+                    .tokenEndpointURI(URI.create(tokenEndpointUrl))
                     .clientId(clientId)
                     .clientSecret(clientSecret)
                     .build();

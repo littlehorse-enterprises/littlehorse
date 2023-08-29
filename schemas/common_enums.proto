@@ -31,7 +31,7 @@ enum MetricsWindowLength {
   HOURS_2 = 1;
   DAYS_1 = 2;
 }
-  
+
 enum VariableType {
   JSON_OBJ = 0;
   JSON_ARR = 1;

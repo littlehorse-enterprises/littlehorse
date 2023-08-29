@@ -26,15 +26,13 @@ type OauthConfig struct {
 	ClientId            string
 	ClientSecret        string
 	AuthServer          string
+	TokenEndpointUrl    string
 	CallbackPort        int32
 	CredentialsLocation string
 }
 
 func (oauthConfig *OauthConfig) IsEnabled() bool {
-	if oauthConfig.ClientId != "" && oauthConfig.AuthServer != "" {
-		return true
-	}
-	return false
+	return oauthConfig.DeduceFlow() != Undefined
 }
 
 // Implicit configurations instead of explicitly set the desired flow
@@ -42,7 +40,7 @@ func (oauthConfig *OauthConfig) IsEnabled() bool {
 // AuthorizationCode only needs ClientId
 // AuthServer is always mandatory
 func (oauthConfig *OauthConfig) DeduceFlow() OauthFlow {
-	if oauthConfig.ClientId != "" && oauthConfig.AuthServer != "" && oauthConfig.ClientSecret != "" {
+	if oauthConfig.ClientId != "" && oauthConfig.TokenEndpointUrl != "" && oauthConfig.ClientSecret != "" {
 		return ClientCredentials
 	}
 
@@ -114,13 +112,12 @@ func (fileTokenSource FileTokenSource) RequireTransportSecurity() bool {
 //			RequireTransportSecurity() bool
 //	}
 func (oauthConfig *OauthConfig) GetTokenSource() credentials.PerRPCCredentials {
-	provider, err := oidc.NewProvider(context.TODO(), oauthConfig.AuthServer)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	switch oauthConfig.DeduceFlow() {
 	case AuthorizationCode:
+		provider, err := oidc.NewProvider(context.TODO(), oauthConfig.AuthServer)
+		if err != nil {
+			log.Fatal(err)
+		}
 		oauth2Config := oauth2.Config{
 			ClientID: oauthConfig.ClientId,
 			Endpoint: provider.Endpoint(),
@@ -131,8 +128,7 @@ func (oauthConfig *OauthConfig) GetTokenSource() credentials.PerRPCCredentials {
 		config := &clientcredentials.Config{
 			ClientID:     oauthConfig.ClientId,
 			ClientSecret: oauthConfig.ClientSecret,
-			Scopes:       []string{oidc.ScopeOpenID},
-			TokenURL:     provider.Endpoint().TokenURL,
+			TokenURL:     oauthConfig.TokenEndpointUrl,
 		}
 		return oauth.TokenSource{TokenSource: oauth2.ReuseTokenSource(nil, config.TokenSource(context.TODO()))}
 	}

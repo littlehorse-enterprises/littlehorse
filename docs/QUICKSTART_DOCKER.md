@@ -1,4 +1,4 @@
-## Quick Start for Java
+## Quick Start for Docker
 
 ### Prerequisites
 
@@ -60,4 +60,4 @@ Now you are ready to run your workflows.
 
 ### Using Docker Compose
 
-If you need more flexibility to experiment with other settings you can our [docker-compose example](../examples/docker-compose).
+If you need more flexibility to experiment with other settings you can use our [docker-compose example](../examples/docker-compose).

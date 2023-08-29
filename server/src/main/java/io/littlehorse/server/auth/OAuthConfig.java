@@ -1,4 +1,4 @@
-package io.littlehorse.sdk.common.auth;
+package io.littlehorse.server.auth;
 
 import java.net.URI;
 import lombok.Builder;
@@ -12,5 +12,5 @@ public class OAuthConfig {
 
     private final String clientId;
     private final String clientSecret;
-    private final URI tokenEndpointURI;
+    private final URI introspectionEndpointURI;
 }
