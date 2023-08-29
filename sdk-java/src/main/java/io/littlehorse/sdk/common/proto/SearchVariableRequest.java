@@ -26,11 +26,6 @@ private static final long serialVersionUID = 0L;
     return new SearchVariableRequest();
   }
 
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchVariableRequest_descriptor;
@@ -64,12 +59,7 @@ private static final long serialVersionUID = 0L;
     io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder();
 
     /**
-     * <code>optional int32 wf_spec_version = 2;</code>
-     * @return Whether the wfSpecVersion field is set.
-     */
-    boolean hasWfSpecVersion();
-    /**
-     * <code>optional int32 wf_spec_version = 2;</code>
+     * <code>int32 wf_spec_version = 2;</code>
      * @return The wfSpecVersion.
      */
     int getWfSpecVersion();
@@ -122,11 +112,6 @@ private static final long serialVersionUID = 0L;
       return new NameAndValueRequest();
     }
 
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchVariableRequest_NameAndValueRequest_descriptor;
@@ -140,7 +125,6 @@ private static final long serialVersionUID = 0L;
               io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.class, io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest.Builder.class);
     }
 
-    private int bitField0_;
     public static final int VALUE_FIELD_NUMBER = 1;
     private io.littlehorse.sdk.common.proto.VariableValue value_;
     /**
@@ -170,15 +154,7 @@ private static final long serialVersionUID = 0L;
     public static final int WF_SPEC_VERSION_FIELD_NUMBER = 2;
     private int wfSpecVersion_ = 0;
     /**
-     * <code>optional int32 wf_spec_version = 2;</code>
-     * @return Whether the wfSpecVersion field is set.
-     */
-    @java.lang.Override
-    public boolean hasWfSpecVersion() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>optional int32 wf_spec_version = 2;</code>
+     * <code>int32 wf_spec_version = 2;</code>
      * @return The wfSpecVersion.
      */
     @java.lang.Override
@@ -281,7 +257,7 @@ private static final long serialVersionUID = 0L;
       if (value_ != null) {
         output.writeMessage(1, getValue());
       }
-      if (((bitField0_ & 0x00000001) != 0)) {
+      if (wfSpecVersion_ != 0) {
         output.writeInt32(2, wfSpecVersion_);
       }
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(varName_)) {
@@ -303,7 +279,7 @@ private static final long serialVersionUID = 0L;
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getValue());
       }
-      if (((bitField0_ & 0x00000001) != 0)) {
+      if (wfSpecVersion_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, wfSpecVersion_);
       }
@@ -333,11 +309,8 @@ private static final long serialVersionUID = 0L;
         if (!getValue()
             .equals(other.getValue())) return false;
       }
-      if (hasWfSpecVersion() != other.hasWfSpecVersion()) return false;
-      if (hasWfSpecVersion()) {
-        if (getWfSpecVersion()
-            != other.getWfSpecVersion()) return false;
-      }
+      if (getWfSpecVersion()
+          != other.getWfSpecVersion()) return false;
       if (!getVarName()
           .equals(other.getVarName())) return false;
       if (!getWfSpecName()
@@ -357,10 +330,8 @@ private static final long serialVersionUID = 0L;
         hash = (37 * hash) + VALUE_FIELD_NUMBER;
         hash = (53 * hash) + getValue().hashCode();
       }
-      if (hasWfSpecVersion()) {
-        hash = (37 * hash) + WF_SPEC_VERSION_FIELD_NUMBER;
-        hash = (53 * hash) + getWfSpecVersion();
-      }
+      hash = (37 * hash) + WF_SPEC_VERSION_FIELD_NUMBER;
+      hash = (53 * hash) + getWfSpecVersion();
       hash = (37 * hash) + VAR_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getVarName().hashCode();
       hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
@@ -414,11 +385,13 @@ private static final long serialVersionUID = 0L;
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
+
     public static io.littlehorse.sdk.common.proto.SearchVariableRequest.NameAndValueRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -540,10 +513,8 @@ private static final long serialVersionUID = 0L;
               ? value_
               : valueBuilder_.build();
         }
-        int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000002) != 0)) {
           result.wfSpecVersion_ = wfSpecVersion_;
-          to_bitField0_ |= 0x00000001;
         }
         if (((from_bitField0_ & 0x00000004) != 0)) {
           result.varName_ = varName_;
@@ -551,7 +522,6 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000008) != 0)) {
           result.wfSpecName_ = wfSpecName_;
         }
-        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -601,7 +571,7 @@ private static final long serialVersionUID = 0L;
         if (other.hasValue()) {
           mergeValue(other.getValue());
         }
-        if (other.hasWfSpecVersion()) {
+        if (other.getWfSpecVersion() != 0) {
           setWfSpecVersion(other.getWfSpecVersion());
         }
         if (!other.getVarName().isEmpty()) {
@@ -800,15 +770,7 @@ private static final long serialVersionUID = 0L;
 
       private int wfSpecVersion_ ;
       /**
-       * <code>optional int32 wf_spec_version = 2;</code>
-       * @return Whether the wfSpecVersion field is set.
-       */
-      @java.lang.Override
-      public boolean hasWfSpecVersion() {
-        return ((bitField0_ & 0x00000002) != 0);
-      }
-      /**
-       * <code>optional int32 wf_spec_version = 2;</code>
+       * <code>int32 wf_spec_version = 2;</code>
        * @return The wfSpecVersion.
        */
       @java.lang.Override
@@ -816,19 +778,19 @@ private static final long serialVersionUID = 0L;
         return wfSpecVersion_;
       }
       /**
-       * <code>optional int32 wf_spec_version = 2;</code>
+       * <code>int32 wf_spec_version = 2;</code>
        * @param value The wfSpecVersion to set.
        * @return This builder for chaining.
        */
       public Builder setWfSpecVersion(int value) {
-        
+
         wfSpecVersion_ = value;
         bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 wf_spec_version = 2;</code>
+       * <code>int32 wf_spec_version = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearWfSpecVersion() {
@@ -1047,6 +1009,7 @@ private static final long serialVersionUID = 0L;
 
   private int bitField0_;
   private int variableCriteriaCase_ = 0;
+  @SuppressWarnings("serial")
   private java.lang.Object variableCriteria_;
   public enum VariableCriteriaCase
       implements com.google.protobuf.Internal.EnumLite,
@@ -1376,11 +1339,13 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
+
   public static io.littlehorse.sdk.common.proto.SearchVariableRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
+
   public static io.littlehorse.sdk.common.proto.SearchVariableRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1727,7 +1692,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setLimit(int value) {
-      
+
       limit_ = value;
       bitField0_ |= 0x00000002;
       onChanged();

@@ -61,5 +61,5 @@ public interface SearchExternalEventRequestOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequestOrBuilder getExternalEventDefNameAndStatusOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.SearchExternalEventRequest.ExtEvtCriteriaCase getExtEvtCriteriaCase();
+  io.littlehorse.sdk.common.proto.SearchExternalEventRequest.ExtEvtCriteriaCase getExtEvtCriteriaCase();
 }

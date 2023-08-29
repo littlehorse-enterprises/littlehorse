@@ -92,5 +92,5 @@ public interface VariableMutationOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSourceOrBuilder getNodeOutputOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.VariableMutation.RhsValueCase getRhsValueCase();
+  io.littlehorse.sdk.common.proto.VariableMutation.RhsValueCase getRhsValueCase();
 }

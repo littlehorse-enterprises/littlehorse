@@ -58,5 +58,5 @@ public interface AssignUserTaskRunRequestOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.UserGroupOrBuilder getUserGroupOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.AssigneeCase getAssigneeCase();
+  io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.AssigneeCase getAssigneeCase();
 }

@@ -27,11 +27,6 @@ private static final long serialVersionUID = 0L;
     return new TaskMetricUpdatePb();
   }
 
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_TaskMetricUpdatePb_descriptor;
@@ -469,11 +464,13 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
+
   public static io.littlehorse.common.proto.TaskMetricUpdatePb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
+
   public static io.littlehorse.common.proto.TaskMetricUpdatePb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1012,7 +1009,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setNumEntries(long value) {
-      
+
       numEntries_ = value;
       bitField0_ |= 0x00000004;
       onChanged();
@@ -1044,7 +1041,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setScheduleToStartMax(long value) {
-      
+
       scheduleToStartMax_ = value;
       bitField0_ |= 0x00000008;
       onChanged();
@@ -1076,7 +1073,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setScheduleToStartTotal(long value) {
-      
+
       scheduleToStartTotal_ = value;
       bitField0_ |= 0x00000010;
       onChanged();
@@ -1108,7 +1105,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setStartToCompleteMax(long value) {
-      
+
       startToCompleteMax_ = value;
       bitField0_ |= 0x00000020;
       onChanged();
@@ -1140,7 +1137,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setStartToCompleteTotal(long value) {
-      
+
       startToCompleteTotal_ = value;
       bitField0_ |= 0x00000040;
       onChanged();
@@ -1172,7 +1169,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setTotalCompleted(long value) {
-      
+
       totalCompleted_ = value;
       bitField0_ |= 0x00000080;
       onChanged();
@@ -1204,7 +1201,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setTotalErrored(long value) {
-      
+
       totalErrored_ = value;
       bitField0_ |= 0x00000100;
       onChanged();
@@ -1236,7 +1233,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setTotalStarted(long value) {
-      
+
       totalStarted_ = value;
       bitField0_ |= 0x00000200;
       onChanged();
@@ -1340,7 +1337,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setTotalScheduled(long value) {
-      
+
       totalScheduled_ = value;
       bitField0_ |= 0x00000800;
       onChanged();
