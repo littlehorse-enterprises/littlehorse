@@ -30,6 +30,7 @@ public class OAuthCredentialsProvider extends CallCredentials {
                 headers.put(AUTHORIZATION_HEADER_KEY, String.format("Bearer %s", currentToken.getToken()));
                 metadataApplier.apply(headers);
             } catch (Exception e) {
+                log.error("Error when getting access token", e);
                 metadataApplier.fail(Status.UNAUTHENTICATED.withCause(e));
             }
         });
