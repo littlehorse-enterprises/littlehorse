@@ -7,8 +7,6 @@ import io.grpc.Metadata;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.Status;
-import io.littlehorse.sdk.common.auth.OAuthClient;
-import io.littlehorse.sdk.common.auth.OAuthConfig;
 import io.littlehorse.sdk.common.auth.TokenStatus;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;

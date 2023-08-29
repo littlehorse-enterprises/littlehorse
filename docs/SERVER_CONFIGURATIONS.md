@@ -22,7 +22,7 @@
     - [`LHS_LISTENER_<LISTENER NAME>_KEY`](#lhs_listener_listener-name_key)
     - [`LHS_CA_CERT`](#lhs_ca_cert)
     - [`LHS_LISTENERS_AUTHENTICATION_MAP`](#lhs_listeners_authentication_map)
-    - [`LHS_OAUTH_SERVER_URL`](#lhs_oauth_server_url)
+    - [`LHS_OAUTH_INTROSPECT_URL`](#lhs_oauth_introspect_url)
     - [`LHS_OAUTH_CLIENT_ID`](#lhs_oauth_client_id)
     - [`LHS_OAUTH_CLIENT_ID_FILE`](#lhs_oauth_client_id_file)
     - [`LHS_OAUTH_CLIENT_SECRET`](#lhs_oauth_client_secret)
@@ -297,10 +297,10 @@ Allowed protocols: `NONE`, `OAUTH`, `MTLS`
 
 ---
 
-### `LHS_OAUTH_SERVER_URL`
+### `LHS_OAUTH_INTROSPECT_URL`
 
-Optional OAuth server URL. Used by the server to authenticate incoming calls.
-This OAuth server url is used by all `OAUTH` listeners.
+Optional OAuth server introspection URL. Used by the server to authenticate tokens from incoming calls.
+This OAuth server introspection URL is used by all `OAUTH` listeners.
 
 > Needs to be set if any listener specifies `OAUTH` as an authentication mechanism in `LHS_LISTENERS_AUTHENTICATION_MAP`
 
@@ -309,7 +309,7 @@ Example:
 ```
 LHS_LISTENERS=MY_LISTENER:2023
 LHS_LISTENERS_AUTHENTICATION_MAP=MY_LISTENER:OAUTH
-LHS_OAUTH_SERVER_URL=http://localhost:8888/realms/lh
+LHS_OAUTH_INTROSPECT_URL=http://localhost:8888/realms/lh/protocol/openid-connect/token/introspect
 ...
 ```
 

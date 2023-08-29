@@ -7,10 +7,10 @@ import io.grpc.TlsChannelCredentials;
 import io.grpc.TlsServerCredentials;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.RocksConfigSetter;
-import io.littlehorse.sdk.common.auth.OAuthConfig;
 import io.littlehorse.sdk.common.config.ConfigBase;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.server.auth.AuthorizationProtocol;
+import io.littlehorse.server.auth.OAuthConfig;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.listener.ListenerProtocol;
 import io.littlehorse.server.listener.MTLSConfig;
@@ -91,7 +91,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String CA_CERT = "LHS_CA_CERT";
     public static final String OAUTH_CLIENT_ID = "LHS_OAUTH_CLIENT_ID";
     public static final String OAUTH_CLIENT_SECRET = "LHS_OAUTH_CLIENT_SECRET";
-    public static final String OAUTH_SERVER_URL = "LHS_OAUTH_SERVER_URL";
+    public static final String OAUTH_INTROSPECT_URL = "LHS_OAUTH_INTROSPECT_URL";
     public static final String OAUTH_CLIENT_ID_FILE = "LHS_OAUTH_CLIENT_ID_FILE";
     public static final String OAUTH_CLIENT_SECRET_FILE = "LHS_OAUTH_CLIENT_SECRET_FILE";
     private List<ServerListenerConfig> listenerConfigs;
@@ -319,7 +319,7 @@ public class LHServerConfig extends ConfigBase {
 
         String clientId = getOrSetDefault(OAUTH_CLIENT_ID, null);
         String clientSecret = getOrSetDefault(OAUTH_CLIENT_SECRET, null);
-        String authorizationServer = getOrSetDefault(OAUTH_SERVER_URL, null);
+        String introspectionEndpoint = getOrSetDefault(OAUTH_INTROSPECT_URL, null);
 
         String clientIdFile = getOrSetDefault(OAUTH_CLIENT_ID_FILE, null);
         String clientSecretFile = getOrSetDefault(OAUTH_CLIENT_SECRET_FILE, null);
@@ -334,20 +334,20 @@ public class LHServerConfig extends ConfigBase {
             clientId = loadSettingFromFile(clientIdFile);
         }
 
-        if (clientId == null || clientSecret == null || authorizationServer == null) {
+        if (clientId == null || clientSecret == null || introspectionEndpoint == null) {
             throw new LHMisconfigurationException(
-                    "OAuth configuration called but not provided. Check missing client id, client secret or authorization server endpoint");
+                    "OAuth configuration called but not provided. Check missing client id, client secret or introspection endpoint url");
         }
 
         final URI parsedUrl;
         try {
-            parsedUrl = URI.create(authorizationServer);
+            parsedUrl = URI.create(introspectionEndpoint);
         } catch (IllegalArgumentException e) {
-            throw new LHMisconfigurationException("Malformed URL check " + OAUTH_SERVER_URL);
+            throw new LHMisconfigurationException("Malformed URL check " + OAUTH_INTROSPECT_URL);
         }
 
         return OAuthConfig.builder()
-                .authorizationServer(parsedUrl)
+                .introspectionEndpointURI(parsedUrl)
                 .clientId(clientId)
                 .clientSecret(clientSecret)
                 .build();

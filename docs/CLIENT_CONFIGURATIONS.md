@@ -9,7 +9,7 @@
     - [`LHC_CLIENT_KEY`](#lhc_client_key)
     - [`LHC_OAUTH_CLIENT_ID`](#lhc_oauth_client_id)
     - [`LHC_OAUTH_CLIENT_SECRET`](#lhc_oauth_client_secret)
-    - [`LHC_OAUTH_AUTHORIZATION_SERVER`](#lhc_oauth_authorization_server)
+    - [`LHC_OAUTH_ACCESS_TOKEN_URL`](#lhc_oauth_access_token_url)
   - [Worker](#worker)
     - [`LHW_SERVER_CONNECT_LISTENER`](#lhw_server_connect_listener)
     - [`LHW_NUM_WORKER_THREADS`](#lhw_num_worker_threads)
@@ -98,9 +98,9 @@ Optional OAuth2 Client Secret. Used by the Worker to identify itself at an Autho
 
 ---
 
-### `LHC_OAUTH_AUTHORIZATION_SERVER`
+### `LHC_OAUTH_ACCESS_TOKEN_URL`
 
-Optional Authorization Server URL. Used by the Worker to know the OpenId Connect endpoints.
+Optional Authorization Server access token URL. Used by the Worker to obtain a token using client credentials flow.
 It is mandatory if `LHC_OAUTH_CLIENT_ID` and `LHC_OAUTH_CLIENT_SECRET` are provided.
 
 - **Type:** url
