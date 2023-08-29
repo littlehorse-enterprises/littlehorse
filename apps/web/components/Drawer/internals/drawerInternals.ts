@@ -51,6 +51,10 @@ export const parseKey = (variableType: string) => {
 }
 
 export const getThreadName = nodeName => {
+	if(!nodeName) return ''
 	const split = nodeName.split('-')
 	return split[1] + ' ' + split[2]
+}
+export const getThreadVarName = nodeName => {
+	return nodeName.split('-').slice(1,-1).join('-')
 }

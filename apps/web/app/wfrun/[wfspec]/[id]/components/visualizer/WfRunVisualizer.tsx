@@ -60,10 +60,12 @@ export const WfRunVisualizer = ({
   };
 
   const [run, setRun] = useState();
+  const [runs, setRuns] = useState<any[]>([]);
   const setThreads = (data: any) => {
     // console.log('threads',data)
     getWfSpec(data.wfSpecName, data.wfSpecVersion);
     setRun(data.threadRuns[0]);
+    setRuns(data.threadRuns);
   };
 
   const mapData = (data: any, thread?: string) => {
@@ -129,7 +131,9 @@ export const WfRunVisualizer = ({
 
   const drawerInternal = (
     <DrawerComponent
+      isWFRun={true}
       internalComponent={nodeType}
+      datao={data}
       data={drawerData}
       nodeName={selectedNodeName}
       wfRunId={id}
@@ -139,6 +143,7 @@ export const WfRunVisualizer = ({
       setError={setShowError}
       setThread={setThread}
       run={run}
+      runs={runs}
     />
   );
 

@@ -4,7 +4,7 @@ interface Props{
     version:string 
     id: string
 }
-export const VersionCHnager = ({version, id}:Props) => {
+export const VersionChanger = ({version, id}:Props) => {
 
     return <div title={id} className="btns btns-right">
     <Label>WfSpec VERSION:</Label>

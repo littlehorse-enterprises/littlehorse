@@ -3,10 +3,10 @@ import Image from 'next/image'
 import spawnChildSvg from './spawn-child.svg'
 import polylineSvg from './polyline.svg'
 import { FailureInformation, LH_EXCEPTION } from './FailureInformation'
-import { parseKey, getThreadName } from './drawerInternals'
+import { parseKey, getThreadName, getThreadVarName } from './drawerInternals'
 
 interface WaitChildInformationProps {
-	linkedThread: () => void
+	linkedThread: (thread:string) => void
 	nodeName: string
 	errorData: {
 		handlerSpecName: string
@@ -45,7 +45,7 @@ export const WaitChildInformation = (props: WaitChildInformationProps) => {
 						<div className='drawer__waitChild__wfrun__link__container'>
 							<p
 								className='drawer__waitChild__wfrun__link__container__text'
-								onClick={() => props.linkedThread()}
+								onClick={() => props.linkedThread(getThreadVarName(props.nodeName))}
 							>
 								{getThreadName(props.nodeName)}
 							</p>
@@ -60,7 +60,7 @@ export const WaitChildInformation = (props: WaitChildInformationProps) => {
 					<div className='drawer__waitChild__link__container'>
 						<div
 							className='drawer__waitChild__link__container__clickable'
-							onClick={() => props.linkedThread()}
+							onClick={() => props.linkedThread(getThreadVarName(props.nodeName))}
 						>
 							<Image src={polylineSvg} alt={'polyline'} width={12} />
 							<p className='drawer__waitChild__link__container__clickable__text'>

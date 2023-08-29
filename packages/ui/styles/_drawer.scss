@@ -8,6 +8,20 @@
   gap: 12px;
   align-self: stretch;
 
+  .simpleValue__container{
+    padding: 12px 0px;
+  }
+  .simpleValue{
+    color: #FFF;
+    text-align: center;
+    font-family: "Inter";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
+
+
   &__header {
     display: flex;
     align-items: center;

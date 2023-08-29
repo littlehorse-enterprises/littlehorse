@@ -1,7 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { WfSpecVisualizerChart } from './WfSpecVisualizerChart'
-import { DrawerComponent } from '../../../../../../components/Drawer/DrawerComponent'
 import { Drawer } from '../../../../../../components/Drawer/Drawer'
 import {
 	getMainDrawerData,
@@ -9,9 +8,10 @@ import {
 } from '../../../../../../components/Drawer/internals/drawerInternals'
 import WFRunInformationSideBar from '../../../../../../components/WFRunInformationSideBar'
 import { Loader } from 'ui'
+import { WfSpecDrawerComponent } from '../../../../../../components/Drawer/WfSpecDrawerComponent'
 
 interface mapnode {}
-export const WfRunVisualizer = ({
+export const WfSpecVisualizer = ({
 	id,
 	version
 }: {
@@ -88,6 +88,7 @@ export const WfRunVisualizer = ({
 		}
 	}
 	const setThread = (thread:string) => {
+		setSelectedNodeName(undefined)
 		setData(mapData(rawdata,thread))
 	}
 
@@ -102,11 +103,12 @@ export const WfRunVisualizer = ({
 	}, [drawerData, selectedNodeName])
 
 	const drawerInternal = (
-		<DrawerComponent
+		<WfSpecDrawerComponent
 			internalComponent={nodeType}
+			datao={data}
 			data={drawerData}
 			nodeName={selectedNodeName}
-			wfRunId={id}
+			wfSpecId={id}
 			setToggleSideBar={setToggleSideBar}
 			setCode={setSideBarData}
 			setLanguage={setLanguage}
@@ -125,6 +127,7 @@ export const WfRunVisualizer = ({
 			>
 				{ loading ? <Loader /> : <WfSpecVisualizerChart data={data} onClick={setSelectedNodeName} />}
 			</div>
+
 			<Drawer title={'WfSpec Properties'}>{drawerInternal}</Drawer>
 			<WFRunInformationSideBar
 				toggleSideBar={toggleSideBar}

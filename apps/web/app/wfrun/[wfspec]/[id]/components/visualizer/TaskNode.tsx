@@ -1,5 +1,4 @@
 export const TaskNode = ({d, run}:{d:any, run?:any}) => {
-    console.log('RRRRR', run)
     return <div className="viznode-canvas">
         <div className="ring">
             <div className={`node c${d.name} t${d.type}`} >
