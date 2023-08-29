@@ -79,6 +79,17 @@ private static final long serialVersionUID = 0L;
      * @return The threadRunNumber.
      */
     int getThreadRunNumber();
+
+    /**
+     * <code>.littlehorse.FailureMode failure_mode = 4;</code>
+     * @return The enum numeric value on the wire for failureMode.
+     */
+    int getFailureModeValue();
+    /**
+     * <code>.littlehorse.FailureMode failure_mode = 4;</code>
+     * @return The failureMode.
+     */
+    io.littlehorse.sdk.common.proto.FailureMode getFailureMode();
   }
   /**
    * Protobuf type {@code littlehorse.WaitForThreadsRun.WaitForThread}
@@ -94,6 +105,7 @@ private static final long serialVersionUID = 0L;
     }
     private WaitForThread() {
       threadStatus_ = 0;
+      failureMode_ = 0;
     }
 
     @java.lang.Override
@@ -177,6 +189,24 @@ private static final long serialVersionUID = 0L;
       return threadRunNumber_;
     }
 
+    public static final int FAILURE_MODE_FIELD_NUMBER = 4;
+    private int failureMode_ = 0;
+    /**
+     * <code>.littlehorse.FailureMode failure_mode = 4;</code>
+     * @return The enum numeric value on the wire for failureMode.
+     */
+    @java.lang.Override public int getFailureModeValue() {
+      return failureMode_;
+    }
+    /**
+     * <code>.littlehorse.FailureMode failure_mode = 4;</code>
+     * @return The failureMode.
+     */
+    @java.lang.Override public io.littlehorse.sdk.common.proto.FailureMode getFailureMode() {
+      io.littlehorse.sdk.common.proto.FailureMode result = io.littlehorse.sdk.common.proto.FailureMode.forNumber(failureMode_);
+      return result == null ? io.littlehorse.sdk.common.proto.FailureMode.UNRECOGNIZED : result;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -200,6 +230,9 @@ private static final long serialVersionUID = 0L;
       if (threadRunNumber_ != 0) {
         output.writeInt32(3, threadRunNumber_);
       }
+      if (failureMode_ != io.littlehorse.sdk.common.proto.FailureMode.FAST.getNumber()) {
+        output.writeEnum(4, failureMode_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -220,6 +253,10 @@ private static final long serialVersionUID = 0L;
       if (threadRunNumber_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, threadRunNumber_);
+      }
+      if (failureMode_ != io.littlehorse.sdk.common.proto.FailureMode.FAST.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(4, failureMode_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -244,6 +281,7 @@ private static final long serialVersionUID = 0L;
       if (threadStatus_ != other.threadStatus_) return false;
       if (getThreadRunNumber()
           != other.getThreadRunNumber()) return false;
+      if (failureMode_ != other.failureMode_) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -263,6 +301,8 @@ private static final long serialVersionUID = 0L;
       hash = (53 * hash) + threadStatus_;
       hash = (37 * hash) + THREAD_RUN_NUMBER_FIELD_NUMBER;
       hash = (53 * hash) + getThreadRunNumber();
+      hash = (37 * hash) + FAILURE_MODE_FIELD_NUMBER;
+      hash = (53 * hash) + failureMode_;
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -405,6 +445,7 @@ private static final long serialVersionUID = 0L;
         }
         threadStatus_ = 0;
         threadRunNumber_ = 0;
+        failureMode_ = 0;
         return this;
       }
 
@@ -450,6 +491,9 @@ private static final long serialVersionUID = 0L;
         }
         if (((from_bitField0_ & 0x00000004) != 0)) {
           result.threadRunNumber_ = threadRunNumber_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.failureMode_ = failureMode_;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -507,6 +551,9 @@ private static final long serialVersionUID = 0L;
         if (other.getThreadRunNumber() != 0) {
           setThreadRunNumber(other.getThreadRunNumber());
         }
+        if (other.failureMode_ != 0) {
+          setFailureModeValue(other.getFailureModeValue());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -550,6 +597,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000004;
                 break;
               } // case 24
+              case 32: {
+                failureMode_ = input.readEnum();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -767,6 +819,59 @@ private static final long serialVersionUID = 0L;
       public Builder clearThreadRunNumber() {
         bitField0_ = (bitField0_ & ~0x00000004);
         threadRunNumber_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int failureMode_ = 0;
+      /**
+       * <code>.littlehorse.FailureMode failure_mode = 4;</code>
+       * @return The enum numeric value on the wire for failureMode.
+       */
+      @java.lang.Override public int getFailureModeValue() {
+        return failureMode_;
+      }
+      /**
+       * <code>.littlehorse.FailureMode failure_mode = 4;</code>
+       * @param value The enum numeric value on the wire for failureMode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFailureModeValue(int value) {
+        failureMode_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.littlehorse.FailureMode failure_mode = 4;</code>
+       * @return The failureMode.
+       */
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.FailureMode getFailureMode() {
+        io.littlehorse.sdk.common.proto.FailureMode result = io.littlehorse.sdk.common.proto.FailureMode.forNumber(failureMode_);
+        return result == null ? io.littlehorse.sdk.common.proto.FailureMode.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.littlehorse.FailureMode failure_mode = 4;</code>
+       * @param value The failureMode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFailureMode(io.littlehorse.sdk.common.proto.FailureMode value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000008;
+        failureMode_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.littlehorse.FailureMode failure_mode = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFailureMode() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        failureMode_ = 0;
         onChanged();
         return this;
       }
