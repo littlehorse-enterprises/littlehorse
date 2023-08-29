@@ -2,6 +2,7 @@ package io.littlehorse.test.internal;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
+import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -37,26 +38,6 @@ public class TestContext {
             workers.add(new LHTaskWorker(testInstance, annotatedMethod.value(), LHConfig));
         }
         return workers;
-    }
-
-    public List<ExternalEventDef> discoverExternalEventDefinitions(Object testInstance) {
-        if (testInstance.getClass().isAnnotationPresent(LHTest.class)) {
-            LHTest lhTestAnnotation = testInstance.getClass().getAnnotation(LHTest.class);
-            return Stream.of(lhTestAnnotation.externalEventNames())
-                    .map(externalEventName -> ExternalEventDef.newBuilder()
-                            .setName(externalEventName)
-                            .build())
-                    .toList();
-        }
-        return List.of();
-    }
-
-    public void registerExternalEventDef(ExternalEventDef externalEventDef) {
-        PutExternalEventDefRequest putExternalEventDefRequest = PutExternalEventDefRequest.newBuilder()
-                .setName(externalEventDef.getName())
-                .build();
-        ExternalEventDef externalEventDefResult = lhClient.putExternalEventDef(putExternalEventDefRequest);
-        externalEventDefMap.put(externalEventDefResult.getName(), externalEventDefResult);
     }
 
     public void instrument(Object testInstance) {
