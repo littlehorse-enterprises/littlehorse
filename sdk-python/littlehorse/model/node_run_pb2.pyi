@@ -3,11 +3,17 @@ import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 import littlehorse.model.variable_pb2 as _variable_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
 from google.protobuf.internal import containers as _containers
+from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
+
+class FailureMode(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    FAST: _ClassVar[FailureMode]
+FAST: FailureMode
 
 class NodeRun(_message.Message):
     __slots__ = ["wf_run_id", "thread_run_number", "position", "status", "arrival_time", "end_time", "wf_spec_id", "thread_spec_name", "node_name", "error_message", "failures", "task", "external_event", "entrypoint", "exit", "start_thread", "wait_threads", "sleep", "user_task", "failure_handler_ids"]
@@ -84,14 +90,16 @@ class StartThreadRun(_message.Message):
 class WaitForThreadsRun(_message.Message):
     __slots__ = ["threads"]
     class WaitForThread(_message.Message):
-        __slots__ = ["thread_end_time", "thread_status", "thread_run_number"]
+        __slots__ = ["thread_end_time", "thread_status", "thread_run_number", "failure_mode"]
         THREAD_END_TIME_FIELD_NUMBER: _ClassVar[int]
         THREAD_STATUS_FIELD_NUMBER: _ClassVar[int]
         THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
+        FAILURE_MODE_FIELD_NUMBER: _ClassVar[int]
         thread_end_time: _timestamp_pb2.Timestamp
         thread_status: _common_enums_pb2.LHStatus
         thread_run_number: int
-        def __init__(self, thread_end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_run_number: _Optional[int] = ...) -> None: ...
+        failure_mode: FailureMode
+        def __init__(self, thread_end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_run_number: _Optional[int] = ..., failure_mode: _Optional[_Union[FailureMode, str]] = ...) -> None: ...
     THREADS_FIELD_NUMBER: _ClassVar[int]
     threads: _containers.RepeatedCompositeFieldContainer[WaitForThreadsRun.WaitForThread]
     def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsRun.WaitForThread, _Mapping]]] = ...) -> None: ...
