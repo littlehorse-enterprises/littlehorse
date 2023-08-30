@@ -85,7 +85,6 @@ public class LHTaskWorker implements Closeable {
      * Checks if the TaskDef exists
      *
      * @return true if the task is registered or false otherwise
-     * @throws LHApiError if the call fails.
      */
     public boolean doesTaskDefExist() {
         try {
@@ -103,7 +102,6 @@ public class LHTaskWorker implements Closeable {
      * Deploys the TaskDef object to the LH Server. This is a convenience method, generally not
      * recommended for production (in production you should manually use the PutTaskDef).
      *
-     * @throws LHApiError if the call fails.
      */
     public void registerTaskDef() {
         registerTaskDef(false);
@@ -180,9 +178,7 @@ public class LHTaskWorker implements Closeable {
     /**
      * Starts polling for and executing tasks.
      *
-     * @throws LHApiError if the schema from the TaskDef configured in the configProps is
-     *     incompatible with the method signature from the provided executable Java object, or if
-     *     the Worker cannot connect to the LH Server.
+     * @throws IOException if unexpected error occurs opening connections.
      */
     public void start() throws IOException {
         if (!doesTaskDefExist()) {
