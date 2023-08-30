@@ -7,6 +7,8 @@ import sys
 from typing import TYPE_CHECKING, Any, Union
 
 from google.protobuf.timestamp_pb2 import Timestamp
+from google.protobuf.message import Message
+from google.protobuf.json_format import MessageToJson
 from littlehorse.exceptions import SerdeException
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.variable_pb2 import VariableValue
@@ -36,6 +38,18 @@ def timestamp_now() -> Timestamp:
     current_time = Timestamp()
     current_time.GetCurrentTime()
     return current_time
+
+
+def proto_to_json(proto: Message) -> str:
+    """Convert a proto object to json.
+
+    Args:
+        proto (Message): A proto object.
+
+    Returns:
+        str: JSON format.
+    """
+    return MessageToJson(proto)
 
 
 def parse_value(value: Any) -> VariableValue:
