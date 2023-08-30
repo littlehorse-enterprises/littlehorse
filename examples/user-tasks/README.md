@@ -60,9 +60,9 @@ In most production use-cases, we would use option `1` since there would be a fro
 ```
 lhctl search userTaskRun --userId anakin
 
-lhctl search userTaskRun --userId anakin --userTaskStatus CLAIMED
+lhctl search userTaskRun --userId anakin --userTaskStatus ASSIGNED
 
-lhctl search userTaskRun --userTaskStatus CLAIMED --userTaskDefName it-request
+lhctl search userTaskRun --userTaskStatus ASSIGNED --userTaskDefName it-request
 ```
 
 The commands behave roughly like they sound.
@@ -74,12 +74,7 @@ The second option to find the UserTaskRun's ID is to check the `NodeRun`. Recall
 lhctl get nodeRun <wfRunId> 0 1
 ```
 
-<<<<<<< HEAD
 You should see in `$.result.userTask.userTaskRunId` the same ID that resulted from all of the searches above.
-=======
-You should see in `$.result.userTask.id` the same ID that resulted from all of the searches above.
->>>>>>> 46c73083 (Adds User Task Example with lhctl)
-
 
 #### Execute the User Task Run
 
@@ -130,10 +125,10 @@ It's now `DONE`! And we can see the results: Anakin is requesting the Rank of Je
 
 ```
 # Doesn't show our User Task Run from before
-lhctl search userTaskRun --userId anakin --userTaskStatus CLAIMED
+lhctl search userTaskRun --userId anakin --userTaskStatus ASSIGNED
 
 # DOES show the User Task Run
-lhctl search userTaskRun --userId anakin --userTaskStatus CLAIMED
+lhctl search userTaskRun --userId anakin --userTaskStatus DONE
 ```
 
 #### Execute the Next User Task
@@ -147,13 +142,13 @@ lhctl get wfRun <wfRunId>
 It's now on `NodeRun` with position `2`! That makes sense. It's that `UserTaskRun` that's assigned to the `finance` department. Let's find the ID:
 
 ```
-lhctl search userTaskRun --userGroup finance --status ASSIGNED_NOT_CLAIMED
+lhctl search userTaskRun --userGroup finance --userTaskStatus UNASSIGNED
 ```
 
 Now let's inspect the UserTaskRun again (use the new `userTaskGuid` from the search we just ran):
 
 ```
-lhctl get userTaskRun <wfRunId> <userTaskGuid>
+`lhctl get userTaskRun` <wfRunId> <userTaskGuid>
 ```
 
 Note that `userId` is not set, but `userGroup` is set to `finance`. Let's assign it to `mace` (because we know Mace Windu and Anakin are besties).
@@ -167,46 +162,65 @@ Now look at the `UserTaskRun` and note its status:
 
 ```
 ->lhctl get userTaskRun <wfRunId> <userTaskGuid>
-->lhctl get userTaskRun 89962fbd15e748358f2df1c130b34403 72819f4892c745ff92905f3a03ba5f83
+->lhctl get userTaskRun b1810249cef64555ad5bb34534132477 af50671a0c904b008d9bfd9ed92c6df3
 {
-  "code": "OK",
-  "result": {
-    "id": {
-      "wfRunId": "89962fbd15e748358f2df1c130b34403",
-      "userTaskGuid": "72819f4892c745ff92905f3a03ba5f83"
-    },
-    "userTaskDefId": {
-      "name": "approve-it-request",
-      "version": 1
-    },
-    "specificUserId": "mace",
-    "userId": "mace",
-    "results": [],
-    "status": "CLAIMED",
-    "events": [
-      {
-        "time": "2023-07-25T04:08:34.541Z",
-        "reassigned": {
-          "newUserGroup": "finance"
+  "id":  {
+    "wfRunId":  "b1810249cef64555ad5bb34534132477",
+    "userTaskGuid":  "af50671a0c904b008d9bfd9ed92c6df3"
+  },
+  "userTaskDefId":  {
+    "name":  "approve-it-request",
+    "version":  0
+  },
+  "results":  [],
+  "status":  "ASSIGNED",
+  "events":  [
+    {
+      "time":  "2023-08-30T19:24:52.866Z",
+      "reassigned":  {
+        "newUserGroup":  {
+          "id":  "finance"
         }
-      },
-      {
-        "time": "2023-07-25T04:10:48.299Z",
-        "reassigned": {}
       }
-    ],
-    "notes": "User anakin is requesting to buy item the rank of master.\nJustification: it's not fair to be on this council and not be a Master!",
-    "scheduledTime": "2023-07-25T04:08:34.540Z",
-    "nodeRunId": {
-      "wfRunId": "89962fbd15e748358f2df1c130b34403",
-      "threadRunNumber": 0,
-      "position": 2
+    },
+    {
+      "time":  "2023-08-30T19:24:55.715Z",
+      "taskExecuted":  {
+        "taskRun":  {
+          "wfRunId":  "b1810249cef64555ad5bb34534132477",
+          "taskGuid":  "3514a3d59d70463393fb71ce106adc2e"
+        }
+      }
+    },
+    {
+      "time":  "2023-08-30T19:29:30.412Z",
+      "reassigned":  {
+        "newUser":  {
+          "id":  "mace",
+          "userGroup":  {
+            "id":  "finance"
+          }
+        }
+      }
+    }
+  ],
+  "notes":  "User anakin is requesting to buy item qwe.\nJustification: asf",
+  "scheduledTime":  "2023-08-30T19:24:52.847Z",
+  "nodeRunId":  {
+    "wfRunId":  "b1810249cef64555ad5bb34534132477",
+    "threadRunNumber":  0,
+    "position":  2
+  },
+  "user":  {
+    "id":  "mace",
+    "userGroup":  {
+      "id":  "finance"
     }
   }
 }
 ```
 
-It's now `CLAIMED`! And assigned to `mace`. Also, notice the `.result.notes` field.
+It's now `ASSIGNED`! And assigned to `mace`. Also, notice the `.result.notes` field.
 
 Let's execute the `UserTaskRun`.
 
