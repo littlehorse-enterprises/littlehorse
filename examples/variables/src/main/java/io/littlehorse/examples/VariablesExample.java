@@ -38,7 +38,7 @@ public class VariablesExample {
                     .addVariable("input-text", VariableType.STR)
                     .withIndex(LOCAL_INDEX);
 
-                    WfRunVariable addLength = thread.addVariable(
+                WfRunVariable addLength = thread.addVariable(
                     "add-length",
                     VariableType.BOOL
                 ).withIndex(IndexType.LOCAL_INDEX);
@@ -47,15 +47,15 @@ public class VariablesExample {
                     .addVariable("user-id", VariableType.INT)
                     .withIndex(REMOTE_INDEX);
 
-                    WfRunVariable sentimentScore = thread
+                WfRunVariable sentimentScore = thread
                     .addVariable("sentiment-score", VariableType.DOUBLE)
                     .withIndex(LOCAL_INDEX);
 
-                    WfRunVariable processedResult = thread
+                WfRunVariable processedResult = thread
                     .addVariable("processed-result", VariableType.JSON_OBJ)
                     .withJsonIndex("$.sentimentScore", REMOTE_INDEX);
 
-                    NodeOutput sentimentAnalysisOutput = thread.execute(
+                NodeOutput sentimentAnalysisOutput = thread.execute(
                     "sentiment-analysis",
                     inputText
                 );
