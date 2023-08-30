@@ -40,6 +40,26 @@ public class TestContext {
         return workers;
     }
 
+    public List<ExternalEventDef> discoverExternalEventDefinitions(Object testInstance) {
+        if (testInstance.getClass().isAnnotationPresent(LHTest.class)) {
+            LHTest lhTestAnnotation = testInstance.getClass().getAnnotation(LHTest.class);
+            return Stream.of(lhTestAnnotation.externalEventNames())
+                    .map(externalEventName -> ExternalEventDef.newBuilder()
+                            .setName(externalEventName)
+                            .build())
+                    .toList();
+        }
+        return List.of();
+    }
+
+    public void registerExternalEventDef(ExternalEventDef externalEventDef) {
+        PutExternalEventDefRequest putExternalEventDefRequest = PutExternalEventDefRequest.newBuilder()
+                .setName(externalEventDef.getName())
+                .build();
+        ExternalEventDef externalEventDefResult = lhClient.putExternalEventDef(putExternalEventDefRequest);
+        externalEventDefMap.put(externalEventDefResult.getName(), externalEventDefResult);
+    }
+
     public void instrument(Object testInstance) {
         injectWorkflowExecutors(testInstance);
         WorkflowDefinitionDiscover workflowDefinitionDiscover = new WorkflowDefinitionDiscover(testInstance);

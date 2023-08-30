@@ -11,6 +11,25 @@ public class FailureModel extends LHSerializable<Failure> {
     public String message;
     public VariableValueModel content;
 
+    public FailureModel() {}
+
+    public FailureModel(String message, String failureName) {
+        this.message = message;
+        this.failureName = failureName;
+    }
+
+    public FailureModel(String message, String failureName, VariableValueModel content) {
+        this.message = message;
+        this.failureName = failureName;
+        this.content = new VariableValueModel();
+    }
+
+    public static FailureModel fromProto(Failure p) {
+        FailureModel out = new FailureModel();
+        out.initFrom(p);
+        return out;
+    }
+
     public Class<Failure> getProtoBaseClass() {
         return Failure.class;
     }
@@ -33,22 +52,5 @@ public class FailureModel extends LHSerializable<Failure> {
         }
     }
 
-    public static FailureModel fromProto(Failure p) {
-        FailureModel out = new FailureModel();
-        out.initFrom(p);
-        return out;
-    }
 
-    public FailureModel() {}
-
-    public FailureModel(String message, String failureName) {
-        this.message = message;
-        this.failureName = failureName;
-    }
-
-    public FailureModel(String message, String failureName, VariableValueModel content) {
-        this.message = message;
-        this.failureName = failureName;
-        this.content = new VariableValueModel();
-    }
 }

@@ -36,9 +36,8 @@ public class WaitForThreadsTest {
                 .prepareRun(waitForThreadsWithExceptionHandlerWorkflow)
                 .waitForStatus(LHStatus.RUNNING)
                 .thenSendExternalEventJsonContent("person-1-approves", content)
-                .waitForNodeRunStatus(1, 3, LHStatus.ERROR)
                 .thenVerifyNodeRun(
-                        1, 3, nodeRun -> assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.ERROR))
+                        1, 3, nodeRun -> assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.EXCEPTION))
                 .thenVerifyTaskRun(
                         4, 1, taskRun -> assertThat(taskRun.getStatus()).isEqualTo(TaskStatus.TASK_SUCCESS))
                 .thenVerifyTaskRunResult(4, 1, variableValue -> assertThat(variableValue.getStr())
