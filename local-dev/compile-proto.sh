@@ -6,11 +6,11 @@ SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 WORK_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 PUBLIC_PROTOS=$(ls "$WORK_DIR"/schemas | grep -v -E "^internal")
 INTERNAL_PROTOS=$(ls "$WORK_DIR"/schemas/internal)
-docker_run="docker run --rm -it -v ${WORK_DIR}:/littlehorse protoc:23.4"
+docker_run="docker run --rm -it -v ${WORK_DIR}:/littlehorse lh-protoc:23.4"
 
 # compile protoc
-echo "Compiling docker image 'protoc:23.4'"
-docker build -q --tag protoc:23.4 -<<EOF
+echo "Compiling docker image 'lh-protoc:23.4'"
+docker build -q --tag lh-protoc:23.4 -<<EOF
 FROM ubuntu:22.04
 ENV PROTOC_VERSION="23.4"
 RUN apt update && \
