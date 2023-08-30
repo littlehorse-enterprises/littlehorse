@@ -1,7 +1,9 @@
 from inspect import signature
 import inspect
-from typing import Any, Callable
+from pathlib import Path
+from typing import Any, Callable, Union
 from littlehorse.model.service_pb2 import PutWfSpecRequest
+from google.protobuf.json_format import MessageToJson
 
 
 class NodeOutput:
@@ -24,17 +26,15 @@ class Workflow:
     def __init__(self, name: str, initializer: ThreadInitializer) -> None:
         if name is None:
             raise ValueError("Name cannot be None")
+        self.name = name
 
+        self._validate_initializer(initializer)
+        self._initializer = initializer
+
+    def _validate_initializer(self, initializer: ThreadInitializer) -> None:
         if initializer is None:
             raise ValueError("ThreadInitializer cannot be None")
 
-        self.name = name
-        self._initializer = initializer
-
-        # validate initializer
-        self._validate_initializer(initializer)
-
-    def _validate_initializer(self, initializer: ThreadInitializer) -> None:
         if not inspect.isfunction(initializer):
             raise ValueError("Object is not a ThreadInitializer")
 
@@ -53,6 +53,13 @@ class Workflow:
         spec = PutWfSpecRequest(name=self.name)
         return spec
 
+    def save(self, file_path: Union[str, Path]) -> None:
+        with open(file_path, "w") as file_output:
+            file_output.write(str(self))
+
+    def __str__(self) -> str:
+        return MessageToJson(self.compile())
+
 
 if __name__ == "__main__":
 
@@ -60,4 +67,4 @@ if __name__ == "__main__":
         thread.execute("my-task", "1")
 
     wf = Workflow("my-wf", my_thread_builder)
-    print(wf.compile())
+    print(wf)
