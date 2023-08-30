@@ -12,6 +12,7 @@ class LHStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     HALTING: _ClassVar[LHStatus]
     HALTED: _ClassVar[LHStatus]
     ERROR: _ClassVar[LHStatus]
+    EXCEPTION: _ClassVar[LHStatus]
 
 class TaskStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
@@ -46,6 +47,7 @@ COMPLETED: LHStatus
 HALTING: LHStatus
 HALTED: LHStatus
 ERROR: LHStatus
+EXCEPTION: LHStatus
 TASK_SCHEDULED: TaskStatus
 TASK_RUNNING: TaskStatus
 TASK_SUCCESS: TaskStatus
