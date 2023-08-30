@@ -36,7 +36,7 @@ lhctl run donut-workflow number-of-donuts 3
 Let's look at the different outputs (donuts left) of each loop in the while
 
 ```
-lhctl get nodeRunModel <wfRunId from before> 0 2 | jq .result.task.output.int
+lhctl get nodeRun <wfRunId from before> 0 2 | jq .result.task.output.int
 ```
 
 That should print:
@@ -46,7 +46,7 @@ That should print:
 ```
 
 ```
-lhctl get nodeRunModel <wfRunId from before> 0 5 | jq .result.task.output.int
+lhctl get nodeRun <wfRunId from before> 0 5 | jq .result.task.output.int
 ```
 
 That should print:
@@ -56,7 +56,7 @@ That should print:
 ```
 
 ```
-lhctl get nodeRunModel <wfRunId from before> 0 8 | jq .result.task.output.int
+lhctl get nodeRun <wfRunId from before> 0 8 | jq .result.task.output.int
 ```
 
 That should print:
