@@ -51,7 +51,7 @@ jobs:
           poetry run python -m unittest -v
           poetry build
       - name: Publish Package
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@v1.8.10
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
