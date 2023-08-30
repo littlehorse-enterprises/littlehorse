@@ -375,6 +375,15 @@ class LHTaskWorker:
     def __init__(
         self, callable: Callable[..., Any], task_def_name: str, config: LHConfig
     ) -> None:
+        if config is None:
+            raise ValueError("LHConfig cannot be None")
+
+        if task_def_name is None:
+            raise ValueError("TaskDefName cannot be None")
+
+        if callable is None:
+            raise ValueError("Callable cannot be None")
+
         self._config = config
         self._connections: dict[str, LHConnection] = {}
         self.running = False

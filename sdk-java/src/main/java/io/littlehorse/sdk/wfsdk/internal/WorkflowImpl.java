@@ -18,8 +18,8 @@ public class WorkflowImpl extends Workflow {
     private Set<String> requiredTaskDefNames;
     private Set<String> requiredEedNames;
 
-    public WorkflowImpl(String name, ThreadFunc entrypoinThreadFunc) {
-        super(name, entrypoinThreadFunc);
+    public WorkflowImpl(String name, ThreadFunc entrypointThreadFunc) {
+        super(name, entrypointThreadFunc);
         compiledWorkflow = null;
         taskDefBuilders = new HashMap<>();
         requiredTaskDefNames = new HashSet<>();
