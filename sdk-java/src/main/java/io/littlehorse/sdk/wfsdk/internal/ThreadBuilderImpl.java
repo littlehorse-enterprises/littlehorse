@@ -91,17 +91,17 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         return spec;
     }
 
-    public UserTaskOutputImpl assignUserTaskToUser(String userTaskDefName, String userId) {
+    public UserTaskOutputImpl assignTaskToUser(String userTaskDefName, String userId) {
         return assignUserTaskHelper(userTaskDefName, userId, null);
     }
 
     @Override
-    public UserTaskOutput assignUserTaskToUser(String userTaskDefName, String userId, String userGroup) {
+    public UserTaskOutput assignTaskToUser(String userTaskDefName, String userId, String userGroup) {
         return assignUserTaskHelper(userTaskDefName, userId, userGroup);
     }
 
     @Override
-    public void scheduleReassignmentToGroupOnDeadline(UserTaskOutput userTaskOutput, int deadlineSeconds) {
+    public void reassignToGroupOnDeadline(UserTaskOutput userTaskOutput, int deadlineSeconds) {
         checkIfIsActive();
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
@@ -124,8 +124,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     @Override
-    public void scheduleReassignmentToUserOnDeadline(
-            UserTaskOutput userTaskOutput, String userId, int deadlineSeconds) {
+    public void reassignToUserOnDeadline(UserTaskOutput userTaskOutput, String userId, int deadlineSeconds) {
         checkIfIsActive();
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
@@ -144,25 +143,25 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         spec.putNodes(lastNodeName, curNode.build());
     }
 
-    public UserTaskOutputImpl assignUserTaskToUser(String userTaskDefName, WfRunVariable userId) {
+    public UserTaskOutputImpl assignTaskToUser(String userTaskDefName, WfRunVariable userId) {
         return assignUserTaskHelper(userTaskDefName, userId, null);
     }
 
     @Override
-    public UserTaskOutput assignUserTaskToUser(String userTaskDefName, WfRunVariable userId, String userGroup) {
+    public UserTaskOutput assignTaskToUser(String userTaskDefName, WfRunVariable userId, String userGroup) {
         return assignUserTaskHelper(userTaskDefName, userId, userGroup);
     }
 
     @Override
-    public UserTaskOutput assignUserTaskToUser(String userTaskDefName, WfRunVariable userId, WfRunVariable userGroup) {
+    public UserTaskOutput assignTaskToUser(String userTaskDefName, WfRunVariable userId, WfRunVariable userGroup) {
         return assignUserTaskHelper(userTaskDefName, userId, userGroup);
     }
 
-    public UserTaskOutputImpl assignUserTaskToUserGroup(String userTaskDefName, String userGroup) {
+    public UserTaskOutputImpl assignTaskToUserGroup(String userTaskDefName, String userGroup) {
         return assignUserTaskHelper(userTaskDefName, null, userGroup);
     }
 
-    public UserTaskOutputImpl assignUserTaskToUserGroup(String userTaskDefName, WfRunVariable userGroup) {
+    public UserTaskOutputImpl assignTaskToUserGroup(String userTaskDefName, WfRunVariable userGroup) {
         return assignUserTaskHelper(userTaskDefName, null, userGroup);
     }
 
@@ -192,11 +191,12 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         return new UserTaskOutputImpl(nodeName, this);
     }
 
-    public void scheduleTaskAfter(UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Object... args) {
+    public void scheduleReminderTask(
+            UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Object... args) {
         scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, args);
     }
 
-    public void scheduleTaskAfter(UserTaskOutput ut, int delaySeconds, String taskDefName, Object... args) {
+    public void scheduleReminderTask(UserTaskOutput ut, int delaySeconds, String taskDefName, Object... args) {
         scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, args);
     }
 

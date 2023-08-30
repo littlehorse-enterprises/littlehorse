@@ -70,7 +70,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         thread.execute(FAIL_TASK, shouldFail);
         thread.execute(SLOW_TASK);
 
-        thread.assignUserTaskToUser(USER_TASK, "obiwan");
+        thread.assignTaskToUser(USER_TASK, "obiwan");
     }
 
     public AFTaskAndUserTaskSearch(LHPublicApiBlockingStub client, LHConfig config) {
