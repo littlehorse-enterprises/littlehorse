@@ -28,41 +28,38 @@ Note that there are *four* `ThreadRun`s: the Entrypoint (i.e. main) thread, and 
 Let's first take a look at the main thread. The `currentNodePosition` is `5`. So, we get the `5` `NodeRun` as follows:
 
 ```
--> lhctl get nodeRun <wfRunId> 0 5
+lhctl get nodeRun <wfRunId> 0 5
 
 {
-  "code":  "OK",
-  "result":  {
-    "wfRunId":  "ad4d7eaedc5140f2af462d9c4a0f7cac",
-    "threadRunNumber":  0,
-    "position":  5,
-    "status":  "RUNNING",
-    "arrivalTime":  "2023-07-18T00:12:08.627Z",
-    "wfSpecId":  {
-      "name":  "parallel-approval",
-      "version":  0
-    },
-    "threadSpecName":  "entrypoint",
-    "nodeName":  "5-threads-WAIT_FOR_THREADS",
-    "failures":  [],
-    "waitThreads":  {
-      "threads":  [
-        {
-          "threadStatus":  "RUNNING",
-          "threadRunNumber":  2
-        },
-        {
-          "threadStatus":  "RUNNING",
-          "threadRunNumber":  3
-        },
-        {
-          "threadStatus":  "RUNNING",
-          "threadRunNumber":  4
-        }
-      ]
-    },
-    "failureHandlerIds":  []
-  }
+  "wfRunId":  "a5a9a33b1e1043ecaf2a3db7a16da627",
+  "threadRunNumber":  0,
+  "position":  5,
+  "status":  "RUNNING",
+  "arrivalTime":  "2023-08-30T17:58:45.220Z",
+  "wfSpecId":  {
+    "name":  "parallel-approval",
+    "version":  0
+  },
+  "threadSpecName":  "entrypoint",
+  "nodeName":  "5-threads-WAIT_FOR_THREADS",
+  "failures":  [],
+  "waitThreads":  {
+    "threads":  [
+      {
+        "threadStatus":  "RUNNING",
+        "threadRunNumber":  2
+      },
+      {
+        "threadStatus":  "RUNNING",
+        "threadRunNumber":  3
+      },
+      {
+        "threadStatus":  "RUNNING",
+        "threadRunNumber":  4
+      }
+    ]
+  },
+  "failureHandlerIds":  []
 }
 ```
 
@@ -71,27 +68,25 @@ We can see that it's waiting for threads `2`, `3`, and `4`.
 Let's look at thread `3` and see what's up. Recall from `lhctl get wfRun` that thread `3` is on node `1`.
 
 ```
--> lhctl get nodeRun <wfRunId> 3 1
+lhctl get nodeRun <wfRunId> 3 1
+
 {
-  "code":  "OK",
-  "result":  {
-    "wfRunId":  "ad4d7eaedc5140f2af462d9c4a0f7cac",
-    "threadRunNumber":  3,
-    "position":  1,
-    "status":  "RUNNING",
-    "arrivalTime":  "2023-07-18T00:12:08.627Z",
-    "wfSpecId":  {
-      "name":  "example-parallel-approval",
-      "version":  0
-    },
-    "threadSpecName":  "person-2",
-    "nodeName":  "1-person-2-approves-EXTERNAL_EVENT",
-    "failures":  [],
-    "externalEvent":  {
-      "externalEventDefName":  "person-2-approves"
-    },
-    "failureHandlerIds":  []
-  }
+  "wfRunId":  "a5a9a33b1e1043ecaf2a3db7a16da627",
+  "threadRunNumber":  3,
+  "position":  1,
+  "status":  "RUNNING",
+  "arrivalTime":  "2023-08-30T17:58:45.218Z",
+  "wfSpecId":  {
+    "name":  "parallel-approval",
+    "version":  0
+  },
+  "threadSpecName":  "person-2",
+  "nodeName":  "1-person-2-approves-EXTERNAL_EVENT",
+  "failures":  [],
+  "externalEvent":  {
+    "externalEventDefName":  "person-2-approves"
+  },
+  "failureHandlerIds":  []
 }
 ```
 
@@ -106,68 +101,68 @@ lhctl postEvent <wfRunId> person-2-approves NULL
 Now look at the main thread's `WAIT_FOR_THREAD` node:
 
 ```
--> lhctl get nodeRun <wfRunId> 0 5
+lhctl get nodeRun <wfRunId> 0 5
+
 {
-  "code":  "OK",
-  "result":  {
-    "wfRunId":  "ad4d7eaedc5140f2af462d9c4a0f7cac",
-    "threadRunNumber":  0,
-    "position":  5,
-    "status":  "RUNNING",
-    "arrivalTime":  "2023-07-18T00:12:08.627Z",
-    "wfSpecId":  {
-      "name":  "example-parallel-approval",
-      "version":  0
-    },
-    "threadSpecName":  "entrypoint",
-    "nodeName":  "5-threads-WAIT_FOR_THREADS",
-    "failures":  [],
-    "waitThreads":  {
-      "threads":  [
-        {
-          "threadStatus":  "RUNNING",
-          "threadRunNumber":  2
-        },
-        {
-          "threadEndTime":  "2023-07-18T05:24:10.714Z",
-          "threadStatus":  "COMPLETED",
-          "threadRunNumber":  3
-        },
-        {
-          "threadStatus":  "RUNNING",
-          "threadRunNumber":  4
-        }
-      ]
-    },
-    "failureHandlerIds":  []
-  }
+  "wfRunId":  "a5a9a33b1e1043ecaf2a3db7a16da627",
+  "threadRunNumber":  0,
+  "position":  5,
+  "status":  "RUNNING",
+  "arrivalTime":  "2023-08-30T17:58:45.220Z",
+  "wfSpecId":  {
+    "name":  "parallel-approval",
+    "version":  0
+  },
+  "threadSpecName":  "entrypoint",
+  "nodeName":  "5-threads-WAIT_FOR_THREADS",
+  "failures":  [],
+  "waitThreads":  {
+    "threads":  [
+      {
+        "threadStatus":  "RUNNING",
+        "threadRunNumber":  2
+      },
+      {
+        "threadEndTime":  "2023-08-30T18:00:17.820Z",
+        "threadStatus":  "COMPLETED",
+        "threadRunNumber":  3
+      },
+      {
+        "threadStatus":  "RUNNING",
+        "threadRunNumber":  4
+      }
+    ]
+  },
+  "failureHandlerIds":  []
 }
 ```
 
 The second thread is completed! Let's finish off the next two threads (quickly).
 
 ```
--> lhctl postEvent <wfRunId> person-1-approves NULL
+lhctl postEvent <wfRunId> person-1-approves NULL
 ...
--> lhctl postEvent <wfRunId> person-3-approves NULL
+lhctl postEvent <wfRunId> person-3-approves NULL
 ...
 ```
 
 Now the `WAIT_FOR_THREAD` node is completed. If you look at the `all-approved` Variable, you will see that all of the approvals have come in. The Reminder Thread will gracefully wake up and exit rather than send the next reminder. At that point, your `WfRun` will be `COMPLETED`.
 
 ```
--> lhctl get variable <wfRunId> 0 all-approved
+lhctl get variable <wfRunId> 0 all-approved
+
 {
-  "code":  "OK",
-  "result":  {
-    "value":  {
-      "type":  "BOOL",
-      "bool":  true
-    },
-    "wfRunId":  "ad4d7eaedc5140f2af462d9c4a0f7cac",
-    "threadRunNumber":  0,
-    "name":  "all-approved",
-    "date":  "2023-07-18T05:26:28.521Z"
+  "value":  {
+    "type":  "BOOL",
+    "bool":  true
+  },
+  "wfRunId":  "a5a9a33b1e1043ecaf2a3db7a16da627",
+  "threadRunNumber":  0,
+  "name":  "all-approved",
+  "date":  "2023-08-30T17:58:45.247Z",
+  "wfSpecId":  {
+    "name":  "parallel-approval",
+    "version":  0
   }
 }
 ```
