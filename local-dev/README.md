@@ -41,7 +41,7 @@ Run:
 You can clean up (i.e. stop Kafka and delete the data from the state directory) as follows:
 
 ```
-./local-dev/cleanup.sh
+./local-dev/setup.sh clean
 ```
 
 ## Cleanup Data
@@ -88,16 +88,16 @@ You can build the `littlehorse` docker image by running:
 Run server with docker (default config `local-dev/server-1.config`):
 
 ```
-./local-dev/do-docker-server.sh
+./local-dev/do-server.sh --docker
 ```
 
 Run server with docker and specific config:
 
 ```
-./local-dev/do-docker-server.sh <config-name>
+./local-dev/do-server.sh --docker <config-name>
 
 # Example
-./local-dev/do-docker-server.sh server-2
+./local-dev/do-server.sh --docker server-2
 ```
 
 ## Compile Schemas
@@ -110,10 +110,10 @@ Run server with docker and specific config:
 
 > You need to install [httpie](https://httpie.io/cli)
 
-Creates client at keycloak:
+Run keycloak and creates clients:
 
 ```
-./local-dev/setup-keycloak.sh
+./local-dev/setup.sh keycloak
 ```
 
 Clients:
