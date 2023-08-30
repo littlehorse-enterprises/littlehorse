@@ -45,7 +45,7 @@ public class UserTasksExample {
         );
 
         // Get the IT Request
-        UserTaskOutput formOutput = thread.assignUserTaskToUser(
+        UserTaskOutput formOutput = thread.assignTaskToUser(
             IT_REQUEST_FORM,
             userId,
             "testGroup"
@@ -62,7 +62,7 @@ public class UserTasksExample {
 
         // Have Finance approve the request
         UserTaskOutput financeUserTaskOutput = thread
-            .assignUserTaskToUserGroup(APPROVAL_FORM, "finance")
+            .assignTaskToUserGroup(APPROVAL_FORM, "finance")
             .withNotes(
                 thread.format(
                     "User {0} is requesting to buy item {1}.\nJustification: {2}",
@@ -73,14 +73,14 @@ public class UserTasksExample {
             );
         String financeTeamEmailBody = "Hi finance team, you have a new assigned task";
         String financeTeamEmail = "finance@gmail.com";
-        thread.scheduleTaskAfter(
+        thread.scheduleReminderTask(
             financeUserTaskOutput,
             2,
             EMAIL_TASK_NAME,
             financeTeamEmail,
             financeTeamEmailBody
         );
-        thread.scheduleReassignmentToUserOnDeadline(
+        thread.reassignToUserOnDeadline(
             financeUserTaskOutput,
             "test-eduwer",
             60
