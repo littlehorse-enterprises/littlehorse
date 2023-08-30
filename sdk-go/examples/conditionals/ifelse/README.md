@@ -38,7 +38,7 @@ lhctl run donut-workflow number-of-donuts 3
 Let's view the output of the Task
 
 ```
-lhctl get nodeRunModel <wfRunId from before> 0 2 | jq .result.task.output.str
+lhctl get nodeRun <wfRunId from before> 0 2 | jq .result.task.output.str
 ```
 
 That should print:
@@ -56,7 +56,7 @@ lhctl run donut-workflow number-of-donuts 15
 Let's view the output of the Task
 
 ```
-lhctl get nodeRunModel <wfRunId from before> 0 2 | jq .result.task.output.str
+lhctl get nodeRun <wfRunId from before> 0 2 | jq .result.task.output.str
 ```
 
 That should print:

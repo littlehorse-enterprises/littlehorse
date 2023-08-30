@@ -27,7 +27,7 @@ RUN apt update && \
     rm -f /tmp/*
 EOF
 
-# create docker run command
+# check protoc version
 echo "Docker image compiled, protoc --version: " $($docker_run protoc --version)
 
 # clean old objects
