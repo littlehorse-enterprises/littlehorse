@@ -117,7 +117,6 @@ public abstract class Workflow {
      *
      * @param client is an LHClient.
      * @return true if the workflow spec is registered or false otherwise
-     * @throws LHApiError if the call fails.
      */
     public boolean doesWfSpecExist(LHPublicApiBlockingStub client) {
         try {
@@ -139,7 +138,6 @@ public abstract class Workflow {
      * @param client is an LHClient.
      * @param version workflow version
      * @return true if the workflow spec is registered for this version or false otherwise
-     * @throws LHApiError
      */
     public boolean doesWfSpecExist(LHPublicApiBlockingStub client, Integer version) {
         if (version == null) return doesWfSpecExist(client);
@@ -162,7 +160,6 @@ public abstract class Workflow {
      * Workflow::registerWfSpec() is the same as client.putWfSpec(workflow.compileWorkflow()).
      *
      * @param client is an LHClient.
-     * @throws LHApiError if the call fails.
      */
     public void registerWfSpec(LHPublicApiBlockingStub client) {
         log.info("Creating wfSpec:\n {}", LHLibUtil.protoToJson(client.putWfSpec(compileWorkflow())));

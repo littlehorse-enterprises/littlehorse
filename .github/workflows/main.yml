@@ -22,6 +22,8 @@ jobs:
           java-version: ${{ matrix.java-version }}
       - name: Tests
         run: ./gradlew sdk-java:test sdk-java:build
+      - name: Java Documentaion
+        run: ./gradlew sdk-java:javadoc
   tests-sdk-go:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
     runs-on: ubuntu-latest

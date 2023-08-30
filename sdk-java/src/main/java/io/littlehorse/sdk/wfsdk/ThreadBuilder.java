@@ -31,7 +31,7 @@ public interface ThreadBuilder {
      * @param userId is the user id to assign it to.
      * @return a NodeOutput.
      */
-    UserTaskOutput assignUserTaskToUser(String userTaskDefName, String userId);
+    UserTaskOutput assignTaskToUser(String userTaskDefName, String userId);
 
     /**
      * Adds a User Task Node, and assigns it to a specific user
@@ -41,7 +41,7 @@ public interface ThreadBuilder {
      * @param userGroup is the User's group
      * @return a NodeOutput.
      */
-    UserTaskOutput assignUserTaskToUser(String userTaskDefName, String userId, String userGroup);
+    UserTaskOutput assignTaskToUser(String userTaskDefName, String userId, String userGroup);
 
     /**
      * Schedule Reassignment of a UserTask to a userGroup upon reaching the Deadline. This method is
@@ -52,7 +52,7 @@ public interface ThreadBuilder {
      * @param deadlineSeconds Time in seconds after which the UserTask will be automatically
      *     reassigned to the UserGroup.
      */
-    void scheduleReassignmentToGroupOnDeadline(UserTaskOutput userTaskOutput, int deadlineSeconds);
+    void reassignToGroupOnDeadline(UserTaskOutput userTaskOutput, int deadlineSeconds);
 
     /**
      * Schedule Reassignment of a UserTask to a userId upon reaching the Deadline. This method is
@@ -64,7 +64,7 @@ public interface ThreadBuilder {
      * @param deadlineSeconds Time in seconds after which the UserTask will be automatically
      *     reassigned to the UserGroup.
      */
-    void scheduleReassignmentToUserOnDeadline(UserTaskOutput userTaskOutput, String userId, int deadlineSeconds);
+    void reassignToUserOnDeadline(UserTaskOutput userTaskOutput, String userId, int deadlineSeconds);
 
     /**
      * Adds a User Task Node, and assigns it to a specific user
@@ -73,17 +73,7 @@ public interface ThreadBuilder {
      * @param userId is the user id to assign it to.
      * @return a NodeOutput.
      */
-    UserTaskOutput assignUserTaskToUser(String userTaskDefName, WfRunVariable userId);
-
-    /**
-     * Adds a User Task Node, and assigns it to a specific user
-     *
-     * @param userTaskDefName is the UserTaskDef to assign.
-     * @param userId is the user id to assign it to.
-     * @param userGroup is the User's group
-     * @return a NodeOutput.
-     */
-    UserTaskOutput assignUserTaskToUser(String userTaskDefName, WfRunVariable userId, String userGroup);
+    UserTaskOutput assignTaskToUser(String userTaskDefName, WfRunVariable userId);
 
     /**
      * Adds a User Task Node, and assigns it to a specific user
@@ -93,7 +83,17 @@ public interface ThreadBuilder {
      * @param userGroup is the User's group
      * @return a NodeOutput.
      */
-    UserTaskOutput assignUserTaskToUser(String userTaskDefName, WfRunVariable userId, WfRunVariable userGroup);
+    UserTaskOutput assignTaskToUser(String userTaskDefName, WfRunVariable userId, String userGroup);
+
+    /**
+     * Adds a User Task Node, and assigns it to a specific user
+     *
+     * @param userTaskDefName is the UserTaskDef to assign.
+     * @param userId is the user id to assign it to.
+     * @param userGroup is the User's group
+     * @return a NodeOutput.
+     */
+    UserTaskOutput assignTaskToUser(String userTaskDefName, WfRunVariable userId, WfRunVariable userGroup);
 
     /**
      * Adds a User Task Node, and assigns it to a group of users.
@@ -102,8 +102,18 @@ public interface ThreadBuilder {
      * @param userGroup is the User Group to assign the task to.
      * @return a UserTaskOutput.
      */
-    public UserTaskOutput assignUserTaskToUserGroup(String userTaskDefName, String userGroup);
+    public UserTaskOutput assignTaskToUserGroup(String userTaskDefName, String userGroup);
 
+    /**
+     * Creates a formatted string using WfRunVariables as arguments.
+     *
+     * Example:
+     * format("Hello there, {0}, today is {1}", name, dayOfWeek);
+     *
+     * @param format is the format string.
+     * @param args are the format args.
+     * @return an LHFormatString object which can be used as a variable assignment in a WfSpec.
+     */
     public LHFormatString format(String format, WfRunVariable... args);
 
     /**
@@ -113,7 +123,7 @@ public interface ThreadBuilder {
      * @param userGroup is the User Group (either WfRunVariable or String) to assign the task to.
      * @return a UserTaskOutput.
      */
-    public UserTaskOutput assignUserTaskToUserGroup(String userTaskDefName, WfRunVariable userGroup);
+    public UserTaskOutput assignTaskToUserGroup(String userTaskDefName, WfRunVariable userGroup);
 
     // TODO: Allow assigning User Tasks via `WfRunVariable`
 
@@ -154,7 +164,7 @@ public interface ThreadBuilder {
     public void doIfElse(WorkflowCondition condition, IfElseBody doIf, IfElseBody doElse);
 
     /**
-     * Adds a TASK node to the ThreadSpec.
+     * Adds a Reminder Task to a User Task Node.
      *
      * @param userTask is a reference to the UserTaskNode that we schedule the action after.
      * @param delaySeconds is the delay time after which the Task should be executed.
@@ -164,10 +174,10 @@ public interface ThreadBuilder {
      *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
      *     pass that literal value in.
      */
-    public void scheduleTaskAfter(UserTaskOutput userTask, int delaySeconds, String taskDefName, Object... args);
+    public void scheduleReminderTask(UserTaskOutput userTask, int delaySeconds, String taskDefName, Object... args);
 
     /**
-     * Adds a TASK node to the ThreadSpec.
+     * Adds a Reminder Task to a User Task Node.
      *
      * @param userTask is a reference to the UserTaskNode that we schedule the action after.
      * @param delaySeconds is the delay time after which the Task should be executed.
@@ -177,7 +187,7 @@ public interface ThreadBuilder {
      *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
      *     pass that literal value in.
      */
-    public void scheduleTaskAfter(
+    public void scheduleReminderTask(
             UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Object... args);
 
     /**

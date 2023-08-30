@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
@@ -469,6 +470,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             }
             ctx.onNext((RP) out.toProto().build());
             ctx.onCompleted();
+        } catch (StatusRuntimeException exn) {
+            ctx.onError(exn);
         } catch (Exception exn) {
             log.error("Failed handling a search", exn);
             ctx.onError(LHUtil.toGrpcError(exn));
