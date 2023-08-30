@@ -92,6 +92,13 @@ repos:
         pass_filenames: false
         entry: ./gradlew sdk-java:test
 
+      - id: javadoc
+        name: Running JavaDoc
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: ./gradlew sdk-java:javadoc
+
       - id: go-tests
         name: Running SDK Go Tests
         language: system
