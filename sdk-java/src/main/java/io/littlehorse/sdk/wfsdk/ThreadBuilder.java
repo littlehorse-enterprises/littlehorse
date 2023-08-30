@@ -104,6 +104,15 @@ public interface ThreadBuilder {
      */
     public UserTaskOutput assignTaskToUserGroup(String userTaskDefName, String userGroup);
 
+    /**
+     * Creates a formatted string using WfRunVariables as arguments. Example:
+     *
+     *  -> format("Hello there, {0}, today is {1}", name, dayOfWeek);
+     *
+     * @param format is the format string.
+     * @param args are the format args.
+     * @return an LHFormatString object which can be used as a variable assignment in a WfSpec.
+     */
     public LHFormatString format(String format, WfRunVariable... args);
 
     /**
