@@ -117,14 +117,26 @@ public class SearchVariableRequestModel
             throw new LHApiException(Status.INVALID_ARGUMENT, "Couldn't find WfSpec");
         }
 
-        return spec.getThreadSpecs().entrySet().stream()
+        Optional<VariableDefModel> associatedVariable = spec.getThreadSpecs().entrySet().stream()
                 .flatMap(stringThreadSpecEntry -> stringThreadSpecEntry.getValue().getVariableDefs().stream())
                 .filter(variableDef -> variableDef.getName().equals(value.getVarName()))
-                .filter(variableDef ->
-                        variableDef.getType().equals(value.getValue().getType()))
-                .map(VariableDefModel::getTagStorageType)
-                .findFirst()
-                .orElse(null);
+                .findFirst();
+
+        if (!associatedVariable.isPresent()) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Provided WfSpec has no variable named " + value.getVarName());
+        }
+
+        VariableDefModel varDef = associatedVariable.get();
+        if (varDef.getTagStorageType() == null) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Provided variable has no index");
+        }
+
+        if (varDef.getType() != value.getValue().getType()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Specified Variable has type " + varDef.getType());
+        }
+
+        return varDef.getTagStorageType();
     }
 
     public List<Attribute> getSearchAttributes() throws LHApiException {
@@ -139,9 +151,6 @@ public class SearchVariableRequestModel
         return getStorageTypeFromVariableIndexConfiguration().orElseGet(() -> {
             TagStorageType result = indexTypeForSearchFromWfSpec(stores);
             log.trace("Doing a {} search", result);
-            if (result == null) {
-                throw new LHApiException(Status.INVALID_ARGUMENT, "No index configured for this variable search");
-            }
             return result;
         });
     }

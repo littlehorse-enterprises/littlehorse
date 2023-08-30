@@ -4,6 +4,7 @@ import static io.littlehorse.sdk.common.proto.IndexType.LOCAL_INDEX;
 import static io.littlehorse.sdk.common.proto.IndexType.REMOTE_INDEX;
 
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -36,20 +37,25 @@ public class VariablesExample {
                 WfRunVariable inputText = thread
                     .addVariable("input-text", VariableType.STR)
                     .withIndex(LOCAL_INDEX);
-                WfRunVariable addLength = thread.addVariable(
+
+                    WfRunVariable addLength = thread.addVariable(
                     "add-length",
                     VariableType.BOOL
-                );
+                ).withIndex(IndexType.LOCAL_INDEX);
+
                 WfRunVariable userId = thread
                     .addVariable("user-id", VariableType.INT)
                     .withIndex(REMOTE_INDEX);
-                WfRunVariable sentimentScore = thread
+
+                    WfRunVariable sentimentScore = thread
                     .addVariable("sentiment-score", VariableType.DOUBLE)
                     .withIndex(LOCAL_INDEX);
-                WfRunVariable processedResult = thread
+
+                    WfRunVariable processedResult = thread
                     .addVariable("processed-result", VariableType.JSON_OBJ)
                     .withJsonIndex("$.sentimentScore", REMOTE_INDEX);
-                NodeOutput sentimentAnalysisOutput = thread.execute(
+
+                    NodeOutput sentimentAnalysisOutput = thread.execute(
                     "sentiment-analysis",
                     inputText
                 );
