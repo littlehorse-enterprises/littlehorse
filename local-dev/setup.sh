@@ -4,11 +4,173 @@ set -e
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 WORK_DIR=$SCRIPT_DIR
+DOCKER_COMPOSE_KAFKA=$(
+    cat <<EOF
+services:
+  kafka:
+    network_mode: host
+    container_name: lh-server-kafka
+    image: bitnami/kafka:3.4
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_ENABLE_KRAFT: "yes"
+      KAFKA_CFG_LISTENERS: CONTROLLER://127.0.0.1:29092,PLAINTEXT://127.0.0.1:9092
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
+      KAFKA_CFG_BROKER_ID: "1"
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@localhost:29092
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_PROCESS_ROLES: broker,controller
+      BITNAMI_DEBUG: "true"
+      KAFKA_CFG_NODE_ID: "1"
+      KAFKA_KRAFT_CLUSTER_ID: abcdefghijklmnopqrstuv
+EOF
+)
 
-docker compose --file "$WORK_DIR/docker/docker-compose.yml" \
-    --project-directory "$WORK_DIR" \
-    --project-name lh-server-local-dev \
-    up -d
+DOCKER_COMPOSE_KEYCLOAK=$(
+    cat <<EOF
+services:
+  keycloak:
+    network_mode: host
+    container_name: lh-server-auth
+    image: quay.io/keycloak/keycloak:21.1.1
+    command: ["start-dev", "--http-port=8888"]
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+EOF
+)
 
-echo
-echo "Kafka port: localhost:9092"
+if [ -n "$1" ]; then
+    command="$1"
+else
+    command="kafka"
+fi
+
+setup_keycloak() {
+    docker compose --file /dev/stdin \
+        --project-directory "$WORK_DIR" \
+        --project-name lh-server-auth-local-dev \
+        up -d <<EOF
+${DOCKER_COMPOSE_KEYCLOAK}
+EOF
+
+    while ! curl --silent --fail --output /dev/null http://localhost:8888; do
+        echo "Waiting for keycloak"
+        sleep 5
+    done
+
+    if ! command -v http &>/dev/null; then
+        echo "'http' command not found. Inatall httpie https://httpie.io/cli"
+        exit 1
+    fi
+
+    REALM_NAME="lh"
+    SERVER_CLIENT_ID="server"
+    SERVER_CLIENT_SECRET="3bdca420cf6c48e2aa4f56d46d6327e0"
+    WORKER_CLIENT_ID="worker"
+    WORKER_CLIENT_SECRET="40317ab43bd34a9e93499c7ea03ad398"
+    CLI_CLIENT_ID="lhctl"
+    KEYCLOAK_ADMIN="admin"
+    KEYCLOAK_ADMIN_PASSWORD="admin"
+    KEYCLOAK_PORT="8888"
+
+    KEYCLOAK_ADMIN_ACCESS_TOKEN=$(http -q --form "http://localhost:${KEYCLOAK_PORT}/realms/master/protocol/openid-connect/token" \
+        client_id=admin-cli \
+        username="$KEYCLOAK_ADMIN" \
+        password="$KEYCLOAK_ADMIN_PASSWORD" \
+        grant_type=password | jq -r ".access_token")
+
+    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" "http://localhost:${KEYCLOAK_PORT}/admin/realms" \
+        id="$REALM_NAME" \
+        realm="$REALM_NAME" \
+        displayName="$REALM_NAME" \
+        sslRequired=external \
+        enabled:=true \
+        registrationAllowed:=false \
+        loginWithEmailAllowed:=true \
+        duplicateEmailsAllowed:=false \
+        resetPasswordAllowed:=false \
+        editUsernameAllowed:=false \
+        bruteForceProtected:=true
+
+    echo "Real '${REALM_NAME}' created"
+
+    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
+        protocol=openid-connect \
+        clientId="$SERVER_CLIENT_ID" \
+        id="$SERVER_CLIENT_ID" \
+        secret="$SERVER_CLIENT_SECRET" \
+        serviceAccountsEnabled:=true \
+        directAccessGrantsEnabled:=true \
+        publicClient:=false
+
+    echo "Client '${SERVER_CLIENT_ID}' created"
+
+    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
+        protocol=openid-connect \
+        clientId="$WORKER_CLIENT_ID" \
+        id="$WORKER_CLIENT_ID" \
+        secret="$WORKER_CLIENT_SECRET" \
+        serviceAccountsEnabled:=true \
+        directAccessGrantsEnabled:=true \
+        publicClient:=false
+
+    echo "Client '${WORKER_CLIENT_ID}' created"
+
+    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
+        protocol=openid-connect \
+        clientId="$CLI_CLIENT_ID" \
+        id="$CLI_CLIENT_ID" \
+        directAccessGrantsEnabled:=false \
+        publicClient:=true \
+        redirectUris:='["http://127.0.0.1:25242/callback"]'
+
+    echo "Client '${CLI_CLIENT_ID}' created"
+
+    echo "Keycloak url: http://localhost:8888/"
+}
+
+setup_kafka() {
+    docker compose --file /dev/stdin \
+        --project-directory "$WORK_DIR" \
+        --project-name lh-server-kafka-local-dev \
+        up -d <<EOF
+${DOCKER_COMPOSE_KAFKA}
+EOF
+    echo "Kafka bootstrap: localhost:9092"
+}
+
+clean() {
+    docker compose --file /dev/stdin \
+        --project-directory "$WORK_DIR" \
+        --project-name lh-server-kafka-local-dev \
+        down -v <<EOF
+${DOCKER_COMPOSE_KAFKA}
+EOF
+    docker compose --file /dev/stdin \
+        --project-directory "$WORK_DIR" \
+        --project-name lh-server-auth-local-dev \
+        down -v <<EOF
+${DOCKER_COMPOSE_KEYCLOAK}
+EOF
+    rm -rf /tmp/kafkaState*
+    cd "$SCRIPT_DIR/.."
+    ./gradlew -q clean
+}
+
+case $command in
+clean)
+    clean
+    ;;
+keycloak)
+    setup_keycloak
+    ;;
+*)
+    setup_kafka
+    ;;
+esac

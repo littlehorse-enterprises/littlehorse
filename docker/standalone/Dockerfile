@@ -8,6 +8,7 @@ FROM amazoncorretto:17
 LABEL maintainer="engineering@littlehorse.io"
 
 ENV PATH ${PATH}:/kafka/bin:/lh
+VOLUME /data
 
 RUN mkdir /kafka /lh \
     && yum install -y tar gzip wget \
