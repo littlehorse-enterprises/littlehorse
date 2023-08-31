@@ -60,17 +60,26 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         return out;
     }
 
+    @Override
+    public boolean canBeInterrupted() {
+        return true;
+    }
+
     // First order of business is to get the status of all threads.
     public boolean advanceIfPossible(Date time) {
         for (WaitForThreadModel wft : threads) {
+            if (wft.isAlreadyHandled()) {
+                continue;
+            }
             ThreadRunModel childThread = getWfRun().getThreadRun(wft.getThreadRunNumber());
             wft.setThreadStatus(childThread.getStatus());
             if (childThread.getStatus() == LHStatus.EXCEPTION) {
                 NodeRunModel nodeRun = childThread.getNodeRun(childThread.getCurrentNodePosition());
                 FailureModel latestFailure = nodeRun.getLatestFailure();
-                nodeRunModel.handleSubNodeFailure(latestFailure, time);
+                nodeRunModel.fail(latestFailure, time);
             }
             if (childThread.getEndTime() != null) {
+                wft.setAlreadyHandled(true);
                 wft.setThreadEndTime(childThread.getEndTime());
             }
         }

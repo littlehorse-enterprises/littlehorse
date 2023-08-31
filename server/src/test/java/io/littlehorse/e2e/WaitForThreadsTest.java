@@ -134,9 +134,9 @@ public class WaitForThreadsTest {
                 .prepareRun(waitForThreadsWithExceptionHandlerWorkflow)
                 .waitForStatus(LHStatus.RUNNING)
                 .thenSendExternalEventJsonContent("person-1-approves", person1DenyEvent)
-                .waitForStatus(LHStatus.RUNNING)
-                .waitForNodeRunStatus(person1ApprovalThreadNumber, 3, LHStatus.EXCEPTION)
-                .waitForThreadRunStatus(person2ApprovalThreadNumber, LHStatus.HALTED)
+                .waitForStatus(RUNNING)
+                .waitForNodeRunStatus(person1ApprovalThreadNumber, 3, EXCEPTION)
+                .waitForThreadRunStatus(person2ApprovalThreadNumber, RUNNING)
                 .waitForNodeRunStatus(person2ApprovalThreadNumber, 1, LHStatus.RUNNING)
                 .waitForTaskStatus(exceptionHandlerThreadNumber, 1, TaskStatus.TASK_SUCCESS)
                 .thenVerifyTaskRunResult(

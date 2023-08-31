@@ -31,7 +31,7 @@ public class ParallelApprovalExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
-            "parallel-approval",
+            "parallel-approval-with-handler",
             thread -> {
                 // Initialize variables.
                 WfRunVariable person1Approved = thread.addVariable(
@@ -240,12 +240,15 @@ public class ParallelApprovalExample {
 
         for (String externalEventName : externalEventNames) {
             log.debug("Registering external event {}", externalEventName);
-            client.putExternalEventDef(
-                PutExternalEventDefRequest
-                    .newBuilder()
-                    .setName(externalEventName)
-                    .build()
-            );
+            try{
+                client.putExternalEventDef(
+                        PutExternalEventDefRequest
+                                .newBuilder()
+                                .setName(externalEventName)
+                                .build()
+                );
+            }catch (Exception e){}
+
         }
 
         // Register a workflow if it does not exist

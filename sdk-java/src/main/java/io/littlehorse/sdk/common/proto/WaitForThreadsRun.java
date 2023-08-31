@@ -85,6 +85,12 @@ private static final long serialVersionUID = 0L;
      * @return The failureMode.
      */
     io.littlehorse.sdk.common.proto.FailureMode getFailureMode();
+
+    /**
+     * <code>bool already_handled = 5;</code>
+     * @return The alreadyHandled.
+     */
+    boolean getAlreadyHandled();
   }
   /**
    * Protobuf type {@code littlehorse.WaitForThreadsRun.WaitForThread}
@@ -197,6 +203,17 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.FailureMode.UNRECOGNIZED : result;
     }
 
+    public static final int ALREADY_HANDLED_FIELD_NUMBER = 5;
+    private boolean alreadyHandled_ = false;
+    /**
+     * <code>bool already_handled = 5;</code>
+     * @return The alreadyHandled.
+     */
+    @java.lang.Override
+    public boolean getAlreadyHandled() {
+      return alreadyHandled_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -223,6 +240,9 @@ private static final long serialVersionUID = 0L;
       if (failureMode_ != io.littlehorse.sdk.common.proto.FailureMode.FAST.getNumber()) {
         output.writeEnum(4, failureMode_);
       }
+      if (alreadyHandled_ != false) {
+        output.writeBool(5, alreadyHandled_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -248,6 +268,10 @@ private static final long serialVersionUID = 0L;
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(4, failureMode_);
       }
+      if (alreadyHandled_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(5, alreadyHandled_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -272,6 +296,8 @@ private static final long serialVersionUID = 0L;
       if (getThreadRunNumber()
           != other.getThreadRunNumber()) return false;
       if (failureMode_ != other.failureMode_) return false;
+      if (getAlreadyHandled()
+          != other.getAlreadyHandled()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -293,6 +319,9 @@ private static final long serialVersionUID = 0L;
       hash = (53 * hash) + getThreadRunNumber();
       hash = (37 * hash) + FAILURE_MODE_FIELD_NUMBER;
       hash = (53 * hash) + failureMode_;
+      hash = (37 * hash) + ALREADY_HANDLED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getAlreadyHandled());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -438,6 +467,7 @@ private static final long serialVersionUID = 0L;
         threadStatus_ = 0;
         threadRunNumber_ = 0;
         failureMode_ = 0;
+        alreadyHandled_ = false;
         return this;
       }
 
@@ -486,6 +516,9 @@ private static final long serialVersionUID = 0L;
         }
         if (((from_bitField0_ & 0x00000008) != 0)) {
           result.failureMode_ = failureMode_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.alreadyHandled_ = alreadyHandled_;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -546,6 +579,9 @@ private static final long serialVersionUID = 0L;
         if (other.failureMode_ != 0) {
           setFailureModeValue(other.getFailureModeValue());
         }
+        if (other.getAlreadyHandled() != false) {
+          setAlreadyHandled(other.getAlreadyHandled());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -594,6 +630,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000008;
                 break;
               } // case 32
+              case 40: {
+                alreadyHandled_ = input.readBool();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -864,6 +905,38 @@ private static final long serialVersionUID = 0L;
       public Builder clearFailureMode() {
         bitField0_ = (bitField0_ & ~0x00000008);
         failureMode_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private boolean alreadyHandled_ ;
+      /**
+       * <code>bool already_handled = 5;</code>
+       * @return The alreadyHandled.
+       */
+      @java.lang.Override
+      public boolean getAlreadyHandled() {
+        return alreadyHandled_;
+      }
+      /**
+       * <code>bool already_handled = 5;</code>
+       * @param value The alreadyHandled to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAlreadyHandled(boolean value) {
+
+        alreadyHandled_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool already_handled = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAlreadyHandled() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        alreadyHandled_ = false;
         onChanged();
         return this;
       }
