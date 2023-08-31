@@ -15,19 +15,9 @@ This repository requires the following system dependencies:
     - [Protocol Buffer Compiler](https://grpc.io/docs/protoc-installation/)
     - [Java gRPC compiler plugin](https://github.com/grpc/grpc-java/blob/master/compiler/README.md)
     - This needs to be put somewhere in your `PATH`.
-- `npm` (this is a dev dependency)
 - `pre-commit` (this is a dev dependency)
-
-### Setting Up the Linters
-
-We have decided to use the [Prettier for Java](https://github.com/jhipster/prettier-java) linter. It is the same linter used by most Javascript projects but adapted for Java. Therefore, it requires Node.js as a prerequisite to run.
-
-To install the formatter, all you need to do is first install Node.js as per the website, and then run:
-
-```
-npm install  # This uses the package.json
-npm run format  # This runs the linters
-```
+- `python` and [poetry](https://python-poetry.org/).
+    - [sdk-python](sdk-python): >= 3.9
 
 
 ### Setup Pre-commit
