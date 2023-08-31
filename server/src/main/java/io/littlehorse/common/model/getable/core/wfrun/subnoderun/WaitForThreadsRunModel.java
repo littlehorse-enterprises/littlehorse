@@ -4,7 +4,6 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
-import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
@@ -18,6 +17,7 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -62,54 +62,49 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     // First order of business is to get the status of all threads.
     public boolean advanceIfPossible(Date time) {
         for (WaitForThreadModel wft : threads) {
-            ThreadRunModel thread = getWfRun().getThreadRun(wft.getThreadRunNumber());
-            if (wft.getThreadStatus() != thread.getStatus()
-                    && (thread.getStatus() == LHStatus.ERROR || thread.getStatus() == LHStatus.EXCEPTION)) {
-                NodeRunModel nodeRun = thread.getNodeRun(thread.getCurrentNodePosition());
-                FailureModel latestFailure = nodeRun.getLatestFailure();
-                nodeRunModel.handleSubNodeFailure(latestFailure, time);
-            }
-            wft.setThreadStatus(thread.getStatus());
-            if (thread.getEndTime() != null) {
-                wft.setThreadEndTime(thread.getEndTime());
+            ThreadRunModel childThread = getWfRun().getThreadRun(wft.getThreadRunNumber());
+            wft.setThreadStatus(childThread.getStatus());
+            if (childThread.getEndTime() != null) {
+                wft.setThreadEndTime(childThread.getEndTime());
             }
         }
 
-        boolean allTerminated = true;
-        List<Integer> failedThreads = new ArrayList<>();
-
-        for (WaitForThreadModel wft : threads) {
-            if (!isTerminated(wft)) {
-                allTerminated = false;
-                break;
-            }
-
-            if (wft.getThreadStatus() == LHStatus.ERROR) {
-                failedThreads.add(wft.getThreadRunNumber());
+        // boolean allTerminated = true;
+        for (WaitForThreadModel thread : threads) {
+            if (!isTerminated(thread)) {
+                log.debug("Still waiting for threads");
+                return false;
             }
         }
 
-        if (allTerminated && failedThreads.isEmpty()) {
+        Predicate<WaitForThreadModel> isFailedWaitForThread =
+                waitForThreadModel -> waitForThreadModel.getThreadStatus() == LHStatus.ERROR
+                        || waitForThreadModel.getThreadStatus() == LHStatus.EXCEPTION;
+
+        List<Integer> failedThreads = threads.stream()
+                .filter(isFailedWaitForThread)
+                .map(WaitForThreadModel::getThreadRunNumber)
+                .toList();
+
+        if (failedThreads.isEmpty()) {
             VariableValueModel out = new VariableValueModel();
             out.type = VariableType.NULL;
             nodeRunModel.complete(out, time);
             return true;
-        } else if (allTerminated && !failedThreads.isEmpty()) {
+        } else {
             String message = "Some child threads failed";
             for (Integer threadRunNumber : failedThreads) {
                 message += ", " + threadRunNumber;
             }
             nodeRunModel.fail(new FailureModel(message, LHConstants.CHILD_FAILURE), time);
             return true;
-        } else {
-            // nothing to do.
-            log.debug("Still waiting for threads");
-            return false;
         }
     }
 
     private boolean isTerminated(WaitForThreadModel wft) {
-        return ((wft.getThreadStatus() == LHStatus.COMPLETED) || (wft.getThreadStatus() == LHStatus.ERROR));
+        return wft.getThreadStatus() == LHStatus.COMPLETED
+                || wft.getThreadStatus() == LHStatus.ERROR
+                || wft.getThreadStatus() == LHStatus.EXCEPTION;
     }
 
     public void arrive(Date time) {

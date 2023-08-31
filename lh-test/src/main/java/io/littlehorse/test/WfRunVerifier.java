@@ -11,6 +11,7 @@ import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.exception.LHTestInitializationException;
@@ -18,6 +19,7 @@ import io.littlehorse.test.internal.step.SendExternalEventStep;
 import io.littlehorse.test.internal.step.VerifyNodeRunStep;
 import io.littlehorse.test.internal.step.VerifyTaskExecution;
 import io.littlehorse.test.internal.step.VerifyVariableStep;
+import io.littlehorse.test.internal.step.VerifyWfRunStep;
 import io.littlehorse.test.internal.step.WaitForStatusStep;
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -54,6 +56,11 @@ public class WfRunVerifier extends AbstractVerifier {
             expectedOutput.accept(actualOutput);
         };
         steps.add(new VerifyTaskExecution(threadRunNumber, nodeRunNumber, taskRunConsumer));
+        return this;
+    }
+
+    public WfRunVerifier thenVerifyWfRun(Consumer<WfRun> wfRunMatcher) {
+        steps.add(new VerifyWfRunStep(wfRunMatcher));
         return this;
     }
 
