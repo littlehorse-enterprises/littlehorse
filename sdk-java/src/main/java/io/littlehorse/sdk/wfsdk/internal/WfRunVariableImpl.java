@@ -66,7 +66,7 @@ public class WfRunVariableImpl implements WfRunVariable {
             throw new LHMisconfigurationException(String.format("Invalid JsonPath: %s", jsonPath));
         }
         if (!type.equals(VariableType.JSON_OBJ)) {
-            throw new LHMisconfigurationException(String.format("Non-Json %s varibale contains jsonIndex", name));
+            throw new LHMisconfigurationException(String.format("Non-Json %s variable contains jsonIndex", name));
         }
         this.jsonIndexes.add(
                 JsonIndex.newBuilder().setIndexType(indexType).setPath(jsonPath).build());

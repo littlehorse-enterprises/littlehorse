@@ -1,11 +1,13 @@
 from inspect import signature
 import inspect
 from pathlib import Path
-from typing import Any, Callable, Union
-from littlehorse.model.common_wfspec_pb2 import VariableDef
+from typing import Any, Callable, Optional, Union
+from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.model.common_wfspec_pb2 import IndexType, JsonIndex, VariableDef
 from littlehorse.model.service_pb2 import PutWfSpecRequest
+from littlehorse.model.variable_pb2 import VariableValue
 from littlehorse.model.wf_spec_pb2 import ThreadSpec
-from littlehorse.utils import proto_to_json
+from littlehorse.utils import parse_value, proto_to_json
 
 
 class NodeOutput:
@@ -14,12 +16,70 @@ class NodeOutput:
 
 
 class WfRunVariable:
-    def __init__(self) -> None:
-        pass
+    def __init__(
+        self, variable_name: str, variable_type: VariableType, default_value: Any = None
+    ) -> None:
+        self.name = variable_name
+        self.type = variable_type
+        self.default: Optional[VariableValue] = None
+        self._json_path: Optional[str] = None
+        self.index_type: Optional[IndexType] = None
+        self.json_indexes: list[JsonIndex] = []
+
+        if default_value is not None:
+            self.default = parse_value(default_value)
+
+            if self.default.type != self.type:
+                raise TypeError(
+                    f"Default value is not a {VariableType.Name(variable_type)}"
+                )
+
+    @property
+    def json_path(self) -> Optional[str]:
+        # if not json_path.startswith("$."):
+        #     raise ValueError(f"Invalid JsonPath: {json_path}")
+        return self._json_path
+
+    @json_path.setter
+    def json_path(self, json_path: str) -> None:
+        if json_path is None:
+            raise ValueError("None is not allowed")
+
+        if not json_path.startswith("$."):
+            raise ValueError(f"Invalid JsonPath: {json_path}. Use $. at the beginning")
+
+        if self._json_path is not None:
+            raise ValueError("Cannot set a json_path twice on same var")
+
+        self._json_path = json_path
+
+    def with_json_path(self, json_path: str) -> "WfRunVariable":
+        if self.json_path is not None:
+            raise ValueError("Cannot set a json_path twice on same var")
+
+        out = WfRunVariable(self.name, self.type, self.default)
+        out.json_path = json_path
+        return out
+
+    def with_index(self, index_type: IndexType) -> "WfRunVariable":
+        self.index_type = index_type
+        return self
+
+    def with_json_index(self, json_path: str, index_type: IndexType) -> "WfRunVariable":
+        if json_path is None or index_type is None:
+            raise ValueError("None is not allowed")
+
+        if not json_path.startswith("$."):
+            raise ValueError(f"Invalid JsonPath: {json_path}")
+
+        if self.type != VariableType.JSON_OBJ:
+            raise ValueError(f"Non-Json {self.name} variable contains jsonIndex")
+
+        self.json_indexes.append(JsonIndex(path=json_path, index_type=index_type))
+        return self
 
     def compile(self) -> VariableDef:
-        spec = VariableDef()
-        return spec
+        return VariableDef(type=self.type, name=self.name)
 
 
 class ThreadBuilder:
@@ -29,8 +89,10 @@ class ThreadBuilder:
     def execute(self, task_name: str, *args: Any) -> NodeOutput:
         return NodeOutput()
 
-    def add_variable(self, name: str, type_or_default: Any) -> WfRunVariable:
-        return WfRunVariable()
+    def add_variable(
+        self, variable_name: str, variable_type: VariableType, default_value: Any = None
+    ) -> WfRunVariable:
+        return WfRunVariable(variable_name, variable_type, default_value)
 
     def compile(self) -> ThreadSpec:
         spec = ThreadSpec()
