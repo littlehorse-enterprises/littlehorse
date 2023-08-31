@@ -63,7 +63,8 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     public boolean advanceIfPossible(Date time) {
         for (WaitForThreadModel wft : threads) {
             ThreadRunModel thread = getWfRun().getThreadRun(wft.getThreadRunNumber());
-            if (wft.getThreadStatus() != thread.getStatus() && thread.getStatus() == LHStatus.ERROR) {
+            if (wft.getThreadStatus() != thread.getStatus()
+                    && (thread.getStatus() == LHStatus.ERROR || thread.getStatus() == LHStatus.EXCEPTION)) {
                 NodeRunModel nodeRun = thread.getNodeRun(thread.getCurrentNodePosition());
                 FailureModel latestFailure = nodeRun.getLatestFailure();
                 nodeRunModel.handleSubNodeFailure(latestFailure, time);

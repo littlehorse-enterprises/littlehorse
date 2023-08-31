@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.util.Arg;
@@ -87,6 +88,16 @@ public class WfRunVerifier extends AbstractVerifier {
                     .getStatus();
         };
         steps.add(new WaitForStatusStep<>(objectLHStatusFunction, status));
+        return this;
+    }
+
+    public WfRunVerifier waitForThreadRunStatus(int threadRunNumber, LHStatus threadRunStatus) {
+        Function<Object, LHStatus> objectLHStatusFunction = context -> {
+            String wfRunId = context.toString();
+            ThreadRun threadRun = lhClientTestWrapper.getWfRun(wfRunId).getThreadRuns(threadRunNumber);
+            return threadRun.getStatus();
+        };
+        steps.add(new WaitForStatusStep<>(objectLHStatusFunction, threadRunStatus));
         return this;
     }
 

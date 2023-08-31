@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.getable.core.wfrun.failure;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.Failure;
@@ -50,5 +51,9 @@ public class FailureModel extends LHSerializable<Failure> {
         if (p.hasContent()) {
             content = VariableValueModel.fromProto(p.getContent());
         }
+    }
+
+    public boolean isUserDefinedFailure() {
+        return !LHConstants.RESERVED_EXCEPTION_NAMES.contains(failureName);
     }
 }

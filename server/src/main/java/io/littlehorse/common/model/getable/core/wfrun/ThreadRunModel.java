@@ -431,7 +431,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         } else if (status == LHStatus.COMPLETED) {
             // Nothing to do, this is likely an innocuous event.
             return false;
-        } else if (status == LHStatus.ERROR) {
+        } else if (status == LHStatus.ERROR || status == LHStatus.EXCEPTION) {
             // This is innocuous. Occurs when a timeout event comes in after
             // a thread fails or completes. Nothing to do.
 
@@ -508,7 +508,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public void dieForReal(FailureModel failure, Date time) {
         this.errorMessage = failure.message;
-        setStatus(LHStatus.ERROR);
+        this.status = failure.isUserDefinedFailure() ? LHStatus.EXCEPTION : LHStatus.ERROR;
         this.endTime = time;
 
         for (int childId : childThreadIds) {
