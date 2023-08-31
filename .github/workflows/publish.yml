@@ -39,7 +39,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: "3.9"
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
@@ -80,12 +80,12 @@ jobs:
         id: login-ecr-public
         uses: aws-actions/amazon-ecr-login@v1
         with:
-          mask-password: 'true'
+          mask-password: "true"
           registry-type: public
       - name: Push Server Image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-          ECR_REGISTRY_ALIAS: k7z9g8i4
+          ECR_REGISTRY_ALIAS: littlehorse
           ECR_REPOSITORY: littlehorse-server
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
@@ -96,7 +96,7 @@ jobs:
       - name: Push Standalone Image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-          ECR_REGISTRY_ALIAS: k7z9g8i4
+          ECR_REGISTRY_ALIAS: littlehorse
           ECR_REPOSITORY: littlehorse-standalone
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
