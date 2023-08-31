@@ -21,15 +21,15 @@ class WfRunVariable:
     ) -> None:
         self.name = variable_name
         self.type = variable_type
-        self.default: Optional[VariableValue] = None
+        self.default_value: Optional[VariableValue] = None
         self._json_path: Optional[str] = None
         self.index_type: Optional[IndexType] = None
         self.json_indexes: list[JsonIndex] = []
 
         if default_value is not None:
-            self.default = parse_value(default_value)
+            self.default_value = parse_value(default_value)
 
-            if self.default.type != self.type:
+            if self.default_value.type != self.type:
                 raise TypeError(
                     f"Default value is not a {VariableType.Name(variable_type)}"
                 )
@@ -57,7 +57,12 @@ class WfRunVariable:
         if self.json_path is not None:
             raise ValueError("Cannot set a json_path twice on same var")
 
-        out = WfRunVariable(self.name, self.type, self.default)
+        if self.type != VariableType.JSON_OBJ and self.type != VariableType.JSON_ARR:
+            raise ValueError(
+                f"JsonPath not allowed in a {VariableType.Name(self.type)} variable"
+            )
+
+        out = WfRunVariable(self.name, self.type, self.default_value)
         out.json_path = json_path
         return out
 
@@ -73,13 +78,22 @@ class WfRunVariable:
             raise ValueError(f"Invalid JsonPath: {json_path}")
 
         if self.type != VariableType.JSON_OBJ:
-            raise ValueError(f"Non-Json {self.name} variable contains jsonIndex")
+            raise ValueError(
+                f"JsonPath not allowed in a {VariableType.Name(self.type)} variable"
+            )
 
         self.json_indexes.append(JsonIndex(path=json_path, index_type=index_type))
         return self
 
     def compile(self) -> VariableDef:
-        return VariableDef(type=self.type, name=self.name)
+        new_var = VariableDef(
+            type=self.type,
+            name=self.name,
+            index_type=self.index_type,
+            default_value=self.default_value,
+        )
+        new_var.json_indexes.extend(self.json_indexes)
+        return new_var
 
 
 class ThreadBuilder:

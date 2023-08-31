@@ -1,5 +1,6 @@
 import unittest
 from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.model.common_wfspec_pb2 import IndexType, JsonIndex, VariableDef
 
 from littlehorse.workflow import ThreadBuilder, WfRunVariable, Workflow
 
@@ -7,11 +8,11 @@ from littlehorse.workflow import ThreadBuilder, WfRunVariable, Workflow
 class TestWfRunVariable(unittest.TestCase):
     def test_value_is_not_none(self):
         variable = WfRunVariable("my-var", VariableType.STR, "my-str")
-        self.assertEqual(variable.default.type, VariableType.STR)
-        self.assertEqual(variable.default.str, "my-str")
+        self.assertEqual(variable.default_value.type, VariableType.STR)
+        self.assertEqual(variable.default_value.str, "my-str")
 
         variable = WfRunVariable("my-var", VariableType.STR)
-        self.assertEqual(variable.default, None)
+        self.assertEqual(variable.default_value, None)
 
     def test_validate_are_same_type(self):
         with self.assertRaises(TypeError) as exception_context:
@@ -50,10 +51,48 @@ class TestWfRunVariable(unittest.TestCase):
             str(exception_context.exception),
         )
 
-    def test_json_path_creates_new(self):
+    def test_validate_is_json_obj_when_using_json_index(self):
         variable = WfRunVariable("my-var", VariableType.STR)
+        with self.assertRaises(ValueError) as exception_context:
+            variable.with_json_index("$.myPath", IndexType.LOCAL_INDEX)
+        self.assertEqual(
+            "JsonPath not allowed in a STR variable",
+            str(exception_context.exception),
+        )
+
+    def test_validate_is_json_obj_when_using_json_pth(self):
+        variable = WfRunVariable("my-var", VariableType.STR)
+        with self.assertRaises(ValueError) as exception_context:
+            variable.with_json_path("$.myPath")
+        self.assertEqual(
+            "JsonPath not allowed in a STR variable",
+            str(exception_context.exception),
+        )
+
+        variable = WfRunVariable("my-var", VariableType.JSON_OBJ)
+        variable.with_json_path("$.myPath")
+
+        variable = WfRunVariable("my-var", VariableType.JSON_ARR)
+        variable.with_json_path("$.myPath")
+
+    def test_json_path_creates_new(self):
+        variable = WfRunVariable("my-var", VariableType.JSON_ARR)
         with_json = variable.with_json_path("$.myPath")
         self.assertIsNot(variable, with_json)
+
+    def test_compile_variable(self):
+        variable = WfRunVariable("my-var", VariableType.STR)
+        self.assertEqual(
+            variable.compile(), VariableDef(name="my-var", type=VariableType.STR)
+        )
+
+        variable = WfRunVariable("my-var", VariableType.JSON_OBJ)
+        variable.with_json_index("$.myPath", IndexType.LOCAL_INDEX)
+        expected_output = VariableDef(name="my-var", type=VariableType.JSON_OBJ)
+        expected_output.json_indexes.append(
+            JsonIndex(path="$.myPath", index_type=IndexType.LOCAL_INDEX)
+        )
+        self.assertEqual(variable.compile(), expected_output)
 
 
 class TestWorkflow(unittest.TestCase):

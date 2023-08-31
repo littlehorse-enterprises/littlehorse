@@ -49,6 +49,9 @@ public class WfRunVariableImpl implements WfRunVariable {
         if (jsonPath != null) {
             throw new LHMisconfigurationException("Cannot use jsonpath() twice on same var!");
         }
+        if (!type.equals(VariableType.JSON_OBJ) && !type.equals(VariableType.JSON_ARR)) {
+            throw new LHMisconfigurationException(String.format("JsonPath not allowed in a %s variable", type.name()));
+        }
         WfRunVariableImpl out = new WfRunVariableImpl(name, typeOrDefaultVal);
         out.jsonPath = path;
         return out;
