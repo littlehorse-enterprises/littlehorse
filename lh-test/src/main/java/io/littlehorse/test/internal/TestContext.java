@@ -52,11 +52,13 @@ public class TestContext {
     }
 
     public void registerExternalEventDef(ExternalEventDef externalEventDef) {
-        PutExternalEventDefRequest putExternalEventDefRequest = PutExternalEventDefRequest.newBuilder()
-                .setName(externalEventDef.getName())
-                .build();
-        ExternalEventDef externalEventDefResult = lhClient.putExternalEventDef(putExternalEventDefRequest);
-        externalEventDefMap.put(externalEventDefResult.getName(), externalEventDefResult);
+        if (!externalEventDefMap.containsKey(externalEventDef.getName())) {
+            PutExternalEventDefRequest putExternalEventDefRequest = PutExternalEventDefRequest.newBuilder()
+                    .setName(externalEventDef.getName())
+                    .build();
+            ExternalEventDef externalEventDefResult = lhClient.putExternalEventDef(putExternalEventDefRequest);
+            externalEventDefMap.put(externalEventDefResult.getName(), externalEventDefResult);
+        }
     }
 
     public void instrument(Object testInstance) {

@@ -43,6 +43,9 @@ public class WaitForThreadsTest {
     @LHWorkflow("simple-wait-for-threads-workflow")
     private Workflow simpleWaitForThreadsWorkflow;
 
+    @LHWorkflow("wait-for-threads-without-exception-handler")
+    private Workflow waitForThreadsWithoutExceptionHandlerWorkflow;
+
     @Test
     void shouldExecuteSimpleWorkflowSuccessfully() {
         int entrypointThreadNumber = 0;
@@ -142,6 +145,17 @@ public class WaitForThreadsTest {
                 .start();
     }
 
+    @Test
+    void shouldTerminateWorkflowExecutionWhenExceptionHandlerIsNotPresent() {
+        Map person1DenyEvent = Map.of("approval", false);
+        workflowVerifier
+                .prepareRun(waitForThreadsWithoutExceptionHandlerWorkflow)
+                .waitForStatus(RUNNING)
+                .thenSendExternalEventJsonContent("person-1-approves", person1DenyEvent)
+                .waitForStatus(EXCEPTION)
+                .start();
+    }
+
     @LHWorkflow("wait-for-threads-with-exception-handler")
     public Workflow buildWaitForThreadsWithExceptionHandlerWorkflow() {
         return new WorkflowImpl("parallel-approval", thread -> {
@@ -189,6 +203,55 @@ public class WaitForThreadsTest {
             thread.handleException(nodeOutput, "denied-by-user", xnHandler -> {
                 xnHandler.execute("exc-handler");
             });
+
+            // Tell the reminder workflow to stop
+            thread.mutate(allApproved, VariableMutationType.ASSIGN, true);
+        });
+    }
+
+    @LHWorkflow("wait-for-threads-without-exception-handler")
+    public Workflow buildWaitForThreadsWithoutExceptionHandlerWorkflow() {
+        return new WorkflowImpl("parallel-approval", thread -> {
+            // Initialize variables.
+            WfRunVariable person1Approved = thread.addVariable("person-1-approved", VariableType.BOOL);
+            WfRunVariable person2Approved = thread.addVariable("person-2-approved", VariableType.BOOL);
+            WfRunVariable person3Approved = thread.addVariable("person-3-approved", VariableType.BOOL);
+            WfRunVariable allApproved = thread.addVariable("all-approved", VariableType.BOOL);
+
+            // Variables are initialized to NULL. Need to set to a real value.
+            thread.mutate(allApproved, VariableMutationType.ASSIGN, false);
+            thread.mutate(person1Approved, VariableMutationType.ASSIGN, false);
+            thread.mutate(person2Approved, VariableMutationType.ASSIGN, false);
+            thread.mutate(person3Approved, VariableMutationType.ASSIGN, false);
+
+            BiFunction<WfRunVariable, String, ThreadFunc> buildChildThread = (approvalVariable, approvalName) -> {
+                return approvalThread -> {
+                    WfRunVariable jsonVariable =
+                            approvalThread.addVariable(approvalName + "-response", VariableType.JSON_OBJ);
+                    approvalThread.mutate(
+                            jsonVariable,
+                            VariableMutationType.ASSIGN,
+                            approvalThread.waitForEvent(approvalName + "-approves"));
+                    approvalThread.doIfElse(
+                            approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
+                            ifHandler -> {
+                                approvalThread.mutate(person2Approved, VariableMutationType.ASSIGN, true);
+                            },
+                            elseHandler -> {
+                                approvalThread.fail("denied-by-user", "message here");
+                            });
+                };
+            };
+
+            // Wait for all users to approve the transaction
+            SpawnedThread p1Thread =
+                    thread.spawnThread(buildChildThread.apply(person1Approved, "person-1"), "person-1", null);
+            SpawnedThread p2Thread =
+                    thread.spawnThread(buildChildThread.apply(person2Approved, "person-2"), "person-2", null);
+            SpawnedThread p3Thread =
+                    thread.spawnThread(buildChildThread.apply(person3Approved, "person-3"), "person-3", null);
+
+            thread.waitForThreads(p1Thread, p2Thread, p3Thread);
 
             // Tell the reminder workflow to stop
             thread.mutate(allApproved, VariableMutationType.ASSIGN, true);

@@ -511,14 +511,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         this.status = failure.isUserDefinedFailure() ? LHStatus.EXCEPTION : LHStatus.ERROR;
         this.endTime = time;
 
-        /*for (int childId : childThreadIds) {
+        for (int childId : childThreadIds) {
             ThreadRunModel child = wfRunModel.threadRunModels.get(childId);
             ThreadHaltReasonModel hr = new ThreadHaltReasonModel();
             hr.type = ReasonCase.PARENT_HALTED;
             hr.parentHalted = new ParentHaltedModel();
             hr.parentHalted.parentThreadId = number;
             child.halt(hr);
-        }*/
+        }
 
         if (interruptTriggerId != null) {
             // then we're an interrupt thread and need to fail the parent.
