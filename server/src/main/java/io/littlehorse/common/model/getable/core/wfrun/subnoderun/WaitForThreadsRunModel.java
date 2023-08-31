@@ -60,6 +60,11 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         return out;
     }
 
+    @Override
+    public boolean canBeInterrupted() {
+        return true;
+    }
+
     // First order of business is to get the status of all threads.
     public boolean advanceIfPossible(Date time) {
         for (WaitForThreadModel wft : threads) {
