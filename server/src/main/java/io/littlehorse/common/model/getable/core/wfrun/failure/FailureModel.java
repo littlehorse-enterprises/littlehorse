@@ -51,6 +51,4 @@ public class FailureModel extends LHSerializable<Failure> {
             content = VariableValueModel.fromProto(p.getContent());
         }
     }
-
-
 }
