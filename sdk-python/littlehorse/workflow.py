@@ -233,9 +233,6 @@ class Workflow:
 
         self._thread_initializers: list[tuple[str, ThreadInitializer]] = []
 
-        # add entrypoint
-        self.add_sub_thread(ENTRYPOINT, entrypoint)
-
     def add_sub_thread(self, name: str, initializer: ThreadInitializer) -> str:
         """Add a subthread.
 
@@ -292,12 +289,15 @@ class Workflow:
         Returns:
             PutWfSpecRequest: Spec.
         """
+        self.add_sub_thread(ENTRYPOINT, self._entrypoint)
         threads_iterator = iter(self._thread_initializers)
         thread_specs: dict[str, ThreadSpec] = {}
 
         for name, initializer in threads_iterator:
             builder = ThreadBuilder(self, initializer)
             thread_specs[name] = builder.compile()
+
+        self._thread_initializers = []
 
         return PutWfSpecRequest(
             name=self.name, entrypoint_thread_name=ENTRYPOINT, thread_specs=thread_specs

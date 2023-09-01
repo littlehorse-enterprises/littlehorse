@@ -16,10 +16,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 
 /** The Workflow class represents a `WfSpec` object in the API. */
 @Slf4j
@@ -28,7 +29,7 @@ public abstract class Workflow {
     protected ThreadFunc entrypointThread;
     protected String name;
     protected PutWfSpecRequest.Builder spec;
-    protected Map<String, ThreadFunc> threadFuncs;
+    protected Queue<Pair<String, ThreadFunc>> threadFuncs;
 
     /**
      * Internal constructor used by WorkflowImpl.
@@ -37,7 +38,7 @@ public abstract class Workflow {
      * @param entrypointThreadFunc is the entrypoint thread function.
      */
     protected Workflow(String name, ThreadFunc entrypointThreadFunc) {
-        this.threadFuncs = new HashMap<>();
+        this.threadFuncs = new LinkedList<>();
         this.entrypointThread = entrypointThreadFunc;
         this.name = name;
         this.spec = PutWfSpecRequest.newBuilder().setName(name);

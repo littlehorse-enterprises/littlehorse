@@ -148,8 +148,11 @@ class TestWorkflow(unittest.TestCase):
             pass
 
         wf = Workflow("my-wf", my_entrypoint)
+        wf.add_sub_thread("entrypoint", my_entrypoint)
+
         with self.assertRaises(ValueError) as exception_context:
             wf.add_sub_thread("entrypoint", my_entrypoint)
+
         self.assertEqual(
             "Thread entrypoint already added",
             str(exception_context.exception),
