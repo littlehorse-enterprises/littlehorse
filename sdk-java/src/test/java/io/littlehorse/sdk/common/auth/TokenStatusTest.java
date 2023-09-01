@@ -12,18 +12,15 @@ import org.junit.jupiter.api.Test;
 public class TokenStatusTest {
 
     @Test
-    void getExpirationIsNonNull() {
-        assertThrows(NullPointerException.class, () -> TokenStatus.builder()
-                .clientId("my-client")
-                .token("my-token")
-                .build());
+    void getTokenIsNonNull() {
+        assertThrows(NullPointerException.class, () -> TokenStatus.builder().build());
     }
 
     @Test
     void getExpired() {
         TokenStatus status =
                 TokenStatus.builder().token("my-token").expiration(Instant.MIN).build();
-        assertTrue(status.isExpired());
+        assertFalse(status.isValid());
     }
 
     @Test
@@ -33,7 +30,7 @@ public class TokenStatusTest {
                 .token("my-token")
                 .expiration(Instant.now())
                 .build();
-        assertTrue(status.isExpired());
+        assertFalse(status.isValid());
     }
 
     @Test
@@ -53,6 +50,6 @@ public class TokenStatusTest {
                 .token("my-token")
                 .expiration(Instant.MAX)
                 .build();
-        assertFalse(status.isExpired());
+        assertTrue(status.isValid());
     }
 }
