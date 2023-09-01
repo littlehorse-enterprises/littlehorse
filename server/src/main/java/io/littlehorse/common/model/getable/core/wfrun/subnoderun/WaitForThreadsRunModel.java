@@ -4,7 +4,6 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
-import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
@@ -18,7 +17,6 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
     private List<WaitForThreadModel> threads;
+
+    private boolean failFast = false;
 
     public WaitForThreadsRunModel() {
         this.threads = new ArrayList<>();
@@ -67,7 +67,13 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
     // First order of business is to get the status of all threads.
     public boolean advanceIfPossible(Date time) {
-        for (WaitForThreadModel wft : threads) {
+        if (failFast) {
+            // TODO implement this
+            return false;
+        } else {
+            return doSingleThreadFailure(time);
+        }
+        /*for (WaitForThreadModel wft : threads) {
             if (wft.isAlreadyHandled()) {
                 continue;
             }
@@ -113,7 +119,44 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
             }
             nodeRunModel.fail(new FailureModel(message, LHConstants.CHILD_FAILURE), time);
             return true;
+        }*/
+    }
+
+    private boolean doSingleThreadFailure(Date time) {
+        boolean shouldContinue = true;
+        List<Integer> failedThreads = new ArrayList<>();
+        for (WaitForThreadModel wft : threads) {
+            if (wft.isAlreadyHandled()) {
+                continue;
+            }
+            ThreadRunModel childThread = getWfRun().getThreadRun(wft.getThreadRunNumber());
+            wft.setThreadStatus(childThread.getStatus());
+            if (!childThread.isTerminated()) {
+                shouldContinue = false;
+            }
+            if (childThread.getEndTime() != null) {
+                wft.setAlreadyHandled(true);
+                wft.setThreadEndTime(childThread.getEndTime());
+            }
+
+            if (childThread.getStatus() == LHStatus.EXCEPTION || childThread.getStatus() == LHStatus.ERROR) {
+                failedThreads.add(wft.getThreadRunNumber());
+            }
+            if (failedThreads.isEmpty()) {
+                VariableValueModel out = new VariableValueModel();
+                out.type = VariableType.NULL;
+                nodeRunModel.complete(out, time);
+                return shouldContinue;
+            } else {
+                String message = "Some child threads failed";
+                for (Integer threadRunNumber : failedThreads) {
+                    message += ", " + threadRunNumber;
+                }
+                nodeRunModel.fail(new FailureModel(message, LHConstants.CHILD_FAILURE), time);
+                return shouldContinue;
+            }
         }
+        return true;
     }
 
     private boolean isTerminated(WaitForThreadModel wft) {
