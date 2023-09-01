@@ -21,11 +21,8 @@ public class TokenStatusTest {
 
     @Test
     void getExpired() {
-        TokenStatus status = TokenStatus.builder()
-                .clientId("my-client")
-                .token("my-token")
-                .expiration(Instant.MIN)
-                .build();
+        TokenStatus status =
+                TokenStatus.builder().token("my-token").expiration(Instant.MIN).build();
         assertTrue(status.isExpired());
     }
 

@@ -59,11 +59,6 @@ setup_keycloak() {
 ${DOCKER_COMPOSE_KEYCLOAK}
 EOF
 
-    while ! curl --silent --fail --output /dev/null http://localhost:8888; do
-        echo "Waiting for keycloak"
-        sleep 5
-    done
-
     if ! command -v http &>/dev/null; then
         echo "'http' command not found. Inatall httpie https://httpie.io/cli"
         exit 1
@@ -79,13 +74,18 @@ EOF
     KEYCLOAK_ADMIN_PASSWORD="admin"
     KEYCLOAK_PORT="8888"
 
-    KEYCLOAK_ADMIN_ACCESS_TOKEN=$(http -q --form "http://localhost:${KEYCLOAK_PORT}/realms/master/protocol/openid-connect/token" \
+    while ! curl --silent --fail --output /dev/null "http://localhost:${KEYCLOAK_PORT}"; do
+        echo "Waiting for keycloak"
+        sleep 5
+    done
+
+    KEYCLOAK_ADMIN_ACCESS_TOKEN=$(http --form "http://localhost:${KEYCLOAK_PORT}/realms/master/protocol/openid-connect/token" \
         client_id=admin-cli \
         username="$KEYCLOAK_ADMIN" \
         password="$KEYCLOAK_ADMIN_PASSWORD" \
         grant_type=password | jq -r ".access_token")
 
-    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" "http://localhost:${KEYCLOAK_PORT}/admin/realms" \
+    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms" \
         id="$REALM_NAME" \
         realm="$REALM_NAME" \
         displayName="$REALM_NAME" \
@@ -100,7 +100,7 @@ EOF
 
     echo "Real '${REALM_NAME}' created"
 
-    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
+    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
         protocol=openid-connect \
         clientId="$SERVER_CLIENT_ID" \
         id="$SERVER_CLIENT_ID" \
@@ -111,7 +111,7 @@ EOF
 
     echo "Client '${SERVER_CLIENT_ID}' created"
 
-    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
+    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
         protocol=openid-connect \
         clientId="$WORKER_CLIENT_ID" \
         id="$WORKER_CLIENT_ID" \
@@ -122,7 +122,7 @@ EOF
 
     echo "Client '${WORKER_CLIENT_ID}' created"
 
-    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
+    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
         protocol=openid-connect \
         clientId="$CLI_CLIENT_ID" \
         id="$CLI_CLIENT_ID" \
@@ -132,7 +132,7 @@ EOF
 
     echo "Client '${CLI_CLIENT_ID}' created"
 
-    echo "Keycloak url: http://localhost:8888/"
+    echo "Keycloak url: http://http://localhost:${KEYCLOAK_PORT}"
 }
 
 setup_kafka() {

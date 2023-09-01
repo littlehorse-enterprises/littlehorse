@@ -16,7 +16,7 @@ public class TokenStatus {
     private Instant expiration;
     private String clientId;
 
-    public TokenStatus(@NonNull String token, @NonNull Instant expiration, @NonNull String clientId) {
+    public TokenStatus(@NonNull String token, @NonNull Instant expiration, String clientId) {
         this.token = token;
         this.expiration = expiration.truncatedTo(ChronoUnit.SECONDS);
         this.clientId = clientId;

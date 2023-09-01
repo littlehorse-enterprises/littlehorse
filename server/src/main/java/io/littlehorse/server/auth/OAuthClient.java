@@ -47,8 +47,15 @@ public class OAuthClient {
                     ? successResponse.getExpirationTime().toInstant()
                     : Instant.MIN;
 
+            if (successResponse.getClientID() == null && successResponse.isActive()) {
+                throw new AuthorizationServerException("Token is active but client_id was not provided");
+            }
+
             return TokenStatus.builder()
-                    .clientId(successResponse.getClientID().getValue())
+                    .clientId(
+                            successResponse.getClientID() == null
+                                    ? null
+                                    : successResponse.getClientID().getValue())
                     .token(token)
                     .expiration(expiration)
                     .build();
