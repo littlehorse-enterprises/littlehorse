@@ -134,7 +134,7 @@ public interface ThreadBuilder {
      * Defines a Variable in the `ThreadSpec` and returns a handle to it.
      *
      * @param name the name of the variable.
-     * @param typeOrDefaultVal is either the type of the variable, from the `VariableTypePb` enum,
+     * @param typeOrDefaultVal is either the type of the variable, from the `VariableType` enum,
      *     or an object representing the default value of the Variable. If an object (or primitive)
      *     is provided, the Task Worker Library casts the provided value to a VariableValue and sets
      *     that as the default.

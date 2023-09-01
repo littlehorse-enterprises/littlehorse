@@ -143,6 +143,18 @@ class TestWorkflow(unittest.TestCase):
 
         Workflow("my-wf", my_entrypoint)
 
+    def test_validate_thread_already_exists(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            pass
+
+        wf = Workflow("my-wf", my_entrypoint)
+        with self.assertRaises(ValueError) as exception_context:
+            wf.add_sub_thread("entrypoint", my_entrypoint)
+        self.assertEqual(
+            "Thread entrypoint already added",
+            str(exception_context.exception),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
