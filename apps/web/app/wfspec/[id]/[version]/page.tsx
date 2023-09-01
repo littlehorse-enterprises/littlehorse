@@ -1,5 +1,3 @@
-import Link from "next/link"
-import { WfRunVisualizer } from "./components/visualizer/WfSpecVisualizer"
 import { WorkflowExecutionMetrics } from "./sections/WorkflowExecutionMetrics"
 import { WfRunSearch } from "./sections/WfRunSearch"
 import Breadcrumbs from "../../../../components/Breadcrumbs"
