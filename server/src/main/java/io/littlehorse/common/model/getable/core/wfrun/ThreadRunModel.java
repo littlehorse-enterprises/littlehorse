@@ -508,7 +508,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public void dieForReal(FailureModel failure, Date time) {
         this.errorMessage = failure.message;
-        this.status = failure.isUserDefinedFailure() ? LHStatus.EXCEPTION : LHStatus.ERROR;
+        this.status = failure.getStatus();
         this.endTime = time;
 
         for (int childId : childThreadIds) {

@@ -1,5 +1,7 @@
 package io.littlehorse.examples;
 
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
@@ -31,7 +33,7 @@ public class ParallelApprovalExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
-            "parallel-approval-with-handler",
+            "parallel-approval",
             thread -> {
                 // Initialize variables.
                 WfRunVariable person1Approved = thread.addVariable(
@@ -247,7 +249,15 @@ public class ParallelApprovalExample {
                                 .setName(externalEventName)
                                 .build()
                 );
-            }catch (Exception e){}
+            }catch (StatusRuntimeException e){
+                if(e.getStatus().getCode().equals(Status.ALREADY_EXISTS.getCode())){
+                    log.debug("external event already exists, ignoring...");
+                    continue;
+                }
+                throw e;
+            }
+
+
 
         }
 

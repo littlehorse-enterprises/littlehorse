@@ -5,6 +5,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.Failure;
+import io.littlehorse.sdk.common.proto.LHStatus;
 
 public class FailureModel extends LHSerializable<Failure> {
 
@@ -55,5 +56,9 @@ public class FailureModel extends LHSerializable<Failure> {
 
     public boolean isUserDefinedFailure() {
         return !LHConstants.RESERVED_EXCEPTION_NAMES.contains(failureName);
+    }
+
+    public LHStatus getStatus() {
+        return isUserDefinedFailure() ? LHStatus.EXCEPTION : LHStatus.ERROR;
     }
 }
