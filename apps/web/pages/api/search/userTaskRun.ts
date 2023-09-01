@@ -5,6 +5,7 @@ export default async function handler(
     res: NextApiResponse
 ) {
     if (req.method === "POST") {
+        console.log(req.body)
         const raw = await fetch(process.env.API_URL + "/search/userTaskRun", {
             method: "POST",
             body: req.body,
