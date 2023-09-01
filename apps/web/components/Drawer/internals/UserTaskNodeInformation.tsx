@@ -80,7 +80,7 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run}:Props) => 
                         <p className="center">DISPLAY NAME</p>
                         <p className="center">TYPE</p>
                     </div>
-                    {info.fields.map((f, index: number) => <tr key={index} className="grid-3">
+                    {info?.fields?.map((f, index: number) => <tr key={index} className="grid-3">
                             <td className="center">{f.name}</td>
                             <td className="center">{f.displayName}</td>
                             <td className="center">{f.type}</td>

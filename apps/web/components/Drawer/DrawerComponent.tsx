@@ -9,6 +9,7 @@ import { LH_EXCEPTION } from "./internals/FailureInformation";
 import { parseKey } from "./internals/drawerInternals";
 import WfVariable, { Value } from "./wfVariable";
 import { SleepNodeInformation } from "./internals/SleepNodeInformation";
+import { UserTaskNodeInformation } from "./internals/UserTaskNodeInformation";
 
 interface DrawerComponentProps {
   isWFRun:boolean
@@ -500,7 +501,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
           />
         )}
         {type === 'SLEEP' ? <SleepNodeInformation run={current_run} isWFRun={props.isWFRun} wfRunId={props.wfRunId} data={props.datao.find((d : any) => d.name === props.nodeName)} /> : ''}
-   
+        {type === 'USER_TASK' ? <UserTaskNodeInformation run={current_run} isWFRun={props.isWFRun} wfRunId={props.wfRunId} data={props.datao.find((d : any) => d.name === props.nodeName)} /> : ''}
       </>
     </div>
   );
