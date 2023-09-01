@@ -12,7 +12,7 @@ const WfRun = ({
             <h1>
                 <span className="lighter">UserTaskDef</span>{" "}
                 <span className="line">|</span>{" "}
-                {params.id.charAt(0).toUpperCase() + params.id.slice(1)}{" "}
+                {params.id.charAt(0) + params.id.slice(1)}{" "}
             </h1>
 
             <Breadcrumbs
@@ -23,8 +23,7 @@ const WfRun = ({
                     },
                     {
                         title: `userTaskDef: ${
-                            params.id?.charAt(0).toUpperCase() +
-                            params.id.slice(1)
+                            params.id?.charAt(0) + params.id.slice(1)
                         }`,
                         active: true,
                     },

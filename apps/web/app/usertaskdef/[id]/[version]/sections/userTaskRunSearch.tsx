@@ -28,12 +28,12 @@ let myTimeout: NodeJS.Timeout;
 export const UserTaskRunSearch = ({ id }: any) => {
     let first = true;
 
-    const [user_id, setUserId] = useState('')
-    const keyDownHandler = (e:React.KeyboardEvent<HTMLInputElement>) => {
-        clearTimeout(myTimeout)
-        if( e.key == 'Enter' ) return getMData()
+    const [user_id, setUserId] = useState("");
+    const keyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        clearTimeout(myTimeout);
+        if (e.key == "Enter") return getMData();
         myTimeout = setTimeout(getMData, keyDownDelay);
-    }
+    };
 
     const [loading, setLoading] = useState(false);
     const [firstLoad, setFirstLoad] = useState(false);
@@ -67,8 +67,8 @@ export const UserTaskRunSearch = ({ id }: any) => {
         };
         if (paginate && bookmark) filters["bookmark"] = bookmark;
         if (paginate && !bookmark) return { status: "done" };
-        if (user_id) filters["user"] = { id: user_id};
-        
+        if (user_id) filters["user"] = { id: user_id };
+
         const res = await fetch("/api/search/userTaskRun", {
             method: "POST",
             body: JSON.stringify({
@@ -83,7 +83,7 @@ export const UserTaskRunSearch = ({ id }: any) => {
         });
         if (res.ok) {
             const response = await res.json();
-            console.log('response', response)
+            console.log("response", response);
             return { ...response, status: "ok" };
         }
     };
@@ -183,7 +183,6 @@ export const UserTaskRunSearch = ({ id }: any) => {
             }
         }
 
-
         if (doneBookmark) {
             const tasks = await fetchData("DONE", true, false);
             if (tasks.status != "done") {
@@ -254,8 +253,15 @@ export const UserTaskRunSearch = ({ id }: any) => {
     }, []);
     return (
         <section>
-            <h2>UserTaskRun search</h2>
-            <Input icon="/search.svg" placeholder="Search by assigned User ID or User Group" type="text" value={user_id} onKeyDown={keyDownHandler} onChange={e => setUserId(e.target.value)} />
+            <h2>UserTaskRun Search</h2>
+            <Input
+                icon="/search.svg"
+                placeholder="Search by assigned User ID or User Group"
+                type="text"
+                value={user_id}
+                onKeyDown={keyDownHandler}
+                onChange={(e) => setUserId(e.target.value)}
+            />
             <div className="between">
                 <div className="btns btns-right">
                     <CalendarB
