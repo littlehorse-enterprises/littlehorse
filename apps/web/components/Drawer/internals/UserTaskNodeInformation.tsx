@@ -63,20 +63,31 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run}:Props) => 
             </div>
         </div>
         {isWFRun ? (
-            <div className='drawer__waitChild__link '>
-                <div className='drawer__task__wfrun-outputs'>
-                    <div className='drawer__task__wfrun-outputs__label'>
-                        Node data
-                    </div>
-                    <div className='drawer__waitChild__link__container'>
-                        <div className='simpleValue__container' >
-                            <p className='simpleValue'>
-                                {JSON.stringify(node, null, 2)}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div className='drawer__task__wfrun-outputs'>
+            <div className=''>
+                <div className="drawer__nodeData">
+      <div className="drawer__nodeData__label">Node data</div>
+      <div className="grid-3">
+        {node?.scheduled &&  <p className="drawer__nodeData__header">SCHEDULED</p>}
+        {node?.scheduled &&  <p className="drawer__nodeData__data">{node?.scheduled ? moment(node?.scheduled).format('MMMM DD, HH:mm:ss') : ''}</p>}
+        <p className="drawer__nodeData__header">ARRIVAL TIME</p>
+        <p className="drawer__nodeData__data">{node?.arrivalTime ? moment(node.arrivalTime).format('MMMM DD, HH:mm:ss') : ''}</p>
+        <p className="drawer__nodeData__header">END TIME</p>
+        <p className="drawer__nodeData__data">{node?.endTime ? moment(node.endTime).format('MMMM DD, HH:mm:ss') : ''}</p>
+        <p className="drawer__nodeData__header">STATUS</p>
+        <p className="drawer__nodeData__data">{node?.status}</p>
+        <p className="drawer__nodeData__header">wfRunId</p>
+        <p className="drawer__nodeData__data">{node?.userTask?.userTaskRunId?.wfRunId}</p>
+        <p className="drawer__nodeData__header">GUID</p>
+        <p className="drawer__nodeData__data">{node?.userTask?.userTaskRunId?.userTaskGuid}</p>
+
+
+      </div>
+      
+    </div>
+    <div style={{ height:'10px'}}></div>
+
+
+                {/* <div className='drawer__task__wfrun-outputs'>
                     <div className='drawer__task__wfrun-outputs__label'>
                         Form Results
                     </div>
@@ -88,6 +99,8 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run}:Props) => 
                         </div>
                     </div>
                 </div>
+                <div style={{ height:'10px'}}></div> */}
+
 
                 <div className="drawer__task__link">
         <div className="drawer__task__link__title">UserTaskDef link</div>
@@ -108,7 +121,9 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run}:Props) => 
           </Link>
         </div>
       </div>
-                <div className='drawer__task__wfrun-outputs'>
+
+      <div style={{ height:'10px'}}></div>
+                {/* <div className='drawer__task__wfrun-outputs'>
                     <div className='drawer__task__wfrun-outputs__label'>
                         Audit event log
                     </div>
@@ -119,7 +134,7 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run}:Props) => 
                             </p>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
         ) : (
             <div className='drawer__waitChild__link '>
