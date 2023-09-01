@@ -12,6 +12,7 @@ enum LHStatus {
   HALTING = 3;
   HALTED = 4;
   ERROR = 5;
+  EXCEPTION = 6;
 }
 
 enum TaskStatus {

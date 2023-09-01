@@ -65,6 +65,7 @@ message WaitForThreadsRun {
     optional google.protobuf.Timestamp thread_end_time = 1;
     LHStatus thread_status = 2;
     int32 thread_run_number = 3;
+    bool already_handled = 5;
   }
 
   repeated WaitForThread threads = 1;

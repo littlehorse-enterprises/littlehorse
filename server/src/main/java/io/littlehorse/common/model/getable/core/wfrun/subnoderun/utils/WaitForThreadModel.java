@@ -22,6 +22,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
     private Date threadEndTime;
     private LHStatus threadStatus;
     private int threadRunNumber;
+    private boolean alreadyHandled;
 
     public Class<WaitForThread> getProtoBaseClass() {
         return WaitForThread.class;
@@ -67,6 +68,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         }
         threadStatus = p.getThreadStatus();
         threadRunNumber = p.getThreadRunNumber();
+        alreadyHandled = p.getAlreadyHandled();
     }
 
     public WaitForThread.Builder toProto() {
@@ -75,6 +77,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         if (threadEndTime != null) {
             out.setThreadEndTime(LHUtil.fromDate(threadEndTime));
         }
+        out.setAlreadyHandled(alreadyHandled);
         return out;
     }
 }

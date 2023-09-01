@@ -84,14 +84,16 @@ class StartThreadRun(_message.Message):
 class WaitForThreadsRun(_message.Message):
     __slots__ = ["threads"]
     class WaitForThread(_message.Message):
-        __slots__ = ["thread_end_time", "thread_status", "thread_run_number"]
+        __slots__ = ["thread_end_time", "thread_status", "thread_run_number", "already_handled"]
         THREAD_END_TIME_FIELD_NUMBER: _ClassVar[int]
         THREAD_STATUS_FIELD_NUMBER: _ClassVar[int]
         THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
+        ALREADY_HANDLED_FIELD_NUMBER: _ClassVar[int]
         thread_end_time: _timestamp_pb2.Timestamp
         thread_status: _common_enums_pb2.LHStatus
         thread_run_number: int
-        def __init__(self, thread_end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_run_number: _Optional[int] = ...) -> None: ...
+        already_handled: bool
+        def __init__(self, thread_end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_run_number: _Optional[int] = ..., already_handled: bool = ...) -> None: ...
     THREADS_FIELD_NUMBER: _ClassVar[int]
     threads: _containers.RepeatedCompositeFieldContainer[WaitForThreadsRun.WaitForThread]
     def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsRun.WaitForThread, _Mapping]]] = ...) -> None: ...
