@@ -5,6 +5,7 @@ import { ExternalEventInformation } from "./internals/ExternalEventInformation";
 import { SpawnChildInformation } from "./internals/SpawnChildInformation";
 import { WaitChildInformation } from "./internals/WaitChildInformation";
 import { SleepNodeInformation } from "./internals/SleepNodeInformation";
+import { UserTaskNodeInformation } from "./internals/UserTaskNodeInformation";
 
 interface DrawerComponentProps {
   internalComponent?: string | undefined;
@@ -20,6 +21,7 @@ interface DrawerComponentProps {
 }
 
 export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
+
   const [type, setType] = useState('');
   const [rawData, setRawData] = useState<any>();
   const [wfRunRawData, setWfRunRawData] = useState<any>();
@@ -310,6 +312,7 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
           />
         )}
         {type === 'SLEEP' ? <SleepNodeInformation isWFRun={false} data={props.datao.find((d : any) => d.name === props.nodeName)} /> : ''}
+        {type === 'USER_TASK' ? <UserTaskNodeInformation isWFRun={false} data={props.datao.find((d : any) => d.name === props.nodeName)} /> : ''}
 
       </>
     </div>
