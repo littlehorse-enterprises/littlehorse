@@ -1,6 +1,9 @@
 import moment from "moment"
 import { useEffect, useState } from "react"
 import { FailureInformation } from "./FailureInformation"
+import Link from "next/link"
+import Image from "next/image"
+import linkSvg from "./link.svg";
 
 interface Props {
     isWFRun:boolean
@@ -45,10 +48,11 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run}:Props) => 
     }
     useEffect( () => {
         if(isWFRun) getNodeRun()
-    },[isWFRun])
+    },[isWFRun, data])
+
     useEffect( () => {
         getInfo()
-    },[])
+    },[data])
     return (
         <>
         <div className='component-header'>
@@ -59,15 +63,72 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run}:Props) => 
             </div>
         </div>
         {isWFRun ? (
-            <div className='drawer__waitChild__wfrun__link'>
-                <div className='drawer__waitChild__wfrun__link__title'>
-                    Maturation Time
+            <div className='drawer__waitChild__link '>
+                <div className='drawer__task__wfrun-outputs'>
+                    <div className='drawer__task__wfrun-outputs__label'>
+                        Node data
+                    </div>
+                    <div className='drawer__waitChild__link__container'>
+                        <div className='simpleValue__container' >
+                            <p className='simpleValue'>
+                                {JSON.stringify(node, null, 2)}
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div className='drawer__waitChild__link__container'>
-                    <div className='simpleValue__container' >
-                        <p className='simpleValue'>
-                            {node?.sleep?.maturationTime ? moment(node?.sleep?.maturationTime).format('MMMM D, Y. h:mm A') : ''}
-                        </p>
+                <div className='drawer__task__wfrun-outputs'>
+                    <div className='drawer__task__wfrun-outputs__label'>
+                        Form Results
+                    </div>
+                    <div className='drawer__waitChild__link__container'>
+                        <div className='simpleValue__container' >
+                            <p className='simpleValue'>
+                               
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div className='drawer__task__wfrun-outputs'>
+                    <div className='drawer__task__wfrun-outputs__label'>
+                        UserTaskDef link
+                    </div>
+                    <div className='drawer__waitChild__link__container'>
+                        <div className='simpleValue__container' >
+                            <p className='simpleValue'>
+                               
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div className="drawer__task__link">
+        <div className="drawer__task__link__title">TaskDef linked</div>
+        <div className="drawer__task__link__container">
+          <Link
+            href={
+              "/usertaskdef/" + data?.node?.userTask?.userTaskDefName + '/' + data?.node?.userTask?.userTaskDefVersion
+            }
+            className="drawer__task__link__container__clickable"
+            style={{
+              textDecoration: "none",
+            }}
+          >
+            <Image src={linkSvg} alt={"link"} width={20} height={10} />
+            <p className="drawer__task__link__container__clickable__text">
+              {data?.name?.split("-").slice(1, -1).join("-") || ""}
+            </p>
+          </Link>
+        </div>
+      </div>
+                <div className='drawer__task__wfrun-outputs'>
+                    <div className='drawer__task__wfrun-outputs__label'>
+                        Audit event log
+                    </div>
+                    <div className='drawer__waitChild__link__container'>
+                        <div className='simpleValue__container' >
+                            <p className='simpleValue'>
+                               
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
