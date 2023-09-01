@@ -1,6 +1,8 @@
 import unittest
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import IndexType, JsonIndex, VariableDef
+from littlehorse.model.service_pb2 import PutWfSpecRequest
+from littlehorse.model.wf_spec_pb2 import ThreadSpec
 
 from littlehorse.workflow import ThreadBuilder, WfRunVariable, Workflow
 
@@ -95,6 +97,34 @@ class TestWfRunVariable(unittest.TestCase):
         self.assertEqual(variable.compile(), expected_output)
 
 
+class TestThreadBuilder(unittest.TestCase):
+    def test_compile_with_variables(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            thread.add_variable("input-name", VariableType.STR)
+
+        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+        self.assertEqual(
+            thread.compile(),
+            ThreadSpec(
+                variable_defs=[VariableDef(name="input-name", type=VariableType.STR)]
+            ),
+        )
+
+    def test_validate_variable_already_exists(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            thread.add_variable("input-name", VariableType.STR)
+
+        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+
+        with self.assertRaises(ValueError) as exception_context:
+            thread.add_variable("input-name", VariableType.STR)
+
+        self.assertEqual(
+            "Variable input-name already added",
+            str(exception_context.exception),
+        )
+
+
 class TestWorkflow(unittest.TestCase):
     def test_entrypoint_is_a_function(self):
         with self.assertRaises(TypeError) as exception_context:
@@ -156,6 +186,26 @@ class TestWorkflow(unittest.TestCase):
         self.assertEqual(
             "Thread entrypoint already added",
             str(exception_context.exception),
+        )
+
+    def test_compile_with_variables(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            thread.add_variable("input-name", VariableType.STR)
+
+        wf = Workflow("my-wf", my_entrypoint)
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        variable_defs=[
+                            VariableDef(name="input-name", type=VariableType.STR)
+                        ]
+                    )
+                },
+            ),
         )
 
 

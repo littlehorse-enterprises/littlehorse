@@ -196,6 +196,10 @@ class ThreadBuilder:
         Returns:
             WfRunVariable: A handle to the created WfRunVariable.
         """
+        for var in self.wf_run_variables:
+            if var.name == variable_name:
+                raise ValueError(f"Variable {variable_name} already added")
+
         new_var = WfRunVariable(variable_name, variable_type, default_value)
         self.wf_run_variables.append(new_var)
         return new_var
