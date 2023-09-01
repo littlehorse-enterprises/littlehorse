@@ -88,20 +88,9 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run}:Props) => 
                         </div>
                     </div>
                 </div>
-                <div className='drawer__task__wfrun-outputs'>
-                    <div className='drawer__task__wfrun-outputs__label'>
-                        UserTaskDef link
-                    </div>
-                    <div className='drawer__waitChild__link__container'>
-                        <div className='simpleValue__container' >
-                            <p className='simpleValue'>
-                               
-                            </p>
-                        </div>
-                    </div>
-                </div>
+
                 <div className="drawer__task__link">
-        <div className="drawer__task__link__title">TaskDef linked</div>
+        <div className="drawer__task__link__title">UserTaskDef link</div>
         <div className="drawer__task__link__container">
           <Link
             href={
@@ -141,12 +130,16 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run}:Props) => 
                         <p className="center">DISPLAY NAME</p>
                         <p className="center">TYPE</p>
                     </div>
+                    <table>
+                        <tbody>
                     {info?.fields?.map((f, index: number) => <tr key={index} className="grid-3">
                             <td className="center">{f.name}</td>
                             <td className="center">{f.displayName}</td>
                             <td className="center">{f.type}</td>
                         </tr>
                     )}
+                    </tbody>
+                    </table>
                 </div>
             </div>
         )}
