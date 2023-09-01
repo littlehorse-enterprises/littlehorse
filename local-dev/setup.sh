@@ -132,7 +132,7 @@ EOF
 
     echo "Client '${CLI_CLIENT_ID}' created"
 
-    echo "Keycloak url: http://http://localhost:${KEYCLOAK_PORT}"
+    echo "Keycloak url: http://localhost:${KEYCLOAK_PORT}"
 }
 
 setup_kafka() {
