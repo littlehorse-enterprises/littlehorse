@@ -1,7 +1,6 @@
 "use client";
 import {
     Button,
-    Calendar,
     CalendarB,
     Label,
     LoadMoreButton,
@@ -15,6 +14,7 @@ import { UserTaskRunSearchTable } from "../search/userTaskRunSearchTable";
 export interface Result {
     id: any;
     wfRunId: string;
+    userTaskGuid: string;
     status?: string;
 }
 
@@ -37,8 +37,6 @@ export const UserTaskRunSearch = ({ id }: any) => {
     const [endDt, setEndDT] = useState<Date>(moment().toDate());
     const [assignedBookmark, setAssignedBookmark] = useState();
     const [unAssignedBookmark, setUnAssignedBookmark] = useState();
-    const [claimedBookmark, setClaimedBookmark] = useState();
-    const [unclaimedBookmark, setUnClaimedBookmark] = useState();
     const [doneBookmark, setDoneBookmark] = useState();
     const [cancelledBookmark, setCancelledBookmark] = useState();
 
@@ -53,20 +51,8 @@ export const UserTaskRunSearch = ({ id }: any) => {
         let bookmark: string | undefined;
         if (type === "ASSIGNED") bookmark = assignedBookmark;
         if (type === "UNASSIGNED") bookmark = unAssignedBookmark;
-        if (type === "CLAIMED") bookmark = claimedBookmark;
-        if (type === "UNCLAIMED") bookmark = unclaimedBookmark;
         if (type === "DONE") bookmark = doneBookmark;
         if (type === "CANCELLED") bookmark = cancelledBookmark;
-
-        //TASK_SCHEDULED
-
-        // - TASK_SCHEDULED
-        // - TASK_RUNNING
-        // - TASK_SUCCESS
-        // - TASK_FAILED
-        // - TASK_TIMEOUT
-        // - TASK_OUTPUT_SERIALIZING_ERROR
-        // - TASK_INPUT_VAR_SUB_ERROR
 
         const filters: any = {
             limit: useLimit ? limit : allLimit,
@@ -79,8 +65,8 @@ export const UserTaskRunSearch = ({ id }: any) => {
             body: JSON.stringify({
                 status: type,
                 userTaskDefName: id,
-                userId: "string",
-                userGroup: "string",
+                // userId: "string",
+                // userGroup: "string",
                 earliestStart: startDt,
                 latestStart: endDt,
 
@@ -89,7 +75,7 @@ export const UserTaskRunSearch = ({ id }: any) => {
         });
         if (res.ok) {
             const response = await res.json();
-            console.log("responsetshere", response);
+            console.log('response', response)
             return { ...response, status: "ok" };
         }
     };
@@ -98,8 +84,6 @@ export const UserTaskRunSearch = ({ id }: any) => {
         const { results, bookmark } = await fetchData(type);
         if (type === "ASSIGNED") setAssignedBookmark(bookmark);
         if (type === "UNASSIGNED") setUnAssignedBookmark(bookmark);
-        if (type === "CLAIMED") setClaimedBookmark(bookmark);
-        if (type === "UNCLAIMED") setUnClaimedBookmark(bookmark);
         if (type === "DONE") setDoneBookmark(bookmark);
         if (type === "CANCELLED") setCancelledBookmark(bookmark);
 
@@ -109,8 +93,6 @@ export const UserTaskRunSearch = ({ id }: any) => {
     const getMData = async () => {
         setAssignedBookmark(undefined);
         setUnAssignedBookmark(undefined);
-        setClaimedBookmark(undefined);
-        setUnClaimedBookmark(undefined);
         setDoneBookmark(undefined);
         setCancelledBookmark(undefined);
         if (type) return getData();
@@ -122,7 +104,7 @@ export const UserTaskRunSearch = ({ id }: any) => {
         setAssignedBookmark(assigned.bookmark);
         setResults((prev) => [
             ...prev,
-            assigned.results?.map((v: any) => ({
+            ...assigned.results?.map((v: any) => ({
                 ...v,
                 status: "ASSIGNED",
             })),
@@ -132,29 +114,9 @@ export const UserTaskRunSearch = ({ id }: any) => {
         setUnAssignedBookmark(unassigned.bookmark);
         setResults((prev) => [
             ...prev,
-            unassigned.results?.map((v: any) => ({
+            ...unassigned.results?.map((v: any) => ({
                 ...v,
                 status: "UNASSIGNED",
-            })),
-        ]);
-
-        const claimed = await fetchData("CLAIMED", false, false);
-        setClaimedBookmark(claimed.bookmark);
-        setResults((prev) => [
-            ...prev,
-            claimed.results?.map((v: any) => ({
-                ...v,
-                status: "CLAIMED",
-            })),
-        ]);
-
-        const unclaimed = await fetchData("UNCLAIMED", false, false);
-        setUnClaimedBookmark(unclaimed.bookmark);
-        setResults((prev) => [
-            ...prev,
-            unclaimed.results?.map((v: any) => ({
-                ...v,
-                status: "UNCLAIMED",
             })),
         ]);
 
@@ -162,7 +124,7 @@ export const UserTaskRunSearch = ({ id }: any) => {
         setDoneBookmark(done.bookmark);
         setResults((prev) => [
             ...prev,
-            done.results?.map((v: any) => ({
+            ...done.results?.map((v: any) => ({
                 ...v,
                 status: "DONE",
             })),
@@ -172,7 +134,7 @@ export const UserTaskRunSearch = ({ id }: any) => {
         setCancelledBookmark(cancelled.bookmark);
         setResults((prev) => [
             ...prev,
-            cancelled.results?.map((v: any) => ({
+            ...cancelled.results?.map((v: any) => ({
                 ...v,
                 status: "CANCELLED",
             })),
@@ -213,33 +175,6 @@ export const UserTaskRunSearch = ({ id }: any) => {
             }
         }
 
-        if (claimedBookmark) {
-            const tasks = await fetchData("CLAIMED", true, false);
-            if (tasks.status != "done") {
-                setClaimedBookmark(tasks.bookmark);
-                setResults((prev) => [
-                    ...prev,
-                    ...tasks.results.map((v: any) => ({
-                        ...v,
-                        status: "CLAIMED",
-                    })),
-                ]);
-            }
-        }
-
-        if (unclaimedBookmark) {
-            const tasks = await fetchData("UNCLAIMED", true, false);
-            if (tasks.status != "done") {
-                setUnClaimedBookmark(tasks.bookmark);
-                setResults((prev) => [
-                    ...prev,
-                    ...tasks.results.map((v: any) => ({
-                        ...v,
-                        status: "UNCLAIMED",
-                    })),
-                ]);
-            }
-        }
 
         if (doneBookmark) {
             const tasks = await fetchData("DONE", true, false);
@@ -280,8 +215,6 @@ export const UserTaskRunSearch = ({ id }: any) => {
 
         if (type === "ASSIGNED") setAssignedBookmark(bookmark);
         if (type === "UNASSIGNED") setUnAssignedBookmark(bookmark);
-        if (type === "CLAIMED") setClaimedBookmark(bookmark);
-        if (type === "UNCLAIMED") setUnClaimedBookmark(bookmark);
         if (type === "DONE") setDoneBookmark(bookmark);
         if (type === "CANCELLED") setCancelledBookmark(bookmark);
 
@@ -339,18 +272,6 @@ export const UserTaskRunSearch = ({ id }: any) => {
                         Unassigned
                     </Button>
                     <Button
-                        active={type === "CLAIMED"}
-                        onClick={() => setType("CLAIMED")}
-                    >
-                        Claimed
-                    </Button>
-                    <Button
-                        active={type === "UNCLAIMED"}
-                        onClick={() => setType("UNCLAIMED")}
-                    >
-                        Unclaimed
-                    </Button>
-                    <Button
                         active={type === "DONE"}
                         onClick={() => setType("DONE")}
                     >
@@ -396,8 +317,6 @@ export const UserTaskRunSearch = ({ id }: any) => {
                         disabled={
                             !assignedBookmark &&
                             !unAssignedBookmark &&
-                            !claimedBookmark &&
-                            !unclaimedBookmark &&
                             !doneBookmark &&
                             !cancelledBookmark
                         }

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Loading from "ui/components/Loading";
 import { InputVarsTaskDef } from "../../../../../interfaces/InputVarsTaskDef";
 import { TaskDefInformationResponse } from "../../../../../interfaces/TaskDefInformationResponse";
+import { VersionChanger } from "../components/VersionChanger";
 
 export const UserTaskDefSchemaInformation = ({
     id,
@@ -37,7 +38,10 @@ export const UserTaskDefSchemaInformation = ({
 
     return (
         <section>
-            <h2>UserTaskDef Schema Information</h2>
+            <div className="between">
+                <h2>UserTaskDef Schema Information</h2>
+                <VersionChanger version={version} id={id} />
+            </div>
 
             <div className="table">
                 <table className="flex-1" style={{ width: "100%" }}>

@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react"
-import { Label } from "ui"
+import { Button, Label } from "ui"
 
 interface Props{
     version:string 
@@ -12,7 +12,7 @@ export const VersionChanger = ({version, id}:Props) => {
 
     const [versions, setVersions] = useState<string[]>([version])
     const getVersions = async () => {
-        const res = await fetch('/api/search/wfSpec',{
+        const res = await fetch('/api/search/userTaskDef',{
             method:'POST',
             body: JSON.stringify({
                 prefix:id
@@ -25,13 +25,13 @@ export const VersionChanger = ({version, id}:Props) => {
         
     }
     const changeV = (version:string) => {
-        router.push(`/wfspec/${id}/${version}`);
+        router.push(`/usertaskdef/${id}/${version}`);
     }
     useEffect( () => {
         getVersions()
     },[])
     return <div title={id} className="btns btns-right">
-    <Label>WfSpec VERSION:</Label>
+    <Label>UserTaskDef VERSION:</Label>
     <div className='version_select'>
         <select  value={version} onChange={ e => changeV(e.target.value)}>
             {versions.map( v => <option key={v} value={v}>Version {v}</option>)}

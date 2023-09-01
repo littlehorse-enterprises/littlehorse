@@ -15,7 +15,6 @@ export default async function handler(
                 Accept: "*/*",
             },
         });
-        console.log(req.body);
         if (raw.ok) {
             const content = await raw.json();
             return res.send(content);

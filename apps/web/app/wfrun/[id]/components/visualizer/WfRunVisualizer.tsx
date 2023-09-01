@@ -1,22 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
-import WFRunInformationSideBar from "../../../../../../components/WFRunInformationSideBar";
-import { DrawerComponent } from "../../../../../../components/Drawer/DrawerComponent";
-import { Drawer } from "../../../../../../components/Drawer/Drawer";
+import WFRunInformationSideBar from "../../../../../components/WFRunInformationSideBar";
+import { DrawerComponent } from "../../../../../components/Drawer/DrawerComponent";
+import { Drawer } from "../../../../../components/Drawer/Drawer";
 import {
   getMainDrawerData,
   nodeTypes,
-} from "../../../../../../components/Drawer/internals/drawerInternals";
+} from "../../../../../components/Drawer/internals/drawerInternals";
 import { WfRunVisualizerChart } from "./WfRunVisualizerChart";
 import { Loader } from "ui";
 
 interface mapnode {}
 export const WfRunVisualizer = ({
-  id,
-  wfspec,
+  id
 }: {
   id: string;
-  wfspec: string;
 }) => {
   const [rawdata, setRawData] = useState<any[]>([])
   const [data, setData] = useState<any[]>([]);
@@ -62,7 +60,6 @@ export const WfRunVisualizer = ({
   const [run, setRun] = useState();
   const [runs, setRuns] = useState<any[]>([]);
   const setThreads = (data: any) => {
-    // console.log('threads',data)
     getWfSpec(data.wfSpecName, data.wfSpecVersion);
     setRun(data.threadRuns[0]);
     setRuns(data.threadRuns);
@@ -94,8 +91,10 @@ export const WfRunVisualizer = ({
     });
     if (res.ok) {
       const content = await res.json();
-      setRawData(content.result)
-      setData(mapData(content.result))
+      if(content.result){
+        setRawData(content.result)
+        setData(mapData(content.result))
+      }
     }
   };
   const getData = async () => {
@@ -120,7 +119,7 @@ export const WfRunVisualizer = ({
   }, []);
 
   useEffect(() => {
-    if (drawerData === undefined) getMainDrawerData(wfspec, setDrawerData);
+    // if (drawerData === undefined) getMainDrawerData(wfspec, setDrawerData);
 
     if (selectedNodeName) {
       const nodePostFix = selectedNodeName.split("-").reverse()[0];

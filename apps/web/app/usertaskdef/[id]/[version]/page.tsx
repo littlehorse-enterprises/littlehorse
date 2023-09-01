@@ -36,7 +36,7 @@ const WfRun = ({
                 version={params.version}
             />
 
-            {/*<UserTaskRunSearch id={params.id} version={params.version} /> */}
+            <UserTaskRunSearch id={params.id} version={params.version} />
         </>
     );
 };

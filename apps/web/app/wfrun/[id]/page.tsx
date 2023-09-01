@@ -1,8 +1,8 @@
 import React from 'react'
-import Breadcrumbs from '../../../../components/Breadcrumbs'
+import Breadcrumbs from '../../../components/Breadcrumbs'
 import { WfRunVisualization } from './sections/WfRunVisualization'
 
-const WfRun = ({ params }: { params: { wfspec: string; id: string } }) => {
+const WfRun = ({ params }: { params: { id: string } }) => {
 	return (
 		<>
 			<h1>
@@ -25,7 +25,7 @@ const WfRun = ({ params }: { params: { wfspec: string; id: string } }) => {
 				]}
 			/>
 
-			<WfRunVisualization id={params.id} wfspec={params.wfspec} />
+			<WfRunVisualization id={params.id} />
 		</>
 	)
 }
