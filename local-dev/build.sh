@@ -9,8 +9,6 @@ CONTEXT_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 
 cd "$CONTEXT_DIR"
 
-CONTAINER=lh-quickbuilder
-
 if [ "$1" == "--quick" ]; then
     # The quick build compiles the jar using gradle on the host machine, which
     # enables usage of the gradle cache. This is much faster than building from
