@@ -11,7 +11,7 @@ namespace LittleHorse.Common.Configuration.Implementations
 {
     public class LHWorkerConfig : ILHWorkerConfig
     {
-        private ILogger<LHWorkerConfig>? _logger;
+        private ILogger? _logger;
         private LHWorkerOptions _options;
         private Dictionary<string, GrpcChannel> _createdChannels;
 
@@ -60,7 +60,7 @@ namespace LittleHorse.Common.Configuration.Implementations
             get { return _createdChannels.Count; }
         }
 
-        public LHWorkerConfig(IConfiguration configuration, ILogger<LHWorkerConfig>? logger = null)
+        public LHWorkerConfig(IConfiguration configuration, ILogger? logger = null)
         {
             _logger = logger;
 
