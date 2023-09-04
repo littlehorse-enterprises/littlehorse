@@ -183,6 +183,7 @@ public class BackendInternalComms implements Closeable {
                             .getObject(GetObjectRequest.newBuilder()
                                     .setObjectType(objectId.getType())
                                     .setObjectId(objectId.toString())
+                                    .setPartition(metadata.partition())
                                     .build())
                             .getResponse()
                             .toByteArray(),
