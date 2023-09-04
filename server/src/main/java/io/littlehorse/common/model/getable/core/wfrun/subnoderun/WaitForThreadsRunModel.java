@@ -134,7 +134,15 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
             }
         }
         if (allThreadsCompleted) {
-            nodeRunModel.complete(new VariableValueModel(), time);
+            WaitForThreadModel failed = threads.stream()
+                    .filter(waitForThreadModel -> waitForThreadModel.getThreadStatus() == LHStatus.ERROR)
+                    .findFirst()
+                    .orElse(null);
+            if (failed != null) {
+                nodeRunModel.fail(new FailureModel("failed", LHConstants.CHILD_FAILURE), time);
+            } else {
+                nodeRunModel.complete(new VariableValueModel(), time);
+            }
         }
         return allThreadsCompleted;
     }

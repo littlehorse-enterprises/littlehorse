@@ -106,6 +106,14 @@ public class WaitForThreadsRunModelTest {
             verify(firstWaitForThread).setAlreadyHandled(true);
             verify(secondWaitForThread).setAlreadyHandled(true);
         }
+
+        @Test
+        void shouldHandleErrors() {
+            when(secondWaitForThread.getThreadStatus()).thenReturn(LHStatus.ERROR);
+            waitForThreadsRunModel.advanceIfPossible(advanceDate);
+            verify(waitForThreadsRunModel.getNodeRunModel()).fail(any(), eq(advanceDate));
+            verify(waitForThreadsRunModel.getNodeRunModel(), never()).complete(any(), any());
+        }
     }
 
     @Nested
