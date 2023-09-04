@@ -80,4 +80,8 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         out.setAlreadyHandled(alreadyHandled);
         return out;
     }
+
+    public boolean isFailed() {
+        return threadStatus == LHStatus.EXCEPTION || threadStatus == LHStatus.ERROR;
+    }
 }
