@@ -52,7 +52,7 @@ public class ASChildThreadFails extends WorkflowLogicTest {
             throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client);
         Thread.sleep(500);
-        assertStatus(client, wfRunId, LHStatus.ERROR);
+        assertStatus(client, wfRunId, LHStatus.EXCEPTION);
 
         // The parent should only execute one task.
         assertTaskOutputsMatch(client, wfRunId, 0, new ASSimpleTask().obiwan());

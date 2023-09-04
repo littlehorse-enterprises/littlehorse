@@ -109,10 +109,14 @@ public class WaitForThreadsRunModelTest {
 
         @Test
         void shouldHandleErrors() {
+            ArgumentCaptor<FailureModel> failureCaptor = ArgumentCaptor.forClass(FailureModel.class);
             when(secondWaitForThread.getThreadStatus()).thenReturn(LHStatus.ERROR);
             waitForThreadsRunModel.advanceIfPossible(advanceDate);
-            verify(waitForThreadsRunModel.getNodeRunModel()).fail(any(), eq(advanceDate));
+            verify(waitForThreadsRunModel.getNodeRunModel()).fail(failureCaptor.capture(), eq(advanceDate));
             verify(waitForThreadsRunModel.getNodeRunModel(), never()).complete(any(), any());
+            FailureModel failure = failureCaptor.getValue();
+            assertThat(failure.getStatus()).isEqualTo(LHStatus.ERROR);
+            assertThat(failure.getMessage()).isEqualTo("Some child threads failed = [2]");
         }
     }
 

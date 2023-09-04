@@ -17,6 +17,7 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -134,14 +135,16 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
             }
         }
         if (allThreadsCompleted) {
-            WaitForThreadModel failed = threads.stream()
+            String failedThreadRunNumbers = threads.stream()
                     .filter(waitForThreadModel -> waitForThreadModel.getThreadStatus() == LHStatus.ERROR)
-                    .findFirst()
-                    .orElse(null);
-            if (failed != null) {
-                nodeRunModel.fail(new FailureModel("failed", LHConstants.CHILD_FAILURE), time);
-            } else {
+                    .map(WaitForThreadModel::getThreadRunNumber)
+                    .map(Object::toString)
+                    .collect(Collectors.joining(","));
+            if (failedThreadRunNumbers.isEmpty()) {
                 nodeRunModel.complete(new VariableValueModel(), time);
+            } else {
+                String failureMessage = "Some child threads failed = [%s]".formatted(failedThreadRunNumbers);
+                nodeRunModel.fail(new FailureModel(failureMessage, LHConstants.CHILD_FAILURE), time);
             }
         }
         return allThreadsCompleted;
