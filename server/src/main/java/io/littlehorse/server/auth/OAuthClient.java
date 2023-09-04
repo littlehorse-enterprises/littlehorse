@@ -42,13 +42,19 @@ public class OAuthClient {
             }
 
             TokenIntrospectionSuccessResponse successResponse = response.toSuccessResponse();
+            if (!successResponse.isActive()) {
+                log.warn("Received Access Token is Not Active");
+            }
 
-            Instant expiration = successResponse.getExpirationTime() != null
-                    ? successResponse.getExpirationTime().toInstant()
-                    : Instant.MIN;
+            String clientId = successResponse.getClientID() == null
+                    ? null
+                    : successResponse.getClientID().getValue();
+            Instant expiration = successResponse.getExpirationTime() == null
+                    ? null
+                    : successResponse.getExpirationTime().toInstant();
 
             return TokenStatus.builder()
-                    .clientId(successResponse.getClientID().getValue())
+                    .clientId(clientId)
                     .token(token)
                     .expiration(expiration)
                     .build();
