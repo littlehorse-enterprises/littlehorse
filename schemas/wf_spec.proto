@@ -47,6 +47,7 @@ message WaitForThreadsNode {
     VariableAssignment thread_run_number = 1;
   }
   repeated ThreadToWaitFor threads = 1;
+  WaitForThreadsFailureStrategy failure_strategy = 2;
 }
 
 message ExternalEventNode {

@@ -30,4 +30,15 @@ public interface WaitForThreadsNodeOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder getThreadsOrBuilder(
       int index);
+
+  /**
+   * <code>.littlehorse.WaitForThreadsFailureStrategy failure_strategy = 2;</code>
+   * @return The enum numeric value on the wire for failureStrategy.
+   */
+  int getFailureStrategyValue();
+  /**
+   * <code>.littlehorse.WaitForThreadsFailureStrategy failure_strategy = 2;</code>
+   * @return The failureStrategy.
+   */
+  io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy getFailureStrategy();
 }

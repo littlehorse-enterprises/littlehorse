@@ -31,6 +31,7 @@ import io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
@@ -504,7 +505,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         this.addMutationToCurrentNode(mutation.build());
     }
 
-    public NodeOutputImpl waitForThreads(SpawnedThread... threadsToWaitFor) {
+    public WaitForThreadNodeOutput waitForThreads(SpawnedThread... threadsToWaitFor) {
         checkIfIsActive();
         WaitForThreadsNode.Builder waitNode = WaitForThreadsNode.newBuilder();
 
@@ -512,10 +513,10 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             SpawnedThreadImpl st = (SpawnedThreadImpl) threadsToWaitFor[i];
             waitNode.addThreads(ThreadToWaitFor.newBuilder().setThreadRunNumber(assignVariable(st.internalThreadVar)));
         }
-
+        waitNode.setFailureStrategy(WaitForThreadsFailureStrategy.ALL_NODES);
         String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode.build());
 
-        return new NodeOutputImpl(nodeName, this);
+        return new WaitForThreadNodeOutput(nodeName, this, spec);
     }
 
     public NodeOutputImpl waitForEvent(String externalEventDefName) {

@@ -377,4 +377,8 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         errorMessage = failure.message;
         getThreadRun().fail(failure, time);
     }
+
+    public void halt() {
+        status = LHStatus.HALTED;
+    }
 }

@@ -2,6 +2,7 @@ package io.littlehorse.sdk.wfsdk;
 
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.wfsdk.internal.WaitForThreadNodeOutput;
 import java.util.Map;
 
 /** This interface is what is used to define the logic of a ThreaSpec in a ThreadFunc. */
@@ -22,7 +23,7 @@ public interface ThreadBuilder {
      *     pass that literal value in.
      * @return A NodeOutput for that TASK node.
      */
-    public NodeOutput execute(String taskName, Object... args);
+    NodeOutput execute(String taskName, Object... args);
 
     /**
      * Adds a User Task Node, and assigns it to a specific user
@@ -102,7 +103,7 @@ public interface ThreadBuilder {
      * @param userGroup is the User Group to assign the task to.
      * @return a UserTaskOutput.
      */
-    public UserTaskOutput assignTaskToUserGroup(String userTaskDefName, String userGroup);
+    UserTaskOutput assignTaskToUserGroup(String userTaskDefName, String userGroup);
 
     /**
      * Creates a formatted string using WfRunVariables as arguments.
@@ -114,7 +115,7 @@ public interface ThreadBuilder {
      * @param args are the format args.
      * @return an LHFormatString object which can be used as a variable assignment in a WfSpec.
      */
-    public LHFormatString format(String format, WfRunVariable... args);
+    LHFormatString format(String format, WfRunVariable... args);
 
     /**
      * Adds a User Task Node, and assigns it to a group of users.
@@ -123,7 +124,7 @@ public interface ThreadBuilder {
      * @param userGroup is the User Group (either WfRunVariable or String) to assign the task to.
      * @return a UserTaskOutput.
      */
-    public UserTaskOutput assignTaskToUserGroup(String userTaskDefName, WfRunVariable userGroup);
+    UserTaskOutput assignTaskToUserGroup(String userTaskDefName, WfRunVariable userGroup);
 
     // TODO: Allow assigning User Tasks via `WfRunVariable`
 
@@ -140,7 +141,7 @@ public interface ThreadBuilder {
      *     that as the default.
      * @return a handle to the created WfRunVariable.
      */
-    public WfRunVariable addVariable(String name, Object typeOrDefaultVal);
+    WfRunVariable addVariable(String name, Object typeOrDefaultVal);
 
     /**
      * Conditionally executes some workflow code; equivalent to an if() statement in programming.
@@ -149,7 +150,7 @@ public interface ThreadBuilder {
      * @param doIf is the block of ThreadSpec code to be executed if the provided WorkflowCondition
      *     is satisfied.
      */
-    public void doIf(WorkflowCondition condition, IfElseBody doIf);
+    void doIf(WorkflowCondition condition, IfElseBody doIf);
 
     /**
      * Conditionally executes one of two workflow code branches; equivalent to an if/else statement
@@ -161,7 +162,7 @@ public interface ThreadBuilder {
      * @param doElse is the block of ThreadSpec code to be executed if the provided
      *     WorkflowCondition is NOT satisfied.
      */
-    public void doIfElse(WorkflowCondition condition, IfElseBody doIf, IfElseBody doElse);
+    void doIfElse(WorkflowCondition condition, IfElseBody doIf, IfElseBody doElse);
 
     /**
      * Adds a Reminder Task to a User Task Node.
@@ -174,7 +175,7 @@ public interface ThreadBuilder {
      *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
      *     pass that literal value in.
      */
-    public void scheduleReminderTask(UserTaskOutput userTask, int delaySeconds, String taskDefName, Object... args);
+    void scheduleReminderTask(UserTaskOutput userTask, int delaySeconds, String taskDefName, Object... args);
 
     /**
      * Adds a Reminder Task to a User Task Node.
@@ -187,8 +188,7 @@ public interface ThreadBuilder {
      *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
      *     pass that literal value in.
      */
-    public void scheduleReminderTask(
-            UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Object... args);
+    void scheduleReminderTask(UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Object... args);
 
     /**
      * Conditionally executes some workflow code; equivalent to an while() statement in programming.
@@ -197,7 +197,7 @@ public interface ThreadBuilder {
      * @param whileBody is the block of ThreadFunc code to be executed while the provided
      *     WorkflowCondition is satisfied.
      */
-    public void doWhile(WorkflowCondition condition, ThreadFunc whileBody);
+    void doWhile(WorkflowCondition condition, ThreadFunc whileBody);
 
     /**
      * Adds a SPAWN_THREAD node to the ThreadSpec, which spawns a Child ThreadRun whose ThreadSpec
@@ -211,7 +211,7 @@ public interface ThreadBuilder {
      * @return a handle to the resulting SpawnedThread, which can be used in
      *     ThreadBuilder::waitForThread()
      */
-    public SpawnedThread spawnThread(ThreadFunc threadFunc, String threadName, Map<String, Object> inputVars);
+    SpawnedThread spawnThread(ThreadFunc threadFunc, String threadName, Map<String, Object> inputVars);
 
     /**
      * Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
@@ -220,7 +220,7 @@ public interface ThreadBuilder {
      *     spawnThread.
      * @return a NodeOutput that can be used for timeouts or exception handling.
      */
-    public NodeOutput waitForThreads(SpawnedThread... threadsToWaitFor);
+    WaitForThreadNodeOutput waitForThreads(SpawnedThread... threadsToWaitFor);
 
     /**
      * Adds an EXTERNAL_EVENT node which blocks until an 'ExternalEvent' of the specified type
@@ -229,7 +229,7 @@ public interface ThreadBuilder {
      * @param externalEventDefName is the type of ExternalEvent to wait for.
      * @return a NodeOutput for this event.
      */
-    public NodeOutput waitForEvent(String externalEventDefName);
+    NodeOutput waitForEvent(String externalEventDefName);
 
     /**
      * Adds an EXIT node with a Failure defined. This causes a ThreadRun to fail, and the resulting
@@ -241,13 +241,13 @@ public interface ThreadBuilder {
      * @param failureName is the name of the failure to throw.
      * @param message is a human-readable message.
      */
-    public void fail(Object output, String failureName, String message);
+    void fail(Object output, String failureName, String message);
 
     /**
      * Adds an EXIT node with no Failure defined. This causes the ThreadRun to complete gracefully.
      * It is equivalent to putting a call to `return;` early in your function.
      */
-    public void complete();
+    void complete();
 
     /**
      * Adds an EXIT node with a Failure defined. This causes a ThreadRun to fail, and the resulting
@@ -256,7 +256,7 @@ public interface ThreadBuilder {
      * @param failureName is the name of the failure to throw.
      * @param message is a human-readable message.
      */
-    public void fail(String failureName, String message);
+    void fail(String failureName, String message);
 
     /**
      * Registers an Interrupt Handler, such that when an ExternalEvent arrives with the specified
@@ -265,7 +265,7 @@ public interface ThreadBuilder {
      * @param interruptName The name of the ExternalEventDef to listen for.
      * @param handler A Thread Function defining a ThreadSpec to use to handle the Interrupt.
      */
-    public void registerInterruptHandler(String interruptName, ThreadFunc handler);
+    void registerInterruptHandler(String interruptName, ThreadFunc handler);
 
     /**
      * Adds a SLEEP node which makes the ThreadRun sleep for a specified number of seconds.
@@ -274,7 +274,7 @@ public interface ThreadBuilder {
      *     a WfRunVariable which evaluates to a VariableTypePb.INT specifying the number of seconds
      *     to sleep for.
      */
-    public void sleepSeconds(Object seconds);
+    void sleepSeconds(Object seconds);
 
     /**
      * Adds a SLEEP node which makes the ThreadRun sleep until a specified timestamp, provided as an
@@ -283,7 +283,7 @@ public interface ThreadBuilder {
      * @param timestamp a WfRunVariable which evaluates to a VariableTypePb.INT specifying the epoch
      *     timestamp (in milliseconds) to wait for.
      */
-    public void sleepUntil(WfRunVariable timestamp);
+    void sleepUntil(WfRunVariable timestamp);
 
     /**
      * Adds a Failure Handler to the Node specified by the provided NodeOutput.
@@ -294,7 +294,7 @@ public interface ThreadBuilder {
      * @param handler is a ThreadFunction defining a ThreadSpec that should be used to handle the
      *     failure.
      */
-    public void handleException(NodeOutput node, String exceptionName, ThreadFunc handler);
+    void handleException(NodeOutput node, String exceptionName, ThreadFunc handler);
 
     /**
      * Returns a WorkflowCondition that can be used in `ThreadBuilder::doIf()` or
@@ -308,7 +308,7 @@ public interface ThreadBuilder {
      *     `WfRunVariable` representing the RHS of the expression.
      * @return a WorkflowCondition.
      */
-    public WorkflowCondition condition(Object lhs, Comparator comparator, Object rhs);
+    WorkflowCondition condition(Object lhs, Comparator comparator, Object rhs);
 
     /**
      * Adds a VariableMutation to the last Node
@@ -319,5 +319,5 @@ public interface ThreadBuilder {
      *     `WfRunVariable` which determines the right hand side of the expression, or a `NodeOutput`
      *     (which allows you to use the output of a Node Run to mutate variables).
      */
-    public void mutate(WfRunVariable lhs, VariableMutationType type, Object rhs);
+    void mutate(WfRunVariable lhs, VariableMutationType type, Object rhs);
 }

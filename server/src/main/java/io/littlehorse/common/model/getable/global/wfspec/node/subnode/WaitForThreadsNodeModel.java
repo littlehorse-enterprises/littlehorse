@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsR
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.ThreadToWaitForModel;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
 
     private List<ThreadToWaitForModel> threads;
 
+    private WaitForThreadsFailureStrategy failureStrategy;
+
     public Class<WaitForThreadsNode> getProtoBaseClass() {
         return WaitForThreadsNode.class;
     }
@@ -39,6 +42,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         for (ThreadToWaitFor ttwf : p.getThreadsList()) {
             threads.add(LHSerializable.fromProto(ttwf, ThreadToWaitForModel.class));
         }
+        failureStrategy = p.getFailureStrategy();
     }
 
     public WaitForThreadsNode.Builder toProto() {
@@ -46,7 +50,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         for (ThreadToWaitForModel ttwf : threads) {
             out.addThreads(ttwf.toProto());
         }
-
+        out.setFailureStrategy(failureStrategy);
         return out;
     }
 

@@ -43,3 +43,8 @@ enum VariableType {
   BYTES = 6;
   NULL = 7;
 }
+
+enum WaitForThreadsFailureStrategy{
+  ALL_NODES = 0;
+  SINGLE_NODE = 1;
+}

@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.utils.WaitForThreadModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -122,14 +123,23 @@ public class WaitForThreadsRunModelTest {
 
     @Nested
     class ChildrenThreadsStillRunning {
+
+        private NodeRunModel secondThreadRunCurrentNode = mock(NodeRunModel.class);
+
         @BeforeEach
         void setup() {
             when(firstThreadRunModel.isTerminated()).thenReturn(false);
             when(secondThreadRunModel.isTerminated()).thenReturn(true);
+            when(firstThreadRunModel.isRunning()).thenReturn(true);
+            when(firstWaitForThread.isFailed()).thenReturn(true);
+            waitForThreadsRunModel.setFailureStrategy(WaitForThreadsFailureStrategy.SINGLE_NODE);
+            when(secondThreadRunModel.getCurrentNodeRun()).thenReturn(secondThreadRunCurrentNode);
+            when(secondThreadRunCurrentNode.isInProgress()).thenReturn(true);
         }
 
         @Test
         void shouldNotAdvanceIfSomeChildIsNotTerminated() {
+            waitForThreadsRunModel.setFailureStrategy(WaitForThreadsFailureStrategy.ALL_NODES);
             boolean shouldAdvance = waitForThreadsRunModel.advanceIfPossible(advanceDate);
             assertThat(shouldAdvance).isFalse();
             verify(waitForThreadsRunModel.getNodeRunModel(), never()).complete(any(), eq(advanceDate));
@@ -141,6 +151,23 @@ public class WaitForThreadsRunModelTest {
             waitForThreadsRunModel.advanceIfPossible(advanceDate);
             verify(firstWaitForThread, never()).setAlreadyHandled(true);
             verify(firstWaitForThread, never()).setThreadEndTime(any());
+        }
+
+        @Test
+        void shouldFailOnSingleChildThreadFailure() {
+            boolean shouldAdvance = waitForThreadsRunModel.advanceIfPossible(advanceDate);
+            assertThat(shouldAdvance).isTrue();
+            verify(waitForThreadsRunModel.getNodeRunModel(), times(1)).fail(any(), eq(advanceDate));
+            verify(secondThreadRunCurrentNode).halt();
+            verify(firstWaitForThread, atLeastOnce()).setThreadStatus(firstThreadRunModel.getStatus());
+            verify(secondWaitForThread).setThreadStatus(secondThreadRunModel.getStatus());
+        }
+
+        @Test
+        void shouldFailOnSingleChildThreadException() {
+            when(firstWaitForThread.getThreadStatus()).thenReturn(LHStatus.EXCEPTION);
+            waitForThreadsRunModel.advanceIfPossible(advanceDate);
+            verify(waitForThreadsRunModel.getNodeRunModel(), times(1)).fail(any(), any());
         }
     }
 
@@ -158,6 +185,7 @@ public class WaitForThreadsRunModelTest {
                     .forEach(threadRun -> when(threadRun.isTerminated()).thenReturn(true));
             when(firstWaitForThread.getThreadStatus()).thenReturn(LHStatus.COMPLETED);
             when(secondWaitForThread.getThreadStatus()).thenReturn(LHStatus.EXCEPTION);
+            when(secondWaitForThread.isFailed()).thenReturn(true);
             when(secondThreadRunModel.getCurrentNodePosition()).thenReturn(failureNodePosition);
             when(secondThreadRunModel
                             .getNodeRun(secondThreadRunModel.getCurrentNodePosition())
@@ -166,14 +194,25 @@ public class WaitForThreadsRunModelTest {
         }
 
         @Test
-        void shouldPropagateExceptionFromChildToParentNode() {
+        void shouldPropagateExceptionFromChildToParentNodeIfItIsAUserDefinedFailure() {
+            when(nodeFailure.isUserDefinedFailure()).thenReturn(true);
             boolean shouldAdvance = waitForThreadsRunModel.advanceIfPossible(advanceDate);
             assertThat(shouldAdvance).isTrue();
             verify(waitForThreadsRunModel.getNodeRunModel()).fail(eq(nodeFailure), eq(advanceDate));
         }
 
         @Test
+        void shouldNotPropagateExceptionIfItIsNotAUserDefinedFailure() {
+            when(nodeFailure.isUserDefinedFailure()).thenReturn(true);
+            when(nodeFailure.isUserDefinedFailure()).thenReturn(false);
+            boolean shouldAdvance = waitForThreadsRunModel.advanceIfPossible(advanceDate);
+            assertThat(shouldAdvance).isTrue();
+            verify(waitForThreadsRunModel.getNodeRunModel(), never()).fail(eq(nodeFailure), eq(advanceDate));
+        }
+
+        @Test
         void shouldPropagateExceptionFromChildToParentWhenThereIsANonTerminatedWaitThread() {
+            when(nodeFailure.isUserDefinedFailure()).thenReturn(true);
             when(firstThreadRunModel.isTerminated()).thenReturn(false);
             boolean shouldAdvance = waitForThreadsRunModel.advanceIfPossible(advanceDate);
             assertThat(shouldAdvance).isFalse();

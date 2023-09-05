@@ -41,6 +41,11 @@ class VariableType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     INT: _ClassVar[VariableType]
     BYTES: _ClassVar[VariableType]
     NULL: _ClassVar[VariableType]
+
+class WaitForThreadsFailureStrategy(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    ALL_NODES: _ClassVar[WaitForThreadsFailureStrategy]
+    SINGLE_NODE: _ClassVar[WaitForThreadsFailureStrategy]
 STARTING: LHStatus
 RUNNING: LHStatus
 COMPLETED: LHStatus
@@ -67,3 +72,5 @@ STR: VariableType
 INT: VariableType
 BYTES: VariableType
 NULL: VariableType
+ALL_NODES: WaitForThreadsFailureStrategy
+SINGLE_NODE: WaitForThreadsFailureStrategy

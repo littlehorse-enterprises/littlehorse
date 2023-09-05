@@ -17,7 +17,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
 
+@Getter
 public class StartThreadNodeModel extends SubNode<StartThreadNode> {
 
     public String threadSpecName;

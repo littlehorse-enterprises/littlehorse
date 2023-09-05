@@ -82,15 +82,17 @@ class FailureHandlerDef(_message.Message):
     def __init__(self, specific_failure: _Optional[str] = ..., handler_spec_name: _Optional[str] = ...) -> None: ...
 
 class WaitForThreadsNode(_message.Message):
-    __slots__ = ["threads"]
+    __slots__ = ["threads", "failure_strategy"]
     class ThreadToWaitFor(_message.Message):
         __slots__ = ["thread_run_number"]
         THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
         thread_run_number: _common_wfspec_pb2.VariableAssignment
         def __init__(self, thread_run_number: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
     THREADS_FIELD_NUMBER: _ClassVar[int]
+    FAILURE_STRATEGY_FIELD_NUMBER: _ClassVar[int]
     threads: _containers.RepeatedCompositeFieldContainer[WaitForThreadsNode.ThreadToWaitFor]
-    def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsNode.ThreadToWaitFor, _Mapping]]] = ...) -> None: ...
+    failure_strategy: _common_enums_pb2.WaitForThreadsFailureStrategy
+    def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsNode.ThreadToWaitFor, _Mapping]]] = ..., failure_strategy: _Optional[_Union[_common_enums_pb2.WaitForThreadsFailureStrategy, str]] = ...) -> None: ...
 
 class ExternalEventNode(_message.Message):
     __slots__ = ["external_event_def_name", "timeout_seconds"]

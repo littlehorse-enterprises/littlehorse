@@ -13,10 +13,12 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.utils.WaitForTh
 import io.littlehorse.common.model.getable.global.wfspec.node.ThreadToWaitForModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForThreadsNodeModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,9 +30,11 @@ import lombok.extern.slf4j.Slf4j;
 public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
     private List<WaitForThreadModel> threads;
+    private WaitForThreadsFailureStrategy failureStrategy;
 
     public WaitForThreadsRunModel() {
         this.threads = new ArrayList<>();
+        this.failureStrategy = WaitForThreadsFailureStrategy.ALL_NODES;
     }
 
     public Class<WaitForThreadsRun> getProtoBaseClass() {
@@ -42,6 +46,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         for (WaitForThreadsRun.WaitForThread wft : p.getThreadsList()) {
             threads.add(LHSerializable.fromProto(wft, WaitForThreadModel.class));
         }
+        failureStrategy = p.getFailureStrategy();
     }
 
     public WaitForThreadsRun.Builder toProto() {
@@ -50,6 +55,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         for (WaitForThreadModel wft : threads) {
             out.addThreads(wft.toProto());
         }
+        out.setFailureStrategy(failureStrategy);
         return out;
     }
 
@@ -64,57 +70,6 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         return true;
     }
 
-    // First order of business is to get the status of all threads.
-    /*public boolean advanceIfPossible(Date time) {
-        for (WaitForThreadModel wft : threads) {
-            if (wft.isAlreadyHandled()) {
-                continue;
-            }
-            ThreadRunModel childThread = getWfRun().getThreadRun(wft.getThreadRunNumber());
-            wft.setThreadStatus(childThread.getStatus());
-            if (childThread.getStatus() == LHStatus.EXCEPTION) {
-                NodeRunModel nodeRun = childThread.getNodeRun(childThread.getCurrentNodePosition());
-                FailureModel latestFailure = nodeRun.getLatestFailure();
-                nodeRunModel.fail(latestFailure, time);
-            }
-            if (childThread.getEndTime() != null) {
-                wft.setAlreadyHandled(true);
-                wft.setThreadEndTime(childThread.getEndTime());
-            }
-        }
-
-        // boolean allTerminated = true;
-        for (WaitForThreadModel thread : threads) {
-            if (!isTerminated(thread)) {
-                log.debug("Still waiting for threads");
-                return false;
-            }
-        }
-
-        Predicate<WaitForThreadModel> isFailedWaitForThread =
-                waitForThreadModel -> waitForThreadModel.getThreadStatus() == LHStatus.ERROR
-                        || waitForThreadModel.getThreadStatus() == LHStatus.EXCEPTION;
-
-        List<Integer> failedThreads = threads.stream()
-                .filter(isFailedWaitForThread)
-                .map(WaitForThreadModel::getThreadRunNumber)
-                .toList();
-
-        if (failedThreads.isEmpty()) {
-            VariableValueModel out = new VariableValueModel();
-            out.type = VariableType.NULL;
-            nodeRunModel.complete(out, time);
-            return true;
-        } else {
-            String message = "Some child threads failed";
-            for (Integer threadRunNumber : failedThreads) {
-                message += ", " + threadRunNumber;
-            }
-            nodeRunModel.fail(new FailureModel(message, LHConstants.CHILD_FAILURE), time);
-            return true;
-        }
-    }*/
-
     @Override
     public boolean advanceIfPossible(Date time) {
         WfRunModel wfRun = getWfRun();
@@ -122,10 +77,22 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         for (WaitForThreadModel waitingThread : threads) {
             ThreadRunModel threadRun = wfRun.getThreadRun(waitingThread.getThreadRunNumber());
             waitingThread.setThreadStatus(threadRun.getStatus());
-            if (waitingThread.getThreadStatus() == LHStatus.EXCEPTION && !waitingThread.isAlreadyHandled()) {
+            if (waitingThread.isFailed() && !waitingThread.isAlreadyHandled()) {
                 FailureModel latestFailure =
                         threadRun.getNodeRun(threadRun.getCurrentNodePosition()).getLatestFailure();
-                nodeRunModel.fail(latestFailure, time);
+                if (isFailFast()) {
+                    if (latestFailure.isUserDefinedFailure()) {
+                        doFailFast(waitingThread, latestFailure, time);
+                    } else {
+                        String failureMessage =
+                                "Some child threads failed = [%s]".formatted(waitingThread.getThreadRunNumber());
+                        FailureModel failure = new FailureModel(failureMessage, LHConstants.CHILD_FAILURE);
+                        doFailFast(waitingThread, failure, time);
+                    }
+                    return true;
+                } else if (latestFailure.isUserDefinedFailure()) {
+                    nodeRunModel.fail(latestFailure, time);
+                }
             }
             if (threadRun.isTerminated()) {
                 waitingThread.setAlreadyHandled(true);
@@ -148,6 +115,24 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
             }
         }
         return allThreadsCompleted;
+    }
+
+    private void doFailFast(WaitForThreadModel failedWaitingThread, FailureModel failure, Date time) {
+        nodeRunModel.fail(failure, time);
+        WfRunModel wfRun = getWfRun();
+        for (WaitForThreadModel waitingThreads : threads) {
+            if (!Objects.equals(failedWaitingThread, waitingThreads)) {
+                ThreadRunModel threadRun = wfRun.getThreadRun(waitingThreads.getThreadRunNumber());
+                if (threadRun.getCurrentNodeRun().isInProgress()) {
+                    threadRun.getCurrentNodeRun().halt();
+                }
+                waitingThreads.setThreadStatus(threadRun.getStatus());
+            }
+        }
+    }
+
+    private boolean isFailFast() {
+        return failureStrategy == WaitForThreadsFailureStrategy.SINGLE_NODE;
     }
 
     private boolean isTerminated(WaitForThreadModel wft) {
