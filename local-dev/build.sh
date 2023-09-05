@@ -7,18 +7,24 @@ LH_SERVER_WORK_DIR=$(cd "$SCRIPT_DIR/../docker/server" && pwd)
 LH_STANDALONE_WORK_DIR=$(cd "$SCRIPT_DIR/../docker/standalone" && pwd)
 CONTEXT_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 
-cd "$CONTEXT_DIR"
+cd "${CONTEXT_DIR}"
 
 if [ "$1" == "--quick" ]; then
     # The quick build compiles the jar using gradle on the host machine, which
     # enables usage of the gradle cache. This is much faster than building from
     # scratch in a fresh container, and is suitable for local development.
     echo "Building server image using host machine's gradle cache"
-    cd ${CONTEXT_DIR}
     gradle server:shadowJar -x test
 
-    docker build -f ${SCRIPT_DIR}/util/Dockerfile.server-quick \
-        --tag littlehorse/littlehorse-server:latest ${CONTEXT_DIR}
+    docker build --tag littlehorse/littlehorse-server:latest -f- . <<EOF
+FROM amazoncorretto:17
+WORKDIR /lh
+COPY ./docker/server/docker-entrypoint.sh /lh
+COPY ./docker/server/log4j2.properties /lh
+COPY ./server/build/libs/server-*-all.jar /lh/server.jar
+ENTRYPOINT ["/lh/docker-entrypoint.sh"]
+CMD ["server"]
+EOF
 else
     # Build from scratch using the same Dockerfiles used in our CI/CD
     # pipeline. Also, we build the standalone image as well.
