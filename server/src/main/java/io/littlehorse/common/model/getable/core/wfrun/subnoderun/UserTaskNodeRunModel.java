@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.UserTaskNo
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.proto.UserTaskNodeRun;
+import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -73,5 +74,11 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
         userTaskRunId = out.getObjectId();
         out.onArrival(time);
         getDao().put(out);
+    }
+
+    @Override
+    public void halt() {
+        UserTaskRunModel userTaskRunModel = getDao().get(getUserTaskRunId());
+        userTaskRunModel.setStatus(UserTaskRunStatus.CANCELLED);
     }
 }

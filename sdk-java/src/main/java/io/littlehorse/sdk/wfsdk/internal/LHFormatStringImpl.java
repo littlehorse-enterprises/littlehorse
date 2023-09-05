@@ -5,7 +5,7 @@ import io.littlehorse.sdk.wfsdk.LHFormatString;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LHFormatStringImpl implements LHFormatString {
+class LHFormatStringImpl implements LHFormatString {
 
     private String format;
     private List<VariableAssignment> formatArgs;

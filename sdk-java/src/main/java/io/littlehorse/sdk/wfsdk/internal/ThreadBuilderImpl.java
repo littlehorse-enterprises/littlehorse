@@ -33,12 +33,14 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
+import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
+import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import java.util.ArrayList;
@@ -52,7 +54,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @Setter
-public class ThreadBuilderImpl implements ThreadBuilder {
+final class ThreadBuilderImpl implements ThreadBuilder {
 
     private WorkflowImpl parent;
     private ThreadSpec.Builder spec;
@@ -504,7 +506,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         this.addMutationToCurrentNode(mutation.build());
     }
 
-    public NodeOutputImpl waitForThreads(SpawnedThread... threadsToWaitFor) {
+    public WaitForThreadsNodeOutput waitForThreads(SpawnedThread... threadsToWaitFor) {
         checkIfIsActive();
         WaitForThreadsNode.Builder waitNode = WaitForThreadsNode.newBuilder();
 
@@ -512,10 +514,10 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             SpawnedThreadImpl st = (SpawnedThreadImpl) threadsToWaitFor[i];
             waitNode.addThreads(ThreadToWaitFor.newBuilder().setThreadRunNumber(assignVariable(st.internalThreadVar)));
         }
-
+        waitNode.setPolicy(WaitForThreadsPolicy.WAIT_FOR_COMPLETION);
         String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode.build());
 
-        return new NodeOutputImpl(nodeName, this);
+        return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
     }
 
     public NodeOutputImpl waitForEvent(String externalEventDefName) {

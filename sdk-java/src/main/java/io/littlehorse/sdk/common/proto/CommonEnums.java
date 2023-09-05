@@ -35,8 +35,10 @@ public final class CommonEnums {
       "TES_5\020\000\022\013\n\007HOURS_2\020\001\022\n\n\006DAYS_1\020\002*g\n\014Vari" +
       "ableType\022\014\n\010JSON_OBJ\020\000\022\014\n\010JSON_ARR\020\001\022\n\n\006" +
       "DOUBLE\020\002\022\010\n\004BOOL\020\003\022\007\n\003STR\020\004\022\007\n\003INT\020\005\022\t\n\005" +
-      "BYTES\020\006\022\010\n\004NULL\020\007B,\n\037io.littlehorse.sdk." +
-      "common.protoP\001Z\007.;modelb\006proto3"
+      "BYTES\020\006\022\010\n\004NULL\020\007*D\n\024WaitForThreadsPolic" +
+      "y\022\027\n\023WAIT_FOR_COMPLETION\020\000\022\023\n\017STOP_ON_FA" +
+      "ILURE\020\001B,\n\037io.littlehorse.sdk.common.pro" +
+      "toP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

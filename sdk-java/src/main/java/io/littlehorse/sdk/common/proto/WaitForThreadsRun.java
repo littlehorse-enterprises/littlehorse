@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private WaitForThreadsRun() {
     threads_ = java.util.Collections.emptyList();
+    policy_ = 0;
   }
 
   @java.lang.Override
@@ -940,6 +941,24 @@ private static final long serialVersionUID = 0L;
     return threads_.get(index);
   }
 
+  public static final int POLICY_FIELD_NUMBER = 2;
+  private int policy_ = 0;
+  /**
+   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+   * @return The enum numeric value on the wire for policy.
+   */
+  @java.lang.Override public int getPolicyValue() {
+    return policy_;
+  }
+  /**
+   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+   * @return The policy.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy() {
+    io.littlehorse.sdk.common.proto.WaitForThreadsPolicy result = io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.forNumber(policy_);
+    return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -957,6 +976,9 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < threads_.size(); i++) {
       output.writeMessage(1, threads_.get(i));
     }
+    if (policy_ != io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.WAIT_FOR_COMPLETION.getNumber()) {
+      output.writeEnum(2, policy_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -969,6 +991,10 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < threads_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, threads_.get(i));
+    }
+    if (policy_ != io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.WAIT_FOR_COMPLETION.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(2, policy_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -987,6 +1013,7 @@ private static final long serialVersionUID = 0L;
 
     if (!getThreadsList()
         .equals(other.getThreadsList())) return false;
+    if (policy_ != other.policy_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -1002,6 +1029,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + THREADS_FIELD_NUMBER;
       hash = (53 * hash) + getThreadsList().hashCode();
     }
+    hash = (37 * hash) + POLICY_FIELD_NUMBER;
+    hash = (53 * hash) + policy_;
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -1140,6 +1169,7 @@ private static final long serialVersionUID = 0L;
         threadsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
+      policy_ = 0;
       return this;
     }
 
@@ -1186,6 +1216,9 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.WaitForThreadsRun result) {
       int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.policy_ = policy_;
+      }
     }
 
     @java.lang.Override
@@ -1258,6 +1291,9 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
+      if (other.policy_ != 0) {
+        setPolicyValue(other.getPolicyValue());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -1297,6 +1333,11 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 10
+            case 16: {
+              policy_ = input.readEnum();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 16
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1552,6 +1593,59 @@ private static final long serialVersionUID = 0L;
         threads_ = null;
       }
       return threadsBuilder_;
+    }
+
+    private int policy_ = 0;
+    /**
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @return The enum numeric value on the wire for policy.
+     */
+    @java.lang.Override public int getPolicyValue() {
+      return policy_;
+    }
+    /**
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @param value The enum numeric value on the wire for policy to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPolicyValue(int value) {
+      policy_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @return The policy.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy() {
+      io.littlehorse.sdk.common.proto.WaitForThreadsPolicy result = io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.forNumber(policy_);
+      return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @param value The policy to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPolicy(io.littlehorse.sdk.common.proto.WaitForThreadsPolicy value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000002;
+      policy_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPolicy() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      policy_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

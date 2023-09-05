@@ -2,7 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 
-public class NodeOutputImpl implements NodeOutput {
+class NodeOutputImpl implements NodeOutput {
 
     public String nodeName;
     public ThreadBuilderImpl parent;

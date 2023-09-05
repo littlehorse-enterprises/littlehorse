@@ -67,8 +67,8 @@ message WaitForThreadsRun {
     int32 thread_run_number = 3;
     bool already_handled = 5;
   }
-
   repeated WaitForThread threads = 1;
+  WaitForThreadsPolicy policy = 2;
 }
 
 message ExternalEventRun {
