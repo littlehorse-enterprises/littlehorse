@@ -29,6 +29,8 @@ sdk-dotnet/src/LittleHorseSDK/LittleHorse.Common/bin/
 sdk-dotnet/src/LittleHorseSDK/LittleHorse.Common/obj/
 sdk-dotnet/src/LittleHorseSDK/LittleHorse.Test/bin/
 sdk-dotnet/src/LittleHorseSDK/LittleHorse.Test/obj/
+sdk-dotnet/src/LittleHorseSDK/LittleHorse.Worker/bin/
+sdk-dotnet/src/LittleHorseSDK/LittleHorse.Worker/obj/
 sdk-dotnet/src/LittleHorseSDK/.vs/
 
 # Others
