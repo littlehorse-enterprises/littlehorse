@@ -32,13 +32,13 @@ public interface WaitForThreadsNodeOrBuilder extends
       int index);
 
   /**
-   * <code>.littlehorse.WaitForThreadsFailureStrategy failure_strategy = 2;</code>
-   * @return The enum numeric value on the wire for failureStrategy.
+   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+   * @return The enum numeric value on the wire for policy.
    */
-  int getFailureStrategyValue();
+  int getPolicyValue();
   /**
-   * <code>.littlehorse.WaitForThreadsFailureStrategy failure_strategy = 2;</code>
-   * @return The failureStrategy.
+   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+   * @return The policy.
    */
-  io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy getFailureStrategy();
+  io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy();
 }

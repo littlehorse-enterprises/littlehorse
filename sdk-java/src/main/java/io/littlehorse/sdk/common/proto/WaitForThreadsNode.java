@@ -17,7 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private WaitForThreadsNode() {
     threads_ = java.util.Collections.emptyList();
-    failureStrategy_ = 0;
+    policy_ = 0;
   }
 
   @java.lang.Override
@@ -681,22 +681,22 @@ private static final long serialVersionUID = 0L;
     return threads_.get(index);
   }
 
-  public static final int FAILURE_STRATEGY_FIELD_NUMBER = 2;
-  private int failureStrategy_ = 0;
+  public static final int POLICY_FIELD_NUMBER = 2;
+  private int policy_ = 0;
   /**
-   * <code>.littlehorse.WaitForThreadsFailureStrategy failure_strategy = 2;</code>
-   * @return The enum numeric value on the wire for failureStrategy.
+   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+   * @return The enum numeric value on the wire for policy.
    */
-  @java.lang.Override public int getFailureStrategyValue() {
-    return failureStrategy_;
+  @java.lang.Override public int getPolicyValue() {
+    return policy_;
   }
   /**
-   * <code>.littlehorse.WaitForThreadsFailureStrategy failure_strategy = 2;</code>
-   * @return The failureStrategy.
+   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+   * @return The policy.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy getFailureStrategy() {
-    io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy result = io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy.forNumber(failureStrategy_);
-    return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy() {
+    io.littlehorse.sdk.common.proto.WaitForThreadsPolicy result = io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.forNumber(policy_);
+    return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -716,8 +716,8 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < threads_.size(); i++) {
       output.writeMessage(1, threads_.get(i));
     }
-    if (failureStrategy_ != io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy.ALL_NODES.getNumber()) {
-      output.writeEnum(2, failureStrategy_);
+    if (policy_ != io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.WAIT_FOR_COMPLETION.getNumber()) {
+      output.writeEnum(2, policy_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -732,9 +732,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, threads_.get(i));
     }
-    if (failureStrategy_ != io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy.ALL_NODES.getNumber()) {
+    if (policy_ != io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.WAIT_FOR_COMPLETION.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(2, failureStrategy_);
+        .computeEnumSize(2, policy_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -753,7 +753,7 @@ private static final long serialVersionUID = 0L;
 
     if (!getThreadsList()
         .equals(other.getThreadsList())) return false;
-    if (failureStrategy_ != other.failureStrategy_) return false;
+    if (policy_ != other.policy_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -769,8 +769,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + THREADS_FIELD_NUMBER;
       hash = (53 * hash) + getThreadsList().hashCode();
     }
-    hash = (37 * hash) + FAILURE_STRATEGY_FIELD_NUMBER;
-    hash = (53 * hash) + failureStrategy_;
+    hash = (37 * hash) + POLICY_FIELD_NUMBER;
+    hash = (53 * hash) + policy_;
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -909,7 +909,7 @@ private static final long serialVersionUID = 0L;
         threadsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
-      failureStrategy_ = 0;
+      policy_ = 0;
       return this;
     }
 
@@ -957,7 +957,7 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.WaitForThreadsNode result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.failureStrategy_ = failureStrategy_;
+        result.policy_ = policy_;
       }
     }
 
@@ -1031,8 +1031,8 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
-      if (other.failureStrategy_ != 0) {
-        setFailureStrategyValue(other.getFailureStrategyValue());
+      if (other.policy_ != 0) {
+        setPolicyValue(other.getPolicyValue());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -1074,7 +1074,7 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 16: {
-              failureStrategy_ = input.readEnum();
+              policy_ = input.readEnum();
               bitField0_ |= 0x00000002;
               break;
             } // case 16
@@ -1335,55 +1335,55 @@ private static final long serialVersionUID = 0L;
       return threadsBuilder_;
     }
 
-    private int failureStrategy_ = 0;
+    private int policy_ = 0;
     /**
-     * <code>.littlehorse.WaitForThreadsFailureStrategy failure_strategy = 2;</code>
-     * @return The enum numeric value on the wire for failureStrategy.
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @return The enum numeric value on the wire for policy.
      */
-    @java.lang.Override public int getFailureStrategyValue() {
-      return failureStrategy_;
+    @java.lang.Override public int getPolicyValue() {
+      return policy_;
     }
     /**
-     * <code>.littlehorse.WaitForThreadsFailureStrategy failure_strategy = 2;</code>
-     * @param value The enum numeric value on the wire for failureStrategy to set.
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @param value The enum numeric value on the wire for policy to set.
      * @return This builder for chaining.
      */
-    public Builder setFailureStrategyValue(int value) {
-      failureStrategy_ = value;
+    public Builder setPolicyValue(int value) {
+      policy_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.WaitForThreadsFailureStrategy failure_strategy = 2;</code>
-     * @return The failureStrategy.
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @return The policy.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy getFailureStrategy() {
-      io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy result = io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy.forNumber(failureStrategy_);
-      return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy() {
+      io.littlehorse.sdk.common.proto.WaitForThreadsPolicy result = io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.forNumber(policy_);
+      return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.WaitForThreadsFailureStrategy failure_strategy = 2;</code>
-     * @param value The failureStrategy to set.
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @param value The policy to set.
      * @return This builder for chaining.
      */
-    public Builder setFailureStrategy(io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy value) {
+    public Builder setPolicy(io.littlehorse.sdk.common.proto.WaitForThreadsPolicy value) {
       if (value == null) {
         throw new NullPointerException();
       }
       bitField0_ |= 0x00000002;
-      failureStrategy_ = value.getNumber();
+      policy_ = value.getNumber();
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.WaitForThreadsFailureStrategy failure_strategy = 2;</code>
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearFailureStrategy() {
+    public Builder clearPolicy() {
       bitField0_ = (bitField0_ & ~0x00000002);
-      failureStrategy_ = 0;
+      policy_ = 0;
       onChanged();
       return this;
     }

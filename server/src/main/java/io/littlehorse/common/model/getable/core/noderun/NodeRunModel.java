@@ -380,5 +380,6 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     public void halt() {
         status = LHStatus.HALTED;
+        getSubNodeRun().halt();
     }
 }

@@ -68,7 +68,7 @@ message WaitForThreadsRun {
     bool already_handled = 5;
   }
   repeated WaitForThread threads = 1;
-  WaitForThreadsFailureStrategy failure_strategy = 2;
+  WaitForThreadsPolicy policy = 2;
 }
 
 message ExternalEventRun {

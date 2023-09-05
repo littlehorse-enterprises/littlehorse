@@ -518,6 +518,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             hr.parentHalted = new ParentHaltedModel();
             hr.parentHalted.parentThreadId = number;
             child.halt(hr);
+            if (child.getCurrentNodeRun().isInProgress()) {
+                child.getCurrentNodeRun().halt();
+            }
         }
 
         if (interruptTriggerId != null) {

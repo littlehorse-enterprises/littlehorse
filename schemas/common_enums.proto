@@ -44,7 +44,7 @@ enum VariableType {
   NULL = 7;
 }
 
-enum WaitForThreadsFailureStrategy{
-  ALL_NODES = 0;
-  SINGLE_NODE = 1;
+enum WaitForThreadsPolicy{
+  WAIT_FOR_COMPLETION = 0;
+  STOP_ON_FAILURE = 1;
 }

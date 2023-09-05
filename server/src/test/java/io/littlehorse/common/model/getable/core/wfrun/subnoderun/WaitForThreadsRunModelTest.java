@@ -11,7 +11,7 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.utils.WaitForThreadModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy;
+import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -132,14 +132,14 @@ public class WaitForThreadsRunModelTest {
             when(secondThreadRunModel.isTerminated()).thenReturn(true);
             when(firstThreadRunModel.isRunning()).thenReturn(true);
             when(firstWaitForThread.isFailed()).thenReturn(true);
-            waitForThreadsRunModel.setFailureStrategy(WaitForThreadsFailureStrategy.SINGLE_NODE);
+            waitForThreadsRunModel.setPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
             when(secondThreadRunModel.getCurrentNodeRun()).thenReturn(secondThreadRunCurrentNode);
             when(secondThreadRunCurrentNode.isInProgress()).thenReturn(true);
         }
 
         @Test
         void shouldNotAdvanceIfSomeChildIsNotTerminated() {
-            waitForThreadsRunModel.setFailureStrategy(WaitForThreadsFailureStrategy.ALL_NODES);
+            waitForThreadsRunModel.setPolicy(WaitForThreadsPolicy.WAIT_FOR_COMPLETION);
             boolean shouldAdvance = waitForThreadsRunModel.advanceIfPossible(advanceDate);
             assertThat(shouldAdvance).isFalse();
             verify(waitForThreadsRunModel.getNodeRunModel(), never()).complete(any(), eq(advanceDate));
@@ -158,7 +158,6 @@ public class WaitForThreadsRunModelTest {
             boolean shouldAdvance = waitForThreadsRunModel.advanceIfPossible(advanceDate);
             assertThat(shouldAdvance).isTrue();
             verify(waitForThreadsRunModel.getNodeRunModel(), times(1)).fail(any(), eq(advanceDate));
-            verify(secondThreadRunCurrentNode).halt();
             verify(firstWaitForThread, atLeastOnce()).setThreadStatus(firstThreadRunModel.getStatus());
             verify(secondWaitForThread).setThreadStatus(secondThreadRunModel.getStatus());
         }

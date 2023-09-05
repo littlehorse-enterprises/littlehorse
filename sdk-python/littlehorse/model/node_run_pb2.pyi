@@ -82,7 +82,7 @@ class StartThreadRun(_message.Message):
     def __init__(self, child_thread_id: _Optional[int] = ..., thread_spec_name: _Optional[str] = ...) -> None: ...
 
 class WaitForThreadsRun(_message.Message):
-    __slots__ = ["threads", "failure_strategy"]
+    __slots__ = ["threads", "policy"]
     class WaitForThread(_message.Message):
         __slots__ = ["thread_end_time", "thread_status", "thread_run_number", "already_handled"]
         THREAD_END_TIME_FIELD_NUMBER: _ClassVar[int]
@@ -95,10 +95,10 @@ class WaitForThreadsRun(_message.Message):
         already_handled: bool
         def __init__(self, thread_end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_run_number: _Optional[int] = ..., already_handled: bool = ...) -> None: ...
     THREADS_FIELD_NUMBER: _ClassVar[int]
-    FAILURE_STRATEGY_FIELD_NUMBER: _ClassVar[int]
+    POLICY_FIELD_NUMBER: _ClassVar[int]
     threads: _containers.RepeatedCompositeFieldContainer[WaitForThreadsRun.WaitForThread]
-    failure_strategy: _common_enums_pb2.WaitForThreadsFailureStrategy
-    def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsRun.WaitForThread, _Mapping]]] = ..., failure_strategy: _Optional[_Union[_common_enums_pb2.WaitForThreadsFailureStrategy, str]] = ...) -> None: ...
+    policy: _common_enums_pb2.WaitForThreadsPolicy
+    def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsRun.WaitForThread, _Mapping]]] = ..., policy: _Optional[_Union[_common_enums_pb2.WaitForThreadsPolicy, str]] = ...) -> None: ...
 
 class ExternalEventRun(_message.Message):
     __slots__ = ["external_event_def_name", "event_time", "external_event_id"]

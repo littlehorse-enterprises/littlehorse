@@ -2,8 +2,8 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
-import io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
+import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 
 public class WaitForThreadNodeOutput extends NodeOutputImpl {
 
@@ -14,11 +14,10 @@ public class WaitForThreadNodeOutput extends NodeOutputImpl {
         this.threadSpec = threadSpec;
     }
 
-    public WaitForThreadNodeOutput withFailureStrategy(WaitForThreadsFailureStrategy failureStrategy) {
+    public WaitForThreadNodeOutput withFailureStrategy(WaitForThreadsPolicy failureStrategy) {
         Node nodesOrThrow = threadSpec.getNodesOrThrow(nodeName);
         WaitForThreadsNode waitForThreads = nodesOrThrow.getWaitForThreads();
-        waitForThreads =
-                waitForThreads.toBuilder().setFailureStrategy(failureStrategy).build();
+        waitForThreads = waitForThreads.toBuilder().setPolicy(failureStrategy).build();
         nodesOrThrow =
                 nodesOrThrow.toBuilder().setWaitForThreads(waitForThreads).build();
         threadSpec.putNodes(nodeName, nodesOrThrow);

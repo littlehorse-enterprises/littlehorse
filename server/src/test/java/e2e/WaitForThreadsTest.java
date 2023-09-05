@@ -9,7 +9,7 @@ import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy;
+import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
@@ -24,7 +24,6 @@ import io.littlehorse.test.WorkflowVerifier;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @LHTest(
@@ -92,34 +91,37 @@ public class WaitForThreadsTest {
     }
 
     @Test
-    @Disabled
     void shouldFailWorkflowExecutionWhenFirstSpawnedThreadFails() {
         Map<String, String> failingEvent = Map.of("myInt", "invalidInt");
         Map<String, Integer> event2 = Map.of("myInt", 10);
+        int entrypointThreadNumber = 0;
+        int firstEventThreadNumber = 1;
+        int secondEventThreadNumber = 2;
         workflowVerifier
                 .prepareRun(simpleWaitForThreadsWorkflow)
                 .waitForStatus(RUNNING)
+                .waitForThreadRunStatus(entrypointThreadNumber, RUNNING)
+                .waitForThreadRunStatus(firstEventThreadNumber, RUNNING)
+                .waitForThreadRunStatus(secondEventThreadNumber, RUNNING)
                 .thenSendExternalEventJsonContent("thread-1-event", failingEvent)
-                .waitForNodeRunStatus(1, 2, ERROR)
-                .waitForThreadRunStatus(1, ERROR)
-                .thenVerifyNodeRun(1, 2, nodeRun -> {
+                .waitForStatus(ERROR)
+                .thenSendExternalEventJsonContent("thread-2-event", event2)
+                .waitForThreadRunStatus(entrypointThreadNumber, ERROR)
+                .waitForThreadRunStatus(firstEventThreadNumber, ERROR)
+                .waitForThreadRunStatus(secondEventThreadNumber, HALTED)
+                .waitForNodeRunStatus(entrypointThreadNumber, 3, ERROR)
+                .waitForNodeRunStatus(firstEventThreadNumber, 2, ERROR)
+                .waitForNodeRunStatus(secondEventThreadNumber, 1, HALTED)
+                .thenVerifyNodeRun(firstEventThreadNumber, 2, nodeRun -> {
                     assertThat(nodeRun.getTask().hasTaskRunId()).isFalse();
                     assertThat(nodeRun.getFailuresCount()).isEqualTo(1);
                     assertThat(nodeRun.getFailures(0).getFailureName()).isEqualTo("VAR_SUB_ERROR");
                 })
-                .waitForThreadRunStatus(2, HALTED)
-                .thenVerifyNodeRun(0, 3, nodeRun -> {
+                .thenVerifyNodeRun(entrypointThreadNumber, 3, nodeRun -> {
                     WaitForThreadsRun waitForThreadsRun = nodeRun.getWaitThreads();
                     assertThat(waitForThreadsRun.getThreads(0).getThreadStatus())
                             .isEqualTo(ERROR);
                     assertThat(waitForThreadsRun.getThreads(1).getThreadStatus())
-                            .isEqualTo(HALTED);
-                })
-                .waitForNodeRunStatus(2, 1, HALTED)
-                .thenSendExternalEventJsonContent("thread-2-event", event2)
-                .waitForStatus(ERROR)
-                .thenVerifyNodeRun(0, 3, nodeRun -> {
-                    assertThat(nodeRun.getWaitThreads().getThreads(1).getThreadStatus())
                             .isEqualTo(HALTED);
                 })
                 .start();
@@ -138,7 +140,7 @@ public class WaitForThreadsTest {
                 .waitForStatus(RUNNING)
                 .waitForNodeRunStatus(person1ApprovalThreadNumber, 3, EXCEPTION)
                 .waitForThreadRunStatus(person2ApprovalThreadNumber, RUNNING)
-                .waitForNodeRunStatus(person2ApprovalThreadNumber, 1, LHStatus.RUNNING)
+                .waitForNodeRunStatus(person2ApprovalThreadNumber, 1, RUNNING)
                 .waitForTaskStatus(exceptionHandlerThreadNumber, 1, TaskStatus.TASK_SUCCESS)
                 .thenVerifyTaskRunResult(
                         exceptionHandlerThreadNumber, 1, variableValue -> assertThat(variableValue.getStr())
@@ -200,7 +202,7 @@ public class WaitForThreadsTest {
                     thread.spawnThread(buildChildThread.apply(person3Approved, "person-3"), "person-3", null);
 
             NodeOutput nodeOutput = thread.waitForThreads(p1Thread, p2Thread, p3Thread)
-                    .withFailureStrategy(WaitForThreadsFailureStrategy.ALL_NODES);
+                    .withFailureStrategy(WaitForThreadsPolicy.WAIT_FOR_COMPLETION);
 
             thread.handleException(nodeOutput, "denied-by-user", xnHandler -> {
                 xnHandler.execute("exc-handler");
@@ -276,7 +278,7 @@ public class WaitForThreadsTest {
             SpawnedThread child2 = thread.spawnThread(
                     buildSpawnThread.apply("input2", "thread-2-event"), "child-2", Map.of("input2", Map.of()));
 
-            thread.waitForThreads(child1, child2).withFailureStrategy(WaitForThreadsFailureStrategy.SINGLE_NODE);
+            thread.waitForThreads(child1, child2).withFailureStrategy(WaitForThreadsPolicy.STOP_ON_FAILURE);
         });
     }
 

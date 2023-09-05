@@ -10,9 +10,9 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsR
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.ThreadToWaitForModel;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.common.proto.WaitForThreadsFailureStrategy;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
+import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -27,7 +27,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
 
     private List<ThreadToWaitForModel> threads;
 
-    private WaitForThreadsFailureStrategy failureStrategy;
+    private WaitForThreadsPolicy policy;
 
     public Class<WaitForThreadsNode> getProtoBaseClass() {
         return WaitForThreadsNode.class;
@@ -42,7 +42,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         for (ThreadToWaitFor ttwf : p.getThreadsList()) {
             threads.add(LHSerializable.fromProto(ttwf, ThreadToWaitForModel.class));
         }
-        failureStrategy = p.getFailureStrategy();
+        policy = p.getPolicy();
     }
 
     public WaitForThreadsNode.Builder toProto() {
@@ -50,12 +50,14 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         for (ThreadToWaitForModel ttwf : threads) {
             out.addThreads(ttwf.toProto());
         }
-        out.setFailureStrategy(failureStrategy);
+        out.setPolicy(policy);
         return out;
     }
 
     public WaitForThreadsRunModel createSubNodeRun(Date time) {
-        return new WaitForThreadsRunModel();
+        WaitForThreadsRunModel waitForThreadsRun = new WaitForThreadsRunModel();
+        waitForThreadsRun.setPolicy(getPolicy());
+        return waitForThreadsRun;
     }
 
     @Override

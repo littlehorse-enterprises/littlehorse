@@ -4,29 +4,29 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf enum {@code littlehorse.WaitForThreadsFailureStrategy}
+ * Protobuf enum {@code littlehorse.WaitForThreadsPolicy}
  */
-public enum WaitForThreadsFailureStrategy
+public enum WaitForThreadsPolicy
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>ALL_NODES = 0;</code>
+   * <code>WAIT_FOR_COMPLETION = 0;</code>
    */
-  ALL_NODES(0),
+  WAIT_FOR_COMPLETION(0),
   /**
-   * <code>SINGLE_NODE = 1;</code>
+   * <code>STOP_ON_FAILURE = 1;</code>
    */
-  SINGLE_NODE(1),
+  STOP_ON_FAILURE(1),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>ALL_NODES = 0;</code>
+   * <code>WAIT_FOR_COMPLETION = 0;</code>
    */
-  public static final int ALL_NODES_VALUE = 0;
+  public static final int WAIT_FOR_COMPLETION_VALUE = 0;
   /**
-   * <code>SINGLE_NODE = 1;</code>
+   * <code>STOP_ON_FAILURE = 1;</code>
    */
-  public static final int SINGLE_NODE_VALUE = 1;
+  public static final int STOP_ON_FAILURE_VALUE = 1;
 
 
   public final int getNumber() {
@@ -43,7 +43,7 @@ public enum WaitForThreadsFailureStrategy
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static WaitForThreadsFailureStrategy valueOf(int value) {
+  public static WaitForThreadsPolicy valueOf(int value) {
     return forNumber(value);
   }
 
@@ -51,23 +51,23 @@ public enum WaitForThreadsFailureStrategy
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static WaitForThreadsFailureStrategy forNumber(int value) {
+  public static WaitForThreadsPolicy forNumber(int value) {
     switch (value) {
-      case 0: return ALL_NODES;
-      case 1: return SINGLE_NODE;
+      case 0: return WAIT_FOR_COMPLETION;
+      case 1: return STOP_ON_FAILURE;
       default: return null;
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<WaitForThreadsFailureStrategy>
+  public static com.google.protobuf.Internal.EnumLiteMap<WaitForThreadsPolicy>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      WaitForThreadsFailureStrategy> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<WaitForThreadsFailureStrategy>() {
-          public WaitForThreadsFailureStrategy findValueByNumber(int number) {
-            return WaitForThreadsFailureStrategy.forNumber(number);
+      WaitForThreadsPolicy> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<WaitForThreadsPolicy>() {
+          public WaitForThreadsPolicy findValueByNumber(int number) {
+            return WaitForThreadsPolicy.forNumber(number);
           }
         };
 
@@ -88,9 +88,9 @@ public enum WaitForThreadsFailureStrategy
     return io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor().getEnumTypes().get(4);
   }
 
-  private static final WaitForThreadsFailureStrategy[] VALUES = values();
+  private static final WaitForThreadsPolicy[] VALUES = values();
 
-  public static WaitForThreadsFailureStrategy valueOf(
+  public static WaitForThreadsPolicy valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -104,10 +104,10 @@ public enum WaitForThreadsFailureStrategy
 
   private final int value;
 
-  private WaitForThreadsFailureStrategy(int value) {
+  private WaitForThreadsPolicy(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:littlehorse.WaitForThreadsFailureStrategy)
+  // @@protoc_insertion_point(enum_scope:littlehorse.WaitForThreadsPolicy)
 }
 
