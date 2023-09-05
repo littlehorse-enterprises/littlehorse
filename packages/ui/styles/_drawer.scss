@@ -613,3 +613,78 @@
     justify-content: center;
   }
 }
+
+
+.drawer-section{
+  border-radius: 8px;
+  border: 1px solid #3D4149;
+  margin-bottom: 16px;
+  overflow: hidden;
+  &>.title{
+    display: flex;
+    padding: 12px;
+    justify-content: center;
+    align-items: center;
+    align-self: stretch;
+    border: 1px solid #3D4149;
+    background: #373554;
+    color: var(--color-brightLight, #EDEEF0);
+    font-family: "Inter";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+  }
+  .drawer-link{
+    color: var(--color-primary, #7F7AFF);
+    font-family: "Inter";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    text-decoration: none;
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    
+  } 
+  table{
+    border-collapse: collapse;
+    width: 100%;
+    thead{
+      background: var(--color-shadowLight3, #2D2F36);
+      th{
+        padding: 12px;
+        color: var(--color-mildLight, #9098A0);
+        text-align: center;
+        font-family: "Inter";
+        font-size: 10px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        text-transform: uppercase;
+      }
+    }
+    tbody{
+      td{
+        color: var(--color-brightLight, #EDEEF0);
+        font-family: "Inter";
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        padding: 12px;
+        border-bottom: 1px solid #3D4149;
+        text-align: center;
+      }
+      tr:last-child{
+        td{
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}

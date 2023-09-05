@@ -501,7 +501,11 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
           />
         )}
         {type === 'SLEEP' ? <SleepNodeInformation run={current_run} isWFRun={props.isWFRun} wfRunId={props.wfRunId} data={props.datao.find((d : any) => d.name === props.nodeName)} /> : ''}
-        {type === 'USER_TASK' ? <UserTaskNodeInformation run={current_run} isWFRun={props.isWFRun} wfRunId={props.wfRunId} data={props.datao.find((d : any) => d.name === props.nodeName)} /> : ''}
+        {type === 'USER_TASK' ? <UserTaskNodeInformation run={current_run} isWFRun={props.isWFRun} wfRunId={props.wfRunId} 
+          setToggleSideBar={props.setToggleSideBar}
+          setCode={props.setCode}
+          data={props.datao.find((d : any) => d.name === props.nodeName)}
+         /> : ''}
       </>
     </div>
   );

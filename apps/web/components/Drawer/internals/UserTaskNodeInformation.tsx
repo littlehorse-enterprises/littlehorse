@@ -4,19 +4,32 @@ import { FailureInformation } from "./FailureInformation"
 import Link from "next/link"
 import Image from "next/image"
 import linkSvg from "./link.svg";
+import { DrawerSection } from "ui"
+import { orderBy } from "lodash"
 
 interface Props {
     isWFRun:boolean
     wfRunId?:string
     data?: any
     run?: any
+    setToggleSideBar: (value:boolean) => void
+    setCode:(value:any) => void
 }
-export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run}:Props) => {
+const parseValueByType = (value:any) => {
+    if(value?.type === 'JSON_OBJ') return JSON.stringify(value?.jsonObj)
+    if(value?.type === 'JSON_ARR') return JSON.stringify(value?.jsonArr)
+    if(value?.type === 'DOUBLE') return JSON.stringify(value?.double)
+    if(value?.type === 'BOOL') return JSON.stringify(value?.bool)
+    if(value?.type === 'INT') return (value?.int)
+    if(value?.type === 'BYTES') return (value?.bytes)
+    return value?.str
+}
+export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run, setToggleSideBar, setCode}:Props) => {
 
     const [info, setInfo] = useState<any>()
     const [node, setNode] = useState<any>()
+    const [nrun, setRun] = useState<any>()
     const getNodeRun = async () => {
-
         const res = await fetch('/api/drawer/nodeRun', {
 			method: 'POST',
 			body: JSON.stringify({
@@ -29,7 +42,19 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run}:Props) => 
 			const {result} = await res.json()
             setNode(result)
 		}
-       
+    }
+    const getUserTaskRun = async () => {
+        const res = await fetch('/api/drawer/userTaskRun', {
+			method: 'POST',
+			body: JSON.stringify({
+				wfRunId,
+				guid:node?.userTask?.userTaskRunId?.userTaskGuid
+			})
+		})
+        if (res.ok) {
+			const {result} = await res.json()
+            setRun(result)
+		}
     }
     const getInfo = async () => {
 
@@ -51,12 +76,16 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run}:Props) => 
     },[isWFRun, data])
 
     useEffect( () => {
+        getUserTaskRun()
+    },[node])
+
+    useEffect( () => {
         getInfo()
     },[data])
     return (
         <>
         <div className='component-header'>
-            <img src={`/SLEEP.svg`} alt="sleep" />
+            <img src={`/USER_TASK.svg`} alt="sleep" />
             <div>
                 <p>UserTaskDef Node Information</p>
                 <p className='component-header__subheader'>{data?.name && data.name.split('-').slice(0,-1).join('-')}</p>
@@ -64,99 +93,98 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run}:Props) => 
         </div>
         {isWFRun ? (
             <div className=''>
-                <div className="drawer__nodeData">
-      <div className="drawer__nodeData__label">Node data</div>
-      <div className="grid-3">
-        {node?.scheduled &&  <p className="drawer__nodeData__header">SCHEDULED</p>}
-        {node?.scheduled &&  <p className="drawer__nodeData__data">{node?.scheduled ? moment(node?.scheduled).format('MMMM DD, HH:mm:ss') : ''}</p>}
-        <p className="drawer__nodeData__header">ARRIVAL TIME</p>
-        <p className="drawer__nodeData__data">{node?.arrivalTime ? moment(node.arrivalTime).format('MMMM DD, HH:mm:ss') : ''}</p>
-        <p className="drawer__nodeData__header">END TIME</p>
-        <p className="drawer__nodeData__data">{node?.endTime ? moment(node.endTime).format('MMMM DD, HH:mm:ss') : ''}</p>
-        <p className="drawer__nodeData__header">STATUS</p>
-        <p className="drawer__nodeData__data">{node?.status}</p>
-        <p className="drawer__nodeData__header">wfRunId</p>
-        <p className="drawer__nodeData__data">{node?.userTask?.userTaskRunId?.wfRunId}</p>
-        <p className="drawer__nodeData__header">GUID</p>
-        <p className="drawer__nodeData__data">{node?.userTask?.userTaskRunId?.userTaskGuid}</p>
 
+            <DrawerSection title="Node Data" >
+                <div className="grid-3">
+                    {nrun?.scheduledTime &&  <p className="drawer__nodeData__header">SCHEDULED</p>}
+                    {nrun?.scheduledTime &&  <p className="drawer__nodeData__data">{nrun?.scheduledTime ? moment(nrun?.scheduledTime).format('MMMM DD, HH:mm:ss') : ''}</p>}
+                    <p className="drawer__nodeData__header">ARRIVAL TIME</p>
+                    <p className="drawer__nodeData__data">{node?.arrivalTime ? moment(node.arrivalTime).format('MMMM DD, HH:mm:ss') : ''}</p>
+                    <p className="drawer__nodeData__header">END TIME</p>
+                    <p className="drawer__nodeData__data">{node?.endTime ? moment(node.endTime).format('MMMM DD, HH:mm:ss') : ''}</p>
+                    <p className="drawer__nodeData__header">STATUS</p>
+                    <p className="drawer__nodeData__data">{node?.status}</p>
 
-      </div>
-      
-    </div>
-    <div style={{ height:'10px'}}></div>
+                    {(nrun?.userGroup || nrun?.user?.userGroup) &&  <p className="drawer__nodeData__header">USER GROUP</p>}
+                    {(nrun?.userGroup || nrun?.user?.userGroup) &&  <p className="drawer__nodeData__data">{nrun?.user?.userGroup?.id || nrun?.userGroup?.id }</p>}
+                    
 
+                    {nrun?.user &&  <p className="drawer__nodeData__header">SPECIFIC USER</p>}
+                    {nrun?.user &&  <p className="drawer__nodeData__data">{nrun?.user?.id }</p>}
+                    
+                    {orderBy(nrun?.events, ["time"],["desc"])?.find( e => e.reassigned?.oldUser) &&  <p className="drawer__nodeData__header">REASSIGNED TO</p>}
+                    {orderBy(nrun?.events, ["time"],["desc"])?.find( e => e.reassigned?.oldUser) &&  <p className="drawer__nodeData__data">{orderBy(nrun?.events, ["time"],["desc"])?.find( e => e.reassigned).reassigned.oldUser?.id} {`->`} {orderBy(nrun?.events, ["time"],["desc"])?.find( e => e.reassigned).reassigned.newUser?.id}</p>}
 
-                {/* <div className='drawer__task__wfrun-outputs'>
-                    <div className='drawer__task__wfrun-outputs__label'>
-                        Form Results
-                    </div>
-                    <div className='drawer__waitChild__link__container'>
-                        <div className='simpleValue__container' >
-                            <p className='simpleValue'>
-                               
-                            </p>
-                        </div>
-                    </div>
+                   
+                    {nrun?.notes &&  <p className="drawer__nodeData__header">NOTES</p>}
+                    {nrun?.notes &&  <p className="drawer__nodeData__data">{nrun?.notes }</p>}
                 </div>
-                <div style={{ height:'10px'}}></div> */}
+            </DrawerSection>
 
+            <DrawerSection title="Form Results" >
+                <table>
+                    <thead>
+                        <tr>
+                            <th>NAME</th>
+                            <th>TYPE</th>
+                            <th>RESULT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {nrun?.results?.map( (r:any, ix:number) => <tr key={ix}>
+                            <td>{r.name}</td>
+                            <td>{r.value?.type}</td>
+                            <td>{parseValueByType(r.value)}</td>
+                        </tr>)}
+                    </tbody>
+                </table>
+            </DrawerSection>
+            
+            <DrawerSection title="UserTaskDef Link" >
+                <Link
+                    href={
+                    "/usertaskdef/" + data?.node?.userTask?.userTaskDefName + '/' + data?.node?.userTask?.userTaskDefVersion
+                    }
+                    className="drawer-link"
+                >
+                    <Image src={linkSvg} alt={"link"} width={20} height={10} />
+                    <p className="drawer__task__link__container__clickable__text">
+                    {data?.name?.split("-").slice(1, -1).join("-") || ""}
+                    </p>
+                </Link>
+            </DrawerSection>
 
-                <div className="drawer__task__link">
-        <div className="drawer__task__link__title">UserTaskDef link</div>
-        <div className="drawer__task__link__container">
-          <Link
-            href={
-              "/usertaskdef/" + data?.node?.userTask?.userTaskDefName + '/' + data?.node?.userTask?.userTaskDefVersion
-            }
-            className="drawer__task__link__container__clickable"
-            style={{
-              textDecoration: "none",
-            }}
-          >
-            <Image src={linkSvg} alt={"link"} width={20} height={10} />
-            <p className="drawer__task__link__container__clickable__text">
-              {data?.name?.split("-").slice(1, -1).join("-") || ""}
-            </p>
-          </Link>
-        </div>
-      </div>
+            <DrawerSection title="Audit Event log" >
+                <div className="drawer-link" onClick={()=> {
+                                    setToggleSideBar(true)
+                                    setCode(nrun?.events || "")
+                            }}>
+                          audit log      
+                </div>
+            </DrawerSection>
 
-      <div style={{ height:'10px'}}></div>
-                {/* <div className='drawer__task__wfrun-outputs'>
-                    <div className='drawer__task__wfrun-outputs__label'>
-                        Audit event log
-                    </div>
-                    <div className='drawer__waitChild__link__container'>
-                        <div className='simpleValue__container' >
-                            <p className='simpleValue'>
-                               
-                            </p>
-                        </div>
-                    </div>
-                </div> */}
             </div>
         ) : (
-            <div className='drawer__waitChild__link '>
-                <div className="drawer__task__wfrun-outputs">
-                    <div className="drawer__task__wfrun-outputs__label">UserTaskDef Fields</div>
-                    <div className="drawer__task__wfrun-outputs__header grid-3">
-                        <p className="center">NAME</p>
-                        <p className="center">DISPLAY NAME</p>
-                        <p className="center">TYPE</p>
-                    </div>
-                    <table>
-                        <tbody>
-                    {info?.fields?.map((f, index: number) => <tr key={index} className="grid-3">
-                            <td className="center">{f.name}</td>
-                            <td className="center">{f.displayName}</td>
-                            <td className="center">{f.type}</td>
+
+            <DrawerSection title="UserTaskDef Fields" >
+                <table>
+                    <thead>
+                        <tr>
+                            <th>NAME</th>
+                            <th>DISPLAY NAME</th>
+                            <th>TYPE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                     {info?.fields?.map((f, index: number) => <tr key={index}>
+                            <td>{f.name}</td>
+                            <td>{f.displayName}</td>
+                            <td>{f.type}</td>
                         </tr>
                     )}
-                    </tbody>
-                    </table>
-                </div>
-            </div>
+                </tbody>
+                </table>
+            </DrawerSection>
         )}
         {/* <FailureInformation data={errorData} openError={onParseError} /> */}
         {/* data.node.failureHandlers */}
