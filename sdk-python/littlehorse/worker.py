@@ -414,7 +414,7 @@ class LHTaskWorker:
                 )
             except Exception as e:
                 self._log.error(
-                    "Error when registering task worker: %s. Closing. %s",
+                    "Error when registering task worker: %s. %s",
                     self._task.task_name,
                     e,
                 )
