@@ -2,7 +2,6 @@ package io.littlehorse.sdk.wfsdk;
 
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
-import io.littlehorse.sdk.wfsdk.internal.WaitForThreadNodeOutput;
 import java.util.Map;
 
 /** This interface is what is used to define the logic of a ThreaSpec in a ThreadFunc. */
@@ -220,7 +219,7 @@ public interface ThreadBuilder {
      *     spawnThread.
      * @return a NodeOutput that can be used for timeouts or exception handling.
      */
-    WaitForThreadNodeOutput waitForThreads(SpawnedThread... threadsToWaitFor);
+    WaitForThreadsNodeOutput waitForThreads(SpawnedThread... threadsToWaitFor);
 
     /**
      * Adds an EXTERNAL_EVENT node which blocks until an 'ExternalEvent' of the specified type

@@ -40,6 +40,7 @@ import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
+import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @Setter
-public class ThreadBuilderImpl implements ThreadBuilder {
+final class ThreadBuilderImpl implements ThreadBuilder {
 
     private WorkflowImpl parent;
     private ThreadSpec.Builder spec;
@@ -505,7 +506,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         this.addMutationToCurrentNode(mutation.build());
     }
 
-    public WaitForThreadNodeOutput waitForThreads(SpawnedThread... threadsToWaitFor) {
+    public WaitForThreadsNodeOutput waitForThreads(SpawnedThread... threadsToWaitFor) {
         checkIfIsActive();
         WaitForThreadsNode.Builder waitNode = WaitForThreadsNode.newBuilder();
 
@@ -516,7 +517,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         waitNode.setPolicy(WaitForThreadsPolicy.WAIT_FOR_COMPLETION);
         String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode.build());
 
-        return new WaitForThreadNodeOutput(nodeName, this, spec);
+        return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
     }
 
     public NodeOutputImpl waitForEvent(String externalEventDefName) {

@@ -202,7 +202,7 @@ public class WaitForThreadsTest {
                     thread.spawnThread(buildChildThread.apply(person3Approved, "person-3"), "person-3", null);
 
             NodeOutput nodeOutput = thread.waitForThreads(p1Thread, p2Thread, p3Thread)
-                    .withFailureStrategy(WaitForThreadsPolicy.WAIT_FOR_COMPLETION);
+                    .withPolicy(WaitForThreadsPolicy.WAIT_FOR_COMPLETION);
 
             thread.handleException(nodeOutput, "denied-by-user", xnHandler -> {
                 xnHandler.execute("exc-handler");
@@ -278,7 +278,7 @@ public class WaitForThreadsTest {
             SpawnedThread child2 = thread.spawnThread(
                     buildSpawnThread.apply("input2", "thread-2-event"), "child-2", Map.of("input2", Map.of()));
 
-            thread.waitForThreads(child1, child2).withFailureStrategy(WaitForThreadsPolicy.STOP_ON_FAILURE);
+            thread.waitForThreads(child1, child2).withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
         });
     }
 

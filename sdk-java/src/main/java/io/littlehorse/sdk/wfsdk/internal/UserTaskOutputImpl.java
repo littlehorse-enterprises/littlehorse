@@ -6,7 +6,7 @@ import io.littlehorse.sdk.wfsdk.LHFormatString;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 
-public class UserTaskOutputImpl extends NodeOutputImpl implements UserTaskOutput {
+class UserTaskOutputImpl extends NodeOutputImpl implements UserTaskOutput {
 
     private VariableAssignment notes;
 
