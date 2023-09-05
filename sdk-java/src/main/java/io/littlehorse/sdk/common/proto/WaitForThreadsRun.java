@@ -74,6 +74,12 @@ private static final long serialVersionUID = 0L;
      * @return The threadRunNumber.
      */
     int getThreadRunNumber();
+
+    /**
+     * <code>bool already_handled = 5;</code>
+     * @return The alreadyHandled.
+     */
+    boolean getAlreadyHandled();
   }
   /**
    * Protobuf type {@code littlehorse.WaitForThreadsRun.WaitForThread}
@@ -167,6 +173,17 @@ private static final long serialVersionUID = 0L;
       return threadRunNumber_;
     }
 
+    public static final int ALREADY_HANDLED_FIELD_NUMBER = 5;
+    private boolean alreadyHandled_ = false;
+    /**
+     * <code>bool already_handled = 5;</code>
+     * @return The alreadyHandled.
+     */
+    @java.lang.Override
+    public boolean getAlreadyHandled() {
+      return alreadyHandled_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -190,6 +207,9 @@ private static final long serialVersionUID = 0L;
       if (threadRunNumber_ != 0) {
         output.writeInt32(3, threadRunNumber_);
       }
+      if (alreadyHandled_ != false) {
+        output.writeBool(5, alreadyHandled_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -210,6 +230,10 @@ private static final long serialVersionUID = 0L;
       if (threadRunNumber_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, threadRunNumber_);
+      }
+      if (alreadyHandled_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(5, alreadyHandled_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -234,6 +258,8 @@ private static final long serialVersionUID = 0L;
       if (threadStatus_ != other.threadStatus_) return false;
       if (getThreadRunNumber()
           != other.getThreadRunNumber()) return false;
+      if (getAlreadyHandled()
+          != other.getAlreadyHandled()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -253,6 +279,9 @@ private static final long serialVersionUID = 0L;
       hash = (53 * hash) + threadStatus_;
       hash = (37 * hash) + THREAD_RUN_NUMBER_FIELD_NUMBER;
       hash = (53 * hash) + getThreadRunNumber();
+      hash = (37 * hash) + ALREADY_HANDLED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getAlreadyHandled());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -397,6 +426,7 @@ private static final long serialVersionUID = 0L;
         }
         threadStatus_ = 0;
         threadRunNumber_ = 0;
+        alreadyHandled_ = false;
         return this;
       }
 
@@ -442,6 +472,9 @@ private static final long serialVersionUID = 0L;
         }
         if (((from_bitField0_ & 0x00000004) != 0)) {
           result.threadRunNumber_ = threadRunNumber_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.alreadyHandled_ = alreadyHandled_;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -499,6 +532,9 @@ private static final long serialVersionUID = 0L;
         if (other.getThreadRunNumber() != 0) {
           setThreadRunNumber(other.getThreadRunNumber());
         }
+        if (other.getAlreadyHandled() != false) {
+          setAlreadyHandled(other.getAlreadyHandled());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -542,6 +578,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000004;
                 break;
               } // case 24
+              case 40: {
+                alreadyHandled_ = input.readBool();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 40
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -759,6 +800,38 @@ private static final long serialVersionUID = 0L;
       public Builder clearThreadRunNumber() {
         bitField0_ = (bitField0_ & ~0x00000004);
         threadRunNumber_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private boolean alreadyHandled_ ;
+      /**
+       * <code>bool already_handled = 5;</code>
+       * @return The alreadyHandled.
+       */
+      @java.lang.Override
+      public boolean getAlreadyHandled() {
+        return alreadyHandled_;
+      }
+      /**
+       * <code>bool already_handled = 5;</code>
+       * @param value The alreadyHandled to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAlreadyHandled(boolean value) {
+
+        alreadyHandled_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool already_handled = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAlreadyHandled() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        alreadyHandled_ = false;
         onChanged();
         return this;
       }

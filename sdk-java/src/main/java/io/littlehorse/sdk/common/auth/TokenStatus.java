@@ -16,13 +16,21 @@ public class TokenStatus {
     private Instant expiration;
     private String clientId;
 
-    public TokenStatus(@NonNull String token, @NonNull Instant expiration, @NonNull String clientId) {
+    public TokenStatus(@NonNull String token, Instant expiration, String clientId) {
         this.token = token;
+
+        if (expiration == null) {
+            expiration = Instant.MIN;
+        }
         this.expiration = expiration.truncatedTo(ChronoUnit.SECONDS);
         this.clientId = clientId;
     }
 
-    public boolean isExpired() {
-        return expiration.isBefore(Instant.now().truncatedTo(ChronoUnit.SECONDS).plusSeconds(1));
+    public boolean isValid() {
+        if (clientId == null) {
+            return false;
+        }
+
+        return expiration.isAfter(Instant.now().truncatedTo(ChronoUnit.SECONDS));
     }
 }

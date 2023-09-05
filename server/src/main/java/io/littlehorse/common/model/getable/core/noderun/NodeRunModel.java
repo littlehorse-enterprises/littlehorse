@@ -373,7 +373,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public void fail(FailureModel failure, Date time) {
         this.failures.add(failure);
         endTime = time;
-        status = LHStatus.ERROR;
+        status = failure.getStatus();
         errorMessage = failure.message;
         getThreadRun().fail(failure, time);
     }

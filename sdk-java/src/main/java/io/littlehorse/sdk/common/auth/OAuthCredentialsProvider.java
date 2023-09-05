@@ -22,7 +22,7 @@ public class OAuthCredentialsProvider extends CallCredentials {
     public void applyRequestMetadata(RequestInfo requestInfo, Executor executor, MetadataApplier metadataApplier) {
         executor.execute(() -> {
             try {
-                if (currentToken == null || currentToken.isExpired()) {
+                if (currentToken == null || !currentToken.isValid()) {
                     currentToken = oauthClient.getAccessToken();
                 }
 

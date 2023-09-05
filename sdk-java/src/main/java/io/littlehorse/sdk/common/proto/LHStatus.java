@@ -32,6 +32,10 @@ public enum LHStatus
    * <code>ERROR = 5;</code>
    */
   ERROR(5),
+  /**
+   * <code>EXCEPTION = 6;</code>
+   */
+  EXCEPTION(6),
   UNRECOGNIZED(-1),
   ;
 
@@ -59,6 +63,10 @@ public enum LHStatus
    * <code>ERROR = 5;</code>
    */
   public static final int ERROR_VALUE = 5;
+  /**
+   * <code>EXCEPTION = 6;</code>
+   */
+  public static final int EXCEPTION_VALUE = 6;
 
 
   public final int getNumber() {
@@ -91,6 +99,7 @@ public enum LHStatus
       case 3: return HALTING;
       case 4: return HALTED;
       case 5: return ERROR;
+      case 6: return EXCEPTION;
       default: return null;
     }
   }

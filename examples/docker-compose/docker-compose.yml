@@ -25,7 +25,7 @@ services:
       interval: 5s
   littlehorse:
     container_name: lh-server
-    image: public.ecr.aws/k7z9g8i4/littlehorse-server:latest
+    image: public.ecr.aws/littlehorse/littlehorse-server:latest
     environment:
       LHS_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       LHS_SHOULD_CREATE_TOPICS: "true"
