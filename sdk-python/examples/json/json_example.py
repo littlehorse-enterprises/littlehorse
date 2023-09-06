@@ -7,7 +7,7 @@ import littlehorse
 
 from littlehorse.config import LHConfig
 from littlehorse.model.common_enums_pb2 import VariableType
-from littlehorse.worker import LHTaskWorker, WorkerContext
+from littlehorse.worker import LHTaskWorker
 from littlehorse.workflow import ThreadBuilder, Workflow
 
 logging.basicConfig(level=logging.INFO)
@@ -30,15 +30,15 @@ def get_workflow() -> Workflow:
     return Workflow("example-json", my_entrypoint)
 
 
-async def greeting(name: str, ctx: WorkerContext) -> str:
-    msg = f"Hello {name}!. WfRun {ctx.wf_run_id}"
+async def greeting(name: str) -> str:
+    msg = f"Hello {name}!."
     print(msg)
     await asyncio.sleep(random.uniform(0.5, 1.5))
     return msg
 
 
 async def describe_car(car: dict[str, Any]) -> str:
-    msg = f"You drive a {car['brand']} model {car['model']}"
+    msg = f"You drive a {car['brand']} model {car['model']}."
     print(msg)
     await asyncio.sleep(random.uniform(0.5, 1.5))
     return msg
