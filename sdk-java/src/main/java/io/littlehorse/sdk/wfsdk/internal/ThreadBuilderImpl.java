@@ -17,6 +17,7 @@ import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
 import io.littlehorse.sdk.common.proto.SleepNode;
+import io.littlehorse.sdk.common.proto.StartMultipleThreadsNode;
 import io.littlehorse.sdk.common.proto.StartThreadNode;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
@@ -37,6 +38,7 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
@@ -399,6 +401,20 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         spec.putNodes(treeLastNodeName, treeLast.build());
     }
 
+    @Override
+    public SpawnedThreads spawnThreadForEach(WfRunVariable wfRunVariable, String threadName, ThreadFunc threadFunc) {
+        checkIfIsActive();
+        String finalThreadName = parent.addSubThread(threadName, threadFunc);
+        StartMultipleThreadsNode startMultiplesThreadNode = StartMultipleThreadsNode.newBuilder()
+                .setThreadSpecName(finalThreadName)
+                .setIterable(assignVariable(wfRunVariable))
+                .build();
+        String nodeName = addNode(threadName, NodeCase.START_MULTIPLE_THREADS, startMultiplesThreadNode);
+        WfRunVariableImpl internalStartedThreadVar = addVariable(nodeName, VariableType.JSON_ARR);
+        mutate(internalStartedThreadVar, VariableMutationType.ASSIGN, new NodeOutputImpl(nodeName, this));
+        return new SpawnedThreadsImpl(this, threadName, internalStartedThreadVar);
+    }
+
     public void sleepSeconds(Object secondsToSleep) {
         checkIfIsActive();
         SleepNode.Builder n = SleepNode.newBuilder().setRawSeconds(assignVariable(secondsToSleep));
@@ -520,6 +536,17 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
     }
 
+    @Override
+    public WaitForThreadsNodeOutput waitForThreads(SpawnedThreads threads) {
+        checkIfIsActive();
+        WaitForThreadsNode.Builder waitNode = WaitForThreadsNode.newBuilder();
+        SpawnedThreadsImpl spawnedThreads = (SpawnedThreadsImpl) threads;
+        waitNode.setThreadList(assignVariable(spawnedThreads.getInternalThreadVar()));
+        waitNode.setPolicy(WaitForThreadsPolicy.WAIT_FOR_COMPLETION);
+        String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode.build());
+        return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
+    }
+
     public NodeOutputImpl waitForEvent(String externalEventDefName) {
         checkIfIsActive();
         ExternalEventNode waitNode = ExternalEventNode.newBuilder()
@@ -637,6 +664,9 @@ final class ThreadBuilderImpl implements ThreadBuilder {
                 break;
             case USER_TASK:
                 node.setUserTask((UserTaskNode) subNode);
+                break;
+            case START_MULTIPLE_THREADS:
+                node.setStartMultipleThreads((StartMultipleThreadsNode) subNode);
                 break;
             case NODE_NOT_SET:
                 // not possible

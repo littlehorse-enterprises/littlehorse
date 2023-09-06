@@ -7,8 +7,6 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.ThreadToWaitForModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForThreadsNodeModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread;
@@ -31,17 +29,10 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
 
     public WaitForThreadModel() {}
 
-    public WaitForThreadModel(NodeRunModel waitForThreadNodeRunModel, ThreadToWaitForModel threadToWaitFor)
+    public WaitForThreadModel(NodeRunModel waitForThreadNodeRunModel, Integer threadRunNumberToWaitFor)
             throws LHVarSubError {
         ThreadRunModel parentThreadRunModel = waitForThreadNodeRunModel.getThreadRun();
-        WaitForThreadsNodeModel waitForThreadsNode =
-                waitForThreadNodeRunModel.getNode().getWaitForThreadsNode();
-        this.threadRunNumber = parentThreadRunModel
-                .assignVariable(threadToWaitFor.getThreadRunNumber())
-                .asInt()
-                .intVal
-                .intValue();
-
+        this.threadRunNumber = threadRunNumberToWaitFor;
         ThreadRunModel threadRunModel = parentThreadRunModel.getWfRunModel().getThreadRun(threadRunNumber);
 
         if (threadRunModel == null) {
@@ -63,6 +54,17 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
 
         this.threadStatus = threadRunModel.getStatus();
     }
+
+    /*public WaitForThreadModel(NodeRunModel waitForThreadNodeRunModel, ThreadToWaitForModel threadToWaitFor)
+            throws LHVarSubError {
+        ThreadRunModel parentThreadRunModel = waitForThreadNodeRunModel.getThreadRun();
+        int threadRunNumber = parentThreadRunModel
+                .assignVariable(threadToWaitFor.getThreadRunNumber())
+                .asInt()
+                .intVal
+                .intValue();
+        this(waitForThreadNodeRunModel, threadRunNumber);
+    }*/
 
     public void initFrom(Message proto) {
         WaitForThread p = (WaitForThread) proto;

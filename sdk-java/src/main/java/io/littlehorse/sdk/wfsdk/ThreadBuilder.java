@@ -221,6 +221,8 @@ public interface ThreadBuilder {
      */
     WaitForThreadsNodeOutput waitForThreads(SpawnedThread... threadsToWaitFor);
 
+    WaitForThreadsNodeOutput waitForThreads(SpawnedThreads threads);
+
     /**
      * Adds an EXTERNAL_EVENT node which blocks until an 'ExternalEvent' of the specified type
      * arrives.
@@ -319,4 +321,6 @@ public interface ThreadBuilder {
      *     (which allows you to use the output of a Node Run to mutate variables).
      */
     void mutate(WfRunVariable lhs, VariableMutationType type, Object rhs);
+
+    SpawnedThreads spawnThreadForEach(WfRunVariable arrVar, String threadName, ThreadFunc threadFunc);
 }
