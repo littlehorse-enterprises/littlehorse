@@ -57,9 +57,9 @@ async def main() -> None:
     config = get_config()
     wf = get_workflow()
 
-    littlehorse.register_task(spider_bite, TASK_NAME_SPIDER_BITE, config)
-    littlehorse.register_task(daily_bugle, TASK_NAME_DAILY_BUGLE, config)
-    littlehorse.register_workflow(wf, config)
+    littlehorse.create_task_def(spider_bite, TASK_NAME_SPIDER_BITE, config)
+    littlehorse.create_task_def(daily_bugle, TASK_NAME_DAILY_BUGLE, config)
+    littlehorse.create_workflow_spec(wf, config)
 
     await littlehorse.start(
         LHTaskWorker(spider_bite, TASK_NAME_SPIDER_BITE, config),

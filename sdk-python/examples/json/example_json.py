@@ -48,9 +48,9 @@ async def main() -> None:
     config = get_config()
     wf = get_workflow()
 
-    littlehorse.register_task(greeting, "greet", config)
-    littlehorse.register_task(describe_car, "describe-car", config)
-    littlehorse.register_workflow(wf, config)
+    littlehorse.create_task_def(greeting, "greet", config)
+    littlehorse.create_task_def(describe_car, "describe-car", config)
+    littlehorse.create_workflow_spec(wf, config)
 
     await littlehorse.start(
         LHTaskWorker(greeting, "greet", config),

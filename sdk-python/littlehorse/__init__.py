@@ -1,10 +1,12 @@
-from littlehorse.user_utils import register_workflow as _register_workflow
-from littlehorse.user_utils import register_external_event as _register_external_event
-from littlehorse.user_utils import register_task as _register_task
+from littlehorse.user_utils import create_workflow_spec as _create_workflow_spec
+from littlehorse.user_utils import (
+    create_external_event_def as _create_external_event_def,
+)
+from littlehorse.user_utils import create_task_def as _create_task_def
 from littlehorse.user_utils import start as _start
 
 
 start = _start
-register_workflow = _register_workflow
-register_task = _register_task
-register_external_event = _register_external_event
+create_workflow_spec = _create_workflow_spec
+create_task_def = _create_task_def
+create_external_event_def = _create_external_event_def
