@@ -5,7 +5,6 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/empty.proto";
-import "cluster_health.proto";
 import "interactive_query.proto";
 
 
@@ -17,8 +16,4 @@ service LHInternals {
     rpc WaitForCommand(WaitForCommandRequest) returns (WaitForCommandResponse) {}
 
     rpc GetAdvertisedHosts(google.protobuf.Empty) returns (InternalGetAdvertisedHostsResponse) {}
-
-    rpc TopologyInstancesState(google.protobuf.Empty) returns (TopologyInstanceStateResponse) {}
-
-    rpc LocalTasks(google.protobuf.Empty) returns (LocalTasksResponse) {}
 }

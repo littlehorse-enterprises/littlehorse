@@ -43,6 +43,8 @@ public class ServerListener implements Closeable {
 
     @Override
     public void close() {
+        // This forcibly closes all grpc connections rather than waiting for them to
+        // complete. This cuts off all streaming connections too.
         server.shutdownNow();
         try {
             server.awaitTermination();

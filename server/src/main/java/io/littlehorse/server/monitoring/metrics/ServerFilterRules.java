@@ -1,4 +1,4 @@
-package io.littlehorse.server.metrics;
+package io.littlehorse.server.monitoring.metrics;
 
 import io.micrometer.core.instrument.config.MeterFilterReply;
 import java.util.List;
@@ -9,6 +9,7 @@ public final class ServerFilterRules {
 
     // relevance ordered
     public static final List<ServerFilterRule> RULES = List.of(
+            // TODO: Wait for KIP-869 and gather state restoration metrics.
             accept("kafka_stream_state_compaction_pending"),
             accept("kafka_stream_state_write_stall"),
             accept("kafka_stream_state_bytes"),

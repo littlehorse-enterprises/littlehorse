@@ -294,6 +294,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         reason.threadRunModel = this;
         switch (status) {
             case COMPLETED:
+            case EXCEPTION:
             case ERROR:
                 // Already terminated, ignoring halt
                 return;

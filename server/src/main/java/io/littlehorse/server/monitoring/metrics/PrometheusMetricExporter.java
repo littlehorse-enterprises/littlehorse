@@ -1,4 +1,4 @@
-package io.littlehorse.server.metrics;
+package io.littlehorse.server.monitoring.metrics;
 
 import io.javalin.http.Handler;
 import io.littlehorse.common.LHServerConfig;

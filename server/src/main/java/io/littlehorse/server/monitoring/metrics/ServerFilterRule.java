@@ -1,4 +1,4 @@
-package io.littlehorse.server.metrics;
+package io.littlehorse.server.monitoring.metrics;
 
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.config.MeterFilter;
