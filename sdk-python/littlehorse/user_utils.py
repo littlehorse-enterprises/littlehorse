@@ -5,9 +5,8 @@ from inspect import signature
 import logging
 import signal
 from typing import Any, Callable
-from grpc import StatusCode
+from grpc import RpcError, StatusCode
 from littlehorse.config import LHConfig
-from littlehorse.exceptions import GrpcException
 from littlehorse.model.common_wfspec_pb2 import VariableDef
 from littlehorse.model.object_id_pb2 import GetLatestWfSpecRequest
 from littlehorse.model.service_pb2 import PutTaskDefRequest
@@ -16,7 +15,6 @@ from littlehorse.proto_utils import (
     type_to_variable_type,
 )
 from littlehorse.worker import LHTaskWorker, WorkerContext
-from grpc._channel import _InactiveRpcError
 
 import asyncio
 
@@ -62,16 +60,13 @@ def register_workflow(
             stub.GetLatestWfSpec(GetLatestWfSpecRequest(name=workflow.name))
             logging.info(f"Workflow {workflow.name} already exits, skipping")
             return
-        except _InactiveRpcError as e:
+        except RpcError as e:
             if e.code() != StatusCode.NOT_FOUND:
                 raise e
 
-    try:
-        request = workflow.compile()
-        logging.info(f"Creating a new version of {workflow.name}:\n{workflow}")
-        stub.PutWfSpec(request)
-    except _InactiveRpcError as e:
-        raise GrpcException(e)
+    request = workflow.compile()
+    logging.info(f"Creating a new version of {workflow.name}:\n{workflow}")
+    stub.PutWfSpec(request)
 
 
 def register_task(
@@ -100,8 +95,8 @@ def register_task(
         request = PutTaskDefRequest(name=name, input_vars=input_vars)
         stub.PutTaskDef(request)
         logging.info(f"TaskDef {name} was created:\n{proto_to_json(request)}")
-    except _InactiveRpcError as e:
+    except RpcError as e:
         if swallow_already_exists and e.code() == StatusCode.ALREADY_EXISTS:
             logging.info(f"TaskDef {name} already exits, skipping")
             return
-        raise GrpcException(e)
+        raise e

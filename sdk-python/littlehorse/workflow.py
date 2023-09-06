@@ -152,7 +152,7 @@ class WfRunVariable:
 
     def with_json_path(self, json_path: str) -> "WfRunVariable":
         """Valid only for output of the JSON_OBJ or JSON_ARR types. Returns a new
-        NodeOutput handle which points to Json element referred to by the json path.
+        WfRunVariable handle which points to Json element referred to by the json path.
 
         Args:
             json_path (str): is the json path to evaluate.
