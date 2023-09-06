@@ -1,4 +1,4 @@
-"""Collections of utils intended to be use by the sdk user without circular imports"""
+"""Collections of utils intended to be use by the sdk user"""
 
 import functools
 from inspect import signature

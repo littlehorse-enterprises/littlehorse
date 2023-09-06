@@ -1,4 +1,4 @@
-"""Collections of utils for general proposes without circular imports"""
+"""Collections of utils for general proposes"""
 
 from pathlib import Path
 import sys

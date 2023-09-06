@@ -1,4 +1,4 @@
-"""Collections of utils for managing protobuf objects, with circular import"""
+"""Collections of utils for managing protobuf objects. With circular import"""
 
 import json
 from typing import Any, Optional
