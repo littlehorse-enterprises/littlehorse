@@ -220,7 +220,7 @@ class TestProtoUtils(unittest.TestCase):
 
         # a NodeOutput
         with self.assertRaises(ValueError) as exception_context:
-            value_to_variable_assignment(NodeOutput())
+            value_to_variable_assignment(NodeOutput(""))
 
         self.assertEqual(
             "Cannot use NodeOutput directly as input to task. "

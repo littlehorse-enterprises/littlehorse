@@ -1,20 +1,22 @@
-## Running JsonExample
+## Running BasicExample
 
-This workflow demonstrates the ability of the Java SDK to serialize/deserialize
-JSON and allow Task developers to interact with real Java objects.
-More information about json-path at https://github.com/json-path/JsonPath.
+In this example you will see how to mutate variables.
 
 Let's run the example:
 
 ```
 poetry shell
-python -m example_json
+python -m example_mutation
 ```
 
 In another terminal, use `lhctl` to run the workflow:
 
 ```
-lhctl run example-json person '{"name": "Obi-Wan", "car": {"brand": "Ford", "model": "Escape"}}'
+# Execute with Peter or Miles
+lhctl run example-mutation name Peter
+
+# Execute with other names
+lhctl run example-mutation name Mateo
 ```
 
 In addition, you can check the result with:

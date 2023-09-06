@@ -8,7 +8,10 @@ from littlehorse.model.common_wfspec_pb2 import (
     IndexType,
     JsonIndex,
     TaskNode,
+    VariableAssignment,
     VariableDef,
+    VariableMutation,
+    VariableMutationType,
 )
 from littlehorse.model.service_pb2 import PutWfSpecRequest
 from littlehorse.model.variable_pb2 import VariableValue
@@ -97,9 +100,43 @@ class FormatString:
 
 
 class NodeOutput:
-    # TODO NodeOutput implementation
-    def __init__(self) -> None:
-        pass
+    def __init__(self, node_name: str) -> None:
+        self.node_name = node_name
+        self._json_path: Optional[str] = None
+
+    @property
+    def json_path(self) -> Optional[str]:
+        return self._json_path
+
+    @json_path.setter
+    def json_path(self, json_path: str) -> None:
+        if json_path is None:
+            raise ValueError("None is not allowed")
+
+        if not json_path.startswith("$."):
+            raise ValueError(f"Invalid JsonPath: {json_path}. Use $. at the beginning")
+
+        if self._json_path is not None:
+            raise ValueError("Cannot set a json_path twice on same var")
+
+        self._json_path = json_path
+
+    def with_json_path(self, json_path: str) -> "NodeOutput":
+        """Valid only for output of the JSON_OBJ or JSON_ARR types. Returns a new
+        NodeOutput handle which points to Json element referred to by the json path.
+
+        Args:
+            json_path (str): is the json path to evaluate.
+
+        Returns:
+            NodeOutput: Another NodeOutput.
+        """
+        if self.json_path is not None:
+            raise ValueError("Cannot set a json_path twice on same var")
+
+        out = NodeOutput(self.node_name)
+        out.json_path = json_path
+        return out
 
 
 class WfRunVariable:
@@ -296,8 +333,79 @@ class ThreadBuilder:
             task_def_name=task_name,
             variables=[value_to_variable_assignment(arg) for arg in args],
         )
-        self.add_node(task_name, task_node)
-        return NodeOutput()
+        node_name = self.add_node(task_name, task_node)
+        return NodeOutput(node_name)
+
+    def wait_for_event(self, event_name: str, timeout: int = -1) -> NodeOutput:
+        """Adds an EXTERNAL_EVENT node which blocks until an
+        'ExternalEvent' of the specified type arrives.
+
+        Args:
+            event_name (str): The name of ExternalEvent to wait for
+            timeout (int, optional): Adds a timeout to this node. If
+            it is 0 or less it does not set a timeout. Defaults to -1.
+
+        Returns:
+            NodeOutput: A NodeOutput for this event.
+        """
+        self._check_if_active()
+        wait_node = ExternalEventNode(
+            external_event_def_name=event_name,
+            timeout_seconds=None
+            if timeout <= 0
+            else value_to_variable_assignment(timeout),
+        )
+        node_name = self.add_node(event_name, wait_node)
+        return NodeOutput(node_name)
+
+    def mutate(
+        self, left_hand: WfRunVariable, operation: VariableMutationType, right_hand: Any
+    ) -> None:
+        """Adds a VariableMutation to the last Node.
+
+        Args:
+            left_hand (WfRunVariable): It is a handle to the WfRunVariable to mutate.
+            type (VariableMutationType): It is the mutation type to use,
+            for example, `VariableMutationType.ASSIGN`.
+            right_hand (Any): It is either a literal value
+            (which the Library casts to a Variable Value), a
+            `WfRunVariable` which determines the right hand side
+            of the expression, or a `NodeOutput` (which allows you to
+            use the output of a Node Run to mutate variables).
+        """
+        self._check_if_active()
+
+        if len(self._nodes) == 0:
+            raise ReferenceError("No node is found")
+
+        previous_node_name = list(self._nodes)[-1]
+        previous_node = self._nodes[previous_node_name]
+
+        node_output: Optional[VariableMutation.NodeOutputSource] = None
+        source_variable: Optional[VariableAssignment] = None
+        literal_value: Optional[VariableValue] = None
+
+        if isinstance(right_hand, NodeOutput):
+            if previous_node_name != right_hand.node_name:
+                raise ReferenceError("NodeOutput does not match with previous node")
+            node_output = VariableMutation.NodeOutputSource(
+                jsonpath=right_hand.json_path
+            )
+        elif isinstance(right_hand, WfRunVariable):
+            source_variable = value_to_variable_assignment(right_hand)
+        else:
+            literal_value = value_to_variable_value(right_hand)
+
+        mutation = VariableMutation(
+            lhs_name=left_hand.name,
+            lhs_json_path=left_hand.json_path,
+            operation=operation,
+            node_output=node_output,
+            source_variable=source_variable,
+            literal_value=literal_value,
+        )
+
+        previous_node.variable_mutations.append(mutation)
 
     def format(self, format: str, *args: Any) -> FormatString:
         """Generates a FormatString object that can be understood by the ThreadBuilder.

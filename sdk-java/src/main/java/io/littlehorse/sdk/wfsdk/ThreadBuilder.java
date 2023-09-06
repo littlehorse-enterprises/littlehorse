@@ -313,7 +313,7 @@ public interface ThreadBuilder {
      * Adds a VariableMutation to the last Node
      *
      * @param lhs is a handle to the WfRunVariable to mutate.
-     * @param type is the mutation type to use, for example, `VariableMutationTypePb.ASSIGN`.
+     * @param type is the mutation type to use, for example, `VariableMutationType.ASSIGN`.
      * @param rhs is either a literal value (which the Library casts to a Variable Value), a
      *     `WfRunVariable` which determines the right hand side of the expression, or a `NodeOutput`
      *     (which allows you to use the output of a Node Run to mutate variables).

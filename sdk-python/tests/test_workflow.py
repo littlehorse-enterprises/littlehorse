@@ -6,21 +6,58 @@ from littlehorse.model.common_wfspec_pb2 import (
     TaskNode,
     VariableAssignment,
     VariableDef,
+    VariableMutation,
+    VariableMutationType,
 )
 from littlehorse.model.service_pb2 import PutWfSpecRequest
+from littlehorse.model.variable_pb2 import VariableValue
 from littlehorse.model.wf_spec_pb2 import (
     Edge,
     EntrypointNode,
     ExitNode,
+    ExternalEventNode,
     Node,
     ThreadSpec,
 )
+from littlehorse.proto_utils import value_to_variable_assignment
 
 from littlehorse.workflow import (
+    NodeOutput,
     ThreadBuilder,
     WfRunVariable,
     Workflow,
 )
+
+
+class TestNodeOutput(unittest.TestCase):
+    def test_validate_with_json_path_already_set(self):
+        variable = NodeOutput("my-node")
+        variable.json_path = "$.myPath"
+        with self.assertRaises(ValueError) as exception_context:
+            variable.with_json_path("$.myNewOne")
+        self.assertEqual(
+            "Cannot set a json_path twice on same var",
+            str(exception_context.exception),
+        )
+
+    def test_validate_json_path_already_set(self):
+        variable = NodeOutput("my-node")
+        variable.json_path = "$.myPath"
+        with self.assertRaises(ValueError) as exception_context:
+            variable.json_path = "$.myNewOne"
+        self.assertEqual(
+            "Cannot set a json_path twice on same var",
+            str(exception_context.exception),
+        )
+
+    def test_validate_json_path_format(self):
+        variable = NodeOutput("my-node")
+        with self.assertRaises(ValueError) as exception_context:
+            variable.json_path = "$myNewOne"
+        self.assertEqual(
+            "Invalid JsonPath: $myNewOne. Use $. at the beginning",
+            str(exception_context.exception),
+        )
 
 
 class TestWfRunVariable(unittest.TestCase):
@@ -184,6 +221,61 @@ class TestThreadBuilder(unittest.TestCase):
             ),
         )
 
+    def test_compile_with_ext_event_no_timeout(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            thread.wait_for_event("my-event")
+
+        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+
+        self.assertEqual(
+            thread.compile(),
+            ThreadSpec(
+                nodes={
+                    "0-entrypoint-ENTRYPOINT": Node(
+                        entrypoint=EntrypointNode(),
+                        outgoing_edges=[
+                            Edge(sink_node_name="1-my-event-EXTERNAL_EVENT")
+                        ],
+                    ),
+                    "1-my-event-EXTERNAL_EVENT": Node(
+                        external_event=ExternalEventNode(
+                            external_event_def_name="my-event",
+                        ),
+                        outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                    ),
+                    "2-exit-EXIT": Node(exit=ExitNode()),
+                },
+            ),
+        )
+
+    def test_compile_with_ext_event(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            thread.wait_for_event("my-event", 3)
+
+        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+
+        self.assertEqual(
+            thread.compile(),
+            ThreadSpec(
+                nodes={
+                    "0-entrypoint-ENTRYPOINT": Node(
+                        entrypoint=EntrypointNode(),
+                        outgoing_edges=[
+                            Edge(sink_node_name="1-my-event-EXTERNAL_EVENT")
+                        ],
+                    ),
+                    "1-my-event-EXTERNAL_EVENT": Node(
+                        external_event=ExternalEventNode(
+                            external_event_def_name="my-event",
+                            timeout_seconds=value_to_variable_assignment(3),
+                        ),
+                        outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                    ),
+                    "2-exit-EXIT": Node(exit=ExitNode()),
+                },
+            ),
+        )
+
     def test_validate_variable_already_exists(self):
         def my_entrypoint(thread: ThreadBuilder) -> None:
             thread.add_variable("input-name", VariableType.STR)
@@ -209,6 +301,44 @@ class TestThreadBuilder(unittest.TestCase):
         self.assertEqual(
             "Using an inactive thread, check your workflow",
             str(exception_context.exception),
+        )
+
+    def test_mutate_with_literal_value(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            value = thread.add_variable("value", VariableType.INT)
+            thread.mutate(value, VariableMutationType.MULTIPLY, 2)
+            thread.execute("result", value)
+
+        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+
+        self.assertEqual(
+            thread.compile(),
+            ThreadSpec(
+                variable_defs=[VariableDef(name="value", type=VariableType.INT)],
+                nodes={
+                    "0-entrypoint-ENTRYPOINT": Node(
+                        entrypoint=EntrypointNode(),
+                        outgoing_edges=[Edge(sink_node_name="1-result-TASK")],
+                        variable_mutations=[
+                            VariableMutation(
+                                lhs_name="value",
+                                operation=VariableMutationType.MULTIPLY,
+                                literal_value=VariableValue(
+                                    int=2, type=VariableType.INT
+                                ),
+                            )
+                        ],
+                    ),
+                    "1-result-TASK": Node(
+                        task=TaskNode(
+                            task_def_name="result",
+                            variables=[VariableAssignment(variable_name="value")],
+                        ),
+                        outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                    ),
+                    "2-exit-EXIT": Node(exit=ExitNode()),
+                },
+            ),
         )
 
 

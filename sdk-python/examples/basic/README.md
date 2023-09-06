@@ -9,7 +9,7 @@ Let's run the example:
 
 ```
 poetry shell
-python -m basic_example
+python -m example_basic
 ```
 
 In another terminal, use `lhctl` to run the workflow:
