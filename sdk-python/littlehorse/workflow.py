@@ -334,6 +334,17 @@ class ThreadBuilder:
         return new_var
 
     def add_node(self, name: str, sub_node: NodeType) -> str:
+        """Add a given node.
+
+        Args:
+            name (str): Name of the node.
+            sub_node (NodeType): One of node: [TaskNode, EntrypointNode,
+            ExitNode, ExternalEventNode, SleepNode, StartThreadNode,
+            WaitForThreadsNode,  NopNode, UserTaskNode]
+
+        Returns:
+            str: The name.
+        """
         self._check_if_active()
         node_type = NodeCase.from_node(sub_node)
         next_node_name = f"{len(self._nodes)}-{name}-{node_type.name}"

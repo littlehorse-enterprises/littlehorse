@@ -46,6 +46,15 @@ async def start(*workers: LHTaskWorker) -> None:
 def register_workflow(
     workflow: Workflow, config: LHConfig, skip_if_already_exists: bool = True
 ) -> None:
+    """Register a given workflow at the LH Server.
+
+    Args:
+        workflow (Workflow): The workflow.
+        config (LHConfig): The configuration to get connected to the LH Server.
+        skip_if_already_exists (bool, optional): If the workflow exits and
+        this is True, then it does not create a new version,
+        else it creates a new version. Defaults to True.
+    """
     stub = config.stub()
 
     if skip_if_already_exists:
@@ -71,6 +80,15 @@ def register_task(
     config: LHConfig,
     swallow_already_exists: bool = True,
 ) -> None:
+    """Register a new task at the LH Server.
+
+    Args:
+        task (Callable[..., Any]): The task.
+        name (str): Name of the task.
+        config (LHConfig): The config.
+        swallow_already_exists (bool, optional): If already exists and this is True,
+        it does not raise an exception, else it raise an exception. Defaults to True.
+    """
     stub = config.stub()
     try:
         task_signature = signature(task)
