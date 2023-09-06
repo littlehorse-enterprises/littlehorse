@@ -518,6 +518,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             hr.parentHalted = new ParentHaltedModel();
             hr.parentHalted.parentThreadId = number;
             child.halt(hr);
+            if (child.getCurrentNodeRun().isInProgress()) {
+                child.getCurrentNodeRun().halt();
+            }
         }
 
         if (interruptTriggerId != null) {
@@ -724,7 +727,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     public boolean isTerminated() {
-        return status == LHStatus.COMPLETED || status == LHStatus.ERROR;
+        return status == LHStatus.COMPLETED || status == LHStatus.ERROR || status == LHStatus.EXCEPTION;
     }
 
     public VariableValueModel assignVariable(VariableAssignmentModel assn) throws LHVarSubError {

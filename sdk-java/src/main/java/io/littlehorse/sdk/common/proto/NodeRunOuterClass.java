@@ -109,25 +109,26 @@ public final class NodeRunOuterClass {
       "task_run_id\"\017\n\rEntrypointRun\"\t\n\007ExitRun\"" +
       "\\\n\016StartThreadRun\022\034\n\017child_thread_id\030\001 \001" +
       "(\005H\000\210\001\001\022\030\n\020thread_spec_name\030\002 \001(\tB\022\n\020_ch" +
-      "ild_thread_id\"\224\002\n\021WaitForThreadsRun\022=\n\007t" +
+      "ild_thread_id\"\307\002\n\021WaitForThreadsRun\022=\n\007t" +
       "hreads\030\001 \003(\0132,.littlehorse.WaitForThread" +
-      "sRun.WaitForThread\032\277\001\n\rWaitForThread\0228\n\017" +
-      "thread_end_time\030\001 \001(\0132\032.google.protobuf." +
-      "TimestampH\000\210\001\001\022,\n\rthread_status\030\002 \001(\0162\025." +
-      "littlehorse.LHStatus\022\031\n\021thread_run_numbe" +
-      "r\030\003 \001(\005\022\027\n\017already_handled\030\005 \001(\010B\022\n\020_thr" +
-      "ead_end_time\"\313\001\n\020ExternalEventRun\022\037\n\027ext" +
-      "ernal_event_def_name\030\001 \001(\t\0223\n\nevent_time" +
-      "\030\002 \001(\0132\032.google.protobuf.TimestampH\000\210\001\001\022" +
-      "<\n\021external_event_id\030\003 \001(\0132\034.littlehorse" +
-      ".ExternalEventIdH\001\210\001\001B\r\n\013_event_timeB\024\n\022" +
-      "_external_event_id\"C\n\014SleepNodeRun\0223\n\017ma" +
-      "turation_time\030\001 \001(\0132\032.google.protobuf.Ti" +
-      "mestamp\"n\n\007Failure\022\024\n\014failure_name\030\001 \001(\t" +
-      "\022\017\n\007message\030\002 \001(\t\0220\n\007content\030\003 \001(\0132\032.lit" +
-      "tlehorse.VariableValueH\000\210\001\001B\n\n\010_contentB" +
-      ",\n\037io.littlehorse.sdk.common.protoP\001Z\007.;" +
-      "modelb\006proto3"
+      "sRun.WaitForThread\0221\n\006policy\030\002 \001(\0162!.lit" +
+      "tlehorse.WaitForThreadsPolicy\032\277\001\n\rWaitFo" +
+      "rThread\0228\n\017thread_end_time\030\001 \001(\0132\032.googl" +
+      "e.protobuf.TimestampH\000\210\001\001\022,\n\rthread_stat" +
+      "us\030\002 \001(\0162\025.littlehorse.LHStatus\022\031\n\021threa" +
+      "d_run_number\030\003 \001(\005\022\027\n\017already_handled\030\005 " +
+      "\001(\010B\022\n\020_thread_end_time\"\313\001\n\020ExternalEven" +
+      "tRun\022\037\n\027external_event_def_name\030\001 \001(\t\0223\n" +
+      "\nevent_time\030\002 \001(\0132\032.google.protobuf.Time" +
+      "stampH\000\210\001\001\022<\n\021external_event_id\030\003 \001(\0132\034." +
+      "littlehorse.ExternalEventIdH\001\210\001\001B\r\n\013_eve" +
+      "nt_timeB\024\n\022_external_event_id\"C\n\014SleepNo" +
+      "deRun\0223\n\017maturation_time\030\001 \001(\0132\032.google." +
+      "protobuf.Timestamp\"n\n\007Failure\022\024\n\014failure" +
+      "_name\030\001 \001(\t\022\017\n\007message\030\002 \001(\t\0220\n\007content\030" +
+      "\003 \001(\0132\032.littlehorse.VariableValueH\000\210\001\001B\n" +
+      "\n\010_contentB,\n\037io.littlehorse.sdk.common." +
+      "protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -178,7 +179,7 @@ public final class NodeRunOuterClass {
     internal_static_littlehorse_WaitForThreadsRun_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_WaitForThreadsRun_descriptor,
-        new java.lang.String[] { "Threads", });
+        new java.lang.String[] { "Threads", "Policy", });
     internal_static_littlehorse_WaitForThreadsRun_WaitForThread_descriptor =
       internal_static_littlehorse_WaitForThreadsRun_descriptor.getNestedTypes().get(0);
     internal_static_littlehorse_WaitForThreadsRun_WaitForThread_fieldAccessorTable = new

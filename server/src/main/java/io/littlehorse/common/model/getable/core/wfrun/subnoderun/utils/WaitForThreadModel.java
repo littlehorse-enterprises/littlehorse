@@ -8,6 +8,7 @@ import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ThreadToWaitForModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForThreadsNodeModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread;
@@ -33,6 +34,8 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
     public WaitForThreadModel(NodeRunModel waitForThreadNodeRunModel, ThreadToWaitForModel threadToWaitFor)
             throws LHVarSubError {
         ThreadRunModel parentThreadRunModel = waitForThreadNodeRunModel.getThreadRun();
+        WaitForThreadsNodeModel waitForThreadsNode =
+                waitForThreadNodeRunModel.getNode().getWaitForThreadsNode();
         this.threadRunNumber = parentThreadRunModel
                 .assignVariable(threadToWaitFor.getThreadRunNumber())
                 .asInt()
@@ -79,5 +82,9 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         }
         out.setAlreadyHandled(alreadyHandled);
         return out;
+    }
+
+    public boolean isFailed() {
+        return threadStatus == LHStatus.EXCEPTION || threadStatus == LHStatus.ERROR;
     }
 }

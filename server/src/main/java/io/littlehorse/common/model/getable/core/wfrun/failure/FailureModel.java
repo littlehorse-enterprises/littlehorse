@@ -6,11 +6,15 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import lombok.Getter;
 
 public class FailureModel extends LHSerializable<Failure> {
 
     public String failureName;
+
+    @Getter
     public String message;
+
     public VariableValueModel content;
 
     public FailureModel() {}

@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.NonNull;
 
 @Getter
-public class WfRunVariableImpl implements WfRunVariable {
+class WfRunVariableImpl implements WfRunVariable {
 
     public String name;
     public VariableType type;
