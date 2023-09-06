@@ -4,9 +4,10 @@ from pathlib import Path
 import random
 from typing import Any
 
-import littlehorse
 from littlehorse.config import LHConfig
-from littlehorse.worker import LHTaskWorker, LHWorkerContext
+from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.worker import WorkerContext
+from littlehorse.workflow import ThreadBuilder, Workflow
 
 logging.basicConfig(level=logging.INFO)
 
@@ -19,7 +20,7 @@ def get_config() -> LHConfig:
     return config
 
 
-async def greeting(name: str, ctx: LHWorkerContext) -> str:
+async def greeting(name: str, ctx: WorkerContext) -> str:
     msg = f"Hello {name}!. WfRun {ctx.wf_run_id}"
     print(msg)
     await asyncio.sleep(random.uniform(0.5, 1.5))
@@ -34,11 +35,17 @@ async def describe_car(car: dict[str, Any]) -> str:
 
 
 async def main() -> None:
-    config = get_config()
-    await littlehorse.start(
-        LHTaskWorker(greeting, "greet", config),
-        LHTaskWorker(describe_car, "describe-car", config),
-    )
+    def my_entrypoint(thread: ThreadBuilder) -> None:
+        the_name = thread.add_variable("input-name", VariableType.STR)
+        thread.execute("greet", the_name)
+
+    wf = Workflow("my-wf", my_entrypoint)
+    print(wf)
+    # config = get_config()
+    # await littlehorse.start(
+    #     LHTaskWorker(greeting, "greet", config),
+    #     LHTaskWorker(describe_car, "describe-car", config),
+    # )
 
 
 if __name__ == "__main__":

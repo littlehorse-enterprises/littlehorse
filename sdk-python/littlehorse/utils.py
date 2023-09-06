@@ -4,17 +4,16 @@ import json
 from pathlib import Path
 import signal
 import sys
-from typing import TYPE_CHECKING, Any, Union
+from typing import Any, Optional, Union
 
 from google.protobuf.timestamp_pb2 import Timestamp
 from google.protobuf.message import Message
 from google.protobuf.json_format import MessageToJson
+
 from littlehorse.exceptions import SerdeException
 from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.model.common_wfspec_pb2 import VariableAssignment
 from littlehorse.model.variable_pb2 import VariableValue
-
-if TYPE_CHECKING:
-    from littlehorse.worker import LHTaskWorker
 
 VARIABLE_TYPE_MAP = {
     VariableType.JSON_OBJ: dict[str, Any],
@@ -190,3 +189,50 @@ async def start_workers(*workers: "LHTaskWorker") -> None:
     shutdown_hook(*workers)
     tasks = [asyncio.create_task(worker.start()) for worker in workers]
     await asyncio.gather(*tasks)
+
+
+def parse_variable_assignment(value: Any) -> VariableAssignment:
+    """Receives a value and return a Protobuf VariableAssignment.
+
+    Args:
+        value (Any): Any value.
+
+    Returns:
+        VariableAssignment: Protobuf.
+    """
+    if isinstance(value, NodeOutput):
+        raise ValueError(
+            "Cannot use NodeOutput directly as input to task. "
+            "First save to a WfRunVariable."
+        )
+
+    if isinstance(value, WfRunVariable):
+        json_path: Optional[str] = None
+        variable_name = value.name
+
+        if value.json_path is not None:
+            json_path = value.json_path
+
+        return VariableAssignment(
+            json_path=json_path,
+            variable_name=variable_name,
+        )
+
+    if isinstance(value, FormatString):
+        new_var = VariableAssignment(
+            format_string=VariableAssignment.FormatString(
+                format=parse_variable_assignment(value.format),
+                args=[parse_variable_assignment(arg) for arg in value.args],
+            )
+        )
+
+        return new_var
+
+    return VariableAssignment(
+        literal_value=parse_value(value),
+    )
+
+
+# import circular import at the end
+from littlehorse.workflow import FormatString, NodeOutput, WfRunVariable  # noqa: E402
+from littlehorse.worker import LHTaskWorker  # noqa: E402

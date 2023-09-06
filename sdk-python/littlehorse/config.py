@@ -5,7 +5,7 @@ from typing import Optional, Union
 from grpc import CallCredentials, Channel, ChannelCredentials
 import grpc
 from jproperties import Properties
-from littlehorse.auth import GrpcAuth
+from littlehorse.auth import OAuthCredentialsProvider
 from littlehorse.model.service_pb2_grpc import LHPublicApiStub
 from littlehorse.utils import read_binary
 import logging
@@ -276,7 +276,7 @@ class LHConfig:
 
         def get_oauth_config() -> CallCredentials:
             return grpc.metadata_call_credentials(
-                GrpcAuth(
+                OAuthCredentialsProvider(
                     client_id=self.oauth_client_id,
                     client_secret=self.oauth_client_secret,
                     token_endpoint_url=self.oauth_token_endpoint_url,

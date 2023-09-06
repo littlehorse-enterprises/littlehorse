@@ -6,7 +6,7 @@ import uuid
 from littlehorse.config import LHConfig
 
 
-class TestConfig(unittest.TestCase):
+class TestLHConfig(unittest.TestCase):
     def tearDown(self):
         os.environ.clear()
 
@@ -145,7 +145,7 @@ class TestConfig(unittest.TestCase):
         )
 
     @patch("builtins.open", new_callable=mock_open, read_data="data")
-    @patch("littlehorse.config.GrpcAuth")
+    @patch("littlehorse.config.OAuthCredentialsProvider")
     @patch("littlehorse.config.grpc")
     def test_establish_secure_channel_and_oauth(
         self, grpc_package_mock, grpc_auth_class_mock, mock_file

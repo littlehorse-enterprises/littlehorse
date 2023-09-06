@@ -1,15 +1,95 @@
+from enum import Enum
 from inspect import signature
 import inspect
 from pathlib import Path
 from typing import Any, Callable, Optional, Union
 from littlehorse.model.common_enums_pb2 import VariableType
-from littlehorse.model.common_wfspec_pb2 import IndexType, JsonIndex, VariableDef
+from littlehorse.model.common_wfspec_pb2 import (
+    IndexType,
+    JsonIndex,
+    TaskNode,
+    VariableDef,
+)
 from littlehorse.model.service_pb2 import PutWfSpecRequest
 from littlehorse.model.variable_pb2 import VariableValue
-from littlehorse.model.wf_spec_pb2 import ThreadSpec
-from littlehorse.utils import parse_value, proto_to_json
+from littlehorse.model.wf_spec_pb2 import (
+    Edge,
+    EntrypointNode,
+    ExitNode,
+    ExternalEventNode,
+    Node,
+    NopNode,
+    SleepNode,
+    StartThreadNode,
+    ThreadSpec,
+    UserTaskNode,
+    WaitForThreadsNode,
+)
+from littlehorse.utils import parse_value, parse_variable_assignment, proto_to_json
 
 ENTRYPOINT = "entrypoint"
+
+NodeType = Union[
+    TaskNode,
+    EntrypointNode,
+    ExitNode,
+    ExternalEventNode,
+    SleepNode,
+    StartThreadNode,
+    WaitForThreadsNode,
+    NopNode,
+    UserTaskNode,
+]
+
+
+class NodeCase(Enum):
+    ENTRYPOINT = "ENTRYPOINT"
+    EXIT = "EXIT"
+    TASK = "TASK"
+    EXTERNAL_EVENT = "EXTERNAL_EVENT"
+    START_THREAD = "START_THREAD"
+    WAIT_FOR_THREADS = "WAIT_FOR_THREADS"
+    NOP = "NOP"
+    SLEEP = "SLEEP"
+    USER_TASK = "USER_TASK"
+
+    @classmethod
+    def from_node(cls, node: NodeType) -> "NodeCase":
+        if isinstance(node, TaskNode):
+            return cls.TASK
+        if isinstance(node, EntrypointNode):
+            return cls.ENTRYPOINT
+        if isinstance(node, ExitNode):
+            return cls.EXIT
+        if isinstance(node, ExternalEventNode):
+            return cls.EXTERNAL_EVENT
+        if isinstance(node, SleepNode):
+            return cls.SLEEP
+        if isinstance(node, StartThreadNode):
+            return cls.START_THREAD
+        if isinstance(node, WaitForThreadsNode):
+            return cls.WAIT_FOR_THREADS
+        if isinstance(node, NopNode):
+            return cls.NOP
+        if isinstance(node, UserTaskNode):
+            return cls.USER_TASK
+
+        raise TypeError("Unrecognized node type")
+
+
+class FormatString:
+    def __init__(self, format: str, *args: Any) -> None:
+        """Generates a FormatString object that can be understood by the ThreadBuilder.
+
+        Args:
+            format (str): String format with variables with curly brackets {}.
+            *args (Any): Arguments.
+
+        Returns:
+            FormatString: A FormatString.
+        """
+        self.format = format
+        self.args = args
 
 
 class NodeOutput:
@@ -157,7 +237,7 @@ class WfRunVariable:
 
 class ThreadBuilder:
     def __init__(self, workflow: "Workflow", initializer: "ThreadInitializer") -> None:
-        """This is used to define the logic of a ThreaSpec in a ThreadInitializer.
+        """This is used to define the logic of a ThreadSpec in a ThreadInitializer.
 
         Args:
             workflow (Workflow): Parent.
@@ -165,7 +245,32 @@ class ThreadBuilder:
         """
         self.wf_run_variables: list[WfRunVariable] = []
         self._workflow = workflow
+        self._nodes: dict[str, Node] = {}
+
+        if initializer is None:
+            raise ValueError("None is not allowed")
+
+        self.is_active = True
+        self.add_node("entrypoint", EntrypointNode())
         initializer(self)
+        self.add_node("exit", ExitNode())
+        self.is_active = False
+
+    def compile(self) -> ThreadSpec:
+        """Compile this into Protobuf Objects.
+
+        Returns:
+            ThreadSpec: Spec.
+        """
+        variable_defs = [variable.compile() for variable in self.wf_run_variables]
+        return ThreadSpec(variable_defs=variable_defs, nodes=self._nodes)
+
+    def __str__(self) -> str:
+        return proto_to_json(self.compile())
+
+    def _check_if_active(self) -> None:
+        if not self.is_active:
+            raise ReferenceError("Using an inactive thread, check your workflow")
 
     def execute(self, task_name: str, *args: Any) -> NodeOutput:
         """Adds a TASK node to the ThreadSpec.
@@ -181,7 +286,25 @@ class ThreadBuilder:
         Returns:
             NodeOutput: A NodeOutput for that TASK node.
         """
+        self._check_if_active()
+        task_node = TaskNode(
+            task_def_name=task_name,
+            variables=[parse_variable_assignment(arg) for arg in args],
+        )
+        self.add_node(task_name, task_node)
         return NodeOutput()
+
+    def format(self, format: str, *args: Any) -> FormatString:
+        """Generates a FormatString object that can be understood by the ThreadBuilder.
+
+        Args:
+            format (str): String format with variables with curly brackets {}.
+            *args (Any): Arguments.
+
+        Returns:
+            FormatString: A FormatString.
+        """
+        return FormatString(format, *args)
 
     def add_variable(
         self, variable_name: str, variable_type: VariableType, default_value: Any = None
@@ -196,6 +319,7 @@ class ThreadBuilder:
         Returns:
             WfRunVariable: A handle to the created WfRunVariable.
         """
+        self._check_if_active()
         for var in self.wf_run_variables:
             if var.name == variable_name:
                 raise ValueError(f"Variable {variable_name} already added")
@@ -204,17 +328,40 @@ class ThreadBuilder:
         self.wf_run_variables.append(new_var)
         return new_var
 
-    def compile(self) -> ThreadSpec:
-        """Compile this into Protobuf Objects.
+    def add_node(self, name: str, sub_node: NodeType) -> str:
+        self._check_if_active()
+        node_type = NodeCase.from_node(sub_node)
+        next_node_name = f"{len(self._nodes)}-{name}-{node_type.name}"
 
-        Returns:
-            ThreadSpec: Spec.
-        """
-        variable_defs = [variable.compile() for variable in self.wf_run_variables]
-        return ThreadSpec(variable_defs=variable_defs)
+        if len(self._nodes) == 0 and node_type != NodeCase.ENTRYPOINT:
+            raise TypeError("The first node should be a EntrypointNode")
 
-    def __str__(self) -> str:
-        return proto_to_json(self.compile())
+        if len(self._nodes) > 0:
+            previous_node = self._nodes[list(self._nodes)[-1]]
+            previous_node.outgoing_edges.append(Edge(sink_node_name=next_node_name))
+
+            # TODO add node condition
+
+        if node_type == NodeCase.TASK:
+            self._nodes[next_node_name] = Node(task=sub_node)  # type: ignore[arg-type]  # noqa: E501
+        if node_type == NodeCase.ENTRYPOINT:
+            self._nodes[next_node_name] = Node(entrypoint=sub_node)  # type: ignore[arg-type]  # noqa: E501
+        if node_type == NodeCase.EXIT:
+            self._nodes[next_node_name] = Node(exit=sub_node)  # type: ignore[arg-type]  # noqa: E501
+        if node_type == NodeCase.EXTERNAL_EVENT:
+            self._nodes[next_node_name] = Node(external_event=sub_node)  # type: ignore[arg-type]  # noqa: E501
+        if node_type == NodeCase.SLEEP:
+            self._nodes[next_node_name] = Node(sleep=sub_node)  # type: ignore[arg-type]  # noqa: E501
+        if node_type == NodeCase.START_THREAD:
+            self._nodes[next_node_name] = Node(start_thread=sub_node)  # type: ignore[arg-type]  # noqa: E501
+        if node_type == NodeCase.WAIT_FOR_THREADS:
+            self._nodes[next_node_name] = Node(wait_for_threads=sub_node)  # type: ignore[arg-type]  # noqa: E501
+        if node_type == NodeCase.NOP:
+            self._nodes[next_node_name] = Node(nop=sub_node)  # type: ignore[arg-type]  # noqa: E501
+        if node_type == NodeCase.USER_TASK:
+            self._nodes[next_node_name] = Node(user_task=sub_node)  # type: ignore[arg-type]  # noqa: E501
+
+        return next_node_name
 
 
 ThreadInitializer = Callable[[ThreadBuilder], None]
@@ -306,62 +453,3 @@ class Workflow:
         return PutWfSpecRequest(
             name=self.name, entrypoint_thread_name=ENTRYPOINT, thread_specs=thread_specs
         )
-
-
-"""
-{
-  "name": "example-basic",
-  "threadSpecs": {
-    "entrypoint": {
-      "nodes": {
-        "0-entrypoint-ENTRYPOINT": {
-          "outgoingEdges": [{
-            "sinkNodeName": "1-greet-TASK"
-          }],
-          "variableMutations": [],
-          "failureHandlers": [],
-          "entrypoint": {
-          }
-        },
-        "1-greet-TASK": {
-          "outgoingEdges": [{
-            "sinkNodeName": "2-exit-EXIT"
-          }],
-          "variableMutations": [],
-          "failureHandlers": [],
-          "task": {
-            "taskDefName": "greet",
-            "timeoutSeconds": 0,
-            "retries": 0,
-            "variables": [{
-              "variableName": "input-name"
-            }]
-          }
-        },
-        "2-exit-EXIT": {
-          "outgoingEdges": [],
-          "variableMutations": [],
-          "failureHandlers": [],
-          "exit": {
-          }
-        }
-      },
-      "variableDefs": [{
-        "type": "STR",
-        "name": "input-name",
-        "jsonIndexes": []
-      }],
-      "interruptDefs": []
-    }
-  },
-  "entrypointThreadName": "entrypoint"
-}
-"""
-
-if __name__ == "__main__":
-
-    def my_entrypoint(thread: ThreadBuilder) -> None:
-        thread.add_variable("input-name", VariableType.STR)
-
-    wf = Workflow("my-wf", my_entrypoint)
-    print(wf)

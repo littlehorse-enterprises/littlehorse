@@ -663,12 +663,13 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             builder.setVariableName(wrv.name);
         } else if (variable.getClass().equals(NodeOutputImpl.class)) {
             throw new RuntimeException(
-                    "Error: Cannot use NodeOutput directly as input to" + " task. First save to a WfRunVariable.");
+                    "Error: Cannot use NodeOutput directly as input to task. First save to a WfRunVariable.");
         } else if (variable.getClass().equals(LHFormatStringImpl.class)) {
             LHFormatStringImpl format = (LHFormatStringImpl) variable;
             builder.setFormatString(FormatString.newBuilder()
                     .setFormat(assignVariable(format.getFormat()))
                     .addAllArgs(format.getArgs()));
+
         } else {
             try {
                 VariableValue defVal = LHLibUtil.objToVarVal(variable);

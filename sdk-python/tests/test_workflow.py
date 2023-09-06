@@ -1,10 +1,26 @@
 import unittest
 from littlehorse.model.common_enums_pb2 import VariableType
-from littlehorse.model.common_wfspec_pb2 import IndexType, JsonIndex, VariableDef
+from littlehorse.model.common_wfspec_pb2 import (
+    IndexType,
+    JsonIndex,
+    TaskNode,
+    VariableAssignment,
+    VariableDef,
+)
 from littlehorse.model.service_pb2 import PutWfSpecRequest
-from littlehorse.model.wf_spec_pb2 import ThreadSpec
+from littlehorse.model.wf_spec_pb2 import (
+    Edge,
+    EntrypointNode,
+    ExitNode,
+    Node,
+    ThreadSpec,
+)
 
-from littlehorse.workflow import ThreadBuilder, WfRunVariable, Workflow
+from littlehorse.workflow import (
+    ThreadBuilder,
+    WfRunVariable,
+    Workflow,
+)
 
 
 class TestWfRunVariable(unittest.TestCase):
@@ -106,21 +122,92 @@ class TestThreadBuilder(unittest.TestCase):
         self.assertEqual(
             thread.compile(),
             ThreadSpec(
-                variable_defs=[VariableDef(name="input-name", type=VariableType.STR)]
+                variable_defs=[VariableDef(name="input-name", type=VariableType.STR)],
+                nodes={
+                    "0-entrypoint-ENTRYPOINT": Node(
+                        entrypoint=EntrypointNode(),
+                        outgoing_edges=[Edge(sink_node_name="1-exit-EXIT")],
+                    ),
+                    "1-exit-EXIT": Node(exit=ExitNode()),
+                },
+            ),
+        )
+
+    def test_compile_with_task(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            thread.execute("greet")
+
+        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+
+        self.assertEqual(
+            thread.compile(),
+            ThreadSpec(
+                nodes={
+                    "0-entrypoint-ENTRYPOINT": Node(
+                        entrypoint=EntrypointNode(),
+                        outgoing_edges=[Edge(sink_node_name="1-greet-TASK")],
+                    ),
+                    "1-greet-TASK": Node(
+                        task=TaskNode(task_def_name="greet"),
+                        outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                    ),
+                    "2-exit-EXIT": Node(exit=ExitNode()),
+                },
+            ),
+        )
+
+    def test_compile_with_variables_and_task(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            the_name = thread.add_variable("input-name", VariableType.STR)
+            thread.execute("greet", the_name)
+
+        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+
+        self.assertEqual(
+            thread.compile(),
+            ThreadSpec(
+                variable_defs=[VariableDef(name="input-name", type=VariableType.STR)],
+                nodes={
+                    "0-entrypoint-ENTRYPOINT": Node(
+                        entrypoint=EntrypointNode(),
+                        outgoing_edges=[Edge(sink_node_name="1-greet-TASK")],
+                    ),
+                    "1-greet-TASK": Node(
+                        task=TaskNode(
+                            task_def_name="greet",
+                            variables=[VariableAssignment(variable_name="input-name")],
+                        ),
+                        outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                    ),
+                    "2-exit-EXIT": Node(exit=ExitNode()),
+                },
             ),
         )
 
     def test_validate_variable_already_exists(self):
         def my_entrypoint(thread: ThreadBuilder) -> None:
             thread.add_variable("input-name", VariableType.STR)
-
-        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+            thread.add_variable("input-name", VariableType.STR)
 
         with self.assertRaises(ValueError) as exception_context:
-            thread.add_variable("input-name", VariableType.STR)
+            ThreadBuilder(workflow=None, initializer=my_entrypoint)
 
         self.assertEqual(
             "Variable input-name already added",
+            str(exception_context.exception),
+        )
+
+    def test_validate_is_active(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            thread.add_variable("input-name", VariableType.STR)
+
+        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+
+        with self.assertRaises(ReferenceError) as exception_context:
+            thread.add_variable("new-input", VariableType.STR)
+
+        self.assertEqual(
+            "Using an inactive thread, check your workflow",
             str(exception_context.exception),
         )
 
@@ -202,7 +289,14 @@ class TestWorkflow(unittest.TestCase):
                     "entrypoint": ThreadSpec(
                         variable_defs=[
                             VariableDef(name="input-name", type=VariableType.STR)
-                        ]
+                        ],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-exit-EXIT")],
+                            ),
+                            "1-exit-EXIT": Node(exit=ExitNode()),
+                        },
                     )
                 },
             ),

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import unittest
 from unittest.mock import ANY, call, patch
 from littlehorse.exceptions import OAuthException
-from littlehorse.auth import AccessToken, GrpcAuth
+from littlehorse.auth import AccessToken, OAuthCredentialsProvider
 
 
 class TestAccessToken(unittest.TestCase):
@@ -17,9 +17,9 @@ class TestAccessToken(unittest.TestCase):
         self.assertFalse(access_token.is_expired())
 
 
-class TestGrpcAuth(unittest.TestCase):
+class TestOAuthCredentialsProvider(unittest.TestCase):
     def test_oauth_token_endpoint_is_not_set(self):
-        grpc_auth = GrpcAuth("some-id", "some-secret", None)
+        grpc_auth = OAuthCredentialsProvider("some-id", "some-secret", None)
         with self.assertRaises(OAuthException) as exception_context:
             grpc_auth.access_token()
         self.assertEqual(
@@ -28,7 +28,7 @@ class TestGrpcAuth(unittest.TestCase):
         )
 
     def test_oauth_client_id_not_set(self):
-        grpc_auth = GrpcAuth(None, "some-secret", "http://my-endpoint/")
+        grpc_auth = OAuthCredentialsProvider(None, "some-secret", "http://my-endpoint/")
         with self.assertRaises(OAuthException) as exception_context:
             grpc_auth.access_token()
         self.assertEqual(
@@ -37,7 +37,7 @@ class TestGrpcAuth(unittest.TestCase):
         )
 
     def test_oauth_client_secret_not_set(self):
-        grpc_auth = GrpcAuth("some-id", None, "http://my-endpoint/")
+        grpc_auth = OAuthCredentialsProvider("some-id", None, "http://my-endpoint/")
         with self.assertRaises(OAuthException) as exception_context:
             grpc_auth.access_token()
         self.assertEqual(
@@ -55,7 +55,7 @@ class TestGrpcAuth(unittest.TestCase):
         my_client = "my-client"
         my_password = "my-password"
         my_endpoint = "http://my-endpoint/"
-        grpc_auth = GrpcAuth(my_client, my_password, my_endpoint)
+        grpc_auth = OAuthCredentialsProvider(my_client, my_password, my_endpoint)
 
         token1 = grpc_auth.access_token()
         token2 = grpc_auth.access_token()
@@ -75,7 +75,7 @@ class TestGrpcAuth(unittest.TestCase):
         my_client = "my-client"
         my_password = "my-password"
         my_endpoint = "http://my-endpoint/"
-        grpc_auth = GrpcAuth(my_client, my_password, my_endpoint)
+        grpc_auth = OAuthCredentialsProvider(my_client, my_password, my_endpoint)
 
         token1 = grpc_auth.access_token()
         token2 = grpc_auth.access_token()

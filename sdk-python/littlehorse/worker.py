@@ -23,7 +23,7 @@ REPORT_TASK_DEFAULT_RETRIES = 5
 HEARTBEAT_DEFAULT_INTERVAL = 5
 
 
-class LHWorkerContext:
+class WorkerContext:
     def __init__(self, scheduled_task: ScheduledTask) -> None:
         self._scheduled_task = scheduled_task
         self._log_entries: list[str] = []
@@ -151,7 +151,7 @@ class LHTask:
         callable_params = [
             param.annotation
             for param in self._signature.parameters.values()
-            if param.annotation is not LHWorkerContext
+            if param.annotation is not WorkerContext
         ]
 
         if len(task_def_vars) != len(callable_params):
@@ -207,7 +207,7 @@ class LHTask:
             )
 
         # validate context is not repeated
-        filtered_params = filter(lambda param: param.annotation is LHWorkerContext)
+        filtered_params = filter(lambda param: param.annotation is WorkerContext)
         if len(filtered_params) > 1:
             raise TaskSchemaMismatchException(
                 f"Too many context arguments (expected 1): {names(filtered_params)}"
@@ -217,7 +217,7 @@ class LHTask:
         if len(filtered_params) > 0:
             last_parameter = list(self._signature.parameters.values())[-1]
 
-            if last_parameter.annotation is not LHWorkerContext:
+            if last_parameter.annotation is not WorkerContext:
                 raise TaskSchemaMismatchException(
                     "The WorkerContext should be the last parameter"
                 )
@@ -228,7 +228,7 @@ class LHTask:
 
     def has_context(self) -> bool:
         last_parameter = list(self._signature.parameters.values())[-1]
-        return last_parameter.annotation is LHWorkerContext
+        return last_parameter.annotation is WorkerContext
 
 
 class LHConnection:
@@ -255,7 +255,7 @@ class LHConnection:
         asyncio.create_task(self._execute_task(task))
 
     async def _execute_task(self, task: ScheduledTask) -> None:
-        context = LHWorkerContext(task)
+        context = WorkerContext(task)
         args: Any = [extract_value(var.value) for var in task.variables]
 
         if self._task.has_context():

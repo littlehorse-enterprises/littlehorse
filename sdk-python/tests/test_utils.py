@@ -5,9 +5,11 @@ import unittest
 from faker import Faker
 from littlehorse.exceptions import SerdeException
 from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.model.common_wfspec_pb2 import VariableAssignment
 from littlehorse.model.variable_pb2 import VariableValue
 
-from littlehorse.utils import extract_value, parse_value
+from littlehorse.utils import extract_value, parse_value, parse_variable_assignment
+from littlehorse.workflow import FormatString, NodeOutput, WfRunVariable
 
 
 class TestUtils(unittest.TestCase):
@@ -198,6 +200,59 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(
             f"Error when deserializing {variable_value}",
             str(exception_context.exception),
+        )
+
+    def test_parse_assignment_variable(self):
+        # a literal
+        variable = parse_variable_assignment(10)
+        self.assertEqual(
+            variable,
+            VariableAssignment(
+                literal_value=VariableValue(type=VariableType.INT, int=10)
+            ),
+        )
+
+        # a NodeOutput
+        with self.assertRaises(ValueError) as exception_context:
+            parse_variable_assignment(NodeOutput())
+
+        self.assertEqual(
+            "Cannot use NodeOutput directly as input to task. "
+            "First save to a WfRunVariable.",
+            str(exception_context.exception),
+        )
+
+        # a WfRunVariable
+        wf_run_variable = WfRunVariable(
+            variable_name="my-var-name", variable_type=VariableType.STR
+        )
+        wf_run_variable.json_path = "$.myPath"
+        variable = parse_variable_assignment(wf_run_variable)
+        self.assertEqual(
+            variable,
+            VariableAssignment(variable_name="my-var-name", json_path="$.myPath"),
+        )
+
+        # a FormatString
+        variable = parse_variable_assignment(FormatString("format {0}", "my-var"))
+        self.assertEqual(
+            variable,
+            VariableAssignment(
+                format_string=VariableAssignment.FormatString(
+                    format=VariableAssignment(
+                        literal_value=VariableValue(
+                            type=VariableType.STR, str="format {0}"
+                        )
+                    ),
+                    args=[
+                        VariableAssignment(
+                            literal_value=VariableValue(
+                                type=VariableType.STR, str="my-var"
+                            )
+                        )
+                    ],
+                )
+            ),
         )
 
 
