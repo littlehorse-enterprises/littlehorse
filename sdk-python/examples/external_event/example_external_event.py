@@ -27,7 +27,7 @@ def get_config() -> LHConfig:
 def get_workflow() -> Workflow:
     def my_entrypoint(thread: ThreadBuilder) -> None:
         thread.execute(ASK_FOR_NAME)
-        ext_event_output = thread.wait_for_event(EXT_EVENT, timeout=30)
+        ext_event_output = thread.wait_for_event(EXT_EVENT, timeout=60)
 
         name = thread.add_variable("name", VariableType.STR)
         thread.mutate(name, VariableMutationType.ASSIGN, ext_event_output)
