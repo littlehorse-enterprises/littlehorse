@@ -117,7 +117,9 @@ ExternalEventDef to delete.
 			getGlobalClient(cmd).DeleteExternalEventDef(
 				context.Background(),
 				&model.DeleteExternalEventDefRequest{
-					Name: name,
+					Id: &model.ExternalEventDefId{
+						Name: name,
+					},
 				}),
 		)
 	},

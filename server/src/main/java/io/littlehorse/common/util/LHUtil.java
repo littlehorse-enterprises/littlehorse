@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
-import io.littlehorse.common.model.LHSerializable;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -38,6 +40,11 @@ public class LHUtil {
         }
 
         return out;
+    }
+
+    public static StatusRuntimeException toGrpcError(Throwable exn) {
+        return new StatusRuntimeException(
+                Status.INTERNAL.withCause(exn).withDescription("Unexpected internal failure: " + exn.getMessage()));
     }
 
     public static String generateGuid() {
@@ -138,7 +145,8 @@ public class LHUtil {
     }
 
     /**
-     * TODO: THis needs more thought. We want the double to be searchable both positive and
+     * TODO: THis needs more thought. We want the double to be searchable both
+     * positive and
      * negative, and we want to be able to do range queries.
      */
     public static String toLhDbFormat(Double val) {

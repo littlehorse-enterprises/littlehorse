@@ -5,9 +5,8 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.HostInfo;
+import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
@@ -111,11 +110,8 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
 
     @Override
     public void onNext(RegisterTaskWorkerResponse next) {
-        if (next.getCode() == LHResponseCode.BAD_REQUEST_ERROR) {
-            throw new RuntimeException("Invalid configuration: " + next.getMessage());
-        }
         // Reconcile what's running
-        for (HostInfo host : next.getYourHostsList()) {
+        for (LHHostInfo host : next.getYourHostsList()) {
             if (!isAlreadyRunning(host)) {
                 try {
                     runningConnections.add(new LHServerConnection(this, host));
@@ -144,14 +140,14 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         }
     }
 
-    private boolean shouldBeRunning(LHServerConnection ssc, List<HostInfo> hosts) {
-        for (HostInfo h : hosts) {
+    private boolean shouldBeRunning(LHServerConnection ssc, List<LHHostInfo> hosts) {
+        for (LHHostInfo h : hosts) {
             if (ssc.isSameAs(h)) return true;
         }
         return false;
     }
 
-    private boolean isAlreadyRunning(HostInfo host) {
+    private boolean isAlreadyRunning(LHHostInfo host) {
         for (LHServerConnection ssc : runningConnections) {
             if (ssc.isSameAs(host)) {
                 return true;
@@ -167,6 +163,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
                 config.getApiBootstrapHost(),
                 config.getApiBootstrapPort(),
                 t);
+        this.running = false;
         // We don't close the connections to other hosts here since they will do
         // that themselves if they can't connect.
     }

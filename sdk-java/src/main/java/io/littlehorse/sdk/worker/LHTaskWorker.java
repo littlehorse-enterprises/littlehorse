@@ -1,12 +1,14 @@
 package io.littlehorse.sdk.worker;
 
-import io.littlehorse.sdk.client.LHClient;
+import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.TaskDef;
+import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
@@ -45,8 +47,8 @@ public class LHTaskWorker implements Closeable {
     private Method taskMethod;
     private List<VariableMapping> mappings;
     private LHServerConnectionManager manager;
-    private LHClient lhClient;
     private String taskDefName;
+    private LHPublicApiBlockingStub grpcClient;
 
     /**
      * Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod, and a
@@ -57,12 +59,12 @@ public class LHTaskWorker implements Closeable {
      * @param taskDefName is the name of the `TaskDef` to execute.
      * @param config is a valid LHWorkerConfig.
      */
-    public LHTaskWorker(Object executable, String taskDefName, LHWorkerConfig config) {
+    public LHTaskWorker(Object executable, String taskDefName, LHWorkerConfig config) throws IOException {
         this.config = config;
         this.executable = executable;
         this.mappings = new ArrayList<>();
-        this.lhClient = new LHClient(config);
         this.taskDefName = taskDefName;
+        this.grpcClient = config.getBlockingStub();
     }
 
     /**
@@ -74,17 +76,9 @@ public class LHTaskWorker implements Closeable {
         return taskDefName;
     }
 
-    private void createManager() throws LHApiError {
-        try {
-            validateTaskDefAndExecutable();
-
-            this.manager = new LHServerConnectionManager(taskMethod, taskDef, config, mappings, executable);
-        } catch (TaskSchemaMismatchError exn) {
-            throw new LHApiError(
-                    exn, "Provided java method does not match registered task!", LHResponseCode.BAD_REQUEST_ERROR);
-        } catch (IOException exn) {
-            throw new LHApiError(exn, "Couldn't create connection to LH");
-        }
+    private void createManager() throws IOException {
+        validateTaskDefAndExecutable();
+        this.manager = new LHServerConnectionManager(taskMethod, taskDef, config, mappings, executable);
     }
 
     /**
@@ -93,9 +87,16 @@ public class LHTaskWorker implements Closeable {
      * @return true if the task is registered or false otherwise
      * @throws LHApiError if the call fails.
      */
-    public boolean doesTaskDefExist() throws LHApiError {
-        this.taskDef = lhClient.getTaskDef(taskDefName);
-        return this.taskDef != null;
+    public boolean doesTaskDefExist() {
+        try {
+            grpcClient.getTaskDef(TaskDefId.newBuilder().setName(taskDefName).build());
+            return true;
+        } catch (StatusRuntimeException exn) {
+            if (exn.getStatus().getCode() == Code.NOT_FOUND) {
+                return false;
+            }
+            throw exn;
+        }
     }
 
     /**
@@ -104,7 +105,7 @@ public class LHTaskWorker implements Closeable {
      *
      * @throws LHApiError if the call fails.
      */
-    public void registerTaskDef() throws LHApiError {
+    public void registerTaskDef() {
         registerTaskDef(false);
     }
 
@@ -112,23 +113,31 @@ public class LHTaskWorker implements Closeable {
      * Deploys the TaskDef object to the LH Server. This is a convenience method, generally not
      * recommended for production (in production you should manually use the PutTaskDef).
      *
-     * @param swallowAlreadyExists if true, then ignore ALREADY_EXISTS_ERROR when registering the
-     *     TaskDef.
-     * @throws LHApiError if the call fails.
+     * @param swallowAlreadyExists if true, then ignore grpc ALREADY_EXISTS error when registering
+     *     the TaskDef.
      */
-    public void registerTaskDef(boolean swallowAlreadyExists) throws LHApiError {
+    public void registerTaskDef(boolean swallowAlreadyExists) {
+        TaskDefBuilder tdb = new TaskDefBuilder(executable, taskDefName);
+        log.info("Creating TaskDef: {}", taskDefName);
+
         try {
-            TaskDefBuilder tdb = new TaskDefBuilder(executable, taskDefName);
-            log.info(
-                    "Creating TaskDef:\n {}",
-                    LHLibUtil.protoToJson(lhClient.putTaskDef(tdb.toPutTaskDefRequest(), swallowAlreadyExists)));
-        } catch (TaskSchemaMismatchError exn) {
-            log.error("Error registering task", exn);
-            throw new LHApiError(exn, exn.getMessage(), LHResponseCode.VALIDATION_ERROR);
+            TaskDef result = grpcClient.putTaskDef(tdb.toPutTaskDefRequest());
+            log.info("Created TaskDef:\n{}", LHLibUtil.protoToJson(result));
+
+        } catch (StatusRuntimeException exn) {
+            if (swallowAlreadyExists && exn.getStatus().getCode() == Code.ALREADY_EXISTS) {
+                log.info("TaskDef {} already exists!", taskDefName);
+            } else {
+                throw exn;
+            }
         }
     }
 
     private void validateTaskDefAndExecutable() throws TaskSchemaMismatchError {
+        if (this.taskDef == null) {
+            this.taskDef = grpcClient.getTaskDef(
+                    TaskDefId.newBuilder().setName(taskDefName).build());
+        }
         LHTaskSignature signature = new LHTaskSignature(taskDef.getName(), executable);
         taskMethod = signature.getTaskMethod();
 
@@ -175,9 +184,9 @@ public class LHTaskWorker implements Closeable {
      *     incompatible with the method signature from the provided executable Java object, or if
      *     the Worker cannot connect to the LH Server.
      */
-    public void start() throws LHApiError {
+    public void start() throws IOException {
         if (!doesTaskDefExist()) {
-            throw new LHApiError("Couldn't find TaskDef: " + taskDefName, LHResponseCode.NOT_FOUND_ERROR);
+            throw new LHMisconfigurationException("Couldn't find TaskDef: " + taskDefName);
         }
         createManager();
         manager.start();

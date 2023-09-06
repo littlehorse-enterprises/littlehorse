@@ -16,9 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private DeleteExternalEventRequest() {
-    wfRunId_ = "";
-    externalEventDefName_ = "";
-    guid_ = "";
   }
 
   @java.lang.Override
@@ -46,121 +43,30 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.class, io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.Builder.class);
   }
 
-  public static final int WF_RUN_ID_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object wfRunId_ = "";
+  public static final int ID_FIELD_NUMBER = 1;
+  private io.littlehorse.sdk.common.proto.ExternalEventId id_;
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The wfRunId.
+   * <code>.littlehorse.ExternalEventId id = 1;</code>
+   * @return Whether the id field is set.
    */
   @java.lang.Override
-  public java.lang.String getWfRunId() {
-    java.lang.Object ref = wfRunId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      wfRunId_ = s;
-      return s;
-    }
+  public boolean hasId() {
+    return id_ != null;
   }
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
+   * <code>.littlehorse.ExternalEventId id = 1;</code>
+   * @return The id.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getWfRunIdBytes() {
-    java.lang.Object ref = wfRunId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      wfRunId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int EXTERNAL_EVENT_DEF_NAME_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object externalEventDefName_ = "";
-  /**
-   * <code>string external_event_def_name = 2;</code>
-   * @return The externalEventDefName.
-   */
-  @java.lang.Override
-  public java.lang.String getExternalEventDefName() {
-    java.lang.Object ref = externalEventDefName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      externalEventDefName_ = s;
-      return s;
-    }
+  public io.littlehorse.sdk.common.proto.ExternalEventId getId() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance() : id_;
   }
   /**
-   * <code>string external_event_def_name = 2;</code>
-   * @return The bytes for externalEventDefName.
+   * <code>.littlehorse.ExternalEventId id = 1;</code>
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getExternalEventDefNameBytes() {
-    java.lang.Object ref = externalEventDefName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      externalEventDefName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int GUID_FIELD_NUMBER = 3;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object guid_ = "";
-  /**
-   * <code>string guid = 3;</code>
-   * @return The guid.
-   */
-  @java.lang.Override
-  public java.lang.String getGuid() {
-    java.lang.Object ref = guid_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      guid_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string guid = 3;</code>
-   * @return The bytes for guid.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getGuidBytes() {
-    java.lang.Object ref = guid_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      guid_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getIdOrBuilder() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance() : id_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -177,14 +83,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfRunId_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfRunId_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(externalEventDefName_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, externalEventDefName_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(guid_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, guid_);
+    if (id_ != null) {
+      output.writeMessage(1, getId());
     }
     getUnknownFields().writeTo(output);
   }
@@ -195,14 +95,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfRunId_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, wfRunId_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(externalEventDefName_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, externalEventDefName_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(guid_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, guid_);
+    if (id_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(1, getId());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -219,12 +114,11 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.DeleteExternalEventRequest other = (io.littlehorse.sdk.common.proto.DeleteExternalEventRequest) obj;
 
-    if (!getWfRunId()
-        .equals(other.getWfRunId())) return false;
-    if (!getExternalEventDefName()
-        .equals(other.getExternalEventDefName())) return false;
-    if (!getGuid()
-        .equals(other.getGuid())) return false;
+    if (hasId() != other.hasId()) return false;
+    if (hasId()) {
+      if (!getId()
+          .equals(other.getId())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -236,12 +130,10 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getWfRunId().hashCode();
-    hash = (37 * hash) + EXTERNAL_EVENT_DEF_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getExternalEventDefName().hashCode();
-    hash = (37 * hash) + GUID_FIELD_NUMBER;
-    hash = (53 * hash) + getGuid().hashCode();
+    if (hasId()) {
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -371,9 +263,11 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      wfRunId_ = "";
-      externalEventDefName_ = "";
-      guid_ = "";
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
       return this;
     }
 
@@ -408,13 +302,9 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.DeleteExternalEventRequest result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.wfRunId_ = wfRunId_;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.externalEventDefName_ = externalEventDefName_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.guid_ = guid_;
+        result.id_ = idBuilder_ == null
+            ? id_
+            : idBuilder_.build();
       }
     }
 
@@ -462,20 +352,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.DeleteExternalEventRequest other) {
       if (other == io.littlehorse.sdk.common.proto.DeleteExternalEventRequest.getDefaultInstance()) return this;
-      if (!other.getWfRunId().isEmpty()) {
-        wfRunId_ = other.wfRunId_;
-        bitField0_ |= 0x00000001;
-        onChanged();
-      }
-      if (!other.getExternalEventDefName().isEmpty()) {
-        externalEventDefName_ = other.externalEventDefName_;
-        bitField0_ |= 0x00000002;
-        onChanged();
-      }
-      if (!other.getGuid().isEmpty()) {
-        guid_ = other.guid_;
-        bitField0_ |= 0x00000004;
-        onChanged();
+      if (other.hasId()) {
+        mergeId(other.getId());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -504,20 +382,12 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              wfRunId_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 18: {
-              externalEventDefName_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 18
-            case 26: {
-              guid_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -535,220 +405,123 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.lang.Object wfRunId_ = "";
+    private io.littlehorse.sdk.common.proto.ExternalEventId id_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExternalEventId, io.littlehorse.sdk.common.proto.ExternalEventId.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder> idBuilder_;
     /**
-     * <code>string wf_run_id = 1;</code>
-     * @return The wfRunId.
+     * <code>.littlehorse.ExternalEventId id = 1;</code>
+     * @return Whether the id field is set.
      */
-    public java.lang.String getWfRunId() {
-      java.lang.Object ref = wfRunId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        wfRunId_ = s;
-        return s;
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.littlehorse.ExternalEventId id = 1;</code>
+     * @return The id.
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventId getId() {
+      if (idBuilder_ == null) {
+        return id_ == null ? io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance() : id_;
       } else {
-        return (java.lang.String) ref;
+        return idBuilder_.getMessage();
       }
     }
     /**
-     * <code>string wf_run_id = 1;</code>
-     * @return The bytes for wfRunId.
+     * <code>.littlehorse.ExternalEventId id = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getWfRunIdBytes() {
-      java.lang.Object ref = wfRunId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        wfRunId_ = b;
-        return b;
+    public Builder setId(io.littlehorse.sdk.common.proto.ExternalEventId value) {
+      if (idBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        id_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        idBuilder_.setMessage(value);
       }
-    }
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @param value The wfRunId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfRunId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      wfRunId_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>string wf_run_id = 1;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.ExternalEventId id = 1;</code>
      */
-    public Builder clearWfRunId() {
-      wfRunId_ = getDefaultInstance().getWfRunId();
+    public Builder setId(
+        io.littlehorse.sdk.common.proto.ExternalEventId.Builder builderForValue) {
+      if (idBuilder_ == null) {
+        id_ = builderForValue.build();
+      } else {
+        idBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ExternalEventId id = 1;</code>
+     */
+    public Builder mergeId(io.littlehorse.sdk.common.proto.ExternalEventId value) {
+      if (idBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+          id_ != null &&
+          id_ != io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance()) {
+          getIdBuilder().mergeFrom(value);
+        } else {
+          id_ = value;
+        }
+      } else {
+        idBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ExternalEventId id = 1;</code>
+     */
+    public Builder clearId() {
       bitField0_ = (bitField0_ & ~0x00000001);
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
       onChanged();
       return this;
     }
     /**
-     * <code>string wf_run_id = 1;</code>
-     * @param value The bytes for wfRunId to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.ExternalEventId id = 1;</code>
      */
-    public Builder setWfRunIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      wfRunId_ = value;
+    public io.littlehorse.sdk.common.proto.ExternalEventId.Builder getIdBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
-      return this;
+      return getIdFieldBuilder().getBuilder();
     }
-
-    private java.lang.Object externalEventDefName_ = "";
     /**
-     * <code>string external_event_def_name = 2;</code>
-     * @return The externalEventDefName.
+     * <code>.littlehorse.ExternalEventId id = 1;</code>
      */
-    public java.lang.String getExternalEventDefName() {
-      java.lang.Object ref = externalEventDefName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        externalEventDefName_ = s;
-        return s;
+    public io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder getIdOrBuilder() {
+      if (idBuilder_ != null) {
+        return idBuilder_.getMessageOrBuilder();
       } else {
-        return (java.lang.String) ref;
+        return id_ == null ?
+            io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance() : id_;
       }
     }
     /**
-     * <code>string external_event_def_name = 2;</code>
-     * @return The bytes for externalEventDefName.
+     * <code>.littlehorse.ExternalEventId id = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getExternalEventDefNameBytes() {
-      java.lang.Object ref = externalEventDefName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        externalEventDefName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExternalEventId, io.littlehorse.sdk.common.proto.ExternalEventId.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder> 
+        getIdFieldBuilder() {
+      if (idBuilder_ == null) {
+        idBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ExternalEventId, io.littlehorse.sdk.common.proto.ExternalEventId.Builder, io.littlehorse.sdk.common.proto.ExternalEventIdOrBuilder>(
+                getId(),
+                getParentForChildren(),
+                isClean());
+        id_ = null;
       }
-    }
-    /**
-     * <code>string external_event_def_name = 2;</code>
-     * @param value The externalEventDefName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setExternalEventDefName(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      externalEventDefName_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string external_event_def_name = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearExternalEventDefName() {
-      externalEventDefName_ = getDefaultInstance().getExternalEventDefName();
-      bitField0_ = (bitField0_ & ~0x00000002);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string external_event_def_name = 2;</code>
-     * @param value The bytes for externalEventDefName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setExternalEventDefNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      externalEventDefName_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object guid_ = "";
-    /**
-     * <code>string guid = 3;</code>
-     * @return The guid.
-     */
-    public java.lang.String getGuid() {
-      java.lang.Object ref = guid_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        guid_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string guid = 3;</code>
-     * @return The bytes for guid.
-     */
-    public com.google.protobuf.ByteString
-        getGuidBytes() {
-      java.lang.Object ref = guid_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        guid_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string guid = 3;</code>
-     * @param value The guid to set.
-     * @return This builder for chaining.
-     */
-    public Builder setGuid(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      guid_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string guid = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearGuid() {
-      guid_ = getDefaultInstance().getGuid();
-      bitField0_ = (bitField0_ & ~0x00000004);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string guid = 3;</code>
-     * @param value The bytes for guid to set.
-     * @return This builder for chaining.
-     */
-    public Builder setGuidBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      guid_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
+      return idBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

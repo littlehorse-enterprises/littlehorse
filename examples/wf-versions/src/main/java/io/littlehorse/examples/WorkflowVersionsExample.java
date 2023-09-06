@@ -1,10 +1,10 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfSpec;
+import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -63,7 +63,7 @@ public class WorkflowVersionsExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) {
+    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) throws IOException {
         MyWorker executable = new MyWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "greet0", config),
@@ -84,11 +84,11 @@ public class WorkflowVersionsExample {
         return workers;
     }
 
-    public static void main(String[] args) throws IOException, LHApiError {
+    public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
         LHWorkerConfig config = new LHWorkerConfig(props);
-        LHClient client = new LHClient(config);
+        LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow0
         Workflow workflow0 = getWorkflow0();
@@ -144,7 +144,7 @@ public class WorkflowVersionsExample {
         }
 
         // Getting the latest version
-        WfSpec wfSpec = client.getWfSpec("example-wf-versions");
+        WfSpec wfSpec = client.getWfSpec(WfSpecId.newBuilder().setName("example-wf-versions").build());
         log.info(
             "The latest version of example-wf-versions is {}",
             wfSpec.getVersion()

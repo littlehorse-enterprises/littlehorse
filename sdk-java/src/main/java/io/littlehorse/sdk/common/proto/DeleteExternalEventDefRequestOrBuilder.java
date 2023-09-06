@@ -8,14 +8,17 @@ public interface DeleteExternalEventDefRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string name = 1;</code>
-   * @return The name.
+   * <code>.littlehorse.ExternalEventDefId id = 1;</code>
+   * @return Whether the id field is set.
    */
-  java.lang.String getName();
+  boolean hasId();
   /**
-   * <code>string name = 1;</code>
-   * @return The bytes for name.
+   * <code>.littlehorse.ExternalEventDefId id = 1;</code>
+   * @return The id.
    */
-  com.google.protobuf.ByteString
-      getNameBytes();
+  io.littlehorse.sdk.common.proto.ExternalEventDefId getId();
+  /**
+   * <code>.littlehorse.ExternalEventDefId id = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getIdOrBuilder();
 }

@@ -1,19 +1,16 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.client.LHClient;
+import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
-import io.littlehorse.sdk.common.proto.AssignUserTaskRunResponse;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
-import io.littlehorse.sdk.common.proto.CompleteUserTaskRunResponse;
-import io.littlehorse.sdk.common.proto.LHResponseCode;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
-import io.littlehorse.sdk.common.proto.SearchUserTaskRunResponse;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskStatus;
@@ -25,6 +22,7 @@ import io.littlehorse.sdk.common.proto.UserTaskFieldResult;
 import io.littlehorse.sdk.common.proto.UserTaskResult;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
+import io.littlehorse.sdk.common.proto.UserTaskRunIdList;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -38,6 +36,7 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.UserTaskWorkflowTest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +47,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
 
     private static final String USER_TASK_DEF_NAME = "some-usertask";
 
-    public AZUserTasksBasic(LHClient client, LHWorkerConfig workerConfig) {
+    public AZUserTasksBasic(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -84,7 +83,8 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         return Arrays.asList(new AZSimpleTask());
     }
 
-    public List<String> launchAndCheckWorkflows(LHClient client) throws TestFailure, InterruptedException, LHApiError {
+    public List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, InterruptedException, IOException {
         List<String> out = new ArrayList<>();
 
         String wfRunId = runWf(client);
@@ -110,12 +110,11 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
             throw new TestFailure(this, "Workflow " + wfRunId + " usertask run reminder didn't complete!");
         }
 
-        SearchUserTaskRunResponse userGroupResult = client.getGrpcClient()
-                .searchUserTaskRun(SearchUserTaskRunRequest.newBuilder()
-                        .setUserGroup(UserGroup.newBuilder().setId("test-group").build())
-                        .setUserTaskDefName(USER_TASK_DEF_NAME)
-                        .setStatus(UserTaskRunStatus.UNASSIGNED)
-                        .build());
+        UserTaskRunIdList userGroupResult = client.searchUserTaskRun(SearchUserTaskRunRequest.newBuilder()
+                .setUserGroup(UserGroup.newBuilder().setId("test-group").build())
+                .setUserTaskDefName(USER_TASK_DEF_NAME)
+                .setStatus(UserTaskRunStatus.UNASSIGNED)
+                .build());
         UserTaskRunId userTaskRunId = null;
         for (UserTaskRunId userTaskRunIdResult : userGroupResult.getResultsList()) {
             if (userTaskRunIdResult.getWfRunId().equals(wfRunId)) {
@@ -123,26 +122,20 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
                 break;
             }
         }
-        AssignUserTaskRunResponse assignUserTaskRunResponse = client.getGrpcClient()
-                .assignUserTaskRun(AssignUserTaskRunRequest.newBuilder()
-                        .setUser(User.newBuilder().setId("unavailable-user").build())
-                        .setUserTaskRunId(userTaskRunId)
-                        .build());
-        assertThat(
-                assignUserTaskRunResponse.getCode() == LHResponseCode.OK,
-                "Unexpected response from user assignment request");
+        assertThat(userTaskRunId != null, "Should have found the userTaskRun when searching for the group");
+
+        client.assignUserTaskRun(AssignUserTaskRunRequest.newBuilder()
+                .setUser(User.newBuilder().setId("unavailable-user").build())
+                .setUserTaskRunId(userTaskRunId)
+                .build());
         Thread.sleep(1000 * 10);
 
         // Look for UserTaskRun's with `test-user` as the user
-        SearchUserTaskRunResponse results = client.getGrpcClient()
-                .searchUserTaskRun(SearchUserTaskRunRequest.newBuilder()
-                        .setUser(User.newBuilder()
-                                .setId("available-user")
-                                .setUserGroup(UserGroup.newBuilder()
-                                        .setId("test-group")
-                                        .build()))
-                        .build());
-        assertThat(results.getCode() == LHResponseCode.OK, "Unexpected response from search request");
+        UserTaskRunIdList results = client.searchUserTaskRun(SearchUserTaskRunRequest.newBuilder()
+                .setUser(User.newBuilder()
+                        .setId("available-user")
+                        .setUserGroup(UserGroup.newBuilder().setId("test-group").build()))
+                .build());
         UserTaskRunId found = null;
 
         for (UserTaskRunId candidate : results.getResultsList()) {
@@ -158,30 +151,42 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
 
         // Now we execute the task
         try {
-            CompleteUserTaskRunResponse completeUserTaskRunResponse =
-                    client.getGrpcClient().completeUserTaskRun(buildInvalidCompleteUserTaskRequest(found));
+            StatusRuntimeException caught = null;
+            try {
+                client.completeUserTaskRun(buildInvalidCompleteUserTaskRequest(found));
+            } catch (StatusRuntimeException exn) {
+                caught = exn;
+            }
+
+            assertThat(caught != null, "should have thrown exception!");
+            if (caught == null) throw new RuntimeException("impossible");
+
             assertThat(
-                    completeUserTaskRunResponse.getCode().equals(LHResponseCode.BAD_REQUEST_ERROR),
+                    caught.getStatus().getCode() == Code.INVALID_ARGUMENT,
                     "UserTaskRun Fields validation not working as expected");
             assertThat(
-                    completeUserTaskRunResponse
-                            .getMessage()
-                            .equals("Field [name = nonExistingStringField, type = STR] is not"
-                                    + " defined in UserTask schema"),
-                    "Actual output message: " + completeUserTaskRunResponse.getMessage());
-            completeUserTaskRunResponse =
-                    client.getGrpcClient().completeUserTaskRun(buildCompleteUserTaskRequestWithMissingField(found));
+                    caught.getStatus().getDescription() != null
+                            && caught.getStatus()
+                                    .getDescription()
+                                    .equals("Field [name = nonExistingStringField, type = STR] is not"
+                                            + " defined in UserTask schema or has different type"),
+                    "Actual output message: " + caught.getStatus().getDescription());
+
+            caught = null;
+            try {
+                client.completeUserTaskRun(buildCompleteUserTaskRequestWithMissingField(found));
+            } catch (StatusRuntimeException exn) {
+                caught = exn;
+            }
+
             assertThat(
-                    completeUserTaskRunResponse.getCode().equals(LHResponseCode.BAD_REQUEST_ERROR),
+                    caught.getStatus().getCode() == Code.INVALID_ARGUMENT,
                     "UserTaskRun mandatory fields validation is not working as expected");
             assertThat(
-                    completeUserTaskRunResponse.getMessage().equals("[myStr] are mandatory fields"),
-                    "Actual output message: " + completeUserTaskRunResponse.getMessage());
-            completeUserTaskRunResponse =
-                    client.getGrpcClient().completeUserTaskRun(buildValidCompleteUserTaskRequest(found));
-            assertThat(
-                    completeUserTaskRunResponse.getCode().equals(LHResponseCode.OK),
-                    "Failed processing complete user task request");
+                    caught.getStatus().getDescription().equals("[myStr] are mandatory fields"),
+                    "Actual output message: " + caught.getStatus().getDescription());
+
+            client.completeUserTaskRun(buildValidCompleteUserTaskRequest(found));
         } catch (LHSerdeError exn) {
             throw new RuntimeException(exn);
         }

@@ -1,7 +1,7 @@
 package io.littlehorse.server.auth;
 
 public enum AuthorizationProtocol {
-    BASIC,
+    MTLS,
     OAUTH,
     NONE,
 }

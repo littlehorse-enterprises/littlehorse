@@ -1,21 +1,33 @@
 package io.littlehorse.tests;
 
-import io.littlehorse.sdk.client.LHClient;
+import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
-import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
+import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
+import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
+import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRun;
+import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +40,8 @@ public abstract class WorkflowLogicTest extends Test {
     private static final int WAIT_TIME_BETWEEN_REGISTER = 500;
     private static Logger log = LoggerFactory.getLogger(WorkflowLogicTest.class);
 
-    public abstract List<String> launchAndCheckWorkflows(LHClient client)
-            throws TestFailure, LHApiError, InterruptedException;
+    public abstract List<String> launchAndCheckWorkflows(LHPublicApiBlockingStub client)
+            throws TestFailure, IOException, InterruptedException;
 
     protected abstract Workflow getWorkflowImpl();
 
@@ -40,7 +52,7 @@ public abstract class WorkflowLogicTest extends Test {
     private List<String> wfRunIds;
     private int wfSpecVersion; // usually will be 0
 
-    public WorkflowLogicTest(LHClient client, LHWorkerConfig workerConfig) {
+    public WorkflowLogicTest(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
         super(client, workerConfig);
         wfRunIds = new ArrayList<>();
     }
@@ -50,25 +62,33 @@ public abstract class WorkflowLogicTest extends Test {
         launchAndCheckWorkflows(client);
     }
 
-    public void cleanup() throws LHApiError {
+    public void cleanup() {
         log.info("Shutting down task workers for testcase {}", getWorkflowName());
         for (LHTaskWorker worker : workers) {
             worker.close();
         }
 
         for (String wfRunId : wfRunIds) {
-            client.deleteWfRun(wfRunId);
+            client.deleteWfRun(DeleteWfRunRequest.newBuilder()
+                    .setId(WfRunId.newBuilder().setId(wfRunId))
+                    .build());
         }
 
         for (String tdn : workflow.getRequiredTaskDefNames()) {
-            client.deleteTaskDef(tdn);
+            client.deleteTaskDef(DeleteTaskDefRequest.newBuilder()
+                    .setId(TaskDefId.newBuilder().setName(tdn))
+                    .build());
         }
 
         for (String eedn : workflow.getRequiredExternalEventDefNames()) {
-            client.deleteExternalEventDef(eedn);
+            client.deleteExternalEventDef(DeleteExternalEventDefRequest.newBuilder()
+                    .setId(ExternalEventDefId.newBuilder().setName(eedn))
+                    .build());
         }
 
-        client.deleteWfSpec(getWorkflowName(), wfSpecVersion);
+        client.deleteWfSpec(DeleteWfSpecRequest.newBuilder()
+                .setId(WfSpecId.newBuilder().setName(getWorkflowName()).setVersion(wfSpecVersion))
+                .build());
     }
 
     protected Workflow getWorkflow() {
@@ -94,20 +114,21 @@ public abstract class WorkflowLogicTest extends Test {
         return result.toString();
     }
 
-    protected void deploy(LHClient client, LHWorkerConfig workerConfig) throws TestFailure {
+    protected void deploy(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) throws TestFailure {
         workers = new ArrayList<>();
 
         // Now need to create LHTaskWorkers and run them for all worker objects.
         for (Object executable : getTaskWorkerObjects()) {
-            for (LHTaskWorker worker : getWorkersFromExecutable(executable, workerConfig)) {
-                workers.add(worker);
-                try {
+            try {
+                for (LHTaskWorker worker : getWorkersFromExecutable(executable, workerConfig)) {
+                    workers.add(worker);
                     worker.registerTaskDef(true);
+                    Thread.sleep(WAIT_TIME_BETWEEN_REGISTER);
+
                     worker.start();
-                } catch (LHApiError exn) {
-                    exn.printStackTrace();
-                    throw new TestFailure(this, "Failed to start worker, failing test.");
                 }
+            } catch (IOException | InterruptedException exn) {
+                throw new RuntimeException(exn);
             }
         }
 
@@ -115,13 +136,13 @@ public abstract class WorkflowLogicTest extends Test {
 
         for (String externalEvent : requiredExternalEventDefNames) {
             try {
-                client.putExternalEventDef(
-                        PutExternalEventDefRequest.newBuilder()
-                                .setName(externalEvent)
-                                .build(),
-                        true);
-            } catch (LHApiError exn) {
-                throw new TestFailure(this, "Failed deploying external event def: " + exn.getMessage());
+                client.putExternalEventDef(PutExternalEventDefRequest.newBuilder()
+                        .setName(externalEvent)
+                        .build());
+            } catch (StatusRuntimeException exn) {
+                if (exn.getStatus().getCode() != Code.ALREADY_EXISTS) {
+                    throw exn;
+                }
             }
         }
 
@@ -131,23 +152,23 @@ public abstract class WorkflowLogicTest extends Test {
         }
 
         // Now deploy the WF
+        getWorkflow().registerWfSpec(client);
+
         try {
-            getWorkflow().registerWfSpec(client);
-
-            try {
-                Thread.sleep(WAIT_TIME_BETWEEN_REGISTER);
-            } catch (Exception ignored) {
-            }
-
-            wfSpecVersion = client.getWfSpec(getWorkflowName(), null).getVersion();
-        } catch (LHApiError exn) {
-            throw new TestFailure(this, "Failed deploying test case: " + exn.getMessage());
+            Thread.sleep(WAIT_TIME_BETWEEN_REGISTER);
+        } catch (Exception ignored) {
         }
+
+        wfSpecVersion = client.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder()
+                        .setName(getWorkflowName())
+                        .build())
+                .getVersion();
 
         log.info("Done deploying for testCase " + getWorkflowName());
     }
 
-    private List<LHTaskWorker> getWorkersFromExecutable(Object exe, LHWorkerConfig workerConfig) throws TestFailure {
+    private List<LHTaskWorker> getWorkersFromExecutable(Object exe, LHWorkerConfig workerConfig)
+            throws TestFailure, IOException {
         List<LHTaskWorker> out = new ArrayList<>();
 
         for (Method method : exe.getClass().getMethods()) {
@@ -162,12 +183,27 @@ public abstract class WorkflowLogicTest extends Test {
         return out;
     }
 
-    protected String runWf(LHClient client, Arg... params) throws TestFailure, LHApiError {
+    protected String runWf(LHPublicApiBlockingStub client, Arg... params) throws TestFailure, IOException {
         return runWf(generateGuid(), client, params);
     }
 
-    protected String runWf(String id, LHClient client, Arg... params) throws TestFailure, LHApiError {
-        String resultingId = client.runWf(getWorkflowName(), wfSpecVersion, id, params);
+    protected String runWf(String id, LHPublicApiBlockingStub client, Arg... params) throws TestFailure, IOException {
+        RunWfRequest.Builder b =
+                RunWfRequest.newBuilder().setWfSpecName(getWorkflowName()).setWfSpecVersion(wfSpecVersion);
+
+        if (id != null) {
+            b.setId(id);
+        }
+
+        for (Arg arg : params) {
+            try {
+                b.putVariables(arg.name, LHLibUtil.objToVarVal(arg.value));
+            } catch (LHSerdeError exn) {
+                throw new RuntimeException(exn);
+            }
+        }
+
+        String resultingId = client.runWf(b.build()).getId();
 
         log.info("Test {} launched: {}", getWorkflowName(), resultingId);
 
@@ -177,8 +213,8 @@ public abstract class WorkflowLogicTest extends Test {
         return resultingId;
     }
 
-    protected String runWithInputsAndCheckPath(LHClient client, Object input, Object... expectedPath)
-            throws TestFailure, InterruptedException, LHApiError {
+    protected String runWithInputsAndCheckPath(LHPublicApiBlockingStub client, Object input, Object... expectedPath)
+            throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client, Arg.of("input", input));
         Thread.sleep(100 * (expectedPath.length + 1));
         assertStatus(client, wfRunId, LHStatus.COMPLETED);

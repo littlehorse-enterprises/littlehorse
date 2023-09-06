@@ -67,20 +67,11 @@ However, you can start two Brokers in your terminal as follows:
 
 ## Release a new version
 
-Install semver command:
-
-```
-npm install
-```
-
 Upgrade to a new version:
 
 ```bash
-./local-dev/bump.sh -i <major, minor, patch>
-./local-dev/bump.sh -i prerelease --preid <alpha, beta, rc>
+./local-dev/bump.sh --help
 ```
-
-> More information at https://github.com/npm/node-semver
 
 ## Building the Docker Image
 
@@ -140,14 +131,14 @@ Update config:
 ```
 LHS_LISTENERS=OAUTH:2023
 LHS_LISTENERS_PROTOCOL_MAP=OAUTH:TLS
-LHS_LISTENERS_AUTHORIZATION_MAP=OAUTH:OAUTH
+LHS_LISTENERS_AUTHENTICATION_MAP=OAUTH:OAUTH
 
 LHS_LISTENER_OAUTH_CERT=local-dev/certs/server/server.crt
 LHS_LISTENER_OAUTH_KEY=local-dev/certs/server/server.key
 
-LHS_LISTENER_OAUTH_CLIENT_ID=server
-LHS_LISTENER_OAUTH_CLIENT_SECRET=3bdca420cf6c48e2aa4f56d46d6327e0
-LHS_LISTENER_OAUTH_AUTHORIZATION_SERVER=http://localhost:8888/realms/lh
+LHS_OAUTH_CLIENT_ID=server
+LHS_OAUTH_CLIENT_SECRET=3bdca420cf6c48e2aa4f56d46d6327e0
+LHS_OAUTH_SERVER_URL=http://localhost:8888/realms/lh
 ```
 
 > Check file [oauth.config](configs/oauth.config)

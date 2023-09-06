@@ -62,6 +62,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testImplementation project(":lh-test")
 }
 
 
@@ -81,6 +82,21 @@ shadowJar {
 
 test {
     useJUnitPlatform()
+    filter {
+        includeTestsMatching "io.littlehorse.unit.**"
+    }
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+    jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
+}
+
+task e2e(type: Test, dependsOn: compileJava){
+    useJUnitPlatform()
+    filter {
+        includeTestsMatching "io.littlehorse.e2e.**"
+    }
     testLogging {
         events 'passed', 'skipped', 'failed'
         exceptionFormat = 'full'

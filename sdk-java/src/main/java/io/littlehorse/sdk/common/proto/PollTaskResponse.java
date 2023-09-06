@@ -16,8 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private PollTaskResponse() {
-    code_ = 0;
-    message_ = "";
   }
 
   @java.lang.Override
@@ -46,83 +44,18 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int CODE_FIELD_NUMBER = 1;
-  private int code_ = 0;
-  /**
-   * <code>.littlehorse.LHResponseCode code = 1;</code>
-   * @return The enum numeric value on the wire for code.
-   */
-  @java.lang.Override public int getCodeValue() {
-    return code_;
-  }
-  /**
-   * <code>.littlehorse.LHResponseCode code = 1;</code>
-   * @return The code.
-   */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.LHResponseCode getCode() {
-    io.littlehorse.sdk.common.proto.LHResponseCode result = io.littlehorse.sdk.common.proto.LHResponseCode.forNumber(code_);
-    return result == null ? io.littlehorse.sdk.common.proto.LHResponseCode.UNRECOGNIZED : result;
-  }
-
-  public static final int MESSAGE_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object message_ = "";
-  /**
-   * <code>optional string message = 2;</code>
-   * @return Whether the message field is set.
-   */
-  @java.lang.Override
-  public boolean hasMessage() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <code>optional string message = 2;</code>
-   * @return The message.
-   */
-  @java.lang.Override
-  public java.lang.String getMessage() {
-    java.lang.Object ref = message_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      message_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>optional string message = 2;</code>
-   * @return The bytes for message.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getMessageBytes() {
-    java.lang.Object ref = message_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      message_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int RESULT_FIELD_NUMBER = 3;
+  public static final int RESULT_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.ScheduledTask result_;
   /**
-   * <code>optional .littlehorse.ScheduledTask result = 3;</code>
+   * <code>optional .littlehorse.ScheduledTask result = 1;</code>
    * @return Whether the result field is set.
    */
   @java.lang.Override
   public boolean hasResult() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>optional .littlehorse.ScheduledTask result = 3;</code>
+   * <code>optional .littlehorse.ScheduledTask result = 1;</code>
    * @return The result.
    */
   @java.lang.Override
@@ -130,7 +63,7 @@ private static final long serialVersionUID = 0L;
     return result_ == null ? io.littlehorse.sdk.common.proto.ScheduledTask.getDefaultInstance() : result_;
   }
   /**
-   * <code>optional .littlehorse.ScheduledTask result = 3;</code>
+   * <code>optional .littlehorse.ScheduledTask result = 1;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.ScheduledTaskOrBuilder getResultOrBuilder() {
@@ -151,14 +84,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCode.OK.getNumber()) {
-      output.writeEnum(1, code_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
-    }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeMessage(3, getResult());
+      output.writeMessage(1, getResult());
     }
     getUnknownFields().writeTo(output);
   }
@@ -169,16 +96,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (code_ != io.littlehorse.sdk.common.proto.LHResponseCode.OK.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, code_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
-    }
-    if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getResult());
+        .computeMessageSize(1, getResult());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -195,12 +115,6 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.PollTaskResponse other = (io.littlehorse.sdk.common.proto.PollTaskResponse) obj;
 
-    if (code_ != other.code_) return false;
-    if (hasMessage() != other.hasMessage()) return false;
-    if (hasMessage()) {
-      if (!getMessage()
-          .equals(other.getMessage())) return false;
-    }
     if (hasResult() != other.hasResult()) return false;
     if (hasResult()) {
       if (!getResult()
@@ -217,12 +131,6 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + CODE_FIELD_NUMBER;
-    hash = (53 * hash) + code_;
-    if (hasMessage()) {
-      hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
-      hash = (53 * hash) + getMessage().hashCode();
-    }
     if (hasResult()) {
       hash = (37 * hash) + RESULT_FIELD_NUMBER;
       hash = (53 * hash) + getResult().hashCode();
@@ -362,8 +270,6 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      code_ = 0;
-      message_ = "";
       result_ = null;
       if (resultBuilder_ != null) {
         resultBuilder_.dispose();
@@ -402,19 +308,12 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.PollTaskResponse result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.code_ = code_;
-      }
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.message_ = message_;
-        to_bitField0_ |= 0x00000001;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
+      if (((from_bitField0_ & 0x00000001) != 0)) {
         result.result_ = resultBuilder_ == null
             ? result_
             : resultBuilder_.build();
-        to_bitField0_ |= 0x00000002;
+        to_bitField0_ |= 0x00000001;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -463,14 +362,6 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.PollTaskResponse other) {
       if (other == io.littlehorse.sdk.common.proto.PollTaskResponse.getDefaultInstance()) return this;
-      if (other.code_ != 0) {
-        setCodeValue(other.getCodeValue());
-      }
-      if (other.hasMessage()) {
-        message_ = other.message_;
-        bitField0_ |= 0x00000002;
-        onChanged();
-      }
       if (other.hasResult()) {
         mergeResult(other.getResult());
       }
@@ -500,23 +391,13 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 8: {
-              code_ = input.readEnum();
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 8
-            case 18: {
-              message_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 18
-            case 26: {
+            case 10: {
               input.readMessage(
                   getResultFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000001;
               break;
-            } // case 26
+            } // case 10
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -534,150 +415,18 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private int code_ = 0;
-    /**
-     * <code>.littlehorse.LHResponseCode code = 1;</code>
-     * @return The enum numeric value on the wire for code.
-     */
-    @java.lang.Override public int getCodeValue() {
-      return code_;
-    }
-    /**
-     * <code>.littlehorse.LHResponseCode code = 1;</code>
-     * @param value The enum numeric value on the wire for code to set.
-     * @return This builder for chaining.
-     */
-    public Builder setCodeValue(int value) {
-      code_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.LHResponseCode code = 1;</code>
-     * @return The code.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.LHResponseCode getCode() {
-      io.littlehorse.sdk.common.proto.LHResponseCode result = io.littlehorse.sdk.common.proto.LHResponseCode.forNumber(code_);
-      return result == null ? io.littlehorse.sdk.common.proto.LHResponseCode.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.littlehorse.LHResponseCode code = 1;</code>
-     * @param value The code to set.
-     * @return This builder for chaining.
-     */
-    public Builder setCode(io.littlehorse.sdk.common.proto.LHResponseCode value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      bitField0_ |= 0x00000001;
-      code_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.LHResponseCode code = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearCode() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      code_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object message_ = "";
-    /**
-     * <code>optional string message = 2;</code>
-     * @return Whether the message field is set.
-     */
-    public boolean hasMessage() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>optional string message = 2;</code>
-     * @return The message.
-     */
-    public java.lang.String getMessage() {
-      java.lang.Object ref = message_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        message_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>optional string message = 2;</code>
-     * @return The bytes for message.
-     */
-    public com.google.protobuf.ByteString
-        getMessageBytes() {
-      java.lang.Object ref = message_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        message_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>optional string message = 2;</code>
-     * @param value The message to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMessage(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      message_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional string message = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearMessage() {
-      message_ = getDefaultInstance().getMessage();
-      bitField0_ = (bitField0_ & ~0x00000002);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional string message = 2;</code>
-     * @param value The bytes for message to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMessageBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      message_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-
     private io.littlehorse.sdk.common.proto.ScheduledTask result_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ScheduledTask, io.littlehorse.sdk.common.proto.ScheduledTask.Builder, io.littlehorse.sdk.common.proto.ScheduledTaskOrBuilder> resultBuilder_;
     /**
-     * <code>optional .littlehorse.ScheduledTask result = 3;</code>
+     * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      * @return Whether the result field is set.
      */
     public boolean hasResult() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>optional .littlehorse.ScheduledTask result = 3;</code>
+     * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      * @return The result.
      */
     public io.littlehorse.sdk.common.proto.ScheduledTask getResult() {
@@ -688,7 +437,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional .littlehorse.ScheduledTask result = 3;</code>
+     * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      */
     public Builder setResult(io.littlehorse.sdk.common.proto.ScheduledTask value) {
       if (resultBuilder_ == null) {
@@ -699,12 +448,12 @@ private static final long serialVersionUID = 0L;
       } else {
         resultBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.ScheduledTask result = 3;</code>
+     * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      */
     public Builder setResult(
         io.littlehorse.sdk.common.proto.ScheduledTask.Builder builderForValue) {
@@ -713,16 +462,16 @@ private static final long serialVersionUID = 0L;
       } else {
         resultBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.ScheduledTask result = 3;</code>
+     * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      */
     public Builder mergeResult(io.littlehorse.sdk.common.proto.ScheduledTask value) {
       if (resultBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
+        if (((bitField0_ & 0x00000001) != 0) &&
           result_ != null &&
           result_ != io.littlehorse.sdk.common.proto.ScheduledTask.getDefaultInstance()) {
           getResultBuilder().mergeFrom(value);
@@ -732,15 +481,15 @@ private static final long serialVersionUID = 0L;
       } else {
         resultBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.ScheduledTask result = 3;</code>
+     * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      */
     public Builder clearResult() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000001);
       result_ = null;
       if (resultBuilder_ != null) {
         resultBuilder_.dispose();
@@ -750,15 +499,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.ScheduledTask result = 3;</code>
+     * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ScheduledTask.Builder getResultBuilder() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000001;
       onChanged();
       return getResultFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.ScheduledTask result = 3;</code>
+     * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ScheduledTaskOrBuilder getResultOrBuilder() {
       if (resultBuilder_ != null) {
@@ -769,7 +518,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional .littlehorse.ScheduledTask result = 3;</code>
+     * <code>optional .littlehorse.ScheduledTask result = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ScheduledTask, io.littlehorse.sdk.common.proto.ScheduledTask.Builder, io.littlehorse.sdk.common.proto.ScheduledTaskOrBuilder> 

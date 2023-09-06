@@ -59,16 +59,16 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			}
 
 			// Now, we need to look up the wfSpec and serialize the variables.
-			var wfSpecReply *model.GetWfSpecResponse
+			var wfSpec *model.WfSpec
 			var err error
 
 			if wfSpecVersion == nil {
-				wfSpecReply, err = getGlobalClient(cmd).GetLatestWfSpec(
+				wfSpec, err = getGlobalClient(cmd).GetLatestWfSpec(
 					context.Background(),
 					&model.GetLatestWfSpecRequest{Name: args[0]},
 				)
 			} else {
-				wfSpecReply, err = getGlobalClient(cmd).GetWfSpec(
+				wfSpec, err = getGlobalClient(cmd).GetWfSpec(
 					context.Background(),
 					&model.WfSpecId{
 						Name:    args[0],
@@ -79,15 +79,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			if err != nil {
 				log.Fatal("Unable to find WfSpec: " + err.Error())
 			}
-			if wfSpecReply.Code != model.LHResponseCode_OK {
-				msg := "Unable to find WfSpec"
-				if wfSpecReply.Message != nil {
-					msg += ": " + *wfSpecReply.Message
-				}
-				log.Fatal(msg)
-			}
 
-			wfSpec := wfSpecReply.Result
 			runReq.Variables = make(map[string]*model.VariableValue)
 			varDefs := common.GetInputVarDefs(wfSpec)
 

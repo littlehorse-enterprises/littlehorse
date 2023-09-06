@@ -8,10 +8,8 @@ import (
 type LHTaskWorker struct {
 	config      *common.LHConfig
 	grpcStub    *model.LHPublicApiClient
-	client      *common.LHClient
 	taskFunc    interface{}
 	taskSig     *common.TaskFuncSignature
-	taskDef     *model.TaskDef
 	manager     *serverConnectionManager
 	taskDefName string
 }
@@ -21,11 +19,6 @@ func NewTaskWorker(
 	taskFunction interface{},
 	taskDefName string,
 ) (*LHTaskWorker, error) {
-	client, err := common.NewLHClient(config)
-	if err != nil {
-		return nil, err
-	}
-
 	taskSig, err := common.NewTaskSignature(taskFunction)
 	if err != nil {
 		return nil, err
@@ -39,7 +32,6 @@ func NewTaskWorker(
 	tw := &LHTaskWorker{
 		config:      config,
 		taskFunc:    taskFunction,
-		client:      client,
 		grpcStub:    stub,
 		taskDefName: taskDefName,
 		taskSig:     taskSig,

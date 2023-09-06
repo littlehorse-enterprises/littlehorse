@@ -36,3 +36,9 @@ sdk-dotnet/src/LittleHorseSDK/.vs/
 # Others
 local-dev/certs/
 build/
+
+# Python
+__pycache__
+.ruff_cache
+.mypy_cache
+dist/
