@@ -1,4 +1,4 @@
-## Running BasicExample
+## Running a Basic Example
 
 This is a simple example, which does two things:
 
@@ -9,7 +9,7 @@ Let's run the example:
 
 ```
 poetry shell
-python -m basic_example
+python -m example_basic
 ```
 
 In another terminal, use `lhctl` to run the workflow:

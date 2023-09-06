@@ -234,7 +234,10 @@ class LHTask:
         return self.task_def.name
 
     def has_context(self) -> bool:
-        last_parameter = list(self._signature.parameters.values())[-1]
+        parameters = list(self._signature.parameters.values())
+        if len(parameters) == 0:
+            return False
+        last_parameter = parameters[-1]
         return last_parameter.annotation is WorkerContext
 
 

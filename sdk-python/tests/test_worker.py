@@ -162,6 +162,17 @@ class TestLHTask(unittest.TestCase):
 
         self.assertFalse(task.has_context())
 
+    def test_has_no_context_in_empty_parameters(self):
+        async def my_method():
+            pass
+
+        task = LHTask(
+            my_method,
+            TaskDef(),
+        )
+
+        self.assertFalse(task.has_context())
+
     def test_has_context(self):
         async def my_method(ctx: WorkerContext):
             pass

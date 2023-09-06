@@ -9,7 +9,7 @@ from grpc import RpcError, StatusCode
 from littlehorse.config import LHConfig
 from littlehorse.model.common_wfspec_pb2 import VariableDef
 from littlehorse.model.object_id_pb2 import GetLatestWfSpecRequest
-from littlehorse.model.service_pb2 import PutTaskDefRequest
+from littlehorse.model.service_pb2 import PutExternalEventDefRequest, PutTaskDefRequest
 from littlehorse.proto_utils import (
     proto_to_json,
     type_to_variable_type,
@@ -41,10 +41,10 @@ async def start(*workers: LHTaskWorker) -> None:
     await asyncio.gather(*tasks)
 
 
-def register_workflow(
+def create_workflow_spec(
     workflow: Workflow, config: LHConfig, skip_if_already_exists: bool = True
 ) -> None:
-    """Register a given workflow at the LH Server.
+    """Creates a given workflow spec at the LH Server.
 
     Args:
         workflow (Workflow): The workflow.
@@ -69,20 +69,21 @@ def register_workflow(
     stub.PutWfSpec(request)
 
 
-def register_task(
+def create_task_def(
     task: Callable[..., Any],
     name: str,
     config: LHConfig,
     swallow_already_exists: bool = True,
 ) -> None:
-    """Register a new task at the LH Server.
+    """Creates a new TaskDef at the LH Server.
 
     Args:
         task (Callable[..., Any]): The task.
         name (str): Name of the task.
         config (LHConfig): The config.
         swallow_already_exists (bool, optional): If already exists and this is True,
-        it does not raise an exception, else it raise an exception. Defaults to True.
+        it does not raise an exception, else it raise an exception with code
+        StatusCode.ALREADY_EXISTS. Defaults to True.
     """
     stub = config.stub()
     try:
@@ -98,5 +99,36 @@ def register_task(
     except RpcError as e:
         if swallow_already_exists and e.code() == StatusCode.ALREADY_EXISTS:
             logging.info(f"TaskDef {name} already exits, skipping")
+            return
+        raise e
+
+
+def create_external_event_def(
+    name: str,
+    config: LHConfig,
+    retention_hours: int = -1,
+    swallow_already_exists: bool = True,
+) -> None:
+    """Creates a new ExternalEventDef at the LH Server.
+
+    Args:
+        name (str): Name of the external event.
+        config (LHConfig): _description_
+        retention_hours (int, optional): _description_. Defaults to -1.
+        swallow_already_exists (bool, optional): If already exists and this is True,
+        it does not raise an exception, else it raise an exception with code
+        StatusCode.ALREADY_EXISTS. Defaults to True.
+    """
+    stub = config.stub()
+    try:
+        request = PutExternalEventDefRequest(
+            name=name,
+            retention_hours=None if retention_hours <= 0 else retention_hours,
+        )
+        stub.PutExternalEventDef(request)
+        logging.info(f"ExternalEventDef {name} was created:\n{proto_to_json(request)}")
+    except RpcError as e:
+        if swallow_already_exists and e.code() == StatusCode.ALREADY_EXISTS:
+            logging.info(f"ExternalEventDef {name} already exits, skipping")
             return
         raise e
