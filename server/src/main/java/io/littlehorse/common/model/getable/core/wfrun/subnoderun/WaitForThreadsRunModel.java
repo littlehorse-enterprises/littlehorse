@@ -128,10 +128,15 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
                         .map(Object::toString)
                         .map(Integer::valueOf)
                         .map(threadRunNumber -> this.createWaitForThreadModel(threadRunNumber, time))
+                        .filter(Objects::nonNull)
                         .toList();
                 threads.addAll(waitForThreads);
-            } catch (LHVarSubError e) {
-                throw new RuntimeException(e);
+            } catch (LHVarSubError exn) {
+                nodeRunModel.fail(
+                        new FailureModel(
+                                "Failed determining thread run number to wait for: " + exn.getMessage(),
+                                LHConstants.VAR_SUB_ERROR),
+                        time);
             }
         }
     }
@@ -145,8 +150,8 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
                             "Failed determining thread run number to wait for: " + exn.getMessage(),
                             LHConstants.VAR_SUB_ERROR),
                     time);
-            throw new IllegalStateException(exn);
         }
+        return null;
     }
 
     private void doFailFast(WaitForThreadModel failedWaitingThread, FailureModel failure, Date time) {

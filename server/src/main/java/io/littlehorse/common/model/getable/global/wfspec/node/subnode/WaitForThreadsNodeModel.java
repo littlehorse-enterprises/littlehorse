@@ -30,7 +30,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
 
     private WaitForThreadsPolicy policy;
 
-    private VariableAssignment listThreads;
+    private VariableAssignment threadList;
 
     public Class<WaitForThreadsNode> getProtoBaseClass() {
         return WaitForThreadsNode.class;
@@ -47,7 +47,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         }
         policy = p.getPolicy();
         if (p.hasThreadList()) {
-            listThreads = p.getThreadList();
+            threadList = p.getThreadList();
         }
     }
 
@@ -57,8 +57,8 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
             out.addThreads(ttwf.toProto());
         }
         out.setPolicy(policy);
-        if (listThreads != null) {
-            out.setThreadList(listThreads);
+        if (threadList != null) {
+            out.setThreadList(threadList);
         }
         return out;
     }

@@ -55,17 +55,6 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         this.threadStatus = threadRunModel.getStatus();
     }
 
-    /*public WaitForThreadModel(NodeRunModel waitForThreadNodeRunModel, ThreadToWaitForModel threadToWaitFor)
-            throws LHVarSubError {
-        ThreadRunModel parentThreadRunModel = waitForThreadNodeRunModel.getThreadRun();
-        int threadRunNumber = parentThreadRunModel
-                .assignVariable(threadToWaitFor.getThreadRunNumber())
-                .asInt()
-                .intVal
-                .intValue();
-        this(waitForThreadNodeRunModel, threadRunNumber);
-    }*/
-
     public void initFrom(Message proto) {
         WaitForThread p = (WaitForThread) proto;
         if (p.hasThreadEndTime()) {
