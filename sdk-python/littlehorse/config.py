@@ -7,7 +7,7 @@ import grpc
 from jproperties import Properties
 from littlehorse.auth import OAuthCredentialsProvider
 from littlehorse.model.service_pb2_grpc import LHPublicApiStub
-from littlehorse.utils import read_binary
+from littlehorse.common_utils import read_binary
 import logging
 
 PREFIXES = ("LHC_", "LHW_")

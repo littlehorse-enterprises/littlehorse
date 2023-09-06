@@ -17,7 +17,12 @@ from littlehorse.model.service_pb2 import (
     ScheduledTask,
 )
 from littlehorse.model.task_def_pb2 import TaskDef
-from littlehorse.utils import parse_value, parse_type, extract_value, timestamp_now
+from littlehorse.proto_utils import (
+    value_to_variable_value,
+    variable_type_to_type,
+    extract_value,
+    timestamp_now,
+)
 
 REPORT_TASK_DEFAULT_RETRIES = 5
 HEARTBEAT_DEFAULT_INTERVAL = 5
@@ -146,7 +151,9 @@ class LHTask:
         self._validate_match()
 
     def _validate_match(self) -> None:
-        task_def_vars = [parse_type(var.type) for var in self.task_def.input_vars]
+        task_def_vars = [
+            variable_type_to_type(var.type) for var in self.task_def.input_vars
+        ]
 
         callable_params = [
             param.annotation
@@ -262,7 +269,7 @@ class LHConnection:
             args.append(context)
 
         try:
-            output = parse_value(await self._task._callable(*args))
+            output = value_to_variable_value(await self._task._callable(*args))
             status = TaskStatus.TASK_SUCCESS
         except TypeError as te:
             output = None
@@ -281,7 +288,9 @@ class LHConnection:
             attempt_number=task.attempt_number,
             status=status,
             output=output,
-            log_output=parse_value(context.log_output) if context.log_output else None,
+            log_output=value_to_variable_value(context.log_output)
+            if context.log_output
+            else None,
         )
 
         asyncio.create_task(self._report_task(task_result, REPORT_TASK_DEFAULT_RETRIES))

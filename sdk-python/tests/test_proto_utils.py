@@ -8,11 +8,17 @@ from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import VariableAssignment
 from littlehorse.model.variable_pb2 import VariableValue
 
-from littlehorse.utils import extract_value, parse_value, parse_variable_assignment
+from littlehorse.proto_utils import (
+    type_to_variable_type,
+    variable_type_to_type,
+    extract_value,
+    value_to_variable_value,
+    value_to_variable_assignment,
+)
 from littlehorse.workflow import FormatString, NodeOutput, WfRunVariable
 
 
-class TestUtils(unittest.TestCase):
+class TestProtoUtils(unittest.TestCase):
     faker = Faker()
 
     def test_extract_value(self):
@@ -67,44 +73,44 @@ class TestUtils(unittest.TestCase):
     def test_parse_value(self):
         # STR
         value = self.faker.word()
-        result = parse_value(value)
+        result = value_to_variable_value(value)
         self.assertEqual(result, VariableValue(type=VariableType.STR, str=value))
 
         # INT
         value = self.faker.random_int()
-        result = parse_value(value)
+        result = value_to_variable_value(value)
         self.assertEqual(result, VariableValue(type=VariableType.INT, int=value))
 
         value = 0
-        result = parse_value(value)
+        result = value_to_variable_value(value)
         self.assertEqual(result, VariableValue(type=VariableType.INT, int=value))
 
         value = 1
-        result = parse_value(value)
+        result = value_to_variable_value(value)
         self.assertEqual(result, VariableValue(type=VariableType.INT, int=value))
 
         # DOUBLE
         value = random()
-        result = parse_value(value)
+        result = value_to_variable_value(value)
         self.assertEqual(result, VariableValue(type=VariableType.DOUBLE, double=value))
 
         # BOOLEAN
         value = self.faker.boolean()
-        result = parse_value(value)
+        result = value_to_variable_value(value)
         self.assertEqual(result, VariableValue(type=VariableType.BOOL, bool=value))
 
         # BYTES
         value = self.faker.binary()
-        result = parse_value(value)
+        result = value_to_variable_value(value)
         self.assertEqual(result, VariableValue(type=VariableType.BYTES, bytes=value))
 
         # NULL
-        result = parse_value(None)
+        result = value_to_variable_value(None)
         self.assertEqual(result, VariableValue(type=VariableType.NULL))
 
         # JSON_OBJ
         value = {"name": self.faker.name(), "income": self.faker.random_int()}
-        result = parse_value(value)
+        result = value_to_variable_value(value)
         self.assertEqual(
             result,
             VariableValue(type=VariableType.JSON_OBJ, json_obj=json.dumps(value)),
@@ -115,7 +121,7 @@ class TestUtils(unittest.TestCase):
             {"name": self.faker.name(), "income": self.faker.random_int()},
             {"name": self.faker.name(), "income": self.faker.random_int()},
         ]
-        result = parse_value(value)
+        result = value_to_variable_value(value)
         self.assertEqual(
             result,
             VariableValue(type=VariableType.JSON_ARR, json_arr=json.dumps(value)),
@@ -132,7 +138,7 @@ class TestUtils(unittest.TestCase):
                 self.y = y
 
         value = Point(self.faker.random_int(), self.faker.random_int())
-        result = parse_value(value)
+        result = value_to_variable_value(value)
         self.assertEqual(
             result,
             VariableValue(type=VariableType.JSON_OBJ, json_obj=json.dumps(vars(value))),
@@ -144,7 +150,7 @@ class TestUtils(unittest.TestCase):
                 Point(self.faker.random_int(), self.faker.random_int()),
             ]
         )
-        result = parse_value(value)
+        result = value_to_variable_value(value)
         self.assertEqual(
             result,
             VariableValue(
@@ -155,7 +161,7 @@ class TestUtils(unittest.TestCase):
 
         # JSON_OBJ (class and dict)
         value = {"point": Point(self.faker.random_int(), self.faker.random_int())}
-        result = parse_value(value)
+        result = value_to_variable_value(value)
         self.assertEqual(
             result,
             VariableValue(
@@ -169,7 +175,7 @@ class TestUtils(unittest.TestCase):
             Point(self.faker.random_int(), self.faker.random_int()),
             Point(self.faker.random_int(), self.faker.random_int()),
         ]
-        result = parse_value(value)
+        result = value_to_variable_value(value)
         self.assertEqual(
             result,
             VariableValue(
@@ -182,7 +188,7 @@ class TestUtils(unittest.TestCase):
         value = datetime.now()
 
         with self.assertRaises(SerdeException) as exception_context:
-            parse_value(value)
+            value_to_variable_value(value)
 
         self.assertEqual(
             f"Error when serializing value: '{value}' of type '{type(value)}'",
@@ -204,7 +210,7 @@ class TestUtils(unittest.TestCase):
 
     def test_parse_assignment_variable(self):
         # a literal
-        variable = parse_variable_assignment(10)
+        variable = value_to_variable_assignment(10)
         self.assertEqual(
             variable,
             VariableAssignment(
@@ -214,7 +220,7 @@ class TestUtils(unittest.TestCase):
 
         # a NodeOutput
         with self.assertRaises(ValueError) as exception_context:
-            parse_variable_assignment(NodeOutput())
+            value_to_variable_assignment(NodeOutput())
 
         self.assertEqual(
             "Cannot use NodeOutput directly as input to task. "
@@ -227,14 +233,14 @@ class TestUtils(unittest.TestCase):
             variable_name="my-var-name", variable_type=VariableType.STR
         )
         wf_run_variable.json_path = "$.myPath"
-        variable = parse_variable_assignment(wf_run_variable)
+        variable = value_to_variable_assignment(wf_run_variable)
         self.assertEqual(
             variable,
             VariableAssignment(variable_name="my-var-name", json_path="$.myPath"),
         )
 
         # a FormatString
-        variable = parse_variable_assignment(FormatString("format {0}", "my-var"))
+        variable = value_to_variable_assignment(FormatString("format {0}", "my-var"))
         self.assertEqual(
             variable,
             VariableAssignment(
@@ -253,6 +259,30 @@ class TestUtils(unittest.TestCase):
                     ],
                 )
             ),
+        )
+
+    def test_raise_if_not_found_variable_type(self):
+        class MyClass:
+            pass
+
+        with self.assertRaises(ValueError) as exception_context:
+            variable_type_to_type(MyClass)
+
+        self.assertEqual(
+            "VariableType not found",
+            str(exception_context.exception),
+        )
+
+    def test_raise_if_not_found_type(self):
+        class MyClass:
+            pass
+
+        with self.assertRaises(ValueError) as exception_context:
+            type_to_variable_type(MyClass)
+
+        self.assertIn(
+            "not supported",
+            str(exception_context.exception),
         )
 
 

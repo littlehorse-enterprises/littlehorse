@@ -25,7 +25,11 @@ from littlehorse.model.wf_spec_pb2 import (
     UserTaskNode,
     WaitForThreadsNode,
 )
-from littlehorse.utils import parse_value, parse_variable_assignment, proto_to_json
+from littlehorse.proto_utils import (
+    value_to_variable_value,
+    value_to_variable_assignment,
+    proto_to_json,
+)
 
 ENTRYPOINT = "entrypoint"
 
@@ -93,6 +97,7 @@ class FormatString:
 
 
 class NodeOutput:
+    # TODO NodeOutput implementation
     def __init__(self) -> None:
         pass
 
@@ -122,7 +127,7 @@ class WfRunVariable:
         self.json_indexes: list[JsonIndex] = []
 
         if default_value is not None:
-            self.default_value = parse_value(default_value)
+            self.default_value = value_to_variable_value(default_value)
             if self.default_value.type != self.type:
                 raise TypeError(
                     f"Default value is not a {VariableType.Name(variable_type)}"
@@ -289,7 +294,7 @@ class ThreadBuilder:
         self._check_if_active()
         task_node = TaskNode(
             task_def_name=task_name,
-            variables=[parse_variable_assignment(arg) for arg in args],
+            variables=[value_to_variable_assignment(arg) for arg in args],
         )
         self.add_node(task_name, task_node)
         return NodeOutput()
