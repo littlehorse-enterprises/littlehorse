@@ -50,12 +50,11 @@ async def greet(name: str) -> str:
 
 async def main() -> None:
     config = get_config()
-    wf = get_workflow()
 
     littlehorse.register_external_event(EXT_EVENT, config)
     littlehorse.register_task(ask_for_name, ASK_FOR_NAME, config)
     littlehorse.register_task(greet, GREET, config)
-    littlehorse.register_workflow(wf, config)
+    littlehorse.register_workflow(get_workflow(), config)
 
     await littlehorse.start(
         LHTaskWorker(ask_for_name, ASK_FOR_NAME, config),
