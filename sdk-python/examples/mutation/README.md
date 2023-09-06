@@ -1,4 +1,4 @@
-## Running BasicExample
+## Running a Example that Mutates a Variable
 
 In this example you will see how to mutate variables.
 

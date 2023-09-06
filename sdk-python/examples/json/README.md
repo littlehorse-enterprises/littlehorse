@@ -1,4 +1,4 @@
-## Running JsonExample
+## Running a Example with JSON Variables
 
 This workflow demonstrates the ability of the Java SDK to serialize/deserialize
 JSON and allow Task developers to interact with real Java objects.

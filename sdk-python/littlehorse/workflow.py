@@ -342,7 +342,7 @@ class ThreadBuilder:
 
         Args:
             event_name (str): The name of ExternalEvent to wait for
-            timeout (int, optional): Adds a timeout to this node. If
+            timeout (int, optional): Timeout in seconds. If
             it is 0 or less it does not set a timeout. Defaults to -1.
 
         Returns:

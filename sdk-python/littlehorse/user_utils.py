@@ -9,7 +9,7 @@ from grpc import RpcError, StatusCode
 from littlehorse.config import LHConfig
 from littlehorse.model.common_wfspec_pb2 import VariableDef
 from littlehorse.model.object_id_pb2 import GetLatestWfSpecRequest
-from littlehorse.model.service_pb2 import PutTaskDefRequest
+from littlehorse.model.service_pb2 import PutExternalEventDefRequest, PutTaskDefRequest
 from littlehorse.proto_utils import (
     proto_to_json,
     type_to_variable_type,
@@ -98,5 +98,26 @@ def register_task(
     except RpcError as e:
         if swallow_already_exists and e.code() == StatusCode.ALREADY_EXISTS:
             logging.info(f"TaskDef {name} already exits, skipping")
+            return
+        raise e
+
+
+def register_external_event(
+    name: str,
+    config: LHConfig,
+    retention_hours: int = -1,
+    swallow_already_exists: bool = True,
+) -> None:
+    stub = config.stub()
+    try:
+        request = PutExternalEventDefRequest(
+            name=name,
+            retention_hours=None if retention_hours <= 0 else retention_hours,
+        )
+        stub.PutExternalEventDef(request)
+        logging.info(f"ExternalEventDef {name} was created:\n{proto_to_json(request)}")
+    except RpcError as e:
+        if swallow_already_exists and e.code() == StatusCode.ALREADY_EXISTS:
+            logging.info(f"ExternalEventDef {name} already exits, skipping")
             return
         raise e

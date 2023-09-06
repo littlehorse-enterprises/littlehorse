@@ -1,4 +1,4 @@
-## Running BasicExample
+## Running a Basic Example
 
 This is a simple example, which does two things:
 
