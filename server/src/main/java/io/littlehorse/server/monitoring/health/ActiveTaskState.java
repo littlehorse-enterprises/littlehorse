@@ -17,9 +17,6 @@ public class ActiveTaskState {
 
     private Long processingLag;
 
-    private boolean isRestoring;
-    private long restorationLag;
-
     public ActiveTaskState() {}
 
     public ActiveTaskState(
@@ -40,9 +37,8 @@ public class ActiveTaskState {
         Long committedOffset = meta.committedOffsets().get(tp);
         this.processingLag = (endOffset == null || committedOffset == null) ? null : endOffset - committedOffset;
 
-        this.isRestoring = restorations.containsKey(tp);
-        if (this.isRestoring) {
-            this.restorationLag = restorations.get(tp).getRemaining();
-        }
+        // Note: If a Task is assigned to this Streams instance, and it's restoring, the task won't
+        // show up in the ThreadMetadata#activeTasks(). That's a REALLY bad API in my opinion,
+        // I'll tak to Matthias about making it better with a KIP.
     }
 }

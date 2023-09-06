@@ -667,7 +667,7 @@ public class LHServerConfig extends ConfigBase {
                 org.apache.kafka.streams.errors.DefaultProductionExceptionHandler.class);
         props.put(
                 StreamsConfig.consumerPrefix(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG),
-                Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "30000")));
+                Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "20000")));
         props.put(StreamsConfig.METADATA_MAX_AGE_CONFIG, 1000 * 30);
         props.put(
                 StreamsConfig.NUM_STREAM_THREADS_CONFIG,

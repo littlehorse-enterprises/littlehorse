@@ -1,4 +1,4 @@
-package io.littlehorse.server.metrics;
+package io.littlehorse.server.monitoring.metrics;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

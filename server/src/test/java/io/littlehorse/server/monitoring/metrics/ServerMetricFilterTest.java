@@ -1,4 +1,4 @@
-package io.littlehorse.server.metrics;
+package io.littlehorse.server.monitoring.metrics;
 
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;

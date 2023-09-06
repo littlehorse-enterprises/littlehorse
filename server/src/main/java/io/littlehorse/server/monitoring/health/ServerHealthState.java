@@ -22,6 +22,7 @@ public class ServerHealthState {
 
     private State coreState;
     private State timerState;
+    private List<InProgressRestoration> restorations;
 
     public ServerHealthState() {
         this.activeTasks = new ArrayList<>();
@@ -39,26 +40,27 @@ public class ServerHealthState {
         this.host = config.getInternalAdvertisedHost();
         this.port = config.getInternalAdvertisedPort();
         this.instanceId = config.getLHInstanceId();
+        this.restorations = restorations.values().stream().toList();
 
         this.activeTasks.addAll(coreStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.activeTasks().stream())
                 .map(coreTask -> new ActiveTaskState(coreTask, restorations, config))
                 .toList());
 
-        // this.activeTasks.addAll(timerStreams.metadataForLocalThreads().stream()
-        //         .flatMap(thread -> thread.activeTasks().stream())
-        //         .map(timerTask -> new ActiveTaskState(timerTask, restorations, config))
-        //         .toList());
+        this.activeTasks.addAll(timerStreams.metadataForLocalThreads().stream()
+                .flatMap(thread -> thread.activeTasks().stream())
+                .map(timerTask -> new ActiveTaskState(timerTask, restorations, config))
+                .toList());
 
         this.standbyTasks.addAll(coreStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.standbyTasks().stream())
                 .map(standbyTask -> new StandbyTaskState(standbyTask, restorations, config))
                 .toList());
 
-        // this.standbyTasks.addAll(timerStreams.metadataForLocalThreads().stream()
-        //         .flatMap(thread -> thread.standbyTasks().stream())
-        //         .map(timerTask -> new StandbyTaskState(timerTask, restorations, config))
-        //         .toList());
+        this.standbyTasks.addAll(timerStreams.metadataForLocalThreads().stream()
+                .flatMap(thread -> thread.standbyTasks().stream())
+                .map(timerTask -> new StandbyTaskState(timerTask, restorations, config))
+                .toList());
 
         this.coreState = coreStreams.state();
         this.timerState = timerStreams.state();

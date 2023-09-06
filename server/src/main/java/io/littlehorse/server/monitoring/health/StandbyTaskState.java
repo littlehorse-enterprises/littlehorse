@@ -15,8 +15,6 @@ public class StandbyTaskState {
     private String topic;
     private int partition;
 
-    private long restorationLag;
-
     public StandbyTaskState() {}
 
     public StandbyTaskState(
@@ -33,6 +31,7 @@ public class StandbyTaskState {
         this.partition = tp.partition();
         this.processor = ServerHealthState.fromTopic(this.topic, config);
 
-        this.restorationLag = restorations.get(tp).getRemaining();
+        // Note: Kafka Streams (accidentally) provides no way to calculate lag for
+        // standby tasks. Future versions of this class will include such calculations.
     }
 }
