@@ -1379,37 +1379,6 @@ public final class LHPublicApiGrpc {
     return getDeleteExternalEventDefMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      io.littlehorse.sdk.common.proto.HealthCheckResponse> getHealthCheckMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "HealthCheck",
-      requestType = com.google.protobuf.Empty.class,
-      responseType = io.littlehorse.sdk.common.proto.HealthCheckResponse.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      io.littlehorse.sdk.common.proto.HealthCheckResponse> getHealthCheckMethod() {
-    io.grpc.MethodDescriptor<com.google.protobuf.Empty, io.littlehorse.sdk.common.proto.HealthCheckResponse> getHealthCheckMethod;
-    if ((getHealthCheckMethod = LHPublicApiGrpc.getHealthCheckMethod) == null) {
-      synchronized (LHPublicApiGrpc.class) {
-        if ((getHealthCheckMethod = LHPublicApiGrpc.getHealthCheckMethod) == null) {
-          LHPublicApiGrpc.getHealthCheckMethod = getHealthCheckMethod =
-              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, io.littlehorse.sdk.common.proto.HealthCheckResponse>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "HealthCheck"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.google.protobuf.Empty.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.HealthCheckResponse.getDefaultInstance()))
-              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("HealthCheck"))
-              .build();
-        }
-      }
-    }
-    return getHealthCheckMethod;
-  }
-
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest,
       io.littlehorse.sdk.common.proto.TaskDefMetrics> getGetTaskDefMetricsWindowMethod;
 
@@ -1892,13 +1861,6 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    default void healthCheck(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.HealthCheckResponse> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getHealthCheckMethod(), responseObserver);
-    }
-
-    /**
-     */
     default void getTaskDefMetricsWindow(io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDefMetrics> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetTaskDefMetricsWindowMethod(), responseObserver);
@@ -2307,14 +2269,6 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public void healthCheck(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.HealthCheckResponse> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getHealthCheckMethod(), getCallOptions()), request, responseObserver);
-    }
-
-    /**
-     */
     public void getTaskDefMetricsWindow(io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDefMetrics> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
@@ -2661,13 +2615,6 @@ public final class LHPublicApiGrpc {
     public com.google.protobuf.Empty deleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteExternalEventDefMethod(), getCallOptions(), request);
-    }
-
-    /**
-     */
-    public io.littlehorse.sdk.common.proto.HealthCheckResponse healthCheck(com.google.protobuf.Empty request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getHealthCheckMethod(), getCallOptions(), request);
     }
 
     /**
@@ -3061,14 +3008,6 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.HealthCheckResponse> healthCheck(
-        com.google.protobuf.Empty request) {
-      return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getHealthCheckMethod(), getCallOptions()), request);
-    }
-
-    /**
-     */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TaskDefMetrics> getTaskDefMetricsWindow(
         io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
@@ -3143,12 +3082,11 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_DELETE_WF_SPEC = 40;
   private static final int METHODID_DELETE_USER_TASK_DEF = 41;
   private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 42;
-  private static final int METHODID_HEALTH_CHECK = 43;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 44;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 45;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 46;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 47;
-  private static final int METHODID_POLL_TASK = 48;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 43;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 44;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 45;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 46;
+  private static final int METHODID_POLL_TASK = 47;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -3338,10 +3276,6 @@ public final class LHPublicApiGrpc {
         case METHODID_DELETE_EXTERNAL_EVENT_DEF:
           serviceImpl.deleteExternalEventDef((io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
-          break;
-        case METHODID_HEALTH_CHECK:
-          serviceImpl.healthCheck((com.google.protobuf.Empty) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.HealthCheckResponse>) responseObserver);
           break;
         case METHODID_GET_TASK_DEF_METRICS_WINDOW:
           serviceImpl.getTaskDefMetricsWindow((io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest) request,
@@ -3689,13 +3623,6 @@ public final class LHPublicApiGrpc {
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_EXTERNAL_EVENT_DEF)))
         .addMethod(
-          getHealthCheckMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              com.google.protobuf.Empty,
-              io.littlehorse.sdk.common.proto.HealthCheckResponse>(
-                service, METHODID_HEALTH_CHECK)))
-        .addMethod(
           getGetTaskDefMetricsWindowMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -3815,7 +3742,6 @@ public final class LHPublicApiGrpc {
               .addMethod(getDeleteWfSpecMethod())
               .addMethod(getDeleteUserTaskDefMethod())
               .addMethod(getDeleteExternalEventDefMethod())
-              .addMethod(getHealthCheckMethod())
               .addMethod(getGetTaskDefMetricsWindowMethod())
               .addMethod(getGetWfSpecMetricsWindowMethod())
               .addMethod(getListTaskDefMetricsMethod())

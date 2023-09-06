@@ -55,6 +55,9 @@ public class MetadataCache extends LHCache<MetadataId<?, ?, ?>, GlobalGetable<?>
                 TaskDefIdModel id = (TaskDefIdModel) ObjectIdModel.fromString(key, TaskDefIdModel.class);
                 evictOrUpdate(value, id);
             }
+            default -> {
+                // nothing to do
+            }
         }
     }
 
@@ -66,6 +69,8 @@ public class MetadataCache extends LHCache<MetadataId<?, ?, ?>, GlobalGetable<?>
             evictCache(cacheKey);
         } else {
             log.trace("Updating cache for {} with key {}", keyType, cacheKey);
+
+            @SuppressWarnings("unchecked")
             StoredGetable<U, V> storedGetable = LHSerializable.fromBytes(value.get(), StoredGetable.class);
             updateCache(cacheKey, storedGetable.getStoredObject());
         }

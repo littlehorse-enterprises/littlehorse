@@ -80,8 +80,9 @@ public class LHServerConfig extends ConfigBase {
     // PROMETHEUS
     public static final String HEALTH_SERVICE_PORT_KEY = "LHS_HEALTH_SERVICE_PORT";
     public static final String HEALTH_PATH_METRICS_KEY = "LHS_HEALTH_PATH_METRICS";
-    public static final String HEALTH_PATH_READINESS_KEY = "LHS_HEALTH_PATH_READINESS";
     public static final String HEALTH_PATH_LIVENESS_KEY = "LHS_HEALTH_PATH_LIVENESS";
+    public static final String HEALTH_PATH_STATUS_KEY = "LHS_HEALTH_PATH_STATUS";
+    public static final String HEALTH_PATH_DISK_USAGE_KEY = "LHS_HEALTH_PATH_DISK_USAGE";
 
     // ADVERTISED LISTENERS
     public static final String ADVERTISED_LISTENERS_KEY = "LHS_ADVERTISED_LISTENERS";
@@ -298,12 +299,16 @@ public class LHServerConfig extends ConfigBase {
         return getOrSetDefault(LHServerConfig.HEALTH_PATH_METRICS_KEY, "/metrics");
     }
 
-    public String getReadinessPath() {
-        return getOrSetDefault(LHServerConfig.HEALTH_PATH_READINESS_KEY, "/readiness");
-    }
-
     public String getLivenessPath() {
         return getOrSetDefault(LHServerConfig.HEALTH_PATH_LIVENESS_KEY, "/liveness");
+    }
+
+    public String getStatusPath() {
+        return getOrSetDefault(LHServerConfig.HEALTH_PATH_STATUS_KEY, "/status");
+    }
+
+    public String getDiskUsagePath() {
+        return getOrSetDefault(LHServerConfig.HEALTH_PATH_DISK_USAGE_KEY, "/diskUsage");
     }
 
     public int getInternalBindPort() {
@@ -662,7 +667,7 @@ public class LHServerConfig extends ConfigBase {
                 org.apache.kafka.streams.errors.DefaultProductionExceptionHandler.class);
         props.put(
                 StreamsConfig.consumerPrefix(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG),
-                Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "30000")));
+                Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "20000")));
         props.put(StreamsConfig.METADATA_MAX_AGE_CONFIG, 1000 * 30);
         props.put(
                 StreamsConfig.NUM_STREAM_THREADS_CONFIG,

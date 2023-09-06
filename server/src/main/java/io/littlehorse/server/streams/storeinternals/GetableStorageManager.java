@@ -292,7 +292,7 @@ public class GetableStorageManager {
     }
 
     // Note that this is an expensive operation. It's used by External Event Nodes.
-    // @SuppressWarnings("all")
+    @SuppressWarnings("unchecked")
     private <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefix(
             String prefix, Class<T> cls) {
         Map<String, GetableToStore<U, T>> all = new HashMap<>();

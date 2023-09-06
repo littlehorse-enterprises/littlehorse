@@ -78,8 +78,6 @@ public class BackendInternalComms implements Closeable {
     private LHServerConfig config;
     private Server internalGrpcServer;
     private KafkaStreams coreStreams;
-    private KafkaStreams timerStreams;
-    private StreamsClusterHealthTracker streamsHealth;
 
     @Getter
     private HostInfo thisHost;
@@ -102,7 +100,6 @@ public class BackendInternalComms implements Closeable {
             MetadataCache metadataCache) {
         this.config = config;
         this.coreStreams = coreStreams;
-        this.timerStreams = timerStreams;
         this.metadataCache = metadataCache;
         this.channels = new HashMap<>();
         otherHosts = new ConcurrentHashMap<>();
@@ -128,8 +125,6 @@ public class BackendInternalComms implements Closeable {
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
         this.producer = config.getProducer();
         this.asyncWaiters = new AsyncWaiters();
-
-        this.streamsHealth = new StreamsClusterHealthTracker(this, config);
 
         // TODO: Optimize this later.
         new Thread(() -> {
@@ -378,41 +373,6 @@ public class BackendInternalComms implements Closeable {
                         .build());
                 observer.onCompleted();
             }
-        }
-
-        @Override
-        public void topologyInstancesState(Empty req, StreamObserver<TopologyInstanceStateResponse> ctx) {
-            var coreServerStates = streamsHealth.buildServerStates(coreStreams, "core");
-            var timerServerStates = streamsHealth.buildServerStates(timerStreams, "timer");
-
-            TopologyInstanceStateResponse response = TopologyInstanceStateResponse.newBuilder()
-                    .addAllServersCore(coreServerStates)
-                    .addAllServersTimer(timerServerStates)
-                    .build();
-
-            ctx.onNext(response);
-            ctx.onCompleted();
-        }
-
-        @Override
-        public void localTasks(Empty req, StreamObserver<LocalTasksResponse> ctx) {
-            List<TaskStatePb> activeTasks = coreStreams.metadataForLocalThreads().stream()
-                    .flatMap(threadMetadata -> threadMetadata.activeTasks().stream())
-                    .flatMap(taskMetadata -> streamsHealth.buildActiveTasksStatePb(taskMetadata).stream())
-                    .collect(Collectors.toList());
-
-            List<StandByTaskStatePb> standbyTasks = coreStreams.metadataForLocalThreads().stream()
-                    .flatMap(threadMetadata -> threadMetadata.standbyTasks().stream())
-                    .flatMap(taskMetadata -> streamsHealth.buildStandbyTasksStatePb(taskMetadata).stream())
-                    .collect(Collectors.toList());
-
-            LocalTasksResponse response = LocalTasksResponse.newBuilder()
-                    .addAllActiveTasks(activeTasks)
-                    .addAllStandbyTasks(standbyTasks)
-                    .build();
-
-            ctx.onNext(response);
-            ctx.onCompleted();
         }
 
         @Override
