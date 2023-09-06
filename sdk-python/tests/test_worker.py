@@ -11,7 +11,7 @@ from littlehorse.model.task_run_pb2 import TaskNodeReference, TaskRunSource
 from littlehorse.model.user_tasks_pb2 import UserTaskTriggerReference
 
 
-from littlehorse.worker import LHTask, LHWorkerContext
+from littlehorse.worker import LHTask, WorkerContext
 
 
 class TestWorkerContext(unittest.TestCase):
@@ -21,11 +21,11 @@ class TestWorkerContext(unittest.TestCase):
         scheduled_task = ScheduledTask(
             task_run_id=TaskRunId(task_guid=task_id, wf_run_id=wf_id)
         )
-        ctx = LHWorkerContext(scheduled_task)
+        ctx = WorkerContext(scheduled_task)
         self.assertEqual(ctx.idempotency_key, f"{task_id}")
 
     def test_log_output(self):
-        ctx = LHWorkerContext(ScheduledTask())
+        ctx = WorkerContext(ScheduledTask())
         self.assertEqual(ctx.log_output, "")
         ctx.log("my log 1")
         ctx.log("my log 2")
@@ -41,7 +41,7 @@ class TestWorkerContext(unittest.TestCase):
         scheduled_task_task = ScheduledTask(
             source=TaskRunSource(task_node=TaskNodeReference(node_run_id=node_run_task))
         )
-        ctx = LHWorkerContext(scheduled_task_task)
+        ctx = WorkerContext(scheduled_task_task)
 
         self.assertEqual(ctx.node_run_id, node_run_task)
 
@@ -52,12 +52,12 @@ class TestWorkerContext(unittest.TestCase):
                 user_task_trigger=UserTaskTriggerReference(node_run_id=node_run_user)
             )
         )
-        ctx = LHWorkerContext(scheduled_task_user)
+        ctx = WorkerContext(scheduled_task_user)
 
         self.assertEqual(ctx.node_run_id, node_run_user)
 
 
-class TestTask(unittest.TestCase):
+class TestLHTask(unittest.TestCase):
     def test_raise_exception_if_it_is_not_a_callable(self):
         not_a_callable = 3
         with self.assertRaises(TypeError) as exception_context:
@@ -68,7 +68,7 @@ class TestTask(unittest.TestCase):
         )
 
     def test_raise_exception_if_contexts_is_not_the_last_param(self):
-        async def my_method(ctx: LHWorkerContext, param: str):
+        async def my_method(ctx: WorkerContext, param: str):
             pass
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
@@ -92,7 +92,7 @@ class TestTask(unittest.TestCase):
         )
 
     def test_raise_exception_if_there_are_more_than_one_contexts(self):
-        async def my_method(ctx1: LHWorkerContext, ctx2: LHWorkerContext):
+        async def my_method(ctx1: WorkerContext, ctx2: WorkerContext):
             pass
 
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
@@ -163,7 +163,7 @@ class TestTask(unittest.TestCase):
         self.assertFalse(task.has_context())
 
     def test_has_context(self):
-        async def my_method(ctx: LHWorkerContext):
+        async def my_method(ctx: WorkerContext):
             pass
 
         task = LHTask(my_method, TaskDef())
@@ -171,7 +171,7 @@ class TestTask(unittest.TestCase):
         self.assertTrue(task.has_context())
 
     def test_callable_matches_with_context(self):
-        async def my_method(param1: str, param2: int, ctx: LHWorkerContext = None):
+        async def my_method(param1: str, param2: int, ctx: WorkerContext = None):
             pass
 
         task_def = TaskDef(
@@ -187,7 +187,7 @@ class TestTask(unittest.TestCase):
             self.fail(f"Unexpected exception {e}")
 
     def test_raise_error_if_wrong_order(self):
-        async def my_method(param1: str, param2: int, ctx: LHWorkerContext):
+        async def my_method(param1: str, param2: int, ctx: WorkerContext):
             pass
 
         task_def = TaskDef(
@@ -206,7 +206,7 @@ class TestTask(unittest.TestCase):
         )
 
     def test_raise_error_if_wrong_callable_order(self):
-        async def my_method(param1: int, param2: str, ctx: LHWorkerContext):
+        async def my_method(param1: int, param2: str, ctx: WorkerContext):
             pass
 
         task_def = TaskDef(

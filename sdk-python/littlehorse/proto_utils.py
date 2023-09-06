@@ -1,20 +1,19 @@
-import asyncio
-import functools
+"""Collections of utils for managing protobuf objects. With circular import"""
+
 import json
-from pathlib import Path
-import signal
-import sys
-from typing import TYPE_CHECKING, Any, Union
+from typing import Any, Optional
 
 from google.protobuf.timestamp_pb2 import Timestamp
+from google.protobuf.message import Message
+from google.protobuf.json_format import MessageToJson
+
 from littlehorse.exceptions import SerdeException
 from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.model.common_wfspec_pb2 import VariableAssignment
 from littlehorse.model.variable_pb2 import VariableValue
 
-if TYPE_CHECKING:
-    from littlehorse.worker import LHTaskWorker
 
-VARIABLE_TYPE_MAP = {
+VARIABLE_TYPE_TO_TYPE_MAP = {
     VariableType.JSON_OBJ: dict[str, Any],
     VariableType.JSON_ARR: list[Any],
     VariableType.DOUBLE: float,
@@ -24,7 +23,9 @@ VARIABLE_TYPE_MAP = {
     VariableType.BYTES: bytes,
 }
 
-TYPE_VARIABLE_MAP = {value: key for key, value in VARIABLE_TYPE_MAP.items()}
+TYPE_TO_VARIABLE_TYPE_MAP = {
+    value: key for key, value in VARIABLE_TYPE_TO_TYPE_MAP.items()
+}
 
 
 def timestamp_now() -> Timestamp:
@@ -38,7 +39,19 @@ def timestamp_now() -> Timestamp:
     return current_time
 
 
-def parse_value(value: Any) -> VariableValue:
+def proto_to_json(proto: Message) -> str:
+    """Convert a proto object to json.
+
+    Args:
+        proto (Message): A proto object.
+
+    Returns:
+        str: JSON format.
+    """
+    return MessageToJson(proto)
+
+
+def value_to_variable_value(value: Any) -> VariableValue:
     """Receives a python variable and return a VariableValue.
 
     Args:
@@ -87,7 +100,7 @@ def parse_value(value: Any) -> VariableValue:
         ) from e
 
 
-def parse_type(lh_type: VariableType) -> Any:
+def variable_type_to_type(lh_type: VariableType) -> type:
     """Receives a LH type and return a python type.
 
     Args:
@@ -96,7 +109,29 @@ def parse_type(lh_type: VariableType) -> Any:
     Returns:
         Any: Python type.
     """
-    return VARIABLE_TYPE_MAP[lh_type]
+    type_to_return = VARIABLE_TYPE_TO_TYPE_MAP.get(lh_type)
+
+    if type_to_return is None:
+        raise ValueError("VariableType not found")
+
+    return type_to_return
+
+
+def type_to_variable_type(python_type: type) -> VariableType:
+    """Receives a python type and return a LH Type.
+
+    Args:
+        python_type (type): Type.
+
+    Returns:
+        VariableType: LH TYpe.
+    """
+    type_to_return = TYPE_TO_VARIABLE_TYPE_MAP.get(python_type)
+
+    if type_to_return is None:
+        raise ValueError(f"Type {python_type} not supported")
+
+    return type_to_return
 
 
 def extract_value(lh_value: VariableValue) -> Any:
@@ -131,48 +166,51 @@ def extract_value(lh_value: VariableValue) -> Any:
     return None
 
 
-def read_binary(file_path: Union[str, Path]) -> bytes:
-    """Read a file to bytes.
+def value_to_variable_assignment(value: Any) -> VariableAssignment:
+    """Receives a value and return a Protobuf VariableAssignment.
 
     Args:
-        file_path (Union[str, Path]): File location.
+        value (Any): Any value.
 
     Returns:
-        bytes: File bytes.
+        VariableAssignment: Protobuf.
     """
-    with open(file_path, "rb") as file_input:
-        return file_input.read()
+    if isinstance(value, NodeOutput):
+        raise ValueError(
+            "Cannot use NodeOutput directly as input to task. "
+            "First save to a WfRunVariable."
+        )
+
+    if isinstance(value, WfRunVariable):
+        json_path: Optional[str] = None
+        variable_name = value.name
+
+        if value.json_path is not None:
+            json_path = value.json_path
+
+        return VariableAssignment(
+            json_path=json_path,
+            variable_name=variable_name,
+        )
+
+    if isinstance(value, FormatString):
+        new_var = VariableAssignment(
+            format_string=VariableAssignment.FormatString(
+                format=value_to_variable_assignment(value.format),
+                args=[value_to_variable_assignment(arg) for arg in value.args],
+            )
+        )
+
+        return new_var
+
+    return VariableAssignment(
+        literal_value=value_to_variable_value(value),
+    )
 
 
-def get_event_loop_is_deprecated() -> bool:
-    """Verify if asyncio.get_event_loop()
-    is deprecated for the current python version.
-
-    https://docs.python.org/3/library/asyncio-eventloop.html#asyncio.get_event_loop.
-
-    Use asyncio.run(main()).
-
-    Returns:
-        bool: True if python is greater or equal to 3.10.
-    """
-    return sys.version_info >= (3, 10, 0)
-
-
-def shutdown_hook(*workers: "LHTaskWorker") -> None:
-    """Add a shutdown hook for multiples workers"""
-
-    def stop_workers(*workers: "LHTaskWorker") -> None:
-        for worker in workers:
-            worker.stop()
-
-    loop = asyncio.get_running_loop()
-
-    for sig in (signal.SIGHUP, signal.SIGTERM, signal.SIGINT):
-        loop.add_signal_handler(sig, functools.partial(stop_workers, *workers))
-
-
-async def start_workers(*workers: "LHTaskWorker") -> None:
-    """Starts a list of workers"""
-    shutdown_hook(*workers)
-    tasks = [asyncio.create_task(worker.start()) for worker in workers]
-    await asyncio.gather(*tasks)
+# circular import at the end
+from littlehorse.workflow import (  # noqa: E402
+    FormatString,
+    NodeOutput,
+    WfRunVariable,
+)

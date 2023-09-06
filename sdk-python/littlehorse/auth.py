@@ -26,7 +26,7 @@ class AccessToken:
 
 # https://grpc.io/docs/guides/auth/#python
 # https://docs.authlib.org/en/latest/client/oauth2.html#oauth2session-for-client-credentials
-class GrpcAuth(grpc.AuthMetadataPlugin):
+class OAuthCredentialsProvider(grpc.AuthMetadataPlugin):
     def __init__(
         self,
         client_id: Optional[str],

@@ -39,3 +39,17 @@ Set python version:
 ```
 poetry env use python3.9
 ```
+
+## Types Map
+
+Task arguments type reference:
+
+```
+VariableType.JSON_OBJ: dict[str, Any]
+VariableType.JSON_ARR: list[Any]
+VariableType.DOUBLE:   float
+VariableType.BOOL:     bool
+VariableType.STR:      str
+VariableType.INT:      int
+VariableType.BYTES:    bytes
+```

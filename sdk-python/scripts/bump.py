@@ -105,10 +105,17 @@ class Bump:
                 self.console.print(f"Nex version is: [dodger_blue1]{next_version}[/]")
                 sys.exit(0)
 
-            # validate
+            # validate branch
             if self.run_command("git branch --show-current") != "master":
-                raise Exception("To increase the version you must be in 'master'")
+                confirmation = self.console.input(
+                    "[bold]You are not on the master branch. Do you want to continue?"
+                    " ([green]yes[/]/[red]no[/])? [/]"
+                )
+                if not confirmation.startswith("y"):
+                    self.console.print("Aborting!")
+                    sys.exit(1)
 
+            # validate changes
             self.run_command("git diff --exit-code", "There are unstaged changes")
             self.run_command(
                 "git diff --staged --exit-code", "There are staged changes"
@@ -126,7 +133,7 @@ class Bump:
 
             if not confirmation.startswith("y"):
                 self.console.print("Aborting!")
-                sys.exit(0)
+                sys.exit(1)
 
             # save java version
             java_properties = Properties()

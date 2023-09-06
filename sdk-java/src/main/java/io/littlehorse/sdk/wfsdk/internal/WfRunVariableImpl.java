@@ -49,6 +49,9 @@ class WfRunVariableImpl implements WfRunVariable {
         if (jsonPath != null) {
             throw new LHMisconfigurationException("Cannot use jsonpath() twice on same var!");
         }
+        if (!type.equals(VariableType.JSON_OBJ) && !type.equals(VariableType.JSON_ARR)) {
+            throw new LHMisconfigurationException(String.format("JsonPath not allowed in a %s variable", type.name()));
+        }
         WfRunVariableImpl out = new WfRunVariableImpl(name, typeOrDefaultVal);
         out.jsonPath = path;
         return out;
@@ -66,7 +69,7 @@ class WfRunVariableImpl implements WfRunVariable {
             throw new LHMisconfigurationException(String.format("Invalid JsonPath: %s", jsonPath));
         }
         if (!type.equals(VariableType.JSON_OBJ)) {
-            throw new LHMisconfigurationException(String.format("Non-Json %s varibale contains jsonIndex", name));
+            throw new LHMisconfigurationException(String.format("Non-Json %s variable contains jsonIndex", name));
         }
         this.jsonIndexes.add(
                 JsonIndex.newBuilder().setIndexType(indexType).setPath(jsonPath).build());
