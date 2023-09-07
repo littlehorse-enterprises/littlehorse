@@ -24,8 +24,8 @@ namespace LittleHorse.Worker.Internal
             Executable = executable;
 
             var methodsWithTaskWorkerAttrAndDefName = typeof(T).GetMethods()
-                         .Where(method => method.CustomAttributes.Any(ca => ca.AttributeType == typeof(LHTaskWorkerAttribute)))
-                         .Where(method => IsValidLHTaskWorkerValue(method.GetCustomAttribute(typeof(LHTaskWorkerAttribute)), taskDefName));
+                         .Where(method => method.CustomAttributes.Any(ca => ca.AttributeType == typeof(LHTaskMethodAttribute)))
+                         .Where(method => IsValidLHTaskWorkerValue(method.GetCustomAttribute(typeof(LHTaskMethodAttribute)), taskDefName));
 
             if (!methodsWithTaskWorkerAttrAndDefName.Any())
             {
@@ -67,7 +67,7 @@ namespace LittleHorse.Worker.Internal
 
         private bool IsValidLHTaskWorkerValue(Attribute? lhtaskWorkerAttribute, string taskDefName)
         {
-            if (lhtaskWorkerAttribute is LHTaskWorkerAttribute a)
+            if (lhtaskWorkerAttribute is LHTaskMethodAttribute a)
             {
                 return a.Value == taskDefName;
             }

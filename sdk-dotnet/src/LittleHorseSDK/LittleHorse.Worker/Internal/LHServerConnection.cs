@@ -1,5 +1,4 @@
 ﻿using Grpc.Core;
-using Grpc.Core.Utils;
 using LittleHorse.Worker.Internal.Helpers;
 using LittleHorseSDK.Common.proto;
 using Microsoft.Extensions.Logging;
@@ -9,16 +8,16 @@ namespace LittleHorse.Worker.Internal
     public class LHServerConnection<T> : IDisposable
     {
         private LHServerConnectionManager<T> _connectionManager;
-        private HostInfo _hostInfo;
+        private LHHostInfo _hostInfo;
         private bool _running;
         private LHPublicApi.LHPublicApiClient _client;
         private AsyncDuplexStreamingCall<PollTaskRequest, PollTaskResponse> _call;
         private ILogger? _logger;
 
-        public HostInfo HostInfo { get { return _hostInfo; } }
+        public LHHostInfo HostInfo { get { return _hostInfo; } }
 
-        public LHServerConnection(LHServerConnectionManager<T> connectionManager, HostInfo hostInfo, ILogger? logger = null) 
-        { 
+        public LHServerConnection(LHServerConnectionManager<T> connectionManager, LHHostInfo hostInfo, ILogger? logger = null)
+        {
             _connectionManager = connectionManager;
             _hostInfo = hostInfo;
             _logger = logger;
@@ -35,51 +34,44 @@ namespace LittleHorse.Worker.Internal
 
         private async Task RequestMoreWorkAsync()
         {
-            try
+
+            _logger?.LogDebug($"Request work on {_hostInfo.Host} : {_hostInfo.Port}");
+
+            var request = new PollTaskRequest()
             {
-                _logger?.LogDebug($"Request work on {_hostInfo.Host} : {_hostInfo.Port}");
+                ClientId = _connectionManager.Config.ClientId,
+                TaskDefName = _connectionManager.TaskDef.Name,
+                TaskWorkerVersion = _connectionManager.Config.TaskWorkerVersion
+            };
 
-                var request = new PollTaskRequest()
+            await _call.RequestStream.WriteAsync(request);
+
+            await foreach (var taskToDo in _call.ResponseStream.ReadAllAsync())
+            {
+                if (taskToDo.Result != null)
                 {
-                    ClientId = _connectionManager.Config.ClientId,
-                    TaskDefName = _connectionManager.TaskDef.Name,
-                    TaskWorkerVersion = _connectionManager.Config.TaskWorkerVersion
-                };
+                    var scheduledTask = taskToDo.Result;
+                    var wFRunId = LHWorkerHelper.GetWFRunId(scheduledTask.Source);
 
-                await _call.RequestStream.WriteAsync(request);
+                    _logger?.LogInformation($"Received task schedule request for wfRun {wFRunId}");
 
-                await foreach (var taskToDo in _call.ResponseStream.ReadAllAsync())
-                {
-                    if(taskToDo.Result != null)
-                    {
-                        var scheduledTask = taskToDo.Result;
-                        var wFRunId = LHWorkerHelper.GetWFRunId(scheduledTask.Source);
+                    _connectionManager.SubmitTaskForExecution(scheduledTask, _client);
 
-                        _logger?.LogInformation($"Received task schedule request for wfRun {wFRunId}");
-
-                        _connectionManager.SubmitTaskForExecution(scheduledTask, _client);
-                    } 
-                    else
-                    {
-                        _logger?.LogError($"Didn't successfully claim task: {taskToDo.Code.ToString()} {taskToDo.Message}");
-                    }
-
-                    if(_running)
-                    {
-                        await RequestMoreWorkAsync();
-                    }
-                    else
-                    {
-                        await _call.RequestStream.CompleteAsync();
-                        _connectionManager.CloseConnection(this);
-                    }
+                    _logger?.LogInformation($"Scheduled task on threadpool for wfRun {wFRunId}");
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger?.LogError(ex, "Unexpected error from server");
-                _running = false;
-                _connectionManager.CloseConnection(this);
+                else
+                {
+                    _logger?.LogError($"Didn't successfully claim task, likely due to server restart.");
+                }
+
+                if (_running)
+                {
+                    await RequestMoreWorkAsync();
+                }
+                else
+                {
+                    await _call.RequestStream.CompleteAsync();
+                }
             }
         }
 
@@ -88,7 +80,7 @@ namespace LittleHorse.Worker.Internal
             _running = false;
         }
 
-        public bool IsSame(HostInfo hostInfoToCompare)
+        public bool IsSame(LHHostInfo hostInfoToCompare)
         {
             return _hostInfo.Host.Equals(hostInfoToCompare.Host) && _hostInfo.Port == hostInfoToCompare.Port;
         }

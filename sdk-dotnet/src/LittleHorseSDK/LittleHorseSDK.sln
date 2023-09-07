@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LittleHorse.Test", "LittleH
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LittleHorse.Common", "LittleHorse.Common\LittleHorse.Common.csproj", "{D84312F1-0FB5-41FC-A0B0-80A4F56D2354}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LittleHorse.Worker", "LittleHorse.Worker\LittleHorse.Worker.csproj", "{E8A3F07C-EBA0-48F4-AE52-2145DB1518EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LittleHorse.Worker", "LittleHorse.Worker\LittleHorse.Worker.csproj", "{E8A3F07C-EBA0-48F4-AE52-2145DB1518EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

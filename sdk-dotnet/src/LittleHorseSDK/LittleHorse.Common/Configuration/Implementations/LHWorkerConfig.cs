@@ -116,7 +116,6 @@ namespace LittleHorse.Common.Configuration.Implementations
         /// </summary>
         /// <param name="taskDefName">The TaskDef's name.</param>
         /// <returns>The specified TaskDefPb.</returns>
-        /// <exception cref="Exception">If taskdef loading fails.</exception>
         public TaskDef GetTaskDef(string taskDefName)
         {
             try
@@ -128,21 +127,11 @@ namespace LittleHorse.Common.Configuration.Implementations
                 };
                 var response = client.GetTaskDef(taskDefId);
 
-                if (response.Code != LHResponseCode.Ok)
-                {
-                    if (response.HasMessage)
-                    {
-                        throw new Exception($"Failed loading taskDef: {response.Message}");
-                    }
-
-                    throw new Exception("Failed loading taskDef: No response message.");
-                }
-
-                return response.Result;
+                return response;
             }
-            catch (Exception ex)
+            catch (RpcException ex)
             {
-                _logger?.LogCritical(exception: ex, "GetTaskDef error, taskDefName: {}", taskDefName);
+                _logger?.LogCritical(exception: ex, $"GetTaskDef error, taskDefName: {taskDefName}, Error Code: {ex.StatusCode}");
                 throw;
             }
         }

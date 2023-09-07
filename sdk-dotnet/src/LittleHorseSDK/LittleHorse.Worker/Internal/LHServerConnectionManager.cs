@@ -102,15 +102,6 @@ namespace LittleHorse.Worker.Internal
 
         private void HandleRegisterTaskWorkResponse(RegisterTaskWorkerResponse response)
         {
-            if (response.Code == LHResponseCode.BadRequestError)
-            {
-                if (response.HasMessage)
-                {
-                    throw new Exception($"Invalid configration: {response.Message}");
-                }
-
-                throw new Exception($"Invalid configuration.");
-            }
 
             response.YourHosts.ToList().ForEach(async host =>
             {
@@ -147,12 +138,12 @@ namespace LittleHorse.Worker.Internal
             }
         }
 
-        private bool ShouldBeRunning(LHServerConnection<T> runningThread, RepeatedField<HostInfo> hosts)
+        private bool ShouldBeRunning(LHServerConnection<T> runningThread, RepeatedField<LHHostInfo> hosts)
         {
             return hosts.ToList().Any(host => runningThread.IsSame(host));
         }
 
-        private bool IsAlreadyRunning(HostInfo host)
+        private bool IsAlreadyRunning(LHHostInfo host)
         {
             return _runningConnections.Any(conn => conn.IsSame(host));
         }
@@ -184,7 +175,8 @@ namespace LittleHorse.Worker.Internal
                     _logger?.LogDebug($"Failed to report task for wfRun {wfRunId}: {exception.Message}. Retries left: {retriesLeft}");
                     _logger?.LogDebug($"Retrying reportTask rpc on taskRun {LHWorkerHelper.TaskRunIdToString(result.TaskRunId)}");
                 }).Execute(() => RunReportTask(result));
-            } catch (Exception ex)
+            } 
+            catch (Exception ex)
             {
                 _logger?.LogDebug($"Failed to report task for wfRun {wfRunId}: {ex.Message}. No retries left.");
             }
@@ -193,22 +185,6 @@ namespace LittleHorse.Worker.Internal
         private void RunReportTask(ReportTaskRun reportedTask)
         {
             var response = _bootstrapClient.ReportTask(reportedTask);
-
-            if(response?.Code != LHResponseCode.Ok)
-            {
-                if(response?.Code == LHResponseCode.ReportedButNotProcessed)
-                {
-                    _logger?.LogWarning("Reported task but processor was down. No action required");
-                }
-                else
-                {
-                    _logger?.LogError($"Error reporting task: {response?.Code}");
-                    if(reportedTask != null)
-                    {
-                        throw new Exception($"Error reporting task: {response?.Code}");
-                    }
-                }
-            }
         }
 
         private ReportTaskRun ExecuteTask(ScheduledTask scheduledTask, DateTime? scheduleTime)

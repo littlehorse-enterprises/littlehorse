@@ -2,6 +2,7 @@
 using Google.Protobuf.WellKnownTypes;
 using LittleHorseSDK.Common.proto;
 using Newtonsoft.Json;
+using static Google.Protobuf.Reflection.FeatureSet.Types;
 
 namespace LittleHorse.Worker.Internal.Helpers
 {
@@ -60,7 +61,6 @@ namespace LittleHorse.Worker.Internal.Helpers
 
             return JsonConvert.SerializeObject(o, jsonSettings);
         }
-
         public static object? DeserializeFromJson(string json, System.Type type)
         {
             return JsonConvert.DeserializeObject(json, type);
@@ -150,7 +150,19 @@ namespace LittleHorse.Worker.Internal.Helpers
                     Type = VariableType.Str
                 };
             }
-        } 
-
+        }
+        public static string? MapProtoToJson(IMessage o)
+        {
+            try
+            {
+                var jsonFormatter = new JsonFormatter(new JsonFormatter.Settings(true));
+                return jsonFormatter.Format(o);
+            }
+            catch (InvalidProtocolBufferException ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
     }
 }
