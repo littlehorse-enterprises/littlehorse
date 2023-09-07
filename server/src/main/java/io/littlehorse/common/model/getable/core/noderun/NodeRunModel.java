@@ -392,6 +392,10 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     }
 
     public void halt() {
+        if (!isInProgress()) {
+            return;
+        }
+
         status = LHStatus.HALTED;
         getSubNodeRun().halt();
     }

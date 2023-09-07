@@ -47,7 +47,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -341,6 +340,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 child.halt(childHaltReason);
             }
         }
+
+        getCurrentNodeRun().halt();
     }
 
     /*

@@ -6,14 +6,15 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
+import io.littlehorse.common.model.getable.core.wfrun.haltreason.ParentHaltedModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.utils.WaitForThreadModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.ThreadToWaitForModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForThreadsNodeModel;
-import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import java.util.ArrayList;
@@ -32,7 +33,6 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
     private List<WaitForThreadModel> threads;
     private WaitForThreadsPolicy policy;
-    private VariableAssignmentModel threadList;
 
     public WaitForThreadsRunModel() {
         this.threads = new ArrayList<>();
@@ -126,49 +126,21 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         return allThreadsCompleted;
     }
 
-    private void maybeInitializeDynamicThreads(Date time) {
-        if (threadList != null) {
-            try {
-                VariableValueModel variableValueModel =
-                        nodeRunModel.getThreadRun().assignVariable(threadList);
-
-                List<WaitForThreadModel> waitForThreads = variableValueModel.getJsonArrVal().stream()
-                        .map(Object::toString)
-                        .map(Integer::valueOf)
-                        .map(threadRunNumber -> this.createWaitForThreadModel(threadRunNumber, time))
-                        .filter(Objects::nonNull)
-                        .toList();
-                threads.addAll(waitForThreads);
-            } catch (LHVarSubError exn) {
-                nodeRunModel.fail(
-                        new FailureModel(
-                                "Failed determining thread run number to wait for: " + exn.getMessage(),
-                                LHConstants.VAR_SUB_ERROR),
-                        time);
-            }
-        }
-    }
-
-    private WaitForThreadModel createWaitForThreadModel(int threadRunNumber, Date time) {
-        try {
-            return new WaitForThreadModel(nodeRunModel, threadRunNumber);
-        } catch (LHVarSubError exn) {
-            nodeRunModel.fail(
-                    new FailureModel(
-                            "Failed determining thread run number to wait for: " + exn.getMessage(),
-                            LHConstants.VAR_SUB_ERROR),
-                    time);
-        }
-        return null;
-    }
-
     private void doFailFast(WaitForThreadModel failedWaitingThread, FailureModel failure, Date time) {
         nodeRunModel.fail(failure, time);
         WfRunModel wfRun = getWfRun();
         for (WaitForThreadModel waitingThreads : threads) {
             if (!Objects.equals(failedWaitingThread, waitingThreads)) {
-                ThreadRunModel threadRun = wfRun.getThreadRun(waitingThreads.getThreadRunNumber());
-                waitingThreads.setThreadStatus(threadRun.getStatus());
+                ThreadRunModel otherChildThread = wfRun.getThreadRun(waitingThreads.getThreadRunNumber());
+                // waitingThreads.setThreadStatus(otherChildThread.getStatus());
+
+                ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
+                haltReason.setType(ReasonCase.PARENT_HALTED);
+                ParentHaltedModel parentHalted = new ParentHaltedModel();
+                parentHalted.setParentThreadId(nodeRunModel.getThreadRunNumber());
+                haltReason.setParentHalted(parentHalted);
+
+                otherChildThread.halt(haltReason);
             }
         }
     }
@@ -181,17 +153,8 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         // Need to initialize all of the threads.
         WaitForThreadsNodeModel wftn = getNode().getWaitForThreadsNode();
         nodeRunModel.setStatus(LHStatus.RUNNING);
-        ThreadRunModel threadRun = nodeRunModel.getThreadRun();
         try {
-            for (ThreadToWaitForModel ttwf : wftn.getThreads()) {
-                int threadRunNumber = threadRun
-                        .assignVariable(ttwf.getThreadRunNumber())
-                        .asInt()
-                        .intVal
-                        .intValue();
-                threads.add(new WaitForThreadModel(nodeRunModel, threadRunNumber));
-            }
-            maybeInitializeDynamicThreads(time);
+            threads.addAll(wftn.getThreadsToWaitFor(nodeRunModel));
         } catch (LHVarSubError exn) {
             nodeRunModel.fail(
                     new FailureModel(

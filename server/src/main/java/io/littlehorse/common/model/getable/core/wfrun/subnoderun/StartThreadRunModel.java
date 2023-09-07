@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
 
     public Integer childThreadId;
@@ -51,7 +50,6 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
     }
 
     public boolean advanceIfPossible(Date time) {
-        log.warn("Shouldn't get here");
         return false;
     }
 

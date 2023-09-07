@@ -171,8 +171,6 @@ public class SearchUserTaskRunRequestModel
         if (userGroup != null) {
             attributes.add(new Attribute("userGroup", this.getUserGroup().getId()));
         }
-
-        System.out.println("\n\n\n\n" + attributes + "\n\n\n\n");
         return attributes;
     }
 
