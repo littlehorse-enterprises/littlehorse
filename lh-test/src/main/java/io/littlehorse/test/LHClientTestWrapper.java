@@ -113,4 +113,8 @@ public class LHClientTestWrapper {
         return lhClient.getLatestWfSpec(
                 GetLatestWfSpecRequest.newBuilder().setName(workflow.getName()).build());
     }
+
+    public LHPublicApiBlockingStub getLhClient() {
+        return lhClient;
+    }
 }

@@ -4,9 +4,12 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
+import io.littlehorse.sdk.usertask.UserTaskSchema;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.LHTest;
+import io.littlehorse.test.LHUserTaskForm;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import java.io.IOException;
@@ -37,6 +40,22 @@ public class TestContext {
             workers.add(new LHTaskWorker(testInstance, annotatedMethod.value(), LHConfig));
         }
         return workers;
+    }
+
+    public List<UserTaskSchema> discoverUserTaskSchemas(Object testInstance) {
+        List<UserTaskSchema> schemas = new ArrayList<>();
+        List<Field> annotatedFields = ReflectionUtil.findAnnotatedFields(testInstance.getClass(), LHUserTaskForm.class);
+        for (Field annotatedField : annotatedFields) {
+            try {
+                annotatedField.setAccessible(true);
+                Object taskForm = annotatedField.get(testInstance);
+                LHUserTaskForm annotation = annotatedField.getAnnotation(LHUserTaskForm.class);
+                schemas.add(new UserTaskSchema(taskForm, annotation.value()));
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return schemas;
     }
 
     public List<ExternalEventDef> discoverExternalEventDefinitions(Object testInstance) {
@@ -91,5 +110,9 @@ public class TestContext {
         new FieldDependencyInjector(() -> new WorkflowVerifier(lhClient), testInstance, field -> field.getType()
                         .isAssignableFrom(WorkflowVerifier.class))
                 .inject();
+    }
+
+    public void registerUserTaskDef(PutUserTaskDefRequest taskDefRequest) {
+        lhClient.putUserTaskDef(taskDefRequest);
     }
 }

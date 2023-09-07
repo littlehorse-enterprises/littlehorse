@@ -2,6 +2,8 @@ package io.littlehorse.test;
 
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
+import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
+import io.littlehorse.sdk.usertask.UserTaskSchema;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.StandaloneTestBootstrapper;
@@ -40,6 +42,7 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
         TestContext testContext = store.get(LH_TEST_CONTEXT, TestContext.class);
         try {
             List<LHTaskWorker> workers = testContext.discoverTaskWorkers(testInstance);
+            List<UserTaskSchema> userTaskSchemas = testContext.discoverUserTaskSchemas(testInstance);
             for (LHTaskWorker worker : workers) {
                 if (store.get(worker.getTaskDefName()) != null) {
                     continue;
@@ -56,6 +59,14 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
                                 throw new IllegalStateException(e);
                             }
                         });
+            }
+            for (UserTaskSchema userTaskSchema : userTaskSchemas) {
+                PutUserTaskDefRequest taskDefRequest = userTaskSchema.compile();
+                if (store.get(taskDefRequest.getName()) != null) {
+                    continue;
+                }
+                store.put(taskDefRequest.getName(), userTaskSchema);
+                testContext.registerUserTaskDef(taskDefRequest);
             }
             List<ExternalEventDef> externalEventDefinitions =
                     testContext.discoverExternalEventDefinitions(testInstance);
