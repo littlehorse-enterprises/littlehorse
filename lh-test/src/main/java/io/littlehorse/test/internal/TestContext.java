@@ -27,6 +27,8 @@ public class TestContext {
 
     private final Map<String, ExternalEventDef> externalEventDefMap = new HashMap<>();
 
+    private final Map<String, UserTaskSchema> userTaskSchemasStore = new HashMap<>();
+
     public TestContext(TestBootstrapper bootstrapper) {
         this.LHConfig = bootstrapper.getWorkerConfig();
         this.lhClient = bootstrapper.getLhClient();
@@ -42,18 +44,14 @@ public class TestContext {
         return workers;
     }
 
-    public List<UserTaskSchema> discoverUserTaskSchemas(Object testInstance) {
+    public List<UserTaskSchema> discoverUserTaskSchemas(Object testInstance) throws IllegalAccessException {
         List<UserTaskSchema> schemas = new ArrayList<>();
         List<Field> annotatedFields = ReflectionUtil.findAnnotatedFields(testInstance.getClass(), LHUserTaskForm.class);
         for (Field annotatedField : annotatedFields) {
-            try {
-                annotatedField.setAccessible(true);
-                Object taskForm = annotatedField.get(testInstance);
-                LHUserTaskForm annotation = annotatedField.getAnnotation(LHUserTaskForm.class);
-                schemas.add(new UserTaskSchema(taskForm, annotation.value()));
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
+            annotatedField.setAccessible(true);
+            Object taskForm = annotatedField.get(testInstance);
+            LHUserTaskForm annotation = annotatedField.getAnnotation(LHUserTaskForm.class);
+            schemas.add(new UserTaskSchema(taskForm, annotation.value()));
         }
         return schemas;
     }
@@ -114,5 +112,17 @@ public class TestContext {
 
     public void registerUserTaskDef(PutUserTaskDefRequest taskDefRequest) {
         lhClient.putUserTaskDef(taskDefRequest);
+    }
+
+    public void registerUserTaskSchemas(Object testInstance) throws IllegalAccessException {
+        List<UserTaskSchema> userTaskSchemas = discoverUserTaskSchemas(testInstance);
+        for (UserTaskSchema userTaskSchema : userTaskSchemas) {
+            PutUserTaskDefRequest taskDefRequest = userTaskSchema.compile();
+            if (userTaskSchemasStore.get(taskDefRequest.getName()) != null) {
+                continue;
+            }
+            userTaskSchemasStore.put(taskDefRequest.getName(), userTaskSchema);
+            registerUserTaskDef(taskDefRequest);
+        }
     }
 }
