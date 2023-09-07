@@ -204,9 +204,7 @@ Choose one of the following option groups:
 				}
 			}
 
-		}
-
-		if userGroupStr != "" {
+		} else if userGroupStr != "" {
 			var userGroupPb = &model.UserGroup{
 				Id: userGroupStr,
 			}
@@ -222,6 +220,8 @@ Choose one of the following option groups:
 
 		search.Bookmark = bookmark
 		search.Limit = &limit
+
+		common.PrintProto(search)
 
 		common.PrintResp(getGlobalClient(cmd).SearchUserTaskRun(context.Background(), search))
 

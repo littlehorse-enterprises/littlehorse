@@ -47,6 +47,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -909,6 +910,10 @@ class Comparer {
     @SuppressWarnings("all") // lol
     public static int compare(VariableValueModel left, VariableValueModel right) throws LHVarSubError {
         try {
+            if (left.getVal() == null && right.getVal() != null) return -1;
+            if (right.getVal() == null && left.getVal() != null) return 1;
+            if (right.getVal() == null && left.getVal() == null) return 0;
+
             int result = ((Comparable) left.getVal()).compareTo((Comparable) right.getVal());
             return result;
         } catch (Exception exn) {

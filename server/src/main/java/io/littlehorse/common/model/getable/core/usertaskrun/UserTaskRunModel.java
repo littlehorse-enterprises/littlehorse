@@ -264,6 +264,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     }
 
     public void reassignTo(AssignUserTaskRunRequestModel event) {
+        log.warn("\n\n\n\nHere in reassignTo: {}\n\n\n\n", event);
         UTEReassignedModel reassigned = null;
         switch (event.getAssigneeType()) {
             case USER:
@@ -360,6 +361,8 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
                                 assignToCase),
                         maturationTime),
                 getDao());
+
+        log.warn("Scheduling reassignment: {}", timer);
         getDao().scheduleTimer(timer);
     }
 

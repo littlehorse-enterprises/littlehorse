@@ -698,7 +698,9 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         checkIfIsActive();
         VariableAssignment.Builder builder = VariableAssignment.newBuilder();
 
-        if (variable.getClass().equals(WfRunVariableImpl.class)) {
+        if (variable == null) {
+            builder.setLiteralValue(VariableValue.newBuilder().setType(VariableType.NULL));
+        } else if (variable.getClass().equals(WfRunVariableImpl.class)) {
             WfRunVariableImpl wrv = (WfRunVariableImpl) variable;
             if (wrv.jsonPath != null) {
                 builder.setJsonPath(wrv.jsonPath);
