@@ -14,8 +14,5 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
             error: "Something goes wrong.",
           })
       }
-    
-
-
 
 }
