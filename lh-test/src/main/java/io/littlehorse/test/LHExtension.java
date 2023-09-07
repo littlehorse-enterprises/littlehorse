@@ -1,11 +1,14 @@
 package io.littlehorse.test;
 
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
+import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.StandaloneTestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -20,6 +23,8 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
 
     @Override
     public void beforeAll(ExtensionContext context) {
+        Awaitility.setDefaultPollInterval(Duration.of(100, ChronoUnit.MILLIS));
+        Awaitility.setDefaultTimeout(Duration.of(1000, ChronoUnit.MILLIS));
         getStore(context)
                 .getOrComputeIfAbsent(
                         LH_TEST_CONTEXT, s -> new TestContext(new StandaloneTestBootstrapper()), TestContext.class);
@@ -52,6 +57,9 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
                             }
                         });
             }
+            List<ExternalEventDef> externalEventDefinitions =
+                    testContext.discoverExternalEventDefinitions(testInstance);
+            externalEventDefinitions.forEach(testContext::registerExternalEventDef);
         } catch (IOException e) {
             throw new LHTestInitializationException("Something went wrong registering task workers", e);
         }

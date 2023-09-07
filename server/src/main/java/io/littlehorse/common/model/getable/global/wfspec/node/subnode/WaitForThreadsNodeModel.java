@@ -2,16 +2,18 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.ThreadToWaitForModel;
+import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
+import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -26,6 +28,10 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
 
     private List<ThreadToWaitForModel> threads;
 
+    private WaitForThreadsPolicy policy;
+
+    private VariableAssignment threadList;
+
     public Class<WaitForThreadsNode> getProtoBaseClass() {
         return WaitForThreadsNode.class;
     }
@@ -39,6 +45,10 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         for (ThreadToWaitFor ttwf : p.getThreadsList()) {
             threads.add(LHSerializable.fromProto(ttwf, ThreadToWaitForModel.class));
         }
+        policy = p.getPolicy();
+        if (p.hasThreadList()) {
+            threadList = p.getThreadList();
+        }
     }
 
     public WaitForThreadsNode.Builder toProto() {
@@ -46,12 +56,17 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         for (ThreadToWaitForModel ttwf : threads) {
             out.addThreads(ttwf.toProto());
         }
-
+        out.setPolicy(policy);
+        if (threadList != null) {
+            out.setThreadList(threadList);
+        }
         return out;
     }
 
     public WaitForThreadsRunModel createSubNodeRun(Date time) {
-        return new WaitForThreadsRunModel();
+        WaitForThreadsRunModel waitForThreadsRun = new WaitForThreadsRunModel();
+        waitForThreadsRun.setPolicy(getPolicy());
+        return waitForThreadsRun;
     }
 
     @Override
@@ -64,7 +79,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHApiException {
+    public void validate(ReadOnlyMetadataStore stores, LHServerConfig config) throws LHApiException {
         for (ThreadToWaitForModel ttwf : threads) {
             if (!ttwf.getThreadRunNumber().canBeType(VariableType.INT, node.threadSpecModel)) {
                 throw new LHApiException(

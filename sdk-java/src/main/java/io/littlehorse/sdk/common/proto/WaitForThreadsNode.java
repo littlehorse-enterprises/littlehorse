@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private WaitForThreadsNode() {
     threads_ = java.util.Collections.emptyList();
+    policy_ = 0;
   }
 
   @java.lang.Override
@@ -26,11 +27,6 @@ private static final long serialVersionUID = 0L;
     return new WaitForThreadsNode();
   }
 
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_WaitForThreadsNode_descriptor;
@@ -85,11 +81,6 @@ private static final long serialVersionUID = 0L;
       return new ThreadToWaitFor();
     }
 
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_WaitForThreadsNode_ThreadToWaitFor_descriptor;
@@ -243,11 +234,13 @@ private static final long serialVersionUID = 0L;
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
+
     public static io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -647,6 +640,7 @@ private static final long serialVersionUID = 0L;
 
   }
 
+  private int bitField0_;
   public static final int THREADS_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> threads_;
@@ -688,6 +682,50 @@ private static final long serialVersionUID = 0L;
     return threads_.get(index);
   }
 
+  public static final int POLICY_FIELD_NUMBER = 2;
+  private int policy_ = 0;
+  /**
+   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+   * @return The enum numeric value on the wire for policy.
+   */
+  @java.lang.Override public int getPolicyValue() {
+    return policy_;
+  }
+  /**
+   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+   * @return The policy.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy() {
+    io.littlehorse.sdk.common.proto.WaitForThreadsPolicy result = io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.forNumber(policy_);
+    return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.UNRECOGNIZED : result;
+  }
+
+  public static final int THREAD_LIST_FIELD_NUMBER = 3;
+  private io.littlehorse.sdk.common.proto.VariableAssignment threadList_;
+  /**
+   * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+   * @return Whether the threadList field is set.
+   */
+  @java.lang.Override
+  public boolean hasThreadList() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+   * @return The threadList.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignment getThreadList() {
+    return threadList_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : threadList_;
+  }
+  /**
+   * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getThreadListOrBuilder() {
+    return threadList_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : threadList_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -705,6 +743,12 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < threads_.size(); i++) {
       output.writeMessage(1, threads_.get(i));
     }
+    if (policy_ != io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.WAIT_FOR_COMPLETION.getNumber()) {
+      output.writeEnum(2, policy_);
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(3, getThreadList());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -717,6 +761,14 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < threads_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, threads_.get(i));
+    }
+    if (policy_ != io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.WAIT_FOR_COMPLETION.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(2, policy_);
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getThreadList());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -735,6 +787,12 @@ private static final long serialVersionUID = 0L;
 
     if (!getThreadsList()
         .equals(other.getThreadsList())) return false;
+    if (policy_ != other.policy_) return false;
+    if (hasThreadList() != other.hasThreadList()) return false;
+    if (hasThreadList()) {
+      if (!getThreadList()
+          .equals(other.getThreadList())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -749,6 +807,12 @@ private static final long serialVersionUID = 0L;
     if (getThreadsCount() > 0) {
       hash = (37 * hash) + THREADS_FIELD_NUMBER;
       hash = (53 * hash) + getThreadsList().hashCode();
+    }
+    hash = (37 * hash) + POLICY_FIELD_NUMBER;
+    hash = (53 * hash) + policy_;
+    if (hasThreadList()) {
+      hash = (37 * hash) + THREAD_LIST_FIELD_NUMBER;
+      hash = (53 * hash) + getThreadList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -799,11 +863,13 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
+
   public static io.littlehorse.sdk.common.proto.WaitForThreadsNode parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
+
   public static io.littlehorse.sdk.common.proto.WaitForThreadsNode parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -867,13 +933,20 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.WaitForThreadsNode.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getThreadsFieldBuilder();
+        getThreadListFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -886,6 +959,12 @@ private static final long serialVersionUID = 0L;
         threadsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
+      policy_ = 0;
+      threadList_ = null;
+      if (threadListBuilder_ != null) {
+        threadListBuilder_.dispose();
+        threadListBuilder_ = null;
+      }
       return this;
     }
 
@@ -932,6 +1011,17 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.WaitForThreadsNode result) {
       int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.policy_ = policy_;
+      }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.threadList_ = threadListBuilder_ == null
+            ? threadList_
+            : threadListBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -1004,6 +1094,12 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
+      if (other.policy_ != 0) {
+        setPolicyValue(other.getPolicyValue());
+      }
+      if (other.hasThreadList()) {
+        mergeThreadList(other.getThreadList());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -1043,6 +1139,18 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 10
+            case 16: {
+              policy_ = input.readEnum();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 16
+            case 26: {
+              input.readMessage(
+                  getThreadListFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1298,6 +1406,178 @@ private static final long serialVersionUID = 0L;
         threads_ = null;
       }
       return threadsBuilder_;
+    }
+
+    private int policy_ = 0;
+    /**
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @return The enum numeric value on the wire for policy.
+     */
+    @java.lang.Override public int getPolicyValue() {
+      return policy_;
+    }
+    /**
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @param value The enum numeric value on the wire for policy to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPolicyValue(int value) {
+      policy_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @return The policy.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy() {
+      io.littlehorse.sdk.common.proto.WaitForThreadsPolicy result = io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.forNumber(policy_);
+      return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @param value The policy to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPolicy(io.littlehorse.sdk.common.proto.WaitForThreadsPolicy value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000002;
+      policy_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPolicy() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      policy_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private io.littlehorse.sdk.common.proto.VariableAssignment threadList_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> threadListBuilder_;
+    /**
+     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     * @return Whether the threadList field is set.
+     */
+    public boolean hasThreadList() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     * @return The threadList.
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignment getThreadList() {
+      if (threadListBuilder_ == null) {
+        return threadList_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : threadList_;
+      } else {
+        return threadListBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     */
+    public Builder setThreadList(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (threadListBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        threadList_ = value;
+      } else {
+        threadListBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     */
+    public Builder setThreadList(
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
+      if (threadListBuilder_ == null) {
+        threadList_ = builderForValue.build();
+      } else {
+        threadListBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     */
+    public Builder mergeThreadList(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (threadListBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+          threadList_ != null &&
+          threadList_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+          getThreadListBuilder().mergeFrom(value);
+        } else {
+          threadList_ = value;
+        }
+      } else {
+        threadListBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     */
+    public Builder clearThreadList() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      threadList_ = null;
+      if (threadListBuilder_ != null) {
+        threadListBuilder_.dispose();
+        threadListBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getThreadListBuilder() {
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return getThreadListFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getThreadListOrBuilder() {
+      if (threadListBuilder_ != null) {
+        return threadListBuilder_.getMessageOrBuilder();
+      } else {
+        return threadList_ == null ?
+            io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : threadList_;
+      }
+    }
+    /**
+     * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
+        getThreadListFieldBuilder() {
+      if (threadListBuilder_ == null) {
+        threadListBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                getThreadList(),
+                getParentForChildren(),
+                isClean());
+        threadList_ = null;
+      }
+      return threadListBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

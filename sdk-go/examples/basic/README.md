@@ -30,7 +30,7 @@ go run ./basic/deploy
 That will create the `WfSpec`. You can verify that via:
 
 ```
-lhctl get wfSpecModel my-workflow
+lhctl get wfSpec my-workflow
 ```
 
 ## Run a `WfRun`
@@ -44,5 +44,5 @@ lhctl run my-workflow name obi-wan
 It will print out an ID. You can view the status of that `WfRun` via:
 
 ```
-lhctl get wfRunModel <the id from the previous step>
+lhctl get wfRun <the id from the previous step>
 ```

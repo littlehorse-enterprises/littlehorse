@@ -2,7 +2,7 @@
 
 ### Prerequisites
 
-- `docker` and `docker-compose-plugin`.
+- `docker`.
 - `go`.
 
 ### Running Locally
@@ -27,8 +27,7 @@ lhctl
 Start your LH Server with:
 
 ```
-cd examples/docker-compose
-docker compose up -d
+docker run --name littlehorse -d -p 2023:2023 public.ecr.aws/littlehorse/littlehorse-standalone:latest
 ```
 
 When you run the LH Server according to the command above, the API Host is `localhost` and the API Port is `2023`.
@@ -49,8 +48,7 @@ Result:
 
 ```
 {
-  "code":  "OK",
-  "objectIds":  []
+  "results": []
 }
 ```
 

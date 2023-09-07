@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class WorkflowImpl extends Workflow {
 
@@ -18,8 +19,8 @@ public class WorkflowImpl extends Workflow {
     private Set<String> requiredTaskDefNames;
     private Set<String> requiredEedNames;
 
-    public WorkflowImpl(String name, ThreadFunc entrypoinThreadFunc) {
-        super(name, entrypoinThreadFunc);
+    public WorkflowImpl(String name, ThreadFunc entrypointThreadFunc) {
+        super(name, entrypointThreadFunc);
         compiledWorkflow = null;
         taskDefBuilders = new HashMap<>();
         requiredTaskDefNames = new HashSet<>();
@@ -78,28 +79,15 @@ public class WorkflowImpl extends Workflow {
     }
 
     private PutWfSpecRequest compileWorkflowHelper() {
-        Set<String> seenThreads = new HashSet<>();
         String entrypointThreadName = this.addSubThread("entrypoint", entrypointThread);
         spec.setEntrypointThreadName(entrypointThreadName);
 
-        while (true) {
-            int numThreadsSeen = seenThreads.size();
-
-            for (Map.Entry<String, ThreadFunc> entry : threadFuncs.entrySet()) {
-                ThreadFunc threadObj = entry.getValue();
-                String funcName = entry.getKey();
-
-                if (seenThreads.contains(funcName)) {
-                    continue;
-                }
-                seenThreads.add(funcName);
-                ThreadBuilderImpl thr = new ThreadBuilderImpl(name, this, threadObj);
-                spec.putThreadSpecs(funcName, thr.getSpec().build());
-            }
-
-            if (numThreadsSeen == threadFuncs.size()) {
-                break;
-            }
+        while (!threadFuncs.isEmpty()) {
+            Pair<String, ThreadFunc> nextFunc = threadFuncs.remove();
+            ThreadFunc threadObj = nextFunc.getValue();
+            String funcName = nextFunc.getKey();
+            ThreadBuilderImpl thr = new ThreadBuilderImpl(name, this, threadObj);
+            spec.putThreadSpecs(funcName, thr.getSpec().build());
         }
 
         return spec.build();
@@ -114,13 +102,13 @@ public class WorkflowImpl extends Workflow {
         return out;
     }
 
-    // TODO: See if we can determine the name of the function using reflection
-    // so we don't need to pass in the name.
     public String addSubThread(String subThreadName, ThreadFunc subThreadFunc) {
-        if (threadFuncs.containsKey(subThreadName)) {
-            throw new LHMisconfigurationException(String.format("Thread %s already exists", subThreadName));
+        for (Pair<String, ThreadFunc> pair : threadFuncs) {
+            if (pair.getKey().equals(subThreadName)) {
+                throw new LHMisconfigurationException(String.format("Thread %s already exists", subThreadName));
+            }
         }
-        threadFuncs.put(subThreadName, subThreadFunc);
+        threadFuncs.add(Pair.of(subThreadName, subThreadFunc));
         return subThreadName;
     }
 }

@@ -46,8 +46,12 @@ dependencies {
     implementation "org.apache.kafka:kafka-streams:${kafkaVersion}"
     testImplementation "org.apache.kafka:kafka-streams-test-utils:${kafkaVersion}"
 
+    // Auth
+    implementation 'com.nimbusds:oauth2-oidc-sdk:10.9.2'
+
     // Utils
     implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'commons-io:commons-io:2.13.0'
     implementation 'com.google.guava:guava:32.0.1-jre'
 
     // gRPC and Protobuf now included in lh-sdk
@@ -83,7 +87,8 @@ shadowJar {
 test {
     useJUnitPlatform()
     filter {
-        includeTestsMatching "io.littlehorse.unit.**"
+        includeTestsMatching "io.littlehorse.**"
+        excludeTestsMatching "e2e.**"
     }
     testLogging {
         events 'passed', 'skipped', 'failed'
@@ -95,7 +100,8 @@ test {
 task e2e(type: Test, dependsOn: compileJava){
     useJUnitPlatform()
     filter {
-        includeTestsMatching "io.littlehorse.e2e.**"
+        includeTestsMatching "e2e.**"
+        excludeTestsMatching "io.littlehorse.**"
     }
     testLogging {
         events 'passed', 'skipped', 'failed'

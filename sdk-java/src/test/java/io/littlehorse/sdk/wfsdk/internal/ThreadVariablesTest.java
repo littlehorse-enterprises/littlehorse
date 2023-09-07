@@ -19,7 +19,7 @@ public class ThreadVariablesTest {
         Throwable throwable = Assertions.catchThrowable(wf::compileWorkflow);
         Assertions.assertThat(throwable)
                 .isInstanceOf(LHMisconfigurationException.class)
-                .hasMessage("Non-Json my-var varibale contains jsonIndex");
+                .hasMessage("Non-Json my-var variable contains jsonIndex");
     }
 
     @Test

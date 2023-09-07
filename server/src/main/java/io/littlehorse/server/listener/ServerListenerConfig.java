@@ -4,7 +4,7 @@ import com.google.common.base.Objects;
 import io.grpc.InsecureServerCredentials;
 import io.grpc.ServerCredentials;
 import io.grpc.TlsServerCredentials;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.auth.AuthorizationProtocol;
 import io.littlehorse.server.auth.InsecureServerAuthorizer;
 import io.littlehorse.server.auth.OAuthServerAuthorizer;
@@ -24,7 +24,7 @@ public class ServerListenerConfig {
     private int port;
     private ListenerProtocol protocol;
     private AuthorizationProtocol authorizationProtocol;
-    private LHConfig config;
+    private LHServerConfig config;
 
     @Override
     public boolean equals(Object o) {

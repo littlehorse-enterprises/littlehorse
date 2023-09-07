@@ -21,4 +21,10 @@ public class Notifier {
         System.out.println("\n\n\n\n******\nreminder-task!!!\n******\n\n\n");
         return "I just sent a reminder!";
     }
+
+    @LHTaskMethod("exc-handler")
+    public String handler(){
+        System.out.println("Ok, handler was called by exception handler");
+        return "Ok?";
+    }
 }

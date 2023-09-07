@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartThreadRunModel;
@@ -17,7 +17,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
 
+@Getter
 public class StartThreadNodeModel extends SubNode<StartThreadNode> {
 
     public String threadSpecName;
@@ -49,7 +51,7 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataStore stores, LHConfig config) throws LHApiException {
+    public void validate(ReadOnlyMetadataStore stores, LHServerConfig config) throws LHApiException {
         WfSpecModel wfSpecModel = node.threadSpecModel.wfSpecModel;
 
         if (threadSpecName.equals(node.threadSpecModel.name)) {

@@ -82,5 +82,5 @@ public interface UserTaskEventOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelledOrBuilder getCancelledOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase getEventCase();
+  io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase getEventCase();
 }

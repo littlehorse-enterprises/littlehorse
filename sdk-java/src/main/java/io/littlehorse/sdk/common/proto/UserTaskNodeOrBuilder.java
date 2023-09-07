@@ -153,5 +153,5 @@ public interface UserTaskNodeOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getNotesOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.UserTaskNode.AssignmentCase getAssignmentCase();
+  io.littlehorse.sdk.common.proto.UserTaskNode.AssignmentCase getAssignmentCase();
 }

@@ -3,7 +3,7 @@ package io.littlehorse.tests;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
@@ -52,7 +52,7 @@ public abstract class WorkflowLogicTest extends Test {
     private List<String> wfRunIds;
     private int wfSpecVersion; // usually will be 0
 
-    public WorkflowLogicTest(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
+    public WorkflowLogicTest(LHPublicApiBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
         wfRunIds = new ArrayList<>();
     }
@@ -114,7 +114,7 @@ public abstract class WorkflowLogicTest extends Test {
         return result.toString();
     }
 
-    protected void deploy(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) throws TestFailure {
+    protected void deploy(LHPublicApiBlockingStub client, LHConfig workerConfig) throws TestFailure {
         workers = new ArrayList<>();
 
         // Now need to create LHTaskWorkers and run them for all worker objects.
@@ -167,7 +167,7 @@ public abstract class WorkflowLogicTest extends Test {
         log.info("Done deploying for testCase " + getWorkflowName());
     }
 
-    private List<LHTaskWorker> getWorkersFromExecutable(Object exe, LHWorkerConfig workerConfig)
+    private List<LHTaskWorker> getWorkersFromExecutable(Object exe, LHConfig workerConfig)
             throws TestFailure, IOException {
         List<LHTaskWorker> out = new ArrayList<>();
 

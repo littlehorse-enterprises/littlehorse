@@ -2,7 +2,7 @@ package io.littlehorse.examples;
 
 import io.grpc.StatusRuntimeException;
 import io.grpc.Status.Code;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -61,7 +61,7 @@ public class ExternalEventExample {
         return props;
     }
 
-    public static List<LHTaskWorker> getTaskWorkers(LHWorkerConfig config) throws IOException {
+    public static List<LHTaskWorker> getTaskWorkers(LHConfig config) throws IOException {
         WaitForExternalEventWorker executable = new WaitForExternalEventWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "ask-for-name", config),
@@ -85,7 +85,7 @@ public class ExternalEventExample {
     public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
-        LHWorkerConfig config = new LHWorkerConfig(props);
+        LHConfig config = new LHConfig(props);
         LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow

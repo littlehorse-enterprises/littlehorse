@@ -12,5 +12,5 @@ public class OAuthConfig {
 
     private final String clientId;
     private final String clientSecret;
-    private final URI authorizationServer;
+    private final URI tokenEndpointURI;
 }

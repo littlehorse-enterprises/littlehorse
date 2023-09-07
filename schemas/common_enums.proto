@@ -13,6 +13,7 @@ enum LHStatus {
   HALTING = 3;
   HALTED = 4;
   ERROR = 5;
+  EXCEPTION = 6;
 }
 
 enum TaskStatus {
@@ -32,7 +33,7 @@ enum MetricsWindowLength {
   HOURS_2 = 1;
   DAYS_1 = 2;
 }
-  
+
 enum VariableType {
   JSON_OBJ = 0;
   JSON_ARR = 1;
@@ -42,4 +43,9 @@ enum VariableType {
   INT = 5;
   BYTES = 6;
   NULL = 7;
+}
+
+enum WaitForThreadsPolicy{
+  WAIT_FOR_COMPLETION = 0;
+  STOP_ON_FAILURE = 1;
 }

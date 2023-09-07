@@ -193,7 +193,7 @@ message SearchVariableRequest {
 
   message NameAndValueRequest {
     VariableValue value = 1;
-    optional int32 wf_spec_version = 2;
+    int32 wf_spec_version = 2;
     string var_name = 3;
     string wf_spec_name = 4;
   }
@@ -381,11 +381,6 @@ enum LHHealthResult {
   LH_HEALTH_ERROR = 2;
 }
 
-message HealthCheckResponse {
-  LHHealthResult core_state = 1;
-  LHHealthResult timer_state = 2;
-}
-
 message TaskDefMetricsQueryRequest {
   google.protobuf.Timestamp window_start = 1;
   MetricsWindowLength window_type = 2;
@@ -508,8 +503,6 @@ service LHPublicApi {
   rpc DeleteWfSpec(DeleteWfSpecRequest) returns (google.protobuf.Empty) {}
   rpc DeleteUserTaskDef(DeleteUserTaskDefRequest) returns (google.protobuf.Empty) {}
   rpc DeleteExternalEventDef(DeleteExternalEventDefRequest) returns (google.protobuf.Empty) {}
-
-  rpc HealthCheck(google.protobuf.Empty) returns (HealthCheckResponse) {}
 
   rpc GetTaskDefMetricsWindow(TaskDefMetricsQueryRequest) returns (TaskDefMetrics) {}
   rpc GetWfSpecMetricsWindow(WfSpecMetricsQueryRequest) returns (WfSpecMetrics) {}

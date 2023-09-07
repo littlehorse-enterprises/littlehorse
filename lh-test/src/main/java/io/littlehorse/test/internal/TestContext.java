@@ -1,23 +1,31 @@
 package io.littlehorse.test.internal;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 public class TestContext {
 
-    private final LHWorkerConfig lhWorkerConfig;
+    private final LHConfig LHConfig;
     private final LHPublicApiBlockingStub lhClient;
 
+    private final Map<String, ExternalEventDef> externalEventDefMap = new HashMap<>();
+
     public TestContext(TestBootstrapper bootstrapper) {
-        this.lhWorkerConfig = bootstrapper.getWorkerConfig();
+        this.LHConfig = bootstrapper.getWorkerConfig();
         this.lhClient = bootstrapper.getLhClient();
     }
 
@@ -26,9 +34,31 @@ public class TestContext {
         List<LHTaskMethod> annotatedMethods =
                 ReflectionUtil.findAnnotatedMethods(testInstance.getClass(), LHTaskMethod.class);
         for (LHTaskMethod annotatedMethod : annotatedMethods) {
-            workers.add(new LHTaskWorker(testInstance, annotatedMethod.value(), lhWorkerConfig));
+            workers.add(new LHTaskWorker(testInstance, annotatedMethod.value(), LHConfig));
         }
         return workers;
+    }
+
+    public List<ExternalEventDef> discoverExternalEventDefinitions(Object testInstance) {
+        if (testInstance.getClass().isAnnotationPresent(LHTest.class)) {
+            LHTest lhTestAnnotation = testInstance.getClass().getAnnotation(LHTest.class);
+            return Stream.of(lhTestAnnotation.externalEventNames())
+                    .map(externalEventName -> ExternalEventDef.newBuilder()
+                            .setName(externalEventName)
+                            .build())
+                    .toList();
+        }
+        return List.of();
+    }
+
+    public void registerExternalEventDef(ExternalEventDef externalEventDef) {
+        if (!externalEventDefMap.containsKey(externalEventDef.getName())) {
+            PutExternalEventDefRequest putExternalEventDefRequest = PutExternalEventDefRequest.newBuilder()
+                    .setName(externalEventDef.getName())
+                    .build();
+            ExternalEventDef externalEventDefResult = lhClient.putExternalEventDef(putExternalEventDefRequest);
+            externalEventDefMap.put(externalEventDefResult.getName(), externalEventDefResult);
+        }
     }
 
     public void instrument(Object testInstance) {

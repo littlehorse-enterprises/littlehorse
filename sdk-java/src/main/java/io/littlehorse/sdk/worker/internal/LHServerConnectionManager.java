@@ -2,7 +2,7 @@ package io.littlehorse.sdk.worker.internal;
 
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
@@ -37,7 +37,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
 
     public Object executable;
     public Method taskMethod;
-    public LHWorkerConfig config;
+    public LHConfig config;
     public List<VariableMapping> mappings;
     public TaskDef taskDef;
 
@@ -51,11 +51,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     private static final int TOTAL_RETRIES = 5;
 
     public LHServerConnectionManager(
-            Method taskMethod,
-            TaskDef taskDef,
-            LHWorkerConfig config,
-            List<VariableMapping> mappings,
-            Object executable)
+            Method taskMethod, TaskDef taskDef, LHConfig config, List<VariableMapping> mappings, Object executable)
             throws IOException {
         this.executable = executable;
         this.taskMethod = taskMethod;

@@ -22,10 +22,10 @@ Check the results with:
 
 ```
 # This call shows the result
-lhctl get wfRunModel <wf_run_id>
+lhctl get wfRun <wf_run_id>
 
 # This will show you all nodes in tha run
-lhctl list nodeRunModel <wf_run_id>
+lhctl list nodeRun <wf_run_id>
 
 # This shows the task run information
 lhctl get taskRun <wf_run_id> <task_run_global_id>

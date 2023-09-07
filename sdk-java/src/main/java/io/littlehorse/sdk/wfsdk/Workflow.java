@@ -8,8 +8,6 @@ import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
-import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -18,12 +16,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 
 /** The Workflow class represents a `WfSpec` object in the API. */
 @Slf4j
@@ -32,7 +29,7 @@ public abstract class Workflow {
     protected ThreadFunc entrypointThread;
     protected String name;
     protected PutWfSpecRequest.Builder spec;
-    protected Map<String, ThreadFunc> threadFuncs;
+    protected Queue<Pair<String, ThreadFunc>> threadFuncs;
 
     /**
      * Internal constructor used by WorkflowImpl.
@@ -41,7 +38,7 @@ public abstract class Workflow {
      * @param entrypointThreadFunc is the entrypoint thread function.
      */
     protected Workflow(String name, ThreadFunc entrypointThreadFunc) {
-        this.threadFuncs = new HashMap<>();
+        this.threadFuncs = new LinkedList<>();
         this.entrypointThread = entrypointThreadFunc;
         this.name = name;
         this.spec = PutWfSpecRequest.newBuilder().setName(name);
@@ -87,28 +84,11 @@ public abstract class Workflow {
     public abstract PutWfSpecRequest compileWorkflow();
 
     /**
-     * Creates a set of all TaskDef's that need to be created for this WfSpec, determined by calls
-     * to ThreadBuilder::executeAndRegisterTaskDef().
-     *
-     * @return a Set of PutTaskDefRequests containing a PutTaskDef for every auto-generated TaskDef
-     *     in this `WfSpec`.
-     */
-    public abstract Set<PutTaskDefRequest> compileTaskDefs();
-
-    /**
      * Returns the names of all `TaskDef`s used by this workflow.
      *
      * @return a Set of Strings containing the names of all `TaskDef`s used by this workflow.
      */
     public abstract Set<String> getRequiredTaskDefNames();
-
-    /**
-     * Returns a set of all objects that were passed to executeAndRegisterTaskDef().
-     *
-     * @return a set of all Task Worker objects that were passed into
-     *     ThreadBuilder::executeAndRegisterTaskDef().
-     */
-    public abstract Set<Object> getTaskExecutables();
 
     /**
      * Returns the names of all `ExternalEventDef`s used by this workflow. Includes
@@ -134,31 +114,10 @@ public abstract class Workflow {
     }
 
     /**
-     * Creates a list of all TaskDef's that need to be created for this WfSpec, determined by calls
-     * to ThreadBuilder::executeAndRegisterTaskDef().
-     *
-     * @return a List containing the containing a PutTaskDef in Json form (String) for every
-     *     auto-generated TaskDef in this `WfSpec`.
-     */
-    public List<String> compileTaskDefsToJson() {
-        Set<PutTaskDefRequest> taskDefs = compileTaskDefs();
-        List<String> out = new ArrayList<>();
-        try {
-            for (PutTaskDefRequest ptd : taskDefs) {
-                out.add(JsonFormat.printer().includingDefaultValueFields().print(ptd));
-            }
-            return out;
-        } catch (InvalidProtocolBufferException exn) {
-            throw new RuntimeException(exn);
-        }
-    }
-
-    /**
      * Checks if the WfSpec exists
      *
      * @param client is an LHClient.
      * @return true if the workflow spec is registered or false otherwise
-     * @throws LHApiError if the call fails.
      */
     public boolean doesWfSpecExist(LHPublicApiBlockingStub client) {
         try {
@@ -180,7 +139,6 @@ public abstract class Workflow {
      * @param client is an LHClient.
      * @param version workflow version
      * @return true if the workflow spec is registered for this version or false otherwise
-     * @throws LHApiError
      */
     public boolean doesWfSpecExist(LHPublicApiBlockingStub client, Integer version) {
         if (version == null) return doesWfSpecExist(client);
@@ -203,32 +161,17 @@ public abstract class Workflow {
      * Workflow::registerWfSpec() is the same as client.putWfSpec(workflow.compileWorkflow()).
      *
      * @param client is an LHClient.
-     * @throws LHApiError if the call fails.
      */
     public void registerWfSpec(LHPublicApiBlockingStub client) {
         log.info("Creating wfSpec:\n {}", LHLibUtil.protoToJson(client.putWfSpec(compileWorkflow())));
     }
 
     /**
-     * Writes out all PutTaskDefRequest, PutExternalEventDefRequest, and PutWfSpecRequest in JSON
-     * form in a directory.
+     * Writes out the PutWfSpecRequest in JSON form in a directory.
      *
      * @param directory is the location to save the resources.
      */
     public void compileAndSaveToDisk(String directory) {
-        for (PutTaskDefRequest putTaskDef : compileTaskDefs()) {
-            String fileName = putTaskDef.getName() + "-taskdef.json";
-            log.info("Saving TaskDef to {}", fileName);
-            saveProtoToFile(directory, fileName, putTaskDef);
-        }
-
-        for (String eedName : getRequiredExternalEventDefNames()) {
-            String fileName = eedName + "-extevtdef.json";
-            log.info("Saving ExternalEventDef to {}", fileName);
-            saveProtoToFile(
-                    directory, fileName, PutExternalEventDefRequest.newBuilder().setName(eedName));
-        }
-
         PutWfSpecRequest wf = compileWorkflow();
         String wfFileName = wf.getName() + "-wfspec.json";
         log.info("Saving WfSpec to {}", wfFileName);

@@ -59,5 +59,5 @@ public interface SearchTaskRunRequestOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.SearchTaskRunRequest.ByTaskDefRequestOrBuilder getTaskDefOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.SearchTaskRunRequest.TaskRunCriteriaCase getTaskRunCriteriaCase();
+  io.littlehorse.sdk.common.proto.SearchTaskRunRequest.TaskRunCriteriaCase getTaskRunCriteriaCase();
 }

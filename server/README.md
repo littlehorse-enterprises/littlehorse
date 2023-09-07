@@ -36,10 +36,14 @@ Next, you can start the LH server itself. The server can be started in a single 
 You can confirm that the Server is running via:
 
 ```
--> lhctl search wfSpec
+lhctl search wfSpec
+```
+
+Result:
+
+```
 {
-  "code":  "OK",
-  "objectIds":  []
+  "results": []
 }
 ```
 

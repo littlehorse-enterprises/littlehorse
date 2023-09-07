@@ -1,7 +1,7 @@
 package io.littlehorse.driver;
 
-import io.littlehorse.common.LHConfig;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import java.io.IOException;
 import java.util.Properties;
@@ -31,7 +31,7 @@ public class TestDriverStandalone extends TestDriver {
         log.info("Starting kafka");
         kafka.start();
         startServer();
-        workerConfig = new LHWorkerConfig();
+        workerConfig = new LHConfig();
 
         try {
             client = workerConfig.getBlockingStub();
@@ -42,11 +42,11 @@ public class TestDriverStandalone extends TestDriver {
 
     private void startServer() throws Exception {
         Properties serverProperties = new Properties();
-        serverProperties.put(LHConfig.KAFKA_BOOTSTRAP_KEY, kafka.getBootstrapServers());
-        serverProperties.put(LHConfig.KAFKA_STATE_DIR_KEY, "/tmp/" + UUID.randomUUID());
-        serverProperties.put(LHConfig.CLUSTER_PARTITIONS_KEY, "3");
+        serverProperties.put(LHServerConfig.KAFKA_BOOTSTRAP_KEY, kafka.getBootstrapServers());
+        serverProperties.put(LHServerConfig.KAFKA_STATE_DIR_KEY, "/tmp/" + UUID.randomUUID());
+        serverProperties.put(LHServerConfig.CLUSTER_PARTITIONS_KEY, "3");
 
-        LHConfig serverConfig = new LHConfig(serverProperties);
+        LHServerConfig serverConfig = new LHServerConfig(serverProperties);
 
         for (NewTopic topic : serverConfig.getAllTopics()) {
             serverConfig.createKafkaTopic(topic);

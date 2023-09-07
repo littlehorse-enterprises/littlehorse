@@ -1,6 +1,6 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class AHConditionalsNotEquals extends WorkflowLogicTest {
 
-    public AHConditionalsNotEquals(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
+    public AHConditionalsNotEquals(LHPublicApiBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 

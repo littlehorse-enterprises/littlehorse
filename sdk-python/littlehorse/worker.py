@@ -8,7 +8,7 @@ from littlehorse.exceptions import (
     TaskSchemaMismatchException,
 )
 from littlehorse.model.common_enums_pb2 import TaskStatus
-from littlehorse.model.object_id_pb2 import NodeRunId, TaskDefId
+from littlehorse.model.object_id_pb2 import NodeRunId, TaskDefId, TaskRunId
 from littlehorse.model.service_pb2 import (
     PollTaskRequest,
     RegisterTaskWorkerRequest,
@@ -17,13 +17,18 @@ from littlehorse.model.service_pb2 import (
     ScheduledTask,
 )
 from littlehorse.model.task_def_pb2 import TaskDef
-from littlehorse.utils import parse_value, parse_type, extract_value, timestamp_now
+from littlehorse.proto_utils import (
+    value_to_variable_value,
+    variable_type_to_type,
+    extract_value,
+    timestamp_now,
+)
 
 REPORT_TASK_DEFAULT_RETRIES = 5
 HEARTBEAT_DEFAULT_INTERVAL = 5
 
 
-class LHWorkerContext:
+class WorkerContext:
     def __init__(self, scheduled_task: ScheduledTask) -> None:
         self._scheduled_task = scheduled_task
         self._log_entries: list[str] = []
@@ -43,13 +48,13 @@ class LHWorkerContext:
         return datetime.fromtimestamp(float(self._scheduled_task.created_at.seconds))
 
     @property
-    def task_guid(self) -> str:
-        """Task global unique identifier.
+    def task_run_id(self) -> TaskRunId:
+        """Task Run Id.
 
         Returns:
-            str: An identifier.
+            TaskRunId: the ID of the associated TaskRun.
         """
-        return self._scheduled_task.task_run_id.task_guid
+        return self._scheduled_task.task_run_id
 
     @property
     def wf_run_id(self) -> str:
@@ -80,7 +85,7 @@ class LHWorkerContext:
         Returns:
             str: An idempotency key.
         """
-        return f"{self.wf_run_id}/{self.task_guid}"
+        return self.task_run_id.task_guid
 
     @property
     def task_def_name(self) -> str:
@@ -127,11 +132,10 @@ class LHWorkerContext:
         return str(
             {
                 "wf_run_id": self.wf_run_id,
-                "task_guid": self.task_guid,
+                "idempotency_key": self.idempotency_key,
                 "task_def_name": self.task_def_name,
                 "scheduled_time": str(self.scheduled_time),
                 "attempt_number": self.attempt_number,
-                "idempotency_key": self.idempotency_key,
             }
         )
 
@@ -147,12 +151,14 @@ class LHTask:
         self._validate_match()
 
     def _validate_match(self) -> None:
-        task_def_vars = [parse_type(var.type) for var in self.task_def.input_vars]
+        task_def_vars = [
+            variable_type_to_type(var.type) for var in self.task_def.input_vars
+        ]
 
         callable_params = [
             param.annotation
             for param in self._signature.parameters.values()
-            if param.annotation is not LHWorkerContext
+            if param.annotation is not WorkerContext
         ]
 
         if len(task_def_vars) != len(callable_params):
@@ -208,7 +214,7 @@ class LHTask:
             )
 
         # validate context is not repeated
-        filtered_params = filter(lambda param: param.annotation is LHWorkerContext)
+        filtered_params = filter(lambda param: param.annotation is WorkerContext)
         if len(filtered_params) > 1:
             raise TaskSchemaMismatchException(
                 f"Too many context arguments (expected 1): {names(filtered_params)}"
@@ -218,7 +224,7 @@ class LHTask:
         if len(filtered_params) > 0:
             last_parameter = list(self._signature.parameters.values())[-1]
 
-            if last_parameter.annotation is not LHWorkerContext:
+            if last_parameter.annotation is not WorkerContext:
                 raise TaskSchemaMismatchException(
                     "The WorkerContext should be the last parameter"
                 )
@@ -228,8 +234,11 @@ class LHTask:
         return self.task_def.name
 
     def has_context(self) -> bool:
-        last_parameter = list(self._signature.parameters.values())[-1]
-        return last_parameter.annotation is LHWorkerContext
+        parameters = list(self._signature.parameters.values())
+        if len(parameters) == 0:
+            return False
+        last_parameter = parameters[-1]
+        return last_parameter.annotation is WorkerContext
 
 
 class LHConnection:
@@ -256,14 +265,14 @@ class LHConnection:
         asyncio.create_task(self._execute_task(task))
 
     async def _execute_task(self, task: ScheduledTask) -> None:
-        context = LHWorkerContext(task)
+        context = WorkerContext(task)
         args: Any = [extract_value(var.value) for var in task.variables]
 
         if self._task.has_context():
             args.append(context)
 
         try:
-            output = parse_value(await self._task._callable(*args))
+            output = value_to_variable_value(await self._task._callable(*args))
             status = TaskStatus.TASK_SUCCESS
         except TypeError as te:
             output = None
@@ -282,7 +291,9 @@ class LHConnection:
             attempt_number=task.attempt_number,
             status=status,
             output=output,
-            log_output=parse_value(context.log_output) if context.log_output else None,
+            log_output=value_to_variable_value(context.log_output)
+            if context.log_output
+            else None,
         )
 
         asyncio.create_task(self._report_task(task_result, REPORT_TASK_DEFAULT_RETRIES))
@@ -376,6 +387,15 @@ class LHTaskWorker:
     def __init__(
         self, callable: Callable[..., Any], task_def_name: str, config: LHConfig
     ) -> None:
+        if config is None:
+            raise ValueError("LHConfig cannot be None")
+
+        if task_def_name is None:
+            raise ValueError("TaskDefName cannot be None")
+
+        if callable is None:
+            raise ValueError("Callable cannot be None")
+
         self._config = config
         self._connections: dict[str, LHConnection] = {}
         self.running = False
@@ -406,7 +426,7 @@ class LHTaskWorker:
                 )
             except Exception as e:
                 self._log.error(
-                    "Error when registering task worker: %s. Closing. %s",
+                    "Error when registering task worker: %s. %s",
                     self._task.task_name,
                     e,
                 )

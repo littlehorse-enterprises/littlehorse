@@ -48,7 +48,7 @@ message ExternalEventId {
   string external_event_def_name = 2;
   string guid = 3;
 }
-  
+
 message WfRunId {
   string id = 1;
 }

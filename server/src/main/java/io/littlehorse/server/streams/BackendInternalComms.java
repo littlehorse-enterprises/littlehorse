@@ -13,8 +13,8 @@ import io.grpc.ServerCredentials;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -41,6 +41,7 @@ import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.util.AsyncWaiters;
+import io.littlehorse.server.streams.util.MetadataCache;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -74,11 +75,9 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 @Slf4j
 public class BackendInternalComms implements Closeable {
 
-    private LHConfig config;
+    private LHServerConfig config;
     private Server internalGrpcServer;
     private KafkaStreams coreStreams;
-    private KafkaStreams timerStreams;
-    private StreamsClusterHealthTracker streamsHealth;
 
     @Getter
     private HostInfo thisHost;
@@ -91,11 +90,17 @@ public class BackendInternalComms implements Closeable {
     private AsyncWaiters asyncWaiters;
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
+    private MetadataCache metadataCache;
+
     public BackendInternalComms(
-            LHConfig config, KafkaStreams coreStreams, KafkaStreams timerStreams, Executor executor) {
+            LHServerConfig config,
+            KafkaStreams coreStreams,
+            KafkaStreams timerStreams,
+            Executor executor,
+            MetadataCache metadataCache) {
         this.config = config;
         this.coreStreams = coreStreams;
-        this.timerStreams = timerStreams;
+        this.metadataCache = metadataCache;
         this.channels = new HashMap<>();
         otherHosts = new ConcurrentHashMap<>();
 
@@ -120,8 +125,6 @@ public class BackendInternalComms implements Closeable {
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
         this.producer = config.getProducer();
         this.asyncWaiters = new AsyncWaiters();
-
-        this.streamsHealth = new StreamsClusterHealthTracker(this, config);
 
         // TODO: Optimize this later.
         new Thread(() -> {
@@ -175,6 +178,7 @@ public class BackendInternalComms implements Closeable {
                             .getObject(GetObjectRequest.newBuilder()
                                     .setObjectType(objectId.getType())
                                     .setObjectId(objectId.toString())
+                                    .setPartition(metadata.partition())
                                     .build())
                             .getResponse()
                             .toByteArray(),
@@ -369,41 +373,6 @@ public class BackendInternalComms implements Closeable {
                         .build());
                 observer.onCompleted();
             }
-        }
-
-        @Override
-        public void topologyInstancesState(Empty req, StreamObserver<TopologyInstanceStateResponse> ctx) {
-            var coreServerStates = streamsHealth.buildServerStates(coreStreams, "core");
-            var timerServerStates = streamsHealth.buildServerStates(timerStreams, "timer");
-
-            TopologyInstanceStateResponse response = TopologyInstanceStateResponse.newBuilder()
-                    .addAllServersCore(coreServerStates)
-                    .addAllServersTimer(timerServerStates)
-                    .build();
-
-            ctx.onNext(response);
-            ctx.onCompleted();
-        }
-
-        @Override
-        public void localTasks(Empty req, StreamObserver<LocalTasksResponse> ctx) {
-            List<TaskStatePb> activeTasks = coreStreams.metadataForLocalThreads().stream()
-                    .flatMap(threadMetadata -> threadMetadata.activeTasks().stream())
-                    .flatMap(taskMetadata -> streamsHealth.buildActiveTasksStatePb(taskMetadata).stream())
-                    .collect(Collectors.toList());
-
-            List<StandByTaskStatePb> standbyTasks = coreStreams.metadataForLocalThreads().stream()
-                    .flatMap(threadMetadata -> threadMetadata.standbyTasks().stream())
-                    .flatMap(taskMetadata -> streamsHealth.buildStandbyTasksStatePb(taskMetadata).stream())
-                    .collect(Collectors.toList());
-
-            LocalTasksResponse response = LocalTasksResponse.newBuilder()
-                    .addAllActiveTasks(activeTasks)
-                    .addAllStandbyTasks(standbyTasks)
-                    .build();
-
-            ctx.onNext(response);
-            ctx.onCompleted();
         }
 
         @Override
@@ -705,7 +674,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     public ReadOnlyMetadataStore getGlobalStoreImpl() {
-        return new ReadOnlyMetadataStore(getStore(null, true, ServerTopology.GLOBAL_METADATA_STORE));
+        return new ReadOnlyMetadataStore(getStore(null, true, ServerTopology.GLOBAL_METADATA_STORE), metadataCache);
     }
 
     private InternalScanResponse localAllPartitionTagScan(InternalScan req) {
@@ -849,14 +818,14 @@ public class BackendInternalComms implements Closeable {
         return out;
     }
 
-    private static boolean isCommandProcessor(TaskMetadata task, LHConfig config) {
+    private static boolean isCommandProcessor(TaskMetadata task, LHServerConfig config) {
         for (TopicPartition tPart : task.topicPartitions()) {
             if (isCommandProcessor(tPart, config)) return true;
         }
         return false;
     }
 
-    private static boolean isCommandProcessor(TopicPartition tPart, LHConfig config) {
+    private static boolean isCommandProcessor(TopicPartition tPart, LHServerConfig config) {
         return tPart.topic().equals(config.getCoreCmdTopicName());
     }
 }

@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.storeinternals;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.AbstractGetable;
@@ -31,7 +31,7 @@ public class GetableStorageManager {
     public GetableStorageManager(
             RocksDBWrapper rocksdb,
             final ProcessorContext<String, CommandProcessorOutput> ctx,
-            LHConfig config,
+            LHServerConfig config,
             CommandModel command,
             CoreProcessorDAO dao) {
 
@@ -292,7 +292,7 @@ public class GetableStorageManager {
     }
 
     // Note that this is an expensive operation. It's used by External Event Nodes.
-    // @SuppressWarnings("all")
+    @SuppressWarnings("unchecked")
     private <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefix(
             String prefix, Class<T> cls) {
         Map<String, GetableToStore<U, T>> all = new HashMap<>();

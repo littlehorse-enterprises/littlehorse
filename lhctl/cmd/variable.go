@@ -71,7 +71,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get variable'.
 
 Choose one of the following option groups:
 [wfRunId]
-[varType, value, name, wfSpecName] (Can optionally provide --wfSpecVersion)
+[varType, value, name, wfSpecName, wfSpecVersion]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		token, _ := cmd.Flags().GetString("token")
@@ -112,17 +112,12 @@ Choose one of the following option groups:
 
 			}
 
-			v := &wfSpecVersion
-			if *v == -1 {
-				v = nil
-			}
-
 			search = model.SearchVariableRequest{
 				VariableCriteria: &model.SearchVariableRequest_Value{
 					Value: &model.SearchVariableRequest_NameAndValueRequest{
 						Value:         content,
 						VarName:       name,
-						WfSpecVersion: v,
+						WfSpecVersion: wfSpecVersion,
 						WfSpecName:    wfSpecName,
 					},
 				},
@@ -174,7 +169,7 @@ func init() {
 	searchVariableCmd.Flags().String("value", "", "value of variable to search for")
 	searchVariableCmd.Flags().String("name", "", "name of the variable to search for")
 	searchVariableCmd.Flags().String("wfSpecName", "", "name of WfSpec")
-	searchVariableCmd.Flags().Int32("wfSpecVersion", -1, "WfSpecVersion to search for")
+	searchVariableCmd.Flags().Int32("wfSpecVersion", 0, "WfSpecVersion to search for")
 
-	searchVariableCmd.MarkFlagsRequiredTogether("name", "value", "varType", "wfSpecName")
+	searchVariableCmd.MarkFlagsRequiredTogether("name", "value", "varType", "wfSpecName", "wfSpecVersion")
 }

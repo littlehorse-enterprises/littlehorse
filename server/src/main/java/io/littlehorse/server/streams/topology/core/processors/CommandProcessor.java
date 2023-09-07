@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
@@ -25,15 +25,15 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private CoreProcessorDAOImpl dao;
-    private LHConfig config;
+    private LHServerConfig config;
     private KafkaStreamsServerImpl server;
     private RocksDBWrapper rocksdb;
-    private final MetadataCache wfSpecCache;
+    private final MetadataCache metadataCache;
 
-    public CommandProcessor(LHConfig config, KafkaStreamsServerImpl server, MetadataCache wfSpecCache) {
+    public CommandProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         this.config = config;
         this.server = server;
-        this.wfSpecCache = wfSpecCache;
+        this.metadataCache = metadataCache;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
         ReadOnlyRocksDBWrapper globalStore =
                 new ReadOnlyRocksDBWrapper(ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), config);
 
-        dao = new CoreProcessorDAOImpl(this.ctx, config, server, wfSpecCache, rocksdb, globalStore);
+        dao = new CoreProcessorDAOImpl(this.ctx, config, server, metadataCache, rocksdb, globalStore);
         dao.onPartitionClaimed();
         ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
     }

@@ -49,4 +49,6 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
     public CoreProcessorDAO getDao() {
         return nodeRunModel.getThreadRun().getWfRunModel().getDao();
     }
+
+    public void halt() {}
 }

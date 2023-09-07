@@ -1,6 +1,6 @@
 package io.littlehorse.server.streams;
 
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
@@ -82,9 +82,9 @@ public class ServerTopology {
 
     public static final String GLOBAL_METADATA_SINK = "global-metadata-sink";
 
-    public static Topology initCoreTopology(LHConfig config, KafkaStreamsServerImpl server) {
+    public static Topology initCoreTopology(
+            LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         Topology topo = new Topology();
-        MetadataCache wfSpecCache = new MetadataCache();
         Serializer<Object> sinkValueSerializer = (topic, output) -> {
             CommandProcessorOutput cpo = (CommandProcessorOutput) output;
             if (cpo.payload == null) {
@@ -108,7 +108,8 @@ public class ServerTopology {
                 new LHDeserializer<>(MetadataCommandModel.class), // value deserializer
                 config.getMetadataCmdTopicName() // source topic
                 );
-        topo.addProcessor(METADATA_PROCESSOR, () -> new MetadataProcessor(config, server), METADATA_SOURCE);
+        topo.addProcessor(
+                METADATA_PROCESSOR, () -> new MetadataProcessor(config, server, metadataCache), METADATA_SOURCE);
         StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(METADATA_STORE), Serdes.String(), Serdes.Bytes());
         topo.addStateStore(metadataStoreBuilder, METADATA_PROCESSOR);
@@ -120,7 +121,7 @@ public class ServerTopology {
                 new LHDeserializer<>(CommandModel.class), // value deserializer
                 config.getCoreCmdTopicName() // source topic
                 );
-        topo.addProcessor(CORE_PROCESSOR, () -> new CommandProcessor(config, server, wfSpecCache), CORE_SOURCE);
+        topo.addProcessor(CORE_PROCESSOR, () -> new CommandProcessor(config, server, metadataCache), CORE_SOURCE);
         topo.addSink(
                 CORE_PROCESSOR_SINK,
                 sinkTopicNameExtractor, // topic extractor
@@ -148,7 +149,7 @@ public class ServerTopology {
                         Stores.persistentKeyValueStore(GLOBAL_METADATA_STORE), Serdes.String(), Serdes.Bytes())
                 .withLoggingDisabled();
 
-        String metadataStoreChangelog = LHConfig.getMetadataStoreChangelogTopic(config.getLHClusterId());
+        String metadataStoreChangelog = LHServerConfig.getMetadataStoreChangelogTopic(config.getLHClusterId());
         topo.addGlobalStore(
                 globalStoreBuilder,
                 GLOBAL_METADATA_SOURCE, // source created by Streams internally
@@ -156,11 +157,11 @@ public class ServerTopology {
                 Serdes.Bytes().deserializer(),
                 metadataStoreChangelog, // input topic
                 GLOBAL_METADATA_PROCESSOR,
-                () -> new MetadataGlobalStoreProcessor(wfSpecCache));
+                () -> new MetadataGlobalStoreProcessor(metadataCache));
         return topo;
     }
 
-    public static Topology initTimerTopology(LHConfig config) {
+    public static Topology initTimerTopology(LHServerConfig config) {
         Topology topo = new Topology();
         Serde<LHTimer> timerSerde = new LHSerde<>(LHTimer.class);
 

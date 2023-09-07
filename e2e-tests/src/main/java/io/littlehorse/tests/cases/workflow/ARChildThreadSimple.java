@@ -1,6 +1,6 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -20,7 +20,7 @@ import java.util.List;
 
 public class ARChildThreadSimple extends WorkflowLogicTest {
 
-    public ARChildThreadSimple(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
+    public ARChildThreadSimple(LHPublicApiBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 

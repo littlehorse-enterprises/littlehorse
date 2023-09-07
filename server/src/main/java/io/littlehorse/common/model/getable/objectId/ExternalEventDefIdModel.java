@@ -47,6 +47,6 @@ public class ExternalEventDefIdModel extends MetadataId<ExternalEventDefId, Exte
 
     @Override
     public GetableClassEnum getType() {
-        return GetableClassEnum.WF_SPEC;
+        return GetableClassEnum.EXTERNAL_EVENT_DEF;
     }
 }

@@ -1,6 +1,6 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -45,7 +45,7 @@ public class UserTasksExample {
         );
 
         // Get the IT Request
-        UserTaskOutput formOutput = thread.assignUserTaskToUser(
+        UserTaskOutput formOutput = thread.assignTaskToUser(
             IT_REQUEST_FORM,
             userId,
             "testGroup"
@@ -62,7 +62,7 @@ public class UserTasksExample {
 
         // Have Finance approve the request
         UserTaskOutput financeUserTaskOutput = thread
-            .assignUserTaskToUserGroup(APPROVAL_FORM, "finance")
+            .assignTaskToUserGroup(APPROVAL_FORM, "finance")
             .withNotes(
                 thread.format(
                     "User {0} is requesting to buy item {1}.\nJustification: {2}",
@@ -73,14 +73,14 @@ public class UserTasksExample {
             );
         String financeTeamEmailBody = "Hi finance team, you have a new assigned task";
         String financeTeamEmail = "finance@gmail.com";
-        thread.scheduleTaskAfter(
+        thread.scheduleReminderTask(
             financeUserTaskOutput,
             2,
             EMAIL_TASK_NAME,
             financeTeamEmail,
             financeTeamEmailBody
         );
-        thread.scheduleReassignmentToUserOnDeadline(
+        thread.reassignToUserOnDeadline(
             financeUserTaskOutput,
             "test-eduwer",
             60
@@ -131,7 +131,7 @@ public class UserTasksExample {
         return props;
     }
 
-    public LHTaskWorker getTaskWorker(LHWorkerConfig config) throws IOException {
+    public LHTaskWorker getTaskWorker(LHConfig config) throws IOException {
         EmailSender executable = new EmailSender();
         LHTaskWorker worker = new LHTaskWorker(executable, "send-email", config);
 
@@ -147,7 +147,7 @@ public class UserTasksExample {
     public void doMain() throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
-        LHWorkerConfig config = new LHWorkerConfig(props);
+        LHConfig config = new LHConfig(props);
         LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow

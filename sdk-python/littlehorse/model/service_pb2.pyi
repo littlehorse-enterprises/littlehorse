@@ -588,14 +588,6 @@ class ResumeWfRunRequest(_message.Message):
     thread_run_number: int
     def __init__(self, wf_run_id: _Optional[str] = ..., thread_run_number: _Optional[int] = ...) -> None: ...
 
-class HealthCheckResponse(_message.Message):
-    __slots__ = ["core_state", "timer_state"]
-    CORE_STATE_FIELD_NUMBER: _ClassVar[int]
-    TIMER_STATE_FIELD_NUMBER: _ClassVar[int]
-    core_state: LHHealthResult
-    timer_state: LHHealthResult
-    def __init__(self, core_state: _Optional[_Union[LHHealthResult, str]] = ..., timer_state: _Optional[_Union[LHHealthResult, str]] = ...) -> None: ...
-
 class TaskDefMetricsQueryRequest(_message.Message):
     __slots__ = ["window_start", "window_type", "task_def_name"]
     WINDOW_START_FIELD_NUMBER: _ClassVar[int]
