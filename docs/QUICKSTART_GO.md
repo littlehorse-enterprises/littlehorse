@@ -14,9 +14,12 @@ cd lhctl
 go install .
 ```
 
-> Make sure it's on the path <br />
-> `export GOPATH="$(go env GOPATH)"` <br />
-> `export PATH="$PATH:$GOPATH/bin"`
+Update your path:
+
+```
+export GOPATH="$(go env GOPATH)"
+export PATH="$PATH:$GOPATH/bin"
+```
 
 Verify the installation:
 
@@ -27,7 +30,7 @@ lhctl
 Start your LH Server with:
 
 ```
-docker run --name littlehorse -d -p 2023:2023 public.ecr.aws/littlehorse/littlehorse-standalone:latest
+docker run --name littlehorse -d -p 2023:2023 public.ecr.aws/littlehorse/lh-standalone:latest
 ```
 
 When you run the LH Server according to the command above, the API Host is `localhost` and the API Port is `2023`.
