@@ -16,7 +16,7 @@ if [ "$1" == "--quick" ]; then
     echo "Building server image using host machine's gradle cache"
     gradle server:shadowJar -x test
 
-    docker build --tag littlehorse/littlehorse-server:latest -f- . <<EOF
+    docker build --tag littlehorse/lh-server:latest -f- . <<EOF
 FROM amazoncorretto:17
 WORKDIR /lh
 COPY ./docker/server/docker-entrypoint.sh /lh
@@ -32,9 +32,9 @@ else
 
     echo "Building server"
     docker build --file ${LH_SERVER_WORK_DIR}/Dockerfile \
-        --tag littlehorse/littlehorse-server:latest ${CONTEXT_DIR}
+        --tag littlehorse/lh-server:latest ${CONTEXT_DIR}
 
     echo "Building standalone"
     docker build --file ${LH_STANDALONE_WORK_DIR}/Dockerfile \
-        --tag littlehorse/littlehorse-standalone:latest ${CONTEXT_DIR}
+        --tag littlehorse/lh-standalone:latest ${CONTEXT_DIR}
 fi

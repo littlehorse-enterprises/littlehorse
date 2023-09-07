@@ -15,9 +15,12 @@ Install `lhctl`:
 go install github.com/littlehorse-enterprises/littlehorse/lhctl@latest
 ```
 
-> Make sure it's on the path <br />
-> `export GOPATH="$(go env GOPATH)"` <br />
-> `export PATH="$PATH:$GOPATH/bin"`
+Update your path:
+
+```
+export GOPATH="$(go env GOPATH)"
+export PATH="$PATH:$GOPATH/bin"
+```
 
 Verify the installation:
 
@@ -28,7 +31,7 @@ lhctl
 Start a LH Server with:
 
 ```
-docker run --name littlehorse -d -p 2023:2023 public.ecr.aws/littlehorse/littlehorse-standalone:latest
+docker run --name littlehorse -d -p 2023:2023 public.ecr.aws/littlehorse/lh-standalone:latest
 ```
 
 > This example is intended to be used in development environments.

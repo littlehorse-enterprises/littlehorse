@@ -86,7 +86,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
           ECR_REGISTRY_ALIAS: littlehorse
-          ECR_REPOSITORY: littlehorse-server
+          ECR_REPOSITORY: lh-server
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
           docker build -f docker/server/Dockerfile -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
@@ -97,7 +97,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
           ECR_REGISTRY_ALIAS: littlehorse
-          ECR_REPOSITORY: littlehorse-standalone
+          ECR_REPOSITORY: lh-standalone
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
           docker build -f docker/standalone/Dockerfile -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
