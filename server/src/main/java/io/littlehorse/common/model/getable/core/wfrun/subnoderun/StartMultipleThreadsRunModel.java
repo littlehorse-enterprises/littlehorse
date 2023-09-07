@@ -9,6 +9,8 @@ import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.StartMultipleThreadsNodeModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.StartMultipleThreadsRun;
@@ -16,6 +18,7 @@ import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
@@ -65,18 +68,28 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
             for (Object threadInput : iterable.getJsonArrVal()) {
                 VariableValueModel iterInput =
                         LHSerializable.fromProto(LHLibUtil.objToVarVal(threadInput), VariableValueModel.class);
+
+                StartMultipleThreadsNodeModel node = nodeRunModel.getNode().getStartMultipleThreadsNode();
+
+                // Construct input variables
+                Map<String, VariableValueModel> inputs = new HashMap<>();
+
+                for (Map.Entry<String, VariableAssignmentModel> inputVar :
+                        node.getVariables().entrySet()) {
+                    inputs.put(inputVar.getKey(), nodeRunModel.getThreadRun().assignVariable(inputVar.getValue()));
+                }
+
+                String threadSpecName = node.getThreadSpecName();
+                int parentThreadNumber = nodeRunModel.getThreadRunNumber();
+                ThreadSpecModel threadSpec = getWfSpec().getThreadSpecs().get(threadSpecName);
+                if (threadSpec.getInputVariableDefs().containsKey(ThreadBuilder.HANDLER_INPUT_VAR)) {
+                    inputs.put(ThreadBuilder.HANDLER_INPUT_VAR, iterInput);
+                }
+
                 ThreadRunModel child = nodeRunModel
                         .getThreadRun()
                         .getWfRunModel()
-                        .startThread(
-                                nodeRunModel
-                                        .getNode()
-                                        .getStartMultipleThreadsNode()
-                                        .getThreadSpecName(),
-                                time,
-                                nodeRunModel.threadRunNumber,
-                                Map.of(ThreadBuilder.HANDLER_INPUT_VAR, iterInput),
-                                ThreadType.CHILD);
+                        .startThread(threadSpecName, time, parentThreadNumber, inputs, ThreadType.CHILD);
                 createdThreads.add(child.getNumber());
             }
             VariableValueModel nodeOutput =

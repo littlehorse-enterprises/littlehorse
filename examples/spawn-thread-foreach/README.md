@@ -5,7 +5,7 @@ In this example you will see how to spawn multiples threads base on a INPUT json
 Let's run the example in `ConditionalsWhileExample.java`
 
 ```
-gradle example-spawn-parallel-threads-from-json-arr-variable:run
+gradle example-spawn-thread-foreach:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:
@@ -20,9 +20,9 @@ In addition, you can check the result with:
 # This call shows the result
 lhctl get wfRun <wf_run_id>
 
-# This will show you all nodes in tha run
-lhctl list nodeRun <wf_run_id>
+# See the input variables to each ThreadRun
+lhctl get variable <wf_run_id> 1 INPUT  # yoda
+lhctl get variable <wf_run_id> 2 INPUT  # chewbacca
+lhctl get variable <wf_run_id> 3 INPUT  # anakin
 
-# This shows the task run information
-lhctl get taskRun <wf_run_id> <task_run_global_id>
 ```

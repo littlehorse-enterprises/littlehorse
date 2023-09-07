@@ -4,10 +4,10 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SpawnParallelThreadsFromJsonArrVariableWorker {
+public class SpawnThreadForEachWorker {
 
     private static final Logger log = LoggerFactory.getLogger(
-        SpawnParallelThreadsFromJsonArrVariableWorker.class
+        SpawnThreadForEachWorker.class
     );
 
     @LHTaskMethod("task-executor")

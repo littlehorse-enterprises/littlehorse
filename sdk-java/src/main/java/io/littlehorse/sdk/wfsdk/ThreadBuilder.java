@@ -322,5 +322,28 @@ public interface ThreadBuilder {
      */
     void mutate(WfRunVariable lhs, VariableMutationType type, Object rhs);
 
+    /**
+     * Given a WfRunVariable of type JSON_ARR, this function iterates over each object in that list
+     * and creates a Child ThreadRun for each item. The list item is provided as an input variable
+     * to the Child ThreadRun with the name `INPUT`.
+     * @param arrVar is a WfRunVariable of type JSON_ARR that we iterate over.
+     * @param threadName is the name to assign to the created ThreadSpec.
+     * @param threadFunc is the function that defnes the ThreadSpec.
+     * @return a SpawnedThreads handle which we can use to wait for all child threads.
+     */
     SpawnedThreads spawnThreadForEach(WfRunVariable arrVar, String threadName, ThreadFunc threadFunc);
+
+    /**
+     * Given a WfRunVariable of type JSON_ARR, this function iterates over each object in that list
+     * and creates a Child ThreadRun for each item. The list item is provided as an input variable
+     * to the Child ThreadRun with the name `INPUT`.
+     * @param arrVar is a WfRunVariable of type JSON_ARR that we iterate over.
+     * @param threadName is the name to assign to the created ThreadSpec.
+     * @param threadFunc is the function that defnes the ThreadSpec.
+     * @param inputVars is a map of input variables to pass to each child ThreadRun in addition
+     *   to the list item.
+     * @return a SpawnedThreads handle which we can use to wait for all child threads.
+     */
+    SpawnedThreads spawnThreadForEach(
+            WfRunVariable arrVar, String threadName, ThreadFunc threadFunc, Map<String, Object> inputVars);
 }

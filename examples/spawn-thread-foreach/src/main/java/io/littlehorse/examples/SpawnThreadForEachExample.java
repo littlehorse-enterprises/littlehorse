@@ -12,6 +12,7 @@ import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -20,10 +21,10 @@ import org.slf4j.LoggerFactory;
 /*
  * In this example you will see how to spawn multiples threads base on a INPUT json array.
  */
-public class SpawnParallelThreadsFromJsonArrVariableExample {
+public class SpawnThreadForEachExample {
 
     private static final Logger log = LoggerFactory.getLogger(
-        SpawnParallelThreadsFromJsonArrVariableExample.class
+        SpawnThreadForEachExample.class
     );
 
     public static Workflow getWorkflow() {
@@ -36,9 +37,12 @@ public class SpawnParallelThreadsFromJsonArrVariableExample {
                 );
                 SpawnedThreads spawnedThreads = thread.spawnThreadForEach(approvalChain.jsonPath("$.approvals"), "spawn-threads", innerThread -> {
                     // It is mandatory to use ThreadBuilder.HANDLER_INPUT_VAR at the moment.
+                    innerThread.addVariable("not-used-variable", VariableType.INT);
                     WfRunVariable inputVariable = innerThread.addVariable(ThreadBuilder.HANDLER_INPUT_VAR, VariableType.JSON_OBJ);
                     innerThread.execute("task-executor", inputVariable.jsonPath("$.user"));
-                });
+                },
+                Map.of("not-used-variable", 1234)
+                );
                 thread.waitForThreads(spawnedThreads);
 
                 thread.execute("task-executor", approvalChain.jsonPath("$.description"));
@@ -57,7 +61,7 @@ public class SpawnParallelThreadsFromJsonArrVariableExample {
     }
 
     public static LHTaskWorker getTaskWorker(LHConfig config) throws IOException {
-        SpawnParallelThreadsFromJsonArrVariableWorker executable = new SpawnParallelThreadsFromJsonArrVariableWorker();
+        SpawnThreadForEachWorker executable = new SpawnThreadForEachWorker();
         LHTaskWorker worker = new LHTaskWorker(executable, "task-executor", config);
 
         // Gracefully shutdown

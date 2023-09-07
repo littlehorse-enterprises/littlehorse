@@ -403,13 +403,24 @@ final class ThreadBuilderImpl implements ThreadBuilder {
 
     @Override
     public SpawnedThreads spawnThreadForEach(WfRunVariable wfRunVariable, String threadName, ThreadFunc threadFunc) {
+        return spawnThreadForEach(wfRunVariable, threadName, threadFunc, Map.of());
+    }
+
+    @Override
+    public SpawnedThreads spawnThreadForEach(
+            WfRunVariable wfRunVariable, String threadName, ThreadFunc threadFunc, Map<String, Object> inputVars) {
+
         checkIfIsActive();
         String finalThreadName = parent.addSubThread(threadName, threadFunc);
-        StartMultipleThreadsNode startMultiplesThreadNode = StartMultipleThreadsNode.newBuilder()
+        StartMultipleThreadsNode.Builder startMultiplesThreadNode = StartMultipleThreadsNode.newBuilder()
                 .setThreadSpecName(finalThreadName)
-                .setIterable(assignVariable(wfRunVariable))
-                .build();
-        String nodeName = addNode(threadName, NodeCase.START_MULTIPLE_THREADS, startMultiplesThreadNode);
+                .setIterable(assignVariable(wfRunVariable));
+
+        for (Map.Entry<String, Object> inputVar : inputVars.entrySet()) {
+            startMultiplesThreadNode.putVariables(inputVar.getKey(), assignVariable(inputVar.getValue()));
+        }
+
+        String nodeName = addNode(threadName, NodeCase.START_MULTIPLE_THREADS, startMultiplesThreadNode.build());
         WfRunVariableImpl internalStartedThreadVar = addVariable(nodeName, VariableType.JSON_ARR);
         mutate(internalStartedThreadVar, VariableMutationType.ASSIGN, new NodeOutputImpl(nodeName, this));
         return new SpawnedThreadsImpl(this, threadName, internalStartedThreadVar);
