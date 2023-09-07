@@ -3,7 +3,7 @@ package io.littlehorse.sdk.worker;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
@@ -42,7 +42,7 @@ public class LHTaskWorker implements Closeable {
     };
 
     private Object executable;
-    private LHWorkerConfig config;
+    private LHConfig config;
     private TaskDef taskDef;
     private Method taskMethod;
     private List<VariableMapping> mappings;
@@ -57,9 +57,10 @@ public class LHTaskWorker implements Closeable {
      * @param executable is any Object which has exactly one method annotated with '@LHTaskMethod'.
      *     That method will be used to execute the tasks.
      * @param taskDefName is the name of the `TaskDef` to execute.
-     * @param config is a valid LHWorkerConfig.
+     * @param config is a valid LHConfig.
+     * @throws IOException
      */
-    public LHTaskWorker(Object executable, String taskDefName, LHWorkerConfig config) throws IOException {
+    public LHTaskWorker(Object executable, String taskDefName, LHConfig config) throws IOException {
         this.config = config;
         this.executable = executable;
         this.mappings = new ArrayList<>();
@@ -85,7 +86,6 @@ public class LHTaskWorker implements Closeable {
      * Checks if the TaskDef exists
      *
      * @return true if the task is registered or false otherwise
-     * @throws LHApiError if the call fails.
      */
     public boolean doesTaskDefExist() {
         try {
@@ -103,7 +103,6 @@ public class LHTaskWorker implements Closeable {
      * Deploys the TaskDef object to the LH Server. This is a convenience method, generally not
      * recommended for production (in production you should manually use the PutTaskDef).
      *
-     * @throws LHApiError if the call fails.
      */
     public void registerTaskDef() {
         registerTaskDef(false);
@@ -180,9 +179,7 @@ public class LHTaskWorker implements Closeable {
     /**
      * Starts polling for and executing tasks.
      *
-     * @throws LHApiError if the schema from the TaskDef configured in the configProps is
-     *     incompatible with the method signature from the provided executable Java object, or if
-     *     the Worker cannot connect to the LH Server.
+     * @throws IOException if unexpected error occurs opening connections.
      */
     public void start() throws IOException {
         if (!doesTaskDefExist()) {

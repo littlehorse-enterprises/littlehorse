@@ -12,6 +12,7 @@ class LHStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     HALTING: _ClassVar[LHStatus]
     HALTED: _ClassVar[LHStatus]
     ERROR: _ClassVar[LHStatus]
+    EXCEPTION: _ClassVar[LHStatus]
 
 class TaskStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
@@ -40,12 +41,18 @@ class VariableType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     INT: _ClassVar[VariableType]
     BYTES: _ClassVar[VariableType]
     NULL: _ClassVar[VariableType]
+
+class WaitForThreadsPolicy(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    WAIT_FOR_COMPLETION: _ClassVar[WaitForThreadsPolicy]
+    STOP_ON_FAILURE: _ClassVar[WaitForThreadsPolicy]
 STARTING: LHStatus
 RUNNING: LHStatus
 COMPLETED: LHStatus
 HALTING: LHStatus
 HALTED: LHStatus
 ERROR: LHStatus
+EXCEPTION: LHStatus
 TASK_SCHEDULED: TaskStatus
 TASK_RUNNING: TaskStatus
 TASK_SUCCESS: TaskStatus
@@ -65,3 +72,5 @@ STR: VariableType
 INT: VariableType
 BYTES: VariableType
 NULL: VariableType
+WAIT_FOR_COMPLETION: WaitForThreadsPolicy
+STOP_ON_FAILURE: WaitForThreadsPolicy

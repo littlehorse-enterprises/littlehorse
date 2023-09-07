@@ -1,6 +1,6 @@
 package io.littlehorse.server.streams.storeinternals;
 
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.RemoveRemoteTag;
@@ -22,7 +22,7 @@ public class TagStorageManager {
 
     private RocksDBWrapper localStore;
     private ProcessorContext<String, CommandProcessorOutput> context;
-    private LHConfig lhConfig;
+    private LHServerConfig lhConfig;
 
     public void store(Collection<Tag> newTags, TagsCache preExistingTags) {
         List<String> newTagIds = newTags.stream().map(tag -> tag.getStoreKey()).toList();

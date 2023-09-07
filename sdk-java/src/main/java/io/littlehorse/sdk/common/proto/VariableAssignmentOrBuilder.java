@@ -71,5 +71,5 @@ public interface VariableAssignmentOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableAssignment.FormatStringOrBuilder getFormatStringOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase getSourceCase();
+  io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase getSourceCase();
 }

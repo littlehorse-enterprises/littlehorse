@@ -1,6 +1,6 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ASChildThreadFails extends WorkflowLogicTest {
 
-    public ASChildThreadFails(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
+    public ASChildThreadFails(LHPublicApiBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -52,7 +52,7 @@ public class ASChildThreadFails extends WorkflowLogicTest {
             throws TestFailure, InterruptedException, IOException {
         String wfRunId = runWf(client);
         Thread.sleep(500);
-        assertStatus(client, wfRunId, LHStatus.ERROR);
+        assertStatus(client, wfRunId, LHStatus.EXCEPTION);
 
         // The parent should only execute one task.
         assertTaskOutputsMatch(client, wfRunId, 0, new ASSimpleTask().obiwan());

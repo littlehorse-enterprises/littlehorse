@@ -1,9 +1,11 @@
 package io.littlehorse.sdk.common.auth;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 
 @Getter
 @Builder
@@ -12,16 +14,23 @@ public class TokenStatus {
 
     private String token;
     private Instant expiration;
+    private String clientId;
 
-    public boolean isExpired() {
+    public TokenStatus(@NonNull String token, Instant expiration, String clientId) {
+        this.token = token;
+
         if (expiration == null) {
-            return true;
+            expiration = Instant.MIN;
         }
-        return expiration.isBefore(Instant.now());
+        this.expiration = expiration.truncatedTo(ChronoUnit.SECONDS);
+        this.clientId = clientId;
     }
 
-    @Override
-    public String toString() {
-        return String.format("IntrospectResponse [expired=%s, expiration date=%s]", isExpired(), expiration);
+    public boolean isValid() {
+        if (clientId == null) {
+            return false;
+        }
+
+        return expiration.isAfter(Instant.now().truncatedTo(ChronoUnit.SECONDS));
     }
 }

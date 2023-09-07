@@ -92,4 +92,9 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
         // TODO: this should update metrics
         task.scheduleAttempt();
     }
+
+    @Override
+    public void halt() {
+        // ignoring...
+    }
 }

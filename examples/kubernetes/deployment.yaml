@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: littlehorse-sandbox
-          image: littlehorse.io/littlehorse-server:latest
+          image: public.ecr.aws/littlehorse/littlehorse-server:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 2023
@@ -27,9 +27,17 @@ spec:
               value: "true"
             - name: LHS_STATE_DIR
               value: /kafkaState
+            - name: LHS_HEALTH_SERVICE_PORT
+              value: "1822"
           volumeMounts:
             - name: littlehorse-sandbox
               mountPath: /kafkaState
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: 1822
+            initialDelaySeconds: 5
+            periodSeconds: 5
       volumes:
         - name: littlehorse-sandbox
           persistentVolumeClaim:

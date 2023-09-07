@@ -26,11 +26,6 @@ private static final long serialVersionUID = 0L;
     return new VariableAssignment();
   }
 
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_descriptor;
@@ -110,11 +105,6 @@ private static final long serialVersionUID = 0L;
       return new FormatString();
     }
 
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_FormatString_descriptor;
@@ -322,11 +312,13 @@ private static final long serialVersionUID = 0L;
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static io.littlehorse.sdk.common.proto.VariableAssignment.FormatString parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
+
     public static io.littlehorse.sdk.common.proto.VariableAssignment.FormatString parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1027,6 +1019,7 @@ private static final long serialVersionUID = 0L;
 
   private int bitField0_;
   private int sourceCase_ = 0;
+  @SuppressWarnings("serial")
   private java.lang.Object source_;
   public enum SourceCase
       implements com.google.protobuf.Internal.EnumLite,
@@ -1396,11 +1389,13 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
+
   public static io.littlehorse.sdk.common.proto.VariableAssignment parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
+
   public static io.littlehorse.sdk.common.proto.VariableAssignment parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)

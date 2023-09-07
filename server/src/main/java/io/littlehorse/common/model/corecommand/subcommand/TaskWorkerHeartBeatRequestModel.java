@@ -4,7 +4,7 @@ import static io.littlehorse.common.LHConstants.MAX_TASK_WORKER_INACTIVITY;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.SubCommand;
@@ -43,7 +43,7 @@ public class TaskWorkerHeartBeatRequestModel extends SubCommand<TaskWorkerHeartB
     }
 
     @Override
-    public RegisterTaskWorkerResponse process(CoreProcessorDAO dao, LHConfig config) {
+    public RegisterTaskWorkerResponse process(CoreProcessorDAO dao, LHServerConfig config) {
         log.debug("Processing a heartbeat");
 
         // Get the group, a group contains all the task worker for that specific task

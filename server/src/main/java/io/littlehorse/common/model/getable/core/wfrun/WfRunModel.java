@@ -534,6 +534,9 @@ public class WfRunModel extends CoreGetable<WfRun> {
             } else if (newStatus == LHStatus.ERROR) {
                 endTime = time;
                 setStatus(LHStatus.ERROR);
+            } else if (newStatus == LHStatus.EXCEPTION) {
+                endTime = time;
+                setStatus(LHStatus.EXCEPTION);
             }
         }
 

@@ -1,6 +1,6 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class AXConditionalWhileLogic extends WorkflowLogicTest {
 
-    public AXConditionalWhileLogic(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
+    public AXConditionalWhileLogic(LHPublicApiBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 

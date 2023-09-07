@@ -21,7 +21,7 @@ message ExternalEvent {
   optional int32 node_run_position = 7;
   bool claimed = 8;
 }
-  
+
 // ExternalEventDef
 message ExternalEventDef {
   string name = 1;

@@ -74,5 +74,5 @@ public interface SearchWfRunRequestOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.SearchWfRunRequest.StatusAndNameRequestOrBuilder getStatusAndNameOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.SearchWfRunRequest.WfrunCriteriaCase getWfrunCriteriaCase();
+  io.littlehorse.sdk.common.proto.SearchWfRunRequest.WfrunCriteriaCase getWfrunCriteriaCase();
 }

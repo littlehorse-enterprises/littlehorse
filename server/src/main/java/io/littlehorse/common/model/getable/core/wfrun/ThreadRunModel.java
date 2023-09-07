@@ -294,6 +294,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         reason.threadRunModel = this;
         switch (status) {
             case COMPLETED:
+            case EXCEPTION:
             case ERROR:
                 // Already terminated, ignoring halt
                 return;
@@ -431,7 +432,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         } else if (status == LHStatus.COMPLETED) {
             // Nothing to do, this is likely an innocuous event.
             return false;
-        } else if (status == LHStatus.ERROR) {
+        } else if (status == LHStatus.ERROR || status == LHStatus.EXCEPTION) {
             // This is innocuous. Occurs when a timeout event comes in after
             // a thread fails or completes. Nothing to do.
 
@@ -508,7 +509,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public void dieForReal(FailureModel failure, Date time) {
         this.errorMessage = failure.message;
-        setStatus(LHStatus.ERROR);
+        this.status = failure.getStatus();
         this.endTime = time;
 
         for (int childId : childThreadIds) {
@@ -518,6 +519,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             hr.parentHalted = new ParentHaltedModel();
             hr.parentHalted.parentThreadId = number;
             child.halt(hr);
+            if (child.getCurrentNodeRun().isInProgress()) {
+                child.getCurrentNodeRun().halt();
+            }
         }
 
         if (interruptTriggerId != null) {
@@ -552,7 +556,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void completeCurrentNode(VariableValueModel output, Date eventTime) {
         NodeRunModel crn = getCurrentNodeRun();
         crn.status = LHStatus.COMPLETED;
-
         try {
             mutateVariables(output);
         } catch (LHVarSubError exn) {
@@ -724,7 +727,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     public boolean isTerminated() {
-        return status == LHStatus.COMPLETED || status == LHStatus.ERROR;
+        return status == LHStatus.COMPLETED || status == LHStatus.ERROR || status == LHStatus.EXCEPTION;
     }
 
     public VariableValueModel assignVariable(VariableAssignmentModel assn) throws LHVarSubError {

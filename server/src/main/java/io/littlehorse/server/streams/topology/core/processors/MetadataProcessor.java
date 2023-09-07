@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
@@ -10,6 +10,7 @@ import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorDAOImpl;
+import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
@@ -25,17 +26,19 @@ import org.apache.kafka.streams.processor.api.Record;
 public class MetadataProcessor implements Processor<String, MetadataCommandModel, String, Bytes> {
 
     private MetadataProcessorDAO dao;
-    private LHConfig config;
-    private KafkaStreamsServerImpl server;
+    private final LHServerConfig config;
+    private final KafkaStreamsServerImpl server;
+    private final MetadataCache metadataCache;
 
-    public MetadataProcessor(LHConfig config, KafkaStreamsServerImpl server) {
+    public MetadataProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         this.config = config;
         this.server = server;
+        this.metadataCache = metadataCache;
     }
 
     public void init(final ProcessorContext<String, Bytes> ctx) {
         this.dao = new MetadataProcessorDAOImpl(
-                new RocksDBWrapper(ctx.getStateStore(ServerTopology.METADATA_STORE), config));
+                new RocksDBWrapper(ctx.getStateStore(ServerTopology.METADATA_STORE), config), metadataCache);
     }
 
     @Override

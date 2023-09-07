@@ -14,6 +14,8 @@ import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.function.Supplier;
 
 /*
  * There is no cacheing implemented in this store. All cacheing is the responsibility
@@ -21,31 +23,37 @@ import io.littlehorse.server.streams.store.StoredGetable;
  */
 public class ReadOnlyMetadataStore {
 
-    private ReadOnlyRocksDBWrapper rocksdb;
+    private final ReadOnlyRocksDBWrapper rocksdb;
 
-    public ReadOnlyMetadataStore(ReadOnlyRocksDBWrapper rocksdb) {
+    private final MetadataCache metadataCache;
+
+    public ReadOnlyMetadataStore(ReadOnlyRocksDBWrapper rocksdb, MetadataCache metadataCache) {
         this.rocksdb = rocksdb;
+        this.metadataCache = metadataCache;
     }
 
     @SuppressWarnings("unchecked")
     public WfSpecModel getWfSpec(String name, Integer version) {
-        StoredGetable<WfSpec, WfSpecModel> storedResult;
-        if (version != null) {
-            WfSpecIdModel id = new WfSpecIdModel(name, version);
-            storedResult = (StoredGetable<WfSpec, WfSpecModel>) rocksdb.get(id.getStoreableKey(), StoredGetable.class);
-        } else {
-            storedResult = rocksdb.getLastFromPrefix(WfSpecIdModel.getPrefix(name), StoredGetable.class);
-        }
-
-        return storedResult == null ? null : storedResult.getStoredObject();
+        Supplier<WfSpecModel> findWfSpec = () -> {
+            final StoredGetable<WfSpec, WfSpecModel> storedResult;
+            if (version != null) {
+                storedResult = rocksdb.get(new WfSpecIdModel(name, version).getStoreableKey(), StoredGetable.class);
+            } else {
+                storedResult = rocksdb.getLastFromPrefix(WfSpecIdModel.getPrefix(name), StoredGetable.class);
+            }
+            return storedResult == null ? null : storedResult.getStoredObject();
+        };
+        return metadataCache.getOrCache(name, version, findWfSpec);
     }
 
+    @SuppressWarnings("unchecked")
     public TaskDefModel getTaskDef(String name) {
-        @SuppressWarnings("unchecked")
-        StoredGetable<TaskDef, TaskDefModel> storedResult = (StoredGetable<TaskDef, TaskDefModel>)
-                rocksdb.get(new TaskDefIdModel(name).getStoreableKey(), StoredGetable.class);
-
-        return storedResult == null ? null : storedResult.getStoredObject();
+        TaskDefIdModel id = new TaskDefIdModel(name);
+        Supplier<TaskDefModel> findTaskDef = () -> {
+            StoredGetable<TaskDef, TaskDefModel> storedResult = rocksdb.get(id.getStoreableKey(), StoredGetable.class);
+            return storedResult == null ? null : storedResult.getStoredObject();
+        };
+        return (TaskDefModel) metadataCache.getOrCache(id, findTaskDef::get);
     }
 
     public ExternalEventDefModel getExternalEventDef(String name) {

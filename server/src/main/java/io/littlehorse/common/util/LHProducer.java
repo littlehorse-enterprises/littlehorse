@@ -1,6 +1,6 @@
 package io.littlehorse.common.util;
 
-import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
 import java.io.Closeable;
 import java.util.concurrent.Future;
@@ -14,7 +14,7 @@ public class LHProducer implements Closeable {
 
     private KafkaProducer<String, Bytes> prod;
 
-    public LHProducer(LHConfig config) {
+    public LHProducer(LHServerConfig config) {
         prod = new KafkaProducer<>(config.getKafkaProducerConfig(config.getLHInstanceId()));
     }
 

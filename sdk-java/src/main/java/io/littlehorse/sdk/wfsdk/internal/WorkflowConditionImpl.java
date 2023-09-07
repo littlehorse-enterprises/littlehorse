@@ -4,7 +4,7 @@ import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.EdgeCondition;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 
-public class WorkflowConditionImpl implements WorkflowCondition {
+class WorkflowConditionImpl implements WorkflowCondition {
 
     private EdgeCondition spec;
 

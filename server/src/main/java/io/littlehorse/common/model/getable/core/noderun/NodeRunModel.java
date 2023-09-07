@@ -13,6 +13,7 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.EntrypointRunMo
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExitRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.SleepNodeRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartMultipleThreadsRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.TaskNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
@@ -69,6 +70,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public ExitRunModel exitRun;
     public EntrypointRunModel entrypointRun;
     public StartThreadRunModel startThreadRun;
+    private StartMultipleThreadsRunModel startMultipleThreadsRun;
     public WaitForThreadsRunModel waitThreadsRun;
     public SleepNodeRunModel sleepNodeRun;
     public UserTaskNodeRunModel userTaskRun;
@@ -187,6 +189,10 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             case USER_TASK:
                 userTaskRun = LHSerializable.fromProto(proto.getUserTask(), UserTaskNodeRunModel.class);
                 break;
+            case START_MULTIPLE_THREADS:
+                startMultipleThreadsRun =
+                        LHSerializable.fromProto(proto.getStartMultipleThreads(), StartMultipleThreadsRunModel.class);
+                break;
             case NODETYPE_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -219,6 +225,8 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 return sleepNodeRun;
             case USER_TASK:
                 return userTaskRun;
+            case START_MULTIPLE_THREADS:
+                return startMultipleThreadsRun;
             case NODETYPE_NOT_SET:
         }
         throw new RuntimeException("Not possible");
@@ -250,6 +258,9 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         } else if (cls.equals(UserTaskNodeRunModel.class)) {
             type = NodeTypeCase.USER_TASK;
             userTaskRun = (UserTaskNodeRunModel) snr;
+        } else if (cls.equals(StartMultipleThreadsRunModel.class)) {
+            type = NodeTypeCase.START_MULTIPLE_THREADS;
+            startMultipleThreadsRun = (StartMultipleThreadsRunModel) snr;
         } else {
             throw new RuntimeException("Didn't recognize " + snr.getClass());
         }
@@ -297,6 +308,8 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             case USER_TASK:
                 out.setUserTask(userTaskRun.toProto());
                 break;
+            case START_MULTIPLE_THREADS:
+                out.setStartMultipleThreads(startMultipleThreadsRun.toProto());
             case NODETYPE_NOT_SET:
         }
 
@@ -373,8 +386,13 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public void fail(FailureModel failure, Date time) {
         this.failures.add(failure);
         endTime = time;
-        status = LHStatus.ERROR;
+        status = failure.getStatus();
         errorMessage = failure.message;
         getThreadRun().fail(failure, time);
+    }
+
+    public void halt() {
+        status = LHStatus.HALTED;
+        getSubNodeRun().halt();
     }
 }

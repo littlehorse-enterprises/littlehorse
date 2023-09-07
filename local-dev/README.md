@@ -20,9 +20,13 @@ You can confirm that the Server is running via:
 
 ```
 lhctl search wfSpec
+```
+
+Result:
+
+```
 {
-  "code":  "OK",
-  "objectIds":  []
+  "results": []
 }
 ```
 
@@ -37,7 +41,7 @@ Run:
 You can clean up (i.e. stop Kafka and delete the data from the state directory) as follows:
 
 ```
-./local-dev/cleanup.sh
+./local-dev/setup.sh clean
 ```
 
 ## Cleanup Data
@@ -75,25 +79,31 @@ Upgrade to a new version:
 
 ## Building the Docker Image
 
-You can build the `littlehorse` docker image by running:
+You can build the `littlehorse-server` and `littlehorse-standalone` docker images by running:
 
 ```
 ./local-dev/build.sh
 ```
 
+To build the `littlehorse-server` image for local development utilizing the local gradle cache, you can run:
+
+```
+./local-dev/build.sh --quick
+```
+
 Run server with docker (default config `local-dev/server-1.config`):
 
 ```
-./local-dev/do-docker-server.sh
+./local-dev/do-server.sh --docker
 ```
 
 Run server with docker and specific config:
 
 ```
-./local-dev/do-docker-server.sh <config-name>
+./local-dev/do-server.sh --docker <config-name>
 
 # Example
-./local-dev/do-docker-server.sh server-2
+./local-dev/do-server.sh --docker server-2
 ```
 
 ## Compile Schemas
@@ -106,19 +116,19 @@ Run server with docker and specific config:
 
 > You need to install [httpie](https://httpie.io/cli)
 
-Creates client at keycloak:
+Run keycloak and creates clients:
 
 ```
-./local-dev/setup-keycloak.sh
+./local-dev/setup.sh keycloak
 ```
 
 Clients:
 
 | Client Id | Client Secret                    | Description                                                    |
-| --------- | -------------------------------- | -------------------------------------------------------------- |
+| --------- |----------------------------------| -------------------------------------------------------------- |
 | server    | 3bdca420cf6c48e2aa4f56d46d6327e0 | Server Introspection                                           |
 | worker    | 40317ab43bd34a9e93499c7ea03ad398 | For Workers to issue access tokens (Client Credentials FLow)   |
-| lhctl     | ee96a53af0034437bee816e63944e0f0 | For lhctl cli to issue access tokens (Authorization Code Flow) |
+| lhctl     | N/A                              | For lhctl cli to issue access tokens (Authorization Code Flow) |
 
 Creates certificates:
 
@@ -138,7 +148,7 @@ LHS_LISTENER_OAUTH_KEY=local-dev/certs/server/server.key
 
 LHS_OAUTH_CLIENT_ID=server
 LHS_OAUTH_CLIENT_SECRET=3bdca420cf6c48e2aa4f56d46d6327e0
-LHS_OAUTH_SERVER_URL=http://localhost:8888/realms/lh
+LHS_OAUTH_INTROSPECT_URL=http://localhost:8888/realms/lh/protocol/openid-connect/token/introspect
 ```
 
 > Check file [oauth.config](configs/oauth.config)

@@ -22,12 +22,12 @@ jobs:
         env:
           JAVA_HOME: /opt/jdk
         with:
-          project: 'server'
-          path: 'server'
-          format: 'HTML'
-          out: 'reports'
+          project: "server"
+          path: "server"
+          format: "HTML"
+          out: "reports"
       - name: Upload Test results
         uses: actions/upload-artifact@master
         with:
-           name: server report
-           path: ${{github.workspace}}/reports
+          name: server report
+          path: ${{github.workspace}}/reports

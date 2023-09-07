@@ -32,11 +32,6 @@ private static final long serialVersionUID = 0L;
     return new NodeRun();
   }
 
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.sdk.common.proto.NodeRunOuterClass.internal_static_littlehorse_NodeRun_descriptor;
@@ -52,6 +47,7 @@ private static final long serialVersionUID = 0L;
 
   private int bitField0_;
   private int nodeTypeCase_ = 0;
+  @SuppressWarnings("serial")
   private java.lang.Object nodeType_;
   public enum NodeTypeCase
       implements com.google.protobuf.Internal.EnumLite,
@@ -64,6 +60,7 @@ private static final long serialVersionUID = 0L;
     WAIT_THREADS(21),
     SLEEP(22),
     USER_TASK(24),
+    START_MULTIPLE_THREADS(25),
     NODETYPE_NOT_SET(0);
     private final int value;
     private NodeTypeCase(int value) {
@@ -89,6 +86,7 @@ private static final long serialVersionUID = 0L;
         case 21: return WAIT_THREADS;
         case 22: return SLEEP;
         case 24: return USER_TASK;
+        case 25: return START_MULTIPLE_THREADS;
         case 0: return NODETYPE_NOT_SET;
         default: return null;
       }
@@ -675,6 +673,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.UserTaskNodeRun.getDefaultInstance();
   }
 
+  public static final int START_MULTIPLE_THREADS_FIELD_NUMBER = 25;
+  /**
+   * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+   * @return Whether the startMultipleThreads field is set.
+   */
+  @java.lang.Override
+  public boolean hasStartMultipleThreads() {
+    return nodeTypeCase_ == 25;
+  }
+  /**
+   * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+   * @return The startMultipleThreads.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StartMultipleThreadsRun getStartMultipleThreads() {
+    if (nodeTypeCase_ == 25) {
+       return (io.littlehorse.sdk.common.proto.StartMultipleThreadsRun) nodeType_;
+    }
+    return io.littlehorse.sdk.common.proto.StartMultipleThreadsRun.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StartMultipleThreadsRunOrBuilder getStartMultipleThreadsOrBuilder() {
+    if (nodeTypeCase_ == 25) {
+       return (io.littlehorse.sdk.common.proto.StartMultipleThreadsRun) nodeType_;
+    }
+    return io.littlehorse.sdk.common.proto.StartMultipleThreadsRun.getDefaultInstance();
+  }
+
   public static final int FAILURE_HANDLER_IDS_FIELD_NUMBER = 23;
   @SuppressWarnings("serial")
   private com.google.protobuf.Internal.IntList failureHandlerIds_;
@@ -783,6 +812,9 @@ private static final long serialVersionUID = 0L;
     if (nodeTypeCase_ == 24) {
       output.writeMessage(24, (io.littlehorse.sdk.common.proto.UserTaskNodeRun) nodeType_);
     }
+    if (nodeTypeCase_ == 25) {
+      output.writeMessage(25, (io.littlehorse.sdk.common.proto.StartMultipleThreadsRun) nodeType_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -878,6 +910,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(24, (io.littlehorse.sdk.common.proto.UserTaskNodeRun) nodeType_);
     }
+    if (nodeTypeCase_ == 25) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(25, (io.littlehorse.sdk.common.proto.StartMultipleThreadsRun) nodeType_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -962,6 +998,10 @@ private static final long serialVersionUID = 0L;
         if (!getUserTask()
             .equals(other.getUserTask())) return false;
         break;
+      case 25:
+        if (!getStartMultipleThreads()
+            .equals(other.getStartMultipleThreads())) return false;
+        break;
       case 0:
       default:
     }
@@ -1045,6 +1085,10 @@ private static final long serialVersionUID = 0L;
         hash = (37 * hash) + USER_TASK_FIELD_NUMBER;
         hash = (53 * hash) + getUserTask().hashCode();
         break;
+      case 25:
+        hash = (37 * hash) + START_MULTIPLE_THREADS_FIELD_NUMBER;
+        hash = (53 * hash) + getStartMultipleThreads().hashCode();
+        break;
       case 0:
       default:
     }
@@ -1097,11 +1141,13 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
+
   public static io.littlehorse.sdk.common.proto.NodeRun parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
+
   public static io.littlehorse.sdk.common.proto.NodeRun parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1239,6 +1285,9 @@ private static final long serialVersionUID = 0L;
       if (userTaskBuilder_ != null) {
         userTaskBuilder_.clear();
       }
+      if (startMultipleThreadsBuilder_ != null) {
+        startMultipleThreadsBuilder_.clear();
+      }
       failureHandlerIds_ = emptyIntList();
       nodeTypeCase_ = 0;
       nodeType_ = null;
@@ -1285,9 +1334,9 @@ private static final long serialVersionUID = 0L;
       } else {
         result.failures_ = failuresBuilder_.build();
       }
-      if (((bitField0_ & 0x00080000) != 0)) {
+      if (((bitField0_ & 0x00100000) != 0)) {
         failureHandlerIds_.makeImmutable();
-        bitField0_ = (bitField0_ & ~0x00080000);
+        bitField0_ = (bitField0_ & ~0x00100000);
       }
       result.failureHandlerIds_ = failureHandlerIds_;
     }
@@ -1370,6 +1419,10 @@ private static final long serialVersionUID = 0L;
       if (nodeTypeCase_ == 24 &&
           userTaskBuilder_ != null) {
         result.nodeType_ = userTaskBuilder_.build();
+      }
+      if (nodeTypeCase_ == 25 &&
+          startMultipleThreadsBuilder_ != null) {
+        result.nodeType_ = startMultipleThreadsBuilder_.build();
       }
     }
 
@@ -1484,7 +1537,7 @@ private static final long serialVersionUID = 0L;
       if (!other.failureHandlerIds_.isEmpty()) {
         if (failureHandlerIds_.isEmpty()) {
           failureHandlerIds_ = other.failureHandlerIds_;
-          bitField0_ = (bitField0_ & ~0x00080000);
+          bitField0_ = (bitField0_ & ~0x00100000);
         } else {
           ensureFailureHandlerIdsIsMutable();
           failureHandlerIds_.addAll(other.failureHandlerIds_);
@@ -1522,6 +1575,10 @@ private static final long serialVersionUID = 0L;
         }
         case USER_TASK: {
           mergeUserTask(other.getUserTask());
+          break;
+        }
+        case START_MULTIPLE_THREADS: {
+          mergeStartMultipleThreads(other.getStartMultipleThreads());
           break;
         }
         case NODETYPE_NOT_SET: {
@@ -1695,6 +1752,13 @@ private static final long serialVersionUID = 0L;
               nodeTypeCase_ = 24;
               break;
             } // case 194
+            case 202: {
+              input.readMessage(
+                  getStartMultipleThreadsFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              nodeTypeCase_ = 25;
+              break;
+            } // case 202
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1814,7 +1878,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setThreadRunNumber(int value) {
-      
+
       threadRunNumber_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
@@ -1846,7 +1910,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setPosition(int value) {
-      
+
       position_ = value;
       bitField0_ |= 0x00000004;
       onChanged();
@@ -3872,11 +3936,153 @@ private static final long serialVersionUID = 0L;
       return userTaskBuilder_;
     }
 
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.StartMultipleThreadsRun, io.littlehorse.sdk.common.proto.StartMultipleThreadsRun.Builder, io.littlehorse.sdk.common.proto.StartMultipleThreadsRunOrBuilder> startMultipleThreadsBuilder_;
+    /**
+     * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+     * @return Whether the startMultipleThreads field is set.
+     */
+    @java.lang.Override
+    public boolean hasStartMultipleThreads() {
+      return nodeTypeCase_ == 25;
+    }
+    /**
+     * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+     * @return The startMultipleThreads.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.StartMultipleThreadsRun getStartMultipleThreads() {
+      if (startMultipleThreadsBuilder_ == null) {
+        if (nodeTypeCase_ == 25) {
+          return (io.littlehorse.sdk.common.proto.StartMultipleThreadsRun) nodeType_;
+        }
+        return io.littlehorse.sdk.common.proto.StartMultipleThreadsRun.getDefaultInstance();
+      } else {
+        if (nodeTypeCase_ == 25) {
+          return startMultipleThreadsBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.StartMultipleThreadsRun.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+     */
+    public Builder setStartMultipleThreads(io.littlehorse.sdk.common.proto.StartMultipleThreadsRun value) {
+      if (startMultipleThreadsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        nodeType_ = value;
+        onChanged();
+      } else {
+        startMultipleThreadsBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 25;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+     */
+    public Builder setStartMultipleThreads(
+        io.littlehorse.sdk.common.proto.StartMultipleThreadsRun.Builder builderForValue) {
+      if (startMultipleThreadsBuilder_ == null) {
+        nodeType_ = builderForValue.build();
+        onChanged();
+      } else {
+        startMultipleThreadsBuilder_.setMessage(builderForValue.build());
+      }
+      nodeTypeCase_ = 25;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+     */
+    public Builder mergeStartMultipleThreads(io.littlehorse.sdk.common.proto.StartMultipleThreadsRun value) {
+      if (startMultipleThreadsBuilder_ == null) {
+        if (nodeTypeCase_ == 25 &&
+            nodeType_ != io.littlehorse.sdk.common.proto.StartMultipleThreadsRun.getDefaultInstance()) {
+          nodeType_ = io.littlehorse.sdk.common.proto.StartMultipleThreadsRun.newBuilder((io.littlehorse.sdk.common.proto.StartMultipleThreadsRun) nodeType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          nodeType_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeTypeCase_ == 25) {
+          startMultipleThreadsBuilder_.mergeFrom(value);
+        } else {
+          startMultipleThreadsBuilder_.setMessage(value);
+        }
+      }
+      nodeTypeCase_ = 25;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+     */
+    public Builder clearStartMultipleThreads() {
+      if (startMultipleThreadsBuilder_ == null) {
+        if (nodeTypeCase_ == 25) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeTypeCase_ == 25) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+        }
+        startMultipleThreadsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+     */
+    public io.littlehorse.sdk.common.proto.StartMultipleThreadsRun.Builder getStartMultipleThreadsBuilder() {
+      return getStartMultipleThreadsFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.StartMultipleThreadsRunOrBuilder getStartMultipleThreadsOrBuilder() {
+      if ((nodeTypeCase_ == 25) && (startMultipleThreadsBuilder_ != null)) {
+        return startMultipleThreadsBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeTypeCase_ == 25) {
+          return (io.littlehorse.sdk.common.proto.StartMultipleThreadsRun) nodeType_;
+        }
+        return io.littlehorse.sdk.common.proto.StartMultipleThreadsRun.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.StartMultipleThreadsRun, io.littlehorse.sdk.common.proto.StartMultipleThreadsRun.Builder, io.littlehorse.sdk.common.proto.StartMultipleThreadsRunOrBuilder> 
+        getStartMultipleThreadsFieldBuilder() {
+      if (startMultipleThreadsBuilder_ == null) {
+        if (!(nodeTypeCase_ == 25)) {
+          nodeType_ = io.littlehorse.sdk.common.proto.StartMultipleThreadsRun.getDefaultInstance();
+        }
+        startMultipleThreadsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.StartMultipleThreadsRun, io.littlehorse.sdk.common.proto.StartMultipleThreadsRun.Builder, io.littlehorse.sdk.common.proto.StartMultipleThreadsRunOrBuilder>(
+                (io.littlehorse.sdk.common.proto.StartMultipleThreadsRun) nodeType_,
+                getParentForChildren(),
+                isClean());
+        nodeType_ = null;
+      }
+      nodeTypeCase_ = 25;
+      onChanged();
+      return startMultipleThreadsBuilder_;
+    }
+
     private com.google.protobuf.Internal.IntList failureHandlerIds_ = emptyIntList();
     private void ensureFailureHandlerIdsIsMutable() {
-      if (!((bitField0_ & 0x00080000) != 0)) {
+      if (!((bitField0_ & 0x00100000) != 0)) {
         failureHandlerIds_ = mutableCopy(failureHandlerIds_);
-        bitField0_ |= 0x00080000;
+        bitField0_ |= 0x00100000;
       }
     }
     /**
@@ -3885,7 +4091,7 @@ private static final long serialVersionUID = 0L;
      */
     public java.util.List<java.lang.Integer>
         getFailureHandlerIdsList() {
-      return ((bitField0_ & 0x00080000) != 0) ?
+      return ((bitField0_ & 0x00100000) != 0) ?
                java.util.Collections.unmodifiableList(failureHandlerIds_) : failureHandlerIds_;
     }
     /**
@@ -3911,7 +4117,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setFailureHandlerIds(
         int index, int value) {
-      
+
       ensureFailureHandlerIdsIsMutable();
       failureHandlerIds_.setInt(index, value);
       onChanged();
@@ -3923,7 +4129,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder addFailureHandlerIds(int value) {
-      
+
       ensureFailureHandlerIdsIsMutable();
       failureHandlerIds_.addInt(value);
       onChanged();
@@ -3948,7 +4154,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearFailureHandlerIds() {
       failureHandlerIds_ = emptyIntList();
-      bitField0_ = (bitField0_ & ~0x00080000);
+      bitField0_ = (bitField0_ & ~0x00100000);
       onChanged();
       return this;
     }

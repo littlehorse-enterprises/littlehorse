@@ -7,7 +7,6 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.ThreadToWaitForModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread;
@@ -22,6 +21,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
     private Date threadEndTime;
     private LHStatus threadStatus;
     private int threadRunNumber;
+    private boolean alreadyHandled;
 
     public Class<WaitForThread> getProtoBaseClass() {
         return WaitForThread.class;
@@ -29,15 +29,10 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
 
     public WaitForThreadModel() {}
 
-    public WaitForThreadModel(NodeRunModel waitForThreadNodeRunModel, ThreadToWaitForModel threadToWaitFor)
+    public WaitForThreadModel(NodeRunModel waitForThreadNodeRunModel, Integer threadRunNumberToWaitFor)
             throws LHVarSubError {
         ThreadRunModel parentThreadRunModel = waitForThreadNodeRunModel.getThreadRun();
-        this.threadRunNumber = parentThreadRunModel
-                .assignVariable(threadToWaitFor.getThreadRunNumber())
-                .asInt()
-                .intVal
-                .intValue();
-
+        this.threadRunNumber = threadRunNumberToWaitFor;
         ThreadRunModel threadRunModel = parentThreadRunModel.getWfRunModel().getThreadRun(threadRunNumber);
 
         if (threadRunModel == null) {
@@ -67,6 +62,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         }
         threadStatus = p.getThreadStatus();
         threadRunNumber = p.getThreadRunNumber();
+        alreadyHandled = p.getAlreadyHandled();
     }
 
     public WaitForThread.Builder toProto() {
@@ -75,6 +71,11 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         if (threadEndTime != null) {
             out.setThreadEndTime(LHUtil.fromDate(threadEndTime));
         }
+        out.setAlreadyHandled(alreadyHandled);
         return out;
+    }
+
+    public boolean isFailed() {
+        return threadStatus == LHStatus.EXCEPTION || threadStatus == LHStatus.ERROR;
     }
 }

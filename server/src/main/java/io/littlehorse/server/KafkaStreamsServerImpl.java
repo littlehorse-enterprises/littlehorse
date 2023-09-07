@@ -4,9 +4,10 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
@@ -51,6 +52,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
 import io.littlehorse.server.listener.ListenersManager;
+import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanReply;
@@ -87,7 +89,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWf
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
-import io.littlehorse.server.streams.util.HealthService;
+import io.littlehorse.server.streams.util.MetadataCache;
 import io.littlehorse.server.streams.util.POSTStreamObserver;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -99,19 +101,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.KafkaStreams.State;
 
 @Slf4j
 public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
-    private LHConfig config;
+    private LHServerConfig config;
     private TaskQueueManager taskQueueManager;
 
     private KafkaStreams coreStreams;
     private KafkaStreams timerStreams;
-
-    private State coreState;
-    private State timerState;
 
     private BackendInternalComms internalComms;
 
@@ -122,11 +120,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         return internalComms.getGlobalStoreImpl();
     }
 
-    public KafkaStreamsServerImpl(LHConfig config) {
+    public KafkaStreamsServerImpl(LHServerConfig config) {
+        MetadataCache metadataCache = new MetadataCache();
         this.config = config;
         this.taskQueueManager = new TaskQueueManager(this);
         this.coreStreams = new KafkaStreams(
-                ServerTopology.initCoreTopology(config, this),
+                ServerTopology.initCoreTopology(config, this, metadataCache),
                 // Core topology must be EOS
                 config.getStreamsConfig("core", true));
         this.timerStreams = new KafkaStreams(
@@ -144,7 +143,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
         this.listenerManager = new ListenersManager(config, this, networkThreadpool, healthService.getMeterRegistry());
 
-        this.internalComms = new BackendInternalComms(config, coreStreams, timerStreams, networkThreadpool);
+        this.internalComms =
+                new BackendInternalComms(config, coreStreams, timerStreams, networkThreadpool, metadataCache);
     }
 
     public String getInstanceId() {
@@ -466,6 +466,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             }
             ctx.onNext((RP) out.toProto().build());
             ctx.onCompleted();
+        } catch (StatusRuntimeException exn) {
+            ctx.onError(exn);
         } catch (Exception exn) {
             log.error("Failed handling a search", exn);
             ctx.onError(LHUtil.toGrpcError(exn));
@@ -543,32 +545,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         DeleteExternalEventDefRequestModel deedr =
                 LHSerializable.fromProto(req, DeleteExternalEventDefRequestModel.class);
         processCommand(new MetadataCommandModel(deedr), ctx, Empty.class, true);
-    }
-
-    @Override
-    public void healthCheck(Empty req, StreamObserver<HealthCheckResponse> ctx) {
-        ctx.onNext(HealthCheckResponse.newBuilder()
-                .setCoreState(kafkaStateToLhHealthState(coreState))
-                .setTimerState(kafkaStateToLhHealthState(timerState))
-                .build());
-        ctx.onCompleted();
-    }
-
-    private LHHealthResult kafkaStateToLhHealthState(State kState) {
-        switch (kState) {
-            case CREATED:
-            case NOT_RUNNING:
-            case REBALANCING:
-                return LHHealthResult.LH_HEALTH_REBALANCING;
-            case RUNNING:
-                return LHHealthResult.LH_HEALTH_RUNNING;
-            case PENDING_ERROR:
-            case PENDING_SHUTDOWN:
-            case ERROR:
-                return LHHealthResult.LH_HEALTH_ERROR;
-            default:
-                throw new RuntimeException("Unknown health status");
-        }
     }
 
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
@@ -668,7 +644,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         }
     }
 
-    public static void doMain(LHConfig config) throws IOException, InterruptedException {
+    public static void doMain(LHServerConfig config) throws IOException, InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         KafkaStreamsServerImpl server = new KafkaStreamsServerImpl(config);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

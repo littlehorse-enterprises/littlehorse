@@ -21,7 +21,7 @@ message VariableValue {
   optional int64 int = 7;
   optional bytes bytes = 8;
 }
- 
+
 message Variable {
   VariableValue value = 1;
   string wf_run_id = 2;

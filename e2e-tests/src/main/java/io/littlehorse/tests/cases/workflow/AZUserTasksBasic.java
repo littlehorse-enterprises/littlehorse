@@ -3,7 +3,7 @@ package io.littlehorse.tests.cases.workflow;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
@@ -47,7 +47,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
 
     private static final String USER_TASK_DEF_NAME = "some-usertask";
 
-    public AZUserTasksBasic(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
+    public AZUserTasksBasic(LHPublicApiBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -67,11 +67,11 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         return new WorkflowImpl(getWorkflowName(), thread -> {
             WfRunVariable formVar = thread.addVariable("form", VariableType.JSON_OBJ);
 
-            UserTaskOutput formOutput = thread.assignUserTaskToUserGroup(USER_TASK_DEF_NAME, "test-group");
+            UserTaskOutput formOutput = thread.assignTaskToUserGroup(USER_TASK_DEF_NAME, "test-group");
 
-            thread.scheduleReassignmentToUserOnDeadline(formOutput, "available-user", 5);
+            thread.reassignToUserOnDeadline(formOutput, "available-user", 5);
 
-            thread.scheduleTaskAfter(formOutput, 2, "az-reminder");
+            thread.scheduleReminderTask(formOutput, 2, "az-reminder");
             thread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 
             thread.execute("az-describe-car", formVar);

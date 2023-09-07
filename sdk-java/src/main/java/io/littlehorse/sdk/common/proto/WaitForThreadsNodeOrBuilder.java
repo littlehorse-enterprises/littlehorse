@@ -30,4 +30,30 @@ public interface WaitForThreadsNodeOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder getThreadsOrBuilder(
       int index);
+
+  /**
+   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+   * @return The enum numeric value on the wire for policy.
+   */
+  int getPolicyValue();
+  /**
+   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+   * @return The policy.
+   */
+  io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy();
+
+  /**
+   * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+   * @return Whether the threadList field is set.
+   */
+  boolean hasThreadList();
+  /**
+   * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+   * @return The threadList.
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignment getThreadList();
+  /**
+   * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getThreadListOrBuilder();
 }

@@ -1,6 +1,6 @@
 package io.littlehorse.tests.cases.workflow;
 
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -23,7 +23,7 @@ public class BEUserTasksCancel extends UserTaskWorkflowTest {
 
     private static final String USER_TASK_DEF_NAME = "be-some-usertask";
 
-    public BEUserTasksCancel(LHPublicApiBlockingStub client, LHWorkerConfig workerConfig) {
+    public BEUserTasksCancel(LHPublicApiBlockingStub client, LHConfig workerConfig) {
         super(client, workerConfig);
     }
 
@@ -41,7 +41,7 @@ public class BEUserTasksCancel extends UserTaskWorkflowTest {
         return new WorkflowImpl(getWorkflowName(), thread -> {
             WfRunVariable formVar = thread.addVariable("form", VariableType.JSON_OBJ);
 
-            thread.assignUserTaskToUser(USER_TASK_DEF_NAME, "test-user");
+            thread.assignTaskToUser(USER_TASK_DEF_NAME, "test-user");
 
             thread.execute("be-unreachable-task", formVar);
         });

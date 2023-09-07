@@ -29,7 +29,7 @@ lhctl run external-event
 Note the `wfRunId`. Let's check on it:
 
 ```
-lhctl get wfRunModel <wfRunId>
+lhctl get wfRun <wfRunId>
 ```
 
 The status should be `RUNNING`. That's because it's waiting for us to send the event.
@@ -41,5 +41,5 @@ lhctl postEvent <wfRunId> my-name STR obi-wan
 That sends the `ExternalEvent` to the `WfRun`. We can view the status and see that the workflow completed:
 
 ```
-lhctl get wfRunModel <wfRunId>
+lhctl get wfRun <wfRunId>
 ```

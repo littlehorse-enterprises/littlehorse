@@ -1,7 +1,7 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -53,7 +53,7 @@ public class RunWfExample {
         return props;
     }
 
-    public static LHTaskWorker getTaskWorker(LHWorkerConfig config) throws IOException {
+    public static LHTaskWorker getTaskWorker(LHConfig config) throws IOException {
         MyWorker executable = new MyWorker();
         LHTaskWorker worker = new LHTaskWorker(
             executable,
@@ -69,7 +69,7 @@ public class RunWfExample {
     public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
-        LHWorkerConfig config = new LHWorkerConfig(props);
+        LHConfig config = new LHConfig(props);
         LHPublicApiGrpc.LHPublicApiBlockingStub client = config.getBlockingStub();
 
         // New workflow
