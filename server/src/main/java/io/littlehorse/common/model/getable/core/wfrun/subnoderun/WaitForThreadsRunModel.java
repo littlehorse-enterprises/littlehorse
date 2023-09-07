@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.utils.WaitForThreadModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ThreadToWaitForModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForThreadsNodeModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
@@ -31,6 +32,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
     private List<WaitForThreadModel> threads;
     private WaitForThreadsPolicy policy;
+    private VariableAssignmentModel threadList;
 
     public WaitForThreadsRunModel() {
         this.threads = new ArrayList<>();
@@ -73,13 +75,19 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     public boolean advanceIfPossible(Date time) {
         WfRunModel wfRun = getWfRun();
         boolean allThreadsCompleted = true;
+
         for (WaitForThreadModel waitingThread : threads) {
             ThreadRunModel threadRun = wfRun.getThreadRun(waitingThread.getThreadRunNumber());
             waitingThread.setThreadStatus(threadRun.getStatus());
+
             if (waitingThread.isFailed() && !waitingThread.isAlreadyHandled()) {
+                log.trace("Detected new failure on ThreadRun {} {}", threadRun.getWfRunId(), threadRun.getNumber());
+
                 FailureModel latestFailure =
                         threadRun.getNodeRun(threadRun.getCurrentNodePosition()).getLatestFailure();
                 if (isFailFast()) {
+                    log.trace("Doing fast failure!");
+
                     if (latestFailure.isUserDefinedFailure()) {
                         doFailFast(waitingThread, latestFailure, time);
                     } else {
@@ -90,6 +98,8 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
                     }
                     return true;
                 } else if (latestFailure.isUserDefinedFailure()) {
+
+                    log.debug("There is an uncaught user failure, we are causing the NodeRun to fail.");
                     nodeRunModel.fail(latestFailure, time);
                 }
             }
@@ -116,6 +126,42 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         return allThreadsCompleted;
     }
 
+    private void maybeInitializeDynamicThreads(Date time) {
+        if (threadList != null) {
+            try {
+                VariableValueModel variableValueModel =
+                        nodeRunModel.getThreadRun().assignVariable(threadList);
+
+                List<WaitForThreadModel> waitForThreads = variableValueModel.getJsonArrVal().stream()
+                        .map(Object::toString)
+                        .map(Integer::valueOf)
+                        .map(threadRunNumber -> this.createWaitForThreadModel(threadRunNumber, time))
+                        .filter(Objects::nonNull)
+                        .toList();
+                threads.addAll(waitForThreads);
+            } catch (LHVarSubError exn) {
+                nodeRunModel.fail(
+                        new FailureModel(
+                                "Failed determining thread run number to wait for: " + exn.getMessage(),
+                                LHConstants.VAR_SUB_ERROR),
+                        time);
+            }
+        }
+    }
+
+    private WaitForThreadModel createWaitForThreadModel(int threadRunNumber, Date time) {
+        try {
+            return new WaitForThreadModel(nodeRunModel, threadRunNumber);
+        } catch (LHVarSubError exn) {
+            nodeRunModel.fail(
+                    new FailureModel(
+                            "Failed determining thread run number to wait for: " + exn.getMessage(),
+                            LHConstants.VAR_SUB_ERROR),
+                    time);
+        }
+        return null;
+    }
+
     private void doFailFast(WaitForThreadModel failedWaitingThread, FailureModel failure, Date time) {
         nodeRunModel.fail(failure, time);
         WfRunModel wfRun = getWfRun();
@@ -131,21 +177,21 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         return policy == WaitForThreadsPolicy.STOP_ON_FAILURE;
     }
 
-    private boolean isTerminated(WaitForThreadModel wft) {
-        return wft.getThreadStatus() == LHStatus.COMPLETED
-                || wft.getThreadStatus() == LHStatus.ERROR
-                || wft.getThreadStatus() == LHStatus.EXCEPTION;
-    }
-
     public void arrive(Date time) {
         // Need to initialize all of the threads.
         WaitForThreadsNodeModel wftn = getNode().getWaitForThreadsNode();
         nodeRunModel.setStatus(LHStatus.RUNNING);
-
+        ThreadRunModel threadRun = nodeRunModel.getThreadRun();
         try {
             for (ThreadToWaitForModel ttwf : wftn.getThreads()) {
-                threads.add(new WaitForThreadModel(nodeRunModel, ttwf));
+                int threadRunNumber = threadRun
+                        .assignVariable(ttwf.getThreadRunNumber())
+                        .asInt()
+                        .intVal
+                        .intValue();
+                threads.add(new WaitForThreadModel(nodeRunModel, threadRunNumber));
             }
+            maybeInitializeDynamicThreads(time);
         } catch (LHVarSubError exn) {
             nodeRunModel.fail(
                     new FailureModel(

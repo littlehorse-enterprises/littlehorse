@@ -23,7 +23,8 @@ include(
     'parallel-approval',
     'mutation',
     'user-tasks',
-    'hundred-tasks'
+    'hundred-tasks',
+    'spawn-thread-foreach'
 ].each { example ->
     include "example-$example"
     project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/$example")

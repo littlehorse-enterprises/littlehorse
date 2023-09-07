@@ -16,7 +16,9 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
 
     public Integer childThreadId;
@@ -49,7 +51,7 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
     }
 
     public boolean advanceIfPossible(Date time) {
-        // nothing to do
+        log.warn("Shouldn't get here");
         return false;
     }
 

@@ -9,6 +9,7 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.ThreadToWaitForModel;
+import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
@@ -29,6 +30,8 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
 
     private WaitForThreadsPolicy policy;
 
+    private VariableAssignment threadList;
+
     public Class<WaitForThreadsNode> getProtoBaseClass() {
         return WaitForThreadsNode.class;
     }
@@ -43,6 +46,9 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
             threads.add(LHSerializable.fromProto(ttwf, ThreadToWaitForModel.class));
         }
         policy = p.getPolicy();
+        if (p.hasThreadList()) {
+            threadList = p.getThreadList();
+        }
     }
 
     public WaitForThreadsNode.Builder toProto() {
@@ -51,6 +57,9 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
             out.addThreads(ttwf.toProto());
         }
         out.setPolicy(policy);
+        if (threadList != null) {
+            out.setThreadList(threadList);
+        }
         return out;
     }
 

@@ -273,6 +273,21 @@ public interface NodeRunOrBuilder extends
   io.littlehorse.sdk.common.proto.UserTaskNodeRunOrBuilder getUserTaskOrBuilder();
 
   /**
+   * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+   * @return Whether the startMultipleThreads field is set.
+   */
+  boolean hasStartMultipleThreads();
+  /**
+   * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+   * @return The startMultipleThreads.
+   */
+  io.littlehorse.sdk.common.proto.StartMultipleThreadsRun getStartMultipleThreads();
+  /**
+   * <code>.littlehorse.StartMultipleThreadsRun start_multiple_threads = 25;</code>
+   */
+  io.littlehorse.sdk.common.proto.StartMultipleThreadsRunOrBuilder getStartMultipleThreadsOrBuilder();
+
+  /**
    * <code>repeated int32 failure_handler_ids = 23;</code>
    * @return A list containing the failureHandlerIds.
    */

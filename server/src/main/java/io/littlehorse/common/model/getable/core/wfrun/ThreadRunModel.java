@@ -556,7 +556,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void completeCurrentNode(VariableValueModel output, Date eventTime) {
         NodeRunModel crn = getCurrentNodeRun();
         crn.status = LHStatus.COMPLETED;
-
         try {
             mutateVariables(output);
         } catch (LHVarSubError exn) {

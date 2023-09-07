@@ -37,6 +37,7 @@ message NodeRun {
     WaitForThreadsRun wait_threads = 21;
     SleepNodeRun sleep = 22;
     UserTaskNodeRun user_task = 24;
+    StartMultipleThreadsRun start_multiple_threads = 25;
   }
   repeated int32 failure_handler_ids = 23;
 }
@@ -58,6 +59,10 @@ message ExitRun {
 message StartThreadRun {
   optional int32 child_thread_id = 1;
   string thread_spec_name = 2;
+}
+
+message StartMultipleThreadsRun {
+  string thread_spec_name = 1;
 }
 
 message WaitForThreadsRun {
