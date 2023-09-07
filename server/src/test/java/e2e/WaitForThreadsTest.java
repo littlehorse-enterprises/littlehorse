@@ -140,6 +140,7 @@ public class WaitForThreadsTest {
                 .waitForStatus(RUNNING)
                 .waitForNodeRunStatus(person1ApprovalThreadNumber, 3, EXCEPTION)
                 .waitForThreadRunStatus(person2ApprovalThreadNumber, RUNNING)
+                .waitForThreadRunStatus(person2ApprovalThreadNumber, RUNNING)
                 .waitForNodeRunStatus(person2ApprovalThreadNumber, 1, RUNNING)
                 .waitForTaskStatus(exceptionHandlerThreadNumber, 1, TaskStatus.TASK_SUCCESS)
                 .thenVerifyTaskRunResult(

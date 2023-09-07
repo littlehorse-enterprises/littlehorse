@@ -132,7 +132,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         for (WaitForThreadModel waitingThreads : threads) {
             if (!Objects.equals(failedWaitingThread, waitingThreads)) {
                 ThreadRunModel otherChildThread = wfRun.getThreadRun(waitingThreads.getThreadRunNumber());
-                // waitingThreads.setThreadStatus(otherChildThread.getStatus());
+                waitingThreads.setThreadStatus(otherChildThread.getStatus());
 
                 ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
                 haltReason.setType(ReasonCase.PARENT_HALTED);
