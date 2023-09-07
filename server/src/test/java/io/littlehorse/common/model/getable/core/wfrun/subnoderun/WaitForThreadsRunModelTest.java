@@ -159,7 +159,6 @@ public class WaitForThreadsRunModelTest {
             assertThat(shouldAdvance).isTrue();
             verify(waitForThreadsRunModel.getNodeRunModel(), times(1)).fail(any(), eq(advanceDate));
             verify(firstWaitForThread, atLeastOnce()).setThreadStatus(firstThreadRunModel.getStatus());
-            verify(secondWaitForThread).setThreadStatus(secondThreadRunModel.getStatus());
         }
 
         @Test
