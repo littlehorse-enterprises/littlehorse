@@ -115,9 +115,12 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         UserTaskNode.UserAssignment userAssignment =
                 curNode.getUserTaskBuilder().getUser();
         if (userAssignment == null) {
-            throw new IllegalStateException("User task is not assigned to a user");
+            throw new IllegalStateException("The User Task is not assigned to any user");
         }
         VariableAssignment userGroup = userAssignment.getUserGroup();
+        if (userGroup == null) {
+            throw new IllegalStateException("The User Task is assigned to a user without a group.");
+        }
         UTActionTrigger.UTAReassign reassignPb =
                 UTActionTrigger.UTAReassign.newBuilder().setUserGroup(userGroup).build();
         UTActionTrigger actionTrigger = UTActionTrigger.newBuilder()
