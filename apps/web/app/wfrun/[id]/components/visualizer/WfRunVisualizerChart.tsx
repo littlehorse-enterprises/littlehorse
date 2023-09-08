@@ -88,13 +88,24 @@ let nodes:any[] = [];
          + "m" + +3 + "," + +3
          + "l" + -3 + "," + +3
   }
-  function backArrow(x, y, width, height, radius) {
+//   function backArrow(x, y, width, height, radius) {
+//     return "M" + ((x+(width*1.5))-50) + "," + (y+25)
+//         + "h" + (20)
+//         + "a" + radius + "," + radius + " 1 0 0 " + radius + "," + -radius
+//          + "v" + (-height+20)
+//          + "a" + radius + "," + radius + " 1 0 0 " + -radius + "," + -radius
+//          + "h" + (-20)
+//          + "l" + 3 + "," + 3
+//          + "m" + -3 + "," + -3
+//          + "l" + 3 + "," + -3
+//   }
+function backArrow(x, y, width, height, radius, ix=0) {
     return "M" + ((x+(width*1.5))-50) + "," + (y+25)
-        + "h" + (20)
+        + "h" + (20 + (ix*20))
         + "a" + radius + "," + radius + " 1 0 0 " + radius + "," + -radius
          + "v" + (-height+20)
          + "a" + radius + "," + radius + " 1 0 0 " + -radius + "," + -radius
-         + "h" + (-20)
+         + "h" + (-0 - (ix*20))
          + "l" + 3 + "," + 3
          + "m" + -3 + "," + -3
          + "l" + 3 + "," + -3
@@ -246,7 +257,18 @@ export const WfRunVisualizerChart = ({data, onClick, run}:{data:any, onClick:(n:
             .append("path")
             .attr("d", (d) => backArrow(width/2, (d.level * 110) +65 , 110+(d.px === 'left' ? -110 : (d.px === 'right' ? 150 : 0)), ((d.level * 110))-((d.wlevel * 110)+5), 12)).attr('fill','none').attr('stroke','#7F7AFF')
 
-            
+        lineG2.data(data.filter( d => d.type === "WAIT_FOR_THREADS"))
+            .enter()
+            // .data(d.node.waitForThreads.threads)
+            .append("path")
+            .attr("d", (d) => {
+                return d.node.waitForThreads.threads.map( (t:any, ix:number) => backArrow(width/2 -(40) , 
+                (d.level * 110) +65 , 
+                110+(d.px === 'left' ? -110 : (d.px === 'right' ? 150 : 0)), 
+                ((d.level * 110))-(( (data.find(dat => dat.name === t.threadRunNumber.variableName).level) * 110)+5), 
+                12,d.node.waitForThreads.threads.length - ix))
+            } )
+            .attr('fill','none').attr('stroke','#7F7AFF') 
 
         //TEXT
         let textGN = svg.append("g").selectAll("g");
