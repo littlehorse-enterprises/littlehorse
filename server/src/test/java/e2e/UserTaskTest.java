@@ -24,7 +24,10 @@ public class UserTaskTest {
     public static final String USER_TASK_DEF_NAME = "my-usertask";
 
     @LHWorkflow("deadline-reassignment-workflow")
-    private Workflow workflow;
+    private Workflow deadlineReassignmentWorkflow;
+
+    @LHWorkflow("deadline-reassignment-workflow-user-without-group")
+    private Workflow deadlineReassignmentUserWithoutGroupWorkflow;
 
     @LHUserTaskForm(USER_TASK_DEF_NAME)
     private MyForm myForm = new MyForm();
@@ -34,7 +37,17 @@ public class UserTaskTest {
     @Test
     void shouldTransferOwnershipFromUserToGroupOnDeadline() {
         workflowVerifier
-                .prepareRun(workflow)
+                .prepareRun(deadlineReassignmentWorkflow)
+                .waitForStatus(RUNNING)
+                .waitForUserTaskRunStatus(0, 1, UserTaskRunStatus.ASSIGNED)
+                .waitForUserTaskRunStatus(0, 1, UserTaskRunStatus.UNASSIGNED, Duration.ofSeconds(6))
+                .start();
+    }
+
+    @Test
+    void shouldTransferOwnershipFromUserToSpecificGroupOnDeadline() {
+        workflowVerifier
+                .prepareRun(deadlineReassignmentUserWithoutGroupWorkflow)
                 .waitForStatus(RUNNING)
                 .waitForUserTaskRunStatus(0, 1, UserTaskRunStatus.ASSIGNED)
                 .waitForUserTaskRunStatus(0, 1, UserTaskRunStatus.UNASSIGNED, Duration.ofSeconds(6))
@@ -50,6 +63,21 @@ public class UserTaskTest {
                     entrypointThread.assignTaskToUser(USER_TASK_DEF_NAME, "test-group", "test-department");
 
             entrypointThread.reassignToGroupOnDeadline(formOutput, 4);
+
+            entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
+
+            entrypointThread.execute("my-task", formVar);
+        });
+    }
+
+    @LHWorkflow("deadline-reassignment-workflow-user-without-group")
+    public Workflow buildDeadlineReassignmentWorkflowUserWithoutGroup() {
+        return new WorkflowImpl("deadline-reassignment-workflow-user-without-group", entrypointThread -> {
+            WfRunVariable formVar = entrypointThread.addVariable("form", VariableType.JSON_OBJ);
+
+            UserTaskOutput formOutput = entrypointThread.assignTaskToUser(USER_TASK_DEF_NAME, "test-group");
+
+            entrypointThread.reassignToGroupOnDeadline(formOutput, "test-it-department", 4);
 
             entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 

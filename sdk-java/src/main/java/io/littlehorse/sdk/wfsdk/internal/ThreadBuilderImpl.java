@@ -117,10 +117,30 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         if (userAssignment == null) {
             throw new IllegalStateException("The User Task is not assigned to any user");
         }
-        VariableAssignment userGroup = userAssignment.getUserGroup();
-        if (userGroup == null) {
+        if (!userAssignment.hasUserGroup()) {
             throw new IllegalStateException("The User Task is assigned to a user without a group.");
         }
+        VariableAssignment userGroup = userAssignment.getUserGroup();
+        reassignToGroupOnDeadline(userGroup, curNode, deadlineSeconds);
+    }
+
+    @Override
+    public void reassignToGroupOnDeadline(UserTaskOutput userTaskOutput, String userGroup, int deadlineSeconds) {
+        checkIfIsActive();
+        Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
+        UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
+        if (!lastNodeName.equals(utImpl.nodeName)) {
+            throw new IllegalStateException("Tried to edit a stale User Task node!");
+        }
+        if (userGroup == null || userGroup.isEmpty()) {
+            throw new IllegalStateException("User group is required; please provide a valid user group.");
+        }
+        VariableAssignment userGroupVariableAssignment = assignVariable(userGroup);
+        reassignToGroupOnDeadline(userGroupVariableAssignment, curNode, deadlineSeconds);
+    }
+
+    private void reassignToGroupOnDeadline(
+            VariableAssignment userGroup, Node.Builder currentNode, int deadlineSeconds) {
         UTActionTrigger.UTAReassign reassignPb =
                 UTActionTrigger.UTAReassign.newBuilder().setUserGroup(userGroup).build();
         UTActionTrigger actionTrigger = UTActionTrigger.newBuilder()
@@ -128,8 +148,8 @@ final class ThreadBuilderImpl implements ThreadBuilder {
                 .setHook(UTActionTrigger.UTHook.ON_TASK_ASSIGNED)
                 .setDelaySeconds(assignVariable(deadlineSeconds))
                 .build();
-        curNode.getUserTaskBuilder().addActions(actionTrigger);
-        spec.putNodes(lastNodeName, curNode.build());
+        currentNode.getUserTaskBuilder().addActions(actionTrigger);
+        spec.putNodes(lastNodeName, currentNode.build());
     }
 
     @Override
