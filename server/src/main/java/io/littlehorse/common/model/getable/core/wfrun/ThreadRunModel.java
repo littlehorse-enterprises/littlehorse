@@ -536,7 +536,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         } else if (failureBeingHandled != null) {
             getParent()
                     .failWithoutGrace(
-                            new FailureModel("Interrupt thread with id " + number + " failed!", failure.failureName),
+                            failure,
                             time);
         }
 
