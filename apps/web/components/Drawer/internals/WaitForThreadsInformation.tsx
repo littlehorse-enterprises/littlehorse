@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { FailureInformation, LH_EXCEPTION } from './FailureInformation'
 import { parseKey } from './drawerInternals'
 import moment from 'moment'
-import { DrawerHeader, DrawerSection } from 'ui'
-import { nodeposition } from '../../../helpers/nodename'
+import { DrawerHeader, DrawerLink, DrawerSection, DrawerThreadSpecLink } from 'ui'
+import { nodename, nodeposition } from '../../../helpers/nodename'
 import { parseValueByType } from '../../../helpers/parseValueByType'
+import Link from 'next/link'
 
 interface Props {
+	linkedThread: (thread:string) => void
 	isWFRun:boolean
 	run?: any
 	data?: any
@@ -18,8 +20,8 @@ interface Props {
 	setToggleSideBar: (value: boolean, isError: boolean, code: string, language?: string) => void;
 }
 
-export const ExternalEventInformation = (
-	{isWFRun,run,data,wfRunId,errorData,setToggleSideBar}: Props
+export const WaitForThreadsInformation = (
+	{isWFRun,run,data,wfRunId,errorData,setToggleSideBar, linkedThread}: Props
 ) => {
 
 	const onParseError = (data: any) => {
@@ -46,6 +48,7 @@ export const ExternalEventInformation = (
 		})
         if (res.ok) {
 			const {result} = await res.json()
+            console.log('RESULT',result)
             setNode(result)
 		}
     }
@@ -71,7 +74,7 @@ export const ExternalEventInformation = (
 
 	return (
 		<>	
-			<DrawerHeader name={data?.name} title="ExternalEvent Node Information" image="EXTERNAL_EVENT" />
+			<DrawerHeader name={data?.name} title="WaitForThreads Node Information" image="WAIT_FOR_THREADS" />
 
 			{isWFRun ? (
 				<>
@@ -86,68 +89,16 @@ export const ExternalEventInformation = (
 							<p className="drawer__nodeData__header">STATUS</p>
 							<p className="drawer__nodeData__data">{node?.status}</p>
 						</div>
-					</DrawerSection>
-					
-					{/* <pre>{JSON.stringify(node, null, 2)}</pre> */}
-
-					{/* <pre>{JSON.stringify(nrun, null, 2)}</pre> */}
-					<DrawerSection title="ExternalEvent info" >
-						<div className='grid-3'>
-							<p className='drawer__nodeData__header'>GUID</p>
-							<p className='drawer__nodeData__data'>{node?.externalEvent?.externalEventId?.guid}</p>
-							<p className='drawer__nodeData__header'>ARRIVED TIME</p>
-							<p className='drawer__nodeData__data'>
-								{node?.externalEvent?.eventTime ? moment(node.externalEvent?.eventTime).format('MMMM DD, HH:mm:ss') : ''}
-							</p>
-							<p className='drawer__nodeData__header'>ARRIVED</p>
-							<p className='drawer__nodeData__dataSimple'>
-								{node?.externalEvent?.eventTime ? 'YES' : 'NO'}
-							</p>
-						</div>
-					</DrawerSection>
-
-					{nrun && <DrawerSection title="Content" >
-						<div className='grid-3'>
-							<p className='drawer__nodeData__header'>TYPE</p>
-							<p className='drawer__nodeData__data'>{nrun?.content?.type}</p>
-							{ (nrun?.content?.type != 'NULL') && <p className='drawer__nodeData__header'>VALUE</p>}
-							{ (nrun?.content?.type != 'NULL') && <p className='drawer__nodeData__data'>{parseValueByType(nrun?.content)}</p>}
-						</div>
-					</DrawerSection>}
+					</DrawerSection>	
 				</>
 			) : (
-				<div className='drawer__externalEvent__table'>
-					<div className='drawer__externalEvent__table__header'>
-						Variables Mutations
-					</div>
-					<div className='drawer__externalEvent__table__header__subheaders'>
-						<p className='center'>MUTATED VARIABLE</p>
-						<p className='center'>MUTATION TYPE</p>
-						<p className='center'>
-							RHS
-							<br />
-							(LITERAL VALUE OR VARIABLE)
-						</p>
-					</div>
-					{data &&
-						data.node?.variableMutations?.map(
-							(
-								{ lhsName, operation, literalValue, nodeOutput },
-								index: number
-							) => {
-								return (
-									<div key={index} className='grid-3'>
-										<p className='center'>{lhsName}</p>
-										<p className='center'>{operation}</p>
-										<p className='center'>{literalValue ? "Literal Value" : "Variable" }</p>
-										{/* <p className='center'>{literalValue ? parseliteralValue(literalValue) : parsenodeOutput(nodeOutput) }</p> */}
-									</div>
-								)
-							}
-						)}
-
-				</div>
+				<>
+					{/* <pre>{JSON.stringify(data?.node, null,2)}</pre> */}
+				</>
 			)}
+			<DrawerSection title="Related ThreadSpec" >
+				{data?.node?.waitForThreads?.threads?.map( (t:any, ix:number) => <DrawerThreadSpecLink onClick={linkedThread} key={ix} name={nodename(t.threadRunNumber?.variableName)} />)}
+			</DrawerSection>
 			<FailureInformation data={errorData} openError={onParseError} />
 		</>
 	)

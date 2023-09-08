@@ -3,9 +3,9 @@ import { TaskDefInformation } from "./internals/TaskDefInformation";
 import { NOPInformation } from "./internals/NOPInformation";
 import { ExternalEventInformation } from "./internals/ExternalEventInformation";
 import { SpawnChildInformation } from "./internals/SpawnChildInformation";
-import { WaitChildInformation } from "./internals/WaitChildInformation";
 import { SleepNodeInformation } from "./internals/SleepNodeInformation";
 import { UserTaskNodeInformation } from "./internals/UserTaskNodeInformation";
+import { WaitForThreadsInformation } from "./internals/WaitForThreadsInformation";
 
 interface DrawerComponentProps {
   internalComponent?: string | undefined;
@@ -37,6 +37,7 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
   const setThreadHandler = (thread: string) => {
     setThreadName(thread);
     props.setThread(thread);
+    setType('')
   };
 
   const getData: any = async (
@@ -290,23 +291,22 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
             }}
           />
         )}
-        {props.internalComponent === "waitForThread" && (
-          <WaitChildInformation
-            {...{
-              linkedThread: setThreadHandler,
-              nodeName: props.nodeName  || '' ,
-              errorData: errorData,
-              wfRunDrawer: false,
-              setToggleSideBar: setToggleSideBar,
-            }}
-          />
-        )}
+
+        {type === 'WAIT_FOR_THREADS' ? 
+        <WaitForThreadsInformation
+          {...{
+            isWFRun : false,
+            linkedThread: setThreadHandler,
+            data: props.datao.find((d : any) => d.name === props.nodeName),
+            errorData: errorData,
+            setToggleSideBar: setToggleSideBar,
+          }}
+        /> : ''}
         {type === 'EXTERNAL_EVENT' ? 
         <ExternalEventInformation
           {...{
             isWFRun : false,
             data: props.datao.find((d : any) => d.name === props.nodeName),
-            nodeName: props.nodeName,
             errorData: errorData,
             setToggleSideBar: setToggleSideBar,
           }}
