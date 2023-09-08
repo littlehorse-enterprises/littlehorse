@@ -45,4 +45,10 @@ public interface FailureOrBuilder extends
    * <code>optional .littlehorse.VariableValue content = 3;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getContentOrBuilder();
+
+  /**
+   * <code>bool was_properly_handled = 4;</code>
+   * @return The wasProperlyHandled.
+   */
+  boolean getWasProperlyHandled();
 }

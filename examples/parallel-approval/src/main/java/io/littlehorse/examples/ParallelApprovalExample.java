@@ -86,7 +86,10 @@ public class ParallelApprovalExample {
                 NodeOutput nodeOutput = thread.waitForThreads(p1Thread, p2Thread, p3Thread);
 
                 thread.handleException(nodeOutput, "denied-by-user", xnHandler -> {
-                    xnHandler.execute("exc-handler");
+                    // HANDLE FAILED APPROVALS HERE.
+                    // If you want, you can execute additional business logic.
+
+                    xnHandler.fail("denied-by-user", "The workflow was not approved!");
                 });
 
                 // Tell the reminder workflow to stop

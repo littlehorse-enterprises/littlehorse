@@ -366,7 +366,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             }
             if (haltReasons.isEmpty()) {
                 log.debug("Thread {} is alive again!", number);
-                setStatus(LHStatus.RUNNING);
+                if (getCurrentNodeRun().getLatestFailure() == null
+                        || getCurrentNodeRun().getLatestFailure().isProperlyHandled()) {
+                    setStatus(LHStatus.RUNNING);
+                } else {
+                    setStatus(getCurrentNodeRun().getLatestFailure().getStatus());
+                }
                 return true;
             } else {
                 return false;
@@ -534,10 +539,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                             new FailureModel("Interrupt thread with id " + number + " failed!", failure.failureName),
                             time);
         } else if (failureBeingHandled != null) {
-            getParent()
-                    .failWithoutGrace(
-                            new FailureModel("Interrupt thread with id " + number + " failed!", failure.failureName),
-                            time);
+            getParent().failWithoutGrace(failure, time);
         }
 
         wfRunModel.handleThreadStatus(number, new Date(), status);

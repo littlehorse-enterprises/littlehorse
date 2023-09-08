@@ -391,6 +391,14 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         getThreadRun().fail(failure, time);
     }
 
+    public void failWithoutGrace(FailureModel failure, Date time) {
+        this.failures.add(failure);
+        endTime = time;
+        status = failure.getStatus();
+        errorMessage = failure.message;
+        getThreadRun().failWithoutGrace(failure, time);
+    }
+
     public void halt() {
         if (!isInProgress()) {
             return;
