@@ -541,7 +541,7 @@ final class ThreadBuilderImpl implements ThreadBuilder {
             SpawnedThreadImpl st = (SpawnedThreadImpl) threadsToWaitFor[i];
             waitNode.addThreads(ThreadToWaitFor.newBuilder().setThreadRunNumber(assignVariable(st.internalThreadVar)));
         }
-        waitNode.setPolicy(WaitForThreadsPolicy.WAIT_FOR_COMPLETION);
+        waitNode.setPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
         String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode.build());
 
         return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
@@ -553,7 +553,7 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         WaitForThreadsNode.Builder waitNode = WaitForThreadsNode.newBuilder();
         SpawnedThreadsImpl spawnedThreads = (SpawnedThreadsImpl) threads;
         waitNode.setThreadList(assignVariable(spawnedThreads.getInternalThreadVar()));
-        waitNode.setPolicy(WaitForThreadsPolicy.WAIT_FOR_COMPLETION);
+        waitNode.setPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
         String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode.build());
         return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
     }

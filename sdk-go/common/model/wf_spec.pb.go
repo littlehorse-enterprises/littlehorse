@@ -460,7 +460,7 @@ func (x *WaitForThreadsNode) GetPolicy() WaitForThreadsPolicy {
 	if x != nil {
 		return x.Policy
 	}
-	return WaitForThreadsPolicy_WAIT_FOR_COMPLETION
+	return WaitForThreadsPolicy_STOP_ON_FAILURE
 }
 
 func (x *WaitForThreadsNode) GetThreadList() *VariableAssignment {

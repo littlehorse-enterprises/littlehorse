@@ -44,7 +44,6 @@ class VariableType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
 
 class WaitForThreadsPolicy(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
-    WAIT_FOR_COMPLETION: _ClassVar[WaitForThreadsPolicy]
     STOP_ON_FAILURE: _ClassVar[WaitForThreadsPolicy]
 STARTING: LHStatus
 RUNNING: LHStatus
@@ -72,5 +71,4 @@ STR: VariableType
 INT: VariableType
 BYTES: VariableType
 NULL: VariableType
-WAIT_FOR_COMPLETION: WaitForThreadsPolicy
 STOP_ON_FAILURE: WaitForThreadsPolicy

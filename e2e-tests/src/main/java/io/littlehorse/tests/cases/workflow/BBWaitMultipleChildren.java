@@ -11,6 +11,7 @@ import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
@@ -58,7 +59,7 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
             SpawnedThread child1 = thread.spawnThread(this::thread1, "child-1", Map.of("input1", Map.of()));
             SpawnedThread child2 = thread.spawnThread(this::thread2, "child-2", Map.of("input2", Map.of()));
 
-            thread.waitForThreads(child1, child2);
+            thread.waitForThreads(child1, child2).withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
         });
     }
 
@@ -181,7 +182,8 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
         // for it to finish.
         Thread.sleep(200);
         WfRun wfRun = getWfRun(client, id);
-        assertThat(wfRun.getStatus() == LHStatus.RUNNING, "WfRun should still be running! Wf: " + id);
+        System.out.println(wfRun.getStatus());
+        assertThat(wfRun.getStatus() == LHStatus.ERROR, "WfRun should still be running! Wf: " + id);
         ThreadRun thread1 = wfRun.getThreadRuns(1);
         assertThat(thread1.getStatus() == LHStatus.ERROR, "Thread1 should have failed! Wf: " + id);
 
@@ -205,7 +207,7 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
                 waitingThreads.getThreads(0).getThreadStatus() == LHStatus.ERROR,
                 "Should have noticed that the first thread Died! WF: " + id);
         assertThat(
-                waitingThreads.getThreads(1).getThreadStatus() == LHStatus.RUNNING,
+                waitingThreads.getThreads(1).getThreadStatus() == LHStatus.HALTED,
                 "Second thread should still be running! WF: " + id);
 
         // Now we complete the second thread.
@@ -220,7 +222,7 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
                 wfRun.getStatus() == LHStatus.ERROR, "WfRun should have failed because first thread died! Wf: " + id);
         waitingThreads = getNodeRun(client, id, 0, 3).getWaitThreads();
         assertThat(
-                waitingThreads.getThreads(1).getThreadStatus() == LHStatus.COMPLETED,
+                waitingThreads.getThreads(1).getThreadStatus() == LHStatus.HALTED,
                 "Should have noticed that the second thread finished! WF: " + id);
         return id;
     }

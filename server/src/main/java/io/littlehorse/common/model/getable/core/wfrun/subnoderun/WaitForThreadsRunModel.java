@@ -4,24 +4,21 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
-import io.littlehorse.common.model.getable.core.wfrun.ThreadHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
-import io.littlehorse.common.model.getable.core.wfrun.haltreason.ParentHaltedModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.utils.WaitForThreadModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForThreadsNodeModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -73,80 +70,8 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
     @Override
     public boolean advanceIfPossible(Date time) {
-        WfRunModel wfRun = getWfRun();
-        boolean allThreadsCompleted = true;
-
-        for (WaitForThreadModel waitingThread : threads) {
-            ThreadRunModel threadRun = wfRun.getThreadRun(waitingThread.getThreadRunNumber());
-            waitingThread.setThreadStatus(threadRun.getStatus());
-
-            if (waitingThread.isFailed() && !waitingThread.isAlreadyHandled()) {
-                log.trace("Detected new failure on ThreadRun {} {}", threadRun.getWfRunId(), threadRun.getNumber());
-
-                FailureModel latestFailure =
-                        threadRun.getNodeRun(threadRun.getCurrentNodePosition()).getLatestFailure();
-                if (isFailFast()) {
-                    log.trace("Doing fast failure!");
-
-                    if (latestFailure.isUserDefinedFailure()) {
-                        doFailFast(waitingThread, latestFailure, time);
-                    } else {
-                        String failureMessage =
-                                "Some child threads failed = [%s]".formatted(waitingThread.getThreadRunNumber());
-                        FailureModel failure = new FailureModel(failureMessage, LHConstants.CHILD_FAILURE);
-                        doFailFast(waitingThread, failure, time);
-                    }
-                    return true;
-                } else if (latestFailure.isUserDefinedFailure()) {
-
-                    log.debug("There is an uncaught user failure, we are causing the NodeRun to fail.");
-                    nodeRunModel.fail(latestFailure, time);
-                }
-            }
-            if (threadRun.isTerminated()) {
-                waitingThread.setAlreadyHandled(true);
-                waitingThread.setThreadEndTime(time);
-            } else {
-                allThreadsCompleted = false;
-            }
-        }
-        if (allThreadsCompleted) {
-            String failedThreadRunNumbers = threads.stream()
-                    .filter(waitForThreadModel -> waitForThreadModel.getThreadStatus() == LHStatus.ERROR)
-                    .map(WaitForThreadModel::getThreadRunNumber)
-                    .map(Object::toString)
-                    .collect(Collectors.joining(","));
-            if (failedThreadRunNumbers.isEmpty()) {
-                nodeRunModel.complete(new VariableValueModel(), time);
-            } else {
-                String failureMessage = "Some child threads failed = [%s]".formatted(failedThreadRunNumbers);
-                nodeRunModel.fail(new FailureModel(failureMessage, LHConstants.CHILD_FAILURE), time);
-            }
-        }
-        return allThreadsCompleted;
-    }
-
-    private void doFailFast(WaitForThreadModel failedWaitingThread, FailureModel failure, Date time) {
-        nodeRunModel.fail(failure, time);
-        WfRunModel wfRun = getWfRun();
-        for (WaitForThreadModel waitingThreads : threads) {
-            if (!Objects.equals(failedWaitingThread, waitingThreads)) {
-                ThreadRunModel otherChildThread = wfRun.getThreadRun(waitingThreads.getThreadRunNumber());
-                waitingThreads.setThreadStatus(otherChildThread.getStatus());
-
-                ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
-                haltReason.setType(ReasonCase.PARENT_HALTED);
-                ParentHaltedModel parentHalted = new ParentHaltedModel();
-                parentHalted.setParentThreadId(nodeRunModel.getThreadRunNumber());
-                haltReason.setParentHalted(parentHalted);
-
-                otherChildThread.halt(haltReason);
-            }
-        }
-    }
-
-    private boolean isFailFast() {
-        return policy == WaitForThreadsPolicy.STOP_ON_FAILURE;
+        NodeTerminationManager nodeTerminationManager = new NodeTerminationManager(threads, nodeRunModel);
+        return nodeTerminationManager.completeIfPossible(time);
     }
 
     public void arrive(Date time) {
@@ -161,6 +86,89 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
                             "Failed determining thread run number to wait for: " + exn.getMessage(),
                             LHConstants.VAR_SUB_ERROR),
                     time);
+        }
+    }
+
+    static final class NodeTerminationManager {
+        private final List<WaitForThreadModel> waitingThreads;
+        private final NodeRunModel waitForThreadsNodeRun;
+        private final WfRunModel wfRun;
+
+        NodeTerminationManager(List<WaitForThreadModel> waitingThreads, NodeRunModel waitForThreadsNodeRun) {
+            this.waitingThreads = waitingThreads;
+            this.waitForThreadsNodeRun = waitForThreadsNodeRun;
+            this.wfRun = waitForThreadsNodeRun.getThreadRun().getWfRunModel();
+        }
+
+        /**
+         * Verify if WaitForThreads Node should complete or fail.
+         * @param time WfRun execution time
+         * @return true if node should advance
+         */
+        public boolean completeIfPossible(Date time) {
+            WaitForThreadModel failedWaitingThread = getFailedWaitingThread(time);
+            if (failedWaitingThread != null) {
+                handleWaitingThreadFailure(failedWaitingThread, time);
+                // node fails, so advance
+                return true;
+            }
+            if (areWaitingThreadsTerminated()) {
+                waitForThreadsNodeRun.complete(new VariableValueModel(), time);
+            }
+            return false;
+        }
+
+        private void handleWaitingThreadFailure(WaitForThreadModel failedWaitingThread, Date time) {
+            ThreadRunModel threadRun = wfRun.getThreadRun(failedWaitingThread.getThreadRunNumber());
+            FailureModel latestFailure =
+                    threadRun.getNodeRun(threadRun.getCurrentNodePosition()).getLatestFailure();
+            if (latestFailure.isUserDefinedFailure()) {
+                propagateFailure(latestFailure, time);
+            } else {
+                String failureMessage =
+                        "Some child threads failed = [%s]".formatted(failedWaitingThread.getThreadRunNumber());
+                FailureModel childFailure = new FailureModel(failureMessage, LHConstants.CHILD_FAILURE);
+                propagateFailure(childFailure, time);
+            }
+            updateWaitingThreadStatuses(failedWaitingThread);
+        }
+
+        private WaitForThreadModel getFailedWaitingThread(Date time) {
+            for (WaitForThreadModel waitingThread : waitingThreads) {
+                ThreadRunModel threadRun = wfRun.getThreadRun(waitingThread.getThreadRunNumber());
+                waitingThread.setThreadStatus(threadRun.getStatus());
+                if (waitingThread.isFailed() && !waitingThread.isAlreadyHandled()) {
+                    waitingThread.setAlreadyHandled(true);
+                    waitingThread.setThreadEndTime(time);
+                    return waitingThread;
+                }
+            }
+            return null;
+        }
+
+        private boolean areWaitingThreadsTerminated() {
+            return waitingThreads.stream()
+                    .map(WaitForThreadModel::getThreadStatus)
+                    .allMatch(this::isTerminated);
+        }
+
+        private boolean isTerminated(LHStatus threadStatus) {
+            return threadStatus == LHStatus.COMPLETED
+                    || threadStatus == LHStatus.ERROR
+                    || threadStatus == LHStatus.EXCEPTION;
+        }
+
+        private void propagateFailure(FailureModel failureToPropagate, Date time) {
+            waitForThreadsNodeRun.fail(failureToPropagate, time);
+        }
+
+        private void updateWaitingThreadStatuses(WaitForThreadModel failedWaitingThread) {
+            for (WaitForThreadModel waitingThread : waitingThreads) {
+                if (!Objects.equals(failedWaitingThread, waitingThread)) {
+                    ThreadRunModel waitingThreadRun = wfRun.getThreadRun(waitingThread.getThreadRunNumber());
+                    waitingThread.setThreadStatus(waitingThreadRun.getStatus());
+                }
+            }
         }
     }
 }
