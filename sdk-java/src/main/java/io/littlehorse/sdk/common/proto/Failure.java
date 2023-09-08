@@ -145,6 +145,17 @@ private static final long serialVersionUID = 0L;
     return content_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : content_;
   }
 
+  public static final int WAS_PROPERLY_HANDLED_FIELD_NUMBER = 4;
+  private boolean wasProperlyHandled_ = false;
+  /**
+   * <code>bool was_properly_handled = 4;</code>
+   * @return The wasProperlyHandled.
+   */
+  @java.lang.Override
+  public boolean getWasProperlyHandled() {
+    return wasProperlyHandled_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -168,6 +179,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(3, getContent());
     }
+    if (wasProperlyHandled_ != false) {
+      output.writeBool(4, wasProperlyHandled_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -186,6 +200,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getContent());
+    }
+    if (wasProperlyHandled_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(4, wasProperlyHandled_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -211,6 +229,8 @@ private static final long serialVersionUID = 0L;
       if (!getContent()
           .equals(other.getContent())) return false;
     }
+    if (getWasProperlyHandled()
+        != other.getWasProperlyHandled()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -230,6 +250,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + CONTENT_FIELD_NUMBER;
       hash = (53 * hash) + getContent().hashCode();
     }
+    hash = (37 * hash) + WAS_PROPERLY_HANDLED_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getWasProperlyHandled());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -374,6 +397,7 @@ private static final long serialVersionUID = 0L;
         contentBuilder_.dispose();
         contentBuilder_ = null;
       }
+      wasProperlyHandled_ = false;
       return this;
     }
 
@@ -419,6 +443,9 @@ private static final long serialVersionUID = 0L;
             ? content_
             : contentBuilder_.build();
         to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.wasProperlyHandled_ = wasProperlyHandled_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -480,6 +507,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasContent()) {
         mergeContent(other.getContent());
       }
+      if (other.getWasProperlyHandled() != false) {
+        setWasProperlyHandled(other.getWasProperlyHandled());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -523,6 +553,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 32: {
+              wasProperlyHandled_ = input.readBool();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -801,6 +836,38 @@ private static final long serialVersionUID = 0L;
         content_ = null;
       }
       return contentBuilder_;
+    }
+
+    private boolean wasProperlyHandled_ ;
+    /**
+     * <code>bool was_properly_handled = 4;</code>
+     * @return The wasProperlyHandled.
+     */
+    @java.lang.Override
+    public boolean getWasProperlyHandled() {
+      return wasProperlyHandled_;
+    }
+    /**
+     * <code>bool was_properly_handled = 4;</code>
+     * @param value The wasProperlyHandled to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWasProperlyHandled(boolean value) {
+
+      wasProperlyHandled_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bool was_properly_handled = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearWasProperlyHandled() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      wasProperlyHandled_ = false;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

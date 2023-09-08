@@ -93,10 +93,8 @@ lhctl get nodeRun <wfRunId> 3 1
 As expected, it's waiting on the `ExternalEvent` with the name `person-2-approves`. Let's send the event:
 
 ```
-lhctl postEvent <wfRunId> person-2-approves NULL
+lhctl postEvent <wfRunId> person-2-approves JSON_OBJ '{"approval": true}'
 ```
-
-*NOTE: most External Event's have a payload; however, in this example, we do not send a payload, so the value is `NULL`*
 
 Now look at the main thread's `WAIT_FOR_THREAD` node:
 
@@ -140,9 +138,9 @@ lhctl get nodeRun <wfRunId> 0 5
 The second thread is completed! Let's finish off the next two threads (quickly).
 
 ```
-lhctl postEvent <wfRunId> person-1-approves NULL
+lhctl postEvent <wfRunId> person-1-approves JSON_OBJ '{"approval": true}'
 ...
-lhctl postEvent <wfRunId> person-3-approves NULL
+lhctl postEvent <wfRunId> person-3-approves JSON_OBJ '{"approval": true}'
 ...
 ```
 
@@ -168,3 +166,42 @@ lhctl get variable <wfRunId> 0 all-approved
 ```
 
 *NOTE: look at `ParallelApprovalWorkflow#sendReminders()` to see how `all-approved` is used.*
+
+### Handling Failed Approvals
+
+What happens if someone doesn't approve the workflow? We run the exception handler. Search for `HANDLE FAILED APPROVALS HERE` in [the Parallel Approval workflow](./src/main/java/io/littlehorse/examples/ParallelApprovalExample.java) to see how it works.
+
+First, run the workflow:
+
+```
+lhctl run parallel-approval
+```
+
+Then as before, verify that we're waiting on 3 people:
+
+```
+lhctl get wfRun <wf_run_id> 0 5
+```
+
+Now, we _make one of the approvals fail_. To do so:
+
+```
+lhctl postEvent <wf_run_id> person-1-approves JSON_OBJ '{"approval": false}'
+```
+
+Look at the node run. Notice that the approval for thread `1` failed.
+
+```
+lhctl get nodeRun <wf_run_id> 0 5
+```
+
+Look at the `WfRun`:
+
+```
+lhctl get wfRun <wf_run_id>
+```
+
+There are two important things to notice:
+
+1. There is now a 6th `ThreadRun`. Look at thread `5` (the last one, since it's zero-indexed). You'll see that it is type `FALIURE_HANDLER`, which means that it's our exception handler thread.
+2. The `WfRun` is now in the `EXCEPTION` state, because our Exception Handler thread propagated the failure up the stack.
