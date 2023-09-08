@@ -55,6 +55,17 @@ public interface ThreadBuilder {
     void reassignToGroupOnDeadline(UserTaskOutput userTaskOutput, int deadlineSeconds);
 
     /**
+     * Schedule Reassignment of a UserTask to a userGroup upon reaching the Deadline. This method is
+     * used to schedule the reassignment of a UserTask to a userGroup when the specified UserTask
+     * user assignment reaches its deadline in seconds.
+     *
+     * @param userTaskOutput that is currently assigned to a UserGroup.
+     * @param deadlineSeconds Time in seconds after which the UserTask will be automatically
+     *     reassigned to the UserGroup.
+     */
+    void reassignToGroupOnDeadline(UserTaskOutput userTaskOutput, String userGroup, int deadlineSeconds);
+
+    /**
      * Schedule Reassignment of a UserTask to a userId upon reaching the Deadline. This method is
      * used to schedule the reassignment of a UserTask to a userId when the specified UserTask user
      * assignment reaches its deadline in seconds.
