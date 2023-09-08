@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import os from "os";
 import { TaskDefInformation } from "./internals/TaskDefInformation";
 import { NOPInformation } from "./internals/NOPInformation";
 import { ExternalEventInformation } from "./internals/ExternalEventInformation";
@@ -465,19 +464,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
             }}
           />
         )}
-        {props.internalComponent === "externalEvent" && (
-          <ExternalEventInformation
-            {...{
-              isWFRun : true,
-              run: current_run,
-              data:props.datao.find((d : any) => d.name === props.nodeName),
-              wfRunId: props.wfRunId,
-              nodeName: props.nodeName,
-              errorData: errorData,
-              setToggleSideBar: setToggleSideBar,
-            }}
-          />
-        )}
+
         {props.internalComponent === "startThread" && (
           <SpawnChildInformation
             {...{
@@ -500,6 +487,18 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
             }}
           />
         )}
+        {type === 'EXTERNAL_EVENT' ? 
+        <ExternalEventInformation
+          {...{
+            isWFRun : true,
+            run: current_run,
+            data:props.datao.find((d : any) => d.name === props.nodeName),
+            wfRunId: props.wfRunId,
+            nodeName: props.nodeName,
+            errorData: errorData,
+            setToggleSideBar: setToggleSideBar,
+          }}
+        /> : ''}
         {type === 'SLEEP' ? <SleepNodeInformation run={current_run} isWFRun={props.isWFRun} wfRunId={props.wfRunId} data={props.datao.find((d : any) => d.name === props.nodeName)} /> : ''}
         {type === 'USER_TASK' ? <UserTaskNodeInformation run={current_run} isWFRun={props.isWFRun} wfRunId={props.wfRunId} 
           setToggleSideBar={props.setToggleSideBar}

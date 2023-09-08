@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import Image from 'next/image'
-import externalEventSvg from './external-event.svg'
 import { FailureInformation, LH_EXCEPTION } from './FailureInformation'
-import { NodeData, NodeDataProps } from './NodeData'
 import { parseKey } from './drawerInternals'
 import moment from 'moment'
+import { DrawerHeader, DrawerSection } from 'ui'
+import { nodeposition } from '../../../helpers/nodename'
+import { parseValueByType } from '../../../helpers/parseValueByType'
 
 interface ExternalEventInformationProps {
 	isWFRun:boolean
 	run?: any
-	data: any
+	data?: any
 	nodeName: any
 	wfRunId?:string
 	errorData: {
@@ -22,7 +22,7 @@ interface ExternalEventInformationProps {
 export const ExternalEventInformation = (
 	props: ExternalEventInformationProps
 ) => {
-	console.log('PPD',props.data)
+
 	const onParseError = (data: any) => {
 
 		if (typeof data  == 'string') {
@@ -33,57 +33,66 @@ export const ExternalEventInformation = (
 		const error = data[key];
 		props.setToggleSideBar(true, true, error, key)
 	}
-	const parseliteralValue = (v:any) => {
-		return 'Literal Value'
-		if(v.type === 'BOOL') return  v.bool.toString()
-	}
-	const parsenodeOutput = (n:any) => {
-		return  n.jsonpath
-	}
-
 
 	const [node, setNode] = useState<any>()
+	const [nrun, setRun] = useState<any>()
     const getNodeRun = async () => {
         const res = await fetch('/api/drawer/nodeRun', {
 			method: 'POST',
 			body: JSON.stringify({
 				wfRunId:props.wfRunId,
 				threadRunNumber: props.run?.number || 0,
-                name:props.data?.name?.split('-')[0] || 0
+                name:nodeposition(props.data?.name)
 			})
 		})
         if (res.ok) {
 			const {result} = await res.json()
             setNode(result)
-			console.log('NODE',result)
+		}
+    }
+	const getUserTaskRun = async () => {
+        const res = await fetch('/api/drawer/externalEvent', {
+			method: 'POST',
+			body: JSON.stringify({
+				...node?.externalEvent?.externalEventId
+			})
+		})
+        if (res.ok) {
+			const {result} = await res.json()
+            setRun(result)
 		}
     }
 	useEffect( () => {
+        getUserTaskRun()
+    },[node])
+
+	useEffect( () => {
         if(props.isWFRun) getNodeRun()
-    },[props.isWFRun])
+    },[props.isWFRun, props.data])
 
 	return (
-		<>
-			<div className='component-header'>
-				<Image
-					src={externalEventSvg}
-					alt={'external-event'}
-					width={24}
-					height={24}
-				/>
-				<div>
-					<p>ExternalEvent Node Information</p>
-					<p className='component-header__subheader'>{props.nodeName}</p>
-				</div>
-			</div>
+		<>	
+			<DrawerHeader name={props.data?.name} title="ExternalEvent Node Information" image="EXTERNAL_EVENT" />
+
 			{props.isWFRun ? (
 				<>
-
-					<NodeData reachTime={node?.arrivalTime} completionTime={node?.endTime} status={node?.status}/>
-					<div className='drawer__externalEvent__table'>
-						<div className='drawer__externalEvent__table__header'>
-							ExternalEvent info
+					<DrawerSection title="Node Data" >
+						<div className="grid-3">
+							{nrun?.scheduledTime &&  <p className="drawer__nodeData__header">SCHEDULED</p>}
+							{nrun?.scheduledTime &&  <p className="drawer__nodeData__data">{nrun?.scheduledTime ? moment(nrun?.scheduledTime).format('MMMM DD, HH:mm:ss') : ''}</p>}
+							<p className="drawer__nodeData__header">REACH TIME</p>
+							<p className="drawer__nodeData__data">{node?.arrivalTime ? moment(node.arrivalTime).format('MMMM DD, HH:mm:ss') : ''}</p>
+							<p className="drawer__nodeData__header">COMPLETION TIME</p>
+							<p className="drawer__nodeData__data">{node?.endTime ? moment(node.endTime).format('MMMM DD, HH:mm:ss') : ''}</p>
+							<p className="drawer__nodeData__header">STATUS</p>
+							<p className="drawer__nodeData__data">{node?.status}</p>
 						</div>
+					</DrawerSection>
+					
+					{/* <pre>{JSON.stringify(node, null, 2)}</pre> */}
+
+					{/* <pre>{JSON.stringify(nrun, null, 2)}</pre> */}
+					<DrawerSection title="ExternalEvent info" >
 						<div className='grid-3'>
 							<p className='drawer__nodeData__header'>GUID</p>
 							<p className='drawer__nodeData__data'>{node?.externalEvent?.externalEventId?.guid}</p>
@@ -96,22 +105,16 @@ export const ExternalEventInformation = (
 								{node?.externalEvent?.eventTime ? 'YES' : 'NO'}
 							</p>
 						</div>
-					</div>
-					{/* <div className='lh-border lh-round flex flex-col overflow-y-auto'>
-						<div className='p-3 text-center lh-drawer-title'>Content</div>
-						<div className='grid grid-cols-3'>
-							<p className='text-center p-3 lh-node-data-header'>TYPE</p>
-							<p className='text-center p-3 col-span-2 lh-node-data'>
-								{props.wfRunData.content?.type || ''}
-							</p>
-							<p className='text-center p-3 lh-node-data-header-single'>
-								VALUE
-							</p>
-							<p className='text-center p-3 col-span-2'>
-								{props.wfRunData.content?.value || ''}
-							</p>
+					</DrawerSection>
+
+					{nrun && <DrawerSection title="Content" >
+						<div className='grid-3'>
+							<p className='drawer__nodeData__header'>TYPE</p>
+							<p className='drawer__nodeData__data'>{nrun?.content?.type}</p>
+							{ (nrun?.content?.type != 'NULL') && <p className='drawer__nodeData__header'>VALUE</p>}
+							{ (nrun?.content?.type != 'NULL') && <p className='drawer__nodeData__data'>{parseValueByType(nrun?.content)}</p>}
 						</div>
-					</div> */}
+					</DrawerSection>}
 				</>
 			) : (
 				<div className='drawer__externalEvent__table'>
@@ -137,11 +140,13 @@ export const ExternalEventInformation = (
 									<div key={index} className='grid-3'>
 										<p className='center'>{lhsName}</p>
 										<p className='center'>{operation}</p>
-										<p className='center'>{literalValue ? parseliteralValue(literalValue) : parsenodeOutput(nodeOutput) }</p>
+										<p className='center'>{literalValue ? "Literal Value" : "Variable" }</p>
+										{/* <p className='center'>{literalValue ? parseliteralValue(literalValue) : parsenodeOutput(nodeOutput) }</p> */}
 									</div>
 								)
 							}
 						)}
+
 				</div>
 			)}
 			<FailureInformation data={props.errorData} openError={onParseError} />

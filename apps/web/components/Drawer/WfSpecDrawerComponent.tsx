@@ -278,17 +278,7 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
             }}
           />
         )}
-        {props.internalComponent === "externalEvent" && (
-          <ExternalEventInformation
-            {...{
-              isWFRun : false,
-              data: props.datao.find((d : any) => d.name === props.nodeName),
-              nodeName: props.nodeName,
-              errorData: errorData,
-              setToggleSideBar: setToggleSideBar,
-            }}
-          />
-        )}
+
         {props.internalComponent === "startThread" && (
           <SpawnChildInformation
             {...{
@@ -311,6 +301,16 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
             }}
           />
         )}
+        {type === 'EXTERNAL_EVENT' ? 
+        <ExternalEventInformation
+          {...{
+            isWFRun : false,
+            data: props.datao.find((d : any) => d.name === props.nodeName),
+            nodeName: props.nodeName,
+            errorData: errorData,
+            setToggleSideBar: setToggleSideBar,
+          }}
+        /> : ''}
         {type === 'SLEEP' ? <SleepNodeInformation isWFRun={false} data={props.datao.find((d : any) => d.name === props.nodeName)} /> : ''}
         {type === 'USER_TASK' ? <UserTaskNodeInformation isWFRun={false} 
           setToggleSideBar={props.setToggleSideBar}

@@ -4,8 +4,9 @@ import { FailureInformation } from "./FailureInformation"
 import Link from "next/link"
 import Image from "next/image"
 import linkSvg from "./link.svg";
-import { DrawerSection } from "ui"
+import { DrawerHeader, DrawerSection } from "ui"
 import { orderBy } from "lodash"
+import { parseValueByType } from "../../../helpers/parseValueByType"
 
 interface Props {
     isWFRun:boolean
@@ -15,15 +16,7 @@ interface Props {
     setToggleSideBar: (value:boolean) => void
     setCode:(value:any) => void
 }
-const parseValueByType = (value:any) => {
-    if(value?.type === 'JSON_OBJ') return JSON.stringify(value?.jsonObj)
-    if(value?.type === 'JSON_ARR') return JSON.stringify(value?.jsonArr)
-    if(value?.type === 'DOUBLE') return JSON.stringify(value?.double)
-    if(value?.type === 'BOOL') return JSON.stringify(value?.bool)
-    if(value?.type === 'INT') return (value?.int)
-    if(value?.type === 'BYTES') return (value?.bytes)
-    return value?.str
-}
+
 export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run, setToggleSideBar, setCode}:Props) => {
 
     const [info, setInfo] = useState<any>()
@@ -84,13 +77,9 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run, setToggleS
     },[data])
     return (
         <>
-        <div className='component-header'>
-            <img src={`/USER_TASK.svg`} alt="sleep" />
-            <div>
-                <p>UserTaskDef Node Information</p>
-                <p className='component-header__subheader'>{data?.name && data.name.split('-').slice(0,-1).join('-')}</p>
-            </div>
-        </div>
+
+        <DrawerHeader name={data.name} title="UserTaskDef Node Information" image="USER_TASK" />
+
         {isWFRun ? (
             <div className=''>
 
@@ -98,9 +87,9 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run, setToggleS
                 <div className="grid-3">
                     {nrun?.scheduledTime &&  <p className="drawer__nodeData__header">SCHEDULED</p>}
                     {nrun?.scheduledTime &&  <p className="drawer__nodeData__data">{nrun?.scheduledTime ? moment(nrun?.scheduledTime).format('MMMM DD, HH:mm:ss') : ''}</p>}
-                    <p className="drawer__nodeData__header">ARRIVAL TIME</p>
+                    <p className="drawer__nodeData__header">REACH TIME</p>
                     <p className="drawer__nodeData__data">{node?.arrivalTime ? moment(node.arrivalTime).format('MMMM DD, HH:mm:ss') : ''}</p>
-                    <p className="drawer__nodeData__header">END TIME</p>
+                    <p className="drawer__nodeData__header">COMPLETION TIME</p>
                     <p className="drawer__nodeData__data">{node?.endTime ? moment(node.endTime).format('MMMM DD, HH:mm:ss') : ''}</p>
                     <p className="drawer__nodeData__header">STATUS</p>
                     <p className="drawer__nodeData__data">{node?.status}</p>

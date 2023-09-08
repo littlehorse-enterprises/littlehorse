@@ -102,10 +102,10 @@ let nodes:any[] = [];
 
 export const WfRunVisualizerChart = ({data, onClick, run}:{data:any, onClick:(n:any) => void, run:any}) => {
     const clickHandler = (_p:any, d:any) => {
-        console.log(_p,d)
+        // console.log(_p,d)
         onClick(d.name)
-        console.log(d.name)
-        console.log('run',run)
+        // console.log(d.name)
+        // console.log('run',run)
         _d3.select('.selected-node').classed('selected-node',false)
         _d3.select('.c'+d.name).classed('selected-node',true)
        
@@ -118,8 +118,6 @@ export const WfRunVisualizerChart = ({data, onClick, run}:{data:any, onClick:(n:
             .attr("width",width)
             .attr("height",(Math.max(...data.map(d => d.level))*120)+100 < minHeight ? minHeight : (Math.max(...data.map(d => d.level))*120)+100);
             // .attr("height",height);
-
-
 
         //ARROWS
         let lineG = svg.append("g").selectAll("g");
