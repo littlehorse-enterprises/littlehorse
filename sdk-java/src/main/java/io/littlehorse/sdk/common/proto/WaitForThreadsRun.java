@@ -976,7 +976,7 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < threads_.size(); i++) {
       output.writeMessage(1, threads_.get(i));
     }
-    if (policy_ != io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.WAIT_FOR_COMPLETION.getNumber()) {
+    if (policy_ != io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.STOP_ON_FAILURE.getNumber()) {
       output.writeEnum(2, policy_);
     }
     getUnknownFields().writeTo(output);
@@ -992,7 +992,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, threads_.get(i));
     }
-    if (policy_ != io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.WAIT_FOR_COMPLETION.getNumber()) {
+    if (policy_ != io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.STOP_ON_FAILURE.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(2, policy_);
     }

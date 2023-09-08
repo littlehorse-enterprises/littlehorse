@@ -340,6 +340,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 child.halt(childHaltReason);
             }
         }
+
+        getCurrentNodeRun().halt();
     }
 
     /*
@@ -909,6 +911,10 @@ class Comparer {
     @SuppressWarnings("all") // lol
     public static int compare(VariableValueModel left, VariableValueModel right) throws LHVarSubError {
         try {
+            if (left.getVal() == null && right.getVal() != null) return -1;
+            if (right.getVal() == null && left.getVal() != null) return 1;
+            if (right.getVal() == null && left.getVal() == null) return 0;
+
             int result = ((Comparable) left.getVal()).compareTo((Comparable) right.getVal());
             return result;
         } catch (Exception exn) {

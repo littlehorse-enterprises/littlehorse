@@ -6,10 +6,15 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
+import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.subnoderun.utils.WaitForThreadModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.ThreadToWaitForModel;
-import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
@@ -30,7 +35,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
 
     private WaitForThreadsPolicy policy;
 
-    private VariableAssignment threadList;
+    private VariableAssignmentModel threadList;
 
     public Class<WaitForThreadsNode> getProtoBaseClass() {
         return WaitForThreadsNode.class;
@@ -47,7 +52,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         }
         policy = p.getPolicy();
         if (p.hasThreadList()) {
-            threadList = p.getThreadList();
+            threadList = VariableAssignmentModel.fromProto(p.getThreadList());
         }
     }
 
@@ -58,7 +63,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         }
         out.setPolicy(policy);
         if (threadList != null) {
-            out.setThreadList(threadList);
+            out.setThreadList(threadList.toProto());
         }
         return out;
     }
@@ -67,6 +72,29 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         WaitForThreadsRunModel waitForThreadsRun = new WaitForThreadsRunModel();
         waitForThreadsRun.setPolicy(getPolicy());
         return waitForThreadsRun;
+    }
+
+    public List<WaitForThreadModel> getThreadsToWaitFor(NodeRunModel nodeRun) throws LHVarSubError {
+        ThreadRunModel thread = nodeRun.getThreadRun();
+        List<WaitForThreadModel> out = new ArrayList<>();
+
+        for (ThreadToWaitForModel ttwf : getThreads()) {
+            int threadRunNumber = thread.assignVariable(ttwf.getThreadRunNumber())
+                    .asInt()
+                    .intVal
+                    .intValue();
+            out.add(new WaitForThreadModel(nodeRun, threadRunNumber));
+        }
+
+        if (threadList != null) {
+            VariableValueModel threadListVar = thread.assignVariable(threadList);
+
+            for (Object threadNumberObj : threadListVar.getJsonArrVal()) {
+                out.add(new WaitForThreadModel(nodeRun, Integer.valueOf(threadNumberObj.toString())));
+            }
+        }
+
+        return out;
     }
 
     @Override

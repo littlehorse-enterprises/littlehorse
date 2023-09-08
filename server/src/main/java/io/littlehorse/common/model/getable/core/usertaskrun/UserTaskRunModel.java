@@ -360,6 +360,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
                                 assignToCase),
                         maturationTime),
                 getDao());
+
         getDao().scheduleTimer(timer);
     }
 

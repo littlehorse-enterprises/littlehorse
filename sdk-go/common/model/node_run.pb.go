@@ -619,7 +619,7 @@ func (x *WaitForThreadsRun) GetPolicy() WaitForThreadsPolicy {
 	if x != nil {
 		return x.Policy
 	}
-	return WaitForThreadsPolicy_WAIT_FOR_COMPLETION
+	return WaitForThreadsPolicy_STOP_ON_FAILURE
 }
 
 type ExternalEventRun struct {
