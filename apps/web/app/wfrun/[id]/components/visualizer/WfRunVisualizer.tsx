@@ -72,6 +72,7 @@ export const WfRunVisualizer = ({
     const mappedData: any = entries.map((e: mapnode) => ({
       name: e[0],
       type: e[0].split("-").pop(),
+      position: e[0].split("-").shift(),
       node: e[1],
       childs: e[1]["outgoingEdges"].map((e) => e.sinkNodeName),
       level: 0,

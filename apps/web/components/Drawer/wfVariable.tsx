@@ -4,6 +4,7 @@ import {
   FailureInformation,
   LH_EXCEPTION,
 } from "./internals/FailureInformation";
+import { parseValueByType } from "../../helpers/parseValueByType";
 
 export type Value =
   | {
@@ -71,27 +72,9 @@ const WfVariable = (props: WfVariableProps) => {
     }
   };
 
-  function processValue(value: Value | undefined) {
-    if (value === null || value === undefined) return "NULL";
-
-    switch (value.type) {
-      case "STR":
-        return value.str;
-      case "JSON_OBJ":
-        return value.jsonObj;
-      case "DOUBLE":
-        return value.double;
-      case "BOOL":
-        return value.bool;
-      case "INT":
-        return value.int;
-      default:
-        return "NULL";
-    }
-  }
   const onJsonObjClick = () => {
     if (wfVariable?.type === "JSON_OBJ") {
-      props.setToggleSideBar(true, false, wfVariable.jsonObj, "json");
+      props.setToggleSideBar(true, false, JSON.parse(wfVariable.jsonObj), "json");
     }
   };
 
@@ -107,7 +90,7 @@ const WfVariable = (props: WfVariableProps) => {
 
   useEffect(() => {
     if (wfVariable !== undefined) {
-      const processVal = processValue(wfVariable);
+      const processVal = parseValueByType(wfVariable);
       setProcessVal(processVal);
       if (wfVariable.type === "JSON_OBJ") {
         setJsonObjClass("drawer__mainTable__clickable");
