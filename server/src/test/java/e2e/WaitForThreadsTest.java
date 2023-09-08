@@ -130,22 +130,21 @@ public class WaitForThreadsTest {
     @Test
     void shouldExecuteExceptionHandlerWhenChildThreadTrowsAUserDefinedException() {
         int person1ApprovalThreadNumber = 1;
-        int person2ApprovalThreadNumber = 2;
         int exceptionHandlerThreadNumber = 4;
         Map person1DenyEvent = Map.of("approval", false);
+        Map person2Approves = Map.of("approval", true);
+        Map person3Approves = Map.of("approval", true);
         workflowVerifier
                 .prepareRun(waitForThreadsWithExceptionHandlerWorkflow)
                 .waitForStatus(LHStatus.RUNNING)
                 .thenSendExternalEventJsonContent("person-1-approves", person1DenyEvent)
-                .waitForStatus(RUNNING)
-                .waitForNodeRunStatus(person1ApprovalThreadNumber, 3, EXCEPTION)
-                .waitForThreadRunStatus(person2ApprovalThreadNumber, RUNNING)
-                .waitForThreadRunStatus(person2ApprovalThreadNumber, RUNNING)
-                .waitForNodeRunStatus(person2ApprovalThreadNumber, 1, HALTED)
                 .waitForTaskStatus(exceptionHandlerThreadNumber, 1, TaskStatus.TASK_SUCCESS)
                 .thenVerifyTaskRunResult(
                         exceptionHandlerThreadNumber, 1, variableValue -> assertThat(variableValue.getStr())
                                 .isEqualTo("result"))
+                .thenSendExternalEventJsonContent("person-2-approves", person2Approves)
+                .thenSendExternalEventJsonContent("person-3-approves", person3Approves)
+                .waitForStatus(ERROR)
                 .start();
     }
 
