@@ -119,8 +119,8 @@ export const WfRunVisualizer = ({
   }, []);
 
   useEffect(() => {
-    // if (drawerData === undefined) getMainDrawerData(wfspec, setDrawerData);
-
+    // if (drawerData === undefined) getMainDrawerData(run?.wfSpecName || '', setDrawerData);
+    
     if (selectedNodeName) {
       const nodePostFix = selectedNodeName.split("-").reverse()[0];
 
@@ -133,7 +133,7 @@ export const WfRunVisualizer = ({
       isWFRun={true}
       internalComponent={nodeType}
       datao={data}
-      data={drawerData}
+      data={rawdata}
       nodeName={selectedNodeName}
       wfRunId={id}
       setToggleSideBar={setToggleSideBar}

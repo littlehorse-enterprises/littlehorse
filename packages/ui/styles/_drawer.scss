@@ -43,7 +43,22 @@
   p {
     margin: 0;
   }
+  &__threadData{
+    font-family: "Inter";
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 17px;
+        letter-spacing: 0em;
+        text-align: left;
+        color: white;
 
+        border: 1px solid #4b5058;
+        border-radius: 4px;
+        width: 100%;
+        padding: 12px;
+        background: #4b5058;
+
+  }
   &__threadSelector {
     &__container {
       display: flex;
@@ -53,7 +68,7 @@
       gap: 24px;
 
       &__select {
-        font-family: Inter;
+        font-family: "Inter";
         font-size: 14px;
         font-weight: 600;
         line-height: 17px;

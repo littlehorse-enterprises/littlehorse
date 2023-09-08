@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { FailureInformation, LH_EXCEPTION } from './FailureInformation'
 import { parseKey } from './drawerInternals'
 import moment from 'moment'
-import { DrawerHeader, DrawerLink, DrawerSection, DrawerThreadSpecLink } from 'ui'
+import { DrawerHeader, DrawerSection, DrawerThreadSpecLink } from 'ui'
 import { nodename, nodeposition } from '../../../helpers/nodename'
-import { parseValueByType } from '../../../helpers/parseValueByType'
-import Link from 'next/link'
 
 interface Props {
 	linkedThread: (thread:string) => void
@@ -48,25 +46,9 @@ export const WaitForThreadsInformation = (
 		})
         if (res.ok) {
 			const {result} = await res.json()
-            console.log('RESULT',result)
             setNode(result)
 		}
     }
-	const getUserTaskRun = async () => {
-        const res = await fetch('/api/drawer/externalEvent', {
-			method: 'POST',
-			body: JSON.stringify({
-				...node?.externalEvent?.externalEventId
-			})
-		})
-        if (res.ok) {
-			const {result} = await res.json()
-            setRun(result)
-		}
-    }
-	useEffect( () => {
-        getUserTaskRun()
-    },[node])
 
 	useEffect( () => {
         if(isWFRun) getNodeRun()

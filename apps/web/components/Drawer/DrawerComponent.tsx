@@ -12,7 +12,7 @@ import { WaitForThreadsInformation } from "./internals/WaitForThreadsInformation
 interface DrawerComponentProps {
   isWFRun:boolean
   internalComponent?: string | undefined;
-  data: any;
+  data?: any;
   datao: any;
   nodeName: string;
   wfRunId?: string;
@@ -62,19 +62,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
       handler(content.data[dataPath]);
     } else console.warn("INVALID RESPONSE FROM API");
   };
-  const getVariableData = async (wfRunId, RunNumber, name) => {
-    const res = await fetch("/api/drawer/variable", {
-      method: "POST",
-      body: JSON.stringify({
-        wfRunId,
-        RunNumber,
-        name,
-      }),
-    });
-    if (res.ok) {
-      const content = await res.json();
-    }
-  };
+
   const getErrorData: any = (node: any, key: string) => {
     if (node) {
       const logs = "task" in node ? node.task.logOutput : null;
@@ -101,22 +89,11 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
       );
 
     if (props.data) {
-      if (mainData === undefined || threadName) {
-        let selectedThread;
 
-        if (threadName === undefined) {
-          selectedThread = props.data.entrypointThreadName;
-          selectedThread;
-        }
+      setMainData(
+        (threadName && props.data?.threadSpecs) ? props.data?.threadSpecs[threadName].variableDefs : []
+      );
 
-        setMainData(
-          props.data.threadSpecs[selectedThread || threadName].variableDefs
-        );
-      }
-
-      if (props.wfRunId) {
-        getVariableData(props.wfRunId, "0", "customer-id");
-      }
 
       if (props.nodeName !== lastSelectedNode) {
         setLastSelectedNode(props.nodeName);
@@ -148,7 +125,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 
       const processComplexData = {
         task: () => {
-          console.log("selectedNode", selectedNode);
+          // console.log("selectedNode", selectedNode);
           if (rawData === undefined)
             getData(
               "../../api/drawer/taskDef/",
@@ -314,9 +291,9 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
               (element: any) => element.nodeName === props.nodeName
             );
 
-            console.log("wfRunRawData", wfRunRawData);
-            console.log("wfRunNode", wfRunNode);
-            console.log("props.nodeName", props.nodeName);
+            // console.log("wfRunRawData", wfRunRawData);
+            // console.log("wfRunNode", wfRunNode);
+            // console.log("props.nodeName", props.nodeName);
 
             if (wfRunNode && props.internalComponent) {
               const data = wfRunNode[
@@ -369,6 +346,11 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
     }
   },[props.nodeName])
 
+  useEffect( () => {
+    setCurrentRun(props.run)
+    setThreadName(props.run?.threadSpecName)
+  },[props.run])
+
   const setToggleSideBar = (
     value: boolean,
     isError: boolean,
@@ -392,12 +374,13 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
   return (
     <div className="drawer-component">
       <>
+      {/* <pre>{JSON.stringify(props.data, null,2)}</pre> */}
         <div className="drawer__threadSelector">
-          <p className="drawer__threadSelector__header">THREADSPEC NAME</p>
+          <p className="drawer__threadSelector__header">THREADRUN</p>
           <div className="drawer__threadSelector__container">
             <select
               className="drawer__threadSelector__container__select"
-              value={threadName}
+              value={current_run?.threadSpecName}
               onChange={(event) => setThreadHandler(event.target.value)}
             >
               {props.runs &&
@@ -410,11 +393,14 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
                 })}
             </select>
           </div>
-        </div>
-        <div className="drawer__mainTable">
-          <div className="drawer__mainTable__header">
-            {props.run ? "ThreadRun Variables" : "ThreadSpec Variables"}
+          <p className="drawer__threadSelector__header">TYPE</p>
+          <div className="drawer__threadSelector__container">
+            <div className="drawer__threadData">{current_run?.type}</div>
           </div>
+        </div>
+
+        <div className="drawer__mainTable">
+          <div className="drawer__mainTable__header">ThreadRun Variables</div>
           <div
             className={`drawer__mainTable__header__subheaders ${
               props.run
@@ -424,7 +410,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
           >
             <p className="center ">NAME</p>
             <p className="center">TYPE</p>
-            {props.run && <p className="center">VALUE</p>}
+            {current_run && <p className="center">VALUE</p>}
           </div>
           {mainData &&
             mainData.map(({ name, type }, index) => {
