@@ -97,7 +97,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         NodeTerminationManager(List<WaitForThreadModel> waitingThreads, NodeRunModel waitForThreadsNodeRun) {
             this.waitingThreads = waitingThreads;
             this.waitForThreadsNodeRun = waitForThreadsNodeRun;
-            this.wfRun = waitForThreadsNodeRun.getThreadRun().getWfRunModel();
+            this.wfRun = waitForThreadsNodeRun.getThreadRun().getWfRun();
         }
 
         /**

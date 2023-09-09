@@ -340,7 +340,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 }
                 for (int handlerId : failureHandlerIds) {
                     ThreadRunModel handler =
-                            getThreadRun().wfRunModel.threadRunModels.get(handlerId);
+                            getThreadRun().wfRun.threadRunModels.get(handlerId);
                     if (handler.status != LHStatus.COMPLETED) {
                         return false;
                     }

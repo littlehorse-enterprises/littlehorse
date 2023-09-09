@@ -56,7 +56,7 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
     }
 
     public boolean isResolved() {
-        return getSubHaltReason().isResolved(threadRunModel.wfRunModel);
+        return getSubHaltReason().isResolved(threadRunModel.wfRun);
     }
 
     public ThreadHaltReason.Builder toProto() {

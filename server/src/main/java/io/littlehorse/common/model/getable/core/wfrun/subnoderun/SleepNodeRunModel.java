@@ -67,10 +67,10 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
             LHTimer timer = new LHTimer();
             timer.maturationTime = maturationTime;
             timer.key = nodeRunModel.wfRunId;
-            timer.topic = nodeRunModel.getThreadRun().getWfRunModel().getDao().getCoreCmdTopic();
+            timer.topic = nodeRunModel.getThreadRun().getWfRun().getDao().getCoreCmdTopic();
             timer.payload = cmd.toProto().build().toByteArray();
 
-            nodeRunModel.getThreadRun().getWfRunModel().getDao().scheduleTimer(timer);
+            nodeRunModel.getThreadRun().getWfRun().getDao().scheduleTimer(timer);
         } catch (LHVarSubError exn) {
             FailureModel failure = new FailureModel(
                     "Failed calculating maturation for timer: " + exn.getMessage(), LHConstants.VAR_SUB_ERROR);

@@ -32,12 +32,10 @@ enum ThreadType {
 }
 
 message ThreadRun {
-  string wf_run_id = 1;
+  reserved 1, 4, 5;
   int32 number = 2;
 
   LHStatus status = 3;
-  string wf_spec_name = 4;
-  int32 wf_spec_version = 5;
   string thread_spec_name = 6;
 
   google.protobuf.Timestamp start_time = 7;
