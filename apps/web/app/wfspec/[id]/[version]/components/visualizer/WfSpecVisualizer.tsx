@@ -30,33 +30,66 @@ export const WfSpecVisualizer = ({
 	const [toggleSideBar, setToggleSideBar] = useState(false)
 	const [sideBarData, setSideBarData] = useState('')
 
-	const rec = (mappedData, i) => {
+	const rec = (mappedData, i, offset, open=false) => {
 		let el = mappedData[i]
+		// console.log(el.name,offset, +el.position)
+		el.level=+el.position+offset
 		if (!el.childs.length) return mappedData //if not childs close the REC function
 		if (el.type === 'WAIT_FOR_THREAD') {
 			let wft = el.node.waitForThread.threadRunNumber.variableName
 			let thread = mappedData.find(m => m.name === wft)
 			el.wlevel = thread.level
 		}
+		
+		let addo = 0
+		if(el.type === 'NOP' ){
+			if(open){
+				el.closer = true
+				open = false
+			}else{
+				open = true
+				addo = 1
+			}
+		}
+		
 		mappedData = mappedData.map(m => {
 			if (el.childs.includes(m.name)) {
-				m.level = el.level + 1 // each child heritate parent level + 1
+				// m.level = el.level + 1 // each child heritate parent level + 1
+
+				// CHECK IF NOP IS WHILE
+				if(el.type === 'NOP' && m.type==='NOP'){
+					const econd =  el.node.outgoingEdges.find(e => e.sinkNodeName != m.name)?.condition || {}
+					const mcond = m.node.outgoingEdges.find(e => e.sinkNodeName === el.name)?.condition || {}
+					if(JSON.stringify(econd) === JSON.stringify(mcond)){
+						el.while = true
+						m.while = true
+					}
+				}
+
 				if(m.type === 'NOP' ){
 					m.px = 'center'
 				}else{
 					m.px = el.px
 				}
-				if (el.childs.length > 1) {
-					m.level = el.level + 2
+
+				if (el.childs.length > 1 && (m.type != 'NOP') ) {
+					// m.level = el.level + 2
 					m.px = m.name === el.childs[0] ? 'left' : 'right'
 				}
-				if(m.type === 'NOP' && m.childs.length === 1){
+				// if(m.type === 'NOP' && m.childs.length === 1){
+	
+				if(m.type === 'NOP' && open){
 					el.cNOP = m.name
 				}
+				if(!open){
+					m.px = 'center'
+				}
+
 			}
 			return m
 		})
-		return rec(mappedData, ++i)
+		// console.log(addo)
+		return rec(mappedData, ++i, offset+addo, open)
 	}
 	const mapData = (data: any, thread?: string) => {
 		const threads = Object.keys(data?.threadSpecs)
@@ -65,13 +98,16 @@ export const WfSpecVisualizer = ({
 		const mappedData: any = entries.map((e: mapnode) => ({
 			name: e[0],
 			type: e[0].split('-').pop(),
+			position: e[0].split("-").shift(),
 			node: e[1],
 			childs: e[1]['outgoingEdges'].map(e => e.sinkNodeName),
 			level: 0,
+			closer:false,
+			while:false,
 			px: 'center'
 		}))
 		setLoading(false);
-		return rec(mappedData, 0)
+		return rec(mappedData, 0, 0)
 	}
 	const getData = async () => {
 		const res = await fetch('/api/visualization/wfSpec', {
