@@ -14,12 +14,14 @@ export const getNOP_RHS = (value: any) => {
 
 export const conditionSymbol = (comparator: string) => {
 	const conditions = {
-		EQUALS: '=',
-		NOT_EQUALS: '!=',
+		EQUALS:'=',
+		NOT_EQUALS:'!=',
 		GREATER_THAN: '>',
 		GREATER_THAN_EQ: '>=',
+		LESS_THAN_EQ: '<=',
 		LESS_THAN: '<',
-		LESS_THAN_EQ: '<='
+		IN: 'IN',
+		NOT_IN: 'NOT IN'
 	}
 
 	return conditions[comparator as keyof typeof conditions]

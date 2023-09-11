@@ -11,7 +11,9 @@ const conditions = {
     GREATER_THAN: '>',
     GREATER_THAN_EQ: '>=',
     LESS_THAN_EQ: '<=',
-    LESS_THAN: '<'
+    LESS_THAN: '<',
+    IN: 'IN',
+    NOT_IN: 'NOT IN'
 }
 let  _d3:d3.Selection<d3.BaseType, unknown, HTMLElement, any>
 // let svg:d3.Selection<SVGGElement, unknown, HTMLElement, any>
