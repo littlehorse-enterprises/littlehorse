@@ -178,5 +178,5 @@ func init() {
 	searchVariableCmd.Flags().String("wfSpecName", "", "name of WfSpec")
 	searchVariableCmd.Flags().Int32("wfSpecVersion", -1, "WfSpecVersion to search for")
 
-	searchVariableCmd.MarkFlagsRequiredTogether("name", "value", "varType", "wfSpecName", "wfSpecVersion")
+	searchVariableCmd.MarkFlagsRequiredTogether("name", "value", "varType", "wfSpecName")
 }
