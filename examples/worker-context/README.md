@@ -6,7 +6,7 @@ Go to the class `MyWorker`.
 Let's run the example in `WorkerContextExample.java`
 
 ```
-gradle example-worker-context:run
+./gradlew example-worker-context:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:

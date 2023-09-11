@@ -64,7 +64,7 @@ Now let's run an example. This example lives in the `examples/basic` folder, and
 > More examples at [examples](../examples).
 
 ```
-gradle example-basic:run
+./gradlew example-basic:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:

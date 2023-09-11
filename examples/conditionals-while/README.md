@@ -7,7 +7,7 @@ the end condition and the handler (body) of the while.
 Let's run the example in `ConditionalsWhileExample.java`
 
 ```
-gradle example-conditionals-while:run
+./gradlew example-conditionals-while:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:

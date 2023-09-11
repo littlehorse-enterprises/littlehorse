@@ -1,7 +1,7 @@
 FROM gradle:8 as builder
 WORKDIR /lh
 COPY . /lh
-RUN gradle server:shadowJar -x test
+RUN ./gradlew server:shadowJar -x test
 
 FROM amazoncorretto:17
 RUN mkdir /lh
