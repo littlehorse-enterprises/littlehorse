@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any, Callable, Optional, Union
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import (
+    Comparator,
     IndexType,
     JsonIndex,
     TaskNode,
@@ -17,6 +18,7 @@ from littlehorse.model.service_pb2 import PutWfSpecRequest
 from littlehorse.model.variable_pb2 import VariableValue
 from littlehorse.model.wf_spec_pb2 import (
     Edge,
+    EdgeCondition,
     EntrypointNode,
     ExitNode,
     ExternalEventNode,
@@ -29,6 +31,7 @@ from littlehorse.model.wf_spec_pb2 import (
     WaitForThreadsNode,
 )
 from littlehorse.proto_utils import (
+    negate_comparator,
     to_variable_value,
     to_variable_assignment,
     to_json,
@@ -47,6 +50,60 @@ NodeType = Union[
     NopNode,
     UserTaskNode,
 ]
+
+
+class WorkflowCondition:
+    def __init__(self, left_hand: Any, comparator: Comparator, right_hand: Any) -> None:
+        """Returns a WorkflowCondition that can be used in
+        `ThreadBuilder.doIf()` or `ThreadBuilder.doElse()`.
+
+        Args:
+            left_hand (Any): is either a literal value
+            (which the Library casts to a Variable Value) or a
+            `WfRunVariable` representing the LHS of the expression.
+            comparator (Comparator): is a Comparator defining the
+            comparator, for example, `ComparatorTypePb.EQUALS`.
+            right_hand (Any): is either a literal value
+            (which the Library casts to a Variable Value) or a
+            `WfRunVariable` representing the RHS of the expression.
+        """
+        self.left_hand = left_hand
+        self.comparator = comparator
+        self.right_hand = right_hand
+
+    def negate(self) -> "WorkflowCondition":
+        """Negates a comparator:
+
+        Comparator.LESS_THAN => Comparator.GREATER_THAN_EQ
+        Comparator.GREATER_THAN_EQ => Comparator.LESS_THAN
+        Comparator.GREATER_THAN => Comparator.LESS_THAN_EQ
+        Comparator.LESS_THAN_EQ => Comparator.GREATER_THAN
+        Comparator.IN => Comparator.NOT_IN
+        Comparator.NOT_IN => Comparator.IN
+        Comparator.EQUALS => Comparator.NOT_EQUALS
+        Comparator.NOT_EQUALS => Comparator.EQUALS
+
+        Returns:
+            WorkflowCondition: A condition.
+        """
+        return WorkflowCondition(
+            self.left_hand, negate_comparator(self.comparator), self.right_hand
+        )
+
+    def __str__(self) -> str:
+        return to_json(self.compile())
+
+    def compile(self) -> EdgeCondition:
+        """Compile this into Protobuf Objects.
+
+        Returns:
+            EdgeCondition: Spec.
+        """
+        return EdgeCondition(
+            comparator=self.comparator,
+            left=to_variable_assignment(self.left_hand),
+            right=to_variable_assignment(self.right_hand),
+        )
 
 
 class NodeCase(Enum):
@@ -484,6 +541,27 @@ class ThreadBuilder:
             self._nodes[next_node_name] = Node(user_task=sub_node)  # type: ignore[arg-type]  # noqa: E501
 
         return next_node_name
+
+    def condition(
+        self, left_hand: Any, comparator: Comparator, right_hand: Any
+    ) -> WorkflowCondition:
+        """Returns a WorkflowCondition that can be used in
+        `ThreadBuilder.doIf()` or `ThreadBuilder.doElse()`.
+
+        Args:
+            left_hand (Any): is either a literal value
+            (which the Library casts to a Variable Value) or a
+            `WfRunVariable` representing the LHS of the expression.
+            comparator (Comparator): is a Comparator defining the
+            comparator, for example, `ComparatorTypePb.EQUALS`.
+            right_hand (Any): is either a literal value
+            (which the Library casts to a Variable Value) or a
+            `WfRunVariable` representing the RHS of the expression.
+
+        Returns:
+            WorkflowCondition: a WorkflowCondition.
+        """
+        return WorkflowCondition(left_hand, comparator, right_hand)
 
 
 ThreadInitializer = Callable[[ThreadBuilder], None]
