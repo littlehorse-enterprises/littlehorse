@@ -347,16 +347,23 @@ class WorkflowNode:
         self.outgoing_edges: list[Edge] = []
         self.variable_mutations: list[VariableMutation] = []
 
-    def __eq__(self, __value: object) -> bool:
-        return hasattr(__value, "name") and self.name == __value.name
-
-    def __hash__(self) -> int:
-        return hash(self.name)
-
     def __str__(self) -> str:
         return to_json(self.compile())
 
+    def _find_outgoing_edge(self, sink_node_name: str) -> Edge:
+        for edge in self.outgoing_edges:
+            if sink_node_name == edge.sink_node_name:
+                return edge
+
+        raise ValueError("Edge not found")
+
     def compile(self) -> Node:
+        """Compile this into Protobuf Objects.
+
+        Returns:
+            Node: Spec.
+        """
+
         def new_node(**kwargs: Any) -> Node:
             return Node(
                 outgoing_edges=self.outgoing_edges,
@@ -401,11 +408,31 @@ class ThreadBuilder:
         if initializer is None:
             raise ValueError("None is not allowed")
 
+        self._validate_initializer(initializer)
+
         self.is_active = True
         self.add_node("entrypoint", EntrypointNode())
         initializer(self)
         self.add_node("exit", ExitNode())
         self.is_active = False
+
+    def _validate_initializer(self, initializer: "ThreadInitializer") -> None:
+        if initializer is None:
+            raise ValueError("ThreadInitializer cannot be None")
+
+        if not inspect.isfunction(initializer) and not inspect.ismethod(initializer):
+            raise TypeError("Object is not a ThreadInitializer")
+
+        sig = signature(initializer)
+
+        if len(sig.parameters) != 1:
+            raise TypeError("ThreadInitializer receives only one parameter")
+
+        if list(sig.parameters.values())[0].annotation is not ThreadBuilder:
+            raise TypeError("ThreadInitializer receives a ThreadBuilder")
+
+        if sig.return_annotation is not None:
+            raise TypeError("ThreadInitializer returns None")
 
     def compile(self) -> ThreadSpec:
         """Compile this into Protobuf Objects.
@@ -431,6 +458,19 @@ class ThreadBuilder:
         if len(self._nodes) == 0:
             raise ReferenceError("No node found")
         return self._nodes[-1]
+
+    def _find_node(self, name: str) -> WorkflowNode:
+        for node in self._nodes:
+            if node.name == name:
+                return node
+        raise ReferenceError("Node not found")
+
+    def _find_next_node(self, name: str) -> WorkflowNode:
+        nodes_count = len(self._nodes)
+        for i, node in enumerate(self._nodes, 1):
+            if node.name == name and i < nodes_count:
+                return self._nodes[i]
+        raise ReferenceError("Next node not found")
 
     def execute(self, task_name: str, *args: Any) -> NodeOutput:
         """Adds a TASK node to the ThreadSpec.
@@ -575,8 +615,6 @@ class ThreadBuilder:
             last_node = self._last_node()
             last_node.outgoing_edges.append(Edge(sink_node_name=next_node_name))
 
-            # TODO add node condition
-
         self._nodes.append(WorkflowNode(next_node_name, node_type, sub_node))
 
         return next_node_name
@@ -602,10 +640,45 @@ class ThreadBuilder:
         """
         return WorkflowCondition(left_hand, comparator, right_hand)
 
-    def do_if(self, condition: WorkflowCondition) -> None:
+    def do_if(
+        self, condition: WorkflowCondition, initializer: "ThreadInitializer"
+    ) -> None:
+        """Conditionally executes some workflow code; equivalent
+        to an if() statement in programming.
+
+        Args:
+            condition (WorkflowCondition): is the WorkflowCondition
+            to be satisfied.
+            initializer (ThreadInitializer): is the block of
+            ThreadSpec code to be executed if the provided
+            WorkflowCondition is satisfied.
+        """
         self._check_if_active()
-        self.add_node("nop", NopNode())
-        self.add_node("nop", NopNode())
+        self._validate_initializer(initializer)
+
+        # execute body
+        start_node_name = self.add_node("nop", NopNode())
+        initializer(self)
+        end_node_name = self.add_node("nop", NopNode())
+
+        # manipulate the conditions of the nodes
+        start_node = self._find_node(start_node_name)
+        condition_node = self._find_next_node(start_node_name)
+
+        # add if
+        edge = start_node._find_outgoing_edge(condition_node.name)
+        edge.MergeFrom(
+            Edge(
+                condition=condition.compile(),
+            )
+        )
+        # add else
+        start_node.outgoing_edges.append(
+            Edge(
+                sink_node_name=end_node_name,
+                condition=condition.negate().compile(),
+            )
+        )
 
 
 ThreadInitializer = Callable[[ThreadBuilder], None]
@@ -625,12 +698,10 @@ class Workflow:
         """
         if name is None:
             raise ValueError("Name cannot be None")
+
         self.name = name
         self.retention_hours = retention_hours
-
-        self._validate_entrypoint(entrypoint)
         self._entrypoint = entrypoint
-
         self._thread_initializers: list[tuple[str, ThreadInitializer]] = []
 
     def add_sub_thread(self, name: str, initializer: ThreadInitializer) -> str:
@@ -652,24 +723,6 @@ class Workflow:
 
         self._thread_initializers.append((name, initializer))
         return name
-
-    def _validate_entrypoint(self, entrypoint: ThreadInitializer) -> None:
-        if entrypoint is None:
-            raise ValueError("ThreadInitializer cannot be None")
-
-        if not inspect.isfunction(entrypoint) and not inspect.ismethod(entrypoint):
-            raise TypeError("Object is not a ThreadInitializer")
-
-        sig = signature(entrypoint)
-
-        if len(sig.parameters) != 1:
-            raise TypeError("ThreadInitializer receives only one parameter")
-
-        if list(sig.parameters.values())[0].annotation is not ThreadBuilder:
-            raise TypeError("ThreadInitializer receives a ThreadBuilder")
-
-        if sig.return_annotation is not None:
-            raise TypeError("ThreadInitializer returns None")
 
     def save(self, file_path: Union[str, Path]) -> None:
         """Export the WorkflowSpec in JSON format.
