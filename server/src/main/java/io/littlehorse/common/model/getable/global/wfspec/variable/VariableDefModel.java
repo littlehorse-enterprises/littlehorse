@@ -97,7 +97,11 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
                 return false;
             }
         }
-        
+
         return true;
+    }
+
+    public boolean hasIndex() {
+        return indexType != null || jsonIndices.size() > 0;
     }
 }

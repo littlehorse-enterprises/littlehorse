@@ -6,9 +6,7 @@ import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
-
 import java.util.List;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -47,7 +45,8 @@ public class ThreadVariablesTest {
         });
 
         PutWfSpecRequest pwf = wf.compileWorkflow();
-        List<VariableDef> varDefs = pwf.getThreadSpecsOrThrow(pwf.getEntrypointThreadName()).getVariableDefsList();
+        List<VariableDef> varDefs =
+                pwf.getThreadSpecsOrThrow(pwf.getEntrypointThreadName()).getVariableDefsList();
 
         Assertions.assertThat(varDefs.size()).isEqualTo(1);
         Assertions.assertThat(varDefs.get(0).getPersistent()).isTrue();

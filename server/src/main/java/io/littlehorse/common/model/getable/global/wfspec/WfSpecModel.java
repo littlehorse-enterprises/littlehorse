@@ -218,10 +218,11 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         Optional<VariableDefModel> current = getAllVariables().stream()
                 .filter(candidate -> candidate.getName().equals(oldVar.getName()))
                 .findFirst();
-        if (current.isEmpty() || !current.get().isCompatibleWith(oldVar)) {
+        if (current.isEmpty() || !current.get().hasIndex() || !current.get().isCompatibleWith(oldVar)) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
-                    "Must provide variable " + oldVar.getName() + " of type " + oldVar.getType() + ". See the previous version of WfSpec for details.");
+                    "Must provide variable " + oldVar.getName() + " of type " + oldVar.getType()
+                            + ". See the previous version of WfSpec for details.");
         }
     }
 

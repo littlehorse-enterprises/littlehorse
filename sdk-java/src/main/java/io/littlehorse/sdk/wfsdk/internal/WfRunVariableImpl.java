@@ -79,9 +79,9 @@ class WfRunVariableImpl implements WfRunVariable {
 
     public VariableDef getSpec() {
         VariableDef.Builder out = VariableDef.newBuilder()
-        .setType(this.getType())
-        .setName(this.getName())
-        .setPersistent(persistent);
+                .setType(this.getType())
+                .setName(this.getName())
+                .setPersistent(persistent);
 
         if (this.getIndexType() != null) {
             out.setIndexType(this.getIndexType());

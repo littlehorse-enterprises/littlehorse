@@ -112,7 +112,7 @@ public class SearchVariableRequestModel
 
     private TagStorageType indexTypeForSearchFromWfSpec(ReadOnlyMetadataStore stores) {
         boolean isPersistentVariableQuery = !value.hasWfSpecVersion();
-        
+
         // If we're doing a query on a persistent variable, the latest WfSpec is guaranteed to have
         // that VariableDef, and it's also guaranteed that all of the VariableDef's are the same.
         Integer wfSpecVersion = isPersistentVariableQuery ? null : value.getWfSpecVersion();
@@ -134,8 +134,8 @@ public class SearchVariableRequestModel
 
         if (isPersistentVariableQuery && !associatedVariable.get().isPersistent()) {
             throw new LHApiException(
-                Status.INVALID_ARGUMENT, "Variable " + value.getVarName() + " is not persistent; must provide wfSpecVersion"
-            );
+                    Status.INVALID_ARGUMENT,
+                    "Variable " + value.getVarName() + " is not persistent; must provide wfSpecVersion");
         }
 
         VariableDefModel varDef = associatedVariable.get();
@@ -153,13 +153,13 @@ public class SearchVariableRequestModel
     public List<Attribute> getSearchAttributes() throws LHApiException {
         if (value.hasWfSpecVersion()) {
             return List.of(
-                new Attribute("wfSpecName", value.getWfSpecName()),
-                new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(value.getWfSpecVersion())),
-                new Attribute(value.getVarName(), getVariableValue(value.getValue())));
-        }  else {
+                    new Attribute("wfSpecName", value.getWfSpecName()),
+                    new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(value.getWfSpecVersion())),
+                    new Attribute(value.getVarName(), getVariableValue(value.getValue())));
+        } else {
             return List.of(
-                new Attribute("wfSpecName", value.getWfSpecName()),
-                new Attribute(value.getVarName(), getVariableValue(value.getValue())));
+                    new Attribute("wfSpecName", value.getWfSpecName()),
+                    new Attribute(value.getVarName(), getVariableValue(value.getValue())));
         }
     }
 
