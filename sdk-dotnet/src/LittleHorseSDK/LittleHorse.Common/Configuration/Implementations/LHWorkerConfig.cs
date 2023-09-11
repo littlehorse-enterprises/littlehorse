@@ -11,7 +11,7 @@ namespace LittleHorse.Common.Configuration.Implementations
 {
     public class LHWorkerConfig : ILHWorkerConfig
     {
-        private ILogger? _logger;
+        private ILogger<LHWorkerConfig>? _logger;
         private LHWorkerOptions _options;
         private Dictionary<string, GrpcChannel> _createdChannels;
 
@@ -60,7 +60,7 @@ namespace LittleHorse.Common.Configuration.Implementations
             get { return _createdChannels.Count; }
         }
 
-        public LHWorkerConfig(IConfiguration configuration, ILogger? logger = null)
+        public LHWorkerConfig(IConfiguration configuration, ILogger<LHWorkerConfig>? logger)
         {
             _logger = logger;
 
@@ -144,7 +144,7 @@ namespace LittleHorse.Common.Configuration.Implementations
             {
                 _logger?.LogWarning("Using insecure channel!");
                 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-                channel = GrpcChannel.ForAddress($"https://{host}:{port}");
+                channel = GrpcChannel.ForAddress($"http://{host}:{port}");
             }
             else
             {

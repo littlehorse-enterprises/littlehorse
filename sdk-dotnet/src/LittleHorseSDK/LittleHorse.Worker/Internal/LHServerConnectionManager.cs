@@ -235,7 +235,7 @@ namespace LittleHorse.Worker.Internal
                 taskResult.Status = LittleHorseSDK.Common.proto.TaskStatus.TaskFailed;
             }
 
-            taskResult.Time = Timestamp.FromDateTime(DateTime.Now);
+            taskResult.Time = Timestamp.FromDateTime(DateTime.UtcNow);
 
             return taskResult;
         }

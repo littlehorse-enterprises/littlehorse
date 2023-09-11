@@ -112,7 +112,7 @@ namespace LittleHorse.Worker.Internal
                 case VariableType.Str:
                     if (!paramType.IsAssignableFrom(typeof(string)))
                     {
-                        errorMsg = $"TaskDef provides DOUBLE, func accepts {paramType.Name}";
+                        errorMsg = $"TaskDef provides STRING, func accepts {paramType.Name}";
                     }
                     break;
                 case VariableType.Bool:

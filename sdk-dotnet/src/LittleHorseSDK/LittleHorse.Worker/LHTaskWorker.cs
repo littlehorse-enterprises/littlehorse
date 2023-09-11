@@ -19,7 +19,7 @@ namespace LittleHorse.Worker
     public class LHTaskWorker<T>
     {
         private ILHWorkerConfig _config;
-        private ILogger? _logger;
+        private ILogger<LHTaskWorker<T>>? _logger;
         private T _executable;
         private TaskDef? _taskDef;
         private MethodInfo? _taskMethod;
@@ -31,7 +31,7 @@ namespace LittleHorse.Worker
 
         public string TaskDefName { get => _taskDefName; }
 
-        public LHTaskWorker(T executable, string taskDefName, ILHWorkerConfig config, ILogger? logger = null) 
+        public LHTaskWorker(T executable, string taskDefName, ILHWorkerConfig config, ILogger<LHTaskWorker<T>>? logger = null) 
         { 
                 _config = config;
                 _logger = logger;
@@ -60,7 +60,7 @@ namespace LittleHorse.Worker
             _taskMethod = _taskSignature.TaskMethod;
 
             ValidateTaskMethodParameters(_taskMethod, _taskSignature);
-            CreateVariableMappings(_taskMethod, _taskSignature);
+            _mappings = CreateVariableMappings(_taskMethod, _taskSignature);
 
             _manager = new LHServerConnectionManager<T>(_config, _taskMethod, GetTaskDef(), _mappings, _executable, _logger);
 
@@ -199,12 +199,12 @@ namespace LittleHorse.Worker
             {
                 var taskParam = taskParams[index];
 
-                if (taskParam.GetType().IsAssignableFrom(typeof(LHWorkerContext)))
+                if (taskParam.ParameterType.IsAssignableFrom(typeof(LHWorkerContext)))
                 {
                     throw new LHTaskSchemaMismatchException("Can only have WorkerContext after all required taskDef params.");
                 }
 
-                mappings.Add(CreateVariableMapping(GetTaskDef(), index, taskParam.GetType(), taskParam.Name));
+                mappings.Add(CreateVariableMapping(GetTaskDef(), index, taskParam.ParameterType, taskParam.Name));
             }
 
             if (taskSignature.HasWorkerContextAtEnd)
