@@ -334,6 +334,58 @@ class WfRunVariable:
         return to_json(self.compile())
 
 
+class WorkflowNode:
+    def __init__(
+        self,
+        name: str,
+        node_case: NodeCase,
+        sub_node: NodeType,
+    ) -> None:
+        self.name = name
+        self.sub_node = sub_node
+        self.node_case = node_case
+        self.outgoing_edges: list[Edge] = []
+        self.variable_mutations: list[VariableMutation] = []
+
+    def __eq__(self, __value: object) -> bool:
+        return hasattr(__value, "name") and self.name == __value.name
+
+    def __hash__(self) -> int:
+        return hash(self.name)
+
+    def __str__(self) -> str:
+        return to_json(self.compile())
+
+    def compile(self) -> Node:
+        def new_node(**kwargs: Any) -> Node:
+            return Node(
+                outgoing_edges=self.outgoing_edges,
+                variable_mutations=self.variable_mutations,
+                **kwargs,
+            )
+
+        if self.node_case == NodeCase.TASK:
+            return new_node(task=self.sub_node)
+        if self.node_case == NodeCase.ENTRYPOINT:
+            return new_node(entrypoint=self.sub_node)
+        if self.node_case == NodeCase.EXIT:
+            return new_node(exit=self.sub_node)
+        if self.node_case == NodeCase.EXTERNAL_EVENT:
+            return new_node(external_event=self.sub_node)
+        if self.node_case == NodeCase.SLEEP:
+            return new_node(sleep=self.sub_node)
+        if self.node_case == NodeCase.START_THREAD:
+            return new_node(start_thread=self.sub_node)
+        if self.node_case == NodeCase.WAIT_FOR_THREADS:
+            return new_node(wait_for_threads=self.sub_node)
+        if self.node_case == NodeCase.NOP:
+            return new_node(nop=self.sub_node)
+        if self.node_case == NodeCase.USER_TASK:
+            return new_node(user_task=self.sub_node)
+
+        raise ValueError("Node type not supported")
+
+
 class ThreadBuilder:
     def __init__(self, workflow: "Workflow", initializer: "ThreadInitializer") -> None:
         """This is used to define the logic of a ThreadSpec in a ThreadInitializer.
@@ -344,7 +396,7 @@ class ThreadBuilder:
         """
         self.wf_run_variables: list[WfRunVariable] = []
         self._workflow = workflow
-        self._nodes: dict[str, Node] = {}
+        self._nodes: list[WorkflowNode] = []
 
         if initializer is None:
             raise ValueError("None is not allowed")
@@ -362,7 +414,11 @@ class ThreadBuilder:
             ThreadSpec: Spec.
         """
         variable_defs = [variable.compile() for variable in self.wf_run_variables]
-        return ThreadSpec(variable_defs=variable_defs, nodes=self._nodes)
+        nodes = {node.name: node.compile() for node in self._nodes}
+        return ThreadSpec(
+            variable_defs=variable_defs,
+            nodes=nodes,
+        )
 
     def __str__(self) -> str:
         return to_json(self.compile())
@@ -370,6 +426,11 @@ class ThreadBuilder:
     def _check_if_active(self) -> None:
         if not self.is_active:
             raise ReferenceError("Using an inactive thread, check your workflow")
+
+    def _last_node(self) -> WorkflowNode:
+        if len(self._nodes) == 0:
+            raise ReferenceError("No node found")
+        return self._nodes[-1]
 
     def execute(self, task_name: str, *args: Any) -> NodeOutput:
         """Adds a TASK node to the ThreadSpec.
@@ -429,20 +490,15 @@ class ThreadBuilder:
             use the output of a Node Run to mutate variables).
         """
         self._check_if_active()
-
-        if len(self._nodes) == 0:
-            raise ReferenceError("No node is found")
-
-        previous_node_name = list(self._nodes)[-1]
-        previous_node = self._nodes[previous_node_name]
+        last_node = self._last_node()
 
         node_output: Optional[VariableMutation.NodeOutputSource] = None
         source_variable: Optional[VariableAssignment] = None
         literal_value: Optional[VariableValue] = None
 
         if isinstance(right_hand, NodeOutput):
-            if previous_node_name != right_hand.node_name:
-                raise ReferenceError("NodeOutput does not match with previous node")
+            if last_node.name != right_hand.node_name:
+                raise ReferenceError("NodeOutput does not match with last node")
             node_output = VariableMutation.NodeOutputSource(
                 jsonpath=right_hand.json_path
             )
@@ -460,7 +516,7 @@ class ThreadBuilder:
             literal_value=literal_value,
         )
 
-        previous_node.variable_mutations.append(mutation)
+        last_node.variable_mutations.append(mutation)
 
     def format(self, format: str, *args: Any) -> FormatString:
         """Generates a FormatString object that can be understood by the ThreadBuilder.
@@ -516,29 +572,12 @@ class ThreadBuilder:
             raise TypeError("The first node should be a EntrypointNode")
 
         if len(self._nodes) > 0:
-            previous_node = self._nodes[list(self._nodes)[-1]]
-            previous_node.outgoing_edges.append(Edge(sink_node_name=next_node_name))
+            last_node = self._last_node()
+            last_node.outgoing_edges.append(Edge(sink_node_name=next_node_name))
 
             # TODO add node condition
 
-        if node_type == NodeCase.TASK:
-            self._nodes[next_node_name] = Node(task=sub_node)  # type: ignore[arg-type]  # noqa: E501
-        if node_type == NodeCase.ENTRYPOINT:
-            self._nodes[next_node_name] = Node(entrypoint=sub_node)  # type: ignore[arg-type]  # noqa: E501
-        if node_type == NodeCase.EXIT:
-            self._nodes[next_node_name] = Node(exit=sub_node)  # type: ignore[arg-type]  # noqa: E501
-        if node_type == NodeCase.EXTERNAL_EVENT:
-            self._nodes[next_node_name] = Node(external_event=sub_node)  # type: ignore[arg-type]  # noqa: E501
-        if node_type == NodeCase.SLEEP:
-            self._nodes[next_node_name] = Node(sleep=sub_node)  # type: ignore[arg-type]  # noqa: E501
-        if node_type == NodeCase.START_THREAD:
-            self._nodes[next_node_name] = Node(start_thread=sub_node)  # type: ignore[arg-type]  # noqa: E501
-        if node_type == NodeCase.WAIT_FOR_THREADS:
-            self._nodes[next_node_name] = Node(wait_for_threads=sub_node)  # type: ignore[arg-type]  # noqa: E501
-        if node_type == NodeCase.NOP:
-            self._nodes[next_node_name] = Node(nop=sub_node)  # type: ignore[arg-type]  # noqa: E501
-        if node_type == NodeCase.USER_TASK:
-            self._nodes[next_node_name] = Node(user_task=sub_node)  # type: ignore[arg-type]  # noqa: E501
+        self._nodes.append(WorkflowNode(next_node_name, node_type, sub_node))
 
         return next_node_name
 
@@ -562,6 +601,11 @@ class ThreadBuilder:
             WorkflowCondition: a WorkflowCondition.
         """
         return WorkflowCondition(left_hand, comparator, right_hand)
+
+    def do_if(self, condition: WorkflowCondition) -> None:
+        self._check_if_active()
+        self.add_node("nop", NopNode())
+        self.add_node("nop", NopNode())
 
 
 ThreadInitializer = Callable[[ThreadBuilder], None]

@@ -341,6 +341,18 @@ class TestThreadBuilder(unittest.TestCase):
             ),
         )
 
+    def test_do_if(self):
+        class MyClass:
+            def my_entrypoint(self, thread: ThreadBuilder) -> None:
+                thread.execute("my-task")
+                thread.do_if(None)
+
+            def new_thread_builder(self):
+                return ThreadBuilder(workflow=None, initializer=self.my_entrypoint)
+
+        my_object = MyClass()
+        my_object.new_thread_builder()
+
 
 class TestWorkflow(unittest.TestCase):
     def test_entrypoint_is_a_function(self):
@@ -424,7 +436,7 @@ class TestWorkflow(unittest.TestCase):
         except Exception as e:
             self.fail(f"No exception expected != {type(e)}: {e}")
 
-    def test_compile_with_variables(self):
+    def test_compile_wf_with_variables(self):
         def my_entrypoint(thread: ThreadBuilder) -> None:
             thread.add_variable("input-name", VariableType.STR)
 
