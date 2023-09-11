@@ -346,6 +346,7 @@ class TestWorkflow(unittest.TestCase):
     def test_entrypoint_is_a_function(self):
         with self.assertRaises(TypeError) as exception_context:
             Workflow("my-wf", "")
+
         self.assertEqual(
             "Object is not a ThreadInitializer",
             str(exception_context.exception),
@@ -357,6 +358,7 @@ class TestWorkflow(unittest.TestCase):
 
         with self.assertRaises(TypeError) as exception_context:
             Workflow("my-wf", my_entrypoint)
+
         self.assertEqual(
             "ThreadInitializer receives only one parameter",
             str(exception_context.exception),
@@ -368,6 +370,7 @@ class TestWorkflow(unittest.TestCase):
 
         with self.assertRaises(TypeError) as exception_context:
             Workflow("my-wf", my_entrypoint)
+
         self.assertEqual(
             "ThreadInitializer receives a ThreadBuilder",
             str(exception_context.exception),
@@ -379,6 +382,7 @@ class TestWorkflow(unittest.TestCase):
 
         with self.assertRaises(TypeError) as exception_context:
             Workflow("my-wf", my_entrypoint)
+
         self.assertEqual(
             "ThreadInitializer returns None",
             str(exception_context.exception),
@@ -388,7 +392,10 @@ class TestWorkflow(unittest.TestCase):
         def my_entrypoint(thread: ThreadBuilder) -> None:
             pass
 
-        Workflow("my-wf", my_entrypoint)
+        try:
+            Workflow("my-wf", my_entrypoint)
+        except Exception as e:
+            self.fail(f"No exception expected != {type(e)}: {e}")
 
     def test_validate_thread_already_exists(self):
         def my_entrypoint(thread: ThreadBuilder) -> None:
@@ -404,6 +411,18 @@ class TestWorkflow(unittest.TestCase):
             "Thread entrypoint already added",
             str(exception_context.exception),
         )
+
+    def test_compile_with_function_as_class_member(self):
+        class MyClass:
+            def my_entrypoint(self, thread: ThreadBuilder) -> None:
+                thread.add_variable("input-name", VariableType.STR)
+
+        my_class = MyClass()
+
+        try:
+            Workflow("my-wf", my_class.my_entrypoint)
+        except Exception as e:
+            self.fail(f"No exception expected != {type(e)}: {e}")
 
     def test_compile_with_variables(self):
         def my_entrypoint(thread: ThreadBuilder) -> None:

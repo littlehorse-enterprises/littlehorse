@@ -532,7 +532,7 @@ class Workflow:
         if entrypoint is None:
             raise ValueError("ThreadInitializer cannot be None")
 
-        if not inspect.isfunction(entrypoint):
+        if not inspect.isfunction(entrypoint) and not inspect.ismethod(entrypoint):
             raise TypeError("Object is not a ThreadInitializer")
 
         sig = signature(entrypoint)
