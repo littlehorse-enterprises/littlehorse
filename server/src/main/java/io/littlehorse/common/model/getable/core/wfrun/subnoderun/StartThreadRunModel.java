@@ -70,7 +70,7 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
 
         ThreadRunModel child = nodeRunModel
                 .getThreadRun()
-                .getWfRunModel()
+                .getWfRun()
                 .startThread(
                         nodeRunModel.getNode().startThreadNode.threadSpecName,
                         time,

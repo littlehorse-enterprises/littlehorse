@@ -145,7 +145,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
         for (ThreadRun trpb : proto.getThreadRunsList()) {
             ThreadRunModel thr = ThreadRunModel.fromProto(trpb);
-            thr.wfRunModel = this;
+            thr.wfRun = this;
             threadRunModels.add(thr);
         }
         for (PendingInterrupt pipb : proto.getPendingInterruptsList()) {
@@ -216,19 +216,16 @@ public class WfRunModel extends CoreGetable<WfRun> {
         }
 
         ThreadRunModel thread = new ThreadRunModel();
-        thread.wfRunId = id;
         thread.number = threadRunModels.size();
         thread.parentThreadId = parentThreadId;
 
         thread.status = LHStatus.RUNNING;
-        thread.wfSpecName = wfSpecName;
-        thread.wfSpecVersion = wfSpecVersion;
         thread.threadSpecName = threadName;
         thread.currentNodePosition = -1; // this gets bumped when we start the thread
 
         thread.startTime = new Date();
 
-        thread.wfRunModel = this;
+        thread.wfRun = this;
         thread.type = type;
         threadRunModels.add(thread);
 
