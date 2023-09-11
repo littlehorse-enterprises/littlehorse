@@ -29,9 +29,9 @@ cd "$WORK_DIR"
 
 if $DOCKER; then
   echo "Building server"
-  docker build -q --file ${LH_SERVER_DOCKER_DIR}/Dockerfile --tag littlehorse/littlehorse-server:latest ${WORK_DIR}
+  docker build -q --file ${LH_SERVER_DOCKER_DIR}/Dockerfile --tag littlehorse/lh-server:latest ${WORK_DIR}
   echo "Host config file: $CONFIG_PATH"
-  docker run --rm -it --network host --volume "$CONFIG_PATH":/lh/server.config --volume "$CERT_PATH":/local-dev/certs littlehorse/littlehorse-server:latest server /lh/server.config
+  docker run --rm -it --network host --volume "$CONFIG_PATH":/lh/server.config --volume "$CERT_PATH":/local-dev/certs littlehorse/lh-server:latest server /lh/server.config
 else
   ./gradlew server:installDist -x shadowJar -x test
   ./server/build/install/server/server/server "$CONFIG_PATH"

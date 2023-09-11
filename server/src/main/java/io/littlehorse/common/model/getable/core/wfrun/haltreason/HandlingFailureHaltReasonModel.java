@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.utils.WaitForTh
 import io.littlehorse.sdk.common.proto.HandlingFailureHaltReason;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -22,13 +23,14 @@ public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailu
                 "HandlingFailureHaltReason for failed thread {}: handler thread " + "status is {}",
                 handlerThread.getFailureBeingHandled().getThreadRunNumber(),
                 handlerThread.getStatus());
+
+        ThreadRunModel originalThatFailed =
+                wfRunModel.threadRunModels.get(handlerThread.failureBeingHandled.getThreadRunNumber());
+        NodeRunModel handledNode =
+                originalThatFailed.getNodeRun(handlerThread.failureBeingHandled.getNodeRunPosition());
+
         if (handlerThread.status == LHStatus.COMPLETED) {
-            // Need to figure out if the handler thread was handling another
-            // failed thread.
-            ThreadRunModel originalThatFailed =
-                    wfRunModel.threadRunModels.get(handlerThread.failureBeingHandled.getThreadRunNumber());
-            NodeRunModel handledNode =
-                    originalThatFailed.getNodeRun(handlerThread.failureBeingHandled.getNodeRunPosition());
+            handledNode.getLatestFailure().setProperlyHandled(true);
 
             if (handledNode.type == NodeTypeCase.WAIT_THREADS) {
                 // The current implementation of failure handlers for wait_thread nodes
@@ -44,6 +46,10 @@ public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailu
                     }
                 }
             }
+            return true;
+        } else if (handlerThread.status == LHStatus.EXCEPTION || handlerThread.status == LHStatus.ERROR) {
+            // Note: handledNode.getLatestFailure().getProperlyHandled() is already false.
+            handledNode.failWithoutGrace(handlerThread.getCurrentNodeRun().getLatestFailure(), new Date());
             return true;
         } else {
             return false;

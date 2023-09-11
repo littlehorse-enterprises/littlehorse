@@ -214,5 +214,20 @@ public interface NodeOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.UserTaskNodeOrBuilder getUserTaskOrBuilder();
 
+  /**
+   * <code>.littlehorse.StartMultipleThreadsNode start_multiple_threads = 15;</code>
+   * @return Whether the startMultipleThreads field is set.
+   */
+  boolean hasStartMultipleThreads();
+  /**
+   * <code>.littlehorse.StartMultipleThreadsNode start_multiple_threads = 15;</code>
+   * @return The startMultipleThreads.
+   */
+  io.littlehorse.sdk.common.proto.StartMultipleThreadsNode getStartMultipleThreads();
+  /**
+   * <code>.littlehorse.StartMultipleThreadsNode start_multiple_threads = 15;</code>
+   */
+  io.littlehorse.sdk.common.proto.StartMultipleThreadsNodeOrBuilder getStartMultipleThreadsOrBuilder();
+
   io.littlehorse.sdk.common.proto.Node.NodeCase getNodeCase();
 }

@@ -228,7 +228,9 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
             user = new UserModel(userIdVal.strVal);
         }
         status = UserTaskRunStatus.ASSIGNED;
-
+        for (UTActionTriggerModel action : node.getUserTaskNode().getActions(UTHook.ON_TASK_ASSIGNED)) {
+            scheduleTaskReassign(action);
+        }
         // now add Audit Log Event
         UTEReassignedModel reassigned = new UTEReassignedModel();
         reassigned.setNewUser(user);
@@ -337,6 +339,14 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         LocalDateTime localDateTime = LocalDateTime.now().plusSeconds(delayInSeconds);
         Date maturationTime =
                 Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        ReassignUserTask command = buildReassignUserTaskCommandFrom(action);
+        if (command != null) {
+            LHTimer timer = new LHTimer(new CommandModel(command, maturationTime), getDao());
+            getDao().scheduleTimer(timer);
+        }
+    }
+
+    private ReassignUserTask buildReassignUserTaskCommandFrom(UTActionTriggerModel action) {
         ReassignedUserTaskPb.AssignToCase assignToCase = null;
         switch (action.getReassign().getAssignToCase()) {
             case USER_ID:
@@ -347,20 +357,27 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
                 break;
             case ASSIGNTO_NOT_SET:
                 log.warn("Invalid reassignment: no reassign_to set!");
-                return;
+                break;
         }
-        LHTimer timer = new LHTimer(
-                new CommandModel(
-                        new ReassignUserTask(
-                                getNodeRun().getObjectId(),
-                                action.getReassign()
-                                        .getNewOwner()
-                                        .getRhsLiteralValue()
-                                        .getStrVal(),
-                                assignToCase),
-                        maturationTime),
-                getDao());
-        getDao().scheduleTimer(timer);
+        FailureModel invalidAssignToCaseFailure = new FailureModel(
+                "Invalid variables when creating UserTaskRun: Invalid Assign to case", LHConstants.VAR_SUB_ERROR);
+
+        if (assignToCase == null) {
+            getNodeRun().fail(invalidAssignToCaseFailure, new Date());
+            return null;
+        }
+        try {
+            VariableValueModel variableValueModel = getNodeRun()
+                    .getThreadRun()
+                    .assignVariable(action.getReassign().getNewOwner())
+                    .asStr();
+            return new ReassignUserTask(getNodeRun().getObjectId(), variableValueModel.getStrVal(), assignToCase);
+        } catch (LHVarSubError ex) {
+            FailureModel invalidVariablesFailure = new FailureModel(
+                    "Invalid variables when creating UserTaskRun: " + ex.toString(), LHConstants.VAR_SUB_ERROR);
+            getNodeRun().fail(invalidVariablesFailure, new Date());
+            return null;
+        }
     }
 
     public void processTaskCompletedEvent(CompleteUserTaskRunRequestModel event) throws LHApiException {

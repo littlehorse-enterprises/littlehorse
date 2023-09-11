@@ -9,6 +9,9 @@ import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.ThreadRun;
+import io.littlehorse.sdk.common.proto.UserTaskRun;
+import io.littlehorse.sdk.common.proto.UserTaskRunId;
+import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRun;
@@ -21,6 +24,7 @@ import io.littlehorse.test.internal.step.VerifyTaskExecution;
 import io.littlehorse.test.internal.step.VerifyVariableStep;
 import io.littlehorse.test.internal.step.VerifyWfRunStep;
 import io.littlehorse.test.internal.step.WaitForStatusStep;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -85,6 +89,26 @@ public class WfRunVerifier extends AbstractVerifier {
         };
         steps.add(new WaitForStatusStep<>(objectLHStatusFunction, status));
         return this;
+    }
+
+    public WfRunVerifier waitForUserTaskRunStatus(
+            int threadRunNumber, int nodeRunNumber, UserTaskRunStatus status, Duration timeout) {
+        Function<Object, UserTaskRunStatus> objectUserTaskRunStatusFunction = context -> {
+            String wfRunId = context.toString();
+            NodeRun nodeRun = lhClientTestWrapper.getNodeRun(wfRunId, threadRunNumber, nodeRunNumber);
+            if (nodeRun != null && nodeRun.getUserTask() != null) {
+                UserTaskRunId userTaskRunId = nodeRun.getUserTask().getUserTaskRunId();
+                UserTaskRun userTaskRun = lhClientTestWrapper.getLhClient().getUserTaskRun(userTaskRunId);
+                return userTaskRun.getStatus();
+            }
+            return null;
+        };
+        steps.add(new WaitForStatusStep<>(objectUserTaskRunStatusFunction, status, timeout));
+        return this;
+    }
+
+    public WfRunVerifier waitForUserTaskRunStatus(int threadRunNumber, int nodeRunNumber, UserTaskRunStatus status) {
+        return this.waitForUserTaskRunStatus(threadRunNumber, nodeRunNumber, status, null);
     }
 
     public WfRunVerifier waitForNodeRunStatus(int threadRunNumber, int nodeRunNumber, LHStatus status) {

@@ -37,6 +37,12 @@ message StartThreadNode {
   map<string, VariableAssignment> variables = 2;
 }
 
+message StartMultipleThreadsNode {
+  string thread_spec_name = 1;
+  map<string, VariableAssignment> variables = 2;
+  VariableAssignment iterable = 3;
+}
+
 message FailureHandlerDef {
   optional string specific_failure = 1;
   string handler_spec_name = 2;
@@ -48,6 +54,7 @@ message WaitForThreadsNode {
   }
   repeated ThreadToWaitFor threads = 1;
   WaitForThreadsPolicy policy = 2;
+  optional VariableAssignment thread_list = 3;
 }
 
 message ExternalEventNode {
@@ -83,6 +90,7 @@ message Node {
     NopNode nop = 11;
     SleepNode sleep = 12;
     UserTaskNode user_task = 13;
+    StartMultipleThreadsNode start_multiple_threads = 15;
   }
 }
 

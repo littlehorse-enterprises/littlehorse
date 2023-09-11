@@ -7,7 +7,10 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class FailureModel extends LHSerializable<Failure> {
 
     public String failureName;
@@ -16,6 +19,7 @@ public class FailureModel extends LHSerializable<Failure> {
     public String message;
 
     public VariableValueModel content;
+    private boolean properlyHandled;
 
     public FailureModel() {}
 
@@ -41,7 +45,10 @@ public class FailureModel extends LHSerializable<Failure> {
     }
 
     public Failure.Builder toProto() {
-        Failure.Builder out = Failure.newBuilder().setMessage(message).setFailureName(failureName);
+        Failure.Builder out = Failure.newBuilder()
+                .setMessage(message)
+                .setFailureName(failureName)
+                .setWasProperlyHandled(properlyHandled);
 
         if (content != null) out.setContent(content.toProto());
 
@@ -52,6 +59,7 @@ public class FailureModel extends LHSerializable<Failure> {
         Failure p = (Failure) proto;
         failureName = p.getFailureName();
         message = p.getMessage();
+        properlyHandled = p.getWasProperlyHandled();
 
         if (p.hasContent()) {
             content = VariableValueModel.fromProto(p.getContent());

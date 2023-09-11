@@ -39,7 +39,7 @@ def timestamp_now() -> Timestamp:
     return current_time
 
 
-def proto_to_json(proto: Message) -> str:
+def to_json(proto: Message) -> str:
     """Convert a proto object to json.
 
     Args:
@@ -51,7 +51,7 @@ def proto_to_json(proto: Message) -> str:
     return MessageToJson(proto)
 
 
-def value_to_variable_value(value: Any) -> VariableValue:
+def to_variable_value(value: Any) -> VariableValue:
     """Receives a python variable and return a VariableValue.
 
     Args:
@@ -100,7 +100,7 @@ def value_to_variable_value(value: Any) -> VariableValue:
         ) from e
 
 
-def variable_type_to_type(lh_type: VariableType) -> type:
+def to_type(lh_type: VariableType) -> type:
     """Receives a LH type and return a python type.
 
     Args:
@@ -117,7 +117,7 @@ def variable_type_to_type(lh_type: VariableType) -> type:
     return type_to_return
 
 
-def type_to_variable_type(python_type: type) -> VariableType:
+def to_variable_type(python_type: type) -> VariableType:
     """Receives a python type and return a LH Type.
 
     Args:
@@ -166,7 +166,7 @@ def extract_value(lh_value: VariableValue) -> Any:
     return None
 
 
-def value_to_variable_assignment(value: Any) -> VariableAssignment:
+def to_variable_assignment(value: Any) -> VariableAssignment:
     """Receives a value and return a Protobuf VariableAssignment.
 
     Args:
@@ -196,15 +196,15 @@ def value_to_variable_assignment(value: Any) -> VariableAssignment:
     if isinstance(value, FormatString):
         new_var = VariableAssignment(
             format_string=VariableAssignment.FormatString(
-                format=value_to_variable_assignment(value.format),
-                args=[value_to_variable_assignment(arg) for arg in value.args],
+                format=to_variable_assignment(value.format),
+                args=[to_variable_assignment(arg) for arg in value.args],
             )
         )
 
         return new_var
 
     return VariableAssignment(
-        literal_value=value_to_variable_value(value),
+        literal_value=to_variable_value(value),
     )
 
 

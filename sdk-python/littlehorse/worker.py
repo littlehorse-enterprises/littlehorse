@@ -18,8 +18,8 @@ from littlehorse.model.service_pb2 import (
 )
 from littlehorse.model.task_def_pb2 import TaskDef
 from littlehorse.proto_utils import (
-    value_to_variable_value,
-    variable_type_to_type,
+    to_variable_value,
+    to_type,
     extract_value,
     timestamp_now,
 )
@@ -151,9 +151,7 @@ class LHTask:
         self._validate_match()
 
     def _validate_match(self) -> None:
-        task_def_vars = [
-            variable_type_to_type(var.type) for var in self.task_def.input_vars
-        ]
+        task_def_vars = [to_type(var.type) for var in self.task_def.input_vars]
 
         callable_params = [
             param.annotation
@@ -272,7 +270,7 @@ class LHConnection:
             args.append(context)
 
         try:
-            output = value_to_variable_value(await self._task._callable(*args))
+            output = to_variable_value(await self._task._callable(*args))
             status = TaskStatus.TASK_SUCCESS
         except TypeError as te:
             output = None
@@ -291,7 +289,7 @@ class LHConnection:
             attempt_number=task.attempt_number,
             status=status,
             output=output,
-            log_output=value_to_variable_value(context.log_output)
+            log_output=to_variable_value(context.log_output)
             if context.log_output
             else None,
         )

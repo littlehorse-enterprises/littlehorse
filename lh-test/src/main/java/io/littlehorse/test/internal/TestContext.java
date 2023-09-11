@@ -4,9 +4,12 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
+import io.littlehorse.sdk.usertask.UserTaskSchema;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.LHTest;
+import io.littlehorse.test.LHUserTaskForm;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import java.io.IOException;
@@ -24,6 +27,8 @@ public class TestContext {
 
     private final Map<String, ExternalEventDef> externalEventDefMap = new HashMap<>();
 
+    private final Map<String, UserTaskSchema> userTaskSchemasStore = new HashMap<>();
+
     public TestContext(TestBootstrapper bootstrapper) {
         this.LHConfig = bootstrapper.getWorkerConfig();
         this.lhClient = bootstrapper.getLhClient();
@@ -37,6 +42,18 @@ public class TestContext {
             workers.add(new LHTaskWorker(testInstance, annotatedMethod.value(), LHConfig));
         }
         return workers;
+    }
+
+    public List<UserTaskSchema> discoverUserTaskSchemas(Object testInstance) throws IllegalAccessException {
+        List<UserTaskSchema> schemas = new ArrayList<>();
+        List<Field> annotatedFields = ReflectionUtil.findAnnotatedFields(testInstance.getClass(), LHUserTaskForm.class);
+        for (Field annotatedField : annotatedFields) {
+            annotatedField.setAccessible(true);
+            Object taskForm = annotatedField.get(testInstance);
+            LHUserTaskForm annotation = annotatedField.getAnnotation(LHUserTaskForm.class);
+            schemas.add(new UserTaskSchema(taskForm, annotation.value()));
+        }
+        return schemas;
     }
 
     public List<ExternalEventDef> discoverExternalEventDefinitions(Object testInstance) {
@@ -91,5 +108,21 @@ public class TestContext {
         new FieldDependencyInjector(() -> new WorkflowVerifier(lhClient), testInstance, field -> field.getType()
                         .isAssignableFrom(WorkflowVerifier.class))
                 .inject();
+    }
+
+    public void registerUserTaskDef(PutUserTaskDefRequest taskDefRequest) {
+        lhClient.putUserTaskDef(taskDefRequest);
+    }
+
+    public void registerUserTaskSchemas(Object testInstance) throws IllegalAccessException {
+        List<UserTaskSchema> userTaskSchemas = discoverUserTaskSchemas(testInstance);
+        for (UserTaskSchema userTaskSchema : userTaskSchemas) {
+            PutUserTaskDefRequest taskDefRequest = userTaskSchema.compile();
+            if (userTaskSchemasStore.get(taskDefRequest.getName()) != null) {
+                continue;
+            }
+            userTaskSchemasStore.put(taskDefRequest.getName(), userTaskSchema);
+            registerUserTaskDef(taskDefRequest);
+        }
     }
 }

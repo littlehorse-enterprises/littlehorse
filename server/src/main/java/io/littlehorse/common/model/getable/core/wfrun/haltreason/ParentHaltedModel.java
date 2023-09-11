@@ -6,7 +6,11 @@ import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.ParentHalted;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class ParentHaltedModel extends LHSerializable<ParentHalted> implements SubHaltReason {
 
     public int parentThreadId;

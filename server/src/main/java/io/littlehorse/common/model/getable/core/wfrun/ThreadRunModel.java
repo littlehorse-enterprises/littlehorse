@@ -340,6 +340,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 child.halt(childHaltReason);
             }
         }
+
+        getCurrentNodeRun().halt();
     }
 
     /*
@@ -364,7 +366,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             }
             if (haltReasons.isEmpty()) {
                 log.debug("Thread {} is alive again!", number);
-                setStatus(LHStatus.RUNNING);
+                if (getCurrentNodeRun().getLatestFailure() == null
+                        || getCurrentNodeRun().getLatestFailure().isProperlyHandled()) {
+                    setStatus(LHStatus.RUNNING);
+                } else {
+                    setStatus(getCurrentNodeRun().getLatestFailure().getStatus());
+                }
                 return true;
             } else {
                 return false;
@@ -532,10 +539,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                             new FailureModel("Interrupt thread with id " + number + " failed!", failure.failureName),
                             time);
         } else if (failureBeingHandled != null) {
-            getParent()
-                    .failWithoutGrace(
-                            new FailureModel("Interrupt thread with id " + number + " failed!", failure.failureName),
-                            time);
+            getParent().failWithoutGrace(failure, time);
         }
 
         wfRunModel.handleThreadStatus(number, new Date(), status);
@@ -556,7 +560,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void completeCurrentNode(VariableValueModel output, Date eventTime) {
         NodeRunModel crn = getCurrentNodeRun();
         crn.status = LHStatus.COMPLETED;
-
         try {
             mutateVariables(output);
         } catch (LHVarSubError exn) {
@@ -910,6 +913,10 @@ class Comparer {
     @SuppressWarnings("all") // lol
     public static int compare(VariableValueModel left, VariableValueModel right) throws LHVarSubError {
         try {
+            if (left.getVal() == null && right.getVal() != null) return -1;
+            if (right.getVal() == null && left.getVal() != null) return 1;
+            if (right.getVal() == null && left.getVal() == null) return 0;
+
             int result = ((Comparable) left.getVal()).compareTo((Comparable) right.getVal());
             return result;
         } catch (Exception exn) {

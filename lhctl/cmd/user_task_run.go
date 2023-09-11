@@ -204,9 +204,7 @@ Choose one of the following option groups:
 				}
 			}
 
-		}
-
-		if userGroupStr != "" {
+		} else if userGroupStr != "" {
 			var userGroupPb = &model.UserGroup{
 				Id: userGroupStr,
 			}

@@ -49,7 +49,6 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
     }
 
     public boolean advanceIfPossible(Date time) {
-        // nothing to do
         return false;
     }
 

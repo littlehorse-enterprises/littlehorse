@@ -19,7 +19,7 @@ from littlehorse.model.wf_spec_pb2 import (
     Node,
     ThreadSpec,
 )
-from littlehorse.proto_utils import value_to_variable_assignment
+from littlehorse.proto_utils import to_variable_assignment
 
 from littlehorse.workflow import (
     NodeOutput,
@@ -267,7 +267,7 @@ class TestThreadBuilder(unittest.TestCase):
                     "1-my-event-EXTERNAL_EVENT": Node(
                         external_event=ExternalEventNode(
                             external_event_def_name="my-event",
-                            timeout_seconds=value_to_variable_assignment(3),
+                            timeout_seconds=to_variable_assignment(3),
                         ),
                         outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
                     ),

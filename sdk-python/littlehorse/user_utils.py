@@ -11,8 +11,8 @@ from littlehorse.model.common_wfspec_pb2 import VariableDef
 from littlehorse.model.object_id_pb2 import GetLatestWfSpecRequest
 from littlehorse.model.service_pb2 import PutExternalEventDefRequest, PutTaskDefRequest
 from littlehorse.proto_utils import (
-    proto_to_json,
-    type_to_variable_type,
+    to_json,
+    to_variable_type,
 )
 from littlehorse.worker import LHTaskWorker, WorkerContext
 
@@ -89,13 +89,13 @@ def create_task_def(
     try:
         task_signature = signature(task)
         input_vars = [
-            VariableDef(name=param.name, type=type_to_variable_type(param.annotation))
+            VariableDef(name=param.name, type=to_variable_type(param.annotation))
             for param in task_signature.parameters.values()
             if param.annotation is not WorkerContext
         ]
         request = PutTaskDefRequest(name=name, input_vars=input_vars)
         stub.PutTaskDef(request)
-        logging.info(f"TaskDef {name} was created:\n{proto_to_json(request)}")
+        logging.info(f"TaskDef {name} was created:\n{to_json(request)}")
     except RpcError as e:
         if swallow_already_exists and e.code() == StatusCode.ALREADY_EXISTS:
             logging.info(f"TaskDef {name} already exits, skipping")
@@ -126,7 +126,7 @@ def create_external_event_def(
             retention_hours=None if retention_hours <= 0 else retention_hours,
         )
         stub.PutExternalEventDef(request)
-        logging.info(f"ExternalEventDef {name} was created:\n{proto_to_json(request)}")
+        logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")
     except RpcError as e:
         if swallow_already_exists and e.code() == StatusCode.ALREADY_EXISTS:
             logging.info(f"ExternalEventDef {name} already exits, skipping")

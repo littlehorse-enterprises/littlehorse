@@ -29,9 +29,9 @@ from littlehorse.model.wf_spec_pb2 import (
     WaitForThreadsNode,
 )
 from littlehorse.proto_utils import (
-    value_to_variable_value,
-    value_to_variable_assignment,
-    proto_to_json,
+    to_variable_value,
+    to_variable_assignment,
+    to_json,
 )
 
 ENTRYPOINT = "entrypoint"
@@ -164,7 +164,7 @@ class WfRunVariable:
         self.json_indexes: list[JsonIndex] = []
 
         if default_value is not None:
-            self.default_value = value_to_variable_value(default_value)
+            self.default_value = to_variable_value(default_value)
             if self.default_value.type != self.type:
                 raise TypeError(
                     f"Default value is not a {VariableType.Name(variable_type)}"
@@ -274,7 +274,7 @@ class WfRunVariable:
         )
 
     def __str__(self) -> str:
-        return proto_to_json(self.compile())
+        return to_json(self.compile())
 
 
 class ThreadBuilder:
@@ -308,7 +308,7 @@ class ThreadBuilder:
         return ThreadSpec(variable_defs=variable_defs, nodes=self._nodes)
 
     def __str__(self) -> str:
-        return proto_to_json(self.compile())
+        return to_json(self.compile())
 
     def _check_if_active(self) -> None:
         if not self.is_active:
@@ -331,7 +331,7 @@ class ThreadBuilder:
         self._check_if_active()
         task_node = TaskNode(
             task_def_name=task_name,
-            variables=[value_to_variable_assignment(arg) for arg in args],
+            variables=[to_variable_assignment(arg) for arg in args],
         )
         node_name = self.add_node(task_name, task_node)
         return NodeOutput(node_name)
@@ -351,9 +351,7 @@ class ThreadBuilder:
         self._check_if_active()
         wait_node = ExternalEventNode(
             external_event_def_name=event_name,
-            timeout_seconds=None
-            if timeout <= 0
-            else value_to_variable_assignment(timeout),
+            timeout_seconds=None if timeout <= 0 else to_variable_assignment(timeout),
         )
         node_name = self.add_node(event_name, wait_node)
         return NodeOutput(node_name)
@@ -392,9 +390,9 @@ class ThreadBuilder:
                 jsonpath=right_hand.json_path
             )
         elif isinstance(right_hand, WfRunVariable):
-            source_variable = value_to_variable_assignment(right_hand)
+            source_variable = to_variable_assignment(right_hand)
         else:
-            literal_value = value_to_variable_value(right_hand)
+            literal_value = to_variable_value(right_hand)
 
         mutation = VariableMutation(
             lhs_name=left_hand.name,
@@ -492,16 +490,21 @@ ThreadInitializer = Callable[[ThreadBuilder], None]
 
 
 class Workflow:
-    def __init__(self, name: str, entrypoint: ThreadInitializer) -> None:
-        """Workflow
+    def __init__(
+        self, name: str, entrypoint: ThreadInitializer, retention_hours: int = -1
+    ) -> None:
+        """Workflow.
 
         Args:
             name (str): Name of WfSpec.
-            entrypoint (ThreadInitializer): Is the entrypoint thread function.
+            entrypoint (ThreadInitializer):Is the entrypoint thread function.
+            retention_hours (int, optional): Add the hours of life that the
+            workflow will have in the system. Defaults to -1.
         """
         if name is None:
             raise ValueError("Name cannot be None")
         self.name = name
+        self.retention_hours = retention_hours
 
         self._validate_entrypoint(entrypoint)
         self._entrypoint = entrypoint
@@ -556,7 +559,7 @@ class Workflow:
             file_output.write(str(self))
 
     def __str__(self) -> str:
-        return proto_to_json(self.compile())
+        return to_json(self.compile())
 
     def compile(self) -> PutWfSpecRequest:
         """Compile the workflow into Protobuf Objects.
@@ -575,5 +578,8 @@ class Workflow:
         self._thread_initializers = []
 
         return PutWfSpecRequest(
-            name=self.name, entrypoint_thread_name=ENTRYPOINT, thread_specs=thread_specs
+            name=self.name,
+            entrypoint_thread_name=ENTRYPOINT,
+            thread_specs=thread_specs,
+            retention_hours=None if self.retention_hours <= 0 else self.retention_hours,
         )

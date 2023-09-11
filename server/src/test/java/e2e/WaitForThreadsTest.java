@@ -130,21 +130,21 @@ public class WaitForThreadsTest {
     @Test
     void shouldExecuteExceptionHandlerWhenChildThreadTrowsAUserDefinedException() {
         int person1ApprovalThreadNumber = 1;
-        int person2ApprovalThreadNumber = 2;
         int exceptionHandlerThreadNumber = 4;
         Map person1DenyEvent = Map.of("approval", false);
+        Map person2Approves = Map.of("approval", true);
+        Map person3Approves = Map.of("approval", true);
         workflowVerifier
                 .prepareRun(waitForThreadsWithExceptionHandlerWorkflow)
                 .waitForStatus(LHStatus.RUNNING)
                 .thenSendExternalEventJsonContent("person-1-approves", person1DenyEvent)
-                .waitForStatus(RUNNING)
-                .waitForNodeRunStatus(person1ApprovalThreadNumber, 3, EXCEPTION)
-                .waitForThreadRunStatus(person2ApprovalThreadNumber, RUNNING)
-                .waitForNodeRunStatus(person2ApprovalThreadNumber, 1, RUNNING)
                 .waitForTaskStatus(exceptionHandlerThreadNumber, 1, TaskStatus.TASK_SUCCESS)
                 .thenVerifyTaskRunResult(
                         exceptionHandlerThreadNumber, 1, variableValue -> assertThat(variableValue.getStr())
                                 .isEqualTo("result"))
+                .thenSendExternalEventJsonContent("person-2-approves", person2Approves)
+                .thenSendExternalEventJsonContent("person-3-approves", person3Approves)
+                .waitForStatus(ERROR)
                 .start();
     }
 
@@ -202,7 +202,7 @@ public class WaitForThreadsTest {
                     thread.spawnThread(buildChildThread.apply(person3Approved, "person-3"), "person-3", null);
 
             NodeOutput nodeOutput = thread.waitForThreads(p1Thread, p2Thread, p3Thread)
-                    .withPolicy(WaitForThreadsPolicy.WAIT_FOR_COMPLETION);
+                    .withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
 
             thread.handleException(nodeOutput, "denied-by-user", xnHandler -> {
                 xnHandler.execute("exc-handler");
@@ -255,7 +255,7 @@ public class WaitForThreadsTest {
             SpawnedThread p3Thread =
                     thread.spawnThread(buildChildThread.apply(person3Approved, "person-3"), "person-3", null);
 
-            thread.waitForThreads(p1Thread, p2Thread, p3Thread);
+            thread.waitForThreads(p1Thread, p2Thread, p3Thread).withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
 
             // Tell the reminder workflow to stop
             thread.mutate(allApproved, VariableMutationType.ASSIGN, true);
