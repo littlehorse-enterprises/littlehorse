@@ -23,6 +23,7 @@ class WfRunVariableImpl implements WfRunVariable {
     private VariableValue defaultValue;
     private Object typeOrDefaultVal;
     private IndexType indexType;
+    private boolean persistent;
     private List<JsonIndex> jsonIndexes = new ArrayList<>();
 
     public WfRunVariableImpl(String name, Object typeOrDefaultVal) {
@@ -77,9 +78,10 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     public VariableDef getSpec() {
-        VariableDef.Builder out = VariableDef.newBuilder();
-        out.setType(this.getType());
-        out.setName(this.getName());
+        VariableDef.Builder out = VariableDef.newBuilder()
+        .setType(this.getType())
+        .setName(this.getName())
+        .setPersistent(persistent);
 
         if (this.getIndexType() != null) {
             out.setIndexType(this.getIndexType());
@@ -94,5 +96,11 @@ class WfRunVariableImpl implements WfRunVariable {
         }
 
         return out.build();
+    }
+
+    @Override
+    public WfRunVariable persistent() {
+        this.persistent = true;
+        return this;
     }
 }

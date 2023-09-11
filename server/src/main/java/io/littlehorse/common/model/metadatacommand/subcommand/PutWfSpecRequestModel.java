@@ -88,7 +88,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         } else {
             spec.version = 0;
         }
-        spec.validate(dao, config);
+        spec.validate(dao, config, oldVersion);
         dao.put(spec);
         return spec.toProto().build();
     }

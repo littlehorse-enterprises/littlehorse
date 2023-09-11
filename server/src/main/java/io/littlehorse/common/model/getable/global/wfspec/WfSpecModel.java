@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
@@ -170,9 +171,14 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         return Pair.of(tspecName, out);
     }
 
-    public void validate(ReadOnlyMetadataStore dbClient, LHServerConfig config) throws LHApiException {
+    public void validate(ReadOnlyMetadataStore dbClient, LHServerConfig config, WfSpecModel oldVersion)
+            throws LHApiException {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Unknown entrypoint thread");
+        }
+
+        if (oldVersion != null) {
+            validatePersistentVariables(oldVersion);
         }
 
         // Validate the variable definitions.
@@ -186,6 +192,36 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
             } catch (LHApiException exn) {
                 throw exn.getCopyWithPrefix("Thread " + ts.name);
             }
+        }
+    }
+
+    private void validatePersistentVariables(WfSpecModel old) throws LHApiException {
+        Set<VariableDefModel> oldPersistentVars = old.getPersistentVariables();
+        for (VariableDefModel oldVar : oldPersistentVars) {
+            validateCompatibilityWith(oldVar);
+        }
+    }
+
+    private Set<VariableDefModel> getAllVariables() {
+        return threadSpecs.values().stream()
+                .flatMap(tSpec -> tSpec.variableDefs.stream())
+                .collect(Collectors.toSet());
+    }
+
+    private Set<VariableDefModel> getPersistentVariables() {
+        return getAllVariables().stream()
+                .filter(variable -> variable.isPersistent())
+                .collect(Collectors.toSet());
+    }
+
+    private void validateCompatibilityWith(VariableDefModel oldVar) throws LHApiException {
+        Optional<VariableDefModel> current = getAllVariables().stream()
+                .filter(candidate -> candidate.getName().equals(oldVar.getName()))
+                .findFirst();
+        if (current.isEmpty() || !current.get().isCompatibleWith(oldVar)) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    "Must provide variable " + oldVar.getName() + " of type " + oldVar.getType() + ". See the previous version of WfSpec for details.");
         }
     }
 

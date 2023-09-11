@@ -25,6 +25,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     private IndexType indexType;
     private List<JsonIndexModel> jsonIndices = new ArrayList<>();
     private VariableValueModel defaultValue;
+    private boolean persistent;
 
     public Class<VariableDef> getProtoBaseClass() {
         return VariableDef.class;
@@ -34,6 +35,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         VariableDef p = (VariableDef) proto;
         type = p.getType();
         name = p.getName();
+        persistent = p.getPersistent();
 
         for (JsonIndex idx : p.getJsonIndexesList()) {
             jsonIndices.add(LHSerializable.fromProto(idx, JsonIndexModel.class));
@@ -47,7 +49,8 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     }
 
     public VariableDef.Builder toProto() {
-        VariableDef.Builder out = VariableDef.newBuilder().setType(type).setName(name);
+        VariableDef.Builder out =
+                VariableDef.newBuilder().setType(type).setName(name).setPersistent(persistent);
 
         if (defaultValue != null) out.setDefaultValue(defaultValue.toProto());
         if (indexType != null) out.setIndexType(indexType);
@@ -69,5 +72,32 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         if (indexType == null) return null;
 
         return indexType == IndexType.LOCAL_INDEX ? TagStorageType.LOCAL : TagStorageType.REMOTE;
+    }
+
+    public boolean isJson() {
+        return type == VariableType.JSON_ARR || type == VariableType.JSON_OBJ;
+    }
+
+    public boolean isCompatibleWith(VariableDefModel oldVar) {
+        if (type != oldVar.getType()) return false;
+
+        // Next must validate index configs
+        if (oldVar.isJson()) {
+
+            // Validate that every old json index is present in the new one.
+            for (JsonIndexModel idx : oldVar.getJsonIndices()) {
+                if (!(getJsonIndices().contains(idx))) {
+                    return false;
+                }
+            }
+
+        } else {
+            // If not a json index, just need to make sure that the LOCAL vs REMOTE is the same.
+            if (oldVar.getIndexType() != this.getIndexType()) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 }

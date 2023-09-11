@@ -104,14 +104,28 @@ public class VariableModel extends CoreGetable<Variable> {
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        return List.of(new GetableIndex<>(
-                List.of(
-                        Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
-                        Pair.of("wfSpecVersion", GetableIndex.ValueType.SINGLE),
-                        Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
-                Optional.empty(),
-                variable -> ((VariableModel) variable).getValue().getType() != VariableType.NULL
-                        && !((VariableModel) variable).getName().equals(LHConstants.EXT_EVT_HANDLER_VAR)));
+        return List.of(
+                new GetableIndex<>(
+                        List.of(
+                                Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                                Pair.of("wfSpecVersion", GetableIndex.ValueType.SINGLE),
+                                Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
+                        Optional.empty(),
+                        variable -> ((VariableModel) variable).isIndexable()),
+                new GetableIndex<>(
+                        List.of(
+                                Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                                Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
+                        Optional.empty(),
+                        variable -> ((VariableModel) variable).isPersistentlyIndexable()));
+    }
+
+    private boolean isIndexable() {
+        return !name.equals(LHConstants.EXT_EVT_HANDLER_VAR) && value.getType() != VariableType.NULL;
+    }
+
+    private boolean isPersistentlyIndexable() {
+        return isIndexable() && getDefinition().isPersistent();
     }
 
     @Override
@@ -129,6 +143,10 @@ public class VariableModel extends CoreGetable<Variable> {
             }
         }
         return null;
+    }
+
+    private VariableDefModel getDefinition() {
+        return variableDefMap().get(name);
     }
 
     private Map<String, VariableDefModel> variableDefMap() {

@@ -68,6 +68,11 @@ func (w *WfRunVariable) WithIndex(indexType model.IndexType) *WfRunVariable {
 	return w
 }
 
+func (w *WfRunVariable) Persistent() *WfRunVariable {
+	w.varDef.Persistent = true
+	return w
+}
+
 func (l *LHWorkflow) Compile() (*model.PutWfSpecRequest, error) {
 	return l.compile()
 }
