@@ -8,14 +8,18 @@ from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import VariableAssignment
 from littlehorse.model.variable_pb2 import VariableValue
 
-from littlehorse.proto_utils import (
-    to_variable_type,
-    to_type,
+from littlehorse.utils import (
     extract_value,
+    to_type,
+    to_variable_type,
     to_variable_value,
+)
+from littlehorse.workflow import (
+    FormatString,
+    NodeOutput,
+    WfRunVariable,
     to_variable_assignment,
 )
-from littlehorse.workflow import FormatString, NodeOutput, WfRunVariable
 
 
 class TestProtoUtils(unittest.TestCase):
