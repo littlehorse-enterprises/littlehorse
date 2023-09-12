@@ -722,6 +722,47 @@ class ThreadBuilder:
         """
         return WorkflowCondition(left_hand, comparator, right_hand)
 
+    def do_while(
+        self, condition: WorkflowCondition, while_body: "ThreadInitializer"
+    ) -> None:
+        """Conditionally executes some workflow code; equivalent to
+        an while() statement in programming.
+
+        Args:
+            condition (WorkflowCondition): is the WorkflowCondition to be satisfied.
+            while_body (ThreadInitializer): is the block of ThreadFunc
+            code to be executed while the provided
+            WorkflowCondition is satisfied.
+        """
+        self._check_if_active()
+        self._validate_initializer(while_body)
+
+        # execute
+        start_node_name = self.add_node("nop", NopNode())
+        while_body(self)
+        end_node_name = self.add_node("nop", NopNode())
+
+        # get nop nodes
+        start_node = self._find_node(start_node_name)
+        end_node = self._find_node(end_node_name)
+
+        # configure edges
+        while_condition_node = self._find_next_node(start_node_name)
+        while_edge = start_node._find_outgoing_edge(while_condition_node.name)
+        while_edge.MergeFrom(
+            Edge(
+                condition=condition.compile(),
+            )
+        )
+
+        start_node.outgoing_edges.append(
+            Edge(sink_node_name=end_node_name, condition=condition.negate().compile())
+        )
+
+        end_node.outgoing_edges.append(
+            Edge(sink_node_name=start_node_name, condition=condition.compile())
+        )
+
     def do_if(
         self,
         condition: WorkflowCondition,

@@ -1,18 +1,19 @@
 ## Running a Conditionals Example
 
-In this example we are going to se how to use if/else conditionals in LH.
+In this example you will see how to define a while loop with LH.
+Use do_while to define the loop, the end condition and the handler (body) of the while.
 
 Let's run the example:
 
 ```
 poetry shell
-python -m example_conditionals
+python -m example_conditionals_while
 ```
 
 In another terminal, use `lhctl` to run the workflow:
 
 ```
-lhctl run example-conditionals amount 200000
+lhctl run example-conditionals-while number-of-donuts 5
 ```
 
 In addition, you can check the result with:
