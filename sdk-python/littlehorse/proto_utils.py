@@ -83,7 +83,7 @@ def to_json(proto: Message) -> str:
     Returns:
         str: JSON format.
     """
-    return MessageToJson(proto)
+    return MessageToJson(proto, sort_keys=True)
 
 
 def to_variable_value(value: Any) -> VariableValue:

@@ -592,6 +592,22 @@ class ThreadBuilder:
         self.wf_run_variables.append(new_var)
         return new_var
 
+    def find_variable(self, variable_name: str) -> WfRunVariable:
+        """Search for a variable.
+
+        Args:
+            variable_name (str): he name of the variable.
+
+        Returns:
+            WfRunVariable: Variable found.
+        """
+        # TODO look in all threads
+        for var in self.wf_run_variables:
+            if var.name == variable_name:
+                return var
+
+        raise ValueError(f"Variable {variable_name} not found")
+
     def add_node(self, name: str, sub_node: NodeType) -> str:
         """Add a given node.
 
@@ -641,7 +657,10 @@ class ThreadBuilder:
         return WorkflowCondition(left_hand, comparator, right_hand)
 
     def do_if(
-        self, condition: WorkflowCondition, initializer: "ThreadInitializer"
+        self,
+        condition: WorkflowCondition,
+        if_body: "ThreadInitializer",
+        else_body: Optional["ThreadInitializer"] = None,
     ) -> None:
         """Conditionally executes some workflow code; equivalent
         to an if() statement in programming.
@@ -649,36 +668,65 @@ class ThreadBuilder:
         Args:
             condition (WorkflowCondition): is the WorkflowCondition
             to be satisfied.
-            initializer (ThreadInitializer): is the block of
+            if_body (ThreadInitializer): is the block of
             ThreadSpec code to be executed if the provided
             WorkflowCondition is satisfied.
+            else_body (ThreadInitializer): is the block of
+            ThreadSpec code to be executed if the provided
+            WorkflowCondition is NOT satisfied. Default None.
         """
         self._check_if_active()
-        self._validate_initializer(initializer)
+        self._validate_initializer(if_body)
 
-        # execute body
+        # execute if branch
         start_node_name = self.add_node("nop", NopNode())
-        initializer(self)
+        if_body(self)
         end_node_name = self.add_node("nop", NopNode())
 
-        # manipulate the conditions of the nodes
+        # manipulate if branch
+        if_condition_node = self._find_next_node(start_node_name)
         start_node = self._find_node(start_node_name)
-        condition_node = self._find_next_node(start_node_name)
-
-        # add if
-        edge = start_node._find_outgoing_edge(condition_node.name)
-        edge.MergeFrom(
+        if_edge = start_node._find_outgoing_edge(if_condition_node.name)
+        if_edge.MergeFrom(
             Edge(
                 condition=condition.compile(),
             )
         )
-        # add else
-        start_node.outgoing_edges.append(
-            Edge(
-                sink_node_name=end_node_name,
-                condition=condition.negate().compile(),
+
+        # execute else branch
+        if else_body is not None:
+            self._validate_initializer(else_body)
+
+            # change positions
+            self._nodes.remove(start_node)
+            self._nodes.append(start_node)
+            else_body(self)
+
+            # find else edge
+            else_condition_node = self._find_next_node(start_node_name)
+            else_edge = start_node._find_outgoing_edge(else_condition_node.name)
+            else_edge.MergeFrom(
+                Edge(
+                    condition=condition.negate().compile(),
+                )
             )
-        )
+
+            # add edge no for last node
+            last_else_node = self._last_node()
+            last_else_node.outgoing_edges.append(Edge(sink_node_name=end_node_name))
+
+            # change positions again
+            end_node = self._find_node(end_node_name)
+            self._nodes.remove(end_node)
+            self._nodes.append(end_node)
+        else:
+            # add else
+            start_node.outgoing_edges.append(
+                Edge(
+                    sink_node_name=end_node_name,
+                    condition=condition.negate().compile(),
+                )
+            )
 
 
 ThreadInitializer = Callable[[ThreadBuilder], None]

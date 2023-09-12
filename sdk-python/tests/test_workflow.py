@@ -173,6 +173,98 @@ class TestThreadBuilder(unittest.TestCase):
             ),
         )
 
+    def test_do_if_else(self):
+        class MyClass:
+            def if_condition(self, thread: ThreadBuilder) -> None:
+                thread.execute("task-a")
+                thread.execute("task-b")
+
+            def else_condition(self, thread: ThreadBuilder) -> None:
+                thread.execute("task-c")
+                thread.execute("task-d")
+
+            def my_entrypoint(self, thread: ThreadBuilder) -> None:
+                thread.do_if(
+                    thread.condition(20, Comparator.GREATER_THAN, 10),
+                    self.if_condition,
+                    self.else_condition,
+                )
+
+            def to_thread(self):
+                return ThreadBuilder(workflow=None, initializer=self.my_entrypoint)
+
+        my_object = MyClass()
+        thread_builder = my_object.to_thread()
+        self.assertEqual(
+            thread_builder.compile(),
+            ThreadSpec(
+                nodes={
+                    "0-entrypoint-ENTRYPOINT": Node(
+                        entrypoint=EntrypointNode(),
+                        outgoing_edges=[Edge(sink_node_name="1-nop-NOP")],
+                    ),
+                    "1-nop-NOP": Node(
+                        nop=NopNode(),
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="2-task-a-TASK",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.GREATER_THAN,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(
+                                            type=VariableType.INT, int=20
+                                        )
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(
+                                            type=VariableType.INT, int=10
+                                        )
+                                    ),
+                                ),
+                            ),
+                            Edge(
+                                sink_node_name="5-task-c-TASK",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.LESS_THAN_EQ,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(
+                                            type=VariableType.INT, int=20
+                                        )
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(
+                                            type=VariableType.INT, int=10
+                                        )
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                    "2-task-a-TASK": Node(
+                        task=TaskNode(task_def_name="task-a"),
+                        outgoing_edges=[Edge(sink_node_name="3-task-b-TASK")],
+                    ),
+                    "3-task-b-TASK": Node(
+                        task=TaskNode(task_def_name="task-b"),
+                        outgoing_edges=[Edge(sink_node_name="4-nop-NOP")],
+                    ),
+                    "4-nop-NOP": Node(
+                        nop=NopNode(),
+                        outgoing_edges=[Edge(sink_node_name="7-exit-EXIT")],
+                    ),
+                    "5-task-c-TASK": Node(
+                        task=TaskNode(task_def_name="task-c"),
+                        outgoing_edges=[Edge(sink_node_name="6-task-d-TASK")],
+                    ),
+                    "6-task-d-TASK": Node(
+                        task=TaskNode(task_def_name="task-d"),
+                        outgoing_edges=[Edge(sink_node_name="4-nop-NOP")],
+                    ),
+                    "7-exit-EXIT": Node(exit=ExitNode()),
+                },
+            ),
+        )
+
     def test_do_if(self):
         class MyClass:
             def my_condition(self, thread: ThreadBuilder) -> None:
