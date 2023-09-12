@@ -167,3 +167,65 @@ func TestReassignToGroup(t *testing.T) {
 
 	assert.Equal(t, group, *(reassign.GetUserGroup().GetLiteralValue().Str))
 }
+
+func TestParallelSpawnThreads(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+		myArr := t.AddVariable("my-arr", model.VariableType_JSON_ARR)
+
+		spawnedThreads := t.SpawnThreadForEach(
+			myArr,
+			"some-threads",
+			func(t *wflib.ThreadBuilder) {},
+			nil,
+		)
+
+		t.WaitForThreadsList(spawnedThreads)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	assert.Equal(t, len(putWf.ThreadSpecs), 2)
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	spawnNode := entrypoint.Nodes["1-some-threads-START_MULTIPLE_THREADS"]
+	assert.Equal(t, len(spawnNode.VariableMutations), 1)
+	assert.NotNil(t, spawnNode.VariableMutations[0].GetNodeOutput())
+
+	internalVarName := spawnNode.VariableMutations[0].LhsName
+
+	waitNode := entrypoint.Nodes["2-threads-WAIT_FOR_THREADS"].GetWaitForThreads()
+	assert.Equal(t, waitNode.GetThreadList().GetVariableName(), internalVarName)
+}
+
+func TestParallelSpawnThreadsWithInput(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+		myArr := t.AddVariable("my-arr", model.VariableType_JSON_ARR)
+
+		inputs := map[string]interface{}{
+			"asdf": 1234,
+		}
+
+		spawnedThreads := t.SpawnThreadForEach(
+			myArr,
+			"some-threads",
+			func(t *wflib.ThreadBuilder) {},
+			&inputs,
+		)
+
+		t.WaitForThreadsList(spawnedThreads)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	spawnNode := entrypoint.Nodes["1-some-threads-START_MULTIPLE_THREADS"].GetStartMultipleThreads()
+	assert.Equal(t, len(spawnNode.Variables), 1)
+
+	assert.Equal(t, int64(1234), *spawnNode.Variables["asdf"].GetLiteralValue().Int)
+}

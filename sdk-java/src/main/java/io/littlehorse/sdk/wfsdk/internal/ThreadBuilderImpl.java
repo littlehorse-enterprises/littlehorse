@@ -448,7 +448,7 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         String nodeName = addNode(threadName, NodeCase.START_MULTIPLE_THREADS, startMultiplesThreadNode.build());
         WfRunVariableImpl internalStartedThreadVar = addVariable(nodeName, VariableType.JSON_ARR);
         mutate(internalStartedThreadVar, VariableMutationType.ASSIGN, new NodeOutputImpl(nodeName, this));
-        return new SpawnedThreadsImpl(this, threadName, internalStartedThreadVar);
+        return new SpawnedThreadsImpl(this, internalStartedThreadVar);
     }
 
     public void sleepSeconds(Object secondsToSleep) {

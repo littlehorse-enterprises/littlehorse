@@ -59,9 +59,13 @@ message WaitForThreadsNode {
   message ThreadToWaitFor {
     VariableAssignment thread_run_number = 1;
   }
+
+  // Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+  // for compatibility reasons, we cannot wrap it into a separate message.
   repeated ThreadToWaitFor threads = 1;
-  WaitForThreadsPolicy policy = 2;
   optional VariableAssignment thread_list = 3;
+
+  WaitForThreadsPolicy policy = 2;
 }
 
 message ExternalEventNode {
