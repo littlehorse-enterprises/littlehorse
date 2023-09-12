@@ -1,8 +1,13 @@
 from enum import Enum
 from inspect import signature
 import inspect
+import logging
 from pathlib import Path
 from typing import Any, Callable, Optional, Union
+from google.protobuf.json_format import MessageToJson
+from google.protobuf.message import Message
+from grpc import RpcError, StatusCode
+from littlehorse.config import LHConfig
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import (
     Comparator,
@@ -14,7 +19,12 @@ from littlehorse.model.common_wfspec_pb2 import (
     VariableMutation,
     VariableMutationType,
 )
-from littlehorse.model.service_pb2 import PutWfSpecRequest
+from littlehorse.model.object_id_pb2 import GetLatestWfSpecRequest
+from littlehorse.model.service_pb2 import (
+    PutExternalEventDefRequest,
+    PutTaskDefRequest,
+    PutWfSpecRequest,
+)
 from littlehorse.model.variable_pb2 import VariableValue
 from littlehorse.model.wf_spec_pb2 import (
     Edge,
@@ -30,12 +40,8 @@ from littlehorse.model.wf_spec_pb2 import (
     UserTaskNode,
     WaitForThreadsNode,
 )
-from littlehorse.proto_utils import (
-    negate_comparator,
-    to_variable_value,
-    to_variable_assignment,
-    to_json,
-)
+from littlehorse.utils import negate_comparator, to_variable_type, to_variable_value
+from littlehorse.worker import WorkerContext
 
 ENTRYPOINT = "entrypoint"
 
@@ -50,6 +56,60 @@ NodeType = Union[
     NopNode,
     UserTaskNode,
 ]
+
+
+def to_json(proto: Message) -> str:
+    """Convert a proto object to json.
+
+    Args:
+        proto (Message): A proto object.
+
+    Returns:
+        str: JSON format.
+    """
+    return MessageToJson(proto, sort_keys=True)
+
+
+def to_variable_assignment(value: Any) -> VariableAssignment:
+    """Receives a value and return a Protobuf VariableAssignment.
+
+    Args:
+        value (Any): Any value.
+
+    Returns:
+        VariableAssignment: Protobuf.
+    """
+    if isinstance(value, NodeOutput):
+        raise ValueError(
+            "Cannot use NodeOutput directly as input to task. "
+            "First save to a WfRunVariable."
+        )
+
+    if isinstance(value, WfRunVariable):
+        json_path: Optional[str] = None
+        variable_name = value.name
+
+        if value.json_path is not None:
+            json_path = value.json_path
+
+        return VariableAssignment(
+            json_path=json_path,
+            variable_name=variable_name,
+        )
+
+    if isinstance(value, FormatString):
+        new_var = VariableAssignment(
+            format_string=VariableAssignment.FormatString(
+                format=to_variable_assignment(value.format),
+                args=[to_variable_assignment(arg) for arg in value.args],
+            )
+        )
+
+        return new_var
+
+    return VariableAssignment(
+        literal_value=to_variable_value(value),
+    )
 
 
 class WorkflowCondition:
@@ -316,7 +376,7 @@ class WfRunVariable:
 
         self.json_indexes.append(JsonIndex(path=json_path, index_type=index_type))
         return self
-    
+
     def persistent(self) -> "WfRunVariable":
         self._persistent = True
         return self
@@ -812,3 +872,96 @@ class Workflow:
             thread_specs=thread_specs,
             retention_hours=None if self.retention_hours <= 0 else self.retention_hours,
         )
+
+
+def create_workflow_spec(
+    workflow: Workflow, config: LHConfig, skip_if_already_exists: bool = True
+) -> None:
+    """Creates a given workflow spec at the LH Server.
+
+    Args:
+        workflow (Workflow): The workflow.
+        config (LHConfig): The configuration to get connected to the LH Server.
+        skip_if_already_exists (bool, optional): If the workflow exits and
+        this is True, then it does not create a new version,
+        else it creates a new version. Defaults to True.
+    """
+    stub = config.stub()
+
+    if skip_if_already_exists:
+        try:
+            stub.GetLatestWfSpec(GetLatestWfSpecRequest(name=workflow.name))
+            logging.info(f"Workflow {workflow.name} already exits, skipping")
+            return
+        except RpcError as e:
+            if e.code() != StatusCode.NOT_FOUND:
+                raise e
+
+    request = workflow.compile()
+    logging.info(f"Creating a new version of {workflow.name}:\n{workflow}")
+    stub.PutWfSpec(request)
+
+
+def create_task_def(
+    task: Callable[..., Any],
+    name: str,
+    config: LHConfig,
+    swallow_already_exists: bool = True,
+) -> None:
+    """Creates a new TaskDef at the LH Server.
+
+    Args:
+        task (Callable[..., Any]): The task.
+        name (str): Name of the task.
+        config (LHConfig): The config.
+        swallow_already_exists (bool, optional): If already exists and this is True,
+        it does not raise an exception, else it raise an exception with code
+        StatusCode.ALREADY_EXISTS. Defaults to True.
+    """
+    stub = config.stub()
+    try:
+        task_signature = signature(task)
+        input_vars = [
+            VariableDef(name=param.name, type=to_variable_type(param.annotation))
+            for param in task_signature.parameters.values()
+            if param.annotation is not WorkerContext
+        ]
+        request = PutTaskDefRequest(name=name, input_vars=input_vars)
+        stub.PutTaskDef(request)
+        logging.info(f"TaskDef {name} was created:\n{to_json(request)}")
+    except RpcError as e:
+        if swallow_already_exists and e.code() == StatusCode.ALREADY_EXISTS:
+            logging.info(f"TaskDef {name} already exits, skipping")
+            return
+        raise e
+
+
+def create_external_event_def(
+    name: str,
+    config: LHConfig,
+    retention_hours: int = -1,
+    swallow_already_exists: bool = True,
+) -> None:
+    """Creates a new ExternalEventDef at the LH Server.
+
+    Args:
+        name (str): Name of the external event.
+        config (LHConfig): _description_
+        retention_hours (int, optional): _description_. Defaults to -1.
+        swallow_already_exists (bool, optional): If already exists and this is True,
+        it does not raise an exception, else it raise an exception with code
+        StatusCode.ALREADY_EXISTS. Defaults to True.
+    """
+    stub = config.stub()
+    try:
+        request = PutExternalEventDefRequest(
+            name=name,
+            retention_hours=None if retention_hours <= 0 else retention_hours,
+        )
+        stub.PutExternalEventDef(request)
+        logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")
+    except RpcError as e:
+        if swallow_already_exists and e.code() == StatusCode.ALREADY_EXISTS:
+            logging.info(f"ExternalEventDef {name} already exits, skipping")
+            return
+        raise e

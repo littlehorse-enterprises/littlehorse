@@ -22,7 +22,7 @@ from littlehorse.model.wf_spec_pb2 import (
     NopNode,
     ThreadSpec,
 )
-from littlehorse.proto_utils import to_variable_assignment
+from littlehorse.workflow import to_variable_assignment
 
 from littlehorse.workflow import (
     NodeOutput,
