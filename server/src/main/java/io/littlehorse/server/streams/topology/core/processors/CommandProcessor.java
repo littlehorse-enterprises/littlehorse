@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
@@ -90,7 +91,18 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
                 server.onResponseReceived(command.commandId, cmdReply);
             }
         } catch (Exception exn) {
-            log.error("Caught exception processing command:", exn);
+            if (isUserError(exn)) {
+                StatusRuntimeException sre = (StatusRuntimeException) exn;
+                log.debug(
+                        "Caught exception processing {}:\nStatus: {}\nDescription: {}\nCause: {}",
+                        command.getType(),
+                        sre.getStatus().getCode(),
+                        sre.getStatus().getDescription(),
+                        sre.getMessage(),
+                        sre.getCause());
+            } else {
+                log.error("Caught exception processing command:", exn);
+            }
             if (command.hasResponse() && command.getCommandId() != null) {
                 server.sendErrorToClient(command.getCommandId(), exn);
             }
@@ -99,6 +111,36 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
             // let the sysadmin of this LH Server know, and provide as much debugging
             // information as possible.
         }
+    }
+
+    private boolean isUserError(Exception exn) {
+        if (StatusRuntimeException.class.isAssignableFrom(exn.getClass())) {
+            StatusRuntimeException sre = (StatusRuntimeException) exn;
+
+            switch (sre.getStatus().getCode()) {
+                case NOT_FOUND,
+                        INVALID_ARGUMENT,
+                        ALREADY_EXISTS,
+                        OUT_OF_RANGE,
+                        PERMISSION_DENIED,
+                        UNAUTHENTICATED,
+                        FAILED_PRECONDITION,
+                        // RESOURCE_EXHAUSTED used for quota violations.
+                        RESOURCE_EXHAUSTED:
+                    return true;
+
+                case OK,
+                        UNKNOWN,
+                        UNIMPLEMENTED,
+                        UNAVAILABLE,
+                        INTERNAL,
+                        DEADLINE_EXCEEDED,
+                        DATA_LOSS,
+                        ABORTED,
+                        CANCELLED:
+            }
+        }
+        return false;
     }
 
     private void forwardMetricsUpdates(long timestamp) {
