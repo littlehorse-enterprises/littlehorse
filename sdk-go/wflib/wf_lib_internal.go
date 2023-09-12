@@ -719,6 +719,80 @@ func (t *ThreadBuilder) waitForThreads(s ...*SpawnedThread) *NodeOutput {
 	}
 }
 
+func (t *ThreadBuilder) spawnThreadForEach(
+	arrVar *WfRunVariable, threadName string, threadFunc ThreadFunc, args *map[string]interface{},
+) *SpawnedThreads {
+	t.checkIfIsActive()
+
+	if *arrVar.VarType != model.VariableType_JSON_ARR {
+		t.throwError(tracerr.Wrap(errors.New("can only iterate over JSON_ARR variable")))
+	}
+
+	finalThreadName := t.wf.addSubThread(threadName, threadFunc)
+	iterableAssn, err := t.assignVariable(arrVar)
+	if err != nil {
+		t.throwError(tracerr.Wrap(err))
+	}
+
+	subNode := &model.StartMultipleThreadsNode{
+		ThreadSpecName: finalThreadName,
+		Iterable:       iterableAssn,
+		Variables:      make(map[string]*model.VariableAssignment),
+	}
+
+	if args != nil {
+		for name, arg := range *args {
+			varAssn, err := t.assignVariable(arg)
+			if err != nil {
+				t.throwError(tracerr.Wrap(err))
+			}
+			subNode.Variables[name] = varAssn
+		}
+	}
+
+	nodeName, node := t.createBlankNode(threadName, "START_MULTIPLE_THREADS")
+	node.Node = &model.Node_StartMultipleThreads{
+		StartMultipleThreads: subNode,
+	}
+
+	internalThreadNumbersVar := t.addVariable(
+		nodeName, model.VariableType_JSON_ARR, nil,
+	)
+
+	t.mutate(
+		internalThreadNumbersVar,
+		model.VariableMutationType_ASSIGN,
+		NodeOutput{nodeName: nodeName, thread: t},
+	)
+
+	return &SpawnedThreads{
+		thread:     t,
+		threadsVar: internalThreadNumbersVar,
+	}
+}
+
+func (t *ThreadBuilder) waitForThreadsList(s *SpawnedThreads) NodeOutput {
+	t.checkIfIsActive()
+	threadListAssn, err := t.assignVariable(s.threadsVar)
+	if err != nil {
+		t.throwError(tracerr.Wrap(err))
+	}
+
+	subNode := &model.WaitForThreadsNode{
+		ThreadList: threadListAssn,
+		Policy:     model.WaitForThreadsPolicy_STOP_ON_FAILURE,
+	}
+
+	nodeName, node := t.createBlankNode("threads", "WAIT_FOR_THREADS")
+	node.Node = &model.Node_WaitForThreads{
+		WaitForThreads: subNode,
+	}
+	return NodeOutput{
+		thread:   t,
+		nodeName: nodeName,
+	}
+}
+
 func (t *ThreadBuilder) waitForEvent(eventName string) *NodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode(eventName, "EXTERNAL_EVENT")

@@ -61,6 +61,11 @@ type SpawnedThread struct {
 	threadNumVar *WfRunVariable
 }
 
+type SpawnedThreads struct {
+	thread     *ThreadBuilder
+	threadsVar *WfRunVariable
+}
+
 func (n *NodeOutput) JsonPath(path string) NodeOutput {
 	return n.jsonPathImpl(path)
 }
@@ -135,6 +140,16 @@ func (t *ThreadBuilder) SpawnThread(
 
 func (t *ThreadBuilder) WaitForThreads(s ...*SpawnedThread) NodeOutput {
 	return *t.waitForThreads(s...)
+}
+
+func (t *ThreadBuilder) SpawnThreadForEach(
+	arrVar *WfRunVariable, threadName string, threadFunc ThreadFunc, args *map[string]interface{},
+) *SpawnedThreads {
+	return t.spawnThreadForEach(arrVar, threadName, threadFunc, args)
+}
+
+func (t *ThreadBuilder) WaitForThreadsList(s *SpawnedThreads) NodeOutput {
+	return t.waitForThreadsList(s)
 }
 
 func (t *ThreadBuilder) AssignTaskToUser(

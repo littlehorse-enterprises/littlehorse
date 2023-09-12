@@ -176,9 +176,9 @@ public final class WfSpecOuterClass {
       "XCEPTION\020\001B\022\n\020failure_to_catch\"\243\002\n\022WaitF" +
       "orThreadsNode\022@\n\007threads\030\001 \003(\0132/.littleh" +
       "orse.WaitForThreadsNode.ThreadToWaitFor\022" +
-      "1\n\006policy\030\002 \001(\0162!.littlehorse.WaitForThr" +
-      "eadsPolicy\0229\n\013thread_list\030\003 \001(\0132\037.little" +
-      "horse.VariableAssignmentH\000\210\001\001\032M\n\017ThreadT" +
+      "9\n\013thread_list\030\003 \001(\0132\037.littlehorse.Varia" +
+      "bleAssignmentH\000\210\001\001\0221\n\006policy\030\002 \001(\0162!.lit" +
+      "tlehorse.WaitForThreadsPolicy\032M\n\017ThreadT" +
       "oWaitFor\022:\n\021thread_run_number\030\001 \001(\0132\037.li" +
       "ttlehorse.VariableAssignmentB\016\n\014_thread_" +
       "list\"n\n\021ExternalEventNode\022\037\n\027external_ev" +
@@ -305,7 +305,7 @@ public final class WfSpecOuterClass {
     internal_static_littlehorse_WaitForThreadsNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_WaitForThreadsNode_descriptor,
-        new java.lang.String[] { "Threads", "Policy", "ThreadList", "ThreadList", });
+        new java.lang.String[] { "Threads", "ThreadList", "Policy", "ThreadList", });
     internal_static_littlehorse_WaitForThreadsNode_ThreadToWaitFor_descriptor =
       internal_static_littlehorse_WaitForThreadsNode_descriptor.getNestedTypes().get(0);
     internal_static_littlehorse_WaitForThreadsNode_ThreadToWaitFor_fieldAccessorTable = new

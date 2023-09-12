@@ -645,6 +645,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> threads_;
   /**
+   * <pre>
+   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+   * for compatibility reasons, we cannot wrap it into a separate message.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
    */
   @java.lang.Override
@@ -652,6 +657,11 @@ private static final long serialVersionUID = 0L;
     return threads_;
   }
   /**
+   * <pre>
+   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+   * for compatibility reasons, we cannot wrap it into a separate message.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
    */
   @java.lang.Override
@@ -660,6 +670,11 @@ private static final long serialVersionUID = 0L;
     return threads_;
   }
   /**
+   * <pre>
+   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+   * for compatibility reasons, we cannot wrap it into a separate message.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
    */
   @java.lang.Override
@@ -667,6 +682,11 @@ private static final long serialVersionUID = 0L;
     return threads_.size();
   }
   /**
+   * <pre>
+   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+   * for compatibility reasons, we cannot wrap it into a separate message.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
    */
   @java.lang.Override
@@ -674,30 +694,17 @@ private static final long serialVersionUID = 0L;
     return threads_.get(index);
   }
   /**
+   * <pre>
+   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+   * for compatibility reasons, we cannot wrap it into a separate message.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder getThreadsOrBuilder(
       int index) {
     return threads_.get(index);
-  }
-
-  public static final int POLICY_FIELD_NUMBER = 2;
-  private int policy_ = 0;
-  /**
-   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-   * @return The enum numeric value on the wire for policy.
-   */
-  @java.lang.Override public int getPolicyValue() {
-    return policy_;
-  }
-  /**
-   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-   * @return The policy.
-   */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy() {
-    io.littlehorse.sdk.common.proto.WaitForThreadsPolicy result = io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.forNumber(policy_);
-    return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.UNRECOGNIZED : result;
   }
 
   public static final int THREAD_LIST_FIELD_NUMBER = 3;
@@ -724,6 +731,24 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getThreadListOrBuilder() {
     return threadList_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : threadList_;
+  }
+
+  public static final int POLICY_FIELD_NUMBER = 2;
+  private int policy_ = 0;
+  /**
+   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+   * @return The enum numeric value on the wire for policy.
+   */
+  @java.lang.Override public int getPolicyValue() {
+    return policy_;
+  }
+  /**
+   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+   * @return The policy.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy() {
+    io.littlehorse.sdk.common.proto.WaitForThreadsPolicy result = io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.forNumber(policy_);
+    return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -787,12 +812,12 @@ private static final long serialVersionUID = 0L;
 
     if (!getThreadsList()
         .equals(other.getThreadsList())) return false;
-    if (policy_ != other.policy_) return false;
     if (hasThreadList() != other.hasThreadList()) return false;
     if (hasThreadList()) {
       if (!getThreadList()
           .equals(other.getThreadList())) return false;
     }
+    if (policy_ != other.policy_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -808,12 +833,12 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + THREADS_FIELD_NUMBER;
       hash = (53 * hash) + getThreadsList().hashCode();
     }
-    hash = (37 * hash) + POLICY_FIELD_NUMBER;
-    hash = (53 * hash) + policy_;
     if (hasThreadList()) {
       hash = (37 * hash) + THREAD_LIST_FIELD_NUMBER;
       hash = (53 * hash) + getThreadList().hashCode();
     }
+    hash = (37 * hash) + POLICY_FIELD_NUMBER;
+    hash = (53 * hash) + policy_;
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -959,12 +984,12 @@ private static final long serialVersionUID = 0L;
         threadsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
-      policy_ = 0;
       threadList_ = null;
       if (threadListBuilder_ != null) {
         threadListBuilder_.dispose();
         threadListBuilder_ = null;
       }
+      policy_ = 0;
       return this;
     }
 
@@ -1011,15 +1036,15 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.WaitForThreadsNode result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.policy_ = policy_;
-      }
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000004) != 0)) {
+      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.threadList_ = threadListBuilder_ == null
             ? threadList_
             : threadListBuilder_.build();
         to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.policy_ = policy_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -1094,11 +1119,11 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
-      if (other.policy_ != 0) {
-        setPolicyValue(other.getPolicyValue());
-      }
       if (other.hasThreadList()) {
         mergeThreadList(other.getThreadList());
+      }
+      if (other.policy_ != 0) {
+        setPolicyValue(other.getPolicyValue());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -1141,14 +1166,14 @@ private static final long serialVersionUID = 0L;
             } // case 10
             case 16: {
               policy_ = input.readEnum();
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000004;
               break;
             } // case 16
             case 26: {
               input.readMessage(
                   getThreadListFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000002;
               break;
             } // case 26
             default: {
@@ -1181,6 +1206,11 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> threadsBuilder_;
 
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> getThreadsList() {
@@ -1191,6 +1221,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public int getThreadsCount() {
@@ -1201,6 +1236,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor getThreads(int index) {
@@ -1211,6 +1251,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public Builder setThreads(
@@ -1228,6 +1273,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public Builder setThreads(
@@ -1242,6 +1292,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public Builder addThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor value) {
@@ -1258,6 +1313,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public Builder addThreads(
@@ -1275,6 +1335,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public Builder addThreads(
@@ -1289,6 +1354,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public Builder addThreads(
@@ -1303,6 +1373,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public Builder addAllThreads(
@@ -1318,6 +1393,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public Builder clearThreads() {
@@ -1331,6 +1411,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public Builder removeThreads(int index) {
@@ -1344,6 +1429,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder getThreadsBuilder(
@@ -1351,6 +1441,11 @@ private static final long serialVersionUID = 0L;
       return getThreadsFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder getThreadsOrBuilder(
@@ -1361,6 +1456,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> 
@@ -1372,6 +1472,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder addThreadsBuilder() {
@@ -1379,6 +1484,11 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder addThreadsBuilder(
@@ -1387,6 +1497,11 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+     * for compatibility reasons, we cannot wrap it into a separate message.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder> 
@@ -1408,59 +1523,6 @@ private static final long serialVersionUID = 0L;
       return threadsBuilder_;
     }
 
-    private int policy_ = 0;
-    /**
-     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-     * @return The enum numeric value on the wire for policy.
-     */
-    @java.lang.Override public int getPolicyValue() {
-      return policy_;
-    }
-    /**
-     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-     * @param value The enum numeric value on the wire for policy to set.
-     * @return This builder for chaining.
-     */
-    public Builder setPolicyValue(int value) {
-      policy_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-     * @return The policy.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy() {
-      io.littlehorse.sdk.common.proto.WaitForThreadsPolicy result = io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.forNumber(policy_);
-      return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-     * @param value The policy to set.
-     * @return This builder for chaining.
-     */
-    public Builder setPolicy(io.littlehorse.sdk.common.proto.WaitForThreadsPolicy value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      bitField0_ |= 0x00000002;
-      policy_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearPolicy() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      policy_ = 0;
-      onChanged();
-      return this;
-    }
-
     private io.littlehorse.sdk.common.proto.VariableAssignment threadList_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> threadListBuilder_;
@@ -1469,7 +1531,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the threadList field is set.
      */
     public boolean hasThreadList() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
@@ -1494,7 +1556,7 @@ private static final long serialVersionUID = 0L;
       } else {
         threadListBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -1508,7 +1570,7 @@ private static final long serialVersionUID = 0L;
       } else {
         threadListBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -1517,7 +1579,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeThreadList(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (threadListBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
+        if (((bitField0_ & 0x00000002) != 0) &&
           threadList_ != null &&
           threadList_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
           getThreadListBuilder().mergeFrom(value);
@@ -1527,7 +1589,7 @@ private static final long serialVersionUID = 0L;
       } else {
         threadListBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -1535,7 +1597,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
      */
     public Builder clearThreadList() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000002);
       threadList_ = null;
       if (threadListBuilder_ != null) {
         threadListBuilder_.dispose();
@@ -1548,7 +1610,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getThreadListBuilder() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return getThreadListFieldBuilder().getBuilder();
     }
@@ -1578,6 +1640,59 @@ private static final long serialVersionUID = 0L;
         threadList_ = null;
       }
       return threadListBuilder_;
+    }
+
+    private int policy_ = 0;
+    /**
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @return The enum numeric value on the wire for policy.
+     */
+    @java.lang.Override public int getPolicyValue() {
+      return policy_;
+    }
+    /**
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @param value The enum numeric value on the wire for policy to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPolicyValue(int value) {
+      policy_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @return The policy.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy() {
+      io.littlehorse.sdk.common.proto.WaitForThreadsPolicy result = io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.forNumber(policy_);
+      return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsPolicy.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @param value The policy to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPolicy(io.littlehorse.sdk.common.proto.WaitForThreadsPolicy value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000004;
+      policy_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPolicy() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      policy_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
