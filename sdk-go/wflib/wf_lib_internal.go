@@ -90,15 +90,10 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 	return &l.spec, nil
 }
 
-func (t *ThreadBuilder) executeTask(name string, args []interface{}) NodeOutput {
-	t.checkIfIsActive()
-	nodeName, node := t.createBlankNode(name, "TASK")
-
-	taskNode := &model.Node_Task{
-		Task: &model.TaskNode{
-			TaskDefName: name,
-			Variables:   make([]*model.VariableAssignment, 0),
-		},
+func (t *ThreadBuilder) createTaskNode(taskDefName string, args []interface{}) *model.TaskNode {
+	taskNode := &model.TaskNode{
+		TaskDefName: taskDefName,
+		Variables:   make([]*model.VariableAssignment, 0),
 	}
 
 	for _, arg := range args {
@@ -106,14 +101,155 @@ func (t *ThreadBuilder) executeTask(name string, args []interface{}) NodeOutput 
 		if err != nil {
 			t.throwError(tracerr.Wrap(err))
 		}
-		taskNode.Task.Variables = append(taskNode.Task.Variables, varAssn)
+		taskNode.Variables = append(taskNode.Variables, varAssn)
 	}
+	return taskNode
+}
 
-	node.Node = taskNode
+func (t *ThreadBuilder) executeTask(name string, args []interface{}) NodeOutput {
+	t.checkIfIsActive()
+	nodeName, node := t.createBlankNode(name, "TASK")
+
+	node.Node = &model.Node_Task{
+		Task: t.createTaskNode(name, args),
+	}
 
 	return NodeOutput{
 		nodeName: nodeName,
 		thread:   t,
+	}
+}
+
+func (t *ThreadBuilder) reassignToGroupOnDeadline(
+	userTask *UserTaskOutput, userGroup *string, deadlineSeconds int,
+) {
+	t.checkIfIsActive()
+
+	curNode := t.spec.Nodes[*t.lastNodeName]
+	if userTask.Output.nodeName != *t.lastNodeName {
+		log.Fatal("Trying to edit stale UserTaskOutput!")
+	}
+
+	delaySeconds, _ := t.assignVariable(deadlineSeconds)
+
+	var userGroupAssn *model.VariableAssignment
+
+	if userGroup == nil {
+		// nil userGroup is is allowed if:
+		// It's assigned to a User, AND the User has an associated Group.
+		currentUser := curNode.GetUserTask().GetUser()
+		if currentUser == nil {
+			log.Fatal("If UserTask assigned to group, must specify a different userGroup to reassign to")
+		}
+
+		if currentUser.UserGroup == nil {
+			log.Fatal("If UserTask assigned to user without Group, must specify a different userGroup to reassign to")
+		}
+
+		userGroupAssn = currentUser.UserGroup
+	} else {
+		userGroupAssn, _ = t.assignVariable(*userGroup)
+	}
+
+	curNode.GetUserTask().Actions = append(curNode.GetUserTask().Actions, &model.UTActionTrigger{
+		Hook:         model.UTActionTrigger_ON_TASK_ASSIGNED,
+		DelaySeconds: delaySeconds,
+		Action: &model.UTActionTrigger_Reassign{
+			Reassign: &model.UTActionTrigger_UTAReassign{
+				AssignTo: &model.UTActionTrigger_UTAReassign_UserGroup{
+					UserGroup: userGroupAssn,
+				},
+			},
+		},
+	})
+}
+
+func (t *ThreadBuilder) scheduleReminderTask(
+	userTask *UserTaskOutput, delaySeconds interface{},
+	taskDefName string, args ...interface{},
+) {
+	t.checkIfIsActive()
+
+	delayAssn, err := t.assignVariable(delaySeconds)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	utaTask := model.UTActionTrigger_Task{
+		Task: &model.UTActionTrigger_UTATask{
+			Task: t.createTaskNode(taskDefName, args),
+		},
+	}
+
+	if userTask.Output.nodeName != *(t.lastNodeName) {
+		log.Fatal("Tried to edit a stale UserTask node!")
+	}
+
+	curNode := t.spec.Nodes[*t.lastNodeName]
+	curNode.GetUserTask().Actions = append(curNode.GetUserTask().Actions,
+		&model.UTActionTrigger{
+			Action:       &utaTask,
+			Hook:         model.UTActionTrigger_ON_ARRIVAL,
+			DelaySeconds: delayAssn,
+		},
+	)
+}
+
+func (t *ThreadBuilder) assignTaskToUserGroup(
+	userTaskDefName string, userGroup interface{},
+) *UserTaskOutput {
+	return t.assignTaskToUser(userTaskDefName, nil, userGroup)
+}
+
+func (t *ThreadBuilder) assignTaskToUser(
+	userTaskDefName string, userId, userGroup interface{},
+) *UserTaskOutput {
+	t.checkIfIsActive()
+
+	utNode := &model.UserTaskNode{
+		UserTaskDefName: userTaskDefName,
+	}
+
+	var userGroupAssn *model.VariableAssignment = nil
+	if userGroup != nil {
+		var err error
+		userGroupAssn, err = t.assignVariable(userGroup)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	if userId != nil {
+		userIdAssn, err := t.assignVariable(userId)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		utNode.Assignment = &model.UserTaskNode_User{
+			User: &model.UserTaskNode_UserAssignment{
+				UserId:    userIdAssn,
+				UserGroup: userGroupAssn,
+			},
+		}
+	} else {
+		utNode.Assignment = &model.UserTaskNode_UserGroup{
+			UserGroup: userGroupAssn,
+		}
+	}
+
+	nodeName, node := t.createBlankNode(userTaskDefName, "USER_TASK")
+	node.Node = &model.Node_UserTask{
+		UserTask: utNode,
+	}
+
+	return &UserTaskOutput{
+		thread: t,
+		node:   node,
+		Output: NodeOutput{
+			nodeName: nodeName,
+			jsonPath: nil,
+			thread:   t,
+		},
 	}
 }
 

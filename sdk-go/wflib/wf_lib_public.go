@@ -45,6 +45,12 @@ type NodeOutput struct {
 	thread   *ThreadBuilder
 }
 
+type UserTaskOutput struct {
+	Output NodeOutput
+	thread *ThreadBuilder
+	node   *model.Node
+}
+
 type WorkflowCondition struct {
 	spec          *model.EdgeCondition
 	createdAtNode string
@@ -129,6 +135,31 @@ func (t *ThreadBuilder) SpawnThread(
 
 func (t *ThreadBuilder) WaitForThreads(s ...*SpawnedThread) NodeOutput {
 	return *t.waitForThreads(s...)
+}
+
+func (t *ThreadBuilder) AssignTaskToUser(
+	userTaskDefName string, userId, userGroup interface{},
+) *UserTaskOutput {
+	return t.assignTaskToUser(userTaskDefName, userId, userGroup)
+}
+
+func (t *ThreadBuilder) AssignTaskToUserGroup(
+	userTaskDefName string, userGroup interface{},
+) *UserTaskOutput {
+	return t.assignTaskToUserGroup(userTaskDefName, userGroup)
+}
+
+func (t *ThreadBuilder) ScheduleReminderTask(
+	userTask *UserTaskOutput, delaySeconds interface{},
+	taskDefName string, args ...interface{},
+) {
+	t.scheduleReminderTask(userTask, delaySeconds, taskDefName, args)
+}
+
+func (t *ThreadBuilder) ReassignToGroupOnDeadline(
+	userTask *UserTaskOutput, userGroup *string, deadlineSeconds int,
+) {
+	t.reassignToGroupOnDeadline(userTask, userGroup, deadlineSeconds)
 }
 
 func (t *ThreadBuilder) WaitForEvent(eventName string) NodeOutput {
