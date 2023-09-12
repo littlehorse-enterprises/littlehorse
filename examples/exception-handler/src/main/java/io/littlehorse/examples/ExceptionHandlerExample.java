@@ -31,9 +31,8 @@ public class ExceptionHandlerExample {
             thread -> {
                 NodeOutput node = thread.execute("fail");
 
-                thread.handleException( // Handle exception
+                thread.handleError( // Handle exception
                     node,
-                    null,
                     handler -> {
                         handler.execute("my-task");
                     }
