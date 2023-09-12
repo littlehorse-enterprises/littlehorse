@@ -308,6 +308,26 @@ public interface ThreadBuilder {
      */
     void handleException(NodeOutput node, String exceptionName, ThreadFunc handler);
 
+    void handleException(NodeOutput node, ThreadFunc handler);
+
+    /**
+     * Handle specific LHErrorType
+     * @param node
+     * @param error
+     * @param handler
+     * @see LHErrorType
+     */
+    void handleError(NodeOutput node, LHErrorType error, ThreadFunc handler);
+
+    /**
+     * Handle any type of LH error
+     * @param node
+     * @param handler
+     */
+    void handleError(NodeOutput node, ThreadFunc handler);
+
+    void handleAnyFailure(NodeOutput node, ThreadFunc handler);
+
     /**
      * Returns a WorkflowCondition that can be used in `ThreadBuilder::doIf()` or
      * `ThreadBuilder::doElse()`.
