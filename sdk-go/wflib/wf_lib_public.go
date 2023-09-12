@@ -137,29 +137,29 @@ func (t *ThreadBuilder) WaitForThreads(s ...*SpawnedThread) NodeOutput {
 	return *t.waitForThreads(s...)
 }
 
-func (t *ThreadBuilder) AssignUserTaskToUser(
+func (t *ThreadBuilder) AssignTaskToUser(
 	userTaskDefName string, userId, userGroup interface{},
 ) *UserTaskOutput {
-	return t.assignUserTaskToUser(userTaskDefName, userId, userGroup)
+	return t.assignTaskToUser(userTaskDefName, userId, userGroup)
 }
 
-func (t *ThreadBuilder) AssignUserTaskToUserGroup(
+func (t *ThreadBuilder) AssignTaskToUserGroup(
 	userTaskDefName string, userGroup interface{},
 ) *UserTaskOutput {
-	return t.assignUserTaskToUserGroup(userTaskDefName, userGroup)
+	return t.assignTaskToUserGroup(userTaskDefName, userGroup)
 }
 
-func (t *ThreadBuilder) ScheduleTaskAfter(
+func (t *ThreadBuilder) ScheduleReminderTask(
 	userTask *UserTaskOutput, delaySeconds interface{},
 	taskDefName string, args ...interface{},
-) NodeOutput {
-	return t.scheduleTaskAfter(userTask, delaySeconds, taskDefName, args)
+) {
+	t.scheduleReminderTask(userTask, delaySeconds, taskDefName, args)
 }
 
-func (t *ThreadBuilder) ScheduleReassignmentToUserOnDeadline(
-	userTask *UserTaskOutput, deadlineSeconds int,
+func (t *ThreadBuilder) ReassignToGroupOnDeadline(
+	userTask *UserTaskOutput, userGroup *string, deadlineSeconds int,
 ) {
-	t.scheduleReassignmentToUserOnDeadline(userTask, deadlineSeconds)
+	t.reassignToGroupOnDeadline(userTask, userGroup, deadlineSeconds)
 }
 
 func (t *ThreadBuilder) WaitForEvent(eventName string) NodeOutput {
