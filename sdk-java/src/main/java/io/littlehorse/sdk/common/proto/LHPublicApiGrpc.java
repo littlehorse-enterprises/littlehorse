@@ -511,6 +511,37 @@ public final class LHPublicApiGrpc {
     return getCancelUserTaskRunMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListUserTaskRunRequest,
+      io.littlehorse.sdk.common.proto.UserTaskRunList> getListUserTaskRunsMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ListUserTaskRuns",
+      requestType = io.littlehorse.sdk.common.proto.ListUserTaskRunRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.UserTaskRunList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListUserTaskRunRequest,
+      io.littlehorse.sdk.common.proto.UserTaskRunList> getListUserTaskRunsMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListUserTaskRunRequest, io.littlehorse.sdk.common.proto.UserTaskRunList> getListUserTaskRunsMethod;
+    if ((getListUserTaskRunsMethod = LHPublicApiGrpc.getListUserTaskRunsMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getListUserTaskRunsMethod = LHPublicApiGrpc.getListUserTaskRunsMethod) == null) {
+          LHPublicApiGrpc.getListUserTaskRunsMethod = getListUserTaskRunsMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListUserTaskRunRequest, io.littlehorse.sdk.common.proto.UserTaskRunList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListUserTaskRuns"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ListUserTaskRunRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.UserTaskRunList.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("ListUserTaskRuns"))
+              .build();
+        }
+      }
+    }
+    return getListUserTaskRunsMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.NodeRunId,
       io.littlehorse.sdk.common.proto.NodeRun> getGetNodeRunMethod;
 
@@ -1665,6 +1696,13 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    default void listUserTaskRuns(io.littlehorse.sdk.common.proto.ListUserTaskRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRunList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListUserTaskRunsMethod(), responseObserver);
+    }
+
+    /**
+     */
     default void getNodeRun(io.littlehorse.sdk.common.proto.NodeRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.NodeRun> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetNodeRunMethod(), responseObserver);
@@ -2041,6 +2079,14 @@ public final class LHPublicApiGrpc {
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getCancelUserTaskRunMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void listUserTaskRuns(io.littlehorse.sdk.common.proto.ListUserTaskRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRunList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getListUserTaskRunsMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -2430,6 +2476,13 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    public io.littlehorse.sdk.common.proto.UserTaskRunList listUserTaskRuns(io.littlehorse.sdk.common.proto.ListUserTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListUserTaskRunsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
     public io.littlehorse.sdk.common.proto.NodeRun getNodeRun(io.littlehorse.sdk.common.proto.NodeRunId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetNodeRunMethod(), getCallOptions(), request);
@@ -2792,6 +2845,14 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskRunList> listUserTaskRuns(
+        io.littlehorse.sdk.common.proto.ListUserTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getListUserTaskRunsMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.NodeRun> getNodeRun(
         io.littlehorse.sdk.common.proto.NodeRunId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
@@ -3055,38 +3116,39 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_ASSIGN_USER_TASK_RUN = 13;
   private static final int METHODID_COMPLETE_USER_TASK_RUN = 14;
   private static final int METHODID_CANCEL_USER_TASK_RUN = 15;
-  private static final int METHODID_GET_NODE_RUN = 16;
-  private static final int METHODID_LIST_NODE_RUNS = 17;
-  private static final int METHODID_GET_TASK_RUN = 18;
-  private static final int METHODID_GET_VARIABLE = 19;
-  private static final int METHODID_LIST_VARIABLES = 20;
-  private static final int METHODID_PUT_EXTERNAL_EVENT = 21;
-  private static final int METHODID_GET_EXTERNAL_EVENT = 22;
-  private static final int METHODID_LIST_EXTERNAL_EVENTS = 23;
-  private static final int METHODID_SEARCH_WF_RUN = 24;
-  private static final int METHODID_SEARCH_NODE_RUN = 25;
-  private static final int METHODID_SEARCH_TASK_RUN = 26;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 27;
-  private static final int METHODID_SEARCH_VARIABLE = 28;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 29;
-  private static final int METHODID_SEARCH_TASK_DEF = 30;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 31;
-  private static final int METHODID_SEARCH_WF_SPEC = 32;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 33;
-  private static final int METHODID_REGISTER_TASK_WORKER = 34;
-  private static final int METHODID_REPORT_TASK = 35;
-  private static final int METHODID_STOP_WF_RUN = 36;
-  private static final int METHODID_RESUME_WF_RUN = 37;
-  private static final int METHODID_DELETE_WF_RUN = 38;
-  private static final int METHODID_DELETE_TASK_DEF = 39;
-  private static final int METHODID_DELETE_WF_SPEC = 40;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 41;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 42;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 43;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 44;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 45;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 46;
-  private static final int METHODID_POLL_TASK = 47;
+  private static final int METHODID_LIST_USER_TASK_RUNS = 16;
+  private static final int METHODID_GET_NODE_RUN = 17;
+  private static final int METHODID_LIST_NODE_RUNS = 18;
+  private static final int METHODID_GET_TASK_RUN = 19;
+  private static final int METHODID_GET_VARIABLE = 20;
+  private static final int METHODID_LIST_VARIABLES = 21;
+  private static final int METHODID_PUT_EXTERNAL_EVENT = 22;
+  private static final int METHODID_GET_EXTERNAL_EVENT = 23;
+  private static final int METHODID_LIST_EXTERNAL_EVENTS = 24;
+  private static final int METHODID_SEARCH_WF_RUN = 25;
+  private static final int METHODID_SEARCH_NODE_RUN = 26;
+  private static final int METHODID_SEARCH_TASK_RUN = 27;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 28;
+  private static final int METHODID_SEARCH_VARIABLE = 29;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 30;
+  private static final int METHODID_SEARCH_TASK_DEF = 31;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 32;
+  private static final int METHODID_SEARCH_WF_SPEC = 33;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 34;
+  private static final int METHODID_REGISTER_TASK_WORKER = 35;
+  private static final int METHODID_REPORT_TASK = 36;
+  private static final int METHODID_STOP_WF_RUN = 37;
+  private static final int METHODID_RESUME_WF_RUN = 38;
+  private static final int METHODID_DELETE_WF_RUN = 39;
+  private static final int METHODID_DELETE_TASK_DEF = 40;
+  private static final int METHODID_DELETE_WF_SPEC = 41;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 42;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 43;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 44;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 45;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 46;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 47;
+  private static final int METHODID_POLL_TASK = 48;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -3168,6 +3230,10 @@ public final class LHPublicApiGrpc {
         case METHODID_CANCEL_USER_TASK_RUN:
           serviceImpl.cancelUserTaskRun((io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
+        case METHODID_LIST_USER_TASK_RUNS:
+          serviceImpl.listUserTaskRuns((io.littlehorse.sdk.common.proto.ListUserTaskRunRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRunList>) responseObserver);
           break;
         case METHODID_GET_NODE_RUN:
           serviceImpl.getNodeRun((io.littlehorse.sdk.common.proto.NodeRunId) request,
@@ -3426,6 +3492,13 @@ public final class LHPublicApiGrpc {
               io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest,
               com.google.protobuf.Empty>(
                 service, METHODID_CANCEL_USER_TASK_RUN)))
+        .addMethod(
+          getListUserTaskRunsMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.ListUserTaskRunRequest,
+              io.littlehorse.sdk.common.proto.UserTaskRunList>(
+                service, METHODID_LIST_USER_TASK_RUNS)))
         .addMethod(
           getGetNodeRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -3714,6 +3787,7 @@ public final class LHPublicApiGrpc {
               .addMethod(getAssignUserTaskRunMethod())
               .addMethod(getCompleteUserTaskRunMethod())
               .addMethod(getCancelUserTaskRunMethod())
+              .addMethod(getListUserTaskRunsMethod())
               .addMethod(getGetNodeRunMethod())
               .addMethod(getListNodeRunsMethod())
               .addMethod(getGetTaskRunMethod())

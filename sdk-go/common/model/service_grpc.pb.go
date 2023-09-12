@@ -36,6 +36,7 @@ const (
 	LHPublicApi_AssignUserTaskRun_FullMethodName       = "/littlehorse.LHPublicApi/AssignUserTaskRun"
 	LHPublicApi_CompleteUserTaskRun_FullMethodName     = "/littlehorse.LHPublicApi/CompleteUserTaskRun"
 	LHPublicApi_CancelUserTaskRun_FullMethodName       = "/littlehorse.LHPublicApi/CancelUserTaskRun"
+	LHPublicApi_ListUserTaskRuns_FullMethodName        = "/littlehorse.LHPublicApi/ListUserTaskRuns"
 	LHPublicApi_GetNodeRun_FullMethodName              = "/littlehorse.LHPublicApi/GetNodeRun"
 	LHPublicApi_ListNodeRuns_FullMethodName            = "/littlehorse.LHPublicApi/ListNodeRuns"
 	LHPublicApi_GetTaskRun_FullMethodName              = "/littlehorse.LHPublicApi/GetTaskRun"
@@ -90,6 +91,7 @@ type LHPublicApiClient interface {
 	AssignUserTaskRun(ctx context.Context, in *AssignUserTaskRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CompleteUserTaskRun(ctx context.Context, in *CompleteUserTaskRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CancelUserTaskRun(ctx context.Context, in *CancelUserTaskRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	ListUserTaskRuns(ctx context.Context, in *ListUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskRunList, error)
 	GetNodeRun(ctx context.Context, in *NodeRunId, opts ...grpc.CallOption) (*NodeRun, error)
 	ListNodeRuns(ctx context.Context, in *ListNodeRunsRequest, opts ...grpc.CallOption) (*NodeRunList, error)
 	GetTaskRun(ctx context.Context, in *TaskRunId, opts ...grpc.CallOption) (*TaskRun, error)
@@ -270,6 +272,15 @@ func (c *lHPublicApiClient) CompleteUserTaskRun(ctx context.Context, in *Complet
 func (c *lHPublicApiClient) CancelUserTaskRun(ctx context.Context, in *CancelUserTaskRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LHPublicApi_CancelUserTaskRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *lHPublicApiClient) ListUserTaskRuns(ctx context.Context, in *ListUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskRunList, error) {
+	out := new(UserTaskRunList)
+	err := c.cc.Invoke(ctx, LHPublicApi_ListUserTaskRuns_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -606,6 +617,7 @@ type LHPublicApiServer interface {
 	AssignUserTaskRun(context.Context, *AssignUserTaskRunRequest) (*emptypb.Empty, error)
 	CompleteUserTaskRun(context.Context, *CompleteUserTaskRunRequest) (*emptypb.Empty, error)
 	CancelUserTaskRun(context.Context, *CancelUserTaskRunRequest) (*emptypb.Empty, error)
+	ListUserTaskRuns(context.Context, *ListUserTaskRunRequest) (*UserTaskRunList, error)
 	GetNodeRun(context.Context, *NodeRunId) (*NodeRun, error)
 	ListNodeRuns(context.Context, *ListNodeRunsRequest) (*NodeRunList, error)
 	GetTaskRun(context.Context, *TaskRunId) (*TaskRun, error)
@@ -692,6 +704,9 @@ func (UnimplementedLHPublicApiServer) CompleteUserTaskRun(context.Context, *Comp
 }
 func (UnimplementedLHPublicApiServer) CancelUserTaskRun(context.Context, *CancelUserTaskRunRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CancelUserTaskRun not implemented")
+}
+func (UnimplementedLHPublicApiServer) ListUserTaskRuns(context.Context, *ListUserTaskRunRequest) (*UserTaskRunList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUserTaskRuns not implemented")
 }
 func (UnimplementedLHPublicApiServer) GetNodeRun(context.Context, *NodeRunId) (*NodeRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNodeRun not implemented")
@@ -1086,6 +1101,24 @@ func _LHPublicApi_CancelUserTaskRun_Handler(srv interface{}, ctx context.Context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LHPublicApiServer).CancelUserTaskRun(ctx, req.(*CancelUserTaskRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LHPublicApi_ListUserTaskRuns_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUserTaskRunRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LHPublicApiServer).ListUserTaskRuns(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LHPublicApi_ListUserTaskRuns_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LHPublicApiServer).ListUserTaskRuns(ctx, req.(*ListUserTaskRunRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1744,6 +1777,10 @@ var LHPublicApi_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CancelUserTaskRun",
 			Handler:    _LHPublicApi_CancelUserTaskRun_Handler,
+		},
+		{
+			MethodName: "ListUserTaskRuns",
+			Handler:    _LHPublicApi_ListUserTaskRuns_Handler,
 		},
 		{
 			MethodName: "GetNodeRun",
