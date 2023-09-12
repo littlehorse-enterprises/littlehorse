@@ -43,6 +43,29 @@ var cancelUserTaskRunCmd = &cobra.Command{
 	},
 }
 
+var listUserTaskRunCmd = &cobra.Command{
+	Use:   "userTaskRun <wfRunId>",
+	Short: "List all UserTaskRun's for a given WfRun Id.",
+	Long: `
+Lists all UserTaskRun's for a given WfRun Id.
+`,
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) != 1 {
+			log.Fatal("Must provide one arg: the WfRun ID!")
+		}
+		wfRunId := args[0]
+
+		req := &model.ListUserTaskRunRequest{
+			WfRunId: wfRunId,
+		}
+
+		common.PrintResp(getGlobalClient(cmd).ListUserTaskRuns(
+			context.Background(),
+			req,
+		))
+	},
+}
+
 var assignUserTaskRunCmd = &cobra.Command{
 	Use:   "userTaskRun <wfRunId> <userTaskGuid> [options]",
 	Short: "Reassign a UserTaskRun to a userGroup or specific userId",
@@ -335,6 +358,7 @@ func init() {
 	searchCmd.AddCommand(searchUserTaskRunCmd)
 	executeCmd.AddCommand(executeUserTaskRunCmd)
 	assignCmd.AddCommand(assignUserTaskRunCmd)
+	listCmd.AddCommand(listUserTaskRunCmd)
 	cancelUserTaskCmd.AddCommand(cancelUserTaskRunCmd)
 
 	assignUserTaskRunCmd.Flags().String("userId", "", "User Id to assign to.")

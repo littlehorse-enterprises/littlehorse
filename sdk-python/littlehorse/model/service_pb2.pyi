@@ -695,3 +695,15 @@ class WfSpecMetrics(_message.Message):
     start_to_complete_max: int
     start_to_complete_avg: int
     def __init__(self, window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., type: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., wfSpecName: _Optional[str] = ..., wfSpecVersion: _Optional[int] = ..., total_started: _Optional[int] = ..., total_completed: _Optional[int] = ..., total_errored: _Optional[int] = ..., start_to_complete_max: _Optional[int] = ..., start_to_complete_avg: _Optional[int] = ...) -> None: ...
+
+class ListUserTaskRunRequest(_message.Message):
+    __slots__ = ["wf_run_id"]
+    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    wf_run_id: str
+    def __init__(self, wf_run_id: _Optional[str] = ...) -> None: ...
+
+class UserTaskRunList(_message.Message):
+    __slots__ = ["results"]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_user_tasks_pb2.UserTaskRun]
+    def __init__(self, results: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskRun, _Mapping]]] = ...) -> None: ...

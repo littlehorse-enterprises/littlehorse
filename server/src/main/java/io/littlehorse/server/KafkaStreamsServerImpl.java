@@ -60,6 +60,7 @@ import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListExternalEventsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListNodeRunsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskMetricsRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListUserTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListVariablesRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWfMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventDefRequestModel;
@@ -75,6 +76,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfSpecR
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListNodeRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskMetricsReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListUserTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListVariablesReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
@@ -263,6 +265,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public void putWfSpec(PutWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         PutWfSpecRequestModel reqModel = LHSerializable.fromProto(req, PutWfSpecRequestModel.class);
         processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class, true);
+    }
+
+    @Override
+    public void listUserTaskRuns(ListUserTaskRunRequest req, StreamObserver<UserTaskRunList> ctx) {
+        ListUserTaskRunRequestModel requestModel = LHSerializable.fromProto(req, ListUserTaskRunRequestModel.class);
+        handleScan(requestModel, ctx, ListUserTaskRunReply.class);
     }
 
     @Override
