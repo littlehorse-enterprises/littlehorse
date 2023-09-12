@@ -1,6 +1,7 @@
 import unittest
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import (
+    Comparator,
     IndexType,
     JsonIndex,
     TaskNode,
@@ -13,10 +14,12 @@ from littlehorse.model.service_pb2 import PutWfSpecRequest
 from littlehorse.model.variable_pb2 import VariableValue
 from littlehorse.model.wf_spec_pb2 import (
     Edge,
+    EdgeCondition,
     EntrypointNode,
     ExitNode,
     ExternalEventNode,
     Node,
+    NopNode,
     ThreadSpec,
 )
 from littlehorse.proto_utils import to_variable_assignment
@@ -170,6 +173,171 @@ class TestThreadBuilder(unittest.TestCase):
                         outgoing_edges=[Edge(sink_node_name="1-exit-EXIT")],
                     ),
                     "1-exit-EXIT": Node(exit=ExitNode()),
+                },
+            ),
+        )
+
+    def test_do_if_else(self):
+        class MyClass:
+            def if_condition(self, thread: ThreadBuilder) -> None:
+                thread.execute("task-a")
+                thread.execute("task-b")
+
+            def else_condition(self, thread: ThreadBuilder) -> None:
+                thread.execute("task-c")
+                thread.execute("task-d")
+
+            def my_entrypoint(self, thread: ThreadBuilder) -> None:
+                thread.do_if(
+                    thread.condition(20, Comparator.GREATER_THAN, 10),
+                    self.if_condition,
+                    self.else_condition,
+                )
+
+            def to_thread(self):
+                return ThreadBuilder(workflow=None, initializer=self.my_entrypoint)
+
+        my_object = MyClass()
+        thread_builder = my_object.to_thread()
+        self.assertEqual(
+            thread_builder.compile(),
+            ThreadSpec(
+                nodes={
+                    "0-entrypoint-ENTRYPOINT": Node(
+                        entrypoint=EntrypointNode(),
+                        outgoing_edges=[Edge(sink_node_name="1-nop-NOP")],
+                    ),
+                    "1-nop-NOP": Node(
+                        nop=NopNode(),
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="2-task-a-TASK",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.GREATER_THAN,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(
+                                            type=VariableType.INT, int=20
+                                        )
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(
+                                            type=VariableType.INT, int=10
+                                        )
+                                    ),
+                                ),
+                            ),
+                            Edge(
+                                sink_node_name="5-task-c-TASK",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.LESS_THAN_EQ,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(
+                                            type=VariableType.INT, int=20
+                                        )
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(
+                                            type=VariableType.INT, int=10
+                                        )
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                    "2-task-a-TASK": Node(
+                        task=TaskNode(task_def_name="task-a"),
+                        outgoing_edges=[Edge(sink_node_name="3-task-b-TASK")],
+                    ),
+                    "3-task-b-TASK": Node(
+                        task=TaskNode(task_def_name="task-b"),
+                        outgoing_edges=[Edge(sink_node_name="4-nop-NOP")],
+                    ),
+                    "4-nop-NOP": Node(
+                        nop=NopNode(),
+                        outgoing_edges=[Edge(sink_node_name="7-exit-EXIT")],
+                    ),
+                    "5-task-c-TASK": Node(
+                        task=TaskNode(task_def_name="task-c"),
+                        outgoing_edges=[Edge(sink_node_name="6-task-d-TASK")],
+                    ),
+                    "6-task-d-TASK": Node(
+                        task=TaskNode(task_def_name="task-d"),
+                        outgoing_edges=[Edge(sink_node_name="4-nop-NOP")],
+                    ),
+                    "7-exit-EXIT": Node(exit=ExitNode()),
+                },
+            ),
+        )
+
+    def test_do_if(self):
+        class MyClass:
+            def my_condition(self, thread: ThreadBuilder) -> None:
+                thread.execute("my-task")
+
+            def my_entrypoint(self, thread: ThreadBuilder) -> None:
+                thread.do_if(
+                    thread.condition(4, Comparator.LESS_THAN, 5), self.my_condition
+                )
+
+            def to_thread(self):
+                return ThreadBuilder(workflow=None, initializer=self.my_entrypoint)
+
+        my_object = MyClass()
+        thread_builder = my_object.to_thread()
+        self.assertEqual(
+            thread_builder.compile(),
+            ThreadSpec(
+                nodes={
+                    "0-entrypoint-ENTRYPOINT": Node(
+                        entrypoint=EntrypointNode(),
+                        outgoing_edges=[Edge(sink_node_name="1-nop-NOP")],
+                    ),
+                    "1-nop-NOP": Node(
+                        nop=NopNode(),
+                        outgoing_edges=[
+                            Edge(
+                                sink_node_name="2-my-task-TASK",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.LESS_THAN,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(
+                                            type=VariableType.INT, int=4
+                                        )
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(
+                                            type=VariableType.INT, int=5
+                                        )
+                                    ),
+                                ),
+                            ),
+                            Edge(
+                                sink_node_name="3-nop-NOP",
+                                condition=EdgeCondition(
+                                    comparator=Comparator.GREATER_THAN_EQ,
+                                    left=VariableAssignment(
+                                        literal_value=VariableValue(
+                                            type=VariableType.INT, int=4
+                                        )
+                                    ),
+                                    right=VariableAssignment(
+                                        literal_value=VariableValue(
+                                            type=VariableType.INT, int=5
+                                        )
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                    "2-my-task-TASK": Node(
+                        task=TaskNode(task_def_name="my-task"),
+                        outgoing_edges=[Edge(sink_node_name="3-nop-NOP")],
+                    ),
+                    "3-nop-NOP": Node(
+                        nop=NopNode(),
+                        outgoing_edges=[Edge(sink_node_name="4-exit-EXIT")],
+                    ),
+                    "4-exit-EXIT": Node(exit=ExitNode()),
                 },
             ),
         )
@@ -349,7 +517,8 @@ class TestThreadBuilder(unittest.TestCase):
 class TestWorkflow(unittest.TestCase):
     def test_entrypoint_is_a_function(self):
         with self.assertRaises(TypeError) as exception_context:
-            Workflow("my-wf", "")
+            Workflow("my-wf", "").compile()
+
         self.assertEqual(
             "Object is not a ThreadInitializer",
             str(exception_context.exception),
@@ -360,7 +529,8 @@ class TestWorkflow(unittest.TestCase):
             pass
 
         with self.assertRaises(TypeError) as exception_context:
-            Workflow("my-wf", my_entrypoint)
+            Workflow("my-wf", my_entrypoint).compile()
+
         self.assertEqual(
             "ThreadInitializer receives only one parameter",
             str(exception_context.exception),
@@ -371,7 +541,8 @@ class TestWorkflow(unittest.TestCase):
             pass
 
         with self.assertRaises(TypeError) as exception_context:
-            Workflow("my-wf", my_entrypoint)
+            Workflow("my-wf", my_entrypoint).compile()
+
         self.assertEqual(
             "ThreadInitializer receives a ThreadBuilder",
             str(exception_context.exception),
@@ -382,7 +553,8 @@ class TestWorkflow(unittest.TestCase):
             pass
 
         with self.assertRaises(TypeError) as exception_context:
-            Workflow("my-wf", my_entrypoint)
+            Workflow("my-wf", my_entrypoint).compile()
+
         self.assertEqual(
             "ThreadInitializer returns None",
             str(exception_context.exception),
@@ -392,7 +564,10 @@ class TestWorkflow(unittest.TestCase):
         def my_entrypoint(thread: ThreadBuilder) -> None:
             pass
 
-        Workflow("my-wf", my_entrypoint)
+        try:
+            Workflow("my-wf", my_entrypoint)
+        except Exception as e:
+            self.fail(f"No exception expected != {type(e)}: {e}")
 
     def test_validate_thread_already_exists(self):
         def my_entrypoint(thread: ThreadBuilder) -> None:
@@ -409,7 +584,19 @@ class TestWorkflow(unittest.TestCase):
             str(exception_context.exception),
         )
 
-    def test_compile_with_variables(self):
+    def test_compile_with_function_as_class_member(self):
+        class MyClass:
+            def my_entrypoint(self, thread: ThreadBuilder) -> None:
+                thread.add_variable("input-name", VariableType.STR)
+
+        my_class = MyClass()
+
+        try:
+            Workflow("my-wf", my_class.my_entrypoint)
+        except Exception as e:
+            self.fail(f"No exception expected != {type(e)}: {e}")
+
+    def test_compile_wf_with_variables(self):
         def my_entrypoint(thread: ThreadBuilder) -> None:
             thread.add_variable("input-name", VariableType.STR)
 

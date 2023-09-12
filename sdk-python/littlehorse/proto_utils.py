@@ -9,7 +9,7 @@ from google.protobuf.json_format import MessageToJson
 
 from littlehorse.exceptions import SerdeException
 from littlehorse.model.common_enums_pb2 import VariableType
-from littlehorse.model.common_wfspec_pb2 import VariableAssignment
+from littlehorse.model.common_wfspec_pb2 import Comparator, VariableAssignment
 from littlehorse.model.variable_pb2 import VariableValue
 
 
@@ -26,6 +26,41 @@ VARIABLE_TYPE_TO_TYPE_MAP = {
 TYPE_TO_VARIABLE_TYPE_MAP = {
     value: key for key, value in VARIABLE_TYPE_TO_TYPE_MAP.items()
 }
+
+NEGATE_COMPARATOR_MAP = {
+    Comparator.LESS_THAN: Comparator.GREATER_THAN_EQ,
+    Comparator.GREATER_THAN_EQ: Comparator.LESS_THAN,
+    Comparator.GREATER_THAN: Comparator.LESS_THAN_EQ,
+    Comparator.LESS_THAN_EQ: Comparator.GREATER_THAN,
+    Comparator.IN: Comparator.NOT_IN,
+    Comparator.NOT_IN: Comparator.IN,
+    Comparator.EQUALS: Comparator.NOT_EQUALS,
+    Comparator.NOT_EQUALS: Comparator.EQUALS,
+}
+
+
+def negate_comparator(comparator: Comparator) -> Comparator:
+    """Negates a comparator:
+
+    Comparator.LESS_THAN => Comparator.GREATER_THAN_EQ
+    Comparator.GREATER_THAN_EQ => Comparator.LESS_THAN
+    Comparator.GREATER_THAN => Comparator.LESS_THAN_EQ
+    Comparator.LESS_THAN_EQ => Comparator.GREATER_THAN
+    Comparator.IN => Comparator.NOT_IN
+    Comparator.NOT_IN => Comparator.IN
+    Comparator.EQUALS => Comparator.NOT_EQUALS
+    Comparator.NOT_EQUALS => Comparator.EQUALS
+
+    Args:
+        comparator (Comparator):Comparator
+
+    Returns:
+        Comparator: Comparator.
+    """
+    negation = NEGATE_COMPARATOR_MAP.get(comparator)
+    if negation is None:
+        raise ValueError("Comparator not found")
+    return negation
 
 
 def timestamp_now() -> Timestamp:
@@ -48,7 +83,7 @@ def to_json(proto: Message) -> str:
     Returns:
         str: JSON format.
     """
-    return MessageToJson(proto)
+    return MessageToJson(proto, sort_keys=True)
 
 
 def to_variable_value(value: Any) -> VariableValue:
