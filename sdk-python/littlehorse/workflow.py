@@ -711,7 +711,7 @@ class ThreadBuilder:
                 )
             )
 
-            # add edge no for last node
+            # add edge for last node
             last_else_node = self._last_node()
             last_else_node.outgoing_edges.append(Edge(sink_node_name=end_node_name))
 
