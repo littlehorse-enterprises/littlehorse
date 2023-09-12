@@ -498,19 +498,21 @@ public class WfRunModel extends CoreGetable<WfRun> {
         this.status = status;
 
         if (status.equals(LHStatus.COMPLETED) || status.equals(LHStatus.ERROR)) {
-            LHTimer timer = new LHTimer();
-            timer.topic = this.getDao().getCoreCmdTopic();
-            timer.key = id;
-            Date now = new Date();
-            timer.maturationTime = DateUtils.addHours(now, this.wfSpec.retentionHours);
-            DeleteWfRunRequestModel deleteWfRun = new DeleteWfRunRequestModel();
-            deleteWfRun.wfRunId = new WfRunIdModel(id);
+            if (wfSpec.getRetentionHours() != LHConstants.INFINITE_RETENTION) {
+                LHTimer timer = new LHTimer();
+                timer.topic = this.getDao().getCoreCmdTopic();
+                timer.key = id;
+                Date now = new Date();
+                timer.maturationTime = DateUtils.addHours(now, this.wfSpec.retentionHours);
+                DeleteWfRunRequestModel deleteWfRun = new DeleteWfRunRequestModel();
+                deleteWfRun.wfRunId = new WfRunIdModel(id);
 
-            CommandModel deleteWfRunCmd = new CommandModel();
-            deleteWfRunCmd.setSubCommand(deleteWfRun);
-            deleteWfRunCmd.time = timer.maturationTime;
-            timer.payload = deleteWfRunCmd.toProto().build().toByteArray();
-            this.getDao().scheduleTimer(timer);
+                CommandModel deleteWfRunCmd = new CommandModel();
+                deleteWfRunCmd.setSubCommand(deleteWfRun);
+                deleteWfRunCmd.time = timer.maturationTime;
+                timer.payload = deleteWfRunCmd.toProto().build().toByteArray();
+                this.getDao().scheduleTimer(timer);
+            }
         }
     }
 
