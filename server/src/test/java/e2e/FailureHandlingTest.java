@@ -8,7 +8,6 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @LHTest
@@ -25,8 +24,9 @@ public class FailureHandlingTest {
                 .prepareRun(handleErrorWf)
                 .waitForStatus(LHStatus.COMPLETED)
                 .waitForNodeRunStatus(0, 1, LHStatus.ERROR)
-                .thenVerifyNodeRun(1, 1, nodeRun -> Assertions.assertThat(nodeRun.getStatus())
-                        .isEqualTo(LHStatus.COMPLETED))
+                .waitForNodeRunStatus(1, 1, LHStatus.COMPLETED)
+                .waitForNodeRunStatus(0, 3, LHStatus.COMPLETED)
+                .waitForStatus(LHStatus.COMPLETED)
                 .start();
     }
 
