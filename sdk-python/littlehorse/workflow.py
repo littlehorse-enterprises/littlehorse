@@ -259,7 +259,7 @@ class WfRunVariable:
 
         self.json_indexes.append(JsonIndex(path=json_path, index_type=index_type))
         return self
-    
+
     def persistent(self) -> "WfRunVariable":
         self._persistent = True
         return self
