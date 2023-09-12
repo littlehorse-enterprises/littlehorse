@@ -38,7 +38,7 @@ public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailu
                 //
                 // Therefore, what we must do here is add each of the failed children.
                 for (WaitForThreadModel wft : handledNode.getWaitThreadsRun().getThreads()) {
-                    if (wft.getThreadStatus() == LHStatus.ERROR) {
+                    if (wft.getThreadStatus() == LHStatus.ERROR || wft.getThreadStatus() == LHStatus.EXCEPTION) {
                         originalThatFailed.handledFailedChildren.add(wft.getThreadRunNumber());
                     } else if (wft.getThreadStatus() != LHStatus.COMPLETED) {
                         log.warn("Impossible: handling failure for a WaitThreadNode "
