@@ -670,7 +670,9 @@ func (t *ThreadBuilder) handleException(
 	threadName := t.wf.addSubThread(handlerName, handler)
 
 	node.FailureHandlers = append(node.FailureHandlers, &model.FailureHandlerDef{
-		SpecificFailure: exceptionName,
+		FailureToCatch: &model.FailureHandlerDef_SpecificFailure{
+			SpecificFailure: *exceptionName,
+		},
 		HandlerSpecName: threadName,
 	})
 }

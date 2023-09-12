@@ -8,23 +8,6 @@ public interface FailureHandlerDefOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>optional string specific_failure = 1;</code>
-   * @return Whether the specificFailure field is set.
-   */
-  boolean hasSpecificFailure();
-  /**
-   * <code>optional string specific_failure = 1;</code>
-   * @return The specificFailure.
-   */
-  java.lang.String getSpecificFailure();
-  /**
-   * <code>optional string specific_failure = 1;</code>
-   * @return The bytes for specificFailure.
-   */
-  com.google.protobuf.ByteString
-      getSpecificFailureBytes();
-
-  /**
    * <code>string handler_spec_name = 2;</code>
    * @return The handlerSpecName.
    */
@@ -35,4 +18,39 @@ public interface FailureHandlerDefOrBuilder extends
    */
   com.google.protobuf.ByteString
       getHandlerSpecNameBytes();
+
+  /**
+   * <code>string specific_failure = 1;</code>
+   * @return Whether the specificFailure field is set.
+   */
+  boolean hasSpecificFailure();
+  /**
+   * <code>string specific_failure = 1;</code>
+   * @return The specificFailure.
+   */
+  java.lang.String getSpecificFailure();
+  /**
+   * <code>string specific_failure = 1;</code>
+   * @return The bytes for specificFailure.
+   */
+  com.google.protobuf.ByteString
+      getSpecificFailureBytes();
+
+  /**
+   * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
+   * @return Whether the anyFailureOfType field is set.
+   */
+  boolean hasAnyFailureOfType();
+  /**
+   * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
+   * @return The enum numeric value on the wire for anyFailureOfType.
+   */
+  int getAnyFailureOfTypeValue();
+  /**
+   * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
+   * @return The anyFailureOfType.
+   */
+  io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType getAnyFailureOfType();
+
+  io.littlehorse.sdk.common.proto.FailureHandlerDef.FailureToCatchCase getFailureToCatchCase();
 }

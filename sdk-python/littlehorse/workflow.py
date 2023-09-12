@@ -162,6 +162,7 @@ class WfRunVariable:
         self._json_path: Optional[str] = None
         self.index_type: Optional[IndexType] = None
         self.json_indexes: list[JsonIndex] = []
+        self._persistent = False
 
         if default_value is not None:
             self.default_value = to_variable_value(default_value)
@@ -259,6 +260,10 @@ class WfRunVariable:
         self.json_indexes.append(JsonIndex(path=json_path, index_type=index_type))
         return self
 
+    def persistent(self) -> "WfRunVariable":
+        self._persistent = True
+        return self
+
     def compile(self) -> VariableDef:
         """Compile this into Protobuf Objects.
 
@@ -271,6 +276,7 @@ class WfRunVariable:
             index_type=self.index_type,
             default_value=self.default_value,
             json_indexes=self.json_indexes.copy(),
+            persistent=self._persistent,
         )
 
     def __str__(self) -> str:

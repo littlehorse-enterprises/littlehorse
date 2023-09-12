@@ -21,6 +21,52 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type FailureHandlerDef_LHFailureType int32
+
+const (
+	FailureHandlerDef_FAILURE_TYPE_ERROR     FailureHandlerDef_LHFailureType = 0
+	FailureHandlerDef_FAILURE_TYPE_EXCEPTION FailureHandlerDef_LHFailureType = 1
+)
+
+// Enum value maps for FailureHandlerDef_LHFailureType.
+var (
+	FailureHandlerDef_LHFailureType_name = map[int32]string{
+		0: "FAILURE_TYPE_ERROR",
+		1: "FAILURE_TYPE_EXCEPTION",
+	}
+	FailureHandlerDef_LHFailureType_value = map[string]int32{
+		"FAILURE_TYPE_ERROR":     0,
+		"FAILURE_TYPE_EXCEPTION": 1,
+	}
+)
+
+func (x FailureHandlerDef_LHFailureType) Enum() *FailureHandlerDef_LHFailureType {
+	p := new(FailureHandlerDef_LHFailureType)
+	*p = x
+	return p
+}
+
+func (x FailureHandlerDef_LHFailureType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (FailureHandlerDef_LHFailureType) Descriptor() protoreflect.EnumDescriptor {
+	return file_wf_spec_proto_enumTypes[0].Descriptor()
+}
+
+func (FailureHandlerDef_LHFailureType) Type() protoreflect.EnumType {
+	return &file_wf_spec_proto_enumTypes[0]
+}
+
+func (x FailureHandlerDef_LHFailureType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use FailureHandlerDef_LHFailureType.Descriptor instead.
+func (FailureHandlerDef_LHFailureType) EnumDescriptor() ([]byte, []int) {
+	return file_wf_spec_proto_rawDescGZIP(), []int{5, 0}
+}
+
 type WfSpec struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -357,8 +403,11 @@ type FailureHandlerDef struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SpecificFailure *string `protobuf:"bytes,1,opt,name=specific_failure,json=specificFailure,proto3,oneof" json:"specific_failure,omitempty"`
-	HandlerSpecName string  `protobuf:"bytes,2,opt,name=handler_spec_name,json=handlerSpecName,proto3" json:"handler_spec_name,omitempty"`
+	HandlerSpecName string `protobuf:"bytes,2,opt,name=handler_spec_name,json=handlerSpecName,proto3" json:"handler_spec_name,omitempty"`
+	// Types that are assignable to FailureToCatch:
+	//	*FailureHandlerDef_SpecificFailure
+	//	*FailureHandlerDef_AnyFailureOfType
+	FailureToCatch isFailureHandlerDef_FailureToCatch `protobuf_oneof:"failure_to_catch"`
 }
 
 func (x *FailureHandlerDef) Reset() {
@@ -393,19 +442,49 @@ func (*FailureHandlerDef) Descriptor() ([]byte, []int) {
 	return file_wf_spec_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *FailureHandlerDef) GetSpecificFailure() string {
-	if x != nil && x.SpecificFailure != nil {
-		return *x.SpecificFailure
-	}
-	return ""
-}
-
 func (x *FailureHandlerDef) GetHandlerSpecName() string {
 	if x != nil {
 		return x.HandlerSpecName
 	}
 	return ""
 }
+
+func (m *FailureHandlerDef) GetFailureToCatch() isFailureHandlerDef_FailureToCatch {
+	if m != nil {
+		return m.FailureToCatch
+	}
+	return nil
+}
+
+func (x *FailureHandlerDef) GetSpecificFailure() string {
+	if x, ok := x.GetFailureToCatch().(*FailureHandlerDef_SpecificFailure); ok {
+		return x.SpecificFailure
+	}
+	return ""
+}
+
+func (x *FailureHandlerDef) GetAnyFailureOfType() FailureHandlerDef_LHFailureType {
+	if x, ok := x.GetFailureToCatch().(*FailureHandlerDef_AnyFailureOfType); ok {
+		return x.AnyFailureOfType
+	}
+	return FailureHandlerDef_FAILURE_TYPE_ERROR
+}
+
+type isFailureHandlerDef_FailureToCatch interface {
+	isFailureHandlerDef_FailureToCatch()
+}
+
+type FailureHandlerDef_SpecificFailure struct {
+	SpecificFailure string `protobuf:"bytes,1,opt,name=specific_failure,json=specificFailure,proto3,oneof"`
+}
+
+type FailureHandlerDef_AnyFailureOfType struct {
+	AnyFailureOfType FailureHandlerDef_LHFailureType `protobuf:"varint,3,opt,name=any_failure_of_type,json=anyFailureOfType,proto3,enum=littlehorse.FailureHandlerDef_LHFailureType,oneof"`
+}
+
+func (*FailureHandlerDef_SpecificFailure) isFailureHandlerDef_FailureToCatch() {}
+
+func (*FailureHandlerDef_AnyFailureOfType) isFailureHandlerDef_FailureToCatch() {}
 
 type WaitForThreadsNode struct {
 	state         protoimpl.MessageState
@@ -1456,15 +1535,25 @@ var file_wf_spec_proto_rawDesc = []byte{
 	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65,
 	0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x41, 0x73,
 	0x73, 0x69, 0x67, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a,
-	0x02, 0x38, 0x01, 0x22, 0x84, 0x01, 0x0a, 0x11, 0x46, 0x61, 0x69, 0x6c, 0x75, 0x72, 0x65, 0x48,
-	0x61, 0x6e, 0x64, 0x6c, 0x65, 0x72, 0x44, 0x65, 0x66, 0x12, 0x2e, 0x0a, 0x10, 0x73, 0x70, 0x65,
-	0x63, 0x69, 0x66, 0x69, 0x63, 0x5f, 0x66, 0x61, 0x69, 0x6c, 0x75, 0x72, 0x65, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x48, 0x00, 0x52, 0x0f, 0x73, 0x70, 0x65, 0x63, 0x69, 0x66, 0x69, 0x63, 0x46,
-	0x61, 0x69, 0x6c, 0x75, 0x72, 0x65, 0x88, 0x01, 0x01, 0x12, 0x2a, 0x0a, 0x11, 0x68, 0x61, 0x6e,
+	0x02, 0x38, 0x01, 0x22, 0xa4, 0x02, 0x0a, 0x11, 0x46, 0x61, 0x69, 0x6c, 0x75, 0x72, 0x65, 0x48,
+	0x61, 0x6e, 0x64, 0x6c, 0x65, 0x72, 0x44, 0x65, 0x66, 0x12, 0x2a, 0x0a, 0x11, 0x68, 0x61, 0x6e,
 	0x64, 0x6c, 0x65, 0x72, 0x5f, 0x73, 0x70, 0x65, 0x63, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02,
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x0f, 0x68, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x72, 0x53, 0x70, 0x65,
-	0x63, 0x4e, 0x61, 0x6d, 0x65, 0x42, 0x13, 0x0a, 0x11, 0x5f, 0x73, 0x70, 0x65, 0x63, 0x69, 0x66,
-	0x69, 0x63, 0x5f, 0x66, 0x61, 0x69, 0x6c, 0x75, 0x72, 0x65, 0x22, 0xd1, 0x02, 0x0a, 0x12, 0x57,
+	0x63, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x2b, 0x0a, 0x10, 0x73, 0x70, 0x65, 0x63, 0x69, 0x66, 0x69,
+	0x63, 0x5f, 0x66, 0x61, 0x69, 0x6c, 0x75, 0x72, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x48,
+	0x00, 0x52, 0x0f, 0x73, 0x70, 0x65, 0x63, 0x69, 0x66, 0x69, 0x63, 0x46, 0x61, 0x69, 0x6c, 0x75,
+	0x72, 0x65, 0x12, 0x5d, 0x0a, 0x13, 0x61, 0x6e, 0x79, 0x5f, 0x66, 0x61, 0x69, 0x6c, 0x75, 0x72,
+	0x65, 0x5f, 0x6f, 0x66, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x2c, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x46, 0x61,
+	0x69, 0x6c, 0x75, 0x72, 0x65, 0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x72, 0x44, 0x65, 0x66, 0x2e,
+	0x4c, 0x48, 0x46, 0x61, 0x69, 0x6c, 0x75, 0x72, 0x65, 0x54, 0x79, 0x70, 0x65, 0x48, 0x00, 0x52,
+	0x10, 0x61, 0x6e, 0x79, 0x46, 0x61, 0x69, 0x6c, 0x75, 0x72, 0x65, 0x4f, 0x66, 0x54, 0x79, 0x70,
+	0x65, 0x22, 0x43, 0x0a, 0x0d, 0x4c, 0x48, 0x46, 0x61, 0x69, 0x6c, 0x75, 0x72, 0x65, 0x54, 0x79,
+	0x70, 0x65, 0x12, 0x16, 0x0a, 0x12, 0x46, 0x41, 0x49, 0x4c, 0x55, 0x52, 0x45, 0x5f, 0x54, 0x59,
+	0x50, 0x45, 0x5f, 0x45, 0x52, 0x52, 0x4f, 0x52, 0x10, 0x00, 0x12, 0x1a, 0x0a, 0x16, 0x46, 0x41,
+	0x49, 0x4c, 0x55, 0x52, 0x45, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x45, 0x58, 0x43, 0x45, 0x50,
+	0x54, 0x49, 0x4f, 0x4e, 0x10, 0x01, 0x42, 0x12, 0x0a, 0x10, 0x66, 0x61, 0x69, 0x6c, 0x75, 0x72,
+	0x65, 0x5f, 0x74, 0x6f, 0x5f, 0x63, 0x61, 0x74, 0x63, 0x68, 0x22, 0xd1, 0x02, 0x0a, 0x12, 0x57,
 	0x61, 0x69, 0x74, 0x46, 0x6f, 0x72, 0x54, 0x68, 0x72, 0x65, 0x61, 0x64, 0x73, 0x4e, 0x6f, 0x64,
 	0x65, 0x12, 0x49, 0x0a, 0x07, 0x74, 0x68, 0x72, 0x65, 0x61, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03,
 	0x28, 0x0b, 0x32, 0x2f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65,
@@ -1652,93 +1741,96 @@ func file_wf_spec_proto_rawDescGZIP() []byte {
 	return file_wf_spec_proto_rawDescData
 }
 
+var file_wf_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_wf_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 23)
 var file_wf_spec_proto_goTypes = []interface{}{
-	(*WfSpec)(nil),                   // 0: littlehorse.WfSpec
-	(*ThreadSpec)(nil),               // 1: littlehorse.ThreadSpec
-	(*InterruptDef)(nil),             // 2: littlehorse.InterruptDef
-	(*StartThreadNode)(nil),          // 3: littlehorse.StartThreadNode
-	(*StartMultipleThreadsNode)(nil), // 4: littlehorse.StartMultipleThreadsNode
-	(*FailureHandlerDef)(nil),        // 5: littlehorse.FailureHandlerDef
-	(*WaitForThreadsNode)(nil),       // 6: littlehorse.WaitForThreadsNode
-	(*ExternalEventNode)(nil),        // 7: littlehorse.ExternalEventNode
-	(*EntrypointNode)(nil),           // 8: littlehorse.EntrypointNode
-	(*ExitNode)(nil),                 // 9: littlehorse.ExitNode
-	(*FailureDef)(nil),               // 10: littlehorse.FailureDef
-	(*Node)(nil),                     // 11: littlehorse.Node
-	(*UserTaskNode)(nil),             // 12: littlehorse.UserTaskNode
-	(*EdgeCondition)(nil),            // 13: littlehorse.EdgeCondition
-	(*Edge)(nil),                     // 14: littlehorse.Edge
-	(*NopNode)(nil),                  // 15: littlehorse.NopNode
-	(*SleepNode)(nil),                // 16: littlehorse.SleepNode
-	nil,                              // 17: littlehorse.WfSpec.ThreadSpecsEntry
-	nil,                              // 18: littlehorse.ThreadSpec.NodesEntry
-	nil,                              // 19: littlehorse.StartThreadNode.VariablesEntry
-	nil,                              // 20: littlehorse.StartMultipleThreadsNode.VariablesEntry
-	(*WaitForThreadsNode_ThreadToWaitFor)(nil), // 21: littlehorse.WaitForThreadsNode.ThreadToWaitFor
-	(*UserTaskNode_UserAssignment)(nil),        // 22: littlehorse.UserTaskNode.UserAssignment
-	(*timestamppb.Timestamp)(nil),              // 23: google.protobuf.Timestamp
-	(LHStatus)(0),                              // 24: littlehorse.LHStatus
-	(*VariableDef)(nil),                        // 25: littlehorse.VariableDef
-	(*VariableAssignment)(nil),                 // 26: littlehorse.VariableAssignment
-	(WaitForThreadsPolicy)(0),                  // 27: littlehorse.WaitForThreadsPolicy
-	(*VariableMutation)(nil),                   // 28: littlehorse.VariableMutation
-	(*TaskNode)(nil),                           // 29: littlehorse.TaskNode
-	(*UTActionTrigger)(nil),                    // 30: littlehorse.UTActionTrigger
-	(Comparator)(0),                            // 31: littlehorse.Comparator
+	(FailureHandlerDef_LHFailureType)(0), // 0: littlehorse.FailureHandlerDef.LHFailureType
+	(*WfSpec)(nil),                       // 1: littlehorse.WfSpec
+	(*ThreadSpec)(nil),                   // 2: littlehorse.ThreadSpec
+	(*InterruptDef)(nil),                 // 3: littlehorse.InterruptDef
+	(*StartThreadNode)(nil),              // 4: littlehorse.StartThreadNode
+	(*StartMultipleThreadsNode)(nil),     // 5: littlehorse.StartMultipleThreadsNode
+	(*FailureHandlerDef)(nil),            // 6: littlehorse.FailureHandlerDef
+	(*WaitForThreadsNode)(nil),           // 7: littlehorse.WaitForThreadsNode
+	(*ExternalEventNode)(nil),            // 8: littlehorse.ExternalEventNode
+	(*EntrypointNode)(nil),               // 9: littlehorse.EntrypointNode
+	(*ExitNode)(nil),                     // 10: littlehorse.ExitNode
+	(*FailureDef)(nil),                   // 11: littlehorse.FailureDef
+	(*Node)(nil),                         // 12: littlehorse.Node
+	(*UserTaskNode)(nil),                 // 13: littlehorse.UserTaskNode
+	(*EdgeCondition)(nil),                // 14: littlehorse.EdgeCondition
+	(*Edge)(nil),                         // 15: littlehorse.Edge
+	(*NopNode)(nil),                      // 16: littlehorse.NopNode
+	(*SleepNode)(nil),                    // 17: littlehorse.SleepNode
+	nil,                                  // 18: littlehorse.WfSpec.ThreadSpecsEntry
+	nil,                                  // 19: littlehorse.ThreadSpec.NodesEntry
+	nil,                                  // 20: littlehorse.StartThreadNode.VariablesEntry
+	nil,                                  // 21: littlehorse.StartMultipleThreadsNode.VariablesEntry
+	(*WaitForThreadsNode_ThreadToWaitFor)(nil), // 22: littlehorse.WaitForThreadsNode.ThreadToWaitFor
+	(*UserTaskNode_UserAssignment)(nil),        // 23: littlehorse.UserTaskNode.UserAssignment
+	(*timestamppb.Timestamp)(nil),              // 24: google.protobuf.Timestamp
+	(LHStatus)(0),                              // 25: littlehorse.LHStatus
+	(*VariableDef)(nil),                        // 26: littlehorse.VariableDef
+	(*VariableAssignment)(nil),                 // 27: littlehorse.VariableAssignment
+	(WaitForThreadsPolicy)(0),                  // 28: littlehorse.WaitForThreadsPolicy
+	(*VariableMutation)(nil),                   // 29: littlehorse.VariableMutation
+	(*TaskNode)(nil),                           // 30: littlehorse.TaskNode
+	(*UTActionTrigger)(nil),                    // 31: littlehorse.UTActionTrigger
+	(Comparator)(0),                            // 32: littlehorse.Comparator
 }
 var file_wf_spec_proto_depIdxs = []int32{
-	23, // 0: littlehorse.WfSpec.created_at:type_name -> google.protobuf.Timestamp
-	24, // 1: littlehorse.WfSpec.status:type_name -> littlehorse.LHStatus
-	17, // 2: littlehorse.WfSpec.thread_specs:type_name -> littlehorse.WfSpec.ThreadSpecsEntry
-	18, // 3: littlehorse.ThreadSpec.nodes:type_name -> littlehorse.ThreadSpec.NodesEntry
-	25, // 4: littlehorse.ThreadSpec.variable_defs:type_name -> littlehorse.VariableDef
-	2,  // 5: littlehorse.ThreadSpec.interrupt_defs:type_name -> littlehorse.InterruptDef
-	19, // 6: littlehorse.StartThreadNode.variables:type_name -> littlehorse.StartThreadNode.VariablesEntry
-	20, // 7: littlehorse.StartMultipleThreadsNode.variables:type_name -> littlehorse.StartMultipleThreadsNode.VariablesEntry
-	26, // 8: littlehorse.StartMultipleThreadsNode.iterable:type_name -> littlehorse.VariableAssignment
-	21, // 9: littlehorse.WaitForThreadsNode.threads:type_name -> littlehorse.WaitForThreadsNode.ThreadToWaitFor
-	27, // 10: littlehorse.WaitForThreadsNode.policy:type_name -> littlehorse.WaitForThreadsPolicy
-	26, // 11: littlehorse.WaitForThreadsNode.thread_list:type_name -> littlehorse.VariableAssignment
-	26, // 12: littlehorse.ExternalEventNode.timeout_seconds:type_name -> littlehorse.VariableAssignment
-	10, // 13: littlehorse.ExitNode.failure_def:type_name -> littlehorse.FailureDef
-	26, // 14: littlehorse.FailureDef.content:type_name -> littlehorse.VariableAssignment
-	14, // 15: littlehorse.Node.outgoing_edges:type_name -> littlehorse.Edge
-	28, // 16: littlehorse.Node.variable_mutations:type_name -> littlehorse.VariableMutation
-	5,  // 17: littlehorse.Node.failure_handlers:type_name -> littlehorse.FailureHandlerDef
-	8,  // 18: littlehorse.Node.entrypoint:type_name -> littlehorse.EntrypointNode
-	9,  // 19: littlehorse.Node.exit:type_name -> littlehorse.ExitNode
-	29, // 20: littlehorse.Node.task:type_name -> littlehorse.TaskNode
-	7,  // 21: littlehorse.Node.external_event:type_name -> littlehorse.ExternalEventNode
-	3,  // 22: littlehorse.Node.start_thread:type_name -> littlehorse.StartThreadNode
-	6,  // 23: littlehorse.Node.wait_for_threads:type_name -> littlehorse.WaitForThreadsNode
-	15, // 24: littlehorse.Node.nop:type_name -> littlehorse.NopNode
-	16, // 25: littlehorse.Node.sleep:type_name -> littlehorse.SleepNode
-	12, // 26: littlehorse.Node.user_task:type_name -> littlehorse.UserTaskNode
-	4,  // 27: littlehorse.Node.start_multiple_threads:type_name -> littlehorse.StartMultipleThreadsNode
-	26, // 28: littlehorse.UserTaskNode.user_group:type_name -> littlehorse.VariableAssignment
-	22, // 29: littlehorse.UserTaskNode.user:type_name -> littlehorse.UserTaskNode.UserAssignment
-	30, // 30: littlehorse.UserTaskNode.actions:type_name -> littlehorse.UTActionTrigger
-	26, // 31: littlehorse.UserTaskNode.notes:type_name -> littlehorse.VariableAssignment
-	31, // 32: littlehorse.EdgeCondition.comparator:type_name -> littlehorse.Comparator
-	26, // 33: littlehorse.EdgeCondition.left:type_name -> littlehorse.VariableAssignment
-	26, // 34: littlehorse.EdgeCondition.right:type_name -> littlehorse.VariableAssignment
-	13, // 35: littlehorse.Edge.condition:type_name -> littlehorse.EdgeCondition
-	26, // 36: littlehorse.SleepNode.raw_seconds:type_name -> littlehorse.VariableAssignment
-	26, // 37: littlehorse.SleepNode.timestamp:type_name -> littlehorse.VariableAssignment
-	26, // 38: littlehorse.SleepNode.iso_date:type_name -> littlehorse.VariableAssignment
-	1,  // 39: littlehorse.WfSpec.ThreadSpecsEntry.value:type_name -> littlehorse.ThreadSpec
-	11, // 40: littlehorse.ThreadSpec.NodesEntry.value:type_name -> littlehorse.Node
-	26, // 41: littlehorse.StartThreadNode.VariablesEntry.value:type_name -> littlehorse.VariableAssignment
-	26, // 42: littlehorse.StartMultipleThreadsNode.VariablesEntry.value:type_name -> littlehorse.VariableAssignment
-	26, // 43: littlehorse.WaitForThreadsNode.ThreadToWaitFor.thread_run_number:type_name -> littlehorse.VariableAssignment
-	26, // 44: littlehorse.UserTaskNode.UserAssignment.user_id:type_name -> littlehorse.VariableAssignment
-	26, // 45: littlehorse.UserTaskNode.UserAssignment.user_group:type_name -> littlehorse.VariableAssignment
-	46, // [46:46] is the sub-list for method output_type
-	46, // [46:46] is the sub-list for method input_type
-	46, // [46:46] is the sub-list for extension type_name
-	46, // [46:46] is the sub-list for extension extendee
-	0,  // [0:46] is the sub-list for field type_name
+	24, // 0: littlehorse.WfSpec.created_at:type_name -> google.protobuf.Timestamp
+	25, // 1: littlehorse.WfSpec.status:type_name -> littlehorse.LHStatus
+	18, // 2: littlehorse.WfSpec.thread_specs:type_name -> littlehorse.WfSpec.ThreadSpecsEntry
+	19, // 3: littlehorse.ThreadSpec.nodes:type_name -> littlehorse.ThreadSpec.NodesEntry
+	26, // 4: littlehorse.ThreadSpec.variable_defs:type_name -> littlehorse.VariableDef
+	3,  // 5: littlehorse.ThreadSpec.interrupt_defs:type_name -> littlehorse.InterruptDef
+	20, // 6: littlehorse.StartThreadNode.variables:type_name -> littlehorse.StartThreadNode.VariablesEntry
+	21, // 7: littlehorse.StartMultipleThreadsNode.variables:type_name -> littlehorse.StartMultipleThreadsNode.VariablesEntry
+	27, // 8: littlehorse.StartMultipleThreadsNode.iterable:type_name -> littlehorse.VariableAssignment
+	0,  // 9: littlehorse.FailureHandlerDef.any_failure_of_type:type_name -> littlehorse.FailureHandlerDef.LHFailureType
+	22, // 10: littlehorse.WaitForThreadsNode.threads:type_name -> littlehorse.WaitForThreadsNode.ThreadToWaitFor
+	28, // 11: littlehorse.WaitForThreadsNode.policy:type_name -> littlehorse.WaitForThreadsPolicy
+	27, // 12: littlehorse.WaitForThreadsNode.thread_list:type_name -> littlehorse.VariableAssignment
+	27, // 13: littlehorse.ExternalEventNode.timeout_seconds:type_name -> littlehorse.VariableAssignment
+	11, // 14: littlehorse.ExitNode.failure_def:type_name -> littlehorse.FailureDef
+	27, // 15: littlehorse.FailureDef.content:type_name -> littlehorse.VariableAssignment
+	15, // 16: littlehorse.Node.outgoing_edges:type_name -> littlehorse.Edge
+	29, // 17: littlehorse.Node.variable_mutations:type_name -> littlehorse.VariableMutation
+	6,  // 18: littlehorse.Node.failure_handlers:type_name -> littlehorse.FailureHandlerDef
+	9,  // 19: littlehorse.Node.entrypoint:type_name -> littlehorse.EntrypointNode
+	10, // 20: littlehorse.Node.exit:type_name -> littlehorse.ExitNode
+	30, // 21: littlehorse.Node.task:type_name -> littlehorse.TaskNode
+	8,  // 22: littlehorse.Node.external_event:type_name -> littlehorse.ExternalEventNode
+	4,  // 23: littlehorse.Node.start_thread:type_name -> littlehorse.StartThreadNode
+	7,  // 24: littlehorse.Node.wait_for_threads:type_name -> littlehorse.WaitForThreadsNode
+	16, // 25: littlehorse.Node.nop:type_name -> littlehorse.NopNode
+	17, // 26: littlehorse.Node.sleep:type_name -> littlehorse.SleepNode
+	13, // 27: littlehorse.Node.user_task:type_name -> littlehorse.UserTaskNode
+	5,  // 28: littlehorse.Node.start_multiple_threads:type_name -> littlehorse.StartMultipleThreadsNode
+	27, // 29: littlehorse.UserTaskNode.user_group:type_name -> littlehorse.VariableAssignment
+	23, // 30: littlehorse.UserTaskNode.user:type_name -> littlehorse.UserTaskNode.UserAssignment
+	31, // 31: littlehorse.UserTaskNode.actions:type_name -> littlehorse.UTActionTrigger
+	27, // 32: littlehorse.UserTaskNode.notes:type_name -> littlehorse.VariableAssignment
+	32, // 33: littlehorse.EdgeCondition.comparator:type_name -> littlehorse.Comparator
+	27, // 34: littlehorse.EdgeCondition.left:type_name -> littlehorse.VariableAssignment
+	27, // 35: littlehorse.EdgeCondition.right:type_name -> littlehorse.VariableAssignment
+	14, // 36: littlehorse.Edge.condition:type_name -> littlehorse.EdgeCondition
+	27, // 37: littlehorse.SleepNode.raw_seconds:type_name -> littlehorse.VariableAssignment
+	27, // 38: littlehorse.SleepNode.timestamp:type_name -> littlehorse.VariableAssignment
+	27, // 39: littlehorse.SleepNode.iso_date:type_name -> littlehorse.VariableAssignment
+	2,  // 40: littlehorse.WfSpec.ThreadSpecsEntry.value:type_name -> littlehorse.ThreadSpec
+	12, // 41: littlehorse.ThreadSpec.NodesEntry.value:type_name -> littlehorse.Node
+	27, // 42: littlehorse.StartThreadNode.VariablesEntry.value:type_name -> littlehorse.VariableAssignment
+	27, // 43: littlehorse.StartMultipleThreadsNode.VariablesEntry.value:type_name -> littlehorse.VariableAssignment
+	27, // 44: littlehorse.WaitForThreadsNode.ThreadToWaitFor.thread_run_number:type_name -> littlehorse.VariableAssignment
+	27, // 45: littlehorse.UserTaskNode.UserAssignment.user_id:type_name -> littlehorse.VariableAssignment
+	27, // 46: littlehorse.UserTaskNode.UserAssignment.user_group:type_name -> littlehorse.VariableAssignment
+	47, // [47:47] is the sub-list for method output_type
+	47, // [47:47] is the sub-list for method input_type
+	47, // [47:47] is the sub-list for extension type_name
+	47, // [47:47] is the sub-list for extension extendee
+	0,  // [0:47] is the sub-list for field type_name
 }
 
 func init() { file_wf_spec_proto_init() }
@@ -1978,7 +2070,10 @@ func file_wf_spec_proto_init() {
 			}
 		}
 	}
-	file_wf_spec_proto_msgTypes[5].OneofWrappers = []interface{}{}
+	file_wf_spec_proto_msgTypes[5].OneofWrappers = []interface{}{
+		(*FailureHandlerDef_SpecificFailure)(nil),
+		(*FailureHandlerDef_AnyFailureOfType)(nil),
+	}
 	file_wf_spec_proto_msgTypes[6].OneofWrappers = []interface{}{}
 	file_wf_spec_proto_msgTypes[9].OneofWrappers = []interface{}{}
 	file_wf_spec_proto_msgTypes[10].OneofWrappers = []interface{}{}
@@ -2010,13 +2105,14 @@ func file_wf_spec_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_wf_spec_proto_rawDesc,
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   23,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_wf_spec_proto_goTypes,
 		DependencyIndexes: file_wf_spec_proto_depIdxs,
+		EnumInfos:         file_wf_spec_proto_enumTypes,
 		MessageInfos:      file_wf_spec_proto_msgTypes,
 	}.Build()
 	File_wf_spec_proto = out.File

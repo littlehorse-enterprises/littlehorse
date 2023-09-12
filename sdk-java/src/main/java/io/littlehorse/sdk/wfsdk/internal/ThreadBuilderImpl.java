@@ -630,30 +630,43 @@ final class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     public void handleException(NodeOutput nodeOutput, String exceptionName, ThreadFunc handler) {
-        addFailureHandlerDef(nodeOutput, exceptionName, handler);
+        addExceptionHandler(nodeOutput, exceptionName, handler);
     }
 
     @Override
     public void handleException(NodeOutput node, ThreadFunc handler) {
-        addFailureHandlerDef(node, null, handler);
+        addExceptionHandler(node, null, handler);
     }
 
     @Override
     public void handleError(NodeOutput node, LHErrorType error, ThreadFunc handler) {
-        addFailureHandlerDef(node, error.getInternalName(), handler);
+        addErrorHandler(node, error, handler);
     }
 
     @Override
     public void handleError(NodeOutput node, ThreadFunc handler) {
-        addFailureHandlerDef(node, null, handler);
+        addErrorHandler(node, null, handler);
     }
 
     @Override
-    public void handleAnyFailure(NodeOutput node, ThreadFunc handler) {
-        addFailureHandlerDef(node, null, handler);
+    public void handleAnyFailure(NodeOutput nodeOutput, ThreadFunc handler) {
+        checkIfIsActive();
+        NodeOutputImpl node = (NodeOutputImpl) nodeOutput;
+        String threadName = "exn-handler-" + node.nodeName + "-any-failure";
+        threadName = parent.addSubThread(threadName, handler);
+        FailureHandlerDef.Builder handlerDef = FailureHandlerDef.newBuilder().setHandlerSpecName(threadName);
+        addFailureHandlerDef(handlerDef.build(), node);
     }
 
-    private void addFailureHandlerDef(NodeOutput nodeOutput, String exceptionName, ThreadFunc handler) {
+    private void addFailureHandlerDef(FailureHandlerDef handlerDef, NodeOutputImpl node) {
+        // Add the failure handler to the most recent node
+        Node.Builder lastNodeBuilder = spec.getNodesOrThrow(node.nodeName).toBuilder();
+
+        lastNodeBuilder.addFailureHandlers(handlerDef);
+        spec.putNodes(node.nodeName, lastNodeBuilder.build());
+    }
+
+    private void addExceptionHandler(NodeOutput nodeOutput, String exceptionName, ThreadFunc handler) {
         checkIfIsActive();
         NodeOutputImpl node = (NodeOutputImpl) nodeOutput;
         String threadName = "exn-handler-" + node.nodeName + "-" + exceptionName;
@@ -661,13 +674,27 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         FailureHandlerDef.Builder handlerDef = FailureHandlerDef.newBuilder().setHandlerSpecName(threadName);
         if (exceptionName != null) {
             handlerDef.setSpecificFailure(exceptionName);
+        } else {
+            handlerDef.setAnyFailureOfType(FailureHandlerDef.LHFailureType.FAILURE_TYPE_EXCEPTION);
         }
+        addFailureHandlerDef(handlerDef.build(), node);
+    }
 
-        // Add the failure handler to the most recent node
-        Node.Builder lastNodeBuilder = spec.getNodesOrThrow(node.nodeName).toBuilder();
-
-        lastNodeBuilder.addFailureHandlers(handlerDef);
-        spec.putNodes(node.nodeName, lastNodeBuilder.build());
+    private void addErrorHandler(NodeOutput nodeOutput, LHErrorType errorType, ThreadFunc handler) {
+        checkIfIsActive();
+        NodeOutputImpl node = (NodeOutputImpl) nodeOutput;
+        String threadName = "exn-handler-" + node.nodeName + "-"
+                + (errorType != null
+                        ? errorType.getInternalName()
+                        : FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR);
+        threadName = parent.addSubThread(threadName, handler);
+        FailureHandlerDef.Builder handlerDef = FailureHandlerDef.newBuilder().setHandlerSpecName(threadName);
+        if (errorType != null) {
+            handlerDef.setSpecificFailure(errorType.getInternalName());
+        } else {
+            handlerDef.setAnyFailureOfType(FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR);
+        }
+        addFailureHandlerDef(handlerDef.build(), node);
     }
 
     public WorkflowConditionImpl condition(Object lhs, Comparator comparator, Object rhs) {

@@ -44,8 +44,15 @@ message StartMultipleThreadsNode {
 }
 
 message FailureHandlerDef {
-  optional string specific_failure = 1;
   string handler_spec_name = 2;
+  enum LHFailureType {
+    FAILURE_TYPE_ERROR = 0;
+    FAILURE_TYPE_EXCEPTION = 1;
+  }
+  oneof failure_to_catch {
+    string specific_failure = 1;
+    LHFailureType any_failure_of_type = 3;
+  }
 }
 
 message WaitForThreadsNode {
