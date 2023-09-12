@@ -1,7 +1,7 @@
 package io.littlehorse.test.internal.step;
 
-import io.littlehorse.test.LHClientTestWrapper;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 
 public interface Step {
-    void execute(Object context, LHClientTestWrapper lhClientWrapper);
+    void execute(Object context, LHPublicApiBlockingStub lhClient);
 }
