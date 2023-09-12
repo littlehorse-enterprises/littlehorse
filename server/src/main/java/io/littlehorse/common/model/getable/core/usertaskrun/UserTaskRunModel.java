@@ -254,7 +254,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     }
 
     private void scheduleAction(UTActionTriggerModel trigger) throws LHVarSubError {
-        trigger.schedule(getNodeRun().getThreadRun().wfRunModel.getDao(), this);
+        trigger.schedule(getNodeRun().getThreadRun().wfRun.getDao(), this);
     }
 
     public UserGroupModel getUserGroup() {

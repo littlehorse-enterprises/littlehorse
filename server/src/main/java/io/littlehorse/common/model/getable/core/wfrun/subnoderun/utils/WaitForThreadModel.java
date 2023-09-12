@@ -33,7 +33,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
             throws LHVarSubError {
         ThreadRunModel parentThreadRunModel = waitForThreadNodeRunModel.getThreadRun();
         this.threadRunNumber = threadRunNumberToWaitFor;
-        ThreadRunModel threadRunModel = parentThreadRunModel.getWfRunModel().getThreadRun(threadRunNumber);
+        ThreadRunModel threadRunModel = parentThreadRunModel.getWfRun().getThreadRun(threadRunNumber);
 
         if (threadRunModel == null) {
             throw new LHVarSubError(null, "Couldn't wait for nonexistent threadRun: " + threadRunNumber);

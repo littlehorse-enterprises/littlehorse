@@ -39,7 +39,7 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
     }
 
     public WfRunModel getWfRun() {
-        return nodeRunModel.getThreadRun().getWfRunModel();
+        return nodeRunModel.getThreadRun().getWfRun();
     }
 
     public NodeModel getNode() {
@@ -47,7 +47,7 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
     }
 
     public CoreProcessorDAO getDao() {
-        return nodeRunModel.getThreadRun().getWfRunModel().getDao();
+        return nodeRunModel.getThreadRun().getWfRun().getDao();
     }
 
     public void halt() {}

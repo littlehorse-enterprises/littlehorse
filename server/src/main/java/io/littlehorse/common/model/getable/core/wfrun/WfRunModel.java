@@ -145,7 +145,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
         for (ThreadRun trpb : proto.getThreadRunsList()) {
             ThreadRunModel thr = ThreadRunModel.fromProto(trpb);
-            thr.wfRunModel = this;
+            thr.wfRun = this;
             threadRunModels.add(thr);
         }
         for (PendingInterrupt pipb : proto.getPendingInterruptsList()) {
@@ -216,19 +216,16 @@ public class WfRunModel extends CoreGetable<WfRun> {
         }
 
         ThreadRunModel thread = new ThreadRunModel();
-        thread.wfRunId = id;
         thread.number = threadRunModels.size();
         thread.parentThreadId = parentThreadId;
 
         thread.status = LHStatus.RUNNING;
-        thread.wfSpecName = wfSpecName;
-        thread.wfSpecVersion = wfSpecVersion;
         thread.threadSpecName = threadName;
         thread.currentNodePosition = -1; // this gets bumped when we start the thread
 
         thread.startTime = new Date();
 
-        thread.wfRunModel = this;
+        thread.wfRun = this;
         thread.type = type;
         threadRunModels.add(thread);
 
@@ -501,19 +498,21 @@ public class WfRunModel extends CoreGetable<WfRun> {
         this.status = status;
 
         if (status.equals(LHStatus.COMPLETED) || status.equals(LHStatus.ERROR)) {
-            LHTimer timer = new LHTimer();
-            timer.topic = this.getDao().getCoreCmdTopic();
-            timer.key = id;
-            Date now = new Date();
-            timer.maturationTime = DateUtils.addHours(now, this.wfSpec.retentionHours);
-            DeleteWfRunRequestModel deleteWfRun = new DeleteWfRunRequestModel();
-            deleteWfRun.wfRunId = new WfRunIdModel(id);
+            if (wfSpec.getRetentionHours() != LHConstants.INFINITE_RETENTION) {
+                LHTimer timer = new LHTimer();
+                timer.topic = this.getDao().getCoreCmdTopic();
+                timer.key = id;
+                Date now = new Date();
+                timer.maturationTime = DateUtils.addHours(now, this.wfSpec.retentionHours);
+                DeleteWfRunRequestModel deleteWfRun = new DeleteWfRunRequestModel();
+                deleteWfRun.wfRunId = new WfRunIdModel(id);
 
-            CommandModel deleteWfRunCmd = new CommandModel();
-            deleteWfRunCmd.setSubCommand(deleteWfRun);
-            deleteWfRunCmd.time = timer.maturationTime;
-            timer.payload = deleteWfRunCmd.toProto().build().toByteArray();
-            this.getDao().scheduleTimer(timer);
+                CommandModel deleteWfRunCmd = new CommandModel();
+                deleteWfRunCmd.setSubCommand(deleteWfRun);
+                deleteWfRunCmd.time = timer.maturationTime;
+                timer.payload = deleteWfRunCmd.toProto().build().toByteArray();
+                this.getDao().scheduleTimer(timer);
+            }
         }
     }
 

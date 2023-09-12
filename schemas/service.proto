@@ -192,7 +192,7 @@ message SearchVariableRequest {
 
   message NameAndValueRequest {
     VariableValue value = 1;
-    int32 wf_spec_version = 2;
+    optional int32 wf_spec_version = 2;
     string var_name = 3;
     string wf_spec_name = 4;
   }

@@ -16,9 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ThreadRun() {
-    wfRunId_ = "";
     status_ = 0;
-    wfSpecName_ = "";
     threadSpecName_ = "";
     errorMessage_ = "";
     childThreadIds_ = emptyIntList();
@@ -48,45 +46,6 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int WF_RUN_ID_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object wfRunId_ = "";
-  /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The wfRunId.
-   */
-  @java.lang.Override
-  public java.lang.String getWfRunId() {
-    java.lang.Object ref = wfRunId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      wfRunId_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getWfRunIdBytes() {
-    java.lang.Object ref = wfRunId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      wfRunId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
   public static final int NUMBER_FIELD_NUMBER = 2;
   private int number_ = 0;
   /**
@@ -114,56 +73,6 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override public io.littlehorse.sdk.common.proto.LHStatus getStatus() {
     io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(status_);
     return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
-  }
-
-  public static final int WF_SPEC_NAME_FIELD_NUMBER = 4;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object wfSpecName_ = "";
-  /**
-   * <code>string wf_spec_name = 4;</code>
-   * @return The wfSpecName.
-   */
-  @java.lang.Override
-  public java.lang.String getWfSpecName() {
-    java.lang.Object ref = wfSpecName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      wfSpecName_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string wf_spec_name = 4;</code>
-   * @return The bytes for wfSpecName.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getWfSpecNameBytes() {
-    java.lang.Object ref = wfSpecName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      wfSpecName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int WF_SPEC_VERSION_FIELD_NUMBER = 5;
-  private int wfSpecVersion_ = 0;
-  /**
-   * <code>int32 wf_spec_version = 5;</code>
-   * @return The wfSpecVersion.
-   */
-  @java.lang.Override
-  public int getWfSpecVersion() {
-    return wfSpecVersion_;
   }
 
   public static final int THREAD_SPEC_NAME_FIELD_NUMBER = 6;
@@ -518,20 +427,11 @@ private static final long serialVersionUID = 0L;
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     getSerializedSize();
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfRunId_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfRunId_);
-    }
     if (number_ != 0) {
       output.writeInt32(2, number_);
     }
     if (status_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
       output.writeEnum(3, status_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, wfSpecName_);
-    }
-    if (wfSpecVersion_ != 0) {
-      output.writeInt32(5, wfSpecVersion_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(threadSpecName_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 6, threadSpecName_);
@@ -586,9 +486,6 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfRunId_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, wfRunId_);
-    }
     if (number_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, number_);
@@ -596,13 +493,6 @@ private static final long serialVersionUID = 0L;
     if (status_ != io.littlehorse.sdk.common.proto.LHStatus.STARTING.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(3, status_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, wfSpecName_);
-    }
-    if (wfSpecVersion_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(5, wfSpecVersion_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(threadSpecName_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, threadSpecName_);
@@ -685,15 +575,9 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.ThreadRun other = (io.littlehorse.sdk.common.proto.ThreadRun) obj;
 
-    if (!getWfRunId()
-        .equals(other.getWfRunId())) return false;
     if (getNumber()
         != other.getNumber()) return false;
     if (status_ != other.status_) return false;
-    if (!getWfSpecName()
-        .equals(other.getWfSpecName())) return false;
-    if (getWfSpecVersion()
-        != other.getWfSpecVersion()) return false;
     if (!getThreadSpecName()
         .equals(other.getThreadSpecName())) return false;
     if (hasStartTime() != other.hasStartTime()) return false;
@@ -746,16 +630,10 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getWfRunId().hashCode();
     hash = (37 * hash) + NUMBER_FIELD_NUMBER;
     hash = (53 * hash) + getNumber();
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + status_;
-    hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getWfSpecName().hashCode();
-    hash = (37 * hash) + WF_SPEC_VERSION_FIELD_NUMBER;
-    hash = (53 * hash) + getWfSpecVersion();
     hash = (37 * hash) + THREAD_SPEC_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getThreadSpecName().hashCode();
     if (hasStartTime()) {
@@ -939,11 +817,8 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      wfRunId_ = "";
       number_ = 0;
       status_ = 0;
-      wfSpecName_ = "";
-      wfSpecVersion_ = 0;
       threadSpecName_ = "";
       startTime_ = null;
       if (startTimeBuilder_ != null) {
@@ -964,7 +839,7 @@ private static final long serialVersionUID = 0L;
         haltReasons_ = null;
         haltReasonsBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000800);
+      bitField0_ = (bitField0_ & ~0x00000100);
       interruptTriggerId_ = null;
       if (interruptTriggerIdBuilder_ != null) {
         interruptTriggerIdBuilder_.dispose();
@@ -1011,23 +886,23 @@ private static final long serialVersionUID = 0L;
     }
 
     private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.ThreadRun result) {
-      if (((bitField0_ & 0x00000200) != 0)) {
+      if (((bitField0_ & 0x00000040) != 0)) {
         childThreadIds_.makeImmutable();
-        bitField0_ = (bitField0_ & ~0x00000200);
+        bitField0_ = (bitField0_ & ~0x00000040);
       }
       result.childThreadIds_ = childThreadIds_;
       if (haltReasonsBuilder_ == null) {
-        if (((bitField0_ & 0x00000800) != 0)) {
+        if (((bitField0_ & 0x00000100) != 0)) {
           haltReasons_ = java.util.Collections.unmodifiableList(haltReasons_);
-          bitField0_ = (bitField0_ & ~0x00000800);
+          bitField0_ = (bitField0_ & ~0x00000100);
         }
         result.haltReasons_ = haltReasons_;
       } else {
         result.haltReasons_ = haltReasonsBuilder_.build();
       }
-      if (((bitField0_ & 0x00008000) != 0)) {
+      if (((bitField0_ & 0x00001000) != 0)) {
         handledFailedChildren_.makeImmutable();
-        bitField0_ = (bitField0_ & ~0x00008000);
+        bitField0_ = (bitField0_ & ~0x00001000);
       }
       result.handledFailedChildren_ = handledFailedChildren_;
     }
@@ -1035,59 +910,50 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.ThreadRun result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.wfRunId_ = wfRunId_;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.number_ = number_;
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
+      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.status_ = status_;
       }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.wfSpecName_ = wfSpecName_;
-      }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.wfSpecVersion_ = wfSpecVersion_;
-      }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
+      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.threadSpecName_ = threadSpecName_;
       }
-      if (((from_bitField0_ & 0x00000040) != 0)) {
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.startTime_ = startTimeBuilder_ == null
             ? startTime_
             : startTimeBuilder_.build();
       }
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000080) != 0)) {
+      if (((from_bitField0_ & 0x00000010) != 0)) {
         result.endTime_ = endTimeBuilder_ == null
             ? endTime_
             : endTimeBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
-      if (((from_bitField0_ & 0x00000100) != 0)) {
+      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.errorMessage_ = errorMessage_;
         to_bitField0_ |= 0x00000002;
       }
-      if (((from_bitField0_ & 0x00000400) != 0)) {
+      if (((from_bitField0_ & 0x00000080) != 0)) {
         result.parentThreadId_ = parentThreadId_;
         to_bitField0_ |= 0x00000004;
       }
-      if (((from_bitField0_ & 0x00001000) != 0)) {
+      if (((from_bitField0_ & 0x00000200) != 0)) {
         result.interruptTriggerId_ = interruptTriggerIdBuilder_ == null
             ? interruptTriggerId_
             : interruptTriggerIdBuilder_.build();
         to_bitField0_ |= 0x00000008;
       }
-      if (((from_bitField0_ & 0x00002000) != 0)) {
+      if (((from_bitField0_ & 0x00000400) != 0)) {
         result.failureBeingHandled_ = failureBeingHandledBuilder_ == null
             ? failureBeingHandled_
             : failureBeingHandledBuilder_.build();
         to_bitField0_ |= 0x00000010;
       }
-      if (((from_bitField0_ & 0x00004000) != 0)) {
+      if (((from_bitField0_ & 0x00000800) != 0)) {
         result.currentNodePosition_ = currentNodePosition_;
       }
-      if (((from_bitField0_ & 0x00010000) != 0)) {
+      if (((from_bitField0_ & 0x00002000) != 0)) {
         result.type_ = type_;
       }
       result.bitField0_ |= to_bitField0_;
@@ -1137,28 +1003,15 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.ThreadRun other) {
       if (other == io.littlehorse.sdk.common.proto.ThreadRun.getDefaultInstance()) return this;
-      if (!other.getWfRunId().isEmpty()) {
-        wfRunId_ = other.wfRunId_;
-        bitField0_ |= 0x00000001;
-        onChanged();
-      }
       if (other.getNumber() != 0) {
         setNumber(other.getNumber());
       }
       if (other.status_ != 0) {
         setStatusValue(other.getStatusValue());
       }
-      if (!other.getWfSpecName().isEmpty()) {
-        wfSpecName_ = other.wfSpecName_;
-        bitField0_ |= 0x00000008;
-        onChanged();
-      }
-      if (other.getWfSpecVersion() != 0) {
-        setWfSpecVersion(other.getWfSpecVersion());
-      }
       if (!other.getThreadSpecName().isEmpty()) {
         threadSpecName_ = other.threadSpecName_;
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000004;
         onChanged();
       }
       if (other.hasStartTime()) {
@@ -1169,13 +1022,13 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasErrorMessage()) {
         errorMessage_ = other.errorMessage_;
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000020;
         onChanged();
       }
       if (!other.childThreadIds_.isEmpty()) {
         if (childThreadIds_.isEmpty()) {
           childThreadIds_ = other.childThreadIds_;
-          bitField0_ = (bitField0_ & ~0x00000200);
+          bitField0_ = (bitField0_ & ~0x00000040);
         } else {
           ensureChildThreadIdsIsMutable();
           childThreadIds_.addAll(other.childThreadIds_);
@@ -1189,7 +1042,7 @@ private static final long serialVersionUID = 0L;
         if (!other.haltReasons_.isEmpty()) {
           if (haltReasons_.isEmpty()) {
             haltReasons_ = other.haltReasons_;
-            bitField0_ = (bitField0_ & ~0x00000800);
+            bitField0_ = (bitField0_ & ~0x00000100);
           } else {
             ensureHaltReasonsIsMutable();
             haltReasons_.addAll(other.haltReasons_);
@@ -1202,7 +1055,7 @@ private static final long serialVersionUID = 0L;
             haltReasonsBuilder_.dispose();
             haltReasonsBuilder_ = null;
             haltReasons_ = other.haltReasons_;
-            bitField0_ = (bitField0_ & ~0x00000800);
+            bitField0_ = (bitField0_ & ~0x00000100);
             haltReasonsBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getHaltReasonsFieldBuilder() : null;
@@ -1223,7 +1076,7 @@ private static final long serialVersionUID = 0L;
       if (!other.handledFailedChildren_.isEmpty()) {
         if (handledFailedChildren_.isEmpty()) {
           handledFailedChildren_ = other.handledFailedChildren_;
-          bitField0_ = (bitField0_ & ~0x00008000);
+          bitField0_ = (bitField0_ & ~0x00001000);
         } else {
           ensureHandledFailedChildrenIsMutable();
           handledFailedChildren_.addAll(other.handledFailedChildren_);
@@ -1259,53 +1112,38 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 10: {
-              wfRunId_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 10
             case 16: {
               number_ = input.readInt32();
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000001;
               break;
             } // case 16
             case 24: {
               status_ = input.readEnum();
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000002;
               break;
             } // case 24
-            case 34: {
-              wfSpecName_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000008;
-              break;
-            } // case 34
-            case 40: {
-              wfSpecVersion_ = input.readInt32();
-              bitField0_ |= 0x00000010;
-              break;
-            } // case 40
             case 50: {
               threadSpecName_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000004;
               break;
             } // case 50
             case 58: {
               input.readMessage(
                   getStartTimeFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000040;
+              bitField0_ |= 0x00000008;
               break;
             } // case 58
             case 66: {
               input.readMessage(
                   getEndTimeFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000080;
+              bitField0_ |= 0x00000010;
               break;
             } // case 66
             case 74: {
               errorMessage_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000100;
+              bitField0_ |= 0x00000020;
               break;
             } // case 74
             case 88: {
@@ -1326,7 +1164,7 @@ private static final long serialVersionUID = 0L;
             } // case 90
             case 96: {
               parentThreadId_ = input.readInt32();
-              bitField0_ |= 0x00000400;
+              bitField0_ |= 0x00000080;
               break;
             } // case 96
             case 106: {
@@ -1346,19 +1184,19 @@ private static final long serialVersionUID = 0L;
               input.readMessage(
                   getInterruptTriggerIdFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00001000;
+              bitField0_ |= 0x00000200;
               break;
             } // case 114
             case 122: {
               input.readMessage(
                   getFailureBeingHandledFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00002000;
+              bitField0_ |= 0x00000400;
               break;
             } // case 122
             case 128: {
               currentNodePosition_ = input.readInt32();
-              bitField0_ |= 0x00004000;
+              bitField0_ |= 0x00000800;
               break;
             } // case 128
             case 136: {
@@ -1379,7 +1217,7 @@ private static final long serialVersionUID = 0L;
             } // case 138
             case 144: {
               type_ = input.readEnum();
-              bitField0_ |= 0x00010000;
+              bitField0_ |= 0x00002000;
               break;
             } // case 144
             default: {
@@ -1399,78 +1237,6 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.lang.Object wfRunId_ = "";
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @return The wfRunId.
-     */
-    public java.lang.String getWfRunId() {
-      java.lang.Object ref = wfRunId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        wfRunId_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @return The bytes for wfRunId.
-     */
-    public com.google.protobuf.ByteString
-        getWfRunIdBytes() {
-      java.lang.Object ref = wfRunId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        wfRunId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @param value The wfRunId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfRunId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      wfRunId_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearWfRunId() {
-      wfRunId_ = getDefaultInstance().getWfRunId();
-      bitField0_ = (bitField0_ & ~0x00000001);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @param value The bytes for wfRunId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfRunIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      wfRunId_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-
     private int number_ ;
     /**
      * <code>int32 number = 2;</code>
@@ -1488,7 +1254,7 @@ private static final long serialVersionUID = 0L;
     public Builder setNumber(int value) {
 
       number_ = value;
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -1497,7 +1263,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearNumber() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000001);
       number_ = 0;
       onChanged();
       return this;
@@ -1518,7 +1284,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setStatusValue(int value) {
       status_ = value;
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -1540,7 +1306,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       status_ = value.getNumber();
       onChanged();
       return this;
@@ -1550,112 +1316,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearStatus() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000002);
       status_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object wfSpecName_ = "";
-    /**
-     * <code>string wf_spec_name = 4;</code>
-     * @return The wfSpecName.
-     */
-    public java.lang.String getWfSpecName() {
-      java.lang.Object ref = wfSpecName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        wfSpecName_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string wf_spec_name = 4;</code>
-     * @return The bytes for wfSpecName.
-     */
-    public com.google.protobuf.ByteString
-        getWfSpecNameBytes() {
-      java.lang.Object ref = wfSpecName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        wfSpecName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string wf_spec_name = 4;</code>
-     * @param value The wfSpecName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfSpecName(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      wfSpecName_ = value;
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string wf_spec_name = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearWfSpecName() {
-      wfSpecName_ = getDefaultInstance().getWfSpecName();
-      bitField0_ = (bitField0_ & ~0x00000008);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string wf_spec_name = 4;</code>
-     * @param value The bytes for wfSpecName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfSpecNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      wfSpecName_ = value;
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-
-    private int wfSpecVersion_ ;
-    /**
-     * <code>int32 wf_spec_version = 5;</code>
-     * @return The wfSpecVersion.
-     */
-    @java.lang.Override
-    public int getWfSpecVersion() {
-      return wfSpecVersion_;
-    }
-    /**
-     * <code>int32 wf_spec_version = 5;</code>
-     * @param value The wfSpecVersion to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfSpecVersion(int value) {
-
-      wfSpecVersion_ = value;
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 wf_spec_version = 5;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearWfSpecVersion() {
-      bitField0_ = (bitField0_ & ~0x00000010);
-      wfSpecVersion_ = 0;
       onChanged();
       return this;
     }
@@ -1703,7 +1365,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       threadSpecName_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -1713,7 +1375,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearThreadSpecName() {
       threadSpecName_ = getDefaultInstance().getThreadSpecName();
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000004);
       onChanged();
       return this;
     }
@@ -1727,7 +1389,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       threadSpecName_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -1740,7 +1402,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the startTime field is set.
      */
     public boolean hasStartTime() {
-      return ((bitField0_ & 0x00000040) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>.google.protobuf.Timestamp start_time = 7;</code>
@@ -1765,7 +1427,7 @@ private static final long serialVersionUID = 0L;
       } else {
         startTimeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1779,7 +1441,7 @@ private static final long serialVersionUID = 0L;
       } else {
         startTimeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1788,7 +1450,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeStartTime(com.google.protobuf.Timestamp value) {
       if (startTimeBuilder_ == null) {
-        if (((bitField0_ & 0x00000040) != 0) &&
+        if (((bitField0_ & 0x00000008) != 0) &&
           startTime_ != null &&
           startTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getStartTimeBuilder().mergeFrom(value);
@@ -1798,7 +1460,7 @@ private static final long serialVersionUID = 0L;
       } else {
         startTimeBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1806,7 +1468,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Timestamp start_time = 7;</code>
      */
     public Builder clearStartTime() {
-      bitField0_ = (bitField0_ & ~0x00000040);
+      bitField0_ = (bitField0_ & ~0x00000008);
       startTime_ = null;
       if (startTimeBuilder_ != null) {
         startTimeBuilder_.dispose();
@@ -1819,7 +1481,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Timestamp start_time = 7;</code>
      */
     public com.google.protobuf.Timestamp.Builder getStartTimeBuilder() {
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000008;
       onChanged();
       return getStartTimeFieldBuilder().getBuilder();
     }
@@ -1859,7 +1521,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the endTime field is set.
      */
     public boolean hasEndTime() {
-      return ((bitField0_ & 0x00000080) != 0);
+      return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <code>optional .google.protobuf.Timestamp end_time = 8;</code>
@@ -1884,7 +1546,7 @@ private static final long serialVersionUID = 0L;
       } else {
         endTimeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1898,7 +1560,7 @@ private static final long serialVersionUID = 0L;
       } else {
         endTimeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1907,7 +1569,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeEndTime(com.google.protobuf.Timestamp value) {
       if (endTimeBuilder_ == null) {
-        if (((bitField0_ & 0x00000080) != 0) &&
+        if (((bitField0_ & 0x00000010) != 0) &&
           endTime_ != null &&
           endTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getEndTimeBuilder().mergeFrom(value);
@@ -1917,7 +1579,7 @@ private static final long serialVersionUID = 0L;
       } else {
         endTimeBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1925,7 +1587,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .google.protobuf.Timestamp end_time = 8;</code>
      */
     public Builder clearEndTime() {
-      bitField0_ = (bitField0_ & ~0x00000080);
+      bitField0_ = (bitField0_ & ~0x00000010);
       endTime_ = null;
       if (endTimeBuilder_ != null) {
         endTimeBuilder_.dispose();
@@ -1938,7 +1600,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .google.protobuf.Timestamp end_time = 8;</code>
      */
     public com.google.protobuf.Timestamp.Builder getEndTimeBuilder() {
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000010;
       onChanged();
       return getEndTimeFieldBuilder().getBuilder();
     }
@@ -1976,7 +1638,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the errorMessage field is set.
      */
     public boolean hasErrorMessage() {
-      return ((bitField0_ & 0x00000100) != 0);
+      return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <code>optional string error_message = 9;</code>
@@ -2020,7 +1682,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       errorMessage_ = value;
-      bitField0_ |= 0x00000100;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -2030,7 +1692,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearErrorMessage() {
       errorMessage_ = getDefaultInstance().getErrorMessage();
-      bitField0_ = (bitField0_ & ~0x00000100);
+      bitField0_ = (bitField0_ & ~0x00000020);
       onChanged();
       return this;
     }
@@ -2044,16 +1706,16 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       errorMessage_ = value;
-      bitField0_ |= 0x00000100;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
 
     private com.google.protobuf.Internal.IntList childThreadIds_ = emptyIntList();
     private void ensureChildThreadIdsIsMutable() {
-      if (!((bitField0_ & 0x00000200) != 0)) {
+      if (!((bitField0_ & 0x00000040) != 0)) {
         childThreadIds_ = mutableCopy(childThreadIds_);
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000040;
       }
     }
     /**
@@ -2062,7 +1724,7 @@ private static final long serialVersionUID = 0L;
      */
     public java.util.List<java.lang.Integer>
         getChildThreadIdsList() {
-      return ((bitField0_ & 0x00000200) != 0) ?
+      return ((bitField0_ & 0x00000040) != 0) ?
                java.util.Collections.unmodifiableList(childThreadIds_) : childThreadIds_;
     }
     /**
@@ -2125,7 +1787,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearChildThreadIds() {
       childThreadIds_ = emptyIntList();
-      bitField0_ = (bitField0_ & ~0x00000200);
+      bitField0_ = (bitField0_ & ~0x00000040);
       onChanged();
       return this;
     }
@@ -2137,7 +1799,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public boolean hasParentThreadId() {
-      return ((bitField0_ & 0x00000400) != 0);
+      return ((bitField0_ & 0x00000080) != 0);
     }
     /**
      * <code>optional int32 parent_thread_id = 12;</code>
@@ -2155,7 +1817,7 @@ private static final long serialVersionUID = 0L;
     public Builder setParentThreadId(int value) {
 
       parentThreadId_ = value;
-      bitField0_ |= 0x00000400;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -2164,7 +1826,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearParentThreadId() {
-      bitField0_ = (bitField0_ & ~0x00000400);
+      bitField0_ = (bitField0_ & ~0x00000080);
       parentThreadId_ = 0;
       onChanged();
       return this;
@@ -2173,9 +1835,9 @@ private static final long serialVersionUID = 0L;
     private java.util.List<io.littlehorse.sdk.common.proto.ThreadHaltReason> haltReasons_ =
       java.util.Collections.emptyList();
     private void ensureHaltReasonsIsMutable() {
-      if (!((bitField0_ & 0x00000800) != 0)) {
+      if (!((bitField0_ & 0x00000100) != 0)) {
         haltReasons_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.ThreadHaltReason>(haltReasons_);
-        bitField0_ |= 0x00000800;
+        bitField0_ |= 0x00000100;
        }
     }
 
@@ -2325,7 +1987,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearHaltReasons() {
       if (haltReasonsBuilder_ == null) {
         haltReasons_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000800);
+        bitField0_ = (bitField0_ & ~0x00000100);
         onChanged();
       } else {
         haltReasonsBuilder_.clear();
@@ -2402,7 +2064,7 @@ private static final long serialVersionUID = 0L;
         haltReasonsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.sdk.common.proto.ThreadHaltReason, io.littlehorse.sdk.common.proto.ThreadHaltReason.Builder, io.littlehorse.sdk.common.proto.ThreadHaltReasonOrBuilder>(
                 haltReasons_,
-                ((bitField0_ & 0x00000800) != 0),
+                ((bitField0_ & 0x00000100) != 0),
                 getParentForChildren(),
                 isClean());
         haltReasons_ = null;
@@ -2418,7 +2080,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the interruptTriggerId field is set.
      */
     public boolean hasInterruptTriggerId() {
-      return ((bitField0_ & 0x00001000) != 0);
+      return ((bitField0_ & 0x00000200) != 0);
     }
     /**
      * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
@@ -2443,7 +2105,7 @@ private static final long serialVersionUID = 0L;
       } else {
         interruptTriggerIdBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00001000;
+      bitField0_ |= 0x00000200;
       onChanged();
       return this;
     }
@@ -2457,7 +2119,7 @@ private static final long serialVersionUID = 0L;
       } else {
         interruptTriggerIdBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00001000;
+      bitField0_ |= 0x00000200;
       onChanged();
       return this;
     }
@@ -2466,7 +2128,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeInterruptTriggerId(io.littlehorse.sdk.common.proto.ExternalEventId value) {
       if (interruptTriggerIdBuilder_ == null) {
-        if (((bitField0_ & 0x00001000) != 0) &&
+        if (((bitField0_ & 0x00000200) != 0) &&
           interruptTriggerId_ != null &&
           interruptTriggerId_ != io.littlehorse.sdk.common.proto.ExternalEventId.getDefaultInstance()) {
           getInterruptTriggerIdBuilder().mergeFrom(value);
@@ -2476,7 +2138,7 @@ private static final long serialVersionUID = 0L;
       } else {
         interruptTriggerIdBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00001000;
+      bitField0_ |= 0x00000200;
       onChanged();
       return this;
     }
@@ -2484,7 +2146,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
      */
     public Builder clearInterruptTriggerId() {
-      bitField0_ = (bitField0_ & ~0x00001000);
+      bitField0_ = (bitField0_ & ~0x00000200);
       interruptTriggerId_ = null;
       if (interruptTriggerIdBuilder_ != null) {
         interruptTriggerIdBuilder_.dispose();
@@ -2497,7 +2159,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.ExternalEventId interrupt_trigger_id = 14;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventId.Builder getInterruptTriggerIdBuilder() {
-      bitField0_ |= 0x00001000;
+      bitField0_ |= 0x00000200;
       onChanged();
       return getInterruptTriggerIdFieldBuilder().getBuilder();
     }
@@ -2537,7 +2199,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the failureBeingHandled field is set.
      */
     public boolean hasFailureBeingHandled() {
-      return ((bitField0_ & 0x00002000) != 0);
+      return ((bitField0_ & 0x00000400) != 0);
     }
     /**
      * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
@@ -2562,7 +2224,7 @@ private static final long serialVersionUID = 0L;
       } else {
         failureBeingHandledBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00002000;
+      bitField0_ |= 0x00000400;
       onChanged();
       return this;
     }
@@ -2576,7 +2238,7 @@ private static final long serialVersionUID = 0L;
       } else {
         failureBeingHandledBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00002000;
+      bitField0_ |= 0x00000400;
       onChanged();
       return this;
     }
@@ -2585,7 +2247,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeFailureBeingHandled(io.littlehorse.sdk.common.proto.FailureBeingHandled value) {
       if (failureBeingHandledBuilder_ == null) {
-        if (((bitField0_ & 0x00002000) != 0) &&
+        if (((bitField0_ & 0x00000400) != 0) &&
           failureBeingHandled_ != null &&
           failureBeingHandled_ != io.littlehorse.sdk.common.proto.FailureBeingHandled.getDefaultInstance()) {
           getFailureBeingHandledBuilder().mergeFrom(value);
@@ -2595,7 +2257,7 @@ private static final long serialVersionUID = 0L;
       } else {
         failureBeingHandledBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00002000;
+      bitField0_ |= 0x00000400;
       onChanged();
       return this;
     }
@@ -2603,7 +2265,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
      */
     public Builder clearFailureBeingHandled() {
-      bitField0_ = (bitField0_ & ~0x00002000);
+      bitField0_ = (bitField0_ & ~0x00000400);
       failureBeingHandled_ = null;
       if (failureBeingHandledBuilder_ != null) {
         failureBeingHandledBuilder_.dispose();
@@ -2616,7 +2278,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.FailureBeingHandled failure_being_handled = 15;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureBeingHandled.Builder getFailureBeingHandledBuilder() {
-      bitField0_ |= 0x00002000;
+      bitField0_ |= 0x00000400;
       onChanged();
       return getFailureBeingHandledFieldBuilder().getBuilder();
     }
@@ -2665,7 +2327,7 @@ private static final long serialVersionUID = 0L;
     public Builder setCurrentNodePosition(int value) {
 
       currentNodePosition_ = value;
-      bitField0_ |= 0x00004000;
+      bitField0_ |= 0x00000800;
       onChanged();
       return this;
     }
@@ -2674,7 +2336,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearCurrentNodePosition() {
-      bitField0_ = (bitField0_ & ~0x00004000);
+      bitField0_ = (bitField0_ & ~0x00000800);
       currentNodePosition_ = 0;
       onChanged();
       return this;
@@ -2682,9 +2344,9 @@ private static final long serialVersionUID = 0L;
 
     private com.google.protobuf.Internal.IntList handledFailedChildren_ = emptyIntList();
     private void ensureHandledFailedChildrenIsMutable() {
-      if (!((bitField0_ & 0x00008000) != 0)) {
+      if (!((bitField0_ & 0x00001000) != 0)) {
         handledFailedChildren_ = mutableCopy(handledFailedChildren_);
-        bitField0_ |= 0x00008000;
+        bitField0_ |= 0x00001000;
       }
     }
     /**
@@ -2693,7 +2355,7 @@ private static final long serialVersionUID = 0L;
      */
     public java.util.List<java.lang.Integer>
         getHandledFailedChildrenList() {
-      return ((bitField0_ & 0x00008000) != 0) ?
+      return ((bitField0_ & 0x00001000) != 0) ?
                java.util.Collections.unmodifiableList(handledFailedChildren_) : handledFailedChildren_;
     }
     /**
@@ -2756,7 +2418,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearHandledFailedChildren() {
       handledFailedChildren_ = emptyIntList();
-      bitField0_ = (bitField0_ & ~0x00008000);
+      bitField0_ = (bitField0_ & ~0x00001000);
       onChanged();
       return this;
     }
@@ -2776,7 +2438,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setTypeValue(int value) {
       type_ = value;
-      bitField0_ |= 0x00010000;
+      bitField0_ |= 0x00002000;
       onChanged();
       return this;
     }
@@ -2798,7 +2460,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00010000;
+      bitField0_ |= 0x00002000;
       type_ = value.getNumber();
       onChanged();
       return this;
@@ -2808,7 +2470,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearType() {
-      bitField0_ = (bitField0_ & ~0x00010000);
+      bitField0_ = (bitField0_ & ~0x00002000);
       type_ = 0;
       onChanged();
       return this;
