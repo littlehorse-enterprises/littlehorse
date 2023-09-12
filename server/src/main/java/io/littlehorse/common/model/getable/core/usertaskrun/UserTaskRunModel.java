@@ -452,7 +452,8 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
         return List.of(
                 new GetableIndex<UserTaskRunModel>(
-                        List.of(Pair.of("wfRunId", GetableIndex.ValueType.SINGLE)), Optional.of(TagStorageType.LOCAL)),
+                        List.of(Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)),
                 // Future: We will make this LOCAL if it's DONE or CANCELLED, and
                 // REMOTE if it's CLAIMED, UNASSIGNED, or ASSIGNED_NOT_CLAIMED.
                 new GetableIndex<UserTaskRunModel>(
