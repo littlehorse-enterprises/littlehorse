@@ -36,6 +36,7 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
 import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
+import io.littlehorse.sdk.wfsdk.LHErrorType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
@@ -629,6 +630,30 @@ final class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     public void handleException(NodeOutput nodeOutput, String exceptionName, ThreadFunc handler) {
+        addFailureHandlerDef(nodeOutput, exceptionName, handler);
+    }
+
+    @Override
+    public void handleException(NodeOutput node, ThreadFunc handler) {
+        addFailureHandlerDef(node, null, handler);
+    }
+
+    @Override
+    public void handleError(NodeOutput node, LHErrorType error, ThreadFunc handler) {
+        addFailureHandlerDef(node, error.getInternalName(), handler);
+    }
+
+    @Override
+    public void handleError(NodeOutput node, ThreadFunc handler) {
+        addFailureHandlerDef(node, null, handler);
+    }
+
+    @Override
+    public void handleAnyFailure(NodeOutput node, ThreadFunc handler) {
+        addFailureHandlerDef(node, null, handler);
+    }
+
+    private void addFailureHandlerDef(NodeOutput nodeOutput, String exceptionName, ThreadFunc handler) {
         checkIfIsActive();
         NodeOutputImpl node = (NodeOutputImpl) nodeOutput;
         String threadName = "exn-handler-" + node.nodeName + "-" + exceptionName;
