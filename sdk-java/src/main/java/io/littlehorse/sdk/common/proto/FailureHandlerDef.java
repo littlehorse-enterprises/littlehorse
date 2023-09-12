@@ -16,7 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private FailureHandlerDef() {
-    specificFailure_ = "";
     handlerSpecName_ = "";
   }
 
@@ -40,52 +39,154 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.FailureHandlerDef.class, io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder.class);
   }
 
-  private int bitField0_;
-  public static final int SPECIFIC_FAILURE_FIELD_NUMBER = 1;
+  /**
+   * Protobuf enum {@code littlehorse.FailureHandlerDef.LHFailureType}
+   */
+  public enum LHFailureType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>FAILURE_TYPE_ERROR = 0;</code>
+     */
+    FAILURE_TYPE_ERROR(0),
+    /**
+     * <code>FAILURE_TYPE_EXCEPTION = 1;</code>
+     */
+    FAILURE_TYPE_EXCEPTION(1),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>FAILURE_TYPE_ERROR = 0;</code>
+     */
+    public static final int FAILURE_TYPE_ERROR_VALUE = 0;
+    /**
+     * <code>FAILURE_TYPE_EXCEPTION = 1;</code>
+     */
+    public static final int FAILURE_TYPE_EXCEPTION_VALUE = 1;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static LHFailureType valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static LHFailureType forNumber(int value) {
+      switch (value) {
+        case 0: return FAILURE_TYPE_ERROR;
+        case 1: return FAILURE_TYPE_EXCEPTION;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<LHFailureType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        LHFailureType> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<LHFailureType>() {
+            public LHFailureType findValueByNumber(int number) {
+              return LHFailureType.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.FailureHandlerDef.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final LHFailureType[] VALUES = values();
+
+    public static LHFailureType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private LHFailureType(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:littlehorse.FailureHandlerDef.LHFailureType)
+  }
+
+  private int failureToCatchCase_ = 0;
   @SuppressWarnings("serial")
-  private volatile java.lang.Object specificFailure_ = "";
-  /**
-   * <code>optional string specific_failure = 1;</code>
-   * @return Whether the specificFailure field is set.
-   */
-  @java.lang.Override
-  public boolean hasSpecificFailure() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <code>optional string specific_failure = 1;</code>
-   * @return The specificFailure.
-   */
-  @java.lang.Override
-  public java.lang.String getSpecificFailure() {
-    java.lang.Object ref = specificFailure_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      specificFailure_ = s;
-      return s;
+  private java.lang.Object failureToCatch_;
+  public enum FailureToCatchCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    SPECIFIC_FAILURE(1),
+    ANY_FAILURE_OF_TYPE(3),
+    FAILURETOCATCH_NOT_SET(0);
+    private final int value;
+    private FailureToCatchCase(int value) {
+      this.value = value;
     }
-  }
-  /**
-   * <code>optional string specific_failure = 1;</code>
-   * @return The bytes for specificFailure.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getSpecificFailureBytes() {
-    java.lang.Object ref = specificFailure_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      specificFailure_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static FailureToCatchCase valueOf(int value) {
+      return forNumber(value);
     }
+
+    public static FailureToCatchCase forNumber(int value) {
+      switch (value) {
+        case 1: return SPECIFIC_FAILURE;
+        case 3: return ANY_FAILURE_OF_TYPE;
+        case 0: return FAILURETOCATCH_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public FailureToCatchCase
+  getFailureToCatchCase() {
+    return FailureToCatchCase.forNumber(
+        failureToCatchCase_);
   }
 
   public static final int HANDLER_SPEC_NAME_FIELD_NUMBER = 2;
@@ -127,6 +228,89 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int SPECIFIC_FAILURE_FIELD_NUMBER = 1;
+  /**
+   * <code>string specific_failure = 1;</code>
+   * @return Whether the specificFailure field is set.
+   */
+  public boolean hasSpecificFailure() {
+    return failureToCatchCase_ == 1;
+  }
+  /**
+   * <code>string specific_failure = 1;</code>
+   * @return The specificFailure.
+   */
+  public java.lang.String getSpecificFailure() {
+    java.lang.Object ref = "";
+    if (failureToCatchCase_ == 1) {
+      ref = failureToCatch_;
+    }
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      if (failureToCatchCase_ == 1) {
+        failureToCatch_ = s;
+      }
+      return s;
+    }
+  }
+  /**
+   * <code>string specific_failure = 1;</code>
+   * @return The bytes for specificFailure.
+   */
+  public com.google.protobuf.ByteString
+      getSpecificFailureBytes() {
+    java.lang.Object ref = "";
+    if (failureToCatchCase_ == 1) {
+      ref = failureToCatch_;
+    }
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      if (failureToCatchCase_ == 1) {
+        failureToCatch_ = b;
+      }
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int ANY_FAILURE_OF_TYPE_FIELD_NUMBER = 3;
+  /**
+   * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
+   * @return Whether the anyFailureOfType field is set.
+   */
+  public boolean hasAnyFailureOfType() {
+    return failureToCatchCase_ == 3;
+  }
+  /**
+   * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
+   * @return The enum numeric value on the wire for anyFailureOfType.
+   */
+  public int getAnyFailureOfTypeValue() {
+    if (failureToCatchCase_ == 3) {
+      return (java.lang.Integer) failureToCatch_;
+    }
+    return 0;
+  }
+  /**
+   * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
+   * @return The anyFailureOfType.
+   */
+  public io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType getAnyFailureOfType() {
+    if (failureToCatchCase_ == 3) {
+      io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType result = io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType.forNumber(
+          (java.lang.Integer) failureToCatch_);
+      return result == null ? io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType.UNRECOGNIZED : result;
+    }
+    return io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -141,11 +325,14 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, specificFailure_);
+    if (failureToCatchCase_ == 1) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, failureToCatch_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(handlerSpecName_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, handlerSpecName_);
+    }
+    if (failureToCatchCase_ == 3) {
+      output.writeEnum(3, ((java.lang.Integer) failureToCatch_));
     }
     getUnknownFields().writeTo(output);
   }
@@ -156,11 +343,15 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, specificFailure_);
+    if (failureToCatchCase_ == 1) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, failureToCatch_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(handlerSpecName_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, handlerSpecName_);
+    }
+    if (failureToCatchCase_ == 3) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(3, ((java.lang.Integer) failureToCatch_));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -177,13 +368,21 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.FailureHandlerDef other = (io.littlehorse.sdk.common.proto.FailureHandlerDef) obj;
 
-    if (hasSpecificFailure() != other.hasSpecificFailure()) return false;
-    if (hasSpecificFailure()) {
-      if (!getSpecificFailure()
-          .equals(other.getSpecificFailure())) return false;
-    }
     if (!getHandlerSpecName()
         .equals(other.getHandlerSpecName())) return false;
+    if (!getFailureToCatchCase().equals(other.getFailureToCatchCase())) return false;
+    switch (failureToCatchCase_) {
+      case 1:
+        if (!getSpecificFailure()
+            .equals(other.getSpecificFailure())) return false;
+        break;
+      case 3:
+        if (getAnyFailureOfTypeValue()
+            != other.getAnyFailureOfTypeValue()) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -195,12 +394,20 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasSpecificFailure()) {
-      hash = (37 * hash) + SPECIFIC_FAILURE_FIELD_NUMBER;
-      hash = (53 * hash) + getSpecificFailure().hashCode();
-    }
     hash = (37 * hash) + HANDLER_SPEC_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getHandlerSpecName().hashCode();
+    switch (failureToCatchCase_) {
+      case 1:
+        hash = (37 * hash) + SPECIFIC_FAILURE_FIELD_NUMBER;
+        hash = (53 * hash) + getSpecificFailure().hashCode();
+        break;
+      case 3:
+        hash = (37 * hash) + ANY_FAILURE_OF_TYPE_FIELD_NUMBER;
+        hash = (53 * hash) + getAnyFailureOfTypeValue();
+        break;
+      case 0:
+      default:
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -332,8 +539,9 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      specificFailure_ = "";
       handlerSpecName_ = "";
+      failureToCatchCase_ = 0;
+      failureToCatch_ = null;
       return this;
     }
 
@@ -361,21 +569,21 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.FailureHandlerDef buildPartial() {
       io.littlehorse.sdk.common.proto.FailureHandlerDef result = new io.littlehorse.sdk.common.proto.FailureHandlerDef(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.FailureHandlerDef result) {
       int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.specificFailure_ = specificFailure_;
-        to_bitField0_ |= 0x00000001;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.handlerSpecName_ = handlerSpecName_;
       }
-      result.bitField0_ |= to_bitField0_;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.FailureHandlerDef result) {
+      result.failureToCatchCase_ = failureToCatchCase_;
+      result.failureToCatch_ = this.failureToCatch_;
     }
 
     @java.lang.Override
@@ -422,15 +630,25 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.FailureHandlerDef other) {
       if (other == io.littlehorse.sdk.common.proto.FailureHandlerDef.getDefaultInstance()) return this;
-      if (other.hasSpecificFailure()) {
-        specificFailure_ = other.specificFailure_;
+      if (!other.getHandlerSpecName().isEmpty()) {
+        handlerSpecName_ = other.handlerSpecName_;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (!other.getHandlerSpecName().isEmpty()) {
-        handlerSpecName_ = other.handlerSpecName_;
-        bitField0_ |= 0x00000002;
-        onChanged();
+      switch (other.getFailureToCatchCase()) {
+        case SPECIFIC_FAILURE: {
+          failureToCatchCase_ = 1;
+          failureToCatch_ = other.failureToCatch_;
+          onChanged();
+          break;
+        }
+        case ANY_FAILURE_OF_TYPE: {
+          setAnyFailureOfTypeValue(other.getAnyFailureOfTypeValue());
+          break;
+        }
+        case FAILURETOCATCH_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -459,15 +677,22 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              specificFailure_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000001;
+              java.lang.String s = input.readStringRequireUtf8();
+              failureToCatchCase_ = 1;
+              failureToCatch_ = s;
               break;
             } // case 10
             case 18: {
               handlerSpecName_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000001;
               break;
             } // case 18
+            case 24: {
+              int rawValue = input.readEnum();
+              failureToCatchCase_ = 3;
+              failureToCatch_ = rawValue;
+              break;
+            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -483,86 +708,22 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-    private int bitField0_;
+    private int failureToCatchCase_ = 0;
+    private java.lang.Object failureToCatch_;
+    public FailureToCatchCase
+        getFailureToCatchCase() {
+      return FailureToCatchCase.forNumber(
+          failureToCatchCase_);
+    }
 
-    private java.lang.Object specificFailure_ = "";
-    /**
-     * <code>optional string specific_failure = 1;</code>
-     * @return Whether the specificFailure field is set.
-     */
-    public boolean hasSpecificFailure() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>optional string specific_failure = 1;</code>
-     * @return The specificFailure.
-     */
-    public java.lang.String getSpecificFailure() {
-      java.lang.Object ref = specificFailure_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        specificFailure_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>optional string specific_failure = 1;</code>
-     * @return The bytes for specificFailure.
-     */
-    public com.google.protobuf.ByteString
-        getSpecificFailureBytes() {
-      java.lang.Object ref = specificFailure_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        specificFailure_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>optional string specific_failure = 1;</code>
-     * @param value The specificFailure to set.
-     * @return This builder for chaining.
-     */
-    public Builder setSpecificFailure(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      specificFailure_ = value;
-      bitField0_ |= 0x00000001;
+    public Builder clearFailureToCatch() {
+      failureToCatchCase_ = 0;
+      failureToCatch_ = null;
       onChanged();
       return this;
     }
-    /**
-     * <code>optional string specific_failure = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearSpecificFailure() {
-      specificFailure_ = getDefaultInstance().getSpecificFailure();
-      bitField0_ = (bitField0_ & ~0x00000001);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional string specific_failure = 1;</code>
-     * @param value The bytes for specificFailure to set.
-     * @return This builder for chaining.
-     */
-    public Builder setSpecificFailureBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      specificFailure_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
+
+    private int bitField0_;
 
     private java.lang.Object handlerSpecName_ = "";
     /**
@@ -607,7 +768,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       handlerSpecName_ = value;
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -617,7 +778,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearHandlerSpecName() {
       handlerSpecName_ = getDefaultInstance().getHandlerSpecName();
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
@@ -631,8 +792,171 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       handlerSpecName_ = value;
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
+      return this;
+    }
+
+    /**
+     * <code>string specific_failure = 1;</code>
+     * @return Whether the specificFailure field is set.
+     */
+    @java.lang.Override
+    public boolean hasSpecificFailure() {
+      return failureToCatchCase_ == 1;
+    }
+    /**
+     * <code>string specific_failure = 1;</code>
+     * @return The specificFailure.
+     */
+    @java.lang.Override
+    public java.lang.String getSpecificFailure() {
+      java.lang.Object ref = "";
+      if (failureToCatchCase_ == 1) {
+        ref = failureToCatch_;
+      }
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (failureToCatchCase_ == 1) {
+          failureToCatch_ = s;
+        }
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string specific_failure = 1;</code>
+     * @return The bytes for specificFailure.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSpecificFailureBytes() {
+      java.lang.Object ref = "";
+      if (failureToCatchCase_ == 1) {
+        ref = failureToCatch_;
+      }
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        if (failureToCatchCase_ == 1) {
+          failureToCatch_ = b;
+        }
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string specific_failure = 1;</code>
+     * @param value The specificFailure to set.
+     * @return This builder for chaining.
+     */
+    public Builder setSpecificFailure(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      failureToCatchCase_ = 1;
+      failureToCatch_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string specific_failure = 1;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearSpecificFailure() {
+      if (failureToCatchCase_ == 1) {
+        failureToCatchCase_ = 0;
+        failureToCatch_ = null;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <code>string specific_failure = 1;</code>
+     * @param value The bytes for specificFailure to set.
+     * @return This builder for chaining.
+     */
+    public Builder setSpecificFailureBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      failureToCatchCase_ = 1;
+      failureToCatch_ = value;
+      onChanged();
+      return this;
+    }
+
+    /**
+     * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
+     * @return Whether the anyFailureOfType field is set.
+     */
+    @java.lang.Override
+    public boolean hasAnyFailureOfType() {
+      return failureToCatchCase_ == 3;
+    }
+    /**
+     * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
+     * @return The enum numeric value on the wire for anyFailureOfType.
+     */
+    @java.lang.Override
+    public int getAnyFailureOfTypeValue() {
+      if (failureToCatchCase_ == 3) {
+        return ((java.lang.Integer) failureToCatch_).intValue();
+      }
+      return 0;
+    }
+    /**
+     * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
+     * @param value The enum numeric value on the wire for anyFailureOfType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setAnyFailureOfTypeValue(int value) {
+      failureToCatchCase_ = 3;
+      failureToCatch_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
+     * @return The anyFailureOfType.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType getAnyFailureOfType() {
+      if (failureToCatchCase_ == 3) {
+        io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType result = io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType.forNumber(
+            (java.lang.Integer) failureToCatch_);
+        return result == null ? io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType.UNRECOGNIZED : result;
+      }
+      return io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR;
+    }
+    /**
+     * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
+     * @param value The anyFailureOfType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setAnyFailureOfType(io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      failureToCatchCase_ = 3;
+      failureToCatch_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearAnyFailureOfType() {
+      if (failureToCatchCase_ == 3) {
+        failureToCatchCase_ = 0;
+        failureToCatch_ = null;
+        onChanged();
+      }
       return this;
     }
     @java.lang.Override
