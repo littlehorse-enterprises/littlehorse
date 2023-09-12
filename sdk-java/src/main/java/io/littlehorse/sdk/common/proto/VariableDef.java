@@ -192,6 +192,17 @@ private static final long serialVersionUID = 0L;
     return defaultValue_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : defaultValue_;
   }
 
+  public static final int PERSISTENT_FIELD_NUMBER = 6;
+  private boolean persistent_ = false;
+  /**
+   * <code>bool persistent = 6;</code>
+   * @return The persistent.
+   */
+  @java.lang.Override
+  public boolean getPersistent() {
+    return persistent_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -221,6 +232,9 @@ private static final long serialVersionUID = 0L;
     if (defaultValue_ != null) {
       output.writeMessage(5, getDefaultValue());
     }
+    if (persistent_ != false) {
+      output.writeBool(6, persistent_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -248,6 +262,10 @@ private static final long serialVersionUID = 0L;
     if (defaultValue_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, getDefaultValue());
+    }
+    if (persistent_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(6, persistent_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -278,6 +296,8 @@ private static final long serialVersionUID = 0L;
       if (!getDefaultValue()
           .equals(other.getDefaultValue())) return false;
     }
+    if (getPersistent()
+        != other.getPersistent()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -305,6 +325,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + DEFAULT_VALUE_FIELD_NUMBER;
       hash = (53 * hash) + getDefaultValue().hashCode();
     }
+    hash = (37 * hash) + PERSISTENT_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getPersistent());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -451,6 +474,7 @@ private static final long serialVersionUID = 0L;
         defaultValueBuilder_.dispose();
         defaultValueBuilder_ = null;
       }
+      persistent_ = false;
       return this;
     }
 
@@ -512,6 +536,9 @@ private static final long serialVersionUID = 0L;
         result.defaultValue_ = defaultValueBuilder_ == null
             ? defaultValue_
             : defaultValueBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
+        result.persistent_ = persistent_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -600,6 +627,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasDefaultValue()) {
         mergeDefaultValue(other.getDefaultValue());
       }
+      if (other.getPersistent() != false) {
+        setPersistent(other.getPersistent());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -661,6 +691,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000010;
               break;
             } // case 42
+            case 48: {
+              persistent_ = input.readBool();
+              bitField0_ |= 0x00000020;
+              break;
+            } // case 48
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1220,6 +1255,38 @@ private static final long serialVersionUID = 0L;
         defaultValue_ = null;
       }
       return defaultValueBuilder_;
+    }
+
+    private boolean persistent_ ;
+    /**
+     * <code>bool persistent = 6;</code>
+     * @return The persistent.
+     */
+    @java.lang.Override
+    public boolean getPersistent() {
+      return persistent_;
+    }
+    /**
+     * <code>bool persistent = 6;</code>
+     * @param value The persistent to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPersistent(boolean value) {
+
+      persistent_ = value;
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bool persistent = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPersistent() {
+      bitField0_ = (bitField0_ & ~0x00000020);
+      persistent_ = false;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

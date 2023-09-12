@@ -96,18 +96,20 @@ class VariableMutation(_message.Message):
     def __init__(self, lhs_name: _Optional[str] = ..., lhs_json_path: _Optional[str] = ..., operation: _Optional[_Union[VariableMutationType, str]] = ..., source_variable: _Optional[_Union[VariableAssignment, _Mapping]] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., node_output: _Optional[_Union[VariableMutation.NodeOutputSource, _Mapping]] = ...) -> None: ...
 
 class VariableDef(_message.Message):
-    __slots__ = ["type", "name", "index_type", "json_indexes", "default_value"]
+    __slots__ = ["type", "name", "index_type", "json_indexes", "default_value", "persistent"]
     TYPE_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
     INDEX_TYPE_FIELD_NUMBER: _ClassVar[int]
     JSON_INDEXES_FIELD_NUMBER: _ClassVar[int]
     DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
+    PERSISTENT_FIELD_NUMBER: _ClassVar[int]
     type: _common_enums_pb2.VariableType
     name: str
     index_type: IndexType
     json_indexes: _containers.RepeatedCompositeFieldContainer[JsonIndex]
     default_value: _variable_pb2.VariableValue
-    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., index_type: _Optional[_Union[IndexType, str]] = ..., json_indexes: _Optional[_Iterable[_Union[JsonIndex, _Mapping]]] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    persistent: bool
+    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., index_type: _Optional[_Union[IndexType, str]] = ..., json_indexes: _Optional[_Iterable[_Union[JsonIndex, _Mapping]]] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., persistent: bool = ...) -> None: ...
 
 class JsonIndex(_message.Message):
     __slots__ = ["path", "index_type"]

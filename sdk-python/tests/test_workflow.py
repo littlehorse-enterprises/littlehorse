@@ -115,6 +115,10 @@ class TestWfRunVariable(unittest.TestCase):
             str(exception_context.exception),
         )
 
+    def test_persistent(self):
+        variable = WfRunVariable("my-var", VariableType.STR).persistent()
+        self.assertEqual(variable.compile().persistent, True)
+
     def test_validate_is_json_obj_when_using_json_pth(self):
         variable = WfRunVariable("my-var", VariableType.STR)
         with self.assertRaises(ValueError) as exception_context:

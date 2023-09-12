@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.JsonIndex;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,5 +39,17 @@ public class JsonIndexModel extends LHSerializable<JsonIndex> {
 
     public TagStorageType getTagStorageType() {
         return indexType == IndexType.LOCAL_INDEX ? TagStorageType.LOCAL : TagStorageType.REMOTE;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) return false;
+
+        if (!(other instanceof JsonIndexModel)) {
+            return false;
+        }
+
+        JsonIndexModel o = (JsonIndexModel) other;
+        return Objects.equals(path, o.getPath()) && Objects.equals(indexType, o.getIndexType());
     }
 }
