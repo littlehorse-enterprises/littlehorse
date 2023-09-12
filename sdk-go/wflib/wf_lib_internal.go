@@ -272,6 +272,25 @@ func (t *ThreadBuilder) assignVariable(
 				VariableName: v.Name,
 			},
 		}
+	case *LHFormatString:
+		formatAssignment, _ := t.assignVariable(v.format)
+		var argsAssignments []*model.VariableAssignment = make([]*model.VariableAssignment, 0)
+
+		for _, formatArg := range v.formatArgs {
+			argAssignment, err := t.assignVariable(formatArg)
+			if err != nil {
+				t.throwError(tracerr.Wrap(err))
+			}
+			argsAssignments = append(argsAssignments, argAssignment)
+		}
+		out = &model.VariableAssignment{
+			Source: &model.VariableAssignment_FormatString_{
+				FormatString: &model.VariableAssignment_FormatString{
+					Format: formatAssignment,
+					Args:   argsAssignments,
+				},
+			},
+		}
 	case *NodeOutput, NodeOutput:
 		err = errors.New(
 			"cannot use NodeOutput directly as input to task. Save as var first",
@@ -807,6 +826,14 @@ func (t *ThreadBuilder) waitForEvent(eventName string) *NodeOutput {
 		nodeName: nodeName,
 		jsonPath: nil,
 		thread:   t,
+	}
+}
+
+func (t *ThreadBuilder) format(format string, args []*WfRunVariable) *LHFormatString {
+	return &LHFormatString{
+		format:     format,
+		thread:     t,
+		formatArgs: args,
 	}
 }
 
