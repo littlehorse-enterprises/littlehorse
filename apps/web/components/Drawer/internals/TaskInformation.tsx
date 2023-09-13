@@ -77,7 +77,7 @@ export const TaskInformation = ({isWFRun, data, wfRunId, run, setToggleSideBar, 
     return (
         <>
 
-        <DrawerHeader name={data.name} title="Task Node Information" image="TASK" />
+        <DrawerHeader name={data?.name} title="Task Node Information" image="TASK" />
         
         {isWFRun ? (
             <div className=''>
@@ -133,7 +133,7 @@ export const TaskInformation = ({isWFRun, data, wfRunId, run, setToggleSideBar, 
             {/* <pre>{JSON.stringify(node, null,2)}</pre> */}
             {/* <pre>{JSON.stringify(nrun?.attempts?.[attempt_no || 0], null,2)}</pre> */}
             {/* <pre>{JSON.stringify(info, null,2)}</pre> */}
-            {nrun?.attempts.length &&<DrawerSection title="Outputs" >
+            {nrun?.attempts?.length &&<DrawerSection title="Outputs" >
                 <table>
                     <thead>
                         <tr>

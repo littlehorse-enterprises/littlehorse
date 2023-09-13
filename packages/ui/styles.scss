@@ -287,3 +287,21 @@ article{
     }
 
 }
+
+.bcrumb{
+    display: flex;
+    gap:5px;
+    color:"#EDEEF0";
+    font-family: "Inter";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    .kind{
+        text-transform: capitalize;
+    }
+    a{
+        color: var(--color-primary, #7F7AFF);
+        text-decoration: none;
+    }
+}
