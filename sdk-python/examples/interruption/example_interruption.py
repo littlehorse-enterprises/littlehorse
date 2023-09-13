@@ -20,7 +20,7 @@ def get_config() -> LHConfig:
 
 def get_workflow() -> Workflow:
     def my_interrupt_handler(thread: ThreadBuilder) -> None:
-        thread.execute("interrupt-handler")
+        thread.execute("some-task")
 
     def my_entrypoint(thread: ThreadBuilder) -> None:
         thread.add_interrupt_handler("interruption-event", my_interrupt_handler)
@@ -30,8 +30,8 @@ def get_workflow() -> Workflow:
     return Workflow("example-interrupt-handler", my_entrypoint)
 
 
-async def interrupt_handler() -> None:
-    print("Executing interrupt-handler")
+async def some_task() -> None:
+    print("Executing some task")
     raise Exception("Workflow execution stopped")
 
 
@@ -46,12 +46,12 @@ async def main() -> None:
 
     littlehorse.create_external_event_def("interruption-event", config)
     littlehorse.create_task_def(my_task, "my-task", config)
-    littlehorse.create_task_def(interrupt_handler, "interrupt-handler", config)
+    littlehorse.create_task_def(some_task, "some-task", config)
     littlehorse.create_workflow_spec(get_workflow(), config)
 
     await littlehorse.start(
         LHTaskWorker(my_task, "my-task", config),
-        LHTaskWorker(interrupt_handler, "interrupt-handler", config),
+        LHTaskWorker(some_task, "some-task", config),
     )
 
 

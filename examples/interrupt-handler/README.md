@@ -3,6 +3,12 @@
 This example shows how to interrupt a workflow execution.
 You need to register and interrupt handler with thread.registerInterruptHandler.
 
+In this example the parent thread sleeps 30 sec, we can interrupt it while it's sleeping,
+and it creates a child thread. When a interruption is received the workflow executes the task:
+"some-task", if the task fails the whole workflow fails.
+
+In order for the Interrupt to happen, the parent thread needs to be sleeping.
+
 Let's run the example in `InterruptHandlerExample.java`
 
 ```
@@ -22,10 +28,10 @@ lhctl get wfRun <wf run id>
 lhctl postEvent <wf run id> interruption-event NULL
 
 # Then inspect the wfRun:
-# Note it is 'COMPLETED' whit type 'INTERRUPT'
+# Note that the threadRuns number 1 is 'ERROR' with type 'INTERRUPT'
 lhctl get wfRun <wf run id>
 
-# Then inspect the output of the ExternalEvent and how it completed the nodeRun:
+# Then you can inspect the output of the ExternalEvent:
 lhctl get nodeRun <wf run id> 1 1
 lhctl get taskRun <wf run id> <task runid>
 ```
