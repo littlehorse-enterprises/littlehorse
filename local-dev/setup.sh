@@ -8,14 +8,15 @@ DOCKER_COMPOSE_KAFKA=$(
     cat <<EOF
 services:
   kafka:
-    network_mode: host
+    ports:
+      - "9092:9092"
     container_name: lh-server-kafka
     image: bitnami/kafka:3.4
     environment:
       ALLOW_PLAINTEXT_LISTENER: "yes"
       KAFKA_ENABLE_KRAFT: "yes"
-      KAFKA_CFG_LISTENERS: CONTROLLER://127.0.0.1:29092,PLAINTEXT://127.0.0.1:9092
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
+      KAFKA_CFG_LISTENERS: CONTROLLER://0.0.0.0:29092,PLAINTEXT://0.0.0.0:9092
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_CFG_BROKER_ID: "1"
       KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_CFG_INTER_BROKER_LISTENER_NAME: PLAINTEXT
@@ -35,7 +36,8 @@ DOCKER_COMPOSE_KEYCLOAK=$(
     cat <<EOF
 services:
   keycloak:
-    network_mode: host
+    ports:
+      - "8888:8888"
     container_name: lh-server-auth
     image: quay.io/keycloak/keycloak:21.1.1
     command: ["start-dev", "--http-port=8888"]
@@ -146,6 +148,7 @@ EOF
 }
 
 clean() {
+    echo "Cleanning"
     docker compose --file /dev/stdin \
         --project-directory "$WORK_DIR" \
         --project-name lh-server-kafka-local-dev \
@@ -164,7 +167,7 @@ EOF
 }
 
 case $command in
-clean)
+--clean)
     clean
     ;;
 keycloak)
