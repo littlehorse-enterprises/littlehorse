@@ -516,6 +516,11 @@ class ThreadBuilder:
             to sleep for.
         """
         self._check_if_active()
+        if isinstance(seconds, WfRunVariable) and seconds.type is not VariableType.INT:
+            raise ValueError("WfRunVariable must be VariableType.INT")
+
+        if isinstance(seconds, int) and seconds <= 0:
+            raise ValueError(f"Value '{seconds}' not allowed")
         self.add_node("sleep", SleepNode(raw_seconds=to_variable_assignment(seconds)))
 
     def sleep_until(self, timestamp: WfRunVariable) -> None:
@@ -529,6 +534,11 @@ class ThreadBuilder:
             timestamp (in milliseconds) to wait for.
         """
         self._check_if_active()
+        if (
+            isinstance(timestamp, WfRunVariable)
+            and timestamp.type is not VariableType.INT
+        ):
+            raise ValueError("WfRunVariable must be VariableType.INT")
         self.add_node("sleep", SleepNode(timestamp=to_variable_assignment(timestamp)))
 
     def add_interrupt_handler(self, name: str, handler: "ThreadInitializer") -> None:

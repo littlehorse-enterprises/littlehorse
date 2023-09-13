@@ -574,6 +574,53 @@ class TestThreadBuilder(unittest.TestCase):
             str(exception_context.exception),
         )
 
+    def test_invalid_int_sleep(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            thread.sleep(0)
+
+        with self.assertRaises(ValueError) as exception_context:
+            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+
+        self.assertEqual(
+            "Value '0' not allowed",
+            str(exception_context.exception),
+        )
+
+    def test_valid_int_sleep(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            thread.sleep(1)
+
+        try:
+            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+        except Exception as e:
+            self.fail(f"Exception was NOT expected: {e}")
+
+    def test_invalid_variable_sleep(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            my_var = thread.add_variable("my-var", VariableType.STR)
+            thread.sleep(my_var)
+
+        with self.assertRaises(ValueError) as exception_context:
+            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+
+        self.assertEqual(
+            "WfRunVariable must be VariableType.INT",
+            str(exception_context.exception),
+        )
+
+    def test_invalid_variable_sleep_until(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            my_var = thread.add_variable("my-var", VariableType.STR)
+            thread.sleep_until(my_var)
+
+        with self.assertRaises(ValueError) as exception_context:
+            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+
+        self.assertEqual(
+            "WfRunVariable must be VariableType.INT",
+            str(exception_context.exception),
+        )
+
     def test_mutate_with_literal_value(self):
         def my_entrypoint(thread: ThreadBuilder) -> None:
             value = thread.add_variable("value", VariableType.INT)
