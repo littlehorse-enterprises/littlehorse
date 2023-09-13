@@ -229,3 +229,25 @@ func TestParallelSpawnThreadsWithInput(t *testing.T) {
 
 	assert.Equal(t, int64(1234), *spawnNode.Variables["asdf"].GetLiteralValue().Int)
 }
+
+func TestFormatString(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+		myArr := t.AddVariable("my-str", model.VariableType_STR)
+		t.Execute("some-task", t.Format("input {0}", myArr))
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	spawnNode := entrypoint.Nodes["1-some-task-TASK"].GetTask()
+
+	formatAssn := spawnNode.Variables[0].GetFormatString()
+
+	assert.NotNil(t, formatAssn)
+	assert.Equal(t, *formatAssn.Format.GetLiteralValue().Str, "input {0}")
+	assert.Equal(t, len(formatAssn.GetArgs()), 1)
+	assert.Equal(t, formatAssn.Args[0].GetVariableName(), "my-str")
+}

@@ -66,6 +66,12 @@ type SpawnedThreads struct {
 	threadsVar *WfRunVariable
 }
 
+type LHFormatString struct {
+	format     string
+	formatArgs []*WfRunVariable
+	thread     *ThreadBuilder
+}
+
 func (n *NodeOutput) JsonPath(path string) NodeOutput {
 	return n.jsonPathImpl(path)
 }
@@ -156,6 +162,10 @@ func (t *ThreadBuilder) AssignTaskToUser(
 	userTaskDefName string, userId, userGroup interface{},
 ) *UserTaskOutput {
 	return t.assignTaskToUser(userTaskDefName, userId, userGroup)
+}
+
+func (t *ThreadBuilder) Format(format string, args ...*WfRunVariable) *LHFormatString {
+	return t.format(format, args)
 }
 
 func (t *ThreadBuilder) AssignTaskToUserGroup(
