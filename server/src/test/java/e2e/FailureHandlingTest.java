@@ -51,7 +51,7 @@ public class FailureHandlingTest {
     public void shouldHandleAnyException() {
         workflowVerifier
                 .prepareRun(handleAnyExceptionWf)
-                .waitForStatus(LHStatus.ERROR)
+                .waitForStatus(LHStatus.COMPLETED)
                 .start();
     }
 
@@ -87,7 +87,7 @@ public class FailureHandlingTest {
         return new WorkflowImpl("example-exception-handler", thread -> {
             SpawnedThread spawnThread = thread.spawnThread(
                     subThread -> {
-                        subThread.execute("fail");
+                        subThread.fail("custom-exception", "this is a exception");
                     },
                     "sub-thread",
                     Map.of());

@@ -51,8 +51,8 @@ public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
             } else if (type == LHFailureType.FAILURE_TYPE_EXCEPTION) {
                 return !LHConstants.RESERVED_EXCEPTION_NAMES.contains(failureName);
             }
-            // Then it's a wildcard, which means match all exceptions.
-            log.debug("Wildcard exception handler...accepting.");
+            // Then it's a wildcard, which means match all failures.
+            log.debug("Wildcard failure handler...accepting.");
             return true;
         }
 
