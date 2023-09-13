@@ -431,7 +431,9 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
               );
             })}
         </div>
-
+          
+        
+            
         {/* {props.internalComponent === "task" && (
           <TaskDefInformation
             {...{

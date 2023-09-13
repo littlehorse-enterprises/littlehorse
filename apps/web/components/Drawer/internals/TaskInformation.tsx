@@ -7,6 +7,7 @@ import linkSvg from "./link.svg";
 import { DrawerHeader, DrawerSection } from "ui"
 import { orderBy } from "lodash"
 import { parseValueByType } from "../../../helpers/parseValueByType"
+import { nodename } from "../../../helpers/nodename"
 
 interface Props {
     isWFRun:boolean
@@ -20,6 +21,8 @@ interface Props {
 export const TaskInformation = ({isWFRun, data, wfRunId, run, setToggleSideBar, setCode}:Props) => {
 
     const [attempt_no, setAttemptNo] = useState(0)
+    const [loops, setLoops] = useState<any[]>()
+    const [guid, setGuid] = useState<string>()
     const [info, setInfo] = useState<any>()
     const [node, setNode] = useState<any>()
     const [nrun, setRun] = useState<any>()
@@ -49,9 +52,23 @@ export const TaskInformation = ({isWFRun, data, wfRunId, run, setToggleSideBar, 
             // if(result.attempts.length)setAttempt(result.attempts[0])
 		}
     }
+    const getUserTaskRunGUID = async () => {
+      if(!node?.task?.taskRunId) return 
+      let params = node?.task?.taskRunId
+      params['taskGuid'] = guid
+        const res = await fetch('/api/drawer/taskRun', {
+			method: 'POST',
+			body: JSON.stringify(params)
+		})
+        if (res.ok) {
+			const {result} = await res.json()
+            setRun(result)
+            // if(result.attempts.length)setAttempt(result.attempts[0])
+		}
+    }
     const getInfo = async () => {
 
-        const res = await fetch('/api/information/taskDef', {
+    const res = await fetch('/api/information/taskDef', {
 			method: 'POST',
 			body: JSON.stringify({
 				id:data?.node?.task?.taskDefName,
@@ -74,9 +91,48 @@ export const TaskInformation = ({isWFRun, data, wfRunId, run, setToggleSideBar, 
     useEffect( () => {
         getInfo()
     },[data])
+
+    const getLoops = async ( ) => {
+      const res = await fetch("/api/loops/taskRun", {
+        method: "POST",
+        body: JSON.stringify({
+          taskDefName: data?.node?.task?.taskDefName,
+          wfRunId
+        }),
+      });
+      if (res.ok) {
+        const results = await res.json()
+       setLoops(results)
+      }
+    }
+
+  useEffect( () => {
+    if(!data) return 
+      getLoops()
+  },[data])
+  useEffect( () => {
+    if(!guid) return 
+    getUserTaskRunGUID()
+  },[guid])
     return (
         <>
+        {loops?.length && loops?.length  > 1 && <div className="task_attempts">
+              <div className="title">Node Run</div>
+              <div className="selector">
+                <div className="icon">
+                  <img src="/loop.svg" />
+                </div>
+                <div className='version_select'>
+                  {/* <select  value={attempt_no} onChange={ e => setAttemptNo(+e.target.value)}> */}
+                  <select onChange={ e => setGuid(e.target.value)} >
+                      {loops?.map( (loop, ix:number) => <option key={ix} value={loop.taskGuid}> {loop.taskGuid}</option>)}
+                      {/* {nrun?.attempts?.map( (_, ix:number) => <option key={ix} value={ix}> {nrun?.taskDefName} [{ix}]</option>)} */}
+                  </select>
+                  <img style={{marginLeft:"30px"}} src="/expand_more.svg" />
+                </div>
+              </div>
 
+            </div>}
         <DrawerHeader name={data?.name} title="Task Node Information" image="TASK" />
         
         {isWFRun ? (
@@ -131,7 +187,8 @@ export const TaskInformation = ({isWFRun, data, wfRunId, run, setToggleSideBar, 
               </div>
             </DrawerSection>}
             {/* <pre>{JSON.stringify(node, null,2)}</pre> */}
-            {/* <pre>{JSON.stringify(nrun?.attempts?.[attempt_no || 0], null,2)}</pre> */}
+            {/* <pre>{JSON.stringify(node?.task?.taskRunId, null,2)}</pre> */}
+            {/* <pre>{JSON.stringify(nrun, null,2)}</pre> */}
             {/* <pre>{JSON.stringify(info, null,2)}</pre> */}
             {nrun?.attempts?.length &&<DrawerSection title="Outputs" >
                 <table>

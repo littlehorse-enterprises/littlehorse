@@ -75,6 +75,26 @@ export const WfRunVisualizer = ({
 				}
 				// if(m.type === 'NOP' && m.childs.length === 1){
 	
+				if(open && ['TASK', 'USER_TASK', 'EXTERNAL_EVENT'].includes(el.type)){
+					console.log('CHECK IF LOOP', el.type)
+          el.loop = true
+          // if('TASK') 
+          // - TASK_SCHEDULED
+          // - TASK_RUNNING
+          // - TASK_SUCCESS
+          // - TASK_FAILED
+          // - TASK_TIMEOUT
+          // - TASK_OUTPUT_SERIALIZING_ERROR
+          // - TASK_INPUT_VAR_SUB_ERROR
+
+          // if('USER_TASK') 
+          // - UNASSIGNED
+          // - ASSIGNED
+          // - DONE
+          // - CANCELLED
+
+          // if('EXTERNAL_EVENT') 
+				}
 				if(m.type === 'NOP' && open){
 					el.cNOP = m.name
 				}
@@ -114,6 +134,7 @@ export const WfRunVisualizer = ({
       childs: e[1]["outgoingEdges"].map((e) => e.sinkNodeName),
       level: 0,
       closer:false,
+      loop:false,
       while:false,
       px: "center",
     }));
@@ -205,6 +226,7 @@ export const WfRunVisualizer = ({
           />
         )}
       </div>
+
       <Drawer title={"WfSpec Properties"}>{drawerInternal}</Drawer>
       <WFRunInformationSideBar
         toggleSideBar={toggleSideBar}
