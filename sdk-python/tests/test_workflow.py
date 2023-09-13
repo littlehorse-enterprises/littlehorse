@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import MagicMock
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import (
     Comparator,
@@ -18,6 +19,7 @@ from littlehorse.model.wf_spec_pb2 import (
     EntrypointNode,
     ExitNode,
     ExternalEventNode,
+    InterruptDef,
     Node,
     NopNode,
     ThreadSpec,
@@ -162,7 +164,7 @@ class TestThreadBuilder(unittest.TestCase):
         def my_entrypoint(thread: ThreadBuilder) -> None:
             thread.add_variable("input-name", VariableType.STR)
 
-        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+        thread = ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
         self.assertEqual(
             thread.compile(),
             ThreadSpec(
@@ -195,7 +197,9 @@ class TestThreadBuilder(unittest.TestCase):
                 )
 
             def to_thread(self):
-                return ThreadBuilder(workflow=None, initializer=self.my_entrypoint)
+                return ThreadBuilder(
+                    workflow=MagicMock(), initializer=self.my_entrypoint
+                )
 
         my_object = MyClass()
         thread_builder = my_object.to_thread()
@@ -280,7 +284,9 @@ class TestThreadBuilder(unittest.TestCase):
                 )
 
             def to_thread(self):
-                return ThreadBuilder(workflow=None, initializer=self.my_entrypoint)
+                return ThreadBuilder(
+                    workflow=MagicMock(), initializer=self.my_entrypoint
+                )
 
         my_object = MyClass()
         thread_builder = my_object.to_thread()
@@ -353,7 +359,9 @@ class TestThreadBuilder(unittest.TestCase):
                 )
 
             def to_thread(self):
-                return ThreadBuilder(workflow=None, initializer=self.my_entrypoint)
+                return ThreadBuilder(
+                    workflow=MagicMock(), initializer=self.my_entrypoint
+                )
 
         my_object = MyClass()
         thread_builder = my_object.to_thread()
@@ -437,7 +445,7 @@ class TestThreadBuilder(unittest.TestCase):
         def my_entrypoint(thread: ThreadBuilder) -> None:
             thread.execute("greet")
 
-        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+        thread = ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             thread.compile(),
@@ -461,7 +469,7 @@ class TestThreadBuilder(unittest.TestCase):
             the_name = thread.add_variable("input-name", VariableType.STR)
             thread.execute("greet", the_name)
 
-        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+        thread = ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             thread.compile(),
@@ -488,7 +496,7 @@ class TestThreadBuilder(unittest.TestCase):
         def my_entrypoint(thread: ThreadBuilder) -> None:
             thread.wait_for_event("my-event")
 
-        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+        thread = ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             thread.compile(),
@@ -515,7 +523,7 @@ class TestThreadBuilder(unittest.TestCase):
         def my_entrypoint(thread: ThreadBuilder) -> None:
             thread.wait_for_event("my-event", 3)
 
-        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+        thread = ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             thread.compile(),
@@ -545,7 +553,7 @@ class TestThreadBuilder(unittest.TestCase):
             thread.add_variable("input-name", VariableType.STR)
 
         with self.assertRaises(ValueError) as exception_context:
-            ThreadBuilder(workflow=None, initializer=my_entrypoint)
+            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             "Variable input-name already added",
@@ -556,7 +564,7 @@ class TestThreadBuilder(unittest.TestCase):
         def my_entrypoint(thread: ThreadBuilder) -> None:
             thread.add_variable("input-name", VariableType.STR)
 
-        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+        thread = ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
 
         with self.assertRaises(ReferenceError) as exception_context:
             thread.add_variable("new-input", VariableType.STR)
@@ -566,13 +574,60 @@ class TestThreadBuilder(unittest.TestCase):
             str(exception_context.exception),
         )
 
+    def test_invalid_int_sleep(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            thread.sleep(0)
+
+        with self.assertRaises(ValueError) as exception_context:
+            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+
+        self.assertEqual(
+            "Value '0' not allowed",
+            str(exception_context.exception),
+        )
+
+    def test_valid_int_sleep(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            thread.sleep(1)
+
+        try:
+            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+        except Exception as e:
+            self.fail(f"Exception was NOT expected: {e}")
+
+    def test_invalid_variable_sleep(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            my_var = thread.add_variable("my-var", VariableType.STR)
+            thread.sleep(my_var)
+
+        with self.assertRaises(ValueError) as exception_context:
+            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+
+        self.assertEqual(
+            "WfRunVariable must be VariableType.INT",
+            str(exception_context.exception),
+        )
+
+    def test_invalid_variable_sleep_until(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            my_var = thread.add_variable("my-var", VariableType.STR)
+            thread.sleep_until(my_var)
+
+        with self.assertRaises(ValueError) as exception_context:
+            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+
+        self.assertEqual(
+            "WfRunVariable must be VariableType.INT",
+            str(exception_context.exception),
+        )
+
     def test_mutate_with_literal_value(self):
         def my_entrypoint(thread: ThreadBuilder) -> None:
             value = thread.add_variable("value", VariableType.INT)
             thread.mutate(value, VariableMutationType.MULTIPLY, 2)
             thread.execute("result", value)
 
-        thread = ThreadBuilder(workflow=None, initializer=my_entrypoint)
+        thread = ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             thread.compile(),
@@ -686,6 +741,59 @@ class TestWorkflow(unittest.TestCase):
             Workflow("my-wf", my_class.my_entrypoint)
         except Exception as e:
             self.fail(f"No exception expected != {type(e)}: {e}")
+
+    def test_compile_with_interrupt(self):
+        def my_interrupt_handler(thread: ThreadBuilder) -> None:
+            thread.execute("interrupt-handler")
+
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            thread.add_interrupt_handler("interruption-event", my_interrupt_handler)
+            thread.execute("my-task")
+
+        wf = Workflow("my-wf", my_entrypoint)
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        interrupt_defs=[
+                            InterruptDef(
+                                external_event_def_name="interruption-event",
+                                handler_spec_name="interrupt-interruption-event",
+                            )
+                        ],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-my-task-TASK")],
+                            ),
+                            "1-my-task-TASK": Node(
+                                task=TaskNode(task_def_name="my-task"),
+                                outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                            ),
+                            "2-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    ),
+                    "interrupt-interruption-event": ThreadSpec(
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[
+                                    Edge(sink_node_name="1-interrupt-handler-TASK")
+                                ],
+                            ),
+                            "1-interrupt-handler-TASK": Node(
+                                task=TaskNode(task_def_name="interrupt-handler"),
+                                outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                            ),
+                            "2-exit-EXIT": Node(exit=ExitNode()),
+                        }
+                    ),
+                },
+            ),
+        )
 
     def test_compile_wf_with_variables(self):
         def my_entrypoint(thread: ThreadBuilder) -> None:

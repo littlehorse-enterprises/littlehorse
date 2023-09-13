@@ -33,12 +33,12 @@ public class InterruptHandlerExample {
                 thread.registerInterruptHandler(
                     "interruption-event",
                     handler -> {
-                        handler.execute("interrupt-handler");
+                        handler.execute("some-task");
                     }
                 );
 
                 // Do some work that takes a while
-                thread.sleepSeconds(120);
+                thread.sleepSeconds(30);
                 thread.execute("my-task");
             }
         );
@@ -58,7 +58,7 @@ public class InterruptHandlerExample {
         InterruptHandlerWorker executable = new InterruptHandlerWorker();
         List<LHTaskWorker> workers = List.of(
             new LHTaskWorker(executable, "my-task", config),
-            new LHTaskWorker(executable, "interrupt-handler", config)
+            new LHTaskWorker(executable, "some-task", config)
         );
 
         // Gracefully shutdown

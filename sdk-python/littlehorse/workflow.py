@@ -32,6 +32,7 @@ from littlehorse.model.wf_spec_pb2 import (
     EntrypointNode,
     ExitNode,
     ExternalEventNode,
+    InterruptDef,
     Node,
     NopNode,
     SleepNode,
@@ -459,6 +460,25 @@ class WorkflowNode:
         raise ValueError("Node type not supported")
 
 
+class WorkflowInterruption:
+    def __init__(self, name: str, thread_name: str) -> None:
+        self.name = name
+        self.thread_name = thread_name
+
+    def compile(self) -> InterruptDef:
+        """Compile this into Protobuf Objects.
+
+        Returns:
+            InterruptDef: Spec.
+        """
+        return InterruptDef(
+            external_event_def_name=self.name, handler_spec_name=self.thread_name
+        )
+
+    def __str__(self) -> str:
+        return to_json(self.compile())
+
+
 class ThreadBuilder:
     def __init__(self, workflow: "Workflow", initializer: "ThreadInitializer") -> None:
         """This is used to define the logic of a ThreadSpec in a ThreadInitializer.
@@ -467,12 +487,14 @@ class ThreadBuilder:
             workflow (Workflow): Parent.
             initializer (ThreadInitializer): Initializer.
         """
-        self.wf_run_variables: list[WfRunVariable] = []
-        self._workflow = workflow
+        self._wf_run_variables: list[WfRunVariable] = []
+        self._wf_interruptions: list[WorkflowInterruption] = []
         self._nodes: list[WorkflowNode] = []
 
-        if initializer is None:
-            raise ValueError("None is not allowed")
+        if workflow is None:
+            raise ValueError("Workflow must be not None")
+
+        self._workflow = workflow
 
         self._validate_initializer(initializer)
 
@@ -481,6 +503,56 @@ class ThreadBuilder:
         initializer(self)
         self.add_node("exit", ExitNode())
         self.is_active = False
+
+    def sleep(self, seconds: Union[int, WfRunVariable]) -> None:
+        """Adds a SLEEP node which makes the ThreadRun sleep
+        for a specified number of seconds.
+
+        Args:
+            seconds (int): is either an integer representing the
+            number of seconds to sleep for, or it is
+            a WfRunVariable which evaluates to a
+            VariableTypePb.INT specifying the number of seconds
+            to sleep for.
+        """
+        self._check_if_active()
+        if isinstance(seconds, WfRunVariable) and seconds.type is not VariableType.INT:
+            raise ValueError("WfRunVariable must be VariableType.INT")
+
+        if isinstance(seconds, int) and seconds <= 0:
+            raise ValueError(f"Value '{seconds}' not allowed")
+        self.add_node("sleep", SleepNode(raw_seconds=to_variable_assignment(seconds)))
+
+    def sleep_until(self, timestamp: WfRunVariable) -> None:
+        """Adds a SLEEP node which makes the ThreadRun sleep until
+        a specified timestamp, provided as an
+        INT WfRunVariable (note that INT in LH is a 64-bit integer).
+
+        Args:
+            timestamp (WfRunVariable): a WfRunVariable which evaluates
+            to a VariableTypePb.INT specifying the epoch
+            timestamp (in milliseconds) to wait for.
+        """
+        self._check_if_active()
+        if (
+            isinstance(timestamp, WfRunVariable)
+            and timestamp.type is not VariableType.INT
+        ):
+            raise ValueError("WfRunVariable must be VariableType.INT")
+        self.add_node("sleep", SleepNode(timestamp=to_variable_assignment(timestamp)))
+
+    def add_interrupt_handler(self, name: str, handler: "ThreadInitializer") -> None:
+        """Registers an Interrupt Handler, such that when an ExternalEvent
+        arrives with the specified type, this ThreadRun is interrupted.
+
+        Args:
+            name (str): The name of the ExternalEventDef to listen for.
+            handler (ThreadInitializer): A Thread Function defining a
+            ThreadSpec to use to handle the Interrupt.
+        """
+        self._check_if_active()
+        thread_name = self._workflow.add_sub_thread(f"interrupt-{name}", handler)
+        self._wf_interruptions.append(WorkflowInterruption(name, thread_name))
 
     def _validate_initializer(self, initializer: "ThreadInitializer") -> None:
         if initializer is None:
@@ -506,11 +578,13 @@ class ThreadBuilder:
         Returns:
             ThreadSpec: Spec.
         """
-        variable_defs = [variable.compile() for variable in self.wf_run_variables]
+        variable_defs = [variable.compile() for variable in self._wf_run_variables]
         nodes = {node.name: node.compile() for node in self._nodes}
+        interruptions = [
+            interruption.compile() for interruption in self._wf_interruptions
+        ]
         return ThreadSpec(
-            variable_defs=variable_defs,
-            nodes=nodes,
+            variable_defs=variable_defs, nodes=nodes, interrupt_defs=interruptions
         )
 
     def __str__(self) -> str:
@@ -650,12 +724,12 @@ class ThreadBuilder:
             WfRunVariable: A handle to the created WfRunVariable.
         """
         self._check_if_active()
-        for var in self.wf_run_variables:
+        for var in self._wf_run_variables:
             if var.name == variable_name:
                 raise ValueError(f"Variable {variable_name} already added")
 
         new_var = WfRunVariable(variable_name, variable_type, default_value)
-        self.wf_run_variables.append(new_var)
+        self._wf_run_variables.append(new_var)
         return new_var
 
     def find_variable(self, variable_name: str) -> WfRunVariable:
@@ -668,7 +742,7 @@ class ThreadBuilder:
             WfRunVariable: Variable found.
         """
         # TODO look in all threads
-        for var in self.wf_run_variables:
+        for var in self._wf_run_variables:
             if var.name == variable_name:
                 return var
 
