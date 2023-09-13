@@ -29,7 +29,7 @@ poetry install
 
 ```
 poetry shell
-python -m unittest -v
+python -m unittest discover -v
 ```
 
 ## Useful Commands
