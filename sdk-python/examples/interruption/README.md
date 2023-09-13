@@ -4,7 +4,7 @@ This example shows how to interrupt a workflow execution.
 You need to register an external event at LH Server.
 
 In this example the parent thread sleeps 30 sec, we can interrupt it while it's sleeping,
-and it creates a child thread. When a interruption is received the workflow executes the task:
+and it creates a child thread. When an interruption is received the workflow executes the task:
 "some-task", if the task fails the whole workflow fails.
 
 In order for the Interrupt to happen, the parent thread needs to be sleeping.
