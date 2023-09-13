@@ -468,7 +468,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
         )}
 
         {type === 'TASK' ? 
-        <TaskInformation run={current_run} isWFRun={props.isWFRun} wfRunId={props.wfRunId} 
+        <TaskInformation run={current_run} isWFRun={true} wfRunId={props.wfRunId} 
           setToggleSideBar={props.setToggleSideBar}
           setCode={props.setCode}
           data={props.datao.find((d : any) => d.name === props.nodeName)}
