@@ -40,6 +40,7 @@ from littlehorse.model.wf_spec_pb2 import (
     ThreadSpec,
     UserTaskNode,
     WaitForThreadsNode,
+    FailureHandlerDef,
 )
 from littlehorse.utils import negate_comparator, to_variable_type, to_variable_value
 from littlehorse.worker import WorkerContext
@@ -413,6 +414,7 @@ class WorkflowNode:
         self.node_case = node_case
         self.outgoing_edges: list[Edge] = []
         self.variable_mutations: list[VariableMutation] = []
+        self.failure_handlers: list[FailureHandlerDef] = []
 
     def __str__(self) -> str:
         return to_json(self.compile())
@@ -435,6 +437,7 @@ class WorkflowNode:
             return Node(
                 outgoing_edges=self.outgoing_edges,
                 variable_mutations=self.variable_mutations,
+                failure_handlers=self.failure_handlers,
                 **kwargs,
             )
 
@@ -633,6 +636,20 @@ class ThreadBuilder:
         )
         node_name = self.add_node(task_name, task_node)
         return NodeOutput(node_name)
+
+    def handle_error(self, node: NodeOutput, initializer: "ThreadInitializer") -> None:
+        self._check_if_active()
+        failure_type = FailureHandlerDef.LHFailureType.Name(
+            FailureHandlerDef.FAILURE_TYPE_ERROR
+        )
+        thread_name = f"exn-handler-{node.node_name}-{failure_type}"
+        self._workflow.add_sub_thread(thread_name, initializer)
+        failure_handler = FailureHandlerDef(
+            handler_spec_name=thread_name,
+            any_failure_of_type=FailureHandlerDef.FAILURE_TYPE_ERROR,
+        )
+        last_node = self._find_node(node.node_name)
+        last_node.failure_handlers.append(failure_handler)
 
     def wait_for_event(self, event_name: str, timeout: int = -1) -> NodeOutput:
         """Adds an EXTERNAL_EVENT node which blocks until an
