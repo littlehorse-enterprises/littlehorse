@@ -1,22 +1,21 @@
 "use client";
 import { useEffect, useState } from "react";
-import WFRunInformationSideBar from "../../../../../../components/WFRunInformationSideBar";
-import { DrawerComponent } from "../../../../../../components/Drawer/DrawerComponent";
-import { Drawer } from "../../../../../../components/Drawer/Drawer";
+import WFRunInformationSideBar from "../../../../../components/WFRunInformationSideBar";
+import { DrawerComponent } from "../../../../../components/Drawer/DrawerComponent";
+import { Drawer } from "../../../../../components/Drawer/Drawer";
 import {
   getMainDrawerData,
   nodeTypes,
-} from "../../../../../../components/Drawer/internals/drawerInternals";
+} from "../../../../../components/Drawer/internals/drawerInternals";
 import { WfRunVisualizerChart } from "./WfRunVisualizerChart";
 import { Loader } from "ui";
+import { nodename } from "../../../../../helpers/nodename";
 
 interface mapnode {}
 export const WfRunVisualizer = ({
-  id,
-  wfspec,
+  id
 }: {
   id: string;
-  wfspec: string;
 }) => {
   const [rawdata, setRawData] = useState<any[]>([])
   const [data, setData] = useState<any[]>([]);
@@ -30,40 +29,119 @@ export const WfRunVisualizer = ({
   const [toggleSideBar, setToggleSideBar] = useState(false);
   const [sideBarData, setSideBarData] = useState("");
 
-  const rec = (mappedData, i) => {
+  const getLoops = async (taskDefName, wfRunId) => {
+    const res = await fetch("/api/loops/taskRun", {
+      method: "POST",
+      body: JSON.stringify({
+        taskDefName,
+        wfRunId
+      }),
+    });
+    if (res.ok) {
+      const results = await res.json()
+      console.log('RESS',results.length)
+
+      return results.length > 1
+    //  setLoops(results)
+    }
+  }
+  
+
+  const rec = (mappedData, i, offset, open=false) => {
     let el = mappedData[i];
+    el.level=+el.position+offset
     if (!el.childs.length) return mappedData; //if not childs close the REC function
     if (el.type === "WAIT_FOR_THREAD") {
       let wft = el.node.waitForThread.threadRunNumber.variableName;
       let thread = mappedData.find((m) => m.name === wft);
       el.wlevel = thread.level;
     }
-    mappedData = mappedData.map((m) => {
+
+    let addo = 0
+		if(el.type === 'NOP' ){
+			if(open){
+				el.closer = true
+				open = false
+			}else{
+				open = true
+				addo = 1
+			}
+		}
+
+    mappedData = mappedData.map( (m) => {
       if (el.childs.includes(m.name)) {
-        m.level = el.level + 1; // each child heritate parent level + 1
+        // m.level = el.level + 1; // each child heritate parent level + 1
+
+        // CHECK IF NOP IS WHILE
+				if(el.type === 'NOP' && m.type==='NOP'){
+					const econd =  el.node.outgoingEdges.find(e => e.sinkNodeName != m.name)?.condition || {}
+					const mcond = m.node.outgoingEdges.find(e => e.sinkNodeName === el.name)?.condition || {}
+					if(JSON.stringify(econd) === JSON.stringify(mcond)){
+						el.while = true
+						m.while = true
+					}
+				}
+
         if (m.type === "NOP") {
           m.px = "center";
         } else {
           m.px = el.px;
         }
-        if (el.childs.length > 1) {
-          m.level = el.level + 2;
-          m.px = m.name === el.childs[0] ? "left" : "right";
-        }
-        if (m.type === "NOP" && m.childs.length === 1) {
-          el.cNOP = m.name;
-        }
+
+        if (el.childs.length > 1 && (m.type != 'NOP') ) {
+					// m.level = el.level + 2
+					m.px = m.name === el.childs[0] ? 'left' : 'right'
+				}
+				// if(m.type === 'NOP' && m.childs.length === 1){
+	
+				if(open && ['TASK', 'USER_TASK', 'EXTERNAL_EVENT'].includes(el.type)){
+					console.log('CHECK IF LOOP', el.type)
+
+          el.loop = getLoops(nodename(el.name),id)
+          // taskDefName: nodename(d.name),
+          // wfRunId:run.wfRunId
+          // if('TASK') 
+          // - TASK_SCHEDULED
+          // - TASK_RUNNING
+          // - TASK_SUCCESS
+          // - TASK_FAILED
+          // - TASK_TIMEOUT
+          // - TASK_OUTPUT_SERIALIZING_ERROR
+          // - TASK_INPUT_VAR_SUB_ERROR
+
+          // if('USER_TASK') 
+          // - UNASSIGNED
+          // - ASSIGNED
+          // - DONE
+          // - CANCELLED
+
+          // if('EXTERNAL_EVENT') 
+				}
+				if(m.type === 'NOP' && open){
+					el.cNOP = m.name
+				}
+				if(!open){
+					m.px = 'center'
+				}
+        // if (el.childs.length > 1) {
+        //   m.level = el.level + 2;
+        //   m.px = m.name === el.childs[0] ? "left" : "right";
+        // }
+        // if (m.type === "NOP" && m.childs.length === 1) {
+        //   el.cNOP = m.name;
+        // }
       }
       return m;
     });
-    return rec(mappedData, ++i);
+    return rec(mappedData, ++i, offset+addo, open)
   };
 
   const [run, setRun] = useState();
+  const [runs, setRuns] = useState<any[]>([]);
   const setThreads = (data: any) => {
-    // console.log('threads',data)
     getWfSpec(data.wfSpecName, data.wfSpecVersion);
     setRun(data.threadRuns[0]);
+    setRuns(data.threadRuns);
   };
 
   const mapData = (data: any, thread?: string) => {
@@ -73,13 +151,17 @@ export const WfRunVisualizer = ({
     const mappedData: any = entries.map((e: mapnode) => ({
       name: e[0],
       type: e[0].split("-").pop(),
+      position: e[0].split("-").shift(),
       node: e[1],
       childs: e[1]["outgoingEdges"].map((e) => e.sinkNodeName),
       level: 0,
+      closer:false,
+      loop:false,
+      while:false,
       px: "center",
     }));
     setLoading(false);
-    return rec(mappedData, 0);
+    return rec(mappedData, 0, 0)
   };
 
   const getWfSpec = async (id: string, version: number) => {
@@ -92,8 +174,10 @@ export const WfRunVisualizer = ({
     });
     if (res.ok) {
       const content = await res.json();
-      setRawData(content.result)
-      setData(mapData(content.result))
+      if(content.result){
+        setRawData(content.result)
+        setData(mapData(content.result))
+      }
     }
   };
   const getData = async () => {
@@ -118,8 +202,8 @@ export const WfRunVisualizer = ({
   }, []);
 
   useEffect(() => {
-    if (drawerData === undefined) getMainDrawerData(wfspec, setDrawerData);
-
+    // if (drawerData === undefined) getMainDrawerData(run?.wfSpecName || '', setDrawerData);
+    
     if (selectedNodeName) {
       const nodePostFix = selectedNodeName.split("-").reverse()[0];
 
@@ -129,8 +213,10 @@ export const WfRunVisualizer = ({
 
   const drawerInternal = (
     <DrawerComponent
+      isWFRun={true}
       internalComponent={nodeType}
-      data={drawerData}
+      datao={data}
+      data={rawdata}
       nodeName={selectedNodeName}
       wfRunId={id}
       setToggleSideBar={setToggleSideBar}
@@ -139,6 +225,7 @@ export const WfRunVisualizer = ({
       setError={setShowError}
       setThread={setThread}
       run={run}
+      runs={runs}
     />
   );
 
@@ -161,6 +248,7 @@ export const WfRunVisualizer = ({
           />
         )}
       </div>
+
       <Drawer title={"WfSpec Properties"}>{drawerInternal}</Drawer>
       <WFRunInformationSideBar
         toggleSideBar={toggleSideBar}

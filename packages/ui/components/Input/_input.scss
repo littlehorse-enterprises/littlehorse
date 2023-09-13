@@ -1,5 +1,6 @@
 .input-canvas{
     position: relative;
+    width: 100%;
     img{
         position: absolute;
         top: 8px;
@@ -7,7 +8,8 @@
     }
     .input{
         display: flex;
-        width: 311px;
+        min-width: 311px;
+        width: 100%;
         height: 32px;
         padding: 10px;
         align-items: center;

@@ -21,5 +21,7 @@ export * from "./components/Loader"
 export * from "./components/Loading"
 export * from "./components/HeaderBar"
 export * from "./components/Calendar"
+export * from "./components/Drawer"
+
 
 export { useOutsideClick } from './utils/useOutsideClick';

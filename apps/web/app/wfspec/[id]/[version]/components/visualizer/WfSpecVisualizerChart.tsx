@@ -10,7 +10,9 @@ const conditions = {
     GREATER_THAN: '>',
     GREATER_THAN_EQ: '>=',
     LESS_THAN_EQ: '<=',
-    LESS_THAN: '<'
+    LESS_THAN: '<',
+    IN: 'IN',
+    NOT_IN: 'NOT IN'
 }
 let  _d3:d3.Selection<d3.BaseType, unknown, HTMLElement, any>
 // let svg:d3.Selection<SVGGElement, unknown, HTMLElement, any>
@@ -20,30 +22,40 @@ const width=936;
 const height=900;
 
 const conditionsRender = (cond:any) => {
-    let left=`${cond.condition.left.variableName}${cond.condition.left.jsonPath ? `.jsonPath(${cond.condition.left.jsonPath})` : ''}`;
+    // console.log('cond',cond)
+    let left=``;
+    if(cond?.condition?.left){
+        left=`${cond.condition.left.variableName}${cond.condition.left.jsonPath ? `.jsonPath(${cond.condition.left.jsonPath})` : ''}`;
+    }
     let right=''
-    if( cond.condition.right.literalValue.type==='BOOL') right = cond.condition.right.literalValue.bool
-    if( cond.condition.right.literalValue.type==='INT') right = cond.condition.right.literalValue.int
-    if( cond.condition.right.literalValue.type==='STR') right = cond.condition.right.literalValue.str
-    return `${left} ${conditions[cond.condition.comparator]} ${right}`
+    if(cond?.condition?.right){
+        if( cond.condition.right.literalValue.type==='BOOL') right = cond.condition.right.literalValue.bool
+        if( cond.condition.right.literalValue.type==='INT') right = cond.condition.right.literalValue.int
+        if( cond.condition.right.literalValue.type==='STR') right = cond.condition.right.literalValue.str
+    }
+    let comparator=''
+    if(cond?.condition?.comparator){
+        comparator=conditions[cond.condition.comparator];
+    }
+    return `${left} ${comparator} ${right}`
 }
 let nodes:any[] = [];
   nodes.push([width / 2, boxHeight / 1.5]);
   nodes.push([width / 4, boxHeight / 3]);
 
 
-  function roundedRect(x, y, width, height, radius) {
-    return "M" + ((x-(width/2))+radius) + "," + y
-         + "h" + (width - radius*2)
-         + "a" + radius + "," + radius + " 0 0 1 " + radius + "," + radius
-         + "v" + (height - 2 * radius)
-         + "a" + radius + "," + radius + " 0 0 1 " + -radius + "," + radius
-         + "h" + (radius*2 - width)
-         + "a" + radius + "," + radius + " 0 0 1 " + -radius + "," + -radius
-         + "v" + ( 2 * radius -height)
-         + "a" + radius + "," + radius + " 0 0 1 " + radius + "," + -radius
-         + "z";
-  }
+//   function roundedRect(x, y, width, height, radius) {
+//     return "M" + ((x-(width/2))+radius) + "," + y
+//          + "h" + (width - radius*2)
+//          + "a" + radius + "," + radius + " 0 0 1 " + radius + "," + radius
+//          + "v" + (height - 2 * radius)
+//          + "a" + radius + "," + radius + " 0 0 1 " + -radius + "," + radius
+//          + "h" + (radius*2 - width)
+//          + "a" + radius + "," + radius + " 0 0 1 " + -radius + "," + -radius
+//          + "v" + ( 2 * radius -height)
+//          + "a" + radius + "," + radius + " 0 0 1 " + radius + "," + -radius
+//          + "z";
+//   }
   function rArrow(x, y, width, height, radius) {
     return "M" + ((x+(width/2))+radius) + "," + (y+(height/2))
          + "h" + (width - radius*2)
@@ -77,17 +89,34 @@ let nodes:any[] = [];
          + "m" + +3 + "," + +3
          + "l" + -3 + "," + +3
   }
-  function backArrow(x, y, width, height, radius) {
+  function backArrow(x, y, width, height, radius, ix=0) {
     return "M" + ((x+(width*1.5))-50) + "," + (y+25)
-        + "h" + (20)
+        + "h" + (20 + (ix*20))
         + "a" + radius + "," + radius + " 1 0 0 " + radius + "," + -radius
          + "v" + (-height+20)
          + "a" + radius + "," + radius + " 1 0 0 " + -radius + "," + -radius
-         + "h" + (-20)
+         + "h" + (-0 - (ix*20))
          + "l" + 3 + "," + 3
          + "m" + -3 + "," + -3
          + "l" + 3 + "," + -3
   }
+  //radio de 10
+  const c1 = (r:number) => `q ${r} 0 ${r} ${r}`
+  const c2 = (r:number) => `q 0 ${r} -${r} ${r}`
+  const c3 = (r:number) => `q 0 ${r} ${r} ${r}`
+  const c4 = (r:number) => `q ${r} 0 ${r} -${r}`
+  const c5 = (r:number) => `q 0 -${r} -${r} -${r}`
+  const arr1  = () => "l" + 3 + "," + 3
+  + "m" + -3 + "," + -3
+  + "l" + 3 + "," + -3
+  const arrR  = () => "l" + -3 + "," + -3
+  + "m" + +3 + "," + +3
+  + "l" + -3 + "," + +3
+  const coline = (level:number,levelsDown:number, radio=10) => `M${width/2} ${(level*110)-15} h${100-radio} ${c1(radio)} v${(levelsDown*110)-(radio*2)} ${c2(radio)} h-${100-radio}  ${arr1()}`
+  const condline = (level:number,levelsDown:number, onop=false, radio=20) => `M${width/2} ${((level+1+(onop ? 1 : 0))*110)-15} m150 0  v${((levelsDown-(onop ? 1 : 0))*110)-(radio)} ${c2(radio)} h-${100-radio}  ${arr1()}`
+  const condlineL = (level:number,levelsDown:number, onop=false, radio=20) => `M${width/2} ${((level+1+(onop ? 1 : 0))*110)-15} m-150 0  v${((levelsDown-(onop ? 1 : 0))*110)-(radio)} ${c3(radio)} h${100-radio}  ${arrR()}`
+  const condlineBack = (level:number,levelsDown:number, radio=20) => `M${width/2} ${((level+levelsDown+1)*110)-15} h${100-radio} ${c4(radio)} v${((-levelsDown)*110)+(radio*2)} ${c5(radio)} h-${50-radio}  ${arr1()}`
+
 
 export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any) => void}) => {
     const clickHandler = (_p:any, d:any) => {
@@ -116,7 +145,8 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
             .append("line")
             .style("stroke-width", 1)
             .style("stroke", (d, ix) => {
-                if(!ix || (d.type==='NOP' && d.node.outgoingEdges.length === 1)) return "transparent"
+                // if(!ix || (d.type==='NOP' && d.node.outgoingEdges.length === 1)) return "transparent"
+                if(!ix || (d.type==='NOP' && d.closer)) return "transparent"
                 return "#B3B3B3"
             } )
             .attr("x1", d => {
@@ -142,7 +172,8 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
             .append("line")
             .style("stroke-width", 1)
             .style("stroke", (d, ix) => {
-                if(!ix || (d.type==='NOP' && d.node.outgoingEdges.length === 1)) return "transparent"
+                // if(!ix || (d.type==='NOP' && d.node.outgoingEdges.length === 1)) return "transparent"
+                if(!ix || (d.type==='NOP' && d.closer)) return "transparent"
                 return "#B3B3B3"
             } )
             .attr("x1", d => {
@@ -164,7 +195,8 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
             .append("line")
             .style("stroke-width", 1)
             .style("stroke", (d, ix) => {
-                if(!ix || (d.type==='NOP' && d.node.outgoingEdges.length === 1)) return "transparent"
+                if(!ix || (d.type==='NOP' && d.closer)) return "transparent"
+                // if(!ix || (d.type==='NOP' && d.node.outgoingEdges.length === 1)) return "transparent"
                 return "#B3B3B3"
             } )
             .attr("x1", d => {
@@ -188,18 +220,23 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
         
         // NOP LINES
         let lineG2 = svg.append("g").selectAll("g");
-        lineG2.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
+        // lineG2.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
+        lineG2.data(data.filter( d => d.type === "NOP" && !d.closer))
             .enter()
             .append("path")
             .attr("class", d => d.name)
-            .attr("d", (d,i) => rArrow((width/2)-45, (d.level * 110) +85 , 130, 48, 12)).attr('fill','none').attr('stroke','#B3B3B3')
+            .attr("d", (d,i) => {
+                if(d.while) return 
+                return rArrow((width/2)-45, (d.level * 110) +85 , 130, 48, 12)
+            })
+            .attr('fill','none').attr('stroke','#B3B3B3')
 
-        lineG2.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
+        lineG2.data(data.filter( d => d.type === "NOP" && !d.closer))
+        // lineG2.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
             .enter()
             .append("path")
             .attr("class", d => d.name)
             .attr("d", (d) => lArrow((width/2)+45, (d.level * 110) +85 , 130, 48, 12)).attr('fill','none').attr('stroke','#B3B3B3')
-
 
         lineG2.data(data.filter( d => d.cNOP))
             .enter()
@@ -209,15 +246,34 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
                 // console.log('CNOP', data.find( dd => dd.name === d.cNOP))
                 const cnopl =  data.find( dd => dd.name === d.cNOP).level
                 // console.log((cnopl-d.level)*66)
-                const condh = d.type === 'NOP' ? 100 : 0
+                // const condh = d.type === 'NOP' ? 100 : 0
                 if(d.px === 'left'){
-                    return lbArrow((width/2)+15, ((d.level-1) * 110)-85 +condh - ((cnopl-d.level)*400), 110, ((cnopl-d.level)*81.5)+54, 12)
+                    return condlineL(d.level,cnopl-d.level, d.type==='NOP')
+                    // return lbArrow((width/2)+15, ((d.level-1) * 110)-85 +condh - ((cnopl-d.level)*400), 110, ((cnopl-d.level)*81.5)+54, 12)
                 }
-                return rbArrow((width/2)-15, ((d.level-1) * 110)-85 +condh - ((cnopl-d.level)*400), 110, ((cnopl-d.level)*81.5)+54, 12)
+                if(d.while) return 
+                return condline(d.level,cnopl-d.level, d.type==='NOP')
+                // return rbArrow((width/2)-15, ((d.level-1) * 110)-85 +condh - ((cnopl-d.level)*400), 110, ((cnopl-d.level)*81.5)+54, 12)
 
                 //function backArrow(x, y, width, height, radius) {
             })
             .attr('fill','none').attr('stroke','#B3B3B3')
+
+        lineG2.data(data.filter( d => d.cNOP))
+            .enter()
+            .append("path")
+            .attr("class", d => d.name)
+            .attr("d", (d) => {
+                // console.log('CNOP', data.find( dd => dd.name === d.cNOP))
+                const cnopl =  data.find( dd => dd.name === d.cNOP).level
+                // console.log((cnopl-d.level)*66)
+                // console.log('YYYY', d.level, cnopl, d.px )
+                if(d.while){
+                    return condlineBack(d.level,cnopl-d.level)
+                    // return lbArrow((width/2)+15, ((d.level-1) * 110)-85 +condh - ((cnopl-d.level)*400), 110, ((cnopl-d.level)*81.5)+54, 12)
+                }
+            })
+            .attr('fill','none').attr('stroke','#7F7AFF')
 
         // lineG2.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
         //     .enter()
@@ -237,10 +293,28 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
             .attr("d", (d) => backArrow(width/2, (d.level * 110) +65 , 110+(d.px === 'left' ? -110 : (d.px === 'right' ? 150 : 0)), ((d.level * 110))-((d.wlevel * 110)+5), 12)).attr('fill','none').attr('stroke','#7F7AFF')
 
             
+        lineG2.data(data.filter( d => d.type === "WAIT_FOR_THREADS"))
+            .enter()
+            // .data(d.node.waitForThreads.threads)
+            .append("path")
+            .attr("d", (d) => {
+                // d.node.waitForThreads.threads.map( (t:any, ix:number) => {
+    
+                //     console.log('NODE','#idd'+t.threadRunNumber.variableName,_d3.select('#idd'+t.threadRunNumber.variableName))
+                // })
+                return d.node.waitForThreads.threads.map( (t:any, ix:number) => backArrow(width/2 -(40) , 
+                (d.level * 110) +65 , 
+                110+(d.px === 'left' ? -110 : (d.px === 'right' ? 150 : 0)), 
+                ((d.level * 110))-(( (data.find(dat => dat.name === t.threadRunNumber.variableName).level) * 110)+5), 
+                12,d.node.waitForThreads.threads.length - ix))
+            } )
+            .attr('fill','none').attr('stroke','#7F7AFF')
+
+            
 
         //TEXT
         let textGN = svg.append("g").selectAll("g");
-        textGN.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
+        textGN.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1 && !d.closer))
         .enter()
             .append("text")
             .text('CONDITION')
@@ -255,7 +329,7 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
             .attr("y", (d) => (d.level * 110) +175)
             .style("pointer-events", "none")
 
-        textGN.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
+        textGN.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1 && !d.closer) )
         .enter()
             .append("text")
             .text( d => conditionsRender(d.node.outgoingEdges[0]))
@@ -271,7 +345,7 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
             .style("pointer-events", "none")
 
 
-        textGN.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
+        textGN.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1 && !d.while))
         .enter()
             .append("text")
             .text('CONDITION')
@@ -285,7 +359,7 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
             })
             .attr("y", (d) => (d.level * 110) +175)
             .style("pointer-events", "none")
-        textGN.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
+        textGN.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1 && !d.while))
         .enter()
             .append("text")
             .text( d => conditionsRender(d.node.outgoingEdges[1]))
@@ -299,7 +373,6 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
             })
             .attr("y", (d) => (d.level * 110) +175 +20)
             .style("pointer-events", "none")
-
 
 
                  //NODES
@@ -327,6 +400,7 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
 
 
     useEffect( () => {
+        console.log('DATA',data)
         setD3(data)
     },[data, setD3 ])
 

@@ -30,7 +30,7 @@ export const TaskRunSearchTable = ({ wfspec, results }: Props) => {
 						{results.map((r: Result, ix: number) => (
 							<tr key={ix} className='flex w-full'>
 								<td>
-									<Link href={`/wfrun/${wfspec}/${r.wfRunId}`}>
+									<Link href={`/wfrun/${r.wfRunId}`}>
 										{r.wfRunId}
 									</Link>
 								</td>

@@ -4,10 +4,10 @@ import spawnChildSvg from './spawn-child.svg'
 import polylineSvg from './polyline.svg'
 import { FailureInformation, LH_EXCEPTION } from './FailureInformation'
 import { NodeData, NodeDataProps } from './NodeData'
-import { parseKey, getThreadName } from './drawerInternals'
+import { parseKey, getThreadName, getThreadVarName } from './drawerInternals'
 
 interface SpawnChildInformationProps {
-	linkedThread: () => void
+	linkedThread: (thread:string) => void
 	nodeName: any
 	errorData: {
 		handlerSpecName: string
@@ -50,9 +50,10 @@ export const SpawnChildInformation = (props: SpawnChildInformationProps) => {
 							<div className='drawer__nodeData__dataSimple'>
 								<p
 									className='drawer__startThread__wfrun__table__link'
-									onClick={() => props.linkedThread()}
+									onClick={() => props.linkedThread(getThreadVarName(props.nodeName))}
 								>
 									{getThreadName(props.nodeName)}
+									{props.nodeName}
 								</p>
 							</div>
 						</div>
@@ -67,7 +68,7 @@ export const SpawnChildInformation = (props: SpawnChildInformationProps) => {
 					<div className='drawer__startThread__link__container'>
 						<div
 							className='drawer__startThread__link__container__clickable'
-							onClick={() => props.linkedThread()}
+							onClick={() => props.linkedThread(getThreadVarName(props.nodeName))}
 						>
 							<Image src={polylineSvg} alt={'polyline'} width={12} />
 							<p className='drawer__startThread__link__container__clickable__text'>

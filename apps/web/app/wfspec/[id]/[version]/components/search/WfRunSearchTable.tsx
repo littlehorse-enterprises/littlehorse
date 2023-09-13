@@ -30,7 +30,7 @@ export const WfRunSearchTable = ({ wfspec, results }: Props) => {
 						{results.map((r: Result, ix: number) => (
 							<tr key={ix} className='flex w-full'>
 								<td>
-									<Link href={`/wfrun/${wfspec}/${r.id}`}>{r.id}</Link>
+									<Link href={`/wfrun/${r.id}`}>{r.id}</Link>
 								</td>
 								<td className='text-center '> {r.status}</td>
 							</tr>

@@ -21,6 +21,7 @@ export const MetadataSearch = () => {
     const [loading, setLoading] = useState(false)
     const [firstLoad, setFirstLoad] = useState(false)
     const [limit, setLimit] = useState(defaultLimit)
+    const [userTaskDefBookmark, setUserTaskDefBookmark] = useState()
     const [taskDefBookmark, setTaskDefBookmark] = useState()
     const [wfSpecBookmark, setWfSpecBookmark] = useState()
     const [externalEventDefBookmark, setExternalEventDefBookmark] = useState()
@@ -32,6 +33,7 @@ export const MetadataSearch = () => {
         let bookmark:string|undefined
         if(type === "wfSpec") bookmark = wfSpecBookmark
         if(type === "taskDef") bookmark = taskDefBookmark
+        if(type === "userTaskDef") bookmark = userTaskDefBookmark
         if(type === "externalEventDef") bookmark = externalEventDefBookmark
         const filters:any = { limit:useLimit? limit: allLimit }
         if(prefix?.trim()) filters['prefix'] = prefix.trim().toLocaleLowerCase()
@@ -53,6 +55,7 @@ export const MetadataSearch = () => {
         const {results, bookmark} = await fetchData(type)
         if(type === "wfSpec") setWfSpecBookmark(bookmark)
         if(type === "taskDef") setTaskDefBookmark(bookmark)
+        if(type === "userTaskDef") setUserTaskDefBookmark(bookmark)
         if(type === "externalEventDef") setExternalEventDefBookmark(bookmark)
         setResults(results.map( (v:Result) => ({...v, type:type.charAt(0).toUpperCase() + type.slice(1)})))
         setLoading(false)
@@ -60,6 +63,7 @@ export const MetadataSearch = () => {
     const getMData = async () => {
         setWfSpecBookmark(undefined)
         setTaskDefBookmark(undefined)
+        setUserTaskDefBookmark(undefined)
         setExternalEventDefBookmark(undefined)
         if(type) return getData()
 
@@ -74,6 +78,10 @@ export const MetadataSearch = () => {
         const taskDefs = await fetchData('taskDef', false, false)
         setTaskDefBookmark(taskDefs.bookmark)
         setResults(prev => [...prev, ...taskDefs.results.map((v:any) => ({...v, type:'TaskDef'}))])
+
+        const userTaskDefs = await fetchData('userTaskDef', false, false)
+        setTaskDefBookmark(userTaskDefs.bookmark)
+        setResults(prev => [...prev, ...userTaskDefs.results.map((v:any) => ({...v, type:'UserTaskDef'}))])
 
         const externalEventDefs = await fetchData('externalEventDef', false, false)
         setExternalEventDefBookmark(externalEventDefs.bookmark)
@@ -101,6 +109,13 @@ export const MetadataSearch = () => {
                 setResults(prev => [...prev, ...taskDefs.results.map((v:any) => ({...v, type:'TaskDef'}))])
             }
         }
+        if(userTaskDefBookmark){
+            const userTaskDefs = await fetchData('userTaskDef', true, false)
+            if(userTaskDefs.status!='done'){
+                setTaskDefBookmark(userTaskDefs.bookmark)
+                setResults(prev => [...prev, ...userTaskDefs.results.map((v:any) => ({...v, type:'UserTaskDef'}))])
+            }
+        }
         if(externalEventDefBookmark){
             const externalEventDefs = await fetchData('externalEventDef', true, false)
             if(externalEventDefs.status!='done'){
@@ -120,6 +135,7 @@ export const MetadataSearch = () => {
         
         if(type === "wfSpec") setWfSpecBookmark(bookmark)
         if(type === "taskDef") setTaskDefBookmark(bookmark)
+        if(type === "userTaskDef") setUserTaskDefBookmark(bookmark)
         if(type === "externalEventDef") setExternalEventDefBookmark(bookmark)
         setResults(prev => [...prev, ...results.map((v:any) => ({...v, type:type.charAt(0).toUpperCase() + type.slice(1)}))])
         setLoading(false)
@@ -150,6 +166,7 @@ export const MetadataSearch = () => {
                 <Button active={type === ''} onClick={() => setType("")}>All</Button>
                 <Button active={type === 'wfSpec'} onClick={() => setType("wfSpec")}>WfSpec</Button>
                 <Button active={type === 'taskDef'} onClick={() => setType("taskDef")}>TaskDef</Button>
+                <Button active={type === 'userTaskDef'} onClick={() => setType("userTaskDef")}>UserTaskDef</Button>
                 <Button active={type === 'externalEventDef'} onClick={() => setType("externalEventDef")}>ExternalEventDef</Button>
             </div>
         </div>

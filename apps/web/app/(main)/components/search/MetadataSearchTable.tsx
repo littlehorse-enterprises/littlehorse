@@ -25,6 +25,7 @@ export const MetadataSearchTable = ({results}:Props) => {
                     <td className="capitalize">
                         {(r.type==='WfSpec') ? <Link href={`/wfspec/${r.name}/${r.version}`}>{r.name}</Link>  :  undefined}
                         {(r.type==='TaskDef') ? <Link href={`/taskdef/${r.name}`}>{r.name}</Link>  :  undefined}
+                        {(r.type==='UserTaskDef') ? <Link href={`/usertaskdef/${r.name}/${r.version}`}>{r.name}</Link>  :  undefined}
                         {(r.type==='ExternalEventDef') ? r.name :  undefined}
                     </td>
                     <td className="text-center ">{r.type}</td>

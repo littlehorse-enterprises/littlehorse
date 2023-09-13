@@ -15,7 +15,9 @@ const WFRunInformationSideBar = ({
 
     return (<div className="flex-1">
         <div className="pop-up-wfrun-information">
-            <div className="header">
+            <div className="header" style={{
+                cursor:"pointer"
+            }}>
                 <Image
                     src="/chevron_right.svg"
                     onClick={(e) => setToggleSideBar(false)}
