@@ -72,6 +72,20 @@ type LHFormatString struct {
 	thread     *ThreadBuilder
 }
 
+type LHErrorType string
+
+const (
+	ChildFailure      LHErrorType = "CHILD_FAILURE"
+	VarSubError       LHErrorType = "VAR_SUB_ERROR"
+	VarMutationError  LHErrorType = "VAR_MUTATION_ERROR"
+	UserTaskCancelled LHErrorType = "USER_TASK_CANCELLED"
+	Timeout           LHErrorType = "TIMEOUT"
+	TaskFailure       LHErrorType = "TASK_FAILURE"
+	VarError          LHErrorType = "VAR_ERROR"
+	TaskError         LHErrorType = "TASK_ERROR"
+	InternalError     LHErrorType = "INTERNAL_ERROR"
+)
+
 func (n *NodeOutput) JsonPath(path string) NodeOutput {
 	return n.jsonPathImpl(path)
 }
@@ -203,10 +217,25 @@ func (t *ThreadBuilder) HandleInterrupt(interruptName string, handler ThreadFunc
 	t.handleInterrupt(interruptName, handler)
 }
 
+func (t *ThreadBuilder) HandleError(
+	nodeOutput *NodeOutput,
+	specificError *LHErrorType,
+	handler ThreadFunc,
+) {
+	t.handleError(nodeOutput, specificError, handler)
+}
+
 func (t *ThreadBuilder) HandleException(
 	nodeOutput *NodeOutput,
 	exceptionName *string,
 	handler ThreadFunc,
 ) {
 	t.handleException(nodeOutput, exceptionName, handler)
+}
+
+func (t *ThreadBuilder) HandleAnyFailure(
+	nodeOutput *NodeOutput,
+	handler ThreadFunc,
+) {
+	t.handleAnyFailure(nodeOutput, handler)
 }

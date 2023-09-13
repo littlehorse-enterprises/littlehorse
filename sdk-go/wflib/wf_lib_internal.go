@@ -39,13 +39,12 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 	for {
 		curFuncsSize := len(seenThreads)
 
-		for funcName, function := range l.funcs {
-			if _, alreadySeen := seenThreads[funcName]; !alreadySeen {
-				funcName = camelCaseToHostNameCase(funcName)
-				seenThreads[funcName] = function
+		for threadName, function := range l.funcs {
+			if _, alreadySeen := seenThreads[threadName]; !alreadySeen {
+				seenThreads[threadName] = function
 
 				thr := ThreadBuilder{
-					Name:     funcName,
+					Name:     threadName,
 					isActive: true,
 					wf:       l,
 					spec:     model.ThreadSpec{},
@@ -78,7 +77,7 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 				}
 				thr.isActive = false
 				// Now save the thread to the protobuf
-				l.spec.ThreadSpecs[funcName] = &thr.spec
+				l.spec.ThreadSpecs[threadName] = &thr.spec
 			}
 
 		}
@@ -347,7 +346,7 @@ func (t *ThreadBuilder) getNodeName(humanName, nodeType string) string {
 }
 
 func (w *LHWorkflow) addSubThread(threadName string, tf ThreadFunc) string {
-	threadName = camelCaseToHostNameCase(threadName)
+	// Note: no need to convert thread name to hostNameCase. It is not a getable.
 	w.funcs[threadName] = tf
 	return threadName
 }
@@ -896,6 +895,56 @@ func (t *ThreadBuilder) handleInterrupt(interruptName string, handler ThreadFunc
 	})
 }
 
+func (t *ThreadBuilder) handleError(
+	nodeOutput *NodeOutput,
+	specificError *LHErrorType,
+	handler ThreadFunc,
+) {
+	t.checkIfIsActive()
+	node := t.spec.Nodes[nodeOutput.nodeName]
+
+	var fhd *model.FailureHandlerDef
+
+	if specificError != nil {
+		failureName := string(*specificError)
+		handlerName := "error-handler-" + failureName + "-" + nodeOutput.nodeName
+		threadName := t.wf.addSubThread(handlerName, handler)
+
+		fhd = &model.FailureHandlerDef{
+			FailureToCatch: &model.FailureHandlerDef_SpecificFailure{
+				SpecificFailure: failureName,
+			},
+			HandlerSpecName: threadName,
+		}
+	} else {
+		handlerName := "error-handler-" + nodeOutput.nodeName
+		threadName := t.wf.addSubThread(handlerName, handler)
+
+		fhd = &model.FailureHandlerDef{
+			FailureToCatch: &model.FailureHandlerDef_AnyFailureOfType{
+				AnyFailureOfType: model.FailureHandlerDef_FAILURE_TYPE_ERROR,
+			},
+			HandlerSpecName: threadName,
+		}
+	}
+
+	node.FailureHandlers = append(node.FailureHandlers, fhd)
+}
+
+func (t *ThreadBuilder) handleAnyFailure(
+	nodeOutput *NodeOutput, handler ThreadFunc,
+) {
+	t.checkIfIsActive()
+	node := t.spec.Nodes[nodeOutput.nodeName]
+	handlerName := "exception-handler-all-" + nodeOutput.nodeName
+	threadName := t.wf.addSubThread(handlerName, handler)
+
+	node.FailureHandlers = append(node.FailureHandlers, &model.FailureHandlerDef{
+		FailureToCatch:  nil, // catches all Failures
+		HandlerSpecName: threadName,
+	})
+}
+
 func (t *ThreadBuilder) handleException(
 	nodeOutput *NodeOutput,
 	exceptionName *string,
@@ -903,19 +952,36 @@ func (t *ThreadBuilder) handleException(
 ) {
 	t.checkIfIsActive()
 	node := t.spec.Nodes[nodeOutput.nodeName]
-	handlerName := "exception-handler-" + *exceptionName + "-" + nodeOutput.nodeName
-	threadName := t.wf.addSubThread(handlerName, handler)
 
-	node.FailureHandlers = append(node.FailureHandlers, &model.FailureHandlerDef{
-		FailureToCatch: &model.FailureHandlerDef_SpecificFailure{
-			SpecificFailure: *exceptionName,
-		},
-		HandlerSpecName: threadName,
-	})
+	var fhd *model.FailureHandlerDef
+
+	if exceptionName != nil {
+		handlerName := "exn-handler-" + *exceptionName + "-" + nodeOutput.nodeName
+		threadName := t.wf.addSubThread(handlerName, handler)
+
+		fhd = &model.FailureHandlerDef{
+			FailureToCatch: &model.FailureHandlerDef_SpecificFailure{
+				SpecificFailure: *exceptionName,
+			},
+			HandlerSpecName: threadName,
+		}
+	} else {
+		handlerName := "exn-handler-" + nodeOutput.nodeName
+		threadName := t.wf.addSubThread(handlerName, handler)
+
+		fhd = &model.FailureHandlerDef{
+			FailureToCatch: &model.FailureHandlerDef_AnyFailureOfType{
+				AnyFailureOfType: model.FailureHandlerDef_FAILURE_TYPE_EXCEPTION,
+			},
+			HandlerSpecName: threadName,
+		}
+	}
+
+	node.FailureHandlers = append(node.FailureHandlers, fhd)
 }
 
 func (t *ThreadBuilder) checkIfIsActive() {
 	if !t.isActive {
-		panic("Using a inactive thread")
+		t.throwError(tracerr.Wrap(errors.New("using a inactive thread")))
 	}
 }
