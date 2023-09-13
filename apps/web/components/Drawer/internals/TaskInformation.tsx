@@ -116,7 +116,7 @@ export const TaskInformation = ({isWFRun, data, wfRunId, run, setToggleSideBar, 
   },[guid])
     return (
         <>
-        {loops?.length && loops?.length  > 1 && <div className="task_attempts">
+        {!!loops?.length && loops?.length  > 1 && <div className="task_attempts">
               <div className="title">Node Run</div>
               <div className="selector">
                 <div className="icon">
@@ -172,7 +172,7 @@ export const TaskInformation = ({isWFRun, data, wfRunId, run, setToggleSideBar, 
 
             </div>
 
-            {nrun?.attempts.length && <DrawerSection title="Node Data" >
+            {!!nrun?.attempts.length && <DrawerSection title="Node Data" >
               <div className="grid-3">
                 {nrun?.attempts?.[attempt_no || 0]?.scheduleTime &&  <p className="drawer__nodeData__header">SCHEDULED</p>}
                 {nrun?.attempts?.[attempt_no || 0]?.scheduleTime &&  <p className="drawer__nodeData__data">{nrun?.attempts?.[attempt_no || 0]?.scheduleTime ? moment(nrun?.attempts?.[attempt_no || 0]?.scheduleTime).format('MMMM DD, HH:mm:ss') : ''}</p>}

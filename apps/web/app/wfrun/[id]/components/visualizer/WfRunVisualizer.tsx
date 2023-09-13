@@ -9,6 +9,7 @@ import {
 } from "../../../../../components/Drawer/internals/drawerInternals";
 import { WfRunVisualizerChart } from "./WfRunVisualizerChart";
 import { Loader } from "ui";
+import { nodename } from "../../../../../helpers/nodename";
 
 interface mapnode {}
 export const WfRunVisualizer = ({
@@ -27,6 +28,24 @@ export const WfRunVisualizer = ({
   const [showError, setShowError] = useState(false);
   const [toggleSideBar, setToggleSideBar] = useState(false);
   const [sideBarData, setSideBarData] = useState("");
+
+  const getLoops = async (taskDefName, wfRunId) => {
+    const res = await fetch("/api/loops/taskRun", {
+      method: "POST",
+      body: JSON.stringify({
+        taskDefName,
+        wfRunId
+      }),
+    });
+    if (res.ok) {
+      const results = await res.json()
+      console.log('RESS',results.length)
+
+      return results.length > 1
+    //  setLoops(results)
+    }
+  }
+  
 
   const rec = (mappedData, i, offset, open=false) => {
     let el = mappedData[i];
@@ -49,7 +68,7 @@ export const WfRunVisualizer = ({
 			}
 		}
 
-    mappedData = mappedData.map((m) => {
+    mappedData = mappedData.map( (m) => {
       if (el.childs.includes(m.name)) {
         // m.level = el.level + 1; // each child heritate parent level + 1
 
@@ -77,7 +96,10 @@ export const WfRunVisualizer = ({
 	
 				if(open && ['TASK', 'USER_TASK', 'EXTERNAL_EVENT'].includes(el.type)){
 					console.log('CHECK IF LOOP', el.type)
-          el.loop = true
+
+          el.loop = getLoops(nodename(el.name),id)
+          // taskDefName: nodename(d.name),
+          // wfRunId:run.wfRunId
           // if('TASK') 
           // - TASK_SCHEDULED
           // - TASK_RUNNING
