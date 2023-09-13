@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LittleHorse.Worker", "Littl
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{CDA1D0DF-0807-4D93-A404-73EDB778EDA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicExampleConsoleApp", "BasicExampleConsoleApp\BasicExampleConsoleApp.csproj", "{4D1C988E-8E52-4FEF-AFC5-4FD53971A70E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicExampleConsoleApp", "BasicExampleConsoleApp\BasicExampleConsoleApp.csproj", "{4D1C988E-8E52-4FEF-AFC5-4FD53971A70E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthExampleConsoleApp", "AuthExampleConsoleApp\AuthExampleConsoleApp.csproj", "{60C63565-78DE-4321-839E-7D4A21AE116C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,12 +37,17 @@ Global
 		{4D1C988E-8E52-4FEF-AFC5-4FD53971A70E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D1C988E-8E52-4FEF-AFC5-4FD53971A70E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D1C988E-8E52-4FEF-AFC5-4FD53971A70E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60C63565-78DE-4321-839E-7D4A21AE116C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60C63565-78DE-4321-839E-7D4A21AE116C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60C63565-78DE-4321-839E-7D4A21AE116C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60C63565-78DE-4321-839E-7D4A21AE116C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4D1C988E-8E52-4FEF-AFC5-4FD53971A70E} = {CDA1D0DF-0807-4D93-A404-73EDB778EDA5}
+		{60C63565-78DE-4321-839E-7D4A21AE116C} = {CDA1D0DF-0807-4D93-A404-73EDB778EDA5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {25A73410-0E1F-4105-8B53-76949B1D410F}
