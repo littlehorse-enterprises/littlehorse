@@ -294,15 +294,10 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
         )}
 
         {type === 'TASK' ? 
-        <TaskInformation
-          {...{
-            isWFRun : false,
-            // linkedThread: setThreadHandler,
-            data: props.datao.find((d : any) => d.name === props.nodeName),
-            // errorData: errorData,
-            setCode:props.setCode,
-            setToggleSideBar: setToggleSideBar,
-          }}
+        <TaskInformation  isWFRun={false} 
+          setToggleSideBar={props.setToggleSideBar}
+          setCode={props.setCode}
+          data={props.datao.find((d : any) => d.name === props.nodeName)}
         /> : ''}
 
         {type === 'WAIT_FOR_THREADS' ? 

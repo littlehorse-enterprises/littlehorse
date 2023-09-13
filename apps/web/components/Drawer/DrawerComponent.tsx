@@ -468,18 +468,12 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
         )}
 
         {type === 'TASK' ? 
-        <TaskInformation
-          {...{
-            isWFRun : true,
-            run: current_run,
-            wfRunId: props.wfRunId,
-            // linkedThread: setThreadHandler,
-            data: props.datao.find((d : any) => d.name === props.nodeName),
-            // errorData: errorData,
-            setCode:props.setCode,
-            setToggleSideBar: setToggleSideBar,
-          }}
+        <TaskInformation run={current_run} isWFRun={props.isWFRun} wfRunId={props.wfRunId} 
+          setToggleSideBar={props.setToggleSideBar}
+          setCode={props.setCode}
+          data={props.datao.find((d : any) => d.name === props.nodeName)}
         /> : ''}
+
 
         {type === 'WAIT_FOR_THREADS' ? 
         <WaitForThreadsInformation
