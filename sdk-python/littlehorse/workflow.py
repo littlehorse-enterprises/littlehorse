@@ -492,7 +492,7 @@ class ThreadBuilder:
         self._nodes: list[WorkflowNode] = []
 
         if workflow is None:
-            raise ValueError("Workflow is not allowed")
+            raise ValueError("Workflow must be not None")
 
         self._workflow = workflow
 
