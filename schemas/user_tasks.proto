@@ -37,7 +37,10 @@ message UserTaskRun {
   UserTaskRunId id = 1;
   UserTaskDefId user_task_def_id = 2;
 
-  repeated UserTaskFieldResult results = 6;
+  optional string user_group = 3;
+  optional string user_id = 4;
+
+  map<string, VariableValue> results = 6;
   UserTaskRunStatus status = 7;
   repeated UserTaskEvent events = 8;
   optional string notes = 9;
@@ -47,11 +50,6 @@ message UserTaskRun {
   // field, or a `oneof user_task_source` field. However, note that such
   // a change would be fine from the API Compatibility perspective.
   NodeRunId node_run_id = 11;
-
-  oneof owner {
-    UserGroup user_group = 12;
-    User user = 13;
-  }
 }
 
 message AssignUserTaskRunRequest {
@@ -59,10 +57,8 @@ message AssignUserTaskRunRequest {
 
   bool override_claim = 2;
 
-  oneof assignee {
-    User user = 3;
-    UserGroup user_group = 4;
-  }
+  optional string user_group = 3;
+  optional string user_id = 4;
 }
 
 message UserTaskFieldResult {
@@ -92,10 +88,8 @@ message CancelUserTaskRunRequest {
 }
 
 message UserTaskTriggerContext {
-  oneof owner {
-    UserGroup user_group = 1;
-    User user = 2;
-  }
+  optional string user_id = 1;
+  optional string user_group = 2;
 }
 
 message UserTaskTriggerReference {
@@ -103,15 +97,6 @@ message UserTaskTriggerReference {
   int32 user_task_event_number = 2;
   WfSpecId wf_spec_id = 3;
   optional UserTaskTriggerContext context = 4;
-}
-
-message UserGroup {
-  string id = 1;
-}
-
-message User {
-  string id = 1;
-  optional UserGroup user_group = 2;
 }
 
 enum UserTaskRunStatus {
@@ -132,14 +117,11 @@ message UserTaskEvent {
   }
 
   message UTEReassigned {
-    oneof old_owner {
-      User old_user= 5;
-      UserGroup old_user_group = 6;
-    }
-    oneof new_owner {
-      User new_user = 7;
-      UserGroup new_user_group = 8;
-    }
+    optional string old_user_id = 1;
+    optional string old_user_group = 2;
+    
+    optional string new_user_id = 3;
+    optional string new_user_group = 4;
   }
 
   oneof event {
