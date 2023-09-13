@@ -144,7 +144,7 @@ public class WaitForThreadsTest {
                                 .isEqualTo("result"))
                 .thenSendExternalEventJsonContent("person-2-approves", person2Approves)
                 .thenSendExternalEventJsonContent("person-3-approves", person3Approves)
-                .waitForStatus(ERROR)
+                .waitForStatus(COMPLETED)
                 .start();
     }
 

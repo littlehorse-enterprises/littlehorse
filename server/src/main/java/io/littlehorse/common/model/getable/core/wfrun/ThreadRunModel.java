@@ -506,7 +506,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         thr.handlingFailure = new HandlingFailureHaltReasonModel();
         thr.handlingFailure.handlerThreadId = handlerThreadNumber;
 
-        childThreadIds.add((Integer) handlerThreadNumber);
+        childThreadIds.add(handlerThreadNumber);
         haltReasons.add(thr);
     }
 

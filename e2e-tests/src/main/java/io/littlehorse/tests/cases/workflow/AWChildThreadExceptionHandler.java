@@ -36,7 +36,7 @@ public class AWChildThreadExceptionHandler extends WorkflowLogicTest {
                     null);
 
             NodeOutput toHandle = thread.waitForThreads(childThread).withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
-            thread.handleException(toHandle, null, handler -> {
+            thread.handleError(toHandle, handler -> {
                 handler.execute("aw-echo", "hi from handler");
             });
             thread.execute("aw-succeed");

@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
+import io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -13,6 +14,8 @@ public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
     public String handlerSpecName;
 
     public NodeModel node;
+
+    private LHFailureType type;
 
     public FailureHandlerDefModel() {}
 
@@ -24,13 +27,14 @@ public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
         FailureHandlerDef.Builder out = FailureHandlerDef.newBuilder().setHandlerSpecName(handlerSpecName);
 
         if (specificFailure != null) out.setSpecificFailure(specificFailure);
-
+        if (type != null) out.setAnyFailureOfType(type);
         return out;
     }
 
     public void initFrom(Message proto) {
         FailureHandlerDef p = (FailureHandlerDef) proto;
         if (p.hasSpecificFailure()) specificFailure = p.getSpecificFailure();
+        if (p.hasAnyFailureOfType()) type = p.getAnyFailureOfType();
         handlerSpecName = p.getHandlerSpecName();
     }
 
@@ -42,8 +46,13 @@ public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
 
     public boolean doesHandle(String failureName) {
         if (specificFailure == null) {
-            // Then it's a wildcard, which means match all exceptions.
-            log.debug("Wildcard exception handler...accepting.");
+            if (type == LHFailureType.FAILURE_TYPE_ERROR) {
+                return LHConstants.RESERVED_EXCEPTION_NAMES.contains(failureName);
+            } else if (type == LHFailureType.FAILURE_TYPE_EXCEPTION) {
+                return !LHConstants.RESERVED_EXCEPTION_NAMES.contains(failureName);
+            }
+            // Then it's a wildcard, which means match all failures.
+            log.debug("Wildcard failure handler...accepting.");
             return true;
         }
 
@@ -53,11 +62,6 @@ public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
         }
 
         log.debug("Specific: {} handling: {}", this.specificFailure, failureName);
-
-        if (specificFailure.equals(LHConstants.VAR_ERROR)) {
-            return (failureName.equals(LHConstants.VAR_MUTATION_ERROR)
-                    || failureName.equals(LHConstants.VAR_SUB_ERROR));
-        }
 
         if (specificFailure.equals(LHConstants.VAR_ERROR)) {
             return (failureName.equals(LHConstants.VAR_MUTATION_ERROR)

@@ -66,7 +66,7 @@ public class UserTaskTest {
 
             entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 
-            entrypointThread.execute("my-task", formVar);
+            entrypointThread.execute("my-custom-task", formVar);
         });
     }
 
@@ -81,11 +81,11 @@ public class UserTaskTest {
 
             entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 
-            entrypointThread.execute("my-task", formVar);
+            entrypointThread.execute("my-custom-task", formVar);
         });
     }
 
-    @LHTaskMethod("my-task")
+    @LHTaskMethod("my-custom-task")
     public String obiwan(MyForm formData) {
         return "String was " + formData.myStr + " and int was " + formData.myInt;
     }
