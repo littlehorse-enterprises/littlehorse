@@ -629,7 +629,58 @@
   }
 }
 
-
+.task_attempts{
+  display: flex;
+  padding: 8px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  align-self: stretch;
+  border-radius: 8px;
+  border: 1px solid #3D4149;
+  margin-bottom: 16px;
+  .title{
+    display: flex;
+    padding: 4px 0px;
+    align-items: flex-start;
+    color: #EDEEF0;
+    font-family: "Inter";
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-transform: uppercase;
+  }
+  .selector{
+    gap:4px;
+    display: flex;
+    width: 100%;
+    .icon{
+      display: flex;
+      padding: 4px 8px;
+      align-items: center;
+      border-radius: 4px;
+      border: 1px solid #4B5058;
+      background: #363A41;
+    }
+    .version_select{
+      flex:1;
+      border-radius: 4px;
+      border: 1px solid #4B5058;
+      background: #363A41;
+      display: flex;
+      select{
+        height: 32px;
+        background: transparent;
+        flex: auto;
+        text-align: left;
+      }
+      img{
+        position: absolute;
+      }
+    }
+  }
+}
 .drawer-section{
   border-radius: 8px;
   border: 1px solid #3D4149;

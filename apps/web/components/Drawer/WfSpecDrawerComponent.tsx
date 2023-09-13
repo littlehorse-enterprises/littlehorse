@@ -6,6 +6,7 @@ import { SpawnChildInformation } from "./internals/SpawnChildInformation";
 import { SleepNodeInformation } from "./internals/SleepNodeInformation";
 import { UserTaskNodeInformation } from "./internals/UserTaskNodeInformation";
 import { WaitForThreadsInformation } from "./internals/WaitForThreadsInformation";
+import { TaskInformation } from "./internals/TaskInformation";
 
 interface DrawerComponentProps {
   internalComponent?: string | undefined;
@@ -257,7 +258,7 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
             })}
         </div>
 
-        {props.internalComponent === "task" && (
+        {/* {props.internalComponent === "task" && (
           <TaskDefInformation
             {...{
               linkedThread: setThreadHandler,
@@ -268,7 +269,7 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
               setToggleSideBar: setToggleSideBar,
             }}
           />
-        )}
+        )} */}
         {props.internalComponent === "nop_def" && (
           <NOPInformation
             {...{
@@ -291,6 +292,18 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
             }}
           />
         )}
+
+        {type === 'TASK' ? 
+        <TaskInformation
+          {...{
+            isWFRun : false,
+            // linkedThread: setThreadHandler,
+            data: props.datao.find((d : any) => d.name === props.nodeName),
+            // errorData: errorData,
+            setCode:props.setCode,
+            setToggleSideBar: setToggleSideBar,
+          }}
+        /> : ''}
 
         {type === 'WAIT_FOR_THREADS' ? 
         <WaitForThreadsInformation

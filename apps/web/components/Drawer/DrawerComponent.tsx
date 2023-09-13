@@ -8,6 +8,7 @@ import WfVariable from "./wfVariable";
 import { SleepNodeInformation } from "./internals/SleepNodeInformation";
 import { UserTaskNodeInformation } from "./internals/UserTaskNodeInformation";
 import { WaitForThreadsInformation } from "./internals/WaitForThreadsInformation";
+import { TaskInformation } from "./internals/TaskInformation";
 
 interface DrawerComponentProps {
   isWFRun:boolean
@@ -125,7 +126,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 
       const processComplexData = {
         task: () => {
-          // console.log("selectedNode", selectedNode);
+          console.log("selectedNode", selectedNode);
           if (rawData === undefined)
             getData(
               "../../api/drawer/taskDef/",
@@ -374,6 +375,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
   return (
     <div className="drawer-component">
       <>
+      {/* <pre>{threadName &&  props.data.threadSpecs && JSON.stringify(props.data.threadSpecs[threadName].variableDefs, null,2)}</pre> */}
       {/* <pre>{JSON.stringify(props.data, null,2)}</pre> */}
         <div className="drawer__threadSelector">
           <p className="drawer__threadSelector__header">THREADRUN</p>
@@ -431,7 +433,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
             })}
         </div>
 
-        {props.internalComponent === "task" && (
+        {/* {props.internalComponent === "task" && (
           <TaskDefInformation
             {...{
               linkedThread: setThreadHandler,
@@ -442,7 +444,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
               setToggleSideBar: setToggleSideBar,
             }}
           />
-        )}
+        )} */}
         {props.internalComponent === "nop_def" && (
           <NOPInformation
             {...{
@@ -465,6 +467,20 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
             }}
           />
         )}
+
+        {type === 'TASK' ? 
+        <TaskInformation
+          {...{
+            isWFRun : true,
+            run: current_run,
+            wfRunId: props.wfRunId,
+            // linkedThread: setThreadHandler,
+            data: props.datao.find((d : any) => d.name === props.nodeName),
+            // errorData: errorData,
+            setCode:props.setCode,
+            setToggleSideBar: setToggleSideBar,
+          }}
+        /> : ''}
 
         {type === 'WAIT_FOR_THREADS' ? 
         <WaitForThreadsInformation
