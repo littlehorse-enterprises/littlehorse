@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { TaskDefInformation } from "./internals/TaskDefInformation";
 import { NOPInformation } from "./internals/NOPInformation";
 import { ExternalEventInformation } from "./internals/ExternalEventInformation";
 import { SpawnChildInformation } from "./internals/SpawnChildInformation";
