@@ -35,5 +35,10 @@ var host = builder.Build();
 
 var taskWorker = host.Services.GetRequiredService<LHTaskWorker<MyWorker>>();
 
+if(!taskWorker.TaskDefExists())
+{
+    taskWorker.RegisterTaskDef();
+}
+
 taskWorker.Start();
 
