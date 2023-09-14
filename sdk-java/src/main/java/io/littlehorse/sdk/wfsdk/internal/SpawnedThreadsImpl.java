@@ -1,16 +1,24 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
+import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
+import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import lombok.Getter;
 
+import java.util.Collection;
+import java.util.List;
+
 @Getter
-class SpawnedThreadsImpl implements SpawnedThreads {
+public final class SpawnedThreadsImpl implements SpawnedThreads {
 
-    private ThreadBuilderImpl parent;
-    private WfRunVariableImpl internalThreadVar;
+    private final Collection<SpawnedThread> spawnedThreads;
 
-    SpawnedThreadsImpl(ThreadBuilderImpl parent, WfRunVariableImpl internalThreadVar) {
-        this.parent = parent;
-        this.internalThreadVar = internalThreadVar;
+    public SpawnedThreadsImpl(SpawnedThread... spawnedThreads) {
+        this.spawnedThreads = List.of(spawnedThreads);
+    }
+
+    @Override
+    public WaitForThreadsNode buildNode() {
+        return null;
     }
 }
