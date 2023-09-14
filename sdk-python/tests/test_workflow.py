@@ -25,7 +25,7 @@ from littlehorse.model.wf_spec_pb2 import (
     ThreadSpec,
     FailureHandlerDef,
 )
-from littlehorse.workflow import to_variable_assignment
+from littlehorse.workflow import to_variable_assignment, LHErrorType
 
 from littlehorse.workflow import (
     NodeOutput,
@@ -796,13 +796,13 @@ class TestWorkflow(unittest.TestCase):
             ),
         )
 
-    def test_handle_error(self):
+    def test_handle_any_error(self):
         def my_interrupt_handler(thread: ThreadBuilder) -> None:
             thread.execute("my-task")
 
         def my_entrypoint(thread: ThreadBuilder) -> None:
             node = thread.execute("fail")
-            thread.handle_error(node, None, my_interrupt_handler)
+            thread.handle_any_error(node, my_interrupt_handler)
             thread.execute("my-task")
 
         wf = Workflow("my-wf", my_entrypoint)
@@ -836,6 +836,62 @@ class TestWorkflow(unittest.TestCase):
                         },
                     ),
                     "exn-handler-1-fail-TASK-FAILURE_TYPE_ERROR": ThreadSpec(
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-my-task-TASK")],
+                            ),
+                            "1-my-task-TASK": Node(
+                                task=TaskNode(task_def_name="my-task"),
+                                outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                            ),
+                            "2-exit-EXIT": Node(exit=ExitNode()),
+                        }
+                    ),
+                },
+            ),
+        )
+
+    def test_handle_task_failure_error(self):
+        def my_interrupt_handler(thread: ThreadBuilder) -> None:
+            thread.execute("my-task")
+
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            node = thread.execute("fail")
+            thread.handle_error(node, LHErrorType.TASK_ERROR, my_interrupt_handler)
+            thread.execute("my-task")
+
+        wf = Workflow("my-wf", my_entrypoint)
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-fail-TASK")],
+                            ),
+                            "1-fail-TASK": Node(
+                                task=TaskNode(task_def_name="fail"),
+                                outgoing_edges=[Edge(sink_node_name="2-my-task-TASK")],
+                                failure_handlers=[
+                                    FailureHandlerDef(
+                                        handler_spec_name="exn-handler-1-fail-TASK-TASK_ERROR",
+                                        specific_failure="TASK_ERROR",
+                                    )
+                                ],
+                            ),
+                            "2-my-task-TASK": Node(
+                                task=TaskNode(task_def_name="my-task"),
+                                outgoing_edges=[Edge(sink_node_name="3-exit-EXIT")],
+                            ),
+                            "3-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    ),
+                    "exn-handler-1-fail-TASK-TASK_ERROR": ThreadSpec(
                         nodes={
                             "0-entrypoint-ENTRYPOINT": Node(
                                 entrypoint=EntrypointNode(),

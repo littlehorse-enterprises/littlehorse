@@ -655,6 +655,16 @@ class ThreadBuilder:
         error_type: Optional[LHErrorType],
         initializer: "ThreadInitializer",
     ) -> None:
+        """Adds Error Handler to the specified NodeOutput,
+        allowing it to manage specific types of errors. If
+        error_type is None, the handler will catch all errors.
+
+        Args:
+            node (NodeOutput): node to which the Error Handler will be attached.
+            error_type (Optional[LHErrorType]): The type of error that the
+            handler will manage.
+            initializer (ThreadInitializer): specifies how to handle the error.
+        """
         self._check_if_active()
         any_error = FailureHandlerDef.LHFailureType.Name(
             FailureHandlerDef.FAILURE_TYPE_ERROR
@@ -669,6 +679,18 @@ class ThreadBuilder:
         )
         last_node = self._find_node(node.node_name)
         last_node.failure_handlers.append(failure_handler)
+
+    def handle_any_error(
+        self, node: NodeOutput, initializer: "ThreadInitializer"
+    ) -> None:
+        """Adds Error Handler to the specified NodeOutput,
+        allowing it to manage any types of errors.
+
+        Args:
+            node (NodeOutput): node to which the Error Handler will be attached.
+            initializer (ThreadInitializer): specifies how to handle the error.
+        """
+        self.handle_error(node, None, initializer)
 
     def wait_for_event(self, event_name: str, timeout: int = -1) -> NodeOutput:
         """Adds an EXTERNAL_EVENT node which blocks until an
