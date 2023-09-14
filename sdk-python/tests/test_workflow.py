@@ -802,7 +802,7 @@ class TestWorkflow(unittest.TestCase):
 
         def my_entrypoint(thread: ThreadBuilder) -> None:
             node = thread.execute("fail")
-            thread.handle_any_error(node, my_interrupt_handler)
+            thread.handle_error(node, my_interrupt_handler)
             thread.execute("my-task")
 
         wf = Workflow("my-wf", my_entrypoint)
@@ -858,7 +858,7 @@ class TestWorkflow(unittest.TestCase):
 
         def my_entrypoint(thread: ThreadBuilder) -> None:
             node = thread.execute("fail")
-            thread.handle_error(node, LHErrorType.TASK_ERROR, my_interrupt_handler)
+            thread.handle_error(node, my_interrupt_handler, LHErrorType.TASK_ERROR)
             thread.execute("my-task")
 
         wf = Workflow("my-wf", my_entrypoint)

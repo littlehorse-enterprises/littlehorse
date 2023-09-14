@@ -25,7 +25,7 @@ async def fail() -> None:
 
 def entrypoint(thread: ThreadBuilder) -> None:
     node = thread.execute("fail")
-    thread.handle_error(node, LHErrorType.TASK_ERROR, exception_handler)
+    thread.handle_error(node, exception_handler, LHErrorType.TASK_ERROR)
 
 
 def exception_handler(thread: ThreadBuilder) -> None:

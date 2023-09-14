@@ -652,8 +652,8 @@ class ThreadBuilder:
     def handle_error(
         self,
         node: NodeOutput,
-        error_type: Optional[LHErrorType],
         initializer: "ThreadInitializer",
+        error_type: Optional[LHErrorType] = None,
     ) -> None:
         """Adds Error Handler to the specified NodeOutput,
         allowing it to manage specific types of errors. If
@@ -669,7 +669,7 @@ class ThreadBuilder:
         any_error = FailureHandlerDef.LHFailureType.Name(
             FailureHandlerDef.FAILURE_TYPE_ERROR
         )
-        failure_name = error_type.name if error_type else any_error
+        failure_name = error_type.name if error_type is not None else any_error
         thread_name = f"exn-handler-{node.node_name}-{failure_name}"
         self._workflow.add_sub_thread(thread_name, initializer)
         failure_handler = FailureHandlerDef(
@@ -679,18 +679,6 @@ class ThreadBuilder:
         )
         last_node = self._find_node(node.node_name)
         last_node.failure_handlers.append(failure_handler)
-
-    def handle_any_error(
-        self, node: NodeOutput, initializer: "ThreadInitializer"
-    ) -> None:
-        """Adds Error Handler to the specified NodeOutput,
-        allowing it to manage any types of errors.
-
-        Args:
-            node (NodeOutput): node to which the Error Handler will be attached.
-            initializer (ThreadInitializer): specifies how to handle the error.
-        """
-        self.handle_error(node, None, initializer)
 
     def wait_for_event(self, event_name: str, timeout: int = -1) -> NodeOutput:
         """Adds an EXTERNAL_EVENT node which blocks until an
