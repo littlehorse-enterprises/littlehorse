@@ -42,4 +42,12 @@ public interface WfRunVariable {
      *     start with $. or adding a jsonIndex to a non-json variable
      */
     WfRunVariable withJsonIndex(@NonNull String jsonPath, @NonNull IndexType indexType);
+
+    /**
+     * Makes this variable persistent across WfSpec versions. This enables searching for
+     * this `Variable` without specifying a WfSpec Version, and it also requires that all
+     * future versions of the WfSpec have the same variable with
+     * @return
+     */
+    WfRunVariable persistent();
 }

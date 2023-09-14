@@ -125,11 +125,13 @@ class SleepNodeRun(_message.Message):
     def __init__(self, maturation_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class Failure(_message.Message):
-    __slots__ = ["failure_name", "message", "content"]
+    __slots__ = ["failure_name", "message", "content", "was_properly_handled"]
     FAILURE_NAME_FIELD_NUMBER: _ClassVar[int]
     MESSAGE_FIELD_NUMBER: _ClassVar[int]
     CONTENT_FIELD_NUMBER: _ClassVar[int]
+    WAS_PROPERLY_HANDLED_FIELD_NUMBER: _ClassVar[int]
     failure_name: str
     message: str
     content: _variable_pb2.VariableValue
-    def __init__(self, failure_name: _Optional[str] = ..., message: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    was_properly_handled: bool
+    def __init__(self, failure_name: _Optional[str] = ..., message: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., was_properly_handled: bool = ...) -> None: ...

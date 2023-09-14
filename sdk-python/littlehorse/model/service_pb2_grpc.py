@@ -104,6 +104,11 @@ class LHPublicApiStub(object):
                 request_serializer=user__tasks__pb2.CancelUserTaskRunRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
+        self.ListUserTaskRuns = channel.unary_unary(
+                '/littlehorse.LHPublicApi/ListUserTaskRuns',
+                request_serializer=service__pb2.ListUserTaskRunRequest.SerializeToString,
+                response_deserializer=service__pb2.UserTaskRunList.FromString,
+                )
         self.GetNodeRun = channel.unary_unary(
                 '/littlehorse.LHPublicApi/GetNodeRun',
                 request_serializer=object__id__pb2.NodeRunId.SerializeToString,
@@ -360,6 +365,12 @@ class LHPublicApiServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def CancelUserTaskRun(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListUserTaskRuns(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -639,6 +650,11 @@ def add_LHPublicApiServicer_to_server(servicer, server):
                     servicer.CancelUserTaskRun,
                     request_deserializer=user__tasks__pb2.CancelUserTaskRunRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'ListUserTaskRuns': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListUserTaskRuns,
+                    request_deserializer=service__pb2.ListUserTaskRunRequest.FromString,
+                    response_serializer=service__pb2.UserTaskRunList.SerializeToString,
             ),
             'GetNodeRun': grpc.unary_unary_rpc_method_handler(
                     servicer.GetNodeRun,
@@ -1079,6 +1095,23 @@ class LHPublicApi(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/CancelUserTaskRun',
             user__tasks__pb2.CancelUserTaskRunRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ListUserTaskRuns(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ListUserTaskRuns',
+            service__pb2.ListUserTaskRunRequest.SerializeToString,
+            service__pb2.UserTaskRunList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

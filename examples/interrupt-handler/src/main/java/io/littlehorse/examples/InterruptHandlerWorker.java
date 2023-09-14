@@ -10,9 +10,10 @@ public class InterruptHandlerWorker {
         InterruptHandlerWorker.class
     );
 
-    @LHTaskMethod("interrupt-handler")
-    public void interruptHandler() {
-        log.warn("Executing interrupt-handler");
+    @LHTaskMethod("some-task")
+    public void someTask() {
+        log.warn("Executing some-task");
+        throw new RuntimeException("My task has failed");
     }
 
     @LHTaskMethod("my-task")

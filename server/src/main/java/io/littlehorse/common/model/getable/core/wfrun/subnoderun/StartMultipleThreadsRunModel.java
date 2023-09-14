@@ -88,9 +88,10 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
 
                 ThreadRunModel child = nodeRunModel
                         .getThreadRun()
-                        .getWfRunModel()
+                        .getWfRun()
                         .startThread(threadSpecName, time, parentThreadNumber, inputs, ThreadType.CHILD);
                 createdThreads.add(child.getNumber());
+                nodeRunModel.getThreadRun().getChildThreadIds().add(child.number);
             }
             VariableValueModel nodeOutput =
                     LHSerializable.fromProto(LHLibUtil.objToVarVal(createdThreads), VariableValueModel.class);

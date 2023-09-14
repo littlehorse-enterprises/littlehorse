@@ -92,4 +92,5 @@ message Failure {
   string failure_name = 1;
   string message = 2;
   optional VariableValue content = 3;
+  bool was_properly_handled = 4;
 }

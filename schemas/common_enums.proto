@@ -46,6 +46,5 @@ enum VariableType {
 }
 
 enum WaitForThreadsPolicy{
-  WAIT_FOR_COMPLETION = 0;
-  STOP_ON_FAILURE = 1;
+  STOP_ON_FAILURE = 0;
 }

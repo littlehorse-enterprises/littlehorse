@@ -26,7 +26,7 @@ public class AUExceptionHandlerTask extends WorkflowLogicTest {
     public Workflow getWorkflowImpl() {
         return new WorkflowImpl(getWorkflowName(), thread -> {
             NodeOutput taskThatWillFail = thread.execute("au-will-fail");
-            thread.handleException(taskThatWillFail, null, handler -> {
+            thread.handleError(taskThatWillFail, handler -> {
                 handler.execute("au-obiwan");
             });
         });

@@ -79,9 +79,9 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
 
         ExternalEventModel evt = nodeRunModel
                 .getThreadRun()
-                .wfRunModel
+                .wfRun
                 .getDao()
-                .getUnclaimedEvent(nodeRunModel.getThreadRun().wfRunId, eNode.externalEventDefName);
+                .getUnclaimedEvent(nodeRunModel.getWfRunId(), eNode.externalEventDefName);
         if (evt == null) {
             // It hasn't come in yet.
             return false;
@@ -124,7 +124,7 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
                 }
 
                 LHTimer timer = new LHTimer();
-                timer.topic = nodeRunModel.getThreadRun().wfRunModel.getDao().getCoreCmdTopic();
+                timer.topic = nodeRunModel.getThreadRun().wfRun.getDao().getCoreCmdTopic();
                 timer.key = nodeRunModel.wfRunId;
                 timer.maturationTime = new Date(new Date().getTime() + (timeoutSeconds.intVal * 1000));
 
@@ -138,7 +138,7 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
                 cmd.time = timeoutEvt.time;
 
                 timer.payload = cmd.toProto().build().toByteArray();
-                nodeRunModel.getThreadRun().wfRunModel.getDao().scheduleTimer(timer);
+                nodeRunModel.getThreadRun().wfRun.getDao().scheduleTimer(timer);
                 log.info("Scheduled timer!");
             } catch (LHVarSubError exn) {
                 nodeRunModel.fail(

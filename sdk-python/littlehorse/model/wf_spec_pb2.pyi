@@ -2,6 +2,7 @@ from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 import littlehorse.model.common_wfspec_pb2 as _common_wfspec_pb2
 from google.protobuf.internal import containers as _containers
+from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
@@ -91,27 +92,35 @@ class StartMultipleThreadsNode(_message.Message):
     def __init__(self, thread_spec_name: _Optional[str] = ..., variables: _Optional[_Mapping[str, _common_wfspec_pb2.VariableAssignment]] = ..., iterable: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class FailureHandlerDef(_message.Message):
-    __slots__ = ["specific_failure", "handler_spec_name"]
-    SPECIFIC_FAILURE_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["handler_spec_name", "specific_failure", "any_failure_of_type"]
+    class LHFailureType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+        __slots__ = []
+        FAILURE_TYPE_ERROR: _ClassVar[FailureHandlerDef.LHFailureType]
+        FAILURE_TYPE_EXCEPTION: _ClassVar[FailureHandlerDef.LHFailureType]
+    FAILURE_TYPE_ERROR: FailureHandlerDef.LHFailureType
+    FAILURE_TYPE_EXCEPTION: FailureHandlerDef.LHFailureType
     HANDLER_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
-    specific_failure: str
+    SPECIFIC_FAILURE_FIELD_NUMBER: _ClassVar[int]
+    ANY_FAILURE_OF_TYPE_FIELD_NUMBER: _ClassVar[int]
     handler_spec_name: str
-    def __init__(self, specific_failure: _Optional[str] = ..., handler_spec_name: _Optional[str] = ...) -> None: ...
+    specific_failure: str
+    any_failure_of_type: FailureHandlerDef.LHFailureType
+    def __init__(self, handler_spec_name: _Optional[str] = ..., specific_failure: _Optional[str] = ..., any_failure_of_type: _Optional[_Union[FailureHandlerDef.LHFailureType, str]] = ...) -> None: ...
 
 class WaitForThreadsNode(_message.Message):
-    __slots__ = ["threads", "policy", "thread_list"]
+    __slots__ = ["threads", "thread_list", "policy"]
     class ThreadToWaitFor(_message.Message):
         __slots__ = ["thread_run_number"]
         THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
         thread_run_number: _common_wfspec_pb2.VariableAssignment
         def __init__(self, thread_run_number: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
     THREADS_FIELD_NUMBER: _ClassVar[int]
-    POLICY_FIELD_NUMBER: _ClassVar[int]
     THREAD_LIST_FIELD_NUMBER: _ClassVar[int]
+    POLICY_FIELD_NUMBER: _ClassVar[int]
     threads: _containers.RepeatedCompositeFieldContainer[WaitForThreadsNode.ThreadToWaitFor]
-    policy: _common_enums_pb2.WaitForThreadsPolicy
     thread_list: _common_wfspec_pb2.VariableAssignment
-    def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsNode.ThreadToWaitFor, _Mapping]]] = ..., policy: _Optional[_Union[_common_enums_pb2.WaitForThreadsPolicy, str]] = ..., thread_list: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
+    policy: _common_enums_pb2.WaitForThreadsPolicy
+    def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsNode.ThreadToWaitFor, _Mapping]]] = ..., thread_list: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., policy: _Optional[_Union[_common_enums_pb2.WaitForThreadsPolicy, str]] = ...) -> None: ...
 
 class ExternalEventNode(_message.Message):
     __slots__ = ["external_event_def_name", "timeout_seconds"]

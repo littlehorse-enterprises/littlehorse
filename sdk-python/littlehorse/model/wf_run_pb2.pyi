@@ -43,12 +43,9 @@ class WfRun(_message.Message):
     def __init__(self, id: _Optional[str] = ..., wf_spec_name: _Optional[str] = ..., wf_spec_version: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., start_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_runs: _Optional[_Iterable[_Union[ThreadRun, _Mapping]]] = ..., pending_interrupts: _Optional[_Iterable[_Union[PendingInterrupt, _Mapping]]] = ..., pending_failures: _Optional[_Iterable[_Union[PendingFailureHandler, _Mapping]]] = ...) -> None: ...
 
 class ThreadRun(_message.Message):
-    __slots__ = ["wf_run_id", "number", "status", "wf_spec_name", "wf_spec_version", "thread_spec_name", "start_time", "end_time", "error_message", "child_thread_ids", "parent_thread_id", "halt_reasons", "interrupt_trigger_id", "failure_being_handled", "current_node_position", "handled_failed_children", "type"]
-    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["number", "status", "thread_spec_name", "start_time", "end_time", "error_message", "child_thread_ids", "parent_thread_id", "halt_reasons", "interrupt_trigger_id", "failure_being_handled", "current_node_position", "handled_failed_children", "type"]
     NUMBER_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
-    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
-    WF_SPEC_VERSION_FIELD_NUMBER: _ClassVar[int]
     THREAD_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
     START_TIME_FIELD_NUMBER: _ClassVar[int]
     END_TIME_FIELD_NUMBER: _ClassVar[int]
@@ -61,11 +58,8 @@ class ThreadRun(_message.Message):
     CURRENT_NODE_POSITION_FIELD_NUMBER: _ClassVar[int]
     HANDLED_FAILED_CHILDREN_FIELD_NUMBER: _ClassVar[int]
     TYPE_FIELD_NUMBER: _ClassVar[int]
-    wf_run_id: str
     number: int
     status: _common_enums_pb2.LHStatus
-    wf_spec_name: str
-    wf_spec_version: int
     thread_spec_name: str
     start_time: _timestamp_pb2.Timestamp
     end_time: _timestamp_pb2.Timestamp
@@ -78,7 +72,7 @@ class ThreadRun(_message.Message):
     current_node_position: int
     handled_failed_children: _containers.RepeatedScalarFieldContainer[int]
     type: ThreadType
-    def __init__(self, wf_run_id: _Optional[str] = ..., number: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., wf_spec_name: _Optional[str] = ..., wf_spec_version: _Optional[int] = ..., thread_spec_name: _Optional[str] = ..., start_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., error_message: _Optional[str] = ..., child_thread_ids: _Optional[_Iterable[int]] = ..., parent_thread_id: _Optional[int] = ..., halt_reasons: _Optional[_Iterable[_Union[ThreadHaltReason, _Mapping]]] = ..., interrupt_trigger_id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ..., failure_being_handled: _Optional[_Union[FailureBeingHandled, _Mapping]] = ..., current_node_position: _Optional[int] = ..., handled_failed_children: _Optional[_Iterable[int]] = ..., type: _Optional[_Union[ThreadType, str]] = ...) -> None: ...
+    def __init__(self, number: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_spec_name: _Optional[str] = ..., start_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., error_message: _Optional[str] = ..., child_thread_ids: _Optional[_Iterable[int]] = ..., parent_thread_id: _Optional[int] = ..., halt_reasons: _Optional[_Iterable[_Union[ThreadHaltReason, _Mapping]]] = ..., interrupt_trigger_id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ..., failure_being_handled: _Optional[_Union[FailureBeingHandled, _Mapping]] = ..., current_node_position: _Optional[int] = ..., handled_failed_children: _Optional[_Iterable[int]] = ..., type: _Optional[_Union[ThreadType, str]] = ...) -> None: ...
 
 class FailureBeingHandled(_message.Message):
     __slots__ = ["thread_run_number", "node_run_position", "failure_number"]

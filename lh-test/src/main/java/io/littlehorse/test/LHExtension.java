@@ -57,10 +57,11 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
                             }
                         });
             }
+            testContext.registerUserTaskSchemas(testInstance);
             List<ExternalEventDef> externalEventDefinitions =
                     testContext.discoverExternalEventDefinitions(testInstance);
             externalEventDefinitions.forEach(testContext::registerExternalEventDef);
-        } catch (IOException e) {
+        } catch (IOException | IllegalAccessException e) {
             throw new LHTestInitializationException("Something went wrong registering task workers", e);
         }
         testContext.instrument(testInstance);

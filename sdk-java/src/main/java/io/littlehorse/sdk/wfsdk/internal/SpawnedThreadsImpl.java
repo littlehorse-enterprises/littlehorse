@@ -8,11 +8,9 @@ class SpawnedThreadsImpl implements SpawnedThreads {
 
     private ThreadBuilderImpl parent;
     private WfRunVariableImpl internalThreadVar;
-    private String childThreadName;
 
-    SpawnedThreadsImpl(ThreadBuilderImpl parent, String childThreadName, WfRunVariableImpl internalThreadVar) {
+    SpawnedThreadsImpl(ThreadBuilderImpl parent, WfRunVariableImpl internalThreadVar) {
         this.parent = parent;
         this.internalThreadVar = internalThreadVar;
-        this.childThreadName = childThreadName;
     }
 }

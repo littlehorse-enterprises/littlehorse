@@ -36,6 +36,7 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
 import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
+import io.littlehorse.sdk.wfsdk.LHErrorType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
@@ -112,10 +113,35 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         if (!lastNodeName.equals(utImpl.nodeName)) {
             throw new IllegalStateException("Tried to edit a stale User Task node!");
         }
-        VariableAssignment userGroup = curNode.getUserTaskBuilder().getUserGroup();
-        if (userGroup == null) {
-            throw new IllegalStateException("User task is not assigned to a userGroup");
+        UserTaskNode.UserAssignment userAssignment =
+                curNode.getUserTaskBuilder().getUser();
+        if (userAssignment == null) {
+            throw new IllegalStateException("The User Task is not assigned to any user");
         }
+        if (!userAssignment.hasUserGroup()) {
+            throw new IllegalStateException("The User Task is assigned to a user without a group.");
+        }
+        VariableAssignment userGroup = userAssignment.getUserGroup();
+        reassignToGroupOnDeadline(userGroup, curNode, deadlineSeconds);
+    }
+
+    @Override
+    public void reassignToGroupOnDeadline(UserTaskOutput userTaskOutput, String userGroup, int deadlineSeconds) {
+        checkIfIsActive();
+        Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
+        UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
+        if (!lastNodeName.equals(utImpl.nodeName)) {
+            throw new IllegalStateException("Tried to edit a stale User Task node!");
+        }
+        if (userGroup == null || userGroup.isEmpty()) {
+            throw new IllegalStateException("User group is required; please provide a valid user group.");
+        }
+        VariableAssignment userGroupVariableAssignment = assignVariable(userGroup);
+        reassignToGroupOnDeadline(userGroupVariableAssignment, curNode, deadlineSeconds);
+    }
+
+    private void reassignToGroupOnDeadline(
+            VariableAssignment userGroup, Node.Builder currentNode, int deadlineSeconds) {
         UTActionTrigger.UTAReassign reassignPb =
                 UTActionTrigger.UTAReassign.newBuilder().setUserGroup(userGroup).build();
         UTActionTrigger actionTrigger = UTActionTrigger.newBuilder()
@@ -123,8 +149,8 @@ final class ThreadBuilderImpl implements ThreadBuilder {
                 .setHook(UTActionTrigger.UTHook.ON_TASK_ASSIGNED)
                 .setDelaySeconds(assignVariable(deadlineSeconds))
                 .build();
-        curNode.getUserTaskBuilder().addActions(actionTrigger);
-        spec.putNodes(lastNodeName, curNode.build());
+        currentNode.getUserTaskBuilder().addActions(actionTrigger);
+        spec.putNodes(lastNodeName, currentNode.build());
     }
 
     @Override
@@ -423,7 +449,7 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         String nodeName = addNode(threadName, NodeCase.START_MULTIPLE_THREADS, startMultiplesThreadNode.build());
         WfRunVariableImpl internalStartedThreadVar = addVariable(nodeName, VariableType.JSON_ARR);
         mutate(internalStartedThreadVar, VariableMutationType.ASSIGN, new NodeOutputImpl(nodeName, this));
-        return new SpawnedThreadsImpl(this, threadName, internalStartedThreadVar);
+        return new SpawnedThreadsImpl(this, internalStartedThreadVar);
     }
 
     public void sleepSeconds(Object secondsToSleep) {
@@ -541,7 +567,7 @@ final class ThreadBuilderImpl implements ThreadBuilder {
             SpawnedThreadImpl st = (SpawnedThreadImpl) threadsToWaitFor[i];
             waitNode.addThreads(ThreadToWaitFor.newBuilder().setThreadRunNumber(assignVariable(st.internalThreadVar)));
         }
-        waitNode.setPolicy(WaitForThreadsPolicy.WAIT_FOR_COMPLETION);
+        waitNode.setPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
         String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode.build());
 
         return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
@@ -553,7 +579,7 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         WaitForThreadsNode.Builder waitNode = WaitForThreadsNode.newBuilder();
         SpawnedThreadsImpl spawnedThreads = (SpawnedThreadsImpl) threads;
         waitNode.setThreadList(assignVariable(spawnedThreads.getInternalThreadVar()));
-        waitNode.setPolicy(WaitForThreadsPolicy.WAIT_FOR_COMPLETION);
+        waitNode.setPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
         String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode.build());
         return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
     }
@@ -604,6 +630,43 @@ final class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     public void handleException(NodeOutput nodeOutput, String exceptionName, ThreadFunc handler) {
+        addExceptionHandler(nodeOutput, exceptionName, handler);
+    }
+
+    @Override
+    public void handleException(NodeOutput node, ThreadFunc handler) {
+        addExceptionHandler(node, null, handler);
+    }
+
+    @Override
+    public void handleError(NodeOutput node, LHErrorType error, ThreadFunc handler) {
+        addErrorHandler(node, error, handler);
+    }
+
+    @Override
+    public void handleError(NodeOutput node, ThreadFunc handler) {
+        addErrorHandler(node, null, handler);
+    }
+
+    @Override
+    public void handleAnyFailure(NodeOutput nodeOutput, ThreadFunc handler) {
+        checkIfIsActive();
+        NodeOutputImpl node = (NodeOutputImpl) nodeOutput;
+        String threadName = "exn-handler-" + node.nodeName + "-any-failure";
+        threadName = parent.addSubThread(threadName, handler);
+        FailureHandlerDef.Builder handlerDef = FailureHandlerDef.newBuilder().setHandlerSpecName(threadName);
+        addFailureHandlerDef(handlerDef.build(), node);
+    }
+
+    private void addFailureHandlerDef(FailureHandlerDef handlerDef, NodeOutputImpl node) {
+        // Add the failure handler to the most recent node
+        Node.Builder lastNodeBuilder = spec.getNodesOrThrow(node.nodeName).toBuilder();
+
+        lastNodeBuilder.addFailureHandlers(handlerDef);
+        spec.putNodes(node.nodeName, lastNodeBuilder.build());
+    }
+
+    private void addExceptionHandler(NodeOutput nodeOutput, String exceptionName, ThreadFunc handler) {
         checkIfIsActive();
         NodeOutputImpl node = (NodeOutputImpl) nodeOutput;
         String threadName = "exn-handler-" + node.nodeName + "-" + exceptionName;
@@ -611,13 +674,27 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         FailureHandlerDef.Builder handlerDef = FailureHandlerDef.newBuilder().setHandlerSpecName(threadName);
         if (exceptionName != null) {
             handlerDef.setSpecificFailure(exceptionName);
+        } else {
+            handlerDef.setAnyFailureOfType(FailureHandlerDef.LHFailureType.FAILURE_TYPE_EXCEPTION);
         }
+        addFailureHandlerDef(handlerDef.build(), node);
+    }
 
-        // Add the failure handler to the most recent node
-        Node.Builder lastNodeBuilder = spec.getNodesOrThrow(node.nodeName).toBuilder();
-
-        lastNodeBuilder.addFailureHandlers(handlerDef);
-        spec.putNodes(node.nodeName, lastNodeBuilder.build());
+    private void addErrorHandler(NodeOutput nodeOutput, LHErrorType errorType, ThreadFunc handler) {
+        checkIfIsActive();
+        NodeOutputImpl node = (NodeOutputImpl) nodeOutput;
+        String threadName = "exn-handler-" + node.nodeName + "-"
+                + (errorType != null
+                        ? errorType.getInternalName()
+                        : FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR);
+        threadName = parent.addSubThread(threadName, handler);
+        FailureHandlerDef.Builder handlerDef = FailureHandlerDef.newBuilder().setHandlerSpecName(threadName);
+        if (errorType != null) {
+            handlerDef.setSpecificFailure(errorType.getInternalName());
+        } else {
+            handlerDef.setAnyFailureOfType(FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR);
+        }
+        addFailureHandlerDef(handlerDef.build(), node);
     }
 
     public WorkflowConditionImpl condition(Object lhs, Comparator comparator, Object rhs) {
@@ -698,7 +775,9 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         checkIfIsActive();
         VariableAssignment.Builder builder = VariableAssignment.newBuilder();
 
-        if (variable.getClass().equals(WfRunVariableImpl.class)) {
+        if (variable == null) {
+            builder.setLiteralValue(VariableValue.newBuilder().setType(VariableType.NULL));
+        } else if (variable.getClass().equals(WfRunVariableImpl.class)) {
             WfRunVariableImpl wrv = (WfRunVariableImpl) variable;
             if (wrv.jsonPath != null) {
                 builder.setJsonPath(wrv.jsonPath);

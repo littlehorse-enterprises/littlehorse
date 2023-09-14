@@ -62,6 +62,7 @@ class TestLHTask(unittest.TestCase):
         not_a_callable = 3
         with self.assertRaises(TypeError) as exception_context:
             LHTask(not_a_callable, TaskDef())
+
         self.assertEqual(
             f"{not_a_callable} is not a callable object",
             str(exception_context.exception),
@@ -180,6 +181,20 @@ class TestLHTask(unittest.TestCase):
         task = LHTask(my_method, TaskDef())
 
         self.assertTrue(task.has_context())
+
+    def test_with_class(self):
+        class MyClass:
+            async def my_method(self, ctx: WorkerContext):
+                pass
+
+            def create_task(self):
+                return LHTask(self.my_method, TaskDef())
+
+        try:
+            my_class = MyClass()
+            my_class.create_task()
+        except Exception as e:
+            self.fail(f"Unexpected exception {e}")
 
     def test_callable_matches_with_context(self):
         async def my_method(param1: str, param2: int, ctx: WorkerContext = None):

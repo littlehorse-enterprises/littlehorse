@@ -9,24 +9,16 @@ package io.littlehorse.sdk.common.proto;
 public enum WaitForThreadsPolicy
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>WAIT_FOR_COMPLETION = 0;</code>
+   * <code>STOP_ON_FAILURE = 0;</code>
    */
-  WAIT_FOR_COMPLETION(0),
-  /**
-   * <code>STOP_ON_FAILURE = 1;</code>
-   */
-  STOP_ON_FAILURE(1),
+  STOP_ON_FAILURE(0),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>WAIT_FOR_COMPLETION = 0;</code>
+   * <code>STOP_ON_FAILURE = 0;</code>
    */
-  public static final int WAIT_FOR_COMPLETION_VALUE = 0;
-  /**
-   * <code>STOP_ON_FAILURE = 1;</code>
-   */
-  public static final int STOP_ON_FAILURE_VALUE = 1;
+  public static final int STOP_ON_FAILURE_VALUE = 0;
 
 
   public final int getNumber() {
@@ -53,8 +45,7 @@ public enum WaitForThreadsPolicy
    */
   public static WaitForThreadsPolicy forNumber(int value) {
     switch (value) {
-      case 0: return WAIT_FOR_COMPLETION;
-      case 1: return STOP_ON_FAILURE;
+      case 0: return STOP_ON_FAILURE;
       default: return null;
     }
   }

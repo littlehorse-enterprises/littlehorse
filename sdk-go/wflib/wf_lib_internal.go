@@ -39,13 +39,12 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 	for {
 		curFuncsSize := len(seenThreads)
 
-		for funcName, function := range l.funcs {
-			if _, alreadySeen := seenThreads[funcName]; !alreadySeen {
-				funcName = camelCaseToHostNameCase(funcName)
-				seenThreads[funcName] = function
+		for threadName, function := range l.funcs {
+			if _, alreadySeen := seenThreads[threadName]; !alreadySeen {
+				seenThreads[threadName] = function
 
 				thr := ThreadBuilder{
-					Name:     funcName,
+					Name:     threadName,
 					isActive: true,
 					wf:       l,
 					spec:     model.ThreadSpec{},
@@ -78,7 +77,7 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 				}
 				thr.isActive = false
 				// Now save the thread to the protobuf
-				l.spec.ThreadSpecs[funcName] = &thr.spec
+				l.spec.ThreadSpecs[threadName] = &thr.spec
 			}
 
 		}
@@ -90,15 +89,10 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 	return &l.spec, nil
 }
 
-func (t *ThreadBuilder) executeTask(name string, args []interface{}) NodeOutput {
-	t.checkIfIsActive()
-	nodeName, node := t.createBlankNode(name, "TASK")
-
-	taskNode := &model.Node_Task{
-		Task: &model.TaskNode{
-			TaskDefName: name,
-			Variables:   make([]*model.VariableAssignment, 0),
-		},
+func (t *ThreadBuilder) createTaskNode(taskDefName string, args []interface{}) *model.TaskNode {
+	taskNode := &model.TaskNode{
+		TaskDefName: taskDefName,
+		Variables:   make([]*model.VariableAssignment, 0),
 	}
 
 	for _, arg := range args {
@@ -106,14 +100,155 @@ func (t *ThreadBuilder) executeTask(name string, args []interface{}) NodeOutput 
 		if err != nil {
 			t.throwError(tracerr.Wrap(err))
 		}
-		taskNode.Task.Variables = append(taskNode.Task.Variables, varAssn)
+		taskNode.Variables = append(taskNode.Variables, varAssn)
 	}
+	return taskNode
+}
 
-	node.Node = taskNode
+func (t *ThreadBuilder) executeTask(name string, args []interface{}) NodeOutput {
+	t.checkIfIsActive()
+	nodeName, node := t.createBlankNode(name, "TASK")
+
+	node.Node = &model.Node_Task{
+		Task: t.createTaskNode(name, args),
+	}
 
 	return NodeOutput{
 		nodeName: nodeName,
 		thread:   t,
+	}
+}
+
+func (t *ThreadBuilder) reassignToGroupOnDeadline(
+	userTask *UserTaskOutput, userGroup *string, deadlineSeconds int,
+) {
+	t.checkIfIsActive()
+
+	curNode := t.spec.Nodes[*t.lastNodeName]
+	if userTask.Output.nodeName != *t.lastNodeName {
+		log.Fatal("Trying to edit stale UserTaskOutput!")
+	}
+
+	delaySeconds, _ := t.assignVariable(deadlineSeconds)
+
+	var userGroupAssn *model.VariableAssignment
+
+	if userGroup == nil {
+		// nil userGroup is is allowed if:
+		// It's assigned to a User, AND the User has an associated Group.
+		currentUser := curNode.GetUserTask().GetUser()
+		if currentUser == nil {
+			log.Fatal("If UserTask assigned to group, must specify a different userGroup to reassign to")
+		}
+
+		if currentUser.UserGroup == nil {
+			log.Fatal("If UserTask assigned to user without Group, must specify a different userGroup to reassign to")
+		}
+
+		userGroupAssn = currentUser.UserGroup
+	} else {
+		userGroupAssn, _ = t.assignVariable(*userGroup)
+	}
+
+	curNode.GetUserTask().Actions = append(curNode.GetUserTask().Actions, &model.UTActionTrigger{
+		Hook:         model.UTActionTrigger_ON_TASK_ASSIGNED,
+		DelaySeconds: delaySeconds,
+		Action: &model.UTActionTrigger_Reassign{
+			Reassign: &model.UTActionTrigger_UTAReassign{
+				AssignTo: &model.UTActionTrigger_UTAReassign_UserGroup{
+					UserGroup: userGroupAssn,
+				},
+			},
+		},
+	})
+}
+
+func (t *ThreadBuilder) scheduleReminderTask(
+	userTask *UserTaskOutput, delaySeconds interface{},
+	taskDefName string, args ...interface{},
+) {
+	t.checkIfIsActive()
+
+	delayAssn, err := t.assignVariable(delaySeconds)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	utaTask := model.UTActionTrigger_Task{
+		Task: &model.UTActionTrigger_UTATask{
+			Task: t.createTaskNode(taskDefName, args),
+		},
+	}
+
+	if userTask.Output.nodeName != *(t.lastNodeName) {
+		log.Fatal("Tried to edit a stale UserTask node!")
+	}
+
+	curNode := t.spec.Nodes[*t.lastNodeName]
+	curNode.GetUserTask().Actions = append(curNode.GetUserTask().Actions,
+		&model.UTActionTrigger{
+			Action:       &utaTask,
+			Hook:         model.UTActionTrigger_ON_ARRIVAL,
+			DelaySeconds: delayAssn,
+		},
+	)
+}
+
+func (t *ThreadBuilder) assignTaskToUserGroup(
+	userTaskDefName string, userGroup interface{},
+) *UserTaskOutput {
+	return t.assignTaskToUser(userTaskDefName, nil, userGroup)
+}
+
+func (t *ThreadBuilder) assignTaskToUser(
+	userTaskDefName string, userId, userGroup interface{},
+) *UserTaskOutput {
+	t.checkIfIsActive()
+
+	utNode := &model.UserTaskNode{
+		UserTaskDefName: userTaskDefName,
+	}
+
+	var userGroupAssn *model.VariableAssignment = nil
+	if userGroup != nil {
+		var err error
+		userGroupAssn, err = t.assignVariable(userGroup)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	if userId != nil {
+		userIdAssn, err := t.assignVariable(userId)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		utNode.Assignment = &model.UserTaskNode_User{
+			User: &model.UserTaskNode_UserAssignment{
+				UserId:    userIdAssn,
+				UserGroup: userGroupAssn,
+			},
+		}
+	} else {
+		utNode.Assignment = &model.UserTaskNode_UserGroup{
+			UserGroup: userGroupAssn,
+		}
+	}
+
+	nodeName, node := t.createBlankNode(userTaskDefName, "USER_TASK")
+	node.Node = &model.Node_UserTask{
+		UserTask: utNode,
+	}
+
+	return &UserTaskOutput{
+		thread: t,
+		node:   node,
+		Output: NodeOutput{
+			nodeName: nodeName,
+			jsonPath: nil,
+			thread:   t,
+		},
 	}
 }
 
@@ -134,6 +269,25 @@ func (t *ThreadBuilder) assignVariable(
 			JsonPath: v.jsonPath,
 			Source: &model.VariableAssignment_VariableName{
 				VariableName: v.Name,
+			},
+		}
+	case *LHFormatString:
+		formatAssignment, _ := t.assignVariable(v.format)
+		var argsAssignments []*model.VariableAssignment = make([]*model.VariableAssignment, 0)
+
+		for _, formatArg := range v.formatArgs {
+			argAssignment, err := t.assignVariable(formatArg)
+			if err != nil {
+				t.throwError(tracerr.Wrap(err))
+			}
+			argsAssignments = append(argsAssignments, argAssignment)
+		}
+		out = &model.VariableAssignment{
+			Source: &model.VariableAssignment_FormatString_{
+				FormatString: &model.VariableAssignment_FormatString{
+					Format: formatAssignment,
+					Args:   argsAssignments,
+				},
 			},
 		}
 	case *NodeOutput, NodeOutput:
@@ -192,7 +346,7 @@ func (t *ThreadBuilder) getNodeName(humanName, nodeType string) string {
 }
 
 func (w *LHWorkflow) addSubThread(threadName string, tf ThreadFunc) string {
-	threadName = camelCaseToHostNameCase(threadName)
+	// Note: no need to convert thread name to hostNameCase. It is not a getable.
 	w.funcs[threadName] = tf
 	return threadName
 }
@@ -583,6 +737,80 @@ func (t *ThreadBuilder) waitForThreads(s ...*SpawnedThread) *NodeOutput {
 	}
 }
 
+func (t *ThreadBuilder) spawnThreadForEach(
+	arrVar *WfRunVariable, threadName string, threadFunc ThreadFunc, args *map[string]interface{},
+) *SpawnedThreads {
+	t.checkIfIsActive()
+
+	if *arrVar.VarType != model.VariableType_JSON_ARR {
+		t.throwError(tracerr.Wrap(errors.New("can only iterate over JSON_ARR variable")))
+	}
+
+	finalThreadName := t.wf.addSubThread(threadName, threadFunc)
+	iterableAssn, err := t.assignVariable(arrVar)
+	if err != nil {
+		t.throwError(tracerr.Wrap(err))
+	}
+
+	subNode := &model.StartMultipleThreadsNode{
+		ThreadSpecName: finalThreadName,
+		Iterable:       iterableAssn,
+		Variables:      make(map[string]*model.VariableAssignment),
+	}
+
+	if args != nil {
+		for name, arg := range *args {
+			varAssn, err := t.assignVariable(arg)
+			if err != nil {
+				t.throwError(tracerr.Wrap(err))
+			}
+			subNode.Variables[name] = varAssn
+		}
+	}
+
+	nodeName, node := t.createBlankNode(threadName, "START_MULTIPLE_THREADS")
+	node.Node = &model.Node_StartMultipleThreads{
+		StartMultipleThreads: subNode,
+	}
+
+	internalThreadNumbersVar := t.addVariable(
+		nodeName, model.VariableType_JSON_ARR, nil,
+	)
+
+	t.mutate(
+		internalThreadNumbersVar,
+		model.VariableMutationType_ASSIGN,
+		NodeOutput{nodeName: nodeName, thread: t},
+	)
+
+	return &SpawnedThreads{
+		thread:     t,
+		threadsVar: internalThreadNumbersVar,
+	}
+}
+
+func (t *ThreadBuilder) waitForThreadsList(s *SpawnedThreads) NodeOutput {
+	t.checkIfIsActive()
+	threadListAssn, err := t.assignVariable(s.threadsVar)
+	if err != nil {
+		t.throwError(tracerr.Wrap(err))
+	}
+
+	subNode := &model.WaitForThreadsNode{
+		ThreadList: threadListAssn,
+		Policy:     model.WaitForThreadsPolicy_STOP_ON_FAILURE,
+	}
+
+	nodeName, node := t.createBlankNode("threads", "WAIT_FOR_THREADS")
+	node.Node = &model.Node_WaitForThreads{
+		WaitForThreads: subNode,
+	}
+	return NodeOutput{
+		thread:   t,
+		nodeName: nodeName,
+	}
+}
+
 func (t *ThreadBuilder) waitForEvent(eventName string) *NodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode(eventName, "EXTERNAL_EVENT")
@@ -597,6 +825,14 @@ func (t *ThreadBuilder) waitForEvent(eventName string) *NodeOutput {
 		nodeName: nodeName,
 		jsonPath: nil,
 		thread:   t,
+	}
+}
+
+func (t *ThreadBuilder) format(format string, args []*WfRunVariable) *LHFormatString {
+	return &LHFormatString{
+		format:     format,
+		thread:     t,
+		formatArgs: args,
 	}
 }
 
@@ -659,6 +895,56 @@ func (t *ThreadBuilder) handleInterrupt(interruptName string, handler ThreadFunc
 	})
 }
 
+func (t *ThreadBuilder) handleError(
+	nodeOutput *NodeOutput,
+	specificError *LHErrorType,
+	handler ThreadFunc,
+) {
+	t.checkIfIsActive()
+	node := t.spec.Nodes[nodeOutput.nodeName]
+
+	var fhd *model.FailureHandlerDef
+
+	if specificError != nil {
+		failureName := string(*specificError)
+		handlerName := "error-handler-" + failureName + "-" + nodeOutput.nodeName
+		threadName := t.wf.addSubThread(handlerName, handler)
+
+		fhd = &model.FailureHandlerDef{
+			FailureToCatch: &model.FailureHandlerDef_SpecificFailure{
+				SpecificFailure: failureName,
+			},
+			HandlerSpecName: threadName,
+		}
+	} else {
+		handlerName := "error-handler-" + nodeOutput.nodeName
+		threadName := t.wf.addSubThread(handlerName, handler)
+
+		fhd = &model.FailureHandlerDef{
+			FailureToCatch: &model.FailureHandlerDef_AnyFailureOfType{
+				AnyFailureOfType: model.FailureHandlerDef_FAILURE_TYPE_ERROR,
+			},
+			HandlerSpecName: threadName,
+		}
+	}
+
+	node.FailureHandlers = append(node.FailureHandlers, fhd)
+}
+
+func (t *ThreadBuilder) handleAnyFailure(
+	nodeOutput *NodeOutput, handler ThreadFunc,
+) {
+	t.checkIfIsActive()
+	node := t.spec.Nodes[nodeOutput.nodeName]
+	handlerName := "exception-handler-all-" + nodeOutput.nodeName
+	threadName := t.wf.addSubThread(handlerName, handler)
+
+	node.FailureHandlers = append(node.FailureHandlers, &model.FailureHandlerDef{
+		FailureToCatch:  nil, // catches all Failures
+		HandlerSpecName: threadName,
+	})
+}
+
 func (t *ThreadBuilder) handleException(
 	nodeOutput *NodeOutput,
 	exceptionName *string,
@@ -666,17 +952,36 @@ func (t *ThreadBuilder) handleException(
 ) {
 	t.checkIfIsActive()
 	node := t.spec.Nodes[nodeOutput.nodeName]
-	handlerName := "exception-handler-" + *exceptionName + "-" + nodeOutput.nodeName
-	threadName := t.wf.addSubThread(handlerName, handler)
 
-	node.FailureHandlers = append(node.FailureHandlers, &model.FailureHandlerDef{
-		SpecificFailure: exceptionName,
-		HandlerSpecName: threadName,
-	})
+	var fhd *model.FailureHandlerDef
+
+	if exceptionName != nil {
+		handlerName := "exn-handler-" + *exceptionName + "-" + nodeOutput.nodeName
+		threadName := t.wf.addSubThread(handlerName, handler)
+
+		fhd = &model.FailureHandlerDef{
+			FailureToCatch: &model.FailureHandlerDef_SpecificFailure{
+				SpecificFailure: *exceptionName,
+			},
+			HandlerSpecName: threadName,
+		}
+	} else {
+		handlerName := "exn-handler-" + nodeOutput.nodeName
+		threadName := t.wf.addSubThread(handlerName, handler)
+
+		fhd = &model.FailureHandlerDef{
+			FailureToCatch: &model.FailureHandlerDef_AnyFailureOfType{
+				AnyFailureOfType: model.FailureHandlerDef_FAILURE_TYPE_EXCEPTION,
+			},
+			HandlerSpecName: threadName,
+		}
+	}
+
+	node.FailureHandlers = append(node.FailureHandlers, fhd)
 }
 
 func (t *ThreadBuilder) checkIfIsActive() {
 	if !t.isActive {
-		panic("Using a inactive thread")
+		t.throwError(tracerr.Wrap(errors.New("using a inactive thread")))
 	}
 }

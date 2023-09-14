@@ -8,18 +8,6 @@ public interface ThreadRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The wfRunId.
-   */
-  java.lang.String getWfRunId();
-  /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
-   */
-  com.google.protobuf.ByteString
-      getWfRunIdBytes();
-
-  /**
    * <code>int32 number = 2;</code>
    * @return The number.
    */
@@ -35,24 +23,6 @@ public interface ThreadRunOrBuilder extends
    * @return The status.
    */
   io.littlehorse.sdk.common.proto.LHStatus getStatus();
-
-  /**
-   * <code>string wf_spec_name = 4;</code>
-   * @return The wfSpecName.
-   */
-  java.lang.String getWfSpecName();
-  /**
-   * <code>string wf_spec_name = 4;</code>
-   * @return The bytes for wfSpecName.
-   */
-  com.google.protobuf.ByteString
-      getWfSpecNameBytes();
-
-  /**
-   * <code>int32 wf_spec_version = 5;</code>
-   * @return The wfSpecVersion.
-   */
-  int getWfSpecVersion();
 
   /**
    * <code>string thread_spec_name = 6;</code>

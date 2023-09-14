@@ -193,7 +193,7 @@ message SearchVariableRequest {
 
   message NameAndValueRequest {
     VariableValue value = 1;
-    int32 wf_spec_version = 2;
+    optional int32 wf_spec_version = 2;
     string var_name = 3;
     string wf_spec_name = 4;
   }
@@ -443,6 +443,13 @@ message WfSpecMetrics {
   int64 start_to_complete_avg = 9;
 }
 
+message ListUserTaskRunRequest {
+  string wf_run_id = 1;
+}
+
+message UserTaskRunList {
+  repeated UserTaskRun results = 1;
+}
 
 service LHPublicApi {
   rpc PutTaskDef(PutTaskDefRequest) returns (TaskDef) {}
@@ -466,6 +473,7 @@ service LHPublicApi {
   rpc AssignUserTaskRun(AssignUserTaskRunRequest) returns (google.protobuf.Empty) {}
   rpc CompleteUserTaskRun(CompleteUserTaskRunRequest) returns (google.protobuf.Empty) {}
   rpc CancelUserTaskRun(CancelUserTaskRunRequest) returns (google.protobuf.Empty) {}
+  rpc ListUserTaskRuns(ListUserTaskRunRequest) returns (UserTaskRunList) {}
 
   rpc GetNodeRun(NodeRunId) returns (NodeRun) {}
   rpc ListNodeRuns(ListNodeRunsRequest) returns (NodeRunList) {}

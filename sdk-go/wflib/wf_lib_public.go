@@ -45,6 +45,12 @@ type NodeOutput struct {
 	thread   *ThreadBuilder
 }
 
+type UserTaskOutput struct {
+	Output NodeOutput
+	thread *ThreadBuilder
+	node   *model.Node
+}
+
 type WorkflowCondition struct {
 	spec          *model.EdgeCondition
 	createdAtNode string
@@ -54,6 +60,31 @@ type SpawnedThread struct {
 	thread       *ThreadBuilder
 	threadNumVar *WfRunVariable
 }
+
+type SpawnedThreads struct {
+	thread     *ThreadBuilder
+	threadsVar *WfRunVariable
+}
+
+type LHFormatString struct {
+	format     string
+	formatArgs []*WfRunVariable
+	thread     *ThreadBuilder
+}
+
+type LHErrorType string
+
+const (
+	ChildFailure      LHErrorType = "CHILD_FAILURE"
+	VarSubError       LHErrorType = "VAR_SUB_ERROR"
+	VarMutationError  LHErrorType = "VAR_MUTATION_ERROR"
+	UserTaskCancelled LHErrorType = "USER_TASK_CANCELLED"
+	Timeout           LHErrorType = "TIMEOUT"
+	TaskFailure       LHErrorType = "TASK_FAILURE"
+	VarError          LHErrorType = "VAR_ERROR"
+	TaskError         LHErrorType = "TASK_ERROR"
+	InternalError     LHErrorType = "INTERNAL_ERROR"
+)
 
 func (n *NodeOutput) JsonPath(path string) NodeOutput {
 	return n.jsonPathImpl(path)
@@ -65,6 +96,11 @@ func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
 
 func (w *WfRunVariable) WithIndex(indexType model.IndexType) *WfRunVariable {
 	w.setIndex(indexType)
+	return w
+}
+
+func (w *WfRunVariable) Persistent() *WfRunVariable {
+	w.varDef.Persistent = true
 	return w
 }
 
@@ -126,6 +162,45 @@ func (t *ThreadBuilder) WaitForThreads(s ...*SpawnedThread) NodeOutput {
 	return *t.waitForThreads(s...)
 }
 
+func (t *ThreadBuilder) SpawnThreadForEach(
+	arrVar *WfRunVariable, threadName string, threadFunc ThreadFunc, args *map[string]interface{},
+) *SpawnedThreads {
+	return t.spawnThreadForEach(arrVar, threadName, threadFunc, args)
+}
+
+func (t *ThreadBuilder) WaitForThreadsList(s *SpawnedThreads) NodeOutput {
+	return t.waitForThreadsList(s)
+}
+
+func (t *ThreadBuilder) AssignTaskToUser(
+	userTaskDefName string, userId, userGroup interface{},
+) *UserTaskOutput {
+	return t.assignTaskToUser(userTaskDefName, userId, userGroup)
+}
+
+func (t *ThreadBuilder) Format(format string, args ...*WfRunVariable) *LHFormatString {
+	return t.format(format, args)
+}
+
+func (t *ThreadBuilder) AssignTaskToUserGroup(
+	userTaskDefName string, userGroup interface{},
+) *UserTaskOutput {
+	return t.assignTaskToUserGroup(userTaskDefName, userGroup)
+}
+
+func (t *ThreadBuilder) ScheduleReminderTask(
+	userTask *UserTaskOutput, delaySeconds interface{},
+	taskDefName string, args ...interface{},
+) {
+	t.scheduleReminderTask(userTask, delaySeconds, taskDefName, args)
+}
+
+func (t *ThreadBuilder) ReassignToGroupOnDeadline(
+	userTask *UserTaskOutput, userGroup *string, deadlineSeconds int,
+) {
+	t.reassignToGroupOnDeadline(userTask, userGroup, deadlineSeconds)
+}
+
 func (t *ThreadBuilder) WaitForEvent(eventName string) NodeOutput {
 	return *t.waitForEvent(eventName)
 }
@@ -142,10 +217,25 @@ func (t *ThreadBuilder) HandleInterrupt(interruptName string, handler ThreadFunc
 	t.handleInterrupt(interruptName, handler)
 }
 
+func (t *ThreadBuilder) HandleError(
+	nodeOutput *NodeOutput,
+	specificError *LHErrorType,
+	handler ThreadFunc,
+) {
+	t.handleError(nodeOutput, specificError, handler)
+}
+
 func (t *ThreadBuilder) HandleException(
 	nodeOutput *NodeOutput,
 	exceptionName *string,
 	handler ThreadFunc,
 ) {
 	t.handleException(nodeOutput, exceptionName, handler)
+}
+
+func (t *ThreadBuilder) HandleAnyFailure(
+	nodeOutput *NodeOutput,
+	handler ThreadFunc,
+) {
+	t.handleAnyFailure(nodeOutput, handler)
 }

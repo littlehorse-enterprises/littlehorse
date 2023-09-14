@@ -84,4 +84,10 @@ public interface VariableDefOrBuilder extends
    * <code>.littlehorse.VariableValue default_value = 5;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getDefaultValueOrBuilder();
+
+  /**
+   * <code>bool persistent = 6;</code>
+   * @return The persistent.
+   */
+  boolean getPersistent();
 }

@@ -1,7 +1,9 @@
 import asyncio
 from datetime import datetime
+import functools
 from inspect import Parameter, signature, iscoroutinefunction
 import logging
+import signal
 from typing import Any, AsyncIterator, Callable
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
@@ -16,13 +18,10 @@ from littlehorse.model.service_pb2 import (
     ReportTaskRun,
     ScheduledTask,
 )
+from google.protobuf.timestamp_pb2 import Timestamp
 from littlehorse.model.task_def_pb2 import TaskDef
-from littlehorse.proto_utils import (
-    value_to_variable_value,
-    variable_type_to_type,
-    extract_value,
-    timestamp_now,
-)
+from littlehorse.utils import extract_value, to_variable_value
+from littlehorse.utils import to_type
 
 REPORT_TASK_DEFAULT_RETRIES = 5
 HEARTBEAT_DEFAULT_INTERVAL = 5
@@ -151,9 +150,7 @@ class LHTask:
         self._validate_match()
 
     def _validate_match(self) -> None:
-        task_def_vars = [
-            variable_type_to_type(var.type) for var in self.task_def.input_vars
-        ]
+        task_def_vars = [to_type(var.type) for var in self.task_def.input_vars]
 
         callable_params = [
             param.annotation
@@ -272,7 +269,7 @@ class LHConnection:
             args.append(context)
 
         try:
-            output = value_to_variable_value(await self._task._callable(*args))
+            output = to_variable_value(await self._task._callable(*args))
             status = TaskStatus.TASK_SUCCESS
         except TypeError as te:
             output = None
@@ -285,13 +282,16 @@ class LHConnection:
 
         self._schedule_task_semaphore.release()
 
+        current_time = Timestamp()
+        current_time.GetCurrentTime()
+
         task_result = ReportTaskRun(
             task_run_id=task.task_run_id,
-            time=timestamp_now(),
+            time=current_time,
             attempt_number=task.attempt_number,
             status=status,
             output=output,
-            log_output=value_to_variable_value(context.log_output)
+            log_output=to_variable_value(context.log_output)
             if context.log_output
             else None,
         )
@@ -490,3 +490,23 @@ class LHTaskWorker:
 
         for connection in self._connections.values():
             connection.stop()
+
+
+def shutdown_hook(*workers: LHTaskWorker) -> None:
+    """Add a shutdown hook for multiples workers"""
+
+    def stop_workers(*workers: LHTaskWorker) -> None:
+        for worker in workers:
+            worker.stop()
+
+    loop = asyncio.get_running_loop()
+
+    for sig in (signal.SIGHUP, signal.SIGTERM, signal.SIGINT):
+        loop.add_signal_handler(sig, functools.partial(stop_workers, *workers))
+
+
+async def start(*workers: LHTaskWorker) -> None:
+    """Starts a list of workers"""
+    shutdown_hook(*workers)
+    tasks = [asyncio.create_task(worker.start()) for worker in workers]
+    await asyncio.gather(*tasks)

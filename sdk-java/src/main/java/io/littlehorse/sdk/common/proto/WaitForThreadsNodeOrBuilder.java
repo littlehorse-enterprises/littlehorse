@@ -8,39 +8,53 @@ public interface WaitForThreadsNodeOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+   * for compatibility reasons, we cannot wrap it into a separate message.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> 
       getThreadsList();
   /**
+   * <pre>
+   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+   * for compatibility reasons, we cannot wrap it into a separate message.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor getThreads(int index);
   /**
+   * <pre>
+   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+   * for compatibility reasons, we cannot wrap it into a separate message.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
    */
   int getThreadsCount();
   /**
+   * <pre>
+   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+   * for compatibility reasons, we cannot wrap it into a separate message.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> 
       getThreadsOrBuilderList();
   /**
+   * <pre>
+   * Either 1 or 3 is set. Cannot put `repeated` into a oneof, and
+   * for compatibility reasons, we cannot wrap it into a separate message.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder getThreadsOrBuilder(
       int index);
-
-  /**
-   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-   * @return The enum numeric value on the wire for policy.
-   */
-  int getPolicyValue();
-  /**
-   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
-   * @return The policy.
-   */
-  io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy();
 
   /**
    * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
@@ -56,4 +70,15 @@ public interface WaitForThreadsNodeOrBuilder extends
    * <code>optional .littlehorse.VariableAssignment thread_list = 3;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getThreadListOrBuilder();
+
+  /**
+   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+   * @return The enum numeric value on the wire for policy.
+   */
+  int getPolicyValue();
+  /**
+   * <code>.littlehorse.WaitForThreadsPolicy policy = 2;</code>
+   * @return The policy.
+   */
+  io.littlehorse.sdk.common.proto.WaitForThreadsPolicy getPolicy();
 }

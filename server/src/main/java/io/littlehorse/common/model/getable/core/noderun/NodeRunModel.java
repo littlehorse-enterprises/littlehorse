@@ -340,7 +340,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 }
                 for (int handlerId : failureHandlerIds) {
                     ThreadRunModel handler =
-                            getThreadRun().wfRunModel.threadRunModels.get(handlerId);
+                            getThreadRun().wfRun.threadRunModels.get(handlerId);
                     if (handler.status != LHStatus.COMPLETED) {
                         return false;
                     }
@@ -391,7 +391,19 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         getThreadRun().fail(failure, time);
     }
 
+    public void failWithoutGrace(FailureModel failure, Date time) {
+        this.failures.add(failure);
+        endTime = time;
+        status = failure.getStatus();
+        errorMessage = failure.message;
+        getThreadRun().failWithoutGrace(failure, time);
+    }
+
     public void halt() {
+        if (!isInProgress()) {
+            return;
+        }
+
         status = LHStatus.HALTED;
         getSubNodeRun().halt();
     }

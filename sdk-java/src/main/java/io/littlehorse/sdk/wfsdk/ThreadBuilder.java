@@ -55,6 +55,17 @@ public interface ThreadBuilder {
     void reassignToGroupOnDeadline(UserTaskOutput userTaskOutput, int deadlineSeconds);
 
     /**
+     * Schedule Reassignment of a UserTask to a userGroup upon reaching the Deadline. This method is
+     * used to schedule the reassignment of a UserTask to a userGroup when the specified UserTask
+     * user assignment reaches its deadline in seconds.
+     *
+     * @param userTaskOutput that is currently assigned to a UserGroup.
+     * @param deadlineSeconds Time in seconds after which the UserTask will be automatically
+     *     reassigned to the UserGroup.
+     */
+    void reassignToGroupOnDeadline(UserTaskOutput userTaskOutput, String userGroup, int deadlineSeconds);
+
+    /**
      * Schedule Reassignment of a UserTask to a userId upon reaching the Deadline. This method is
      * used to schedule the reassignment of a UserTask to a userId when the specified UserTask user
      * assignment reaches its deadline in seconds.
@@ -287,15 +298,53 @@ public interface ThreadBuilder {
     void sleepUntil(WfRunVariable timestamp);
 
     /**
-     * Adds a Failure Handler to the Node specified by the provided NodeOutput.
+     * Attaches an Exception Handler to the specified NodeOutput, enabling it to handle specific
+     * types of exceptions as defined by the 'exceptionName' parameter. If 'exceptionName' is null,
+     * the handler will catch all exceptions.
      *
-     * @param node is a handle to the Node for which we want to catch a failure.
-     * @param exceptionName is the name of the specific exception to handle. If left null, then this
-     *     Failure Handler catches all failures.
-     * @param handler is a ThreadFunction defining a ThreadSpec that should be used to handle the
-     *     failure.
+     * @param node         The NodeOutput instance to which the Exception Handler will be attached.
+     * @param exceptionName The name of the specific exception to handle. If set to null, the handler
+     *                     will catch all exceptions.
+     * @param handler      A ThreadFunction defining a ThreadSpec that specifies how to handle the
+     *                     exception.
      */
     void handleException(NodeOutput node, String exceptionName, ThreadFunc handler);
+
+    /**
+     * Attaches an Exception Handler to the specified NodeOutput, enabling it to handle any
+     * types of exceptions.
+     *
+     * @param node         The NodeOutput instance to which the Exception Handler will be attached.
+     * @param handler      A ThreadFunction defining a ThreadSpec that specifies how to handle the
+     *                     exception.
+     */
+    void handleException(NodeOutput node, ThreadFunc handler);
+
+    /**
+     * Attaches an Error Handler to the specified NodeOutput, allowing it to manage specific types of errors
+     * as defined by the 'error' parameter. If 'error' is set to null, the handler will catch all errors.
+     *
+     * @param node    The NodeOutput instance to which the Error Handler will be attached.
+     * @param error   The type of error that the handler will manage.
+     * @param handler A ThreadFunction defining a ThreadSpec that specifies how to handle the error.
+     */
+    void handleError(NodeOutput node, LHErrorType error, ThreadFunc handler);
+
+    /**
+     * Attaches an Error Handler to the specified NodeOutput, allowing it to manage any types of errors.
+     *
+     * @param node    The NodeOutput instance to which the Error Handler will be attached.
+     * @param handler A ThreadFunction defining a ThreadSpec that specifies how to handle the error.
+     */
+    void handleError(NodeOutput node, ThreadFunc handler);
+
+    /**
+     * Attaches an Failure Handler to the specified NodeOutput, allowing it to manage any types of errors or exceptions.
+     *
+     * @param node    The NodeOutput instance to which the Error Handler will be attached.
+     * @param handler A ThreadFunction defining a ThreadSpec that specifies how to handle the error.
+     */
+    void handleAnyFailure(NodeOutput node, ThreadFunc handler);
 
     /**
      * Returns a WorkflowCondition that can be used in `ThreadBuilder::doIf()` or

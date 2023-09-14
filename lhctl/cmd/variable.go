@@ -91,6 +91,13 @@ Choose one of the following option groups:
 		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
 		wfSpecVersion, _ := cmd.Flags().GetInt32("wfSpecVersion")
 
+		var wfSpecVersionPtr *int32
+		if wfSpecVersion == -1 {
+			wfSpecVersionPtr = nil
+		} else {
+			wfSpecVersionPtr = &wfSpecVersion
+		}
+
 		if wfRunId != "" {
 			search = model.SearchVariableRequest{
 				VariableCriteria: &model.SearchVariableRequest_WfRunId{
@@ -117,7 +124,7 @@ Choose one of the following option groups:
 					Value: &model.SearchVariableRequest_NameAndValueRequest{
 						Value:         content,
 						VarName:       name,
-						WfSpecVersion: wfSpecVersion,
+						WfSpecVersion: wfSpecVersionPtr,
 						WfSpecName:    wfSpecName,
 					},
 				},
@@ -169,7 +176,7 @@ func init() {
 	searchVariableCmd.Flags().String("value", "", "value of variable to search for")
 	searchVariableCmd.Flags().String("name", "", "name of the variable to search for")
 	searchVariableCmd.Flags().String("wfSpecName", "", "name of WfSpec")
-	searchVariableCmd.Flags().Int32("wfSpecVersion", 0, "WfSpecVersion to search for")
+	searchVariableCmd.Flags().Int32("wfSpecVersion", -1, "WfSpecVersion to search for")
 
-	searchVariableCmd.MarkFlagsRequiredTogether("name", "value", "varType", "wfSpecName", "wfSpecVersion")
+	searchVariableCmd.MarkFlagsRequiredTogether("name", "value", "varType", "wfSpecName")
 }
