@@ -1,8 +1,11 @@
 ## Running with an External Event
 
 This example demonstrates the error handling functionality.
-We will use "thread.handle_error" to handle any task failure and completes the WfRun execution.
-It execute "handler" task as a error handler
+We will use `thread.handle_error` to handle any task failure and completes the WfRun execution.
+It execute "handler" task as a error handler.
+
+You can use the `thread.handle_exception`, `thread.handle_error` and `thread.handle_any_failure` methods to elegantly handle
+the exceptions.
 
 Let's run the example:
 
@@ -18,10 +21,10 @@ In another terminal, use `lhctl` to run the workflow:
 lhctl run example-error-handling
 
 # Then inspect the wfRun:
-# Note it is 'COMPLETED'
 lhctl get wfRun <wf run id>
-
-# Then inspect the output of the ExternalEvent and how it completed the nodeRun:
-lhctl get nodeRun <wf run id> 0 1
-lhctl get taskRun <wf run id> <task runid>
 ```
+
+There are two types of failure:
+
+- Exceptions: represents a "business process failure". You can use `thread.handle_exception` for this type of failure.
+- Error: represents a "technical error". You can use `thread.handle_error` for this type of failure.

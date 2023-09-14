@@ -19,17 +19,16 @@ def get_config() -> LHConfig:
     return config
 
 
-async def fail() -> None:
-    raise Exception("Yikes")
-
-
 def entrypoint(thread: ThreadBuilder) -> None:
+    def exception_handler(thread: ThreadBuilder) -> None:
+        thread.execute("handler")
+
     node = thread.execute("fail")
     thread.handle_error(node, exception_handler, LHErrorType.TASK_ERROR)
 
 
-def exception_handler(thread: ThreadBuilder) -> None:
-    thread.execute("handler")
+async def fail() -> None:
+    raise Exception("Yikes")
 
 
 async def handler() -> None:
@@ -37,7 +36,7 @@ async def handler() -> None:
 
 
 def get_workflow() -> Workflow:
-    return Workflow("example-error-handling-12", entrypoint)
+    return Workflow("example-error-handling", entrypoint)
 
 
 async def main() -> None:
@@ -48,7 +47,8 @@ async def main() -> None:
     littlehorse.create_workflow_spec(get_workflow(), config)
 
     await littlehorse.start(
-        LHTaskWorker(fail, "fail", config), LHTaskWorker(handler, "handler", config)
+        LHTaskWorker(fail, "fail", config),
+        LHTaskWorker(handler, "handler", config),
     )
 
 

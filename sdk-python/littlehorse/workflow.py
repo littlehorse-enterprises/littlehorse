@@ -649,6 +649,62 @@ class ThreadBuilder:
         node_name = self.add_node(task_name, task_node)
         return NodeOutput(node_name)
 
+    def handle_any_failure(
+        self, node: NodeOutput, initializer: "ThreadInitializer"
+    ) -> None:
+        """Attaches an Failure Handler to the specified NodeOutput,
+        allowing it to manage any types of errors or exceptions.
+
+        Args:
+            node (NodeOutput): The NodeOutput instance to which
+            the Failure Handler will be attached.
+            initializer (ThreadInitializer): It specifies how to
+            handle failures.
+        """
+        self._check_if_active()
+        thread_name = f"exn-handler-{node.node_name}-any-failure"
+        self._workflow.add_sub_thread(thread_name, initializer)
+        failure_handler = FailureHandlerDef(handler_spec_name=thread_name)
+        last_node = self._find_node(node.node_name)
+        last_node.failure_handlers.append(failure_handler)
+
+    def handle_exception(
+        self,
+        node: NodeOutput,
+        initializer: "ThreadInitializer",
+        exception_name: Optional[str] = None,
+    ) -> None:
+        """Attaches an Exception Handler to the specified
+        NodeOutput, enabling it to handle specific
+        types of exceptions as defined by the 'exception_name'
+        parameter. If 'exception_name' is None,
+        the handler will catch all exceptions.
+
+        Args:
+            node (NodeOutput): The NodeOutput instance to which
+            the Exception Handler will be attached.
+            initializer (ThreadInitializer): It specifies how to
+            handle the exception.
+            exception_name (Optional[str], optional): The name of the
+            specific exception to handle. If set to null, the handler
+            will catch all exceptions. Defaults to None.
+        """
+        self._check_if_active()
+        thread_name = f"exn-handler-{node.node_name}" + (
+            f"-{exception_name}" if exception_name is not None else ""
+        )
+        self._workflow.add_sub_thread(thread_name, initializer)
+
+        failure_handler = FailureHandlerDef(
+            handler_spec_name=thread_name,
+            any_failure_of_type=FailureHandlerDef.LHFailureType.FAILURE_TYPE_EXCEPTION
+            if exception_name is None
+            else None,
+            specific_failure=exception_name,
+        )
+        last_node = self._find_node(node.node_name)
+        last_node.failure_handlers.append(failure_handler)
+
     def handle_error(
         self,
         node: NodeOutput,
@@ -660,10 +716,11 @@ class ThreadBuilder:
         error_type is None, the handler will catch all errors.
 
         Args:
-            node (NodeOutput): node to which the Error Handler will be attached.
-            error_type (Optional[LHErrorType]): The type of error that the
-            handler will manage.
+            node (NodeOutput): The NodeOutput instance to which the
+            Error Handler will be attached.
             initializer (ThreadInitializer): specifies how to handle the error.
+            error_type (Optional[LHErrorType]): The type of error
+            that the handler will manage.
         """
         self._check_if_active()
         any_error = FailureHandlerDef.LHFailureType.Name(
