@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LittleHorse.Common\LittleHorse.Common.csproj" />
     <ProjectReference Include="..\LittleHorse.Worker\LittleHorse.Worker.csproj" />
   </ItemGroup>
 
