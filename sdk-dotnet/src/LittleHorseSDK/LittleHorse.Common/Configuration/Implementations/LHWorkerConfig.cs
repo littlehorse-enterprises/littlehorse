@@ -7,6 +7,8 @@ using LittleHorse.Common.Exceptions;
 using LittleHorseSDK.Common.proto;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using static LittleHorseSDK.Common.proto.LHPublicApi;
 
 
@@ -75,7 +77,7 @@ namespace LittleHorse.Common.Configuration.Implementations
             get { return _createdChannels.Count; }
         }
 
-        public LHWorkerConfig(IConfiguration configuration, ILogger<LHWorkerConfig>? logger)
+        public LHWorkerConfig(IConfiguration configuration, ILogger<LHWorkerConfig>? logger = null)
         {
             _logger = logger;
 
@@ -158,30 +160,30 @@ namespace LittleHorse.Common.Configuration.Implementations
             if (string.IsNullOrEmpty(_options.LHC_CA_CERT))
             {
                 _logger?.LogWarning("Using insecure channel!");
-                AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-                channel = GrpcChannel.ForAddress($"http://{host}:{port}");
+
+                var httpHandler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+
+                channel = GrpcChannel.ForAddress($"http://{host}:{port}", new GrpcChannelOptions()
+                {
+                    Credentials = ChannelCredentials.Insecure,
+                    HttpHandler = httpHandler
+                });
             }
             else
             {
                 _logger?.LogInformation("Using secure connection!");
 
-                var credentials = new SslCredentials(File.ReadAllText(_options.LHC_CA_CERT));
+                var clientCertificate = new X509Certificate2(_options.LHC_CA_CERT);
 
-                if (!string.IsNullOrEmpty(_options.LHC_CLIENT_CERT) && !string.IsNullOrEmpty(_options.LHC_CLIENT_KEY))
-                {
-                    _logger?.LogInformation("Using mtls!");
-                    var keyCertPair = new KeyCertificatePair(File.ReadAllText(_options.LHC_CLIENT_CERT), File.ReadAllText(_options.LHC_CLIENT_KEY));
+                var httphandler = new HttpClientHandler();
+                httphandler.ClientCertificates.Add(clientCertificate);
 
-                    if(credentials?.RootCertificates is not null)
-                    {
-                        credentials = new SslCredentials(credentials.RootCertificates, keyCertPair);
-                    }
-                }
-
-                AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", false);
                 channel = GrpcChannel.ForAddress($"https://{host}:{port}", new GrpcChannelOptions
                 {
-                    Credentials = credentials
+                    HttpHandler = httphandler
                 });
             }
 
@@ -203,42 +205,40 @@ namespace LittleHorse.Common.Configuration.Implementations
 
             var credentials = CallCredentials.FromInterceptor(async (context, metadata) =>
             {
-                var token = await _oAuthClient.GetAccessTokenAsync();
-                metadata.Add("Authorization", $"Bearer {token}");
+                var tokenInfo = await _oAuthClient.GetAccessTokenAsync();
+                metadata.Add("Authorization", $"Bearer {tokenInfo.Token}");
             });
 
 
             if (string.IsNullOrEmpty(_options.LHC_CA_CERT))
             {
                 _logger?.LogWarning("Using insecure channel!");
-                AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
+                var httpHandler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+
                 channel = GrpcChannel.ForAddress($"http://{host}:{port}", new GrpcChannelOptions()
                 {
-                    Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
+                    UnsafeUseInsecureChannelCallCredentials = true,
+                    Credentials = ChannelCredentials.Create(ChannelCredentials.Insecure, credentials),
+                    HttpHandler = httpHandler
                 });
             }
             else
             {
                 _logger?.LogInformation("Using secure connection!");
 
-                var sslCredentials = new SslCredentials(File.ReadAllText(_options.LHC_CA_CERT));
+                var clientCertificate = new X509Certificate2(_options.LHC_CA_CERT);
 
-                if (!string.IsNullOrEmpty(_options.LHC_CLIENT_CERT) && !string.IsNullOrEmpty(_options.LHC_CLIENT_KEY))
-                {
-                    _logger?.LogInformation("Using mtls!");
-                    var keyCertPair = new KeyCertificatePair(File.ReadAllText(_options.LHC_CLIENT_CERT), File.ReadAllText(_options.LHC_CLIENT_KEY));
-
-                    if (sslCredentials?.RootCertificates is not null)
-                    {
-                        sslCredentials = new SslCredentials(sslCredentials.RootCertificates, keyCertPair);
-                    }
-                }
-
-                AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", false);
+                var httphandler = new HttpClientHandler();
+                httphandler.ClientCertificates.Add(clientCertificate);
 
                 channel = GrpcChannel.ForAddress($"https://{host}:{port}", new GrpcChannelOptions
                 {
-                    Credentials = ChannelCredentials.Create(sslCredentials ?? new SslCredentials(), credentials)
+                    HttpHandler = httphandler,
+                    Credentials = ChannelCredentials.Create(ChannelCredentials.SecureSsl, credentials)
                 });
             }
 
