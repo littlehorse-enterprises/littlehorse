@@ -13,11 +13,9 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -48,7 +46,7 @@ public class CompleteUserTaskRunRequestModel extends SubCommand<CompleteUserTask
         CompleteUserTaskRunRequest p = (CompleteUserTaskRunRequest) proto;
         userId = p.getUserId();
         userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class);
-        
+
         for (Map.Entry<String, VariableValue> entry : p.getResultsMap().entrySet()) {
             results.put(entry.getKey(), VariableValueModel.fromProto(entry.getValue()));
         }

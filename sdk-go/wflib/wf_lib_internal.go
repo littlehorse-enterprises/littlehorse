@@ -160,9 +160,7 @@ func (t *ThreadBuilder) reassignToGroupOnDeadline(
 		DelaySeconds: delaySeconds,
 		Action: &model.UTActionTrigger_Reassign{
 			Reassign: &model.UTActionTrigger_UTAReassign{
-				AssignTo: &model.UTActionTrigger_UTAReassign_UserGroup{
-					UserGroup: userGroupAssn,
-				},
+				UserGroup: userGroupAssn,
 			},
 		},
 	})

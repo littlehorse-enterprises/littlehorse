@@ -250,19 +250,19 @@ public interface CommandOrBuilder extends
   io.littlehorse.common.proto.TriggeredTaskRunPbOrBuilder getTriggeredTaskRunOrBuilder();
 
   /**
-   * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 18;</code>
+   * <code>.littlehorse.DeadlineReassignUserTask reassigned_user_task = 18;</code>
    * @return Whether the reassignedUserTask field is set.
    */
   boolean hasReassignedUserTask();
   /**
-   * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 18;</code>
+   * <code>.littlehorse.DeadlineReassignUserTask reassigned_user_task = 18;</code>
    * @return The reassignedUserTask.
    */
-  io.littlehorse.common.proto.ReassignedUserTaskPb getReassignedUserTask();
+  io.littlehorse.common.proto.DeadlineReassignUserTask getReassignedUserTask();
   /**
-   * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 18;</code>
+   * <code>.littlehorse.DeadlineReassignUserTask reassigned_user_task = 18;</code>
    */
-  io.littlehorse.common.proto.ReassignedUserTaskPbOrBuilder getReassignedUserTaskOrBuilder();
+  io.littlehorse.common.proto.DeadlineReassignUserTaskOrBuilder getReassignedUserTaskOrBuilder();
 
   /**
    * <pre>

@@ -14,12 +14,8 @@ import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskStatus;
-import io.littlehorse.sdk.common.proto.User;
-import io.littlehorse.sdk.common.proto.UserGroup;
 import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
-import io.littlehorse.sdk.common.proto.UserTaskFieldResult;
-import io.littlehorse.sdk.common.proto.UserTaskResult;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.UserTaskRunIdList;
@@ -69,7 +65,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
 
             UserTaskOutput formOutput = thread.assignTaskToUserGroup(USER_TASK_DEF_NAME, "test-group");
 
-            thread.reassignToUserOnDeadline(formOutput, "available-user", 5);
+            thread.reassignToUserOnDeadline(formOutput, "available-user", 2);
 
             thread.scheduleReminderTask(formOutput, 2, "az-reminder");
             thread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
@@ -88,7 +84,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         List<String> out = new ArrayList<>();
 
         String wfRunId = runWf(client);
-        Thread.sleep(8 * 1000); // Wait for reminder task to execute
+        Thread.sleep(4 * 1000); // Wait for reminder task to execute
 
         // Get the UserTaskRun, ensure that there is an event with a taskRunId
         NodeRun firstUserTask = getNodeRun(client, wfRunId, 0, 1);
@@ -111,7 +107,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         }
 
         UserTaskRunIdList userGroupResult = client.searchUserTaskRun(SearchUserTaskRunRequest.newBuilder()
-                .setUserGroup(UserGroup.newBuilder().setId("test-group").build())
+                .setUserGroup("test-group")
                 .setUserTaskDefName(USER_TASK_DEF_NAME)
                 .setStatus(UserTaskRunStatus.UNASSIGNED)
                 .build());
@@ -125,16 +121,16 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         assertThat(userTaskRunId != null, "Should have found the userTaskRun when searching for the group");
 
         client.assignUserTaskRun(AssignUserTaskRunRequest.newBuilder()
-                .setUser(User.newBuilder().setId("unavailable-user").build())
+                .setUserId("unavailable-user")
+                .setUserGroup("test-group")
                 .setUserTaskRunId(userTaskRunId)
                 .build());
         Thread.sleep(1000 * 10);
 
         // Look for UserTaskRun's with `test-user` as the user
         UserTaskRunIdList results = client.searchUserTaskRun(SearchUserTaskRunRequest.newBuilder()
-                .setUser(User.newBuilder()
-                        .setId("available-user")
-                        .setUserGroup(UserGroup.newBuilder().setId("test-group").build()))
+                .setUserId("available-user")
+                .setUserGroup("test-group")
                 .build());
         UserTaskRunId found = null;
 
@@ -206,13 +202,8 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
             throws LHSerdeError {
         return CompleteUserTaskRunRequest.newBuilder()
                 .setUserTaskRunId(userTaskRUnIdToComplete)
-                .setResult(UserTaskResult.newBuilder()
-                        .addFields(UserTaskFieldResult.newBuilder()
-                                .setName("myStr")
-                                .setValue(LHLibUtil.objToVarVal("asdf")))
-                        .addFields(UserTaskFieldResult.newBuilder()
-                                .setName("myInt")
-                                .setValue(LHLibUtil.objToVarVal(123))))
+                .putResults("myStr", LHLibUtil.objToVarVal("asdf"))
+                .putResults("myInt", LHLibUtil.objToVarVal(123))
                 .build();
     }
 
@@ -220,24 +211,15 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
             throws LHSerdeError {
         return CompleteUserTaskRunRequest.newBuilder()
                 .setUserTaskRunId(userTaskRUnIdToComplete)
-                .setResult(UserTaskResult.newBuilder()
-                        .addFields(UserTaskFieldResult.newBuilder()
-                                .setName("nonExistingStringField")
-                                .setValue(LHLibUtil.objToVarVal("asdf")))
-                        .addFields(UserTaskFieldResult.newBuilder()
-                                .setName("myInt")
-                                .setValue(LHLibUtil.objToVarVal(123))))
-                .build();
+                .putResults("nonExistingStringField", LHLibUtil.objToVarVal("asdf"))
+                .putResults("myInt", LHLibUtil.objToVarVal(123)).build();
     }
 
     private CompleteUserTaskRunRequest buildCompleteUserTaskRequestWithMissingField(
             UserTaskRunId userTaskRUnIdToComplete) throws LHSerdeError {
         return CompleteUserTaskRunRequest.newBuilder()
                 .setUserTaskRunId(userTaskRUnIdToComplete)
-                .setResult(UserTaskResult.newBuilder()
-                        .addFields(UserTaskFieldResult.newBuilder()
-                                .setName("myInt")
-                                .setValue(LHLibUtil.objToVarVal(123))))
+                .putResults("myInt", LHLibUtil.objToVarVal(123))
                 .build();
     }
 }
@@ -263,7 +245,7 @@ class AZSimpleTask {
         Predicate<VarNameAndVal> isUserGroupVariable = candidateVariable -> {
             return candidateVariable.getVarName().equals("userGroup");
         };
-        String userGroupId = workerContext.getUserGroup().getId();
+        String userGroupId = workerContext.getUserGroup();
         return String.format("Hey there %s execute your task!", userGroupId);
     }
 }

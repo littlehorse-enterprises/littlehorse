@@ -623,7 +623,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int REASSIGNED_USER_TASK_FIELD_NUMBER = 18;
   /**
-   * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 18;</code>
+   * <code>.littlehorse.DeadlineReassignUserTask reassigned_user_task = 18;</code>
    * @return Whether the reassignedUserTask field is set.
    */
   @java.lang.Override
@@ -631,25 +631,25 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 18;
   }
   /**
-   * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 18;</code>
+   * <code>.littlehorse.DeadlineReassignUserTask reassigned_user_task = 18;</code>
    * @return The reassignedUserTask.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.ReassignedUserTaskPb getReassignedUserTask() {
+  public io.littlehorse.common.proto.DeadlineReassignUserTask getReassignedUserTask() {
     if (commandCase_ == 18) {
-       return (io.littlehorse.common.proto.ReassignedUserTaskPb) command_;
+       return (io.littlehorse.common.proto.DeadlineReassignUserTask) command_;
     }
-    return io.littlehorse.common.proto.ReassignedUserTaskPb.getDefaultInstance();
+    return io.littlehorse.common.proto.DeadlineReassignUserTask.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 18;</code>
+   * <code>.littlehorse.DeadlineReassignUserTask reassigned_user_task = 18;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.ReassignedUserTaskPbOrBuilder getReassignedUserTaskOrBuilder() {
+  public io.littlehorse.common.proto.DeadlineReassignUserTaskOrBuilder getReassignedUserTaskOrBuilder() {
     if (commandCase_ == 18) {
-       return (io.littlehorse.common.proto.ReassignedUserTaskPb) command_;
+       return (io.littlehorse.common.proto.DeadlineReassignUserTask) command_;
     }
-    return io.littlehorse.common.proto.ReassignedUserTaskPb.getDefaultInstance();
+    return io.littlehorse.common.proto.DeadlineReassignUserTask.getDefaultInstance();
   }
 
   public static final int CANCEL_USER_TASK_FIELD_NUMBER = 19;
@@ -758,7 +758,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(17, (io.littlehorse.common.proto.TriggeredTaskRunPb) command_);
     }
     if (commandCase_ == 18) {
-      output.writeMessage(18, (io.littlehorse.common.proto.ReassignedUserTaskPb) command_);
+      output.writeMessage(18, (io.littlehorse.common.proto.DeadlineReassignUserTask) command_);
     }
     if (commandCase_ == 19) {
       output.writeMessage(19, (io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) command_);
@@ -837,7 +837,7 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 18) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(18, (io.littlehorse.common.proto.ReassignedUserTaskPb) command_);
+        .computeMessageSize(18, (io.littlehorse.common.proto.DeadlineReassignUserTask) command_);
     }
     if (commandCase_ == 19) {
       size += com.google.protobuf.CodedOutputStream
@@ -3821,9 +3821,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.ReassignedUserTaskPb, io.littlehorse.common.proto.ReassignedUserTaskPb.Builder, io.littlehorse.common.proto.ReassignedUserTaskPbOrBuilder> reassignedUserTaskBuilder_;
+        io.littlehorse.common.proto.DeadlineReassignUserTask, io.littlehorse.common.proto.DeadlineReassignUserTask.Builder, io.littlehorse.common.proto.DeadlineReassignUserTaskOrBuilder> reassignedUserTaskBuilder_;
     /**
-     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 18;</code>
+     * <code>.littlehorse.DeadlineReassignUserTask reassigned_user_task = 18;</code>
      * @return Whether the reassignedUserTask field is set.
      */
     @java.lang.Override
@@ -3831,27 +3831,27 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 18;
     }
     /**
-     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 18;</code>
+     * <code>.littlehorse.DeadlineReassignUserTask reassigned_user_task = 18;</code>
      * @return The reassignedUserTask.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.ReassignedUserTaskPb getReassignedUserTask() {
+    public io.littlehorse.common.proto.DeadlineReassignUserTask getReassignedUserTask() {
       if (reassignedUserTaskBuilder_ == null) {
         if (commandCase_ == 18) {
-          return (io.littlehorse.common.proto.ReassignedUserTaskPb) command_;
+          return (io.littlehorse.common.proto.DeadlineReassignUserTask) command_;
         }
-        return io.littlehorse.common.proto.ReassignedUserTaskPb.getDefaultInstance();
+        return io.littlehorse.common.proto.DeadlineReassignUserTask.getDefaultInstance();
       } else {
         if (commandCase_ == 18) {
           return reassignedUserTaskBuilder_.getMessage();
         }
-        return io.littlehorse.common.proto.ReassignedUserTaskPb.getDefaultInstance();
+        return io.littlehorse.common.proto.DeadlineReassignUserTask.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 18;</code>
+     * <code>.littlehorse.DeadlineReassignUserTask reassigned_user_task = 18;</code>
      */
-    public Builder setReassignedUserTask(io.littlehorse.common.proto.ReassignedUserTaskPb value) {
+    public Builder setReassignedUserTask(io.littlehorse.common.proto.DeadlineReassignUserTask value) {
       if (reassignedUserTaskBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3865,10 +3865,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 18;</code>
+     * <code>.littlehorse.DeadlineReassignUserTask reassigned_user_task = 18;</code>
      */
     public Builder setReassignedUserTask(
-        io.littlehorse.common.proto.ReassignedUserTaskPb.Builder builderForValue) {
+        io.littlehorse.common.proto.DeadlineReassignUserTask.Builder builderForValue) {
       if (reassignedUserTaskBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
@@ -3879,13 +3879,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 18;</code>
+     * <code>.littlehorse.DeadlineReassignUserTask reassigned_user_task = 18;</code>
      */
-    public Builder mergeReassignedUserTask(io.littlehorse.common.proto.ReassignedUserTaskPb value) {
+    public Builder mergeReassignedUserTask(io.littlehorse.common.proto.DeadlineReassignUserTask value) {
       if (reassignedUserTaskBuilder_ == null) {
         if (commandCase_ == 18 &&
-            command_ != io.littlehorse.common.proto.ReassignedUserTaskPb.getDefaultInstance()) {
-          command_ = io.littlehorse.common.proto.ReassignedUserTaskPb.newBuilder((io.littlehorse.common.proto.ReassignedUserTaskPb) command_)
+            command_ != io.littlehorse.common.proto.DeadlineReassignUserTask.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.DeadlineReassignUserTask.newBuilder((io.littlehorse.common.proto.DeadlineReassignUserTask) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -3902,7 +3902,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 18;</code>
+     * <code>.littlehorse.DeadlineReassignUserTask reassigned_user_task = 18;</code>
      */
     public Builder clearReassignedUserTask() {
       if (reassignedUserTaskBuilder_ == null) {
@@ -3921,38 +3921,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 18;</code>
+     * <code>.littlehorse.DeadlineReassignUserTask reassigned_user_task = 18;</code>
      */
-    public io.littlehorse.common.proto.ReassignedUserTaskPb.Builder getReassignedUserTaskBuilder() {
+    public io.littlehorse.common.proto.DeadlineReassignUserTask.Builder getReassignedUserTaskBuilder() {
       return getReassignedUserTaskFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 18;</code>
+     * <code>.littlehorse.DeadlineReassignUserTask reassigned_user_task = 18;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.ReassignedUserTaskPbOrBuilder getReassignedUserTaskOrBuilder() {
+    public io.littlehorse.common.proto.DeadlineReassignUserTaskOrBuilder getReassignedUserTaskOrBuilder() {
       if ((commandCase_ == 18) && (reassignedUserTaskBuilder_ != null)) {
         return reassignedUserTaskBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 18) {
-          return (io.littlehorse.common.proto.ReassignedUserTaskPb) command_;
+          return (io.littlehorse.common.proto.DeadlineReassignUserTask) command_;
         }
-        return io.littlehorse.common.proto.ReassignedUserTaskPb.getDefaultInstance();
+        return io.littlehorse.common.proto.DeadlineReassignUserTask.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.ReassignedUserTaskPb reassigned_user_task = 18;</code>
+     * <code>.littlehorse.DeadlineReassignUserTask reassigned_user_task = 18;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.ReassignedUserTaskPb, io.littlehorse.common.proto.ReassignedUserTaskPb.Builder, io.littlehorse.common.proto.ReassignedUserTaskPbOrBuilder> 
+        io.littlehorse.common.proto.DeadlineReassignUserTask, io.littlehorse.common.proto.DeadlineReassignUserTask.Builder, io.littlehorse.common.proto.DeadlineReassignUserTaskOrBuilder> 
         getReassignedUserTaskFieldBuilder() {
       if (reassignedUserTaskBuilder_ == null) {
         if (!(commandCase_ == 18)) {
-          command_ = io.littlehorse.common.proto.ReassignedUserTaskPb.getDefaultInstance();
+          command_ = io.littlehorse.common.proto.DeadlineReassignUserTask.getDefaultInstance();
         }
         reassignedUserTaskBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.ReassignedUserTaskPb, io.littlehorse.common.proto.ReassignedUserTaskPb.Builder, io.littlehorse.common.proto.ReassignedUserTaskPbOrBuilder>(
-                (io.littlehorse.common.proto.ReassignedUserTaskPb) command_,
+            io.littlehorse.common.proto.DeadlineReassignUserTask, io.littlehorse.common.proto.DeadlineReassignUserTask.Builder, io.littlehorse.common.proto.DeadlineReassignUserTaskOrBuilder>(
+                (io.littlehorse.common.proto.DeadlineReassignUserTask) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;

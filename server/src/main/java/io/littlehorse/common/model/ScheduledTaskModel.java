@@ -40,9 +40,7 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
      * Sets attempt number to zero.
      */
     public ScheduledTaskModel(
-            TaskDefIdModel taskDefId,
-            List<VarNameAndValModel> variables,
-            UserTaskRunModel userTaskRun) {
+            TaskDefIdModel taskDefId, List<VarNameAndValModel> variables, UserTaskRunModel userTaskRun) {
         this.variables = variables;
         this.createdAt = new Date();
         this.source = new TaskRunSourceModel(new UserTaskTriggerReferenceModel(userTaskRun));

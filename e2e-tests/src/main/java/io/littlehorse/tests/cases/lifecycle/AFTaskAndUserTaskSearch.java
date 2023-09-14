@@ -15,10 +15,6 @@ import io.littlehorse.sdk.common.proto.SearchWfRunRequest.StatusAndNameRequest;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunIdList;
 import io.littlehorse.sdk.common.proto.TaskStatus;
-import io.littlehorse.sdk.common.proto.User;
-import io.littlehorse.sdk.common.proto.UserGroup;
-import io.littlehorse.sdk.common.proto.UserTaskFieldResult;
-import io.littlehorse.sdk.common.proto.UserTaskResult;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.UserTaskRunIdList;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
@@ -154,7 +150,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         StatusRuntimeException caught = null;
         try {
             client.assignUserTaskRun(AssignUserTaskRunRequest.newBuilder()
-                    .setUser(User.newBuilder().setId("fdsa").build())
+                    .setUserId("fdsa")
                     .setOverrideClaim(false)
                     .setUserTaskRunId(userTaskId)
                     .build());
@@ -165,7 +161,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
                 caught != null && caught.getStatus().getCode() == Code.FAILED_PRECONDITION,
                 "should be unable to reassign without override claim");
         client.assignUserTaskRun(AssignUserTaskRunRequest.newBuilder()
-                .setUser(User.newBuilder().setId("fdsa").build())
+                .setUserId("fdsa")
                 .setOverrideClaim(true)
                 .setUserTaskRunId(userTaskId)
                 .build());
@@ -176,7 +172,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         assertContainsWfRun(searchUserTaskRunsUserId("fdsa", UserTaskRunStatus.ASSIGNED), succeedWf);
 
         client.assignUserTaskRun(AssignUserTaskRunRequest.newBuilder()
-                .setUserGroup(UserGroup.newBuilder().setId("mygroup").build())
+                .setUserGroup("mygroup")
                 .setOverrideClaim(true)
                 .setUserTaskRunId(userTaskId)
                 .build());
@@ -187,7 +183,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
 
         // Now we claim it once more
         client.assignUserTaskRun(AssignUserTaskRunRequest.newBuilder()
-                .setUser(User.newBuilder().setId("yoda").build())
+                .setUserId("yoda")
                 .setOverrideClaim(true)
                 .setUserTaskRunId(userTaskId)
                 .build());
@@ -201,9 +197,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         client.completeUserTaskRun(CompleteUserTaskRunRequest.newBuilder()
                 .setUserTaskRunId(userTaskId)
                 .setUserId("yoda")
-                .setResult(UserTaskResult.newBuilder()
-                        .addFields(
-                                UserTaskFieldResult.newBuilder().setName("foo").setValue(LHLibUtil.objToVarVal("bar"))))
+                .putResults("foo", LHLibUtil.objToVarVal("bar"))
                 .build());
         Thread.sleep(150);
 

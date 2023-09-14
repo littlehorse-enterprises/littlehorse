@@ -64,6 +64,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
 
     public void initFrom(Message proto) {
         UserTaskNode p = (UserTaskNode) proto;
+        userTaskDefName = p.getUserTaskDefName();
         if (p.hasUserGroup()) userGroup = VariableAssignmentModel.fromProto(p.getUserGroup());
         if (p.hasUserId()) userId = VariableAssignmentModel.fromProto(p.getUserId());
 

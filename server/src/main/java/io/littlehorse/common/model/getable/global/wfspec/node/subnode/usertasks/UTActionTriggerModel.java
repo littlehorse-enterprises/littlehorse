@@ -58,7 +58,7 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
                 task.schedule(dao, utr, this);
                 break;
             case REASSIGN:
-                log.warn("Unimplemented: Reassign trigger");
+                reassign.schedule(dao, utr, this);
                 break;
             case CANCEL:
                 log.warn("Unimplemented: Cancel trigger");
