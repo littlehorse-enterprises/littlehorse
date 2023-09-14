@@ -65,7 +65,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
 
             UserTaskOutput formOutput = thread.assignTaskToUserGroup(USER_TASK_DEF_NAME, "test-group");
 
-            thread.reassignToUserOnDeadline(formOutput, "available-user", 2);
+            thread.reassignToUserOnDeadline(formOutput, "available-user", "test-group", 2);
 
             thread.scheduleReminderTask(formOutput, 2, "az-reminder");
             thread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
