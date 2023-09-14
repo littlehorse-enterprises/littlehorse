@@ -212,7 +212,8 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         return CompleteUserTaskRunRequest.newBuilder()
                 .setUserTaskRunId(userTaskRUnIdToComplete)
                 .putResults("nonExistingStringField", LHLibUtil.objToVarVal("asdf"))
-                .putResults("myInt", LHLibUtil.objToVarVal(123)).build();
+                .putResults("myInt", LHLibUtil.objToVarVal(123))
+                .build();
     }
 
     private CompleteUserTaskRunRequest buildCompleteUserTaskRequestWithMissingField(

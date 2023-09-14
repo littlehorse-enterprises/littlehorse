@@ -152,15 +152,16 @@ final class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     @Override
-    public void reassignToUserOnDeadline(UserTaskOutput userTaskOutput, String userId, String userGroup, int deadlineSeconds) {
+    public void reassignToUserOnDeadline(
+            UserTaskOutput userTaskOutput, String userId, String userGroup, int deadlineSeconds) {
         checkIfIsActive();
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
         if (!lastNodeName.equals(utImpl.nodeName)) {
             throw new IllegalStateException("Tried to edit a stale User Task node!");
         }
-        UTActionTrigger.UTAReassign.Builder reassignPb = UTActionTrigger.UTAReassign.newBuilder()
-                .setUserId(assignVariable(userId));
+        UTActionTrigger.UTAReassign.Builder reassignPb =
+                UTActionTrigger.UTAReassign.newBuilder().setUserId(assignVariable(userId));
         if (userGroup != null) {
             reassignPb.setUserGroup(assignVariable(userGroup));
         }
