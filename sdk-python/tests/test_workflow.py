@@ -802,7 +802,7 @@ class TestWorkflow(unittest.TestCase):
 
         def my_entrypoint(thread: ThreadBuilder) -> None:
             node = thread.execute("fail")
-            thread.handle_error(node, my_interrupt_handler)
+            thread.handle_error(node, None, my_interrupt_handler)
             thread.execute("my-task")
 
         wf = Workflow("my-wf", my_entrypoint)
@@ -824,7 +824,7 @@ class TestWorkflow(unittest.TestCase):
                                 failure_handlers=[
                                     FailureHandlerDef(
                                         handler_spec_name="exn-handler-1-fail-TASK-FAILURE_TYPE_ERROR",
-                                        any_failure_of_type=FailureHandlerDef.FAILURE_TYPE_ERROR,
+                                        any_failure_of_type="FAILURE_TYPE_ERROR",
                                     )
                                 ],
                             ),

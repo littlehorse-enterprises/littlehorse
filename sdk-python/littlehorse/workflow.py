@@ -203,6 +203,18 @@ class NodeCase(Enum):
         raise TypeError("Unrecognized node type")
 
 
+class LHErrorType(Enum):
+    CHILD_FAILURE = "CHILD_FAILURE"
+    VAR_SUB_ERROR = "VAR_SUB_ERROR"
+    VAR_MUTATION_ERROR = "VAR_MUTATION_ERROR"
+    USER_TASK_CANCELLED = "USER_TASK_CANCELLED"
+    TIMEOUT = "TIMEOUT"
+    TASK_FAILURE = "TASK_FAILURE"
+    VAR_ERROR = "VAR_ERROR"
+    TASK_ERROR = "TASK_ERROR"
+    INTERNAL_ERROR = "INTERNAL_ERROR"
+
+
 class FormatString:
     def __init__(self, format: str, *args: Any) -> None:
         """Generates a FormatString object that can be understood by the ThreadBuilder.
@@ -637,16 +649,23 @@ class ThreadBuilder:
         node_name = self.add_node(task_name, task_node)
         return NodeOutput(node_name)
 
-    def handle_error(self, node: NodeOutput, initializer: "ThreadInitializer") -> None:
+    def handle_error(
+        self,
+        node: NodeOutput,
+        error_type: Optional[LHErrorType],
+        initializer: "ThreadInitializer",
+    ) -> None:
         self._check_if_active()
-        failure_type = FailureHandlerDef.LHFailureType.Name(
+        any_error = FailureHandlerDef.LHFailureType.Name(
             FailureHandlerDef.FAILURE_TYPE_ERROR
         )
-        thread_name = f"exn-handler-{node.node_name}-{failure_type}"
+        failure_name = error_type.name if error_type else any_error
+        thread_name = f"exn-handler-{node.node_name}-{failure_name}"
         self._workflow.add_sub_thread(thread_name, initializer)
         failure_handler = FailureHandlerDef(
             handler_spec_name=thread_name,
-            any_failure_of_type=FailureHandlerDef.FAILURE_TYPE_ERROR,
+            any_failure_of_type=failure_name if not error_type else None,
+            specific_failure=failure_name if error_type else None,
         )
         last_node = self._find_node(node.node_name)
         last_node.failure_handlers.append(failure_handler)
