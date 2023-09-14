@@ -16,7 +16,7 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
     private Date time;
     private EventCase type;
     private UTETaskExecutedModel executed;
-    private UTEReassignedModel reassigned;
+    private UTEAssignedModel assigned;
     private UTECancelledModel cancelled;
 
     public UserTaskEventModel() {}
@@ -33,10 +33,10 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
         this.type = EventCase.CANCELLED;
     }
 
-    public UserTaskEventModel(UTEReassignedModel reassigned, Date time) {
-        this.reassigned = reassigned;
+    public UserTaskEventModel(UTEAssignedModel reassigned, Date time) {
+        this.assigned = reassigned;
         this.time = time;
-        this.type = EventCase.REASSIGNED;
+        this.type = EventCase.ASSIGNED;
     }
 
     public Class<UserTaskEvent> getProtoBaseClass() {
@@ -50,8 +50,8 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
             case TASK_EXECUTED:
                 out.setTaskExecuted(executed.toProto());
                 break;
-            case REASSIGNED:
-                out.setReassigned(reassigned.toProto());
+            case ASSIGNED:
+                out.setAssigned(assigned.toProto());
                 break;
             case CANCELLED:
                 out.setCancelled(cancelled.toProto());
@@ -71,8 +71,8 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
             case TASK_EXECUTED:
                 executed = LHSerializable.fromProto(p.getTaskExecuted(), UTETaskExecutedModel.class);
                 break;
-            case REASSIGNED:
-                reassigned = LHSerializable.fromProto(p.getReassigned(), UTEReassignedModel.class);
+            case ASSIGNED:
+                assigned = LHSerializable.fromProto(p.getAssigned(), UTEAssignedModel.class);
                 break;
             case CANCELLED:
                 cancelled = LHSerializable.fromProto(p.getCancelled(), UTECancelledModel.class);

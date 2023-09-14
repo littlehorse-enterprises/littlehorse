@@ -19,6 +19,8 @@ private static final long serialVersionUID = 0L;
     bookmark_ = com.google.protobuf.ByteString.EMPTY;
     status_ = 0;
     userTaskDefName_ = "";
+    userId_ = "";
+    userGroup_ = "";
   }
 
   @java.lang.Override
@@ -42,48 +44,6 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  private int taskOwnerCase_ = 0;
-  @SuppressWarnings("serial")
-  private java.lang.Object taskOwner_;
-  public enum TaskOwnerCase
-      implements com.google.protobuf.Internal.EnumLite,
-          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    USER(5),
-    USER_GROUP(6),
-    TASKOWNER_NOT_SET(0);
-    private final int value;
-    private TaskOwnerCase(int value) {
-      this.value = value;
-    }
-    /**
-     * @param value The number of the enum to look for.
-     * @return The enum associated with the given number.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static TaskOwnerCase valueOf(int value) {
-      return forNumber(value);
-    }
-
-    public static TaskOwnerCase forNumber(int value) {
-      switch (value) {
-        case 5: return USER;
-        case 6: return USER_GROUP;
-        case 0: return TASKOWNER_NOT_SET;
-        default: return null;
-      }
-    }
-    public int getNumber() {
-      return this.value;
-    }
-  };
-
-  public TaskOwnerCase
-  getTaskOwnerCase() {
-    return TaskOwnerCase.forNumber(
-        taskOwnerCase_);
-  }
-
   public static final int BOOKMARK_FIELD_NUMBER = 1;
   private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
   /**
@@ -194,66 +154,98 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int USER_FIELD_NUMBER = 5;
+  public static final int USER_ID_FIELD_NUMBER = 5;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object userId_ = "";
   /**
-   * <code>.littlehorse.User user = 5;</code>
-   * @return Whether the user field is set.
+   * <code>optional string user_id = 5;</code>
+   * @return Whether the userId field is set.
    */
   @java.lang.Override
-  public boolean hasUser() {
-    return taskOwnerCase_ == 5;
+  public boolean hasUserId() {
+    return ((bitField0_ & 0x00000010) != 0);
   }
   /**
-   * <code>.littlehorse.User user = 5;</code>
-   * @return The user.
+   * <code>optional string user_id = 5;</code>
+   * @return The userId.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.User getUser() {
-    if (taskOwnerCase_ == 5) {
-       return (io.littlehorse.sdk.common.proto.User) taskOwner_;
+  public java.lang.String getUserId() {
+    java.lang.Object ref = userId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      userId_ = s;
+      return s;
     }
-    return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.User user = 5;</code>
+   * <code>optional string user_id = 5;</code>
+   * @return The bytes for userId.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserOrBuilder getUserOrBuilder() {
-    if (taskOwnerCase_ == 5) {
-       return (io.littlehorse.sdk.common.proto.User) taskOwner_;
+  public com.google.protobuf.ByteString
+      getUserIdBytes() {
+    java.lang.Object ref = userId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      userId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
     }
-    return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
   }
 
   public static final int USER_GROUP_FIELD_NUMBER = 6;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object userGroup_ = "";
   /**
-   * <code>.littlehorse.UserGroup user_group = 6;</code>
+   * <code>optional string user_group = 6;</code>
    * @return Whether the userGroup field is set.
    */
   @java.lang.Override
   public boolean hasUserGroup() {
-    return taskOwnerCase_ == 6;
+    return ((bitField0_ & 0x00000020) != 0);
   }
   /**
-   * <code>.littlehorse.UserGroup user_group = 6;</code>
+   * <code>optional string user_group = 6;</code>
    * @return The userGroup.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserGroup getUserGroup() {
-    if (taskOwnerCase_ == 6) {
-       return (io.littlehorse.sdk.common.proto.UserGroup) taskOwner_;
+  public java.lang.String getUserGroup() {
+    java.lang.Object ref = userGroup_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      userGroup_ = s;
+      return s;
     }
-    return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.UserGroup user_group = 6;</code>
+   * <code>optional string user_group = 6;</code>
+   * @return The bytes for userGroup.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserGroupOrBuilder getUserGroupOrBuilder() {
-    if (taskOwnerCase_ == 6) {
-       return (io.littlehorse.sdk.common.proto.UserGroup) taskOwner_;
+  public com.google.protobuf.ByteString
+      getUserGroupBytes() {
+    java.lang.Object ref = userGroup_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      userGroup_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
     }
-    return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
   }
 
   public static final int EARLIEST_START_FIELD_NUMBER = 7;
@@ -264,7 +256,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasEarliestStart() {
-    return ((bitField0_ & 0x00000010) != 0);
+    return ((bitField0_ & 0x00000040) != 0);
   }
   /**
    * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
@@ -290,7 +282,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasLatestStart() {
-    return ((bitField0_ & 0x00000020) != 0);
+    return ((bitField0_ & 0x00000080) != 0);
   }
   /**
    * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
@@ -334,16 +326,16 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000008) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 4, userTaskDefName_);
     }
-    if (taskOwnerCase_ == 5) {
-      output.writeMessage(5, (io.littlehorse.sdk.common.proto.User) taskOwner_);
-    }
-    if (taskOwnerCase_ == 6) {
-      output.writeMessage(6, (io.littlehorse.sdk.common.proto.UserGroup) taskOwner_);
-    }
     if (((bitField0_ & 0x00000010) != 0)) {
-      output.writeMessage(7, getEarliestStart());
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, userId_);
     }
     if (((bitField0_ & 0x00000020) != 0)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, userGroup_);
+    }
+    if (((bitField0_ & 0x00000040) != 0)) {
+      output.writeMessage(7, getEarliestStart());
+    }
+    if (((bitField0_ & 0x00000080) != 0)) {
       output.writeMessage(8, getLatestStart());
     }
     getUnknownFields().writeTo(output);
@@ -370,19 +362,17 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000008) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, userTaskDefName_);
     }
-    if (taskOwnerCase_ == 5) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, (io.littlehorse.sdk.common.proto.User) taskOwner_);
-    }
-    if (taskOwnerCase_ == 6) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, (io.littlehorse.sdk.common.proto.UserGroup) taskOwner_);
-    }
     if (((bitField0_ & 0x00000010) != 0)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, userId_);
+    }
+    if (((bitField0_ & 0x00000020) != 0)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, userGroup_);
+    }
+    if (((bitField0_ & 0x00000040) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(7, getEarliestStart());
     }
-    if (((bitField0_ & 0x00000020) != 0)) {
+    if (((bitField0_ & 0x00000080) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, getLatestStart());
     }
@@ -420,6 +410,16 @@ private static final long serialVersionUID = 0L;
       if (!getUserTaskDefName()
           .equals(other.getUserTaskDefName())) return false;
     }
+    if (hasUserId() != other.hasUserId()) return false;
+    if (hasUserId()) {
+      if (!getUserId()
+          .equals(other.getUserId())) return false;
+    }
+    if (hasUserGroup() != other.hasUserGroup()) return false;
+    if (hasUserGroup()) {
+      if (!getUserGroup()
+          .equals(other.getUserGroup())) return false;
+    }
     if (hasEarliestStart() != other.hasEarliestStart()) return false;
     if (hasEarliestStart()) {
       if (!getEarliestStart()
@@ -429,19 +429,6 @@ private static final long serialVersionUID = 0L;
     if (hasLatestStart()) {
       if (!getLatestStart()
           .equals(other.getLatestStart())) return false;
-    }
-    if (!getTaskOwnerCase().equals(other.getTaskOwnerCase())) return false;
-    switch (taskOwnerCase_) {
-      case 5:
-        if (!getUser()
-            .equals(other.getUser())) return false;
-        break;
-      case 6:
-        if (!getUserGroup()
-            .equals(other.getUserGroup())) return false;
-        break;
-      case 0:
-      default:
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -470,6 +457,14 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + USER_TASK_DEF_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getUserTaskDefName().hashCode();
     }
+    if (hasUserId()) {
+      hash = (37 * hash) + USER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getUserId().hashCode();
+    }
+    if (hasUserGroup()) {
+      hash = (37 * hash) + USER_GROUP_FIELD_NUMBER;
+      hash = (53 * hash) + getUserGroup().hashCode();
+    }
     if (hasEarliestStart()) {
       hash = (37 * hash) + EARLIEST_START_FIELD_NUMBER;
       hash = (53 * hash) + getEarliestStart().hashCode();
@@ -477,18 +472,6 @@ private static final long serialVersionUID = 0L;
     if (hasLatestStart()) {
       hash = (37 * hash) + LATEST_START_FIELD_NUMBER;
       hash = (53 * hash) + getLatestStart().hashCode();
-    }
-    switch (taskOwnerCase_) {
-      case 5:
-        hash = (37 * hash) + USER_FIELD_NUMBER;
-        hash = (53 * hash) + getUser().hashCode();
-        break;
-      case 6:
-        hash = (37 * hash) + USER_GROUP_FIELD_NUMBER;
-        hash = (53 * hash) + getUserGroup().hashCode();
-        break;
-      case 0:
-      default:
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -632,12 +615,8 @@ private static final long serialVersionUID = 0L;
       limit_ = 0;
       status_ = 0;
       userTaskDefName_ = "";
-      if (userBuilder_ != null) {
-        userBuilder_.clear();
-      }
-      if (userGroupBuilder_ != null) {
-        userGroupBuilder_.clear();
-      }
+      userId_ = "";
+      userGroup_ = "";
       earliestStart_ = null;
       if (earliestStartBuilder_ != null) {
         earliestStartBuilder_.dispose();
@@ -648,8 +627,6 @@ private static final long serialVersionUID = 0L;
         latestStartBuilder_.dispose();
         latestStartBuilder_ = null;
       }
-      taskOwnerCase_ = 0;
-      taskOwner_ = null;
       return this;
     }
 
@@ -677,7 +654,6 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest buildPartial() {
       io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest result = new io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest(this);
       if (bitField0_ != 0) { buildPartial0(result); }
-      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
@@ -701,32 +677,27 @@ private static final long serialVersionUID = 0L;
         result.userTaskDefName_ = userTaskDefName_;
         to_bitField0_ |= 0x00000008;
       }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.userId_ = userId_;
+        to_bitField0_ |= 0x00000010;
+      }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
+        result.userGroup_ = userGroup_;
+        to_bitField0_ |= 0x00000020;
+      }
       if (((from_bitField0_ & 0x00000040) != 0)) {
         result.earliestStart_ = earliestStartBuilder_ == null
             ? earliestStart_
             : earliestStartBuilder_.build();
-        to_bitField0_ |= 0x00000010;
+        to_bitField0_ |= 0x00000040;
       }
       if (((from_bitField0_ & 0x00000080) != 0)) {
         result.latestStart_ = latestStartBuilder_ == null
             ? latestStart_
             : latestStartBuilder_.build();
-        to_bitField0_ |= 0x00000020;
+        to_bitField0_ |= 0x00000080;
       }
       result.bitField0_ |= to_bitField0_;
-    }
-
-    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest result) {
-      result.taskOwnerCase_ = taskOwnerCase_;
-      result.taskOwner_ = this.taskOwner_;
-      if (taskOwnerCase_ == 5 &&
-          userBuilder_ != null) {
-        result.taskOwner_ = userBuilder_.build();
-      }
-      if (taskOwnerCase_ == 6 &&
-          userGroupBuilder_ != null) {
-        result.taskOwner_ = userGroupBuilder_.build();
-      }
     }
 
     @java.lang.Override
@@ -787,24 +758,21 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000008;
         onChanged();
       }
+      if (other.hasUserId()) {
+        userId_ = other.userId_;
+        bitField0_ |= 0x00000010;
+        onChanged();
+      }
+      if (other.hasUserGroup()) {
+        userGroup_ = other.userGroup_;
+        bitField0_ |= 0x00000020;
+        onChanged();
+      }
       if (other.hasEarliestStart()) {
         mergeEarliestStart(other.getEarliestStart());
       }
       if (other.hasLatestStart()) {
         mergeLatestStart(other.getLatestStart());
-      }
-      switch (other.getTaskOwnerCase()) {
-        case USER: {
-          mergeUser(other.getUser());
-          break;
-        }
-        case USER_GROUP: {
-          mergeUserGroup(other.getUserGroup());
-          break;
-        }
-        case TASKOWNER_NOT_SET: {
-          break;
-        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -853,17 +821,13 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 34
             case 42: {
-              input.readMessage(
-                  getUserFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              taskOwnerCase_ = 5;
+              userId_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000010;
               break;
             } // case 42
             case 50: {
-              input.readMessage(
-                  getUserGroupFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              taskOwnerCase_ = 6;
+              userGroup_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000020;
               break;
             } // case 50
             case 58: {
@@ -895,21 +859,6 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-    private int taskOwnerCase_ = 0;
-    private java.lang.Object taskOwner_;
-    public TaskOwnerCase
-        getTaskOwnerCase() {
-      return TaskOwnerCase.forNumber(
-          taskOwnerCase_);
-    }
-
-    public Builder clearTaskOwner() {
-      taskOwnerCase_ = 0;
-      taskOwner_ = null;
-      onChanged();
-      return this;
-    }
-
     private int bitField0_;
 
     private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
@@ -1131,288 +1080,162 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.User, io.littlehorse.sdk.common.proto.User.Builder, io.littlehorse.sdk.common.proto.UserOrBuilder> userBuilder_;
+    private java.lang.Object userId_ = "";
     /**
-     * <code>.littlehorse.User user = 5;</code>
-     * @return Whether the user field is set.
+     * <code>optional string user_id = 5;</code>
+     * @return Whether the userId field is set.
      */
-    @java.lang.Override
-    public boolean hasUser() {
-      return taskOwnerCase_ == 5;
+    public boolean hasUserId() {
+      return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <code>.littlehorse.User user = 5;</code>
-     * @return The user.
+     * <code>optional string user_id = 5;</code>
+     * @return The userId.
      */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.User getUser() {
-      if (userBuilder_ == null) {
-        if (taskOwnerCase_ == 5) {
-          return (io.littlehorse.sdk.common.proto.User) taskOwner_;
-        }
-        return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
+    public java.lang.String getUserId() {
+      java.lang.Object ref = userId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        userId_ = s;
+        return s;
       } else {
-        if (taskOwnerCase_ == 5) {
-          return userBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>.littlehorse.User user = 5;</code>
+     * <code>optional string user_id = 5;</code>
+     * @return The bytes for userId.
      */
-    public Builder setUser(io.littlehorse.sdk.common.proto.User value) {
-      if (userBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        taskOwner_ = value;
-        onChanged();
+    public com.google.protobuf.ByteString
+        getUserIdBytes() {
+      java.lang.Object ref = userId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        userId_ = b;
+        return b;
       } else {
-        userBuilder_.setMessage(value);
-      }
-      taskOwnerCase_ = 5;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.User user = 5;</code>
-     */
-    public Builder setUser(
-        io.littlehorse.sdk.common.proto.User.Builder builderForValue) {
-      if (userBuilder_ == null) {
-        taskOwner_ = builderForValue.build();
-        onChanged();
-      } else {
-        userBuilder_.setMessage(builderForValue.build());
-      }
-      taskOwnerCase_ = 5;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.User user = 5;</code>
-     */
-    public Builder mergeUser(io.littlehorse.sdk.common.proto.User value) {
-      if (userBuilder_ == null) {
-        if (taskOwnerCase_ == 5 &&
-            taskOwner_ != io.littlehorse.sdk.common.proto.User.getDefaultInstance()) {
-          taskOwner_ = io.littlehorse.sdk.common.proto.User.newBuilder((io.littlehorse.sdk.common.proto.User) taskOwner_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          taskOwner_ = value;
-        }
-        onChanged();
-      } else {
-        if (taskOwnerCase_ == 5) {
-          userBuilder_.mergeFrom(value);
-        } else {
-          userBuilder_.setMessage(value);
-        }
-      }
-      taskOwnerCase_ = 5;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.User user = 5;</code>
-     */
-    public Builder clearUser() {
-      if (userBuilder_ == null) {
-        if (taskOwnerCase_ == 5) {
-          taskOwnerCase_ = 0;
-          taskOwner_ = null;
-          onChanged();
-        }
-      } else {
-        if (taskOwnerCase_ == 5) {
-          taskOwnerCase_ = 0;
-          taskOwner_ = null;
-        }
-        userBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.User user = 5;</code>
-     */
-    public io.littlehorse.sdk.common.proto.User.Builder getUserBuilder() {
-      return getUserFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.User user = 5;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserOrBuilder getUserOrBuilder() {
-      if ((taskOwnerCase_ == 5) && (userBuilder_ != null)) {
-        return userBuilder_.getMessageOrBuilder();
-      } else {
-        if (taskOwnerCase_ == 5) {
-          return (io.littlehorse.sdk.common.proto.User) taskOwner_;
-        }
-        return io.littlehorse.sdk.common.proto.User.getDefaultInstance();
+        return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>.littlehorse.User user = 5;</code>
+     * <code>optional string user_id = 5;</code>
+     * @param value The userId to set.
+     * @return This builder for chaining.
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.User, io.littlehorse.sdk.common.proto.User.Builder, io.littlehorse.sdk.common.proto.UserOrBuilder> 
-        getUserFieldBuilder() {
-      if (userBuilder_ == null) {
-        if (!(taskOwnerCase_ == 5)) {
-          taskOwner_ = io.littlehorse.sdk.common.proto.User.getDefaultInstance();
-        }
-        userBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.User, io.littlehorse.sdk.common.proto.User.Builder, io.littlehorse.sdk.common.proto.UserOrBuilder>(
-                (io.littlehorse.sdk.common.proto.User) taskOwner_,
-                getParentForChildren(),
-                isClean());
-        taskOwner_ = null;
-      }
-      taskOwnerCase_ = 5;
+    public Builder setUserId(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      userId_ = value;
+      bitField0_ |= 0x00000010;
       onChanged();
-      return userBuilder_;
+      return this;
+    }
+    /**
+     * <code>optional string user_id = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearUserId() {
+      userId_ = getDefaultInstance().getUserId();
+      bitField0_ = (bitField0_ & ~0x00000010);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string user_id = 5;</code>
+     * @param value The bytes for userId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setUserIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      userId_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
     }
 
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserGroup, io.littlehorse.sdk.common.proto.UserGroup.Builder, io.littlehorse.sdk.common.proto.UserGroupOrBuilder> userGroupBuilder_;
+    private java.lang.Object userGroup_ = "";
     /**
-     * <code>.littlehorse.UserGroup user_group = 6;</code>
+     * <code>optional string user_group = 6;</code>
      * @return Whether the userGroup field is set.
      */
-    @java.lang.Override
     public boolean hasUserGroup() {
-      return taskOwnerCase_ == 6;
+      return ((bitField0_ & 0x00000020) != 0);
     }
     /**
-     * <code>.littlehorse.UserGroup user_group = 6;</code>
+     * <code>optional string user_group = 6;</code>
      * @return The userGroup.
      */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserGroup getUserGroup() {
-      if (userGroupBuilder_ == null) {
-        if (taskOwnerCase_ == 6) {
-          return (io.littlehorse.sdk.common.proto.UserGroup) taskOwner_;
-        }
-        return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
+    public java.lang.String getUserGroup() {
+      java.lang.Object ref = userGroup_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        userGroup_ = s;
+        return s;
       } else {
-        if (taskOwnerCase_ == 6) {
-          return userGroupBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>.littlehorse.UserGroup user_group = 6;</code>
+     * <code>optional string user_group = 6;</code>
+     * @return The bytes for userGroup.
      */
-    public Builder setUserGroup(io.littlehorse.sdk.common.proto.UserGroup value) {
-      if (userGroupBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        taskOwner_ = value;
-        onChanged();
+    public com.google.protobuf.ByteString
+        getUserGroupBytes() {
+      java.lang.Object ref = userGroup_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        userGroup_ = b;
+        return b;
       } else {
-        userGroupBuilder_.setMessage(value);
+        return (com.google.protobuf.ByteString) ref;
       }
-      taskOwnerCase_ = 6;
-      return this;
     }
     /**
-     * <code>.littlehorse.UserGroup user_group = 6;</code>
+     * <code>optional string user_group = 6;</code>
+     * @param value The userGroup to set.
+     * @return This builder for chaining.
      */
     public Builder setUserGroup(
-        io.littlehorse.sdk.common.proto.UserGroup.Builder builderForValue) {
-      if (userGroupBuilder_ == null) {
-        taskOwner_ = builderForValue.build();
-        onChanged();
-      } else {
-        userGroupBuilder_.setMessage(builderForValue.build());
-      }
-      taskOwnerCase_ = 6;
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      userGroup_ = value;
+      bitField0_ |= 0x00000020;
+      onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.UserGroup user_group = 6;</code>
-     */
-    public Builder mergeUserGroup(io.littlehorse.sdk.common.proto.UserGroup value) {
-      if (userGroupBuilder_ == null) {
-        if (taskOwnerCase_ == 6 &&
-            taskOwner_ != io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance()) {
-          taskOwner_ = io.littlehorse.sdk.common.proto.UserGroup.newBuilder((io.littlehorse.sdk.common.proto.UserGroup) taskOwner_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          taskOwner_ = value;
-        }
-        onChanged();
-      } else {
-        if (taskOwnerCase_ == 6) {
-          userGroupBuilder_.mergeFrom(value);
-        } else {
-          userGroupBuilder_.setMessage(value);
-        }
-      }
-      taskOwnerCase_ = 6;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.UserGroup user_group = 6;</code>
+     * <code>optional string user_group = 6;</code>
+     * @return This builder for chaining.
      */
     public Builder clearUserGroup() {
-      if (userGroupBuilder_ == null) {
-        if (taskOwnerCase_ == 6) {
-          taskOwnerCase_ = 0;
-          taskOwner_ = null;
-          onChanged();
-        }
-      } else {
-        if (taskOwnerCase_ == 6) {
-          taskOwnerCase_ = 0;
-          taskOwner_ = null;
-        }
-        userGroupBuilder_.clear();
-      }
+      userGroup_ = getDefaultInstance().getUserGroup();
+      bitField0_ = (bitField0_ & ~0x00000020);
+      onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.UserGroup user_group = 6;</code>
+     * <code>optional string user_group = 6;</code>
+     * @param value The bytes for userGroup to set.
+     * @return This builder for chaining.
      */
-    public io.littlehorse.sdk.common.proto.UserGroup.Builder getUserGroupBuilder() {
-      return getUserGroupFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.UserGroup user_group = 6;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserGroupOrBuilder getUserGroupOrBuilder() {
-      if ((taskOwnerCase_ == 6) && (userGroupBuilder_ != null)) {
-        return userGroupBuilder_.getMessageOrBuilder();
-      } else {
-        if (taskOwnerCase_ == 6) {
-          return (io.littlehorse.sdk.common.proto.UserGroup) taskOwner_;
-        }
-        return io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.UserGroup user_group = 6;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserGroup, io.littlehorse.sdk.common.proto.UserGroup.Builder, io.littlehorse.sdk.common.proto.UserGroupOrBuilder> 
-        getUserGroupFieldBuilder() {
-      if (userGroupBuilder_ == null) {
-        if (!(taskOwnerCase_ == 6)) {
-          taskOwner_ = io.littlehorse.sdk.common.proto.UserGroup.getDefaultInstance();
-        }
-        userGroupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UserGroup, io.littlehorse.sdk.common.proto.UserGroup.Builder, io.littlehorse.sdk.common.proto.UserGroupOrBuilder>(
-                (io.littlehorse.sdk.common.proto.UserGroup) taskOwner_,
-                getParentForChildren(),
-                isClean());
-        taskOwner_ = null;
-      }
-      taskOwnerCase_ = 6;
+    public Builder setUserGroupBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      userGroup_ = value;
+      bitField0_ |= 0x00000020;
       onChanged();
-      return userGroupBuilder_;
+      return this;
     }
 
     private com.google.protobuf.Timestamp earliestStart_;

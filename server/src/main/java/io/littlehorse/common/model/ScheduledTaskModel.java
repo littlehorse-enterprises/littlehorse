@@ -7,7 +7,6 @@ import io.littlehorse.common.model.getable.core.taskrun.TaskRunSourceModel;
 import io.littlehorse.common.model.getable.core.taskrun.UserTaskTriggerReferenceModel;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
-import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskTriggerContextModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.StoreableType;
@@ -32,7 +31,6 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
     private Date createdAt;
 
     private TaskRunSourceModel source;
-    private UserTaskTriggerContextModel context;
 
     public ScheduledTaskModel() {
         variables = new ArrayList<>();
@@ -44,14 +42,12 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
     public ScheduledTaskModel(
             TaskDefIdModel taskDefId,
             List<VarNameAndValModel> variables,
-            UserTaskRunModel userTaskRun,
-            UserTaskTriggerContextModel context) {
+            UserTaskRunModel userTaskRun) {
         this.variables = variables;
         this.createdAt = new Date();
         this.source = new TaskRunSourceModel(new UserTaskTriggerReferenceModel(userTaskRun));
         this.taskDefId = taskDefId;
         this.attemptNumber = 0;
-        this.context = context;
 
         // This is just the wfRunId.
         this.taskRunId = new TaskRunIdModel(userTaskRun.getNodeRun().getWfRunId());

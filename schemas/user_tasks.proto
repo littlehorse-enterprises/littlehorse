@@ -72,16 +72,13 @@ message CancelUserTaskRunRequest {
   UserTaskRunId user_task_run_id = 1;
 }
 
-message UserTaskTriggerContext {
-  optional string user_id = 1;
-  optional string user_group = 2;
-}
-
 message UserTaskTriggerReference {
   NodeRunId node_run_id = 1;
   int32 user_task_event_number = 2;
   WfSpecId wf_spec_id = 3;
-  optional UserTaskTriggerContext context = 4;
+
+  optional string user_id = 4;
+  optional string user_group = 5;
 }
 
 enum UserTaskRunStatus {
@@ -101,7 +98,7 @@ message UserTaskEvent {
     TaskRunId task_run = 1;
   }
 
-  message UTEReassigned {
+  message UTEAssigned {
     optional string old_user_id = 1;
     optional string old_user_group = 2;
     
@@ -111,7 +108,7 @@ message UserTaskEvent {
 
   oneof event {
     UTETaskExecuted task_executed = 2;
-    UTEReassigned reassigned = 3;
+    UTEAssigned assigned = 3;
     UTECancelled cancelled = 4;
     // TODO: Add "save user task" and "complete user task" to the
     // audit log

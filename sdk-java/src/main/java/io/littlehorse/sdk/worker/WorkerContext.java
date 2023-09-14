@@ -5,8 +5,7 @@ import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
-import io.littlehorse.sdk.common.proto.User;
-import io.littlehorse.sdk.common.proto.UserGroup;
+import io.littlehorse.sdk.common.proto.UserTaskTriggerReference;
 import java.util.Date;
 
 /**
@@ -102,22 +101,51 @@ public class WorkerContext {
         return stderr;
     }
 
+    /**
+     * Returns the TaskRunId of this TaskRun.
+     * @return the associated TaskRunId.
+     */
     public TaskRunId getTaskRunId() {
         return scheduledTask.getTaskRunId();
     }
 
-    public User getUser() {
-        if (scheduledTask.getSource().hasUserTaskTrigger()) {
-            return scheduledTask.getSource().getUserTaskTrigger().getContext().getUser();
-        }
-        return null;
+    private UserTaskTriggerReference getUserTaskTrigger() {
+        return scheduledTask.getSource().hasUserTaskTrigger()
+                ? scheduledTask.getSource().getUserTaskTrigger()
+                : null;
     }
 
-    public UserGroup getUserGroup() {
-        if (scheduledTask.getSource().hasUserTaskTrigger()) {
-            return scheduledTask.getSource().getUserTaskTrigger().getContext().getUserGroup();
-        }
-        return null;
+    /**
+     * If this TaskRun is a User Task Reminder TaskRun, then this method returns the
+     * UserId of the user who the associated UserTask is assigned to. Returns
+     * null if:
+     * - this TaskRun is not a Reminder Task
+     * - this TaskRun is a Reminder Task, but the UserTaskRun does not have an assigned
+     *   user id.
+     *
+     * @return the id of the user that the associated UserTask is assigned to.
+     */
+    public String getUserId() {
+        UserTaskTriggerReference uttr = getUserTaskTrigger();
+        if (uttr == null) return null;
+
+        return uttr.hasUserId() ? uttr.getUserId() : null;
+    }
+
+    /**
+     * If this TaskRun is a User Task Reminder TaskRun, then this method returns the
+     * UserGroup that the associated UserTask is assigned to. Returns null if:
+     * - this TaskRun is not a Reminder Task
+     * - this TaskRun is a Reminder Task, but the UserTaskRun does not have an
+     *   associated User Group
+     *
+     * @return the id of the User Group that the associated UserTask is assigned to.
+     */
+    public String getUserGroup() {
+        UserTaskTriggerReference uttr = getUserTaskTrigger();
+        if (uttr == null) return null;
+
+        return uttr.hasUserGroup() ? uttr.getUserGroup() : null;
     }
 
     /**

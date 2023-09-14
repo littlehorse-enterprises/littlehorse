@@ -132,20 +132,25 @@ func (t *ThreadBuilder) reassignToGroupOnDeadline(
 	delaySeconds, _ := t.assignVariable(deadlineSeconds)
 
 	var userGroupAssn *model.VariableAssignment
+	originalUserGroup := curNode.GetUserTask().GetUserGroup()
+	originalUserId := curNode.GetUserTask().GetUserId()
 
 	if userGroup == nil {
-		// nil userGroup is is allowed if:
+		// reassignment to a nil userGroup is is allowed if:
 		// It's assigned to a User, AND the User has an associated Group.
-		currentUser := curNode.GetUserTask().GetUser()
-		if currentUser == nil {
-			log.Fatal("If UserTask assigned to group, must specify a different userGroup to reassign to")
+		if originalUserId == nil {
+			t.throwError(tracerr.Wrap(errors.New(
+				"need to provide group if reassigning task without userId",
+			)))
 		}
 
-		if currentUser.UserGroup == nil {
-			log.Fatal("If UserTask assigned to user without Group, must specify a different userGroup to reassign to")
+		if originalUserGroup == nil {
+			t.throwError(tracerr.Wrap(errors.New(
+				"cannot release to group if group not specified",
+			)))
 		}
+		userGroupAssn = originalUserGroup
 
-		userGroupAssn = currentUser.UserGroup
 	} else {
 		userGroupAssn, _ = t.assignVariable(*userGroup)
 	}
@@ -209,31 +214,27 @@ func (t *ThreadBuilder) assignTaskToUser(
 		UserTaskDefName: userTaskDefName,
 	}
 
-	var userGroupAssn *model.VariableAssignment = nil
+	if userGroup == nil && userId == nil {
+		t.throwError(tracerr.Wrap(errors.New(
+			"must specify either userGroup or userId when assigning usertask",
+		)))
+	}
+
 	if userGroup != nil {
 		var err error
-		userGroupAssn, err = t.assignVariable(userGroup)
+		userGroupAssn, err := t.assignVariable(userGroup)
 		if err != nil {
-			log.Fatal(err)
+			t.throwError(tracerr.Wrap(err))
 		}
+		utNode.UserGroup = userGroupAssn
 	}
 
 	if userId != nil {
 		userIdAssn, err := t.assignVariable(userId)
 		if err != nil {
-			log.Fatal(err)
+			t.throwError(tracerr.Wrap(err))
 		}
-
-		utNode.Assignment = &model.UserTaskNode_User{
-			User: &model.UserTaskNode_UserAssignment{
-				UserId:    userIdAssn,
-				UserGroup: userGroupAssn,
-			},
-		}
-	} else {
-		utNode.Assignment = &model.UserTaskNode_UserGroup{
-			UserGroup: userGroupAssn,
-		}
+		utNode.UserId = userIdAssn
 	}
 
 	nodeName, node := t.createBlankNode(userTaskDefName, "USER_TASK")
