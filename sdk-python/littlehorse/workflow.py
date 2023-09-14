@@ -493,6 +493,12 @@ class WorkflowInterruption:
         return to_json(self.compile())
 
 
+class SpawnedThread:
+    def __init__(self, name: str, number: WfRunVariable) -> None:
+        self.name = name
+        self.number = number
+
+
 class UserTaskOutput(NodeOutput):
     def __init__(
         self,
@@ -554,6 +560,46 @@ class ThreadBuilder:
         initializer(self)
         self.add_node("exit", ExitNode())
         self.is_active = False
+
+    def spawn_thread(
+        self,
+        initializer: "ThreadInitializer",
+        thread_name: str,
+        input: Optional[dict[str, Any]] = None,
+    ) -> SpawnedThread:
+        """Adds a SPAWN_THREAD node to the ThreadSpec,
+        which spawns a Child ThreadRun whose ThreadSpec
+        is determined by the provided ThreadFunc.
+
+        Args:
+            initializer (ThreadInitializer): defines the logic for the
+            child ThreadRun to execute.
+            thread_name (str): is the name of the child thread spec.
+            input (dict[str, Any], optional): is a dict of all of the
+            input variables to set for the child ThreadRun. If
+            you don't need to set any input variables, leave this
+            null. Defaults to None.
+
+        Returns:
+            SpawnedThread: a handle to the resulting SpawnedThread,
+            which can be used in wait_for_threads()
+        """
+        self._check_if_active()
+        input = {} if input is None else input
+        thread_name = self._workflow.add_sub_thread(thread_name, initializer)
+
+        start_thread_node = StartThreadNode(
+            thread_spec_name=thread_name,
+            variables={
+                key: to_variable_assignment(value) for key, value in input.items()
+            },
+        )
+
+        node_name = self.add_node(thread_name, start_thread_node)
+        thread_number = self.add_variable(node_name, VariableType.INT)
+        self.mutate(thread_number, VariableMutationType.ASSIGN, NodeOutput(node_name))
+
+        return SpawnedThread(thread_name, thread_number)
 
     def sleep(self, seconds: Union[int, WfRunVariable]) -> None:
         """Adds a SLEEP node which makes the ThreadRun sleep
