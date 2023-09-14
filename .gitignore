@@ -33,6 +33,8 @@ sdk-dotnet/src/LittleHorseSDK/LittleHorse.Worker/bin/
 sdk-dotnet/src/LittleHorseSDK/LittleHorse.Worker/obj/
 sdk-dotnet/src/LittleHorseSDK/BasicExampleConsoleApp/bin/
 sdk-dotnet/src/LittleHorseSDK/BasicExampleConsoleApp/obj/
+sdk-dotnet/src/LittleHorseSDK/AuthExampleConsoleApp/bin/
+sdk-dotnet/src/LittleHorseSDK/AuthExampleConsoleApp/obj/
 sdk-dotnet/src/LittleHorseSDK/.vs/
 
 # Others
