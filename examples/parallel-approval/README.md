@@ -10,7 +10,7 @@ Let's run the example in `ParallelApprovalExample.java`.
 ```
 # Register the WfSpec/TaskDefs/ExternalEventDefs and
 # also start the Task Worker
-gradle example-parallel-approval:run
+./gradlew example-parallel-approval:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:

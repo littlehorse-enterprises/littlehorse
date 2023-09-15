@@ -13,5 +13,5 @@ For documentation on how to use this library, please go to [the LittleHorse webs
 ## Run tests
 
 ```
-gradle test
+./gradlew test
 ```

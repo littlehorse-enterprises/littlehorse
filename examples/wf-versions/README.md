@@ -6,7 +6,7 @@ how to run them.
 Let's run the example in `WorkflowVersionsExample.java`
 
 ```
-gradle example-wf-versions:run
+./gradlew example-wf-versions:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:

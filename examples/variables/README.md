@@ -37,7 +37,7 @@ This workflow demonstrates the flow of data between tasks and the handling of di
 ### Start Workers
 
 ```
-gradle example-variables:run
+./gradlew example-variables:run
 ```
 
 ### Run workflow

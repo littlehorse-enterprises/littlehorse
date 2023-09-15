@@ -7,7 +7,7 @@ resumes execution when the handler thread completes.
 Let's run the example in `ExceptionHandlerExample.java`
 
 ```
-gradle example-exception-handler:run
+./gradlew example-exception-handler:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:
