@@ -272,54 +272,8 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         getNodeRun().fail(failure, new Date());
     }
 
-    // private void scheduleTaskReassign(UTActionTriggerModel action) {
-    //     long delayInSeconds = action.getDelaySeconds().getRhsLiteralValue().intVal;
-    //     LocalDateTime localDateTime = LocalDateTime.now().plusSeconds(delayInSeconds);
-    //     Date maturationTime =
-    //             Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
-    //     DeadlineReassignUserTask command = buildReassignUserTaskCommandFrom(action);
-    //     if (command != null) {
-    //         LHTimer timer = new LHTimer(new CommandModel(command, maturationTime), getDao());
-    //         getDao().scheduleTimer(timer);
-    //     }
-    // }
-
-    // private ReassignUserTask buildReassignUserTaskCommandFrom(UTActionTriggerModel action) {
-    //     ReassignUserTask.AssignToCase assignToCase = null;
-    //     switch (action.getReassign().getAssignToCase()) {
-    //         case USER_ID:
-    //             assignToCase = ReassignUserTask.AssignToCase.USER_ID;
-    //             break;
-    //         case USER_GROUP:
-    //             assignToCase = ReassignUserTask.AssignToCase.USER_GROUP;
-    //             break;
-    //         case ASSIGNTO_NOT_SET:
-    //             log.warn("Invalid reassignment: no reassign_to set!");
-    //             break;
-    //     }
-    //     FailureModel invalidAssignToCaseFailure = new FailureModel(
-    //             "Invalid variables when creating UserTaskRun: Invalid Assign to case", LHConstants.VAR_SUB_ERROR);
-
-    //     if (assignToCase == null) {
-    //         getNodeRun().fail(invalidAssignToCaseFailure, new Date());
-    //         return null;
-    //     }
-    //     try {
-    //         VariableValueModel variableValueModel = getNodeRun()
-    //                 .getThreadRun()
-    //                 .assignVariable(action.getReassign().getNewOwner())
-    //                 .asStr();
-    //         return new ReassignUserTask(getNodeRun().getObjectId(), variableValueModel.getStrVal(), assignToCase);
-    //     } catch (LHVarSubError ex) {
-    //         FailureModel invalidVariablesFailure = new FailureModel(
-    //                 "Invalid variables when creating UserTaskRun: " + ex.toString(), LHConstants.VAR_SUB_ERROR);
-    //         getNodeRun().fail(invalidVariablesFailure, new Date());
-    //         return null;
-    //     }
-    // }
-
     public void processTaskCompletedEvent(CompleteUserTaskRunRequestModel event) throws LHApiException {
-        if (getNodeRun().getStatus() != LHStatus.STARTING && getNodeRun().getStatus() != LHStatus.RUNNING) {
+        if (isTerminated()) {
             log.warn("Tried to complete a user task that was not running");
             return;
         }
@@ -361,6 +315,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         VariableValueModel output = new VariableValueModel();
         output.setType(VariableType.JSON_OBJ);
         output.setJsonObjVal(rawNodeOutput);
+        this.status = UserTaskRunStatus.DONE;
 
         getNodeRun().complete(output, new Date());
     }
