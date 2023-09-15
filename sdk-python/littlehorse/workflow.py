@@ -510,6 +510,7 @@ class ThreadBuilder:
             raise ValueError("Workflow must be not None")
 
         self._workflow = workflow
+        self._workflow._builders.append(self)
 
         self._validate_initializer(initializer)
 
@@ -844,10 +845,18 @@ class ThreadBuilder:
         Returns:
             WfRunVariable: Variable found.
         """
-        # TODO look in all threads
-        for var in self._wf_run_variables:
-            if var.name == variable_name:
-                return var
+
+        # let's validate the special INPUT variable
+        if variable_name == "INPUT":
+            for var in self._wf_run_variables:
+                if var.name == variable_name:
+                    return var
+            raise ValueError(f"Variable {variable_name} unaccessible")
+
+        for builder in self._workflow._builders:
+            for var in builder._wf_run_variables:
+                if var.name == variable_name:
+                    return var
 
         raise ValueError(f"Variable {variable_name} not found")
 
@@ -1035,6 +1044,7 @@ class Workflow:
         self.retention_hours = retention_hours
         self._entrypoint = entrypoint
         self._thread_initializers: list[tuple[str, ThreadInitializer]] = []
+        self._builders: list[ThreadBuilder] = []
 
     def add_sub_thread(self, name: str, initializer: ThreadInitializer) -> str:
         """Add a subthread.
@@ -1083,6 +1093,7 @@ class Workflow:
             thread_specs[name] = builder.compile()
 
         self._thread_initializers = []
+        self._builders = []
 
         return PutWfSpecRequest(
             name=self.name,
