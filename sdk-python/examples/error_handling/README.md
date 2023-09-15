@@ -1,4 +1,4 @@
-## Running with an External Event
+## Running with an Error Handling
 
 This example demonstrates the error handling functionality.
 We will use `thread.handle_error` to handle any task failure and completes the WfRun execution.
