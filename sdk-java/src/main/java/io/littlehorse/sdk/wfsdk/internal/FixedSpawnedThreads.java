@@ -10,11 +10,11 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public final class FixedSpawnThreads implements SpawnedThreads {
+public final class FixedSpawnedThreads implements SpawnedThreads {
 
     private final Collection<SpawnedThread> spawnedThreads;
 
-    public FixedSpawnThreads(SpawnedThread... spawnedThreads) {
+    public FixedSpawnedThreads(SpawnedThread... spawnedThreads) {
         this.spawnedThreads = List.of(spawnedThreads);
     }
 
