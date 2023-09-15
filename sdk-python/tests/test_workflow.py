@@ -1103,5 +1103,84 @@ class TestWorkflow(unittest.TestCase):
         )
 
 
+class TestUserTasks(unittest.TestCase):
+    def test_assign_to_user_id(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            thread.assign_user_task("my-user-task", user_id="obi-wan")
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes['1-my-user-task-USER_TASK']
+        ut_node = node.user_task
+        self.assertEqual(ut_node.user_task_def_name, "my-user-task")
+        self.assertFalse(ut_node.HasField("user_group"))
+        self.assertTrue(ut_node.HasField("user_id"))
+        self.assertEqual(ut_node.user_id.literal_value.str, "obi-wan")
+
+    def test_assign_to_user_group(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            thread.assign_user_task("my-user-task", user_group="jedi")
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes['1-my-user-task-USER_TASK']
+        ut_node = node.user_task
+        self.assertEqual(ut_node.user_task_def_name, "my-user-task")
+        self.assertFalse(ut_node.HasField("user_id"))
+        self.assertTrue(ut_node.HasField("user_group"))
+        self.assertEqual(ut_node.user_group.literal_value.str, "jedi")
+
+    def test_assign_to_user_and_group(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            thread.assign_user_task("my-user-task", user_id="yoda", user_group="jedi")
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes['1-my-user-task-USER_TASK']
+        ut_node = node.user_task
+        self.assertEqual(ut_node.user_task_def_name, "my-user-task")
+        self.assertTrue(ut_node.HasField("user_id"))
+        self.assertTrue(ut_node.HasField("user_group"))
+        self.assertEqual(ut_node.user_group.literal_value.str, "jedi")
+        self.assertEqual(ut_node.user_id.literal_value.str, "yoda")
+
+    def test_mutations(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            var = thread.add_variable("my-var", VariableType.INT)
+            ut_output = thread.assign_user_task("my-user-task", user_id="obi-wan")
+            thread.mutate(var, VariableMutationType.ASSIGN, ut_output)
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes['1-my-user-task-USER_TASK']
+        mutations = node.variable_mutations
+        self.assertEqual(1, len(mutations))
+
+        mutation = mutations[0]
+        self.assertEqual("my-var", mutation.lhs_name)
+        self.assertEqual(VariableMutationType.ASSIGN, mutation.operation)
+        self.assertTrue(mutation.HasField("node_output"))
+
+    def test_assign_to_variable_user_id(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            userid = thread.add_variable("userid", VariableType.INT)
+            thread.assign_user_task("my-user-task", user_id=userid)
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes['1-my-user-task-USER_TASK']
+        ut_node = node.user_task
+        self.assertEqual(ut_node.user_task_def_name, "my-user-task")
+        self.assertFalse(ut_node.HasField("user_group"))
+        self.assertTrue(ut_node.HasField("user_id"))
+        self.assertEqual(ut_node.user_id.variable_name, "userid")
+
+
+
 if __name__ == "__main__":
     unittest.main()

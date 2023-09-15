@@ -494,6 +494,11 @@ class WorkflowInterruption:
         return to_json(self.compile())
 
 
+class UserTaskOutput(NodeOutput):
+    def __init__(self, node_name: str) -> None:
+        super().__init__(node_name)
+
+
 class ThreadBuilder:
     def __init__(self, workflow: "Workflow", initializer: "ThreadInitializer") -> None:
         """This is used to define the logic of a ThreadSpec in a ThreadInitializer.
@@ -736,6 +741,26 @@ class ThreadBuilder:
         )
         last_node = self._find_node(node.node_name)
         last_node.failure_handlers.append(failure_handler)
+
+    def assign_user_task(
+        self,
+        user_task_def_name: str,
+        user_id: Optional[Union[str, WfRunVariable]] = None,
+        user_group: Optional[Union[str,WfRunVariable]] = None
+    ) -> UserTaskOutput:
+        self._check_if_active()
+        if user_group is None and user_id is None:
+            raise ValueError(
+                "Must provide either user_id or user_group to assign_user_task()"
+            )
+
+        ut_node = UserTaskNode(
+            user_task_def_name=user_task_def_name,
+            user_group=to_variable_assignment(user_group) if user_group else None,
+            user_id=to_variable_assignment(user_id) if user_id else None,
+        )
+
+        return UserTaskOutput(node_name=self.add_node(user_task_def_name, ut_node))
 
     def wait_for_event(self, event_name: str, timeout: int = -1) -> NodeOutput:
         """Adds an EXTERNAL_EVENT node which blocks until an
