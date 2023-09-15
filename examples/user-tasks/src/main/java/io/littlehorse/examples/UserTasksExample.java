@@ -83,6 +83,7 @@ public class UserTasksExample {
         thread.reassignToUserOnDeadline(
             financeUserTaskOutput,
             "test-eduwer",
+            null,
             60
         );
 
