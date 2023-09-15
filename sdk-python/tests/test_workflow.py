@@ -180,6 +180,19 @@ class TestThreadBuilder(unittest.TestCase):
             ),
         )
 
+    def test_find_variable_validate_input(self):
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            thread.add_variable("my-variable", VariableType.STR)
+            thread.find_variable("INPUT")
+
+        with self.assertRaises(ValueError) as exception_context:
+            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+
+        self.assertEqual(
+            "Variable INPUT unaccessible",
+            str(exception_context.exception),
+        )
+
     def test_do_if_else(self):
         class MyClass:
             def if_condition(self, thread: ThreadBuilder) -> None:
@@ -1074,6 +1087,20 @@ class TestWorkflow(unittest.TestCase):
                 },
             ),
         )
+
+    def test_find_variable_in_another_thread(self):
+        def my_handler(thread: ThreadBuilder) -> None:
+            thread.find_variable("my-variable")
+
+        def my_entrypoint(thread: ThreadBuilder) -> None:
+            thread.add_variable("my-variable", VariableType.STR)
+            thread.handle_error(thread.execute("my-task"), my_handler)
+
+        try:
+            wf = Workflow("my-wf", my_entrypoint)
+            wf.compile()
+        except Exception as e:
+            self.fail(f"Exception not expected: {e}")
 
     def test_compile_wf_with_variables(self):
         def my_entrypoint(thread: ThreadBuilder) -> None:
