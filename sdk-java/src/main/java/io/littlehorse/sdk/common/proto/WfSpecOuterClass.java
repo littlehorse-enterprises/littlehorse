@@ -105,11 +105,6 @@ public final class WfSpecOuterClass {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_UserTaskNode_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_UserTaskNode_UserAssignment_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_UserTaskNode_UserAssignment_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_EdgeCondition_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -206,32 +201,29 @@ public final class WfSpecOuterClass {
       "H\000\022.\n\tuser_task\030\r \001(\0132\031.littlehorse.User" +
       "TaskNodeH\000\022G\n\026start_multiple_threads\030\017 \001" +
       "(\0132%.littlehorse.StartMultipleThreadsNod" +
-      "eH\000B\006\n\004node\"\343\003\n\014UserTaskNode\022\032\n\022user_tas" +
-      "k_def_name\030\001 \001(\t\0225\n\nuser_group\030\002 \001(\0132\037.l" +
-      "ittlehorse.VariableAssignmentH\000\0228\n\004user\030" +
-      "\003 \001(\0132(.littlehorse.UserTaskNode.UserAss" +
-      "ignmentH\000\022-\n\007actions\030\004 \003(\0132\034.littlehorse" +
+      "eH\000B\006\n\004node\"\342\002\n\014UserTaskNode\022\032\n\022user_tas" +
+      "k_def_name\030\001 \001(\t\0228\n\nuser_group\030\002 \001(\0132\037.l" +
+      "ittlehorse.VariableAssignmentH\000\210\001\001\0225\n\007us" +
+      "er_id\030\003 \001(\0132\037.littlehorse.VariableAssign" +
+      "mentH\001\210\001\001\022-\n\007actions\030\004 \003(\0132\034.littlehorse" +
       ".UTActionTrigger\022\"\n\025user_task_def_versio" +
-      "n\030\005 \001(\005H\001\210\001\001\0223\n\005notes\030\006 \001(\0132\037.littlehors" +
-      "e.VariableAssignmentH\002\210\001\001\032\213\001\n\016UserAssign" +
-      "ment\0220\n\007user_id\030\001 \001(\0132\037.littlehorse.Vari" +
-      "ableAssignment\0228\n\nuser_group\030\002 \001(\0132\037.lit" +
-      "tlehorse.VariableAssignmentH\000\210\001\001B\r\n\013_use" +
-      "r_groupB\014\n\nassignmentB\030\n\026_user_task_def_" +
-      "versionB\010\n\006_notes\"\233\001\n\rEdgeCondition\022+\n\nc" +
-      "omparator\030\001 \001(\0162\027.littlehorse.Comparator" +
-      "\022-\n\004left\030\002 \001(\0132\037.littlehorse.VariableAss" +
-      "ignment\022.\n\005right\030\003 \001(\0132\037.littlehorse.Var" +
-      "iableAssignment\"`\n\004Edge\022\026\n\016sink_node_nam" +
-      "e\030\001 \001(\t\0222\n\tcondition\030\002 \001(\0132\032.littlehorse" +
-      ".EdgeConditionH\000\210\001\001B\014\n\n_condition\"\t\n\007Nop" +
-      "Node\"\276\001\n\tSleepNode\0226\n\013raw_seconds\030\001 \001(\0132" +
-      "\037.littlehorse.VariableAssignmentH\000\0224\n\tti" +
-      "mestamp\030\002 \001(\0132\037.littlehorse.VariableAssi" +
-      "gnmentH\000\0223\n\010iso_date\030\003 \001(\0132\037.littlehorse" +
-      ".VariableAssignmentH\000B\016\n\014sleep_lengthB,\n" +
-      "\037io.littlehorse.sdk.common.protoP\001Z\007.;mo" +
-      "delb\006proto3"
+      "n\030\005 \001(\005H\002\210\001\001\0223\n\005notes\030\006 \001(\0132\037.littlehors" +
+      "e.VariableAssignmentH\003\210\001\001B\r\n\013_user_group" +
+      "B\n\n\010_user_idB\030\n\026_user_task_def_versionB\010" +
+      "\n\006_notes\"\233\001\n\rEdgeCondition\022+\n\ncomparator" +
+      "\030\001 \001(\0162\027.littlehorse.Comparator\022-\n\004left\030" +
+      "\002 \001(\0132\037.littlehorse.VariableAssignment\022." +
+      "\n\005right\030\003 \001(\0132\037.littlehorse.VariableAssi" +
+      "gnment\"`\n\004Edge\022\026\n\016sink_node_name\030\001 \001(\t\0222" +
+      "\n\tcondition\030\002 \001(\0132\032.littlehorse.EdgeCond" +
+      "itionH\000\210\001\001B\014\n\n_condition\"\t\n\007NopNode\"\276\001\n\t" +
+      "SleepNode\0226\n\013raw_seconds\030\001 \001(\0132\037.littleh" +
+      "orse.VariableAssignmentH\000\0224\n\ttimestamp\030\002" +
+      " \001(\0132\037.littlehorse.VariableAssignmentH\000\022" +
+      "3\n\010iso_date\030\003 \001(\0132\037.littlehorse.Variable" +
+      "AssignmentH\000B\016\n\014sleep_lengthB,\n\037io.littl" +
+      "ehorse.sdk.common.protoP\001Z\007.;modelb\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -347,13 +339,7 @@ public final class WfSpecOuterClass {
     internal_static_littlehorse_UserTaskNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UserTaskNode_descriptor,
-        new java.lang.String[] { "UserTaskDefName", "UserGroup", "User", "Actions", "UserTaskDefVersion", "Notes", "Assignment", "UserTaskDefVersion", "Notes", });
-    internal_static_littlehorse_UserTaskNode_UserAssignment_descriptor =
-      internal_static_littlehorse_UserTaskNode_descriptor.getNestedTypes().get(0);
-    internal_static_littlehorse_UserTaskNode_UserAssignment_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_UserTaskNode_UserAssignment_descriptor,
-        new java.lang.String[] { "UserId", "UserGroup", "UserGroup", });
+        new java.lang.String[] { "UserTaskDefName", "UserGroup", "UserId", "Actions", "UserTaskDefVersion", "Notes", "UserGroup", "UserId", "UserTaskDefVersion", "Notes", });
     internal_static_littlehorse_EdgeCondition_descriptor =
       getDescriptor().getMessageTypes().get(13);
     internal_static_littlehorse_EdgeCondition_fieldAccessorTable = new

@@ -2,12 +2,9 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.getable.core.usertaskrun.UserGroupModel;
-import io.littlehorse.common.model.getable.core.usertaskrun.UserModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -15,7 +12,6 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
-import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest.TaskOwnerCase;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.UserTaskRunIdList;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
@@ -47,9 +43,8 @@ public class SearchUserTaskRunRequestModel
     private UserTaskRunStatus status;
     private String userTaskDefName;
 
-    private TaskOwnerCase ownerCase;
-    private UserModel user;
-    private UserGroupModel userGroup;
+    private String userId;
+    private String userGroup;
 
     private Date latestStart;
     private Date earliestStart;
@@ -74,17 +69,12 @@ public class SearchUserTaskRunRequestModel
             }
         }
 
+        if (p.hasUserGroup()) userGroup = p.getUserGroup();
+        if (p.hasUserId()) userId = p.getUserId();
+
         if (p.hasStatus()) status = p.getStatus();
         if (p.hasUserTaskDefName()) userTaskDefName = p.getUserTaskDefName();
 
-        ownerCase = p.getTaskOwnerCase();
-        // Note: Typically, we would do as above. However, if a client (eg. the
-        // grpc-gateway) sets both userId and userGroup, the way protobuf works
-        // dictates that we would search by userGroup (since it has a higher
-        // field number) and ignore userId silently. By using the way below,
-        // we can throw an LHValidationError when processing the search.
-        if (p.hasUserGroup()) userGroup = LHSerializable.fromProto(p.getUserGroup(), UserGroupModel.class);
-        if (p.hasUser()) user = LHSerializable.fromProto(p.getUser(), UserModel.class);
         if (p.hasLatestStart()) {
             latestStart = LHUtil.fromProtoTs(p.getLatestStart());
         }
@@ -102,19 +92,11 @@ public class SearchUserTaskRunRequestModel
             out.setLimit(limit);
         }
 
+        if (userGroup != null) out.setUserGroup(userGroup);
+        if (userId != null) out.setUserId(userId);
+
         if (status != null) out.setStatus(status);
         if (userTaskDefName != null) out.setUserTaskDefName(userTaskDefName);
-
-        switch (ownerCase) {
-            case USER_GROUP:
-                out.setUserGroup(userGroup.toProto());
-                break;
-            case USER:
-                out.setUser(user.toProto());
-                break;
-            case TASKOWNER_NOT_SET:
-                // nothing to do
-        }
 
         if (latestStart != null) {
             out.setLatestStart(LHUtil.fromDate(latestStart));
@@ -143,14 +125,12 @@ public class SearchUserTaskRunRequestModel
     }
 
     private Optional<TagStorageType> tagStorageTypePbByUserId() {
-        return Optional.ofNullable(user).map(userId -> TagStorageType.REMOTE);
+        return Optional.ofNullable(userId).map(userId -> TagStorageType.REMOTE);
     }
 
     @Override
     public List<Attribute> getSearchAttributes() {
-        if (userGroup != null && user != null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Cannot specify UserID and User Group in same search!");
-        }
+        // Ordering is important. See UserTaskRunModel#getIndexConfigurations()
 
         List<Attribute> attributes = new ArrayList<>();
         if (status != null) {
@@ -160,16 +140,12 @@ public class SearchUserTaskRunRequestModel
             attributes.add(new Attribute("userTaskDefName", this.getUserTaskDefName()));
         }
 
-        if (user != null) {
-            attributes.add(new Attribute("userId", this.getUser().getId()));
-            if (this.getUser().getUserGroup() != null) {
-                attributes.add(
-                        new Attribute("userGroup", this.getUser().getUserGroup().getId()));
-            }
+        if (userId != null) {
+            attributes.add(new Attribute("userId", this.userId));
         }
 
         if (userGroup != null) {
-            attributes.add(new Attribute("userGroup", this.getUserGroup().getId()));
+            attributes.add(new Attribute("userGroup", this.userGroup));
         }
         return attributes;
     }

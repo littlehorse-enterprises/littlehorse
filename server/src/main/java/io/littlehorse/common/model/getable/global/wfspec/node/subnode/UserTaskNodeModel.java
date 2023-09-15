@@ -9,13 +9,11 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UTActionTriggerModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
-import io.littlehorse.sdk.common.proto.UserTaskNode.AssignmentCase;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,9 +27,8 @@ import lombok.Setter;
 public class UserTaskNodeModel extends SubNode<UserTaskNode> {
 
     private String userTaskDefName;
-    private AssignmentCase assignmentType;
     private VariableAssignmentModel userGroup;
-    private UserAssignmentModel user;
+    private VariableAssignmentModel userId;
     private List<UTActionTriggerModel> actions;
     private Integer userTaskDefVersion;
     private VariableAssignmentModel notes;
@@ -47,16 +44,8 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     public UserTaskNode.Builder toProto() {
         UserTaskNode.Builder out = UserTaskNode.newBuilder().setUserTaskDefName(userTaskDefName);
 
-        switch (assignmentType) {
-            case USER_GROUP:
-                out.setUserGroup(userGroup.toProto());
-                break;
-            case USER:
-                out.setUser(user.toProto());
-                break;
-            case ASSIGNMENT_NOT_SET:
-                throw new RuntimeException("Not possible");
-        }
+        if (userId != null) out.setUserId(userId.toProto());
+        if (userGroup != null) out.setUserGroup(userGroup.toProto());
 
         for (UTActionTriggerModel action : actions) {
             out.addActions(action.toProto());
@@ -75,18 +64,9 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
 
     public void initFrom(Message proto) {
         UserTaskNode p = (UserTaskNode) proto;
-        assignmentType = p.getAssignmentCase();
         userTaskDefName = p.getUserTaskDefName();
-        switch (assignmentType) {
-            case USER_GROUP:
-                userGroup = VariableAssignmentModel.fromProto(p.getUserGroup());
-                break;
-            case USER:
-                user = LHSerializable.fromProto(p.getUser(), UserAssignmentModel.class);
-                break;
-            case ASSIGNMENT_NOT_SET:
-                throw new RuntimeException("not possible");
-        }
+        if (p.hasUserGroup()) userGroup = VariableAssignmentModel.fromProto(p.getUserGroup());
+        if (p.hasUserId()) userId = VariableAssignmentModel.fromProto(p.getUserId());
 
         if (p.hasUserTaskDefVersion()) {
             userTaskDefVersion = p.getUserTaskDefVersion();
@@ -127,8 +107,8 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         // Now pin the version
         userTaskDefVersion = utd.version;
 
-        if (assignmentType == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Must specify assignment type for User Task Node");
+        if (userId == null && userGroup == null) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Must specify userGroup or userId");
         }
     }
 }

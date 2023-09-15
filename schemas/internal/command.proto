@@ -35,7 +35,7 @@ message Command {
         AssignUserTaskRunRequest assign_user_task_run = 15;
         CompleteUserTaskRunRequest complete_user_task_run = 16;
         TriggeredTaskRunPb triggered_task_run = 17;
-        ReassignedUserTaskPb reassigned_user_task = 18;
+        DeadlineReassignUserTask reassigned_user_task = 18;
         CancelUserTaskRunRequest cancel_user_task = 19;
         // TODO: Add SaveUserTask
     }
@@ -148,13 +148,10 @@ message TriggeredTaskRunPb {
     NodeRunId source = 2;
 }
 
-message ReassignedUserTaskPb {
-    oneof assign_to {
-        string user_id = 1;
-        string user_group = 2;
-    }
-    int32 delay_in_seconds = 3;
-    NodeRunId source = 4;
+message DeadlineReassignUserTask {
+    optional VariableAssignment new_user_id = 1;
+    optional VariableAssignment new_user_group = 2;
+    UserTaskRunId user_task = 4;
 }
 
 

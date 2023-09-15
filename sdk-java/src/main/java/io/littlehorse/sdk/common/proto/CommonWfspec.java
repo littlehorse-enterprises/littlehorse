@@ -105,7 +105,7 @@ public final class CommonWfspec {
       "\0221\n\rdefault_value\030\005 \001(\0132\032.littlehorse.Va" +
       "riableValue\022\022\n\npersistent\030\006 \001(\010B\r\n\013_inde" +
       "x_type\"E\n\tJsonIndex\022\014\n\004path\030\001 \001(\t\022*\n\nind" +
-      "ex_type\030\002 \001(\0162\026.littlehorse.IndexType\"\333\004" +
+      "ex_type\030\002 \001(\0162\026.littlehorse.IndexType\"\357\004" +
       "\n\017UTActionTrigger\0224\n\004task\030\001 \001(\0132$.little" +
       "horse.UTActionTrigger.UTATaskH\000\0228\n\006cance" +
       "l\030\002 \001(\0132&.littlehorse.UTActionTrigger.UT" +
@@ -116,25 +116,25 @@ public final class CommonWfspec {
       "tionTrigger.UTHook\032\013\n\tUTACancel\032`\n\007UTATa" +
       "sk\022#\n\004task\030\001 \001(\0132\025.littlehorse.TaskNode\022" +
       "0\n\tmutations\030\002 \003(\0132\035.littlehorse.Variabl" +
-      "eMutation\032\205\001\n\013UTAReassign\0222\n\007user_id\030\001 \001" +
-      "(\0132\037.littlehorse.VariableAssignmentH\000\0225\n" +
-      "\nuser_group\030\002 \001(\0132\037.littlehorse.Variable" +
-      "AssignmentH\000B\013\n\tassign_to\".\n\006UTHook\022\016\n\nO" +
-      "N_ARRIVAL\020\000\022\024\n\020ON_TASK_ASSIGNED\020\001B\010\n\006act" +
-      "ion\"\177\n\010TaskNode\022\025\n\rtask_def_name\030\001 \001(\t\022\027" +
-      "\n\017timeout_seconds\030\002 \001(\005\022\017\n\007retries\030\003 \001(\005" +
-      "\0222\n\tvariables\030\004 \003(\0132\037.littlehorse.Variab" +
-      "leAssignment*\230\001\n\024VariableMutationType\022\n\n" +
-      "\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010SUBTRA" +
-      "CT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021REMOVE" +
-      "_IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022\016\n\nREMOV" +
-      "E_KEY\020\010*.\n\tIndexType\022\017\n\013LOCAL_INDEX\020\000\022\020\n" +
-      "\014REMOTE_INDEX\020\001*\204\001\n\nComparator\022\r\n\tLESS_T" +
-      "HAN\020\000\022\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020" +
-      "\002\022\023\n\017GREATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNO" +
-      "T_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007B,\n\037io.lit" +
-      "tlehorse.sdk.common.protoP\001Z\007.;modelb\006pr" +
-      "oto3"
+      "eMutation\032\231\001\n\013UTAReassign\0225\n\007user_id\030\001 \001" +
+      "(\0132\037.littlehorse.VariableAssignmentH\000\210\001\001" +
+      "\0228\n\nuser_group\030\002 \001(\0132\037.littlehorse.Varia" +
+      "bleAssignmentH\001\210\001\001B\n\n\010_user_idB\r\n\013_user_" +
+      "group\".\n\006UTHook\022\016\n\nON_ARRIVAL\020\000\022\024\n\020ON_TA" +
+      "SK_ASSIGNED\020\001B\010\n\006action\"\177\n\010TaskNode\022\025\n\rt" +
+      "ask_def_name\030\001 \001(\t\022\027\n\017timeout_seconds\030\002 " +
+      "\001(\005\022\017\n\007retries\030\003 \001(\005\0222\n\tvariables\030\004 \003(\0132" +
+      "\037.littlehorse.VariableAssignment*\230\001\n\024Var" +
+      "iableMutationType\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n" +
+      "\n\006EXTEND\020\002\022\014\n\010SUBTRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n" +
+      "\n\006DIVIDE\020\005\022\025\n\021REMOVE_IF_PRESENT\020\006\022\020\n\014REM" +
+      "OVE_INDEX\020\007\022\016\n\nREMOVE_KEY\020\010*.\n\tIndexType" +
+      "\022\017\n\013LOCAL_INDEX\020\000\022\020\n\014REMOTE_INDEX\020\001*\204\001\n\n" +
+      "Comparator\022\r\n\tLESS_THAN\020\000\022\020\n\014GREATER_THA" +
+      "N\020\001\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017GREATER_THAN_EQ" +
+      "\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_EQUALS\020\005\022\006\n\002IN\020\006\022\n" +
+      "\n\006NOT_IN\020\007B,\n\037io.littlehorse.sdk.common." +
+      "protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -201,7 +201,7 @@ public final class CommonWfspec {
     internal_static_littlehorse_UTActionTrigger_UTAReassign_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UTActionTrigger_UTAReassign_descriptor,
-        new java.lang.String[] { "UserId", "UserGroup", "AssignTo", });
+        new java.lang.String[] { "UserId", "UserGroup", "UserId", "UserGroup", });
     internal_static_littlehorse_TaskNode_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_littlehorse_TaskNode_fieldAccessorTable = new

@@ -19,8 +19,6 @@ import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunIdList;
 import io.littlehorse.sdk.common.proto.TaskStatus;
-import io.littlehorse.sdk.common.proto.User;
-import io.littlehorse.sdk.common.proto.UserGroup;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.UserTaskRunIdList;
@@ -136,7 +134,7 @@ public abstract class Test {
     public UserTaskRunIdList searchUserTaskRunsUserGroup(
             String userGroup, String userTaskDefName, UserTaskRunStatus status) {
         SearchUserTaskRunRequest req = SearchUserTaskRunRequest.newBuilder()
-                .setUserGroup(UserGroup.newBuilder().setId(userGroup).build())
+                .setUserGroup(userGroup)
                 .setUserTaskDefName(userTaskDefName)
                 .setStatus(status)
                 .build();
@@ -145,22 +143,21 @@ public abstract class Test {
 
     public UserTaskRunIdList searchUserTaskRunsUserGroup(String userGroup, UserTaskRunStatus status) {
         SearchUserTaskRunRequest req = SearchUserTaskRunRequest.newBuilder()
-                .setUserGroup(UserGroup.newBuilder().setId(userGroup).build())
+                .setUserGroup(userGroup)
                 .setStatus(status)
                 .build();
         return client.searchUserTaskRun(req);
     }
 
     public UserTaskRunIdList searchUserTaskRunsUserGroup(String userGroup) {
-        SearchUserTaskRunRequest req = SearchUserTaskRunRequest.newBuilder()
-                .setUserGroup(UserGroup.newBuilder().setId(userGroup).build())
-                .build();
+        SearchUserTaskRunRequest req =
+                SearchUserTaskRunRequest.newBuilder().setUserGroup(userGroup).build();
         return client.searchUserTaskRun(req);
     }
 
     public UserTaskRunIdList searchUserTaskRunsUserId(String userId, String userTaskDefName, UserTaskRunStatus status) {
         SearchUserTaskRunRequest req = SearchUserTaskRunRequest.newBuilder()
-                .setUser(User.newBuilder().setId(userId).build())
+                .setUserId(userId)
                 .setUserTaskDefName(userTaskDefName)
                 .setStatus(status)
                 .build();
@@ -169,16 +166,15 @@ public abstract class Test {
 
     public UserTaskRunIdList searchUserTaskRunsUserId(String userId, UserTaskRunStatus status) {
         SearchUserTaskRunRequest req = SearchUserTaskRunRequest.newBuilder()
-                .setUser(User.newBuilder().setId(userId).build())
+                .setUserId(userId)
                 .setStatus(status)
                 .build();
         return client.searchUserTaskRun(req);
     }
 
     public UserTaskRunIdList searchUserTaskRunsUserId(String userId) {
-        SearchUserTaskRunRequest req = SearchUserTaskRunRequest.newBuilder()
-                .setUser(User.newBuilder().setId(userId).build())
-                .build();
+        SearchUserTaskRunRequest req =
+                SearchUserTaskRunRequest.newBuilder().setUserId(userId).build();
         return client.searchUserTaskRun(req);
     }
 

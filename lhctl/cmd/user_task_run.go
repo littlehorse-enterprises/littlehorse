@@ -99,20 +99,13 @@ The following option groups are supported:
 		}
 
 		if userId != "" {
-			var user = &model.User{
-				Id: userId,
-			}
-			reassign.Assignee = &model.AssignUserTaskRunRequest_User{
-				User: user,
-			}
-		} else if userGroup != "" {
-			var userGroupPb = &model.UserGroup{
-				Id: userGroup,
-			}
-			reassign.Assignee = &model.AssignUserTaskRunRequest_UserGroup{
-				UserGroup: userGroupPb,
-			}
-		} else {
+			reassign.UserId = &userId
+		}
+		if userGroup != "" {
+			reassign.UserGroup = &userGroup
+		}
+
+		if userId == "" && userGroup == "" {
 			log.Fatal("Must specify either --userId or --userGroup")
 		}
 
@@ -208,32 +201,12 @@ Choose one of the following option groups:
 
 		userIdStr, _ := cmd.Flags().GetString("userId")
 		userGroupStr, _ := cmd.Flags().GetString("userGroup")
-		if userIdStr != "" {
-			if userGroupStr != "" {
-				var userGroup = &model.UserGroup{
-					Id: userGroupStr,
-				}
-				search.TaskOwner = &model.SearchUserTaskRunRequest_User{
-					User: &model.User{
-						Id:        userIdStr,
-						UserGroup: userGroup,
-					},
-				}
-			} else {
-				search.TaskOwner = &model.SearchUserTaskRunRequest_User{
-					User: &model.User{
-						Id: userIdStr,
-					},
-				}
-			}
 
-		} else if userGroupStr != "" {
-			var userGroupPb = &model.UserGroup{
-				Id: userGroupStr,
-			}
-			search.TaskOwner = &model.SearchUserTaskRunRequest_UserGroup{
-				UserGroup: userGroupPb,
-			}
+		if userIdStr != "" {
+			search.UserId = &userIdStr
+		}
+		if userGroupStr != "" {
+			search.UserGroup = &userGroupStr
 		}
 
 		userTaskDefNameStr, _ := cmd.Flags().GetString("userTaskDefName")
@@ -253,9 +226,7 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LHPublic
 	fmt.Println("Executing UserTaskRun ", wfRunId, " ", userTaskGuid)
 
 	completeUserTask := &model.CompleteUserTaskRunRequest{
-		Result: &model.UserTaskResult{
-			Fields: make([]*model.UserTaskFieldResult, 0),
-		},
+		Results: make(map[string]*model.VariableValue),
 		UserTaskRunId: &model.UserTaskRunId{
 			WfRunId:      wfRunId,
 			UserTaskGuid: userTaskGuid,
@@ -298,12 +269,7 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LHPublic
 		if err != nil {
 			log.Fatal(err)
 		}
-		completeUserTask.Result.Fields = append(completeUserTask.Result.Fields,
-			&model.UserTaskFieldResult{
-				Name:  field.Name,
-				Value: resultVal,
-			},
-		)
+		completeUserTask.Results[field.Name] = resultVal
 	}
 
 	fmt.Println("completing userTaskRun!")

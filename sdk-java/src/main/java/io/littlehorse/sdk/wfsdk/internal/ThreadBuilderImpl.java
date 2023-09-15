@@ -113,15 +113,13 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         if (!lastNodeName.equals(utImpl.nodeName)) {
             throw new IllegalStateException("Tried to edit a stale User Task node!");
         }
-        UserTaskNode.UserAssignment userAssignment =
-                curNode.getUserTaskBuilder().getUser();
-        if (userAssignment == null) {
+        if (!curNode.getUserTask().hasUserId()) {
             throw new IllegalStateException("The User Task is not assigned to any user");
         }
-        if (!userAssignment.hasUserGroup()) {
+        if (!curNode.getUserTask().hasUserGroup()) {
             throw new IllegalStateException("The User Task is assigned to a user without a group.");
         }
-        VariableAssignment userGroup = userAssignment.getUserGroup();
+        VariableAssignment userGroup = curNode.getUserTask().getUserGroup();
         reassignToGroupOnDeadline(userGroup, curNode, deadlineSeconds);
     }
 
@@ -154,16 +152,19 @@ final class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     @Override
-    public void reassignToUserOnDeadline(UserTaskOutput userTaskOutput, String userId, int deadlineSeconds) {
+    public void reassignToUserOnDeadline(
+            UserTaskOutput userTaskOutput, String userId, String userGroup, int deadlineSeconds) {
         checkIfIsActive();
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
         if (!lastNodeName.equals(utImpl.nodeName)) {
             throw new IllegalStateException("Tried to edit a stale User Task node!");
         }
-        UTActionTrigger.UTAReassign reassignPb = UTActionTrigger.UTAReassign.newBuilder()
-                .setUserId(assignVariable(userId))
-                .build();
+        UTActionTrigger.UTAReassign.Builder reassignPb =
+                UTActionTrigger.UTAReassign.newBuilder().setUserId(assignVariable(userId));
+        if (userGroup != null) {
+            reassignPb.setUserGroup(assignVariable(userGroup));
+        }
         UTActionTrigger actionTrigger = UTActionTrigger.newBuilder()
                 .setReassign(reassignPb)
                 .setHook(UTActionTrigger.UTHook.ON_TASK_ASSIGNED)
@@ -195,23 +196,19 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         return assignUserTaskHelper(userTaskDefName, null, userGroup);
     }
 
-    private UserTaskOutputImpl assignUserTaskHelper(String userTaskDefName, Object userId, Object userGroups) {
+    private UserTaskOutputImpl assignUserTaskHelper(String userTaskDefName, Object userId, Object userGroup) {
         checkIfIsActive();
         // guaranteed that exatly one of userId or userGroup is not null
         UserTaskNode.Builder utNode = UserTaskNode.newBuilder().setUserTaskDefName(userTaskDefName);
 
         if (userId != null) {
             VariableAssignment userIdAssn = assignVariable(userId);
-            VariableAssignment userGroupAssn = userGroups != null ? assignVariable(userGroups) : null;
-            UserTaskNode.UserAssignment.Builder userAssignmentBuilder = UserTaskNode.UserAssignment.newBuilder();
-            userAssignmentBuilder.setUserId(userIdAssn);
-            if (userGroupAssn != null) {
-                userAssignmentBuilder.setUserGroup(userGroupAssn);
-            }
-            utNode.setUser(userAssignmentBuilder);
-        } else {
-            VariableAssignment userIdAssn = assignVariable(userGroups);
-            utNode.setUserGroup(userIdAssn);
+            utNode.setUserId(userIdAssn);
+        }
+
+        if (userGroup != null) {
+            VariableAssignment userGroupAssn = assignVariable(userGroup);
+            utNode.setUserGroup(userGroupAssn);
         }
 
         // TODO LH-313: Return a special subclass of NodeOutputImpl that
