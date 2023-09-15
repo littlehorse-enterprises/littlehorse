@@ -23,19 +23,38 @@ public interface CompleteUserTaskRunRequestOrBuilder extends
   io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder getUserTaskRunIdOrBuilder();
 
   /**
-   * <code>.littlehorse.UserTaskResult result = 2;</code>
-   * @return Whether the result field is set.
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
    */
-  boolean hasResult();
+  int getResultsCount();
   /**
-   * <code>.littlehorse.UserTaskResult result = 2;</code>
-   * @return The result.
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskResult getResult();
+  boolean containsResults(
+      java.lang.String key);
   /**
-   * <code>.littlehorse.UserTaskResult result = 2;</code>
+   * Use {@link #getResultsMap()} instead.
    */
-  io.littlehorse.sdk.common.proto.UserTaskResultOrBuilder getResultOrBuilder();
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+  getResults();
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   */
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+  getResultsMap();
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   */
+  /* nullable */
+io.littlehorse.sdk.common.proto.VariableValue getResultsOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.VariableValue defaultValue);
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
+      java.lang.String key);
 
   /**
    * <code>string user_id = 3;</code>

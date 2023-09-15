@@ -20,34 +20,46 @@ public interface UserTaskNodeOrBuilder extends
       getUserTaskDefNameBytes();
 
   /**
-   * <code>.littlehorse.VariableAssignment user_group = 2;</code>
+   * <pre>
+   * to whom should the User Task Run be assigned?
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
    * @return Whether the userGroup field is set.
    */
   boolean hasUserGroup();
   /**
-   * <code>.littlehorse.VariableAssignment user_group = 2;</code>
+   * <pre>
+   * to whom should the User Task Run be assigned?
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
    * @return The userGroup.
    */
   io.littlehorse.sdk.common.proto.VariableAssignment getUserGroup();
   /**
-   * <code>.littlehorse.VariableAssignment user_group = 2;</code>
+   * <pre>
+   * to whom should the User Task Run be assigned?
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserGroupOrBuilder();
 
   /**
-   * <code>.littlehorse.UserTaskNode.UserAssignment user = 3;</code>
-   * @return Whether the user field is set.
+   * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
+   * @return Whether the userId field is set.
    */
-  boolean hasUser();
+  boolean hasUserId();
   /**
-   * <code>.littlehorse.UserTaskNode.UserAssignment user = 3;</code>
-   * @return The user.
+   * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
+   * @return The userId.
    */
-  io.littlehorse.sdk.common.proto.UserTaskNode.UserAssignment getUser();
+  io.littlehorse.sdk.common.proto.VariableAssignment getUserId();
   /**
-   * <code>.littlehorse.UserTaskNode.UserAssignment user = 3;</code>
+   * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskNode.UserAssignmentOrBuilder getUserOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserIdOrBuilder();
 
   /**
    * <pre>
@@ -152,6 +164,4 @@ public interface UserTaskNodeOrBuilder extends
    * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getNotesOrBuilder();
-
-  io.littlehorse.sdk.common.proto.UserTaskNode.AssignmentCase getAssignmentCase();
 }

@@ -5,7 +5,7 @@ In this example you will see how to spawn multiples threads base on a INPUT json
 Let's run the example in `ConditionalsWhileExample.java`
 
 ```
-gradle example-spawn-thread-foreach:run
+./gradlew example-spawn-thread-foreach:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:

@@ -4,7 +4,6 @@ import static org.mockito.Mockito.mock;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.getable.core.usertaskrun.UserModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
@@ -55,13 +54,12 @@ public class UserTaskRunModelStorageManagerTest {
     @BeforeEach
     void setup() {
         initializeDependencies();
-        for (UserTaskRunStatus UserTaskRunStatus : UserTaskRunStatus.values()) {
-            if (UserTaskRunStatus == UserTaskRunStatus.UNRECOGNIZED) {
+        for (UserTaskRunStatus userTaskRunStatus : UserTaskRunStatus.values()) {
+            if (userTaskRunStatus == UserTaskRunStatus.UNRECOGNIZED) {
                 continue;
             }
             UserTaskRunModel userTaskRun = TestUtil.userTaskRun(wfRunId);
-            userTaskRun.setUser(new UserModel(userTaskRun.getUser().getId(), userTaskRun.getUserGroup()));
-            userTaskRun.setStatus(UserTaskRunStatus);
+            userTaskRun.setStatus(userTaskRunStatus);
             userTaskRun.setId(
                     new UserTaskRunIdModel(wfRunId + "1", UUID.randomUUID().toString()));
             getableStorageManager.put(userTaskRun);

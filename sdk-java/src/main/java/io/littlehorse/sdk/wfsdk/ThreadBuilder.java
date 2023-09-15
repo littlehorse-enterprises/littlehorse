@@ -75,7 +75,7 @@ public interface ThreadBuilder {
      * @param deadlineSeconds Time in seconds after which the UserTask will be automatically
      *     reassigned to the UserGroup.
      */
-    void reassignToUserOnDeadline(UserTaskOutput userTaskOutput, String userId, int deadlineSeconds);
+    void reassignToUserOnDeadline(UserTaskOutput userTaskOutput, String userId, String userGroup, int deadlineSeconds);
 
     /**
      * Adds a User Task Node, and assigns it to a specific user

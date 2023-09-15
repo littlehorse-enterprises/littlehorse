@@ -8,7 +8,7 @@ This is a simple example, which does two things:
 Let's run the example in `BasicExample.java`
 
 ```
-gradle example-basic:run
+./gradlew example-basic:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:

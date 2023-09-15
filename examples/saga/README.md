@@ -6,7 +6,7 @@ Here you are going to be able to see how to define a workflow for a saga transac
 Let's run the example in `SagaExample.java`
 
 ```
-gradle example-saga:run
+./gradlew example-saga:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:

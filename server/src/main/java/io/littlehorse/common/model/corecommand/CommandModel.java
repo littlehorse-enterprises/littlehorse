@@ -8,11 +8,11 @@ import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTaskModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteExternalEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.ReassignUserTask;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
@@ -51,7 +51,7 @@ public class CommandModel extends AbstractCommand<Command> {
     public AssignUserTaskRunRequestModel assignUserTaskRun;
     public CompleteUserTaskRunRequestModel completeUserTaskRun;
     public TriggeredTaskRun triggeredTaskRun;
-    private ReassignUserTask reassignUserTask;
+    private DeadlineReassignUserTaskModel reassignUserTask;
     private CancelUserTaskRunRequestModel cancelUserTaskRun;
 
     public Class<Command> getProtoBaseClass() {
@@ -190,7 +190,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 triggeredTaskRun = LHSerializable.fromProto(p.getTriggeredTaskRun(), TriggeredTaskRun.class);
                 break;
             case REASSIGNED_USER_TASK:
-                reassignUserTask = LHSerializable.fromProto(p.getReassignedUserTask(), ReassignUserTask.class);
+                reassignUserTask =
+                        LHSerializable.fromProto(p.getReassignedUserTask(), DeadlineReassignUserTaskModel.class);
                 break;
             case CANCEL_USER_TASK:
                 cancelUserTaskRun =
@@ -284,9 +285,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(TriggeredTaskRun.class)) {
             type = CommandCase.TRIGGERED_TASK_RUN;
             triggeredTaskRun = (TriggeredTaskRun) cmd;
-        } else if (cls.equals(ReassignUserTask.class)) {
+        } else if (cls.equals(DeadlineReassignUserTaskModel.class)) {
             type = CommandCase.REASSIGNED_USER_TASK;
-            reassignUserTask = (ReassignUserTask) cmd;
+            reassignUserTask = (DeadlineReassignUserTaskModel) cmd;
         } else if (cls.equals(CancelUserTaskRunRequestModel.class)) {
             type = CommandCase.CANCEL_USER_TASK;
             cancelUserTaskRun = (CancelUserTaskRunRequestModel) cmd;

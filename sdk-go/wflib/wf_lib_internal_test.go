@@ -44,10 +44,9 @@ func TestUserTaskAssignToUser(t *testing.T) {
 	utNode := node.GetUserTask()
 	assert.NotNil(t, utNode)
 
-	assignment := utNode.GetUser()
-	assert.NotNil(t, assignment)
-	assert.Nil(t, assignment.UserGroup)
-	assert.Equal(t, "yoda", *(assignment.UserId.GetLiteralValue().Str))
+	assert.NotNil(t, utNode.UserId)
+	assert.Nil(t, utNode.UserGroup)
+	assert.Equal(t, "yoda", *(utNode.UserId.GetLiteralValue().Str))
 }
 
 func TestUserTaskAssignToUserByVar(t *testing.T) {
@@ -67,10 +66,9 @@ func TestUserTaskAssignToUserByVar(t *testing.T) {
 	utNode := node.GetUserTask()
 	assert.NotNil(t, utNode)
 
-	assignment := utNode.GetUser()
-	assert.NotNil(t, assignment)
-	assert.Nil(t, assignment.UserGroup)
-	assert.Equal(t, "user", assignment.UserId.GetVariableName())
+	assert.NotNil(t, utNode.UserId)
+	assert.Nil(t, utNode.UserGroup)
+	assert.Equal(t, "user", utNode.UserId.GetVariableName())
 }
 
 func TestUserTaskAssignToUserWithGroup(t *testing.T) {
@@ -89,10 +87,10 @@ func TestUserTaskAssignToUserWithGroup(t *testing.T) {
 	utNode := node.GetUserTask()
 	assert.NotNil(t, utNode)
 
-	assignment := utNode.GetUser()
-	assert.NotNil(t, assignment)
-	assert.Equal(t, "yoda", *(assignment.UserId.GetLiteralValue().Str))
-	assert.Equal(t, "jedi-council", *(assignment.UserGroup.GetLiteralValue().Str))
+	assert.NotNil(t, utNode.UserId)
+	assert.NotNil(t, utNode.UserGroup)
+	assert.Equal(t, "yoda", *(utNode.UserId.GetLiteralValue().Str))
+	assert.Equal(t, "jedi-council", *(utNode.UserGroup.GetLiteralValue().Str))
 }
 
 func TestAssignToGroup(t *testing.T) {

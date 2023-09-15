@@ -7,7 +7,7 @@ If bar is greater than 10 then execute task-b else execute task-c.
 Let's run the example in `ConditionalsExample.java`
 
 ```
-gradle example-conditionals:run
+./gradlew example-conditionals:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:

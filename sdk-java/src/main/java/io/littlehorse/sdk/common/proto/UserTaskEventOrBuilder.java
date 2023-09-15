@@ -38,19 +38,19 @@ public interface UserTaskEventOrBuilder extends
   io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecutedOrBuilder getTaskExecutedOrBuilder();
 
   /**
-   * <code>.littlehorse.UserTaskEvent.UTEReassigned reassigned = 3;</code>
-   * @return Whether the reassigned field is set.
+   * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
+   * @return Whether the assigned field is set.
    */
-  boolean hasReassigned();
+  boolean hasAssigned();
   /**
-   * <code>.littlehorse.UserTaskEvent.UTEReassigned reassigned = 3;</code>
-   * @return The reassigned.
+   * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
+   * @return The assigned.
    */
-  io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassigned getReassigned();
+  io.littlehorse.sdk.common.proto.UserTaskEvent.UTEAssigned getAssigned();
   /**
-   * <code>.littlehorse.UserTaskEvent.UTEReassigned reassigned = 3;</code>
+   * <code>.littlehorse.UserTaskEvent.UTEAssigned assigned = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskEvent.UTEReassignedOrBuilder getReassignedOrBuilder();
+  io.littlehorse.sdk.common.proto.UserTaskEvent.UTEAssignedOrBuilder getAssignedOrBuilder();
 
   /**
    * <pre>

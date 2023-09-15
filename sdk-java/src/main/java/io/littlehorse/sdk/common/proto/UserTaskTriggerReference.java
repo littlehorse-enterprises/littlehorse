@@ -16,6 +16,8 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private UserTaskTriggerReference() {
+    userId_ = "";
+    userGroup_ = "";
   }
 
   @java.lang.Override
@@ -102,30 +104,98 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
   }
 
-  public static final int CONTEXT_FIELD_NUMBER = 4;
-  private io.littlehorse.sdk.common.proto.UserTaskTriggerContext context_;
+  public static final int USER_ID_FIELD_NUMBER = 4;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object userId_ = "";
   /**
-   * <code>optional .littlehorse.UserTaskTriggerContext context = 4;</code>
-   * @return Whether the context field is set.
+   * <code>optional string user_id = 4;</code>
+   * @return Whether the userId field is set.
    */
   @java.lang.Override
-  public boolean hasContext() {
+  public boolean hasUserId() {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>optional .littlehorse.UserTaskTriggerContext context = 4;</code>
-   * @return The context.
+   * <code>optional string user_id = 4;</code>
+   * @return The userId.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskTriggerContext getContext() {
-    return context_ == null ? io.littlehorse.sdk.common.proto.UserTaskTriggerContext.getDefaultInstance() : context_;
+  public java.lang.String getUserId() {
+    java.lang.Object ref = userId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      userId_ = s;
+      return s;
+    }
   }
   /**
-   * <code>optional .littlehorse.UserTaskTriggerContext context = 4;</code>
+   * <code>optional string user_id = 4;</code>
+   * @return The bytes for userId.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskTriggerContextOrBuilder getContextOrBuilder() {
-    return context_ == null ? io.littlehorse.sdk.common.proto.UserTaskTriggerContext.getDefaultInstance() : context_;
+  public com.google.protobuf.ByteString
+      getUserIdBytes() {
+    java.lang.Object ref = userId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      userId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int USER_GROUP_FIELD_NUMBER = 5;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object userGroup_ = "";
+  /**
+   * <code>optional string user_group = 5;</code>
+   * @return Whether the userGroup field is set.
+   */
+  @java.lang.Override
+  public boolean hasUserGroup() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <code>optional string user_group = 5;</code>
+   * @return The userGroup.
+   */
+  @java.lang.Override
+  public java.lang.String getUserGroup() {
+    java.lang.Object ref = userGroup_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      userGroup_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>optional string user_group = 5;</code>
+   * @return The bytes for userGroup.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getUserGroupBytes() {
+    java.lang.Object ref = userGroup_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      userGroup_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   private byte memoizedIsInitialized = -1;
@@ -152,7 +222,10 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(3, getWfSpecId());
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(4, getContext());
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, userId_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, userGroup_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -176,8 +249,10 @@ private static final long serialVersionUID = 0L;
         .computeMessageSize(3, getWfSpecId());
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getContext());
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, userId_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, userGroup_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -206,10 +281,15 @@ private static final long serialVersionUID = 0L;
       if (!getWfSpecId()
           .equals(other.getWfSpecId())) return false;
     }
-    if (hasContext() != other.hasContext()) return false;
-    if (hasContext()) {
-      if (!getContext()
-          .equals(other.getContext())) return false;
+    if (hasUserId() != other.hasUserId()) return false;
+    if (hasUserId()) {
+      if (!getUserId()
+          .equals(other.getUserId())) return false;
+    }
+    if (hasUserGroup() != other.hasUserGroup()) return false;
+    if (hasUserGroup()) {
+      if (!getUserGroup()
+          .equals(other.getUserGroup())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -232,9 +312,13 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
       hash = (53 * hash) + getWfSpecId().hashCode();
     }
-    if (hasContext()) {
-      hash = (37 * hash) + CONTEXT_FIELD_NUMBER;
-      hash = (53 * hash) + getContext().hashCode();
+    if (hasUserId()) {
+      hash = (37 * hash) + USER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getUserId().hashCode();
+    }
+    if (hasUserGroup()) {
+      hash = (37 * hash) + USER_GROUP_FIELD_NUMBER;
+      hash = (53 * hash) + getUserGroup().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -355,21 +439,13 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.UserTaskTriggerReference.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-        getNodeRunIdFieldBuilder();
-        getWfSpecIdFieldBuilder();
-        getContextFieldBuilder();
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
@@ -386,11 +462,8 @@ private static final long serialVersionUID = 0L;
         wfSpecIdBuilder_.dispose();
         wfSpecIdBuilder_ = null;
       }
-      context_ = null;
-      if (contextBuilder_ != null) {
-        contextBuilder_.dispose();
-        contextBuilder_ = null;
-      }
+      userId_ = "";
+      userGroup_ = "";
       return this;
     }
 
@@ -439,10 +512,12 @@ private static final long serialVersionUID = 0L;
       }
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.context_ = contextBuilder_ == null
-            ? context_
-            : contextBuilder_.build();
+        result.userId_ = userId_;
         to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.userGroup_ = userGroup_;
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -500,8 +575,15 @@ private static final long serialVersionUID = 0L;
       if (other.hasWfSpecId()) {
         mergeWfSpecId(other.getWfSpecId());
       }
-      if (other.hasContext()) {
-        mergeContext(other.getContext());
+      if (other.hasUserId()) {
+        userId_ = other.userId_;
+        bitField0_ |= 0x00000008;
+        onChanged();
+      }
+      if (other.hasUserGroup()) {
+        userGroup_ = other.userGroup_;
+        bitField0_ |= 0x00000010;
+        onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -549,12 +631,15 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 26
             case 34: {
-              input.readMessage(
-                  getContextFieldBuilder().getBuilder(),
-                  extensionRegistry);
+              userId_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000008;
               break;
             } // case 34
+            case 42: {
+              userGroup_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -842,123 +927,162 @@ private static final long serialVersionUID = 0L;
       return wfSpecIdBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.UserTaskTriggerContext context_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskTriggerContext, io.littlehorse.sdk.common.proto.UserTaskTriggerContext.Builder, io.littlehorse.sdk.common.proto.UserTaskTriggerContextOrBuilder> contextBuilder_;
+    private java.lang.Object userId_ = "";
     /**
-     * <code>optional .littlehorse.UserTaskTriggerContext context = 4;</code>
-     * @return Whether the context field is set.
+     * <code>optional string user_id = 4;</code>
+     * @return Whether the userId field is set.
      */
-    public boolean hasContext() {
+    public boolean hasUserId() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>optional .littlehorse.UserTaskTriggerContext context = 4;</code>
-     * @return The context.
+     * <code>optional string user_id = 4;</code>
+     * @return The userId.
      */
-    public io.littlehorse.sdk.common.proto.UserTaskTriggerContext getContext() {
-      if (contextBuilder_ == null) {
-        return context_ == null ? io.littlehorse.sdk.common.proto.UserTaskTriggerContext.getDefaultInstance() : context_;
+    public java.lang.String getUserId() {
+      java.lang.Object ref = userId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        userId_ = s;
+        return s;
       } else {
-        return contextBuilder_.getMessage();
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>optional .littlehorse.UserTaskTriggerContext context = 4;</code>
+     * <code>optional string user_id = 4;</code>
+     * @return The bytes for userId.
      */
-    public Builder setContext(io.littlehorse.sdk.common.proto.UserTaskTriggerContext value) {
-      if (contextBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        context_ = value;
+    public com.google.protobuf.ByteString
+        getUserIdBytes() {
+      java.lang.Object ref = userId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        userId_ = b;
+        return b;
       } else {
-        contextBuilder_.setMessage(value);
+        return (com.google.protobuf.ByteString) ref;
       }
+    }
+    /**
+     * <code>optional string user_id = 4;</code>
+     * @param value The userId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setUserId(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      userId_ = value;
       bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.UserTaskTriggerContext context = 4;</code>
+     * <code>optional string user_id = 4;</code>
+     * @return This builder for chaining.
      */
-    public Builder setContext(
-        io.littlehorse.sdk.common.proto.UserTaskTriggerContext.Builder builderForValue) {
-      if (contextBuilder_ == null) {
-        context_ = builderForValue.build();
-      } else {
-        contextBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.UserTaskTriggerContext context = 4;</code>
-     */
-    public Builder mergeContext(io.littlehorse.sdk.common.proto.UserTaskTriggerContext value) {
-      if (contextBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0) &&
-          context_ != null &&
-          context_ != io.littlehorse.sdk.common.proto.UserTaskTriggerContext.getDefaultInstance()) {
-          getContextBuilder().mergeFrom(value);
-        } else {
-          context_ = value;
-        }
-      } else {
-        contextBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.UserTaskTriggerContext context = 4;</code>
-     */
-    public Builder clearContext() {
+    public Builder clearUserId() {
+      userId_ = getDefaultInstance().getUserId();
       bitField0_ = (bitField0_ & ~0x00000008);
-      context_ = null;
-      if (contextBuilder_ != null) {
-        contextBuilder_.dispose();
-        contextBuilder_ = null;
-      }
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.UserTaskTriggerContext context = 4;</code>
+     * <code>optional string user_id = 4;</code>
+     * @param value The bytes for userId to set.
+     * @return This builder for chaining.
      */
-    public io.littlehorse.sdk.common.proto.UserTaskTriggerContext.Builder getContextBuilder() {
+    public Builder setUserIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      userId_ = value;
       bitField0_ |= 0x00000008;
       onChanged();
-      return getContextFieldBuilder().getBuilder();
+      return this;
+    }
+
+    private java.lang.Object userGroup_ = "";
+    /**
+     * <code>optional string user_group = 5;</code>
+     * @return Whether the userGroup field is set.
+     */
+    public boolean hasUserGroup() {
+      return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <code>optional .littlehorse.UserTaskTriggerContext context = 4;</code>
+     * <code>optional string user_group = 5;</code>
+     * @return The userGroup.
      */
-    public io.littlehorse.sdk.common.proto.UserTaskTriggerContextOrBuilder getContextOrBuilder() {
-      if (contextBuilder_ != null) {
-        return contextBuilder_.getMessageOrBuilder();
+    public java.lang.String getUserGroup() {
+      java.lang.Object ref = userGroup_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        userGroup_ = s;
+        return s;
       } else {
-        return context_ == null ?
-            io.littlehorse.sdk.common.proto.UserTaskTriggerContext.getDefaultInstance() : context_;
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>optional .littlehorse.UserTaskTriggerContext context = 4;</code>
+     * <code>optional string user_group = 5;</code>
+     * @return The bytes for userGroup.
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskTriggerContext, io.littlehorse.sdk.common.proto.UserTaskTriggerContext.Builder, io.littlehorse.sdk.common.proto.UserTaskTriggerContextOrBuilder> 
-        getContextFieldBuilder() {
-      if (contextBuilder_ == null) {
-        contextBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UserTaskTriggerContext, io.littlehorse.sdk.common.proto.UserTaskTriggerContext.Builder, io.littlehorse.sdk.common.proto.UserTaskTriggerContextOrBuilder>(
-                getContext(),
-                getParentForChildren(),
-                isClean());
-        context_ = null;
+    public com.google.protobuf.ByteString
+        getUserGroupBytes() {
+      java.lang.Object ref = userGroup_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        userGroup_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
       }
-      return contextBuilder_;
+    }
+    /**
+     * <code>optional string user_group = 5;</code>
+     * @param value The userGroup to set.
+     * @return This builder for chaining.
+     */
+    public Builder setUserGroup(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      userGroup_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string user_group = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearUserGroup() {
+      userGroup_ = getDefaultInstance().getUserGroup();
+      bitField0_ = (bitField0_ & ~0x00000010);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string user_group = 5;</code>
+     * @param value The bytes for userGroup to set.
+     * @return This builder for chaining.
+     */
+    public Builder setUserGroupBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      userGroup_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

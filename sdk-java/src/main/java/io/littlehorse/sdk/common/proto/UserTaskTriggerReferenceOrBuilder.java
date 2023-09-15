@@ -44,17 +44,36 @@ public interface UserTaskTriggerReferenceOrBuilder extends
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
-   * <code>optional .littlehorse.UserTaskTriggerContext context = 4;</code>
-   * @return Whether the context field is set.
+   * <code>optional string user_id = 4;</code>
+   * @return Whether the userId field is set.
    */
-  boolean hasContext();
+  boolean hasUserId();
   /**
-   * <code>optional .littlehorse.UserTaskTriggerContext context = 4;</code>
-   * @return The context.
+   * <code>optional string user_id = 4;</code>
+   * @return The userId.
    */
-  io.littlehorse.sdk.common.proto.UserTaskTriggerContext getContext();
+  java.lang.String getUserId();
   /**
-   * <code>optional .littlehorse.UserTaskTriggerContext context = 4;</code>
+   * <code>optional string user_id = 4;</code>
+   * @return The bytes for userId.
    */
-  io.littlehorse.sdk.common.proto.UserTaskTriggerContextOrBuilder getContextOrBuilder();
+  com.google.protobuf.ByteString
+      getUserIdBytes();
+
+  /**
+   * <code>optional string user_group = 5;</code>
+   * @return Whether the userGroup field is set.
+   */
+  boolean hasUserGroup();
+  /**
+   * <code>optional string user_group = 5;</code>
+   * @return The userGroup.
+   */
+  java.lang.String getUserGroup();
+  /**
+   * <code>optional string user_group = 5;</code>
+   * @return The bytes for userGroup.
+   */
+  com.google.protobuf.ByteString
+      getUserGroupBytes();
 }

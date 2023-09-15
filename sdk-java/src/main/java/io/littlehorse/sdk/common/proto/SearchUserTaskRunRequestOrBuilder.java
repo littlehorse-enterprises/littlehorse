@@ -63,34 +63,38 @@ public interface SearchUserTaskRunRequestOrBuilder extends
       getUserTaskDefNameBytes();
 
   /**
-   * <code>.littlehorse.User user = 5;</code>
-   * @return Whether the user field is set.
+   * <code>optional string user_id = 5;</code>
+   * @return Whether the userId field is set.
    */
-  boolean hasUser();
+  boolean hasUserId();
   /**
-   * <code>.littlehorse.User user = 5;</code>
-   * @return The user.
+   * <code>optional string user_id = 5;</code>
+   * @return The userId.
    */
-  io.littlehorse.sdk.common.proto.User getUser();
+  java.lang.String getUserId();
   /**
-   * <code>.littlehorse.User user = 5;</code>
+   * <code>optional string user_id = 5;</code>
+   * @return The bytes for userId.
    */
-  io.littlehorse.sdk.common.proto.UserOrBuilder getUserOrBuilder();
+  com.google.protobuf.ByteString
+      getUserIdBytes();
 
   /**
-   * <code>.littlehorse.UserGroup user_group = 6;</code>
+   * <code>optional string user_group = 6;</code>
    * @return Whether the userGroup field is set.
    */
   boolean hasUserGroup();
   /**
-   * <code>.littlehorse.UserGroup user_group = 6;</code>
+   * <code>optional string user_group = 6;</code>
    * @return The userGroup.
    */
-  io.littlehorse.sdk.common.proto.UserGroup getUserGroup();
+  java.lang.String getUserGroup();
   /**
-   * <code>.littlehorse.UserGroup user_group = 6;</code>
+   * <code>optional string user_group = 6;</code>
+   * @return The bytes for userGroup.
    */
-  io.littlehorse.sdk.common.proto.UserGroupOrBuilder getUserGroupOrBuilder();
+  com.google.protobuf.ByteString
+      getUserGroupBytes();
 
   /**
    * <code>optional .google.protobuf.Timestamp earliest_start = 7;</code>
@@ -121,6 +125,4 @@ public interface SearchUserTaskRunRequestOrBuilder extends
    * <code>optional .google.protobuf.Timestamp latest_start = 8;</code>
    */
   com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();
-
-  io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest.TaskOwnerCase getTaskOwnerCase();
 }

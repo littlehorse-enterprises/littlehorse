@@ -17,7 +17,7 @@ public SpawnedThread spawnThread(
 Let's run the example in `ChildThreadExample.java`
 
 ```
-gradle example-child-thread:run
+./gradlew example-child-thread:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:

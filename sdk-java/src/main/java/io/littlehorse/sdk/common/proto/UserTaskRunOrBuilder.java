@@ -38,28 +38,72 @@ public interface UserTaskRunOrBuilder extends
   io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder getUserTaskDefIdOrBuilder();
 
   /**
-   * <code>repeated .littlehorse.UserTaskFieldResult results = 6;</code>
+   * <code>optional string user_group = 3;</code>
+   * @return Whether the userGroup field is set.
    */
-  java.util.List<io.littlehorse.sdk.common.proto.UserTaskFieldResult> 
-      getResultsList();
+  boolean hasUserGroup();
   /**
-   * <code>repeated .littlehorse.UserTaskFieldResult results = 6;</code>
+   * <code>optional string user_group = 3;</code>
+   * @return The userGroup.
    */
-  io.littlehorse.sdk.common.proto.UserTaskFieldResult getResults(int index);
+  java.lang.String getUserGroup();
   /**
-   * <code>repeated .littlehorse.UserTaskFieldResult results = 6;</code>
+   * <code>optional string user_group = 3;</code>
+   * @return The bytes for userGroup.
+   */
+  com.google.protobuf.ByteString
+      getUserGroupBytes();
+
+  /**
+   * <code>optional string user_id = 4;</code>
+   * @return Whether the userId field is set.
+   */
+  boolean hasUserId();
+  /**
+   * <code>optional string user_id = 4;</code>
+   * @return The userId.
+   */
+  java.lang.String getUserId();
+  /**
+   * <code>optional string user_id = 4;</code>
+   * @return The bytes for userId.
+   */
+  com.google.protobuf.ByteString
+      getUserIdBytes();
+
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
    */
   int getResultsCount();
   /**
-   * <code>repeated .littlehorse.UserTaskFieldResult results = 6;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldResultOrBuilder> 
-      getResultsOrBuilderList();
+  boolean containsResults(
+      java.lang.String key);
   /**
-   * <code>repeated .littlehorse.UserTaskFieldResult results = 6;</code>
+   * Use {@link #getResultsMap()} instead.
    */
-  io.littlehorse.sdk.common.proto.UserTaskFieldResultOrBuilder getResultsOrBuilder(
-      int index);
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+  getResults();
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
+   */
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+  getResultsMap();
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
+   */
+  /* nullable */
+io.littlehorse.sdk.common.proto.VariableValue getResultsOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.VariableValue defaultValue);
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
+      java.lang.String key);
 
   /**
    * <code>.littlehorse.UserTaskRunStatus status = 7;</code>
@@ -160,36 +204,4 @@ public interface UserTaskRunOrBuilder extends
    * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
    */
   io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder();
-
-  /**
-   * <code>.littlehorse.UserGroup user_group = 12;</code>
-   * @return Whether the userGroup field is set.
-   */
-  boolean hasUserGroup();
-  /**
-   * <code>.littlehorse.UserGroup user_group = 12;</code>
-   * @return The userGroup.
-   */
-  io.littlehorse.sdk.common.proto.UserGroup getUserGroup();
-  /**
-   * <code>.littlehorse.UserGroup user_group = 12;</code>
-   */
-  io.littlehorse.sdk.common.proto.UserGroupOrBuilder getUserGroupOrBuilder();
-
-  /**
-   * <code>.littlehorse.User user = 13;</code>
-   * @return Whether the user field is set.
-   */
-  boolean hasUser();
-  /**
-   * <code>.littlehorse.User user = 13;</code>
-   * @return The user.
-   */
-  io.littlehorse.sdk.common.proto.User getUser();
-  /**
-   * <code>.littlehorse.User user = 13;</code>
-   */
-  io.littlehorse.sdk.common.proto.UserOrBuilder getUserOrBuilder();
-
-  io.littlehorse.sdk.common.proto.UserTaskRun.OwnerCase getOwnerCase();
 }

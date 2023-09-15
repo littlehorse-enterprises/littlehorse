@@ -105,8 +105,8 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
             List<VarNameAndValModel> inputVars = taskToSchedule.assignInputVars(thread);
             TaskRunIdModel taskRunId = new TaskRunIdModel(wfRunId);
 
-            ScheduledTaskModel toSchedule = new ScheduledTaskModel(
-                    taskToSchedule.getTaskDef().getObjectId(), inputVars, userTaskRun, userTaskRun.buildTaskContext());
+            ScheduledTaskModel toSchedule =
+                    new ScheduledTaskModel(taskToSchedule.getTaskDef().getObjectId(), inputVars, userTaskRun);
             toSchedule.setTaskRunId(taskRunId);
 
             TaskRunModel taskRun = new TaskRunModel(

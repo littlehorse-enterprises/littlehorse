@@ -7,7 +7,7 @@ it executes the task "greet".
 Let's run the example in `ExternalEventExample.java`
 
 ```
-gradle example-external-event:run
+./gradlew example-external-event:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:

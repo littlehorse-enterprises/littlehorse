@@ -9,10 +9,13 @@ import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.SubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
-import io.littlehorse.sdk.common.proto.UserTaskResult;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +25,7 @@ public class CompleteUserTaskRunRequestModel extends SubCommand<CompleteUserTask
 
     private UserTaskRunIdModel userTaskRunId;
     private String userId;
-    private UserTaskResult result;
+    private Map<String, VariableValueModel> results = new HashMap<>();
     private Date time;
 
     public Class<CompleteUserTaskRunRequest> getProtoBaseClass() {
@@ -32,8 +35,10 @@ public class CompleteUserTaskRunRequestModel extends SubCommand<CompleteUserTask
     public CompleteUserTaskRunRequest.Builder toProto() {
         CompleteUserTaskRunRequest.Builder out = CompleteUserTaskRunRequest.newBuilder()
                 .setUserTaskRunId(userTaskRunId.toProto())
-                .setUserId(userId)
-                .setResult(result);
+                .setUserId(userId);
+        for (Map.Entry<String, VariableValueModel> entry : results.entrySet()) {
+            out.putResults(entry.getKey(), entry.getValue().toProto().build());
+        }
         return out;
     }
 
@@ -41,7 +46,10 @@ public class CompleteUserTaskRunRequestModel extends SubCommand<CompleteUserTask
         CompleteUserTaskRunRequest p = (CompleteUserTaskRunRequest) proto;
         userId = p.getUserId();
         userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class);
-        result = p.getResult();
+
+        for (Map.Entry<String, VariableValue> entry : p.getResultsMap().entrySet()) {
+            results.put(entry.getKey(), VariableValueModel.fromProto(entry.getValue()));
+        }
     }
 
     public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
