@@ -14,6 +14,7 @@ from littlehorse.model.common_wfspec_pb2 import (
     IndexType,
     JsonIndex,
     TaskNode,
+    UTActionTrigger,
     VariableAssignment,
     VariableDef,
     VariableMutation,
@@ -85,6 +86,14 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
         raise ValueError(
             "Cannot use NodeOutput directly as input to task. "
             "First save to a WfRunVariable."
+        )
+
+    if isinstance(value, LHFormatString):
+        return VariableAssignment(
+            format_string=FormatString(
+                format=value._format,
+                args=[to_variable_assignment(arg) for arg in value._args],
+            )
         )
 
     if isinstance(value, WfRunVariable):
@@ -494,9 +503,28 @@ class WorkflowInterruption:
         return to_json(self.compile())
 
 
+class LHFormatString:
+    def __init__(self, format: str, *args: Any):
+        self._format = format
+        self._args = [arg for arg in args]
+
+
 class UserTaskOutput(NodeOutput):
-    def __init__(self, node_name: str) -> None:
+    def __init__(self, node_name: str, thread: "ThreadBuilder") -> None:
         super().__init__(node_name)
+        self._thread = thread
+        self._node_name = node_name
+
+    def with_notes(
+        self, notes: Union[str, WfRunVariable, LHFormatString]
+    ) -> "UserTaskOutput":
+        node = self._thread._last_node()
+        if node.name != self._node_name:
+            raise ValueError("tried to mutate stale UserTaskOutput!")
+        ut_node: UserTaskNode = node.sub_node
+        result = to_variable_assignment(notes)
+        # TODO: figure out how to set the notes on the node.
+        return self
 
 
 class ThreadBuilder:
@@ -746,7 +774,7 @@ class ThreadBuilder:
         self,
         user_task_def_name: str,
         user_id: Optional[Union[str, WfRunVariable]] = None,
-        user_group: Optional[Union[str,WfRunVariable]] = None
+        user_group: Optional[Union[str, WfRunVariable]] = None,
     ) -> UserTaskOutput:
         self._check_if_active()
         if user_group is None and user_id is None:
@@ -760,7 +788,56 @@ class ThreadBuilder:
             user_id=to_variable_assignment(user_id) if user_id else None,
         )
 
-        return UserTaskOutput(node_name=self.add_node(user_task_def_name, ut_node))
+        return UserTaskOutput(self.add_node(user_task_def_name, ut_node), self)
+
+    def reassign_user_task_on_deadline(
+        self,
+        user_task: UserTaskOutput,
+        deadline_seconds: Union[int, WfRunVariable],
+        user_group: Optional[Union[str, WfRunVariable]] = None,
+        user_id: Optional[Union[str, WfRunVariable]] = None,
+    ) -> None:
+        self._check_if_active()
+        if self._last_node().name != user_task.node_name:
+            raise ValueError("Tried to reassign stale usertask node!")
+
+        reassign = UTActionTrigger.UTAReassign(
+            user_id=to_variable_assignment(user_id) if user_id is not None else None,
+            user_group=to_variable_assignment(user_group)
+            if user_group is not None
+            else None,
+        )
+
+        ut_node: UserTaskNode = self._last_node().sub_node
+        ut_node.actions.append(
+            UTActionTrigger(
+                reassign=reassign,
+                delay_seconds=to_variable_assignment(deadline_seconds),
+            )
+        )
+
+    def release_to_group_on_deadline(
+        self,
+        user_task: UserTaskOutput,
+        deadline_seconds: int,
+    ) -> None:
+        self._check_if_active()
+        cur_node = self._last_node()
+
+        if cur_node.name != user_task.node_name:
+            raise ValueError("Tried to reassign stale User Task!")
+
+        ut_node: UserTaskNode = cur_node.sub_node
+        if ut_node.user_group is None:
+            raise ValueError("Cannot release node to group if user_group is None")
+        if ut_node.user_id is None:
+            raise ValueError("Cannot release node to group if user_id is none")
+
+        trigger: UTActionTrigger = UTActionTrigger(
+            reassign=UTActionTrigger.UTAReassign(user_group=ut_node.user_group),
+            delay_seconds=to_variable_assignment(deadline_seconds),
+        )
+        ut_node.actions.append(trigger)
 
     def wait_for_event(self, event_name: str, timeout: int = -1) -> NodeOutput:
         """Adds an EXTERNAL_EVENT node which blocks until an

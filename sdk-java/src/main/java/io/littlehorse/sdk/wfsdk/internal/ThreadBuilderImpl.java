@@ -106,7 +106,7 @@ final class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     @Override
-    public void reassignToGroupOnDeadline(UserTaskOutput userTaskOutput, int deadlineSeconds) {
+    public void releaseToGroupOnDeadline(UserTaskOutput userTaskOutput, int deadlineSeconds) {
         checkIfIsActive();
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
