@@ -15,7 +15,7 @@ from littlehorse.utils import (
     to_variable_value,
 )
 from littlehorse.workflow import (
-    FormatString,
+    LHFormatString,
     NodeOutput,
     WfRunVariable,
     to_variable_assignment,
@@ -244,7 +244,7 @@ class TestProtoUtils(unittest.TestCase):
         )
 
         # a FormatString
-        variable = to_variable_assignment(FormatString("format {0}", "my-var"))
+        variable = to_variable_assignment(LHFormatString("format {0}", "my-var"))
         self.assertEqual(
             variable,
             VariableAssignment(

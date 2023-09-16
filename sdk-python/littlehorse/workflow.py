@@ -90,8 +90,8 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
 
     if isinstance(value, LHFormatString):
         return VariableAssignment(
-            format_string=FormatString(
-                format=value._format,
+            format_string=VariableAssignment.FormatString(
+                format=to_variable_assignment(value._format),
                 args=[to_variable_assignment(arg) for arg in value._args],
             )
         )
@@ -107,16 +107,6 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
             json_path=json_path,
             variable_name=variable_name,
         )
-
-    if isinstance(value, FormatString):
-        new_var = VariableAssignment(
-            format_string=VariableAssignment.FormatString(
-                format=to_variable_assignment(value.format),
-                args=[to_variable_assignment(arg) for arg in value.args],
-            )
-        )
-
-        return new_var
 
     return VariableAssignment(
         literal_value=to_variable_value(value),
@@ -224,7 +214,7 @@ class LHErrorType(Enum):
     INTERNAL_ERROR = "INTERNAL_ERROR"
 
 
-class FormatString:
+class LHFormatString:
     def __init__(self, format: str, *args: Any) -> None:
         """Generates a FormatString object that can be understood by the ThreadBuilder.
 
@@ -235,8 +225,8 @@ class FormatString:
         Returns:
             FormatString: A FormatString.
         """
-        self.format = format
-        self.args = args
+        self._format = format
+        self._args = args
 
 
 class NodeOutput:
@@ -501,12 +491,6 @@ class WorkflowInterruption:
 
     def __str__(self) -> str:
         return to_json(self.compile())
-
-
-class LHFormatString:
-    def __init__(self, format: str, *args: Any):
-        self._format = format
-        self._args = [arg for arg in args]
 
 
 class UserTaskOutput(NodeOutput):
@@ -930,17 +914,17 @@ class ThreadBuilder:
 
         last_node.variable_mutations.append(mutation)
 
-    def format(self, format: str, *args: Any) -> FormatString:
-        """Generates a FormatString object that can be understood by the ThreadBuilder.
+    def format(self, format: str, *args: Any) -> LHFormatString:
+        """Generates a LHFormatString object that can be understood by the ThreadBuilder.
 
         Args:
             format (str): String format with variables with curly brackets {}.
             *args (Any): Arguments.
 
         Returns:
-            FormatString: A FormatString.
+            LHFormatString: A LHFormatString.
         """
-        return FormatString(format, *args)
+        return LHFormatString(format, *args)
 
     def add_variable(
         self, variable_name: str, variable_type: VariableType, default_value: Any = None
