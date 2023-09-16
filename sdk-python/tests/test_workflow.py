@@ -1,3 +1,4 @@
+from re import L
 import unittest
 from unittest.mock import MagicMock
 from littlehorse.model.common_enums_pb2 import VariableType
@@ -1128,6 +1129,255 @@ class TestWorkflow(unittest.TestCase):
                 },
             ),
         )
+
+
+class TestUserTasks(unittest.TestCase):
+    def test_assign_to_user_id(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            thread.assign_user_task("my-user-task", user_id="obi-wan")
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+        self.assertEqual(ut_node.user_task_def_name, "my-user-task")
+        self.assertFalse(ut_node.HasField("user_group"))
+        self.assertTrue(ut_node.HasField("user_id"))
+        self.assertEqual(ut_node.user_id.literal_value.str, "obi-wan")
+
+    def test_assign_to_user_group(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            thread.assign_user_task("my-user-task", user_group="jedi")
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+        self.assertEqual(ut_node.user_task_def_name, "my-user-task")
+        self.assertFalse(ut_node.HasField("user_id"))
+        self.assertTrue(ut_node.HasField("user_group"))
+        self.assertEqual(ut_node.user_group.literal_value.str, "jedi")
+
+    def test_assign_to_user_and_group(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            thread.assign_user_task("my-user-task", user_id="yoda", user_group="jedi")
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+        self.assertEqual(ut_node.user_task_def_name, "my-user-task")
+        self.assertTrue(ut_node.HasField("user_id"))
+        self.assertTrue(ut_node.HasField("user_group"))
+        self.assertEqual(ut_node.user_group.literal_value.str, "jedi")
+        self.assertEqual(ut_node.user_id.literal_value.str, "yoda")
+
+    def test_mutations(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            var = thread.add_variable("my-var", VariableType.INT)
+            ut_output = thread.assign_user_task("my-user-task", user_id="obi-wan")
+            thread.mutate(var, VariableMutationType.ASSIGN, ut_output)
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        mutations = node.variable_mutations
+        self.assertEqual(1, len(mutations))
+
+        mutation = mutations[0]
+        self.assertEqual("my-var", mutation.lhs_name)
+        self.assertEqual(VariableMutationType.ASSIGN, mutation.operation)
+        self.assertTrue(mutation.HasField("node_output"))
+
+    def test_assign_to_variable_user_id(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            userid = thread.add_variable("userid", VariableType.INT)
+            thread.assign_user_task("my-user-task", user_id=userid)
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+        self.assertEqual(ut_node.user_task_def_name, "my-user-task")
+        self.assertFalse(ut_node.HasField("user_group"))
+        self.assertTrue(ut_node.HasField("user_id"))
+        self.assertEqual(ut_node.user_id.variable_name, "userid")
+
+    def test_release_to_group(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            uto = thread.assign_user_task(
+                "my-user-task",
+                user_id="asdf",
+                user_group="my-group",
+            )
+            thread.release_to_group_on_deadline(uto, 60)
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+
+        self.assertEqual(len(ut_node.actions), 1)
+
+        action = ut_node.actions[0]
+        self.assertEqual(action.delay_seconds.literal_value.int, 60)
+        self.assertTrue(action.HasField("reassign"))
+        self.assertFalse(action.HasField("cancel"))
+
+        reassign = action.reassign
+        self.assertEqual(reassign.user_group.literal_value.str, "my-group")
+
+    def test_reassign_to_user_str(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            uto = thread.assign_user_task(
+                "my-user-task",
+                user_id="asdf",
+                user_group="my-group",
+            )
+            thread.reassign_user_task_on_deadline(uto, 60, user_id="obiwan")
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+
+        self.assertEqual(len(ut_node.actions), 1)
+
+        action = ut_node.actions[0]
+        self.assertTrue(action.HasField("reassign"))
+        self.assertFalse(action.HasField("cancel"))
+
+        reassign = action.reassign
+        self.assertEqual(reassign.user_id.literal_value.str, "obiwan")
+        self.assertFalse(reassign.HasField("user_group"))
+
+    def test_reassign_to_user_var(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            user_var = WfRunVariable("my-var", VariableType.STR)
+            uto = thread.assign_user_task(
+                "my-user-task",
+                user_id="asdf",
+                user_group="my-group",
+            )
+            thread.reassign_user_task_on_deadline(uto, 60, user_id=user_var)
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+
+        self.assertEqual(len(ut_node.actions), 1)
+
+        action = ut_node.actions[0]
+        self.assertTrue(action.HasField("reassign"))
+        self.assertFalse(action.HasField("cancel"))
+
+        reassign = action.reassign
+        self.assertEqual(reassign.user_id.variable_name, "my-var")
+        self.assertFalse(reassign.HasField("user_group"))
+
+    def test_reassign_to_group(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            user_var = WfRunVariable("my-var", VariableType.STR)
+            uto = thread.assign_user_task(
+                "my-user-task",
+                user_id="asdf",
+                user_group="my-group",
+            )
+            thread.reassign_user_task_on_deadline(uto, 60, user_group=user_var)
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+
+        self.assertEqual(len(ut_node.actions), 1)
+
+        action = ut_node.actions[0]
+        self.assertTrue(action.HasField("reassign"))
+        self.assertFalse(action.HasField("cancel"))
+
+        reassign = action.reassign
+        self.assertEqual(reassign.user_group.variable_name, "my-var")
+        self.assertFalse(reassign.HasField("user_id"))
+
+    def test_reassign_to_user_with_group(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            uto = thread.assign_user_task(
+                "my-user-task",
+                user_id="asdf",
+                user_group="my-group",
+            )
+            thread.reassign_user_task_on_deadline(
+                uto,
+                60,
+                user_group="jedi-council",
+                user_id="yoda",
+            )
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+
+        self.assertEqual(len(ut_node.actions), 1)
+
+        action = ut_node.actions[0]
+        self.assertTrue(action.HasField("reassign"))
+        self.assertFalse(action.HasField("cancel"))
+
+        reassign = action.reassign
+        self.assertEqual(reassign.user_group.literal_value.str, "jedi-council")
+        self.assertEqual(reassign.user_id.literal_value.str, "yoda")
+
+    def test_notes(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            thread.assign_user_task(
+                "my-user-task",
+                user_id="asdf",
+                user_group="my-group",
+            ).with_notes("hi there")
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+        self.assertEqual(ut_node.notes, to_variable_assignment("hi there"))
+
+
+class FormatStringTest(unittest.TestCase):
+    def test_format_string(self):
+        def wf_func(thread: ThreadBuilder) -> None:
+            str_var = thread.add_variable("my-str", VariableType.STR)
+            str_var2 = thread.add_variable("my-str-2", VariableType.STR)
+            thread.execute("asdf", thread.format("hi {0} there {1}", str_var, str_var2))
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+        node = thread.nodes["1-asdf-TASK"]
+        self.assertTrue(node.HasField("task"))
+        task = node.task
+
+        inputs = task.variables
+        self.assertEqual(len(inputs), 1)
+
+        self.assertTrue(inputs[0].HasField("format_string"))
+        fstr = inputs[0].format_string
+        self.assertEqual(fstr.format.literal_value.str, "hi {0} there {1}")
+        self.assertEqual(len(fstr.args), 2)
+        self.assertEqual(fstr.args[0].variable_name, "my-str")
+        self.assertEqual(fstr.args[1].variable_name, "my-str-2")
 
 
 if __name__ == "__main__":

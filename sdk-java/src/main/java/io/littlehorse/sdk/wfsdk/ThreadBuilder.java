@@ -52,7 +52,7 @@ public interface ThreadBuilder {
      * @param deadlineSeconds Time in seconds after which the UserTask will be automatically
      *     reassigned to the UserGroup.
      */
-    void reassignToGroupOnDeadline(UserTaskOutput userTaskOutput, int deadlineSeconds);
+    void releaseToGroupOnDeadline(UserTaskOutput userTaskOutput, int deadlineSeconds);
 
     /**
      * Schedule Reassignment of a UserTask to a userGroup upon reaching the Deadline. This method is
