@@ -510,10 +510,20 @@ class LHFormatString:
 
 
 class UserTaskOutput(NodeOutput):
-    def __init__(self, node_name: str, thread: "ThreadBuilder") -> None:
+    def __init__(
+        self,
+        node_name: str,
+        thread: "ThreadBuilder",
+        user_task_def_name: str,
+        user_id: Optional[Union[str, WfRunVariable]] = None,
+        user_group: Optional[Union[str, WfRunVariable]] = None,
+    ) -> None:
         super().__init__(node_name)
         self._thread = thread
         self._node_name = node_name
+        self._user_task_def_name = user_task_def_name
+        self._user_group = user_group
+        self._user_id = user_id
 
     def with_notes(
         self, notes: Union[str, WfRunVariable, LHFormatString]
@@ -521,9 +531,17 @@ class UserTaskOutput(NodeOutput):
         node = self._thread._last_node()
         if node.name != self._node_name:
             raise ValueError("tried to mutate stale UserTaskOutput!")
-        ut_node: UserTaskNode = node.sub_node
-        result = to_variable_assignment(notes)
-        # TODO: figure out how to set the notes on the node.
+
+        ug = to_variable_assignment(self._user_group) if self._user_group else None
+        ui = to_variable_assignment(self._user_id) if self._user_id else None
+        ut_node = UserTaskNode(
+            user_task_def_name=self._user_task_def_name,
+            user_group=ug,
+            user_id=ui,
+            notes=to_variable_assignment(notes),
+        )
+
+        node.sub_node = ut_node
         return self
 
 
@@ -782,13 +800,21 @@ class ThreadBuilder:
                 "Must provide either user_id or user_group to assign_user_task()"
             )
 
+        ug = to_variable_assignment(user_group) if user_group else None
+        ui = to_variable_assignment(user_id) if user_id else None
         ut_node = UserTaskNode(
             user_task_def_name=user_task_def_name,
-            user_group=to_variable_assignment(user_group) if user_group else None,
-            user_id=to_variable_assignment(user_id) if user_id else None,
+            user_group=ug,
+            user_id=ui,
         )
 
-        return UserTaskOutput(self.add_node(user_task_def_name, ut_node), self)
+        return UserTaskOutput(
+            self.add_node(user_task_def_name, ut_node),
+            self,
+            user_task_def_name,
+            user_id=user_id,
+            user_group=user_group,
+        )
 
     def reassign_user_task_on_deadline(
         self,
