@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -136,7 +137,7 @@ public class FailureHandlingTest {
                     },
                     "sub-thread",
                     Map.of());
-            WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(spawnThread);
+            WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(SpawnedThreads.of(spawnThread));
             thread.handleException(waitForThread, "my-exception", handler -> {
                 handler.execute("my-task");
             });
@@ -158,7 +159,7 @@ public class FailureHandlingTest {
                     },
                     "sub-thread",
                     Map.of("should-it-fails", failWithUserDefinedException));
-            WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(spawnThread);
+            WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(SpawnedThreads.of(spawnThread));
             thread.handleException(waitForThread, handler -> {
                 handler.execute("my-task");
             });
@@ -180,7 +181,7 @@ public class FailureHandlingTest {
                     },
                     "sub-thread",
                     Map.of("should-it-fails", failWithUserDefinedException));
-            WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(spawnThread);
+            WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(SpawnedThreads.of(spawnThread));
             thread.handleError(waitForThread, handler -> {
                 handler.execute("my-task");
             });
@@ -202,7 +203,7 @@ public class FailureHandlingTest {
                     },
                     "sub-thread",
                     Map.of("should-it-fails", failWithUserDefinedException));
-            WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(spawnThread);
+            WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(SpawnedThreads.of(spawnThread));
             thread.handleAnyFailure(waitForThread, handler -> {
                 handler.execute("my-task");
             });

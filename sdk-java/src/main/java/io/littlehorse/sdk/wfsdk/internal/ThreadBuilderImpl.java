@@ -25,7 +25,6 @@ import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
-import io.littlehorse.sdk.common.proto.VariableAssignment.FormatString;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource;
@@ -446,7 +445,7 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         String nodeName = addNode(threadName, NodeCase.START_MULTIPLE_THREADS, startMultiplesThreadNode.build());
         WfRunVariableImpl internalStartedThreadVar = addVariable(nodeName, VariableType.JSON_ARR);
         mutate(internalStartedThreadVar, VariableMutationType.ASSIGN, new NodeOutputImpl(nodeName, this));
-        return new SpawnedThreadsImpl(this, internalStartedThreadVar);
+        return new SpawnedThreadsIterator(internalStartedThreadVar);
     }
 
     public void sleepSeconds(Object secondsToSleep) {
@@ -556,6 +555,8 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         this.addMutationToCurrentNode(mutation.build());
     }
 
+    @Override
+    @Deprecated(forRemoval = true)
     public WaitForThreadsNodeOutput waitForThreads(SpawnedThread... threadsToWaitFor) {
         checkIfIsActive();
         WaitForThreadsNode.Builder waitNode = WaitForThreadsNode.newBuilder();
@@ -573,11 +574,8 @@ final class ThreadBuilderImpl implements ThreadBuilder {
     @Override
     public WaitForThreadsNodeOutput waitForThreads(SpawnedThreads threads) {
         checkIfIsActive();
-        WaitForThreadsNode.Builder waitNode = WaitForThreadsNode.newBuilder();
-        SpawnedThreadsImpl spawnedThreads = (SpawnedThreadsImpl) threads;
-        waitNode.setThreadList(assignVariable(spawnedThreads.getInternalThreadVar()));
-        waitNode.setPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
-        String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode.build());
+        WaitForThreadsNode waitNode = threads.buildNode();
+        String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode);
         return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
     }
 
@@ -770,35 +768,7 @@ final class ThreadBuilderImpl implements ThreadBuilder {
 
     public VariableAssignment assignVariable(Object variable) {
         checkIfIsActive();
-        VariableAssignment.Builder builder = VariableAssignment.newBuilder();
-
-        if (variable == null) {
-            builder.setLiteralValue(VariableValue.newBuilder().setType(VariableType.NULL));
-        } else if (variable.getClass().equals(WfRunVariableImpl.class)) {
-            WfRunVariableImpl wrv = (WfRunVariableImpl) variable;
-            if (wrv.jsonPath != null) {
-                builder.setJsonPath(wrv.jsonPath);
-            }
-            builder.setVariableName(wrv.name);
-        } else if (variable.getClass().equals(NodeOutputImpl.class)) {
-            throw new RuntimeException(
-                    "Error: Cannot use NodeOutput directly as input to task. First save to a WfRunVariable.");
-        } else if (variable.getClass().equals(LHFormatStringImpl.class)) {
-            LHFormatStringImpl format = (LHFormatStringImpl) variable;
-            builder.setFormatString(FormatString.newBuilder()
-                    .setFormat(assignVariable(format.getFormat()))
-                    .addAllArgs(format.getArgs()));
-
-        } else {
-            try {
-                VariableValue defVal = LHLibUtil.objToVarVal(variable);
-                builder.setLiteralValue(defVal);
-            } catch (LHSerdeError exn) {
-                throw new RuntimeException(exn);
-            }
-        }
-
-        return builder.build();
+        return BuilderUtil.assignVariable(variable);
     }
 
     private void checkIfIsActive() {

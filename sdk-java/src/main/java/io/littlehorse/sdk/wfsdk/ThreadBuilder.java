@@ -229,10 +229,12 @@ public interface ThreadBuilder {
      * @param threadsToWaitFor is an array of SpawnedThread objects returned one or more calls to
      *     spawnThread.
      * @return a NodeOutput that can be used for timeouts or exception handling.
+     * @see ThreadBuilder#waitForThreads(SpawnedThreads)
      */
+    @Deprecated(forRemoval = true)
     WaitForThreadsNodeOutput waitForThreads(SpawnedThread... threadsToWaitFor);
 
-    WaitForThreadsNodeOutput waitForThreads(SpawnedThreads threads);
+    WaitForThreadsNodeOutput waitForThreads(SpawnedThreads threadsToWaitFor);
 
     /**
      * Adds an EXTERNAL_EVENT node which blocks until an 'ExternalEvent' of the specified type
