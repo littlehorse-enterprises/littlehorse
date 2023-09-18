@@ -79,7 +79,7 @@ jobs:
           distribution: "corretto"
           java-version: 17
       - name: Validate Build
-        run: ./gradlew build
+        run: ./gradlew build -x test
       - name: Validate Indentations
         run: ./gradlew spotlessCheck
       - name: Tests
