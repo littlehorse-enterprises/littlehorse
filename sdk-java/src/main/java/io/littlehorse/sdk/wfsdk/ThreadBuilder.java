@@ -51,7 +51,7 @@ public interface ThreadBuilder {
      * Schedules the reassignment of a User Task to a specified userId and/or userGroup after
      * a specified expiration.
      *
-     * @param UserTaskOutput is the userTask to reschedule.
+     * @param userTask is the userTask to reschedule.
      * @param userId is the userId to which the task should be assigned. Must be either WfRunVariable
      * or String. Can be null if userGroup not null.
      * @param userGroup is the userGroup to which the task should be reassigned. Must be either
