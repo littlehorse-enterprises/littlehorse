@@ -96,96 +96,7 @@ final class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     @Override
-    public UserTaskOutputImpl assignUserTask(String userTaskDefName, String userId, String userGroup) {
-        return assignUserTaskHelper(userTaskDefName, userId, null);
-    }
-
-    @Override
-    public UserTaskOutput assignUserTask(String userTaskDefName, WfRunVariable userId, String userGroup) {
-        return assignUserTaskHelper(userTaskDefName, userId, userGroup);
-    }
-
-    @Override
-    public UserTaskOutputImpl assignUserTask(String userTaskDefName, String userId, WfRunVariable userGroup) {
-        return assignUserTaskHelper(userTaskDefName, userId, null);
-    }
-
-    @Override
-    public UserTaskOutput assignUserTask(String userTaskDefName, WfRunVariable userId, WfRunVariable userGroup) {
-        return assignUserTaskHelper(userTaskDefName, userId, userGroup);
-    }
-
-    @Override
-    public void reassignUserTask(
-            UserTaskOutput userTask, WfRunVariable userId, WfRunVariable userGroup, int deadlineSeconds) {
-        if (userId == null && userGroup == null) {
-            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
-        }
-        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
-    }
-
-    @Override
-    public void reassignUserTask(UserTaskOutput userTask, WfRunVariable userId, String userGroup, int deadlineSeconds) {
-        if (userId == null && userGroup == null) {
-            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
-        }
-        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
-    }
-
-    @Override
-    public void reassignUserTask(UserTaskOutput userTask, String userId, WfRunVariable userGroup, int deadlineSeconds) {
-        if (userId == null && userGroup == null) {
-            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
-        }
-        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
-    }
-
-    @Override
-    public void reassignUserTask(UserTaskOutput userTask, String userId, String userGroup, int deadlineSeconds) {
-        if (userId == null && userGroup == null) {
-            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
-        }
-        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
-    }
-
-    @Override
-    public void reassignUserTask(
-            UserTaskOutput userTask, WfRunVariable userId, WfRunVariable userGroup, WfRunVariable deadlineSeconds) {
-        if (userId == null && userGroup == null) {
-            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
-        }
-        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
-    }
-
-    @Override
-    public void reassignUserTask(
-            UserTaskOutput userTask, WfRunVariable userId, String userGroup, WfRunVariable deadlineSeconds) {
-        if (userId == null && userGroup == null) {
-            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
-        }
-        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
-    }
-
-    @Override
-    public void reassignUserTask(
-            UserTaskOutput userTask, String userId, WfRunVariable userGroup, WfRunVariable deadlineSeconds) {
-        if (userId == null && userGroup == null) {
-            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
-        }
-        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
-    }
-
-    @Override
-    public void reassignUserTask(
-            UserTaskOutput userTask, String userId, String userGroup, WfRunVariable deadlineSeconds) {
-        if (userId == null && userGroup == null) {
-            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
-        }
-        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
-    }
-
-    @Override
-    public void releaseToGroupOnDeadline(UserTaskOutput userTaskOutput, int deadlineSeconds) {
+    public void releaseToGroupOnDeadline(UserTaskOutput userTaskOutput, Object deadlineSeconds) {
         checkIfIsActive();
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
@@ -203,7 +114,7 @@ final class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     private void reassignToGroupOnDeadline(
-            VariableAssignment userGroup, Node.Builder currentNode, int deadlineSeconds) {
+            VariableAssignment userGroup, Node.Builder currentNode, Object deadlineSeconds) {
         UTActionTrigger.UTAReassign reassignPb =
                 UTActionTrigger.UTAReassign.newBuilder().setUserGroup(userGroup).build();
         UTActionTrigger actionTrigger = UTActionTrigger.newBuilder()
@@ -215,7 +126,8 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         spec.putNodes(lastNodeName, currentNode.build());
     }
 
-    private void reassignUserTaskHelper(
+    @Override
+    public void reassignUserTask(
             UserTaskOutput userTask, Object userId, Object userGroup, Object deadlineSeconds) {
         checkIfIsActive();
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
@@ -240,29 +152,8 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         spec.putNodes(lastNodeName, curNode.build());
     }
 
-    public UserTaskOutputImpl assignTaskToUser(String userTaskDefName, WfRunVariable userId) {
-        return assignUserTaskHelper(userTaskDefName, userId, null);
-    }
-
     @Override
-    public UserTaskOutput assignTaskToUser(String userTaskDefName, WfRunVariable userId, String userGroup) {
-        return assignUserTaskHelper(userTaskDefName, userId, userGroup);
-    }
-
-    @Override
-    public UserTaskOutput assignTaskToUser(String userTaskDefName, WfRunVariable userId, WfRunVariable userGroup) {
-        return assignUserTaskHelper(userTaskDefName, userId, userGroup);
-    }
-
-    public UserTaskOutputImpl assignTaskToUserGroup(String userTaskDefName, String userGroup) {
-        return assignUserTaskHelper(userTaskDefName, null, userGroup);
-    }
-
-    public UserTaskOutputImpl assignTaskToUserGroup(String userTaskDefName, WfRunVariable userGroup) {
-        return assignUserTaskHelper(userTaskDefName, null, userGroup);
-    }
-
-    private UserTaskOutputImpl assignUserTaskHelper(String userTaskDefName, Object userId, Object userGroup) {
+    public UserTaskOutputImpl assignUserTask(String userTaskDefName, Object userId, Object userGroup) {
         checkIfIsActive();
         // guaranteed that exatly one of userId or userGroup is not null
         UserTaskNode.Builder utNode = UserTaskNode.newBuilder().setUserTaskDefName(userTaskDefName);

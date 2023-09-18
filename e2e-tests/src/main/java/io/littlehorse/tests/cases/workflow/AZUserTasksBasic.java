@@ -63,7 +63,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         return new WorkflowImpl(getWorkflowName(), thread -> {
             WfRunVariable formVar = thread.addVariable("form", VariableType.JSON_OBJ);
 
-            UserTaskOutput formOutput = thread.assignTaskToUserGroup(USER_TASK_DEF_NAME, "test-group");
+            UserTaskOutput formOutput = thread.assignUserTask(USER_TASK_DEF_NAME, null, "test-group");
 
             thread.reassignUserTask(formOutput, "available-user", "test-group", 2);
 

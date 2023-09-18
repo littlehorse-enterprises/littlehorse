@@ -28,41 +28,13 @@ public interface ThreadBuilder {
      * Adds a User Task Node, and assigns it to a specific user
      *
      * @param userTaskDefName is the UserTaskDef to assign.
-     * @param userId is the user id to assign it to. Can be null if userGroup not null.
-     * @param userGroup is the user group to assign it to. Can be null if userId not null.
+     * @param userId is the user id to assign it to. Can be either String or WfRunVariable.
+     * Can be null if userGroup not null.
+     * @param userGroup is the user group to assign it to. Can be either String or
+     * WfRunvariable. Can be null if userId not null.
      * @return a NodeOutput.
      */
-    UserTaskOutput assignUserTask(String userTaskDefName, String userId, String userGroup);
-
-    /**
-     * Adds a User Task Node, and assigns it to a specific user
-     *
-     * @param userTaskDefName is the UserTaskDef to assign.
-     * @param userId is the user id to assign it to. Can be null if userGroup not null.
-     * @param userGroup is the user group to assign it to. Can be null if userId not null.
-     * @return a NodeOutput.
-     */
-    UserTaskOutput assignUserTask(String userTaskDefName, String userId, WfRunVariable userGroup);
-
-    /**
-     * Adds a User Task Node, and assigns it to a specific user
-     *
-     * @param userTaskDefName is the UserTaskDef to assign.
-     * @param userId is the user id to assign it to. Can be null if userGroup not null.
-     * @param userGroup is the user group to assign it to. Can be null if userId not null.
-     * @return a NodeOutput.
-     */
-    UserTaskOutput assignUserTask(String userTaskDefName, WfRunVariable userId, String userGroup);
-
-    /**
-     * Adds a User Task Node, and assigns it to a specific user
-     *
-     * @param userTaskDefName is the UserTaskDef to assign.
-     * @param userId is the user id to assign it to. Can be null if userGroup not null.
-     * @param userGroup is the user group to assign it to. Can be null if userId not null.
-     * @return a NodeOutput.
-     */
-    UserTaskOutput assignUserTask(String userTaskDefName, WfRunVariable userId, WfRunVariable userGroup);
+    UserTaskOutput assignUserTask(String userTaskDefName, Object userId, Object userGroup);
 
     /**
      * Schedule Reassignment of a UserTask to a userGroup upon reaching the Deadline. This method is
@@ -71,146 +43,23 @@ public interface ThreadBuilder {
      *
      * @param userTaskOutput that is currently assigned to a UserGroup.
      * @param deadlineSeconds Time in seconds after which the UserTask will be automatically
-     *     reassigned to the UserGroup.
+     *     reassigned to the UserGroup. Can be either String or WfRunVariable.
      */
-    void releaseToGroupOnDeadline(UserTaskOutput userTaskOutput, int deadlineSeconds);
+    void releaseToGroupOnDeadline(UserTaskOutput userTaskOutput, Object deadlineSeconds);
 
     /**
      * Schedules the reassignment of a User Task to a specified userId and/or userGroup after
      * a specified expiration.
      *
      * @param UserTaskOutput is the userTask to reschedule.
-     * @param userId is the userId to which the task should be assigned. Can be null if userGroup not null.
-     * @param userGroup is the userGroup to which the task should be reassigned. Can be null if
-     *   userId not null.
+     * @param userId is the userId to which the task should be assigned. Must be either WfRunVariable
+     * or String. Can be null if userGroup not null.
+     * @param userGroup is the userGroup to which the task should be reassigned. Must be either
+     * WfRunVariable or String. Can be null if userId not null.
      * @param deadlineSeconds is the expiration time after which the UserTask should be reassigned.
+     * Can be either WfRunVariable or String.
      */
-    void reassignUserTask(UserTaskOutput userTask, String userId, String userGroup, int deadlineSeconds);
-
-    /**
-     * Schedules the reassignment of a User Task to a specified userId and/or userGroup after
-     * a specified expiration.
-     *
-     * @param UserTaskOutput is the userTask to reschedule.
-     * @param userId is the userId to which the task should be assigned. Can be null if userGroup not null.
-     * @param userGroup is the userGroup to which the task should be reassigned. Can be null if
-     *   userId not null.
-     * @param deadlineSeconds is the expiration time after which the UserTask should be reassigned.
-     */
-    void reassignUserTask(UserTaskOutput userTask, WfRunVariable userId, String userGroup, int deadlineSeconds);
-
-    /**
-     * Schedules the reassignment of a User Task to a specified userId and/or userGroup after
-     * a specified expiration.
-     *
-     * @param UserTaskOutput is the userTask to reschedule.
-     * @param userId is the userId to which the task should be assigned. Can be null if userGroup not null.
-     * @param userGroup is the userGroup to which the task should be reassigned. Can be null if
-     *   userId not null.
-     * @param deadlineSeconds is the expiration time after which the UserTask should be reassigned.
-     */
-    void reassignUserTask(UserTaskOutput userTask, String userId, WfRunVariable userGroup, int deadlineSeconds);
-
-    /**
-     * Schedules the reassignment of a User Task to a specified userId and/or userGroup after
-     * a specified expiration.
-     *
-     * @param UserTaskOutput is the userTask to reschedule.
-     * @param userId is the userId to which the task should be assigned. Can be null if userGroup not null.
-     * @param userGroup is the userGroup to which the task should be reassigned. Can be null if
-     *   userId not null.
-     * @param deadlineSeconds is the expiration time after which the UserTask should be reassigned.
-     */
-    void reassignUserTask(UserTaskOutput userTask, WfRunVariable userId, WfRunVariable userGroup, int deadlineSeconds);
-
-    /**
-     * Schedules the reassignment of a User Task to a specified userId and/or userGroup after
-     * a specified expiration.
-     *
-     * @param UserTaskOutput is the userTask to reschedule.
-     * @param userId is the userId to which the task should be assigned. Can be null if userGroup not null.
-     * @param userGroup is the userGroup to which the task should be reassigned. Can be null if
-     *   userId not null.
-     * @param deadlineSeconds is the expiration time after which the UserTask should be reassigned.
-     */
-    void reassignUserTask(UserTaskOutput userTask, String userId, String userGroup, WfRunVariable deadlineSeconds);
-
-    /**
-     * Schedules the reassignment of a User Task to a specified userId and/or userGroup after
-     * a specified expiration.
-     *
-     * @param UserTaskOutput is the userTask to reschedule.
-     * @param userId is the userId to which the task should be assigned. Can be null if userGroup not null.
-     * @param userGroup is the userGroup to which the task should be reassigned. Can be null if
-     *   userId not null.
-     * @param deadlineSeconds is the expiration time after which the UserTask should be reassigned.
-     */
-    void reassignUserTask(
-            UserTaskOutput userTask, WfRunVariable userId, String userGroup, WfRunVariable deadlineSeconds);
-
-    /**
-     * Schedules the reassignment of a User Task to a specified userId and/or userGroup after
-     * a specified expiration.
-     *
-     * @param UserTaskOutput is the userTask to reschedule.
-     * @param userId is the userId to which the task should be assigned. Can be null if userGroup not null.
-     * @param userGroup is the userGroup to which the task should be reassigned. Can be null if
-     *   userId not null.
-     * @param deadlineSeconds is the expiration time after which the UserTask should be reassigned.
-     */
-    void reassignUserTask(
-            UserTaskOutput userTask, String userId, WfRunVariable userGroup, WfRunVariable deadlineSeconds);
-
-    /**
-     * Schedules the reassignment of a User Task to a specified userId and/or userGroup after
-     * a specified expiration.
-     *
-     * @param UserTaskOutput is the userTask to reschedule.
-     * @param userId is the userId to which the task should be assigned. Can be null if userGroup not null.
-     * @param userGroup is the userGroup to which the task should be reassigned. Can be null if
-     *   userId not null.
-     * @param deadlineSeconds is the expiration time after which the UserTask should be reassigned.
-     */
-    void reassignUserTask(
-            UserTaskOutput userTask, WfRunVariable userId, WfRunVariable userGroup, WfRunVariable deadlineSeconds);
-
-    /**
-     * Adds a User Task Node, and assigns it to a specific user
-     *
-     * @param userTaskDefName is the UserTaskDef to assign.
-     * @param userId is the user id to assign it to.
-     * @return a NodeOutput.
-     */
-    UserTaskOutput assignTaskToUser(String userTaskDefName, WfRunVariable userId);
-
-    /**
-     * Adds a User Task Node, and assigns it to a specific user
-     *
-     * @param userTaskDefName is the UserTaskDef to assign.
-     * @param userId is the user id to assign it to.
-     * @param userGroup is the User's group
-     * @return a NodeOutput.
-     */
-    UserTaskOutput assignTaskToUser(String userTaskDefName, WfRunVariable userId, String userGroup);
-
-    /**
-     * Adds a User Task Node, and assigns it to a specific user
-     *
-     * @param userTaskDefName is the UserTaskDef to assign.
-     * @param userId is the user id to assign it to.
-     * @param userGroup is the User's group
-     * @return a NodeOutput.
-     */
-    UserTaskOutput assignTaskToUser(String userTaskDefName, WfRunVariable userId, WfRunVariable userGroup);
-
-    /**
-     * Adds a User Task Node, and assigns it to a group of users.
-     *
-     * @param userTaskDefName is the UserTaskDef to assign.
-     * @param userGroup is the User Group to assign the task to.
-     * @return a UserTaskOutput.
-     */
-    UserTaskOutput assignTaskToUserGroup(String userTaskDefName, String userGroup);
+    void reassignUserTask(UserTaskOutput userTask, Object userId, Object userGroup, Object deadlineSeconds);
 
     /**
      * Creates a formatted string using WfRunVariables as arguments.
@@ -223,20 +72,6 @@ public interface ThreadBuilder {
      * @return an LHFormatString object which can be used as a variable assignment in a WfSpec.
      */
     LHFormatString format(String format, WfRunVariable... args);
-
-    /**
-     * Adds a User Task Node, and assigns it to a group of users.
-     *
-     * @param userTaskDefName is the UserTaskDef to assign.
-     * @param userGroup is the User Group (either WfRunVariable or String) to assign the task to.
-     * @return a UserTaskOutput.
-     */
-    UserTaskOutput assignTaskToUserGroup(String userTaskDefName, WfRunVariable userGroup);
-
-    // TODO: Allow assigning User Tasks via `WfRunVariable`
-
-    // TODO: Allow assigning User Tasks to Groups of people (via String and
-    // WfRunVariable)
 
     /**
      * Defines a Variable in the `ThreadSpec` and returns a handle to it.
