@@ -45,11 +45,12 @@ public class UserTasksExample {
         );
 
         // Get the IT Request
-        UserTaskOutput formOutput = thread.assignTaskToUser(
+        UserTaskOutput formOutput = thread.assignUserTask(
             IT_REQUEST_FORM,
             userId,
             "testGroup"
         );
+
         thread.handleException(
             formOutput,
             "USER_TASK_CANCELLED",
@@ -62,7 +63,7 @@ public class UserTasksExample {
 
         // Have Finance approve the request
         UserTaskOutput financeUserTaskOutput = thread
-            .assignTaskToUserGroup(APPROVAL_FORM, "finance")
+            .assignUserTask(APPROVAL_FORM, null, "finance")
             .withNotes(
                 thread.format(
                     "User {0} is requesting to buy item {1}.\nJustification: {2}",
@@ -80,7 +81,7 @@ public class UserTasksExample {
             financeTeamEmail,
             financeTeamEmailBody
         );
-        thread.reassignToUserOnDeadline(
+        thread.reassignUserTask(
             financeUserTaskOutput,
             "test-eduwer",
             null,
