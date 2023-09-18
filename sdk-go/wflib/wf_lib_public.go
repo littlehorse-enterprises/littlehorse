@@ -172,20 +172,14 @@ func (t *ThreadBuilder) WaitForThreadsList(s *SpawnedThreads) NodeOutput {
 	return t.waitForThreadsList(s)
 }
 
-func (t *ThreadBuilder) AssignTaskToUser(
+func (t *ThreadBuilder) AssignUserTask(
 	userTaskDefName string, userId, userGroup interface{},
 ) *UserTaskOutput {
-	return t.assignTaskToUser(userTaskDefName, userId, userGroup)
+	return t.assignUserTask(userTaskDefName, userId, userGroup)
 }
 
 func (t *ThreadBuilder) Format(format string, args ...*WfRunVariable) *LHFormatString {
 	return t.format(format, args)
-}
-
-func (t *ThreadBuilder) AssignTaskToUserGroup(
-	userTaskDefName string, userGroup interface{},
-) *UserTaskOutput {
-	return t.assignTaskToUserGroup(userTaskDefName, userGroup)
 }
 
 func (t *ThreadBuilder) ScheduleReminderTask(
@@ -195,10 +189,16 @@ func (t *ThreadBuilder) ScheduleReminderTask(
 	t.scheduleReminderTask(userTask, delaySeconds, taskDefName, args)
 }
 
-func (t *ThreadBuilder) ReassignToGroupOnDeadline(
-	userTask *UserTaskOutput, userGroup *string, deadlineSeconds int,
+func (t *ThreadBuilder) ReleaseToGroupOnDeadline(
+	userTask *UserTaskOutput, deadlineSeconds interface{},
 ) {
-	t.reassignToGroupOnDeadline(userTask, userGroup, deadlineSeconds)
+	t.releaseToGroupOnDeadline(userTask, deadlineSeconds)
+}
+
+func (t *ThreadBuilder) ReassignUserTaskOnDeadline(
+	userTask *UserTaskOutput, userId, userGroup, deadlineSeconds interface{},
+) {
+	t.reassignUserTaskOnDeadline(userTask, userId, userGroup, deadlineSeconds)
 }
 
 func (t *ThreadBuilder) WaitForEvent(eventName string) NodeOutput {

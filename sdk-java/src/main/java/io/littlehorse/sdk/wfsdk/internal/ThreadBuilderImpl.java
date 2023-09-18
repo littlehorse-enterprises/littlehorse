@@ -95,17 +95,8 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         return spec;
     }
 
-    public UserTaskOutputImpl assignTaskToUser(String userTaskDefName, String userId) {
-        return assignUserTaskHelper(userTaskDefName, userId, null);
-    }
-
     @Override
-    public UserTaskOutput assignTaskToUser(String userTaskDefName, String userId, String userGroup) {
-        return assignUserTaskHelper(userTaskDefName, userId, userGroup);
-    }
-
-    @Override
-    public void releaseToGroupOnDeadline(UserTaskOutput userTaskOutput, int deadlineSeconds) {
+    public void releaseToGroupOnDeadline(UserTaskOutput userTaskOutput, Object deadlineSeconds) {
         checkIfIsActive();
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
@@ -122,23 +113,8 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         reassignToGroupOnDeadline(userGroup, curNode, deadlineSeconds);
     }
 
-    @Override
-    public void reassignToGroupOnDeadline(UserTaskOutput userTaskOutput, String userGroup, int deadlineSeconds) {
-        checkIfIsActive();
-        Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
-        if (!lastNodeName.equals(utImpl.nodeName)) {
-            throw new IllegalStateException("Tried to edit a stale User Task node!");
-        }
-        if (userGroup == null || userGroup.isEmpty()) {
-            throw new IllegalStateException("User group is required; please provide a valid user group.");
-        }
-        VariableAssignment userGroupVariableAssignment = assignVariable(userGroup);
-        reassignToGroupOnDeadline(userGroupVariableAssignment, curNode, deadlineSeconds);
-    }
-
     private void reassignToGroupOnDeadline(
-            VariableAssignment userGroup, Node.Builder currentNode, int deadlineSeconds) {
+            VariableAssignment userGroup, Node.Builder currentNode, Object deadlineSeconds) {
         UTActionTrigger.UTAReassign reassignPb =
                 UTActionTrigger.UTAReassign.newBuilder().setUserGroup(userGroup).build();
         UTActionTrigger actionTrigger = UTActionTrigger.newBuilder()
@@ -151,21 +127,23 @@ final class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     @Override
-    public void reassignToUserOnDeadline(
-            UserTaskOutput userTaskOutput, String userId, String userGroup, int deadlineSeconds) {
+    public void reassignUserTask(UserTaskOutput userTask, Object userId, Object userGroup, Object deadlineSeconds) {
         checkIfIsActive();
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
+        UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTask;
         if (!lastNodeName.equals(utImpl.nodeName)) {
             throw new IllegalStateException("Tried to edit a stale User Task node!");
         }
-        UTActionTrigger.UTAReassign.Builder reassignPb =
+        UTActionTrigger.UTAReassign.Builder reassignment =
                 UTActionTrigger.UTAReassign.newBuilder().setUserId(assignVariable(userId));
         if (userGroup != null) {
-            reassignPb.setUserGroup(assignVariable(userGroup));
+            reassignment.setUserGroup(assignVariable(userGroup));
+        }
+        if (userId != null) {
+            reassignment.setUserId(assignVariable(userId));
         }
         UTActionTrigger actionTrigger = UTActionTrigger.newBuilder()
-                .setReassign(reassignPb)
+                .setReassign(reassignment)
                 .setHook(UTActionTrigger.UTHook.ON_TASK_ASSIGNED)
                 .setDelaySeconds(assignVariable(deadlineSeconds))
                 .build();
@@ -173,29 +151,8 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         spec.putNodes(lastNodeName, curNode.build());
     }
 
-    public UserTaskOutputImpl assignTaskToUser(String userTaskDefName, WfRunVariable userId) {
-        return assignUserTaskHelper(userTaskDefName, userId, null);
-    }
-
     @Override
-    public UserTaskOutput assignTaskToUser(String userTaskDefName, WfRunVariable userId, String userGroup) {
-        return assignUserTaskHelper(userTaskDefName, userId, userGroup);
-    }
-
-    @Override
-    public UserTaskOutput assignTaskToUser(String userTaskDefName, WfRunVariable userId, WfRunVariable userGroup) {
-        return assignUserTaskHelper(userTaskDefName, userId, userGroup);
-    }
-
-    public UserTaskOutputImpl assignTaskToUserGroup(String userTaskDefName, String userGroup) {
-        return assignUserTaskHelper(userTaskDefName, null, userGroup);
-    }
-
-    public UserTaskOutputImpl assignTaskToUserGroup(String userTaskDefName, WfRunVariable userGroup) {
-        return assignUserTaskHelper(userTaskDefName, null, userGroup);
-    }
-
-    private UserTaskOutputImpl assignUserTaskHelper(String userTaskDefName, Object userId, Object userGroup) {
+    public UserTaskOutputImpl assignUserTask(String userTaskDefName, Object userId, Object userGroup) {
         checkIfIsActive();
         // guaranteed that exatly one of userId or userGroup is not null
         UserTaskNode.Builder utNode = UserTaskNode.newBuilder().setUserTaskDefName(userTaskDefName);

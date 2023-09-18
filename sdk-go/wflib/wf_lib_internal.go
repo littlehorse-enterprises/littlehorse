@@ -119,8 +119,8 @@ func (t *ThreadBuilder) executeTask(name string, args []interface{}) NodeOutput 
 	}
 }
 
-func (t *ThreadBuilder) reassignToGroupOnDeadline(
-	userTask *UserTaskOutput, userGroup *string, deadlineSeconds int,
+func (t *ThreadBuilder) releaseToGroupOnDeadline(
+	userTask *UserTaskOutput, deadlineSeconds interface{},
 ) {
 	t.checkIfIsActive()
 
@@ -131,28 +131,72 @@ func (t *ThreadBuilder) reassignToGroupOnDeadline(
 
 	delaySeconds, _ := t.assignVariable(deadlineSeconds)
 
-	var userGroupAssn *model.VariableAssignment
 	originalUserGroup := curNode.GetUserTask().GetUserGroup()
 	originalUserId := curNode.GetUserTask().GetUserId()
 
-	if userGroup == nil {
-		// reassignment to a nil userGroup is is allowed if:
-		// It's assigned to a User, AND the User has an associated Group.
-		if originalUserId == nil {
-			t.throwError(tracerr.Wrap(errors.New(
-				"need to provide group if reassigning task without userId",
-			)))
-		}
+	// reassignment to a nil userGroup is is allowed if:
+	// It's assigned to a User, AND the User has an associated Group.
+	if originalUserId == nil {
+		t.throwError(tracerr.Wrap(errors.New(
+			"need to provide group if reassigning task without userId",
+		)))
+	}
 
-		if originalUserGroup == nil {
-			t.throwError(tracerr.Wrap(errors.New(
-				"cannot release to group if group not specified",
-			)))
-		}
-		userGroupAssn = originalUserGroup
+	if originalUserGroup == nil {
+		t.throwError(tracerr.Wrap(errors.New(
+			"cannot release to group if group not specified",
+		)))
+	}
+	userGroupAssn := originalUserGroup
 
+	curNode.GetUserTask().Actions = append(curNode.GetUserTask().Actions, &model.UTActionTrigger{
+		Hook:         model.UTActionTrigger_ON_TASK_ASSIGNED,
+		DelaySeconds: delaySeconds,
+		Action: &model.UTActionTrigger_Reassign{
+			Reassign: &model.UTActionTrigger_UTAReassign{
+				UserGroup: userGroupAssn,
+			},
+		},
+	})
+}
+
+func (t *ThreadBuilder) reassignUserTaskOnDeadline(
+	userTask *UserTaskOutput, userId, userGroup, deadlineSeconds interface{},
+) {
+	t.checkIfIsActive()
+
+	curNode := t.spec.Nodes[*t.lastNodeName]
+	if userTask.Output.nodeName != *t.lastNodeName {
+		log.Fatal("Trying to edit stale UserTaskOutput!")
+	}
+
+	if userId == nil && userGroup == nil {
+		t.throwError(tracerr.New("must provide userId or userGroup"))
+	}
+
+	delaySeconds, err := t.assignVariable(deadlineSeconds)
+	if err != nil {
+		t.throwError(tracerr.Wrap(err))
+	}
+
+	var userGroupAssn *model.VariableAssignment
+	var userIdAssn *model.VariableAssignment
+
+	if userId != nil {
+		userIdAssn, err = t.assignVariable(userId)
+		if err != nil {
+			t.throwError(tracerr.Wrap(err))
+		}
 	} else {
-		userGroupAssn, _ = t.assignVariable(*userGroup)
+		userIdAssn = nil
+	}
+	if userGroup != nil {
+		userGroupAssn, err = t.assignVariable(userGroup)
+		if err != nil {
+			t.throwError(tracerr.Wrap(err))
+		}
+	} else {
+		userGroupAssn = nil
 	}
 
 	curNode.GetUserTask().Actions = append(curNode.GetUserTask().Actions, &model.UTActionTrigger{
@@ -161,6 +205,7 @@ func (t *ThreadBuilder) reassignToGroupOnDeadline(
 		Action: &model.UTActionTrigger_Reassign{
 			Reassign: &model.UTActionTrigger_UTAReassign{
 				UserGroup: userGroupAssn,
+				UserId:    userIdAssn,
 			},
 		},
 	})
@@ -197,13 +242,7 @@ func (t *ThreadBuilder) scheduleReminderTask(
 	)
 }
 
-func (t *ThreadBuilder) assignTaskToUserGroup(
-	userTaskDefName string, userGroup interface{},
-) *UserTaskOutput {
-	return t.assignTaskToUser(userTaskDefName, nil, userGroup)
-}
-
-func (t *ThreadBuilder) assignTaskToUser(
+func (t *ThreadBuilder) assignUserTask(
 	userTaskDefName string, userId, userGroup interface{},
 ) *UserTaskOutput {
 	t.checkIfIsActive()
