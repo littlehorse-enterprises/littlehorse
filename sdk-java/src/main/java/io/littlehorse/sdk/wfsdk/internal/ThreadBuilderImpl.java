@@ -127,8 +127,7 @@ final class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     @Override
-    public void reassignUserTask(
-            UserTaskOutput userTask, Object userId, Object userGroup, Object deadlineSeconds) {
+    public void reassignUserTask(UserTaskOutput userTask, Object userId, Object userGroup, Object deadlineSeconds) {
         checkIfIsActive();
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTask;
