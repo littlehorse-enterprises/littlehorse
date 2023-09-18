@@ -41,7 +41,7 @@ public class BEUserTasksCancel extends UserTaskWorkflowTest {
         return new WorkflowImpl(getWorkflowName(), thread -> {
             WfRunVariable formVar = thread.addVariable("form", VariableType.JSON_OBJ);
 
-            thread.assignTaskToUser(USER_TASK_DEF_NAME, "test-user");
+            thread.assignUserTask(USER_TASK_DEF_NAME, "test-user", null);
 
             thread.execute("be-unreachable-task", formVar);
         });

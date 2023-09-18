@@ -95,13 +95,93 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         return spec;
     }
 
-    public UserTaskOutputImpl assignTaskToUser(String userTaskDefName, String userId) {
+    @Override
+    public UserTaskOutputImpl assignUserTask(String userTaskDefName, String userId, String userGroup) {
         return assignUserTaskHelper(userTaskDefName, userId, null);
     }
 
     @Override
-    public UserTaskOutput assignTaskToUser(String userTaskDefName, String userId, String userGroup) {
+    public UserTaskOutput assignUserTask(String userTaskDefName, WfRunVariable userId, String userGroup) {
         return assignUserTaskHelper(userTaskDefName, userId, userGroup);
+    }
+
+    @Override
+    public UserTaskOutputImpl assignUserTask(String userTaskDefName, String userId, WfRunVariable userGroup) {
+        return assignUserTaskHelper(userTaskDefName, userId, null);
+    }
+
+    @Override
+    public UserTaskOutput assignUserTask(String userTaskDefName, WfRunVariable userId, WfRunVariable userGroup) {
+        return assignUserTaskHelper(userTaskDefName, userId, userGroup);
+    }
+
+    @Override
+    public void reassignUserTask(
+            UserTaskOutput userTask, WfRunVariable userId, WfRunVariable userGroup, int deadlineSeconds) {
+        if (userId == null && userGroup == null) {
+            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
+        }
+        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
+    }
+
+    @Override
+    public void reassignUserTask(UserTaskOutput userTask, WfRunVariable userId, String userGroup, int deadlineSeconds) {
+        if (userId == null && userGroup == null) {
+            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
+        }
+        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
+    }
+
+    @Override
+    public void reassignUserTask(UserTaskOutput userTask, String userId, WfRunVariable userGroup, int deadlineSeconds) {
+        if (userId == null && userGroup == null) {
+            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
+        }
+        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
+    }
+
+    @Override
+    public void reassignUserTask(UserTaskOutput userTask, String userId, String userGroup, int deadlineSeconds) {
+        if (userId == null && userGroup == null) {
+            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
+        }
+        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
+    }
+
+    @Override
+    public void reassignUserTask(
+            UserTaskOutput userTask, WfRunVariable userId, WfRunVariable userGroup, WfRunVariable deadlineSeconds) {
+        if (userId == null && userGroup == null) {
+            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
+        }
+        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
+    }
+
+    @Override
+    public void reassignUserTask(
+            UserTaskOutput userTask, WfRunVariable userId, String userGroup, WfRunVariable deadlineSeconds) {
+        if (userId == null && userGroup == null) {
+            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
+        }
+        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
+    }
+
+    @Override
+    public void reassignUserTask(
+            UserTaskOutput userTask, String userId, WfRunVariable userGroup, WfRunVariable deadlineSeconds) {
+        if (userId == null && userGroup == null) {
+            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
+        }
+        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
+    }
+
+    @Override
+    public void reassignUserTask(
+            UserTaskOutput userTask, String userId, String userGroup, WfRunVariable deadlineSeconds) {
+        if (userId == null && userGroup == null) {
+            throw new IllegalArgumentException("Must provide either userId or userGroup to reassign!");
+        }
+        reassignUserTaskHelper(userTask, userId, userGroup, deadlineSeconds);
     }
 
     @Override
@@ -122,21 +202,6 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         reassignToGroupOnDeadline(userGroup, curNode, deadlineSeconds);
     }
 
-    @Override
-    public void reassignToGroupOnDeadline(UserTaskOutput userTaskOutput, String userGroup, int deadlineSeconds) {
-        checkIfIsActive();
-        Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
-        if (!lastNodeName.equals(utImpl.nodeName)) {
-            throw new IllegalStateException("Tried to edit a stale User Task node!");
-        }
-        if (userGroup == null || userGroup.isEmpty()) {
-            throw new IllegalStateException("User group is required; please provide a valid user group.");
-        }
-        VariableAssignment userGroupVariableAssignment = assignVariable(userGroup);
-        reassignToGroupOnDeadline(userGroupVariableAssignment, curNode, deadlineSeconds);
-    }
-
     private void reassignToGroupOnDeadline(
             VariableAssignment userGroup, Node.Builder currentNode, int deadlineSeconds) {
         UTActionTrigger.UTAReassign reassignPb =
@@ -150,22 +215,24 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         spec.putNodes(lastNodeName, currentNode.build());
     }
 
-    @Override
-    public void reassignToUserOnDeadline(
-            UserTaskOutput userTaskOutput, String userId, String userGroup, int deadlineSeconds) {
+    private void reassignUserTaskHelper(
+            UserTaskOutput userTask, Object userId, Object userGroup, Object deadlineSeconds) {
         checkIfIsActive();
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTaskOutput;
+        UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTask;
         if (!lastNodeName.equals(utImpl.nodeName)) {
             throw new IllegalStateException("Tried to edit a stale User Task node!");
         }
-        UTActionTrigger.UTAReassign.Builder reassignPb =
+        UTActionTrigger.UTAReassign.Builder reassignment =
                 UTActionTrigger.UTAReassign.newBuilder().setUserId(assignVariable(userId));
         if (userGroup != null) {
-            reassignPb.setUserGroup(assignVariable(userGroup));
+            reassignment.setUserGroup(assignVariable(userGroup));
+        }
+        if (userId != null) {
+            reassignment.setUserId(assignVariable(userId));
         }
         UTActionTrigger actionTrigger = UTActionTrigger.newBuilder()
-                .setReassign(reassignPb)
+                .setReassign(reassignment)
                 .setHook(UTActionTrigger.UTHook.ON_TASK_ASSIGNED)
                 .setDelaySeconds(assignVariable(deadlineSeconds))
                 .build();
