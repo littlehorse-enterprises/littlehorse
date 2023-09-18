@@ -1,4 +1,3 @@
-from re import L
 import unittest
 from unittest.mock import MagicMock
 from littlehorse.model.common_enums_pb2 import VariableType

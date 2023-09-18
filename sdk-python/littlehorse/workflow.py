@@ -4,6 +4,7 @@ import inspect
 import logging
 from pathlib import Path
 from typing import Any, Callable, Optional, Union
+import typing
 from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
 from grpc import RpcError, StatusCode
@@ -810,7 +811,7 @@ class ThreadBuilder:
     ) -> None:
         self._check_if_active()
         if self._last_node().name != user_task.node_name:
-            raise ValueError("Tried to reassign stale usertask node!")
+            raise ValueError("Tried to reassign stale user task node!")
 
         reassign = UTActionTrigger.UTAReassign(
             user_id=to_variable_assignment(user_id) if user_id is not None else None,
@@ -819,7 +820,7 @@ class ThreadBuilder:
             else None,
         )
 
-        ut_node: UserTaskNode = self._last_node().sub_node
+        ut_node: UserTaskNode = typing.cast(UserTaskNode, self._last_node().sub_node)
         ut_node.actions.append(
             UTActionTrigger(
                 reassign=reassign,
@@ -838,7 +839,7 @@ class ThreadBuilder:
         if cur_node.name != user_task.node_name:
             raise ValueError("Tried to reassign stale User Task!")
 
-        ut_node: UserTaskNode = cur_node.sub_node
+        ut_node: UserTaskNode = typing.cast(UserTaskNode, cur_node.sub_node)
         if ut_node.user_group is None:
             raise ValueError("Cannot release node to group if user_group is None")
         if ut_node.user_id is None:
@@ -915,10 +916,12 @@ class ThreadBuilder:
         last_node.variable_mutations.append(mutation)
 
     def format(self, format: str, *args: Any) -> LHFormatString:
-        """Generates a LHFormatString object that can be understood by the ThreadBuilder.
+        """Generates a LHFormatString object that can be understood
+        by the ThreadBuilder.
 
         Args:
-            format (str): String format with variables with curly brackets {}.
+            format (str): String format with variables with
+            curly brackets {}.
             *args (Any): Arguments.
 
         Returns:
