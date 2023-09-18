@@ -78,10 +78,10 @@ jobs:
         with:
           distribution: "corretto"
           java-version: 17
-      - name: Validate Build
-        run: ./gradlew build -x test
       - name: Validate Indentations
         run: ./gradlew spotlessCheck
+      - name: Validate Build
+        run: ./gradlew build -x test
       - name: Tests
         run: ./gradlew server:test server:e2e server:build
   tests-e2e:
