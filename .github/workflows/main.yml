@@ -57,16 +57,13 @@ jobs:
           poetry install
       - name: Validate Indentations
         working-directory: ./sdk-python
-        run: |
-          poetry run ruff .
+        run: poetry run ruff .
       - name: Validate Types
         working-directory: ./sdk-python
-        run: |
-          poetry run mypy .
+        run: poetry run mypy .
       - name: Tests
         working-directory: ./sdk-python
-        run: |
-          poetry run python -m unittest -v
+        run: poetry run python -m unittest -v
   tests-server:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
     runs-on: ubuntu-latest
