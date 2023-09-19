@@ -5,6 +5,7 @@ from pathlib import Path
 import littlehorse
 from littlehorse.config import LHConfig
 from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.model.common_wfspec_pb2 import IndexType, Comparator
 from littlehorse.worker import LHTaskWorker
 from littlehorse.workflow import ThreadBuilder, Workflow
 
@@ -22,14 +23,42 @@ def get_config() -> LHConfig:
 
 
 def get_workflow() -> Workflow:
-    def thread_1(thread: ThreadBuilder) -> None:
-        input_var = thread.add_variable("INPUT", VariableType.JSON_OBJ)
-        thread.execute(TASK_NAME, input_var.with_json_path("$.user"))
+    def is_user_group(user_group_thread: ThreadBuilder) -> None:
+        pass
+
+    def is_user(user_thread: ThreadBuilder) -> None:
+        pass
+
+    def one_approval(approval_thread: ThreadBuilder) -> None:
+        input_var = approval_thread.add_variable("INPUT", VariableType.JSON_OBJ)
+        (
+            approval_thread.add_variable("did-person-approve", VariableType.BOOL)
+            .with_index(IndexType.LOCAL_INDEX)
+            .persistent()
+        )
+        condition = approval_thread.condition(
+            input_var.with_json_path("$.userId"), Comparator.EQUALS, None
+        )
+        approval_thread.do_if(
+            condition=condition, if_body=is_user_group, else_body=is_user
+        )
 
     def my_entrypoint(thread: ThreadBuilder) -> None:
         # it receives a name
-        input = thread.add_variable("my-input", VariableType.JSON_ARR)
-        spawned_thread_1 = thread.spawn_thread_for_each(input, thread_1, "my-thread-1")
+        approvals_var = thread.add_variable("approvals", VariableType.JSON_ARR)
+        (
+            thread.add_variable("item-url", VariableType.STR)
+            .with_index(IndexType.REMOTE_INDEX)
+            .persistent()
+        )
+        (
+            thread.add_variable("status", VariableType.STR, "PENDING")
+            .with_index(IndexType.LOCAL_INDEX)
+            .persistent()
+        )
+        spawned_thread_1 = thread.spawn_thread_for_each(
+            approvals_var, one_approval, "approval"
+        )
         thread.wait_for_threads(spawned_thread_1)
         thread.execute(TASK_NAME, "var")
 
