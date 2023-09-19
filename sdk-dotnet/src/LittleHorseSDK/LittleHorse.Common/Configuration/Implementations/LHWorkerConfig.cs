@@ -8,7 +8,6 @@ using LittleHorseSDK.Common.proto;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Net;
-using System.Security.Cryptography.X509Certificates;
 using static LittleHorseSDK.Common.proto.LHPublicApi;
 
 
@@ -157,37 +156,23 @@ namespace LittleHorse.Common.Configuration.Implementations
         {
             GrpcChannel channel;
 
-            if (string.IsNullOrEmpty(_options.LHC_CA_CERT))
-            {
+            var httpHandler = new HttpClientHandler();
+            var address = $"https://{host}:{port}";
+
+            #if DEBUG
+                _logger?.LogInformation("Debug Mode");
                 _logger?.LogWarning("Using insecure channel!");
+                address = $"http://{host}:{port}";
+                httpHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            #endif
 
-                var httpHandler = new HttpClientHandler
-                {
-                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-                };
-
-                channel = GrpcChannel.ForAddress($"http://{host}:{port}", new GrpcChannelOptions()
-                {
-                    Credentials = ChannelCredentials.Insecure,
-                    HttpHandler = httpHandler
-                });
-            }
-            else
+            channel = GrpcChannel.ForAddress(address, new GrpcChannelOptions
             {
-                _logger?.LogInformation("Using secure connection!");
-
-                var clientCertificate = new X509Certificate2(_options.LHC_CA_CERT);
-
-                var httphandler = new HttpClientHandler();
-                httphandler.ClientCertificates.Add(clientCertificate);
-
-                channel = GrpcChannel.ForAddress($"https://{host}:{port}", new GrpcChannelOptions
-                {
-                    HttpHandler = httphandler
-                });
-            }
+                HttpHandler = httpHandler
+            });
 
             _createdChannels.Add($"{host}:{port}", channel);
+
             return channel;
         }
 
@@ -210,37 +195,21 @@ namespace LittleHorse.Common.Configuration.Implementations
             });
 
 
-            if (string.IsNullOrEmpty(_options.LHC_CA_CERT))
-            {
+            var httpHandler = new HttpClientHandler();
+            var address = $"https://{host}:{port}";
+
+            #if DEBUG
+                _logger?.LogInformation("Debug Mode");
                 _logger?.LogWarning("Using insecure channel!");
+                address = $"http://{host}:{port}";
+                httpHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            #endif
 
-                var httpHandler = new HttpClientHandler
-                {
-                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-                };
-
-                channel = GrpcChannel.ForAddress($"http://{host}:{port}", new GrpcChannelOptions()
-                {
-                    UnsafeUseInsecureChannelCallCredentials = true,
-                    Credentials = ChannelCredentials.Create(ChannelCredentials.Insecure, credentials),
-                    HttpHandler = httpHandler
-                });
-            }
-            else
+            channel = GrpcChannel.ForAddress(address, new GrpcChannelOptions
             {
-                _logger?.LogInformation("Using secure connection!");
-
-                var clientCertificate = new X509Certificate2(_options.LHC_CA_CERT);
-
-                var httphandler = new HttpClientHandler();
-                httphandler.ClientCertificates.Add(clientCertificate);
-
-                channel = GrpcChannel.ForAddress($"https://{host}:{port}", new GrpcChannelOptions
-                {
-                    HttpHandler = httphandler,
-                    Credentials = ChannelCredentials.Create(ChannelCredentials.SecureSsl, credentials)
-                });
-            }
+                HttpHandler = httpHandler,
+                Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
+            });
 
             _createdChannels.Add($"{host}:{port}", channel);
             return channel;

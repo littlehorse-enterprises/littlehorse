@@ -42,7 +42,7 @@ namespace LittleHorse.Worker.Internal
                 ClientId = _connectionManager.Config.ClientId,
                 TaskDefName = _connectionManager.TaskDef.Name,
                 TaskWorkerVersion = _connectionManager.Config.TaskWorkerVersion
-            };
+            };  
 
             await _call.RequestStream.WriteAsync(request);
 
