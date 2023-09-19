@@ -8,7 +8,10 @@ from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
 from grpc import RpcError, StatusCode
 from littlehorse.config import LHConfig
-from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.model.common_enums_pb2 import (
+    VariableType,
+    WaitForThreadsPolicy,
+)
 from littlehorse.model.common_wfspec_pb2 import (
     Comparator,
     IndexType,
@@ -38,6 +41,7 @@ from littlehorse.model.wf_spec_pb2 import (
     NopNode,
     SleepNode,
     StartThreadNode,
+    StartMultipleThreadsNode,
     ThreadSpec,
     UserTaskNode,
     WaitForThreadsNode,
@@ -58,6 +62,7 @@ NodeType = Union[
     WaitForThreadsNode,
     NopNode,
     UserTaskNode,
+    StartMultipleThreadsNode,
 ]
 
 
@@ -177,6 +182,7 @@ class NodeCase(Enum):
     NOP = "NOP"
     SLEEP = "SLEEP"
     USER_TASK = "USER_TASK"
+    START_MULTIPLE_THREADS = "START_MULTIPLE_THREADS"
 
     @classmethod
     def from_node(cls, node: NodeType) -> "NodeCase":
@@ -198,6 +204,8 @@ class NodeCase(Enum):
             return cls.NOP
         if isinstance(node, UserTaskNode):
             return cls.USER_TASK
+        if isinstance(node, StartMultipleThreadsNode):
+            return cls.START_MULTIPLE_THREADS
 
         raise TypeError("Unrecognized node type")
 
@@ -413,6 +421,13 @@ class WfRunVariable:
         return to_json(self.compile())
 
 
+class WaitForThreadsNodeOutput(NodeOutput):
+    def __init__(self, node_name: str, builder: "ThreadBuilder") -> None:
+        super().__init__(node_name)
+        self.node_name = node_name
+        self.builder = builder
+
+
 class WorkflowNode:
     def __init__(
         self,
@@ -470,6 +485,8 @@ class WorkflowNode:
             return new_node(nop=self.sub_node)
         if self.node_case == NodeCase.USER_TASK:
             return new_node(user_task=self.sub_node)
+        if self.node_case == NodeCase.START_MULTIPLE_THREADS:
+            return new_node(start_multiple_threads=self.sub_node)
 
         raise ValueError("Node type not supported")
 
@@ -497,6 +514,49 @@ class SpawnedThread:
     def __init__(self, name: str, number: WfRunVariable) -> None:
         self.name = name
         self.number = number
+
+
+class SpawnedThreads:
+    def __init__(
+        self,
+        iterable: Optional[WfRunVariable],
+        fixed_threads: Optional[list[SpawnedThread]] = None,
+    ) -> None:
+        self._iterable = iterable
+        self._fixed_threads = fixed_threads
+
+    @classmethod
+    def from_list(cls, *spawned_threads: SpawnedThread) -> "SpawnedThreads":
+        return SpawnedThreads(iterable=None, fixed_threads=list(spawned_threads))
+
+    def build_node(self) -> WaitForThreadsNode:
+        def build_fixed_threads(
+            fixed_threads: Optional[list[SpawnedThread]],
+        ) -> WaitForThreadsNode:
+            threads: list[WaitForThreadsNode.ThreadToWaitFor] = []
+            if fixed_threads is not None:
+                for spawned_thread in fixed_threads:
+                    thread_to_wait_for = WaitForThreadsNode.ThreadToWaitFor(
+                        thread_run_number=to_variable_assignment(spawned_thread.number)
+                    )
+                    threads.append(thread_to_wait_for)
+            return WaitForThreadsNode(
+                threads=threads, policy=WaitForThreadsPolicy.STOP_ON_FAILURE
+            )
+
+        def build_iterator_threads(
+            iterable: Optional[WfRunVariable],
+        ) -> WaitForThreadsNode:
+            return WaitForThreadsNode(
+                thread_list=to_variable_assignment(iterable),
+                policy=WaitForThreadsPolicy.STOP_ON_FAILURE,
+            )
+
+        return (
+            build_iterator_threads(self._iterable)
+            if self._fixed_threads is None
+            else build_fixed_threads(self._fixed_threads)
+        )
 
 
 class UserTaskOutput(NodeOutput):
@@ -600,6 +660,34 @@ class ThreadBuilder:
         self.mutate(thread_number, VariableMutationType.ASSIGN, NodeOutput(node_name))
 
         return SpawnedThread(thread_name, thread_number)
+
+    def spawn_thread_for_each(
+        self,
+        arr_var: WfRunVariable,
+        initializer: "ThreadInitializer",
+        thread_name: str,
+        input: Optional[dict[str, Any]] = None,
+    ) -> SpawnedThreads:
+        self._check_if_active()
+        thread_name = self._workflow.add_sub_thread(thread_name, initializer)
+        input = {} if input is None else input
+        start_multiple_threads_node = StartMultipleThreadsNode(
+            thread_spec_name=thread_name,
+            variables={
+                key: to_variable_assignment(value) for key, value in input.items()
+            },
+            iterable=to_variable_assignment(arr_var),
+        )
+        node_name = self.add_node(thread_name, start_multiple_threads_node)
+        thread_number = self.add_variable(node_name, VariableType.INT)
+        self.mutate(thread_number, VariableMutationType.ASSIGN, NodeOutput(node_name))
+        return SpawnedThreads(arr_var, None)
+
+    def wait_for_threads(self, wait_for: SpawnedThreads) -> NodeOutput:
+        self._check_if_active()
+        node = wait_for.build_node()
+        node_name = self.add_node("threads", node)
+        return WaitForThreadsNodeOutput(node_name, self)
 
     def sleep(self, seconds: Union[int, WfRunVariable]) -> None:
         """Adds a SLEEP node which makes the ThreadRun sleep
