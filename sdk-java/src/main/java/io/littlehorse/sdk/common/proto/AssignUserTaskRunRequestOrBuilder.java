@@ -29,34 +29,36 @@ public interface AssignUserTaskRunRequestOrBuilder extends
   boolean getOverrideClaim();
 
   /**
-   * <code>.littlehorse.User user = 3;</code>
-   * @return Whether the user field is set.
-   */
-  boolean hasUser();
-  /**
-   * <code>.littlehorse.User user = 3;</code>
-   * @return The user.
-   */
-  io.littlehorse.sdk.common.proto.User getUser();
-  /**
-   * <code>.littlehorse.User user = 3;</code>
-   */
-  io.littlehorse.sdk.common.proto.UserOrBuilder getUserOrBuilder();
-
-  /**
-   * <code>.littlehorse.UserGroup user_group = 4;</code>
+   * <code>optional string user_group = 3;</code>
    * @return Whether the userGroup field is set.
    */
   boolean hasUserGroup();
   /**
-   * <code>.littlehorse.UserGroup user_group = 4;</code>
+   * <code>optional string user_group = 3;</code>
    * @return The userGroup.
    */
-  io.littlehorse.sdk.common.proto.UserGroup getUserGroup();
+  java.lang.String getUserGroup();
   /**
-   * <code>.littlehorse.UserGroup user_group = 4;</code>
+   * <code>optional string user_group = 3;</code>
+   * @return The bytes for userGroup.
    */
-  io.littlehorse.sdk.common.proto.UserGroupOrBuilder getUserGroupOrBuilder();
+  com.google.protobuf.ByteString
+      getUserGroupBytes();
 
-  io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest.AssigneeCase getAssigneeCase();
+  /**
+   * <code>optional string user_id = 4;</code>
+   * @return Whether the userId field is set.
+   */
+  boolean hasUserId();
+  /**
+   * <code>optional string user_id = 4;</code>
+   * @return The userId.
+   */
+  java.lang.String getUserId();
+  /**
+   * <code>optional string user_id = 4;</code>
+   * @return The bytes for userId.
+   */
+  com.google.protobuf.ByteString
+      getUserIdBytes();
 }

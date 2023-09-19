@@ -173,10 +173,8 @@ message SearchUserTaskRunRequest {
   optional UserTaskRunStatus status = 3;
   optional string user_task_def_name = 4;
 
-  oneof task_owner {
-    User user = 5;
-    UserGroup user_group = 6;
-  }
+  optional string user_id = 5;
+  optional string user_group = 6;
 
   optional google.protobuf.Timestamp earliest_start = 7;
   optional google.protobuf.Timestamp latest_start = 8;

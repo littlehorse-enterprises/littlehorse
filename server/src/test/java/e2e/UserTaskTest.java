@@ -60,9 +60,9 @@ public class UserTaskTest {
             WfRunVariable formVar = entrypointThread.addVariable("form", VariableType.JSON_OBJ);
 
             UserTaskOutput formOutput =
-                    entrypointThread.assignTaskToUser(USER_TASK_DEF_NAME, "test-group", "test-department");
+                    entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "test-group", "test-department");
 
-            entrypointThread.reassignToGroupOnDeadline(formOutput, 4);
+            entrypointThread.releaseToGroupOnDeadline(formOutput, 4);
 
             entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 
@@ -75,9 +75,9 @@ public class UserTaskTest {
         return new WorkflowImpl("deadline-reassignment-workflow-user-without-group", entrypointThread -> {
             WfRunVariable formVar = entrypointThread.addVariable("form", VariableType.JSON_OBJ);
 
-            UserTaskOutput formOutput = entrypointThread.assignTaskToUser(USER_TASK_DEF_NAME, "test-group");
+            UserTaskOutput formOutput = entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "test-group", null);
 
-            entrypointThread.reassignToGroupOnDeadline(formOutput, "test-it-department", 4);
+            entrypointThread.reassignUserTask(formOutput, null, "test-it-department", 4);
 
             entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 

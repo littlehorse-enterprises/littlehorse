@@ -14,7 +14,7 @@ if [ "$1" == "--quick" ]; then
     # enables usage of the gradle cache. This is much faster than building from
     # scratch in a fresh container, and is suitable for local development.
     echo "Building server image using host machine's gradle cache"
-    gradle server:shadowJar -x test
+    ./gradlew server:shadowJar -x test
 
     docker build --tag littlehorse/lh-server:latest -f- . <<EOF
 FROM amazoncorretto:17

@@ -7,7 +7,7 @@ More information about json-path at https://github.com/json-path/JsonPath.
 Let's run the example in `JsonExample.java`
 
 ```
-gradle example-json:run
+./gradlew example-json:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:

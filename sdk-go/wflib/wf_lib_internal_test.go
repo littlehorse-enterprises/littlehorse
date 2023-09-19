@@ -30,7 +30,7 @@ func TestCanMakePersistentVariable(t *testing.T) {
 
 func TestUserTaskAssignToUser(t *testing.T) {
 	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
-		t.AssignTaskToUser("my-task", "yoda", nil)
+		t.AssignUserTask("my-task", "yoda", nil)
 	}, "my-workflow")
 
 	putWf, err := wf.Compile()
@@ -44,16 +44,15 @@ func TestUserTaskAssignToUser(t *testing.T) {
 	utNode := node.GetUserTask()
 	assert.NotNil(t, utNode)
 
-	assignment := utNode.GetUser()
-	assert.NotNil(t, assignment)
-	assert.Nil(t, assignment.UserGroup)
-	assert.Equal(t, "yoda", *(assignment.UserId.GetLiteralValue().Str))
+	assert.NotNil(t, utNode.UserId)
+	assert.Nil(t, utNode.UserGroup)
+	assert.Equal(t, "yoda", *(utNode.UserId.GetLiteralValue().Str))
 }
 
 func TestUserTaskAssignToUserByVar(t *testing.T) {
 	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
 		userVar := t.AddVariable("user", model.VariableType_STR)
-		t.AssignTaskToUser("my-task", userVar, nil)
+		t.AssignUserTask("my-task", userVar, nil)
 	}, "my-workflow")
 
 	putWf, err := wf.Compile()
@@ -67,15 +66,14 @@ func TestUserTaskAssignToUserByVar(t *testing.T) {
 	utNode := node.GetUserTask()
 	assert.NotNil(t, utNode)
 
-	assignment := utNode.GetUser()
-	assert.NotNil(t, assignment)
-	assert.Nil(t, assignment.UserGroup)
-	assert.Equal(t, "user", assignment.UserId.GetVariableName())
+	assert.NotNil(t, utNode.UserId)
+	assert.Nil(t, utNode.UserGroup)
+	assert.Equal(t, "user", utNode.UserId.GetVariableName())
 }
 
 func TestUserTaskAssignToUserWithGroup(t *testing.T) {
 	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
-		t.AssignTaskToUser("my-task", "yoda", "jedi-council")
+		t.AssignUserTask("my-task", "yoda", "jedi-council")
 	}, "my-workflow")
 
 	putWf, err := wf.Compile()
@@ -89,15 +87,15 @@ func TestUserTaskAssignToUserWithGroup(t *testing.T) {
 	utNode := node.GetUserTask()
 	assert.NotNil(t, utNode)
 
-	assignment := utNode.GetUser()
-	assert.NotNil(t, assignment)
-	assert.Equal(t, "yoda", *(assignment.UserId.GetLiteralValue().Str))
-	assert.Equal(t, "jedi-council", *(assignment.UserGroup.GetLiteralValue().Str))
+	assert.NotNil(t, utNode.UserId)
+	assert.NotNil(t, utNode.UserGroup)
+	assert.Equal(t, "yoda", *(utNode.UserId.GetLiteralValue().Str))
+	assert.Equal(t, "jedi-council", *(utNode.UserGroup.GetLiteralValue().Str))
 }
 
 func TestAssignToGroup(t *testing.T) {
 	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
-		t.AssignTaskToUserGroup("my-task", "jedi-council")
+		t.AssignUserTask("my-task", nil, "jedi-council")
 	}, "my-workflow")
 
 	putWf, err := wf.Compile()
@@ -118,8 +116,8 @@ func TestAssignToGroup(t *testing.T) {
 
 func TestReleaseToGroup(t *testing.T) {
 	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
-		ut := t.AssignTaskToUser("my-task", "yoda", "jedi-council")
-		t.ReassignToGroupOnDeadline(ut, nil, 10)
+		ut := t.AssignUserTask("my-task", "yoda", "jedi-council")
+		t.ReleaseToGroupOnDeadline(ut, 10)
 	}, "my-workflow")
 
 	putWf, err := wf.Compile()
@@ -145,8 +143,8 @@ func TestReleaseToGroup(t *testing.T) {
 func TestReassignToGroup(t *testing.T) {
 	group := "jedi-council"
 	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
-		ut := t.AssignTaskToUser("my-task", "yoda", nil)
-		t.ReassignToGroupOnDeadline(ut, &group, 10)
+		ut := t.AssignUserTask("my-task", "yoda", nil)
+		t.ReassignUserTaskOnDeadline(ut, nil, &group, 10)
 	}, "my-workflow")
 
 	putWf, err := wf.Compile()
@@ -164,6 +162,7 @@ func TestReassignToGroup(t *testing.T) {
 	reassign := action.GetReassign()
 	assert.NotNil(t, reassign)
 	assert.NotNil(t, reassign.GetUserGroup())
+	assert.Nil(t, reassign.GetUserId())
 
 	assert.Equal(t, group, *(reassign.GetUserGroup().GetLiteralValue().Str))
 }

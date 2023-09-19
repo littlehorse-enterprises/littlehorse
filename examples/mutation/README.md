@@ -5,7 +5,7 @@ In this example you will see how to mutate variables.
 Let's run the example in `MutationExample.java`
 
 ```
-gradle example-mutation:run
+./gradlew example-mutation:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:

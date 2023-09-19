@@ -101,10 +101,8 @@ message UTActionTrigger {
   }
 
   message UTAReassign {
-    oneof assign_to {
-      VariableAssignment user_id = 1;
-      VariableAssignment user_group = 2;
-    }
+    optional VariableAssignment user_id = 1;
+    optional VariableAssignment user_group = 2;
   }
 
   oneof action {

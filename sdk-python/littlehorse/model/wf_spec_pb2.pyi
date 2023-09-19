@@ -181,27 +181,20 @@ class Node(_message.Message):
     def __init__(self, outgoing_edges: _Optional[_Iterable[_Union[Edge, _Mapping]]] = ..., variable_mutations: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableMutation, _Mapping]]] = ..., failure_handlers: _Optional[_Iterable[_Union[FailureHandlerDef, _Mapping]]] = ..., entrypoint: _Optional[_Union[EntrypointNode, _Mapping]] = ..., exit: _Optional[_Union[ExitNode, _Mapping]] = ..., task: _Optional[_Union[_common_wfspec_pb2.TaskNode, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventNode, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadNode, _Mapping]] = ..., wait_for_threads: _Optional[_Union[WaitForThreadsNode, _Mapping]] = ..., nop: _Optional[_Union[NopNode, _Mapping]] = ..., sleep: _Optional[_Union[SleepNode, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNode, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsNode, _Mapping]] = ...) -> None: ...
 
 class UserTaskNode(_message.Message):
-    __slots__ = ["user_task_def_name", "user_group", "user", "actions", "user_task_def_version", "notes"]
-    class UserAssignment(_message.Message):
-        __slots__ = ["user_id", "user_group"]
-        USER_ID_FIELD_NUMBER: _ClassVar[int]
-        USER_GROUP_FIELD_NUMBER: _ClassVar[int]
-        user_id: _common_wfspec_pb2.VariableAssignment
-        user_group: _common_wfspec_pb2.VariableAssignment
-        def __init__(self, user_id: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., user_group: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
+    __slots__ = ["user_task_def_name", "user_group", "user_id", "actions", "user_task_def_version", "notes"]
     USER_TASK_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
     USER_GROUP_FIELD_NUMBER: _ClassVar[int]
-    USER_FIELD_NUMBER: _ClassVar[int]
+    USER_ID_FIELD_NUMBER: _ClassVar[int]
     ACTIONS_FIELD_NUMBER: _ClassVar[int]
     USER_TASK_DEF_VERSION_FIELD_NUMBER: _ClassVar[int]
     NOTES_FIELD_NUMBER: _ClassVar[int]
     user_task_def_name: str
     user_group: _common_wfspec_pb2.VariableAssignment
-    user: UserTaskNode.UserAssignment
+    user_id: _common_wfspec_pb2.VariableAssignment
     actions: _containers.RepeatedCompositeFieldContainer[_common_wfspec_pb2.UTActionTrigger]
     user_task_def_version: int
     notes: _common_wfspec_pb2.VariableAssignment
-    def __init__(self, user_task_def_name: _Optional[str] = ..., user_group: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., user: _Optional[_Union[UserTaskNode.UserAssignment, _Mapping]] = ..., actions: _Optional[_Iterable[_Union[_common_wfspec_pb2.UTActionTrigger, _Mapping]]] = ..., user_task_def_version: _Optional[int] = ..., notes: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
+    def __init__(self, user_task_def_name: _Optional[str] = ..., user_group: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., user_id: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., actions: _Optional[_Iterable[_Union[_common_wfspec_pb2.UTActionTrigger, _Mapping]]] = ..., user_task_def_version: _Optional[int] = ..., notes: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class EdgeCondition(_message.Message):
     __slots__ = ["comparator", "left", "right"]

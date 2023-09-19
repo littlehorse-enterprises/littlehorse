@@ -18,6 +18,9 @@ public class UserTaskTriggerReferenceModel extends TaskRunSubSource<UserTaskTrig
     private int userTaskEventNumber;
     private WfSpecIdModel wfSpecId;
 
+    private String userId;
+    private String userGroup;
+
     public UserTaskTriggerReferenceModel() {}
 
     public UserTaskTriggerReferenceModel(UserTaskRunModel utr) {
@@ -25,6 +28,9 @@ public class UserTaskTriggerReferenceModel extends TaskRunSubSource<UserTaskTrig
         // Trust in the Force
         userTaskEventNumber = utr.getEvents().size();
         wfSpecId = utr.getNodeRun().getWfSpecId();
+
+        this.userId = utr.getUserId();
+        this.userGroup = utr.getUserGroup();
     }
 
     public Class<UserTaskTriggerReference> getProtoBaseClass() {

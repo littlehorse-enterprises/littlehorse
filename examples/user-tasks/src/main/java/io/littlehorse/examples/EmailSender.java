@@ -11,13 +11,13 @@ public class EmailSender {
         String content,
         WorkerContext workerContext
     ) {
-        if (workerContext.getUser() != null) {
+        if (workerContext.getUserId() != null) {
             System.out.println(
-                "Received variable by " + workerContext.getUser().getId()
+                "Received variable by " + workerContext.getUserId()
             );
         } else if (workerContext.getUserGroup() != null) {
             System.out.println(
-                "Received variable by " + workerContext.getUserGroup().getId()
+                "Received variable by " + workerContext.getUserGroup()
             );
         }
 

@@ -4,6 +4,7 @@ import inspect
 import logging
 from pathlib import Path
 from typing import Any, Callable, Optional, Union
+import typing
 from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
 from grpc import RpcError, StatusCode
@@ -14,6 +15,7 @@ from littlehorse.model.common_wfspec_pb2 import (
     IndexType,
     JsonIndex,
     TaskNode,
+    UTActionTrigger,
     VariableAssignment,
     VariableDef,
     VariableMutation,
@@ -40,6 +42,7 @@ from littlehorse.model.wf_spec_pb2 import (
     ThreadSpec,
     UserTaskNode,
     WaitForThreadsNode,
+    FailureHandlerDef,
 )
 from littlehorse.utils import negate_comparator, to_variable_type, to_variable_value
 from littlehorse.worker import WorkerContext
@@ -86,6 +89,14 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
             "First save to a WfRunVariable."
         )
 
+    if isinstance(value, LHFormatString):
+        return VariableAssignment(
+            format_string=VariableAssignment.FormatString(
+                format=to_variable_assignment(value._format),
+                args=[to_variable_assignment(arg) for arg in value._args],
+            )
+        )
+
     if isinstance(value, WfRunVariable):
         json_path: Optional[str] = None
         variable_name = value.name
@@ -97,16 +108,6 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
             json_path=json_path,
             variable_name=variable_name,
         )
-
-    if isinstance(value, FormatString):
-        new_var = VariableAssignment(
-            format_string=VariableAssignment.FormatString(
-                format=to_variable_assignment(value.format),
-                args=[to_variable_assignment(arg) for arg in value.args],
-            )
-        )
-
-        return new_var
 
     return VariableAssignment(
         literal_value=to_variable_value(value),
@@ -202,7 +203,19 @@ class NodeCase(Enum):
         raise TypeError("Unrecognized node type")
 
 
-class FormatString:
+class LHErrorType(Enum):
+    CHILD_FAILURE = "CHILD_FAILURE"
+    VAR_SUB_ERROR = "VAR_SUB_ERROR"
+    VAR_MUTATION_ERROR = "VAR_MUTATION_ERROR"
+    USER_TASK_CANCELLED = "USER_TASK_CANCELLED"
+    TIMEOUT = "TIMEOUT"
+    TASK_FAILURE = "TASK_FAILURE"
+    VAR_ERROR = "VAR_ERROR"
+    TASK_ERROR = "TASK_ERROR"
+    INTERNAL_ERROR = "INTERNAL_ERROR"
+
+
+class LHFormatString:
     def __init__(self, format: str, *args: Any) -> None:
         """Generates a FormatString object that can be understood by the ThreadBuilder.
 
@@ -213,8 +226,8 @@ class FormatString:
         Returns:
             FormatString: A FormatString.
         """
-        self.format = format
-        self.args = args
+        self._format = format
+        self._args = args
 
 
 class NodeOutput:
@@ -413,6 +426,7 @@ class WorkflowNode:
         self.node_case = node_case
         self.outgoing_edges: list[Edge] = []
         self.variable_mutations: list[VariableMutation] = []
+        self.failure_handlers: list[FailureHandlerDef] = []
 
     def __str__(self) -> str:
         return to_json(self.compile())
@@ -435,6 +449,7 @@ class WorkflowNode:
             return Node(
                 outgoing_edges=self.outgoing_edges,
                 variable_mutations=self.variable_mutations,
+                failure_handlers=self.failure_handlers,
                 **kwargs,
             )
 
@@ -479,6 +494,42 @@ class WorkflowInterruption:
         return to_json(self.compile())
 
 
+class UserTaskOutput(NodeOutput):
+    def __init__(
+        self,
+        node_name: str,
+        thread: "ThreadBuilder",
+        user_task_def_name: str,
+        user_id: Optional[Union[str, WfRunVariable]] = None,
+        user_group: Optional[Union[str, WfRunVariable]] = None,
+    ) -> None:
+        super().__init__(node_name)
+        self._thread = thread
+        self._node_name = node_name
+        self._user_task_def_name = user_task_def_name
+        self._user_group = user_group
+        self._user_id = user_id
+
+    def with_notes(
+        self, notes: Union[str, WfRunVariable, LHFormatString]
+    ) -> "UserTaskOutput":
+        node = self._thread._last_node()
+        if node.name != self._node_name:
+            raise ValueError("tried to mutate stale UserTaskOutput!")
+
+        ug = to_variable_assignment(self._user_group) if self._user_group else None
+        ui = to_variable_assignment(self._user_id) if self._user_id else None
+        ut_node = UserTaskNode(
+            user_task_def_name=self._user_task_def_name,
+            user_group=ug,
+            user_id=ui,
+            notes=to_variable_assignment(notes),
+        )
+
+        node.sub_node = ut_node
+        return self
+
+
 class ThreadBuilder:
     def __init__(self, workflow: "Workflow", initializer: "ThreadInitializer") -> None:
         """This is used to define the logic of a ThreadSpec in a ThreadInitializer.
@@ -495,6 +546,7 @@ class ThreadBuilder:
             raise ValueError("Workflow must be not None")
 
         self._workflow = workflow
+        self._workflow._builders.append(self)
 
         self._validate_initializer(initializer)
 
@@ -634,6 +686,171 @@ class ThreadBuilder:
         node_name = self.add_node(task_name, task_node)
         return NodeOutput(node_name)
 
+    def handle_any_failure(
+        self, node: NodeOutput, initializer: "ThreadInitializer"
+    ) -> None:
+        """Attaches an Failure Handler to the specified NodeOutput,
+        allowing it to manage any types of errors or exceptions.
+
+        Args:
+            node (NodeOutput): The NodeOutput instance to which
+            the Failure Handler will be attached.
+            initializer (ThreadInitializer): It specifies how to
+            handle failures.
+        """
+        self._check_if_active()
+        thread_name = f"exn-handler-{node.node_name}-any-failure"
+        self._workflow.add_sub_thread(thread_name, initializer)
+        failure_handler = FailureHandlerDef(handler_spec_name=thread_name)
+        last_node = self._find_node(node.node_name)
+        last_node.failure_handlers.append(failure_handler)
+
+    def handle_exception(
+        self,
+        node: NodeOutput,
+        initializer: "ThreadInitializer",
+        exception_name: Optional[str] = None,
+    ) -> None:
+        """Attaches an Exception Handler to the specified
+        NodeOutput, enabling it to handle specific
+        types of exceptions as defined by the 'exception_name'
+        parameter. If 'exception_name' is None,
+        the handler will catch all exceptions.
+
+        Args:
+            node (NodeOutput): The NodeOutput instance to which
+            the Exception Handler will be attached.
+            initializer (ThreadInitializer): It specifies how to
+            handle the exception.
+            exception_name (Optional[str], optional): The name of the
+            specific exception to handle. If set to null, the handler
+            will catch all exceptions. Defaults to None.
+        """
+        self._check_if_active()
+        thread_name = f"exn-handler-{node.node_name}" + (
+            f"-{exception_name}" if exception_name is not None else ""
+        )
+        self._workflow.add_sub_thread(thread_name, initializer)
+
+        failure_handler = FailureHandlerDef(
+            handler_spec_name=thread_name,
+            any_failure_of_type=FailureHandlerDef.LHFailureType.FAILURE_TYPE_EXCEPTION
+            if exception_name is None
+            else None,
+            specific_failure=exception_name,
+        )
+        last_node = self._find_node(node.node_name)
+        last_node.failure_handlers.append(failure_handler)
+
+    def handle_error(
+        self,
+        node: NodeOutput,
+        initializer: "ThreadInitializer",
+        error_type: Optional[LHErrorType] = None,
+    ) -> None:
+        """Adds Error Handler to the specified NodeOutput,
+        allowing it to manage specific types of errors. If
+        error_type is None, the handler will catch all errors.
+
+        Args:
+            node (NodeOutput): The NodeOutput instance to which the
+            Error Handler will be attached.
+            initializer (ThreadInitializer): specifies how to handle the error.
+            error_type (Optional[LHErrorType]): The type of error
+            that the handler will manage.
+        """
+        self._check_if_active()
+        any_error = FailureHandlerDef.LHFailureType.Name(
+            FailureHandlerDef.FAILURE_TYPE_ERROR
+        )
+        failure_name = error_type.name if error_type is not None else any_error
+        thread_name = f"exn-handler-{node.node_name}-{failure_name}"
+        self._workflow.add_sub_thread(thread_name, initializer)
+        failure_handler = FailureHandlerDef(
+            handler_spec_name=thread_name,
+            any_failure_of_type=failure_name if not error_type else None,
+            specific_failure=failure_name if error_type else None,
+        )
+        last_node = self._find_node(node.node_name)
+        last_node.failure_handlers.append(failure_handler)
+
+    def assign_user_task(
+        self,
+        user_task_def_name: str,
+        user_id: Optional[Union[str, WfRunVariable]] = None,
+        user_group: Optional[Union[str, WfRunVariable]] = None,
+    ) -> UserTaskOutput:
+        self._check_if_active()
+        if user_group is None and user_id is None:
+            raise ValueError(
+                "Must provide either user_id or user_group to assign_user_task()"
+            )
+
+        ug = to_variable_assignment(user_group) if user_group else None
+        ui = to_variable_assignment(user_id) if user_id else None
+        ut_node = UserTaskNode(
+            user_task_def_name=user_task_def_name,
+            user_group=ug,
+            user_id=ui,
+        )
+
+        return UserTaskOutput(
+            self.add_node(user_task_def_name, ut_node),
+            self,
+            user_task_def_name,
+            user_id=user_id,
+            user_group=user_group,
+        )
+
+    def reassign_user_task_on_deadline(
+        self,
+        user_task: UserTaskOutput,
+        deadline_seconds: Union[int, WfRunVariable],
+        user_group: Optional[Union[str, WfRunVariable]] = None,
+        user_id: Optional[Union[str, WfRunVariable]] = None,
+    ) -> None:
+        self._check_if_active()
+        if self._last_node().name != user_task.node_name:
+            raise ValueError("Tried to reassign stale user task node!")
+
+        reassign = UTActionTrigger.UTAReassign(
+            user_id=to_variable_assignment(user_id) if user_id is not None else None,
+            user_group=to_variable_assignment(user_group)
+            if user_group is not None
+            else None,
+        )
+
+        ut_node: UserTaskNode = typing.cast(UserTaskNode, self._last_node().sub_node)
+        ut_node.actions.append(
+            UTActionTrigger(
+                reassign=reassign,
+                delay_seconds=to_variable_assignment(deadline_seconds),
+            )
+        )
+
+    def release_to_group_on_deadline(
+        self,
+        user_task: UserTaskOutput,
+        deadline_seconds: int,
+    ) -> None:
+        self._check_if_active()
+        cur_node = self._last_node()
+
+        if cur_node.name != user_task.node_name:
+            raise ValueError("Tried to reassign stale User Task!")
+
+        ut_node: UserTaskNode = typing.cast(UserTaskNode, cur_node.sub_node)
+        if ut_node.user_group is None:
+            raise ValueError("Cannot release node to group if user_group is None")
+        if ut_node.user_id is None:
+            raise ValueError("Cannot release node to group if user_id is none")
+
+        trigger: UTActionTrigger = UTActionTrigger(
+            reassign=UTActionTrigger.UTAReassign(user_group=ut_node.user_group),
+            delay_seconds=to_variable_assignment(deadline_seconds),
+        )
+        ut_node.actions.append(trigger)
+
     def wait_for_event(self, event_name: str, timeout: int = -1) -> NodeOutput:
         """Adds an EXTERNAL_EVENT node which blocks until an
         'ExternalEvent' of the specified type arrives.
@@ -698,17 +915,19 @@ class ThreadBuilder:
 
         last_node.variable_mutations.append(mutation)
 
-    def format(self, format: str, *args: Any) -> FormatString:
-        """Generates a FormatString object that can be understood by the ThreadBuilder.
+    def format(self, format: str, *args: Any) -> LHFormatString:
+        """Generates a LHFormatString object that can be understood
+        by the ThreadBuilder.
 
         Args:
-            format (str): String format with variables with curly brackets {}.
+            format (str): String format with variables with
+            curly brackets {}.
             *args (Any): Arguments.
 
         Returns:
-            FormatString: A FormatString.
+            LHFormatString: A LHFormatString.
         """
-        return FormatString(format, *args)
+        return LHFormatString(format, *args)
 
     def add_variable(
         self, variable_name: str, variable_type: VariableType, default_value: Any = None
@@ -741,10 +960,18 @@ class ThreadBuilder:
         Returns:
             WfRunVariable: Variable found.
         """
-        # TODO look in all threads
-        for var in self._wf_run_variables:
-            if var.name == variable_name:
-                return var
+
+        # let's validate the special INPUT variable
+        if variable_name == "INPUT":
+            for var in self._wf_run_variables:
+                if var.name == variable_name:
+                    return var
+            raise ValueError(f"Variable {variable_name} unaccessible")
+
+        for builder in self._workflow._builders:
+            for var in builder._wf_run_variables:
+                if var.name == variable_name:
+                    return var
 
         raise ValueError(f"Variable {variable_name} not found")
 
@@ -932,6 +1159,7 @@ class Workflow:
         self.retention_hours = retention_hours
         self._entrypoint = entrypoint
         self._thread_initializers: list[tuple[str, ThreadInitializer]] = []
+        self._builders: list[ThreadBuilder] = []
 
     def add_sub_thread(self, name: str, initializer: ThreadInitializer) -> str:
         """Add a subthread.
@@ -980,6 +1208,7 @@ class Workflow:
             thread_specs[name] = builder.compile()
 
         self._thread_initializers = []
+        self._builders = []
 
         return PutWfSpecRequest(
             name=self.name,

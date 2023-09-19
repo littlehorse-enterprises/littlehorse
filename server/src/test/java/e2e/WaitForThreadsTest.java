@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -201,7 +202,7 @@ public class WaitForThreadsTest {
             SpawnedThread p3Thread =
                     thread.spawnThread(buildChildThread.apply(person3Approved, "person-3"), "person-3", null);
 
-            NodeOutput nodeOutput = thread.waitForThreads(p1Thread, p2Thread, p3Thread)
+            NodeOutput nodeOutput = thread.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread))
                     .withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
 
             thread.handleException(nodeOutput, "denied-by-user", xnHandler -> {
@@ -255,7 +256,8 @@ public class WaitForThreadsTest {
             SpawnedThread p3Thread =
                     thread.spawnThread(buildChildThread.apply(person3Approved, "person-3"), "person-3", null);
 
-            thread.waitForThreads(p1Thread, p2Thread, p3Thread).withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
+            thread.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread))
+                    .withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
 
             // Tell the reminder workflow to stop
             thread.mutate(allApproved, VariableMutationType.ASSIGN, true);
@@ -278,7 +280,7 @@ public class WaitForThreadsTest {
             SpawnedThread child2 = thread.spawnThread(
                     buildSpawnThread.apply("input2", "thread-2-event"), "child-2", Map.of("input2", Map.of()));
 
-            thread.waitForThreads(child1, child2).withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
+            thread.waitForThreads(SpawnedThreads.of(child1, child2)).withPolicy(WaitForThreadsPolicy.STOP_ON_FAILURE);
         });
     }
 

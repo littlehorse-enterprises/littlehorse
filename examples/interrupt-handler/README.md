@@ -12,7 +12,7 @@ In order for the Interrupt to happen, the parent thread needs to be sleeping.
 Let's run the example in `InterruptHandlerExample.java`
 
 ```
-gradle example-interrupt-handler:run
+./gradlew example-interrupt-handler:run
 ```
 
 In another terminal, use `lhctl` to run the workflow:

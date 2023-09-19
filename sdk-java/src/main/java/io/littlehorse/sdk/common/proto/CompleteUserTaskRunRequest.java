@@ -31,6 +31,18 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_CompleteUserTaskRunRequest_descriptor;
   }
 
+  @SuppressWarnings({"rawtypes"})
+  @java.lang.Override
+  protected com.google.protobuf.MapField internalGetMapField(
+      int number) {
+    switch (number) {
+      case 2:
+        return internalGetResults();
+      default:
+        throw new RuntimeException(
+            "Invalid map field number: " + number);
+    }
+  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -65,30 +77,83 @@ private static final long serialVersionUID = 0L;
     return userTaskRunId_ == null ? io.littlehorse.sdk.common.proto.UserTaskRunId.getDefaultInstance() : userTaskRunId_;
   }
 
-  public static final int RESULT_FIELD_NUMBER = 2;
-  private io.littlehorse.sdk.common.proto.UserTaskResult result_;
-  /**
-   * <code>.littlehorse.UserTaskResult result = 2;</code>
-   * @return Whether the result field is set.
-   */
-  @java.lang.Override
-  public boolean hasResult() {
-    return result_ != null;
+  public static final int RESULTS_FIELD_NUMBER = 2;
+  private static final class ResultsDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>newDefaultInstance(
+                io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_CompleteUserTaskRunRequest_ResultsEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance());
+  }
+  @SuppressWarnings("serial")
+  private com.google.protobuf.MapField<
+      java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> results_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+  internalGetResults() {
+    if (results_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          ResultsDefaultEntryHolder.defaultEntry);
+    }
+    return results_;
+  }
+  public int getResultsCount() {
+    return internalGetResults().getMap().size();
   }
   /**
-   * <code>.littlehorse.UserTaskResult result = 2;</code>
-   * @return The result.
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskResult getResult() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.UserTaskResult.getDefaultInstance() : result_;
+  public boolean containsResults(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    return internalGetResults().getMap().containsKey(key);
   }
   /**
-   * <code>.littlehorse.UserTaskResult result = 2;</code>
+   * Use {@link #getResultsMap()} instead.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskResultOrBuilder getResultOrBuilder() {
-    return result_ == null ? io.littlehorse.sdk.common.proto.UserTaskResult.getDefaultInstance() : result_;
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getResults() {
+    return getResultsMap();
+  }
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   */
+  @java.lang.Override
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getResultsMap() {
+    return internalGetResults().getMap();
+  }
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   */
+  @java.lang.Override
+  public /* nullable */
+io.littlehorse.sdk.common.proto.VariableValue getResultsOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> map =
+        internalGetResults().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> map =
+        internalGetResults().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
   }
 
   public static final int USER_ID_FIELD_NUMBER = 3;
@@ -147,9 +212,12 @@ private static final long serialVersionUID = 0L;
     if (userTaskRunId_ != null) {
       output.writeMessage(1, getUserTaskRunId());
     }
-    if (result_ != null) {
-      output.writeMessage(2, getResult());
-    }
+    com.google.protobuf.GeneratedMessageV3
+      .serializeStringMapTo(
+        output,
+        internalGetResults(),
+        ResultsDefaultEntryHolder.defaultEntry,
+        2);
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, userId_);
     }
@@ -166,9 +234,15 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getUserTaskRunId());
     }
-    if (result_ != null) {
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> entry
+         : internalGetResults().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+      results__ = ResultsDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getResult());
+          .computeMessageSize(2, results__);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, userId_);
@@ -193,11 +267,8 @@ private static final long serialVersionUID = 0L;
       if (!getUserTaskRunId()
           .equals(other.getUserTaskRunId())) return false;
     }
-    if (hasResult() != other.hasResult()) return false;
-    if (hasResult()) {
-      if (!getResult()
-          .equals(other.getResult())) return false;
-    }
+    if (!internalGetResults().equals(
+        other.internalGetResults())) return false;
     if (!getUserId()
         .equals(other.getUserId())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -215,9 +286,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + USER_TASK_RUN_ID_FIELD_NUMBER;
       hash = (53 * hash) + getUserTaskRunId().hashCode();
     }
-    if (hasResult()) {
-      hash = (37 * hash) + RESULT_FIELD_NUMBER;
-      hash = (53 * hash) + getResult().hashCode();
+    if (!internalGetResults().getMap().isEmpty()) {
+      hash = (37 * hash) + RESULTS_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetResults().hashCode();
     }
     hash = (37 * hash) + USER_ID_FIELD_NUMBER;
     hash = (53 * hash) + getUserId().hashCode();
@@ -330,6 +401,28 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_CompleteUserTaskRunRequest_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetResults();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetMutableResults();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -357,11 +450,7 @@ private static final long serialVersionUID = 0L;
         userTaskRunIdBuilder_.dispose();
         userTaskRunIdBuilder_ = null;
       }
-      result_ = null;
-      if (resultBuilder_ != null) {
-        resultBuilder_.dispose();
-        resultBuilder_ = null;
-      }
+      internalGetMutableResults().clear();
       userId_ = "";
       return this;
     }
@@ -402,9 +491,8 @@ private static final long serialVersionUID = 0L;
             : userTaskRunIdBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.result_ = resultBuilder_ == null
-            ? result_
-            : resultBuilder_.build();
+        result.results_ = internalGetResults();
+        result.results_.makeImmutable();
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.userId_ = userId_;
@@ -458,9 +546,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasUserTaskRunId()) {
         mergeUserTaskRunId(other.getUserTaskRunId());
       }
-      if (other.hasResult()) {
-        mergeResult(other.getResult());
-      }
+      internalGetMutableResults().mergeFrom(
+          other.internalGetResults());
+      bitField0_ |= 0x00000002;
       if (!other.getUserId().isEmpty()) {
         userId_ = other.userId_;
         bitField0_ |= 0x00000004;
@@ -500,9 +588,11 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 18: {
-              input.readMessage(
-                  getResultFieldBuilder().getBuilder(),
-                  extensionRegistry);
+              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+              results__ = input.readMessage(
+                  ResultsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              internalGetMutableResults().getMutableMap().put(
+                  results__.getKey(), results__.getValue());
               bitField0_ |= 0x00000002;
               break;
             } // case 18
@@ -647,123 +737,131 @@ private static final long serialVersionUID = 0L;
       return userTaskRunIdBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.UserTaskResult result_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskResult, io.littlehorse.sdk.common.proto.UserTaskResult.Builder, io.littlehorse.sdk.common.proto.UserTaskResultOrBuilder> resultBuilder_;
-    /**
-     * <code>.littlehorse.UserTaskResult result = 2;</code>
-     * @return Whether the result field is set.
-     */
-    public boolean hasResult() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>.littlehorse.UserTaskResult result = 2;</code>
-     * @return The result.
-     */
-    public io.littlehorse.sdk.common.proto.UserTaskResult getResult() {
-      if (resultBuilder_ == null) {
-        return result_ == null ? io.littlehorse.sdk.common.proto.UserTaskResult.getDefaultInstance() : result_;
-      } else {
-        return resultBuilder_.getMessage();
+    private com.google.protobuf.MapField<
+        java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> results_;
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+        internalGetResults() {
+      if (results_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            ResultsDefaultEntryHolder.defaultEntry);
       }
+      return results_;
     }
-    /**
-     * <code>.littlehorse.UserTaskResult result = 2;</code>
-     */
-    public Builder setResult(io.littlehorse.sdk.common.proto.UserTaskResult value) {
-      if (resultBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        result_ = value;
-      } else {
-        resultBuilder_.setMessage(value);
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+        internalGetMutableResults() {
+      if (results_ == null) {
+        results_ = com.google.protobuf.MapField.newMapField(
+            ResultsDefaultEntryHolder.defaultEntry);
+      }
+      if (!results_.isMutable()) {
+        results_ = results_.copy();
       }
       bitField0_ |= 0x00000002;
       onChanged();
-      return this;
+      return results_;
+    }
+    public int getResultsCount() {
+      return internalGetResults().getMap().size();
     }
     /**
-     * <code>.littlehorse.UserTaskResult result = 2;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
      */
-    public Builder setResult(
-        io.littlehorse.sdk.common.proto.UserTaskResult.Builder builderForValue) {
-      if (resultBuilder_ == null) {
-        result_ = builderForValue.build();
-      } else {
-        resultBuilder_.setMessage(builderForValue.build());
+    @java.lang.Override
+    public boolean containsResults(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetResults().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getResultsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getResults() {
+      return getResultsMap();
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getResultsMap() {
+      return internalGetResults().getMap();
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+     */
+    @java.lang.Override
+    public /* nullable */
+io.littlehorse.sdk.common.proto.VariableValue getResultsOrDefault(
+        java.lang.String key,
+        /* nullable */
+io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> map =
+          internalGetResults().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> map =
+          internalGetResults().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
       }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
+      return map.get(key);
     }
-    /**
-     * <code>.littlehorse.UserTaskResult result = 2;</code>
-     */
-    public Builder mergeResult(io.littlehorse.sdk.common.proto.UserTaskResult value) {
-      if (resultBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
-          result_ != null &&
-          result_ != io.littlehorse.sdk.common.proto.UserTaskResult.getDefaultInstance()) {
-          getResultBuilder().mergeFrom(value);
-        } else {
-          result_ = value;
-        }
-      } else {
-        resultBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.UserTaskResult result = 2;</code>
-     */
-    public Builder clearResult() {
+    public Builder clearResults() {
       bitField0_ = (bitField0_ & ~0x00000002);
-      result_ = null;
-      if (resultBuilder_ != null) {
-        resultBuilder_.dispose();
-        resultBuilder_ = null;
-      }
-      onChanged();
+      internalGetMutableResults().getMutableMap()
+          .clear();
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskResult result = 2;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskResult.Builder getResultBuilder() {
+    public Builder removeResults(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      internalGetMutableResults().getMutableMap()
+          .remove(key);
+      return this;
+    }
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+        getMutableResults() {
       bitField0_ |= 0x00000002;
-      onChanged();
-      return getResultFieldBuilder().getBuilder();
+      return internalGetMutableResults().getMutableMap();
     }
     /**
-     * <code>.littlehorse.UserTaskResult result = 2;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskResultOrBuilder getResultOrBuilder() {
-      if (resultBuilder_ != null) {
-        return resultBuilder_.getMessageOrBuilder();
-      } else {
-        return result_ == null ?
-            io.littlehorse.sdk.common.proto.UserTaskResult.getDefaultInstance() : result_;
-      }
+    public Builder putResults(
+        java.lang.String key,
+        io.littlehorse.sdk.common.proto.VariableValue value) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      if (value == null) { throw new NullPointerException("map value"); }
+      internalGetMutableResults().getMutableMap()
+          .put(key, value);
+      bitField0_ |= 0x00000002;
+      return this;
     }
     /**
-     * <code>.littlehorse.UserTaskResult result = 2;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskResult, io.littlehorse.sdk.common.proto.UserTaskResult.Builder, io.littlehorse.sdk.common.proto.UserTaskResultOrBuilder> 
-        getResultFieldBuilder() {
-      if (resultBuilder_ == null) {
-        resultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UserTaskResult, io.littlehorse.sdk.common.proto.UserTaskResult.Builder, io.littlehorse.sdk.common.proto.UserTaskResultOrBuilder>(
-                getResult(),
-                getParentForChildren(),
-                isClean());
-        result_ = null;
-      }
-      return resultBuilder_;
+    public Builder putAllResults(
+        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> values) {
+      internalGetMutableResults().getMutableMap()
+          .putAll(values);
+      bitField0_ |= 0x00000002;
+      return this;
     }
 
     private java.lang.Object userId_ = "";

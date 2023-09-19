@@ -16,7 +16,7 @@ LHS_SHOULD_CREATE_TOPICS=true
 Then:
 
 ```
-gradle run --args="server.config"
+./gradlew run --args="server.config"
 ```
 
 ### Using Scripts

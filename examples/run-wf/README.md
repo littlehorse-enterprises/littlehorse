@@ -15,7 +15,7 @@ public String runWf(
 Let's run the example in `RunWfExample.java`
 
 ```
-gradle example-run-wf:run
+./gradlew example-run-wf:run
 ```
 
 Check the results with:

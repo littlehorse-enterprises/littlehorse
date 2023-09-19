@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -83,7 +84,7 @@ public class ParallelApprovalExample {
                     null
                 );
 
-                NodeOutput nodeOutput = thread.waitForThreads(p1Thread, p2Thread, p3Thread);
+                NodeOutput nodeOutput = thread.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread));
 
                 thread.handleException(nodeOutput, "denied-by-user", xnHandler -> {
                     // HANDLE FAILED APPROVALS HERE.

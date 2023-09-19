@@ -264,12 +264,12 @@ class NodeRunIdList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.NodeRunId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchUserTaskRunRequest(_message.Message):
-    __slots__ = ["bookmark", "limit", "status", "user_task_def_name", "user", "user_group", "earliest_start", "latest_start"]
+    __slots__ = ["bookmark", "limit", "status", "user_task_def_name", "user_id", "user_group", "earliest_start", "latest_start"]
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
     USER_TASK_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
-    USER_FIELD_NUMBER: _ClassVar[int]
+    USER_ID_FIELD_NUMBER: _ClassVar[int]
     USER_GROUP_FIELD_NUMBER: _ClassVar[int]
     EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
     LATEST_START_FIELD_NUMBER: _ClassVar[int]
@@ -277,11 +277,11 @@ class SearchUserTaskRunRequest(_message.Message):
     limit: int
     status: _user_tasks_pb2.UserTaskRunStatus
     user_task_def_name: str
-    user: _user_tasks_pb2.User
-    user_group: _user_tasks_pb2.UserGroup
+    user_id: str
+    user_group: str
     earliest_start: _timestamp_pb2.Timestamp
     latest_start: _timestamp_pb2.Timestamp
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., status: _Optional[_Union[_user_tasks_pb2.UserTaskRunStatus, str]] = ..., user_task_def_name: _Optional[str] = ..., user: _Optional[_Union[_user_tasks_pb2.User, _Mapping]] = ..., user_group: _Optional[_Union[_user_tasks_pb2.UserGroup, _Mapping]] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., status: _Optional[_Union[_user_tasks_pb2.UserTaskRunStatus, str]] = ..., user_task_def_name: _Optional[str] = ..., user_id: _Optional[str] = ..., user_group: _Optional[str] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class UserTaskRunIdList(_message.Message):
     __slots__ = ["results", "bookmark"]
