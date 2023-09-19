@@ -680,9 +680,9 @@ class ThreadBuilder:
             iterable=to_variable_assignment(arr_var),
         )
         node_name = self.add_node(thread_name, start_multiple_threads_node)
-        thread_number = self.add_variable(node_name, VariableType.INT)
+        thread_number = self.add_variable(node_name, VariableType.JSON_ARR)
         self.mutate(thread_number, VariableMutationType.ASSIGN, NodeOutput(node_name))
-        return SpawnedThreads(arr_var, None)
+        return SpawnedThreads(thread_number, None)
 
     def wait_for_threads(self, wait_for: SpawnedThreads) -> NodeOutput:
         self._check_if_active()

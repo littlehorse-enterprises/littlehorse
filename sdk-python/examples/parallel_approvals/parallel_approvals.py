@@ -85,7 +85,7 @@ def get_workflow() -> Workflow:
         thread.wait_for_threads(spawned_thread_1)
         thread.execute(TASK_NAME, "var")
 
-    return Workflow("example-wait-for-threads-v9", my_entrypoint)
+    return Workflow("parallel-approvals", my_entrypoint)
 
 
 async def task(arg1: str) -> None:
