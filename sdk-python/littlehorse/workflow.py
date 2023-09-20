@@ -942,6 +942,24 @@ class ThreadBuilder:
         user_id: Optional[Union[str, WfRunVariable]] = None,
         user_group: Optional[Union[str, WfRunVariable]] = None,
     ) -> UserTaskOutput:
+        """Adds a User Task Node, and assigns it to a specific user
+
+        Args:
+            user_task_def_name (str): is the UserTaskDef to assign.
+            user_id (Optional[Union[str, WfRunVariable]], optional): is the
+            user id to assign it to. Can be either String or WfRunVariable.
+            Can be None if userGroup not None. Defaults to None.
+            user_group (Optional[Union[str, WfRunVariable]], optional):
+            user group to assign it to. Can be either String or WfRunvariable.
+            Can be null if userId not null.
+            Defaults to None.
+
+        Raises:
+            ValueError: _description_
+
+        Returns:
+            UserTaskOutput: _description_
+        """
         self._check_if_active()
         if user_group is None and user_id is None:
             raise ValueError(
@@ -972,6 +990,15 @@ class ThreadBuilder:
         user_id: Optional[Union[str, WfRunVariable]] = None,
     ) -> None:
         self._check_if_active()
+        """Schedules the reassignment of a User Task to a
+        specified userId and/or userGroup after a specified expiration.
+
+        Args:
+            user_task (UserTaskOutput): is the userTask to reschedule.
+            deadline_seconds (Union[int, WfRunVariable]): is the expiration
+            time after which the UserTask should be reassigned.
+            Can be either WfRunVariable or int.
+        """
         if self._last_node().name != user_task.node_name:
             raise ValueError("Tried to reassign stale user task node!")
 
@@ -995,6 +1022,19 @@ class ThreadBuilder:
         user_task: UserTaskOutput,
         deadline_seconds: int,
     ) -> None:
+        """Schedule Reassignment of a UserTask to a userGroup
+        upon reaching the Deadline. This method is used to schedule
+        the reassignment of a UserTask to a userGroup
+        when the specified UserTask user assignment
+        reaches its deadline in seconds.
+
+        Args:
+            user_task (UserTaskOutput): UserTask that is currently
+            assigned to a UserGroup.
+            deadline_seconds (int): Time in seconds after which
+            the UserTask will be automatically reassigned to the UserGroup.
+            Can be either String or WfRunVariable.
+        """
         self._check_if_active()
         cur_node = self._last_node()
 
