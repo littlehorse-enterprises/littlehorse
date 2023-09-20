@@ -5,6 +5,10 @@ package io.littlehorse.sdk.common.exception;
  */
 public class LHException extends Exception {
 
+    public LHException(String message) {
+        super(message);
+    }
+
     public LHException(String message, Throwable cause) {
         super(message, cause);
     }
