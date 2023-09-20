@@ -83,4 +83,21 @@ public interface ReportTaskRunOrBuilder extends
    * @return The attemptNumber.
    */
   int getAttemptNumber();
+
+  /**
+   * <code>optional string exception_name = 7;</code>
+   * @return Whether the exceptionName field is set.
+   */
+  boolean hasExceptionName();
+  /**
+   * <code>optional string exception_name = 7;</code>
+   * @return The exceptionName.
+   */
+  java.lang.String getExceptionName();
+  /**
+   * <code>optional string exception_name = 7;</code>
+   * @return The bytes for exceptionName.
+   */
+  com.google.protobuf.ByteString
+      getExceptionNameBytes();
 }

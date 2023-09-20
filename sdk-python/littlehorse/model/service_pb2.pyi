@@ -557,20 +557,22 @@ class PollTaskResponse(_message.Message):
     def __init__(self, result: _Optional[_Union[ScheduledTask, _Mapping]] = ...) -> None: ...
 
 class ReportTaskRun(_message.Message):
-    __slots__ = ["task_run_id", "time", "status", "output", "log_output", "attempt_number"]
+    __slots__ = ["task_run_id", "time", "status", "output", "log_output", "attempt_number", "exception_name"]
     TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     TIME_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
     OUTPUT_FIELD_NUMBER: _ClassVar[int]
     LOG_OUTPUT_FIELD_NUMBER: _ClassVar[int]
     ATTEMPT_NUMBER_FIELD_NUMBER: _ClassVar[int]
+    EXCEPTION_NAME_FIELD_NUMBER: _ClassVar[int]
     task_run_id: _object_id_pb2.TaskRunId
     time: _timestamp_pb2.Timestamp
     status: _common_enums_pb2.TaskStatus
     output: _variable_pb2.VariableValue
     log_output: _variable_pb2.VariableValue
     attempt_number: int
-    def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., log_output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., attempt_number: _Optional[int] = ...) -> None: ...
+    exception_name: str
+    def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., log_output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., attempt_number: _Optional[int] = ..., exception_name: _Optional[str] = ...) -> None: ...
 
 class StopWfRunRequest(_message.Message):
     __slots__ = ["wf_run_id", "thread_run_number"]

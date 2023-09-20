@@ -360,6 +360,7 @@ message ReportTaskRun {
   optional VariableValue output = 4;
   optional VariableValue log_output = 5;
   int32 attempt_number = 6;
+  optional string exception_name = 7;
 }
 
 message StopWfRunRequest {
