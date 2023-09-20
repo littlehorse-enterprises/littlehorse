@@ -4,6 +4,7 @@ import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionError;
+import io.littlehorse.sdk.common.exception.LHException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
@@ -245,7 +246,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
             log.error("Failed serializing Task Output", exn);
             taskResult.setLogOutput(exnToVarVal(exn, wc));
             taskResult.setStatus(TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR);
-        } catch (InvocationTargetException exn) {
+        } catch (InvocationTargetException | LHException exn) {
             log.error("Task Method threw an exception", exn.getCause());
             taskResult.setLogOutput(exnToVarVal(exn.getCause(), wc));
             taskResult.setStatus(TaskStatus.TASK_FAILED);
