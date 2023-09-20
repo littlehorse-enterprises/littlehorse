@@ -14,8 +14,6 @@ from littlehorse.workflow import ThreadBuilder, Workflow
 
 logging.basicConfig(level=logging.INFO)
 
-TASK_NAME = "task-with-vars"
-
 
 def get_config() -> LHConfig:
     config = LHConfig()
