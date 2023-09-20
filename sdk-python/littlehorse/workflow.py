@@ -669,6 +669,24 @@ class ThreadBuilder:
         thread_name: str,
         input: Optional[dict[str, Any]] = None,
     ) -> SpawnedThreads:
+        """Iterates over over each object inside a JSON_ARR variable
+        and creates a Child ThreadRun for each item. Resulting object
+        will be provided as a input variable to the child ThreadRun
+        with name 'INPUT'
+
+        Args:
+            arr_var (WfRunVariable): WfRunVariable of type JSON_ARR
+            that we iterate over.
+            initializer (ThreadInitializer): Function that defnes the ThreadSpec.
+            thread_name (str): Name to assign to the created ThreadSpec.
+            input (Optional[dict[str, Any]], optional): Input variables to pass
+            to each child
+            ThreadRun in addition to the list item.. Defaults to None.
+
+        Returns:
+            SpawnedThreads: SpawnedThreads handle which we can use
+            to wait for all child threads.
+        """
         self._check_if_active()
         thread_name = self._workflow.add_sub_thread(thread_name, initializer)
         input = {} if input is None else input
@@ -685,6 +703,16 @@ class ThreadBuilder:
         return SpawnedThreads(thread_number, None)
 
     def wait_for_threads(self, wait_for: SpawnedThreads) -> NodeOutput:
+        """Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
+
+        Args:
+            wait_for (SpawnedThreads): set of SpawnedThread objects returned
+            one or more calls to spawnThread.
+
+        Returns:
+            NodeOutput: a NodeOutput that can be used for timeouts
+            or exception handling.
+        """
         self._check_if_active()
         node = wait_for.build_node()
         node_name = self.add_node("threads", node)
