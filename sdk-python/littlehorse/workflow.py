@@ -9,7 +9,10 @@ from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
 from grpc import RpcError, StatusCode
 from littlehorse.config import LHConfig
-from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.model.common_enums_pb2 import (
+    VariableType,
+    WaitForThreadsPolicy,
+)
 from littlehorse.model.common_wfspec_pb2 import (
     Comparator,
     IndexType,
@@ -39,6 +42,7 @@ from littlehorse.model.wf_spec_pb2 import (
     NopNode,
     SleepNode,
     StartThreadNode,
+    StartMultipleThreadsNode,
     ThreadSpec,
     UserTaskNode,
     WaitForThreadsNode,
@@ -59,6 +63,7 @@ NodeType = Union[
     WaitForThreadsNode,
     NopNode,
     UserTaskNode,
+    StartMultipleThreadsNode,
 ]
 
 
@@ -178,6 +183,7 @@ class NodeCase(Enum):
     NOP = "NOP"
     SLEEP = "SLEEP"
     USER_TASK = "USER_TASK"
+    START_MULTIPLE_THREADS = "START_MULTIPLE_THREADS"
 
     @classmethod
     def from_node(cls, node: NodeType) -> "NodeCase":
@@ -199,6 +205,8 @@ class NodeCase(Enum):
             return cls.NOP
         if isinstance(node, UserTaskNode):
             return cls.USER_TASK
+        if isinstance(node, StartMultipleThreadsNode):
+            return cls.START_MULTIPLE_THREADS
 
         raise TypeError("Unrecognized node type")
 
@@ -414,6 +422,13 @@ class WfRunVariable:
         return to_json(self.compile())
 
 
+class WaitForThreadsNodeOutput(NodeOutput):
+    def __init__(self, node_name: str, builder: "ThreadBuilder") -> None:
+        super().__init__(node_name)
+        self.node_name = node_name
+        self.builder = builder
+
+
 class WorkflowNode:
     def __init__(
         self,
@@ -471,6 +486,8 @@ class WorkflowNode:
             return new_node(nop=self.sub_node)
         if self.node_case == NodeCase.USER_TASK:
             return new_node(user_task=self.sub_node)
+        if self.node_case == NodeCase.START_MULTIPLE_THREADS:
+            return new_node(start_multiple_threads=self.sub_node)
 
         raise ValueError("Node type not supported")
 
@@ -492,6 +509,55 @@ class WorkflowInterruption:
 
     def __str__(self) -> str:
         return to_json(self.compile())
+
+
+class SpawnedThread:
+    def __init__(self, name: str, number: WfRunVariable) -> None:
+        self.name = name
+        self.number = number
+
+
+class SpawnedThreads:
+    def __init__(
+        self,
+        iterable: Optional[WfRunVariable],
+        fixed_threads: Optional[list[SpawnedThread]] = None,
+    ) -> None:
+        self._iterable = iterable
+        self._fixed_threads = fixed_threads
+
+    @classmethod
+    def from_list(cls, *spawned_threads: SpawnedThread) -> "SpawnedThreads":
+        return SpawnedThreads(iterable=None, fixed_threads=list(spawned_threads))
+
+    def compile(self) -> WaitForThreadsNode:
+        def build_fixed_threads(
+            fixed_threads: Optional[list[SpawnedThread]],
+        ) -> WaitForThreadsNode:
+            threads: list[WaitForThreadsNode.ThreadToWaitFor] = []
+            if fixed_threads is not None:
+                for spawned_thread in fixed_threads:
+                    thread_to_wait_for = WaitForThreadsNode.ThreadToWaitFor(
+                        thread_run_number=to_variable_assignment(spawned_thread.number)
+                    )
+                    threads.append(thread_to_wait_for)
+            return WaitForThreadsNode(
+                threads=threads, policy=WaitForThreadsPolicy.STOP_ON_FAILURE
+            )
+
+        def build_iterator_threads(
+            iterable: Optional[WfRunVariable],
+        ) -> WaitForThreadsNode:
+            return WaitForThreadsNode(
+                thread_list=to_variable_assignment(iterable),
+                policy=WaitForThreadsPolicy.STOP_ON_FAILURE,
+            )
+
+        return (
+            build_iterator_threads(self._iterable)
+            if self._fixed_threads is None
+            else build_fixed_threads(self._fixed_threads)
+        )
 
 
 class UserTaskOutput(NodeOutput):
@@ -555,6 +621,102 @@ class ThreadBuilder:
         initializer(self)
         self.add_node("exit", ExitNode())
         self.is_active = False
+
+    def spawn_thread(
+        self,
+        initializer: "ThreadInitializer",
+        thread_name: str,
+        input: Optional[dict[str, Any]] = None,
+    ) -> SpawnedThread:
+        """Adds a SPAWN_THREAD node to the ThreadSpec,
+        which spawns a Child ThreadRun whose ThreadSpec
+        is determined by the provided ThreadFunc.
+
+        Args:
+            initializer (ThreadInitializer): defines the logic for the
+            child ThreadRun to execute.
+            thread_name (str): is the name of the child thread spec.
+            input (dict[str, Any], optional): is a dict of all of the
+            input variables to set for the child ThreadRun. If
+            you don't need to set any input variables, leave this
+            null. Defaults to None.
+
+        Returns:
+            SpawnedThread: a handle to the resulting SpawnedThread,
+            which can be used in wait_for_threads()
+        """
+        self._check_if_active()
+        input = {} if input is None else input
+        thread_name = self._workflow.add_sub_thread(thread_name, initializer)
+
+        start_thread_node = StartThreadNode(
+            thread_spec_name=thread_name,
+            variables={
+                key: to_variable_assignment(value) for key, value in input.items()
+            },
+        )
+
+        node_name = self.add_node(thread_name, start_thread_node)
+        thread_number = self.add_variable(node_name, VariableType.INT)
+        self.mutate(thread_number, VariableMutationType.ASSIGN, NodeOutput(node_name))
+
+        return SpawnedThread(thread_name, thread_number)
+
+    def spawn_thread_for_each(
+        self,
+        arr_var: WfRunVariable,
+        initializer: "ThreadInitializer",
+        thread_name: str,
+        input: Optional[dict[str, Any]] = None,
+    ) -> SpawnedThreads:
+        """Iterates over over each object inside a JSON_ARR variable
+        and creates a Child ThreadRun for each item. Resulting object
+        will be provided as a input variable to the child ThreadRun
+        with name 'INPUT'
+
+        Args:
+            arr_var (WfRunVariable): WfRunVariable of type JSON_ARR
+            that we iterate over.
+            initializer (ThreadInitializer): Function that defnes the ThreadSpec.
+            thread_name (str): Name to assign to the created ThreadSpec.
+            input (Optional[dict[str, Any]], optional): Input variables to pass
+            to each child
+            ThreadRun in addition to the list item.. Defaults to None.
+
+        Returns:
+            SpawnedThreads: SpawnedThreads handle which we can use
+            to wait for all child threads.
+        """
+        self._check_if_active()
+        thread_name = self._workflow.add_sub_thread(thread_name, initializer)
+        input = {} if input is None else input
+        start_multiple_threads_node = StartMultipleThreadsNode(
+            thread_spec_name=thread_name,
+            variables={
+                key: to_variable_assignment(value) for key, value in input.items()
+            },
+            iterable=to_variable_assignment(arr_var),
+        )
+        node_name = self.add_node(thread_name, start_multiple_threads_node)
+        thread_number = self.add_variable(node_name, VariableType.JSON_ARR)
+        self.mutate(thread_number, VariableMutationType.ASSIGN, NodeOutput(node_name))
+        return SpawnedThreads(thread_number, None)
+
+    def wait_for_threads(self, wait_for: SpawnedThreads) -> NodeOutput:
+        """Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
+
+        Args:
+            wait_for (SpawnedThreads): set of SpawnedThread objects returned
+            one or more calls to spawnThread.
+
+        Returns:
+            NodeOutput: a NodeOutput that can be used for timeouts
+            or exception handling.
+        """
+        self._check_if_active()
+        node = wait_for.compile()
+        node_name = self.add_node("threads", node)
+        return WaitForThreadsNodeOutput(node_name, self)
 
     def sleep(self, seconds: Union[int, WfRunVariable]) -> None:
         """Adds a SLEEP node which makes the ThreadRun sleep
@@ -780,6 +942,24 @@ class ThreadBuilder:
         user_id: Optional[Union[str, WfRunVariable]] = None,
         user_group: Optional[Union[str, WfRunVariable]] = None,
     ) -> UserTaskOutput:
+        """Adds a User Task Node, and assigns it to a specific user
+
+        Args:
+            user_task_def_name (str): is the UserTaskDef to assign.
+            user_id (Optional[Union[str, WfRunVariable]], optional): is the
+            user id to assign it to. Can be either String or WfRunVariable.
+            Can be None if userGroup not None. Defaults to None.
+            user_group (Optional[Union[str, WfRunVariable]], optional):
+            user group to assign it to. Can be either String or WfRunvariable.
+            Can be null if userId not null.
+            Defaults to None.
+
+        Raises:
+            ValueError: _description_
+
+        Returns:
+            UserTaskOutput: _description_
+        """
         self._check_if_active()
         if user_group is None and user_id is None:
             raise ValueError(
@@ -810,6 +990,15 @@ class ThreadBuilder:
         user_id: Optional[Union[str, WfRunVariable]] = None,
     ) -> None:
         self._check_if_active()
+        """Schedules the reassignment of a User Task to a
+        specified userId and/or userGroup after a specified expiration.
+
+        Args:
+            user_task (UserTaskOutput): is the userTask to reschedule.
+            deadline_seconds (Union[int, WfRunVariable]): is the expiration
+            time after which the UserTask should be reassigned.
+            Can be either WfRunVariable or int.
+        """
         if self._last_node().name != user_task.node_name:
             raise ValueError("Tried to reassign stale user task node!")
 
@@ -833,6 +1022,19 @@ class ThreadBuilder:
         user_task: UserTaskOutput,
         deadline_seconds: int,
     ) -> None:
+        """Schedule Reassignment of a UserTask to a userGroup
+        upon reaching the Deadline. This method is used to schedule
+        the reassignment of a UserTask to a userGroup
+        when the specified UserTask user assignment
+        reaches its deadline in seconds.
+
+        Args:
+            user_task (UserTaskOutput): UserTask that is currently
+            assigned to a UserGroup.
+            deadline_seconds (int): Time in seconds after which
+            the UserTask will be automatically reassigned to the UserGroup.
+            Can be either String or WfRunVariable.
+        """
         self._check_if_active()
         cur_node = self._last_node()
 

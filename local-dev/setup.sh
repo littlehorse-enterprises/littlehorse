@@ -62,7 +62,12 @@ ${DOCKER_COMPOSE_KEYCLOAK}
 EOF
 
     if ! command -v http &>/dev/null; then
-        echo "'http' command not found. Inatall httpie https://httpie.io/cli"
+        echo "'http' command not found. Install httpie https://httpie.io/cli"
+        exit 1
+    fi
+
+    if ! command -v jq &>/dev/null; then
+        echo "'jq' command not found. Install jq https://jqlang.github.io/jq/"
         exit 1
     fi
 
@@ -100,7 +105,7 @@ EOF
         editUsernameAllowed:=false \
         bruteForceProtected:=true
 
-    echo "Real '${REALM_NAME}' created"
+    echo "Realm '${REALM_NAME}' created"
 
     http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
         protocol=openid-connect \
