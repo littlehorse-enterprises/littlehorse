@@ -10,7 +10,6 @@ from littlehorse.model.common_wfspec_pb2 import (
     Comparator,
     VariableMutationType,
 )
-from littlehorse.worker import LHTaskWorker
 from littlehorse.workflow import ThreadBuilder, Workflow
 
 logging.basicConfig(level=logging.INFO)
@@ -67,7 +66,6 @@ def get_workflow() -> Workflow:
         )
 
     def my_entrypoint(thread: ThreadBuilder) -> None:
-        # it receives a name
         approvals_var = thread.add_variable("approvals", VariableType.JSON_ARR)
         (
             thread.add_variable("item-url", VariableType.STR)
@@ -83,29 +81,14 @@ def get_workflow() -> Workflow:
             approvals_var, one_approval, "approval"
         )
         thread.wait_for_threads(spawned_thread_1)
-        thread.execute(TASK_NAME, "var")
 
-    return Workflow("parallel-approvals", my_entrypoint)
-
-
-async def task(arg1: str) -> None:
-    print("This is an example var " + arg1)
-
-
-async def daily_bugle(news: str) -> None:
-    print(news)
+    return Workflow("parallel-approvals-v2", my_entrypoint)
 
 
 async def main() -> None:
     config = get_config()
     wf = get_workflow()
-
-    littlehorse.create_task_def(task, TASK_NAME, config)
     littlehorse.create_workflow_spec(wf, config)
-
-    await littlehorse.start(
-        LHTaskWorker(task, TASK_NAME, config),
-    )
 
 
 if __name__ == "__main__":
