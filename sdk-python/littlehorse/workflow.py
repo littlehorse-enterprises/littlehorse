@@ -530,7 +530,7 @@ class SpawnedThreads:
     def from_list(cls, *spawned_threads: SpawnedThread) -> "SpawnedThreads":
         return SpawnedThreads(iterable=None, fixed_threads=list(spawned_threads))
 
-    def build_node(self) -> WaitForThreadsNode:
+    def compile(self) -> WaitForThreadsNode:
         def build_fixed_threads(
             fixed_threads: Optional[list[SpawnedThread]],
         ) -> WaitForThreadsNode:
@@ -714,7 +714,7 @@ class ThreadBuilder:
             or exception handling.
         """
         self._check_if_active()
-        node = wait_for.build_node()
+        node = wait_for.compile()
         node_name = self.add_node("threads", node)
         return WaitForThreadsNodeOutput(node_name, self)
 
