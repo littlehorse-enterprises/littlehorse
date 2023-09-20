@@ -24,6 +24,7 @@ class TaskStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     TASK_OUTPUT_SERIALIZING_ERROR: _ClassVar[TaskStatus]
     TASK_INPUT_VAR_SUB_ERROR: _ClassVar[TaskStatus]
     TASK_CANCELLED: _ClassVar[TaskStatus]
+    TASK_EXCEPTION: _ClassVar[TaskStatus]
 
 class MetricsWindowLength(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
@@ -60,6 +61,7 @@ TASK_TIMEOUT: TaskStatus
 TASK_OUTPUT_SERIALIZING_ERROR: TaskStatus
 TASK_INPUT_VAR_SUB_ERROR: TaskStatus
 TASK_CANCELLED: TaskStatus
+TASK_EXCEPTION: TaskStatus
 MINUTES_5: MetricsWindowLength
 HOURS_2: MetricsWindowLength
 DAYS_1: MetricsWindowLength

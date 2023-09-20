@@ -166,6 +166,13 @@ public interface ThreadBuilder {
     @Deprecated(forRemoval = true)
     WaitForThreadsNodeOutput waitForThreads(SpawnedThread... threadsToWaitFor);
 
+    /**
+     * Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
+     *
+     * @param threadsToWaitFor set of SpawnedThread objects returned one or more calls to
+     *     spawnThread.
+     * @return a NodeOutput that can be used for timeouts or exception handling.
+     */
     WaitForThreadsNodeOutput waitForThreads(SpawnedThreads threadsToWaitFor);
 
     /**
