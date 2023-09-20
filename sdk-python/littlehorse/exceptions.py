@@ -14,3 +14,9 @@ class SerdeException(Exception):
     def __init__(self, message: str):
         self.message = message
         super().__init__(self.message)
+
+
+class LHException(Exception):
+    def __init__(self, message: str):
+        self.message = message
+        super().__init__(self.message)
