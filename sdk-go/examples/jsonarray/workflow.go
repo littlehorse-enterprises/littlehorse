@@ -24,7 +24,7 @@ func AddUpList(inputs *[]InputData) int {
 	return result
 }
 
-func MyWorkflowAdd(thread *wflib.ThreadBuilder) {
-	inputVar := thread.AddVariable("input", model.VariableType_JSON_ARR)
-	thread.Execute("greet", inputVar)
+func MyWorkflowAdd(wf *wflib.WorkflowThread) {
+	inputVar := wf.AddVariable("input", model.VariableType_JSON_ARR)
+	wf.Execute("greet", inputVar)
 }

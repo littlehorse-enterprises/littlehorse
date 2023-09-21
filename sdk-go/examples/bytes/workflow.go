@@ -8,6 +8,6 @@ func Greet(byteInput []byte) int {
 	return len(byteInput)
 }
 
-func MyWorkflow(thread *wflib.ThreadBuilder) {
-	thread.Execute("greet", []byte("hello little horse"))
+func MyWorkflow(wf *wflib.WorkflowThread) {
+	wf.Execute("greet", []byte("hello little horse"))
 }
