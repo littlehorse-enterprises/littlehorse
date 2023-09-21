@@ -33,50 +33,50 @@ public class VariablesExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "example-variables",
-            thread -> {
-                WfRunVariable inputText = thread
+            wf -> {
+                WfRunVariable inputText = wf
                     .addVariable("input-text", VariableType.STR)
                     .withIndex(LOCAL_INDEX);
 
-                WfRunVariable addLength = thread.addVariable(
+                WfRunVariable addLength = wf.addVariable(
                     "add-length",
                     VariableType.BOOL
                 ).withIndex(IndexType.LOCAL_INDEX);
 
-                WfRunVariable userId = thread
+                WfRunVariable userId = wf
                     .addVariable("user-id", VariableType.INT)
                     .withIndex(REMOTE_INDEX);
 
-                WfRunVariable sentimentScore = thread
+                WfRunVariable sentimentScore = wf
                     .addVariable("sentiment-score", VariableType.DOUBLE)
                     .withIndex(LOCAL_INDEX);
 
-                WfRunVariable processedResult = thread
+                WfRunVariable processedResult = wf
                     .addVariable("processed-result", VariableType.JSON_OBJ)
                     .withJsonIndex("$.sentimentScore", REMOTE_INDEX);
 
-                NodeOutput sentimentAnalysisOutput = thread.execute(
+                NodeOutput sentimentAnalysisOutput = wf.execute(
                     "sentiment-analysis",
                     inputText
                 );
-                thread.mutate(
+                wf.mutate(
                     sentimentScore,
                     VariableMutationType.ASSIGN,
                     sentimentAnalysisOutput
                 );
-                NodeOutput processedTextOutput = thread.execute(
+                NodeOutput processedTextOutput = wf.execute(
                     "process-text",
                     inputText,
                     sentimentScore,
                     addLength,
                     userId
                 );
-                thread.mutate(
+                wf.mutate(
                     processedResult,
                     VariableMutationType.ASSIGN,
                     processedTextOutput
                 );
-                thread.execute("send", processedResult);
+                wf.execute("send", processedResult);
             }
         );
     }

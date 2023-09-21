@@ -26,12 +26,12 @@ public class HundredTasks {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "hundred-tasks",
-            thread -> {
+            wf -> {
                 for (int i = 0; i < 25; i++) {
-                    thread.execute("task-1");
-                    thread.execute("task-2");
-                    thread.execute("task-3");
-                    thread.execute("task-4");
+                    wf.execute("task-1");
+                    wf.execute("task-2");
+                    wf.execute("task-3");
+                    wf.execute("task-4");
                 }
             }
         );

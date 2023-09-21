@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
-import io.littlehorse.sdk.wfsdk.ThreadBuilder;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -33,25 +33,25 @@ public class UserTasksExample {
         return new WorkflowImpl(WF_NAME, this::wf);
     }
 
-    public void wf(ThreadBuilder thread) {
-        WfRunVariable userId = thread.addVariable("user-id", VariableType.STR);
-        WfRunVariable itRequest = thread.addVariable(
+    public void wf(WorkflowThread wf) {
+        WfRunVariable userId = wf.addVariable("user-id", VariableType.STR);
+        WfRunVariable itRequest = wf.addVariable(
             "it-request",
             VariableType.JSON_OBJ
         );
-        WfRunVariable isApproved = thread.addVariable(
+        WfRunVariable isApproved = wf.addVariable(
             "is-approved",
             VariableType.BOOL
         );
 
         // Get the IT Request
-        UserTaskOutput formOutput = thread.assignUserTask(
+        UserTaskOutput formOutput = wf.assignUserTask(
             IT_REQUEST_FORM,
             userId,
             "testGroup"
         );
 
-        thread.handleException(
+        wf.handleException(
             formOutput,
             "USER_TASK_CANCELLED",
             handler -> {
@@ -59,13 +59,13 @@ public class UserTasksExample {
                 handler.execute(EMAIL_TASK_NAME, email, "Task cancelled");
             }
         );
-        thread.mutate(itRequest, VariableMutationType.ASSIGN, formOutput);
+        wf.mutate(itRequest, VariableMutationType.ASSIGN, formOutput);
 
         // Have Finance approve the request
-        UserTaskOutput financeUserTaskOutput = thread
+        UserTaskOutput financeUserTaskOutput = wf
             .assignUserTask(APPROVAL_FORM, null, "finance")
             .withNotes(
-                thread.format(
+                wf.format(
                     "User {0} is requesting to buy item {1}.\nJustification: {2}",
                     userId,
                     itRequest.jsonPath("$.requestedItem"),
@@ -74,34 +74,34 @@ public class UserTasksExample {
             );
         String financeTeamEmailBody = "Hi finance team, you have a new assigned task";
         String financeTeamEmail = "finance@gmail.com";
-        thread.scheduleReminderTask(
+        wf.scheduleReminderTask(
             financeUserTaskOutput,
             2,
             EMAIL_TASK_NAME,
             financeTeamEmail,
             financeTeamEmailBody
         );
-        thread.reassignUserTask(
+        wf.reassignUserTask(
             financeUserTaskOutput,
             "test-eduwer",
             null,
             60
         );
 
-        thread.mutate(
+        wf.mutate(
             isApproved,
             VariableMutationType.ASSIGN,
             financeUserTaskOutput.jsonPath("$.isApproved")
         );
 
-        thread.doIfElse(
-            thread.condition(isApproved, Comparator.EQUALS, true),
+        wf.doIfElse(
+            wf.condition(isApproved, Comparator.EQUALS, true),
             // Request approved!
             ifBody -> {
                 ifBody.execute(
                     EMAIL_TASK_NAME,
                     userId,
-                    thread.format(
+                    wf.format(
                         "Dear {0}, your request for {1} has been approved!",
                         userId,
                         itRequest.jsonPath("$.requestedItem")
@@ -113,7 +113,7 @@ public class UserTasksExample {
                 elseBody.execute(
                     EMAIL_TASK_NAME,
                     userId,
-                    thread.format(
+                    wf.format(
                         "Dear {0}, your request for {1} has been denied.",
                         userId,
                         itRequest.jsonPath("$.requestedItem")

@@ -26,13 +26,13 @@ public class MutationExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "example-mutation",
-            thread -> {
-                WfRunVariable theName = thread.addVariable("name", VariableType.STR);
+            wf -> {
+                WfRunVariable theName = wf.addVariable("name", VariableType.STR);
                 // We pass the name of the person and receive if it is spider-man or not
-                NodeOutput output = thread.execute("spider-bite", theName);
+                NodeOutput output = wf.execute("spider-bite", theName);
 
                 // We save the output in the variable
-                thread.mutate(theName, VariableMutationType.ASSIGN, output);
+                wf.mutate(theName, VariableMutationType.ASSIGN, output);
             }
         );
     }

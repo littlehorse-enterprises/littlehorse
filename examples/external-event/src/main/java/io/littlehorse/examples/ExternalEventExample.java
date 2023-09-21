@@ -35,18 +35,18 @@ public class ExternalEventExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "example-external-event",
-            thread -> {
-                WfRunVariable name = thread.addVariable("name", VariableType.STR).withIndex(IndexType.REMOTE_INDEX);
+            wf -> {
+                WfRunVariable name = wf.addVariable("name", VariableType.STR).withIndex(IndexType.REMOTE_INDEX);
 
-                thread.execute("ask-for-name");
+                wf.execute("ask-for-name");
 
-                thread.mutate(
+                wf.mutate(
                     name,
                     VariableMutationType.ASSIGN,
-                    thread.waitForEvent("name-event")
+                    wf.waitForEvent("name-event")
                 );
 
-                thread.execute("greet", name);
+                wf.execute("greet", name);
             }
         );
     }

@@ -15,7 +15,7 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.StartMultipleThreadsRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
-import io.littlehorse.sdk.wfsdk.ThreadBuilder;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -82,8 +82,8 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
                 String threadSpecName = node.getThreadSpecName();
                 int parentThreadNumber = nodeRunModel.getThreadRunNumber();
                 ThreadSpecModel threadSpec = getWfSpec().getThreadSpecs().get(threadSpecName);
-                if (threadSpec.getInputVariableDefs().containsKey(ThreadBuilder.HANDLER_INPUT_VAR)) {
-                    inputs.put(ThreadBuilder.HANDLER_INPUT_VAR, iterInput);
+                if (threadSpec.getInputVariableDefs().containsKey(WorkflowThread.HANDLER_INPUT_VAR)) {
+                    inputs.put(WorkflowThread.HANDLER_INPUT_VAR, iterInput);
                 }
 
                 ThreadRunModel child = nodeRunModel
