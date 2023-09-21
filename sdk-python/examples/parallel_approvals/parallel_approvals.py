@@ -10,7 +10,7 @@ from littlehorse.model.common_wfspec_pb2 import (
     Comparator,
     VariableMutationType,
 )
-from littlehorse.workflow import ThreadBuilder, Workflow
+from littlehorse.workflow import WorkflowThread, Workflow
 
 logging.basicConfig(level=logging.INFO)
 
@@ -24,7 +24,7 @@ def get_config() -> LHConfig:
 
 
 def get_workflow() -> Workflow:
-    def one_approval(approval_thread: ThreadBuilder) -> None:
+    def one_approval(approval_thread: WorkflowThread) -> None:
         approval = approval_thread.add_variable("INPUT", VariableType.JSON_OBJ)
         is_approved = (
             approval_thread.add_variable("did-person-approve", VariableType.BOOL)
@@ -32,7 +32,7 @@ def get_workflow() -> Workflow:
             .persistent()
         )
 
-        def is_user_group(user_group_thread: ThreadBuilder) -> None:
+        def is_user_group(user_group_thread: WorkflowThread) -> None:
             user_task_output = approval_thread.assign_user_task(
                 "approve-task",
                 user_id=None,
@@ -44,7 +44,7 @@ def get_workflow() -> Workflow:
                 user_task_output.with_json_path("$.isApproved"),
             )
 
-        def is_user(user_thread: ThreadBuilder) -> None:
+        def is_user(user_thread: WorkflowThread) -> None:
             user_task_output = approval_thread.assign_user_task(
                 "approve-task",
                 user_id=approval.with_json_path("$.userId"),
@@ -63,22 +63,22 @@ def get_workflow() -> Workflow:
             condition=condition, if_body=is_user_group, else_body=is_user
         )
 
-    def my_entrypoint(thread: ThreadBuilder) -> None:
-        approvals_var = thread.add_variable("approvals", VariableType.JSON_ARR)
+    def my_entrypoint(wf: WorkflowThread) -> None:
+        approvals_var = wf.add_variable("approvals", VariableType.JSON_ARR)
         (
-            thread.add_variable("item-url", VariableType.STR)
+            wf.add_variable("item-url", VariableType.STR)
             .with_index(IndexType.REMOTE_INDEX)
             .persistent()
         )
         (
-            thread.add_variable("status", VariableType.STR, "PENDING")
+            wf.add_variable("status", VariableType.STR, "PENDING")
             .with_index(IndexType.LOCAL_INDEX)
             .persistent()
         )
-        spawned_thread_1 = thread.spawn_thread_for_each(
+        spawned_thread_1 = wf.spawn_thread_for_each(
             approvals_var, one_approval, "approval"
         )
-        thread.wait_for_threads(spawned_thread_1)
+        wf.wait_for_threads(spawned_thread_1)
 
     return Workflow("parallel-approvals-v2", my_entrypoint)
 

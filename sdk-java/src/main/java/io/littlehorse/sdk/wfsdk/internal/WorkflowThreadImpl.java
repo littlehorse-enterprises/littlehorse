@@ -39,12 +39,12 @@ import io.littlehorse.sdk.wfsdk.LHErrorType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
-import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
 import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +56,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @Setter
-final class ThreadBuilderImpl implements ThreadBuilder {
+final class WorkflowThreadImpl implements WorkflowThread {
 
     private WorkflowImpl parent;
     private ThreadSpec.Builder spec;
@@ -66,7 +66,7 @@ final class ThreadBuilderImpl implements ThreadBuilder {
     private EdgeCondition lastNodeCondition;
     private boolean isActive;
 
-    public ThreadBuilderImpl(String name, WorkflowImpl parent, ThreadFunc func) {
+    public WorkflowThreadImpl(String name, WorkflowImpl parent, ThreadFunc func) {
         this.parent = parent;
         this.spec = ThreadSpec.newBuilder();
         this.name = name;

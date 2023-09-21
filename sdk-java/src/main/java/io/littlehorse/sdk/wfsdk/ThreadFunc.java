@@ -10,5 +10,5 @@ public interface ThreadFunc {
      *
      * @param thread is the ThreadBuilder that can be used to control the logic of the `ThreadSpec`.
      */
-    public void threadFunction(ThreadBuilder thread);
+    public void threadFunction(WorkflowThread thread);
 }

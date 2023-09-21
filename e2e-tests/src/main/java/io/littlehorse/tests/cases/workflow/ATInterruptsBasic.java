@@ -6,9 +6,9 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
-import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
@@ -35,7 +35,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
             WfRunVariable sharedVar = thread.addVariable("my-int", VariableType.INT);
 
             thread.registerInterruptHandler(INTERRUPT_NAME, handler -> {
-                WfRunVariable interruptInput = handler.addVariable(ThreadBuilder.HANDLER_INPUT_VAR, VariableType.INT);
+                WfRunVariable interruptInput = handler.addVariable(WorkflowThread.HANDLER_INPUT_VAR, VariableType.INT);
 
                 handler.execute("at-obiwan");
 

@@ -5,10 +5,10 @@ import io.littlehorse.sdk.wfsdk.NodeOutput;
 class NodeOutputImpl implements NodeOutput {
 
     public String nodeName;
-    public ThreadBuilderImpl parent;
+    public WorkflowThreadImpl parent;
     public String jsonPath;
 
-    public NodeOutputImpl(String nodeName, ThreadBuilderImpl parent) {
+    public NodeOutputImpl(String nodeName, WorkflowThreadImpl parent) {
         this.nodeName = nodeName;
         this.parent = parent;
     }

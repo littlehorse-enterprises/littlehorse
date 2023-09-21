@@ -10,7 +10,7 @@ class WaitForThreadsNodeOutputImpl extends NodeOutputImpl implements WaitForThre
 
     private final ThreadSpec.Builder threadSpec;
 
-    public WaitForThreadsNodeOutputImpl(String nodeName, ThreadBuilderImpl parent, ThreadSpec.Builder threadSpec) {
+    public WaitForThreadsNodeOutputImpl(String nodeName, WorkflowThreadImpl parent, ThreadSpec.Builder threadSpec) {
         super(nodeName, parent);
         this.threadSpec = threadSpec;
     }

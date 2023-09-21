@@ -8,7 +8,7 @@ import littlehorse
 from littlehorse.config import LHConfig
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.worker import LHTaskWorker
-from littlehorse.workflow import ThreadBuilder, Workflow
+from littlehorse.workflow import WorkflowThread, Workflow
 
 logging.basicConfig(level=logging.INFO)
 
@@ -22,10 +22,10 @@ def get_config() -> LHConfig:
 
 
 def get_workflow() -> Workflow:
-    def my_entrypoint(thread: ThreadBuilder) -> None:
-        person = thread.add_variable("person", VariableType.JSON_OBJ)
-        thread.execute("greet", person.with_json_path("$.name"))
-        thread.execute("describe-car", person.with_json_path("$.car"))
+    def my_entrypoint(wf: WorkflowThread) -> None:
+        person = wf.add_variable("person", VariableType.JSON_OBJ)
+        wf.execute("greet", person.with_json_path("$.name"))
+        wf.execute("describe-car", person.with_json_path("$.car"))
 
     return Workflow("example-json", my_entrypoint)
 

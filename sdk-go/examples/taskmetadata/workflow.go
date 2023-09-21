@@ -24,7 +24,7 @@ func GetInfo(input *InputData, context *common.WorkerContext) string {
 	return "the id for " + input.Art.Title + " is: " + strconv.Itoa(input.Art.Id) + " and WfRunId: " + *context.GetWfRunId()
 }
 
-func MyWorkflowGet(thread *wflib.ThreadBuilder) {
-	inputVar := thread.AddVariable("input", model.VariableType_JSON_OBJ)
-	thread.Execute("greet", inputVar)
+func MyWorkflowGet(wf *wflib.WorkflowThread) {
+	inputVar := wf.AddVariable("input", model.VariableType_JSON_OBJ)
+	wf.Execute("greet", inputVar)
 }

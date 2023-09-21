@@ -15,9 +15,9 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
-import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
@@ -63,7 +63,7 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
         });
     }
 
-    private void thread1(ThreadBuilder thread) {
+    private void thread1(WorkflowThread thread) {
         // We use this variable so that we can control whether the thread
         // fails by manipulating the external event content
         WfRunVariable eventOutput = thread.addVariable("input1", VariableType.JSON_OBJ);
@@ -71,7 +71,7 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
         thread.execute("add-1", eventOutput.jsonPath("$.myInt"));
     }
 
-    private void thread2(ThreadBuilder thread) {
+    private void thread2(WorkflowThread thread) {
         // We use this variable so that we can control whether the thread
         // fails by manipulating the external event content
         WfRunVariable eventOutput = thread.addVariable("input2", VariableType.JSON_OBJ);

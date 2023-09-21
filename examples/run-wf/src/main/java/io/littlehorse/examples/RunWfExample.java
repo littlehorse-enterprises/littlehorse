@@ -36,9 +36,9 @@ public class RunWfExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "example-run-wf",
-            thread -> {
-                WfRunVariable n = thread.addVariable("n", VariableType.INT);
-                thread.execute("execution-number", n);
+            wf -> {
+                WfRunVariable n = wf.addVariable("n", VariableType.INT);
+                wf.execute("execution-number", n);
             }
         );
     }

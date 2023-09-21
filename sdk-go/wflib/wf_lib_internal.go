@@ -43,7 +43,7 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 			if _, alreadySeen := seenThreads[threadName]; !alreadySeen {
 				seenThreads[threadName] = function
 
-				thr := ThreadBuilder{
+				thr := WorkflowThread{
 					Name:     threadName,
 					isActive: true,
 					wf:       l,
@@ -89,7 +89,7 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 	return &l.spec, nil
 }
 
-func (t *ThreadBuilder) createTaskNode(taskDefName string, args []interface{}) *model.TaskNode {
+func (t *WorkflowThread) createTaskNode(taskDefName string, args []interface{}) *model.TaskNode {
 	taskNode := &model.TaskNode{
 		TaskDefName: taskDefName,
 		Variables:   make([]*model.VariableAssignment, 0),
@@ -105,7 +105,7 @@ func (t *ThreadBuilder) createTaskNode(taskDefName string, args []interface{}) *
 	return taskNode
 }
 
-func (t *ThreadBuilder) executeTask(name string, args []interface{}) NodeOutput {
+func (t *WorkflowThread) executeTask(name string, args []interface{}) NodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode(name, "TASK")
 
@@ -119,7 +119,7 @@ func (t *ThreadBuilder) executeTask(name string, args []interface{}) NodeOutput 
 	}
 }
 
-func (t *ThreadBuilder) releaseToGroupOnDeadline(
+func (t *WorkflowThread) releaseToGroupOnDeadline(
 	userTask *UserTaskOutput, deadlineSeconds interface{},
 ) {
 	t.checkIfIsActive()
@@ -160,7 +160,7 @@ func (t *ThreadBuilder) releaseToGroupOnDeadline(
 	})
 }
 
-func (t *ThreadBuilder) reassignUserTaskOnDeadline(
+func (t *WorkflowThread) reassignUserTaskOnDeadline(
 	userTask *UserTaskOutput, userId, userGroup, deadlineSeconds interface{},
 ) {
 	t.checkIfIsActive()
@@ -211,7 +211,7 @@ func (t *ThreadBuilder) reassignUserTaskOnDeadline(
 	})
 }
 
-func (t *ThreadBuilder) scheduleReminderTask(
+func (t *WorkflowThread) scheduleReminderTask(
 	userTask *UserTaskOutput, delaySeconds interface{},
 	taskDefName string, args ...interface{},
 ) {
@@ -242,7 +242,7 @@ func (t *ThreadBuilder) scheduleReminderTask(
 	)
 }
 
-func (t *ThreadBuilder) assignUserTask(
+func (t *WorkflowThread) assignUserTask(
 	userTaskDefName string, userId, userGroup interface{},
 ) *UserTaskOutput {
 	t.checkIfIsActive()
@@ -290,7 +290,7 @@ func (t *ThreadBuilder) assignUserTask(
 	}
 }
 
-func (t *ThreadBuilder) assignVariable(
+func (t *WorkflowThread) assignVariable(
 	val interface{},
 ) (out *model.VariableAssignment, err error) {
 	t.checkIfIsActive()
@@ -347,7 +347,7 @@ func (t *ThreadBuilder) assignVariable(
 	return out, err
 }
 
-func (t *ThreadBuilder) createBlankNode(name, nType string) (string, *model.Node) {
+func (t *WorkflowThread) createBlankNode(name, nType string) (string, *model.Node) {
 	t.checkIfIsActive()
 	nodeName := t.getNodeName(name, nType)
 
@@ -378,7 +378,7 @@ func (t *ThreadBuilder) createBlankNode(name, nType string) (string, *model.Node
 	return nodeName, node
 }
 
-func (t *ThreadBuilder) getNodeName(humanName, nodeType string) string {
+func (t *WorkflowThread) getNodeName(humanName, nodeType string) string {
 	t.checkIfIsActive()
 	return strconv.Itoa(len(t.spec.Nodes)) + "-" + humanName + "-" + nodeType
 }
@@ -425,7 +425,7 @@ func (n *NodeOutput) jsonPathImpl(path string) NodeOutput {
 	}
 }
 
-func (t *ThreadBuilder) throwError(e error) {
+func (t *WorkflowThread) throwError(e error) {
 	// For now, we just panic, since it provides a way to get a stacktrace.
 	// In the future, we'll do more clean things and try to find out how to
 	// bubble up an error with relevant info so that the user can catch it and do
@@ -433,7 +433,7 @@ func (t *ThreadBuilder) throwError(e error) {
 	panic(e)
 }
 
-func (t *ThreadBuilder) mutate(
+func (t *WorkflowThread) mutate(
 	lhs *WfRunVariable,
 	mType model.VariableMutationType,
 	rhs interface{},
@@ -500,7 +500,7 @@ func (t *ThreadBuilder) mutate(
 	node.VariableMutations = append(node.VariableMutations, mutation)
 }
 
-func (t *ThreadBuilder) addVariable(
+func (t *WorkflowThread) addVariable(
 	name string, varType model.VariableType, defaultValue interface{},
 ) *WfRunVariable {
 	t.checkIfIsActive()
@@ -530,7 +530,7 @@ func (t *ThreadBuilder) addVariable(
 	}
 }
 
-func (t *ThreadBuilder) condition(
+func (t *WorkflowThread) condition(
 	lhs interface{}, op model.Comparator, rhs interface{},
 ) *WorkflowCondition {
 	t.checkIfIsActive()
@@ -557,7 +557,7 @@ func (t *ThreadBuilder) condition(
 	}
 }
 
-func (t *ThreadBuilder) addNopNode() {
+func (t *WorkflowThread) addNopNode() {
 	t.checkIfIsActive()
 	_, n := t.createBlankNode("nop", "NOP")
 	n.Node = &model.Node_Nop{
@@ -565,7 +565,7 @@ func (t *ThreadBuilder) addNopNode() {
 	}
 }
 
-func (t *ThreadBuilder) doIf(cond *WorkflowCondition, doIf IfElseBody) {
+func (t *WorkflowThread) doIf(cond *WorkflowCondition, doIf IfElseBody) {
 	t.checkIfIsActive()
 	// The tree looks like:
 	/* T
@@ -602,7 +602,7 @@ func (t *ThreadBuilder) doIf(cond *WorkflowCondition, doIf IfElseBody) {
 	)
 }
 
-func (t *ThreadBuilder) doIfElse(
+func (t *WorkflowThread) doIfElse(
 	cond *WorkflowCondition, doIf IfElseBody, doElse IfElseBody,
 ) {
 	t.checkIfIsActive()
@@ -638,7 +638,7 @@ func (t *ThreadBuilder) doIfElse(
 	t.lastNodeName = joinerNodeName
 }
 
-func (t *ThreadBuilder) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) {
+func (t *WorkflowThread) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) {
 	t.checkIfIsActive()
 	// The tree looks like:
 	/* T
@@ -711,7 +711,7 @@ func (c *WorkflowCondition) getReverse() *model.EdgeCondition {
 	return out
 }
 
-func (t *ThreadBuilder) spawnThread(
+func (t *WorkflowThread) spawnThread(
 	tFunc ThreadFunc, threadName string, args map[string]interface{},
 ) *SpawnedThread {
 	t.checkIfIsActive()
@@ -749,7 +749,7 @@ func (t *ThreadBuilder) spawnThread(
 	}
 }
 
-func (t *ThreadBuilder) waitForThreads(s ...*SpawnedThread) *NodeOutput {
+func (t *WorkflowThread) waitForThreads(s ...*SpawnedThread) *NodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode("wait", "WAIT_THREADS")
 	node.Node = &model.Node_WaitForThreads{
@@ -775,7 +775,7 @@ func (t *ThreadBuilder) waitForThreads(s ...*SpawnedThread) *NodeOutput {
 	}
 }
 
-func (t *ThreadBuilder) spawnThreadForEach(
+func (t *WorkflowThread) spawnThreadForEach(
 	arrVar *WfRunVariable, threadName string, threadFunc ThreadFunc, args *map[string]interface{},
 ) *SpawnedThreads {
 	t.checkIfIsActive()
@@ -827,7 +827,7 @@ func (t *ThreadBuilder) spawnThreadForEach(
 	}
 }
 
-func (t *ThreadBuilder) waitForThreadsList(s *SpawnedThreads) NodeOutput {
+func (t *WorkflowThread) waitForThreadsList(s *SpawnedThreads) NodeOutput {
 	t.checkIfIsActive()
 	threadListAssn, err := t.assignVariable(s.threadsVar)
 	if err != nil {
@@ -849,7 +849,7 @@ func (t *ThreadBuilder) waitForThreadsList(s *SpawnedThreads) NodeOutput {
 	}
 }
 
-func (t *ThreadBuilder) waitForEvent(eventName string) *NodeOutput {
+func (t *WorkflowThread) waitForEvent(eventName string) *NodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode(eventName, "EXTERNAL_EVENT")
 
@@ -866,7 +866,7 @@ func (t *ThreadBuilder) waitForEvent(eventName string) *NodeOutput {
 	}
 }
 
-func (t *ThreadBuilder) format(format string, args []*WfRunVariable) *LHFormatString {
+func (t *WorkflowThread) format(format string, args []*WfRunVariable) *LHFormatString {
 	return &LHFormatString{
 		format:     format,
 		thread:     t,
@@ -874,7 +874,7 @@ func (t *ThreadBuilder) format(format string, args []*WfRunVariable) *LHFormatSt
 	}
 }
 
-func (t *ThreadBuilder) fail(content interface{}, failureName string, msg *string) {
+func (t *WorkflowThread) fail(content interface{}, failureName string, msg *string) {
 	t.checkIfIsActive()
 	_, node := t.createBlankNode(failureName, "EXIT")
 
@@ -900,7 +900,7 @@ func (t *ThreadBuilder) fail(content interface{}, failureName string, msg *strin
 	}
 }
 
-func (t *ThreadBuilder) sleep(sleepSeconds int) {
+func (t *WorkflowThread) sleep(sleepSeconds int) {
 	t.checkIfIsActive()
 	_, node := t.createBlankNode("sleep", "SLEEP")
 
@@ -924,7 +924,7 @@ func (t *ThreadBuilder) sleep(sleepSeconds int) {
 	node.Node = sleepNode
 }
 
-func (t *ThreadBuilder) handleInterrupt(interruptName string, handler ThreadFunc) {
+func (t *WorkflowThread) handleInterrupt(interruptName string, handler ThreadFunc) {
 	t.checkIfIsActive()
 	handlerName := t.wf.addSubThread("interrupt-"+interruptName, handler)
 	t.spec.InterruptDefs = append(t.spec.InterruptDefs, &model.InterruptDef{
@@ -933,7 +933,7 @@ func (t *ThreadBuilder) handleInterrupt(interruptName string, handler ThreadFunc
 	})
 }
 
-func (t *ThreadBuilder) handleError(
+func (t *WorkflowThread) handleError(
 	nodeOutput *NodeOutput,
 	specificError *LHErrorType,
 	handler ThreadFunc,
@@ -969,7 +969,7 @@ func (t *ThreadBuilder) handleError(
 	node.FailureHandlers = append(node.FailureHandlers, fhd)
 }
 
-func (t *ThreadBuilder) handleAnyFailure(
+func (t *WorkflowThread) handleAnyFailure(
 	nodeOutput *NodeOutput, handler ThreadFunc,
 ) {
 	t.checkIfIsActive()
@@ -983,7 +983,7 @@ func (t *ThreadBuilder) handleAnyFailure(
 	})
 }
 
-func (t *ThreadBuilder) handleException(
+func (t *WorkflowThread) handleException(
 	nodeOutput *NodeOutput,
 	exceptionName *string,
 	handler ThreadFunc,
@@ -1018,7 +1018,7 @@ func (t *ThreadBuilder) handleException(
 	node.FailureHandlers = append(node.FailureHandlers, fhd)
 }
 
-func (t *ThreadBuilder) checkIfIsActive() {
+func (t *WorkflowThread) checkIfIsActive() {
 	if !t.isActive {
 		t.throwError(tracerr.Wrap(errors.New("using a inactive thread")))
 	}

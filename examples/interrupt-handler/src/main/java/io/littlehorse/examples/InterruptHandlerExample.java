@@ -28,9 +28,9 @@ public class InterruptHandlerExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "example-interrupt-handler",
-            thread -> {
+            wf -> {
                 // Register an interrupt handler
-                thread.registerInterruptHandler(
+                wf.registerInterruptHandler(
                     "interruption-event",
                     handler -> {
                         handler.execute("some-task");
@@ -38,8 +38,8 @@ public class InterruptHandlerExample {
                 );
 
                 // Do some work that takes a while
-                thread.sleepSeconds(30);
-                thread.execute("my-task");
+                wf.sleepSeconds(30);
+                wf.execute("my-task");
             }
         );
     }

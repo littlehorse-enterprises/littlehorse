@@ -28,10 +28,10 @@ public class ExceptionHandlerExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "example-exception-handler",
-            thread -> {
-                NodeOutput node = thread.execute("fail");
+            wf -> {
+                NodeOutput node = wf.execute("fail");
 
-                thread.handleError( // Handle technical failure
+                wf.handleError( // Handle technical failure
                     node,
                     handler -> {
                         handler.execute("my-task");
@@ -39,7 +39,7 @@ public class ExceptionHandlerExample {
                 );
 
                 // Execution resumes after handling exception.
-                thread.execute("my-task");
+                wf.execute("my-task");
             }
         );
     }

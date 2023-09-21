@@ -35,58 +35,58 @@ public class ParallelApprovalExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "parallel-approval",
-            thread -> {
+            wf -> {
                 // Initialize variables.
-                WfRunVariable person1Approved = thread.addVariable(
+                WfRunVariable person1Approved = wf.addVariable(
                     "person-1-approved",
                     VariableType.BOOL
                 );
-                WfRunVariable person2Approved = thread.addVariable(
+                WfRunVariable person2Approved = wf.addVariable(
                     "person-2-approved",
                     VariableType.BOOL
                 );
-                WfRunVariable person3Approved = thread.addVariable(
+                WfRunVariable person3Approved = wf.addVariable(
                     "person-3-approved",
                     VariableType.BOOL
                 );
-                WfRunVariable allApproved = thread.addVariable(
+                WfRunVariable allApproved = wf.addVariable(
                     "all-approved",
                     VariableType.BOOL
                 );
 
                 // Variables are initialized to NULL. Need to set to a real value.
-                thread.mutate(allApproved, VariableMutationType.ASSIGN, false);
-                thread.mutate(person1Approved, VariableMutationType.ASSIGN, false);
-                thread.mutate(person2Approved, VariableMutationType.ASSIGN, false);
-                thread.mutate(person3Approved, VariableMutationType.ASSIGN, false);
+                wf.mutate(allApproved, VariableMutationType.ASSIGN, false);
+                wf.mutate(person1Approved, VariableMutationType.ASSIGN, false);
+                wf.mutate(person2Approved, VariableMutationType.ASSIGN, false);
+                wf.mutate(person3Approved, VariableMutationType.ASSIGN, false);
 
                 // Kick off the reminder workflow
-                thread.spawnThread(
+                wf.spawnThread(
                     sendReminders(allApproved),
                     "send-reminders",
                     null
                 );
 
                 // Wait for all users to approve the transaction
-                SpawnedThread p1Thread = thread.spawnThread(
+                SpawnedThread p1Thread = wf.spawnThread(
                     waitForPerson1(person1Approved),
                     "person-1",
                     null
                 );
-                SpawnedThread p2Thread = thread.spawnThread(
+                SpawnedThread p2Thread = wf.spawnThread(
                     waitForPerson2(person2Approved),
                     "person-2",
                     null
                 );
-                SpawnedThread p3Thread = thread.spawnThread(
+                SpawnedThread p3Thread = wf.spawnThread(
                     waitForPerson3(person3Approved),
                     "person-3",
                     null
                 );
 
-                NodeOutput nodeOutput = thread.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread));
+                NodeOutput nodeOutput = wf.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread));
 
-                thread.handleException(nodeOutput, "denied-by-user", xnHandler -> {
+                wf.handleException(nodeOutput, "denied-by-user", xnHandler -> {
                     // HANDLE FAILED APPROVALS HERE.
                     // If you want, you can execute additional business logic.
 
@@ -94,7 +94,7 @@ public class ParallelApprovalExample {
                 });
 
                 // Tell the reminder workflow to stop
-                thread.mutate(allApproved, VariableMutationType.ASSIGN, true);
+                wf.mutate(allApproved, VariableMutationType.ASSIGN, true);
             }
         );
     }

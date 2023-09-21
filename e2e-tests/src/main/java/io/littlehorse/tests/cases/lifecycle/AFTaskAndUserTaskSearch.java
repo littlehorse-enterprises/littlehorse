@@ -24,8 +24,8 @@ import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
 import io.littlehorse.sdk.usertask.annotations.UserTaskField;
-import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
@@ -60,7 +60,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
                 """;
     }
 
-    public void wf(ThreadBuilder thread) {
+    public void wf(WorkflowThread thread) {
         WfRunVariable shouldFail = thread.addVariable("should-fail", VariableType.BOOL);
 
         thread.execute(FAIL_TASK, shouldFail);

@@ -86,7 +86,7 @@ public class WorkflowImpl extends Workflow {
             Pair<String, ThreadFunc> nextFunc = threadFuncs.remove();
             ThreadFunc threadObj = nextFunc.getValue();
             String funcName = nextFunc.getKey();
-            ThreadBuilderImpl thr = new ThreadBuilderImpl(name, this, threadObj);
+            WorkflowThreadImpl thr = new WorkflowThreadImpl(name, this, threadObj);
             spec.putThreadSpecs(funcName, thr.getSpec().build());
         }
 

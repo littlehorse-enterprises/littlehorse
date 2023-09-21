@@ -7,7 +7,7 @@ from littlehorse.config import LHConfig
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import VariableMutationType
 from littlehorse.worker import LHTaskWorker
-from littlehorse.workflow import ThreadBuilder, Workflow
+from littlehorse.workflow import WorkflowThread, Workflow
 
 logging.basicConfig(level=logging.INFO)
 
@@ -25,13 +25,13 @@ def get_config() -> LHConfig:
 
 
 def get_workflow() -> Workflow:
-    def my_entrypoint(thread: ThreadBuilder) -> None:
-        thread.execute(ASK_FOR_NAME)
-        ext_event_output = thread.wait_for_event(EXT_EVENT, timeout=60)
+    def my_entrypoint(wf: WorkflowThread) -> None:
+        wf.execute(ASK_FOR_NAME)
+        ext_event_output = wf.wait_for_event(EXT_EVENT, timeout=60)
 
-        name = thread.add_variable("name", VariableType.STR)
-        thread.mutate(name, VariableMutationType.ASSIGN, ext_event_output)
-        thread.execute(GREET, name)
+        name = wf.add_variable("name", VariableType.STR)
+        wf.mutate(name, VariableMutationType.ASSIGN, ext_event_output)
+        wf.execute(GREET, name)
 
     return Workflow("example-external-event", my_entrypoint)
 

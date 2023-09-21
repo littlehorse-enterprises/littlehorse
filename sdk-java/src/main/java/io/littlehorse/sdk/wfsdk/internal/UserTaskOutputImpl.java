@@ -10,7 +10,7 @@ class UserTaskOutputImpl extends NodeOutputImpl implements UserTaskOutput {
 
     private VariableAssignment notes;
 
-    public UserTaskOutputImpl(String nodeName, ThreadBuilderImpl parent) {
+    public UserTaskOutputImpl(String nodeName, WorkflowThreadImpl parent) {
         super(nodeName, parent);
     }
 

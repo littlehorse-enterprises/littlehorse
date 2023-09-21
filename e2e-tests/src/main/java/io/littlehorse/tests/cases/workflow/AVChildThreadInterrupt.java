@@ -7,9 +7,9 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
-import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
@@ -38,7 +38,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
 
             thread.registerInterruptHandler(PARENT_EVENT, parentHandler -> {
                 WfRunVariable interruptInput =
-                        parentHandler.addVariable(ThreadBuilder.HANDLER_INPUT_VAR, VariableType.INT);
+                        parentHandler.addVariable(WorkflowThread.HANDLER_INPUT_VAR, VariableType.INT);
 
                 parentHandler.execute("av-obiwan");
                 parentHandler.mutate(parentInt, VariableMutationType.ADD, interruptInput);
@@ -51,7 +51,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
 
                         child.registerInterruptHandler(CHILD_EVENT, childHandler -> {
                             WfRunVariable interruptInput =
-                                    childHandler.addVariable(ThreadBuilder.HANDLER_INPUT_VAR, VariableType.INT);
+                                    childHandler.addVariable(WorkflowThread.HANDLER_INPUT_VAR, VariableType.INT);
                             childHandler.execute("av-obiwan");
                             childHandler.sleepSeconds(1);
                             childHandler.mutate(childInt, VariableMutationType.ADD, interruptInput);
