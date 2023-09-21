@@ -3,10 +3,13 @@ package io.littlehorse.common.model.corecommand.subcommand;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.failure.LHTaskErrorModel;
+import io.littlehorse.common.model.corecommand.failure.LHTaskExceptionModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
@@ -27,6 +30,8 @@ public class ReportTaskRunModel extends SubCommand<ReportTaskRun> {
     private VariableValueModel stdout;
     private VariableValueModel stderr;
     private int attemptNumber; // this is CRUCIAL to set properly.
+    private LHTaskErrorModel error;
+    private LHTaskExceptionModel exception;
 
     public String getPartitionKey() {
         return taskRunId.getPartitionKey().get();
@@ -59,6 +64,8 @@ public class ReportTaskRunModel extends SubCommand<ReportTaskRun> {
 
         if (stdout != null) b.setOutput(stdout.toProto());
         if (stderr != null) b.setLogOutput(stderr.toProto());
+        if (error != null) b.setError(error.toProto());
+        if (exception != null) b.setException(exception.toProto());
 
         return b;
     }
@@ -76,6 +83,14 @@ public class ReportTaskRunModel extends SubCommand<ReportTaskRun> {
 
         if (p.hasLogOutput()) {
             this.stderr = VariableValueModel.fromProto(p.getLogOutput());
+        }
+
+        if (p.hasError()) {
+            this.error = LHSerializable.fromProto(p.getError(), LHTaskErrorModel.class);
+        }
+
+        if (p.hasException()) {
+            this.exception = LHSerializable.fromProto(p.getException(), LHTaskExceptionModel.class);
         }
     }
 

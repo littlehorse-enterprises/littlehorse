@@ -353,16 +353,6 @@ message PollTaskResponse {
   optional ScheduledTask result = 1;
 }
 
-message LHTaskError {
-  LHErrorType type = 1;
-  string message = 2;
-}
-
-message LHTaskException {
-  string name = 1;
-  string message = 2;
-}
-
 message ReportTaskRun {
   TaskRunId task_run_id = 1;
   google.protobuf.Timestamp time = 2;

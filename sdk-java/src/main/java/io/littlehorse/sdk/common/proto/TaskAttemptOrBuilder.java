@@ -8,21 +8,6 @@ public interface TaskAttemptOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>optional .littlehorse.VariableValue output = 1;</code>
-   * @return Whether the output field is set.
-   */
-  boolean hasOutput();
-  /**
-   * <code>optional .littlehorse.VariableValue output = 1;</code>
-   * @return The output.
-   */
-  io.littlehorse.sdk.common.proto.VariableValue getOutput();
-  /**
-   * <code>optional .littlehorse.VariableValue output = 1;</code>
-   */
-  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder();
-
-  /**
    * <code>optional .littlehorse.VariableValue log_output = 2;</code>
    * @return Whether the logOutput field is set.
    */
@@ -121,4 +106,51 @@ public interface TaskAttemptOrBuilder extends
    * @return The status.
    */
   io.littlehorse.sdk.common.proto.TaskStatus getStatus();
+
+  /**
+   * <code>.littlehorse.VariableValue output = 1;</code>
+   * @return Whether the output field is set.
+   */
+  boolean hasOutput();
+  /**
+   * <code>.littlehorse.VariableValue output = 1;</code>
+   * @return The output.
+   */
+  io.littlehorse.sdk.common.proto.VariableValue getOutput();
+  /**
+   * <code>.littlehorse.VariableValue output = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder();
+
+  /**
+   * <code>.littlehorse.LHTaskError error = 10;</code>
+   * @return Whether the error field is set.
+   */
+  boolean hasError();
+  /**
+   * <code>.littlehorse.LHTaskError error = 10;</code>
+   * @return The error.
+   */
+  io.littlehorse.sdk.common.proto.LHTaskError getError();
+  /**
+   * <code>.littlehorse.LHTaskError error = 10;</code>
+   */
+  io.littlehorse.sdk.common.proto.LHTaskErrorOrBuilder getErrorOrBuilder();
+
+  /**
+   * <code>.littlehorse.LHTaskException exception = 11;</code>
+   * @return Whether the exception field is set.
+   */
+  boolean hasException();
+  /**
+   * <code>.littlehorse.LHTaskException exception = 11;</code>
+   * @return The exception.
+   */
+  io.littlehorse.sdk.common.proto.LHTaskException getException();
+  /**
+   * <code>.littlehorse.LHTaskException exception = 11;</code>
+   */
+  io.littlehorse.sdk.common.proto.LHTaskExceptionOrBuilder getExceptionOrBuilder();
+
+  io.littlehorse.sdk.common.proto.TaskAttempt.ResultCase getResultCase();
 }

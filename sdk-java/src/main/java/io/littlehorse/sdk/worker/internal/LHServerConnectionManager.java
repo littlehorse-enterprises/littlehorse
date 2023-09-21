@@ -1,13 +1,16 @@
 package io.littlehorse.sdk.worker.internal;
 
+import com.google.common.base.Throwables;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionError;
-import io.littlehorse.sdk.common.exception.LHException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHTaskException;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
+import io.littlehorse.sdk.common.proto.LHTaskError;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
@@ -242,20 +245,31 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
             log.error("Failed calculating task input variables", exn);
             taskResult.setLogOutput(exnToVarVal(exn, wc));
             taskResult.setStatus(TaskStatus.TASK_INPUT_VAR_SUB_ERROR);
+            taskResult.setError(exnToTaskError(exn, taskResult.getStatus()));
         } catch (LHSerdeError exn) {
             log.error("Failed serializing Task Output", exn);
             taskResult.setLogOutput(exnToVarVal(exn, wc));
             taskResult.setStatus(TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR);
-        } catch (InvocationTargetException | LHException exn) {
-            log.error("Task Method threw an exception", exn.getCause());
-            taskResult.setLogOutput(exnToVarVal(exn.getCause(), wc));
-            taskResult.setStatus(TaskStatus.TASK_FAILED);
+            taskResult.setError(exnToTaskError(exn, taskResult.getStatus()));
+        } catch (InvocationTargetException exn) {
+            if (exn.getTargetException() instanceof LHTaskException) {
+                LHTaskException exception = (LHTaskException) exn.getTargetException();
+                log.error("Unexpected exception during task execution", exn);
+                taskResult.setLogOutput(exnToVarVal(exn, wc));
+                taskResult.setStatus(TaskStatus.TASK_EXCEPTION);
+                taskResult.setException(exnToTaskException(exception));
+            } else {
+                log.error("Task Method threw an exception", exn.getCause());
+                taskResult.setLogOutput(exnToVarVal(exn.getCause(), wc));
+                taskResult.setStatus(TaskStatus.TASK_FAILED);
+                taskResult.setError(exnToTaskError(exn, taskResult.getStatus()));
+            }
         } catch (Exception exn) {
             log.error("Unexpected exception during task execution", exn);
             taskResult.setLogOutput(exnToVarVal(exn, wc));
             taskResult.setStatus(TaskStatus.TASK_FAILED);
+            taskResult.setError(exnToTaskError(exn, taskResult.getStatus()));
         }
-
         taskResult.setTime(LHLibUtil.fromDate(new Date()));
         return taskResult.build();
     }
@@ -280,6 +294,40 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         }
 
         return VariableValue.newBuilder().setStr(output).setType(VariableType.STR);
+    }
+
+    private io.littlehorse.sdk.common.proto.LHTaskException exnToTaskException(LHTaskException exn) {
+        return io.littlehorse.sdk.common.proto.LHTaskException.newBuilder()
+                .setName(exn.getName())
+                .setMessage(Throwables.getStackTraceAsString(exn))
+                .build();
+    }
+
+    private LHTaskError exnToTaskError(Throwable throwable, TaskStatus taskStatus) {
+        return LHTaskError.newBuilder()
+                .setType(LHErrorType.TASK_FAILURE)
+                .setType(getFailureCodeFor(taskStatus))
+                .build();
+    }
+
+    private LHErrorType getFailureCodeFor(TaskStatus status) {
+        switch (status) {
+            case TASK_FAILED:
+                return LHErrorType.TASK_FAILURE;
+            case TASK_TIMEOUT:
+                return LHErrorType.TIMEOUT;
+            case TASK_OUTPUT_SERIALIZING_ERROR:
+                return LHErrorType.VAR_MUTATION_ERROR;
+            case TASK_INPUT_VAR_SUB_ERROR:
+                return LHErrorType.VAR_SUB_ERROR;
+            case TASK_CANCELLED:
+                return LHErrorType.USER_TASK_CANCELLED;
+            case TASK_RUNNING:
+            case TASK_SCHEDULED:
+            case TASK_SUCCESS:
+            case UNRECOGNIZED:
+        }
+        throw new IllegalArgumentException("Unexpected task status: " + status);
     }
 
     public int getNumThreads() {

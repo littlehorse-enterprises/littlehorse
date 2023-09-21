@@ -2,6 +2,8 @@ package io.littlehorse.common.model.getable.core.taskrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.corecommand.failure.LHTaskErrorModel;
+import io.littlehorse.common.model.corecommand.failure.LHTaskExceptionModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
@@ -23,6 +25,8 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
     private String taskWorkerId;
     private String taskWorkerVersion;
     private TaskStatus status;
+    private LHTaskExceptionModel exception;
+    private LHTaskErrorModel error;
 
     public TaskAttemptModel() {
         scheduleTime = new Date();
@@ -55,6 +59,8 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
         }
         taskWorkerId = p.getTaskWorkerId();
         status = p.getStatus();
+        if (p.hasError()) error = LHSerializable.fromProto(p.getError(), LHTaskErrorModel.class);
+        if (p.hasException()) exception = LHSerializable.fromProto(p.getException(), LHTaskExceptionModel.class);
     }
 
     public TaskAttempt.Builder toProto() {
@@ -81,9 +87,19 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
         if (endTime != null) {
             out.setEndTime(LHUtil.fromDate(endTime));
         }
+        if (error != null) {
+            out.setError(error.toProto());
+        }
+        if (exception != null) {
+            out.setException(exception.toProto());
+        }
 
         out.setStatus(status);
 
         return out;
+    }
+
+    public boolean containsException() {
+        return exception != null;
     }
 }
