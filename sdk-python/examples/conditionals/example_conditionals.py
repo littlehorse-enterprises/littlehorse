@@ -7,7 +7,7 @@ from littlehorse.config import LHConfig
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import Comparator, VariableMutationType
 from littlehorse.worker import LHTaskWorker
-from littlehorse.workflow import ThreadBuilder, Workflow
+from littlehorse.workflow import WorkflowThread, Workflow
 
 logging.basicConfig(level=logging.INFO)
 
@@ -39,21 +39,21 @@ class SaleService:
     async def keep_selling(self, amount: float) -> None:
         print(f"Keep selling, still missing ${GOAL-amount} to reach the goal")
 
-    def if_body(self, thread: ThreadBuilder) -> None:
-        thread.execute("reach-goal", thread.find_variable("total-sales"))
+    def if_body(self, wf: WorkflowThread) -> None:
+        wf.execute("reach-goal", wf.find_variable("total-sales"))
 
-    def else_body(self, thread: ThreadBuilder) -> None:
-        thread.execute("keep-selling", thread.find_variable("total-sales"))
+    def else_body(self, wf: WorkflowThread) -> None:
+        wf.execute("keep-selling", wf.find_variable("total-sales"))
 
-    def entrypoint(self, thread: ThreadBuilder) -> None:
-        amount = thread.add_variable("amount", VariableType.DOUBLE)
-        total_sales = thread.add_variable("total-sales", VariableType.DOUBLE)
-        output = thread.execute("sale", amount)
+    def entrypoint(self, wf: WorkflowThread) -> None:
+        amount = wf.add_variable("amount", VariableType.DOUBLE)
+        total_sales = wf.add_variable("total-sales", VariableType.DOUBLE)
+        output = wf.execute("sale", amount)
 
-        thread.mutate(total_sales, VariableMutationType.ASSIGN, output)
+        wf.mutate(total_sales, VariableMutationType.ASSIGN, output)
 
-        condition = thread.condition(total_sales, Comparator.GREATER_THAN_EQ, GOAL)
-        thread.do_if(condition, self.if_body, self.else_body)
+        condition = wf.condition(total_sales, Comparator.GREATER_THAN_EQ, GOAL)
+        wf.do_if(condition, self.if_body, self.else_body)
 
     def get_workflow(self) -> Workflow:
         return Workflow("example-conditionals", self.entrypoint)

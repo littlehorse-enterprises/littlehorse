@@ -7,7 +7,7 @@ from littlehorse.config import LHConfig
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import Comparator, VariableMutationType
 from littlehorse.worker import LHTaskWorker
-from littlehorse.workflow import ThreadBuilder, Workflow
+from littlehorse.workflow import WorkflowThread, Workflow
 
 logging.basicConfig(level=logging.INFO)
 
@@ -26,16 +26,16 @@ async def eat_donut(donuts_left: int) -> str:
     return msg
 
 
-def while_body(thread: ThreadBuilder) -> None:
-    donuts = thread.find_variable("number-of-donuts")
-    thread.mutate(donuts, VariableMutationType.SUBTRACT, 1)
-    thread.execute("eating-donut", donuts)
+def while_body(wf: WorkflowThread) -> None:
+    donuts = wf.find_variable("number-of-donuts")
+    wf.mutate(donuts, VariableMutationType.SUBTRACT, 1)
+    wf.execute("eating-donut", donuts)
 
 
-def entrypoint(thread: ThreadBuilder) -> None:
-    donuts = thread.add_variable("number-of-donuts", VariableType.INT)
-    condition = thread.condition(donuts, Comparator.GREATER_THAN, 0)
-    thread.do_while(condition, while_body)
+def entrypoint(wf: WorkflowThread) -> None:
+    donuts = wf.add_variable("number-of-donuts", VariableType.INT)
+    condition = wf.condition(donuts, Comparator.GREATER_THAN, 0)
+    wf.do_while(condition, while_body)
 
 
 def get_workflow() -> Workflow:

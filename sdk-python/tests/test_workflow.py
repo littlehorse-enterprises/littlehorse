@@ -29,7 +29,7 @@ from littlehorse.workflow import to_variable_assignment, LHErrorType
 
 from littlehorse.workflow import (
     NodeOutput,
-    ThreadBuilder,
+    WorkflowThread,
     WfRunVariable,
     Workflow,
 )
@@ -162,10 +162,10 @@ class TestWfRunVariable(unittest.TestCase):
 
 class TestThreadBuilder(unittest.TestCase):
     def test_compile_with_variables(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             thread.add_variable("input-name", VariableType.STR)
 
-        thread = ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+        thread = WorkflowThread(workflow=MagicMock(), initializer=my_entrypoint)
         self.assertEqual(
             thread.compile(),
             ThreadSpec(
@@ -181,12 +181,12 @@ class TestThreadBuilder(unittest.TestCase):
         )
 
     def test_find_variable_validate_input(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             thread.add_variable("my-variable", VariableType.STR)
             thread.find_variable("INPUT")
 
         with self.assertRaises(ValueError) as exception_context:
-            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+            WorkflowThread(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             "Variable INPUT unaccessible",
@@ -195,15 +195,15 @@ class TestThreadBuilder(unittest.TestCase):
 
     def test_do_if_else(self):
         class MyClass:
-            def if_condition(self, thread: ThreadBuilder) -> None:
+            def if_condition(self, thread: WorkflowThread) -> None:
                 thread.execute("task-a")
                 thread.execute("task-b")
 
-            def else_condition(self, thread: ThreadBuilder) -> None:
+            def else_condition(self, thread: WorkflowThread) -> None:
                 thread.execute("task-c")
                 thread.execute("task-d")
 
-            def my_entrypoint(self, thread: ThreadBuilder) -> None:
+            def my_entrypoint(self, thread: WorkflowThread) -> None:
                 thread.do_if(
                     thread.condition(20, Comparator.GREATER_THAN, 10),
                     self.if_condition,
@@ -211,7 +211,7 @@ class TestThreadBuilder(unittest.TestCase):
                 )
 
             def to_thread(self):
-                return ThreadBuilder(
+                return WorkflowThread(
                     workflow=MagicMock(), initializer=self.my_entrypoint
                 )
 
@@ -289,16 +289,16 @@ class TestThreadBuilder(unittest.TestCase):
 
     def test_do_if(self):
         class MyClass:
-            def my_condition(self, thread: ThreadBuilder) -> None:
+            def my_condition(self, thread: WorkflowThread) -> None:
                 thread.execute("my-task")
 
-            def my_entrypoint(self, thread: ThreadBuilder) -> None:
+            def my_entrypoint(self, thread: WorkflowThread) -> None:
                 thread.do_if(
                     thread.condition(4, Comparator.LESS_THAN, 5), self.my_condition
                 )
 
             def to_thread(self):
-                return ThreadBuilder(
+                return WorkflowThread(
                     workflow=MagicMock(), initializer=self.my_entrypoint
                 )
 
@@ -364,16 +364,16 @@ class TestThreadBuilder(unittest.TestCase):
 
     def test_do_while(self):
         class MyClass:
-            def my_condition(self, thread: ThreadBuilder) -> None:
+            def my_condition(self, thread: WorkflowThread) -> None:
                 thread.execute("my-task")
 
-            def my_entrypoint(self, thread: ThreadBuilder) -> None:
+            def my_entrypoint(self, thread: WorkflowThread) -> None:
                 thread.do_while(
                     thread.condition(4, Comparator.LESS_THAN, 5), self.my_condition
                 )
 
             def to_thread(self):
-                return ThreadBuilder(
+                return WorkflowThread(
                     workflow=MagicMock(), initializer=self.my_entrypoint
                 )
 
@@ -456,10 +456,10 @@ class TestThreadBuilder(unittest.TestCase):
         )
 
     def test_compile_with_task(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             thread.execute("greet")
 
-        thread = ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+        thread = WorkflowThread(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             thread.compile(),
@@ -479,11 +479,11 @@ class TestThreadBuilder(unittest.TestCase):
         )
 
     def test_compile_with_variables_and_task(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             the_name = thread.add_variable("input-name", VariableType.STR)
             thread.execute("greet", the_name)
 
-        thread = ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+        thread = WorkflowThread(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             thread.compile(),
@@ -507,10 +507,10 @@ class TestThreadBuilder(unittest.TestCase):
         )
 
     def test_compile_with_ext_event_no_timeout(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             thread.wait_for_event("my-event")
 
-        thread = ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+        thread = WorkflowThread(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             thread.compile(),
@@ -534,10 +534,10 @@ class TestThreadBuilder(unittest.TestCase):
         )
 
     def test_compile_with_ext_event(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             thread.wait_for_event("my-event", 3)
 
-        thread = ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+        thread = WorkflowThread(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             thread.compile(),
@@ -562,12 +562,12 @@ class TestThreadBuilder(unittest.TestCase):
         )
 
     def test_validate_variable_already_exists(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             thread.add_variable("input-name", VariableType.STR)
             thread.add_variable("input-name", VariableType.STR)
 
         with self.assertRaises(ValueError) as exception_context:
-            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+            WorkflowThread(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             "Variable input-name already added",
@@ -575,10 +575,10 @@ class TestThreadBuilder(unittest.TestCase):
         )
 
     def test_validate_is_active(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             thread.add_variable("input-name", VariableType.STR)
 
-        thread = ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+        thread = WorkflowThread(workflow=MagicMock(), initializer=my_entrypoint)
 
         with self.assertRaises(ReferenceError) as exception_context:
             thread.add_variable("new-input", VariableType.STR)
@@ -589,11 +589,11 @@ class TestThreadBuilder(unittest.TestCase):
         )
 
     def test_invalid_int_sleep(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             thread.sleep(0)
 
         with self.assertRaises(ValueError) as exception_context:
-            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+            WorkflowThread(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             "Value '0' not allowed",
@@ -601,21 +601,21 @@ class TestThreadBuilder(unittest.TestCase):
         )
 
     def test_valid_int_sleep(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             thread.sleep(1)
 
         try:
-            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+            WorkflowThread(workflow=MagicMock(), initializer=my_entrypoint)
         except Exception as e:
             self.fail(f"Exception was NOT expected: {e}")
 
     def test_invalid_variable_sleep(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             my_var = thread.add_variable("my-var", VariableType.STR)
             thread.sleep(my_var)
 
         with self.assertRaises(ValueError) as exception_context:
-            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+            WorkflowThread(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             "WfRunVariable must be VariableType.INT",
@@ -623,12 +623,12 @@ class TestThreadBuilder(unittest.TestCase):
         )
 
     def test_invalid_variable_sleep_until(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             my_var = thread.add_variable("my-var", VariableType.STR)
             thread.sleep_until(my_var)
 
         with self.assertRaises(ValueError) as exception_context:
-            ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+            WorkflowThread(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             "WfRunVariable must be VariableType.INT",
@@ -636,12 +636,12 @@ class TestThreadBuilder(unittest.TestCase):
         )
 
     def test_mutate_with_literal_value(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             value = thread.add_variable("value", VariableType.INT)
             thread.mutate(value, VariableMutationType.MULTIPLY, 2)
             thread.execute("result", value)
 
-        thread = ThreadBuilder(workflow=MagicMock(), initializer=my_entrypoint)
+        thread = WorkflowThread(workflow=MagicMock(), initializer=my_entrypoint)
 
         self.assertEqual(
             thread.compile(),
@@ -685,7 +685,7 @@ class TestWorkflow(unittest.TestCase):
         )
 
     def test_entrypoint_has_one_parameter(self):
-        def my_entrypoint(thread: ThreadBuilder, another: str) -> None:
+        def my_entrypoint(thread: WorkflowThread, another: str) -> None:
             pass
 
         with self.assertRaises(TypeError) as exception_context:
@@ -709,7 +709,7 @@ class TestWorkflow(unittest.TestCase):
         )
 
     def test_entrypoint_returns_none(self):
-        def my_entrypoint(thread: ThreadBuilder):
+        def my_entrypoint(thread: WorkflowThread):
             pass
 
         with self.assertRaises(TypeError) as exception_context:
@@ -721,7 +721,7 @@ class TestWorkflow(unittest.TestCase):
         )
 
     def test_validate_entrypoint(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             pass
 
         try:
@@ -730,7 +730,7 @@ class TestWorkflow(unittest.TestCase):
             self.fail(f"No exception expected != {type(e)}: {e}")
 
     def test_validate_thread_already_exists(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             pass
 
         wf = Workflow("my-wf", my_entrypoint)
@@ -746,7 +746,7 @@ class TestWorkflow(unittest.TestCase):
 
     def test_compile_with_function_as_class_member(self):
         class MyClass:
-            def my_entrypoint(self, thread: ThreadBuilder) -> None:
+            def my_entrypoint(self, thread: WorkflowThread) -> None:
                 thread.add_variable("input-name", VariableType.STR)
 
         my_class = MyClass()
@@ -757,10 +757,10 @@ class TestWorkflow(unittest.TestCase):
             self.fail(f"No exception expected != {type(e)}: {e}")
 
     def test_compile_with_interrupt(self):
-        def my_interrupt_handler(thread: ThreadBuilder) -> None:
+        def my_interrupt_handler(thread: WorkflowThread) -> None:
             thread.execute("interrupt-handler")
 
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             thread.add_interrupt_handler("interruption-event", my_interrupt_handler)
             thread.execute("my-task")
 
@@ -810,10 +810,10 @@ class TestWorkflow(unittest.TestCase):
         )
 
     def test_handle_any_failure(self):
-        def my_interrupt_handler(thread: ThreadBuilder) -> None:
+        def my_interrupt_handler(thread: WorkflowThread) -> None:
             thread.execute("my-task")
 
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             node = thread.execute("fail")
             thread.handle_any_failure(node, my_interrupt_handler)
             thread.execute("my-task")
@@ -865,10 +865,10 @@ class TestWorkflow(unittest.TestCase):
         )
 
     def test_handle_specific_exception(self):
-        def my_interrupt_handler(thread: ThreadBuilder) -> None:
+        def my_interrupt_handler(thread: WorkflowThread) -> None:
             thread.execute("my-task")
 
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             node = thread.execute("fail")
             thread.handle_exception(node, my_interrupt_handler, "my-exception")
             thread.execute("my-task")
@@ -921,10 +921,10 @@ class TestWorkflow(unittest.TestCase):
         )
 
     def test_handle_any_exception(self):
-        def my_interrupt_handler(thread: ThreadBuilder) -> None:
+        def my_interrupt_handler(thread: WorkflowThread) -> None:
             thread.execute("my-task")
 
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             node = thread.execute("fail")
             thread.handle_exception(node, my_interrupt_handler)
             thread.execute("my-task")
@@ -977,10 +977,10 @@ class TestWorkflow(unittest.TestCase):
         )
 
     def test_handle_any_error(self):
-        def my_interrupt_handler(thread: ThreadBuilder) -> None:
+        def my_interrupt_handler(thread: WorkflowThread) -> None:
             thread.execute("my-task")
 
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             node = thread.execute("fail")
             thread.handle_error(node, my_interrupt_handler)
             thread.execute("my-task")
@@ -1033,10 +1033,10 @@ class TestWorkflow(unittest.TestCase):
         )
 
     def test_handle_task_failure_error(self):
-        def my_interrupt_handler(thread: ThreadBuilder) -> None:
+        def my_interrupt_handler(thread: WorkflowThread) -> None:
             thread.execute("my-task")
 
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             node = thread.execute("fail")
             thread.handle_error(node, my_interrupt_handler, LHErrorType.TASK_ERROR)
             thread.execute("my-task")
@@ -1089,10 +1089,10 @@ class TestWorkflow(unittest.TestCase):
         )
 
     def test_find_variable_in_another_thread(self):
-        def my_handler(thread: ThreadBuilder) -> None:
+        def my_handler(thread: WorkflowThread) -> None:
             thread.find_variable("my-variable")
 
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             thread.add_variable("my-variable", VariableType.STR)
             thread.handle_error(thread.execute("my-task"), my_handler)
 
@@ -1103,7 +1103,7 @@ class TestWorkflow(unittest.TestCase):
             self.fail(f"Exception not expected: {e}")
 
     def test_compile_wf_with_variables(self):
-        def my_entrypoint(thread: ThreadBuilder) -> None:
+        def my_entrypoint(thread: WorkflowThread) -> None:
             thread.add_variable("input-name", VariableType.STR)
 
         wf = Workflow("my-wf", my_entrypoint)
@@ -1132,7 +1132,7 @@ class TestWorkflow(unittest.TestCase):
 
 class TestUserTasks(unittest.TestCase):
     def test_assign_to_user_id(self):
-        def wf_func(thread: ThreadBuilder) -> None:
+        def wf_func(thread: WorkflowThread) -> None:
             thread.assign_user_task("my-user-task", user_id="obi-wan")
 
         wf = Workflow("my-wf", wf_func).compile()
@@ -1146,7 +1146,7 @@ class TestUserTasks(unittest.TestCase):
         self.assertEqual(ut_node.user_id.literal_value.str, "obi-wan")
 
     def test_assign_to_user_group(self):
-        def wf_func(thread: ThreadBuilder) -> None:
+        def wf_func(thread: WorkflowThread) -> None:
             thread.assign_user_task("my-user-task", user_group="jedi")
 
         wf = Workflow("my-wf", wf_func).compile()
@@ -1160,7 +1160,7 @@ class TestUserTasks(unittest.TestCase):
         self.assertEqual(ut_node.user_group.literal_value.str, "jedi")
 
     def test_assign_to_user_and_group(self):
-        def wf_func(thread: ThreadBuilder) -> None:
+        def wf_func(thread: WorkflowThread) -> None:
             thread.assign_user_task("my-user-task", user_id="yoda", user_group="jedi")
 
         wf = Workflow("my-wf", wf_func).compile()
@@ -1175,7 +1175,7 @@ class TestUserTasks(unittest.TestCase):
         self.assertEqual(ut_node.user_id.literal_value.str, "yoda")
 
     def test_mutations(self):
-        def wf_func(thread: ThreadBuilder) -> None:
+        def wf_func(thread: WorkflowThread) -> None:
             var = thread.add_variable("my-var", VariableType.INT)
             ut_output = thread.assign_user_task("my-user-task", user_id="obi-wan")
             thread.mutate(var, VariableMutationType.ASSIGN, ut_output)
@@ -1193,7 +1193,7 @@ class TestUserTasks(unittest.TestCase):
         self.assertTrue(mutation.HasField("node_output"))
 
     def test_assign_to_variable_user_id(self):
-        def wf_func(thread: ThreadBuilder) -> None:
+        def wf_func(thread: WorkflowThread) -> None:
             userid = thread.add_variable("userid", VariableType.INT)
             thread.assign_user_task("my-user-task", user_id=userid)
 
@@ -1208,7 +1208,7 @@ class TestUserTasks(unittest.TestCase):
         self.assertEqual(ut_node.user_id.variable_name, "userid")
 
     def test_release_to_group(self):
-        def wf_func(thread: ThreadBuilder) -> None:
+        def wf_func(thread: WorkflowThread) -> None:
             uto = thread.assign_user_task(
                 "my-user-task",
                 user_id="asdf",
@@ -1233,7 +1233,7 @@ class TestUserTasks(unittest.TestCase):
         self.assertEqual(reassign.user_group.literal_value.str, "my-group")
 
     def test_reassign_to_user_str(self):
-        def wf_func(thread: ThreadBuilder) -> None:
+        def wf_func(thread: WorkflowThread) -> None:
             uto = thread.assign_user_task(
                 "my-user-task",
                 user_id="asdf",
@@ -1258,7 +1258,7 @@ class TestUserTasks(unittest.TestCase):
         self.assertFalse(reassign.HasField("user_group"))
 
     def test_reassign_to_user_var(self):
-        def wf_func(thread: ThreadBuilder) -> None:
+        def wf_func(thread: WorkflowThread) -> None:
             user_var = WfRunVariable("my-var", VariableType.STR)
             uto = thread.assign_user_task(
                 "my-user-task",
@@ -1284,7 +1284,7 @@ class TestUserTasks(unittest.TestCase):
         self.assertFalse(reassign.HasField("user_group"))
 
     def test_reassign_to_group(self):
-        def wf_func(thread: ThreadBuilder) -> None:
+        def wf_func(thread: WorkflowThread) -> None:
             user_var = WfRunVariable("my-var", VariableType.STR)
             uto = thread.assign_user_task(
                 "my-user-task",
@@ -1310,7 +1310,7 @@ class TestUserTasks(unittest.TestCase):
         self.assertFalse(reassign.HasField("user_id"))
 
     def test_reassign_to_user_with_group(self):
-        def wf_func(thread: ThreadBuilder) -> None:
+        def wf_func(thread: WorkflowThread) -> None:
             uto = thread.assign_user_task(
                 "my-user-task",
                 user_id="asdf",
@@ -1340,7 +1340,7 @@ class TestUserTasks(unittest.TestCase):
         self.assertEqual(reassign.user_id.literal_value.str, "yoda")
 
     def test_notes(self):
-        def wf_func(thread: ThreadBuilder) -> None:
+        def wf_func(thread: WorkflowThread) -> None:
             thread.assign_user_task(
                 "my-user-task",
                 user_id="asdf",
@@ -1357,7 +1357,7 @@ class TestUserTasks(unittest.TestCase):
 
 class FormatStringTest(unittest.TestCase):
     def test_format_string(self):
-        def wf_func(thread: ThreadBuilder) -> None:
+        def wf_func(thread: WorkflowThread) -> None:
             str_var = thread.add_variable("my-str", VariableType.STR)
             str_var2 = thread.add_variable("my-str-2", VariableType.STR)
             thread.execute("asdf", thread.format("hi {0} there {1}", str_var, str_var2))

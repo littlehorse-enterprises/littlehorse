@@ -7,7 +7,7 @@ import littlehorse
 from littlehorse.config import LHConfig
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.worker import LHTaskWorker, WorkerContext
-from littlehorse.workflow import ThreadBuilder, Workflow
+from littlehorse.workflow import WorkflowThread, Workflow
 
 logging.basicConfig(level=logging.INFO)
 
@@ -21,9 +21,9 @@ def get_config() -> LHConfig:
 
 
 def get_workflow() -> Workflow:
-    def my_entrypoint(thread: ThreadBuilder) -> None:
-        the_name = thread.add_variable("input-name", VariableType.STR)
-        thread.execute("greet", the_name)
+    def my_entrypoint(wf: WorkflowThread) -> None:
+        the_name = wf.add_variable("input-name", VariableType.STR)
+        wf.execute("greet", the_name)
 
     return Workflow("example-basic", my_entrypoint)
 

@@ -423,7 +423,7 @@ class WfRunVariable:
 
 
 class WaitForThreadsNodeOutput(NodeOutput):
-    def __init__(self, node_name: str, builder: "ThreadBuilder") -> None:
+    def __init__(self, node_name: str, builder: "WorkflowThread") -> None:
         super().__init__(node_name)
         self.node_name = node_name
         self.builder = builder
@@ -564,7 +564,7 @@ class UserTaskOutput(NodeOutput):
     def __init__(
         self,
         node_name: str,
-        thread: "ThreadBuilder",
+        thread: "WorkflowThread",
         user_task_def_name: str,
         user_id: Optional[Union[str, WfRunVariable]] = None,
         user_group: Optional[Union[str, WfRunVariable]] = None,
@@ -596,7 +596,7 @@ class UserTaskOutput(NodeOutput):
         return self
 
 
-class ThreadBuilder:
+class WorkflowThread:
     def __init__(self, workflow: "Workflow", initializer: "ThreadInitializer") -> None:
         """This is used to define the logic of a ThreadSpec in a ThreadInitializer.
 
@@ -780,7 +780,7 @@ class ThreadBuilder:
         if len(sig.parameters) != 1:
             raise TypeError("ThreadInitializer receives only one parameter")
 
-        if list(sig.parameters.values())[0].annotation is not ThreadBuilder:
+        if list(sig.parameters.values())[0].annotation is not WorkflowThread:
             raise TypeError("ThreadInitializer receives a ThreadBuilder")
 
         if sig.return_annotation is not None:
@@ -1339,7 +1339,7 @@ class ThreadBuilder:
             )
 
 
-ThreadInitializer = Callable[[ThreadBuilder], None]
+ThreadInitializer = Callable[[WorkflowThread], None]
 
 
 class Workflow:
@@ -1361,7 +1361,7 @@ class Workflow:
         self.retention_hours = retention_hours
         self._entrypoint = entrypoint
         self._thread_initializers: list[tuple[str, ThreadInitializer]] = []
-        self._builders: list[ThreadBuilder] = []
+        self._builders: list[WorkflowThread] = []
 
     def add_sub_thread(self, name: str, initializer: ThreadInitializer) -> str:
         """Add a subthread.
@@ -1406,7 +1406,7 @@ class Workflow:
         thread_specs: dict[str, ThreadSpec] = {}
 
         for name, initializer in threads_iterator:
-            builder = ThreadBuilder(self, initializer)
+            builder = WorkflowThread(self, initializer)
             thread_specs[name] = builder.compile()
 
         self._thread_initializers = []
