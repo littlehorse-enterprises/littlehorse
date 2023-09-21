@@ -15,18 +15,4 @@ public class MyWorker {
         return "hello there, " + name;
     }
 
-    @LHTaskMethod("business-exception-failure")
-    public String taskException() throws LHTaskException {
-        throw new LHTaskException("this-is-exception", "");
-    }
-    @LHTaskMethod("my-handler")
-    public String handler() {
-        log.debug("Executing task greet");
-        return "hello there,";
-    }
-    @LHTaskMethod("my-task")
-    public String task() {
-        log.debug("Executing task greet");
-        return "hello there, ";
-    }
 }

@@ -254,7 +254,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         } catch (InvocationTargetException exn) {
             if (exn.getTargetException() instanceof LHTaskException) {
                 LHTaskException exception = (LHTaskException) exn.getTargetException();
-                log.error("Unexpected exception during task execution", exn);
+                log.error("Task Method threw a Business Exception", exn);
                 taskResult.setLogOutput(exnToVarVal(exn, wc));
                 taskResult.setStatus(TaskStatus.TASK_EXCEPTION);
                 taskResult.setException(exnToTaskException(exception));
