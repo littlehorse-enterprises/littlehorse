@@ -240,7 +240,7 @@ public class FailureHandlingTest {
 
     @LHTaskMethod("business-exception-failure")
     public String businessExceptionFailure() throws LHException {
-        throw new LHException("This is a business exception!");
+        throw new LHException("client-exception", "This is a business exception!");
     }
 
     @LHTaskMethod("my-handler")
