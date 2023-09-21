@@ -1,6 +1,5 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.common.exception.LHTaskException;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
