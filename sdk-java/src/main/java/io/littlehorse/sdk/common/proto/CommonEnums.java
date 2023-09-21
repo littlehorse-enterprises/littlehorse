@@ -35,10 +35,15 @@ public final class CommonEnums {
       "WindowLength\022\r\n\tMINUTES_5\020\000\022\013\n\007HOURS_2\020\001" +
       "\022\n\n\006DAYS_1\020\002*g\n\014VariableType\022\014\n\010JSON_OBJ" +
       "\020\000\022\014\n\010JSON_ARR\020\001\022\n\n\006DOUBLE\020\002\022\010\n\004BOOL\020\003\022\007" +
-      "\n\003STR\020\004\022\007\n\003INT\020\005\022\t\n\005BYTES\020\006\022\010\n\004NULL\020\007*+\n" +
-      "\024WaitForThreadsPolicy\022\023\n\017STOP_ON_FAILURE" +
-      "\020\000B,\n\037io.littlehorse.sdk.common.protoP\001Z" +
-      "\007.;modelb\006proto3"
+      "\n\003STR\020\004\022\007\n\003INT\020\005\022\t\n\005BYTES\020\006\022\010\n\004NULL\020\007*\266\001" +
+      "\n\013LHErrorType\022\021\n\rCHILD_FAILURE\020\000\022\021\n\rVAR_" +
+      "SUB_ERROR\020\001\022\026\n\022VAR_MUTATION_ERROR\020\002\022\027\n\023U" +
+      "SER_TASK_CANCELLED\020\003\022\013\n\007TIMEOUT\020\004\022\020\n\014TAS" +
+      "K_FAILURE\020\005\022\r\n\tVAR_ERROR\020\006\022\016\n\nTASK_ERROR" +
+      "\020\007\022\022\n\016INTERNAL_ERROR\020\010*+\n\024WaitForThreads" +
+      "Policy\022\023\n\017STOP_ON_FAILURE\020\000B,\n\037io.little" +
+      "horse.sdk.common.protoP\001Z\007.;modelb\006proto" +
+      "3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

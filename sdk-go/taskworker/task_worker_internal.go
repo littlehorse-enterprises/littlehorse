@@ -362,7 +362,7 @@ func (m *serverConnectionManager) doTaskHelper(task *model.ScheduledTask) *model
 				taskResult.Status = model.TaskStatus_TASK_OUTPUT_SERIALIZING_ERROR
 				return taskResult
 			}
-			taskResult.Output = taskOutputVarVal
+			taskResult.Result = &model.ReportTaskRun_Output{Output: taskOutputVarVal}
 			if workerContext.GetLogOutput() != "" {
 				msg := workerContext.GetLogOutput()
 				taskResult.LogOutput = &model.VariableValue{
