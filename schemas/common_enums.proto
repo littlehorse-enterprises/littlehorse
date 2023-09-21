@@ -45,6 +45,18 @@ enum VariableType {
   NULL = 7;
 }
 
+enum LHErrorType {
+  CHILD_FAILURE = 0;
+  VAR_SUB_ERROR = 1;
+  VAR_MUTATION_ERROR = 2;
+  USER_TASK_CANCELLED = 3;
+  TIMEOUT = 4;
+  TASK_FAILURE = 5;
+  VAR_ERROR = 6;
+  TASK_ERROR = 7;
+  INTERNAL_ERROR = 8;
+}
+
 enum WaitForThreadsPolicy{
   STOP_ON_FAILURE = 0;
 }

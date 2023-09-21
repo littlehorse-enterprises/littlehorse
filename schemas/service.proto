@@ -353,14 +353,28 @@ message PollTaskResponse {
   optional ScheduledTask result = 1;
 }
 
+message LHTaskError {
+  LHErrorType type = 1;
+  string message = 2;
+}
+
+message LHTaskException {
+  string name = 1;
+  string message = 2;
+}
+
 message ReportTaskRun {
   TaskRunId task_run_id = 1;
   google.protobuf.Timestamp time = 2;
   TaskStatus status = 3;
-  optional VariableValue output = 4;
   optional VariableValue log_output = 5;
   int32 attempt_number = 6;
-  optional string exception_name = 7;
+  oneof result {
+    VariableValue output = 4;
+    LHTaskError error = 7;
+    LHTaskException exception = 8;
+  }
+
 }
 
 message StopWfRunRequest {

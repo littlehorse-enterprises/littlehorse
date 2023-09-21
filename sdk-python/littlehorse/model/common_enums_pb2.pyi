@@ -43,6 +43,18 @@ class VariableType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     BYTES: _ClassVar[VariableType]
     NULL: _ClassVar[VariableType]
 
+class LHErrorType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    CHILD_FAILURE: _ClassVar[LHErrorType]
+    VAR_SUB_ERROR: _ClassVar[LHErrorType]
+    VAR_MUTATION_ERROR: _ClassVar[LHErrorType]
+    USER_TASK_CANCELLED: _ClassVar[LHErrorType]
+    TIMEOUT: _ClassVar[LHErrorType]
+    TASK_FAILURE: _ClassVar[LHErrorType]
+    VAR_ERROR: _ClassVar[LHErrorType]
+    TASK_ERROR: _ClassVar[LHErrorType]
+    INTERNAL_ERROR: _ClassVar[LHErrorType]
+
 class WaitForThreadsPolicy(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
     STOP_ON_FAILURE: _ClassVar[WaitForThreadsPolicy]
@@ -73,4 +85,13 @@ STR: VariableType
 INT: VariableType
 BYTES: VariableType
 NULL: VariableType
+CHILD_FAILURE: LHErrorType
+VAR_SUB_ERROR: LHErrorType
+VAR_MUTATION_ERROR: LHErrorType
+USER_TASK_CANCELLED: LHErrorType
+TIMEOUT: LHErrorType
+TASK_FAILURE: LHErrorType
+VAR_ERROR: LHErrorType
+TASK_ERROR: LHErrorType
+INTERNAL_ERROR: LHErrorType
 STOP_ON_FAILURE: WaitForThreadsPolicy
