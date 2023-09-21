@@ -9,7 +9,6 @@ import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +50,7 @@ public class BasicExample {
         LHTaskWorker worker = new LHTaskWorker(executable, "greet", config);
 
         // Gracefully shutdown
+        Runtime.getRuntime().addShutdownHook(new Thread(worker::close));
         return worker;
     }
 
