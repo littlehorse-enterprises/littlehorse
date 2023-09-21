@@ -405,7 +405,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
         }
 
         while (statusChanged) {
-            statusChanged = startXnHandlersAndInterrupts(time) || statusChanged;
+            startXnHandlersAndInterrupts(time);
             statusChanged = false;
             for (int i = threadRunModels.size() - 1; i >= 0; i--) {
                 ThreadRunModel thread = threadRunModels.get(i);

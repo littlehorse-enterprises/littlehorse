@@ -24,6 +24,7 @@ class TaskStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     TASK_OUTPUT_SERIALIZING_ERROR: _ClassVar[TaskStatus]
     TASK_INPUT_VAR_SUB_ERROR: _ClassVar[TaskStatus]
     TASK_CANCELLED: _ClassVar[TaskStatus]
+    TASK_EXCEPTION: _ClassVar[TaskStatus]
 
 class MetricsWindowLength(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
@@ -41,6 +42,18 @@ class VariableType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     INT: _ClassVar[VariableType]
     BYTES: _ClassVar[VariableType]
     NULL: _ClassVar[VariableType]
+
+class LHErrorType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    CHILD_FAILURE: _ClassVar[LHErrorType]
+    VAR_SUB_ERROR: _ClassVar[LHErrorType]
+    VAR_MUTATION_ERROR: _ClassVar[LHErrorType]
+    USER_TASK_CANCELLED: _ClassVar[LHErrorType]
+    TIMEOUT: _ClassVar[LHErrorType]
+    TASK_FAILURE: _ClassVar[LHErrorType]
+    VAR_ERROR: _ClassVar[LHErrorType]
+    TASK_ERROR: _ClassVar[LHErrorType]
+    INTERNAL_ERROR: _ClassVar[LHErrorType]
 
 class WaitForThreadsPolicy(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
@@ -60,6 +73,7 @@ TASK_TIMEOUT: TaskStatus
 TASK_OUTPUT_SERIALIZING_ERROR: TaskStatus
 TASK_INPUT_VAR_SUB_ERROR: TaskStatus
 TASK_CANCELLED: TaskStatus
+TASK_EXCEPTION: TaskStatus
 MINUTES_5: MetricsWindowLength
 HOURS_2: MetricsWindowLength
 DAYS_1: MetricsWindowLength
@@ -71,4 +85,13 @@ STR: VariableType
 INT: VariableType
 BYTES: VariableType
 NULL: VariableType
+CHILD_FAILURE: LHErrorType
+VAR_SUB_ERROR: LHErrorType
+VAR_MUTATION_ERROR: LHErrorType
+USER_TASK_CANCELLED: LHErrorType
+TIMEOUT: LHErrorType
+TASK_FAILURE: LHErrorType
+VAR_ERROR: LHErrorType
+TASK_ERROR: LHErrorType
+INTERNAL_ERROR: LHErrorType
 STOP_ON_FAILURE: WaitForThreadsPolicy

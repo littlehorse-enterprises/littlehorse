@@ -246,6 +246,8 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         attempt.setLogOutput(ce.getStderr());
         attempt.setStatus(ce.getStatus());
         attempt.setEndTime(ce.getTime());
+        attempt.setError(ce.getError());
+        attempt.setException(ce.getException());
 
         if (ce.getStatus() == TaskStatus.TASK_SUCCESS) {
             // Tell the WfRun that the TaskRun is done.

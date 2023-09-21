@@ -1,5 +1,6 @@
 package e2e;
 
+import io.littlehorse.sdk.common.exception.LHTaskException;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -33,6 +34,9 @@ public class FailureHandlingTest {
     @LHWorkflow("handle-any-exception-wf")
     private Workflow handleAnyExceptionWf;
 
+    @LHWorkflow("handle-client-specific-exception")
+    private Workflow handleClientSpecificException;
+
     @LHWorkflow("handle-any-error-wf")
     private Workflow handleAnyErrorWf;
 
@@ -47,7 +51,6 @@ public class FailureHandlingTest {
                 .waitForNodeRunStatus(0, 1, LHStatus.ERROR)
                 .waitForNodeRunStatus(1, 1, LHStatus.COMPLETED)
                 .waitForNodeRunStatus(0, 3, LHStatus.COMPLETED)
-                .waitForStatus(LHStatus.COMPLETED)
                 .start();
     }
 
@@ -74,6 +77,14 @@ public class FailureHandlingTest {
             workflowVerifier
                     .prepareRun(handleAnyExceptionWf, Arg.of("fail-with-user-defined-exception", false))
                     .waitForStatus(LHStatus.ERROR)
+                    .start();
+        }
+
+        @Test
+        public void shouldHandleTaskException() {
+            workflowVerifier
+                    .prepareRun(handleClientSpecificException)
+                    .waitForStatus(LHStatus.COMPLETED)
                     .start();
         }
     }
@@ -122,6 +133,17 @@ public class FailureHandlingTest {
         return new WorkflowImpl("handle-error-wf", thread -> {
             NodeOutput node = thread.execute("fail");
             thread.handleError(node, handler -> {
+                handler.execute("my-handler");
+            });
+            thread.execute("my-task");
+        });
+    }
+
+    @LHWorkflow("handle-client-specific-exception")
+    public Workflow handleClientSpecificException() {
+        return new WorkflowImpl("handle-client-specific-exception", thread -> {
+            NodeOutput node = thread.execute("business-exception-failure");
+            thread.handleException(node, handler -> {
                 handler.execute("my-handler");
             });
             thread.execute("my-task");
@@ -213,6 +235,11 @@ public class FailureHandlingTest {
     @LHTaskMethod("fail")
     public String fail() {
         throw new RuntimeException("something went wrong!");
+    }
+
+    @LHTaskMethod("business-exception-failure")
+    public String businessExceptionFailure() throws LHTaskException {
+        throw new LHTaskException("client-exception", "This is a business exception!");
     }
 
     @LHTaskMethod("my-handler")

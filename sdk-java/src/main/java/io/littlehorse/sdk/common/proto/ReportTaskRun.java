@@ -40,6 +40,50 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
+  private int resultCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object result_;
+  public enum ResultCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    OUTPUT(4),
+    ERROR(7),
+    EXCEPTION(8),
+    RESULT_NOT_SET(0);
+    private final int value;
+    private ResultCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static ResultCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static ResultCase forNumber(int value) {
+      switch (value) {
+        case 4: return OUTPUT;
+        case 7: return ERROR;
+        case 8: return EXCEPTION;
+        case 0: return RESULT_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public ResultCase
+  getResultCase() {
+    return ResultCase.forNumber(
+        resultCase_);
+  }
+
   public static final int TASK_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskRunId taskRunId_;
   /**
@@ -110,32 +154,6 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.sdk.common.proto.TaskStatus.UNRECOGNIZED : result;
   }
 
-  public static final int OUTPUT_FIELD_NUMBER = 4;
-  private io.littlehorse.sdk.common.proto.VariableValue output_;
-  /**
-   * <code>optional .littlehorse.VariableValue output = 4;</code>
-   * @return Whether the output field is set.
-   */
-  @java.lang.Override
-  public boolean hasOutput() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <code>optional .littlehorse.VariableValue output = 4;</code>
-   * @return The output.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableValue getOutput() {
-    return output_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : output_;
-  }
-  /**
-   * <code>optional .littlehorse.VariableValue output = 4;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder() {
-    return output_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : output_;
-  }
-
   public static final int LOG_OUTPUT_FIELD_NUMBER = 5;
   private io.littlehorse.sdk.common.proto.VariableValue logOutput_;
   /**
@@ -144,7 +162,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasLogOutput() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return ((bitField0_ & 0x00000001) != 0);
   }
   /**
    * <code>optional .littlehorse.VariableValue log_output = 5;</code>
@@ -173,6 +191,99 @@ private static final long serialVersionUID = 0L;
     return attemptNumber_;
   }
 
+  public static final int OUTPUT_FIELD_NUMBER = 4;
+  /**
+   * <code>.littlehorse.VariableValue output = 4;</code>
+   * @return Whether the output field is set.
+   */
+  @java.lang.Override
+  public boolean hasOutput() {
+    return resultCase_ == 4;
+  }
+  /**
+   * <code>.littlehorse.VariableValue output = 4;</code>
+   * @return The output.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableValue getOutput() {
+    if (resultCase_ == 4) {
+       return (io.littlehorse.sdk.common.proto.VariableValue) result_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.VariableValue output = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder() {
+    if (resultCase_ == 4) {
+       return (io.littlehorse.sdk.common.proto.VariableValue) result_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
+  }
+
+  public static final int ERROR_FIELD_NUMBER = 7;
+  /**
+   * <code>.littlehorse.LHTaskError error = 7;</code>
+   * @return Whether the error field is set.
+   */
+  @java.lang.Override
+  public boolean hasError() {
+    return resultCase_ == 7;
+  }
+  /**
+   * <code>.littlehorse.LHTaskError error = 7;</code>
+   * @return The error.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LHTaskError getError() {
+    if (resultCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.LHTaskError) result_;
+    }
+    return io.littlehorse.sdk.common.proto.LHTaskError.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.LHTaskError error = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LHTaskErrorOrBuilder getErrorOrBuilder() {
+    if (resultCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.LHTaskError) result_;
+    }
+    return io.littlehorse.sdk.common.proto.LHTaskError.getDefaultInstance();
+  }
+
+  public static final int EXCEPTION_FIELD_NUMBER = 8;
+  /**
+   * <code>.littlehorse.LHTaskException exception = 8;</code>
+   * @return Whether the exception field is set.
+   */
+  @java.lang.Override
+  public boolean hasException() {
+    return resultCase_ == 8;
+  }
+  /**
+   * <code>.littlehorse.LHTaskException exception = 8;</code>
+   * @return The exception.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LHTaskException getException() {
+    if (resultCase_ == 8) {
+       return (io.littlehorse.sdk.common.proto.LHTaskException) result_;
+    }
+    return io.littlehorse.sdk.common.proto.LHTaskException.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.LHTaskException exception = 8;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LHTaskExceptionOrBuilder getExceptionOrBuilder() {
+    if (resultCase_ == 8) {
+       return (io.littlehorse.sdk.common.proto.LHTaskException) result_;
+    }
+    return io.littlehorse.sdk.common.proto.LHTaskException.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -196,14 +307,20 @@ private static final long serialVersionUID = 0L;
     if (status_ != io.littlehorse.sdk.common.proto.TaskStatus.TASK_SCHEDULED.getNumber()) {
       output.writeEnum(3, status_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(4, getOutput());
+    if (resultCase_ == 4) {
+      output.writeMessage(4, (io.littlehorse.sdk.common.proto.VariableValue) result_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(5, getLogOutput());
     }
     if (attemptNumber_ != 0) {
       output.writeInt32(6, attemptNumber_);
+    }
+    if (resultCase_ == 7) {
+      output.writeMessage(7, (io.littlehorse.sdk.common.proto.LHTaskError) result_);
+    }
+    if (resultCase_ == 8) {
+      output.writeMessage(8, (io.littlehorse.sdk.common.proto.LHTaskException) result_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -226,17 +343,25 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(3, status_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (resultCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getOutput());
+        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.VariableValue) result_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, getLogOutput());
     }
     if (attemptNumber_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(6, attemptNumber_);
+    }
+    if (resultCase_ == 7) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, (io.littlehorse.sdk.common.proto.LHTaskError) result_);
+    }
+    if (resultCase_ == 8) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(8, (io.littlehorse.sdk.common.proto.LHTaskException) result_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -264,11 +389,6 @@ private static final long serialVersionUID = 0L;
           .equals(other.getTime())) return false;
     }
     if (status_ != other.status_) return false;
-    if (hasOutput() != other.hasOutput()) return false;
-    if (hasOutput()) {
-      if (!getOutput()
-          .equals(other.getOutput())) return false;
-    }
     if (hasLogOutput() != other.hasLogOutput()) return false;
     if (hasLogOutput()) {
       if (!getLogOutput()
@@ -276,6 +396,23 @@ private static final long serialVersionUID = 0L;
     }
     if (getAttemptNumber()
         != other.getAttemptNumber()) return false;
+    if (!getResultCase().equals(other.getResultCase())) return false;
+    switch (resultCase_) {
+      case 4:
+        if (!getOutput()
+            .equals(other.getOutput())) return false;
+        break;
+      case 7:
+        if (!getError()
+            .equals(other.getError())) return false;
+        break;
+      case 8:
+        if (!getException()
+            .equals(other.getException())) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -297,16 +434,28 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + status_;
-    if (hasOutput()) {
-      hash = (37 * hash) + OUTPUT_FIELD_NUMBER;
-      hash = (53 * hash) + getOutput().hashCode();
-    }
     if (hasLogOutput()) {
       hash = (37 * hash) + LOG_OUTPUT_FIELD_NUMBER;
       hash = (53 * hash) + getLogOutput().hashCode();
     }
     hash = (37 * hash) + ATTEMPT_NUMBER_FIELD_NUMBER;
     hash = (53 * hash) + getAttemptNumber();
+    switch (resultCase_) {
+      case 4:
+        hash = (37 * hash) + OUTPUT_FIELD_NUMBER;
+        hash = (53 * hash) + getOutput().hashCode();
+        break;
+      case 7:
+        hash = (37 * hash) + ERROR_FIELD_NUMBER;
+        hash = (53 * hash) + getError().hashCode();
+        break;
+      case 8:
+        hash = (37 * hash) + EXCEPTION_FIELD_NUMBER;
+        hash = (53 * hash) + getException().hashCode();
+        break;
+      case 0:
+      default:
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -439,7 +588,6 @@ private static final long serialVersionUID = 0L;
               .alwaysUseFieldBuilders) {
         getTaskRunIdFieldBuilder();
         getTimeFieldBuilder();
-        getOutputFieldBuilder();
         getLogOutputFieldBuilder();
       }
     }
@@ -458,17 +606,23 @@ private static final long serialVersionUID = 0L;
         timeBuilder_ = null;
       }
       status_ = 0;
-      output_ = null;
-      if (outputBuilder_ != null) {
-        outputBuilder_.dispose();
-        outputBuilder_ = null;
-      }
       logOutput_ = null;
       if (logOutputBuilder_ != null) {
         logOutputBuilder_.dispose();
         logOutputBuilder_ = null;
       }
       attemptNumber_ = 0;
+      if (outputBuilder_ != null) {
+        outputBuilder_.clear();
+      }
+      if (errorBuilder_ != null) {
+        errorBuilder_.clear();
+      }
+      if (exceptionBuilder_ != null) {
+        exceptionBuilder_.clear();
+      }
+      resultCase_ = 0;
+      result_ = null;
       return this;
     }
 
@@ -496,6 +650,7 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.ReportTaskRun buildPartial() {
       io.littlehorse.sdk.common.proto.ReportTaskRun result = new io.littlehorse.sdk.common.proto.ReportTaskRun(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
@@ -517,21 +672,32 @@ private static final long serialVersionUID = 0L;
       }
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.output_ = outputBuilder_ == null
-            ? output_
-            : outputBuilder_.build();
-        to_bitField0_ |= 0x00000001;
-      }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
         result.logOutput_ = logOutputBuilder_ == null
             ? logOutput_
             : logOutputBuilder_.build();
-        to_bitField0_ |= 0x00000002;
+        to_bitField0_ |= 0x00000001;
       }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
+      if (((from_bitField0_ & 0x00000010) != 0)) {
         result.attemptNumber_ = attemptNumber_;
       }
       result.bitField0_ |= to_bitField0_;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.ReportTaskRun result) {
+      result.resultCase_ = resultCase_;
+      result.result_ = this.result_;
+      if (resultCase_ == 4 &&
+          outputBuilder_ != null) {
+        result.result_ = outputBuilder_.build();
+      }
+      if (resultCase_ == 7 &&
+          errorBuilder_ != null) {
+        result.result_ = errorBuilder_.build();
+      }
+      if (resultCase_ == 8 &&
+          exceptionBuilder_ != null) {
+        result.result_ = exceptionBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -587,14 +753,28 @@ private static final long serialVersionUID = 0L;
       if (other.status_ != 0) {
         setStatusValue(other.getStatusValue());
       }
-      if (other.hasOutput()) {
-        mergeOutput(other.getOutput());
-      }
       if (other.hasLogOutput()) {
         mergeLogOutput(other.getLogOutput());
       }
       if (other.getAttemptNumber() != 0) {
         setAttemptNumber(other.getAttemptNumber());
+      }
+      switch (other.getResultCase()) {
+        case OUTPUT: {
+          mergeOutput(other.getOutput());
+          break;
+        }
+        case ERROR: {
+          mergeError(other.getError());
+          break;
+        }
+        case EXCEPTION: {
+          mergeException(other.getException());
+          break;
+        }
+        case RESULT_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -645,21 +825,35 @@ private static final long serialVersionUID = 0L;
               input.readMessage(
                   getOutputFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000008;
+              resultCase_ = 4;
               break;
             } // case 34
             case 42: {
               input.readMessage(
                   getLogOutputFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000008;
               break;
             } // case 42
             case 48: {
               attemptNumber_ = input.readInt32();
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000010;
               break;
             } // case 48
+            case 58: {
+              input.readMessage(
+                  getErrorFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              resultCase_ = 7;
+              break;
+            } // case 58
+            case 66: {
+              input.readMessage(
+                  getExceptionFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              resultCase_ = 8;
+              break;
+            } // case 66
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -675,6 +869,21 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int resultCase_ = 0;
+    private java.lang.Object result_;
+    public ResultCase
+        getResultCase() {
+      return ResultCase.forNumber(
+          resultCase_);
+    }
+
+    public Builder clearResult() {
+      resultCase_ = 0;
+      result_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
     private io.littlehorse.sdk.common.proto.TaskRunId taskRunId_;
@@ -968,125 +1177,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.sdk.common.proto.VariableValue output_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> outputBuilder_;
-    /**
-     * <code>optional .littlehorse.VariableValue output = 4;</code>
-     * @return Whether the output field is set.
-     */
-    public boolean hasOutput() {
-      return ((bitField0_ & 0x00000008) != 0);
-    }
-    /**
-     * <code>optional .littlehorse.VariableValue output = 4;</code>
-     * @return The output.
-     */
-    public io.littlehorse.sdk.common.proto.VariableValue getOutput() {
-      if (outputBuilder_ == null) {
-        return output_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : output_;
-      } else {
-        return outputBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>optional .littlehorse.VariableValue output = 4;</code>
-     */
-    public Builder setOutput(io.littlehorse.sdk.common.proto.VariableValue value) {
-      if (outputBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        output_ = value;
-      } else {
-        outputBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.VariableValue output = 4;</code>
-     */
-    public Builder setOutput(
-        io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
-      if (outputBuilder_ == null) {
-        output_ = builderForValue.build();
-      } else {
-        outputBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.VariableValue output = 4;</code>
-     */
-    public Builder mergeOutput(io.littlehorse.sdk.common.proto.VariableValue value) {
-      if (outputBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0) &&
-          output_ != null &&
-          output_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
-          getOutputBuilder().mergeFrom(value);
-        } else {
-          output_ = value;
-        }
-      } else {
-        outputBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.VariableValue output = 4;</code>
-     */
-    public Builder clearOutput() {
-      bitField0_ = (bitField0_ & ~0x00000008);
-      output_ = null;
-      if (outputBuilder_ != null) {
-        outputBuilder_.dispose();
-        outputBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.VariableValue output = 4;</code>
-     */
-    public io.littlehorse.sdk.common.proto.VariableValue.Builder getOutputBuilder() {
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return getOutputFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>optional .littlehorse.VariableValue output = 4;</code>
-     */
-    public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder() {
-      if (outputBuilder_ != null) {
-        return outputBuilder_.getMessageOrBuilder();
-      } else {
-        return output_ == null ?
-            io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : output_;
-      }
-    }
-    /**
-     * <code>optional .littlehorse.VariableValue output = 4;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
-        getOutputFieldBuilder() {
-      if (outputBuilder_ == null) {
-        outputBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder>(
-                getOutput(),
-                getParentForChildren(),
-                isClean());
-        output_ = null;
-      }
-      return outputBuilder_;
-    }
-
     private io.littlehorse.sdk.common.proto.VariableValue logOutput_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> logOutputBuilder_;
@@ -1095,7 +1185,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the logOutput field is set.
      */
     public boolean hasLogOutput() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>optional .littlehorse.VariableValue log_output = 5;</code>
@@ -1120,7 +1210,7 @@ private static final long serialVersionUID = 0L;
       } else {
         logOutputBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1134,7 +1224,7 @@ private static final long serialVersionUID = 0L;
       } else {
         logOutputBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1143,7 +1233,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeLogOutput(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (logOutputBuilder_ == null) {
-        if (((bitField0_ & 0x00000010) != 0) &&
+        if (((bitField0_ & 0x00000008) != 0) &&
           logOutput_ != null &&
           logOutput_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
           getLogOutputBuilder().mergeFrom(value);
@@ -1153,7 +1243,7 @@ private static final long serialVersionUID = 0L;
       } else {
         logOutputBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1161,7 +1251,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.VariableValue log_output = 5;</code>
      */
     public Builder clearLogOutput() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000008);
       logOutput_ = null;
       if (logOutputBuilder_ != null) {
         logOutputBuilder_.dispose();
@@ -1174,7 +1264,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.VariableValue log_output = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getLogOutputBuilder() {
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return getLogOutputFieldBuilder().getBuilder();
     }
@@ -1223,7 +1313,7 @@ private static final long serialVersionUID = 0L;
     public Builder setAttemptNumber(int value) {
 
       attemptNumber_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1232,10 +1322,436 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearAttemptNumber() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000010);
       attemptNumber_ = 0;
       onChanged();
       return this;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> outputBuilder_;
+    /**
+     * <code>.littlehorse.VariableValue output = 4;</code>
+     * @return Whether the output field is set.
+     */
+    @java.lang.Override
+    public boolean hasOutput() {
+      return resultCase_ == 4;
+    }
+    /**
+     * <code>.littlehorse.VariableValue output = 4;</code>
+     * @return The output.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableValue getOutput() {
+      if (outputBuilder_ == null) {
+        if (resultCase_ == 4) {
+          return (io.littlehorse.sdk.common.proto.VariableValue) result_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
+      } else {
+        if (resultCase_ == 4) {
+          return outputBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.VariableValue output = 4;</code>
+     */
+    public Builder setOutput(io.littlehorse.sdk.common.proto.VariableValue value) {
+      if (outputBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        result_ = value;
+        onChanged();
+      } else {
+        outputBuilder_.setMessage(value);
+      }
+      resultCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableValue output = 4;</code>
+     */
+    public Builder setOutput(
+        io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
+      if (outputBuilder_ == null) {
+        result_ = builderForValue.build();
+        onChanged();
+      } else {
+        outputBuilder_.setMessage(builderForValue.build());
+      }
+      resultCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableValue output = 4;</code>
+     */
+    public Builder mergeOutput(io.littlehorse.sdk.common.proto.VariableValue value) {
+      if (outputBuilder_ == null) {
+        if (resultCase_ == 4 &&
+            result_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
+          result_ = io.littlehorse.sdk.common.proto.VariableValue.newBuilder((io.littlehorse.sdk.common.proto.VariableValue) result_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          result_ = value;
+        }
+        onChanged();
+      } else {
+        if (resultCase_ == 4) {
+          outputBuilder_.mergeFrom(value);
+        } else {
+          outputBuilder_.setMessage(value);
+        }
+      }
+      resultCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableValue output = 4;</code>
+     */
+    public Builder clearOutput() {
+      if (outputBuilder_ == null) {
+        if (resultCase_ == 4) {
+          resultCase_ = 0;
+          result_ = null;
+          onChanged();
+        }
+      } else {
+        if (resultCase_ == 4) {
+          resultCase_ = 0;
+          result_ = null;
+        }
+        outputBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableValue output = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableValue.Builder getOutputBuilder() {
+      return getOutputFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.VariableValue output = 4;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder() {
+      if ((resultCase_ == 4) && (outputBuilder_ != null)) {
+        return outputBuilder_.getMessageOrBuilder();
+      } else {
+        if (resultCase_ == 4) {
+          return (io.littlehorse.sdk.common.proto.VariableValue) result_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.VariableValue output = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
+        getOutputFieldBuilder() {
+      if (outputBuilder_ == null) {
+        if (!(resultCase_ == 4)) {
+          result_ = io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance();
+        }
+        outputBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableValue) result_,
+                getParentForChildren(),
+                isClean());
+        result_ = null;
+      }
+      resultCase_ = 4;
+      onChanged();
+      return outputBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.LHTaskError, io.littlehorse.sdk.common.proto.LHTaskError.Builder, io.littlehorse.sdk.common.proto.LHTaskErrorOrBuilder> errorBuilder_;
+    /**
+     * <code>.littlehorse.LHTaskError error = 7;</code>
+     * @return Whether the error field is set.
+     */
+    @java.lang.Override
+    public boolean hasError() {
+      return resultCase_ == 7;
+    }
+    /**
+     * <code>.littlehorse.LHTaskError error = 7;</code>
+     * @return The error.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.LHTaskError getError() {
+      if (errorBuilder_ == null) {
+        if (resultCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.LHTaskError) result_;
+        }
+        return io.littlehorse.sdk.common.proto.LHTaskError.getDefaultInstance();
+      } else {
+        if (resultCase_ == 7) {
+          return errorBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.LHTaskError.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.LHTaskError error = 7;</code>
+     */
+    public Builder setError(io.littlehorse.sdk.common.proto.LHTaskError value) {
+      if (errorBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        result_ = value;
+        onChanged();
+      } else {
+        errorBuilder_.setMessage(value);
+      }
+      resultCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LHTaskError error = 7;</code>
+     */
+    public Builder setError(
+        io.littlehorse.sdk.common.proto.LHTaskError.Builder builderForValue) {
+      if (errorBuilder_ == null) {
+        result_ = builderForValue.build();
+        onChanged();
+      } else {
+        errorBuilder_.setMessage(builderForValue.build());
+      }
+      resultCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LHTaskError error = 7;</code>
+     */
+    public Builder mergeError(io.littlehorse.sdk.common.proto.LHTaskError value) {
+      if (errorBuilder_ == null) {
+        if (resultCase_ == 7 &&
+            result_ != io.littlehorse.sdk.common.proto.LHTaskError.getDefaultInstance()) {
+          result_ = io.littlehorse.sdk.common.proto.LHTaskError.newBuilder((io.littlehorse.sdk.common.proto.LHTaskError) result_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          result_ = value;
+        }
+        onChanged();
+      } else {
+        if (resultCase_ == 7) {
+          errorBuilder_.mergeFrom(value);
+        } else {
+          errorBuilder_.setMessage(value);
+        }
+      }
+      resultCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LHTaskError error = 7;</code>
+     */
+    public Builder clearError() {
+      if (errorBuilder_ == null) {
+        if (resultCase_ == 7) {
+          resultCase_ = 0;
+          result_ = null;
+          onChanged();
+        }
+      } else {
+        if (resultCase_ == 7) {
+          resultCase_ = 0;
+          result_ = null;
+        }
+        errorBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LHTaskError error = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHTaskError.Builder getErrorBuilder() {
+      return getErrorFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.LHTaskError error = 7;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.LHTaskErrorOrBuilder getErrorOrBuilder() {
+      if ((resultCase_ == 7) && (errorBuilder_ != null)) {
+        return errorBuilder_.getMessageOrBuilder();
+      } else {
+        if (resultCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.LHTaskError) result_;
+        }
+        return io.littlehorse.sdk.common.proto.LHTaskError.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.LHTaskError error = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.LHTaskError, io.littlehorse.sdk.common.proto.LHTaskError.Builder, io.littlehorse.sdk.common.proto.LHTaskErrorOrBuilder> 
+        getErrorFieldBuilder() {
+      if (errorBuilder_ == null) {
+        if (!(resultCase_ == 7)) {
+          result_ = io.littlehorse.sdk.common.proto.LHTaskError.getDefaultInstance();
+        }
+        errorBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.LHTaskError, io.littlehorse.sdk.common.proto.LHTaskError.Builder, io.littlehorse.sdk.common.proto.LHTaskErrorOrBuilder>(
+                (io.littlehorse.sdk.common.proto.LHTaskError) result_,
+                getParentForChildren(),
+                isClean());
+        result_ = null;
+      }
+      resultCase_ = 7;
+      onChanged();
+      return errorBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.LHTaskException, io.littlehorse.sdk.common.proto.LHTaskException.Builder, io.littlehorse.sdk.common.proto.LHTaskExceptionOrBuilder> exceptionBuilder_;
+    /**
+     * <code>.littlehorse.LHTaskException exception = 8;</code>
+     * @return Whether the exception field is set.
+     */
+    @java.lang.Override
+    public boolean hasException() {
+      return resultCase_ == 8;
+    }
+    /**
+     * <code>.littlehorse.LHTaskException exception = 8;</code>
+     * @return The exception.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.LHTaskException getException() {
+      if (exceptionBuilder_ == null) {
+        if (resultCase_ == 8) {
+          return (io.littlehorse.sdk.common.proto.LHTaskException) result_;
+        }
+        return io.littlehorse.sdk.common.proto.LHTaskException.getDefaultInstance();
+      } else {
+        if (resultCase_ == 8) {
+          return exceptionBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.LHTaskException.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.LHTaskException exception = 8;</code>
+     */
+    public Builder setException(io.littlehorse.sdk.common.proto.LHTaskException value) {
+      if (exceptionBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        result_ = value;
+        onChanged();
+      } else {
+        exceptionBuilder_.setMessage(value);
+      }
+      resultCase_ = 8;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LHTaskException exception = 8;</code>
+     */
+    public Builder setException(
+        io.littlehorse.sdk.common.proto.LHTaskException.Builder builderForValue) {
+      if (exceptionBuilder_ == null) {
+        result_ = builderForValue.build();
+        onChanged();
+      } else {
+        exceptionBuilder_.setMessage(builderForValue.build());
+      }
+      resultCase_ = 8;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LHTaskException exception = 8;</code>
+     */
+    public Builder mergeException(io.littlehorse.sdk.common.proto.LHTaskException value) {
+      if (exceptionBuilder_ == null) {
+        if (resultCase_ == 8 &&
+            result_ != io.littlehorse.sdk.common.proto.LHTaskException.getDefaultInstance()) {
+          result_ = io.littlehorse.sdk.common.proto.LHTaskException.newBuilder((io.littlehorse.sdk.common.proto.LHTaskException) result_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          result_ = value;
+        }
+        onChanged();
+      } else {
+        if (resultCase_ == 8) {
+          exceptionBuilder_.mergeFrom(value);
+        } else {
+          exceptionBuilder_.setMessage(value);
+        }
+      }
+      resultCase_ = 8;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LHTaskException exception = 8;</code>
+     */
+    public Builder clearException() {
+      if (exceptionBuilder_ == null) {
+        if (resultCase_ == 8) {
+          resultCase_ = 0;
+          result_ = null;
+          onChanged();
+        }
+      } else {
+        if (resultCase_ == 8) {
+          resultCase_ = 0;
+          result_ = null;
+        }
+        exceptionBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LHTaskException exception = 8;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHTaskException.Builder getExceptionBuilder() {
+      return getExceptionFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.LHTaskException exception = 8;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.LHTaskExceptionOrBuilder getExceptionOrBuilder() {
+      if ((resultCase_ == 8) && (exceptionBuilder_ != null)) {
+        return exceptionBuilder_.getMessageOrBuilder();
+      } else {
+        if (resultCase_ == 8) {
+          return (io.littlehorse.sdk.common.proto.LHTaskException) result_;
+        }
+        return io.littlehorse.sdk.common.proto.LHTaskException.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.LHTaskException exception = 8;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.LHTaskException, io.littlehorse.sdk.common.proto.LHTaskException.Builder, io.littlehorse.sdk.common.proto.LHTaskExceptionOrBuilder> 
+        getExceptionFieldBuilder() {
+      if (exceptionBuilder_ == null) {
+        if (!(resultCase_ == 8)) {
+          result_ = io.littlehorse.sdk.common.proto.LHTaskException.getDefaultInstance();
+        }
+        exceptionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.LHTaskException, io.littlehorse.sdk.common.proto.LHTaskException.Builder, io.littlehorse.sdk.common.proto.LHTaskExceptionOrBuilder>(
+                (io.littlehorse.sdk.common.proto.LHTaskException) result_,
+                getParentForChildren(),
+                isClean());
+        result_ = null;
+      }
+      resultCase_ = 8;
+      onChanged();
+      return exceptionBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
