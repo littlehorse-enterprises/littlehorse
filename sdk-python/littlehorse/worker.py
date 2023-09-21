@@ -8,7 +8,7 @@ from typing import Any, AsyncIterator, Callable
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     TaskSchemaMismatchException,
-    LHException,
+    LHTaskException,
 )
 from littlehorse.model.common_enums_pb2 import TaskStatus
 from littlehorse.model.object_id_pb2 import NodeRunId, TaskDefId, TaskRunId
@@ -272,7 +272,7 @@ class LHConnection:
         try:
             output = to_variable_value(await self._task._callable(*args))
             status = TaskStatus.TASK_SUCCESS
-        except LHException as le:
+        except LHTaskException as le:
             output = None
             context.log(le)
             status = TaskStatus.TASK_EXCEPTION
