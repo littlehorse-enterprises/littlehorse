@@ -29,7 +29,8 @@ public class SearchStep<I, O> implements Step {
                 return declaredMethod;
             }
         }
-        throw new RuntimeException("not found!");
+        throw new IllegalArgumentException("There is no RPC method registered for Request type %s and Response type %s"
+                .formatted(requestType.getSimpleName(), responseType.getSimpleName()));
     }
 
     @Override

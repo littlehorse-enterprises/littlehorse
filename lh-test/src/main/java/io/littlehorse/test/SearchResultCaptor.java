@@ -40,7 +40,7 @@ public final class SearchResultCaptor<T extends Message> {
         @Override
         public void set(T result) {
             if (value != null) {
-                throw new RuntimeException("invalid state");
+                throw new IllegalStateException("Already has value");
             }
             value = result;
         }
