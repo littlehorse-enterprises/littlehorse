@@ -1,3 +1,19 @@
+## Requirements
+* Install yarn
+```
+npm install yarn --global
+```
+
+* Install pnpm globally
+```
+npm install pnpm --global 
+```
+
+* Install the node packages:
+```
+pnpm install
+```
+
 ## Getting Started
 
 First, run the development server:
@@ -28,3 +44,12 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_source=github.com&utm_medium=referral&utm_campaign=turborepo-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Issues
+As of September 2023, turbo versions greater that 1.10.4 are causing the following error. [Issue detailed here.](https://github.com/vercel/turbo/issues/5331): 
+
+```
+root task dev (turbo run dev) looks like it invokes turbo and might cause a loop
+```
+
+That's why in the package JSON we have fixed the version to 1.10.4 until the bug is fixed.
