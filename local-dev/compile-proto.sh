@@ -14,7 +14,7 @@ docker build -q --tag lh-protoc:23.4 -<<EOF
 FROM ubuntu:22.04
 ENV PROTOC_VERSION="23.4"
 RUN apt update && \
-    apt install -y --no-install-recommends python3 pip wget ca-certificates unzip golang && \
+    apt install -y --no-install-recommends python3 pip wget ca-certificates unzip golang nodejs npm && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     wget -q https://github.com/protocolbuffers/protobuf/releases/download/v23.4/protoc-23.4-linux-x86_64.zip -O /tmp/protoc.zip && \
@@ -23,6 +23,8 @@ RUN apt update && \
     GOBIN=/usr/local/bin go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.31.0 && \
     GOBIN=/usr/local/bin go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.3.0 && \
     pip install grpcio-tools==1.57.0 && \
+    node --version && \
+    npm install -g ts-proto && \
     chmod +x /usr/local/bin/* && \
     rm -f /tmp/*
 EOF
@@ -35,6 +37,7 @@ echo "Cleaning objects"
 rm -rf "${WORK_DIR}"/sdk-java/src/main/java/io/littlehorse/sdk/common/proto/*
 rm -rf "${WORK_DIR}"/sdk-go/common/model/*
 rm -rf "${WORK_DIR}"/sdk-python/littlehorse/model/*
+rm -rf "${WORK_DIR}"/sdk-typescript/littlehorse/model/*
 rm -rf "${WORK_DIR}"/server/src/main/java/io/littlehorse/common/proto/*
 
 # compile protobuf
@@ -46,6 +49,7 @@ $docker_run protoc \
     --go_out=/littlehorse/sdk-go/common/model \
     --grpc-java_out=/littlehorse/sdk-java/src/main/java \
     --go-grpc_out=/littlehorse/sdk-go/common/model \
+    --plugin=/usr/local/lib/node_modules/ts-proto/protoc-gen-ts_proto --ts_proto_out=/littlehorse/sdk-typescript/model \
     -I=/littlehorse/schemas \
     $PUBLIC_PROTOS
 
