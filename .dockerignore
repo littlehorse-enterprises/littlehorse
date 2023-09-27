@@ -2,6 +2,10 @@
 *
 !server/
 !sdk-java/
+!sdk-go/
+!lhctl/
 !docker/
 !gradle.properties
 !settings.gradle
+!go.mod
+!go.sum
