@@ -37,6 +37,7 @@ from littlehorse.model.wf_spec_pb2 import (
     EntrypointNode,
     ExitNode,
     ExternalEventNode,
+    FailureDef,
     InterruptDef,
     Node,
     NopNode,
@@ -935,6 +936,36 @@ class WorkflowThread:
         )
         last_node = self._find_node(node.node_name)
         last_node.failure_handlers.append(failure_handler)
+
+    def fail(
+        self, failure_name: str, message: str, output: Optional[Any] = None
+    ) -> None:
+        """Adds an EXIT node with a Failure defined. This causes a
+        ThreadRun to fail, and the resulting
+        Failure has the specified value, name,
+        and a human-readable message.
+
+        Args:
+            failure_name (str): The name of the failure to throw.
+            message (str): A human-readable message.
+            output (Optional[Any]):A literal value or a WfRunVariable.
+            The assigned value is the payload of the resulting Failure,
+            which can be accessed by any Failure Handler ThreadRuns.
+        """
+        self._check_if_active()
+
+        self.add_node(
+            failure_name,
+            ExitNode(
+                failure_def=FailureDef(
+                    failure_name=failure_name,
+                    content=to_variable_assignment(output)
+                    if output is not None
+                    else None,
+                    message=message or None,
+                )
+            ),
+        )
 
     def assign_user_task(
         self,

@@ -19,6 +19,7 @@ from littlehorse.model.wf_spec_pb2 import (
     EntrypointNode,
     ExitNode,
     ExternalEventNode,
+    FailureDef,
     InterruptDef,
     Node,
     NopNode,
@@ -176,6 +177,64 @@ class TestThreadBuilder(unittest.TestCase):
                         outgoing_edges=[Edge(sink_node_name="1-exit-EXIT")],
                     ),
                     "1-exit-EXIT": Node(exit=ExitNode()),
+                },
+            ),
+        )
+
+    def test_fail(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.fail("my_failure_name", "my_message")
+
+        wt = WorkflowThread(workflow=MagicMock(), initializer=my_entrypoint)
+        self.assertEqual(
+            wt.compile(),
+            ThreadSpec(
+                nodes={
+                    "0-entrypoint-ENTRYPOINT": Node(
+                        entrypoint=EntrypointNode(),
+                        outgoing_edges=[Edge(sink_node_name="1-my_failure_name-EXIT")],
+                    ),
+                    "1-my_failure_name-EXIT": Node(
+                        exit=ExitNode(
+                            failure_def=FailureDef(
+                                failure_name="my_failure_name", message="my_message"
+                            )
+                        ),
+                        outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                    ),
+                    "2-exit-EXIT": Node(exit=ExitNode()),
+                },
+            ),
+        )
+
+    def test_fail_with_output(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.fail("my_failure_name", "my message", "my output")
+
+        wt = WorkflowThread(workflow=MagicMock(), initializer=my_entrypoint)
+        self.assertEqual(
+            wt.compile(),
+            ThreadSpec(
+                nodes={
+                    "0-entrypoint-ENTRYPOINT": Node(
+                        entrypoint=EntrypointNode(),
+                        outgoing_edges=[Edge(sink_node_name="1-my_failure_name-EXIT")],
+                    ),
+                    "1-my_failure_name-EXIT": Node(
+                        exit=ExitNode(
+                            failure_def=FailureDef(
+                                failure_name="my_failure_name",
+                                message="my message",
+                                content=VariableAssignment(
+                                    literal_value=VariableValue(
+                                        type=VariableType.STR, str="my output"
+                                    )
+                                ),
+                            )
+                        ),
+                        outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                    ),
+                    "2-exit-EXIT": Node(exit=ExitNode()),
                 },
             ),
         )
