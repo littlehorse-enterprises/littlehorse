@@ -938,7 +938,7 @@ class WorkflowThread:
         last_node.failure_handlers.append(failure_handler)
 
     def fail(
-        self, failure_name: str, message: str, output: Optional[Any] = None
+        self, failure_name: str, message: str, input: Optional[Any] = None
     ) -> None:
         """Adds an EXIT node with a Failure defined. This causes a
         ThreadRun to fail, and the resulting
@@ -948,7 +948,7 @@ class WorkflowThread:
         Args:
             failure_name (str): The name of the failure to throw.
             message (str): A human-readable message.
-            output (Optional[Any]):A literal value or a WfRunVariable.
+            input (Optional[Any]): A literal value or a WfRunVariable.
             The assigned value is the payload of the resulting Failure,
             which can be accessed by any Failure Handler ThreadRuns.
         """
@@ -959,8 +959,8 @@ class WorkflowThread:
             ExitNode(
                 failure_def=FailureDef(
                     failure_name=failure_name,
-                    content=to_variable_assignment(output)
-                    if output is not None
+                    content=to_variable_assignment(input)
+                    if input is not None
                     else None,
                     message=message or None,
                 )
