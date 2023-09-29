@@ -954,6 +954,9 @@ class WorkflowThread:
         """
         self._check_if_active()
 
+        if failure_name is None:
+            raise ValueError("Failure name cannot be None")
+
         self.add_node(
             failure_name,
             ExitNode(
@@ -962,7 +965,7 @@ class WorkflowThread:
                     content=to_variable_assignment(output)
                     if output is not None
                     else None,
-                    message=message or None,
+                    message=message,
                 )
             ),
         )
