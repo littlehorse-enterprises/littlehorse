@@ -12,6 +12,7 @@ message GetObjectRequest {
     GetableClassEnum object_type = 1;
     string object_id = 2;
     int32 partition = 3;
+    string tenant_id = 4;
 }
 
 message GetObjectResponse {
@@ -54,6 +55,7 @@ message InternalScanPb {
         BoundedObjectIdScanPb bounded_object_id_scan = 7;
         TagScanPb tag_scan = 8;
     }
+    string tenant_id = 9;
 }
 
 message InternalGetAdvertisedHostsResponse {
