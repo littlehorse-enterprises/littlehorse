@@ -124,5 +124,17 @@ public interface InternalScanPbOrBuilder extends
    */
   io.littlehorse.common.proto.InternalScanPb.TagScanPbOrBuilder getTagScanOrBuilder();
 
+  /**
+   * <code>string tenant_id = 9;</code>
+   * @return The tenantId.
+   */
+  java.lang.String getTenantId();
+  /**
+   * <code>string tenant_id = 9;</code>
+   * @return The bytes for tenantId.
+   */
+  com.google.protobuf.ByteString
+      getTenantIdBytes();
+
   io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase getScanBoundaryCase();
 }

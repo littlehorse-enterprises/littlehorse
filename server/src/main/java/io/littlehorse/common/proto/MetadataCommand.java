@@ -21,6 +21,7 @@ private static final long serialVersionUID = 0L;
   }
   private MetadataCommand() {
     commandId_ = "";
+    tenantId_ = "";
   }
 
   @java.lang.Override
@@ -58,6 +59,9 @@ private static final long serialVersionUID = 0L;
     DELETE_EXTERNAL_EVENT_DEF(9),
     PUT_USER_TASK_DEF(10),
     DELETE_USER_TASK_DEF(11),
+    PUT_PRINCIPAL(12),
+    DELETE_PRINCIPAL(13),
+    PUT_TENANT(14),
     METADATACOMMAND_NOT_SET(0);
     private final int value;
     private MetadataCommandCase(int value) {
@@ -83,6 +87,9 @@ private static final long serialVersionUID = 0L;
         case 9: return DELETE_EXTERNAL_EVENT_DEF;
         case 10: return PUT_USER_TASK_DEF;
         case 11: return DELETE_USER_TASK_DEF;
+        case 12: return PUT_PRINCIPAL;
+        case 13: return DELETE_PRINCIPAL;
+        case 14: return PUT_TENANT;
         case 0: return METADATACOMMAND_NOT_SET;
         default: return null;
       }
@@ -165,6 +172,45 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
       commandId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int TENANT_ID_FIELD_NUMBER = 3;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object tenantId_ = "";
+  /**
+   * <code>string tenant_id = 3;</code>
+   * @return The tenantId.
+   */
+  @java.lang.Override
+  public java.lang.String getTenantId() {
+    java.lang.Object ref = tenantId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      tenantId_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string tenant_id = 3;</code>
+   * @return The bytes for tenantId.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getTenantIdBytes() {
+    java.lang.Object ref = tenantId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      tenantId_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -419,6 +465,111 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest.getDefaultInstance();
   }
 
+  public static final int PUT_PRINCIPAL_FIELD_NUMBER = 12;
+  /**
+   * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
+   * @return Whether the putPrincipal field is set.
+   */
+  @java.lang.Override
+  public boolean hasPutPrincipal() {
+    return metadataCommandCase_ == 12;
+  }
+  /**
+   * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
+   * @return The putPrincipal.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.PutPrincipalRequest getPutPrincipal() {
+    if (metadataCommandCase_ == 12) {
+       return (io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_;
+    }
+    return io.littlehorse.common.proto.PutPrincipalRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.PutPrincipalRequestOrBuilder getPutPrincipalOrBuilder() {
+    if (metadataCommandCase_ == 12) {
+       return (io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_;
+    }
+    return io.littlehorse.common.proto.PutPrincipalRequest.getDefaultInstance();
+  }
+
+  public static final int DELETE_PRINCIPAL_FIELD_NUMBER = 13;
+  /**
+   * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
+   * @return Whether the deletePrincipal field is set.
+   */
+  @java.lang.Override
+  public boolean hasDeletePrincipal() {
+    return metadataCommandCase_ == 13;
+  }
+  /**
+   * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
+   * @return The deletePrincipal.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.DeletePrincipalRequest getDeletePrincipal() {
+    if (metadataCommandCase_ == 13) {
+       return (io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_;
+    }
+    return io.littlehorse.common.proto.DeletePrincipalRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.DeletePrincipalRequestOrBuilder getDeletePrincipalOrBuilder() {
+    if (metadataCommandCase_ == 13) {
+       return (io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_;
+    }
+    return io.littlehorse.common.proto.DeletePrincipalRequest.getDefaultInstance();
+  }
+
+  public static final int PUT_TENANT_FIELD_NUMBER = 14;
+  /**
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
+   * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
+   * @return Whether the putTenant field is set.
+   */
+  @java.lang.Override
+  public boolean hasPutTenant() {
+    return metadataCommandCase_ == 14;
+  }
+  /**
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
+   * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
+   * @return The putTenant.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.PutTenantRequest getPutTenant() {
+    if (metadataCommandCase_ == 14) {
+       return (io.littlehorse.common.proto.PutTenantRequest) metadataCommand_;
+    }
+    return io.littlehorse.common.proto.PutTenantRequest.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
+   * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.PutTenantRequestOrBuilder getPutTenantOrBuilder() {
+    if (metadataCommandCase_ == 14) {
+       return (io.littlehorse.common.proto.PutTenantRequest) metadataCommand_;
+    }
+    return io.littlehorse.common.proto.PutTenantRequest.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -438,6 +589,9 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, commandId_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tenantId_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, tenantId_);
     }
     if (metadataCommandCase_ == 4) {
       output.writeMessage(4, (io.littlehorse.sdk.common.proto.PutWfSpecRequest) metadataCommand_);
@@ -463,6 +617,15 @@ private static final long serialVersionUID = 0L;
     if (metadataCommandCase_ == 11) {
       output.writeMessage(11, (io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest) metadataCommand_);
     }
+    if (metadataCommandCase_ == 12) {
+      output.writeMessage(12, (io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 13) {
+      output.writeMessage(13, (io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 14) {
+      output.writeMessage(14, (io.littlehorse.common.proto.PutTenantRequest) metadataCommand_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -478,6 +641,9 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, commandId_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tenantId_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, tenantId_);
     }
     if (metadataCommandCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
@@ -511,6 +677,18 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(11, (io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest) metadataCommand_);
     }
+    if (metadataCommandCase_ == 12) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(12, (io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 13) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(13, (io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 14) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(14, (io.littlehorse.common.proto.PutTenantRequest) metadataCommand_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -536,6 +714,8 @@ private static final long serialVersionUID = 0L;
       if (!getCommandId()
           .equals(other.getCommandId())) return false;
     }
+    if (!getTenantId()
+        .equals(other.getTenantId())) return false;
     if (!getMetadataCommandCase().equals(other.getMetadataCommandCase())) return false;
     switch (metadataCommandCase_) {
       case 4:
@@ -570,6 +750,18 @@ private static final long serialVersionUID = 0L;
         if (!getDeleteUserTaskDef()
             .equals(other.getDeleteUserTaskDef())) return false;
         break;
+      case 12:
+        if (!getPutPrincipal()
+            .equals(other.getPutPrincipal())) return false;
+        break;
+      case 13:
+        if (!getDeletePrincipal()
+            .equals(other.getDeletePrincipal())) return false;
+        break;
+      case 14:
+        if (!getPutTenant()
+            .equals(other.getPutTenant())) return false;
+        break;
       case 0:
       default:
     }
@@ -592,6 +784,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + COMMAND_ID_FIELD_NUMBER;
       hash = (53 * hash) + getCommandId().hashCode();
     }
+    hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
+    hash = (53 * hash) + getTenantId().hashCode();
     switch (metadataCommandCase_) {
       case 4:
         hash = (37 * hash) + PUT_WF_SPEC_FIELD_NUMBER;
@@ -624,6 +818,18 @@ private static final long serialVersionUID = 0L;
       case 11:
         hash = (37 * hash) + DELETE_USER_TASK_DEF_FIELD_NUMBER;
         hash = (53 * hash) + getDeleteUserTaskDef().hashCode();
+        break;
+      case 12:
+        hash = (37 * hash) + PUT_PRINCIPAL_FIELD_NUMBER;
+        hash = (53 * hash) + getPutPrincipal().hashCode();
+        break;
+      case 13:
+        hash = (37 * hash) + DELETE_PRINCIPAL_FIELD_NUMBER;
+        hash = (53 * hash) + getDeletePrincipal().hashCode();
+        break;
+      case 14:
+        hash = (37 * hash) + PUT_TENANT_FIELD_NUMBER;
+        hash = (53 * hash) + getPutTenant().hashCode();
         break;
       case 0:
       default:
@@ -769,6 +975,7 @@ private static final long serialVersionUID = 0L;
         timeBuilder_ = null;
       }
       commandId_ = "";
+      tenantId_ = "";
       if (putWfSpecBuilder_ != null) {
         putWfSpecBuilder_.clear();
       }
@@ -792,6 +999,15 @@ private static final long serialVersionUID = 0L;
       }
       if (deleteUserTaskDefBuilder_ != null) {
         deleteUserTaskDefBuilder_.clear();
+      }
+      if (putPrincipalBuilder_ != null) {
+        putPrincipalBuilder_.clear();
+      }
+      if (deletePrincipalBuilder_ != null) {
+        deletePrincipalBuilder_.clear();
+      }
+      if (putTenantBuilder_ != null) {
+        putTenantBuilder_.clear();
       }
       metadataCommandCase_ = 0;
       metadataCommand_ = null;
@@ -839,6 +1055,9 @@ private static final long serialVersionUID = 0L;
         result.commandId_ = commandId_;
         to_bitField0_ |= 0x00000001;
       }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.tenantId_ = tenantId_;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -876,6 +1095,18 @@ private static final long serialVersionUID = 0L;
       if (metadataCommandCase_ == 11 &&
           deleteUserTaskDefBuilder_ != null) {
         result.metadataCommand_ = deleteUserTaskDefBuilder_.build();
+      }
+      if (metadataCommandCase_ == 12 &&
+          putPrincipalBuilder_ != null) {
+        result.metadataCommand_ = putPrincipalBuilder_.build();
+      }
+      if (metadataCommandCase_ == 13 &&
+          deletePrincipalBuilder_ != null) {
+        result.metadataCommand_ = deletePrincipalBuilder_.build();
+      }
+      if (metadataCommandCase_ == 14 &&
+          putTenantBuilder_ != null) {
+        result.metadataCommand_ = putTenantBuilder_.build();
       }
     }
 
@@ -931,6 +1162,11 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000002;
         onChanged();
       }
+      if (!other.getTenantId().isEmpty()) {
+        tenantId_ = other.tenantId_;
+        bitField0_ |= 0x00000004;
+        onChanged();
+      }
       switch (other.getMetadataCommandCase()) {
         case PUT_WF_SPEC: {
           mergePutWfSpec(other.getPutWfSpec());
@@ -962,6 +1198,18 @@ private static final long serialVersionUID = 0L;
         }
         case DELETE_USER_TASK_DEF: {
           mergeDeleteUserTaskDef(other.getDeleteUserTaskDef());
+          break;
+        }
+        case PUT_PRINCIPAL: {
+          mergePutPrincipal(other.getPutPrincipal());
+          break;
+        }
+        case DELETE_PRINCIPAL: {
+          mergeDeletePrincipal(other.getDeletePrincipal());
+          break;
+        }
+        case PUT_TENANT: {
+          mergePutTenant(other.getPutTenant());
           break;
         }
         case METADATACOMMAND_NOT_SET: {
@@ -1006,6 +1254,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 26: {
+              tenantId_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 26
             case 34: {
               input.readMessage(
                   getPutWfSpecFieldBuilder().getBuilder(),
@@ -1062,6 +1315,27 @@ private static final long serialVersionUID = 0L;
               metadataCommandCase_ = 11;
               break;
             } // case 90
+            case 98: {
+              input.readMessage(
+                  getPutPrincipalFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 12;
+              break;
+            } // case 98
+            case 106: {
+              input.readMessage(
+                  getDeletePrincipalFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 13;
+              break;
+            } // case 106
+            case 114: {
+              input.readMessage(
+                  getPutTenantFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 14;
+              break;
+            } // case 114
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1288,6 +1562,78 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       commandId_ = value;
       bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object tenantId_ = "";
+    /**
+     * <code>string tenant_id = 3;</code>
+     * @return The tenantId.
+     */
+    public java.lang.String getTenantId() {
+      java.lang.Object ref = tenantId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        tenantId_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string tenant_id = 3;</code>
+     * @return The bytes for tenantId.
+     */
+    public com.google.protobuf.ByteString
+        getTenantIdBytes() {
+      java.lang.Object ref = tenantId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        tenantId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string tenant_id = 3;</code>
+     * @param value The tenantId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTenantId(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      tenantId_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string tenant_id = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTenantId() {
+      tenantId_ = getDefaultInstance().getTenantId();
+      bitField0_ = (bitField0_ & ~0x00000004);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string tenant_id = 3;</code>
+     * @param value The bytes for tenantId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTenantIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      tenantId_ = value;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -2426,6 +2772,468 @@ private static final long serialVersionUID = 0L;
       metadataCommandCase_ = 11;
       onChanged();
       return deleteUserTaskDefBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.PutPrincipalRequest, io.littlehorse.common.proto.PutPrincipalRequest.Builder, io.littlehorse.common.proto.PutPrincipalRequestOrBuilder> putPrincipalBuilder_;
+    /**
+     * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
+     * @return Whether the putPrincipal field is set.
+     */
+    @java.lang.Override
+    public boolean hasPutPrincipal() {
+      return metadataCommandCase_ == 12;
+    }
+    /**
+     * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
+     * @return The putPrincipal.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.PutPrincipalRequest getPutPrincipal() {
+      if (putPrincipalBuilder_ == null) {
+        if (metadataCommandCase_ == 12) {
+          return (io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_;
+        }
+        return io.littlehorse.common.proto.PutPrincipalRequest.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 12) {
+          return putPrincipalBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.PutPrincipalRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
+     */
+    public Builder setPutPrincipal(io.littlehorse.common.proto.PutPrincipalRequest value) {
+      if (putPrincipalBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        putPrincipalBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 12;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
+     */
+    public Builder setPutPrincipal(
+        io.littlehorse.common.proto.PutPrincipalRequest.Builder builderForValue) {
+      if (putPrincipalBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        putPrincipalBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 12;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
+     */
+    public Builder mergePutPrincipal(io.littlehorse.common.proto.PutPrincipalRequest value) {
+      if (putPrincipalBuilder_ == null) {
+        if (metadataCommandCase_ == 12 &&
+            metadataCommand_ != io.littlehorse.common.proto.PutPrincipalRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.common.proto.PutPrincipalRequest.newBuilder((io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 12) {
+          putPrincipalBuilder_.mergeFrom(value);
+        } else {
+          putPrincipalBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 12;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
+     */
+    public Builder clearPutPrincipal() {
+      if (putPrincipalBuilder_ == null) {
+        if (metadataCommandCase_ == 12) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 12) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        putPrincipalBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
+     */
+    public io.littlehorse.common.proto.PutPrincipalRequest.Builder getPutPrincipalBuilder() {
+      return getPutPrincipalFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.PutPrincipalRequestOrBuilder getPutPrincipalOrBuilder() {
+      if ((metadataCommandCase_ == 12) && (putPrincipalBuilder_ != null)) {
+        return putPrincipalBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 12) {
+          return (io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_;
+        }
+        return io.littlehorse.common.proto.PutPrincipalRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.PutPrincipalRequest, io.littlehorse.common.proto.PutPrincipalRequest.Builder, io.littlehorse.common.proto.PutPrincipalRequestOrBuilder> 
+        getPutPrincipalFieldBuilder() {
+      if (putPrincipalBuilder_ == null) {
+        if (!(metadataCommandCase_ == 12)) {
+          metadataCommand_ = io.littlehorse.common.proto.PutPrincipalRequest.getDefaultInstance();
+        }
+        putPrincipalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.PutPrincipalRequest, io.littlehorse.common.proto.PutPrincipalRequest.Builder, io.littlehorse.common.proto.PutPrincipalRequestOrBuilder>(
+                (io.littlehorse.common.proto.PutPrincipalRequest) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 12;
+      onChanged();
+      return putPrincipalBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.DeletePrincipalRequest, io.littlehorse.common.proto.DeletePrincipalRequest.Builder, io.littlehorse.common.proto.DeletePrincipalRequestOrBuilder> deletePrincipalBuilder_;
+    /**
+     * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
+     * @return Whether the deletePrincipal field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeletePrincipal() {
+      return metadataCommandCase_ == 13;
+    }
+    /**
+     * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
+     * @return The deletePrincipal.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.DeletePrincipalRequest getDeletePrincipal() {
+      if (deletePrincipalBuilder_ == null) {
+        if (metadataCommandCase_ == 13) {
+          return (io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_;
+        }
+        return io.littlehorse.common.proto.DeletePrincipalRequest.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 13) {
+          return deletePrincipalBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.DeletePrincipalRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
+     */
+    public Builder setDeletePrincipal(io.littlehorse.common.proto.DeletePrincipalRequest value) {
+      if (deletePrincipalBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        deletePrincipalBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 13;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
+     */
+    public Builder setDeletePrincipal(
+        io.littlehorse.common.proto.DeletePrincipalRequest.Builder builderForValue) {
+      if (deletePrincipalBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        deletePrincipalBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 13;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
+     */
+    public Builder mergeDeletePrincipal(io.littlehorse.common.proto.DeletePrincipalRequest value) {
+      if (deletePrincipalBuilder_ == null) {
+        if (metadataCommandCase_ == 13 &&
+            metadataCommand_ != io.littlehorse.common.proto.DeletePrincipalRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.common.proto.DeletePrincipalRequest.newBuilder((io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 13) {
+          deletePrincipalBuilder_.mergeFrom(value);
+        } else {
+          deletePrincipalBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 13;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
+     */
+    public Builder clearDeletePrincipal() {
+      if (deletePrincipalBuilder_ == null) {
+        if (metadataCommandCase_ == 13) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 13) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        deletePrincipalBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
+     */
+    public io.littlehorse.common.proto.DeletePrincipalRequest.Builder getDeletePrincipalBuilder() {
+      return getDeletePrincipalFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.DeletePrincipalRequestOrBuilder getDeletePrincipalOrBuilder() {
+      if ((metadataCommandCase_ == 13) && (deletePrincipalBuilder_ != null)) {
+        return deletePrincipalBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 13) {
+          return (io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_;
+        }
+        return io.littlehorse.common.proto.DeletePrincipalRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.DeletePrincipalRequest, io.littlehorse.common.proto.DeletePrincipalRequest.Builder, io.littlehorse.common.proto.DeletePrincipalRequestOrBuilder> 
+        getDeletePrincipalFieldBuilder() {
+      if (deletePrincipalBuilder_ == null) {
+        if (!(metadataCommandCase_ == 13)) {
+          metadataCommand_ = io.littlehorse.common.proto.DeletePrincipalRequest.getDefaultInstance();
+        }
+        deletePrincipalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.DeletePrincipalRequest, io.littlehorse.common.proto.DeletePrincipalRequest.Builder, io.littlehorse.common.proto.DeletePrincipalRequestOrBuilder>(
+                (io.littlehorse.common.proto.DeletePrincipalRequest) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 13;
+      onChanged();
+      return deletePrincipalBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.PutTenantRequest, io.littlehorse.common.proto.PutTenantRequest.Builder, io.littlehorse.common.proto.PutTenantRequestOrBuilder> putTenantBuilder_;
+    /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
+     * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
+     * @return Whether the putTenant field is set.
+     */
+    @java.lang.Override
+    public boolean hasPutTenant() {
+      return metadataCommandCase_ == 14;
+    }
+    /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
+     * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
+     * @return The putTenant.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.PutTenantRequest getPutTenant() {
+      if (putTenantBuilder_ == null) {
+        if (metadataCommandCase_ == 14) {
+          return (io.littlehorse.common.proto.PutTenantRequest) metadataCommand_;
+        }
+        return io.littlehorse.common.proto.PutTenantRequest.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 14) {
+          return putTenantBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.PutTenantRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
+     * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
+     */
+    public Builder setPutTenant(io.littlehorse.common.proto.PutTenantRequest value) {
+      if (putTenantBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        putTenantBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 14;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
+     * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
+     */
+    public Builder setPutTenant(
+        io.littlehorse.common.proto.PutTenantRequest.Builder builderForValue) {
+      if (putTenantBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        putTenantBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 14;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
+     * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
+     */
+    public Builder mergePutTenant(io.littlehorse.common.proto.PutTenantRequest value) {
+      if (putTenantBuilder_ == null) {
+        if (metadataCommandCase_ == 14 &&
+            metadataCommand_ != io.littlehorse.common.proto.PutTenantRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.common.proto.PutTenantRequest.newBuilder((io.littlehorse.common.proto.PutTenantRequest) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 14) {
+          putTenantBuilder_.mergeFrom(value);
+        } else {
+          putTenantBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 14;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
+     * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
+     */
+    public Builder clearPutTenant() {
+      if (putTenantBuilder_ == null) {
+        if (metadataCommandCase_ == 14) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 14) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        putTenantBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
+     * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
+     */
+    public io.littlehorse.common.proto.PutTenantRequest.Builder getPutTenantBuilder() {
+      return getPutTenantFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
+     * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.PutTenantRequestOrBuilder getPutTenantOrBuilder() {
+      if ((metadataCommandCase_ == 14) && (putTenantBuilder_ != null)) {
+        return putTenantBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 14) {
+          return (io.littlehorse.common.proto.PutTenantRequest) metadataCommand_;
+        }
+        return io.littlehorse.common.proto.PutTenantRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
+     * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.PutTenantRequest, io.littlehorse.common.proto.PutTenantRequest.Builder, io.littlehorse.common.proto.PutTenantRequestOrBuilder> 
+        getPutTenantFieldBuilder() {
+      if (putTenantBuilder_ == null) {
+        if (!(metadataCommandCase_ == 14)) {
+          metadataCommand_ = io.littlehorse.common.proto.PutTenantRequest.getDefaultInstance();
+        }
+        putTenantBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.PutTenantRequest, io.littlehorse.common.proto.PutTenantRequest.Builder, io.littlehorse.common.proto.PutTenantRequestOrBuilder>(
+                (io.littlehorse.common.proto.PutTenantRequest) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 14;
+      onChanged();
+      return putTenantBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

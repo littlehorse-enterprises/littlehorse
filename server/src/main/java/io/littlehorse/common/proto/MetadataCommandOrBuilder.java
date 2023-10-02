@@ -40,6 +40,18 @@ public interface MetadataCommandOrBuilder extends
       getCommandIdBytes();
 
   /**
+   * <code>string tenant_id = 3;</code>
+   * @return The tenantId.
+   */
+  java.lang.String getTenantId();
+  /**
+   * <code>string tenant_id = 3;</code>
+   * @return The bytes for tenantId.
+   */
+  com.google.protobuf.ByteString
+      getTenantIdBytes();
+
+  /**
    * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 4;</code>
    * @return Whether the putWfSpec field is set.
    */
@@ -158,6 +170,63 @@ public interface MetadataCommandOrBuilder extends
    * <code>.littlehorse.DeleteUserTaskDefRequest delete_user_task_def = 11;</code>
    */
   io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequestOrBuilder getDeleteUserTaskDefOrBuilder();
+
+  /**
+   * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
+   * @return Whether the putPrincipal field is set.
+   */
+  boolean hasPutPrincipal();
+  /**
+   * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
+   * @return The putPrincipal.
+   */
+  io.littlehorse.common.proto.PutPrincipalRequest getPutPrincipal();
+  /**
+   * <code>.littlehorse.PutPrincipalRequest put_principal = 12;</code>
+   */
+  io.littlehorse.common.proto.PutPrincipalRequestOrBuilder getPutPrincipalOrBuilder();
+
+  /**
+   * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
+   * @return Whether the deletePrincipal field is set.
+   */
+  boolean hasDeletePrincipal();
+  /**
+   * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
+   * @return The deletePrincipal.
+   */
+  io.littlehorse.common.proto.DeletePrincipalRequest getDeletePrincipal();
+  /**
+   * <code>.littlehorse.DeletePrincipalRequest delete_principal = 13;</code>
+   */
+  io.littlehorse.common.proto.DeletePrincipalRequestOrBuilder getDeletePrincipalOrBuilder();
+
+  /**
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
+   * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
+   * @return Whether the putTenant field is set.
+   */
+  boolean hasPutTenant();
+  /**
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
+   * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
+   * @return The putTenant.
+   */
+  io.littlehorse.common.proto.PutTenantRequest getPutTenant();
+  /**
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
+   * <code>.littlehorse.PutTenantRequest put_tenant = 14;</code>
+   */
+  io.littlehorse.common.proto.PutTenantRequestOrBuilder getPutTenantOrBuilder();
 
   io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }
