@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package littlehorse;
+
+// This is a GlobalGetable.
+message Principal {
+    // Principals are agnostic of the Authentication protocol that you use. In OAuth,
+    // the id is retrieved by looking at the claims on the request. In mTLS, the
+    // id is retrived by looking at the Subject Name of the client certificate.
+    string id = 1;
+
+    repeated ServerACL acls = 2;
+
+    // Used for multi-tenancy of the LittleHorse Server.
+    //
+    // NOTE: the principal id (field 1) MUST be unique across all tenants. The
+    // way multi-tenancy works is that the 
+    string tenant_id = 3;
+
+    // Future versions will include quotas.
+}
+
+// This is a GlobalGetable.
+message Tenant {
+    string id = 1;
+    // Future versions will include quotas on a per-Tenant basis.
+}
+
+message ServerACL {
+    repeated ACLResource resources = 1;
+    repeated ACLAction allowed_actions = 2;
+
+    oneof resource_filter {
+        string name = 3;
+        string prefix = 4;
+    }
+}
+
+enum ACLResource {
+    WF_SPEC = 0;
+    TASK_DEF = 1;
+    EXTERNAL_EVENT_DEF = 2;
+    USER_TASK_DEF = 3;
+    PRINCIPAL = 4;
+    ALL_RESOURCE_TYPES = 6;
+
+    // Will use 5 for TENANT
+    reserved 5;
+}
+
+enum ACLAction {
+    READ = 0;
+    EXECUTE = 1;
+    WRITE_METADATA = 2;
+    ALL_ACTIONS = 3;
+}
+
+message PutPrincipalRequest {
+    string id = 1;
+    repeated ServerACL acls = 2;
+    optional string tenant_id = 3;
+}
+
+message DeletePrincipalRequest {
+    string id = 1;
+}
+
+message PutTenantRequest {
+    string id = 1;
+}
+
+// DeleteTenant not yet supported.
