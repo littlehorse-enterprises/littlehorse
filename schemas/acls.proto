@@ -1,6 +1,9 @@
 syntax = "proto3";
-
 package littlehorse;
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.common.proto";
 
 // This is a GlobalGetable.
 message Principal {
@@ -37,15 +40,15 @@ message ServerACL {
 }
 
 enum ACLResource {
-    WF_SPEC = 0;
-    TASK_DEF = 1;
-    EXTERNAL_EVENT_DEF = 2;
-    USER_TASK_DEF = 3;
-    PRINCIPAL = 4;
-    ALL_RESOURCE_TYPES = 6;
+    ACL_WF_SPEC = 0;
+    ACL_TASK_DEF = 1;
+    ACL_EXTERNAL_EVENT_DEF = 2;
+    ACL_USER_TASK_DEF = 3;
+    ACL_PRINCIPAL = 4;
+    ACL_TENANT = 5;
+    ACL_ALL_RESOURCE_TYPES = 6;
 
     // Will use 5 for TENANT
-    reserved 5;
 }
 
 enum ACLAction {
