@@ -342,7 +342,7 @@ public class BackendInternalComms implements Closeable {
         StoredGetable<U, T> storeResult =
                 (StoredGetable<U, T>) store.get(objectId.getStoreableKey(), StoredGetable.class);
         if (storeResult == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified " + clazz.getSimpleName());
+            throw new LHApiException(Status.NOT_FOUND, "Requested object was not found.");
         }
 
         return storeResult.getStoredObject();
@@ -366,7 +366,7 @@ public class BackendInternalComms implements Closeable {
             StoredGetable<?, ?> entity = store.get(id.getStoreableKey(), StoredGetable.class);
 
             if (entity == null) {
-                observer.onError(new LHApiException(Status.NOT_FOUND, "Requested object was not found"));
+                observer.onError(new LHApiException(Status.NOT_FOUND, "Requested object was not found."));
             } else {
                 observer.onNext(GetObjectResponse.newBuilder()
                         .setResponse(entity.getStoredObject().toProto().build().toByteString())
