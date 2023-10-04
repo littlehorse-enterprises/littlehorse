@@ -45,17 +45,23 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     public List<VariableMapping> mappings;
     public TaskDef taskDef;
 
-    private boolean running;
     private List<LHServerConnection> runningConnections;
     private LHPublicApiStub bootstrapStub;
     private ExecutorService threadPool;
     private Semaphore workerSemaphore;
     private Thread rebalanceThread;
 
+    private final ConnectionManagerLivenessController livenessController;
+
     private static final int TOTAL_RETRIES = 5;
 
     public LHServerConnectionManager(
-            Method taskMethod, TaskDef taskDef, LHConfig config, List<VariableMapping> mappings, Object executable)
+            Method taskMethod,
+            TaskDef taskDef,
+            LHConfig config,
+            List<VariableMapping> mappings,
+            Object executable,
+            ConnectionManagerLivenessController livenessController)
             throws IOException {
         this.executable = executable;
         this.taskMethod = taskMethod;
@@ -66,13 +72,12 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
 
         this.bootstrapStub = config.getAsyncStub();
 
-        this.running = false;
         this.runningConnections = new ArrayList<>();
         this.workerSemaphore = new Semaphore(config.getWorkerThreads());
         this.threadPool = Executors.newFixedThreadPool(config.getWorkerThreads());
-
+        this.livenessController = livenessController;
         this.rebalanceThread = new Thread(() -> {
-            while (this.running) {
+            while (this.livenessController.keepManagerRunning()) {
                 doHeartbeat();
                 try {
                     Thread.sleep(5000);
@@ -163,7 +168,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
                 config.getApiBootstrapHost(),
                 config.getApiBootstrapPort(),
                 t);
-        this.running = false;
+        livenessController.notifyFailure();
         // We don't close the connections to other hosts here since they will do
         // that themselves if they can't connect.
     }
@@ -216,13 +221,10 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     }
 
     public void start() {
-        this.running = true;
         this.rebalanceThread.start();
     }
 
-    public void close() {
-        this.running = false;
-    }
+    public void close() {}
 
     // Below is actual task execution logic
 
@@ -332,9 +334,5 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
 
     public int getNumThreads() {
         return config.getWorkerThreads();
-    }
-
-    public boolean isRunning() {
-        return this.running;
     }
 }

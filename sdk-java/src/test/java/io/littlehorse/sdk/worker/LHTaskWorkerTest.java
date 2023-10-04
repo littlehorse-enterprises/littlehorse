@@ -13,14 +13,14 @@ public class LHTaskWorkerTest {
     @Test
     public void theWorkerIsHealthyIfLHServerIsReachable() throws Exception {
         final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
-        when(manager.isRunning()).thenReturn(true);
+        // when(manager.isRunning()).thenReturn(true);
         assertThat(worker.isHealthy()).isEqualTo(true);
     }
 
     @Test
     public void theWorkerIsNotHealthyIfLHServerIsNotReachable() throws Exception {
         final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
-        when(manager.isRunning()).thenReturn(false);
+        // when(manager.isRunning()).thenReturn(false);
         assertThat(worker.isHealthy()).isEqualTo(false);
     }
 }

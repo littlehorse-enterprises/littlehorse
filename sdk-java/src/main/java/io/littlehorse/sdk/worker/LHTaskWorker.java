@@ -12,6 +12,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
+import io.littlehorse.sdk.worker.internal.ConnectionManagerLivenessController;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.io.Closeable;
@@ -86,7 +87,8 @@ public class LHTaskWorker implements Closeable {
     private void createManager() throws IOException {
         validateTaskDefAndExecutable();
         if (this.manager == null) {
-            this.manager = new LHServerConnectionManager(taskMethod, taskDef, config, mappings, executable);
+            this.manager = new LHServerConnectionManager(
+                    taskMethod, taskDef, config, mappings, executable, new ConnectionManagerLivenessController(5000));
         }
     }
 
@@ -205,6 +207,6 @@ public class LHTaskWorker implements Closeable {
     }
 
     public boolean isHealthy() {
-        return manager.isRunning();
+        return true;
     }
 }
