@@ -68,6 +68,12 @@ public class LHTaskWorker implements Closeable {
         this.grpcClient = config.getBlockingStub();
     }
 
+    public LHTaskWorker(Object executable, String taskDefName, LHConfig config, LHServerConnectionManager manager)
+            throws IOException {
+        this(executable, taskDefName, config);
+        this.manager = manager;
+    }
+
     /**
      * `TaskDef` to execute
      *
@@ -79,7 +85,9 @@ public class LHTaskWorker implements Closeable {
 
     private void createManager() throws IOException {
         validateTaskDefAndExecutable();
-        this.manager = new LHServerConnectionManager(taskMethod, taskDef, config, mappings, executable);
+        if (this.manager == null) {
+            this.manager = new LHServerConnectionManager(taskMethod, taskDef, config, mappings, executable);
+        }
     }
 
     /**
@@ -194,5 +202,9 @@ public class LHTaskWorker implements Closeable {
         if (manager != null) {
             manager.close();
         }
+    }
+
+    public boolean isHealthy() {
+        return manager.isRunning();
     }
 }

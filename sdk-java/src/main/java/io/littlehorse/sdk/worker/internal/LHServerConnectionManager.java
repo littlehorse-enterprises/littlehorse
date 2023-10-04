@@ -333,4 +333,8 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     public int getNumThreads() {
         return config.getWorkerThreads();
     }
+
+    public boolean isRunning() {
+        return this.running;
+    }
 }
