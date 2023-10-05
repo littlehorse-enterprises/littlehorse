@@ -1,10 +1,11 @@
+from enum import Enum
 import asyncio
-from datetime import datetime
+from datetime import datetime, timedelta
 import functools
 from inspect import Parameter, signature, iscoroutinefunction
 import logging
 import signal
-from typing import Any, AsyncIterator, Callable
+from typing import Any, AsyncIterator, Callable, Optional
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     TaskSchemaMismatchException,
@@ -26,6 +27,7 @@ from littlehorse.utils import to_type
 
 REPORT_TASK_DEFAULT_RETRIES = 5
 HEARTBEAT_DEFAULT_INTERVAL = 5
+HEALTH_TIMEOUT = 60000
 
 
 class WorkerContext:
@@ -382,6 +384,51 @@ class LHConnection:
         self._ask_for_work_semaphore.release()
 
 
+class LHLivenessController:
+    def __init__(self, timeout_millis: int) -> None:
+        self.timeout_millis = timeout_millis
+        self.running = True
+        self.failure_ocurred_at: Optional[datetime] = None
+
+    def notify_failure(self) -> None:
+        if self.failure_ocurred_at is None:
+            self.failure_ocurred_at = datetime.now()
+
+    def notify_successful_connection(self) -> None:
+        self.failure_ocurred_at = None
+
+    def failure_detected(self) -> bool:
+        return self.failure_ocurred_at is not None
+
+    def keep_running(self) -> bool:
+        if not self.running:
+            return False
+
+        if self.failure_ocurred_at is not None:
+            print("here!")
+            print(self.failure_ocurred_at + timedelta(milliseconds=self.timeout_millis))
+
+            return datetime.now() < (
+                self.failure_ocurred_at + timedelta(milliseconds=self.timeout_millis)
+            )
+        return True
+
+    def notify_cluster_healthy(self, cluster_healthy: bool) -> None:
+        self.cluster_healthy = cluster_healthy
+
+    def is_cluster_healthy(self) -> bool:
+        return self.cluster_healthy
+
+    def stop(self) -> None:
+        self.running = False
+
+
+class TaskWorkerHealth(Enum):
+    HEALTHY = "HEALTHY"
+    UNHEALTHY = "UNHEALTHY"
+    SERVER_UNHEALTHY = "SERVER_UNHEALTHY"
+
+
 class LHTaskWorker:
     """The LHTaskWorker talks to the LH Servers and executes a
     specified Task Method every time a Task is scheduled.
@@ -403,7 +450,7 @@ class LHTaskWorker:
 
         self._config = config
         self._connections: dict[str, LHConnection] = {}
-        self.running = False
+        self.liveness_controller = LHLivenessController(HEALTH_TIMEOUT)
 
         # get the task definition from the server
         stub = config.stub()
@@ -413,7 +460,7 @@ class LHTaskWorker:
     async def _heartbeat(self) -> None:
         stub = self._config.stub(async_channel=True, name="heartbeat")
 
-        while self.running:
+        while self.liveness_controller.keep_running():
             self._log.debug(
                 "Sending heart beat (%s) at %s",
                 self._task.task_name,
@@ -429,12 +476,14 @@ class LHTaskWorker:
                 reply: RegisterTaskWorkerResponse = await stub.RegisterTaskWorker(
                     request
                 )
+                self.liveness_controller.notify_successful_connection()
             except Exception as e:
                 self._log.error(
                     "Error when registering task worker: %s. %s",
                     self._task.task_name,
                     e,
                 )
+                self.liveness_controller.notify_failure()
                 await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
                 continue
 
@@ -481,17 +530,19 @@ class LHTaskWorker:
 
             await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
 
+    def health(self) -> TaskWorkerHealth:
+        return TaskWorkerHealth.HEALTHY
+
     async def start(self) -> None:
         """Starts polling for and executing tasks."""
         self._log.info(f"Starting worker '{self._task.task_name}'")
-        self.running = True
 
         await self._heartbeat()
 
     def stop(self) -> None:
         """Cleanly shuts down the Task Worker."""
         self._log.info(f"Stopping worker '{self._task.task_name}'")
-        self.running = False
+        self.liveness_controller.stop()
 
         for connection in self._connections.values():
             connection.stop()

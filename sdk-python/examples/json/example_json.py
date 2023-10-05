@@ -51,10 +51,11 @@ async def main() -> None:
     littlehorse.create_task_def(greeting, "greet", config)
     littlehorse.create_task_def(describe_car, "describe-car", config)
     littlehorse.create_workflow_spec(wf, config)
-
+    greet_worker = LHTaskWorker(greeting, "greet", config)
+    describe_car_worker = LHTaskWorker(describe_car, "describe-car", config)
     await littlehorse.start(
-        LHTaskWorker(greeting, "greet", config),
-        LHTaskWorker(describe_car, "describe-car", config),
+        greet_worker,
+        describe_car_worker,
     )
 
 
