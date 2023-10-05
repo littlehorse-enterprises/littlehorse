@@ -15,6 +15,33 @@ public class LHServerConnectionManagerTest {
     static final long HEARTBEAT_INTERVAL_MS = 5000L;
 
     @Test
+    public void connectionManagerKeepsRunningWhenAnErrorOccurredButTheTimeoutHasNotBeenExceeded() throws Exception {
+        final LHConfig mockConfig = mock();
+        final TaskDef mockTaskDef = mock();
+        final long beforeTimeout = 101L;
+        final long timeout = 100L;
+        final LHPublicApiGrpc.LHPublicApiStub asyncStub = mock();
+
+        when(mockConfig.getAsyncStub()).thenReturn(asyncStub);
+        when(mockConfig.getWorkerThreads()).thenReturn(1);
+        when(mockTaskDef.getName()).thenReturn("test");
+        when(mockConfig.getClientId()).thenReturn("test-client-id");
+        when(mockConfig.getConnectListener()).thenReturn("test-listener");
+
+        ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(timeout);
+        LHServerConnectionManager connectionManager =
+                new LHServerConnectionManager(mock(), mockTaskDef, mockConfig, mock(), mock(), livenessController);
+
+        connectionManager.start();
+        assertThat(connectionManager.isAlive()).isTrue();
+
+        connectionManager.onError(new IOException());
+        Thread.sleep(beforeTimeout);
+
+        assertThat(connectionManager.isAlive()).isTrue();
+    }
+
+    @Test
     public void shouldStopManagerWhenRetriesWhereExhaustedAfterAnErrorHasOcurred() throws Exception {
         final LHConfig mockConfig = mock();
         final TaskDef mockTaskDef = mock();
@@ -28,9 +55,9 @@ public class LHServerConnectionManagerTest {
         when(mockConfig.getClientId()).thenReturn("test-client-id");
         when(mockConfig.getConnectListener()).thenReturn("test-listener");
 
-        ConnectionManagerLivenessController mockedLivenessController = new ConnectionManagerLivenessController(timeout);
-        LHServerConnectionManager connectionManager = new LHServerConnectionManager(
-                mock(), mockTaskDef, mockConfig, mock(), mock(), mockedLivenessController);
+        ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(timeout);
+        LHServerConnectionManager connectionManager =
+                new LHServerConnectionManager(mock(), mockTaskDef, mockConfig, mock(), mock(), livenessController);
 
         connectionManager.start();
         assertThat(connectionManager.isAlive()).isTrue();
@@ -39,5 +66,31 @@ public class LHServerConnectionManagerTest {
         Thread.sleep(HEARTBEAT_INTERVAL_MS + afterTimeout);
 
         assertThat(connectionManager.isAlive()).isFalse();
+    }
+
+    @Test
+    public void connectionManagerKeepsAlive() throws Exception {
+        final LHConfig mockConfig = mock();
+        final TaskDef mockTaskDef = mock();
+        final long afterTimeout = 101L;
+        final long timeout = 100L;
+        final LHPublicApiGrpc.LHPublicApiStub asyncStub = mock();
+
+        when(mockConfig.getAsyncStub()).thenReturn(asyncStub);
+        when(mockConfig.getWorkerThreads()).thenReturn(1);
+        when(mockTaskDef.getName()).thenReturn("test");
+        when(mockConfig.getClientId()).thenReturn("test-client-id");
+        when(mockConfig.getConnectListener()).thenReturn("test-listener");
+
+        ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(timeout);
+        LHServerConnectionManager connectionManager =
+                new LHServerConnectionManager(mock(), mockTaskDef, mockConfig, mock(), mock(), livenessController);
+
+        connectionManager.start();
+        assertThat(connectionManager.isAlive()).isTrue();
+
+        Thread.sleep(HEARTBEAT_INTERVAL_MS + afterTimeout);
+
+        assertThat(connectionManager.isAlive()).isTrue();
     }
 }
