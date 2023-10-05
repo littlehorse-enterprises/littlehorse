@@ -230,7 +230,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     }
 
     public boolean wasThereAnyCallFailure() {
-        return !livenessController.wasFailureNotified();
+        return livenessController.wasFailureNotified();
     }
 
     public void start() {
