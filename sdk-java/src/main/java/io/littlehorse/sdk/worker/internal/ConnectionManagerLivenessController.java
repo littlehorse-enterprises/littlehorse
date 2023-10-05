@@ -1,5 +1,6 @@
 package io.littlehorse.sdk.worker.internal;
 
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -21,7 +22,7 @@ public class ConnectionManagerLivenessController {
         this.failureOccurredAt = null;
     }
 
-    public boolean isFailureDetected(){
+    public boolean isFailureDetected() {
         return this.failureOccurredAt != null;
     }
 
@@ -33,11 +34,15 @@ public class ConnectionManagerLivenessController {
         return LocalDateTime.now().isBefore(upperLimit);
     }
 
-    public void notifyClusterHealthy(boolean isClusterHealthy) {
-        this.isClusterHealthy = isClusterHealthy;
-    }
-
     public boolean isClusterHealthy() {
         return this.isClusterHealthy;
+    }
+
+    public void establishClusterHealth(RegisterTaskWorkerResponse response) {
+        if (response.hasIsClusterHealthy()) {
+            this.isClusterHealthy = response.getIsClusterHealthy();
+        } else {
+            this.isClusterHealthy = true;
+        }
     }
 }

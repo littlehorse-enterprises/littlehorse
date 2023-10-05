@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class LHTaskWorkerTest {
@@ -27,7 +26,6 @@ public class LHTaskWorkerTest {
     @Test
     public void theWorkerIsUnhealthyWhenTheLHServerIsUnhealthy() throws Exception {
         final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
-
     }
 }
 

@@ -42,18 +42,4 @@ public class ConnectionManagerLivenessControllerTest {
         ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(100);
         assertThat(livenessController.keepManagerRunning()).isEqualTo(true);
     }
-
-    @Test
-    public void indicatesClusterIsHealthyWhenNotified() {
-        ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(100);
-        livenessController.notifyClusterHealthy(true);
-        assertThat(livenessController.isClusterHealthy()).isEqualTo(true);
-    }
-
-    @Test
-    public void indicatesClusterIsUnhealthyWhenNotified() {
-        ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(100);
-        livenessController.notifyClusterHealthy(false);
-        assertThat(livenessController.isClusterHealthy()).isEqualTo(false);
-    }
 }

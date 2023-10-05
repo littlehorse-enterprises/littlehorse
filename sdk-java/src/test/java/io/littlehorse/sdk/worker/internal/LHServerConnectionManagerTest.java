@@ -9,9 +9,7 @@ import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import java.io.IOException;
-
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -81,7 +79,7 @@ public class LHServerConnectionManagerTest {
     }
 
     @Test
-    public void connectionManagerIsNotHealthyIfAFailureHasBeenNotified() throws Exception{
+    public void connectionManagerIsNotHealthyIfAFailureHasBeenNotified() throws Exception {
         final long timeout = 100L;
 
         ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(timeout);
@@ -93,7 +91,7 @@ public class LHServerConnectionManagerTest {
     }
 
     @Test
-    public void connectionManagerRecoverHealthWhenASuccessHeartbeatIsNotified() throws Exception{
+    public void connectionManagerRecoverHealthWhenASuccessHeartbeatIsNotified() throws Exception {
         final long timeout = 100L;
 
         ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(timeout);
@@ -107,37 +105,62 @@ public class LHServerConnectionManagerTest {
     }
 
     @Test
-    public void clusterIsHealthyWhenResponseIndicatesThat() throws Exception{
+    public void clusterIsHealthyWhenResponseIndicatesThat() throws Exception {
         final long timeout = 100L;
 
         ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(timeout);
         LHServerConnectionManager connectionManager =
                 new LHServerConnectionManager(mock(), mockTaskDef, mockConfig, mock(), mock(), livenessController);
 
-        connectionManager.onNext(
-                RegisterTaskWorkerResponse.newBuilder()
-                        .setIsClusterHealthy(true)
-                        .build()
-        );
+        connectionManager.onNext(RegisterTaskWorkerResponse.newBuilder()
+                .setIsClusterHealthy(true)
+                .build());
 
         assertThat(connectionManager.isClusterHealthy()).isTrue();
     }
 
     @Test
-    public void clusterIsUnhealthyWhenResponseIndicatesThat() throws Exception{
-        final long timeout = 100L;
+    public void establishClusterAsHealthyWhenTheResponseIndicatesThat() throws IOException {
+        ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(100);
+        RegisterTaskWorkerResponse responseIndicatingClusterIsHealthy = RegisterTaskWorkerResponse.newBuilder()
+                .setIsClusterHealthy(true)
+                .build();
 
-        ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(timeout);
         LHServerConnectionManager connectionManager =
                 new LHServerConnectionManager(mock(), mockTaskDef, mockConfig, mock(), mock(), livenessController);
 
-        connectionManager.onNext(
-                RegisterTaskWorkerResponse.newBuilder()
-                        .setIsClusterHealthy(false)
-                        .build()
-        );
+        connectionManager.onNext(responseIndicatingClusterIsHealthy);
 
-        assertThat(connectionManager.isClusterHealthy()).isFalse();
+        assertThat(livenessController.isClusterHealthy()).isEqualTo(true);
+    }
+
+    @Test
+    public void establishClusterAsUnhealthyWhenTheResponseIndicatesThat() throws IOException {
+        ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(100);
+        RegisterTaskWorkerResponse responseIndicatingClusterIsUnhealthy = RegisterTaskWorkerResponse.newBuilder()
+                .setIsClusterHealthy(false)
+                .build();
+
+        LHServerConnectionManager connectionManager =
+                new LHServerConnectionManager(mock(), mockTaskDef, mockConfig, mock(), mock(), livenessController);
+
+        connectionManager.onNext(responseIndicatingClusterIsUnhealthy);
+
+        assertThat(livenessController.isClusterHealthy()).isEqualTo(false);
+    }
+
+    @Test
+    public void establishClusterAsHealthyWhenTheResponseDoesNotHaveThatMetadata() throws IOException {
+        ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(100);
+        RegisterTaskWorkerResponse responseWithoutClusterHealthMetadata =
+                RegisterTaskWorkerResponse.newBuilder().build();
+
+        LHServerConnectionManager connectionManager =
+                new LHServerConnectionManager(mock(), mockTaskDef, mockConfig, mock(), mock(), livenessController);
+
+        connectionManager.onNext(responseWithoutClusterHealthMetadata);
+
+        assertThat(livenessController.isClusterHealthy()).isEqualTo(true);
     }
 
     @SneakyThrows
