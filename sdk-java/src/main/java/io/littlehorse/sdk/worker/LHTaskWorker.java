@@ -55,10 +55,10 @@ public class LHTaskWorker implements Closeable {
      * Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod, and a
      * configuration Properties object.
      *
-     * @param executable is any Object which has exactly one method annotated with '@LHTaskMethod'.
-     *     That method will be used to execute the tasks.
+     * @param executable  is any Object which has exactly one method annotated with '@LHTaskMethod'.
+     *                    That method will be used to execute the tasks.
      * @param taskDefName is the name of the `TaskDef` to execute.
-     * @param config is a valid LHConfig.
+     * @param config      is a valid LHConfig.
      * @throws IOException
      */
     public LHTaskWorker(Object executable, String taskDefName, LHConfig config) throws IOException {
@@ -112,7 +112,6 @@ public class LHTaskWorker implements Closeable {
     /**
      * Deploys the TaskDef object to the LH Server. This is a convenience method, generally not
      * recommended for production (in production you should manually use the PutTaskDef).
-     *
      */
     public void registerTaskDef() {
         registerTaskDef(false);
@@ -123,7 +122,7 @@ public class LHTaskWorker implements Closeable {
      * recommended for production (in production you should manually use the PutTaskDef).
      *
      * @param swallowAlreadyExists if true, then ignore grpc ALREADY_EXISTS error when registering
-     *     the TaskDef.
+     *                             the TaskDef.
      */
     public void registerTaskDef(boolean swallowAlreadyExists) {
         TaskDefBuilder tdb = new TaskDefBuilder(executable, taskDefName);
@@ -199,14 +198,22 @@ public class LHTaskWorker implements Closeable {
         manager.start();
     }
 
-    /** Cleanly shuts down the Task Worker. */
+    /**
+     * Cleanly shuts down the Task Worker.
+     */
     public void close() {
         if (manager != null) {
             manager.close();
         }
     }
 
-    public boolean isHealthy() {
-        return manager.wasThereAnyCallFailure();
+    public LHTaskWorkerHealth healthStatus() {
+        if (!manager.isClusterHealthy()) {
+            return new LHTaskWorkerHealth(false, LHTaskWorkerHealthReason.SERVER_REBALANCING);
+        } else if (!manager.wasThereAnyFailure() && manager.isClusterHealthy()) {
+            return new LHTaskWorkerHealth(true, LHTaskWorkerHealthReason.HEALTHY);
+        }
+
+        return new LHTaskWorkerHealth(false, LHTaskWorkerHealthReason.UNHEALTHY);
     }
 }

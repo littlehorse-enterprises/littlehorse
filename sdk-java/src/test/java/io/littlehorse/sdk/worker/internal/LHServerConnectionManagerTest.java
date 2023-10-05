@@ -87,7 +87,7 @@ public class LHServerConnectionManagerTest {
                 new LHServerConnectionManager(mock(), mockTaskDef, mockConfig, mock(), mock(), livenessController);
 
         connectionManager.onError(new IOException());
-        assertThat(connectionManager.wasThereAnyCallFailure()).isTrue();
+        assertThat(connectionManager.wasThereAnyFailure()).isTrue();
     }
 
     @Test
@@ -99,9 +99,9 @@ public class LHServerConnectionManagerTest {
                 new LHServerConnectionManager(mock(), mockTaskDef, mockConfig, mock(), mock(), livenessController);
 
         connectionManager.onError(new IOException());
-        assertThat(connectionManager.wasThereAnyCallFailure()).isTrue();
+        assertThat(connectionManager.wasThereAnyFailure()).isTrue();
         connectionManager.onNext(mock());
-        assertThat(connectionManager.wasThereAnyCallFailure()).isFalse();
+        assertThat(connectionManager.wasThereAnyFailure()).isFalse();
     }
 
     @Test

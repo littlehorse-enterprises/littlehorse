@@ -25,4 +25,19 @@ public class LHTaskWorkerHealth {
     //        SERVER_REBALANCING // Can contact lh server and server is unhealthy
     //    }
 
+    private boolean isHealthy;
+    private LHTaskWorkerHealthReason reason;
+
+    public LHTaskWorkerHealth(boolean isHealthy, LHTaskWorkerHealthReason reason) {
+        this.isHealthy = isHealthy;
+        this.reason = reason;
+    }
+
+    public boolean isHealthy() {
+        return isHealthy;
+    }
+
+    public LHTaskWorkerHealthReason getReason() {
+        return reason;
+    }
 }

@@ -12,21 +12,47 @@ public class LHTaskWorkerTest {
     @Test
     public void theWorkerIsHealthyIfNoCallFailureHasBeenNotifiedAndClusterIsHealthy() throws Exception {
         final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
-        when(manager.wasThereAnyCallFailure()).thenReturn(true);
 
-        assertThat(worker.isHealthy()).isEqualTo(true);
+        when(manager.wasThereAnyFailure()).thenReturn(false);
+        when(manager.isClusterHealthy()).thenReturn(true);
+
+        LHTaskWorkerHealth workerHealth = worker.healthStatus();
+
+        assertThat(workerHealth.isHealthy()).isTrue();
+        assertThat(workerHealth.getReason()).isEqualTo(LHTaskWorkerHealthReason.HEALTHY);
     }
 
     @Test
-    public void theWorkerIsUnhealthyIfConnectionIsUnhealthy() throws Exception {
+    public void theWorkerIsUnhealthyIfAFailureHasBeenNotifiedEvenIfClusterIsHealthy() throws Exception {
         final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
-        when(manager.wasThereAnyCallFailure()).thenReturn(false);
-        assertThat(worker.isHealthy()).isEqualTo(false);
+
+        when(manager.wasThereAnyFailure()).thenReturn(true);
+        when(manager.isClusterHealthy()).thenReturn(true);
+
+        assertThat(worker.healthStatus().isHealthy()).isFalse();
+        assertThat(worker.healthStatus().getReason()).isEqualTo(LHTaskWorkerHealthReason.UNHEALTHY);
     }
 
     @Test
-    public void theWorkerIsUnhealthyWhenTheLHServerIsUnhealthy() throws Exception {
+    public void theWorkerIsUnhealthyIfNoFailureOnCallsButClusterIsUnhealthy() throws Exception {
         final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
+
+        when(manager.wasThereAnyFailure()).thenReturn(false);
+        when(manager.isClusterHealthy()).thenReturn(false);
+
+        assertThat(worker.healthStatus().isHealthy()).isFalse();
+        assertThat(worker.healthStatus().getReason()).isEqualTo(LHTaskWorkerHealthReason.SERVER_REBALANCING);
+    }
+
+    @Test
+    public void theWorkerIsUnhealthyIfFailureOnCallsAndClusterIsUnhealthy() throws Exception {
+        final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
+
+        when(manager.wasThereAnyFailure()).thenReturn(true);
+        when(manager.isClusterHealthy()).thenReturn(false);
+
+        assertThat(worker.healthStatus().isHealthy()).isFalse();
+        assertThat(worker.healthStatus().getReason()).isEqualTo(LHTaskWorkerHealthReason.SERVER_REBALANCING);
     }
 }
 
