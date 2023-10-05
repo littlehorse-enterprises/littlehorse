@@ -285,7 +285,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
-    public void registerTaskWorker(RegisterTaskWorkerRequest req, StreamObserver<RegisterTaskWorkerResponse> ctx) {
+    public void registerTaskWorker(
+            RegisterTaskWorkerRequest req, StreamObserver<RegisterTaskWorkerResponse> responseObserver) {
         log.trace("Receiving RegisterTaskWorkerRequest (heartbeat) from: " + req.getClientId());
 
         TaskWorkerHeartBeatRequest heartBeatPb = TaskWorkerHeartBeatRequest.newBuilder()
@@ -297,7 +298,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         TaskWorkerHeartBeatRequestModel heartBeat =
                 LHSerializable.fromProto(heartBeatPb, TaskWorkerHeartBeatRequestModel.class);
 
-        processCommand(new CommandModel(heartBeat), ctx, RegisterTaskWorkerResponse.class, true);
+        processCommand(new CommandModel(heartBeat), responseObserver, RegisterTaskWorkerResponse.class, true);
     }
 
     @Override
