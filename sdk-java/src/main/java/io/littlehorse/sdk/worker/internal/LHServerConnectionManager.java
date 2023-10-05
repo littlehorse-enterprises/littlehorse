@@ -51,6 +51,8 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     private Semaphore workerSemaphore;
     private Thread rebalanceThread;
 
+    private static final long HEARTBEAT_INTERVAL_MS = 5000L;
+
     private final ConnectionManagerLivenessController livenessController;
 
     private static final int TOTAL_RETRIES = 5;
@@ -80,7 +82,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
             while (this.livenessController.keepManagerRunning()) {
                 doHeartbeat();
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(HEARTBEAT_INTERVAL_MS);
                 } catch (Exception ignored) {
                     // Ignored
                 }
@@ -218,6 +220,10 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
             }
             return false;
         });
+    }
+
+    public boolean isAlive() {
+        return rebalanceThread.isAlive();
     }
 
     public void start() {
