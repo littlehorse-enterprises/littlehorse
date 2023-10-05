@@ -7,23 +7,27 @@ import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled("WIP")
 public class LHTaskWorkerTest {
-
     private final LHServerConnectionManager manager = mock();
 
     @Test
     public void theWorkerIsHealthyIfLHServerIsReachable() throws Exception {
         final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
-        // when(manager.isRunning()).thenReturn(true);
+        when(manager.isHealthy()).thenReturn(true);
         assertThat(worker.isHealthy()).isEqualTo(true);
     }
 
     @Test
-    public void theWorkerIsNotHealthyIfLHServerIsNotReachable() throws Exception {
+    public void theWorkerIsUnhealthyIfConnectionIsUnhealthy() throws Exception {
         final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
-        // when(manager.isRunning()).thenReturn(false);
+        when(manager.isHealthy()).thenReturn(false);
         assertThat(worker.isHealthy()).isEqualTo(false);
+    }
+
+    @Test
+    public void theWorkerIsUnhealthyWhenTheLHServerIsUnhealthy() throws Exception {
+        final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
+
     }
 }
 

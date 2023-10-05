@@ -118,6 +118,11 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     @Override
     public void onNext(RegisterTaskWorkerResponse next) {
         // Reconcile what's running
+//        livenessController.notifyServerHealthy(next.getIsClusterHealthy());
+        livenessController.notifySuccessfulConnection();
+//        if(next.hasIsClusterHealthy()){
+        livenessController.notifyClusterHealthy(next.getIsClusterHealthy());
+//        }
         for (LHHostInfo host : next.getYourHostsList()) {
             if (!isAlreadyRunning(host)) {
                 try {
@@ -224,6 +229,10 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
 
     public boolean isAlive() {
         return rebalanceThread.isAlive();
+    }
+
+    public boolean isHealthy(){
+        return !livenessController.isFailureDetected();
     }
 
     public void start() {
@@ -340,5 +349,9 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
 
     public int getNumThreads() {
         return config.getWorkerThreads();
+    }
+
+    public boolean isClusterHealthy() {
+        return livenessController.isClusterHealthy();
     }
 }
