@@ -14,15 +14,15 @@ public class ConnectionManagerLivenessController {
         this.timeoutInMilliseconds = timeoutInMilliseconds;
     }
 
-    public void notifyFailure() {
+    public void notifyCallFailure() {
         this.failureOccurredAt = LocalDateTime.now();
     }
 
-    public void notifySuccessfulConnection() {
+    public void notifySuccessfulCall() {
         this.failureOccurredAt = null;
     }
 
-    public boolean isFailureDetected() {
+    public boolean wasFailureNotified() {
         return this.failureOccurredAt != null;
     }
 

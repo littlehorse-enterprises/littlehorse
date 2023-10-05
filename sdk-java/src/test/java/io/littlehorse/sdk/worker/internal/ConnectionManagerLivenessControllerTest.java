@@ -11,7 +11,7 @@ public class ConnectionManagerLivenessControllerTest {
         long timeoutInMilliseconds = 100;
         ConnectionManagerLivenessController livenessController =
                 new ConnectionManagerLivenessController(timeoutInMilliseconds);
-        livenessController.notifyFailure();
+        livenessController.notifyCallFailure();
         Thread.sleep(timeoutInMilliseconds);
 
         assertThat(livenessController.keepManagerRunning()).isEqualTo(false);
@@ -22,7 +22,7 @@ public class ConnectionManagerLivenessControllerTest {
         long timeoutInMilliseconds = 100;
         ConnectionManagerLivenessController livenessController =
                 new ConnectionManagerLivenessController(timeoutInMilliseconds);
-        livenessController.notifyFailure();
+        livenessController.notifyCallFailure();
 
         assertThat(livenessController.keepManagerRunning()).isEqualTo(true);
     }
@@ -32,7 +32,7 @@ public class ConnectionManagerLivenessControllerTest {
         long timeoutInMilliseconds = 0;
         ConnectionManagerLivenessController livenessController =
                 new ConnectionManagerLivenessController(timeoutInMilliseconds);
-        livenessController.notifyFailure();
+        livenessController.notifyCallFailure();
 
         assertThat(livenessController.keepManagerRunning()).isEqualTo(false);
     }

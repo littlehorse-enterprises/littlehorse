@@ -119,7 +119,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     public void onNext(RegisterTaskWorkerResponse next) {
         // Reconcile what's running
         livenessController.establishClusterHealth(next);
-        livenessController.notifySuccessfulConnection();
+        livenessController.notifySuccessfulCall();
 
         for (LHHostInfo host : next.getYourHostsList()) {
             if (!isAlreadyRunning(host)) {
@@ -173,7 +173,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
                 config.getApiBootstrapHost(),
                 config.getApiBootstrapPort(),
                 t);
-        livenessController.notifyFailure();
+        livenessController.notifyCallFailure();
         // We don't close the connections to other hosts here since they will do
         // that themselves if they can't connect.
     }
@@ -230,7 +230,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     }
 
     public boolean isHealthy() {
-        return !livenessController.isFailureDetected();
+        return !livenessController.wasFailureNotified();
     }
 
     public void start() {
