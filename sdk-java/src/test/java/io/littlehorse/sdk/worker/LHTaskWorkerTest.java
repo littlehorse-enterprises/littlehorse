@@ -10,16 +10,17 @@ public class LHTaskWorkerTest {
     private final LHServerConnectionManager manager = mock();
 
     @Test
-    public void theWorkerIsHealthyIfLHServerIsReachable() throws Exception {
+    public void theWorkerIsHealthyIfNoCallFailureHasBeenNotifiedAndClusterIsHealthy() throws Exception {
         final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
-        when(manager.isHealthy()).thenReturn(true);
+        when(manager.wasThereAnyCallFailure()).thenReturn(true);
+
         assertThat(worker.isHealthy()).isEqualTo(true);
     }
 
     @Test
     public void theWorkerIsUnhealthyIfConnectionIsUnhealthy() throws Exception {
         final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
-        when(manager.isHealthy()).thenReturn(false);
+        when(manager.wasThereAnyCallFailure()).thenReturn(false);
         assertThat(worker.isHealthy()).isEqualTo(false);
     }
 

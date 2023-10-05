@@ -207,6 +207,6 @@ public class LHTaskWorker implements Closeable {
     }
 
     public boolean isHealthy() {
-        return manager.isHealthy();
+        return manager.wasThereAnyCallFailure();
     }
 }

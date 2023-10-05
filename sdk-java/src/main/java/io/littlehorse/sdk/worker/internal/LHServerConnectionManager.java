@@ -229,7 +229,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         return rebalanceThread.isAlive();
     }
 
-    public boolean isHealthy() {
+    public boolean wasThereAnyCallFailure() {
         return !livenessController.wasFailureNotified();
     }
 
