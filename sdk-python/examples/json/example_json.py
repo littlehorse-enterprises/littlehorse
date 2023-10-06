@@ -53,10 +53,24 @@ async def main() -> None:
     littlehorse.create_workflow_spec(wf, config)
     greet_worker = LHTaskWorker(greeting, "greet", config)
     describe_car_worker = LHTaskWorker(describe_car, "describe-car", config)
-    await littlehorse.start(
+
+    async def show_worker_status(*workers: LHTaskWorker) -> None:
+        running = True
+        while running:
+            for worker in workers:
+                running = worker.is_running()
+                print(f"Current Health for worker: {worker.health().reason}")
+            await asyncio.sleep(1)
+
+    workers = [
         greet_worker,
         describe_car_worker,
-    )
+    ]
+    tasks = [
+        asyncio.create_task(littlehorse.start(*workers)),
+        asyncio.create_task(show_worker_status(*workers)),
+    ]
+    await asyncio.gather(*tasks)
 
 
 if __name__ == "__main__":

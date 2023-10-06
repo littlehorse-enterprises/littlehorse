@@ -406,9 +406,10 @@ class LHLivenessController:
             return False
 
         if self.failure_ocurred_at is not None:
-            return datetime.now() < (
+            self.running = datetime.now() < (
                 self.failure_ocurred_at + timedelta(milliseconds=self.timeout_millis)
             )
+            return self.running
         return True
 
     def set_cluster_healthy(self, cluster_healthy: bool) -> None:
@@ -431,12 +432,6 @@ class LHTaskWorkerHealth:
     def __init__(self, healthy: bool, reason: TaskWorkerHealthReason) -> None:
         self.healthy = healthy
         self.reason = reason
-
-    def is_healthy(self) -> bool:
-        return self.healthy
-
-    def health_reason(self) -> TaskWorkerHealthReason:
-        return self.reason
 
 
 class LHTaskWorker:
@@ -550,6 +545,9 @@ class LHTaskWorker:
             return LHTaskWorkerHealth(True, TaskWorkerHealthReason.HEALTHY)
         else:
             return LHTaskWorkerHealth(False, TaskWorkerHealthReason.UNHEALTHY)
+
+    def is_running(self) -> bool:
+        return self.liveness_controller.keep_worker_running()
 
     async def start(self) -> None:
         """Starts polling for and executing tasks."""
