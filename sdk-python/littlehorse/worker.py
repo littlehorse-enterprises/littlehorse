@@ -389,31 +389,29 @@ class LHLivenessController:
         self.timeout_millis = timeout_millis
         self.running = True
         self.failure_ocurred_at: Optional[datetime] = None
+        self.cluster_healthy = True
 
-    def notify_failure(self) -> None:
+    def notify_call_failure(self) -> None:
         if self.failure_ocurred_at is None:
             self.failure_ocurred_at = datetime.now()
 
-    def notify_successful_connection(self) -> None:
+    def notify_success_call(self) -> None:
         self.failure_ocurred_at = None
 
-    def failure_detected(self) -> bool:
+    def was_failure_notified(self) -> bool:
         return self.failure_ocurred_at is not None
 
-    def keep_running(self) -> bool:
+    def keep_worker_running(self) -> bool:
         if not self.running:
             return False
 
         if self.failure_ocurred_at is not None:
-            print("here!")
-            print(self.failure_ocurred_at + timedelta(milliseconds=self.timeout_millis))
-
             return datetime.now() < (
                 self.failure_ocurred_at + timedelta(milliseconds=self.timeout_millis)
             )
         return True
 
-    def notify_cluster_healthy(self, cluster_healthy: bool) -> None:
+    def set_cluster_healthy(self, cluster_healthy: bool) -> None:
         self.cluster_healthy = cluster_healthy
 
     def is_cluster_healthy(self) -> bool:
@@ -423,10 +421,22 @@ class LHLivenessController:
         self.running = False
 
 
-class TaskWorkerHealth(Enum):
+class TaskWorkerHealthReason(Enum):
     HEALTHY = "HEALTHY"
     UNHEALTHY = "UNHEALTHY"
     SERVER_UNHEALTHY = "SERVER_UNHEALTHY"
+
+
+class LHTaskWorkerHealth:
+    def __init__(self, healthy: bool, reason: TaskWorkerHealthReason) -> None:
+        self.healthy = healthy
+        self.reason = reason
+
+    def is_healthy(self) -> bool:
+        return self.healthy
+
+    def health_reason(self) -> TaskWorkerHealthReason:
+        return self.reason
 
 
 class LHTaskWorker:
@@ -460,7 +470,7 @@ class LHTaskWorker:
     async def _heartbeat(self) -> None:
         stub = self._config.stub(async_channel=True, name="heartbeat")
 
-        while self.liveness_controller.keep_running():
+        while self.liveness_controller.keep_worker_running():
             self._log.debug(
                 "Sending heart beat (%s) at %s",
                 self._task.task_name,
@@ -476,14 +486,14 @@ class LHTaskWorker:
                 reply: RegisterTaskWorkerResponse = await stub.RegisterTaskWorker(
                     request
                 )
-                self.liveness_controller.notify_successful_connection()
+                self.liveness_controller.notify_success_call()
             except Exception as e:
                 self._log.error(
                     "Error when registering task worker: %s. %s",
                     self._task.task_name,
                     e,
                 )
-                self.liveness_controller.notify_failure()
+                self.liveness_controller.notify_call_failure()
                 await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
                 continue
 
@@ -530,8 +540,8 @@ class LHTaskWorker:
 
             await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
 
-    def health(self) -> TaskWorkerHealth:
-        return TaskWorkerHealth.HEALTHY
+    def health(self) -> LHTaskWorkerHealth:
+        return LHTaskWorkerHealth(True, TaskWorkerHealthReason.HEALTHY)
 
     async def start(self) -> None:
         """Starts polling for and executing tasks."""
