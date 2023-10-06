@@ -424,7 +424,7 @@ class LHLivenessController:
 class TaskWorkerHealthReason(Enum):
     HEALTHY = "HEALTHY"
     UNHEALTHY = "UNHEALTHY"
-    SERVER_UNHEALTHY = "SERVER_UNHEALTHY"
+    SERVER_REBALANCING = "SERVER_REBALANCING"
 
 
 class LHTaskWorkerHealth:
@@ -541,7 +541,15 @@ class LHTaskWorker:
             await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
 
     def health(self) -> LHTaskWorkerHealth:
-        return LHTaskWorkerHealth(True, TaskWorkerHealthReason.HEALTHY)
+        if not self.liveness_controller.is_cluster_healthy():
+            return LHTaskWorkerHealth(False, TaskWorkerHealthReason.SERVER_REBALANCING)
+        elif (
+            not self.liveness_controller.was_failure_notified()
+            and self.liveness_controller.is_cluster_healthy()
+        ):
+            return LHTaskWorkerHealth(True, TaskWorkerHealthReason.HEALTHY)
+        else:
+            return LHTaskWorkerHealth(False, TaskWorkerHealthReason.UNHEALTHY)
 
     async def start(self) -> None:
         """Starts polling for and executing tasks."""
