@@ -7,7 +7,7 @@ from littlehorse.config import LHConfig
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import VariableMutationType
 from littlehorse.worker import LHTaskWorker
-from littlehorse.workflow import ThreadBuilder, Workflow
+from littlehorse.workflow import WorkflowThread, Workflow
 
 logging.basicConfig(level=logging.INFO)
 
@@ -24,18 +24,18 @@ def get_config() -> LHConfig:
 
 
 def get_workflow() -> Workflow:
-    def my_entrypoint(thread: ThreadBuilder) -> None:
+    def my_entrypoint(wf: WorkflowThread) -> None:
         # it receives a name
-        name = thread.add_variable("name", VariableType.STR)
+        name = wf.add_variable("name", VariableType.STR)
 
         # it sends the name to a task worker
-        output = thread.execute(SPIDER_BITE, name)
+        output = wf.execute(SPIDER_BITE, name)
 
         # it assigns the result to the variable name
-        thread.mutate(name, VariableMutationType.ASSIGN, output)
+        wf.mutate(name, VariableMutationType.ASSIGN, output)
 
         # it pass the variable to another task
-        thread.execute(DAILY_BUGLE, name)
+        wf.execute(DAILY_BUGLE, name)
 
     return Workflow("example-mutation", my_entrypoint)
 

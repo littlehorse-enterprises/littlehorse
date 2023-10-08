@@ -25,6 +25,7 @@ enum TaskStatus {
   TASK_OUTPUT_SERIALIZING_ERROR = 5;
   TASK_INPUT_VAR_SUB_ERROR = 6;
   TASK_CANCELLED = 7;
+  TASK_EXCEPTION = 8;
 }
 
 // Metrics
@@ -43,6 +44,18 @@ enum VariableType {
   INT = 5;
   BYTES = 6;
   NULL = 7;
+}
+
+enum LHErrorType {
+  CHILD_FAILURE = 0;
+  VAR_SUB_ERROR = 1;
+  VAR_MUTATION_ERROR = 2;
+  USER_TASK_CANCELLED = 3;
+  TIMEOUT = 4;
+  TASK_FAILURE = 5;
+  VAR_ERROR = 6;
+  TASK_ERROR = 7;
+  INTERNAL_ERROR = 8;
 }
 
 enum WaitForThreadsPolicy{

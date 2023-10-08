@@ -12,5 +12,5 @@ public interface IfElseBody {
      *
      * @param thread is a handle to the ThreadBuilder for the specific if/else block.
      */
-    public void body(ThreadBuilder thread);
+    public void body(WorkflowThread thread);
 }

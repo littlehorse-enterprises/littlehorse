@@ -6,7 +6,7 @@ import littlehorse
 from littlehorse.config import LHConfig
 from littlehorse.worker import LHTaskWorker
 from littlehorse.workflow import LHErrorType
-from littlehorse.workflow import ThreadBuilder, Workflow
+from littlehorse.workflow import WorkflowThread, Workflow
 
 logging.basicConfig(level=logging.INFO)
 
@@ -19,12 +19,12 @@ def get_config() -> LHConfig:
     return config
 
 
-def entrypoint(thread: ThreadBuilder) -> None:
-    def exception_handler(thread: ThreadBuilder) -> None:
-        thread.execute("handler")
+def entrypoint(wf: WorkflowThread) -> None:
+    def exception_handler(handler: WorkflowThread) -> None:
+        handler.execute("handler")
 
-    node = thread.execute("fail")
-    thread.handle_error(node, exception_handler, LHErrorType.TASK_ERROR)
+    node = wf.execute("fail")
+    wf.handle_error(node, exception_handler, LHErrorType.TASK_ERROR)
 
 
 async def fail() -> None:

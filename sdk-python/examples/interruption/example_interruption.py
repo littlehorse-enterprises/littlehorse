@@ -5,7 +5,7 @@ from pathlib import Path
 import littlehorse
 from littlehorse.config import LHConfig
 from littlehorse.worker import LHTaskWorker
-from littlehorse.workflow import ThreadBuilder, Workflow
+from littlehorse.workflow import WorkflowThread, Workflow
 
 logging.basicConfig(level=logging.INFO)
 
@@ -19,13 +19,13 @@ def get_config() -> LHConfig:
 
 
 def get_workflow() -> Workflow:
-    def my_interrupt_handler(thread: ThreadBuilder) -> None:
-        thread.execute("some-task")
+    def my_interrupt_handler(handler: WorkflowThread) -> None:
+        handler.execute("some-task")
 
-    def my_entrypoint(thread: ThreadBuilder) -> None:
-        thread.add_interrupt_handler("interruption-event", my_interrupt_handler)
-        thread.sleep(30)
-        thread.execute("my-task")
+    def my_entrypoint(wf: WorkflowThread) -> None:
+        wf.add_interrupt_handler("interruption-event", my_interrupt_handler)
+        wf.sleep(30)
+        wf.execute("my-task")
 
     return Workflow("example-interrupt-handler", my_entrypoint)
 

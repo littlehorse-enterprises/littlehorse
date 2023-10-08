@@ -1,5 +1,9 @@
 package io.littlehorse.examples;
 
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.proto.ExternalEventDef;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.config.LHConfig;
 import java.io.IOException;
@@ -10,6 +14,7 @@ import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -28,9 +33,9 @@ public class InterruptHandlerExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "example-interrupt-handler",
-            thread -> {
+            wf -> {
                 // Register an interrupt handler
-                thread.registerInterruptHandler(
+                wf.registerInterruptHandler(
                     "interruption-event",
                     handler -> {
                         handler.execute("some-task");
@@ -38,8 +43,8 @@ public class InterruptHandlerExample {
                 );
 
                 // Do some work that takes a while
-                thread.sleepSeconds(30);
-                thread.execute("my-task");
+                wf.sleepSeconds(30);
+                wf.execute("my-task");
             }
         );
     }
@@ -109,12 +114,16 @@ public class InterruptHandlerExample {
 
         for (String externalEventName : externalEventNames) {
             log.debug("Registering external event {}", externalEventName);
-            client.putExternalEventDef(
-                PutExternalEventDefRequest
-                    .newBuilder()
-                    .setName(externalEventName)
-                    .build()
-            );
+            Optional<ExternalEventDef> eventDef = getExternalExternalEventDef(client, externalEventName);
+            if(eventDef.isEmpty()){
+                client.putExternalEventDef(
+                    PutExternalEventDefRequest
+                            .newBuilder()
+                            .setName(externalEventName)
+                            .build()
+                );
+            }
+
         }
 
         // Register a workflow if it does not exist
@@ -135,6 +144,17 @@ public class InterruptHandlerExample {
         for (LHTaskWorker worker : workers) {
             log.debug("Starting {}", worker.getTaskDefName());
             worker.start();
+        }
+    }
+
+    private static Optional<ExternalEventDef> getExternalExternalEventDef(LHPublicApiBlockingStub client, String externalEventName) {
+        try{
+            return Optional.of(client.getExternalEventDef(ExternalEventDefId.newBuilder().setName(externalEventName).build()));
+        }catch (StatusRuntimeException exception){
+            if(exception.getStatus().getCode().equals(Status.NOT_FOUND.getCode())){
+                return Optional.empty();
+            }
+            throw exception;
         }
     }
 }

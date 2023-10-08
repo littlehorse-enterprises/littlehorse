@@ -30,14 +30,14 @@ public class JsonExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "example-json",
-            thread -> {
-                WfRunVariable person = thread.addVariable(
+            wf -> {
+                WfRunVariable person = wf.addVariable(
                     "person",
                     VariableType.JSON_OBJ
                 );
 
-                thread.execute("greet", person.jsonPath("$.name"));
-                thread.execute("describe-car", person.jsonPath("$.car"));
+                wf.execute("greet", person.jsonPath("$.name"));
+                wf.execute("describe-car", person.jsonPath("$.car"));
             }
         );
     }

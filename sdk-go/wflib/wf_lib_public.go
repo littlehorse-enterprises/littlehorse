@@ -4,7 +4,7 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 )
 
-type ThreadFunc func(*ThreadBuilder)
+type ThreadFunc func(*WorkflowThread)
 
 func NewWorkflow(threadFunc ThreadFunc, name string) *LHWorkflow {
 	return &LHWorkflow{
@@ -21,7 +21,7 @@ type LHWorkflow struct {
 	funcs map[string]ThreadFunc
 }
 
-type ThreadBuilder struct {
+type WorkflowThread struct {
 	Name              string
 	isActive          bool
 	spec              model.ThreadSpec
@@ -34,7 +34,7 @@ type WfRunVariable struct {
 	Name    string
 	VarType *model.VariableType
 
-	thread   *ThreadBuilder
+	thread   *WorkflowThread
 	jsonPath *string
 	varDef   *model.VariableDef
 }
@@ -42,12 +42,12 @@ type WfRunVariable struct {
 type NodeOutput struct {
 	nodeName string
 	jsonPath *string
-	thread   *ThreadBuilder
+	thread   *WorkflowThread
 }
 
 type UserTaskOutput struct {
 	Output NodeOutput
-	thread *ThreadBuilder
+	thread *WorkflowThread
 	node   *model.Node
 }
 
@@ -57,19 +57,19 @@ type WorkflowCondition struct {
 }
 
 type SpawnedThread struct {
-	thread       *ThreadBuilder
+	thread       *WorkflowThread
 	threadNumVar *WfRunVariable
 }
 
 type SpawnedThreads struct {
-	thread     *ThreadBuilder
+	thread     *WorkflowThread
 	threadsVar *WfRunVariable
 }
 
 type LHFormatString struct {
 	format     string
 	formatArgs []*WfRunVariable
-	thread     *ThreadBuilder
+	thread     *WorkflowThread
 }
 
 type LHErrorType string
@@ -108,23 +108,23 @@ func (l *LHWorkflow) Compile() (*model.PutWfSpecRequest, error) {
 	return l.compile()
 }
 
-func (t *ThreadBuilder) AddVariable(
+func (t *WorkflowThread) AddVariable(
 	name string, varType model.VariableType,
 ) *WfRunVariable {
 	return t.addVariable(name, varType, nil)
 }
 
-func (t *ThreadBuilder) AddVariableWithDefault(
+func (t *WorkflowThread) AddVariableWithDefault(
 	name string, varType model.VariableType, defaultValue interface{},
 ) *WfRunVariable {
 	return t.addVariable(name, varType, defaultValue)
 }
 
-func (t *ThreadBuilder) Execute(name string, args ...interface{}) NodeOutput {
+func (t *WorkflowThread) Execute(name string, args ...interface{}) NodeOutput {
 	return t.executeTask(name, args)
 }
 
-func (t *ThreadBuilder) Mutate(
+func (t *WorkflowThread) Mutate(
 	lhs *WfRunVariable,
 	mutation model.VariableMutationType,
 	rhs interface{},
@@ -132,92 +132,92 @@ func (t *ThreadBuilder) Mutate(
 	t.mutate(lhs, mutation, rhs)
 }
 
-func (t *ThreadBuilder) Condition(
+func (t *WorkflowThread) Condition(
 	lhs interface{}, op model.Comparator, rhs interface{},
 ) *WorkflowCondition {
 	return t.condition(lhs, op, rhs)
 }
 
-type IfElseBody func(t *ThreadBuilder)
+type IfElseBody func(t *WorkflowThread)
 
-func (t *ThreadBuilder) DoIf(cond *WorkflowCondition, doIf IfElseBody) {
+func (t *WorkflowThread) DoIf(cond *WorkflowCondition, doIf IfElseBody) {
 	t.doIf(cond, doIf)
 }
 
-func (t *ThreadBuilder) DoIfElse(cond *WorkflowCondition, doIf IfElseBody, doElse IfElseBody) {
+func (t *WorkflowThread) DoIfElse(cond *WorkflowCondition, doIf IfElseBody, doElse IfElseBody) {
 	t.doIfElse(cond, doIf, doElse)
 }
 
-func (t *ThreadBuilder) DoWhile(cond *WorkflowCondition, whileBody ThreadFunc) {
+func (t *WorkflowThread) DoWhile(cond *WorkflowCondition, whileBody ThreadFunc) {
 	t.doWhile(cond, whileBody)
 }
 
-func (t *ThreadBuilder) SpawnThread(
+func (t *WorkflowThread) SpawnThread(
 	tFunc ThreadFunc, threadName string, args map[string]interface{},
 ) *SpawnedThread {
 	return t.spawnThread(tFunc, threadName, args)
 }
 
-func (t *ThreadBuilder) WaitForThreads(s ...*SpawnedThread) NodeOutput {
+func (t *WorkflowThread) WaitForThreads(s ...*SpawnedThread) NodeOutput {
 	return *t.waitForThreads(s...)
 }
 
-func (t *ThreadBuilder) SpawnThreadForEach(
+func (t *WorkflowThread) SpawnThreadForEach(
 	arrVar *WfRunVariable, threadName string, threadFunc ThreadFunc, args *map[string]interface{},
 ) *SpawnedThreads {
 	return t.spawnThreadForEach(arrVar, threadName, threadFunc, args)
 }
 
-func (t *ThreadBuilder) WaitForThreadsList(s *SpawnedThreads) NodeOutput {
+func (t *WorkflowThread) WaitForThreadsList(s *SpawnedThreads) NodeOutput {
 	return t.waitForThreadsList(s)
 }
 
-func (t *ThreadBuilder) AssignUserTask(
+func (t *WorkflowThread) AssignUserTask(
 	userTaskDefName string, userId, userGroup interface{},
 ) *UserTaskOutput {
 	return t.assignUserTask(userTaskDefName, userId, userGroup)
 }
 
-func (t *ThreadBuilder) Format(format string, args ...*WfRunVariable) *LHFormatString {
+func (t *WorkflowThread) Format(format string, args ...*WfRunVariable) *LHFormatString {
 	return t.format(format, args)
 }
 
-func (t *ThreadBuilder) ScheduleReminderTask(
+func (t *WorkflowThread) ScheduleReminderTask(
 	userTask *UserTaskOutput, delaySeconds interface{},
 	taskDefName string, args ...interface{},
 ) {
 	t.scheduleReminderTask(userTask, delaySeconds, taskDefName, args)
 }
 
-func (t *ThreadBuilder) ReleaseToGroupOnDeadline(
+func (t *WorkflowThread) ReleaseToGroupOnDeadline(
 	userTask *UserTaskOutput, deadlineSeconds interface{},
 ) {
 	t.releaseToGroupOnDeadline(userTask, deadlineSeconds)
 }
 
-func (t *ThreadBuilder) ReassignUserTaskOnDeadline(
+func (t *WorkflowThread) ReassignUserTaskOnDeadline(
 	userTask *UserTaskOutput, userId, userGroup, deadlineSeconds interface{},
 ) {
 	t.reassignUserTaskOnDeadline(userTask, userId, userGroup, deadlineSeconds)
 }
 
-func (t *ThreadBuilder) WaitForEvent(eventName string) NodeOutput {
+func (t *WorkflowThread) WaitForEvent(eventName string) NodeOutput {
 	return *t.waitForEvent(eventName)
 }
 
-func (t *ThreadBuilder) Sleep(sleepSeconds int) {
+func (t *WorkflowThread) Sleep(sleepSeconds int) {
 	t.sleep(sleepSeconds)
 }
 
-func (t *ThreadBuilder) Fail(content interface{}, failureName string, msg *string) {
+func (t *WorkflowThread) Fail(content interface{}, failureName string, msg *string) {
 	t.fail(content, failureName, msg)
 }
 
-func (t *ThreadBuilder) HandleInterrupt(interruptName string, handler ThreadFunc) {
+func (t *WorkflowThread) HandleInterrupt(interruptName string, handler ThreadFunc) {
 	t.handleInterrupt(interruptName, handler)
 }
 
-func (t *ThreadBuilder) HandleError(
+func (t *WorkflowThread) HandleError(
 	nodeOutput *NodeOutput,
 	specificError *LHErrorType,
 	handler ThreadFunc,
@@ -225,7 +225,7 @@ func (t *ThreadBuilder) HandleError(
 	t.handleError(nodeOutput, specificError, handler)
 }
 
-func (t *ThreadBuilder) HandleException(
+func (t *WorkflowThread) HandleException(
 	nodeOutput *NodeOutput,
 	exceptionName *string,
 	handler ThreadFunc,
@@ -233,7 +233,7 @@ func (t *ThreadBuilder) HandleException(
 	t.handleException(nodeOutput, exceptionName, handler)
 }
 
-func (t *ThreadBuilder) HandleAnyFailure(
+func (t *WorkflowThread) HandleAnyFailure(
 	nodeOutput *NodeOutput,
 	handler ThreadFunc,
 ) {

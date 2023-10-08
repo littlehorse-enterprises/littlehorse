@@ -9,7 +9,7 @@ import (
 )
 
 func TestCanMakePersistentVariable(t *testing.T) {
-	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		t.AddVariable(
 			"my-var", model.VariableType_BOOL,
 		).WithIndex(
@@ -29,7 +29,7 @@ func TestCanMakePersistentVariable(t *testing.T) {
 }
 
 func TestUserTaskAssignToUser(t *testing.T) {
-	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		t.AssignUserTask("my-task", "yoda", nil)
 	}, "my-workflow")
 
@@ -50,7 +50,7 @@ func TestUserTaskAssignToUser(t *testing.T) {
 }
 
 func TestUserTaskAssignToUserByVar(t *testing.T) {
-	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		userVar := t.AddVariable("user", model.VariableType_STR)
 		t.AssignUserTask("my-task", userVar, nil)
 	}, "my-workflow")
@@ -72,7 +72,7 @@ func TestUserTaskAssignToUserByVar(t *testing.T) {
 }
 
 func TestUserTaskAssignToUserWithGroup(t *testing.T) {
-	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		t.AssignUserTask("my-task", "yoda", "jedi-council")
 	}, "my-workflow")
 
@@ -94,7 +94,7 @@ func TestUserTaskAssignToUserWithGroup(t *testing.T) {
 }
 
 func TestAssignToGroup(t *testing.T) {
-	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		t.AssignUserTask("my-task", nil, "jedi-council")
 	}, "my-workflow")
 
@@ -115,7 +115,7 @@ func TestAssignToGroup(t *testing.T) {
 }
 
 func TestReleaseToGroup(t *testing.T) {
-	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		ut := t.AssignUserTask("my-task", "yoda", "jedi-council")
 		t.ReleaseToGroupOnDeadline(ut, 10)
 	}, "my-workflow")
@@ -142,7 +142,7 @@ func TestReleaseToGroup(t *testing.T) {
 
 func TestReassignToGroup(t *testing.T) {
 	group := "jedi-council"
-	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		ut := t.AssignUserTask("my-task", "yoda", nil)
 		t.ReassignUserTaskOnDeadline(ut, nil, &group, 10)
 	}, "my-workflow")
@@ -168,13 +168,13 @@ func TestReassignToGroup(t *testing.T) {
 }
 
 func TestParallelSpawnThreads(t *testing.T) {
-	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		myArr := t.AddVariable("my-arr", model.VariableType_JSON_ARR)
 
 		spawnedThreads := t.SpawnThreadForEach(
 			myArr,
 			"some-threads",
-			func(t *wflib.ThreadBuilder) {},
+			func(t *wflib.WorkflowThread) {},
 			nil,
 		)
 
@@ -203,7 +203,7 @@ func TestParallelSpawnThreads(t *testing.T) {
 }
 
 func TestParallelSpawnThreadsWithInput(t *testing.T) {
-	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		myArr := t.AddVariable("my-arr", model.VariableType_JSON_ARR)
 
 		inputs := map[string]interface{}{
@@ -213,7 +213,7 @@ func TestParallelSpawnThreadsWithInput(t *testing.T) {
 		spawnedThreads := t.SpawnThreadForEach(
 			myArr,
 			"some-threads",
-			func(t *wflib.ThreadBuilder) {},
+			func(t *wflib.WorkflowThread) {},
 			&inputs,
 		)
 
@@ -233,7 +233,7 @@ func TestParallelSpawnThreadsWithInput(t *testing.T) {
 }
 
 func TestFormatString(t *testing.T) {
-	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		myArr := t.AddVariable("my-str", model.VariableType_STR)
 		t.Execute("some-task", t.Format("input {0}", myArr))
 	}, "my-workflow")
@@ -255,11 +255,11 @@ func TestFormatString(t *testing.T) {
 }
 
 // unimportant.
-func someHandler(t *wflib.ThreadBuilder) {}
+func someHandler(t *wflib.WorkflowThread) {}
 
 func TestCatchSpecificException(t *testing.T) {
 	exnName := "my-exn"
-	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		nodeOutput := t.Execute("some-task")
 		t.HandleException(&nodeOutput, &exnName, someHandler)
 	}, "my-workflow")
@@ -282,7 +282,7 @@ func TestCatchSpecificException(t *testing.T) {
 
 func TestCatchSpecificError(t *testing.T) {
 	errorName := wflib.ChildFailure
-	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		nodeOutput := t.Execute("some-task")
 		t.HandleError(&nodeOutput, &errorName, someHandler)
 	}, "my-workflow")
@@ -304,7 +304,7 @@ func TestCatchSpecificError(t *testing.T) {
 }
 
 func TestCatchAnyError(t *testing.T) {
-	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		nodeOutput := t.Execute("some-task")
 		t.HandleError(&nodeOutput, nil, someHandler)
 	}, "my-workflow")
@@ -330,7 +330,7 @@ func TestCatchAnyError(t *testing.T) {
 }
 
 func TestCatchAnyException(t *testing.T) {
-	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		nodeOutput := t.Execute("some-task")
 		t.HandleException(&nodeOutput, nil, someHandler)
 	}, "my-workflow")
@@ -356,7 +356,7 @@ func TestCatchAnyException(t *testing.T) {
 }
 
 func TestCatchAnyFailure(t *testing.T) {
-	wf := wflib.NewWorkflow(func(t *wflib.ThreadBuilder) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		nodeOutput := t.Execute("some-task")
 		t.HandleAnyFailure(&nodeOutput, someHandler)
 	}, "my-workflow")

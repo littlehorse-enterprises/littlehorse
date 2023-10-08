@@ -32,19 +32,19 @@ public class ChildThreadExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "example-child-thread",
-            thread -> {
-                WfRunVariable parentVar = thread.addVariable(
+            wf -> {
+                WfRunVariable parentVar = wf.addVariable(
                     "parent-var",
                     VariableType.INT
                 );
 
-                thread.mutate(
+                wf.mutate(
                     parentVar,
                     VariableMutationType.ASSIGN,
-                    thread.execute("parent-task-1", parentVar)
+                    wf.execute("parent-task-1", parentVar)
                 );
 
-                SpawnedThread childThread = thread.spawnThread(
+                SpawnedThread childThread = wf.spawnThread(
                     child -> { // this is the child workflow thread
                         WfRunVariable childVar = child.addVariable(
                             "child-var",
@@ -56,9 +56,9 @@ public class ChildThreadExample {
                     Map.of("child-var", parentVar)
                 );
 
-                thread.waitForThreads(childThread);
+                wf.waitForThreads(childThread);
 
-                thread.execute("parent-task-2");
+                wf.execute("parent-task-2");
             }
         );
     }

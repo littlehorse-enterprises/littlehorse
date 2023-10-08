@@ -13,14 +13,14 @@ func Donut(num int) int {
 	return num
 }
 
-func DonutWorkflow(thread *wflib.ThreadBuilder) {
-	numDonuts := thread.AddVariable("number-of-donuts", model.VariableType_INT)
+func DonutWorkflow(wf *wflib.WorkflowThread) {
+	numDonuts := wf.AddVariable("number-of-donuts", model.VariableType_INT)
 
-	thread.DoWhile(
-		thread.Condition(numDonuts, model.Comparator_GREATER_THAN, 0),
-		func(t *wflib.ThreadBuilder) {
+	wf.DoWhile(
+		wf.Condition(numDonuts, model.Comparator_GREATER_THAN, 0),
+		func(t *wflib.WorkflowThread) {
 			taskOutput := t.Execute("eat-another-donut", numDonuts)
-			thread.Mutate(numDonuts, model.VariableMutationType_ASSIGN, taskOutput)
+			wf.Mutate(numDonuts, model.VariableMutationType_ASSIGN, taskOutput)
 		},
 	)
 }

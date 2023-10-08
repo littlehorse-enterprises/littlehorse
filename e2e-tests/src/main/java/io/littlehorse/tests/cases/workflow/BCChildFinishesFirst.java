@@ -5,8 +5,8 @@ import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
-import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.tests.TestFailure;
@@ -50,7 +50,7 @@ public class BCChildFinishesFirst extends WorkflowLogicTest {
         });
     }
 
-    private void child(ThreadBuilder thread) {
+    private void child(WorkflowThread thread) {
         thread.execute("bc-obiwan");
     }
 

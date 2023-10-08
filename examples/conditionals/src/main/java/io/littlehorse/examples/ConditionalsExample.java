@@ -30,13 +30,13 @@ public class ConditionalsExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "example-conditionals",
-            thread -> {
-                WfRunVariable foo = thread.addVariable("foo", VariableType.JSON_OBJ);
+            wf -> {
+                WfRunVariable foo = wf.addVariable("foo", VariableType.JSON_OBJ);
 
-                thread.execute("task-a");
+                wf.execute("task-a");
 
-                thread.doIfElse(
-                    thread.condition(
+                wf.doIfElse(
+                    wf.condition(
                         foo.jsonPath("$.bar"),
                         Comparator.GREATER_THAN,
                         10
@@ -49,7 +49,7 @@ public class ConditionalsExample {
                     }
                 );
 
-                thread.execute("task-d");
+                wf.execute("task-d");
             }
         );
     }

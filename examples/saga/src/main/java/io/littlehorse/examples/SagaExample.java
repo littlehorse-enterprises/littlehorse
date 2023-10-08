@@ -30,17 +30,17 @@ public class SagaExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "example-saga",
-            thread -> {
-                WfRunVariable flightConfirmationNumber = thread.addVariable(
+            wf -> {
+                WfRunVariable flightConfirmationNumber = wf.addVariable(
                     "flight-confirmation-number",
                     VariableType.STR
                 );
-                WfRunVariable hotelConfirmationNumber = thread.addVariable(
+                WfRunVariable hotelConfirmationNumber = wf.addVariable(
                     "hotel-confirmation-number",
                     VariableType.STR
                 );
 
-                SpawnedThread sagaThread = thread.spawnThread(
+                SpawnedThread sagaThread = wf.spawnThread(
                     bookFlightAndHotel(
                         flightConfirmationNumber,
                         hotelConfirmationNumber
@@ -50,8 +50,8 @@ public class SagaExample {
                 );
 
                 // If there is a failure, we abort it.
-                NodeOutput waitForThread = thread.waitForThreads(sagaThread);
-                thread.handleException(
+                NodeOutput waitForThread = wf.waitForThreads(sagaThread);
+                wf.handleException(
                     waitForThread,
                     null,
                     abortFlight(flightConfirmationNumber)

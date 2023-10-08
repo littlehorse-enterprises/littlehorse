@@ -17,15 +17,15 @@ func Donut() string {
 	return "Have another donut!"
 }
 
-func DonutWorkflow(thread *wflib.ThreadBuilder) {
-	numDonuts := thread.AddVariable("number-of-donuts", model.VariableType_INT)
+func DonutWorkflow(wf *wflib.WorkflowThread) {
+	numDonuts := wf.AddVariable("number-of-donuts", model.VariableType_INT)
 
-	thread.DoIfElse(
-		thread.Condition(numDonuts, model.Comparator_LESS_THAN, 10),
-		func(t *wflib.ThreadBuilder) {
+	wf.DoIfElse(
+		wf.Condition(numDonuts, model.Comparator_LESS_THAN, 10),
+		func(t *wflib.WorkflowThread) {
 			t.Execute("eat-another-donut")
 		},
-		func(t *wflib.ThreadBuilder) {
+		func(t *wflib.WorkflowThread) {
 			t.Execute("eat-salad")
 		},
 	)

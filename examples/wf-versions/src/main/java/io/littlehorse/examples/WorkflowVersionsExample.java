@@ -30,12 +30,12 @@ public class WorkflowVersionsExample {
     public static Workflow getWorkflow0() {
         return new WorkflowImpl(
             "example-wf-versions",
-            thread -> {
-                WfRunVariable theName = thread.addVariable(
+            wf0 -> {
+                WfRunVariable theName = wf0.addVariable(
                     "input-name",
                     VariableType.STR
                 );
-                thread.execute("greet0", theName);
+                wf0.execute("greet0", theName);
             }
         );
     }
@@ -43,12 +43,12 @@ public class WorkflowVersionsExample {
     public static Workflow getWorkflow1() {
         return new WorkflowImpl(
             "example-wf-versions", // same name
-            thread -> {
-                WfRunVariable theName = thread.addVariable(
+            wf1 -> {
+                WfRunVariable theName = wf1.addVariable(
                     "input-name",
                     VariableType.STR
                 );
-                thread.execute("greet1", theName);
+                wf1.execute("greet1", theName);
             }
         );
     }

@@ -332,7 +332,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             return true;
         }
 
-        if (status == LHStatus.ERROR) {
+        if (status == LHStatus.ERROR || status == LHStatus.HALTED || status == LHStatus.EXCEPTION) {
             if (failureHandlerIds.size() == failures.size()) {
                 if (failures.size() == 0) {
                     log.warn("Somehow failed with no failures.");

@@ -20,6 +20,7 @@ import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.TestContext;
+import io.littlehorse.test.internal.step.SearchStep;
 import io.littlehorse.test.internal.step.SendExternalEventStep;
 import io.littlehorse.test.internal.step.VerifyNodeRunStep;
 import io.littlehorse.test.internal.step.VerifyTaskExecution;
@@ -156,5 +157,11 @@ public class WfRunVerifier extends AbstractVerifier {
                 .setThreadRunNumber(threadRunNumber)
                 .setPosition(nodeRunNumber)
                 .build();
+    }
+
+    public <I, O> WfRunVerifier doSearch(
+            Class<I> requestType, CapturedResult<O> capture, Function<WfRunTestContext, I> buildId) {
+        steps.add(new SearchStep<>(requestType, buildId, capture));
+        return this;
     }
 }

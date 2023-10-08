@@ -27,12 +27,12 @@ public class WorkerContextExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "example-worker-context",
-            thread -> {
-                WfRunVariable theName = thread.addVariable(
+            wf -> {
+                WfRunVariable theName = wf.addVariable(
                     "request-time",
                     VariableType.INT
                 );
-                thread.execute("task", theName);
+                wf.execute("task", theName);
             }
         );
     }

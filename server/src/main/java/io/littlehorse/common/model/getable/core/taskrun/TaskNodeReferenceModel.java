@@ -52,33 +52,25 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
 
     public void onFailed(TaskAttemptModel lastFailure, CoreProcessorDAO dao) {
         NodeRunModel nodeRunModel = dao.get(nodeRunId);
-
-        String message = getMessageFor(lastFailure.getStatus());
-        VariableValueModel stderr = lastFailure.getLogOutput();
-        if (stderr != null && stderr.getVal() != null) {
-            message += ": " + stderr.getVal().toString();
+        FailureModel failure;
+        if (!lastFailure.containsException()) {
+            String message = getMessageFor(lastFailure.getStatus());
+            VariableValueModel stderr = lastFailure.getLogOutput();
+            if (stderr != null && stderr.getVal() != null) {
+                message += ": " + stderr.getVal().toString();
+            }
+            if (lastFailure.getError() == null) { // check for compatibility
+                failure = new FailureModel(message, getFailureCodeFor(lastFailure.getStatus()));
+            } else {
+                failure = new FailureModel(
+                        message, lastFailure.getError().getType().name());
+            }
+        } else {
+            failure = new FailureModel(
+                    lastFailure.getException().getMessage(),
+                    lastFailure.getException().getName());
         }
-        nodeRunModel.fail(
-                new FailureModel(message, getFailureCodeFor(lastFailure.getStatus())), lastFailure.getEndTime());
-    }
-
-    private String getMessageFor(TaskStatus status) {
-        switch (status) {
-            case TASK_FAILED:
-                return "Task execution failed";
-            case TASK_TIMEOUT:
-                return "Task timed out";
-            case TASK_OUTPUT_SERIALIZING_ERROR:
-                return "Failed serializing Task Output";
-            case TASK_INPUT_VAR_SUB_ERROR:
-                return "Failed calculating Task Input Variables";
-            case TASK_RUNNING:
-            case TASK_SCHEDULED:
-            case TASK_SUCCESS:
-            case TASK_CANCELLED: // TODO: WTF? This is supposed to be for user task.
-            case UNRECOGNIZED:
-        }
-        throw new IllegalArgumentException("Unexpected task status: " + status);
+        nodeRunModel.fail(failure, lastFailure.getEndTime());
     }
 
     private String getFailureCodeFor(TaskStatus status) {
@@ -96,6 +88,25 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
             case TASK_RUNNING:
             case TASK_SCHEDULED:
             case TASK_SUCCESS:
+            case UNRECOGNIZED:
+        }
+        throw new IllegalArgumentException("Unexpected task status: " + status);
+    }
+
+    private String getMessageFor(TaskStatus status) {
+        switch (status) {
+            case TASK_FAILED:
+                return "Task execution failed";
+            case TASK_TIMEOUT:
+                return "Task timed out";
+            case TASK_OUTPUT_SERIALIZING_ERROR:
+                return "Failed serializing Task Output";
+            case TASK_INPUT_VAR_SUB_ERROR:
+                return "Failed calculating Task Input Variables";
+            case TASK_RUNNING:
+            case TASK_SCHEDULED:
+            case TASK_SUCCESS:
+            case TASK_CANCELLED: // TODO: WTF? This is supposed to be for user task.
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unexpected task status: " + status);

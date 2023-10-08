@@ -1,11 +1,12 @@
 package io.littlehorse.sdk.wfsdk;
 
 import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import java.util.Map;
 
 /** This interface is what is used to define the logic of a ThreaSpec in a ThreadFunc. */
-public interface ThreadBuilder {
+public interface WorkflowThread {
     /**
      * This is the reserved Variable Name that can be used as a WfRunVariable in an Interrupt
      * Handler or Exception Handler thread.
@@ -161,11 +162,18 @@ public interface ThreadBuilder {
      * @param threadsToWaitFor is an array of SpawnedThread objects returned one or more calls to
      *     spawnThread.
      * @return a NodeOutput that can be used for timeouts or exception handling.
-     * @see ThreadBuilder#waitForThreads(SpawnedThreads)
+     * @see WorkflowThread#waitForThreads(SpawnedThreads)
      */
     @Deprecated(forRemoval = true)
     WaitForThreadsNodeOutput waitForThreads(SpawnedThread... threadsToWaitFor);
 
+    /**
+     * Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
+     *
+     * @param threadsToWaitFor set of SpawnedThread objects returned one or more calls to
+     *     spawnThread.
+     * @return a NodeOutput that can be used for timeouts or exception handling.
+     */
     WaitForThreadsNodeOutput waitForThreads(SpawnedThreads threadsToWaitFor);
 
     /**

@@ -5,11 +5,11 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 
 class SpawnedThreadImpl implements SpawnedThread {
 
-    public ThreadBuilderImpl parent;
+    public WorkflowThreadImpl parent;
     public WfRunVariableImpl internalThreadVar;
     public String childThreadName;
 
-    public SpawnedThreadImpl(ThreadBuilderImpl parent, String childThreadName, WfRunVariableImpl internalThreadVar) {
+    public SpawnedThreadImpl(WorkflowThreadImpl parent, String childThreadName, WfRunVariableImpl internalThreadVar) {
         this.parent = parent;
         this.childThreadName = childThreadName;
         this.internalThreadVar = internalThreadVar;

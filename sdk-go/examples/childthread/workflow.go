@@ -13,17 +13,17 @@ func ChildThreadTask(input string) string {
 	return "Hello from child thread, the input was: " + input
 }
 
-func ChildThreadWorkflow(thread *wflib.ThreadBuilder) {
-	inputVar := thread.AddVariable("input", model.VariableType_STR)
+func ChildThreadWorkflow(wf *wflib.WorkflowThread) {
+	inputVar := wf.AddVariable("input", model.VariableType_STR)
 
-	childThread := thread.SpawnThread(
-		func(child *wflib.ThreadBuilder) {
+	childThread := wf.SpawnThread(
+		func(child *wflib.WorkflowThread) {
 			child.Execute("child-thread-task", inputVar)
 		},
 		"my-child-thread",
 		nil,
 	)
 
-	thread.Execute("parent-thread-task")
-	thread.WaitForThreads(childThread)
+	wf.Execute("parent-thread-task")
+	wf.WaitForThreads(childThread)
 }

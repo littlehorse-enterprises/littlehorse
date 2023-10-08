@@ -1,5 +1,6 @@
 package io.littlehorse.test.internal.step;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunId;
@@ -29,7 +30,7 @@ public abstract class AbstractStep implements Step {
     private void printWfRun(String id, LHPublicApiBlockingStub lhClient) {
         WfRunId wfRunId = WfRunId.newBuilder().setId(id).build();
         WfRun wfRun = lhClient.getWfRun(wfRunId);
-        logger.debug(wfRun.toString());
+        logger.debug(LHLibUtil.protoToJson(wfRun));
     }
 
     protected void handleException(Throwable ex) throws LHTestException {

@@ -40,6 +40,10 @@ public enum TaskStatus
    * <code>TASK_CANCELLED = 7;</code>
    */
   TASK_CANCELLED(7),
+  /**
+   * <code>TASK_EXCEPTION = 8;</code>
+   */
+  TASK_EXCEPTION(8),
   UNRECOGNIZED(-1),
   ;
 
@@ -75,6 +79,10 @@ public enum TaskStatus
    * <code>TASK_CANCELLED = 7;</code>
    */
   public static final int TASK_CANCELLED_VALUE = 7;
+  /**
+   * <code>TASK_EXCEPTION = 8;</code>
+   */
+  public static final int TASK_EXCEPTION_VALUE = 8;
 
 
   public final int getNumber() {
@@ -109,6 +117,7 @@ public enum TaskStatus
       case 5: return TASK_OUTPUT_SERIALIZING_ERROR;
       case 6: return TASK_INPUT_VAR_SUB_ERROR;
       case 7: return TASK_CANCELLED;
+      case 8: return TASK_EXCEPTION;
       default: return null;
     }
   }

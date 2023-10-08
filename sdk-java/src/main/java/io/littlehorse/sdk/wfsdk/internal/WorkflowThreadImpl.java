@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.proto.ExternalEventNode;
 import io.littlehorse.sdk.common.proto.FailureDef;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.InterruptDef;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
@@ -35,16 +36,15 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
 import io.littlehorse.sdk.common.proto.WaitForThreadsPolicy;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
-import io.littlehorse.sdk.wfsdk.LHErrorType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
-import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
 import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +56,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @Setter
-final class ThreadBuilderImpl implements ThreadBuilder {
+final class WorkflowThreadImpl implements WorkflowThread {
 
     private WorkflowImpl parent;
     private ThreadSpec.Builder spec;
@@ -66,7 +66,7 @@ final class ThreadBuilderImpl implements ThreadBuilder {
     private EdgeCondition lastNodeCondition;
     private boolean isActive;
 
-    public ThreadBuilderImpl(String name, WorkflowImpl parent, ThreadFunc func) {
+    public WorkflowThreadImpl(String name, WorkflowImpl parent, ThreadFunc func) {
         this.parent = parent;
         this.spec = ThreadSpec.newBuilder();
         this.name = name;
@@ -636,13 +636,11 @@ final class ThreadBuilderImpl implements ThreadBuilder {
         checkIfIsActive();
         NodeOutputImpl node = (NodeOutputImpl) nodeOutput;
         String threadName = "exn-handler-" + node.nodeName + "-"
-                + (errorType != null
-                        ? errorType.getInternalName()
-                        : FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR);
+                + (errorType != null ? errorType.name() : FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR);
         threadName = parent.addSubThread(threadName, handler);
         FailureHandlerDef.Builder handlerDef = FailureHandlerDef.newBuilder().setHandlerSpecName(threadName);
         if (errorType != null) {
-            handlerDef.setSpecificFailure(errorType.getInternalName());
+            handlerDef.setSpecificFailure(errorType.name());
         } else {
             handlerDef.setAnyFailureOfType(FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR);
         }

@@ -30,17 +30,17 @@ public class ConditionalsWhileExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "example-conditionals-while",
-            thread -> {
-                WfRunVariable numDonuts = thread.addVariable(
+            wf -> {
+                WfRunVariable numDonuts = wf.addVariable(
                     "number-of-donuts",
                     VariableType.INT
                 );
 
-                thread.doWhile(
-                    thread.condition(numDonuts, Comparator.GREATER_THAN, 0),
+                wf.doWhile(
+                    wf.condition(numDonuts, Comparator.GREATER_THAN, 0),
                     handler -> {
                         handler.execute("eating-donut", numDonuts);
-                        thread.mutate(numDonuts, VariableMutationType.SUBTRACT, 1);
+                        wf.mutate(numDonuts, VariableMutationType.SUBTRACT, 1);
                     }
                 );
             }

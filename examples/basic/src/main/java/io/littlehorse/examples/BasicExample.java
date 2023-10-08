@@ -25,12 +25,12 @@ public class BasicExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
             "example-basic",
-            thread -> {
-                WfRunVariable theName = thread.addVariable(
+            wf -> {
+                WfRunVariable theName = wf.addVariable(
                     "input-name",
                     VariableType.STR
                 );
-                thread.execute("greet", theName);
+                wf.execute("greet", theName);
             }
         );
     }

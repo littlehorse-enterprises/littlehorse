@@ -34,7 +34,6 @@ message VarNameAndVal {
 }
 
 message TaskAttempt {
-  optional VariableValue output = 1;
   optional VariableValue log_output = 2;
 
   optional google.protobuf.Timestamp schedule_time = 3;
@@ -44,6 +43,12 @@ message TaskAttempt {
   optional string task_worker_version = 8;
 
   TaskStatus status = 9;
+
+  oneof result {
+    VariableValue output = 1;
+    LHTaskError error = 10;
+    LHTaskException exception = 11;
+  }
 }
 
 message TaskRunSource {
@@ -56,4 +61,14 @@ message TaskRunSource {
 message TaskNodeReference {
   NodeRunId node_run_id = 1;
   WfSpecId wf_spec_id = 2;
+}
+
+message LHTaskError {
+  LHErrorType type = 1;
+  string message = 2;
+}
+
+message LHTaskException {
+  string name = 1;
+  string message = 2;
 }

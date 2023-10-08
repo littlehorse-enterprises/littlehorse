@@ -14,11 +14,11 @@ func FlakyTask() (*string, error) {
 	return nil, errors.New("oh no! the task failed")
 }
 
-func ExceptionHandlerWorkflow(thread *wflib.ThreadBuilder) {
-	taskOutput := thread.Execute("flaky-task")
+func ExceptionHandlerWorkflow(wf *wflib.WorkflowThread) {
+	taskOutput := wf.Execute("flaky-task")
 
 	exnToHandle := "TASK_ERROR"
-	thread.HandleException(&taskOutput, &exnToHandle, func(handler *wflib.ThreadBuilder) {
+	wf.HandleException(&taskOutput, &exnToHandle, func(handler *wflib.WorkflowThread) {
 		handler.Execute("some-stable-task")
 	})
 }
