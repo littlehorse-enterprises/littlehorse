@@ -3,6 +3,7 @@ package common
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -18,9 +19,10 @@ import (
 )
 
 const (
-	API_HOST_KEY  = "LHC_API_HOST"
-	API_PORT_KEY  = "LHC_API_PORT"
-	CLIENT_ID_KEY = "LHC_CLIENT_ID"
+	API_HOST_KEY     = "LHC_API_HOST"
+	API_PORT_KEY     = "LHC_API_PORT"
+	API_PROTOCOL_KEY = "LHC_API_PROTOCOL"
+	CLIENT_ID_KEY    = "LHC_CLIENT_ID"
 
 	CERT_FILE_KEY    = "LHC_CLIENT_CERT"
 	KEY_FILE_KEY     = "LHC_CLIENT_KEY"
@@ -40,15 +42,18 @@ const (
 
 	DEFAULT_LISTENER            = "PLAIN"
 	DEFAULT_OAUTH_CALLBACK_PORT = 25242
+	DEFAULT_PROTOCOL            = "PLAINTEXT"
+	TLS_PROTOCOL                = "TLS"
 )
 
 type LHConfig struct {
-	ApiHost  string
-	ApiPort  string
-	ClientId string
-	CertFile *string
-	KeyFile  *string
-	CaCert   *string
+	ApiHost     string
+	ApiProtocol string
+	ApiPort     string
+	ClientId    string
+	CertFile    *string
+	KeyFile     *string
+	CaCert      *string
 
 	NumWorkerThreads      int32
 	TaskWorkerVersion     string
@@ -66,14 +71,14 @@ func (config *LHConfig) GetGrpcConn(url string) (*grpc.ClientConn, error) {
 		var opts []grpc.DialOption
 		apiUrl := config.ApiHost + ":" + config.ApiPort
 
-		if config.CaCert == nil {
+		if config.ApiProtocol == DEFAULT_PROTOCOL {
 			opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		} else {
 			var transportCredentials credentials.TransportCredentials
 			if config.CertFile == nil && config.KeyFile == nil {
-				transportCredentials = loadTLS(*config.CaCert)
+				transportCredentials = loadTLS(config.CaCert)
 			} else {
-				transportCredentials = loadMTLS(*config.CertFile, *config.KeyFile, *config.CaCert)
+				transportCredentials = loadMTLS(config.CaCert, *config.CertFile, *config.KeyFile)
 			}
 
 			if config.OauthConfig.IsEnabled() {
@@ -95,6 +100,9 @@ func (config *LHConfig) GetGrpcConn(url string) (*grpc.ClientConn, error) {
 
 func (l *LHConfig) GetGrpcClient() (*model.LHPublicApiClient, error) {
 	url := l.ApiHost + ":" + l.ApiPort
+	if l.ApiProtocol != DEFAULT_PROTOCOL && l.ApiProtocol != TLS_PROTOCOL {
+		return nil, fmt.Errorf("invalid protocol: %s", l.ApiProtocol)
+	}
 	return l.GetGrpcClientForHost(url)
 }
 
@@ -118,9 +126,10 @@ func NewConfigFromEnv() *LHConfig {
 	}
 
 	return &LHConfig{
-		ApiHost:  getEnvOrDefault(API_HOST_KEY, "localhost"),
-		ApiPort:  getEnvOrDefault(API_PORT_KEY, "2023"),
-		ClientId: getEnvOrDefault(CLIENT_ID_KEY, "client-"+generateRandomClientId()),
+		ApiHost:     getEnvOrDefault(API_HOST_KEY, "localhost"),
+		ApiProtocol: getEnvOrDefault(API_PROTOCOL_KEY, DEFAULT_PROTOCOL),
+		ApiPort:     getEnvOrDefault(API_PORT_KEY, "2023"),
+		ClientId:    getEnvOrDefault(CLIENT_ID_KEY, "client-"+generateRandomClientId()),
 
 		CertFile: stringPtr(os.Getenv(CERT_FILE_KEY)),
 		KeyFile:  stringPtr(os.Getenv(KEY_FILE_KEY)),
@@ -151,9 +160,10 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 	}
 
 	return &LHConfig{
-		ApiHost:  p.GetString(API_HOST_KEY, "localhost"),
-		ApiPort:  p.GetString(API_PORT_KEY, "2023"),
-		ClientId: p.GetString(CLIENT_ID_KEY, "client-"+generateRandomClientId()),
+		ApiHost:     p.GetString(API_HOST_KEY, "localhost"),
+		ApiProtocol: p.GetString(API_PROTOCOL_KEY, DEFAULT_PROTOCOL),
+		ApiPort:     p.GetString(API_PORT_KEY, "2023"),
+		ClientId:    p.GetString(CLIENT_ID_KEY, "client-"+generateRandomClientId()),
 
 		CertFile: stringPtr(p.GetString(CERT_FILE_KEY, "")),
 		KeyFile:  stringPtr(p.GetString(KEY_FILE_KEY, "")),
@@ -218,43 +228,51 @@ func getEnvOrDefault(key, defaultVal string) string {
 	return out
 }
 
-func loadTLS(caCertFileName string) credentials.TransportCredentials {
-	ca, err := os.ReadFile(caCertFileName)
-	if err != nil {
-		panic("can't read ca file")
-	}
+func loadTLS(caCertFileName *string) credentials.TransportCredentials {
+	tlsConfig := &tls.Config{}
 
-	capool := x509.NewCertPool()
-	if !capool.AppendCertsFromPEM(ca) {
-		panic("invalid CA file")
-	}
+	if caCertFileName != nil {
+		capool := x509.NewCertPool()
+		ca, err := os.ReadFile(*caCertFileName)
+		if err != nil {
+			panic("can't read ca file")
+		}
 
-	tlsConfig := &tls.Config{
-		RootCAs: capool,
+		if !capool.AppendCertsFromPEM(ca) {
+			panic("invalid CA file")
+		}
+
+		tlsConfig = &tls.Config{
+			RootCAs: capool,
+		}
 	}
 
 	return credentials.NewTLS(tlsConfig)
 }
 
-func loadMTLS(certFileName, keyFileName, caCertFileName string) credentials.TransportCredentials {
+func loadMTLS(caCertFileName *string, certFileName string, keyFileName string) credentials.TransportCredentials {
 	certificate, err := tls.LoadX509KeyPair(certFileName, keyFileName)
 	if err != nil {
 		panic("Load client certification failed: " + err.Error())
 	}
 
-	ca, err := os.ReadFile(caCertFileName)
-	if err != nil {
-		panic("can't read ca file")
-	}
+	tlsConfig := &tls.Config{Certificates: []tls.Certificate{certificate}}
 
-	capool := x509.NewCertPool()
-	if !capool.AppendCertsFromPEM(ca) {
-		panic("invalid CA file")
-	}
+	if caCertFileName != nil {
+		capool := x509.NewCertPool()
+		ca, err := os.ReadFile(*caCertFileName)
+		if err != nil {
+			panic("can't read ca file")
+		}
 
-	tlsConfig := &tls.Config{
-		Certificates: []tls.Certificate{certificate},
-		RootCAs:      capool,
+		if !capool.AppendCertsFromPEM(ca) {
+			panic("invalid CA file")
+		}
+
+		tlsConfig = &tls.Config{
+			Certificates: []tls.Certificate{certificate},
+			RootCAs:      capool,
+		}
 	}
 
 	return credentials.NewTLS(tlsConfig)

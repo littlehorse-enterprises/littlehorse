@@ -3,6 +3,7 @@
   - [Client](#client)
     - [`LHC_API_HOST`](#lhc_api_host)
     - [`LHC_API_PORT`](#lhc_api_port)
+    - [`LHC_API_PROTOCOL`](#lhc_api_protocol)
     - [`LHC_CLIENT_ID`](#lhc_client_id)
     - [`LHC_CA_CERT`](#lhc_ca_cert)
     - [`LHC_CLIENT_CERT`](#lhc_client_cert)
@@ -35,6 +36,16 @@ The bootstrap port for the LH Server.
 
 - **Type:** int
 - **Default:** 2023
+- **Importance:** high
+
+---
+
+### `LHC_API_PROTOCOL`
+
+The bootstrap protocol for the LH Server. Valid values: `PLAINTEXT` and `TLS`.
+
+- **Type:** string
+- **Default:** PLAINTEXT
 - **Importance:** high
 
 ---
