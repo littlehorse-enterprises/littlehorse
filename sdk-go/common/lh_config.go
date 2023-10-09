@@ -101,7 +101,7 @@ func (config *LHConfig) GetGrpcConn(url string) (*grpc.ClientConn, error) {
 func (l *LHConfig) GetGrpcClient() (*model.LHPublicApiClient, error) {
 	url := l.ApiHost + ":" + l.ApiPort
 	if l.ApiProtocol != DEFAULT_PROTOCOL && l.ApiProtocol != TLS_PROTOCOL {
-		return nil, fmt.Errorf("protocol '%s' not allowed", l.ApiProtocol)
+		return nil, fmt.Errorf("invalid protocol: %s", l.ApiProtocol)
 	}
 	return l.GetGrpcClientForHost(url)
 }

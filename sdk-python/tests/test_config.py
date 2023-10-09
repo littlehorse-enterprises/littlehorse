@@ -107,7 +107,7 @@ class TestLHConfig(unittest.TestCase):
             config.is_secure()
 
         self.assertEqual(
-            "Protocol 'NOT_A_PROTOCOL' not allowed",
+            "Invalid protocol: NOT_A_PROTOCOL",
             str(exception_context.exception),
         )
 

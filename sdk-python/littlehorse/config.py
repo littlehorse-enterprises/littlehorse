@@ -175,7 +175,7 @@ class LHConfig:
         """
         protocol = self.get_or_set_default(API_PROTOCOL, PLAINTEXT_PROTOCOL).upper()
         if protocol not in ALLOWED_PROTOCOLS:
-            raise ValueError(f"Protocol '{protocol}' not allowed")
+            raise ValueError(f"Invalid protocol: {protocol}")
         return protocol == TLS_PROTOCOL
 
     @property
