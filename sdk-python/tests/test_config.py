@@ -99,6 +99,18 @@ class TestLHConfig(unittest.TestCase):
         config = LHConfig()
         self.assertTrue(config.is_secure())
 
+    def test_raise_exp_if_protocol_is_invalid_in_is_secure(self):
+        os.environ["LHC_API_PROTOCOL"] = "NOT_A_PROTOCOL"
+        config = LHConfig()
+
+        with self.assertRaises(ValueError) as exception_context:
+            config.is_secure()
+
+        self.assertEqual(
+            "Protocol 'NOT_A_PROTOCOL' not allowed",
+            str(exception_context.exception),
+        )
+
     def test_is_secure_lower_case(self):
         os.environ["LHC_API_PROTOCOL"] = "tls"
         config = LHConfig()

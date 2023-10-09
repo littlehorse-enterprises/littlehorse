@@ -11,6 +11,10 @@ from littlehorse.utils import read_binary
 import logging
 
 PREFIXES = ("LHC_", "LHW_")
+TLS_PROTOCOL = "TLS"
+PLAINTEXT_PROTOCOL = "PLAINTEXT"
+ALLOWED_PROTOCOLS = (TLS_PROTOCOL, PLAINTEXT_PROTOCOL)
+
 API_HOST = "LHC_API_HOST"
 API_PORT = "LHC_API_PORT"
 API_PROTOCOL = "LHC_API_PROTOCOL"
@@ -169,7 +173,10 @@ class LHConfig:
         Returns:
             bool: True if a secure connection is expected.
         """
-        return self.get_or_set_default(API_PROTOCOL, "PLAINTEXT").upper() == "TLS"
+        protocol = self.get_or_set_default(API_PROTOCOL, PLAINTEXT_PROTOCOL).upper()
+        if protocol not in ALLOWED_PROTOCOLS:
+            raise ValueError(f"Protocol '{protocol}' not allowed")
+        return protocol == TLS_PROTOCOL
 
     @property
     def client_id(self) -> str:
