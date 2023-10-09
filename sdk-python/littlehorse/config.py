@@ -13,6 +13,7 @@ import logging
 PREFIXES = ("LHC_", "LHW_")
 API_HOST = "LHC_API_HOST"
 API_PORT = "LHC_API_PORT"
+API_PROTOCOL = "LHC_API_PROTOCOL"
 CLIENT_ID = "LHC_CLIENT_ID"
 CLIENT_CERT = "LHC_CLIENT_CERT"
 CLIENT_KEY = "LHC_CLIENT_KEY"
@@ -168,7 +169,7 @@ class LHConfig:
         Returns:
             bool: True if a secure connection is expected.
         """
-        return bool(self.get(CA_CERT))
+        return self.get_or_set_default(API_PROTOCOL, "PLAINTEXT").upper() == "TLS"
 
     @property
     def client_id(self) -> str:
@@ -189,7 +190,7 @@ class LHConfig:
         """
         return self.get(OAUTH_CLIENT_ID)
 
-    def needs_credentials(self) -> bool:
+    def has_authentication(self) -> bool:
         """Returns True if OAuth is configured.
 
         Returns:
@@ -283,7 +284,7 @@ class LHConfig:
                 )
             )
 
-        if self.is_secure() and self.needs_credentials():
+        if self.is_secure() and self.has_authentication():
             self._log.debug("Establishing secure channel with OAuth at %s", server)
             return secure_channel(
                 server,

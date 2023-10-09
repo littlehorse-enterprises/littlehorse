@@ -95,7 +95,12 @@ class TestLHConfig(unittest.TestCase):
         self.assertEqual(config.bootstrap_server, "localhost:5050")
 
     def test_is_secure(self):
-        os.environ["LHC_CA_CERT"] = "my-path"
+        os.environ["LHC_API_PROTOCOL"] = "TLS"
+        config = LHConfig()
+        self.assertTrue(config.is_secure())
+
+    def test_is_secure_lower_case(self):
+        os.environ["LHC_API_PROTOCOL"] = "tls"
         config = LHConfig()
         self.assertTrue(config.is_secure())
 
@@ -106,11 +111,11 @@ class TestLHConfig(unittest.TestCase):
     def test_needs_credentials(self):
         os.environ["LHC_OAUTH_CLIENT_ID"] = "my-client_id"
         config = LHConfig()
-        self.assertTrue(config.needs_credentials())
+        self.assertTrue(config.has_authentication())
 
     def test_does_not_need_credentials(self):
         config = LHConfig()
-        self.assertFalse(config.needs_credentials())
+        self.assertFalse(config.has_authentication())
 
     @patch("littlehorse.config.grpc")
     def test_establish_insecure_channel(self, grpc_package_mock):
@@ -127,7 +132,7 @@ class TestLHConfig(unittest.TestCase):
     @patch("builtins.open", new_callable=mock_open, read_data="data")
     @patch("littlehorse.config.grpc")
     def test_establish_secure_channel(self, grpc_package_mock, mock_file):
-        os.environ["LHC_CA_CERT"] = "my-path"
+        os.environ["LHC_API_PROTOCOL"] = "TLS"
         config = LHConfig()
         config.establish_channel()
         grpc_package_mock.secure_channel.assert_called_once_with("localhost:2023", ANY)
@@ -137,7 +142,7 @@ class TestLHConfig(unittest.TestCase):
     def test_establish_secure_channel_with_custom_server(
         self, grpc_package_mock, mock_file
     ):
-        os.environ["LHC_CA_CERT"] = "my-path"
+        os.environ["LHC_API_PROTOCOL"] = "TLS"
         config = LHConfig()
         config.establish_channel(server="192.10.10.20:5555")
         grpc_package_mock.secure_channel.assert_called_once_with(
@@ -150,7 +155,7 @@ class TestLHConfig(unittest.TestCase):
     def test_establish_secure_channel_and_oauth(
         self, grpc_package_mock, grpc_auth_class_mock, mock_file
     ):
-        os.environ["LHC_CA_CERT"] = "my-path"
+        os.environ["LHC_API_PROTOCOL"] = "TLS"
         os.environ["LHC_OAUTH_CLIENT_ID"] = "my-client_id"
         config = LHConfig()
         config.establish_channel()
