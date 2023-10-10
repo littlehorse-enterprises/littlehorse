@@ -2,7 +2,6 @@ package taskworker
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"reflect"
 	"strconv"
@@ -144,25 +143,68 @@ func (c *serverConnection) close() {
 // Below is equivalent to LHServerConnectionManager.java
 /////////////////////////////////////////////////////////////
 
+type serverLivenessController struct {
+	timeoutInMilliseconds int64
+	failureOccurredAt     *time.Time
+	clusterHealthy        bool
+}
+
 type serverConnectionManager struct {
-	tw          *LHTaskWorker
-	connections []*serverConnection
-	taskChannel chan *taskExecutionInfo
-	wg          *sync.WaitGroup
-	running     bool
+	tw                 *LHTaskWorker
+	connections        []*serverConnection
+	taskChannel        chan *taskExecutionInfo
+	wg                 *sync.WaitGroup
+	running            bool
+	livenessController *serverLivenessController
 }
 
 func newServerConnectionManager(tw *LHTaskWorker) *serverConnectionManager {
 	channel := make(chan *taskExecutionInfo, 1)
 	var wg sync.WaitGroup
-
-	return &serverConnectionManager{
-		tw:          tw,
-		connections: make([]*serverConnection, 0),
-		taskChannel: channel,
-		wg:          &wg,
-		running:     false,
+	livenessController := &serverLivenessController{
+		timeoutInMilliseconds: 60000,
+		failureOccurredAt:     nil,
+		clusterHealthy:        true,
 	}
+	return &serverConnectionManager{
+		tw:                 tw,
+		connections:        make([]*serverConnection, 0),
+		taskChannel:        channel,
+		wg:                 &wg,
+		running:            false,
+		livenessController: livenessController,
+	}
+}
+
+func (controller *serverLivenessController) notifyCallFailure() {
+	if controller.failureOccurredAt == nil {
+		t := time.Now()
+		controller.failureOccurredAt = &t
+	}
+}
+
+func (controller *serverLivenessController) notifyCallSuccess() {
+	controller.failureOccurredAt = nil
+}
+
+func (controller *serverLivenessController) wasFailureNotified() bool {
+	return controller.failureOccurredAt == nil
+}
+
+func (controller *serverLivenessController) keepManagerRunning() bool {
+	if controller.failureOccurredAt == nil {
+		return true
+	}
+
+	timeoutMillis := controller.timeoutInMilliseconds
+
+	upperLimit := controller.failureOccurredAt.Add(time.Duration(timeoutMillis) * time.Millisecond)
+
+	return time.Now().Before(upperLimit)
+}
+
+func (controller *serverLivenessController) isClusterHealthy() bool {
+	return controller.clusterHealthy
 }
 
 func (m *serverConnectionManager) start() {
@@ -183,7 +225,7 @@ func (m *serverConnectionManager) start() {
 	}
 
 	// This is the rebalance/heartbeat thread
-	for m.running {
+	for m.livenessController.keepManagerRunning() && m.running {
 		reply, err := (*m.tw.grpcStub).RegisterTaskWorker(
 			context.Background(),
 			&model.RegisterTaskWorkerRequest{
@@ -193,11 +235,11 @@ func (m *serverConnectionManager) start() {
 			},
 		)
 		if err != nil {
-			fmt.Println("Closing Task Worker since heartbeat failed: " + err.Error())
-			m.close()
-			return
+			m.livenessController.notifyCallFailure()
+			time.Sleep(time.Duration(time.Second * 8))
+			continue
 		}
-
+		m.livenessController.notifyCallSuccess()
 		for _, host := range reply.YourHosts {
 			if !m.isAlreadyRunning(host) {
 				newConn, err := newServerConnection(m, host)
