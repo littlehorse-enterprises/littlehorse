@@ -19,6 +19,7 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
         this.shouldComplete = shouldComplete;
     }
 
+    @Override
     public void onError(Throwable t) {
         ctx.onError(t);
     }
@@ -33,12 +34,14 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
         }
     }
 
+    @Override
     public void onCompleted() {
         if (shouldComplete) {
             ctx.onCompleted();
         }
     }
 
+    @Override
     public void onNext(WaitForCommandResponse reply) {
         ctx.onNext(buildRespFromBytes(reply.getResult()));
     }
