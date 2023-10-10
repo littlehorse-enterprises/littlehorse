@@ -15,7 +15,9 @@ public class ConnectionManagerLivenessController {
     }
 
     public void notifyCallFailure() {
-        this.failureOccurredAt = LocalDateTime.now();
+        if (failureOccurredAt == null) {
+            this.failureOccurredAt = LocalDateTime.now();
+        }
     }
 
     public void notifySuccessfulCall() {

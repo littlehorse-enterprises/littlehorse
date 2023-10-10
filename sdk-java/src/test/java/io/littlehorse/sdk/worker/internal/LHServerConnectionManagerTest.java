@@ -12,6 +12,7 @@ import java.io.IOException;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 public class LHServerConnectionManagerTest {
 
@@ -43,22 +44,20 @@ public class LHServerConnectionManagerTest {
     }
 
     @Test
-    public void shouldStopManagerWhenRetriesWhereExhaustedAfterAnErrorHasOcurred() throws Exception {
-        final TaskDef mockTaskDef = mock();
-        final long afterTimeout = 101L;
-        final long timeout = 100L;
+    @Timeout(value = 20)
+    public void shouldStopManagerWhenRetriesWhereExhaustedAfterErrorsHasOccurred() throws Exception {
+        final long timeout = 15_000;
 
-        ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(timeout);
-        LHServerConnectionManager connectionManager =
+        final ConnectionManagerLivenessController livenessController = new ConnectionManagerLivenessController(timeout);
+        final LHServerConnectionManager connectionManager =
                 new LHServerConnectionManager(mock(), mockTaskDef, mockConfig, mock(), mock(), livenessController);
 
         connectionManager.start();
         assertThat(connectionManager.isAlive()).isTrue();
 
-        connectionManager.onError(new IOException());
-        Thread.sleep(HEARTBEAT_INTERVAL_MS + afterTimeout);
-
-        assertThat(connectionManager.isAlive()).isFalse();
+        while (connectionManager.isAlive()) {
+            connectionManager.onError(new Exception());
+        }
     }
 
     @Test
