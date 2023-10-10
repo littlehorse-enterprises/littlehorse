@@ -395,7 +395,9 @@ class LHLivenessController:
         if self.failure_ocurred_at is None:
             self.failure_ocurred_at = datetime.now()
 
-    def notify_success_call(self) -> None:
+    def notify_success_call(self, reply: RegisterTaskWorkerResponse) -> None:
+        if reply.HasField("is_cluster_healthy"):
+            self.cluster_healthy = reply.is_cluster_healthy
         self.failure_ocurred_at = None
 
     def was_failure_notified(self) -> bool:
@@ -411,9 +413,6 @@ class LHLivenessController:
             )
             return self.running
         return True
-
-    def set_cluster_healthy(self, cluster_healthy: bool) -> None:
-        self.cluster_healthy = cluster_healthy
 
     def is_cluster_healthy(self) -> bool:
         return self.cluster_healthy
@@ -481,7 +480,7 @@ class LHTaskWorker:
                 reply: RegisterTaskWorkerResponse = await stub.RegisterTaskWorker(
                     request
                 )
-                self.liveness_controller.notify_success_call()
+
             except Exception as e:
                 self._log.error(
                     "Error when registering task worker: %s. %s",
@@ -492,6 +491,7 @@ class LHTaskWorker:
                 await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
                 continue
 
+            self.liveness_controller.notify_success_call(reply)
             hosts = [f"{host.host}:{host.port}" for host in reply.your_hosts]
 
             # remove invalid connections

@@ -10,6 +10,7 @@ from littlehorse.model.service_pb2 import ScheduledTask
 from littlehorse.model.task_def_pb2 import TaskDef
 from littlehorse.model.task_run_pb2 import TaskNodeReference, TaskRunSource
 from littlehorse.model.user_tasks_pb2 import UserTaskTriggerReference
+from littlehorse.model.service_pb2 import RegisterTaskWorkerResponse
 
 
 from littlehorse.worker import LHTask, WorkerContext, LHLivenessController
@@ -336,7 +337,14 @@ class TestLHLivenessController(unittest.TestCase):
     def test_recover_from_failure(self):
         controller = LHLivenessController(100)
         controller.notify_call_failure()
-        controller.notify_success_call()
+        controller.notify_success_call(RegisterTaskWorkerResponse())
+        time.sleep(150 / 1000)
+        self.assertTrue(controller.keep_worker_running())
+
+    def test_keep_running_on_server_unhealthy(self):
+        reply = RegisterTaskWorkerResponse(is_cluster_healthy=False)
+        controller = LHLivenessController(100)
+        controller.notify_success_call(reply)
         time.sleep(150 / 1000)
         self.assertTrue(controller.keep_worker_running())
 
