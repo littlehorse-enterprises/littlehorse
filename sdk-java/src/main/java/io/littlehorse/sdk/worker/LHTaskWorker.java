@@ -51,6 +51,8 @@ public class LHTaskWorker implements Closeable {
     private String taskDefName;
     private LHPublicApiBlockingStub grpcClient;
 
+    private static final long KEEP_ALIVE_TIMEOUT = 60_000;
+
     /**
      * Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod, and a
      * configuration Properties object.
@@ -88,7 +90,12 @@ public class LHTaskWorker implements Closeable {
         validateTaskDefAndExecutable();
         if (this.manager == null) {
             this.manager = new LHServerConnectionManager(
-                    taskMethod, taskDef, config, mappings, executable, new ConnectionManagerLivenessController(5000));
+                    taskMethod,
+                    taskDef,
+                    config,
+                    mappings,
+                    executable,
+                    new ConnectionManagerLivenessController(KEEP_ALIVE_TIMEOUT));
         }
     }
 
