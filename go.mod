@@ -9,11 +9,12 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
 	github.com/ztrue/tracerr v0.4.0
-	golang.org/x/net v0.12.0
 	golang.org/x/oauth2 v0.10.0
 	google.golang.org/grpc v1.56.2
 	google.golang.org/protobuf v1.31.0
 )
+
+require golang.org/x/net v0.12.0 // indirect
 
 require (
 	cloud.google.com/go/compute v1.20.1 // indirect

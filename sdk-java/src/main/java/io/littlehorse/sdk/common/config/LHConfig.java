@@ -33,6 +33,9 @@ public class LHConfig extends ConfigBase {
     /** The bootstrap port for the LH Server. */
     public static final String API_PORT_KEY = "LHC_API_PORT";
 
+    /** The bootstrap protocol for the LH Server. */
+    public static final String API_PROTOCOL_KEY = "LHC_API_PROTOCOL";
+
     /** The Client Id. */
     public static final String CLIENT_ID_KEY = "LHC_CLIENT_ID";
 
@@ -57,10 +60,12 @@ public class LHConfig extends ConfigBase {
 
     public static final String TASK_WORKER_VERSION_KEY = "LHW_TASK_WORKER_VERSION";
     public static final String DEFAULT_PUBLIC_LISTENER = "PLAIN";
+    public static final String DEFAULT_PROTOCOL = "PLAINTEXT";
 
     private static final Set<String> configNames = Collections.unmodifiableSet(Set.of(
             LHConfig.API_HOST_KEY,
             LHConfig.API_PORT_KEY,
+            LHConfig.API_PROTOCOL_KEY,
             LHConfig.CLIENT_ID_KEY,
             LHConfig.CLIENT_CERT_KEY,
             LHConfig.CLIENT_KEY_KEY,
@@ -229,13 +234,16 @@ public class LHConfig extends ConfigBase {
         String clientCertFile = getOrSetDefault(CLIENT_CERT_KEY, null);
         String clientKeyFile = getOrSetDefault(CLIENT_KEY_KEY, null);
 
-        if (caCertFile == null) {
+        if (DEFAULT_PROTOCOL.equals(getApiProtocol())) {
             log.warn("Using insecure channel!");
             out = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
         } else {
             log.info("Using secure connection!");
-            TlsChannelCredentials.Builder tlsBuilder =
-                    TlsChannelCredentials.newBuilder().trustManager(new File(caCertFile));
+            TlsChannelCredentials.Builder tlsBuilder = TlsChannelCredentials.newBuilder();
+
+            if (caCertFile != null) {
+                tlsBuilder.trustManager(new File(caCertFile));
+            }
 
             if (clientCertFile != null && clientKeyFile != null) {
                 log.info("Using mtls!");
@@ -256,6 +264,14 @@ public class LHConfig extends ConfigBase {
 
     public int getApiBootstrapPort() {
         return Integer.valueOf(getOrSetDefault(API_PORT_KEY, "2023"));
+    }
+
+    public String getApiProtocol() {
+        String protocol = getOrSetDefault(API_PROTOCOL_KEY, "PLAINTEXT");
+        if (!protocol.equals("PLAINTEXT") && !protocol.equals("TLS")) {
+            throw new IllegalArgumentException("Invalid protocol: " + protocol);
+        }
+        return protocol;
     }
 
     public String getClientId() {

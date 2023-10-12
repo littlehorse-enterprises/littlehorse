@@ -56,6 +56,19 @@ public class LHClientConfigTest {
     }
 
     @Test
+    void setDefaultProtocol() {
+        LHConfig config = new LHConfig();
+        assertEquals("PLAINTEXT", config.getApiProtocol());
+    }
+
+    @Test
+    @SetEnvironmentVariable(key = "LHC_API_PROTOCOL", value = "INVALID")
+    void throwsExceptionIfInvalid() {
+        LHConfig config = new LHConfig();
+        assertThrows(IllegalArgumentException.class, config::getApiProtocol);
+    }
+
+    @Test
     void getOnlyOneRandomId() {
         LHConfig config = new LHConfig();
 
@@ -67,7 +80,7 @@ public class LHClientConfigTest {
 
     @Test
     void haveAllConfigs() {
-        assertThat(LHConfig.configNames().size()).isEqualTo(12);
+        assertThat(LHConfig.configNames().size()).isEqualTo(13);
     }
 
     @Test
