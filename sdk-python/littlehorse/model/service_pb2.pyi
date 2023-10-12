@@ -484,10 +484,12 @@ class TaskWorkerHeartBeatRequest(_message.Message):
     def __init__(self, client_id: _Optional[str] = ..., task_def_name: _Optional[str] = ..., listener_name: _Optional[str] = ...) -> None: ...
 
 class RegisterTaskWorkerResponse(_message.Message):
-    __slots__ = ["your_hosts"]
+    __slots__ = ["your_hosts", "is_cluster_healthy"]
     YOUR_HOSTS_FIELD_NUMBER: _ClassVar[int]
+    IS_CLUSTER_HEALTHY_FIELD_NUMBER: _ClassVar[int]
     your_hosts: _containers.RepeatedCompositeFieldContainer[LHHostInfo]
-    def __init__(self, your_hosts: _Optional[_Iterable[_Union[LHHostInfo, _Mapping]]] = ...) -> None: ...
+    is_cluster_healthy: bool
+    def __init__(self, your_hosts: _Optional[_Iterable[_Union[LHHostInfo, _Mapping]]] = ..., is_cluster_healthy: bool = ...) -> None: ...
 
 class LHHostInfo(_message.Message):
     __slots__ = ["host", "port"]

@@ -30,4 +30,15 @@ public interface RegisterTaskWorkerResponseOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder getYourHostsOrBuilder(
       int index);
+
+  /**
+   * <code>optional bool is_cluster_healthy = 2;</code>
+   * @return Whether the isClusterHealthy field is set.
+   */
+  boolean hasIsClusterHealthy();
+  /**
+   * <code>optional bool is_cluster_healthy = 2;</code>
+   * @return The isClusterHealthy.
+   */
+  boolean getIsClusterHealthy();
 }

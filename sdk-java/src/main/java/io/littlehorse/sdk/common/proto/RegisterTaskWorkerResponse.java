@@ -39,6 +39,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse.class, io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse.Builder.class);
   }
 
+  private int bitField0_;
   public static final int YOUR_HOSTS_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo> yourHosts_;
@@ -80,6 +81,25 @@ private static final long serialVersionUID = 0L;
     return yourHosts_.get(index);
   }
 
+  public static final int IS_CLUSTER_HEALTHY_FIELD_NUMBER = 2;
+  private boolean isClusterHealthy_ = false;
+  /**
+   * <code>optional bool is_cluster_healthy = 2;</code>
+   * @return Whether the isClusterHealthy field is set.
+   */
+  @java.lang.Override
+  public boolean hasIsClusterHealthy() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional bool is_cluster_healthy = 2;</code>
+   * @return The isClusterHealthy.
+   */
+  @java.lang.Override
+  public boolean getIsClusterHealthy() {
+    return isClusterHealthy_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -97,6 +117,9 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < yourHosts_.size(); i++) {
       output.writeMessage(1, yourHosts_.get(i));
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeBool(2, isClusterHealthy_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -109,6 +132,10 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < yourHosts_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, yourHosts_.get(i));
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(2, isClusterHealthy_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -127,6 +154,11 @@ private static final long serialVersionUID = 0L;
 
     if (!getYourHostsList()
         .equals(other.getYourHostsList())) return false;
+    if (hasIsClusterHealthy() != other.hasIsClusterHealthy()) return false;
+    if (hasIsClusterHealthy()) {
+      if (getIsClusterHealthy()
+          != other.getIsClusterHealthy()) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -141,6 +173,11 @@ private static final long serialVersionUID = 0L;
     if (getYourHostsCount() > 0) {
       hash = (37 * hash) + YOUR_HOSTS_FIELD_NUMBER;
       hash = (53 * hash) + getYourHostsList().hashCode();
+    }
+    if (hasIsClusterHealthy()) {
+      hash = (37 * hash) + IS_CLUSTER_HEALTHY_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIsClusterHealthy());
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -280,6 +317,7 @@ private static final long serialVersionUID = 0L;
         yourHostsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
+      isClusterHealthy_ = false;
       return this;
     }
 
@@ -326,6 +364,12 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse result) {
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.isClusterHealthy_ = isClusterHealthy_;
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -398,6 +442,9 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
+      if (other.hasIsClusterHealthy()) {
+        setIsClusterHealthy(other.getIsClusterHealthy());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -437,6 +484,11 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 10
+            case 16: {
+              isClusterHealthy_ = input.readBool();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 16
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -692,6 +744,46 @@ private static final long serialVersionUID = 0L;
         yourHosts_ = null;
       }
       return yourHostsBuilder_;
+    }
+
+    private boolean isClusterHealthy_ ;
+    /**
+     * <code>optional bool is_cluster_healthy = 2;</code>
+     * @return Whether the isClusterHealthy field is set.
+     */
+    @java.lang.Override
+    public boolean hasIsClusterHealthy() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional bool is_cluster_healthy = 2;</code>
+     * @return The isClusterHealthy.
+     */
+    @java.lang.Override
+    public boolean getIsClusterHealthy() {
+      return isClusterHealthy_;
+    }
+    /**
+     * <code>optional bool is_cluster_healthy = 2;</code>
+     * @param value The isClusterHealthy to set.
+     * @return This builder for chaining.
+     */
+    public Builder setIsClusterHealthy(boolean value) {
+
+      isClusterHealthy_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional bool is_cluster_healthy = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearIsClusterHealthy() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      isClusterHealthy_ = false;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
