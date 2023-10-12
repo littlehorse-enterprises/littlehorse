@@ -1,27 +1,28 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../../auth/[...nextauth]'
+import { createChannel, createClient } from 'nice-grpc';
+import { LHPublicApiDefinition } from '../../../../../littlehorse-public-api/service';
 
 export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
-	const session = await getServerSession(req, res, authOptions)
-	if (session) {
-		if (req.method === 'GET') {
-			const url = `${process.env.API_URL}/nodeRun/${req.query.id}`
+	if (req.method === 'GET') {
+		try {
+			const channel = createChannel(process.env.API_URL!!);
+			const client = createClient(LHPublicApiDefinition, channel);
 
-			const response = await fetch(url)
-			const data = await response.json()
+			const response = await client.listNodeRuns({ wfRunId: req.query.id } as any);
 
-			return res.json({
-				code: 'OK',
-				data
+			return res.json({ code: 'OK', data: response });
+
+		} catch (error) {
+			console.log("Error during GRPC call:", error);
+			return res.send({
+				error: "Something went wrong." + error,
 			})
 		}
-	} else {
-		res.send({
-			error: 'You must be signed in to view the protected content on this page.'
-		})
+
 	}
 }

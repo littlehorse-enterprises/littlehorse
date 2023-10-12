@@ -1,0 +1,3 @@
+[submodule "littlehorse"]
+	path = littlehorse
+	url = git@github.com:littlehorse-enterprises/littlehorse.git

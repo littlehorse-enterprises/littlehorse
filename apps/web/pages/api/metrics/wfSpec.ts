@@ -1,43 +1,22 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { createChannel, createClient } from 'nice-grpc';
+import { LHPublicApiDefinition, ListWfMetricsRequest } from "../../../littlehorse-public-api/service";
 
-export default async function handler(req:NextApiRequest, res:NextApiResponse) {
-    
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
-      if(req.method === 'POST'){
-        const raw = await fetch(process.env.API_URL+"/metrics/wfSpec",{
-            method:'POST',
-            body: req.body,
-            mode: 'cors',
-            credentials: "include",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*',
-            }
-        })
-        if(raw.ok){
-            const content = await raw.json();
-            return res.send(content)
+
+    if (req.method === 'POST') {
+        try {
+            const channel = createChannel(process.env.API_URL!!);
+            const client = createClient(LHPublicApiDefinition, channel);
+
+            const response = await client.listWfSpecMetrics(ListWfMetricsRequest.fromJSON(req.body) as any);
+            return res.send(response);
+        } catch (error) {
+            console.log("Error during GRPC call:", error);
+            return res.send({
+                error: "Something went wrong." + error,
+            })
         }
-        res.send({
-            error: "Something goes wrong.",
-          })
-      }
-    
-
-    
-    // const session = await getServerSession(req, res, authOptions)
-
-    // if (session) {
-    //     res.send({
-    //         content:
-    //           "This is protected content. You can access this content because you are signed in.",
-    //       })
-    //   } else {
-    //     res.send({
-    //       error: "You must be signed in to view the protected content on this page.",
-    //     })
-    //   }
-
-
-
+    }
 }

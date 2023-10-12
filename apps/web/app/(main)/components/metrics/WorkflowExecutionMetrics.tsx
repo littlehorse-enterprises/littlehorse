@@ -106,7 +106,7 @@ export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().
                 
             }
         }
-        console.log('OUT',out)
+
         return (out.reverse())
 
       }

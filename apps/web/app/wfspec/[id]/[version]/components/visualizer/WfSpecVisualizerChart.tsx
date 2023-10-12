@@ -400,7 +400,6 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
 
 
     useEffect( () => {
-        console.log('DATA',data)
         setD3(data)
     },[data, setD3 ])
 

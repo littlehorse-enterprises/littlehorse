@@ -26,29 +26,33 @@ export const TaskInformation = ({isWFRun, data, wfRunId, run, setToggleSideBar, 
     const [info, setInfo] = useState<any>()
     const [node, setNode] = useState<any>()
     const [nrun, setRun] = useState<any>()
-    const getNodeRun = async () => {
-        const res = await fetch('/api/drawer/nodeRun', {
-			method: 'POST',
-			body: JSON.stringify({
-				wfRunId,
-				threadRunNumber: run?.number || 0,
-                name:data?.name?.split('-')[0] || 0
-			})
-		})
-        if (res.ok) {
-			const {result} = await res.json()
-            setNode(result)
-		}
+  const getNodeRun = async () => {
+    const res = await fetch('/api/drawer/nodeRun', {
+      method: 'POST',
+      body: JSON.stringify({
+        wfRunId,
+        threadRunNumber: run?.number || 0,
+        // name: data?.name?.split('-')[0] || 0
+        name: data?.position // TODO: NEW ALGO
+      })
+    })
+    
+    if (res.ok) {
+      res.json().then((result) => {
+        setNode(result)
+      })
     }
+  }
     const getUserTaskRun = async () => {
       if(!node?.task?.taskRunId) return 
         const res = await fetch('/api/drawer/taskRun', {
 			method: 'POST',
 			body: JSON.stringify(node?.task?.taskRunId)
 		})
-        if (res.ok) {
-			const {result} = await res.json()
-            setRun(result)
+      if (res.ok) {
+        res.json().then((result) => {
+          setRun(result)
+      })
             // if(result.attempts.length)setAttempt(result.attempts[0])
 		}
     }

@@ -21,19 +21,21 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run, setToggleS
 
     const [info, setInfo] = useState<any>()
     const [node, setNode] = useState<any>()
-    const [nrun, setRun] = useState<any>()
+    const [userTaskRun, setUserTaskRun] = useState<any>()
     const getNodeRun = async () => {
         const res = await fetch('/api/drawer/nodeRun', {
 			method: 'POST',
 			body: JSON.stringify({
 				wfRunId,
 				threadRunNumber: run?.number || 0,
-                name:data?.name?.split('-')[0] || 0
+                // name:data?.name?.split('-')[0] || 0 
+                name:data?.position // TODO: NEW-ALGO
 			})
 		})
         if (res.ok) {
-			const {result} = await res.json()
-            setNode(result)
+            res.json().then((result) => {
+                setNode(result)
+            })
 		}
     }
     const getUserTaskRun = async () => {
@@ -44,9 +46,11 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run, setToggleS
 				guid:node?.userTask?.userTaskRunId?.userTaskGuid
 			})
 		})
+        
         if (res.ok) {
-			const {result} = await res.json()
-            setRun(result)
+            res.json().then((result) => {
+                setUserTaskRun(result);
+            })
 		}
     }
     const getInfo = async () => {
@@ -85,8 +89,8 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run, setToggleS
 
             <DrawerSection title="Node Data" >
                 <div className="grid-3">
-                    {nrun?.scheduledTime &&  <p className="drawer__nodeData__header">SCHEDULED</p>}
-                    {nrun?.scheduledTime &&  <p className="drawer__nodeData__data">{nrun?.scheduledTime ? moment(nrun?.scheduledTime).format('MMMM DD, HH:mm:ss') : ''}</p>}
+                    {userTaskRun?.scheduledTime &&  <p className="drawer__nodeData__header">SCHEDULED</p>}
+                    {userTaskRun?.scheduledTime &&  <p className="drawer__nodeData__data">{userTaskRun?.scheduledTime ? moment(userTaskRun?.scheduledTime).format('MMMM DD, HH:mm:ss') : ''}</p>}
                     <p className="drawer__nodeData__header">REACH TIME</p>
                     <p className="drawer__nodeData__data">{node?.arrivalTime ? moment(node.arrivalTime).format('MMMM DD, HH:mm:ss') : ''}</p>
                     <p className="drawer__nodeData__header">COMPLETION TIME</p>
@@ -94,19 +98,19 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run, setToggleS
                     <p className="drawer__nodeData__header">STATUS</p>
                     <p className="drawer__nodeData__data">{node?.status}</p>
 
-                    {(nrun?.userGroup || nrun?.user?.userGroup) &&  <p className="drawer__nodeData__header">USER GROUP</p>}
-                    {(nrun?.userGroup || nrun?.user?.userGroup) &&  <p className="drawer__nodeData__data">{nrun?.user?.userGroup?.id || nrun?.userGroup?.id }</p>}
+                    {(userTaskRun?.userGroup || userTaskRun?.user?.userGroup) &&  <p className="drawer__nodeData__header">USER GROUP</p>}
+                    {(userTaskRun?.userGroup || userTaskRun?.user?.userGroup) &&  <p className="drawer__nodeData__data">{userTaskRun?.user?.userGroup?.id || userTaskRun?.userGroup?.id }</p>}
                     
 
-                    {nrun?.user &&  <p className="drawer__nodeData__header">SPECIFIC USER</p>}
-                    {nrun?.user &&  <p className="drawer__nodeData__data">{nrun?.user?.id }</p>}
+                    {userTaskRun?.user &&  <p className="drawer__nodeData__header">SPECIFIC USER</p>}
+                    {userTaskRun?.user &&  <p className="drawer__nodeData__data">{userTaskRun?.user?.id }</p>}
                     
-                    {orderBy(nrun?.events, ["time"],["desc"])?.find( e => e.reassigned?.oldUser) &&  <p className="drawer__nodeData__header">REASSIGNED TO</p>}
-                    {orderBy(nrun?.events, ["time"],["desc"])?.find( e => e.reassigned?.oldUser) &&  <p className="drawer__nodeData__data">{orderBy(nrun?.events, ["time"],["desc"])?.find( e => e.reassigned).reassigned.oldUser?.id} {`->`} {orderBy(nrun?.events, ["time"],["desc"])?.find( e => e.reassigned).reassigned.newUser?.id}</p>}
+                    {orderBy(userTaskRun?.events, ["time"],["desc"])?.find( e => e.reassigned?.oldUser) &&  <p className="drawer__nodeData__header">REASSIGNED TO</p>}
+                    {orderBy(userTaskRun?.events, ["time"],["desc"])?.find( e => e.reassigned?.oldUser) &&  <p className="drawer__nodeData__data">{orderBy(userTaskRun?.events, ["time"],["desc"])?.find( e => e.reassigned).reassigned.oldUser?.id} {`->`} {orderBy(userTaskRun?.events, ["time"],["desc"])?.find( e => e.reassigned).reassigned.newUser?.id}</p>}
 
                    
-                    {nrun?.notes &&  <p className="drawer__nodeData__header">NOTES</p>}
-                    {nrun?.notes &&  <p className="drawer__nodeData__data">{nrun?.notes }</p>}
+                    {userTaskRun?.notes &&  <p className="drawer__nodeData__header">NOTES</p>}
+                    {userTaskRun?.notes &&  <p className="drawer__nodeData__data">{userTaskRun?.notes }</p>}
                 </div>
             </DrawerSection>
 
@@ -120,11 +124,13 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run, setToggleS
                         </tr>
                     </thead>
                     <tbody>
-                        {nrun?.results?.map( (r:any, ix:number) => <tr key={ix}>
-                            <td>{r.name}</td>
-                            <td>{r.value?.type}</td>
-                            <td>{parseValueByType(r.value)}</td>
-                        </tr>)}
+                        { // TODO: Put logic to make the other type of forms, where we have fields, to work correctly
+                                <tr>
+                                    <td>isApproved</td>
+                                    <td>{userTaskRun?.results?.isApproved?.type}</td>
+                                    <td>{userTaskRun?.results?.isApproved?.bool + ""}</td>
+                                </tr> 
+                        }
                     </tbody>
                 </table>
             </DrawerSection>
@@ -146,7 +152,7 @@ export const UserTaskNodeInformation = ({isWFRun, data, wfRunId, run, setToggleS
             <DrawerSection title="Audit Event log" >
                 <div className="drawer-link" onClick={()=> {
                                     setToggleSideBar(true)
-                                    setCode(nrun?.events || "")
+                                    setCode(userTaskRun?.events || "")
                             }}>
                           audit log      
                 </div>

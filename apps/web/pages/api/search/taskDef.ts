@@ -1,29 +1,23 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { createChannel, createClient } from 'nice-grpc';
+import { LHPublicApiDefinition, SearchTaskDefRequest } from "../../../littlehorse-public-api/service";
 
-export default async function handler(req:NextApiRequest, res:NextApiResponse) {
-    
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
-      if(req.method === 'POST'){
-        const raw = await fetch(process.env.API_URL+"/search/taskDef",{
-            method:'POST',
-            body: req.body,
-            mode: 'cors',
-            credentials: "include",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*',
-            }
-        })
-        if(raw.ok){
-            const content = await raw.json();
-            return res.send(content)
+
+    if (req.method === 'POST') {
+        try {
+            const channel = createChannel(process.env.API_URL!!);
+            const client = createClient(LHPublicApiDefinition, channel);
+
+            const response = await client.searchTaskDef(SearchTaskDefRequest.fromJSON(req.body) as any);
+
+            return res.send(response);
+        } catch (error) {
+            console.log("Error during GRPC call:", error);
+            return res.send({
+                error: "Something went wrong." + error,
+            })
         }
-        res.send({
-            error: "Something goes wrong.",
-          })
-      }
-    
-
-
-
+    }
 }

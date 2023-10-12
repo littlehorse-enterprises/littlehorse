@@ -1,22 +1,28 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { createClient } from "nice-grpc/lib/client/ClientFactory";
+import { createChannel } from "nice-grpc/lib/client/channel";
+import { LHPublicApiDefinition } from "../../../littlehorse-public-api/service";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    console.log(req.body)
     const body = JSON.parse(req.body);
     const { wfRunId, taskGuid } = body;
-    const raw = await fetch(
-      `${process.env.API_URL}/taskRun/${wfRunId}/${taskGuid}`
-    );
-    if (raw.ok) {
-      const content = await raw.json();
-      return res.send(content);
+
+    try {
+      const channel = createChannel(process.env.API_URL!!);
+      const client = createClient(LHPublicApiDefinition, channel);
+
+      const response = await client.getTaskRun({ wfRunId, taskGuid } as any);
+      return res.send(response);
+
+    } catch (error) {
+      console.log("Error during GRPC call:", error);
+      return res.send({
+        error: "Something went wrong." + error,
+      })
     }
-    res.send({
-      error: "Something goes wrong.",
-    });
   }
 }

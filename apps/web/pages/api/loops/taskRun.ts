@@ -1,4 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { createChannel, createClient } from 'nice-grpc';
+import { LHPublicApiDefinition, SearchTaskRunRequest } from "../../../littlehorse-public-api/service";
 
 export default async function handler(req:NextApiRequest, res:NextApiResponse) {
     // - TASK_SCHEDULED    
@@ -10,81 +12,59 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
     // - TASK_INPUT_VAR_SUB_ERROR"
     const body = JSON.parse(req.body);
     const { taskDefName, wfRunId } = body;
-    console.log(wfRunId)
+    console.log("WFRUNID to search task runs for:", wfRunId)
     let out = []
     let content:any
     if(req.method === 'POST'){
-        const TASK_SCHEDULED = await fetch(process.env.API_URL+"/search/taskRun",{
-            method:'POST',
-            body: JSON.stringify({
+        try {
+            const channel = createChannel(process.env.API_URL!!);
+            const client = createClient(LHPublicApiDefinition, channel);
+
+            const scheduledTasks = await client.searchTaskRun(SearchTaskRunRequest.fromJSON({
                 "statusAndTaskDef":{
                     status:"TASK_SCHEDULED",  
                     taskDefName
                 },
                 "limit":99
-            }),
-            mode: 'cors',
-            credentials: "include",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*',
-            }
-        })
-        if(TASK_SCHEDULED.ok){
-            content = await TASK_SCHEDULED.json();
-            out = out.concat(content.results.filter(r => r.wfRunId ===wfRunId))
+            }) as any);
+            out = out.concat(scheduledTasks.results.filter(r => r.wfRunId ===wfRunId) as any)
+        } catch (error) {
+            console.log("Error during GRPC call:", error);
         }
 
-        const TASK_RUNNING = await fetch(process.env.API_URL+"/search/taskRun",{
-            method:'POST',
-            body: JSON.stringify({
+        try {
+            const channel = createChannel(process.env.API_URL!!);
+            const client = createClient(LHPublicApiDefinition, channel);
+
+            const runningTasks = await client.searchTaskRun(SearchTaskRunRequest.fromJSON({
                 "statusAndTaskDef":{
                     status:"TASK_RUNNING",  
                     taskDefName
                 },
                 "limit":99
-            }),
-            mode: 'cors',
-            credentials: "include",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*',
-            }
-        })
-        if(TASK_RUNNING.ok){
-            content = await TASK_RUNNING.json();
-            out = out.concat(content.results.filter(r => r.wfRunId ===wfRunId))
+            }) as any);
+            out = out.concat(runningTasks.results.filter(r => r.wfRunId ===wfRunId) as any)
+        } catch (error) {
+            console.log("Error during GRPC call:", error);
         }
 
-        const TASK_SUCCESS = await fetch(process.env.API_URL+"/search/taskRun",{
-            method:'POST',
-            body: JSON.stringify({
+        try {
+            const channel = createChannel(process.env.API_URL!!);
+            const client = createClient(LHPublicApiDefinition, channel);
+
+            const successfulTasks = await client.searchTaskRun(SearchTaskRunRequest.fromJSON({
                 "statusAndTaskDef":{
                     status:"TASK_SUCCESS",  
                     taskDefName
                 },
                 "limit":99
-            }),
-            mode: 'cors',
-            credentials: "include",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*',
-            }
-        })
-        if(TASK_SUCCESS.ok){
-            content = await TASK_SUCCESS.json();
-            out = out.concat(content.results.filter(r => r.wfRunId ===wfRunId))
+            }) as any);
+            out = out.concat(successfulTasks.results.filter(r => r.wfRunId ===wfRunId) as any)
+        } catch (error) {
+            console.log("Error during GRPC call:", error);
         }
 
-        console.log(out)
+        console.log("LOOP RUN TASKS:", out)
         return res.send(out)
-        res.send({
-            error: "Something goes wrong.",
-        })
     }
-    
-
-
-
 }

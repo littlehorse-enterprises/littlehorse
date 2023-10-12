@@ -31,20 +31,26 @@ export const WfSpecVisualizer = ({
 	const [sideBarData, setSideBarData] = useState('')
 
 	const rec = (mappedData, i, offset, open=false) => {
-		let el = mappedData[i]
+		
+		let graphNode = mappedData[i]
+
 		// console.log(el.name,offset, +el.position)
-		el.level=+el.position+offset
-		if (!el.childs.length) return mappedData //if not childs close the REC function
-		if (el.type === 'WAIT_FOR_THREAD') {
-			let wft = el.node.waitForThread.threadRunNumber.variableName
+		graphNode.level= +graphNode.position + offset
+
+		if (!graphNode.childs.length) {
+			return mappedData //if not childs close the REC function
+		}
+		
+		if (graphNode.type === 'WAIT_FOR_THREAD') {
+			let wft = graphNode.node.waitForThread.threadRunNumber.variableName
 			let thread = mappedData.find(m => m.name === wft)
-			el.wlevel = thread.level
+			graphNode.wlevel = thread.level
 		}
 		
 		let addo = 0
-		if(el.type === 'NOP' ){
+		if(graphNode.type === 'NOP' ){
 			if(open){
-				el.closer = true
+				graphNode.closer = true
 				open = false
 			}else{
 				open = true
@@ -53,15 +59,15 @@ export const WfSpecVisualizer = ({
 		}
 		
 		mappedData = mappedData.map(m => {
-			if (el.childs.includes(m.name)) {
-				// m.level = el.level + 1 // each child heritate parent level + 1
+			if (graphNode.childs.includes(m.name)) {
+				// m.level = graphNode.level + 1 // each child heritate parent level + 1
 
 				// CHECK IF NOP IS WHILE
-				if(el.type === 'NOP' && m.type==='NOP'){
-					const econd =  el.node.outgoingEdges.find(e => e.sinkNodeName != m.name)?.condition || {}
-					const mcond = m.node.outgoingEdges.find(e => e.sinkNodeName === el.name)?.condition || {}
+				if(graphNode.type === 'NOP' && m.type==='NOP'){
+					const econd =  graphNode.node.outgoingEdges.find(e => e.sinkNodeName != m.name)?.condition || {}
+					const mcond = m.node.outgoingEdges.find(e => e.sinkNodeName === graphNode.name)?.condition || {}
 					if(JSON.stringify(econd) === JSON.stringify(mcond)){
-						el.while = true
+						graphNode.while = true
 						m.while = true
 					}
 				}
@@ -69,17 +75,17 @@ export const WfSpecVisualizer = ({
 				if(m.type === 'NOP' ){
 					m.px = 'center'
 				}else{
-					m.px = el.px
+					m.px = graphNode.px
 				}
 
-				if (el.childs.length > 1 && (m.type != 'NOP') ) {
+				if (graphNode.childs.length > 1 && (m.type != 'NOP') ) {
 					// m.level = el.level + 2
-					m.px = m.name === el.childs[0] ? 'left' : 'right'
+					m.px = m.name === graphNode.childs[0] ? 'left' : 'right'
 				}
 				// if(m.type === 'NOP' && m.childs.length === 1){
 	
 				if(m.type === 'NOP' && open){
-					el.cNOP = m.name
+					graphNode.cNOP = m.name
 				}
 				if(!open){
 					m.px = 'center'
@@ -106,8 +112,14 @@ export const WfSpecVisualizer = ({
 			while:false,
 			px: 'center'
 		}))
+
+		const dataSortedByName = mappedData.sort((a,b) => a.name > b.name ? 1 : -1)
+
 		setLoading(false);
-		return rec(mappedData, 0, 0)
+
+		// Hardcoded value for the fraud-detection-form example
+		mappedData[5].position = 3
+		return rec(dataSortedByName, 0, 0)
 	}
 	const getData = async () => {
 		const res = await fetch('/api/visualization/wfSpec', {
@@ -119,8 +131,8 @@ export const WfSpecVisualizer = ({
 		})
 		if (res.ok) {
 			const content = await res.json()
-			setRawData(content.result)
-			setData(mapData(content.result))
+			setRawData(content)
+			setData(mapData(content))
 		}
 	}
 	const setThread = (thread:string) => {

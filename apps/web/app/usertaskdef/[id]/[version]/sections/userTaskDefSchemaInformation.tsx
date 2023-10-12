@@ -77,14 +77,19 @@ export const UserTaskDefSchemaInformation = ({
                                 </tr>
                             ))
                         ) : loadingInputVars ? (
-                            <Loading style={{ padding: "20px" }} />
+                            <tr>
+                                <td colSpan={2} className="flex flex-center justify-center">
+                                    <Loading />
+                                </td>
+                            </tr>
                         ) : (
-                            <div
-                                className="flex items-center justify-center"
-                                style={{ padding: "20px" }}
-                            >
-                                No variables required
-                            </div>
+                            <tr>
+                                <td colSpan={2} className="flex flex-center justify-center">
+                                    <div className="flex items-center justify-center">
+                                        No variables required
+                                    </div>
+                                </td>
+                            </tr>
                         )}
                     </tbody>
                 </table>

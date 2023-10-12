@@ -6,7 +6,7 @@ interface Props {
 const Loading = ({
     className, style
 }: Props) => {
-    return <div className="flex flex-center justify-center" style={style}>Loading ...</div>
+    return <div style={style}>Loading ...</div>
     // return (<div className={`flex grid content-center justify-center ${className || ''}`} style={style}>
     //     <div className="flex gap gap-2 items-center loading">
     //         Loading

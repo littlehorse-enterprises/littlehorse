@@ -49,6 +49,7 @@ export const WfRunVisualizer = ({
 
   const rec = (mappedData, i, offset, open=false) => {
     let el = mappedData[i];
+
     el.level=+el.position+offset
     if (!el.childs.length) return mappedData; //if not childs close the REC function
     if (el.type === "WAIT_FOR_THREAD") {
@@ -133,15 +134,17 @@ export const WfRunVisualizer = ({
       }
       return m;
     });
+
     return rec(mappedData, ++i, offset+addo, open)
   };
 
   const [run, setRun] = useState();
   const [runs, setRuns] = useState<any[]>([]);
   const setThreads = (data: any) => {
-    getWfSpec(data.wfSpecName, data.wfSpecVersion);
-    setRun(data.threadRuns[0]);
-    setRuns(data.threadRuns);
+      // getWfSpec(data.wfSpecName, data.wfSpecVersion); // cambiar por id
+      getWfSpec(id, data.wfSpecVersion); // cambiar por id TODO: NEW-ALGO
+      setRun(data.threadRuns[0]);
+      setRuns(data.threadRuns);
   };
 
   const mapData = (data: any, thread?: string) => {
@@ -151,7 +154,7 @@ export const WfRunVisualizer = ({
     const mappedData: any = entries.map((e: mapnode) => ({
       name: e[0],
       type: e[0].split("-").pop(),
-      position: e[0].split("-").shift(),
+      position: e[1].newPosition, // TODO: NEW-ALGO
       node: e[1],
       childs: e[1]["outgoingEdges"].map((e) => e.sinkNodeName),
       level: 0,
@@ -160,36 +163,47 @@ export const WfRunVisualizer = ({
       while:false,
       px: "center",
     }));
+    
     setLoading(false);
     return rec(mappedData, 0, 0)
   };
 
   const getWfSpec = async (id: string, version: number) => {
-    const res = await fetch("/api/visualization/wfSpec", {
+    const res = await fetch("/api/visualization/wfSpecExecutedNodes", {
       method: "POST",
       body: JSON.stringify({
         id,
         version,
       }),
-    });
+    }); // // TODO: NEW-ALGO
+    
+    // const res = await fetch("/api/visualization/wfSpec", {
+    //   method: "POST",
+    //   body: JSON.stringify({
+    //     id,
+    //     version,
+    //   }),
+    // }); // TODO- NEW ALGO
+    
     if (res.ok) {
       const content = await res.json();
-      if(content.result){
-        setRawData(content.result)
-        setData(mapData(content.result))
+      
+      if(content){
+        setRawData(content)
+        setData(mapData(content))
       }
     }
   };
   const getData = async () => {
-    const res = await fetch("/api/visualization/wfRun", {
+    const res = await fetch("/api/visualization/wfRun", {  // TODO; new ALGO
       method: "POST",
       body: JSON.stringify({
         id,
       }),
     });
     if (res.ok) {
-      const { result } = await res.json();
-      setThreads(result);
+      const response = await res.json();
+      setThreads(response);
     }
   };
 
@@ -205,9 +219,9 @@ export const WfRunVisualizer = ({
     // if (drawerData === undefined) getMainDrawerData(run?.wfSpecName || '', setDrawerData);
     
     if (selectedNodeName) {
-      const nodePostFix = selectedNodeName.split("-").reverse()[0];
+      const nodeType = selectedNodeName.split("-").reverse()[0];
 
-      setNodeType(nodeTypes[nodePostFix as keyof typeof nodeTypes]);
+      setNodeType(nodeTypes[nodeType as keyof typeof nodeTypes]);
     }
   }, [drawerData, selectedNodeName]);
 
@@ -247,6 +261,7 @@ export const WfRunVisualizer = ({
             run={run}
           />
         )}
+         
       </div>
 
       <Drawer title={"WfSpec Properties"}>{drawerInternal}</Drawer>
