@@ -5,6 +5,7 @@ import functools
 from inspect import Parameter, signature, iscoroutinefunction
 import logging
 import signal
+import traceback
 from typing import Any, AsyncIterator, Callable, Optional
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
@@ -276,15 +277,21 @@ class LHConnection:
             status = TaskStatus.TASK_SUCCESS
         except LHTaskException as le:
             output = None
-            context.log(le)
+            stacktrace = traceback.format_exc()
+            logging.error(stacktrace)
+            context.log(stacktrace)
             status = TaskStatus.TASK_EXCEPTION
         except TypeError as te:
             output = None
-            context.log(te)
+            stacktrace = traceback.format_exc()
+            logging.error(stacktrace)
+            context.log(stacktrace)
             status = TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR
         except BaseException as be:
             output = None
-            context.log(be)
+            stacktrace = traceback.format_exc()
+            logging.error(stacktrace)
+            context.log(stacktrace)
             status = TaskStatus.TASK_FAILED
 
         self._schedule_task_semaphore.release()
