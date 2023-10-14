@@ -5,7 +5,6 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
-import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
@@ -55,10 +54,6 @@ public class TaskNodeReferenceModel extends TaskRunSubSource<TaskNodeReference> 
         FailureModel failure;
         if (!lastFailure.containsException()) {
             String message = getMessageFor(lastFailure.getStatus());
-            VariableValueModel stderr = lastFailure.getLogOutput();
-            if (stderr != null && stderr.getVal() != null) {
-                message += ": " + stderr.getVal().toString();
-            }
             if (lastFailure.getError() == null) { // check for compatibility
                 failure = new FailureModel(message, getFailureCodeFor(lastFailure.getStatus()));
             } else {
