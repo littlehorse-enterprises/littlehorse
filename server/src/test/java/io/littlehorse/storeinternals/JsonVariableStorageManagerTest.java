@@ -80,7 +80,7 @@ public class JsonVariableStorageManagerTest {
     }
 
     private void initializeDependencies() {
-        storeWrapper = new LHTenantStore(store, lhConfig, tenantId);
+        storeWrapper = new LHTenantStore(store, tenantId);
         getableStorageManager = new GetableStorageManager(storeWrapper, mockProcessorContext, lhConfig, mock(), mock());
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }

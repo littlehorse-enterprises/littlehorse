@@ -70,7 +70,7 @@ public class UserTaskRunModelStorageManagerTest {
     }
 
     private void initializeDependencies() {
-        localStoreWrapper = new LHTenantStore(store, lhConfig, tenantId);
+        localStoreWrapper = new LHTenantStore(store, tenantId);
         getableStorageManager =
                 new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mock());
         store.init(mockProcessorContext.getStateStoreContext(), store);
