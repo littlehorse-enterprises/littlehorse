@@ -11,7 +11,7 @@ import io.littlehorse.common.proto.TaskMetricUpdatePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.LHStore;
 import java.util.Date;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -129,7 +129,8 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
         return new TaskDefMetricsIdModel(windowStart, type, LHConstants.CLUSTER_LEVEL_METRIC).getStoreableKey();
     }
 
-    public void process(RocksDBWrapper store, ProcessorContext<Void, Void> ctx) {
+    @Override
+    public void process(LHStore store, ProcessorContext<Void, Void> ctx) {
         throw new NotImplementedException("Need to re-implement metrics");
         /*
          * // Update TaskDef-Level Metrics
@@ -142,10 +143,12 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> implements R
          */
     }
 
+    @Override
     public String getPartitionKey() {
         return taskDefName;
     }
 
+    @Override
     public String getStoreKey() {
         return LHUtil.getCompositeId(LHUtil.toLhDbFormat(windowStart), type.toString(), taskDefName);
     }

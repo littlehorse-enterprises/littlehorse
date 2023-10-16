@@ -8,29 +8,27 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 @Slf4j
-public class RocksDBWrapper extends ReadOnlyRocksDBWrapper {
+public class LHTenantStore extends AbstractLHStore implements LHStore {
 
-    // note that super has ReadOnlyKeyValueStore<String, Bytes>
-    private KeyValueStore<String, Bytes> rocksdb;
-
-    public RocksDBWrapper(KeyValueStore<String, Bytes> rocksdb, LHServerConfig config) {
-        super(rocksdb, config);
-        this.rocksdb = rocksdb;
+    public LHTenantStore(KeyValueStore<String, Bytes> rocksdb, LHServerConfig config, String tenantId) {
+        super(rocksdb, config, tenantId);
     }
 
+    @Override
     public void delete(Storeable<?> thing) {
         this.delete(thing.getStoreKey(), thing.getType());
     }
 
+    @Override
     public void put(Storeable<?> thing) {
-        String storeKey = thing.getFullStoreKey();
+        String storeKey = tenantId + "/" + thing.getFullStoreKey();
         log.trace("Putting {}", storeKey);
-        rocksdb.put(storeKey, new Bytes(thing.toBytes()));
+        put(storeKey, thing);
     }
 
     public void delete(String storeKey, StoreableType cls) {
-        String fullKey = Storeable.getFullStoreKey(cls, storeKey);
+        String fullKey = tenantId + "/" + Storeable.getFullStoreKey(cls, storeKey);
         log.trace("Deleting {}", fullKey);
-        rocksdb.delete(fullKey);
+        delete(fullKey);
     }
 }

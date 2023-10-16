@@ -1,14 +1,11 @@
 package io.littlehorse.server.streams.store;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
@@ -32,30 +29,23 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * for a given namespace.
  */
 @Slf4j
-public class ReadOnlyRocksDBWrapper {
+public class ReadOnlyTenantStore extends AbstractReadOnlyLHStore implements ReadOnlyLHStore {
 
-    protected ReadOnlyKeyValueStore<String, Bytes> rocksdb;
     protected LHServerConfig config;
+    protected final String tenantId;
 
     // NOTE: we will pass in a Tenant ID to this in the future when we implement
     // multi-tenancy.
-    public ReadOnlyRocksDBWrapper(ReadOnlyKeyValueStore<String, Bytes> rocksdb, LHServerConfig config) {
-        this.rocksdb = rocksdb;
+    public ReadOnlyTenantStore(ReadOnlyKeyValueStore<String, Bytes> rocksdb, LHServerConfig config, String tenantId) {
+        super(rocksdb);
         this.config = config;
+        this.tenantId = tenantId;
     }
 
     public <U extends Message, T extends Storeable<U>> T get(String storeableKey, Class<T> cls) {
         String fullKey = Storeable.getFullStoreKey(cls, storeableKey);
-        log.trace("Getting {} from rocksdb", fullKey);
-        Bytes raw = rocksdb.get(fullKey);
-
-        if (raw == null) return null;
-
-        try {
-            return LHSerializable.fromBytes(raw.get(), cls);
-        } catch (LHSerdeError exn) {
-            throw new IllegalStateException("LHSerdeError indicates corrupted store.", exn);
-        }
+        fullKey = tenantId + "/" + fullKey;
+        return super.get(fullKey, cls);
     }
 
     @SuppressWarnings("unchecked")
@@ -70,37 +60,14 @@ public class ReadOnlyRocksDBWrapper {
      */
     public <T extends Storeable<?>> LHKeyValueIterator<T> prefixScan(String prefix, Class<T> cls) {
         String compositePrefix = Storeable.getFullStoreKey(cls, prefix);
-        return new LHKeyValueIterator<>(
-                rocksdb.prefixScan(compositePrefix, Serdes.String().serializer()), cls);
-    }
-
-    public <U extends Message, T extends Storeable<U>> T getLastFromPrefix(String prefix, Class<T> cls) {
-
-        LHKeyValueIterator<T> iterator = null;
-        try {
-            iterator = reversePrefixScan(prefix, cls);
-            if (iterator.hasNext()) {
-                return iterator.next().getValue();
-            } else {
-                return null;
-            }
-        } finally {
-            if (iterator != null) {
-                iterator.close();
-            }
-        }
+        return super.prefixScan(compositePrefix, cls);
     }
 
     public <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(String prefix, Class<T> cls) {
         String start = Storeable.getFullStoreKey(cls, prefix);
-        // The Streams ReadOnlyKeyValueStore doesn't have a reverse prefix scan.
-        // However, they do have a reverse range scan. So we take the prefix and
-        // then we use the fact that we know the next character after the prefix is
-        // one of [a-bA-B0-9\/], so we just need to append an Ascii character
-        // greater than Z. We'll go with the '~', which is the greatest Ascii
-        // character.
-        String end = start + '~';
-        return new LHKeyValueIterator<>(rocksdb.reverseRange(start, end), cls);
+        String end = tenantId + "/" + start + '~';
+        start = tenantId + "/" + start;
+        return reverseRange(start, end, cls);
     }
 
     /**
@@ -114,8 +81,8 @@ public class ReadOnlyRocksDBWrapper {
      * @return an iter
      */
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
-
-        return new LHKeyValueIterator<>(
-                rocksdb.range(Storeable.getFullStoreKey(cls, start), Storeable.getFullStoreKey(cls, end)), cls);
+        String startKey = tenantId + "/" + Storeable.getFullStoreKey(cls, start);
+        String endKey = tenantId + "/" + Storeable.getFullStoreKey(cls, end);
+        return super.range(startKey, endKey, cls);
     }
 }

@@ -9,7 +9,7 @@ import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.WfMe
 import io.littlehorse.common.proto.RepartitionCommandPb;
 import io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.LHStore;
 import java.util.Date;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
@@ -69,7 +69,7 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
         }
     }
 
-    public void process(RocksDBWrapper store, ProcessorContext<Void, Void> ctx) {
+    public void process(LHStore store, ProcessorContext<Void, Void> ctx) {
         getSubCommand().process(store, ctx);
     }
 

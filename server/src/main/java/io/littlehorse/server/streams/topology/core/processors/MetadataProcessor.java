@@ -7,9 +7,6 @@ import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
-import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorDAOImpl;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +34,10 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
     }
 
     public void init(final ProcessorContext<String, Bytes> ctx) {
-        this.dao = new MetadataProcessorDAOImpl(
-                new RocksDBWrapper(ctx.getStateStore(ServerTopology.METADATA_STORE), config), metadataCache);
+        /*this.dao = new MetadataProcessorDAOImpl(
+        new RocksDBWrapper(ctx.getStateStore(ServerTopology.METADATA_STORE), config), metadataCache);
+        TODO WIP
+        */
     }
 
     @Override

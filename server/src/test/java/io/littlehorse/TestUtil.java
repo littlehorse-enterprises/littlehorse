@@ -25,6 +25,7 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.*;
+import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import java.util.Date;
 import java.util.Map;
@@ -40,6 +41,10 @@ public class TestUtil {
         wfRunModel.status = LHStatus.RUNNING;
         wfRunModel.setStartTime(new Date());
         return wfRunModel;
+    }
+
+    public static StoredGetable<WfRun, WfRunModel> storedWfRun(String id) {
+        return new StoredGetable<>(wfRun(id));
     }
 
     public static TaskDefModel taskDef(String name) {

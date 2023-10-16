@@ -6,7 +6,7 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.LHTenantStore;
 import io.littlehorse.server.streams.storeinternals.TagStorageManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.CachedTag;
@@ -38,7 +38,9 @@ public class TagStorageManagerTest {
     @Mock
     private LHServerConfig lhConfig;
 
-    private RocksDBWrapper localStore = new RocksDBWrapper(store, lhConfig);
+    private String tenantId = "myTenant";
+
+    private LHTenantStore localStore = new LHTenantStore(store, lhConfig, tenantId);
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
 

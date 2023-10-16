@@ -8,7 +8,7 @@ import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.LHStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -27,10 +27,10 @@ import io.littlehorse.server.streams.util.MetadataCache;
  */
 public class MetadataProcessorDAOImpl extends MetadataProcessorDAO {
 
-    private RocksDBWrapper rocksdb;
+    private LHStore rocksdb;
     private MetadataCommandModel command;
 
-    public MetadataProcessorDAOImpl(RocksDBWrapper rocksdb, MetadataCache metadataCache) {
+    public MetadataProcessorDAOImpl(LHStore rocksdb, MetadataCache metadataCache) {
         super(rocksdb, metadataCache);
         this.rocksdb = rocksdb;
     }

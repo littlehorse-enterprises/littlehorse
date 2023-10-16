@@ -12,7 +12,7 @@ import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.WfSpec;
-import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
+import io.littlehorse.server.streams.store.ReadOnlyLHStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.function.Supplier;
@@ -23,11 +23,11 @@ import java.util.function.Supplier;
  */
 public class ReadOnlyMetadataStore {
 
-    private final ReadOnlyRocksDBWrapper rocksdb;
+    private final ReadOnlyLHStore rocksdb;
 
     private final MetadataCache metadataCache;
 
-    public ReadOnlyMetadataStore(ReadOnlyRocksDBWrapper rocksdb, MetadataCache metadataCache) {
+    public ReadOnlyMetadataStore(ReadOnlyLHStore rocksdb, MetadataCache metadataCache) {
         this.rocksdb = rocksdb;
         this.metadataCache = metadataCache;
     }
