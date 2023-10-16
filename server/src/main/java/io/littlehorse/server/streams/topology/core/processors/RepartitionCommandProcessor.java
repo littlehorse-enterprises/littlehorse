@@ -5,9 +5,8 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.LHStore;
 import java.time.Duration;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,7 @@ import org.apache.kafka.streams.processor.api.Record;
 @Slf4j
 public class RepartitionCommandProcessor implements Processor<String, RepartitionCommand, Void, Void> {
 
-    private RocksDBWrapper store;
+    private LHStore store;
     private LHServerConfig config;
     private ProcessorContext<Void, Void> ctx;
 
@@ -30,7 +29,7 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
 
     public void init(final ProcessorContext<Void, Void> ctx) {
         this.ctx = ctx;
-        store = new RocksDBWrapper(ctx.getStateStore(ServerTopology.CORE_REPARTITION_STORE), config);
+        // store = new RocksDBWrapper(ctx.getStateStore(ServerTopology.CORE_REPARTITION_STORE), config); TODO WIP
 
         ctx.schedule(Duration.ofMinutes(1), PunctuationType.WALL_CLOCK_TIME, this::cleanOldMetrics);
     }

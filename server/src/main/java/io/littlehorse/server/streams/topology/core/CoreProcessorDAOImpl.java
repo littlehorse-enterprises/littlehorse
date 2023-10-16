@@ -27,8 +27,9 @@ import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.LHStore;
+import io.littlehorse.server.streams.store.LHTenantStore;
+import io.littlehorse.server.streams.store.ReadOnlyLHStore;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.util.InternalHosts;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -39,38 +40,39 @@ import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
+import org.apache.kafka.streams.state.KeyValueStore;
 
 @Slf4j
 public class CoreProcessorDAOImpl extends CoreProcessorDAO {
 
-    private Map<String, ScheduledTaskModel> scheduledTaskPuts;
-    private List<LHTimer> timersToSchedule;
+    private final Map<String, ScheduledTaskModel> scheduledTaskPuts;
+    private final List<LHTimer> timersToSchedule;
     private CommandModel command;
-    private KafkaStreamsServerImpl server;
+    private final KafkaStreamsServerImpl server;
     private Set<HostModel> currentHosts;
 
-    private RocksDBWrapper rocksdb;
-    private ProcessorContext<String, CommandProcessorOutput> ctx;
-    private LHServerConfig config;
+    private final ProcessorContext<String, CommandProcessorOutput> ctx;
+    private final LHServerConfig config;
     private boolean partitionIsClaimed;
+
+    private LHStore lhStore;
 
     private GetableStorageManager storageManager;
 
     public CoreProcessorDAOImpl(
             final ProcessorContext<String, CommandProcessorOutput> ctx,
-            LHServerConfig config,
-            KafkaStreamsServerImpl server,
-            MetadataCache metadataCache,
-            RocksDBWrapper localStore,
-            ReadOnlyRocksDBWrapper globalStore) {
+            final LHServerConfig config,
+            final KafkaStreamsServerImpl server,
+            final MetadataCache metadataCache,
+            final ReadOnlyLHStore globalStore) {
         super(globalStore, metadataCache);
 
         this.server = server;
         this.ctx = ctx;
         this.config = config;
-        this.rocksdb = localStore;
 
         // At the start, we haven't claimed the partition until the claim event comes
         this.partitionIsClaimed = false;
@@ -80,11 +82,12 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     }
 
     @Override
-    public void initCommand(CommandModel command) {
+    public void initCommand(CommandModel command, KeyValueStore<String, Bytes> nativeStore) {
         scheduledTaskPuts.clear();
         timersToSchedule.clear();
         this.command = command;
-        this.storageManager = new GetableStorageManager(rocksdb, ctx, config, command, this);
+        this.lhStore = new LHTenantStore(nativeStore, config, command.getTenantId());
+        this.storageManager = new GetableStorageManager(lhStore, ctx, config, command, this);
     }
 
     @Override
@@ -105,7 +108,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
             if (scheduledTask != null) {
                 forwardTask(scheduledTask);
             } else {
-                rocksdb.delete(scheduledTaskId, StoreableType.SCHEDULED_TASK);
+                this.lhStore.delete(scheduledTaskId, StoreableType.SCHEDULED_TASK);
             }
         }
         clearThingsToWrite();
@@ -178,7 +181,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
 
     @Override
     public ScheduledTaskModel markTaskAsScheduled(TaskRunIdModel taskRunId) {
-        ScheduledTaskModel scheduledTask = rocksdb.get(taskRunId.toString(), ScheduledTaskModel.class);
+        ScheduledTaskModel scheduledTask = this.lhStore.get(taskRunId.toString(), ScheduledTaskModel.class);
 
         if (scheduledTask != null) {
             scheduledTaskPuts.put(scheduledTask.getStoreKey(), null);
@@ -224,7 +227,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
         }
         partitionIsClaimed = true;
 
-        try (LHKeyValueIterator<ScheduledTaskModel> iter = rocksdb.prefixScan("", ScheduledTaskModel.class)) {
+        try (LHKeyValueIterator<ScheduledTaskModel> iter = this.lhStore.prefixScan("", ScheduledTaskModel.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<ScheduledTaskModel> next = iter.next();
                 ScheduledTaskModel scheduledTask = next.getValue();
@@ -235,7 +238,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     }
 
     private void forwardTask(ScheduledTaskModel scheduledTask) {
-        rocksdb.put(scheduledTask);
+        this.lhStore.put(scheduledTask);
 
         if (partitionIsClaimed) {
             server.onTaskScheduled(scheduledTask.getTaskDefId(), scheduledTask);

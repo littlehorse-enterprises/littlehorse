@@ -21,7 +21,7 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.LHTenantStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -56,7 +56,9 @@ public class GetableStorageManagerTest {
     @Mock
     private LHServerConfig lhConfig;
 
-    private RocksDBWrapper localStoreWrapper;
+    private String tenantId = "myTenant";
+
+    private LHTenantStore localStoreWrapper;
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
@@ -64,7 +66,7 @@ public class GetableStorageManagerTest {
 
     @BeforeEach
     void setup() {
-        localStoreWrapper = new RocksDBWrapper(store, lhConfig);
+        localStoreWrapper = new LHTenantStore(store, lhConfig, tenantId);
         getableStorageManager =
                 new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mock());
         store.init(mockProcessorContext.getStateStoreContext(), store);

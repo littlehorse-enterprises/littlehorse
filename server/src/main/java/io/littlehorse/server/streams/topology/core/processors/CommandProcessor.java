@@ -8,18 +8,19 @@ import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.ReadOnlyLHStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorDAOImpl;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
+import org.apache.kafka.streams.state.KeyValueStore;
 
 @Slf4j
 public class CommandProcessor implements Processor<String, CommandModel, String, CommandProcessorOutput> {
@@ -28,8 +29,9 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
     private CoreProcessorDAOImpl dao;
     private LHServerConfig config;
     private KafkaStreamsServerImpl server;
-    private RocksDBWrapper rocksdb;
     private final MetadataCache metadataCache;
+
+    private KeyValueStore<String, Bytes> nativeStore;
 
     public CommandProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         this.config = config;
@@ -41,16 +43,12 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
         this.ctx = ctx;
 
-        // Once multi-tenancy is implemented, we will pass the rocksdb store in
-        // the initCommand() method. That way, we can isolate the tenants through
-        // rocksdb without changing any business logic in common.model or in
-        // CoreProcessorDAOImpl.
-        this.rocksdb = new RocksDBWrapper(ctx.getStateStore(ServerTopology.CORE_STORE), config);
+        // We sill need the key value store here
+        this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
+        ReadOnlyLHStore globalStore = null;
+        // new ReadOnlyRocksDBWrapper(ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), config, ""); TODO WIP
 
-        ReadOnlyRocksDBWrapper globalStore =
-                new ReadOnlyRocksDBWrapper(ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), config);
-
-        dao = new CoreProcessorDAOImpl(this.ctx, config, server, metadataCache, rocksdb, globalStore);
+        dao = new CoreProcessorDAOImpl(this.ctx, config, server, metadataCache, globalStore);
         dao.onPartitionClaimed();
         ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
     }
@@ -69,7 +67,7 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
 
     private void processHelper(final Record<String, CommandModel> commandRecord) {
         CommandModel command = commandRecord.value();
-        dao.initCommand(command);
+        dao.initCommand(command, this.nativeStore);
 
         log.trace(
                 "{} Processing command of type {} with commandId {} with partition key {}",

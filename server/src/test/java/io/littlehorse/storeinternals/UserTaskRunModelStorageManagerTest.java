@@ -11,7 +11,7 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.LHTenantStore;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -45,7 +45,9 @@ public class UserTaskRunModelStorageManagerTest {
     @Mock
     private LHServerConfig lhConfig;
 
-    private RocksDBWrapper localStoreWrapper;
+    private LHTenantStore localStoreWrapper;
+
+    private String tenantId = "myTenant";
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
     private GetableStorageManager getableStorageManager;
@@ -68,7 +70,7 @@ public class UserTaskRunModelStorageManagerTest {
     }
 
     private void initializeDependencies() {
-        localStoreWrapper = new RocksDBWrapper(store, lhConfig);
+        localStoreWrapper = new LHTenantStore(store, lhConfig, tenantId);
         getableStorageManager =
                 new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mock());
         store.init(mockProcessorContext.getStateStoreContext(), store);

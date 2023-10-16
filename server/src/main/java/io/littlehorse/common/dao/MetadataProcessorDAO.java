@@ -4,12 +4,12 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.LHStore;
 import io.littlehorse.server.streams.util.MetadataCache;
 
 public abstract class MetadataProcessorDAO extends ReadOnlyMetadataStore {
 
-    public MetadataProcessorDAO(RocksDBWrapper rocksdb, MetadataCache metadataCache) {
+    public MetadataProcessorDAO(LHStore rocksdb, MetadataCache metadataCache) {
         super(rocksdb, metadataCache);
     }
 

@@ -13,14 +13,16 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.server.streams.store.ReadOnlyRocksDBWrapper;
+import io.littlehorse.server.streams.store.ReadOnlyLHStore;
 import io.littlehorse.server.streams.util.InternalHosts;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.state.KeyValueStore;
 
 public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
 
-    public CoreProcessorDAO(ReadOnlyRocksDBWrapper rocksdb, MetadataCache metadataCache) {
+    public CoreProcessorDAO(ReadOnlyLHStore rocksdb, MetadataCache metadataCache) {
         super(rocksdb, metadataCache);
     }
 
@@ -28,7 +30,7 @@ public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
      * Lifecycle for processing a Command
      */
 
-    public abstract void initCommand(CommandModel command);
+    public abstract void initCommand(CommandModel command, KeyValueStore<String, Bytes> nativeStore);
 
     public abstract CommandModel getCommand();
 

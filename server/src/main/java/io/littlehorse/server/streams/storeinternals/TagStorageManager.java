@@ -5,7 +5,7 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.RemoveRemoteTag;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.LHStore;
 import io.littlehorse.server.streams.storeinternals.index.CachedTag;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
@@ -20,7 +20,7 @@ import org.apache.kafka.streams.processor.api.Record;
 @AllArgsConstructor
 public class TagStorageManager {
 
-    private RocksDBWrapper localStore;
+    private LHStore lhStore;
     private ProcessorContext<String, CommandProcessorOutput> context;
     private LHServerConfig lhConfig;
 
@@ -43,7 +43,7 @@ public class TagStorageManager {
         if (tag.isRemote()) {
             this.sendRepartitionCommandForCreateRemoteTag(tag);
         } else {
-            localStore.put(tag);
+            lhStore.put(tag);
         }
     }
 
@@ -52,7 +52,7 @@ public class TagStorageManager {
             String attributeString = extractAttributeStringFromStoreKey(cachedTag.getId());
             sendRepartitionCommandForRemoveRemoteTag(cachedTag.getId(), attributeString);
         } else {
-            localStore.delete(cachedTag.getId(), StoreableType.TAG);
+            lhStore.delete(cachedTag.getId(), StoreableType.TAG);
         }
     }
 
