@@ -86,7 +86,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
         scheduledTaskPuts.clear();
         timersToSchedule.clear();
         this.command = command;
-        this.lhStore = new LHTenantStore(nativeStore, config, command.getTenantId());
+        this.lhStore = new LHTenantStore(nativeStore, command.getTenantId());
         this.storageManager = new GetableStorageManager(lhStore, ctx, config, command, this);
     }
 

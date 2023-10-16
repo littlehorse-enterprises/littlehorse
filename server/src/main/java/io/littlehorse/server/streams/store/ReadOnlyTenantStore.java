@@ -1,11 +1,13 @@
 package io.littlehorse.server.streams.store;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.sdk.common.exception.LHSerdeError;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
@@ -29,26 +31,31 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * for a given namespace.
  */
 @Slf4j
-public class ReadOnlyTenantStore extends AbstractReadOnlyLHStore implements ReadOnlyLHStore {
+public class ReadOnlyTenantStore implements ReadOnlyLHStore {
 
-    protected LHServerConfig config;
     protected final String tenantId;
+    private final ReadOnlyKeyValueStore<String, Bytes> nativeStore;
 
-    // NOTE: we will pass in a Tenant ID to this in the future when we implement
-    // multi-tenancy.
-    public ReadOnlyTenantStore(ReadOnlyKeyValueStore<String, Bytes> rocksdb, LHServerConfig config, String tenantId) {
-        super(rocksdb);
-        this.config = config;
+    public ReadOnlyTenantStore(ReadOnlyKeyValueStore<String, Bytes> nativeStore, String tenantId) {
         this.tenantId = tenantId;
+        this.nativeStore = nativeStore;
     }
 
-    public <U extends Message, T extends Storeable<U>> T get(String storeableKey, Class<T> cls) {
-        String fullKey = Storeable.getFullStoreKey(cls, storeableKey);
-        fullKey = tenantId + "/" + fullKey;
-        return super.get(fullKey, cls);
+    @Override
+    public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
+        String keyToLookFor = appendTenantPrefixTo(Storeable.getFullStoreKey(cls, storeKey));
+        Bytes raw = nativeStore.get(keyToLookFor);
+
+        if (raw == null) return null;
+
+        try {
+            return LHSerializable.fromBytes(raw.get(), cls);
+        } catch (LHSerdeError exn) {
+            throw new IllegalStateException("LHSerdeError indicates corrupted store.", exn);
+        }
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public <U extends Message, T extends AbstractGetable<U>> StoredGetable<U, T> get(ObjectIdModel<?, U, T> id) {
         String key = id.getType().getNumber() + "/";
         key += id.toString();
@@ -58,16 +65,46 @@ public class ReadOnlyTenantStore extends AbstractReadOnlyLHStore implements Read
     /**
      * Make sure to `.close()` the result!
      */
-    public <T extends Storeable<?>> LHKeyValueIterator<T> prefixScan(String prefix, Class<T> cls) {
-        String compositePrefix = Storeable.getFullStoreKey(cls, prefix);
-        return super.prefixScan(compositePrefix, cls);
+    public <T extends Storeable<?>> LHKeyValueIterator<T> prefixScan(String key, Class<T> cls) {
+        return new LHKeyValueIterator<>(
+                nativeStore.prefixScan(
+                        appendTenantPrefixTo(key), Serdes.String().serializer()),
+                cls);
     }
 
     public <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(String prefix, Class<T> cls) {
         String start = Storeable.getFullStoreKey(cls, prefix);
-        String end = tenantId + "/" + start + '~';
-        start = tenantId + "/" + start;
-        return reverseRange(start, end, cls);
+        // The Streams ReadOnlyKeyValueStore doesn't have a reverse prefix scan.
+        // However, they do have a reverse range scan. So we take the prefix and
+        // then we use the fact that we know the next character after the prefix is
+        // one of [a-bA-B0-9\/], so we just need to append an Ascii character
+        // greater than Z. We'll go with the '~', which is the greatest Ascii
+        // character.
+        String end = start + '~';
+        return new LHKeyValueIterator<>(
+                nativeStore.reverseRange(appendTenantPrefixTo(start), appendTenantPrefixTo(end)), cls);
+    }
+
+    public <U extends Message, T extends Storeable<U>> T getLastFromPrefix(String prefix, Class<T> cls) {
+
+        LHKeyValueIterator<T> iterator = null;
+        try {
+            iterator = reversePrefixScan(prefix, cls);
+            if (iterator.hasNext()) {
+                return iterator.next().getValue();
+            } else {
+                return null;
+            }
+        } finally {
+            if (iterator != null) {
+                iterator.close();
+            }
+        }
+    }
+
+    protected <T extends Storeable<?>> LHKeyValueIterator<T> reverseRange(String start, String end, Class<T> cls) {
+        return new LHKeyValueIterator<>(
+                nativeStore.reverseRange(appendTenantPrefixTo(start), appendTenantPrefixTo(end)), cls);
     }
 
     /**
@@ -81,8 +118,10 @@ public class ReadOnlyTenantStore extends AbstractReadOnlyLHStore implements Read
      * @return an iter
      */
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
-        String startKey = tenantId + "/" + Storeable.getFullStoreKey(cls, start);
-        String endKey = tenantId + "/" + Storeable.getFullStoreKey(cls, end);
-        return super.range(startKey, endKey, cls);
+        return new LHKeyValueIterator<>(nativeStore.range(appendTenantPrefixTo(start), appendTenantPrefixTo(end)), cls);
+    }
+
+    protected String appendTenantPrefixTo(String key) {
+        return tenantId + "/" + key;
     }
 }

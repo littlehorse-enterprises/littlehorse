@@ -40,7 +40,7 @@ public class TagStorageManagerTest {
 
     private String tenantId = "myTenant";
 
-    private LHTenantStore localStore = new LHTenantStore(store, lhConfig, tenantId);
+    private LHTenantStore localStore = new LHTenantStore(store, tenantId);
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
 

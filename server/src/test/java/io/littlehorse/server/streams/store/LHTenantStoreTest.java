@@ -40,8 +40,8 @@ public class LHTenantStoreTest {
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
 
-    private final LHStore storeForTenantA = new LHTenantStore(nativeInMemoryStore, lhConfig, tenantA);
-    private final LHStore storeForTenantB = new LHTenantStore(nativeInMemoryStore, lhConfig, tenantB);
+    private final LHStore storeForTenantA = new LHTenantStore(nativeInMemoryStore, tenantA);
+    private final LHStore storeForTenantB = new LHTenantStore(nativeInMemoryStore, tenantB);
 
     private final StoredGetable<WfRun, WfRunModel> getableToSave =
             TestUtil.storedWfRun(UUID.randomUUID().toString());

@@ -7,26 +7,31 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 @Slf4j
-public class LHTenantStore extends ReadOnlyTenantStore implements LHStore {
+class LHDefaultStore extends ReadOnlyLHDefaultStore implements LHStore {
 
     private final KeyValueStore<String, Bytes> nativeStore;
 
-    public LHTenantStore(KeyValueStore<String, Bytes> nativeStore, String tenantId) {
-        super(nativeStore, tenantId);
+    protected LHDefaultStore(KeyValueStore<String, Bytes> nativeStore) {
+        super(nativeStore);
         this.nativeStore = nativeStore;
     }
 
     @Override
     public void delete(Storeable<?> thing) {
-        this.delete(thing.getStoreKey(), thing.getType());
+        delete(thing.getStoreKey(), thing.getType());
     }
 
     @Override
     public void put(Storeable<?> thing) {
-        nativeStore.put(appendTenantPrefixTo(thing.getFullStoreKey()), new Bytes(thing.toBytes()));
+        String storeKey = thing.getFullStoreKey();
+        log.trace("Putting {}", storeKey);
+        nativeStore.put(storeKey, new Bytes(thing.toBytes()));
     }
 
+    @Override
     public void delete(String storeKey, StoreableType cls) {
-        nativeStore.delete(appendTenantPrefixTo(Storeable.getFullStoreKey(cls, storeKey)));
+        String fullKey = Storeable.getFullStoreKey(cls, storeKey);
+        log.trace("Deleting {}", fullKey);
+        nativeStore.delete(fullKey);
     }
 }

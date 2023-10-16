@@ -3,23 +3,24 @@ package io.littlehorse.server.streams.store;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
-@Slf4j
-abstract class AbstractReadOnlyLHStore implements ReadOnlyLHStore {
+public class ReadOnlyLHDefaultStore implements ReadOnlyLHStore {
 
     private final ReadOnlyKeyValueStore<String, Bytes> nativeStore;
 
-    protected AbstractReadOnlyLHStore(ReadOnlyKeyValueStore<String, Bytes> nativeStore) {
+    public ReadOnlyLHDefaultStore(ReadOnlyKeyValueStore<String, Bytes> nativeStore) {
         this.nativeStore = nativeStore;
     }
 
-    public <U extends Message, T extends Storeable<U>> T get(String fullKey, Class<T> cls) {
-        log.trace("Getting {} from rocksdb", fullKey);
+    @Override
+    public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
+        String fullKey = Storeable.getFullStoreKey(cls, storeKey);
         Bytes raw = nativeStore.get(fullKey);
 
         if (raw == null) return null;
@@ -29,6 +30,13 @@ abstract class AbstractReadOnlyLHStore implements ReadOnlyLHStore {
         } catch (LHSerdeError exn) {
             throw new IllegalStateException("LHSerdeError indicates corrupted store.", exn);
         }
+    }
+
+    @Override
+    public <U extends Message, T extends AbstractGetable<U>> StoredGetable<U, T> get(ObjectIdModel<?, U, T> id) {
+        String key = id.getType().getNumber() + "/";
+        key += id.toString();
+        return (StoredGetable<U, T>) get(key, StoredGetable.class);
     }
 
     /**
