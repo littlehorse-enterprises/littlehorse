@@ -126,7 +126,7 @@ public class SearchTaskRunRequestModel
     @Override
     public List<Attribute> getSearchAttributes() {
         if (type == TaskRunCriteriaCase.TASK_DEF) {
-            return List.of(new Attribute("taskDefName", statusAndTaskDef.getTaskDefName()));
+            return List.of(new Attribute("taskDefName", taskDef.getTaskDefName()));
         } else {
             return List.of(
                     new Attribute("taskDefName", statusAndTaskDef.getTaskDefName()),

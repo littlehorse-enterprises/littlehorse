@@ -4,12 +4,10 @@ import (
 	"context"
 	"log"
 	"strings"
-	"time"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 // getTaskRunCmd represents the nodeRun command
@@ -103,33 +101,14 @@ Choose one of the following option groups:
 				},
 			}
 		} else if taskDefName != "" {
-			earliestMinutesAgo, _ := cmd.Flags().GetInt("earliestMinutesAgo")
-			latestMinutesAgo, _ := cmd.Flags().GetInt32("latestMinutesAgo")
-			earliestStartTime := &timestamppb.Timestamp{}
-			latestStartTime := &timestamppb.Timestamp{}
-
-			if earliestMinutesAgo == -1 {
-				earliestStartTime = nil
-			} else {
-				earliestStartTime = timestamppb.New(
-					time.Now().Add(-1 * time.Duration(earliestMinutesAgo) * time.Minute),
-				)
-			}
-
-			if latestMinutesAgo == -1 {
-				latestStartTime = nil
-			} else {
-				latestStartTime = timestamppb.New(
-					time.Now().Add(-1 * time.Duration(latestMinutesAgo) * time.Minute),
-				)
-			}
+			earliest, latest := loadEarliestAndLatestStart(cmd)
 
 			search = &model.SearchTaskRunRequest{
 				TaskRunCriteria: &model.SearchTaskRunRequest_TaskDef{
 					TaskDef: &model.SearchTaskRunRequest_ByTaskDefRequest{
 						TaskDefName:   taskDefName,
-						EarliestStart: earliestStartTime,
-						LatestStart:   latestStartTime,
+						EarliestStart: earliest,
+						LatestStart:   latest,
 					},
 				},
 			}
@@ -147,4 +126,7 @@ func init() {
 	searchTaskRunCmd.Flags().String("status", "", "Status of TaskRun's to search for.")
 	searchTaskRunCmd.Flags().String("taskDefName", "", "TaskDef ID of TaskRun's to search for.")
 	searchTaskRunCmd.MarkFlagRequired("taskDefName")
+	searchTaskRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for TaskRuns that started no more than this number of minutes ago")
+	searchTaskRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for TaskRuns that started at least this number of minutes ago")
+
 }

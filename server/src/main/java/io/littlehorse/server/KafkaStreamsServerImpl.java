@@ -89,6 +89,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUs
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
+import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -285,7 +286,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
-    public void registerTaskWorker(RegisterTaskWorkerRequest req, StreamObserver<RegisterTaskWorkerResponse> ctx) {
+    public void registerTaskWorker(
+            RegisterTaskWorkerRequest req, StreamObserver<RegisterTaskWorkerResponse> responseObserver) {
         log.trace("Receiving RegisterTaskWorkerRequest (heartbeat) from: " + req.getClientId());
 
         TaskWorkerHeartBeatRequest heartBeatPb = TaskWorkerHeartBeatRequest.newBuilder()
@@ -297,7 +299,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         TaskWorkerHeartBeatRequestModel heartBeat =
                 LHSerializable.fromProto(heartBeatPb, TaskWorkerHeartBeatRequestModel.class);
 
-        processCommand(new CommandModel(heartBeat), ctx, RegisterTaskWorkerResponse.class, true);
+        // TODO: Refactor this, we should create a class for this
+        StreamObserver<RegisterTaskWorkerResponse> clusterHealthRequestObserver =
+                new ClusterHealthRequestObserver(responseObserver);
+
+        processCommand(
+                new CommandModel(heartBeat), clusterHealthRequestObserver, RegisterTaskWorkerResponse.class, true);
     }
 
     @Override
