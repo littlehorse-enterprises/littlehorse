@@ -97,11 +97,8 @@ namespace LittleHorse.Common.Configuration.Implementations
         public LHWorkerConfig(IConfiguration configuration, ILogger<LHWorkerConfig>? logger = null)
         {
             _logger = logger;
-
             _options = new LHWorkerOptions();
             configuration.Bind(_options);
-
-            _logger?.LogInformation("Connecting to: " + BootstrapServer);
             _createdChannels = new Dictionary<string, GrpcChannel>();
         }
 
@@ -133,6 +130,8 @@ namespace LittleHorse.Common.Configuration.Implementations
             {
                 return new LHPublicApiClient(_createdChannels[channelKey]);
             }
+
+            _logger?.LogInformation("Establishing connection to: " + channelKey);
 
             if (IsOAuth)
             {
