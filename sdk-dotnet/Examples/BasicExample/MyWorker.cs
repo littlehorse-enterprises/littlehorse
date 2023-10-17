@@ -2,7 +2,7 @@
 using LittleHorse.Worker.Attributes;
 using Microsoft.Extensions.Logging;
 
-namespace BasicExampleConsoleApp
+namespace Examples.BasicExample
 {
     public class MyWorker
     {

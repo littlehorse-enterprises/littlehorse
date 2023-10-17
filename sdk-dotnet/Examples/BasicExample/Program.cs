@@ -1,4 +1,4 @@
-﻿using BasicExampleConsoleApp;
+﻿using Examples.BasicExample;
 using Common.Configuration.Extension;
 using LittleHorse.Common.Configuration;
 using LittleHorse.Common.Configuration.Implementations;

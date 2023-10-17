@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\..\..\..\schemas\*.proto" GrpcServices="Both" ProtoRoot="..\..\..\..\schemas" />
+    <Protobuf Include="..\..\..\schemas\*.proto" GrpcServices="Both" ProtoRoot="..\..\..\schemas" />
   </ItemGroup>
 
 </Project>

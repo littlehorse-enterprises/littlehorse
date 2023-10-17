@@ -37,5 +37,3 @@ namespace Common.Configuration.Extension
         }
     }
 }
-
-
