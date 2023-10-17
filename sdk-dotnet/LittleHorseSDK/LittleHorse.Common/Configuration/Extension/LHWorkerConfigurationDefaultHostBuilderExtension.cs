@@ -9,8 +9,6 @@ namespace Common.Configuration.Extension
         {
             hostBuilder.ConfigureAppConfiguration((context, config) =>
             {
-                config.SetBasePath(Directory.GetCurrentDirectory());
-                config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
                 config.AddEnvironmentVariables();
             });
 
@@ -21,7 +19,8 @@ namespace Common.Configuration.Extension
         {
             hostBuilder.ConfigureAppConfiguration((context, config) =>
             {
-                config.AddJsonFile(configFilePath);
+                config.AddIniFile(configFilePath);
+                config.AddEnvironmentVariables();
             });
 
             return hostBuilder;

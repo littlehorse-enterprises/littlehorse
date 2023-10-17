@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 var builder = Host.CreateDefaultBuilder(args);
 
-builder.ConfigureLHWorker();
+builder.ConfigureLHWorker(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", "littlehorse.config"));
 
 builder.ConfigureLogging((hostingContext, logging) =>
 {

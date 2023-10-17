@@ -11,7 +11,9 @@ namespace LittleHorse.Common.Configuration.Extension
 
         public static IConfigurationBuilder AddLHWorkerConfiguration(this IConfigurationBuilder builder, string configFilePath)
         {
-            return builder.AddJsonFile(configFilePath, optional: true, reloadOnChange: true);
+            builder.AddIniFile(configFilePath);
+            builder.AddEnvironmentVariables();
+            return builder;
         }
 
         public static IConfigurationBuilder AddLHWorkerConfiguration(this IConfigurationBuilder builder, Dictionary<string, string?> properties)

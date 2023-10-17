@@ -20,7 +20,8 @@ namespace Common.Configuration.Extension
         {
             webHostBuilder.ConfigureAppConfiguration((context, config) =>
             {
-                config.AddJsonFile(configFilePath);
+                config.AddIniFile(configFilePath);
+                config.AddEnvironmentVariables();
             });
 
             return webHostBuilder;
