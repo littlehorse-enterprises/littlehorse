@@ -25,17 +25,9 @@ lhctl/lhctl
 *.code-workspace
 
 #Visual Studio
-sdk-dotnet/src/LittleHorseSDK/LittleHorse.Common/bin/
-sdk-dotnet/src/LittleHorseSDK/LittleHorse.Common/obj/
-sdk-dotnet/src/LittleHorseSDK/LittleHorse.Test/bin/
-sdk-dotnet/src/LittleHorseSDK/LittleHorse.Test/obj/
-sdk-dotnet/src/LittleHorseSDK/LittleHorse.Worker/bin/
-sdk-dotnet/src/LittleHorseSDK/LittleHorse.Worker/obj/
-sdk-dotnet/src/LittleHorseSDK/BasicExampleConsoleApp/bin/
-sdk-dotnet/src/LittleHorseSDK/BasicExampleConsoleApp/obj/
-sdk-dotnet/src/LittleHorseSDK/AuthExampleConsoleApp/bin/
-sdk-dotnet/src/LittleHorseSDK/AuthExampleConsoleApp/obj/
-sdk-dotnet/src/LittleHorseSDK/.vs/
+*/bin/
+*/obj/
+*/.vs/
 
 # Others
 local-dev/certs/
