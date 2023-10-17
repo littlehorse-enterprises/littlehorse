@@ -21,18 +21,37 @@ namespace LittleHorse.Common.Configuration.Implementations
         private OAuthConfig? _oAuthConfig;
         private OAuthClient? _oAuthClient;
 
-        public string APIBootstrapHost
+        public string BootstrapHost
         {
             get
             {
                 return _options.LHC_API_HOST;
             }
         }
-        public int APIBootstrapPort
+        public int BootstrapPort
         {
             get
             {
                 return _options.LHC_API_PORT;
+            }
+        }
+        public string BootstrapProtocol
+        {
+            get
+            {
+                if (_options.LHC_API_PROTOCOL != "PLAIN" && _options.LHC_API_PROTOCOL != "TLS")
+                {
+                    throw new ArgumentException("Invalid Protocol: " + _options.LHC_API_PROTOCOL);
+                }
+                return  _options.LHC_API_PROTOCOL == "TLS" ? "https" : "http";
+            }
+        }
+
+        public string BootstrapServer
+        {
+            get
+            {
+                return $"{BootstrapProtocol}://{BootstrapHost}:{BootstrapPort}";
             }
         }
         public string ClientId
@@ -58,14 +77,14 @@ namespace LittleHorse.Common.Configuration.Implementations
         {
             get
             {
-                var result = !string.IsNullOrEmpty(_options.LHC_OAUTH_AUTHORIZATION_SERVER) && !string.IsNullOrEmpty(_options.LHC_OAUTH_CLIENT_ID) && !string.IsNullOrEmpty(_options.LHC_OAUTH_CLIENT_SECRET);
-                if(!result)
+                var result = !string.IsNullOrEmpty(_options.LHC_OAUTH_ACCESS_TOKEN_URL) && !string.IsNullOrEmpty(_options.LHC_OAUTH_CLIENT_ID) && !string.IsNullOrEmpty(_options.LHC_OAUTH_CLIENT_SECRET);
+                if (!result)
                 {
-                    _logger?.LogInformation("oAuth is disable");
+                    _logger?.LogInformation("OAuth is disable");
                 }
                 else
                 {
-                    _logger?.LogInformation("oAuth is enable");
+                    _logger?.LogInformation("OAuth is enable");
                 }
 
                 return result;
@@ -83,7 +102,7 @@ namespace LittleHorse.Common.Configuration.Implementations
             _options = new LHWorkerOptions();
             configuration.Bind(_options);
 
-            _logger?.LogInformation(APIBootstrapHost + ":" + APIBootstrapPort);
+            _logger?.LogInformation("Connecting to: "+ BootstrapServer);
             _createdChannels = new Dictionary<string, GrpcChannel>();
         }
 
@@ -94,7 +113,7 @@ namespace LittleHorse.Common.Configuration.Implementations
         /// <returns>Client for the configured host/port.</returns>
         public LHPublicApiClient GetGrcpClientInstance()
         {
-            return GetGrcpClientInstance(APIBootstrapHost, APIBootstrapPort);
+            return GetGrcpClientInstance(BootstrapHost, BootstrapPort);
         }
 
         /// <summary>
@@ -109,13 +128,14 @@ namespace LittleHorse.Common.Configuration.Implementations
         {
             GrpcChannel channel;
 
-            string channelkey = $"{host}:{port}";
+            string channelKey=$"{BootstrapProtocol}://{host}:{port}";
 
-            if (_createdChannels.ContainsKey(channelkey))
+            if (_createdChannels.ContainsKey(channelKey))
             {
-                channel = _createdChannels[channelkey];
+                return new LHPublicApiClient(_createdChannels[channelKey]);
             }
-            else if (IsOAuth)
+
+            if (IsOAuth)
             {
                 channel = CreateChannelWithOAuthCredentials(host, port);
             }
@@ -123,6 +143,8 @@ namespace LittleHorse.Common.Configuration.Implementations
             {
                 channel = CreateChannel(host, port);
             }
+
+            _createdChannels.Add(channelKey, channel);
 
             return new LHPublicApiClient(channel);
         }
@@ -152,26 +174,24 @@ namespace LittleHorse.Common.Configuration.Implementations
             }
         }
 
+        public bool IsSecured
+        {
+            get
+            {
+                return BootstrapProtocol == "https";
+            }
+        }
+
         private GrpcChannel CreateChannel(string host, int port)
         {
             GrpcChannel channel;
 
             var httpHandler = new HttpClientHandler();
-            var address = $"https://{host}:{port}";
 
-            #if DEBUG
-                _logger?.LogInformation("Debug Mode");
-                _logger?.LogWarning("Using insecure channel!");
-                address = $"http://{host}:{port}";
-                httpHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-            #endif
-
-            channel = GrpcChannel.ForAddress(address, new GrpcChannelOptions
+            channel = GrpcChannel.ForAddress($"{BootstrapProtocol}://{host}:{port}", new GrpcChannelOptions
             {
                 HttpHandler = httpHandler
             });
-
-            _createdChannels.Add($"{host}:{port}", channel);
 
             return channel;
         }
@@ -196,32 +216,23 @@ namespace LittleHorse.Common.Configuration.Implementations
 
 
             var httpHandler = new HttpClientHandler();
-            var address = $"https://{host}:{port}";
 
-            #if DEBUG
-                _logger?.LogInformation("Debug Mode");
-                _logger?.LogWarning("Using insecure channel!");
-                address = $"http://{host}:{port}";
-                httpHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-            #endif
-
-            channel = GrpcChannel.ForAddress(address, new GrpcChannelOptions
+            channel = GrpcChannel.ForAddress($"{BootstrapProtocol}://{host}:{port}", new GrpcChannelOptions
             {
                 HttpHandler = httpHandler,
                 Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
             });
 
-            _createdChannels.Add($"{host}:{port}", channel);
             return channel;
         }
 
         private void InitializeOAuth()
         {
-            if(_oAuthConfig is null)
+            if (_oAuthConfig is null)
             {
-                _oAuthConfig = new OAuthConfig(_options.LHC_OAUTH_CLIENT_ID, _options.LHC_OAUTH_CLIENT_SECRET, _options.LHC_OAUTH_AUTHORIZATION_SERVER);
+                _oAuthConfig = new OAuthConfig(_options.LHC_OAUTH_CLIENT_ID, _options.LHC_OAUTH_CLIENT_SECRET, _options.LHC_OAUTH_ACCESS_TOKEN_URL);
 
-                if(_oAuthClient is null)
+                if (_oAuthClient is null)
                 {
                     _oAuthClient = new OAuthClient(_oAuthConfig, _logger);
                 }

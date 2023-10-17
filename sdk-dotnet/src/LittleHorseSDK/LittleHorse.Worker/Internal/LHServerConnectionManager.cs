@@ -30,13 +30,13 @@ namespace LittleHorse.Worker.Internal
         public ILHWorkerConfig Config { get { return _config; } }
         public TaskDef TaskDef { get { return _taskDef; } }
 
-        public LHServerConnectionManager(ILHWorkerConfig config, 
-                                         MethodInfo taskMethod, 
-                                         TaskDef taskDef, 
-                                         List<VariableMapping> mappings, 
-                                         T executable, 
-                                         ILogger? logger = null) 
-        { 
+        public LHServerConnectionManager(ILHWorkerConfig config,
+                                         MethodInfo taskMethod,
+                                         TaskDef taskDef,
+                                         List<VariableMapping> mappings,
+                                         T executable,
+                                         ILogger? logger = null)
+        {
             _config = config;
             _taskMethod = taskMethod;
             _taskDef = taskDef;
@@ -90,13 +90,13 @@ namespace LittleHorse.Worker.Internal
                 };
 
                 var response = _bootstrapClient.RegisterTaskWorker(request);
-                
+
                 HandleRegisterTaskWorkResponse(response);
 
-            } 
+            }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, $"Failed contacting bootstrap host {_config.APIBootstrapHost}:{_config.APIBootstrapPort}");
+                _logger?.LogError(ex, $"Failed contacting bootstrap host {_config.BootstrapHost}:{_config.BootstrapPort}");
             }
         }
 
@@ -105,7 +105,7 @@ namespace LittleHorse.Worker.Internal
 
             response.YourHosts.ToList().ForEach(async host =>
             {
-                if(!IsAlreadyRunning(host))
+                if (!IsAlreadyRunning(host))
                 {
                     try
                     {
@@ -119,16 +119,16 @@ namespace LittleHorse.Worker.Internal
                         _logger?.LogError(ex, $"Exception on HandleRegisterTaskWorkResponse.");
                     }
                 }
-                
+
             });
 
             var lastIndexOfRunningConnection = _runningConnections.Count() - 1;
 
-            for (int i = lastIndexOfRunningConnection; i >= 0; i--) 
-            { 
+            for (int i = lastIndexOfRunningConnection; i >= 0; i--)
+            {
                 var runningThread = _runningConnections[i];
 
-                if(!ShouldBeRunning(runningThread, response.YourHosts))
+                if (!ShouldBeRunning(runningThread, response.YourHosts))
                 {
                     _logger?.LogInformation($"Stopping worker thread for host {runningThread.HostInfo.Host} : {runningThread.HostInfo.Port}");
 
@@ -175,7 +175,7 @@ namespace LittleHorse.Worker.Internal
                     _logger?.LogDebug($"Failed to report task for wfRun {wfRunId}: {exception.Message}. Retries left: {retriesLeft}");
                     _logger?.LogDebug($"Retrying reportTask rpc on taskRun {LHWorkerHelper.TaskRunIdToString(result.TaskRunId)}");
                 }).Execute(() => RunReportTask(result));
-            } 
+            }
             catch (Exception ex)
             {
                 _logger?.LogDebug($"Failed to report task for wfRun {wfRunId}: {ex.Message}. No retries left.");
@@ -205,7 +205,7 @@ namespace LittleHorse.Worker.Internal
                 taskResult.Output = serialized;
                 taskResult.Status = LittleHorseSDK.Common.proto.TaskStatus.TaskSuccess;
 
-                if(!string.IsNullOrEmpty(workerContext.LogOutput))
+                if (!string.IsNullOrEmpty(workerContext.LogOutput))
                 {
                     var outputVariable = new VariableValue
                     {
@@ -216,19 +216,19 @@ namespace LittleHorse.Worker.Internal
                 }
 
             }
-            catch(LHInputVarSubstitutionException ex)
+            catch (LHInputVarSubstitutionException ex)
             {
                 _logger?.LogError(ex, "Failed calculating task input variables");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
                 taskResult.Status = LittleHorseSDK.Common.proto.TaskStatus.TaskInputVarSubError;
             }
-            catch(LHSerdeException ex)
+            catch (LHSerdeException ex)
             {
                 _logger?.LogError(ex, "Failed serializing Task Output");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
                 taskResult.Status = LittleHorseSDK.Common.proto.TaskStatus.TaskOutputSerializingError;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger?.LogError(ex, "Unexpected exception during task execution");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
@@ -251,7 +251,7 @@ namespace LittleHorse.Worker.Internal
         {
             var currConn = _runningConnections.Where(c => c.IsSame(connection.HostInfo)).FirstOrDefault();
 
-            if(currConn != null)
+            if (currConn != null)
             {
                 _runningConnections.Remove(currConn);
             }

@@ -19,8 +19,8 @@ namespace LittleHorse.Test.Common.Configuration
 
             var workerConfig = new LHWorkerConfig(configuration.Object);
 
-            Assert.Equal(defaultHost, workerConfig.APIBootstrapHost);
-            Assert.Equal(defaultPort, workerConfig.APIBootstrapPort);
+            Assert.Equal(defaultHost, workerConfig.BootstrapHost);
+            Assert.Equal(defaultPort, workerConfig.BootstrapPort);
             Assert.NotEmpty(workerConfig.ClientId);
             Assert.Equal(defaultConnectListener, workerConfig.ConnectListener);
             Assert.Equal(string.Empty, workerConfig.TaskWorkerVersion);
@@ -44,7 +44,7 @@ namespace LittleHorse.Test.Common.Configuration
             {
                 ["LHC_OAUTH_CLIENT_ID"] = "DUMMY_CLIENT_ID",
                 ["LHC_OAUTH_CLIENT_SECRET"] = "DUMMY_CLIENT_SECRET",
-                ["LHC_OAUTH_AUTHORIZATION_SERVER"] = "dummyserver.com"
+                ["LHC_OAUTH_ACCESS_TOKEN_URL"] = "dummyserver.com"
             }).Build();
 
             var workerConfig = new LHWorkerConfig(configuration);
@@ -86,7 +86,7 @@ namespace LittleHorse.Test.Common.Configuration
             var LHC_CLIENT_ID = "client-" + Guid.NewGuid().ToString().Replace("-", "");
             var LHC_OAUTH_CLIENT_ID = "test_oauth_client_id";
             var LHC_OAUTH_CLIENT_SECRET = "test-oauth_client_secret";
-            var LHC_OAUTH_AUTHORIZATION_SERVER = "test-server:2023";
+            var LHC_OAUTH_ACCESS_TOKEN_URL = "test-server:2023";
             var LHW_SERVER_CONNECT_LISTENER = "OTHER";
             var LHW_NUM_WORKER_THREADS = 4;
             var LHW_TASK_WORKER_VERSION = "v1.0.2";
@@ -96,7 +96,7 @@ namespace LittleHorse.Test.Common.Configuration
             Environment.SetEnvironmentVariable("LHC_CLIENT_ID", LHC_CLIENT_ID);
             Environment.SetEnvironmentVariable("LHC_OAUTH_CLIENT_ID", LHC_OAUTH_CLIENT_ID);
             Environment.SetEnvironmentVariable("LHC_OAUTH_CLIENT_SECRET", LHC_OAUTH_CLIENT_SECRET);
-            Environment.SetEnvironmentVariable("LHC_OAUTH_AUTHORIZATION_SERVER", LHC_OAUTH_AUTHORIZATION_SERVER);
+            Environment.SetEnvironmentVariable("LHC_OAUTH_ACCESS_TOKEN_URL", LHC_OAUTH_ACCESS_TOKEN_URL);
             Environment.SetEnvironmentVariable("LHW_SERVER_CONNECT_LISTENER", LHW_SERVER_CONNECT_LISTENER);
             Environment.SetEnvironmentVariable("LHW_NUM_WORKER_THREADS", LHW_NUM_WORKER_THREADS.ToString());
             Environment.SetEnvironmentVariable("LHW_TASK_WORKER_VERSION", LHW_TASK_WORKER_VERSION);
@@ -107,13 +107,26 @@ namespace LittleHorse.Test.Common.Configuration
 
             var workerConfig = new LHWorkerConfig(configuration);
 
-            Assert.Equal(LHC_API_HOST, workerConfig.APIBootstrapHost);
-            Assert.Equal(LHC_API_PORT, workerConfig.APIBootstrapPort);
+            Assert.Equal(LHC_API_HOST, workerConfig.BootstrapHost);
+            Assert.Equal(LHC_API_PORT, workerConfig.BootstrapPort);
             Assert.Equal(LHC_CLIENT_ID, workerConfig.ClientId);
             Assert.True(workerConfig.IsOAuth);
             Assert.Equal(LHW_SERVER_CONNECT_LISTENER, workerConfig.ConnectListener);
             Assert.Equal(LHW_NUM_WORKER_THREADS, workerConfig.WorkerThreads);
             Assert.Equal(LHW_TASK_WORKER_VERSION, workerConfig.TaskWorkerVersion);
+        }
+
+        [Fact]
+        public void ThrowsExceptionIfItIsAnInvalidProtocol()
+        {
+            var configuration = new ConfigurationBuilder().AddLHWorkerConfiguration(new Dictionary<string, string?>()
+            {
+                ["LHC_API_PROTOCOL"] = "NOT_A_PROTOCOL",
+            }).Build();
+
+            var workerConfig = new LHWorkerConfig(configuration);
+            ArgumentException argumentException = Assert.Throws<ArgumentException>(()=> workerConfig.IsSecured);
+            Assert.Equal("Invalid Protocol: NOT_A_PROTOCOL", argumentException.Message);
         }
     }
 }

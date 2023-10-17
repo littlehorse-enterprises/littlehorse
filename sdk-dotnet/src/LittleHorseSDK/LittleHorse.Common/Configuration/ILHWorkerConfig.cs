@@ -5,8 +5,8 @@ namespace LittleHorse.Common.Configuration
 {
     public interface ILHWorkerConfig
     {
-        string APIBootstrapHost { get; }
-        int APIBootstrapPort { get; }
+        string BootstrapHost { get; }
+        int BootstrapPort { get; }
         string ClientId { get; }
         string TaskWorkerVersion { get; }
         string ConnectListener { get; }
