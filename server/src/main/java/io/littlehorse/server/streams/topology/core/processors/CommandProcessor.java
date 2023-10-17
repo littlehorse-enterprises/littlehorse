@@ -45,10 +45,12 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
 
         // We sill need the key value store here
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
-        ReadOnlyLHStore globalStore = null;
-        // new ReadOnlyRocksDBWrapper(ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), config, ""); TODO WIP
-
-        dao = new CoreProcessorDAOImpl(this.ctx, config, server, metadataCache, globalStore);
+        dao = new CoreProcessorDAOImpl(
+                this.ctx,
+                config,
+                server,
+                metadataCache,
+                ReadOnlyLHStore.defaultStore(ctx, ServerTopology.GLOBAL_METADATA_STORE));
         dao.onPartitionClaimed();
         ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
     }
@@ -79,14 +81,14 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
         try {
             Message response = command.process(dao, config);
             dao.commit();
-            if (command.hasResponse() && command.commandId != null) {
+            if (command.hasResponse() && command.getCommandId() != null) {
                 WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
-                        .setCommandId(command.commandId)
+                        .setCommandId(command.getCommandId())
                         .setResultTime(LHUtil.fromDate(new Date()))
                         .setResult(response.toByteString())
                         .build();
 
-                server.onResponseReceived(command.commandId, cmdReply);
+                server.onResponseReceived(command.getCommandId(), cmdReply);
             }
         } catch (Exception exn) {
             if (isUserError(exn)) {

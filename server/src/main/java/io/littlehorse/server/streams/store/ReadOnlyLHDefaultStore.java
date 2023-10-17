@@ -44,7 +44,9 @@ public class ReadOnlyLHDefaultStore implements ReadOnlyLHStore {
      */
     public <T extends Storeable<?>> LHKeyValueIterator<T> prefixScan(String fullKey, Class<T> cls) {
         return new LHKeyValueIterator<>(
-                nativeStore.prefixScan(fullKey, Serdes.String().serializer()), cls);
+                nativeStore.prefixScan(
+                        Storeable.getFullStoreKey(cls, fullKey), Serdes.String().serializer()),
+                cls);
     }
 
     public <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(String prefix, Class<T> cls) {
