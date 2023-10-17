@@ -17,7 +17,9 @@ import io.littlehorse.sdk.common.proto.WfSpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
 
+@Getter
 public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> {
 
     public String name;
