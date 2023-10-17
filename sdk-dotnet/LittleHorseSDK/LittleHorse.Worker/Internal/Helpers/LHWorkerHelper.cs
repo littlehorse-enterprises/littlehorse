@@ -1,4 +1,4 @@
-﻿using LittleHorseSDK.Common.proto;
+﻿using LittleHorse.Common.Proto;
 
 namespace LittleHorse.Worker.Internal.Helpers
 {

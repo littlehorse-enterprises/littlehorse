@@ -9,7 +9,7 @@ import "object_id.proto";
 option go_package = ".;model";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorseSDK.Common.proto";
+option csharp_namespace = "LittleHorse.Common.Proto";
 
 message VariableValue {
   VariableType type = 1;

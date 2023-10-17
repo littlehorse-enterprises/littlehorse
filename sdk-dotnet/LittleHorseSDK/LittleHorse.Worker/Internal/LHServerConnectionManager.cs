@@ -3,7 +3,7 @@ using Google.Protobuf.WellKnownTypes;
 using LittleHorse.Common.Configuration;
 using LittleHorse.Common.Exceptions;
 using LittleHorse.Worker.Internal.Helpers;
-using LittleHorseSDK.Common.proto;
+using LittleHorse.Common.Proto;
 using Microsoft.Extensions.Logging;
 using Polly;
 using System.Reflection;
@@ -203,7 +203,7 @@ namespace LittleHorse.Worker.Internal
                 var serialized = LHMappingHelper.MapObjectToVariableValue(result);
 
                 taskResult.Output = serialized;
-                taskResult.Status = LittleHorseSDK.Common.proto.TaskStatus.TaskSuccess;
+                taskResult.Status = LittleHorse.Common.Proto.TaskStatus.TaskSuccess;
 
                 if (!string.IsNullOrEmpty(workerContext.LogOutput))
                 {
@@ -220,19 +220,19 @@ namespace LittleHorse.Worker.Internal
             {
                 _logger?.LogError(ex, "Failed calculating task input variables");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
-                taskResult.Status = LittleHorseSDK.Common.proto.TaskStatus.TaskInputVarSubError;
+                taskResult.Status = LittleHorse.Common.Proto.TaskStatus.TaskInputVarSubError;
             }
             catch (LHSerdeException ex)
             {
                 _logger?.LogError(ex, "Failed serializing Task Output");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
-                taskResult.Status = LittleHorseSDK.Common.proto.TaskStatus.TaskOutputSerializingError;
+                taskResult.Status = LittleHorse.Common.Proto.TaskStatus.TaskOutputSerializingError;
             }
             catch (Exception ex)
             {
                 _logger?.LogError(ex, "Unexpected exception during task execution");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
-                taskResult.Status = LittleHorseSDK.Common.proto.TaskStatus.TaskFailed;
+                taskResult.Status = LittleHorse.Common.Proto.TaskStatus.TaskFailed;
             }
 
             taskResult.Time = Timestamp.FromDateTime(DateTime.UtcNow);

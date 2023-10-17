@@ -4,10 +4,10 @@ using LittleHorse.Common.Authentication;
 using LittleHorse.Common.Authentication.Model;
 using LittleHorse.Common.Configuration.Models;
 using LittleHorse.Common.Exceptions;
-using LittleHorseSDK.Common.proto;
+using LittleHorse.Common.Proto;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using static LittleHorseSDK.Common.proto.LHPublicApi;
+using static LittleHorse.Common.Proto.LHPublicApi;
 
 
 namespace LittleHorse.Common.Configuration.Implementations

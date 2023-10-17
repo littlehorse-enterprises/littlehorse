@@ -8,7 +8,7 @@ import "common_wfspec.proto";
 option go_package = ".;model";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorseSDK.Common.proto";
+option csharp_namespace = "LittleHorse.Common.Proto";
 
 message TaskDef {
   string name = 1;

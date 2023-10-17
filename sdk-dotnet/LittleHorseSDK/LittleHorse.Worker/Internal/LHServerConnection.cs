@@ -1,6 +1,6 @@
 ﻿using Grpc.Core;
 using LittleHorse.Worker.Internal.Helpers;
-using LittleHorseSDK.Common.proto;
+using LittleHorse.Common.Proto;
 using Microsoft.Extensions.Logging;
 
 namespace LittleHorse.Worker.Internal

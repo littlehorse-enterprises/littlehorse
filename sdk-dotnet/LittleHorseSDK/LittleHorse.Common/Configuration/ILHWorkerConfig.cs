@@ -1,5 +1,5 @@
-﻿using LittleHorseSDK.Common.proto;
-using static LittleHorseSDK.Common.proto.LHPublicApi;
+﻿using LittleHorse.Common.Proto;
+using static LittleHorse.Common.Proto.LHPublicApi;
 
 namespace LittleHorse.Common.Configuration
 {

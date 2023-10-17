@@ -1,6 +1,6 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
-using LittleHorseSDK.Common.proto;
+using LittleHorse.Common.Proto;
 using Newtonsoft.Json;
 
 namespace LittleHorse.Worker.Internal.Helpers

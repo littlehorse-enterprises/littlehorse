@@ -3,7 +3,7 @@ using LittleHorse.Common.Configuration;
 using LittleHorse.Common.Exceptions;
 using LittleHorse.Worker.Internal;
 using LittleHorse.Worker.Internal.Helpers;
-using LittleHorseSDK.Common.proto;
+using LittleHorse.Common.Proto;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 

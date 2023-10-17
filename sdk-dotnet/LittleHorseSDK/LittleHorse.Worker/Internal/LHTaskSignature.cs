@@ -1,7 +1,7 @@
 ﻿using LittleHorse.Common.Exceptions;
 using LittleHorse.Worker.Attributes;
 using LittleHorse.Worker.Internal.Helpers;
-using LittleHorseSDK.Common.proto;
+using LittleHorse.Common.Proto;
 using System.Reflection;
 
 namespace LittleHorse.Worker.Internal
