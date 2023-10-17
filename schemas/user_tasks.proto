@@ -102,7 +102,7 @@ message UserTaskEvent {
   message UTEAssigned {
     optional string old_user_id = 1;
     optional string old_user_group = 2;
-    
+
     optional string new_user_id = 3;
     optional string new_user_group = 4;
   }
