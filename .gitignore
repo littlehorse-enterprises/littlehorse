@@ -25,9 +25,9 @@ lhctl/lhctl
 *.code-workspace
 
 #Visual Studio
-*/bin/
-*/obj/
-*/.vs/
+**/bin/
+**/obj/
+**/.vs/
 
 # Others
 local-dev/certs/
