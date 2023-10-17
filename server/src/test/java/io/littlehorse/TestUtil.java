@@ -1,6 +1,7 @@
 package io.littlehorse;
 
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskNodeReferenceModel;
@@ -28,6 +29,7 @@ import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -189,5 +191,12 @@ public class TestUtil {
         variableDef.setName(name);
         variableDef.setType(variableTypePb);
         return variableDef;
+    }
+
+    public static ScheduledTaskModel scheduledTaskModel() {
+        return new ScheduledTaskModel(
+                taskDef("my-task").getObjectId(),
+                List.of(),
+                userTaskRun(UUID.randomUUID().toString()));
     }
 }
