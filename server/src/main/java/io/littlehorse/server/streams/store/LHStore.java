@@ -2,6 +2,7 @@ package io.littlehorse.server.streams.store;
 
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.proto.StoreableType;
+import java.util.Objects;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.state.KeyValueStore;
@@ -24,5 +25,13 @@ public interface LHStore extends ReadOnlyLHStore {
 
     static LHStore defaultStore(ProcessorContext<String, ?> streamsProcessorContext, String storeName) {
         return defaultStore(streamsProcessorContext.getStateStore(storeName));
+    }
+
+    static LHStore instanceFor(KeyValueStore<String, Bytes> nativeStore, String tenantId) {
+        if (Objects.equals(tenantId, "default")) {
+            return LHStore.defaultStore(nativeStore);
+        } else {
+            return LHStore.tenantStore(nativeStore, tenantId);
+        }
     }
 }

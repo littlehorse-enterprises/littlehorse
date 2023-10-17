@@ -39,6 +39,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private DeleteExternalEventDefRequestModel deleteExternalEventDef;
     private PutUserTaskDefRequestModel putUserTaskDefRequest;
     private DeleteUserTaskDefRequestModel deleteUserTaskDef;
+    private String tenantId;
 
     public MetadataCommandModel() {
         super();
@@ -60,6 +61,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     public MetadataCommand.Builder toProto() {
         MetadataCommand.Builder out = MetadataCommand.newBuilder();
         out.setTime(LHUtil.fromDate(time));
+        out.setTenantId(tenantId);
 
         if (commandId != null) {
             out.setCommandId(commandId);
@@ -100,6 +102,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     public void initFrom(Message proto) {
         MetadataCommand p = (MetadataCommand) proto;
         time = LHUtil.fromProtoTs(p.getTime());
+        tenantId = p.getTenantId();
 
         if (p.hasCommandId()) {
             commandId = p.getCommandId();

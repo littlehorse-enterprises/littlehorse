@@ -17,6 +17,7 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
+import org.apache.kafka.streams.state.KeyValueStore;
 
 /*
  * This is the processor that validates and processes commands to update metadata,
@@ -30,6 +31,8 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
     private final KafkaStreamsServerImpl server;
     private final MetadataCache metadataCache;
 
+    private KeyValueStore<String, Bytes> nativeStore;
+
     public MetadataProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         this.config = config;
         this.server = server;
@@ -37,8 +40,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
     }
 
     public void init(final ProcessorContext<String, Bytes> ctx) {
-        this.dao =
-                new MetadataProcessorDAOImpl(LHStore.defaultStore(ctx, ServerTopology.METADATA_STORE), metadataCache);
+        nativeStore = ctx.getStateStore(ServerTopology.METADATA_STORE);
     }
 
     @Override
@@ -55,6 +57,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
 
     public void processHelper(final Record<String, MetadataCommandModel> record) {
         MetadataCommandModel command = record.value();
+        this.dao = new MetadataProcessorDAOImpl(LHStore.instanceFor(nativeStore, command.getTenantId()), metadataCache);
         log.trace(
                 "{} Processing command of type {} with commandId {}",
                 config.getLHInstanceId(),
