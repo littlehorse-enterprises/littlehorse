@@ -125,7 +125,7 @@ namespace LittleHorse.Test.Common.Configuration
             }).Build();
 
             var workerConfig = new LHWorkerConfig(configuration);
-            ArgumentException argumentException = Assert.Throws<ArgumentException>(()=> workerConfig.IsSecured);
+            ArgumentException argumentException = Assert.Throws<ArgumentException>(() => workerConfig.IsSecured);
             Assert.Equal("Invalid Protocol: NOT_A_PROTOCOL", argumentException.Message);
         }
     }

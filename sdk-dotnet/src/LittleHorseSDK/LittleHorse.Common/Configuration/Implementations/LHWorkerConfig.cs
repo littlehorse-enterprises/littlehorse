@@ -7,7 +7,6 @@ using LittleHorse.Common.Exceptions;
 using LittleHorseSDK.Common.proto;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Net;
 using static LittleHorseSDK.Common.proto.LHPublicApi;
 
 
@@ -43,7 +42,7 @@ namespace LittleHorse.Common.Configuration.Implementations
                 {
                     throw new ArgumentException("Invalid Protocol: " + _options.LHC_API_PROTOCOL);
                 }
-                return  _options.LHC_API_PROTOCOL == "TLS" ? "https" : "http";
+                return _options.LHC_API_PROTOCOL == "TLS" ? "https" : "http";
             }
         }
 
@@ -102,7 +101,7 @@ namespace LittleHorse.Common.Configuration.Implementations
             _options = new LHWorkerOptions();
             configuration.Bind(_options);
 
-            _logger?.LogInformation("Connecting to: "+ BootstrapServer);
+            _logger?.LogInformation("Connecting to: " + BootstrapServer);
             _createdChannels = new Dictionary<string, GrpcChannel>();
         }
 
@@ -128,7 +127,7 @@ namespace LittleHorse.Common.Configuration.Implementations
         {
             GrpcChannel channel;
 
-            string channelKey=$"{BootstrapProtocol}://{host}:{port}";
+            string channelKey = $"{BootstrapProtocol}://{host}:{port}";
 
             if (_createdChannels.ContainsKey(channelKey))
             {

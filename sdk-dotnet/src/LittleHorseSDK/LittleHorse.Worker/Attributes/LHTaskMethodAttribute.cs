@@ -13,8 +13,8 @@
         /// </summary>
         public string Value;
 
-        public LHTaskMethodAttribute(string value) 
-        { 
+        public LHTaskMethodAttribute(string value)
+        {
             Value = value;
         }
     }

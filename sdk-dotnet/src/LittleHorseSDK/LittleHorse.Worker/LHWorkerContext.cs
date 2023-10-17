@@ -19,7 +19,8 @@ namespace LittleHorse.Worker
         /// </summary>
         /// <param name="scheduleTask">The raw payload for the scheduled task.</param>
         /// <param name="scheduleDateTime">The time that the task was actually scheduled.</param>
-        public LHWorkerContext(ScheduledTask scheduleTask, DateTime? scheduleDateTime) {
+        public LHWorkerContext(ScheduledTask scheduleTask, DateTime? scheduleDateTime)
+        {
             _scheduleTask = scheduleTask;
             _scheduleDateTime = scheduleDateTime;
         }
@@ -31,10 +32,10 @@ namespace LittleHorse.Worker
         /// <param name="item">The Object to log to the NodeRun's logOutput.</param>
         public void Log(object item)
         {
-            if(item != null)
+            if (item != null)
             {
                 LogOutput += item.ToString();
-            } 
+            }
             else
             {
                 LogOutput += "null";

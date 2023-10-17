@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LittleHorse.Common.Configuration.Models
+﻿namespace LittleHorse.Common.Configuration.Models
 {
     public class LHWorkerOptions
     {

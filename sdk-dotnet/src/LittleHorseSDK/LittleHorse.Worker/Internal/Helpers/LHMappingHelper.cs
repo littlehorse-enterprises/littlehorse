@@ -2,7 +2,6 @@
 using Google.Protobuf.WellKnownTypes;
 using LittleHorseSDK.Common.proto;
 using Newtonsoft.Json;
-using static Google.Protobuf.Reflection.FeatureSet.Types;
 
 namespace LittleHorse.Worker.Internal.Helpers
 {
@@ -128,7 +127,7 @@ namespace LittleHorse.Worker.Internal.Helpers
 
             return result;
         }
-        public static VariableValue MapExceptionToVariableValue(Exception exception, LHWorkerContext ctx) 
+        public static VariableValue MapExceptionToVariableValue(Exception exception, LHWorkerContext ctx)
         {
             using (StringWriter sw = new StringWriter())
             {

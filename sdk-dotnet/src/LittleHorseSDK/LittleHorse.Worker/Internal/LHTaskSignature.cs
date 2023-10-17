@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace LittleHorse.Worker.Internal
 {
-    public class LHTaskSignature <T>
+    public class LHTaskSignature<T>
     {
         public List<VariableType> ParamTypes { get; init; }
         public List<string?> VarNames { get; init; }
@@ -41,7 +41,7 @@ namespace LittleHorse.Worker.Internal
 
             var methodParams = TaskMethod.GetParameters();
 
-            for (int i = 0;  i < methodParams.Length; i++)
+            for (int i = 0; i < methodParams.Length; i++)
             {
                 var paramType = methodParams[i].ParameterType;
                 var paramName = methodParams[i].Name;

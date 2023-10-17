@@ -31,27 +31,27 @@ namespace LittleHorse.Worker
 
         public string TaskDefName { get => _taskDefName; }
 
-        public LHTaskWorker(T executable, string taskDefName, ILHWorkerConfig config, ILogger<LHTaskWorker<T>>? logger = null) 
-        { 
-                _config = config;
-                _logger = logger;
-                _executable = executable;
-                _mappings = new List<VariableMapping>();
-                _taskDefName = taskDefName;
-                _grpcClient = _config.GetGrcpClientInstance();
+        public LHTaskWorker(T executable, string taskDefName, ILHWorkerConfig config, ILogger<LHTaskWorker<T>>? logger = null)
+        {
+            _config = config;
+            _logger = logger;
+            _executable = executable;
+            _mappings = new List<VariableMapping>();
+            _taskDefName = taskDefName;
+            _grpcClient = _config.GetGrcpClientInstance();
         }
 
         /// <summary>
         /// Starts polling for and executing tasks.
         /// </summary>
         /// <exception cref="LHMisconfigurationException">
-        /// if the schema from the TaskDef configured in the configProps is 
+        /// if the schema from the TaskDef configured in the configProps is
         /// incompatible with the method signature from the provided executable Java object, or if
         /// the Worker cannot connect to the LH Server.
         /// </exception>
         public void Start()
         {
-            if(!TaskDefExists())
+            if (!TaskDefExists())
             {
                 throw new LHMisconfigurationException($"Couldn't find TaskDef: {_taskDefName}");
             }
@@ -87,9 +87,9 @@ namespace LittleHorse.Worker
 
                 return true;
             }
-            catch(RpcException ex)
+            catch (RpcException ex)
             {
-                if(ex.StatusCode == StatusCode.NotFound)
+                if (ex.StatusCode == StatusCode.NotFound)
                 {
                     return false;
                 }
@@ -99,7 +99,7 @@ namespace LittleHorse.Worker
         }
 
         /// <summary>
-        /// Cleanly shuts down the Task Worker. 
+        /// Cleanly shuts down the Task Worker.
         /// </summary>
         public void Close()
         {
@@ -132,10 +132,10 @@ namespace LittleHorse.Worker
 
                 var request = new PutTaskDefRequest()
                 {
-                    Name= _taskDefName
+                    Name = _taskDefName
                 };
 
-                for(int i = 0; i < signature.VarNames.Count; i++)
+                for (int i = 0; i < signature.VarNames.Count; i++)
                 {
                     request.InputVars.Add(new VariableDef()
                     {
@@ -146,7 +146,7 @@ namespace LittleHorse.Worker
 
                 var response = _grpcClient.PutTaskDef(request);
                 _logger?.LogInformation($"Created TaskDef:\n{LHMappingHelper.MapProtoToJson(response)}");
-            } 
+            }
             catch (RpcException ex)
             {
                 if (swallowAlreadyExists && ex.StatusCode == StatusCode.AlreadyExists)
@@ -162,7 +162,7 @@ namespace LittleHorse.Worker
 
         private TaskDef GetTaskDef()
         {
-            if(_taskDef is null)
+            if (_taskDef is null)
             {
                 _taskDef = _config.GetTaskDef(_taskDefName);
             }
@@ -173,20 +173,20 @@ namespace LittleHorse.Worker
         private void ValidateTaskMethodParameters(MethodInfo taskMethod, LHTaskSignature<T> taskSignature)
         {
 
-                if (taskSignature.HasWorkerContextAtEnd)
+            if (taskSignature.HasWorkerContextAtEnd)
+            {
+                if (taskSignature.TaskMethod.GetParameters().Length - 1 != GetTaskDef().InputVars.Count)
                 {
-                    if (taskSignature.TaskMethod.GetParameters().Length - 1 != GetTaskDef().InputVars.Count)
-                    {
-                        throw new LHTaskSchemaMismatchException("Number of task method params doesn't match number of taskdef params!");
-                    }
+                    throw new LHTaskSchemaMismatchException("Number of task method params doesn't match number of taskdef params!");
                 }
-                else
+            }
+            else
+            {
+                if (taskMethod.GetParameters().Length != GetTaskDef().InputVars.Count)
                 {
-                    if (taskMethod.GetParameters().Length != GetTaskDef().InputVars.Count)
-                    {
-                        throw new LHTaskSchemaMismatchException("Number of task method params doesn't match number of taskdef params!");
-                    }
+                    throw new LHTaskSchemaMismatchException("Number of task method params doesn't match number of taskdef params!");
                 }
+            }
         }
 
         private List<VariableMapping> CreateVariableMappings(MethodInfo taskMethod, LHTaskSignature<T> taskSignature)

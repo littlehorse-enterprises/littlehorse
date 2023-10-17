@@ -11,7 +11,7 @@ namespace LittleHorse.Worker.Internal
         private string? _name;
         private Type _type;
         private int _position;
-        
+
         public VariableMapping(TaskDef taskDef, int position, Type type, string? paramName, ILogger? logger = null)
         {
             _type = type;
@@ -19,7 +19,7 @@ namespace LittleHorse.Worker.Internal
             _position = position;
             _logger = logger;
 
-            if(_type.IsAssignableFrom(typeof(LHWorkerContext)))
+            if (_type.IsAssignableFrom(typeof(LHWorkerContext)))
             {
                 return;
             }
@@ -95,10 +95,10 @@ namespace LittleHorse.Worker.Internal
         {
             string errorMsg = string.Empty;
 
-            switch(taskDefInputType) 
+            switch (taskDefInputType)
             {
                 case VariableType.Int:
-                    if(!paramType.IsAssignableFrom(typeof(int)))
+                    if (!paramType.IsAssignableFrom(typeof(int)))
                     {
                         errorMsg = $"TaskDef provides INT, func accepts {paramType.Name}";
                     }
@@ -136,7 +136,7 @@ namespace LittleHorse.Worker.Internal
                     throw new Exception("Not possible");
             }
 
-            if(!string.IsNullOrEmpty(errorMsg))
+            if (!string.IsNullOrEmpty(errorMsg))
             {
                 errorMsg = $"Invalid assignment for var {paramName}: {errorMsg}";
                 throw new LHTaskSchemaMismatchException(errorMsg);

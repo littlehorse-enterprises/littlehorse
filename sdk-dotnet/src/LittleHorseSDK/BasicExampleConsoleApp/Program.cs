@@ -1,11 +1,11 @@
-﻿using Common.Configuration.Extension;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
+﻿using BasicExampleConsoleApp;
+using Common.Configuration.Extension;
 using LittleHorse.Common.Configuration;
 using LittleHorse.Common.Configuration.Implementations;
 using LittleHorse.Worker;
-using BasicExampleConsoleApp;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 var builder = Host.CreateDefaultBuilder(args);
 
@@ -14,13 +14,18 @@ builder.ConfigureLHWorker();
 builder.ConfigureLogging((hostingContext, logging) =>
 {
     logging.AddConsole();
-    logging.SetMinimumLevel(LogLevel.Debug); 
+    logging.SetMinimumLevel(LogLevel.Debug);
 });
 
 builder.ConfigureServices((hostingContext, services) =>
 {
     services.AddSingleton<ILHWorkerConfig, LHWorkerConfig>();
-    services.AddSingleton<MyWorker>();
+    services.AddSingleton(provider =>
+    {
+        var logger = provider.GetService<ILogger<MyWorker>>();
+        return new MyWorker(logger);
+    }
+    );
     services.AddSingleton(provider =>
     {
         var myWorker = provider.GetRequiredService<MyWorker>();
@@ -41,4 +46,3 @@ if (!taskWorker.TaskDefExists())
 }
 
 taskWorker.Start();
-

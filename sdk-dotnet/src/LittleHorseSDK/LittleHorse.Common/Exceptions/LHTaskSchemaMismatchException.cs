@@ -6,6 +6,6 @@
 
         public LHTaskSchemaMismatchException(string message) : base(message) { }
 
-        public LHTaskSchemaMismatchException(string message,  Exception innerException) : base(message, innerException) { }
+        public LHTaskSchemaMismatchException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

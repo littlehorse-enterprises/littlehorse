@@ -1,8 +1,8 @@
-﻿using LittleHorse.Common.Authentication.Model;
-using IdentityModel.Client;
-using System.Net;
+﻿using IdentityModel.Client;
+using LittleHorse.Common.Authentication.Model;
 using LittleHorse.Common.Exceptions;
 using Microsoft.Extensions.Logging;
+using System.Net;
 
 namespace LittleHorse.Common.Authentication
 {
@@ -11,7 +11,7 @@ namespace LittleHorse.Common.Authentication
         private OAuthConfig _oAuthConfig;
         private ILogger? _logger;
 
-        public OAuthClient (OAuthConfig oAuthConfig, ILogger? logger)
+        public OAuthClient(OAuthConfig oAuthConfig, ILogger? logger)
         {
             _oAuthConfig = oAuthConfig;
             _logger = logger;
