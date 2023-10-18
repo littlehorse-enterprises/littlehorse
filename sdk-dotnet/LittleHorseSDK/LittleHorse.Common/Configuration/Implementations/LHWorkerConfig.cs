@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using Grpc.Core;
 using Grpc.Net.Client;
 using LittleHorse.Common.Authentication;
@@ -181,7 +182,14 @@ namespace LittleHorse.Common.Configuration.Implementations
             {
                 string certificatePem = File.ReadAllText(_options.LHC_CLIENT_CERT);
                 string privateKeyPem = File.ReadAllText(_options.LHC_CLIENT_KEY);
-                httpHandler.ClientCertificates.Add(X509Certificate2.CreateFromPem(certificatePem, privateKeyPem));
+                X509Certificate2 cert = X509Certificate2.CreateFromPem(certificatePem, privateKeyPem);
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    var originalCert = cert;
+                    cert = new X509Certificate2(cert.Export(X509ContentType.Pkcs12));
+                    originalCert.Dispose();
+                }
+                httpHandler.ClientCertificates.Add(cert);
             }
 
             if (IsOAuth)
