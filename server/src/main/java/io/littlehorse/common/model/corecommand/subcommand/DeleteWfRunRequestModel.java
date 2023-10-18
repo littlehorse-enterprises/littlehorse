@@ -31,7 +31,8 @@ public class DeleteWfRunRequestModel extends SubCommand<DeleteWfRunRequest> {
         return wfRunId.getPartitionKey().get();
     }
 
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
+    @Override
+    public Empty process(CoreProcessorDAO dao, LHServerConfig config, String tenantId) {
         dao.delete(wfRunId);
         return Empty.getDefaultInstance();
     }

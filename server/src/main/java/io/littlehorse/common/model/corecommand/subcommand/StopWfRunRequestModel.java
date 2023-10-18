@@ -35,7 +35,8 @@ public class StopWfRunRequestModel extends SubCommand<StopWfRunRequest> {
         return wfRunId;
     }
 
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
+    @Override
+    public Empty process(CoreProcessorDAO dao, LHServerConfig config, String tenantId) {
         WfRunModel wfRunModel = dao.getWfRun(wfRunId);
         if (wfRunModel == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfRun");

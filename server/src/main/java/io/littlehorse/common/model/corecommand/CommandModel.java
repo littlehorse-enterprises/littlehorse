@@ -318,6 +318,6 @@ public class CommandModel extends AbstractCommand<Command> {
     }
 
     public Message process(CoreProcessorDAO dao, LHServerConfig config) {
-        return getSubCommand().process(dao, config);
+        return getSubCommand().process(dao, config, tenantId);
     }
 }

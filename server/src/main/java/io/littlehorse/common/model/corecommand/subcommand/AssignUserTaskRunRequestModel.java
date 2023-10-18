@@ -54,7 +54,8 @@ public class AssignUserTaskRunRequestModel extends SubCommand<AssignUserTaskRunR
         return userTaskRunId.getWfRunId();
     }
 
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
+    @Override
+    public Empty process(CoreProcessorDAO dao, LHServerConfig config, String tenantId) {
 
         if (userGroup == null && userId == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "must provide either UserGroup or userId");

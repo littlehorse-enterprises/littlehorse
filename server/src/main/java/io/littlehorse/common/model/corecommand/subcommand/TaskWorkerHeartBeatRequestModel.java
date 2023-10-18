@@ -43,7 +43,7 @@ public class TaskWorkerHeartBeatRequestModel extends SubCommand<TaskWorkerHeartB
     }
 
     @Override
-    public RegisterTaskWorkerResponse process(CoreProcessorDAO dao, LHServerConfig config) {
+    public RegisterTaskWorkerResponse process(CoreProcessorDAO dao, LHServerConfig config, String tenantId) {
         log.debug("Processing a heartbeat");
 
         // Get the group, a group contains all the task worker for that specific task

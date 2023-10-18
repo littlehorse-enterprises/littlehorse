@@ -86,7 +86,7 @@ public class JsonVariableStorageManagerTest {
     }
 
     private List<Tag> storedTags() {
-        return localTagScan("").map(LHIterKeyValue::getValue).toList();
+        return localTagScan("5/").map(LHIterKeyValue::getValue).toList();
     }
 
     private Stream<LHIterKeyValue<Tag>> localTagScan(String keyPrefix) {

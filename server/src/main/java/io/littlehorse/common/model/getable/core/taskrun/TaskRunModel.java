@@ -196,7 +196,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         // TODO: Update Metrics
     }
 
-    public void processStart(TaskClaimEvent se) {
+    public void processStart(TaskClaimEvent se, String tenantId) {
         this.status = TaskStatus.TASK_RUNNING;
 
         // create a timer to mark the task is timeout if it does not finish
@@ -204,8 +204,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         taskResult.setTaskRunId(id);
         taskResult.setTime(new Date(System.currentTimeMillis() + (1000 * timeoutSeconds)));
         taskResult.setStatus(TaskStatus.TASK_TIMEOUT);
-
-        LHTimer timer = new LHTimer(new CommandModel(taskResult, taskResult.getTime()), getDao());
+        CommandModel timerCommand = new CommandModel(taskResult, taskResult.getTime());
+        timerCommand.setTenantId(tenantId);
+        LHTimer timer = new LHTimer(timerCommand, getDao());
         getDao().scheduleTimer(timer);
 
         // Now that that's out of the way, we can mark the TaskRun as running.
