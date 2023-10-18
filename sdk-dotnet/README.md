@@ -27,3 +27,16 @@ dotnet test
 cd sdk-dotnet/Examples/BasicExample
 dotnet run Program.cs
 ```
+
+## Self-signed TLS certificate
+
+According to [the official page](https://learn.microsoft.com/en-us/aspnet/core/grpc/troubleshoot?view=aspnetcore-7.0#call-a-grpc-service-with-an-untrustedinvalid-certificate): **The .NET gRPC client requires the service to have a trusted certificate.**.
+
+Every OS has a collection of CA certificates. In ubuntu:
+
+```
+./local-dev/issue-certificates.sh
+sudo apt install -y ca-certificates
+sudo cp local-dev/certs/ca/ca.crt /usr/local/share/ca-certificates
+sudo update-ca-certificates
+```
