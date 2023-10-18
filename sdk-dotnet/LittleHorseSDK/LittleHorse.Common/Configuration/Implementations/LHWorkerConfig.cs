@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using System.Security.Cryptography.X509Certificates;
+using Grpc.Core;
 using Grpc.Net.Client;
 using LittleHorse.Common.Authentication;
 using LittleHorse.Common.Authentication.Model;
@@ -122,8 +123,6 @@ namespace LittleHorse.Common.Configuration.Implementations
         /// <returns>Client for the host/port combo.</returns>
         public LHPublicApiClient GetGrcpClientInstance(string host, int port)
         {
-            GrpcChannel channel;
-
             string channelKey = $"{BootstrapProtocol}://{host}:{port}";
 
             if (_createdChannels.ContainsKey(channelKey))
@@ -133,14 +132,7 @@ namespace LittleHorse.Common.Configuration.Implementations
 
             _logger?.LogInformation("Establishing connection to: " + channelKey);
 
-            if (IsOAuth)
-            {
-                channel = CreateChannelWithOAuthCredentials(host, port);
-            }
-            else
-            {
-                channel = CreateChannel(host, port);
-            }
+            GrpcChannel channel = CreateChannel(host, port);
 
             _createdChannels.Add(channelKey, channel);
 
@@ -182,46 +174,42 @@ namespace LittleHorse.Common.Configuration.Implementations
 
         private GrpcChannel CreateChannel(string host, int port)
         {
-            GrpcChannel channel;
-
             var httpHandler = new HttpClientHandler();
+            var address = $"{BootstrapProtocol}://{host}:{port}";
 
-            channel = GrpcChannel.ForAddress($"{BootstrapProtocol}://{host}:{port}", new GrpcChannelOptions
+            if (_options.LHC_CLIENT_CERT != null && _options.LHC_CLIENT_KEY != null)
+            {
+                string certificatePem = File.ReadAllText(_options.LHC_CLIENT_CERT);
+                string privateKeyPem = File.ReadAllText(_options.LHC_CLIENT_KEY);
+                httpHandler.ClientCertificates.Add(X509Certificate2.CreateFromPem(certificatePem, privateKeyPem));
+            }
+
+            if (IsOAuth)
+            {
+                InitializeOAuth();
+
+                if (_oAuthClient is null)
+                {
+                    throw new LHAuthorizationServerException("OAuth is not initialized.");
+                }
+
+                var credentials = CallCredentials.FromInterceptor(async (context, metadata) =>
+                {
+                    var tokenInfo = await _oAuthClient.GetAccessTokenAsync();
+                    metadata.Add("Authorization", $"Bearer {tokenInfo.Token}");
+                });
+
+                return GrpcChannel.ForAddress(address, new GrpcChannelOptions
+                {
+                    HttpHandler = httpHandler,
+                    Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
+                });
+            }
+
+            return GrpcChannel.ForAddress(address, new GrpcChannelOptions
             {
                 HttpHandler = httpHandler
             });
-
-            return channel;
-        }
-
-        private GrpcChannel CreateChannelWithOAuthCredentials(string host, int port)
-        {
-
-            GrpcChannel channel;
-
-            InitializeOAuth();
-
-            if (_oAuthClient is null)
-            {
-                throw new LHAuthorizationServerException("OAuth is not initialized.");
-            }
-
-            var credentials = CallCredentials.FromInterceptor(async (context, metadata) =>
-            {
-                var tokenInfo = await _oAuthClient.GetAccessTokenAsync();
-                metadata.Add("Authorization", $"Bearer {tokenInfo.Token}");
-            });
-
-
-            var httpHandler = new HttpClientHandler();
-
-            channel = GrpcChannel.ForAddress($"{BootstrapProtocol}://{host}:{port}", new GrpcChannelOptions
-            {
-                HttpHandler = httpHandler,
-                Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
-            });
-
-            return channel;
         }
 
         private void InitializeOAuth()
