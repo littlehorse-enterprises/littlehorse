@@ -32,6 +32,8 @@ dotnet run Program.cs
 
 According to [the official page](https://learn.microsoft.com/en-us/aspnet/core/grpc/troubleshoot?view=aspnetcore-7.0#call-a-grpc-service-with-an-untrustedinvalid-certificate): **The .NET gRPC client requires the service to have a trusted certificate.**.
 
+> The configuration `LHC_CA_CERT` was remove for this implementation.
+
 Every OS has a collection of CA certificates. On ubuntu:
 
 ```
