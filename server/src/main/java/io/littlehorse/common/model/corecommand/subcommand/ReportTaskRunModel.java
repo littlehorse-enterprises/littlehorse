@@ -45,7 +45,8 @@ public class ReportTaskRunModel extends SubCommand<ReportTaskRun> {
         return true;
     }
 
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
+    @Override
+    public Empty process(CoreProcessorDAO dao, LHServerConfig config, String tenantId) {
         TaskRunModel task = dao.get(taskRunId);
         if (task == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided taskRunId was invalid");

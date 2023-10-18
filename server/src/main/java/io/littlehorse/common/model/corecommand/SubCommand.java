@@ -7,7 +7,7 @@ import io.littlehorse.common.dao.CoreProcessorDAO;
 
 public abstract class SubCommand<T extends Message> extends LHSerializable<T> {
 
-    public abstract Message process(CoreProcessorDAO dao, LHServerConfig config);
+    public abstract Message process(CoreProcessorDAO dao, LHServerConfig config, String tenantId);
 
     public abstract boolean hasResponse();
 

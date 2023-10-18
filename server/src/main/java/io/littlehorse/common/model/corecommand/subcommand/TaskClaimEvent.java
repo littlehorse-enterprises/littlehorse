@@ -69,7 +69,8 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
         return true;
     }
 
-    public PollTaskResponse process(CoreProcessorDAO dao, LHServerConfig config) {
+    @Override
+    public PollTaskResponse process(CoreProcessorDAO dao, LHServerConfig config, String tenantId) {
         TaskRunModel taskRun = dao.get(taskRunId);
         if (taskRun == null) {
             log.warn("Got claimTask for non-existent taskRun {}", taskRunId);
@@ -88,7 +89,7 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
         if (scheduledTask == null) {
             return PollTaskResponse.newBuilder().build();
         } else {
-            taskRun.processStart(this);
+            taskRun.processStart(this, tenantId);
             return PollTaskResponse.newBuilder()
                     .setResult(scheduledTask.toProto())
                     .build();

@@ -51,7 +51,8 @@ public class SleepNodeMatured extends SubCommand<SleepNodeMaturedPb> {
         return wfRunId;
     }
 
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
+    @Override
+    public Empty process(CoreProcessorDAO dao, LHServerConfig config, String tenantId) {
         WfRunModel wfRunModel = dao.getWfRun(wfRunId);
         if (wfRunModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfRun found.");

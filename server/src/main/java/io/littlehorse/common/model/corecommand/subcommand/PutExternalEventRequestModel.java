@@ -56,7 +56,8 @@ public class PutExternalEventRequestModel extends SubCommand<PutExternalEventReq
         return true;
     }
 
-    public ExternalEvent process(CoreProcessorDAO dao, LHServerConfig config) {
+    @Override
+    public ExternalEvent process(CoreProcessorDAO dao, LHServerConfig config, String tenantId) {
         ExternalEventDefModel eed = dao.getExternalEventDef(externalEventDefName);
         if (eed == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "No ExternalEventDef named " + externalEventDefName);

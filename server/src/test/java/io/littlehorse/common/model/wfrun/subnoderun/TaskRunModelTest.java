@@ -26,7 +26,7 @@ public class TaskRunModelTest {
         TaskClaimEvent taskClaimEvent = new TaskClaimEvent();
 
         // act
-        taskRun.processStart(taskClaimEvent);
+        taskRun.processStart(taskClaimEvent, "myTenantId");
 
         // assert
         assertThat(taskRun.getLatestAttempt().getTaskWorkerVersion()).isEqualTo(taskClaimEvent.getTaskWorkerVersion());

@@ -52,7 +52,7 @@ public class CompleteUserTaskRunRequestModel extends SubCommand<CompleteUserTask
         }
     }
 
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
+    public Empty process(CoreProcessorDAO dao, LHServerConfig config, String tenantId) {
         UserTaskRunModel utr = dao.get(userTaskRunId);
         if (utr == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find provided UserTaskRun");

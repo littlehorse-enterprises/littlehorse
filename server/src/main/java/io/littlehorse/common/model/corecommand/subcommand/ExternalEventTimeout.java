@@ -44,7 +44,8 @@ public class ExternalEventTimeout extends SubCommand<ExternalEventNodeTimeoutPb>
         return wfRunId;
     }
 
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
+    @Override
+    public Empty process(CoreProcessorDAO dao, LHServerConfig config, String tenantId) {
         WfRunModel wfRunModel = dao.getWfRun(wfRunId);
 
         if (wfRunModel == null) {

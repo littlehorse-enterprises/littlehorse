@@ -1,5 +1,6 @@
 package io.littlehorse.server.streams.store;
 
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.proto.StoreableType;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class LHTenantStore extends ReadOnlyTenantStore implements LHStore {
     @Override
     public void put(Storeable<?> thing) {
         String s = new String(thing.toBytes());
+        Storeable storeable = LHSerializable.fromBytes(new Bytes(thing.toBytes()).get(), thing.getClass());
         nativeStore.put(appendTenantPrefixTo(thing.getFullStoreKey()), new Bytes(thing.toBytes()));
     }
 
