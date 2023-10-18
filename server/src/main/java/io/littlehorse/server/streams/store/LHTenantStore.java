@@ -23,6 +23,7 @@ public class LHTenantStore extends ReadOnlyTenantStore implements LHStore {
 
     @Override
     public void put(Storeable<?> thing) {
+        String s = new String(thing.toBytes());
         nativeStore.put(appendTenantPrefixTo(thing.getFullStoreKey()), new Bytes(thing.toBytes()));
     }
 

@@ -88,8 +88,7 @@ public class Tag extends Storeable<TagPb> {
 
     public static String getAttributeStringFromPb(GetableClassEnum objectType, List<AttributePb> attributes) {
         return getAttributeString(
-                objectType,
-                attributes.stream().map(attr -> Attribute.fromProto(attr)).collect(Collectors.toList()));
+                objectType, attributes.stream().map(Attribute::fromProto).collect(Collectors.toList()));
     }
 
     public boolean isRemote() {

@@ -11,8 +11,12 @@ import io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.store.LHStore;
 import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
+@Setter
+@Getter
 public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
 
     public Date time;
@@ -23,6 +27,8 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
     public WfMetricUpdate wfMetricPartitionWindow;
     private CreateRemoteTag createRemoteTag;
     private RemoveRemoteTag removeRemoteTag;
+
+    private String tenantId;
 
     public Class<RepartitionCommandPb> getProtoBaseClass() {
         return RepartitionCommandPb.class;
@@ -76,6 +82,7 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
     public RepartitionCommandPb.Builder toProto() {
         RepartitionCommandPb.Builder out = RepartitionCommandPb.newBuilder();
         out.setTime(LHUtil.fromDate(time));
+        out.setTenantId(tenantId);
         if (commandId != null) out.setCommandId(commandId);
 
         switch (type) {
@@ -101,6 +108,7 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
         RepartitionCommandPb p = (RepartitionCommandPb) proto;
 
         type = p.getRepartitionCommandCase();
+        tenantId = p.getTenantId();
         if (p.hasCommandId()) commandId = p.getCommandId();
         time = LHUtil.fromProtoTs(p.getTime());
 
