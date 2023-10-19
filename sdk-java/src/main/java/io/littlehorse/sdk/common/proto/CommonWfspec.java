@@ -133,8 +133,9 @@ public final class CommonWfspec {
       "Comparator\022\r\n\tLESS_THAN\020\000\022\020\n\014GREATER_THA" +
       "N\020\001\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017GREATER_THAN_EQ" +
       "\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_EQUALS\020\005\022\006\n\002IN\020\006\022\n" +
-      "\n\006NOT_IN\020\007B,\n\037io.littlehorse.sdk.common." +
-      "protoP\001Z\007.;modelb\006proto3"
+      "\n\006NOT_IN\020\007BG\n\037io.littlehorse.sdk.common." +
+      "protoP\001Z\007.;model\252\002\030LittleHorse.Common.Pr" +
+      "otob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

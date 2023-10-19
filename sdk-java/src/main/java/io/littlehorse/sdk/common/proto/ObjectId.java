@@ -118,8 +118,9 @@ public final class ObjectId {
       "(\0132\032.google.protobuf.Timestamp\0225\n\013window" +
       "_type\030\002 \001(\0162 .littlehorse.MetricsWindowL" +
       "ength\022\024\n\014wf_spec_name\030\003 \001(\t\022\027\n\017wf_spec_v" +
-      "ersion\030\004 \001(\005B,\n\037io.littlehorse.sdk.commo" +
-      "n.protoP\001Z\007.;modelb\006proto3"
+      "ersion\030\004 \001(\005BG\n\037io.littlehorse.sdk.commo" +
+      "n.protoP\001Z\007.;model\252\002\030LittleHorse.Common." +
+      "Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

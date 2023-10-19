@@ -733,8 +733,9 @@ public final class Service {
       "e.ListTaskMetricsResponse\"\000\022\\\n\021ListWfSpe" +
       "cMetrics\022!.littlehorse.ListWfMetricsRequ" +
       "est\032\".littlehorse.ListWfMetricsResponse\"" +
-      "\000B,\n\037io.littlehorse.sdk.common.protoP\001Z\007" +
-      ".;modelb\006proto3"
+      "\000BG\n\037io.littlehorse.sdk.common.protoP\001Z\007" +
+      ".;model\252\002\030LittleHorse.Common.Protob\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

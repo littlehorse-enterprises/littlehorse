@@ -140,8 +140,9 @@ public final class WfRunOuterClass {
       "nual_halt\030\006 \001(\0132\027.littlehorse.ManualHalt" +
       "H\000B\010\n\006reason*K\n\nThreadType\022\016\n\nENTRYPOINT" +
       "\020\000\022\t\n\005CHILD\020\001\022\r\n\tINTERRUPT\020\002\022\023\n\017FAILURE_" +
-      "HANDLER\020\003B,\n\037io.littlehorse.sdk.common.p" +
-      "rotoP\001Z\007.;modelb\006proto3"
+      "HANDLER\020\003BG\n\037io.littlehorse.sdk.common.p" +
+      "rotoP\001Z\007.;model\252\002\030LittleHorse.Common.Pro" +
+      "tob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

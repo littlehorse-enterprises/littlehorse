@@ -47,8 +47,9 @@ public final class VariableOuterClass {
       "d\030\002 \001(\t\022\031\n\021thread_run_number\030\003 \001(\005\022\014\n\004na" +
       "me\030\004 \001(\t\022(\n\004date\030\005 \001(\0132\032.google.protobuf" +
       ".Timestamp\022)\n\nwf_spec_id\030\006 \001(\0132\025.littleh" +
-      "orse.WfSpecIdB,\n\037io.littlehorse.sdk.comm" +
-      "on.protoP\001Z\007.;modelb\006proto3"
+      "orse.WfSpecIdBG\n\037io.littlehorse.sdk.comm" +
+      "on.protoP\001Z\007.;model\252\002\030LittleHorse.Common" +
+      ".Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

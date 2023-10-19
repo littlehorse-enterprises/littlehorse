@@ -95,9 +95,9 @@ public final class TaskRunOuterClass {
       "id\030\002 \001(\0132\025.littlehorse.WfSpecId\"F\n\013LHTas" +
       "kError\022&\n\004type\030\001 \001(\0162\030.littlehorse.LHErr" +
       "orType\022\017\n\007message\030\002 \001(\t\"0\n\017LHTaskExcepti" +
-      "on\022\014\n\004name\030\001 \001(\t\022\017\n\007message\030\002 \001(\tB,\n\037io." +
-      "littlehorse.sdk.common.protoP\001Z\007.;modelb" +
-      "\006proto3"
+      "on\022\014\n\004name\030\001 \001(\t\022\017\n\007message\030\002 \001(\tBG\n\037io." +
+      "littlehorse.sdk.common.protoP\001Z\007.;model\252" +
+      "\002\030LittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
