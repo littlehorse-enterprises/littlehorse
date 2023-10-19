@@ -28,6 +28,7 @@ lhctl/lhctl
 **/bin/
 **/obj/
 **/.vs/
+**/out/
 
 # Others
 local-dev/certs/

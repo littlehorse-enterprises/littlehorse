@@ -5,9 +5,7 @@ VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LittleHorse.Test", "LittleHorse.Test\LittleHorse.Test.csproj", "{87F1BA1C-ECA4-42B0-832B-6CDCBE0E6F93}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LittleHorse.Common", "LittleHorse.Common\LittleHorse.Common.csproj", "{D84312F1-0FB5-41FC-A0B0-80A4F56D2354}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LittleHorse.Worker", "LittleHorse.Worker\LittleHorse.Worker.csproj", "{E8A3F07C-EBA0-48F4-AE52-2145DB1518EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LittleHorse", "LittleHorse\LittleHorse.csproj", "{D84312F1-0FB5-41FC-A0B0-80A4F56D2354}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +21,6 @@ Global
 		{D84312F1-0FB5-41FC-A0B0-80A4F56D2354}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D84312F1-0FB5-41FC-A0B0-80A4F56D2354}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D84312F1-0FB5-41FC-A0B0-80A4F56D2354}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E8A3F07C-EBA0-48F4-AE52-2145DB1518EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E8A3F07C-EBA0-48F4-AE52-2145DB1518EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E8A3F07C-EBA0-48F4-AE52-2145DB1518EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E8A3F07C-EBA0-48F4-AE52-2145DB1518EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

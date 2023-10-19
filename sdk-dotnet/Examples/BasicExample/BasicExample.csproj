@@ -12,8 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\LittleHorseSDK\LittleHorse.Common\LittleHorse.Common.csproj" />
-    <ProjectReference Include="..\..\LittleHorseSDK\LittleHorse.Worker\LittleHorse.Worker.csproj" />
+    <ProjectReference Include="..\..\LittleHorseSDK\LittleHorse\LittleHorse.csproj" />
   </ItemGroup>
 
 </Project>
