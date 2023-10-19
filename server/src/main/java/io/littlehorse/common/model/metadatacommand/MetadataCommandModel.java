@@ -10,6 +10,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefReque
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
@@ -40,6 +41,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private PutUserTaskDefRequestModel putUserTaskDefRequest;
     private DeleteUserTaskDefRequestModel deleteUserTaskDef;
     private String tenantId;
+    private PutPrincipalRequestModel putPrincipal;
 
     public MetadataCommandModel() {
         super();
@@ -159,6 +161,8 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 return putUserTaskDefRequest;
             case DELETE_USER_TASK_DEF:
                 return deleteUserTaskDef;
+            case PUT_PRINCIPAL:
+                return putPrincipal;
             case METADATACOMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -190,6 +194,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(DeleteUserTaskDefRequestModel.class)) {
             type = MetadataCommandCase.DELETE_USER_TASK_DEF;
             deleteUserTaskDef = (DeleteUserTaskDefRequestModel) cmd;
+        } else if (cls.equals(PutPrincipalRequestModel.class)) {
+            type = MetadataCommandCase.PUT_PRINCIPAL;
+            putPrincipal = (PutPrincipalRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }
