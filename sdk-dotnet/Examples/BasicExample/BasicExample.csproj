@@ -9,10 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+    <PackageReference Include="LittleHorse" Version="0.5.0-alpha1" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\LittleHorseSDK\LittleHorse\LittleHorse.csproj" />
-  </ItemGroup>
-
 </Project>

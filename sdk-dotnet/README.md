@@ -1,34 +1,43 @@
 # LittleHorse .NET SDK
 
-<a href="https://littlehorse.dev/"><img alt="littlehorse.dev" src="https://img.shields.io/badge/-LittleHorse.dev-7f7aff"></a>
-<a href="https://github.com/littlehorse-enterprises/littlehorse"><img alt="github" src="https://img.shields.io/badge/-LittleHorse-gray?logo=github&logoColor=white"></a>
+[LittleHorse](https://littlehorse.dev) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. The LittleHorse Runtime has uses in fields such as:
+
+- Business Process Management
+- Event-Driven Systems
+- Logistics Management Applications
+- Financial Transaction Processing
+- And More.
 
 For documentation on how to use this library, please go to [the LittleHorse website](https://littlehorse.dev).
 
-For examples go to the [examples](./Examples/) folder.
+> **This does not include the Workflow SDK**.
 
-> :warning: **This does not include the Workflow SDK**.
+## License
 
-## Dependencies
+All code in this repository is covered by the [Server Side Public License, Version 1](https://spdx.org/licenses/SSPL-1.0.html). All code is intellectual property of LittleHorse Enterprises LLC.
+
+## Developing
+
+### Dependencies
 
 - Install [.NET Core 7](https://dotnet.microsoft.com/en-us/download)
 - Plugins for [VS Code](https://code.visualstudio.com/): [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
 
-## Run Tests
+### Run Tests
 
 ```
 cd sdk-dotnet/LittleHorseSDK
 dotnet test
 ```
 
-## Run Example
+### Run Example
 
 ```
 cd sdk-dotnet/Examples/BasicExample
 dotnet run Program.cs
 ```
 
-## Self-signed TLS certificate
+### Self-signed TLS certificate
 
 According to [the official page](https://learn.microsoft.com/en-us/aspnet/core/grpc/troubleshoot?view=aspnetcore-7.0#call-a-grpc-service-with-an-untrustedinvalid-certificate): **The .NET gRPC client requires the service to have a trusted certificate.**.
 

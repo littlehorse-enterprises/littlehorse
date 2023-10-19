@@ -7,6 +7,16 @@
     <AssemblyVersion>0.5.0</AssemblyVersion>
     <FileVersion>0.5.0</FileVersion>
     <PackageVersion>0.5.0-alpha1</PackageVersion>
+    <PackageLicenseFile>SSPLv1.txt</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <Company>LittleHorse Enterprises LLC</Company>
+    <Authors>LittleHorse Enterprises LLC</Authors>
+    <Product>LittleHorseSDK</Product>
+    <Copyright>LittleHorse Enterprises LLC</Copyright>
+    <Description>LittleHorse is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications</Description>
+    <PackageProjectUrl>https://littlehorse.dev</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/littlehorse-enterprises/littlehorse</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -41,5 +51,9 @@
     <Protobuf Include="..\..\..\schemas\*.proto" GrpcServices="Both" ProtoRoot="..\..\..\schemas" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\..\licenses\SSPLv1.txt" Pack="true" PackagePath="" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
 
 </Project>
