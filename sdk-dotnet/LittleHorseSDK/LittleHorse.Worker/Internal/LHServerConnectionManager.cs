@@ -109,10 +109,10 @@ namespace LittleHorse.Worker.Internal
                 {
                     try
                     {
-                        var newConnection = new LHServerConnection<T>(this, host);
+                        var newConnection = new LHServerConnection<T>(this, host, _logger);
                         newConnection.Connect();
                         _runningConnections.Add(newConnection);
-                        _logger?.LogInformation($"Adding connection to: {host.Host} : {host.Port} for {_taskDef.Name}");
+                        _logger?.LogInformation($"Adding connection to: {host.Host}:{host.Port} for task '{_taskDef.Name}'");
                     }
                     catch (IOException ex)
                     {
