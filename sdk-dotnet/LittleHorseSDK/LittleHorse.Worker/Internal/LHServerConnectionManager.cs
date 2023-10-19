@@ -103,14 +103,14 @@ namespace LittleHorse.Worker.Internal
         private void HandleRegisterTaskWorkResponse(RegisterTaskWorkerResponse response)
         {
 
-            response.YourHosts.ToList().ForEach(async host =>
+            response.YourHosts.ToList().ForEach(host =>
             {
                 if (!IsAlreadyRunning(host))
                 {
                     try
                     {
                         var newConnection = new LHServerConnection<T>(this, host);
-                        await newConnection.Connect();
+                        newConnection.Connect();
                         _runningConnections.Add(newConnection);
                         _logger?.LogInformation($"Adding connection to: {host.Host} : {host.Port} for {_taskDef.Name}");
                     }

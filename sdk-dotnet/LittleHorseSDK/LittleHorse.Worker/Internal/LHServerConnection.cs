@@ -26,10 +26,10 @@ namespace LittleHorse.Worker.Internal
             _call = _client.PollTask();
         }
 
-        public async Task Connect()
+        public void Connect()
         {
             _running = true;
-            await RequestMoreWorkAsync();
+            Task.Run(RequestMoreWorkAsync);
         }
 
         private async Task RequestMoreWorkAsync()
