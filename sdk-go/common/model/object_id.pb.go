@@ -799,6 +799,53 @@ func (x *WfSpecMetricsId) GetWfSpecVersion() int32 {
 	return 0
 }
 
+type PrincipalId struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (x *PrincipalId) Reset() {
+	*x = PrincipalId{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_object_id_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PrincipalId) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PrincipalId) ProtoMessage() {}
+
+func (x *PrincipalId) ProtoReflect() protoreflect.Message {
+	mi := &file_object_id_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PrincipalId.ProtoReflect.Descriptor instead.
+func (*PrincipalId) Descriptor() ([]byte, []int) {
+	return file_object_id_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *PrincipalId) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 var File_object_id_proto protoreflect.FileDescriptor
 
 var file_object_id_proto_rawDesc = []byte{
@@ -884,10 +931,12 @@ var file_object_id_proto_rawDesc = []byte{
 	0x77, 0x66, 0x53, 0x70, 0x65, 0x63, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x26, 0x0a, 0x0f, 0x77, 0x66,
 	0x5f, 0x73, 0x70, 0x65, 0x63, 0x5f, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20,
 	0x01, 0x28, 0x05, 0x52, 0x0d, 0x77, 0x66, 0x53, 0x70, 0x65, 0x63, 0x56, 0x65, 0x72, 0x73, 0x69,
-	0x6f, 0x6e, 0x42, 0x2c, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68,
-	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x07, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x6e, 0x22, 0x1d, 0x0a, 0x0b, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x49,
+	0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
+	0x64, 0x42, 0x2c, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f,
+	0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x07, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -902,7 +951,7 @@ func file_object_id_proto_rawDescGZIP() []byte {
 	return file_object_id_proto_rawDescData
 }
 
-var file_object_id_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_object_id_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_object_id_proto_goTypes = []interface{}{
 	(*WfSpecId)(nil),               // 0: littlehorse.WfSpecId
 	(*TaskDefId)(nil),              // 1: littlehorse.TaskDefId
@@ -918,14 +967,15 @@ var file_object_id_proto_goTypes = []interface{}{
 	(*UserTaskRunId)(nil),          // 11: littlehorse.UserTaskRunId
 	(*TaskDefMetricsId)(nil),       // 12: littlehorse.TaskDefMetricsId
 	(*WfSpecMetricsId)(nil),        // 13: littlehorse.WfSpecMetricsId
-	(*timestamppb.Timestamp)(nil),  // 14: google.protobuf.Timestamp
-	(MetricsWindowLength)(0),       // 15: littlehorse.MetricsWindowLength
+	(*PrincipalId)(nil),            // 14: littlehorse.PrincipalId
+	(*timestamppb.Timestamp)(nil),  // 15: google.protobuf.Timestamp
+	(MetricsWindowLength)(0),       // 16: littlehorse.MetricsWindowLength
 }
 var file_object_id_proto_depIdxs = []int32{
-	14, // 0: littlehorse.TaskDefMetricsId.window_start:type_name -> google.protobuf.Timestamp
-	15, // 1: littlehorse.TaskDefMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
-	14, // 2: littlehorse.WfSpecMetricsId.window_start:type_name -> google.protobuf.Timestamp
-	15, // 3: littlehorse.WfSpecMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
+	15, // 0: littlehorse.TaskDefMetricsId.window_start:type_name -> google.protobuf.Timestamp
+	16, // 1: littlehorse.TaskDefMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
+	15, // 2: littlehorse.WfSpecMetricsId.window_start:type_name -> google.protobuf.Timestamp
+	16, // 3: littlehorse.WfSpecMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
 	4,  // [4:4] is the sub-list for method output_type
 	4,  // [4:4] is the sub-list for method input_type
 	4,  // [4:4] is the sub-list for extension type_name
@@ -1108,6 +1158,18 @@ func file_object_id_proto_init() {
 				return nil
 			}
 		}
+		file_object_id_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PrincipalId); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1115,7 +1177,7 @@ func file_object_id_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_object_id_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   14,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

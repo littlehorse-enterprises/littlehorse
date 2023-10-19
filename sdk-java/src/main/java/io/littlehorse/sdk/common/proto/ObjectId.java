@@ -84,6 +84,11 @@ public final class ObjectId {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_WfSpecMetricsId_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_PrincipalId_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_PrincipalId_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -118,8 +123,9 @@ public final class ObjectId {
       "(\0132\032.google.protobuf.Timestamp\0225\n\013window" +
       "_type\030\002 \001(\0162 .littlehorse.MetricsWindowL" +
       "ength\022\024\n\014wf_spec_name\030\003 \001(\t\022\027\n\017wf_spec_v" +
-      "ersion\030\004 \001(\005B,\n\037io.littlehorse.sdk.commo" +
-      "n.protoP\001Z\007.;modelb\006proto3"
+      "ersion\030\004 \001(\005\"\031\n\013PrincipalId\022\n\n\002id\030\001 \001(\tB" +
+      ",\n\037io.littlehorse.sdk.common.protoP\001Z\007.;" +
+      "modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -211,6 +217,12 @@ public final class ObjectId {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_WfSpecMetricsId_descriptor,
         new java.lang.String[] { "WindowStart", "WindowType", "WfSpecName", "WfSpecVersion", });
+    internal_static_littlehorse_PrincipalId_descriptor =
+      getDescriptor().getMessageTypes().get(14);
+    internal_static_littlehorse_PrincipalId_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_PrincipalId_descriptor,
+        new java.lang.String[] { "Id", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
   }

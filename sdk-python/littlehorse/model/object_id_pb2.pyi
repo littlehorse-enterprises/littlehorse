@@ -119,3 +119,9 @@ class WfSpecMetricsId(_message.Message):
     wf_spec_name: str
     wf_spec_version: int
     def __init__(self, window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., window_type: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., wf_spec_name: _Optional[str] = ..., wf_spec_version: _Optional[int] = ...) -> None: ...
+
+class PrincipalId(_message.Message):
+    __slots__ = ["id"]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: str
+    def __init__(self, id: _Optional[str] = ...) -> None: ...

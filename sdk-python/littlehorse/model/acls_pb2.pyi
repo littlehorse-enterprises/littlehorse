@@ -35,14 +35,16 @@ WRITE_METADATA: ACLAction
 ALL_ACTIONS: ACLAction
 
 class Principal(_message.Message):
-    __slots__ = ["id", "acls", "tenant_id"]
+    __slots__ = ["id", "acls", "tenant_ids", "default_tenant_id"]
     ID_FIELD_NUMBER: _ClassVar[int]
     ACLS_FIELD_NUMBER: _ClassVar[int]
-    TENANT_ID_FIELD_NUMBER: _ClassVar[int]
+    TENANT_IDS_FIELD_NUMBER: _ClassVar[int]
+    DEFAULT_TENANT_ID_FIELD_NUMBER: _ClassVar[int]
     id: str
     acls: _containers.RepeatedCompositeFieldContainer[ServerACL]
-    tenant_id: str
-    def __init__(self, id: _Optional[str] = ..., acls: _Optional[_Iterable[_Union[ServerACL, _Mapping]]] = ..., tenant_id: _Optional[str] = ...) -> None: ...
+    tenant_ids: _containers.RepeatedScalarFieldContainer[str]
+    default_tenant_id: str
+    def __init__(self, id: _Optional[str] = ..., acls: _Optional[_Iterable[_Union[ServerACL, _Mapping]]] = ..., tenant_ids: _Optional[_Iterable[str]] = ..., default_tenant_id: _Optional[str] = ...) -> None: ...
 
 class Tenant(_message.Message):
     __slots__ = ["id"]
@@ -63,14 +65,16 @@ class ServerACL(_message.Message):
     def __init__(self, resources: _Optional[_Iterable[_Union[ACLResource, str]]] = ..., allowed_actions: _Optional[_Iterable[_Union[ACLAction, str]]] = ..., name: _Optional[str] = ..., prefix: _Optional[str] = ...) -> None: ...
 
 class PutPrincipalRequest(_message.Message):
-    __slots__ = ["id", "acls", "tenant_id"]
+    __slots__ = ["id", "acls", "tenant_id", "default_tenant_id"]
     ID_FIELD_NUMBER: _ClassVar[int]
     ACLS_FIELD_NUMBER: _ClassVar[int]
     TENANT_ID_FIELD_NUMBER: _ClassVar[int]
+    DEFAULT_TENANT_ID_FIELD_NUMBER: _ClassVar[int]
     id: str
     acls: _containers.RepeatedCompositeFieldContainer[ServerACL]
-    tenant_id: str
-    def __init__(self, id: _Optional[str] = ..., acls: _Optional[_Iterable[_Union[ServerACL, _Mapping]]] = ..., tenant_id: _Optional[str] = ...) -> None: ...
+    tenant_id: _containers.RepeatedScalarFieldContainer[str]
+    default_tenant_id: str
+    def __init__(self, id: _Optional[str] = ..., acls: _Optional[_Iterable[_Union[ServerACL, _Mapping]]] = ..., tenant_id: _Optional[_Iterable[str]] = ..., default_tenant_id: _Optional[str] = ...) -> None: ...
 
 class DeletePrincipalRequest(_message.Message):
     __slots__ = ["id"]

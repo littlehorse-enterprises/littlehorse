@@ -17,8 +17,9 @@ message Principal {
     // Used for multi-tenancy of the LittleHorse Server.
     //
     // NOTE: the principal id (field 1) MUST be unique across all tenants. The
-    // way multi-tenancy works is that the 
-    string tenant_id = 3;
+    // way multi-tenancy works is that the
+    repeated string tenant_ids = 3;
+    string default_tenant_id = 4;
 
     // Future versions will include quotas.
 }
@@ -61,7 +62,8 @@ enum ACLAction {
 message PutPrincipalRequest {
     string id = 1;
     repeated ServerACL acls = 2;
-    optional string tenant_id = 3;
+    repeated string tenant_id = 3;
+    string default_tenant_id = 4;
 }
 
 message DeletePrincipalRequest {
