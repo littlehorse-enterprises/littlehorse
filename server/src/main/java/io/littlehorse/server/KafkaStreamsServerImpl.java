@@ -598,7 +598,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command);
 
         command.setCommandId(LHUtil.generateGuid());
-
+        command.setTenantId("default");
         internalComms.getProducer().send(command.getPartitionKey(), command, command.getTopic(config), callback);
     }
 

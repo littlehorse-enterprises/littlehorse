@@ -93,6 +93,7 @@ public class ReadOnlyLHDefaultStore implements ReadOnlyLHStore {
      * @return an iter
      */
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
-        return new LHKeyValueIterator<>(nativeStore.range(start, end), cls);
+        return new LHKeyValueIterator<>(
+                nativeStore.range(Storeable.getFullStoreKey(cls, start), Storeable.getFullStoreKey(cls, end)), cls);
     }
 }
