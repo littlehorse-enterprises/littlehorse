@@ -79,4 +79,6 @@ public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
     public abstract LHHostInfo getAdvertisedHost(HostModel host, String listenerName);
 
     public abstract InternalHosts getInternalHosts();
+
+    public abstract String getTenantId();
 }

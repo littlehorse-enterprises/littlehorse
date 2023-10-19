@@ -63,10 +63,12 @@ public class TagStorageManager {
 
     private void sendRepartitionCommandForRemoveRemoteTag(String tagStoreKey, String tagAttributeString) {
         RemoveRemoteTag command = new RemoveRemoteTag(tagStoreKey, tagAttributeString);
+        RepartitionCommand repartitionCommand = new RepartitionCommand(command, new Date(), tagStoreKey);
+        repartitionCommand.setTenantId(LHStore.tenantIdFor(lhStore));
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.partitionKey = tagAttributeString;
         cpo.topic = this.lhConfig.getRepartitionTopicName();
-        cpo.payload = new RepartitionCommand(command, new Date(), tagStoreKey);
+        cpo.payload = repartitionCommand;
         Record<String, CommandProcessorOutput> out = new Record<>(tagAttributeString, cpo, System.currentTimeMillis());
         this.context.forward(out);
     }
@@ -77,7 +79,9 @@ public class TagStorageManager {
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.setPartitionKey(partitionKey);
         cpo.setTopic(this.lhConfig.getRepartitionTopicName());
-        cpo.setPayload(new RepartitionCommand(command, new Date(), partitionKey));
+        RepartitionCommand repartitionCommand = new RepartitionCommand(command, new Date(), partitionKey);
+        repartitionCommand.setTenantId(LHStore.tenantIdFor(lhStore));
+        cpo.setPayload(repartitionCommand);
         Record<String, CommandProcessorOutput> out = new Record<>(partitionKey, cpo, System.currentTimeMillis());
         this.context.forward(out);
     }

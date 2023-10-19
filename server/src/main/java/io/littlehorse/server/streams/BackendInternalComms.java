@@ -37,6 +37,7 @@ import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.streams.lhinternalscan.InternalScan;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
+import io.littlehorse.server.streams.store.LHStore;
 import io.littlehorse.server.streams.store.ReadOnlyLHStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
@@ -305,7 +306,7 @@ public class BackendInternalComms implements Closeable {
 
     private ReadOnlyLHStore getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, enableStaleStores, storeName);
-        return null; // new ReadOnlyRocksDBWrapper(rawStore, config); TODO WIP
+        return LHStore.defaultStore(rawStore);
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host) {

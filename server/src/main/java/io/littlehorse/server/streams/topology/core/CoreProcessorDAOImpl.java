@@ -29,6 +29,7 @@ import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.LHStore;
+import io.littlehorse.server.streams.store.LHTenantStore;
 import io.littlehorse.server.streams.store.ReadOnlyLHStore;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.util.InternalHosts;
@@ -88,7 +89,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
         timersToSchedule.clear();
         this.command = command;
         this.storageManager = new GetableStorageManager(
-                LHStore.tenantStore(nativeStore, command.getTenantId()), ctx, config, command, this);
+                LHStore.instanceFor(nativeStore, command.getTenantId()), ctx, config, command, this);
     }
 
     @Override
@@ -178,6 +179,10 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     @Override
     public void scheduleTimer(LHTimer timer) {
         timersToSchedule.add(timer);
+    }
+
+    public String getTenantId() {
+        return defaultStore instanceof LHTenantStore ? ((LHTenantStore) defaultStore).getTenantId() : "default";
     }
 
     @Override
