@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.grpc.Status;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -146,7 +146,7 @@ public class SearchWfRunRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataProcessorDAO readOnlyDao) throws LHApiException {
         List<String> searchAttributeKeys =
                 getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
         return new WfRunModel()
@@ -161,8 +161,8 @@ public class SearchWfRunRequestModel
     }
 
     @Override
-    public LHStore getStore(ReadOnlyMetadataStore metadataStore) {
-        return indexTypeForSearch(metadataStore) == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
+    public LHStore getStoreType() {
+        return indexTypeForSearch(null) == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
     }
 
     @Override

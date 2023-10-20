@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
@@ -25,14 +26,16 @@ import io.littlehorse.server.streams.util.MetadataCache;
  * Therefore, we just do everything manually in this class. It's much simpler that
  * way.
  */
-public class MetadataProcessorDAOImpl extends MetadataProcessorDAO {
+public class MetadataProcessorDAOImpl extends ReadOnlyMetadataProcessorDAOImpl implements MetadataProcessorDAO {
 
-    private LHStore rocksdb;
     private MetadataCommandModel command;
+    private final LHStore lhStore;
+    private final MetadataCache metadataCache;
 
-    public MetadataProcessorDAOImpl(LHStore rocksdb, MetadataCache metadataCache) {
-        super(rocksdb, metadataCache);
-        this.rocksdb = rocksdb;
+    public MetadataProcessorDAOImpl(LHStore lhStore, String tenantId, MetadataCache metadataCache) {
+        super(lhStore, metadataCache);
+        this.lhStore = lhStore;
+        this.metadataCache = metadataCache;
     }
 
     @Override
@@ -45,16 +48,6 @@ public class MetadataProcessorDAOImpl extends MetadataProcessorDAO {
         return command;
     }
 
-    public <U extends Message, T extends GlobalGetable<U>> T get(ObjectIdModel<?, U, T> id) {
-        @SuppressWarnings("unchecked")
-        StoredGetable<U, T> storeResult = rocksdb.get(id.getStoreableKey(), StoredGetable.class);
-
-        if (storeResult == null) {
-            return null;
-        }
-        return storeResult.getStoredObject();
-    }
-
     // Note that as of now, modifying a GlobalGetable is not supported. That may
     // change when we introduce the `Principal` and `Tenant` GlobalGetable's. At
     // that time, we will extend this method.
@@ -63,7 +56,7 @@ public class MetadataProcessorDAOImpl extends MetadataProcessorDAO {
         // The cast is necessary to tell the store that the ObjectId belongs to a
         // GlobalGetable.
         @SuppressWarnings("unchecked")
-        GlobalGetable<?> old = get((ObjectIdModel<?, U, T>) getable.getObjectId());
+        AbstractGetable<?> old = get((ObjectIdModel<?, U, T>) getable.getObjectId());
 
         if (old != null) {
             throw new IllegalStateException(
@@ -71,15 +64,15 @@ public class MetadataProcessorDAOImpl extends MetadataProcessorDAO {
         }
 
         StoredGetable<U, T> toStore = new StoredGetable<U, T>(getable);
-        rocksdb.put(toStore);
+        lhStore.put(toStore);
         for (Tag tag : getable.getIndexEntries()) {
-            rocksdb.put(tag);
+            lhStore.put(tag);
         }
     }
 
     public <U extends Message, T extends GlobalGetable<U>> void delete(ObjectIdModel<?, U, T> id) {
         @SuppressWarnings("unchecked")
-        StoredGetable<U, T> storeResult = rocksdb.get(id.getStoreableKey(), StoredGetable.class);
+        StoredGetable<U, T> storeResult = lhStore.get(id.getStoreableKey(), StoredGetable.class);
 
         if (storeResult == null) {
             throw new LHApiException(
@@ -87,11 +80,11 @@ public class MetadataProcessorDAOImpl extends MetadataProcessorDAO {
                     "Couldn't find provided " + id.getObjectClass().getSimpleName());
         }
 
-        rocksdb.delete(id.getStoreableKey(), StoreableType.STORED_GETABLE);
+        lhStore.delete(id.getStoreableKey(), StoreableType.STORED_GETABLE);
 
         // Now delete all the tags
         for (String tagId : storeResult.getIndexCache().getTagIds()) {
-            rocksdb.delete(tagId, StoreableType.TAG);
+            lhStore.delete(tagId, StoreableType.TAG);
         }
     }
 }

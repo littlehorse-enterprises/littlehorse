@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.lhinternalscan;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -37,7 +37,7 @@ public abstract class PublicScanRequest<
         return ScanResultTypePb.OBJECT_ID;
     }
 
-    public abstract LHStore getStore(ReadOnlyMetadataStore metaStore);
+    public abstract LHStore getStoreType();
 
     public int getLimit() {
         if (limit == null) {
@@ -46,10 +46,10 @@ public abstract class PublicScanRequest<
         return limit;
     }
 
-    public InternalScan getInternalSearch(ReadOnlyMetadataStore stores) throws LHApiException {
+    public InternalScan getInternalSearch(ReadOnlyMetadataProcessorDAO readOnlyDao) throws LHApiException {
         SearchScanBoundaryStrategy searchScanBoundaryStrategy = getScanBoundary(getSearchAttributeString());
         getableSearch = new GetableSearchImpl(getObjectType(), searchScanBoundaryStrategy);
-        InternalScan out = getableSearch.buildInternalScan(stores, indexTypeForSearch(stores));
+        InternalScan out = getableSearch.buildInternalScan(readOnlyDao, indexTypeForSearch(readOnlyDao));
         if (out.limit == 0) out.limit = getLimit();
         out.bookmark = bookmark;
 
@@ -57,7 +57,7 @@ public abstract class PublicScanRequest<
 
         out.resultType = getResultType();
 
-        out.storeName = getStore(stores).getStoreName();
+        out.storeName = getStoreType().getStoreName();
         return out;
     }
 
@@ -98,7 +98,7 @@ public abstract class PublicScanRequest<
      * @return The storage type or null if not specified in the configuration.
      * @throws LHApiException if there are validation errors in the input.
      */
-    public abstract TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException;
+    public abstract TagStorageType indexTypeForSearch(ReadOnlyMetadataProcessorDAO readOnlyDao) throws LHApiException;
 
     public abstract SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException;
 }

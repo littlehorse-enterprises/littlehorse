@@ -288,7 +288,7 @@ public class BackendInternalComms implements Closeable {
         // processed.
     }
 
-    private ReadOnlyKeyValueStore<String, Bytes> getRawStore(
+    public ReadOnlyKeyValueStore<String, Bytes> getRawStore(
             Integer specificPartition, boolean enableStaleStores, String storeName) {
         StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
                 StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());

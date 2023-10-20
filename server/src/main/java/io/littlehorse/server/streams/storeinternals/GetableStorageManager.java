@@ -55,7 +55,7 @@ public class GetableStorageManager {
      * @param id  is the ObjectId to look for.
      * @return the specified AbstractGetable, or null if it doesn't exist.
      */
-    public <U extends Message, T extends CoreGetable<U>> T get(ObjectIdModel<?, U, T> id) {
+    public <U extends Message, T extends AbstractGetable<U>> T get(ObjectIdModel<?, U, T> id) {
         log.trace("Getting {} with key {}", id.getType(), id);
         T out = null;
 

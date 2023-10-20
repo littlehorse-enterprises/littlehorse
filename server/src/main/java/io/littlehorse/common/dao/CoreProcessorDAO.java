@@ -1,11 +1,9 @@
 package io.littlehorse.common.dao;
 
-import com.google.protobuf.Message;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
-import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
@@ -14,13 +12,14 @@ import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.streams.store.ReadOnlyLHStore;
+import io.littlehorse.server.streams.topology.core.ReadOnlyMetadataProcessorDAOImpl;
 import io.littlehorse.server.streams.util.InternalHosts;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
+public abstract class CoreProcessorDAO extends ReadOnlyMetadataProcessorDAOImpl {
 
     public CoreProcessorDAO(ReadOnlyLHStore rocksdb, MetadataCache metadataCache) {
         super(rocksdb, metadataCache);
@@ -39,8 +38,6 @@ public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
     /*
      * Basic CRUD for CoreGetables
      */
-
-    public abstract <U extends Message, T extends CoreGetable<U>> T get(ObjectIdModel<?, U, T> id);
 
     public abstract void put(CoreGetable<?> getable);
 

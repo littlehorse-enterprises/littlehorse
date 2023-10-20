@@ -57,7 +57,8 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
 
     public void processHelper(final Record<String, MetadataCommandModel> record) {
         MetadataCommandModel command = record.value();
-        this.dao = new MetadataProcessorDAOImpl(LHStore.instanceFor(nativeStore, command.getTenantId()), metadataCache);
+        this.dao = new MetadataProcessorDAOImpl(
+                LHStore.instanceFor(nativeStore, command.getTenantId()), command.getTenantId(), metadataCache);
         log.trace(
                 "{} Processing command of type {} with commandId {}",
                 config.getLHInstanceId(),

@@ -2,7 +2,7 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -37,7 +37,7 @@ public class ListTaskMetricsRequestModel
     }
 
     @Override
-    public LHStore getStore(ReadOnlyMetadataStore metaStore) {
+    public LHStore getStoreType() {
         return LHStore.REPARTITION;
     }
 
@@ -65,7 +65,7 @@ public class ListTaskMetricsRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataStore stores) throws LHApiException {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataProcessorDAO readOnlyDao) throws LHApiException {
         return TagStorageType.LOCAL;
     }
 

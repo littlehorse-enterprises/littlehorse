@@ -70,8 +70,8 @@ public class PutWfSpecRequestModelTest {
     @ParameterizedTest
     @ValueSource(strings = {TENANT_ID_A, TENANT_ID_B, DEFAULT_TENANT_ID})
     void supportStoringWfSpecWithTenantIsolation(final String tenantId) {
-        MetadataProcessorDAO processorDAO =
-                new MetadataProcessorDAOImpl(LHStore.instanceFor(nativeInMemoryStore, tenantId), metadataCache);
+        MetadataProcessorDAO processorDAO = new MetadataProcessorDAOImpl(
+                LHStore.instanceFor(nativeInMemoryStore, tenantId), tenantId, metadataCache);
         TaskDefModel greet = TestUtil.taskDef("greet");
         wfSpecToProcess.setTenantId(tenantId);
         String specName = wfSpecToProcess.getPutWfSpecRequest().getName();

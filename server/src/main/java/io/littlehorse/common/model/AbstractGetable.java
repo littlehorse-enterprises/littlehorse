@@ -121,6 +121,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return TaskRunModel.class;
             case USER_TASK_RUN:
                 return UserTaskRunModel.class;
+            case PRINCIPAL:
+                return PrincipalModel.class;
             case UNRECOGNIZED:
                 // default:
         }
