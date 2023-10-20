@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
@@ -95,7 +95,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         return new UserTaskNodeRunModel();
     }
 
-    public void validate(ReadOnlyMetadataStore stores, LHServerConfig config) throws LHApiException {
+    public void validate(ReadOnlyMetadataProcessorDAO stores, LHServerConfig config) throws LHApiException {
         UserTaskDefModel utd = stores.getUserTaskDef(userTaskDefName, userTaskDefVersion);
 
         if (utd == null) {

@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -183,7 +183,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         return wfSpecModel.lookupVarDef(name);
     }
 
-    public void validate(ReadOnlyMetadataStore dbClient, LHServerConfig config) throws LHApiException {
+    public void validate(MetadataProcessorDAO metadataDao, LHServerConfig config) throws LHApiException {
         if (entrypointNodeName == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "missing ENTRYPOITNT node!");
         }
@@ -205,7 +205,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 seenEntrypoint = true;
             }
             try {
-                node.validate(dbClient, config);
+                node.validate(metadataDao, config);
             } catch (LHApiException exn) {
                 throw exn.getCopyWithPrefix("Node " + node.name);
             }
@@ -213,7 +213,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
         for (InterruptDefModel idef : interruptDefs) {
             try {
-                idef.validate(dbClient, config);
+                idef.validate(metadataDao, config);
             } catch (LHApiException exn) {
                 throw exn.getCopyWithPrefix("Interrupt Def for " + idef.externalEventDefName);
             }

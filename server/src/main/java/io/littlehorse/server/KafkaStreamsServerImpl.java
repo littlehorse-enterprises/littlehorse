@@ -8,7 +8,8 @@ import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.DAOFactory;
+import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.ScheduledTaskModel;
@@ -121,8 +122,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     private ListenersManager listenerManager;
     private HealthService healthService;
 
-    private ReadOnlyMetadataStore getMetaStore() {
-        return internalComms.getGlobalStoreImpl();
+    private final DAOFactory coreTopologyDaoFactory;
+
+    private ReadOnlyMetadataProcessorDAO metadataDao(String tenantId) {
+        return coreTopologyDaoFactory.getMetadataDao(true, tenantId);
     }
 
     public KafkaStreamsServerImpl(LHServerConfig config) {
@@ -144,6 +147,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 //    timer, which means latency will jump from 15ms to >100ms
                 config.getStreamsConfig("timer", false));
         this.healthService = new HealthService(config, coreStreams, timerStreams);
+        this.coreTopologyDaoFactory = new DAOFactory(coreStreams, metadataCache);
 
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
         this.listenerManager = new ListenersManager(config, this, networkThreadpool, healthService.getMeterRegistry());
@@ -158,7 +162,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getWfSpec(WfSpecId req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = getMetaStore().getWfSpec(req.getName(), req.getVersion());
+        WfSpecModel wfSpec = metadataDao("default").getWfSpec(req.getName(), req.getVersion());
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -169,7 +173,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getLatestWfSpec(GetLatestWfSpecRequest req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = getMetaStore().getWfSpec(req.getName(), null);
+        WfSpecModel wfSpec = metadataDao("default").getWfSpec(req.getName(), null);
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -180,7 +184,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getLatestUserTaskDef(GetLatestUserTaskDefRequest req, StreamObserver<UserTaskDef> ctx) {
-        UserTaskDefModel utd = getMetaStore().getUserTaskDef(req.getName(), null);
+        UserTaskDefModel utd = metadataDao("default").getUserTaskDef(req.getName(), null);
         if (utd == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskDef"));
         } else {
@@ -191,7 +195,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getUserTaskDef(UserTaskDefId req, StreamObserver<UserTaskDef> ctx) {
-        UserTaskDefModel utd = getMetaStore().getUserTaskDef(req.getName(), req.getVersion());
+        UserTaskDefModel utd = metadataDao("default").getUserTaskDef(req.getName(), req.getVersion());
         if (utd == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskDef"));
         } else {
@@ -202,7 +206,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getTaskDef(TaskDefId req, StreamObserver<TaskDef> ctx) {
-        TaskDefModel td = getMetaStore().getTaskDef(req.getName());
+        TaskDefModel td = metadataDao("default").getTaskDef(req.getName());
         if (td == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified TaskDef"));
         } else {
@@ -213,7 +217,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getExternalEventDef(ExternalEventDefId req, StreamObserver<ExternalEventDef> ctx) {
-        ExternalEventDefModel eed = getMetaStore().getExternalEventDef(req.getName());
+        ExternalEventDefModel eed = metadataDao("default").getExternalEventDef(req.getName());
         if (eed == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified ExternalEventDef"));
         } else {
@@ -427,7 +431,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void searchVariable(SearchVariableRequest req, StreamObserver<VariableIdList> ctx) {
-        handleScan(SearchVariableRequestModel.fromProto(req), ctx, SearchVariableReply.class);
+        handleScan(
+                SearchVariableRequestModel.fromProto(req, coreTopologyDaoFactory.getMetadataDao(true, "default")),
+                ctx,
+                SearchVariableReply.class);
     }
 
     @Override
@@ -480,7 +487,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         }
 
         try {
-            InternalScanResponse raw = internalComms.doScan(req.getInternalSearch(internalComms.getGlobalStoreImpl()));
+            InternalScanResponse raw =
+                    internalComms.doScan(req.getInternalSearch(coreTopologyDaoFactory.getMetadataDao(true, "default")));
             if (raw.hasUpdatedBookmark()) {
                 out.bookmark = raw.getUpdatedBookmark().toByteString();
             }

@@ -6,6 +6,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.AnalyticsRegistry;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
@@ -117,7 +118,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     }
 
     @Override
-    public <U extends Message, T extends CoreGetable<U>> T get(ObjectIdModel<?, U, T> id) {
+    public <U extends Message, T extends AbstractGetable<U>> T get(ObjectIdModel<?, U, T> id) {
         return storageManager.get(id);
     }
 

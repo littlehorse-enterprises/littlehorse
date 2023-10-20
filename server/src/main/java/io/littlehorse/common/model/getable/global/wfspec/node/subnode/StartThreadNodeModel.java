@@ -3,7 +3,7 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartThreadRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -51,7 +51,8 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
         return out;
     }
 
-    public void validate(ReadOnlyMetadataStore stores, LHServerConfig config) throws LHApiException {
+    @Override
+    public void validate(ReadOnlyMetadataProcessorDAO readOnlyDao, LHServerConfig config) throws LHApiException {
         WfSpecModel wfSpecModel = node.threadSpecModel.wfSpecModel;
 
         if (threadSpecName.equals(node.threadSpecModel.name)) {

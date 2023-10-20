@@ -23,7 +23,6 @@ import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -62,21 +61,20 @@ public class PrincipalAdministrationTest {
     }
 
     @Test
-    @Disabled
     public void supportStorePrincipal() {
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
         command.setTenantId("default");
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(principalId, new MetadataCommandModel(putPrincipalRequest), 0L));
-        StoredGetable<Principal, PrincipalModel> storedPrincipal = defaultStore.get(new PrincipalIdModel(tenantId));
+        metadataProcessor.process(new Record<>(principalId, command, 0L));
+        StoredGetable<Principal, PrincipalModel> storedPrincipal = defaultStore.get(new PrincipalIdModel(principalId));
         assertThat(storedPrincipal).isNotNull();
+        assertThat(storedPrincipal.getStoredObject().getTenantIds()).containsExactly(tenantId);
+        assertThat(storedPrincipal.getStoredObject().getDefaultTenantId()).isEqualTo(tenantId);
     }
 
     private PutPrincipalRequest principalRequestToProcess() {
         return PutPrincipalRequest.newBuilder()
                 .setId(principalId)
-                .addTenantId(tenantId)
-                .setDefaultTenantId(tenantId)
                 .addAcls(TestUtil.acl().toProto().build())
                 .build();
     }
