@@ -2,7 +2,6 @@ package io.littlehorse.common.model.io.littlehorse.common.model.metadatacommand.
 
 import static org.assertj.core.api.Assertions.*;
 
-import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -63,7 +62,7 @@ public class PrincipalAdministrationTest {
     @Test
     public void supportStorePrincipal() {
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
-        command.setTenantId("default");
+        command.setTenantId(tenantId);
         metadataProcessor.init(mockProcessorContext);
         metadataProcessor.process(new Record<>(principalId, command, 0L));
         StoredGetable<Principal, PrincipalModel> storedPrincipal = defaultStore.get(new PrincipalIdModel(principalId));
@@ -73,9 +72,6 @@ public class PrincipalAdministrationTest {
     }
 
     private PutPrincipalRequest principalRequestToProcess() {
-        return PutPrincipalRequest.newBuilder()
-                .setId(principalId)
-                .addAcls(TestUtil.acl().toProto().build())
-                .build();
+        return PutPrincipalRequest.newBuilder().setId(principalId).build();
     }
 }

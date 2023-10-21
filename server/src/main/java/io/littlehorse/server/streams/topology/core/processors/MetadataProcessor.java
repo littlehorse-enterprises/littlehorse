@@ -2,14 +2,14 @@ package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.dao.DAOFactory;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.dao.ProcessorDAOFactory;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.LHStore;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorDAOImpl;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +26,13 @@ import org.apache.kafka.streams.state.KeyValueStore;
 @Slf4j
 public class MetadataProcessor implements Processor<String, MetadataCommandModel, String, Bytes> {
 
-    private MetadataProcessorDAO dao;
     private final LHServerConfig config;
     private final KafkaStreamsServerImpl server;
     private final MetadataCache metadataCache;
 
     private KeyValueStore<String, Bytes> nativeStore;
+
+    private DAOFactory daoFactory;
 
     public MetadataProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         this.config = config;
@@ -41,6 +42,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
 
     public void init(final ProcessorContext<String, Bytes> ctx) {
         nativeStore = ctx.getStateStore(ServerTopology.METADATA_STORE);
+        this.daoFactory = new ProcessorDAOFactory(metadataCache, ctx);
     }
 
     @Override
@@ -57,8 +59,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
 
     public void processHelper(final Record<String, MetadataCommandModel> record) {
         MetadataCommandModel command = record.value();
-        this.dao = new MetadataProcessorDAOImpl(
-                LHStore.instanceFor(nativeStore, command.getTenantId()), command.getTenantId(), metadataCache);
+        MetadataProcessorDAO dao = this.daoFactory.getMetadataDao();
         log.trace(
                 "{} Processing command of type {} with commandId {}",
                 config.getLHInstanceId(),

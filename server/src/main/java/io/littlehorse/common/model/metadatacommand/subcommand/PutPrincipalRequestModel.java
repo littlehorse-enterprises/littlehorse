@@ -59,6 +59,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
             PrincipalModel toStore = new PrincipalModel();
             toStore.setId(id);
             toStore.setDefaultTenantId(defaultTenantId);
+            toStore.getTenantIds().add(defaultTenantId);
             dao.put(toStore);
         }
         return null;
