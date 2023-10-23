@@ -486,7 +486,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
             evt.setTimeoutSeconds(timeoutValue);
             n.setExternalEvent(evt);
         } else {
-            throw new RuntimeException("Tried to set timeout on non-ext evt node!");
+            throw new RuntimeException("Timeouts are only supported on ExternalEvent and Task nodes.");
         }
 
         spec.putNodes(node.nodeName, n.build());
