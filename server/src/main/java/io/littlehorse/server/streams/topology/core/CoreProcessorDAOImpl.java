@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.topology.core;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.dao.AnalyticsRegistry;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -69,8 +70,9 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
             final LHServerConfig config,
             final KafkaStreamsServerImpl server,
             final MetadataCache metadataCache,
-            final ReadOnlyLHStore globalStore) {
-        super(globalStore, metadataCache);
+            final ReadOnlyLHStore globalStore,
+            final ServerContext context) {
+        super(globalStore, metadataCache, context);
 
         this.server = server;
         this.ctx = ctx;

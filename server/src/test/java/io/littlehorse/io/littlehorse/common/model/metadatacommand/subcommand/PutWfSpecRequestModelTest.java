@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.dao.ProcessorDAOFactory;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
@@ -13,7 +14,6 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHStore;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorDAOImpl;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Objects;
@@ -70,11 +70,11 @@ public class PutWfSpecRequestModelTest {
     @ParameterizedTest
     @ValueSource(strings = {TENANT_ID_A, TENANT_ID_B, DEFAULT_TENANT_ID})
     void supportStoringWfSpecWithTenantIsolation(final String tenantId) {
-        MetadataProcessorDAO processorDAO = new MetadataProcessorDAOImpl(
-                LHStore.instanceFor(nativeInMemoryStore, tenantId), tenantId, metadataCache);
         TaskDefModel greet = TestUtil.taskDef("greet");
         wfSpecToProcess.setTenantId(tenantId);
         String specName = wfSpecToProcess.getPutWfSpecRequest().getName();
+        MetadataProcessorDAO processorDAO =
+                new ProcessorDAOFactory(metadataCache, mockProcessorContext).getMetadataDao(wfSpecToProcess);
         processorDAO.put(greet);
         String commandId = UUID.randomUUID().toString();
         metadataProcessor.init(mockProcessorContext);

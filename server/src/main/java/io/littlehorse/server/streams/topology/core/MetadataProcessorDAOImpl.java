@@ -2,9 +2,9 @@ package io.littlehorse.server.streams.topology.core;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
@@ -32,8 +32,8 @@ public class MetadataProcessorDAOImpl extends ReadOnlyMetadataProcessorDAOImpl i
     private final LHStore lhStore;
     private final MetadataCache metadataCache;
 
-    public MetadataProcessorDAOImpl(LHStore lhStore, String tenantId, MetadataCache metadataCache) {
-        super(lhStore, metadataCache);
+    public MetadataProcessorDAOImpl(LHStore lhStore, MetadataCache metadataCache, ServerContext context) {
+        super(lhStore, metadataCache, context);
         this.lhStore = lhStore;
         this.metadataCache = metadataCache;
     }
@@ -56,12 +56,12 @@ public class MetadataProcessorDAOImpl extends ReadOnlyMetadataProcessorDAOImpl i
         // The cast is necessary to tell the store that the ObjectId belongs to a
         // GlobalGetable.
         @SuppressWarnings("unchecked")
-        AbstractGetable<?> old = get((ObjectIdModel<?, U, T>) getable.getObjectId());
+        /*AbstractGetable<?> old = get((ObjectIdModel<?, U, T>) getable.getObjectId());
 
         if (old != null) {
             throw new IllegalStateException(
                     "As of now, metadata processor does not support editing values. Coming in future.");
-        }
+        }*/
 
         StoredGetable<U, T> toStore = new StoredGetable<U, T>(getable);
         lhStore.put(toStore);

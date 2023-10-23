@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.topology.core;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
@@ -12,23 +13,31 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.WfSpec;
+import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ReadOnlyLHStore;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class ReadOnlyMetadataProcessorDAOImpl implements ReadOnlyMetadataProcessorDAO {
 
     private final ReadOnlyLHStore lhStore;
     private final MetadataCache metadataCache;
+    private final ServerContext context;
 
-    public ReadOnlyMetadataProcessorDAOImpl(final ReadOnlyLHStore lhStore, final MetadataCache metadataCache) {
+    public ReadOnlyMetadataProcessorDAOImpl(
+            final ReadOnlyLHStore lhStore, final MetadataCache metadataCache, final ServerContext context) {
         this.lhStore = lhStore;
         this.metadataCache = metadataCache;
+        this.context = context;
     }
 
     public <U extends Message, T extends AbstractGetable<U>> T get(ObjectIdModel<?, U, T> id) {
@@ -90,5 +99,22 @@ public class ReadOnlyMetadataProcessorDAOImpl implements ReadOnlyMetadataProcess
         }
 
         return storedResult == null ? null : storedResult.getStoredObject();
+    }
+
+    @Override
+    public ServerContext context() {
+        return context;
+    }
+
+    @Override
+    public List<String> adminPrincipalIdsFor(String tenantId) {
+        String startKey = "%s/__isAdmin_true__tenantId_%s".formatted(GetableClassEnum.PRINCIPAL.getNumber(), tenantId);
+        String endKey = startKey + "~";
+        LHKeyValueIterator<Tag> result = lhStore.range(startKey, endKey, Tag.class);
+        List<String> adminPrincipalIds = new ArrayList<>();
+        result.forEachRemaining(tagLHIterKeyValue -> {
+            adminPrincipalIds.add(tagLHIterKeyValue.getValue().getDescribedObjectId());
+        });
+        return adminPrincipalIds;
     }
 }

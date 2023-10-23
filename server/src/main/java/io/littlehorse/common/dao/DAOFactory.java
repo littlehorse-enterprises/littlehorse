@@ -1,5 +1,8 @@
 package io.littlehorse.common.dao;
 
+import com.google.protobuf.Message;
+import io.littlehorse.common.model.AbstractCommand;
+
 public interface DAOFactory {
 
     default ReadOnlyMetadataProcessorDAO getMetadataDao(int specificPartition, String tenantId) {
@@ -10,7 +13,7 @@ public interface DAOFactory {
         throw new UnsupportedOperationException();
     }
 
-    default MetadataProcessorDAO getMetadataDao() {
+    default MetadataProcessorDAO getMetadataDao(AbstractCommand<? extends Message> command) {
         throw new UnsupportedOperationException();
     }
 }

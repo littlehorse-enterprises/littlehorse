@@ -79,4 +79,10 @@ public interface PutPrincipalRequestOrBuilder extends
    */
   com.google.protobuf.ByteString
       getDefaultTenantIdBytes();
+
+  /**
+   * <code>bool overwrite = 5;</code>
+   * @return The overwrite.
+   */
+  boolean getOverwrite();
 }

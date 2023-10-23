@@ -64,6 +64,7 @@ message PutPrincipalRequest {
     repeated ServerACL acls = 2;
     repeated string tenant_id = 3;
     string default_tenant_id = 4;
+    bool overwrite = 5;
 }
 
 message DeletePrincipalRequest {

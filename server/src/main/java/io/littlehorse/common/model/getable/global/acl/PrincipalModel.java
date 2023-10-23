@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
@@ -61,12 +62,16 @@ public class PrincipalModel extends GlobalGetable<Principal> {
 
     @Override
     public Date getCreatedAt() {
-        return null;
+        return new Date();
     }
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        return new ArrayList<>();
+        return List.of(new GetableIndex<>(
+                List.of(
+                        Pair.of("tenantId", GetableIndex.ValueType.DYNAMIC),
+                        Pair.of("isAdmin", GetableIndex.ValueType.SINGLE)),
+                Optional.of(TagStorageType.LOCAL)));
     }
 
     @Override
@@ -76,6 +81,17 @@ public class PrincipalModel extends GlobalGetable<Principal> {
 
     @Override
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
-        return null;
+        if (key.equals("isAdmin")) {
+            return List.of(new IndexedField(key, this.isAdmin(), TagStorageType.LOCAL));
+        } else if (key.equals("tenantId")) {
+            return getTenantIds().stream()
+                    .map(tenantId -> new IndexedField(key, tenantId, TagStorageType.LOCAL))
+                    .toList();
+        }
+        return List.of();
+    }
+
+    public boolean isAdmin() {
+        return acls.stream().anyMatch(ServerACLModel::isAdmin);
     }
 }

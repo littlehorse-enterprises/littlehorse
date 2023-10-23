@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nacls.proto\x12\x0blittlehorse\"l\n\tPrincipal\x12\n\n\x02id\x18\x01 \x01(\t\x12$\n\x04\x61\x63ls\x18\x02 \x03(\x0b\x32\x16.littlehorse.ServerACL\x12\x12\n\ntenant_ids\x18\x03 \x03(\t\x12\x19\n\x11\x64\x65\x66\x61ult_tenant_id\x18\x04 \x01(\t\"\x14\n\x06Tenant\x12\n\n\x02id\x18\x01 \x01(\t\"\x9e\x01\n\tServerACL\x12+\n\tresources\x18\x01 \x03(\x0e\x32\x18.littlehorse.ACLResource\x12/\n\x0f\x61llowed_actions\x18\x02 \x03(\x0e\x32\x16.littlehorse.ACLAction\x12\x0e\n\x04name\x18\x03 \x01(\tH\x00\x12\x10\n\x06prefix\x18\x04 \x01(\tH\x00\x42\x11\n\x0fresource_filter\"u\n\x13PutPrincipalRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12$\n\x04\x61\x63ls\x18\x02 \x03(\x0b\x32\x16.littlehorse.ServerACL\x12\x11\n\ttenant_id\x18\x03 \x03(\t\x12\x19\n\x11\x64\x65\x66\x61ult_tenant_id\x18\x04 \x01(\t\"$\n\x16\x44\x65letePrincipalRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\x1e\n\x10PutTenantRequest\x12\n\n\x02id\x18\x01 \x01(\t*\xa2\x01\n\x0b\x41\x43LResource\x12\x0f\n\x0b\x41\x43L_WF_SPEC\x10\x00\x12\x10\n\x0c\x41\x43L_TASK_DEF\x10\x01\x12\x1a\n\x16\x41\x43L_EXTERNAL_EVENT_DEF\x10\x02\x12\x15\n\x11\x41\x43L_USER_TASK_DEF\x10\x03\x12\x11\n\rACL_PRINCIPAL\x10\x04\x12\x0e\n\nACL_TENANT\x10\x05\x12\x1a\n\x16\x41\x43L_ALL_RESOURCE_TYPES\x10\x06*G\n\tACLAction\x12\x08\n\x04READ\x10\x00\x12\x0b\n\x07\x45XECUTE\x10\x01\x12\x12\n\x0eWRITE_METADATA\x10\x02\x12\x0f\n\x0b\x41LL_ACTIONS\x10\x03\x42(\n\x1bio.littlehorse.common.protoP\x01Z\x07.;modelb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nacls.proto\x12\x0blittlehorse\"l\n\tPrincipal\x12\n\n\x02id\x18\x01 \x01(\t\x12$\n\x04\x61\x63ls\x18\x02 \x03(\x0b\x32\x16.littlehorse.ServerACL\x12\x12\n\ntenant_ids\x18\x03 \x03(\t\x12\x19\n\x11\x64\x65\x66\x61ult_tenant_id\x18\x04 \x01(\t\"\x14\n\x06Tenant\x12\n\n\x02id\x18\x01 \x01(\t\"\x9e\x01\n\tServerACL\x12+\n\tresources\x18\x01 \x03(\x0e\x32\x18.littlehorse.ACLResource\x12/\n\x0f\x61llowed_actions\x18\x02 \x03(\x0e\x32\x16.littlehorse.ACLAction\x12\x0e\n\x04name\x18\x03 \x01(\tH\x00\x12\x10\n\x06prefix\x18\x04 \x01(\tH\x00\x42\x11\n\x0fresource_filter\"\x88\x01\n\x13PutPrincipalRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12$\n\x04\x61\x63ls\x18\x02 \x03(\x0b\x32\x16.littlehorse.ServerACL\x12\x11\n\ttenant_id\x18\x03 \x03(\t\x12\x19\n\x11\x64\x65\x66\x61ult_tenant_id\x18\x04 \x01(\t\x12\x11\n\toverwrite\x18\x05 \x01(\x08\"$\n\x16\x44\x65letePrincipalRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\x1e\n\x10PutTenantRequest\x12\n\n\x02id\x18\x01 \x01(\t*\xa2\x01\n\x0b\x41\x43LResource\x12\x0f\n\x0b\x41\x43L_WF_SPEC\x10\x00\x12\x10\n\x0c\x41\x43L_TASK_DEF\x10\x01\x12\x1a\n\x16\x41\x43L_EXTERNAL_EVENT_DEF\x10\x02\x12\x15\n\x11\x41\x43L_USER_TASK_DEF\x10\x03\x12\x11\n\rACL_PRINCIPAL\x10\x04\x12\x0e\n\nACL_TENANT\x10\x05\x12\x1a\n\x16\x41\x43L_ALL_RESOURCE_TYPES\x10\x06*G\n\tACLAction\x12\x08\n\x04READ\x10\x00\x12\x0b\n\x07\x45XECUTE\x10\x01\x12\x12\n\x0eWRITE_METADATA\x10\x02\x12\x0f\n\x0b\x41LL_ACTIONS\x10\x03\x42(\n\x1bio.littlehorse.common.protoP\x01Z\x07.;modelb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -22,20 +22,20 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'\n\033io.littlehorse.common.protoP\001Z\007.;model'
-  _globals['_ACLRESOURCE']._serialized_start=510
-  _globals['_ACLRESOURCE']._serialized_end=672
-  _globals['_ACLACTION']._serialized_start=674
-  _globals['_ACLACTION']._serialized_end=745
+  _globals['_ACLRESOURCE']._serialized_start=530
+  _globals['_ACLRESOURCE']._serialized_end=692
+  _globals['_ACLACTION']._serialized_start=694
+  _globals['_ACLACTION']._serialized_end=765
   _globals['_PRINCIPAL']._serialized_start=27
   _globals['_PRINCIPAL']._serialized_end=135
   _globals['_TENANT']._serialized_start=137
   _globals['_TENANT']._serialized_end=157
   _globals['_SERVERACL']._serialized_start=160
   _globals['_SERVERACL']._serialized_end=318
-  _globals['_PUTPRINCIPALREQUEST']._serialized_start=320
-  _globals['_PUTPRINCIPALREQUEST']._serialized_end=437
-  _globals['_DELETEPRINCIPALREQUEST']._serialized_start=439
-  _globals['_DELETEPRINCIPALREQUEST']._serialized_end=475
-  _globals['_PUTTENANTREQUEST']._serialized_start=477
-  _globals['_PUTTENANTREQUEST']._serialized_end=507
+  _globals['_PUTPRINCIPALREQUEST']._serialized_start=321
+  _globals['_PUTPRINCIPALREQUEST']._serialized_end=457
+  _globals['_DELETEPRINCIPALREQUEST']._serialized_start=459
+  _globals['_DELETEPRINCIPALREQUEST']._serialized_end=495
+  _globals['_PUTTENANTREQUEST']._serialized_start=497
+  _globals['_PUTTENANTREQUEST']._serialized_end=527
 # @@protoc_insertion_point(module_scope)

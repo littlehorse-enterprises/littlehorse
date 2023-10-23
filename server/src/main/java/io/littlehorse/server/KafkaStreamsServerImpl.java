@@ -3,6 +3,7 @@ package io.littlehorse.server;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
+import io.grpc.Context;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
@@ -130,6 +131,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     public KafkaStreamsServerImpl(LHServerConfig config) {
+        Context.current();
         MetadataCache metadataCache = new MetadataCache();
         this.config = config;
         this.taskQueueManager = new TaskQueueManager(this);
