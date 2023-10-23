@@ -4,7 +4,7 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
-import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.proto.ExternalEventNodeTimeoutPb;
 import io.littlehorse.common.util.LHUtil;
@@ -12,7 +12,7 @@ import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ExternalEventTimeout extends SubCommand<ExternalEventNodeTimeoutPb> {
+public class ExternalEventTimeout extends CoreSubCommand<ExternalEventNodeTimeoutPb> {
 
     public String wfRunId;
     public int threadRunNumber;

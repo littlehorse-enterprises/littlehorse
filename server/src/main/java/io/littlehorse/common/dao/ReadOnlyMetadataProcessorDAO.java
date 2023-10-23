@@ -1,12 +1,14 @@
 package io.littlehorse.common.dao;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
+import java.util.List;
 
 public interface ReadOnlyMetadataProcessorDAO {
 
@@ -19,4 +21,8 @@ public interface ReadOnlyMetadataProcessorDAO {
     WfSpecModel getWfSpec(String name, Integer version);
 
     <U extends Message, T extends AbstractGetable<U>> T get(ObjectIdModel<?, U, T> id);
+
+    ServerContext context();
+
+    List<String> adminPrincipalIdsFor(String tenantId);
 }

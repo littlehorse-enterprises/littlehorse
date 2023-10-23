@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
+import io.littlehorse.common.model.ServerSubCommand;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -14,14 +15,20 @@ import io.littlehorse.common.proto.ServerACL;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
-public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalRequest> {
+@Getter
+@Setter
+public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalRequest> implements ServerSubCommand {
 
     private String id;
     private final List<String> tenantIds = new ArrayList<>();
     private String defaultTenantId;
 
     private final List<ServerACLModel> acls = new ArrayList<>();
+    private boolean overwrite;
 
     @Override
     public void initFrom(Message proto) throws LHSerdeError {
@@ -32,6 +39,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
         for (ServerACL serverACL : putPrincipalCommand.getAclsList()) {
             acls.add(LHSerializable.fromProto(serverACL, ServerACLModel.class));
         }
+        this.overwrite = putPrincipalCommand.getOverwrite();
     }
 
     @Override
@@ -44,6 +52,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
                 .map(ServerACLModel::toProto)
                 .map(ServerACL.Builder::build)
                 .toList());
+        out.setOverwrite(overwrite);
         return out;
     }
 
@@ -54,19 +63,38 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
 
     @Override
     public Principal process(MetadataProcessorDAO dao, LHServerConfig config) {
-        PrincipalModel principalModel = dao.get(new PrincipalIdModel(id));
-        if (principalModel == null) {
-            PrincipalModel toStore = new PrincipalModel();
-            toStore.setId(id);
-            toStore.setDefaultTenantId(defaultTenantId);
-            toStore.getTenantIds().add(defaultTenantId);
-            dao.put(toStore);
+        PrincipalModel existingPrincipal = dao.get(new PrincipalIdModel(id));
+        PrincipalModel toSave;
+        if (existingPrincipal == null) {
+            toSave = new PrincipalModel();
+            toSave.setId(id);
+            toSave.getAcls().addAll(acls);
+        } else if (overwrite) {
+            toSave = existingPrincipal;
+            toSave.getAcls().clear();
+            toSave.getAcls().addAll(acls);
+        } else {
+            throw new IllegalArgumentException("Trying to overwrite existing principal");
         }
-        return null;
+        final String contextTenantId = dao.context().tenantId();
+        final String principalTenantId = defaultTenantId == null ? contextTenantId : defaultTenantId;
+
+        if (!toSave.isAdmin()) {
+            List<String> adminPrincipalIds = dao.adminPrincipalIdsFor(principalTenantId).stream()
+                    .filter(adminPrincipalId -> !Objects.equals(adminPrincipalId, id))
+                    .toList();
+            if (adminPrincipalIds.isEmpty()) {
+                throw new IllegalArgumentException("At least one admin level principal is required");
+            }
+        }
+        toSave.setDefaultTenantId(principalTenantId);
+        toSave.getTenantIds().add(principalTenantId);
+        dao.put(toSave);
+        return toSave.toProto().build();
     }
 
     @Override
     public boolean hasResponse() {
-        return false;
+        return true;
     }
 }

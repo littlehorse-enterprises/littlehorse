@@ -7,13 +7,13 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
 
-public class CancelUserTaskRunRequestModel extends SubCommand<CancelUserTaskRunRequest> {
+public class CancelUserTaskRunRequestModel extends CoreSubCommand<CancelUserTaskRunRequest> {
 
     private UserTaskRunIdModel userTaskRunId;
 

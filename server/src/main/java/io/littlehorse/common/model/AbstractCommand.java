@@ -26,4 +26,8 @@ public abstract class AbstractCommand<T extends Message> extends LHSerializable<
     public abstract String getPartitionKey();
 
     public abstract void setTenantId(String tenantId);
+
+    public abstract String getTenantId();
+
+    public abstract SubCommand<? extends Message> getSubCommand();
 }

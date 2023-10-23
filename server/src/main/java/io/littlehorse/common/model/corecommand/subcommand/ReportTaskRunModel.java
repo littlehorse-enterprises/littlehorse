@@ -7,7 +7,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.corecommand.failure.LHTaskErrorModel;
 import io.littlehorse.common.model.corecommand.failure.LHTaskExceptionModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -22,7 +22,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ReportTaskRunModel extends SubCommand<ReportTaskRun> {
+public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
 
     private TaskRunIdModel taskRunId;
     private Date time;

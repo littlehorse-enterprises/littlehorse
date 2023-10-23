@@ -208,6 +208,15 @@ public class TestUtil {
         ServerACLModel acl = new ServerACLModel();
         acl.setName(Optional.of("name"));
         acl.setPrefix(Optional.empty());
+        acl.setResources(List.of(ACLResource.ACL_PRINCIPAL));
+        acl.setAllowedActions(List.of(ACLAction.WRITE_METADATA));
+        return acl;
+    }
+
+    public static ServerACLModel adminAcl() {
+        ServerACLModel acl = new ServerACLModel();
+        acl.setName(Optional.of("name"));
+        acl.setPrefix(Optional.empty());
         acl.setResources(List.of(ACLResource.ACL_ALL_RESOURCE_TYPES));
         acl.setAllowedActions(List.of(ACLAction.ALL_ACTIONS));
         return acl;

@@ -199,6 +199,17 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int OVERWRITE_FIELD_NUMBER = 5;
+  private boolean overwrite_ = false;
+  /**
+   * <code>bool overwrite = 5;</code>
+   * @return The overwrite.
+   */
+  @java.lang.Override
+  public boolean getOverwrite() {
+    return overwrite_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -224,6 +235,9 @@ private static final long serialVersionUID = 0L;
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(defaultTenantId_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 4, defaultTenantId_);
+    }
+    if (overwrite_ != false) {
+      output.writeBool(5, overwrite_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -252,6 +266,10 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(defaultTenantId_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, defaultTenantId_);
     }
+    if (overwrite_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(5, overwrite_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -275,6 +293,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getTenantIdList())) return false;
     if (!getDefaultTenantId()
         .equals(other.getDefaultTenantId())) return false;
+    if (getOverwrite()
+        != other.getOverwrite()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -298,6 +318,9 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + DEFAULT_TENANT_ID_FIELD_NUMBER;
     hash = (53 * hash) + getDefaultTenantId().hashCode();
+    hash = (37 * hash) + OVERWRITE_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getOverwrite());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -440,6 +463,7 @@ private static final long serialVersionUID = 0L;
       tenantId_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
       defaultTenantId_ = "";
+      overwrite_ = false;
       return this;
     }
 
@@ -495,6 +519,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.defaultTenantId_ = defaultTenantId_;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.overwrite_ = overwrite_;
       }
     }
 
@@ -588,6 +615,9 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000008;
         onChanged();
       }
+      if (other.getOverwrite() != false) {
+        setOverwrite(other.getOverwrite());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -643,6 +673,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 34
+            case 40: {
+              overwrite_ = input.readBool();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1151,6 +1186,38 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       defaultTenantId_ = value;
       bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+
+    private boolean overwrite_ ;
+    /**
+     * <code>bool overwrite = 5;</code>
+     * @return The overwrite.
+     */
+    @java.lang.Override
+    public boolean getOverwrite() {
+      return overwrite_;
+    }
+    /**
+     * <code>bool overwrite = 5;</code>
+     * @param value The overwrite to set.
+     * @return This builder for chaining.
+     */
+    public Builder setOverwrite(boolean value) {
+
+      overwrite_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bool overwrite = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearOverwrite() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      overwrite_ = false;
       onChanged();
       return this;
     }

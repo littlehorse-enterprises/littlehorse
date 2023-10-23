@@ -6,11 +6,11 @@ import io.grpc.Status;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.ResumeWfRunRequest;
 
-public class ResumeWfRunRequestModel extends SubCommand<ResumeWfRunRequest> {
+public class ResumeWfRunRequestModel extends CoreSubCommand<ResumeWfRunRequest> {
 
     public String wfRunId;
     public int threadRunNumber;

@@ -9,17 +9,17 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class ServerACLModel extends LHSerializable<ServerACL> {
 
     private List<ACLResource> resources = new ArrayList<>();
     private List<ACLAction> allowedActions = new ArrayList<>();
-    private Optional<String> name;
-    private Optional<String> prefix;
+    private Optional<String> name = Optional.empty();
+    private Optional<String> prefix = Optional.empty();
 
     @Override
     public void initFrom(Message proto) throws LHSerdeError {
@@ -46,5 +46,9 @@ public class ServerACLModel extends LHSerializable<ServerACL> {
     @Override
     public Class<ServerACL> getProtoBaseClass() {
         return ServerACL.class;
+    }
+
+    public boolean isAdmin() {
+        return resources.contains(ACLResource.ACL_ALL_RESOURCE_TYPES) && allowedActions.contains(ACLAction.ALL_ACTIONS);
     }
 }

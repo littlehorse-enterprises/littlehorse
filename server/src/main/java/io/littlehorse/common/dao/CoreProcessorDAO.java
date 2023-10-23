@@ -1,5 +1,6 @@
 package io.littlehorse.common.dao;
 
+import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
@@ -21,8 +22,8 @@ import org.apache.kafka.streams.state.KeyValueStore;
 
 public abstract class CoreProcessorDAO extends ReadOnlyMetadataProcessorDAOImpl {
 
-    public CoreProcessorDAO(ReadOnlyLHStore rocksdb, MetadataCache metadataCache) {
-        super(rocksdb, metadataCache);
+    public CoreProcessorDAO(ReadOnlyLHStore rocksdb, MetadataCache metadataCache, ServerContext context) {
+        super(rocksdb, metadataCache, context);
     }
 
     /*

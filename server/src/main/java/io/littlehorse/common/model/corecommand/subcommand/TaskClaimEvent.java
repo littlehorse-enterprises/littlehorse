@@ -7,7 +7,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ScheduledTaskModel;
-import io.littlehorse.common.model.corecommand.SubCommand;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.TaskClaimEventPb;
@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
  * one will receive the `ScheduledTask`, and therefore the second will be
  * ignored.
  */
-public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
+public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
 
     private TaskRunIdModel taskRunId;
     private Date time;

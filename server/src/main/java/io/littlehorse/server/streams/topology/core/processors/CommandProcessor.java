@@ -50,7 +50,8 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
                 config,
                 server,
                 metadataCache,
-                ReadOnlyLHStore.defaultStore(ctx, ServerTopology.GLOBAL_METADATA_STORE));
+                ReadOnlyLHStore.defaultStore(ctx, ServerTopology.GLOBAL_METADATA_STORE),
+                null);
         dao.onPartitionClaimed();
         ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
     }
