@@ -73,8 +73,9 @@ public class PutWfSpecRequestModelTest {
         TaskDefModel greet = TestUtil.taskDef("greet");
         wfSpecToProcess.setTenantId(tenantId);
         String specName = wfSpecToProcess.getPutWfSpecRequest().getName();
-        MetadataProcessorDAO processorDAO =
-                new ProcessorDAOFactory(metadataCache, mockProcessorContext).getMetadataDao(wfSpecToProcess);
+        MetadataProcessorDAO processorDAO = new ProcessorDAOFactory(
+                        metadataCache, config, server, null, mockProcessorContext)
+                .getMetadataDao(wfSpecToProcess);
         processorDAO.put(greet);
         String commandId = UUID.randomUUID().toString();
         metadataProcessor.init(mockProcessorContext);

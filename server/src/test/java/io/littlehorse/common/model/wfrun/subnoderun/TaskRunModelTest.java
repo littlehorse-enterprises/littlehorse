@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
@@ -21,7 +22,9 @@ public class TaskRunModelTest {
         // arrange. Complex because all the dependencies needed
         TaskRunModel taskRun = new TaskRunModel();
         CoreProcessorDAO mockDao = mock(CoreProcessorDAO.class);
-        when(mockDao.getTenantId()).thenReturn(tenantId);
+        ServerContext mockContext = mock(ServerContext.class);
+        when(mockContext.tenantId()).thenReturn(tenantId);
+        when(mockDao.context()).thenReturn(mockContext);
         taskRun.setId(new TaskRunIdModel("asdf"));
         taskRun.setInputVariables(new ArrayList<>());
         taskRun.setDao(mockDao);

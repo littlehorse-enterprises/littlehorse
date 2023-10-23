@@ -5,15 +5,19 @@ import io.littlehorse.common.model.AbstractCommand;
 
 public interface DAOFactory {
 
-    default ReadOnlyMetadataProcessorDAO getMetadataDao(int specificPartition, String tenantId) {
-        throw new UnsupportedOperationException();
-    }
-
     default ReadOnlyMetadataProcessorDAO getMetadataDao(String tenantId) {
         throw new UnsupportedOperationException();
     }
 
     default MetadataProcessorDAO getMetadataDao(AbstractCommand<? extends Message> command) {
+        throw new UnsupportedOperationException();
+    }
+
+    default CoreProcessorDAO getCoreDao(AbstractCommand<? extends Message> command) {
+        throw new UnsupportedOperationException();
+    }
+
+    default CoreProcessorDAO getCoreDao() {
         throw new UnsupportedOperationException();
     }
 }

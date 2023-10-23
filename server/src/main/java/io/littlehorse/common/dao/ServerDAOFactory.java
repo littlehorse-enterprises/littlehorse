@@ -23,14 +23,6 @@ public class ServerDAOFactory implements DAOFactory {
     }
 
     @Override
-    public ReadOnlyMetadataProcessorDAO getMetadataDao(int specificPartition, String tenantId) {
-        ReadOnlyKeyValueStore<String, Bytes> nativeStore =
-                readOnlyStore(specificPartition, ServerTopology.METADATA_STORE);
-        return new ReadOnlyMetadataProcessorDAOImpl(
-                ReadOnlyLHStore.instanceFor(nativeStore, tenantId), metadataCache, null);
-    }
-
-    @Override
     public ReadOnlyMetadataProcessorDAO getMetadataDao(String tenantId) {
         ReadOnlyKeyValueStore<String, Bytes> nativeStore = readOnlyStore(null, ServerTopology.METADATA_STORE);
         return new ReadOnlyMetadataProcessorDAOImpl(

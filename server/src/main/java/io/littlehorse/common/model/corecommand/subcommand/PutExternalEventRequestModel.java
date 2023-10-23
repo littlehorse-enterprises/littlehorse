@@ -88,7 +88,7 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
             CommandModel deleteExtEventCmd = new CommandModel();
             deleteExtEventCmd.setSubCommand(deleteExternalEvent);
             deleteExtEventCmd.time = timer.maturationTime;
-            deleteExtEventCmd.setTenantId(dao.getTenantId());
+            deleteExtEventCmd.setTenantId(dao.context().tenantId());
             timer.payload = deleteExtEventCmd.toProto().build().toByteArray();
             dao.scheduleTimer(timer);
         }

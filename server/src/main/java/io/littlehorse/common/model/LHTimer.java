@@ -20,7 +20,7 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
     public LHTimer() {}
 
     public LHTimer(CommandModel command, CoreProcessorDAO dao) {
-        command.setTenantId(dao.getTenantId());
+        command.setTenantId(dao.context().tenantId());
         maturationTime = command.getTime();
         payload = command.toProto().build().toByteArray();
         key = command.getPartitionKey();
