@@ -23,7 +23,7 @@ public interface WorkflowThread {
      *     pass that literal value in.
      * @return A NodeOutput for that TASK node.
      */
-    NodeOutput execute(String taskName, Object... args);
+    TaskNodeOutput execute(String taskName, Object... args);
 
     /**
      * Adds a User Task Node, and assigns it to a specific user

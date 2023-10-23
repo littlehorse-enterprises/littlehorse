@@ -209,11 +209,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new LHFormatStringImpl(this, format, args);
     }
 
-    public NodeOutputImpl execute(String taskName, Object... args) {
+    public TaskNodeOutputImpl execute(String taskName, Object... args) {
         checkIfIsActive();
         TaskNode taskNode = createTaskNode(taskName, args);
         String nodeName = addNode(taskName, NodeCase.TASK, taskNode);
-        return new NodeOutputImpl(nodeName, this);
+        return new TaskNodeOutputImpl(nodeName, this);
     }
 
     private TaskNode createTaskNode(String taskName, Object... args) {
@@ -450,6 +450,20 @@ final class WorkflowThreadImpl implements WorkflowThread {
         mutate(internalStartedThreadVar, VariableMutationType.ASSIGN, new NodeOutputImpl(nodeName, this));
 
         return new SpawnedThreadImpl(this, threadName, internalStartedThreadVar);
+    }
+
+    public void overrideTaskRetries(TaskNodeOutputImpl node, int retries) {
+        checkIfIsActive();
+        Node.Builder nb = spec.getNodesOrThrow(node.nodeName).toBuilder();
+        if (nb.getNodeCase() != NodeCase.TASK) {
+            throw new IllegalStateException("Impossible to not have task node here");
+        }
+
+        TaskNode.Builder taskBuilder = nb.getTaskBuilder();
+        taskBuilder.setRetries(retries);
+
+        nb.setTask(taskBuilder);
+        spec.putNodes(node.nodeName, nb.build());
     }
 
     public void addTimeoutToExtEvt(NodeOutputImpl node, int timeoutSeconds) {
