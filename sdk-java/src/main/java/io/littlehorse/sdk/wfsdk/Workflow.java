@@ -30,6 +30,8 @@ public abstract class Workflow {
     protected String name;
     protected PutWfSpecRequest.Builder spec;
     protected Queue<Pair<String, ThreadFunc>> threadFuncs;
+    protected Integer defaultTaskTimeout;
+    protected int defaultTaskRetries;
 
     /**
      * Internal constructor used by WorkflowImpl.
@@ -42,6 +44,39 @@ public abstract class Workflow {
         this.entrypointThread = entrypointThreadFunc;
         this.name = name;
         this.spec = PutWfSpecRequest.newBuilder().setName(name);
+    }
+
+    /**
+     * Sets the default timeout for all TaskRun's in this workflow.
+     * @param timeoutSeconds is the value for the timeout to set.
+     */
+    public void setDefaultTaskTimeout(int timeoutSeconds) {
+        this.defaultTaskTimeout = timeoutSeconds;
+    }
+
+    /**
+     * Returns the default task timeout, or null if it is not set.
+     * @return the default task timeout for this Workflow.
+     */
+    public Integer getDefaultTaskTimeout() {
+        return defaultTaskTimeout;
+    }
+
+    /**
+     * Set default number of retries for task nodes. If this method is not called,
+     * then there are zero retries for each task node.
+     * @param retries is the number of times to retry failed TaskRun executions.
+     */
+    public void setDefaultTaskRetries(int retries) {
+        this.defaultTaskRetries = retries;
+    }
+
+    /**
+     * Get the default number of retries for task nodes.
+     * @return The default number of retries for task nodes.
+     */
+    public int getDefaultTaskRetries() {
+        return defaultTaskRetries;
     }
 
     /**

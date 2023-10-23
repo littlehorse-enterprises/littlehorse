@@ -223,6 +223,14 @@ final class WorkflowThreadImpl implements WorkflowThread {
         for (Object var : args) {
             taskNode.addVariables(assignVariable(var));
         }
+
+        if (parent.getDefaultTaskTimeout() != null) {
+            taskNode.setTimeoutSeconds(parent.getDefaultTaskTimeout());
+        }
+
+        // Can be overriden via NodeOutput.withRetries();
+        taskNode.setRetries(parent.getDefaultTaskRetries());
+
         return taskNode.build();
     }
 
@@ -447,16 +455,25 @@ final class WorkflowThreadImpl implements WorkflowThread {
     public void addTimeoutToExtEvt(NodeOutputImpl node, int timeoutSeconds) {
         checkIfIsActive();
         Node.Builder n = spec.getNodesOrThrow(node.nodeName).toBuilder();
-        if (n.getNodeCase() != NodeCase.EXTERNAL_EVENT) {
+
+        VariableAssignment timeoutValue = VariableAssignment.newBuilder()
+                .setLiteralValue(
+                        VariableValue.newBuilder().setInt(timeoutSeconds).setType(VariableType.INT))
+                .build();
+
+        if (n.getNodeCase() == NodeCase.TASK) {
+            TaskNode.Builder task = n.getTaskBuilder();
+            task.setTimeoutSeconds(timeoutSeconds);
+            n.setTask(task);
+
+        } else if (n.getNodeCase() != NodeCase.EXTERNAL_EVENT) {
+
+            ExternalEventNode.Builder evt = n.getExternalEventBuilder();
+            evt.setTimeoutSeconds(timeoutValue);
+            n.setExternalEvent(evt);
+        } else {
             throw new RuntimeException("Tried to set timeout on non-ext evt node!");
         }
-
-        ExternalEventNode.Builder evt = n.getExternalEventBuilder();
-        evt.setTimeoutSeconds(VariableAssignment.newBuilder()
-                .setLiteralValue(
-                        VariableValue.newBuilder().setInt(timeoutSeconds).setType(VariableType.INT)));
-
-        n.setExternalEvent(evt);
 
         spec.putNodes(node.nodeName, n.build());
     }
