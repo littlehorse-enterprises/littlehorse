@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 
-public class ThreadBuilderImplTest {
+public class WorkflowThreadImplTest {
 
     Faker faker = new Faker();
 
@@ -106,5 +106,66 @@ public class ThreadBuilderImplTest {
                 wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("2-nop-NOP");
 
         assertThat(lastNodeInLoopBody.getOutgoingEdgesCount()).isEqualTo(2);
+    }
+
+    @Test
+    void noRetriesByDefault() {
+        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
+            thread.execute("asdf");
+        });
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+        Node taskNode =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("1-asdf-TASK");
+
+        assertThat(taskNode.getTask().getRetries()).isEqualTo(0);
+    }
+
+    @Test
+    void setIndividualRetry() {
+        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
+            thread.execute("asdf").withRetries(2);
+            ;
+        });
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+        Node taskNode =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("1-asdf-TASK");
+
+        assertThat(taskNode.getTask().getRetries()).isEqualTo(2);
+    }
+
+    @Test
+    void setDefaultRetryAndOverride() {
+        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
+            thread.execute("asdf");
+            thread.execute("asdf").withRetries(2);
+        });
+        wf.setDefaultTaskRetries(1);
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+        Node defaultNode =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("1-asdf-TASK");
+
+        assertThat(defaultNode.getTask().getRetries()).isEqualTo(1);
+
+        Node overridenNode =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("2-asdf-TASK");
+        assertThat(overridenNode.getTask().getRetries()).isEqualTo(2);
+    }
+
+    @Test
+    void setDefaultTaskTimeout() {
+        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
+            thread.execute("asdf");
+            thread.execute("asdf").timeout(42);
+        });
+        wf.setDefaultTaskTimeout(19);
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+        Node taskNode =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("1-asdf-TASK");
+
+        assertThat(taskNode.getTask().getTimeoutSeconds()).isEqualTo(19);
+
+        Node overridenNode =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("2-asdf-TASK");
+        assertThat(overridenNode.getTask().getTimeoutSeconds()).isEqualTo(42);
     }
 }
