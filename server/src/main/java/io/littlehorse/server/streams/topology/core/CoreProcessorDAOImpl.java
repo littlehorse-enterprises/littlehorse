@@ -27,11 +27,9 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.KafkaStreamsServerImpl;
-import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.LHStore;
-import io.littlehorse.server.streams.store.LHTenantStore;
 import io.littlehorse.server.streams.store.ReadOnlyLHStore;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.util.InternalHosts;
@@ -61,19 +59,20 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     private final LHServerConfig config;
     private boolean partitionIsClaimed;
 
-    private final LHStore defaultStore;
-
     private GetableStorageManager storageManager;
+
+    private final LHStore coreStore;
 
     public CoreProcessorDAOImpl(
             final ProcessorContext<String, CommandProcessorOutput> ctx,
             final LHServerConfig config,
             final KafkaStreamsServerImpl server,
             final MetadataCache metadataCache,
-            final ReadOnlyLHStore globalStore,
+            final ReadOnlyLHStore metadataStore,
+            final LHStore coreStore,
             final ServerContext context) {
-        super(globalStore, metadataCache, context);
-
+        super(metadataStore, metadataCache, context);
+        this.coreStore = coreStore;
         this.server = server;
         this.ctx = ctx;
         this.config = config;
@@ -83,7 +82,6 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
 
         scheduledTaskPuts = new HashMap<>();
         timersToSchedule = new ArrayList<>();
-        this.defaultStore = LHStore.defaultStore(ctx.getStateStore(ServerTopology.CORE_STORE));
     }
 
     @Override
@@ -113,7 +111,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
             if (scheduledTask != null) {
                 forwardTask(scheduledTask);
             } else {
-                this.defaultStore.delete(scheduledTaskId, StoreableType.SCHEDULED_TASK);
+                this.coreStore.delete(scheduledTaskId, StoreableType.SCHEDULED_TASK);
             }
         }
         clearThingsToWrite();
@@ -184,13 +182,9 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
         timersToSchedule.add(timer);
     }
 
-    public String getTenantId() {
-        return defaultStore instanceof LHTenantStore ? ((LHTenantStore) defaultStore).getTenantId() : "default";
-    }
-
     @Override
     public ScheduledTaskModel markTaskAsScheduled(TaskRunIdModel taskRunId) {
-        ScheduledTaskModel scheduledTask = this.defaultStore.get(taskRunId.toString(), ScheduledTaskModel.class);
+        ScheduledTaskModel scheduledTask = this.coreStore.get(taskRunId.toString(), ScheduledTaskModel.class);
 
         if (scheduledTask != null) {
             scheduledTaskPuts.put(scheduledTask.getStoreKey(), null);
@@ -230,13 +224,14 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
         return config.getCoreCmdTopicName();
     }
 
+    @Override
     public void onPartitionClaimed() {
         if (partitionIsClaimed) {
             throw new RuntimeException("Re-claiming partition! Yikes!");
         }
         partitionIsClaimed = true;
 
-        try (LHKeyValueIterator<ScheduledTaskModel> iter = this.defaultStore.prefixScan("", ScheduledTaskModel.class)) {
+        try (LHKeyValueIterator<ScheduledTaskModel> iter = this.coreStore.prefixScan("", ScheduledTaskModel.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<ScheduledTaskModel> next = iter.next();
                 ScheduledTaskModel scheduledTask = next.getValue();
@@ -247,7 +242,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     }
 
     private void forwardTask(ScheduledTaskModel scheduledTask) {
-        this.defaultStore.put(scheduledTask);
+        this.coreStore.put(scheduledTask);
 
         if (partitionIsClaimed) {
             server.onTaskScheduled(scheduledTask.getTaskDefId(), scheduledTask);
@@ -260,7 +255,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     private void forwardTimer(LHTimer timer) {
         CommandProcessorOutput output = new CommandProcessorOutput(config.getTimerTopic(), timer, timer.key);
 
-        ctx.forward(new Record<String, CommandProcessorOutput>(timer.key, output, System.currentTimeMillis()));
+        ctx.forward(new Record<>(timer.key, output, System.currentTimeMillis()));
     }
 
     private void clearThingsToWrite() {

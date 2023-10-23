@@ -12,6 +12,8 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 public interface ReadOnlyLHStore {
 
+    public static final String DEFAULT_TENANT = "default";
+
     <U extends Message, T extends Storeable<U>> T get(String storeableKey, Class<T> cls);
 
     <U extends Message, T extends AbstractGetable<U>> StoredGetable<U, T> get(ObjectIdModel<?, U, T> id);

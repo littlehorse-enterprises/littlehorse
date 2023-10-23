@@ -42,7 +42,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
 
     public void init(final ProcessorContext<String, Bytes> ctx) {
         nativeStore = ctx.getStateStore(ServerTopology.METADATA_STORE);
-        this.daoFactory = new ProcessorDAOFactory(metadataCache, ctx);
+        this.daoFactory = new ProcessorDAOFactory(metadataCache, config, server, null, ctx);
     }
 
     @Override

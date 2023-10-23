@@ -78,5 +78,5 @@ public abstract class CoreProcessorDAO extends ReadOnlyMetadataProcessorDAOImpl 
 
     public abstract InternalHosts getInternalHosts();
 
-    public abstract String getTenantId();
+    public abstract void onPartitionClaimed();
 }

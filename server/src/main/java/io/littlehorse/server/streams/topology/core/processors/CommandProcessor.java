@@ -3,14 +3,15 @@ package io.littlehorse.server.streams.topology.core.processors;
 import com.google.protobuf.Message;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.dao.CoreProcessorDAO;
+import io.littlehorse.common.dao.DAOFactory;
+import io.littlehorse.common.dao.ProcessorDAOFactory;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ReadOnlyLHStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.CoreProcessorDAOImpl;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.util.Date;
@@ -26,12 +27,13 @@ import org.apache.kafka.streams.state.KeyValueStore;
 public class CommandProcessor implements Processor<String, CommandModel, String, CommandProcessorOutput> {
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
-    private CoreProcessorDAOImpl dao;
     private LHServerConfig config;
     private KafkaStreamsServerImpl server;
     private final MetadataCache metadataCache;
 
     private KeyValueStore<String, Bytes> nativeStore;
+
+    private DAOFactory daoFactory;
 
     public CommandProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         this.config = config;
@@ -43,16 +45,9 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
         this.ctx = ctx;
 
-        // We sill need the key value store here
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
-        dao = new CoreProcessorDAOImpl(
-                this.ctx,
-                config,
-                server,
-                metadataCache,
-                ReadOnlyLHStore.defaultStore(ctx, ServerTopology.GLOBAL_METADATA_STORE),
-                null);
-        dao.onPartitionClaimed();
+        daoFactory = new ProcessorDAOFactory(metadataCache, config, server, ctx, null);
+        daoFactory.getCoreDao().onPartitionClaimed();
         ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
     }
 
@@ -70,7 +65,8 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
 
     private void processHelper(final Record<String, CommandModel> commandRecord) {
         CommandModel command = commandRecord.value();
-        dao.initCommand(command, this.nativeStore);
+        CoreProcessorDAO coreDao = daoFactory.getCoreDao(command);
+        coreDao.initCommand(command, this.nativeStore);
 
         log.trace(
                 "{} Processing command of type {} with commandId {} with partition key {}",
@@ -80,8 +76,8 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
                 command.getPartitionKey());
 
         try {
-            Message response = command.process(dao, config);
-            dao.commit();
+            Message response = command.process(coreDao, config);
+            coreDao.commit();
             if (command.hasResponse() && command.getCommandId() != null) {
                 WaitForCommandResponse cmdReply = WaitForCommandResponse.newBuilder()
                         .setCommandId(command.getCommandId())

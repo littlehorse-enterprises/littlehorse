@@ -10,7 +10,5 @@ public abstract class CoreSubCommand<T extends Message> extends LHSerializable<T
 
     public abstract Message process(CoreProcessorDAO dao, LHServerConfig config, String tenantId);
 
-    public abstract boolean hasResponse();
-
     public abstract String getPartitionKey();
 }

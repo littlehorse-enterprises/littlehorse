@@ -1,6 +1,7 @@
 package io.littlehorse.common;
 
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
+import java.util.Optional;
 
 public interface ServerContext {
 
@@ -11,7 +12,7 @@ public interface ServerContext {
 
     Scope scope();
 
-    PrincipalModel principal();
+    Optional<PrincipalModel> principal();
 
     String tenantId();
 }
