@@ -48,6 +48,11 @@ public class CommandProcessorTest {
             .withLoggingDisabled()
             .build();
 
+    private final KeyValueStore<String, Bytes> globalInMemoryStore = Stores.keyValueStoreBuilder(
+                    Stores.inMemoryKeyValueStore(ServerTopology.GLOBAL_METADATA_STORE), Serdes.String(), Serdes.Bytes())
+            .withLoggingDisabled()
+            .build();
+
     private final ModelStore defaultStore = ModelStore.defaultStore(nativeInMemoryStore);
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
@@ -56,6 +61,7 @@ public class CommandProcessorTest {
     @BeforeEach
     public void setup() {
         nativeInMemoryStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryStore);
+        globalInMemoryStore.init(mockProcessorContext.getStateStoreContext(), globalInMemoryStore);
     }
 
     @Test

@@ -15,6 +15,9 @@ class SerdeReadOnlyModelStore implements ReadOnlyModelStore {
     private final ReadOnlyKeyValueStore<String, Bytes> nativeStore;
 
     public SerdeReadOnlyModelStore(final ReadOnlyKeyValueStore<String, Bytes> nativeStore) {
+        if (nativeStore == null) {
+            throw new NullPointerException();
+        }
         this.nativeStore = nativeStore;
     }
 

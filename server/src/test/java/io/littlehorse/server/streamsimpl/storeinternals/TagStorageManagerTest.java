@@ -9,6 +9,7 @@ import io.littlehorse.common.dao.ProcessorDAOFactory;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.TagStorageManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
@@ -35,7 +36,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TagStorageManagerTest {
 
     private final KeyValueStore<String, Bytes> store = Stores.keyValueStoreBuilder(
-                    Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
+                    Stores.inMemoryKeyValueStore(ServerTopology.CORE_STORE), Serdes.String(), Serdes.Bytes())
+            .withLoggingDisabled()
+            .build();
+
+    private final KeyValueStore<String, Bytes> globalMetadaataStore = Stores.keyValueStoreBuilder(
+                    Stores.inMemoryKeyValueStore(ServerTopology.GLOBAL_METADATA_STORE), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
 
@@ -67,9 +73,10 @@ public class TagStorageManagerTest {
 
     @BeforeEach
     void setup() {
+        store.init(mockProcessorContext.getStateStoreContext(), store);
+        globalMetadaataStore.init(mockProcessorContext.getStateStoreContext(), globalMetadaataStore);
         daoFactory = new ProcessorDAOFactory(new MetadataCache(), lhConfig, server, mockProcessorContext, null);
         tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, lhConfig, daoFactory.getCoreDao());
-        store.init(mockProcessorContext.getStateStoreContext(), store);
         tag1.setAttributes(List.of(wfSpecNameAttribute));
         tag2.setAttributes(List.of(wfSpecNameAttribute, statusAttribute));
         tags = List.of(tag1, tag2);

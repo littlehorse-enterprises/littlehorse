@@ -36,7 +36,7 @@ public class MetadataProcessorTest {
     private MetadataProcessor metadataProcessor;
 
     private final KeyValueStore<String, Bytes> nativeInMemoryStore = Stores.keyValueStoreBuilder(
-                    Stores.inMemoryKeyValueStore(ServerTopology.CORE_STORE), Serdes.String(), Serdes.Bytes())
+                    Stores.inMemoryKeyValueStore(ServerTopology.METADATA_STORE), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
 
