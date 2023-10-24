@@ -37,6 +37,7 @@ enum GetableClassEnum {
     TASK_RUN = 11;
     USER_TASK_RUN = 12;
     PRINCIPAL = 13;
+    TENANT = 14;
 }
 
 message AttributePb {

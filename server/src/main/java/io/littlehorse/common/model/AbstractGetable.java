@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -88,6 +89,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.USER_TASK_RUN;
         } else if (cls.equals(PrincipalModel.class)) {
             return GetableClassEnum.PRINCIPAL;
+        } else if (cls.equals(TenantModel.class)) {
+            return GetableClassEnum.TENANT;
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -123,6 +126,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return UserTaskRunModel.class;
             case PRINCIPAL:
                 return PrincipalModel.class;
+            case TENANT:
+                return TenantModel.class;
             case UNRECOGNIZED:
                 // default:
         }

@@ -13,6 +13,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecReques
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.proto.LHStoreType;
@@ -44,6 +45,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private String tenantId;
     private PutPrincipalRequestModel putPrincipal;
     private DeletePrincipalRequestModel deletePrincipal;
+    private PutTenantRequestModel putTenant;
 
     public MetadataCommandModel() {
         super();
@@ -168,6 +170,8 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 return putPrincipal;
             case DELETE_PRINCIPAL:
                 return deletePrincipal;
+            case PUT_TENANT:
+                return putTenant;
             case METADATACOMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -205,6 +209,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(DeletePrincipalRequestModel.class)) {
             type = MetadataCommandCase.DELETE_PRINCIPAL;
             deletePrincipal = (DeletePrincipalRequestModel) cmd;
+        } else if (cls.equals(PutTenantRequestModel.class)) {
+            type = MetadataCommandCase.PUT_TENANT;
+            putTenant = (PutTenantRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }
