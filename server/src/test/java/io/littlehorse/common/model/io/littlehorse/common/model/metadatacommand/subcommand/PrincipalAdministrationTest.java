@@ -9,7 +9,9 @@ import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
+import io.littlehorse.common.proto.DeletePrincipalRequest;
 import io.littlehorse.common.proto.Principal;
 import io.littlehorse.common.proto.PutPrincipalRequest;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -51,6 +53,9 @@ public class PrincipalAdministrationTest {
 
     private PutPrincipalRequestModel putPrincipalRequest =
             PutPrincipalRequestModel.fromProto(principalRequestToProcess(), PutPrincipalRequestModel.class);
+
+    private DeletePrincipalRequestModel deletePrincipalRequest =
+            DeletePrincipalRequestModel.fromProto(deletePrincipalRequest(), DeletePrincipalRequestModel.class);
 
     private final String tenantId = "test-tenant-id";
     private final String principalId = "test-principal-id";
@@ -164,12 +169,35 @@ public class PrincipalAdministrationTest {
         verify(server).sendErrorToClient(eq(command.getCommandId()), any());
     }
 
+    @Test
+    public void supportPrincipalDeletion() {
+        String newPrincipalTenantId = "my-tenant";
+        putPrincipalRequest.setDefaultTenantId(newPrincipalTenantId);
+        putPrincipalRequest.getTenantIds().add(newPrincipalTenantId);
+        putPrincipalRequest.getAcls().clear();
+        putPrincipalRequest.getAcls().add(TestUtil.adminAcl());
+        MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
+        command.setTenantId(tenantId);
+        metadataProcessor.init(mockProcessorContext);
+        metadataProcessor.process(new Record<>(principalId, command, 0L));
+
+        assertThat(storedPrincipal()).isNotNull();
+        MetadataCommandModel deleteCommand = new MetadataCommandModel(deletePrincipalRequest);
+        command.setTenantId(tenantId);
+        metadataProcessor.process(new Record<>(principalId, deleteCommand, 0L));
+        assertThat(defaultStore.get(new PrincipalIdModel(principalId))).isNull();
+    }
+
     private PutPrincipalRequest principalRequestToProcess() {
         return PutPrincipalRequest.newBuilder()
                 .setId(principalId)
                 .setOverwrite(false)
                 .addAcls(TestUtil.adminAcl().toProto().build())
                 .build();
+    }
+
+    private DeletePrincipalRequest deletePrincipalRequest() {
+        return DeletePrincipalRequest.newBuilder().setId(principalId).build();
     }
 
     private PrincipalModel storedPrincipal() {
