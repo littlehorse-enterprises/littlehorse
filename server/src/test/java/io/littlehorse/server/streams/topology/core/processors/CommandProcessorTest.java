@@ -11,7 +11,7 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.LHStore;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
@@ -48,7 +48,7 @@ public class CommandProcessorTest {
             .withLoggingDisabled()
             .build();
 
-    private final LHStore defaultStore = LHStore.defaultStore(nativeInMemoryStore);
+    private final ModelStore defaultStore = ModelStore.defaultStore(nativeInMemoryStore);
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();

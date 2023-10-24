@@ -4,15 +4,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.dao.DAOFactory;
+import io.littlehorse.common.dao.ProcessorDAOFactory;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.server.streams.store.LHTenantStore;
+import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.TagStorageManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.CachedTag;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -38,14 +42,19 @@ public class TagStorageManagerTest {
     @Mock
     private LHServerConfig lhConfig;
 
+    @Mock
+    private KafkaStreamsServerImpl server;
+
     private String tenantId = "myTenant";
 
-    private LHTenantStore localStore = new LHTenantStore(store, tenantId);
+    private ModelStore localStore = ModelStore.instanceFor(store, tenantId);
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
 
+    private DAOFactory daoFactory;
+
     @InjectMocks
-    private TagStorageManager tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, lhConfig);
+    private TagStorageManager tagStorageManager;
 
     private Tag tag1 = TestUtil.tag();
 
@@ -58,6 +67,8 @@ public class TagStorageManagerTest {
 
     @BeforeEach
     void setup() {
+        daoFactory = new ProcessorDAOFactory(new MetadataCache(), lhConfig, server, mockProcessorContext, null);
+        tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, lhConfig, daoFactory.getCoreDao());
         store.init(mockProcessorContext.getStateStoreContext(), store);
         tag1.setAttributes(List.of(wfSpecNameAttribute));
         tag2.setAttributes(List.of(wfSpecNameAttribute, statusAttribute));

@@ -1,9 +1,13 @@
 package io.littlehorse.storeinternals;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.ServerContext;
+import io.littlehorse.common.ServerContextImpl;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
@@ -11,7 +15,7 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
-import io.littlehorse.server.streams.store.LHTenantStore;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -45,13 +49,18 @@ public class UserTaskRunModelStorageManagerTest {
     @Mock
     private LHServerConfig lhConfig;
 
-    private LHTenantStore localStoreWrapper;
+    private ModelStore localStoreWrapper;
 
     private String tenantId = "myTenant";
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
     private GetableStorageManager getableStorageManager;
     private String wfRunId = "1234567890";
+
+    @Mock
+    private CoreProcessorDAO mockCoreDao;
+
+    private ServerContext testContext = new ServerContextImpl(tenantId, ServerContext.Scope.PROCESSOR);
 
     @BeforeEach
     void setup() {
@@ -70,9 +79,10 @@ public class UserTaskRunModelStorageManagerTest {
     }
 
     private void initializeDependencies() {
-        localStoreWrapper = new LHTenantStore(store, tenantId);
+        when(mockCoreDao.context()).thenReturn(testContext);
+        localStoreWrapper = ModelStore.instanceFor(store, tenantId);
         getableStorageManager =
-                new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mock());
+                new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), mockCoreDao);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 

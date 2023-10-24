@@ -24,7 +24,7 @@ public class LHDefaultStoreTest {
                     Stores.inMemoryKeyValueStore("myStore"), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
-    private final LHStore store = LHStore.defaultStore(nativeInMemoryStore);
+    private final ModelStore store = ModelStore.defaultStore(nativeInMemoryStore);
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();

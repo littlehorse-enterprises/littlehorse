@@ -16,7 +16,7 @@ import io.littlehorse.common.proto.Principal;
 import io.littlehorse.common.proto.PutPrincipalRequest;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.LHStore;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -60,7 +60,7 @@ public class PrincipalAdministrationTest {
     private final String tenantId = "test-tenant-id";
     private final String principalId = "test-principal-id";
 
-    private final LHStore defaultStore = LHStore.defaultStore(nativeMetadataStore);
+    private final ModelStore defaultStore = ModelStore.defaultStore(nativeMetadataStore);
 
     @BeforeEach
     public void setup() {

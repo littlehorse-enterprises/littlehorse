@@ -12,7 +12,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefMod
 import io.littlehorse.sdk.common.proto.IndexType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
-import io.littlehorse.server.streams.store.LHTenantStore;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -46,7 +46,7 @@ public class JsonVariableStorageManagerTest {
     @Mock
     private LHServerConfig lhConfig;
 
-    private LHTenantStore storeWrapper;
+    private ModelStore storeWrapper;
 
     private String tenantId = "myTenant";
 
@@ -80,7 +80,7 @@ public class JsonVariableStorageManagerTest {
     }
 
     private void initializeDependencies() {
-        storeWrapper = new LHTenantStore(store, tenantId);
+        storeWrapper = ModelStore.instanceFor(store, tenantId);
         getableStorageManager = new GetableStorageManager(storeWrapper, mockProcessorContext, lhConfig, mock(), mock());
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }

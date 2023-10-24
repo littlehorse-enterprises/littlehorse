@@ -1,11 +1,12 @@
 package io.littlehorse.server.streams.storeinternals;
 
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.RemoveRemoteTag;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.server.streams.store.LHStore;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.index.CachedTag;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
@@ -20,9 +21,10 @@ import org.apache.kafka.streams.processor.api.Record;
 @AllArgsConstructor
 public class TagStorageManager {
 
-    private LHStore lhStore;
-    private ProcessorContext<String, CommandProcessorOutput> context;
-    private LHServerConfig lhConfig;
+    private final ModelStore lhStore;
+    private final ProcessorContext<String, CommandProcessorOutput> context;
+    private final LHServerConfig lhConfig;
+    private final CoreProcessorDAO dao;
 
     public void store(Collection<Tag> newTags, TagsCache preExistingTags) {
         List<String> newTagIds = newTags.stream().map(tag -> tag.getStoreKey()).toList();
@@ -64,7 +66,7 @@ public class TagStorageManager {
     private void sendRepartitionCommandForRemoveRemoteTag(String tagStoreKey, String tagAttributeString) {
         RemoveRemoteTag command = new RemoveRemoteTag(tagStoreKey, tagAttributeString);
         RepartitionCommand repartitionCommand = new RepartitionCommand(command, new Date(), tagStoreKey);
-        repartitionCommand.setTenantId(LHStore.tenantIdFor(lhStore));
+        repartitionCommand.setTenantId(dao.context().tenantId());
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.partitionKey = tagAttributeString;
         cpo.topic = this.lhConfig.getRepartitionTopicName();
@@ -80,7 +82,7 @@ public class TagStorageManager {
         cpo.setPartitionKey(partitionKey);
         cpo.setTopic(this.lhConfig.getRepartitionTopicName());
         RepartitionCommand repartitionCommand = new RepartitionCommand(command, new Date(), partitionKey);
-        repartitionCommand.setTenantId(LHStore.tenantIdFor(lhStore));
+        repartitionCommand.setTenantId(dao.context().tenantId());
         cpo.setPayload(repartitionCommand);
         Record<String, CommandProcessorOutput> out = new Record<>(partitionKey, cpo, System.currentTimeMillis());
         this.context.forward(out);

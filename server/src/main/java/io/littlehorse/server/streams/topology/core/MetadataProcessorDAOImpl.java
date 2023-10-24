@@ -9,7 +9,7 @@ import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.server.streams.store.LHStore;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -29,10 +29,10 @@ import io.littlehorse.server.streams.util.MetadataCache;
 public class MetadataProcessorDAOImpl extends ReadOnlyMetadataProcessorDAOImpl implements MetadataProcessorDAO {
 
     private MetadataCommandModel command;
-    private final LHStore lhStore;
+    private final ModelStore lhStore;
     private final MetadataCache metadataCache;
 
-    public MetadataProcessorDAOImpl(LHStore lhStore, MetadataCache metadataCache, ServerContext context) {
+    public MetadataProcessorDAOImpl(ModelStore lhStore, MetadataCache metadataCache, ServerContext context) {
         super(lhStore, metadataCache, context);
         this.lhStore = lhStore;
         this.metadataCache = metadataCache;

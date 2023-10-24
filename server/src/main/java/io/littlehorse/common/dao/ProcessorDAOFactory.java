@@ -8,7 +8,7 @@ import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.ServerSubCommand;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.LHStore;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorDAOImpl;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorDAOImpl;
@@ -40,7 +40,7 @@ public class ProcessorDAOFactory implements DAOFactory {
 
     @Override
     public MetadataProcessorDAO getMetadataDao(AbstractCommand<? extends Message> command) {
-        LHStore metadataStore = metadataStoreFor(command);
+        ModelStore metadataStore = metadataStoreFor(command);
         return new MetadataProcessorDAOImpl(
                 metadataStore,
                 metadataCache,
@@ -61,30 +61,30 @@ public class ProcessorDAOFactory implements DAOFactory {
 
     @Override
     public CoreProcessorDAO getCoreDao() {
-        LHStore metadataStore = LHStore.defaultStore(coreContext.getStateStore(ServerTopology.METADATA_STORE));
-        LHStore coreStore = LHStore.defaultStore(coreContext.getStateStore(ServerTopology.CORE_STORE));
-        ServerContext serverContext = new ServerContextImpl(LHStore.DEFAULT_TENANT, ServerContext.Scope.PROCESSOR);
+        ModelStore metadataStore = ModelStore.defaultStore(coreContext.getStateStore(ServerTopology.METADATA_STORE));
+        ModelStore coreStore = ModelStore.defaultStore(coreContext.getStateStore(ServerTopology.CORE_STORE));
+        ServerContext serverContext = new ServerContextImpl(ModelStore.DEFAULT_TENANT, ServerContext.Scope.PROCESSOR);
         return new CoreProcessorDAOImpl(
                 coreContext, config, streamsServer, metadataCache, metadataStore, coreStore, serverContext);
     }
 
-    private LHStore metadataStoreFor(AbstractCommand<? extends Message> command) {
+    private ModelStore metadataStoreFor(AbstractCommand<? extends Message> command) {
         KeyValueStore<String, Bytes> nativeStore =
                 currentProcessorContext().getStateStore(ServerTopology.METADATA_STORE);
         return storeFor(command, nativeStore);
     }
 
-    private LHStore coreStoreFor(AbstractCommand<? extends Message> command) {
+    private ModelStore coreStoreFor(AbstractCommand<? extends Message> command) {
         KeyValueStore<String, Bytes> nativeStore = currentProcessorContext().getStateStore(ServerTopology.CORE_STORE);
         return storeFor(command, nativeStore);
     }
 
-    private LHStore storeFor(AbstractCommand<? extends Message> command, KeyValueStore<String, Bytes> nativeStore) {
-        LHStore store;
+    private ModelStore storeFor(AbstractCommand<? extends Message> command, KeyValueStore<String, Bytes> nativeStore) {
+        ModelStore store;
         if (command.getSubCommand() instanceof ServerSubCommand) {
-            store = LHStore.defaultStore(nativeStore);
+            store = ModelStore.defaultStore(nativeStore);
         } else {
-            store = LHStore.instanceFor(nativeStore, command.getTenantId());
+            store = ModelStore.instanceFor(nativeStore, command.getTenantId());
         }
         return store;
     }
