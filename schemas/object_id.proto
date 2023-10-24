@@ -85,3 +85,7 @@ message WfSpecMetricsId {
 message PrincipalId {
   string id = 1;
 }
+
+message TenantId {
+  string id = 1;
+}

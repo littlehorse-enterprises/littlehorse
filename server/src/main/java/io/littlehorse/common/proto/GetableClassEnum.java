@@ -64,6 +64,10 @@ public enum GetableClassEnum
    * <code>PRINCIPAL = 13;</code>
    */
   PRINCIPAL(13),
+  /**
+   * <code>TENANT = 14;</code>
+   */
+  TENANT(14),
   UNRECOGNIZED(-1),
   ;
 
@@ -123,6 +127,10 @@ public enum GetableClassEnum
    * <code>PRINCIPAL = 13;</code>
    */
   public static final int PRINCIPAL_VALUE = 13;
+  /**
+   * <code>TENANT = 14;</code>
+   */
+  public static final int TENANT_VALUE = 14;
 
 
   public final int getNumber() {
@@ -163,6 +171,7 @@ public enum GetableClassEnum
       case 11: return TASK_RUN;
       case 12: return USER_TASK_RUN;
       case 13: return PRINCIPAL;
+      case 14: return TENANT;
       default: return null;
     }
   }
