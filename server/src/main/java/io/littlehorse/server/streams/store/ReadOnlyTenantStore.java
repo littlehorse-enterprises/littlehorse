@@ -1,14 +1,9 @@
 package io.littlehorse.server.streams.store;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
-import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.getable.ObjectIdModel;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
@@ -32,47 +27,29 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * for a given namespace.
  */
 @Slf4j
-public class ReadOnlyTenantStore implements ReadOnlyLHStore {
+public class ReadOnlyTenantStore implements ReadOnlyModelStore {
 
     @Getter
     public final String tenantId;
 
-    private final ReadOnlyKeyValueStore<String, Bytes> nativeStore;
+    private final SerdeReadOnlyModelStore serdeModelStore;
 
     public ReadOnlyTenantStore(ReadOnlyKeyValueStore<String, Bytes> nativeStore, String tenantId) {
         this.tenantId = tenantId;
-        this.nativeStore = nativeStore;
+        this.serdeModelStore = new SerdeReadOnlyModelStore(nativeStore);
     }
 
     @Override
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
         String keyToLookFor = appendTenantPrefixTo(Storeable.getFullStoreKey(cls, storeKey));
-        Bytes raw = nativeStore.get(keyToLookFor);
-
-        if (raw == null) return null;
-
-        try {
-            return LHSerializable.fromBytes(raw.get(), cls);
-        } catch (LHSerdeError exn) {
-            throw new IllegalStateException("LHSerdeError indicates corrupted store.", exn);
-        }
-    }
-
-    @Override
-    public <U extends Message, T extends AbstractGetable<U>> StoredGetable<U, T> get(ObjectIdModel<?, U, T> id) {
-        String key = id.getType().getNumber() + "/";
-        key += id.toString();
-        return (StoredGetable<U, T>) get(key, StoredGetable.class);
+        return serdeModelStore.get(keyToLookFor, cls);
     }
 
     /**
      * Make sure to `.close()` the result!
      */
     public <T extends Storeable<?>> LHKeyValueIterator<T> prefixScan(String key, Class<T> cls) {
-        return new LHKeyValueIterator<>(
-                nativeStore.prefixScan(
-                        appendTenantPrefixTo(key), Serdes.String().serializer()),
-                cls);
+        return serdeModelStore.prefixScan(appendTenantPrefixTo(key), cls);
     }
 
     public <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(String prefix, Class<T> cls) {
@@ -84,30 +61,7 @@ public class ReadOnlyTenantStore implements ReadOnlyLHStore {
         // greater than Z. We'll go with the '~', which is the greatest Ascii
         // character.
         String end = start + '~';
-        return new LHKeyValueIterator<>(
-                nativeStore.reverseRange(appendTenantPrefixTo(start), appendTenantPrefixTo(end)), cls);
-    }
-
-    public <U extends Message, T extends Storeable<U>> T getLastFromPrefix(String prefix, Class<T> cls) {
-
-        LHKeyValueIterator<T> iterator = null;
-        try {
-            iterator = reversePrefixScan(prefix, cls);
-            if (iterator.hasNext()) {
-                return iterator.next().getValue();
-            } else {
-                return null;
-            }
-        } finally {
-            if (iterator != null) {
-                iterator.close();
-            }
-        }
-    }
-
-    protected <T extends Storeable<?>> LHKeyValueIterator<T> reverseRange(String start, String end, Class<T> cls) {
-        return new LHKeyValueIterator<>(
-                nativeStore.reverseRange(appendTenantPrefixTo(start), appendTenantPrefixTo(end)), cls);
+        return serdeModelStore.reversePrefixScan(appendTenantPrefixTo(start), appendTenantPrefixTo(end), cls);
     }
 
     /**
@@ -121,7 +75,7 @@ public class ReadOnlyTenantStore implements ReadOnlyLHStore {
      * @return an iter
      */
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
-        return new LHKeyValueIterator<>(nativeStore.range(appendTenantPrefixTo(start), appendTenantPrefixTo(end)), cls);
+        return serdeModelStore.range(appendTenantPrefixTo(start), appendTenantPrefixTo(end), cls);
     }
 
     protected String appendTenantPrefixTo(String key) {

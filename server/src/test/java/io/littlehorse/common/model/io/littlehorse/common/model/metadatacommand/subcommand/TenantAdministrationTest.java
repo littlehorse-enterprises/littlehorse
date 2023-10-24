@@ -12,7 +12,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestMo
 import io.littlehorse.common.proto.PutTenantRequest;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.LHStore;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorDAOImpl;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -58,7 +58,7 @@ public class TenantAdministrationTest {
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
         metadataProcessor = new MetadataProcessor(config, server, metadataCache);
-        metadataDao = new MetadataProcessorDAOImpl(LHStore.defaultStore(nativeMetadataStore), metadataCache, null);
+        metadataDao = new MetadataProcessorDAOImpl(ModelStore.defaultStore(nativeMetadataStore), metadataCache, null);
     }
 
     @Test

@@ -13,7 +13,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestMo
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.LHStore;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Objects;
@@ -56,10 +56,10 @@ public class PutWfSpecRequestModelTest {
             .build();
 
     private final MockProcessorContext<String, Bytes> mockProcessorContext = new MockProcessorContext<>();
-    private LHStore defaultStore = LHStore.instanceFor(nativeInMemoryStore, DEFAULT_TENANT_ID);
-    private LHStore tenantAStore = LHStore.instanceFor(nativeInMemoryStore, TENANT_ID_A);
+    private ModelStore defaultStore = ModelStore.instanceFor(nativeInMemoryStore, DEFAULT_TENANT_ID);
+    private ModelStore tenantAStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_A);
 
-    private LHStore tenantBStore = LHStore.instanceFor(nativeInMemoryStore, TENANT_ID_B);
+    private ModelStore tenantBStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_B);
 
     @BeforeEach
     public void setup() {
@@ -92,9 +92,9 @@ public class PutWfSpecRequestModelTest {
 
     void ensureTenantIsolation(
             WfSpecIdModel wfSpecToSearch,
-            LHStore storeUnderTest,
-            LHStore firstIsolatedStore,
-            LHStore secondIsolatedStore) {
+            ModelStore storeUnderTest,
+            ModelStore firstIsolatedStore,
+            ModelStore secondIsolatedStore) {
         assertThat(storeUnderTest.get(wfSpecToSearch)).isNotNull();
         assertThat(firstIsolatedStore.get(wfSpecToSearch)).isNull();
         assertThat(secondIsolatedStore.get(wfSpecToSearch)).isNull();

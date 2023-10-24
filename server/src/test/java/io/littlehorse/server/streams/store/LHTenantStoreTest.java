@@ -40,8 +40,8 @@ public class LHTenantStoreTest {
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
 
-    private final LHStore storeForTenantA = LHStore.tenantStore(nativeInMemoryStore, tenantA);
-    private final LHStore storeForTenantB = LHStore.tenantStore(nativeInMemoryStore, tenantB);
+    private final ModelStore storeForTenantA = ModelStore.instanceFor(nativeInMemoryStore, tenantA);
+    private final ModelStore storeForTenantB = ModelStore.instanceFor(nativeInMemoryStore, tenantB);
 
     private final StoredGetable<WfRun, WfRunModel> getableToSave =
             TestUtil.storedWfRun(UUID.randomUUID().toString());
@@ -59,14 +59,17 @@ public class LHTenantStoreTest {
                 getableToSave.getStoredObject().getObjectId().getType().getNumber();
         storeForTenantA.put(getableToSave);
         storeForTenantB.put(getableToSave);
+
         String expectedKey = "%s/%s/%s/%s".formatted(tenantA, storedGetableTypeIndex, objectTypeIndex, testId);
         List<KeyValue<String, Bytes>> allElementsInStore = ImmutableList.copyOf(nativeInMemoryStore.all());
         assertThat(allElementsInStore).hasSize(2);
         Bytes storedBytes = nativeInMemoryStore.get(expectedKey);
         assertThat(storedBytes).isNotNull();
+
         storeForTenantA.delete(getableToSave);
         allElementsInStore = ImmutableList.copyOf(nativeInMemoryStore.all());
         assertThat(allElementsInStore).hasSize(1);
+
         storeForTenantB.delete(getableToSave);
         allElementsInStore = ImmutableList.copyOf(nativeInMemoryStore.all());
         assertThat(allElementsInStore).hasSize(0);

@@ -1,6 +1,6 @@
 package io.littlehorse.common.dao;
 
-import io.littlehorse.server.streams.store.ReadOnlyLHStore;
+import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.util.MetadataCache;
 
 /*
@@ -9,11 +9,11 @@ import io.littlehorse.server.streams.util.MetadataCache;
  */
 public class ReadOnlyMetadataStore {
 
-    private final ReadOnlyLHStore rocksdb;
+    private final ReadOnlyModelStore rocksdb;
 
     private final MetadataCache metadataCache;
 
-    public ReadOnlyMetadataStore(ReadOnlyLHStore rocksdb, MetadataCache metadataCache) {
+    public ReadOnlyMetadataStore(ReadOnlyModelStore rocksdb, MetadataCache metadataCache) {
         this.rocksdb = rocksdb;
         this.metadataCache = metadataCache;
     }

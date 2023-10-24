@@ -19,7 +19,7 @@ import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.ReadOnlyLHStore;
+import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -29,12 +29,12 @@ import java.util.function.Supplier;
 
 public class ReadOnlyMetadataProcessorDAOImpl implements ReadOnlyMetadataProcessorDAO {
 
-    private final ReadOnlyLHStore lhStore;
+    private final ReadOnlyModelStore lhStore;
     private final MetadataCache metadataCache;
     private final ServerContext context;
 
     public ReadOnlyMetadataProcessorDAOImpl(
-            final ReadOnlyLHStore lhStore, final MetadataCache metadataCache, final ServerContext context) {
+            final ReadOnlyModelStore lhStore, final MetadataCache metadataCache, final ServerContext context) {
         this.lhStore = lhStore;
         this.metadataCache = metadataCache;
         this.context = context;

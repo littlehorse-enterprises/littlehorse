@@ -1,7 +1,7 @@
 package io.littlehorse.common.dao;
 
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.ReadOnlyLHStore;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.topology.core.ReadOnlyMetadataProcessorDAOImpl;
 import io.littlehorse.server.streams.util.MetadataCache;
 import org.apache.kafka.common.utils.Bytes;
@@ -25,8 +25,7 @@ public class ServerDAOFactory implements DAOFactory {
     @Override
     public ReadOnlyMetadataProcessorDAO getMetadataDao(String tenantId) {
         ReadOnlyKeyValueStore<String, Bytes> nativeStore = readOnlyStore(null, ServerTopology.METADATA_STORE);
-        return new ReadOnlyMetadataProcessorDAOImpl(
-                ReadOnlyLHStore.instanceFor(nativeStore, tenantId), metadataCache, null);
+        return new ReadOnlyMetadataProcessorDAOImpl(ModelStore.instanceFor(nativeStore, tenantId), metadataCache, null);
     }
 
     private ReadOnlyKeyValueStore<String, Bytes> readOnlyStore(Integer specificPartition, String storeName) {

@@ -8,7 +8,7 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.LHStore;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
@@ -56,9 +56,9 @@ public class CreateRemoteTagRepartitionCommandTest {
 
     private static final String TENANT_ID_A = "A", TENANT_ID_B = "B", DEFAULT_TENANT = "default";
 
-    private LHStore tenantAStore = LHStore.instanceFor(nativeInMemoryStore, TENANT_ID_A);
-    private LHStore tenantBStore = LHStore.instanceFor(nativeInMemoryStore, TENANT_ID_B);
-    private LHStore defaultStore = LHStore.instanceFor(nativeInMemoryStore, DEFAULT_TENANT);
+    private ModelStore tenantAStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_A);
+    private ModelStore tenantBStore = ModelStore.instanceFor(nativeInMemoryStore, TENANT_ID_B);
+    private ModelStore defaultStore = ModelStore.instanceFor(nativeInMemoryStore, DEFAULT_TENANT);
 
     @BeforeEach
     public void setup() {
@@ -83,7 +83,10 @@ public class CreateRemoteTagRepartitionCommandTest {
     }
 
     void ensureTenantIsolation(
-            String tagStoreKey, LHStore storeUnderTest, LHStore firstIsolatedStore, LHStore secondIsolatedStore) {
+            String tagStoreKey,
+            ModelStore storeUnderTest,
+            ModelStore firstIsolatedStore,
+            ModelStore secondIsolatedStore) {
         assertThat(storeUnderTest.get(tagStoreKey, Tag.class)).isNotNull();
         assertThat(firstIsolatedStore.get(tagStoreKey, Tag.class)).isNull();
         assertThat(secondIsolatedStore.get(tagStoreKey, Tag.class)).isNull();

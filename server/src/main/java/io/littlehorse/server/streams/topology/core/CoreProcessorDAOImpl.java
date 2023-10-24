@@ -29,8 +29,8 @@ import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.LHStore;
-import io.littlehorse.server.streams.store.ReadOnlyLHStore;
+import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streams.util.InternalHosts;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -61,15 +61,15 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
 
     private GetableStorageManager storageManager;
 
-    private final LHStore coreStore;
+    private final ModelStore coreStore;
 
     public CoreProcessorDAOImpl(
             final ProcessorContext<String, CommandProcessorOutput> ctx,
             final LHServerConfig config,
             final KafkaStreamsServerImpl server,
             final MetadataCache metadataCache,
-            final ReadOnlyLHStore metadataStore,
-            final LHStore coreStore,
+            final ReadOnlyModelStore metadataStore,
+            final ModelStore coreStore,
             final ServerContext context) {
         super(metadataStore, metadataCache, context);
         this.coreStore = coreStore;
@@ -90,7 +90,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
         timersToSchedule.clear();
         this.command = command;
         this.storageManager = new GetableStorageManager(
-                LHStore.instanceFor(nativeStore, command.getTenantId()), ctx, config, command, this);
+                ModelStore.instanceFor(nativeStore, command.getTenantId()), ctx, config, command, this);
     }
 
     @Override

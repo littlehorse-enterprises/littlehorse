@@ -1,35 +1,24 @@
 package io.littlehorse.server.streams.store;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
-import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
-public class ReadOnlyLHDefaultStore implements ReadOnlyLHStore {
+public class ReadOnlyModelDefaultStore implements ReadOnlyModelStore {
 
-    private final ReadOnlyKeyValueStore<String, Bytes> nativeStore;
+    private final SerdeReadOnlyModelStore serdeModelStore;
 
-    public ReadOnlyLHDefaultStore(ReadOnlyKeyValueStore<String, Bytes> nativeStore) {
-        this.nativeStore = nativeStore;
+    public ReadOnlyModelDefaultStore(ReadOnlyKeyValueStore<String, Bytes> nativeStore) {
+        this.serdeModelStore = new SerdeReadOnlyModelStore(nativeStore);
     }
 
     @Override
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
         String fullKey = Storeable.getFullStoreKey(cls, storeKey);
-        Bytes raw = nativeStore.get(fullKey);
-
-        if (raw == null) return null;
-
-        try {
-            return LHSerializable.fromBytes(raw.get(), cls);
-        } catch (LHSerdeError exn) {
-            throw new IllegalStateException("LHSerdeError indicates corrupted store.", exn);
-        }
+        return serdeModelStore.get(fullKey, cls);
     }
 
     @Override
@@ -43,10 +32,7 @@ public class ReadOnlyLHDefaultStore implements ReadOnlyLHStore {
      * Make sure to `.close()` the result!
      */
     public <T extends Storeable<?>> LHKeyValueIterator<T> prefixScan(String fullKey, Class<T> cls) {
-        return new LHKeyValueIterator<>(
-                nativeStore.prefixScan(
-                        Storeable.getFullStoreKey(cls, fullKey), Serdes.String().serializer()),
-                cls);
+        return serdeModelStore.prefixScan(Storeable.getFullStoreKey(cls, fullKey), cls);
     }
 
     public <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(String prefix, Class<T> cls) {
@@ -58,28 +44,7 @@ public class ReadOnlyLHDefaultStore implements ReadOnlyLHStore {
         // greater than Z. We'll go with the '~', which is the greatest Ascii
         // character.
         String end = start + '~';
-        return new LHKeyValueIterator<>(nativeStore.reverseRange(start, end), cls);
-    }
-
-    public <U extends Message, T extends Storeable<U>> T getLastFromPrefix(String prefix, Class<T> cls) {
-
-        LHKeyValueIterator<T> iterator = null;
-        try {
-            iterator = reversePrefixScan(prefix, cls);
-            if (iterator.hasNext()) {
-                return iterator.next().getValue();
-            } else {
-                return null;
-            }
-        } finally {
-            if (iterator != null) {
-                iterator.close();
-            }
-        }
-    }
-
-    protected <T extends Storeable<?>> LHKeyValueIterator<T> reverseRange(String start, String end, Class<T> cls) {
-        return new LHKeyValueIterator<>(nativeStore.reverseRange(start, end), cls);
+        return serdeModelStore.reversePrefixScan(start, end, cls);
     }
 
     /**
@@ -93,7 +58,6 @@ public class ReadOnlyLHDefaultStore implements ReadOnlyLHStore {
      * @return an iter
      */
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
-        return new LHKeyValueIterator<>(
-                nativeStore.range(Storeable.getFullStoreKey(cls, start), Storeable.getFullStoreKey(cls, end)), cls);
+        return serdeModelStore.range(Storeable.getFullStoreKey(cls, start), Storeable.getFullStoreKey(cls, end), cls);
     }
 }

@@ -7,7 +7,7 @@ import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.WfMe
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.LHStore;
+import io.littlehorse.server.streams.store.ModelStore;
 import java.time.Duration;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
@@ -41,18 +41,18 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
         if (record.value() != null) {
             log.debug("Received a metric update!");
             RepartitionCommand command = record.value();
-            record.value().process(LHStore.instanceFor(nativeStore, command.getTenantId()), ctx);
+            record.value().process(ModelStore.instanceFor(nativeStore, command.getTenantId()), ctx);
         }
     }
 
     public void cleanOldMetrics(long timestamp) {
-        final LHStore defaultStore = LHStore.defaultStore(nativeStore);
+        final ModelStore defaultStore = ModelStore.defaultStore(nativeStore);
         Date thirtyDaysAgo = DateUtils.addDays(new Date(), -30);
         cleanOldTaskMetrics(defaultStore, thirtyDaysAgo);
         cleanOldWfMetrics(defaultStore, thirtyDaysAgo);
     }
 
-    private void cleanOldTaskMetrics(LHStore defaultStore, Date daysAgo) {
+    private void cleanOldTaskMetrics(ModelStore defaultStore, Date daysAgo) {
         try (LHKeyValueIterator<TaskMetricUpdate> iter =
                 defaultStore.range("", LHUtil.toLhDbFormat(daysAgo), TaskMetricUpdate.class)) {
             while (iter.hasNext()) {
@@ -69,7 +69,7 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
         }
     }
 
-    private void cleanOldWfMetrics(LHStore defaultStore, Date daysAgo) {
+    private void cleanOldWfMetrics(ModelStore defaultStore, Date daysAgo) {
         try (LHKeyValueIterator<WfMetricUpdate> iter =
                 defaultStore.range("", LHUtil.toLhDbFormat(daysAgo), WfMetricUpdate.class)) {
             while (iter.hasNext()) {

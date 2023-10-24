@@ -11,7 +11,7 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.LHStore;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import java.util.*;
@@ -23,23 +23,23 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 public class GetableStorageManager {
 
     private final CommandModel command;
-    private final LHStore store;
+    private final ModelStore store;
     private CoreProcessorDAO dao;
     private final TagStorageManager tagStorageManager;
     private Map<String, GetableToStore<?, ?>> uncommittedChanges;
 
     public GetableStorageManager(
-            LHStore store,
+            final ModelStore store,
             final ProcessorContext<String, CommandProcessorOutput> ctx,
-            LHServerConfig config,
-            CommandModel command,
-            CoreProcessorDAO dao) {
+            final LHServerConfig config,
+            final CommandModel command,
+            final CoreProcessorDAO dao) {
 
         this.store = store;
         this.uncommittedChanges = new TreeMap<>();
         this.command = command;
         this.dao = dao;
-        this.tagStorageManager = new TagStorageManager(this.store, ctx, config);
+        this.tagStorageManager = new TagStorageManager(this.store, ctx, config, dao);
     }
 
     /**
