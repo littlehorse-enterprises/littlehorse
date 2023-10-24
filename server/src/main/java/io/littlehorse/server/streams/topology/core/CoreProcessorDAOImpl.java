@@ -244,12 +244,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     private void forwardTask(ScheduledTaskModel scheduledTask) {
         this.coreStore.put(scheduledTask);
 
-        if (partitionIsClaimed) {
-            server.onTaskScheduled(scheduledTask.getTaskDefId(), scheduledTask);
-        } else {
-            // We will call onTaskScheduled() when we re-hydrate it.
-            log.debug("Haven't claimed partitions, deferring scheduling of tsr");
-        }
+        server.onTaskScheduled(scheduledTask.getTaskDefId(), scheduledTask);
     }
 
     private void forwardTimer(LHTimer timer) {

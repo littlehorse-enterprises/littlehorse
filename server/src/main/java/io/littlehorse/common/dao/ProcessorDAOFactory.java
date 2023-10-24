@@ -61,7 +61,8 @@ public class ProcessorDAOFactory implements DAOFactory {
 
     @Override
     public CoreProcessorDAO getCoreDao() {
-        ModelStore metadataStore = ModelStore.defaultStore(coreContext.getStateStore(ServerTopology.METADATA_STORE));
+        ModelStore metadataStore =
+                ModelStore.defaultStore(coreContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE));
         ModelStore coreStore = ModelStore.defaultStore(coreContext.getStateStore(ServerTopology.CORE_STORE));
         ServerContext serverContext = new ServerContextImpl(ModelStore.DEFAULT_TENANT, ServerContext.Scope.PROCESSOR);
         return new CoreProcessorDAOImpl(
@@ -69,13 +70,17 @@ public class ProcessorDAOFactory implements DAOFactory {
     }
 
     private ModelStore metadataStoreFor(AbstractCommand<? extends Message> command) {
-        KeyValueStore<String, Bytes> nativeStore =
-                currentProcessorContext().getStateStore(ServerTopology.METADATA_STORE);
+        KeyValueStore<String, Bytes> nativeStore;
+        if (metadataContext != null) {
+            nativeStore = metadataContext.getStateStore(ServerTopology.METADATA_STORE);
+        } else {
+            nativeStore = coreContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
+        }
         return storeFor(command, nativeStore);
     }
 
     private ModelStore coreStoreFor(AbstractCommand<? extends Message> command) {
-        KeyValueStore<String, Bytes> nativeStore = currentProcessorContext().getStateStore(ServerTopology.CORE_STORE);
+        KeyValueStore<String, Bytes> nativeStore = coreContext.getStateStore(ServerTopology.CORE_STORE);
         return storeFor(command, nativeStore);
     }
 
