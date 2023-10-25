@@ -60,20 +60,19 @@ public final class Acls {
       "\n\tServerACL\022+\n\tresources\030\001 \003(\0162\030.littleh" +
       "orse.ACLResource\022/\n\017allowed_actions\030\002 \003(" +
       "\0162\026.littlehorse.ACLAction\022\016\n\004name\030\003 \001(\tH" +
-      "\000\022\020\n\006prefix\030\004 \001(\tH\000B\021\n\017resource_filter\"\210" +
-      "\001\n\023PutPrincipalRequest\022\n\n\002id\030\001 \001(\t\022$\n\004ac" +
-      "ls\030\002 \003(\0132\026.littlehorse.ServerACL\022\021\n\ttena" +
-      "nt_id\030\003 \003(\t\022\031\n\021default_tenant_id\030\004 \001(\t\022\021" +
-      "\n\toverwrite\030\005 \001(\010\"$\n\026DeletePrincipalRequ" +
-      "est\022\n\n\002id\030\001 \001(\t\"\036\n\020PutTenantRequest\022\n\n\002i" +
-      "d\030\001 \001(\t*\242\001\n\013ACLResource\022\017\n\013ACL_WF_SPEC\020\000" +
-      "\022\020\n\014ACL_TASK_DEF\020\001\022\032\n\026ACL_EXTERNAL_EVENT" +
-      "_DEF\020\002\022\025\n\021ACL_USER_TASK_DEF\020\003\022\021\n\rACL_PRI" +
-      "NCIPAL\020\004\022\016\n\nACL_TENANT\020\005\022\032\n\026ACL_ALL_RESO" +
-      "URCE_TYPES\020\006*G\n\tACLAction\022\010\n\004READ\020\000\022\013\n\007E" +
-      "XECUTE\020\001\022\022\n\016WRITE_METADATA\020\002\022\017\n\013ALL_ACTI" +
-      "ONS\020\003B(\n\033io.littlehorse.common.protoP\001Z\007" +
-      ".;modelb\006proto3"
+      "\000\022\020\n\006prefix\030\004 \001(\tH\000B\021\n\017resource_filter\"m" +
+      "\n\023PutPrincipalRequest\022\n\n\002id\030\001 \001(\t\022$\n\004acl" +
+      "s\030\002 \003(\0132\026.littlehorse.ServerACL\022\021\n\ttenan" +
+      "t_id\030\003 \001(\t\022\021\n\toverwrite\030\005 \001(\010\"$\n\026DeleteP" +
+      "rincipalRequest\022\n\n\002id\030\001 \001(\t\"\036\n\020PutTenant" +
+      "Request\022\n\n\002id\030\001 \001(\t*\242\001\n\013ACLResource\022\017\n\013A" +
+      "CL_WF_SPEC\020\000\022\020\n\014ACL_TASK_DEF\020\001\022\032\n\026ACL_EX" +
+      "TERNAL_EVENT_DEF\020\002\022\025\n\021ACL_USER_TASK_DEF\020" +
+      "\003\022\021\n\rACL_PRINCIPAL\020\004\022\016\n\nACL_TENANT\020\005\022\032\n\026" +
+      "ACL_ALL_RESOURCE_TYPES\020\006*G\n\tACLAction\022\010\n" +
+      "\004READ\020\000\022\013\n\007EXECUTE\020\001\022\022\n\016WRITE_METADATA\020\002" +
+      "\022\017\n\013ALL_ACTIONS\020\003B(\n\033io.littlehorse.comm" +
+      "on.protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -102,7 +101,7 @@ public final class Acls {
     internal_static_littlehorse_PutPrincipalRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_PutPrincipalRequest_descriptor,
-        new java.lang.String[] { "Id", "Acls", "TenantId", "DefaultTenantId", "Overwrite", });
+        new java.lang.String[] { "Id", "Acls", "TenantId", "Overwrite", });
     internal_static_littlehorse_DeletePrincipalRequest_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_littlehorse_DeletePrincipalRequest_fieldAccessorTable = new

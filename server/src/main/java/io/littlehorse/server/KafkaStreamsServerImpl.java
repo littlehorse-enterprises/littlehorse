@@ -9,7 +9,6 @@ import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.DAOFactory;
 import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.dao.ServerDAOFactory;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -124,10 +123,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     private ListenersManager listenerManager;
     private HealthService healthService;
 
-    private final DAOFactory coreTopologyDaoFactory;
+    private final ServerDAOFactory serverDAOFactory;
 
     private ReadOnlyMetadataProcessorDAO metadataDao(String tenantId) {
-        return coreTopologyDaoFactory.getMetadataDao(tenantId);
+        return serverDAOFactory.getMetadataDao(tenantId);
     }
 
     public KafkaStreamsServerImpl(LHServerConfig config) {
@@ -150,7 +149,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 //    timer, which means latency will jump from 15ms to >100ms
                 config.getStreamsConfig("timer", false));
         this.healthService = new HealthService(config, coreStreams, timerStreams);
-        this.coreTopologyDaoFactory = new ServerDAOFactory(coreStreams, metadataCache);
+        this.serverDAOFactory = new ServerDAOFactory(coreStreams, metadataCache);
 
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
         this.listenerManager = new ListenersManager(config, this, networkThreadpool, healthService.getMeterRegistry());
@@ -435,7 +434,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     @Override
     public void searchVariable(SearchVariableRequest req, StreamObserver<VariableIdList> ctx) {
         handleScan(
-                SearchVariableRequestModel.fromProto(req, coreTopologyDaoFactory.getMetadataDao("default")),
+                SearchVariableRequestModel.fromProto(req, serverDAOFactory.getMetadataDao("default")),
                 ctx,
                 SearchVariableReply.class);
     }
@@ -491,7 +490,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         try {
             InternalScanResponse raw =
-                    internalComms.doScan(req.getInternalSearch(coreTopologyDaoFactory.getMetadataDao("default")));
+                    internalComms.doScan(req.getInternalSearch(serverDAOFactory.getMetadataDao("default")));
             if (raw.hasUpdatedBookmark()) {
                 out.bookmark = raw.getUpdatedBookmark().toByteString();
             }
