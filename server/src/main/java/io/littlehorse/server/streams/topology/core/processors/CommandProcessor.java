@@ -3,15 +3,19 @@ package io.littlehorse.server.streams.topology.core.processors;
 import com.google.protobuf.Message;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.ServerContext;
+import io.littlehorse.common.ServerContextImpl;
 import io.littlehorse.common.dao.CoreProcessorDAO;
-import io.littlehorse.common.dao.DAOFactory;
-import io.littlehorse.common.dao.ProcessorDAOFactory;
+import io.littlehorse.common.model.AbstractCommand;
+import io.littlehorse.common.model.ServerSubCommand;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.CoreProcessorDAOImpl;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.util.Date;
@@ -33,7 +37,7 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
 
     private KeyValueStore<String, Bytes> nativeStore;
 
-    private DAOFactory daoFactory;
+    private CommandDAOFactory daoFactory;
 
     public CommandProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         this.config = config;
@@ -46,8 +50,8 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
         this.ctx = ctx;
 
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
-        daoFactory = new ProcessorDAOFactory(metadataCache, config, server, ctx, null);
-        daoFactory.getCoreDao().onPartitionClaimed();
+        daoFactory = new CommandDAOFactory();
+        daoFactory.getDefaultDao().onPartitionClaimed();
         ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
     }
 
@@ -65,7 +69,7 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
 
     private void processHelper(final Record<String, CommandModel> commandRecord) {
         CommandModel command = commandRecord.value();
-        CoreProcessorDAO coreDao = daoFactory.getCoreDao(command);
+        CoreProcessorDAO coreDao = daoFactory.getDao(command);
         coreDao.initCommand(command, this.nativeStore);
 
         log.trace(
@@ -142,5 +146,56 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
 
     private void forwardMetricsUpdates(long timestamp) {
         // TODO: batch and send metrics to the repartition processor
+    }
+
+    private final class CommandDAOFactory {
+
+        CoreProcessorDAO getDao(CommandModel command) {
+            return new CoreProcessorDAOImpl(
+                    ctx,
+                    config,
+                    server,
+                    metadataCache,
+                    storeFor(command, globalMetadata()),
+                    storeFor(command, coreStore()),
+                    contextFor(command));
+        }
+
+        CoreProcessorDAO getDefaultDao() {
+            return new CoreProcessorDAOImpl(
+                    ctx,
+                    config,
+                    server,
+                    metadataCache,
+                    ModelStore.defaultStore(globalMetadata()),
+                    ModelStore.defaultStore(coreStore()),
+                    defaultContext());
+        }
+
+        private ModelStore storeFor(CommandModel command, KeyValueStore<String, Bytes> nativeStore) {
+            ModelStore store;
+            if (command.getSubCommand() instanceof ServerSubCommand) {
+                store = ModelStore.defaultStore(nativeStore);
+            } else {
+                store = ModelStore.instanceFor(nativeStore, command.getTenantId());
+            }
+            return store;
+        }
+
+        private KeyValueStore<String, Bytes> globalMetadata() {
+            return ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
+        }
+
+        private KeyValueStore<String, Bytes> coreStore() {
+            return ctx.getStateStore(ServerTopology.CORE_STORE);
+        }
+
+        private ServerContext contextFor(AbstractCommand<? extends Message> command) {
+            return new ServerContextImpl(command.getTenantId(), ServerContext.Scope.PROCESSOR);
+        }
+
+        private ServerContext defaultContext() {
+            return new ServerContextImpl(ModelStore.DEFAULT_TENANT, ServerContext.Scope.PROCESSOR);
+        }
     }
 }

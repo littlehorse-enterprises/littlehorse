@@ -1,5 +1,6 @@
 package io.littlehorse.test.internal.step;
 
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.test.internal.LHTestException;
 import io.littlehorse.test.internal.MismatchedConditionException;
 import java.time.Duration;
@@ -33,7 +34,7 @@ public abstract class MatchStep<V> extends AbstractStep {
     }
 
     public void waitUntilMatch(final Callable<V> supplier) {
-        condition.until(supplier, matcher(expectedValue));
+        condition.ignoreException(StatusRuntimeException.class).until(supplier, matcher(expectedValue));
     }
 
     @Override
