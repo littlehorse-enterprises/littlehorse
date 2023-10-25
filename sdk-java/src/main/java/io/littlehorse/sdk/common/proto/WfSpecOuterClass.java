@@ -221,9 +221,9 @@ public final class WfSpecOuterClass {
       "orse.VariableAssignmentH\000\0224\n\ttimestamp\030\002" +
       " \001(\0132\037.littlehorse.VariableAssignmentH\000\022" +
       "3\n\010iso_date\030\003 \001(\0132\037.littlehorse.Variable" +
-      "AssignmentH\000B\016\n\014sleep_lengthB,\n\037io.littl" +
-      "ehorse.sdk.common.protoP\001Z\007.;modelb\006prot" +
-      "o3"
+      "AssignmentH\000B\016\n\014sleep_lengthBG\n\037io.littl" +
+      "ehorse.sdk.common.protoP\001Z\007.;model\252\002\030Lit" +
+      "tleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

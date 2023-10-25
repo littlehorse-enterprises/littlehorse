@@ -33,8 +33,9 @@ public final class TaskDefOuterClass {
       "oto\"u\n\007TaskDef\022\014\n\004name\030\001 \001(\t\022,\n\ninput_va" +
       "rs\030\002 \003(\0132\030.littlehorse.VariableDef\022.\n\ncr" +
       "eated_at\030\003 \001(\0132\032.google.protobuf.Timesta" +
-      "mpB,\n\037io.littlehorse.sdk.common.protoP\001Z" +
-      "\007.;modelb\006proto3"
+      "mpBG\n\037io.littlehorse.sdk.common.protoP\001Z" +
+      "\007.;model\252\002\030LittleHorse.Common.Protob\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

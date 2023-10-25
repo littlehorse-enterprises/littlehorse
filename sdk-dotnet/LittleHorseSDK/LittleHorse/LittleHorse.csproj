@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyVersion>0.5.0</AssemblyVersion>
+    <FileVersion>0.5.0</FileVersion>
+    <PackageVersion>0.5.0-alpha1</PackageVersion>
+    <PackageLicenseFile>SSPLv1.txt</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <Company>LittleHorse Enterprises LLC</Company>
+    <Authors>LittleHorse Enterprises LLC</Authors>
+    <Product>LittleHorseSDK</Product>
+    <Copyright>LittleHorse Enterprises LLC</Copyright>
+    <Description>LittleHorse is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications</Description>
+    <PackageProjectUrl>https://littlehorse.dev</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/littlehorse-enterprises/littlehorse</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="proto\**" />
+    <EmbeddedResource Remove="proto\**" />
+    <None Remove="proto\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.Net.Client" Version="2.55.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.57.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Google.Protobuf" Version="3.24.1" />
+    <PackageReference Include="Grpc" Version="2.46.6" />
+    <PackageReference Include="IdentityModel" Version="6.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables"
+      Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Polly" Version="7.2.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\..\..\schemas\*.proto" GrpcServices="Both" ProtoRoot="..\..\..\schemas" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\licenses\SSPLv1.txt" Pack="true" PackagePath="" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+</Project>

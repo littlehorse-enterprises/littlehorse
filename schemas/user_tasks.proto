@@ -10,6 +10,7 @@ import "variable.proto";
 option go_package = ".;model";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Common.Proto";
 
 message UserTaskDef {
   string name = 1;
@@ -101,7 +102,7 @@ message UserTaskEvent {
   message UTEAssigned {
     optional string old_user_id = 1;
     optional string old_user_group = 2;
-    
+
     optional string new_user_id = 3;
     optional string new_user_group = 4;
   }

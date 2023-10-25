@@ -136,8 +136,9 @@ public final class NodeRunOuterClass {
       "ailure_name\030\001 \001(\t\022\017\n\007message\030\002 \001(\t\0220\n\007co" +
       "ntent\030\003 \001(\0132\032.littlehorse.VariableValueH" +
       "\000\210\001\001\022\034\n\024was_properly_handled\030\004 \001(\010B\n\n\010_c" +
-      "ontentB,\n\037io.littlehorse.sdk.common.prot" +
-      "oP\001Z\007.;modelb\006proto3"
+      "ontentBG\n\037io.littlehorse.sdk.common.prot" +
+      "oP\001Z\007.;model\252\002\030LittleHorse.Common.Protob" +
+      "\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

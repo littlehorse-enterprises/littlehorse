@@ -45,8 +45,9 @@ public final class ExternalEventOuterClass {
       "mberB\024\n\022_node_run_position\"i\n\020ExternalEv" +
       "entDef\022\014\n\004name\030\001 \001(\t\022.\n\ncreated_at\030\002 \001(\013" +
       "2\032.google.protobuf.Timestamp\022\027\n\017retentio" +
-      "n_hours\030\003 \001(\005B,\n\037io.littlehorse.sdk.comm" +
-      "on.protoP\001Z\007.;modelb\006proto3"
+      "n_hours\030\003 \001(\005BG\n\037io.littlehorse.sdk.comm" +
+      "on.protoP\001Z\007.;model\252\002\030LittleHorse.Common" +
+      ".Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

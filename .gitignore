@@ -24,6 +24,12 @@ lhctl/lhctl
 .vscode/launch.json
 *.code-workspace
 
+#Visual Studio
+**/bin/
+**/obj/
+**/.vs/
+**/out/
+
 # Others
 local-dev/certs/
 build/
