@@ -641,22 +641,28 @@ public class LHServerConfig extends ConfigBase {
                 StreamsConfig.APPLICATION_SERVER_CONFIG,
                 this.getInternalAdvertisedHost() + ":" + this.getInternalAdvertisedPort());
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, this.getKafkaGroupId(component));
+
+        // Static membership is utilized
         props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, this.getLHInstanceId());
+
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, this.getBootstrapServers());
         props.put(StreamsConfig.STATE_DIR_CONFIG, this.getStateDirectory());
         if (exactlyOnce) {
             props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, "exactly_once_v2");
         }
         props.put(StreamsConfig.TOPOLOGY_OPTIMIZATION_CONFIG, "all");
-        props.put(StreamsConfig.REQUEST_TIMEOUT_MS_CONFIG, 30000);
-        props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), 1000 * 15);
-        props.put(StreamsConfig.producerPrefix(ProducerConfig.ACKS_CONFIG), "all");
 
-        props.put(
-                StreamsConfig.consumerPrefix(ConsumerConfig.MAX_POLL_RECORDS_CONFIG),
-                10000 // 10,000 instead of 1,000 to improve throughput
-                );
-        props.put(StreamsConfig.consumerPrefix(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG), 20);
+        // Keep retrying kafka requests for 60 seconds, which should be long enough for partition
+        // leader to move over in case of broker failure.
+        // TODO (LH-149): Ensure this works when we kill a Kafka broker
+        props.put(StreamsConfig.REQUEST_TIMEOUT_MS_CONFIG, 1000 * 60);
+
+        // TOOD (LH-149): Determine whether a broker failure causes a transaction timeout and then a
+        // subsequent state store wipeout and restoration. Additionally, LH-149 should make this
+        // value match the request timeout as well.
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), 1000 * 60);
+
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.ACKS_CONFIG), "all");
 
         props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, (int) getReplicationFactor());
         props.put(
@@ -665,15 +671,16 @@ public class LHServerConfig extends ConfigBase {
         props.put(
                 StreamsConfig.DEFAULT_PRODUCTION_EXCEPTION_HANDLER_CLASS_CONFIG,
                 org.apache.kafka.streams.errors.DefaultProductionExceptionHandler.class);
+
+        // TODO (LH-150): Make this configurable
         props.put(
                 StreamsConfig.consumerPrefix(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG),
                 Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "20000")));
-        props.put(StreamsConfig.METADATA_MAX_AGE_CONFIG, 1000 * 30);
+
         props.put(
                 StreamsConfig.NUM_STREAM_THREADS_CONFIG,
                 Integer.valueOf(getOrSetDefault(LHServerConfig.NUM_STREAM_THREADS_KEY, "1")));
-        props.put(StreamsConfig.TASK_TIMEOUT_MS_CONFIG, 10 * 1000);
-        props.put(StreamsConfig.producerPrefix(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG), 10 * 1000);
+
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName());
         props.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG, this.getStandbyReplicas());
         props.put(StreamsConfig.MAX_WARMUP_REPLICAS_CONFIG, this.getWarmupReplicas());
@@ -681,8 +688,24 @@ public class LHServerConfig extends ConfigBase {
         props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, getStreamsCommitInterval());
         props.put(StreamsConfig.PROBING_REBALANCE_INTERVAL_MS_CONFIG, 1000 * 60);
 
-        // props.put(StreamsConfig.RACK_AWARE_ASSIGNMENT_TAGS_CONFIG, "rack");
-        // props.put(StreamsConfig.CLIENT_TAG_PREFIX + "rack", getRackId());
+        if (getRackId() != null) {
+            // This enables high-availability assignment (standby's are scheduled in different)
+            // racks than the active tasks
+            props.put(StreamsConfig.RACK_AWARE_ASSIGNMENT_TAGS_CONFIG, "availabilityzone");
+            props.put(StreamsConfig.CLIENT_TAG_PREFIX + "availabilityzone", getRackId());
+
+            // Enable follower fetching for standby tasks and restoration.
+            // Follower fetching increases latency by a few dozen milliseconds for tail reads.
+            // Therefore, we only fetch from followers on the standby tasks.
+            props.put("restore.consumer." + ConsumerConfig.CLIENT_RACK_CONFIG, getRackId());
+
+            // It's fine to slightly increase latency for the global consumer. Even though the
+            // global consumer doesn't read much data, it still sends fetch requests quite often.
+            // Those fetch requests can be somewhat costly.
+            props.put("global.consumer." + ConsumerConfig.CLIENT_RACK_CONFIG, getRackId());
+
+            // As of Kafka 3.6, there is nothing we can do to optimize the group coordinator traffic.
+        }
 
         props.put(StreamsConfig.ROCKSDB_CONFIG_SETTER_CLASS_CONFIG, RocksConfigSetter.class);
 
@@ -700,7 +723,7 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public String getRackId() {
-        return getOrSetDefault(LHServerConfig.RACK_ID_KEY, "unset-rack-id");
+        return getOrSetDefault(LHServerConfig.RACK_ID_KEY, null);
     }
 
     public int getStreamsCommitInterval() {
@@ -723,6 +746,14 @@ public class LHServerConfig extends ConfigBase {
         return Integer.valueOf(getOrSetDefault(LHServerConfig.NUM_WARMUP_REPLICAS_KEY, "12"));
     }
 
+    /**
+     * Creates a Kafka Topic if it doesn't already exist. Returns true if the topic was created,
+     * false if it already existed.
+     * @param topic is the topic to create.
+     * @return true if topic was created, false if it already existed
+     * @throws InterruptedException if interrupted when waiting for the topic creation callback.
+     * @throws ExecutionException if the topic creation callback fails.
+     */
     public boolean createKafkaTopic(NewTopic topic) throws InterruptedException, ExecutionException {
         try {
             kafkaAdmin.createTopics(Collections.singleton(topic)).all().get();
