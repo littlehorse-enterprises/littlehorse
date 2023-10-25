@@ -71,8 +71,7 @@ public class PrincipalAdministrationTest {
     @Test
     public void supportStorePrincipal() {
         String newPrincipalTenantId = "my-tenant";
-        putPrincipalRequest.setDefaultTenantId(newPrincipalTenantId);
-        putPrincipalRequest.getTenantIds().add(newPrincipalTenantId);
+        putPrincipalRequest.setTenantId(newPrincipalTenantId);
         putPrincipalRequest.getAcls().clear();
         putPrincipalRequest.getAcls().add(TestUtil.adminAcl());
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
@@ -86,8 +85,7 @@ public class PrincipalAdministrationTest {
 
     @Test
     public void supportPrincipalInitializationFromCommandMetadata() {
-        putPrincipalRequest.setDefaultTenantId(null);
-        putPrincipalRequest.getTenantIds().clear();
+        putPrincipalRequest.setTenantId(null);
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
         command.setTenantId(tenantId);
         metadataProcessor.init(mockProcessorContext);
@@ -131,8 +129,7 @@ public class PrincipalAdministrationTest {
     @Test
     public void supportPrincipalDowngrade() {
         String newPrincipalTenantId = "my-tenant";
-        putPrincipalRequest.setDefaultTenantId(newPrincipalTenantId);
-        putPrincipalRequest.getTenantIds().add(newPrincipalTenantId);
+        putPrincipalRequest.setTenantId(newPrincipalTenantId);
         putPrincipalRequest.getAcls().clear();
         putPrincipalRequest.getAcls().add(TestUtil.adminAcl());
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
@@ -152,8 +149,7 @@ public class PrincipalAdministrationTest {
     @Test
     public void shouldPreventTenantLockOut() {
         String newPrincipalTenantId = "my-tenant";
-        putPrincipalRequest.setDefaultTenantId(newPrincipalTenantId);
-        putPrincipalRequest.getTenantIds().add(newPrincipalTenantId);
+        putPrincipalRequest.setTenantId(newPrincipalTenantId);
         putPrincipalRequest.getAcls().clear();
         putPrincipalRequest.getAcls().add(TestUtil.adminAcl());
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
@@ -172,8 +168,7 @@ public class PrincipalAdministrationTest {
     @Test
     public void supportPrincipalDeletion() {
         String newPrincipalTenantId = "my-tenant";
-        putPrincipalRequest.setDefaultTenantId(newPrincipalTenantId);
-        putPrincipalRequest.getTenantIds().add(newPrincipalTenantId);
+        putPrincipalRequest.setTenantId(newPrincipalTenantId);
         putPrincipalRequest.getAcls().clear();
         putPrincipalRequest.getAcls().add(TestUtil.adminAcl());
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);

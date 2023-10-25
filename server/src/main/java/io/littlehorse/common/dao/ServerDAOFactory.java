@@ -1,5 +1,7 @@
 package io.littlehorse.common.dao;
 
+import io.littlehorse.common.ServerContext;
+import io.littlehorse.common.ServerContextImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.topology.core.ReadOnlyMetadataProcessorDAOImpl;
@@ -10,7 +12,7 @@ import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
-public class ServerDAOFactory implements DAOFactory {
+public class ServerDAOFactory {
 
     private final KafkaStreams streamsInstance;
     private final MetadataCache metadataCache;
@@ -22,10 +24,15 @@ public class ServerDAOFactory implements DAOFactory {
         this.metadataCache = metadataCache;
     }
 
-    @Override
     public ReadOnlyMetadataProcessorDAO getMetadataDao(String tenantId) {
-        ReadOnlyKeyValueStore<String, Bytes> nativeStore = readOnlyStore(null, ServerTopology.METADATA_STORE);
-        return new ReadOnlyMetadataProcessorDAOImpl(ModelStore.instanceFor(nativeStore, tenantId), metadataCache, null);
+        ReadOnlyKeyValueStore<String, Bytes> allPartitionNativeStore =
+                readOnlyStore(null, ServerTopology.METADATA_STORE);
+        return new ReadOnlyMetadataProcessorDAOImpl(
+                ModelStore.instanceFor(allPartitionNativeStore, tenantId), metadataCache, contextFor(tenantId));
+    }
+
+    private ServerContext contextFor(String tenantId) {
+        return new ServerContextImpl(tenantId, ServerContext.Scope.READ);
     }
 
     private ReadOnlyKeyValueStore<String, Bytes> readOnlyStore(Integer specificPartition, String storeName) {

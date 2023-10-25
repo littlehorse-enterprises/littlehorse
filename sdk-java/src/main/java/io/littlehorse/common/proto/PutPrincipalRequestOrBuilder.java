@@ -44,41 +44,16 @@ public interface PutPrincipalRequestOrBuilder extends
       int index);
 
   /**
-   * <code>repeated string tenant_id = 3;</code>
-   * @return A list containing the tenantId.
+   * <code>string tenant_id = 3;</code>
+   * @return The tenantId.
    */
-  java.util.List<java.lang.String>
-      getTenantIdList();
+  java.lang.String getTenantId();
   /**
-   * <code>repeated string tenant_id = 3;</code>
-   * @return The count of tenantId.
-   */
-  int getTenantIdCount();
-  /**
-   * <code>repeated string tenant_id = 3;</code>
-   * @param index The index of the element to return.
-   * @return The tenantId at the given index.
-   */
-  java.lang.String getTenantId(int index);
-  /**
-   * <code>repeated string tenant_id = 3;</code>
-   * @param index The index of the value to return.
-   * @return The bytes of the tenantId at the given index.
+   * <code>string tenant_id = 3;</code>
+   * @return The bytes for tenantId.
    */
   com.google.protobuf.ByteString
-      getTenantIdBytes(int index);
-
-  /**
-   * <code>string default_tenant_id = 4;</code>
-   * @return The defaultTenantId.
-   */
-  java.lang.String getDefaultTenantId();
-  /**
-   * <code>string default_tenant_id = 4;</code>
-   * @return The bytes for defaultTenantId.
-   */
-  com.google.protobuf.ByteString
-      getDefaultTenantIdBytes();
+      getTenantIdBytes();
 
   /**
    * <code>bool overwrite = 5;</code>

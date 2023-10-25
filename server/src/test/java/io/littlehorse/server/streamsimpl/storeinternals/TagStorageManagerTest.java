@@ -1,11 +1,13 @@
 package io.littlehorse.server.streamsimpl.storeinternals;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.DAOFactory;
-import io.littlehorse.common.dao.ProcessorDAOFactory;
+import io.littlehorse.common.ServerContext;
+import io.littlehorse.common.ServerContextImpl;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -17,7 +19,6 @@ import io.littlehorse.server.streams.storeinternals.index.CachedTag;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -28,6 +29,7 @@ import org.apache.kafka.streams.state.Stores;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -57,8 +59,6 @@ public class TagStorageManagerTest {
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
 
-    private DAOFactory daoFactory;
-
     @InjectMocks
     private TagStorageManager tagStorageManager;
 
@@ -68,6 +68,11 @@ public class TagStorageManagerTest {
 
     private List<Tag> tags;
 
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private CoreProcessorDAO processorDAO;
+
+    private ServerContext serverContext = new ServerContextImpl(tenantId, ServerContext.Scope.PROCESSOR);
+
     private Attribute wfSpecNameAttribute = new Attribute("wfSpecName", "test-name");
     private Attribute statusAttribute = new Attribute("status", "running");
 
@@ -75,8 +80,7 @@ public class TagStorageManagerTest {
     void setup() {
         store.init(mockProcessorContext.getStateStoreContext(), store);
         globalMetadaataStore.init(mockProcessorContext.getStateStoreContext(), globalMetadaataStore);
-        daoFactory = new ProcessorDAOFactory(new MetadataCache(), lhConfig, server, mockProcessorContext, null);
-        tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, lhConfig, daoFactory.getCoreDao());
+        tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, lhConfig, processorDAO);
         tag1.setAttributes(List.of(wfSpecNameAttribute));
         tag2.setAttributes(List.of(wfSpecNameAttribute, statusAttribute));
         tags = List.of(tag1, tag2);
@@ -109,6 +113,7 @@ public class TagStorageManagerTest {
 
     @Test
     void sendRepartitionCommandForCreateRemoteTagSubCommand() {
+        when(processorDAO.context()).thenReturn(serverContext);
         String expectedPartitionKey = "3/__wfSpecName_test-name";
         tag1.setTagType(TagStorageType.REMOTE);
         tags = List.of(tag1, tag2);
