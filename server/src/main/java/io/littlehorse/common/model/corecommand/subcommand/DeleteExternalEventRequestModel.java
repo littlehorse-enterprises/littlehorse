@@ -39,7 +39,7 @@ public class DeleteExternalEventRequestModel extends CoreSubCommand<DeleteExtern
         return true;
     }
 
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config, String tenantId) {
+    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
         ExternalEventModel externalEvent = dao.get(id);
         if (!externalEvent.claimed) {
             dao.delete(id);

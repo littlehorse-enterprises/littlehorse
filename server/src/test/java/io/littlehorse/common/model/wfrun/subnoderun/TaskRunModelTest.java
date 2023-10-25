@@ -33,7 +33,7 @@ public class TaskRunModelTest {
 
         TaskClaimEvent taskClaimEvent = new TaskClaimEvent();
         // act
-        taskRun.processStart(taskClaimEvent, tenantId);
+        taskRun.processStart(taskClaimEvent);
 
         // assert
         assertThat(taskRun.getLatestAttempt().getTaskWorkerVersion()).isEqualTo(taskClaimEvent.getTaskWorkerVersion());

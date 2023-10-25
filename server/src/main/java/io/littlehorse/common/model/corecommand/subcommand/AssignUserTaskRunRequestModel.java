@@ -55,7 +55,7 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
     }
 
     @Override
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config, String tenantId) {
+    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
 
         if (userGroup == null && userId == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "must provide either UserGroup or userId");
