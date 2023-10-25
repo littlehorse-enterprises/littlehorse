@@ -9,7 +9,16 @@ using Microsoft.Extensions.Logging;
 
 var builder = Host.CreateDefaultBuilder(args);
 
-builder.ConfigureLHWorker(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", "littlehorse.config"));
+var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", "littlehorse.config");
+
+if (File.Exists(path))
+{
+    builder.ConfigureLHWorker(path);
+}
+else
+{
+    builder.ConfigureLHWorker();
+}
 
 builder.ConfigureLogging((hostingContext, logging) =>
 {
@@ -44,5 +53,7 @@ if (!taskWorker.TaskDefExists())
 {
     taskWorker.RegisterTaskDef();
 }
+
+Thread.Sleep(1000);
 
 taskWorker.Start();
