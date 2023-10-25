@@ -57,7 +57,7 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
     }
 
     @Override
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config, String tenantId) {
+    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
         UserTaskRunModel userTaskRun = dao.get(source);
         if (userTaskRun == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified NodeRun not a UserTaskRun");

@@ -68,7 +68,7 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
     }
 
     @Override
-    public Empty process(CoreProcessorDAO dao, LHServerConfig config, String tenantId) {
+    public Empty process(CoreProcessorDAO dao, LHServerConfig config) {
         taskToSchedule.setDao(dao);
         String wfRunId = source.getWfRunId();
 

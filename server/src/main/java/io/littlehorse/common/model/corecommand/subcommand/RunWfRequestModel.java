@@ -65,7 +65,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
     }
 
     @Override
-    public WfRun process(CoreProcessorDAO dao, LHServerConfig config, String tenantId) {
+    public WfRun process(CoreProcessorDAO dao, LHServerConfig config) {
         WfSpecModel spec = dao.getWfSpec(wfSpecName, wfSpecVersion);
         if (spec == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec");

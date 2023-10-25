@@ -60,7 +60,7 @@ public class TaskWorkerHeartBeatTest {
         when(lhdao.getInternalHosts()).thenReturn(new InternalHosts(null, generateHosts));
         when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());
 
-        taskWorkerHeartBeat.process(lhdao, lhConfig, tenantId);
+        taskWorkerHeartBeat.process(lhdao, lhConfig);
 
         verify(lhdao).put(taskWorkerCaptor.capture());
 
@@ -86,7 +86,7 @@ public class TaskWorkerHeartBeatTest {
         when(lhdao.getInternalHosts()).thenReturn(new InternalHosts(null, generateHosts));
         when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());
 
-        taskWorkerHeartBeat.process(lhdao, lhConfig, tenantId);
+        taskWorkerHeartBeat.process(lhdao, lhConfig);
 
         verify(lhdao).put(taskWorkerCaptor.capture());
         verify(assignor).assign(anyCollection(), anyCollection());
@@ -112,8 +112,8 @@ public class TaskWorkerHeartBeatTest {
                 .thenReturn(new InternalHosts(generateHosts, generateHosts));
         when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());
 
-        taskWorkerHeartBeat.process(lhdao, lhConfig, tenantId);
-        taskWorkerHeartBeat.process(lhdao, lhConfig, tenantId);
+        taskWorkerHeartBeat.process(lhdao, lhConfig);
+        taskWorkerHeartBeat.process(lhdao, lhConfig);
 
         verify(assignor).assign(anyCollection(), anyCollection());
     }
@@ -138,15 +138,15 @@ public class TaskWorkerHeartBeatTest {
                 .thenReturn(new InternalHosts(generateHosts, generateHosts));
         when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());
 
-        taskWorkerHeartBeat.process(lhdao, lhConfig, tenantId);
-        taskWorkerHeartBeat.process(lhdao, lhConfig, tenantId);
+        taskWorkerHeartBeat.process(lhdao, lhConfig);
+        taskWorkerHeartBeat.process(lhdao, lhConfig);
         verify(assignor).assign(anyCollection(), anyCollection());
 
         Set<HostModel> newHost = new HashSet<>(generateHosts);
         newHost.addAll(generateHosts(1));
 
         when(lhdao.getInternalHosts()).thenReturn(new InternalHosts(generateHosts, newHost));
-        taskWorkerHeartBeat.process(lhdao, lhConfig, tenantId);
+        taskWorkerHeartBeat.process(lhdao, lhConfig);
 
         verify(assignor, times(2)).assign(anyCollection(), anyCollection());
     }
@@ -171,7 +171,7 @@ public class TaskWorkerHeartBeatTest {
         when(lhdao.getInternalHosts()).thenReturn(new InternalHosts(null, generateHosts));
         when(lhdao.getAdvertisedHost(any(), any())).thenReturn(mock());
 
-        taskWorkerHeartBeat.process(lhdao, lhConfig, tenantId);
+        taskWorkerHeartBeat.process(lhdao, lhConfig);
 
         verify(lhdao).put(taskWorkerCaptor.capture());
         verify(assignor).assign(anyCollection(), anyCollection());
