@@ -1,5 +1,6 @@
 package io.littlehorse.test.internal;
 
+import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
@@ -81,8 +82,15 @@ public class TestContext {
             PutExternalEventDefRequest putExternalEventDefRequest = PutExternalEventDefRequest.newBuilder()
                     .setName(externalEventDef.getName())
                     .build();
-            ExternalEventDef externalEventDefResult = lhClient.putExternalEventDef(putExternalEventDefRequest);
-            externalEventDefMap.put(externalEventDefResult.getName(), externalEventDefResult);
+
+            try {
+                ExternalEventDef externalEventDefResult = lhClient.putExternalEventDef(putExternalEventDefRequest);
+                externalEventDefMap.put(externalEventDefResult.getName(), externalEventDefResult);
+            } catch (StatusRuntimeException exn) {
+                if (exn.getStatus().getCode() != Code.ALREADY_EXISTS) {
+                    throw exn;
+                }
+            }
         }
     }
 

@@ -162,7 +162,7 @@ public class WaitForThreadsTest {
 
     @LHWorkflow("wait-for-threads-with-exception-handler")
     public Workflow buildWaitForThreadsWithExceptionHandlerWorkflow() {
-        return new WorkflowImpl("parallel-approval", thread -> {
+        return new WorkflowImpl("wait-for-threads-with-exception-handler", thread -> {
             // Initialize variables.
             WfRunVariable person1Approved = thread.addVariable("person-1-approved", VariableType.BOOL);
             WfRunVariable person2Approved = thread.addVariable("person-2-approved", VariableType.BOOL);
@@ -216,7 +216,7 @@ public class WaitForThreadsTest {
 
     @LHWorkflow("wait-for-threads-without-exception-handler")
     public Workflow buildWaitForThreadsWithoutExceptionHandlerWorkflow() {
-        return new WorkflowImpl("parallel-approval", thread -> {
+        return new WorkflowImpl("wait-for-threads-without-exception-handler", thread -> {
             // Initialize variables.
             WfRunVariable person1Approved = thread.addVariable("person-1-approved", VariableType.BOOL);
             WfRunVariable person2Approved = thread.addVariable("person-2-approved", VariableType.BOOL);
