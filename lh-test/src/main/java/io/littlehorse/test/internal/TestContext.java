@@ -1,7 +1,7 @@
 package io.littlehorse.test.internal;
 
-import io.grpc.StatusRuntimeException;
 import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
