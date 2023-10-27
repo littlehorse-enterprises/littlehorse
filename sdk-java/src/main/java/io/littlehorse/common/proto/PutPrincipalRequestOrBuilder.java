@@ -44,12 +44,17 @@ public interface PutPrincipalRequestOrBuilder extends
       int index);
 
   /**
-   * <code>string tenant_id = 3;</code>
+   * <code>optional string tenant_id = 3;</code>
+   * @return Whether the tenantId field is set.
+   */
+  boolean hasTenantId();
+  /**
+   * <code>optional string tenant_id = 3;</code>
    * @return The tenantId.
    */
   java.lang.String getTenantId();
   /**
-   * <code>string tenant_id = 3;</code>
+   * <code>optional string tenant_id = 3;</code>
    * @return The bytes for tenantId.
    */
   com.google.protobuf.ByteString

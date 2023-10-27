@@ -3,6 +3,8 @@ package io.littlehorse.server.listener;
 import io.grpc.BindableService;
 import io.grpc.Grpc;
 import io.grpc.Server;
+import io.littlehorse.common.dao.ServerDAOFactory;
+import io.littlehorse.server.auth.RequestAuthorizer;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.grpc.MetricCollectingServerInterceptor;
 import java.io.Closeable;
@@ -18,7 +20,11 @@ public class ServerListener implements Closeable {
     private final Server server;
 
     public ServerListener(
-            ServerListenerConfig config, Executor executor, BindableService service, MeterRegistry meter) {
+            ServerListenerConfig config,
+            Executor executor,
+            BindableService service,
+            MeterRegistry meter,
+            ServerDAOFactory factory) {
         this.config = config;
         this.server = Grpc.newServerBuilderForPort(config.getPort(), config.getCredentials())
                 .keepAliveTime(10, TimeUnit.SECONDS)
@@ -27,6 +33,7 @@ public class ServerListener implements Closeable {
                 .permitKeepAliveWithoutCalls(true)
                 .addService(service)
                 .intercept(new MetricCollectingServerInterceptor(meter))
+                .intercept(new RequestAuthorizer(service, factory))
                 .intercept(config.getAuthorizer())
                 .executor(executor)
                 .build();

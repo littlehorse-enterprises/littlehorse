@@ -1,7 +1,6 @@
 package io.littlehorse.common;
 
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
-import java.util.Optional;
 
 public final class ServerContextImpl implements ServerContext {
 
@@ -20,7 +19,7 @@ public final class ServerContextImpl implements ServerContext {
     }
 
     @Override
-    public Optional<PrincipalModel> principal() {
+    public PrincipalModel principal() {
         return null;
     }
 

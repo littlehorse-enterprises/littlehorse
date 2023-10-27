@@ -7,12 +7,17 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.proto.Tenant;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
+@Getter
+@EqualsAndHashCode(of = "id", callSuper = false)
 public class TenantModel extends GlobalGetable<Tenant> {
 
     private String id;
@@ -21,6 +26,14 @@ public class TenantModel extends GlobalGetable<Tenant> {
 
     public TenantModel(final String id) {
         this.id = id;
+    }
+
+    public static TenantModel createDefault() {
+        return create(ModelStore.DEFAULT_TENANT);
+    }
+
+    public static TenantModel create(String tenantId) {
+        return new TenantModel(tenantId);
     }
 
     @Override

@@ -79,8 +79,7 @@ public class PrincipalAdministrationTest {
         metadataProcessor.init(mockProcessorContext);
         metadataProcessor.process(new Record<>(principalId, command, 0L));
 
-        assertThat(storedPrincipal().getTenantIds()).containsExactly(newPrincipalTenantId);
-        assertThat(storedPrincipal().getDefaultTenantId()).isEqualTo(newPrincipalTenantId);
+        assertThat(storedPrincipal().getTenant().getId()).isEqualTo(newPrincipalTenantId);
     }
 
     @Test
@@ -91,8 +90,7 @@ public class PrincipalAdministrationTest {
         metadataProcessor.init(mockProcessorContext);
         metadataProcessor.process(new Record<>(principalId, command, 0L));
 
-        assertThat(storedPrincipal().getTenantIds()).containsExactly(tenantId);
-        assertThat(storedPrincipal().getDefaultTenantId()).isEqualTo(tenantId);
+        assertThat(storedPrincipal().getTenant().getId()).isEqualTo(tenantId);
     }
 
     @Test
