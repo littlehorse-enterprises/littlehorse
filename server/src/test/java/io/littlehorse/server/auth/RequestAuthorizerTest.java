@@ -1,6 +1,7 @@
 package io.littlehorse.server.auth;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -11,6 +12,7 @@ import io.grpc.ServerCall;
 import io.grpc.ServerInterceptors;
 import io.grpc.ServerMethodDefinition;
 import io.grpc.ServerServiceDefinition;
+import io.grpc.Status;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.ServerContextImpl;
@@ -34,37 +36,28 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class RequestAuthorizerTest {
 
     private final KafkaStreamsServerImpl server = mock();
-
     private final KafkaStreams kafkaStreams = mock();
     private final MetadataCache metadataCache = new MetadataCache();
     private final ServerContext context = new ServerContextImpl(ModelStore.DEFAULT_TENANT, ServerContext.Scope.READ);
-
     private final KeyValueStore<String, Bytes> nativeMetadataStore = Stores.keyValueStoreBuilder(
                     Stores.inMemoryKeyValueStore(ServerTopology.GLOBAL_METADATA_STORE), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
-
     private ModelStore modelStore = ModelStore.defaultStore(nativeMetadataStore);
-
     private final MetadataProcessorDAO metadataDao = new MetadataProcessorDAOImpl(modelStore, metadataCache, context);
-
     private final ServerDAOFactory daoFactory = new ServerDAOFactory(kafkaStreams, metadataCache);
-
     private RequestAuthorizer requestAuthorizer = new RequestAuthorizer(server, daoFactory);
-
     private ServerCall<Object, Object> mockCall = mock();
-
     private final Metadata mockMetadata = mock();
-
     private final MockProcessorContext<String, Bytes> mockProcessorContext = new MockProcessorContext<>();
-
     private final ServerServiceDefinition testServiceDefinition = buildTestServiceDefinition();
-
     private PrincipalModel resolvedPrincipal;
 
     @BeforeEach
@@ -104,7 +97,7 @@ public class RequestAuthorizerTest {
     public void supportPrincipalForSpecificTenant() {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
         TenantModel tenant = new TenantModel("my-tenant");
-        List<ServerACLModel> acls = List.of(TestUtil.acl());
+        List<ServerACLModel> acls = List.of(TestUtil.adminAcl());
         metadataDao.put(tenant);
         metadataDao.put(new PrincipalModel("principal-id", acls, tenant));
         startCall();
@@ -119,6 +112,36 @@ public class RequestAuthorizerTest {
         startCall();
         Assertions.assertThat(resolvedPrincipal.getId()).isEqualTo("anonymous");
         Assertions.assertThat(resolvedPrincipal.isAdmin()).isTrue();
+    }
+
+    @Nested
+    class ACLValidations {
+
+        @BeforeEach
+        public void setup() {
+            TenantModel customTenant = new TenantModel("my-tenant");
+            PrincipalModel adminPrincipal =
+                    new PrincipalModel("admin-principal", List.of(TestUtil.adminAcl()), customTenant);
+            PrincipalModel limitedPrincipal =
+                    new PrincipalModel("limited-principal", List.of(TestUtil.acl()), customTenant);
+            metadataDao.put(customTenant);
+            metadataDao.put(adminPrincipal);
+            metadataDao.put(limitedPrincipal);
+        }
+
+        @Test
+        public void supportRequestAuthorizationForAdminPrincipals() {
+            when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("admin-principal");
+            startCall();
+            Assertions.assertThat(resolvedPrincipal).isNotNull();
+        }
+
+        @Test
+        public void supportRequiredAclValidation() {
+            when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("limited-principal");
+            startCall();
+            Mockito.verify(mockCall).close(eq(Status.PERMISSION_DENIED), eq(mockMetadata));
+        }
     }
 
     private ServerServiceDefinition buildTestServiceDefinition() {

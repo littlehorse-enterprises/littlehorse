@@ -6,6 +6,7 @@ import io.grpc.Contexts;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
+import io.grpc.Status;
 import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.dao.ServerDAOFactory;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
@@ -27,7 +28,13 @@ public class RequestAuthorizer implements ServerAuthorizer {
         String clientId = headers.get(CLIENT_ID);
         Context current = Context.current();
 
-        current = current.withValue(PRINCIPAL, resolvePrincipal(clientId));
+        PrincipalModel resolvedPrincipal = resolvePrincipal(clientId);
+        try {
+            validateAcl(resolvedPrincipal);
+            current = current.withValue(PRINCIPAL, resolvedPrincipal);
+        } catch (PermissionDeniedException ex) {
+            call.close(Status.PERMISSION_DENIED, headers);
+        }
         return Contexts.interceptCall(current, call, headers, next);
     }
 
@@ -37,6 +44,12 @@ public class RequestAuthorizer implements ServerAuthorizer {
         } else {
             PrincipalModel principal = readOnlyDao().get(new PrincipalIdModel(clientId));
             return principal != null ? principal : PrincipalModel.anonymous();
+        }
+    }
+
+    private void validateAcl(PrincipalModel principalToValidate) {
+        if (!principalToValidate.isAdmin()) {
+            throw new PermissionDeniedException("");
         }
     }
 
