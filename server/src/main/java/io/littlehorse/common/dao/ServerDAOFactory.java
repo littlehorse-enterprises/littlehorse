@@ -1,5 +1,7 @@
 package io.littlehorse.common.dao;
 
+import static io.littlehorse.server.auth.ServerAuthorizer.PRINCIPAL;
+
 import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.ServerContextImpl;
 import io.littlehorse.server.streams.ServerTopology;
@@ -24,11 +26,19 @@ public class ServerDAOFactory {
         this.metadataCache = metadataCache;
     }
 
-    public ReadOnlyMetadataProcessorDAO getMetadataDao(String tenantId) {
+    public ReadOnlyMetadataProcessorDAO getMetadataDao() {
+        final String tenantId = PRINCIPAL.get().getTenant().getId();
         ReadOnlyKeyValueStore<String, Bytes> allPartitionNativeStore =
                 readOnlyStore(null, ServerTopology.METADATA_STORE);
         return new ReadOnlyMetadataProcessorDAOImpl(
                 ModelStore.instanceFor(allPartitionNativeStore, tenantId), metadataCache, contextFor(tenantId));
+    }
+
+    public ReadOnlyMetadataProcessorDAO getDefaultMetadataDao() {
+        ReadOnlyKeyValueStore<String, Bytes> allPartitionNativeStore =
+                readOnlyStore(null, ServerTopology.METADATA_STORE);
+        return new ReadOnlyMetadataProcessorDAOImpl(
+                ModelStore.defaultStore(allPartitionNativeStore), metadataCache, contextFor(ModelStore.DEFAULT_TENANT));
     }
 
     private ServerContext contextFor(String tenantId) {

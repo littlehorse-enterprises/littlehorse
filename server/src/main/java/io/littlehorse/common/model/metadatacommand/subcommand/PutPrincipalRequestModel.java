@@ -9,6 +9,7 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ServerSubCommand;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.proto.Principal;
@@ -86,8 +87,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
                 throw new LHApiException(Status.FAILED_PRECONDITION, "At least one admin level principal is required");
             }
         }
-        toSave.setDefaultTenantId(principalTenantId);
-        toSave.getTenantIds().add(principalTenantId);
+        toSave.setTenant(TenantModel.create(principalTenantId));
         dao.put(toSave);
         return toSave.toProto().build();
     }

@@ -2,6 +2,7 @@ package io.littlehorse.server.listener;
 
 import io.grpc.BindableService;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.dao.ServerDAOFactory;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.io.Closeable;
 import java.util.List;
@@ -11,9 +12,15 @@ public class ListenersManager implements Closeable {
 
     private final List<ServerListener> servers;
 
-    public ListenersManager(LHServerConfig config, BindableService service, Executor threadpool, MeterRegistry meter) {
+    public ListenersManager(
+            LHServerConfig config,
+            BindableService service,
+            Executor threadpool,
+            MeterRegistry meter,
+            ServerDAOFactory factory) {
         this.servers = config.getListeners().stream()
-                .map(serverListenerConfig -> new ServerListener(serverListenerConfig, threadpool, service, meter))
+                .map(serverListenerConfig ->
+                        new ServerListener(serverListenerConfig, threadpool, service, meter, factory))
                 .toList();
     }
 

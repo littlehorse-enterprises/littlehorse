@@ -21,6 +21,13 @@ public class ServerACLModel extends LHSerializable<ServerACL> {
     private Optional<String> name = Optional.empty();
     private Optional<String> prefix = Optional.empty();
 
+    public ServerACLModel() {}
+
+    public ServerACLModel(final List<ACLResource> resources, final List<ACLAction> allowedActions) {
+        this.resources = resources;
+        this.allowedActions = allowedActions;
+    }
+
     @Override
     public void initFrom(Message proto) throws LHSerdeError {
         ServerACL serverACL = (ServerACL) proto;

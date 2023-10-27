@@ -59,7 +59,7 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
                 .trim();
     }
 
-    private void validateToken(String token) throws Exception {
+    private void validateToken(String token) {
         if (Strings.isNullOrEmpty(token)) {
             throw new PermissionDeniedException("Token is empty");
         }

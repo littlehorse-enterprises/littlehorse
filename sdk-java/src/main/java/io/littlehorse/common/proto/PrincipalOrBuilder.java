@@ -63,11 +63,10 @@ public interface PrincipalOrBuilder extends
    * way multi-tenancy works is that the
    * </pre>
    *
-   * <code>repeated string tenant_ids = 3;</code>
-   * @return A list containing the tenantIds.
+   * <code>string tenant_id = 3;</code>
+   * @return The tenantId.
    */
-  java.util.List<java.lang.String>
-      getTenantIdsList();
+  java.lang.String getTenantId();
   /**
    * <pre>
    * Used for multi-tenancy of the LittleHorse Server.
@@ -76,47 +75,9 @@ public interface PrincipalOrBuilder extends
    * way multi-tenancy works is that the
    * </pre>
    *
-   * <code>repeated string tenant_ids = 3;</code>
-   * @return The count of tenantIds.
-   */
-  int getTenantIdsCount();
-  /**
-   * <pre>
-   * Used for multi-tenancy of the LittleHorse Server.
-   *
-   * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-   * way multi-tenancy works is that the
-   * </pre>
-   *
-   * <code>repeated string tenant_ids = 3;</code>
-   * @param index The index of the element to return.
-   * @return The tenantIds at the given index.
-   */
-  java.lang.String getTenantIds(int index);
-  /**
-   * <pre>
-   * Used for multi-tenancy of the LittleHorse Server.
-   *
-   * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-   * way multi-tenancy works is that the
-   * </pre>
-   *
-   * <code>repeated string tenant_ids = 3;</code>
-   * @param index The index of the value to return.
-   * @return The bytes of the tenantIds at the given index.
+   * <code>string tenant_id = 3;</code>
+   * @return The bytes for tenantId.
    */
   com.google.protobuf.ByteString
-      getTenantIdsBytes(int index);
-
-  /**
-   * <code>string default_tenant_id = 4;</code>
-   * @return The defaultTenantId.
-   */
-  java.lang.String getDefaultTenantId();
-  /**
-   * <code>string default_tenant_id = 4;</code>
-   * @return The bytes for defaultTenantId.
-   */
-  com.google.protobuf.ByteString
-      getDefaultTenantIdBytes();
+      getTenantIdBytes();
 }

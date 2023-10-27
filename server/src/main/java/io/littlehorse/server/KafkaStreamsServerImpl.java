@@ -3,7 +3,6 @@ package io.littlehorse.server;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
-import io.grpc.Context;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
@@ -47,12 +46,15 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDe
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
+import io.littlehorse.common.proto.ACLAction;
+import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
+import io.littlehorse.server.auth.ServerAuthorizer;
 import io.littlehorse.server.listener.ListenersManager;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
@@ -122,12 +124,11 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     private final ServerDAOFactory serverDAOFactory;
 
-    private ReadOnlyMetadataProcessorDAO metadataDao(String tenantId) {
-        return serverDAOFactory.getMetadataDao(tenantId);
+    private ReadOnlyMetadataProcessorDAO metadataDao() {
+        return serverDAOFactory.getMetadataDao();
     }
 
     public KafkaStreamsServerImpl(LHServerConfig config) {
-        Context.current();
         MetadataCache metadataCache = new MetadataCache();
         this.config = config;
         this.taskQueueManager = new TaskQueueManager(this);
@@ -149,7 +150,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         this.serverDAOFactory = new ServerDAOFactory(coreStreams, metadataCache);
 
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
-        this.listenerManager = new ListenersManager(config, this, networkThreadpool, healthService.getMeterRegistry());
+        this.listenerManager = new ListenersManager(
+                config, this, networkThreadpool, healthService.getMeterRegistry(), serverDAOFactory);
 
         this.internalComms =
                 new BackendInternalComms(config, coreStreams, timerStreams, networkThreadpool, metadataCache);
@@ -160,8 +162,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WF_SPEC, actions = ACLAction.READ)
     public void getWfSpec(WfSpecId req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = metadataDao("default").getWfSpec(req.getName(), req.getVersion());
+        WfSpecModel wfSpec = metadataDao().getWfSpec(req.getName(), req.getVersion());
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -172,7 +175,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getLatestWfSpec(GetLatestWfSpecRequest req, StreamObserver<WfSpec> ctx) {
-        WfSpecModel wfSpec = metadataDao("default").getWfSpec(req.getName(), null);
+        WfSpecModel wfSpec = metadataDao().getWfSpec(req.getName(), null);
         if (wfSpec == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
@@ -183,7 +186,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getLatestUserTaskDef(GetLatestUserTaskDefRequest req, StreamObserver<UserTaskDef> ctx) {
-        UserTaskDefModel utd = metadataDao("default").getUserTaskDef(req.getName(), null);
+        String tenantId = ServerAuthorizer.PRINCIPAL.get().getTenant().getId();
+        UserTaskDefModel utd = metadataDao().getUserTaskDef(req.getName(), null);
         if (utd == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskDef"));
         } else {
@@ -194,7 +198,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getUserTaskDef(UserTaskDefId req, StreamObserver<UserTaskDef> ctx) {
-        UserTaskDefModel utd = metadataDao("default").getUserTaskDef(req.getName(), req.getVersion());
+        UserTaskDefModel utd = metadataDao().getUserTaskDef(req.getName(), req.getVersion());
         if (utd == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskDef"));
         } else {
@@ -205,7 +209,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getTaskDef(TaskDefId req, StreamObserver<TaskDef> ctx) {
-        TaskDefModel td = metadataDao("default").getTaskDef(req.getName());
+        TaskDefModel td = metadataDao().getTaskDef(req.getName());
         if (td == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified TaskDef"));
         } else {
@@ -216,7 +220,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getExternalEventDef(ExternalEventDefId req, StreamObserver<ExternalEventDef> ctx) {
-        ExternalEventDefModel eed = metadataDao("default").getExternalEventDef(req.getName());
+        ExternalEventDefModel eed = metadataDao().getExternalEventDef(req.getName());
         if (eed == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified ExternalEventDef"));
         } else {
@@ -419,7 +423,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     @Override
     public void searchVariable(SearchVariableRequest req, StreamObserver<VariableIdList> ctx) {
         handleScan(
-                SearchVariableRequestModel.fromProto(req, serverDAOFactory.getMetadataDao("default")),
+                SearchVariableRequestModel.fromProto(req, serverDAOFactory.getMetadataDao()),
                 ctx,
                 SearchVariableReply.class);
     }
@@ -474,8 +478,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         }
 
         try {
-            InternalScanResponse raw =
-                    internalComms.doScan(req.getInternalSearch(serverDAOFactory.getMetadataDao("default")));
+            InternalScanResponse raw = internalComms.doScan(req.getInternalSearch(serverDAOFactory.getMetadataDao()));
             if (raw.hasUpdatedBookmark()) {
                 out.bookmark = raw.getUpdatedBookmark().toByteString();
             }

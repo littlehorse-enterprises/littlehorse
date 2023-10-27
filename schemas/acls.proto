@@ -18,8 +18,7 @@ message Principal {
     //
     // NOTE: the principal id (field 1) MUST be unique across all tenants. The
     // way multi-tenancy works is that the
-    repeated string tenant_ids = 3;
-    string default_tenant_id = 4;
+    string tenant_id = 3;
 
     // Future versions will include quotas.
 }
