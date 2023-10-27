@@ -16,12 +16,9 @@ import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.ServerContextImpl;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.dao.ServerDAOFactory;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
-import io.littlehorse.common.proto.ACLAction;
-import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
@@ -85,33 +82,8 @@ public class RequestAuthorizerTest {
     }
 
     @Test
-    public void supportAnonymousPrincipalForSpecificTenant() {
-        when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn(null);
-        when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-tenant");
-        metadataDao.put(new TenantModel("my-tenant"));
-        startCall();
-        Assertions.assertThat(resolvedPrincipal.getAcls()).hasSize(1);
-        ServerACLModel resolvedAcl = resolvedPrincipal.getAcls().get(0);
-        Assertions.assertThat(resolvedPrincipal.getId()).isEqualTo("anonymous");
-        Assertions.assertThat(resolvedPrincipal.isAdmin()).isTrue();
-        Assertions.assertThat(resolvedPrincipal.getTenant()).isEqualTo(TenantModel.create("my-tenant"));
-        Assertions.assertThat(resolvedAcl.getAllowedActions()).containsExactly(ACLAction.ALL_ACTIONS);
-        Assertions.assertThat(resolvedAcl.getResources()).containsExactly(ACLResource.ACL_ALL_RESOURCE_TYPES);
-    }
-
-    @Test
-    public void supportMandatoryTenantValidation() {
-        when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn(null);
-        when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-tenant");
-        Assertions.assertThatThrownBy(this::startCall)
-                .isOfAnyClassIn(LHApiException.class)
-                .hasMessage("FAILED_PRECONDITION: Tenant is required");
-    }
-
-    @Test
     public void supportAnonymousPrincipalForDefaultTenant() {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn(null);
-        when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn(null);
         startCall();
         Assertions.assertThat(resolvedPrincipal.getAcls()).hasSize(1);
         Assertions.assertThat(resolvedPrincipal.getId()).isEqualTo("anonymous");
@@ -122,7 +94,6 @@ public class RequestAuthorizerTest {
     @Test
     public void supportPrincipalForDefaultTenant() {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
-        when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn(null);
         startCall();
         Assertions.assertThat(resolvedPrincipal.getId()).isEqualTo("anonymous");
         Assertions.assertThat(resolvedPrincipal.isAdmin()).isTrue();
@@ -132,7 +103,6 @@ public class RequestAuthorizerTest {
     @Test
     public void supportPrincipalForSpecificTenant() {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
-        when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-tenant");
         TenantModel tenant = new TenantModel("my-tenant");
         List<ServerACLModel> acls = List.of(TestUtil.acl());
         metadataDao.put(tenant);
@@ -145,7 +115,6 @@ public class RequestAuthorizerTest {
     @Test
     public void supportAnonymousPrincipalWhenPrincipalIdIsNotFound() {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
-        when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-tenant");
         metadataDao.put(new TenantModel("my-tenant"));
         startCall();
         Assertions.assertThat(resolvedPrincipal.getId()).isEqualTo("anonymous");
