@@ -35,7 +35,8 @@ public class VarMutationListsTest {
 
         Consumer<VariableValue> verifyVariableListMutation = variableValue -> {
             try {
-                List variableList = LHLibUtil.deserializeFromjson(variableValue.getJsonArr(), List.class);
+                @SuppressWarnings("unchecked")
+                List<Object> variableList = LHLibUtil.deserializeFromjson(variableValue.getJsonArr(), List.class);
                 assertThat(variableList).containsExactly(expectedOutput);
             } catch (JsonProcessingException exn) {
                 throw new RuntimeException(exn);
@@ -52,7 +53,8 @@ public class VarMutationListsTest {
         List<Object> workflowInput = Arrays.asList(5, "hello", 3, 4);
         Consumer<VariableValue> assertVariableValueRollback = variableValue -> {
             try {
-                List variableList = LHLibUtil.deserializeFromjson(variableValue.getJsonArr(), List.class);
+                @SuppressWarnings("unchecked")
+                List<Object> variableList = LHLibUtil.deserializeFromjson(variableValue.getJsonArr(), List.class);
                 assertThat(variableList).containsExactly(workflowInput);
             } catch (JsonProcessingException exn) {
                 throw new RuntimeException(exn);

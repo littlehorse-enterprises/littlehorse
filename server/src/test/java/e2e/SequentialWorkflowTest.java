@@ -20,8 +20,6 @@ public class SequentialWorkflowTest {
     @LHWorkflow("simple-sequential-wf")
     private Workflow workflow;
 
-    private WorkerContext context;
-
     @Test
     public void simpleSequentialWorkflowExecution() {
         workflowVerifier
@@ -35,6 +33,20 @@ public class SequentialWorkflowTest {
                         variableValue ->
                                 Assertions.assertTrue(variableValue.getStr().contains("hello there from wfRun")))
                 .start();
+    }
+
+    @Test
+    public void readYourOwnWritesTest() {
+
+        // waitForTaskStatus calls
+        for (int i = 0; i < 10; i++) {
+            workflowVerifier
+                    .prepareRun(workflow)
+                    // This step will throw a NOT_FOUND exception if the nodeRun is
+                    // not returned.
+                    .thenVerifyNodeRun(0, 1, nodeRun -> {})
+                    .start();
+        }
     }
 
     @LHWorkflow("simple-sequential-wf")

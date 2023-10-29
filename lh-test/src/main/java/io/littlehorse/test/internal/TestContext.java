@@ -4,6 +4,7 @@ import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
+import io.littlehorse.sdk.common.proto.GetLatestUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
@@ -17,6 +18,7 @@ import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHUserTaskForm;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import io.littlehorse.test.exception.LHTestExceptionUtil;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -146,6 +148,13 @@ public class TestContext {
             }
             userTaskSchemasStore.put(taskDefRequest.getName(), userTaskSchema);
             registerUserTaskDef(taskDefRequest);
+            Awaitility.await()
+                    .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
+                    .until(
+                            () -> lhClient.getLatestUserTaskDef(GetLatestUserTaskDefRequest.newBuilder()
+                                    .setName(taskDefRequest.getName())
+                                    .build()),
+                            Objects::nonNull);
         }
     }
 
@@ -155,7 +164,7 @@ public class TestContext {
         if (!wfSpecStore.containsKey(workflow.getName())) {
             workflow.registerWfSpec(lhClient);
             return Awaitility.await()
-                    .ignoreException(StatusRuntimeException.class)
+                    .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
                     .until(() -> lhClient.getLatestWfSpec(wfSpecRequest), Objects::nonNull);
         }
         return wfSpecStore.get(workflow.getName());
