@@ -1,15 +1,5 @@
 package io.littlehorse.test;
 
-import java.io.IOException;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-
-import org.awaitility.Awaitility;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.TestInstancePostProcessor;
-
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.worker.LHTaskWorker;
@@ -17,6 +7,14 @@ import io.littlehorse.test.exception.LHTestExceptionUtil;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.StandaloneTestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
+import java.io.IOException;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 
 public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor {
 
