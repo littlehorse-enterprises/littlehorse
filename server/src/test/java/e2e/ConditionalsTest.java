@@ -416,7 +416,7 @@ public class ConditionalsTest {
 
     @LHWorkflow("test-conditionals-greater-than-workflow")
     public Workflow getGreaterThanWorkflow() {
-        return new WorkflowImpl("test-conditionals-greater-than-equals-workflow", thread -> {
+        return new WorkflowImpl("test-conditionals-greater-than-workflow", thread -> {
             // Use an input JSON blob with two fields, LHS and RHS.
             // This allows us to test with various types on the left and the
             // right, since right now the JSON_OBJ var type does not have a

@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Stream;
 import org.awaitility.Awaitility;
 
@@ -40,9 +42,12 @@ public class TestContext {
 
     private final Map<String, WfSpec> wfSpecStore = new HashMap<>();
 
+    private final Lock wfSpecStoreLock;
+
     public TestContext(TestBootstrapper bootstrapper) {
         this.LHConfig = bootstrapper.getWorkerConfig();
         this.lhClient = bootstrapper.getLhClient();
+        this.wfSpecStoreLock = new ReentrantLock();
     }
 
     public List<LHTaskWorker> discoverTaskWorkers(Object testInstance) throws IOException {
@@ -159,15 +164,23 @@ public class TestContext {
     }
 
     public WfSpec registerWfSpecIfNotPresent(Workflow workflow) {
-        GetLatestWfSpecRequest wfSpecRequest =
-                GetLatestWfSpecRequest.newBuilder().setName(workflow.getName()).build();
-        if (!wfSpecStore.containsKey(workflow.getName())) {
-            workflow.registerWfSpec(lhClient);
-            return Awaitility.await()
-                    .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
-                    .until(() -> lhClient.getLatestWfSpec(wfSpecRequest), Objects::nonNull);
+        wfSpecStoreLock.lock();
+        try {
+            if (!wfSpecStore.containsKey(workflow.getName())) {
+                GetLatestWfSpecRequest wfSpecRequest = GetLatestWfSpecRequest.newBuilder()
+                        .setName(workflow.getName())
+                        .build();
+                workflow.registerWfSpec(lhClient);
+                WfSpec result = Awaitility.await()
+                        .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
+                        .until(() -> lhClient.getLatestWfSpec(wfSpecRequest), Objects::nonNull);
+                wfSpecStore.put(workflow.getName(), result);
+            }
+
+            return wfSpecStore.get(workflow.getName());
+        } finally {
+            wfSpecStoreLock.unlock();
         }
-        return wfSpecStore.get(workflow.getName());
     }
 
     public LHPublicApiBlockingStub getLhClient() {
