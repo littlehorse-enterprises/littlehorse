@@ -635,6 +635,37 @@ public final class LHPublicApiGrpc {
     return getGetTaskRunMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskRunRequest,
+      io.littlehorse.sdk.common.proto.TaskRunList> getListTaskRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ListTaskRun",
+      requestType = io.littlehorse.sdk.common.proto.ListTaskRunRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.TaskRunList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskRunRequest,
+      io.littlehorse.sdk.common.proto.TaskRunList> getListTaskRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskRunRequest, io.littlehorse.sdk.common.proto.TaskRunList> getListTaskRunMethod;
+    if ((getListTaskRunMethod = LHPublicApiGrpc.getListTaskRunMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getListTaskRunMethod = LHPublicApiGrpc.getListTaskRunMethod) == null) {
+          LHPublicApiGrpc.getListTaskRunMethod = getListTaskRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListTaskRunRequest, io.littlehorse.sdk.common.proto.TaskRunList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListTaskRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ListTaskRunRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.TaskRunList.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("ListTaskRun"))
+              .build();
+        }
+      }
+    }
+    return getListTaskRunMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.VariableId,
       io.littlehorse.sdk.common.proto.Variable> getGetVariableMethod;
 
@@ -1724,6 +1755,13 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    default void listTaskRun(io.littlehorse.sdk.common.proto.ListTaskRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskRunList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListTaskRunMethod(), responseObserver);
+    }
+
+    /**
+     */
     default void getVariable(io.littlehorse.sdk.common.proto.VariableId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Variable> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetVariableMethod(), responseObserver);
@@ -2111,6 +2149,14 @@ public final class LHPublicApiGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskRun> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetTaskRunMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void listTaskRun(io.littlehorse.sdk.common.proto.ListTaskRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskRunList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getListTaskRunMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -2504,6 +2550,13 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    public io.littlehorse.sdk.common.proto.TaskRunList listTaskRun(io.littlehorse.sdk.common.proto.ListTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListTaskRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
     public io.littlehorse.sdk.common.proto.Variable getVariable(io.littlehorse.sdk.common.proto.VariableId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetVariableMethod(), getCallOptions(), request);
@@ -2877,6 +2930,14 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TaskRunList> listTaskRun(
+        io.littlehorse.sdk.common.proto.ListTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getListTaskRunMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Variable> getVariable(
         io.littlehorse.sdk.common.proto.VariableId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
@@ -3120,35 +3181,36 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_GET_NODE_RUN = 17;
   private static final int METHODID_LIST_NODE_RUNS = 18;
   private static final int METHODID_GET_TASK_RUN = 19;
-  private static final int METHODID_GET_VARIABLE = 20;
-  private static final int METHODID_LIST_VARIABLES = 21;
-  private static final int METHODID_PUT_EXTERNAL_EVENT = 22;
-  private static final int METHODID_GET_EXTERNAL_EVENT = 23;
-  private static final int METHODID_LIST_EXTERNAL_EVENTS = 24;
-  private static final int METHODID_SEARCH_WF_RUN = 25;
-  private static final int METHODID_SEARCH_NODE_RUN = 26;
-  private static final int METHODID_SEARCH_TASK_RUN = 27;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 28;
-  private static final int METHODID_SEARCH_VARIABLE = 29;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 30;
-  private static final int METHODID_SEARCH_TASK_DEF = 31;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 32;
-  private static final int METHODID_SEARCH_WF_SPEC = 33;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 34;
-  private static final int METHODID_REGISTER_TASK_WORKER = 35;
-  private static final int METHODID_REPORT_TASK = 36;
-  private static final int METHODID_STOP_WF_RUN = 37;
-  private static final int METHODID_RESUME_WF_RUN = 38;
-  private static final int METHODID_DELETE_WF_RUN = 39;
-  private static final int METHODID_DELETE_TASK_DEF = 40;
-  private static final int METHODID_DELETE_WF_SPEC = 41;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 42;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 43;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 44;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 45;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 46;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 47;
-  private static final int METHODID_POLL_TASK = 48;
+  private static final int METHODID_LIST_TASK_RUN = 20;
+  private static final int METHODID_GET_VARIABLE = 21;
+  private static final int METHODID_LIST_VARIABLES = 22;
+  private static final int METHODID_PUT_EXTERNAL_EVENT = 23;
+  private static final int METHODID_GET_EXTERNAL_EVENT = 24;
+  private static final int METHODID_LIST_EXTERNAL_EVENTS = 25;
+  private static final int METHODID_SEARCH_WF_RUN = 26;
+  private static final int METHODID_SEARCH_NODE_RUN = 27;
+  private static final int METHODID_SEARCH_TASK_RUN = 28;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 29;
+  private static final int METHODID_SEARCH_VARIABLE = 30;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 31;
+  private static final int METHODID_SEARCH_TASK_DEF = 32;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 33;
+  private static final int METHODID_SEARCH_WF_SPEC = 34;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 35;
+  private static final int METHODID_REGISTER_TASK_WORKER = 36;
+  private static final int METHODID_REPORT_TASK = 37;
+  private static final int METHODID_STOP_WF_RUN = 38;
+  private static final int METHODID_RESUME_WF_RUN = 39;
+  private static final int METHODID_DELETE_WF_RUN = 40;
+  private static final int METHODID_DELETE_TASK_DEF = 41;
+  private static final int METHODID_DELETE_WF_SPEC = 42;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 43;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 44;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 45;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 46;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 47;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 48;
+  private static final int METHODID_POLL_TASK = 49;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -3246,6 +3308,10 @@ public final class LHPublicApiGrpc {
         case METHODID_GET_TASK_RUN:
           serviceImpl.getTaskRun((io.littlehorse.sdk.common.proto.TaskRunId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskRun>) responseObserver);
+          break;
+        case METHODID_LIST_TASK_RUN:
+          serviceImpl.listTaskRun((io.littlehorse.sdk.common.proto.ListTaskRunRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskRunList>) responseObserver);
           break;
         case METHODID_GET_VARIABLE:
           serviceImpl.getVariable((io.littlehorse.sdk.common.proto.VariableId) request,
@@ -3521,6 +3587,13 @@ public final class LHPublicApiGrpc {
               io.littlehorse.sdk.common.proto.TaskRun>(
                 service, METHODID_GET_TASK_RUN)))
         .addMethod(
+          getListTaskRunMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.ListTaskRunRequest,
+              io.littlehorse.sdk.common.proto.TaskRunList>(
+                service, METHODID_LIST_TASK_RUN)))
+        .addMethod(
           getGetVariableMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -3791,6 +3864,7 @@ public final class LHPublicApiGrpc {
               .addMethod(getGetNodeRunMethod())
               .addMethod(getListNodeRunsMethod())
               .addMethod(getGetTaskRunMethod())
+              .addMethod(getListTaskRunMethod())
               .addMethod(getGetVariableMethod())
               .addMethod(getListVariablesMethod())
               .addMethod(getPutExternalEventMethod())

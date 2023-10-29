@@ -713,3 +713,15 @@ class UserTaskRunList(_message.Message):
     RESULTS_FIELD_NUMBER: _ClassVar[int]
     results: _containers.RepeatedCompositeFieldContainer[_user_tasks_pb2.UserTaskRun]
     def __init__(self, results: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskRun, _Mapping]]] = ...) -> None: ...
+
+class ListTaskRunRequest(_message.Message):
+    __slots__ = ["wf_run_id"]
+    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    wf_run_id: str
+    def __init__(self, wf_run_id: _Optional[str] = ...) -> None: ...
+
+class TaskRunList(_message.Message):
+    __slots__ = ["results"]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_task_run_pb2.TaskRun]
+    def __init__(self, results: _Optional[_Iterable[_Union[_task_run_pb2.TaskRun, _Mapping]]] = ...) -> None: ...

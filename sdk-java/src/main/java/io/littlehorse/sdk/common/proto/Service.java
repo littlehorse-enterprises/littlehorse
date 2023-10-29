@@ -369,6 +369,16 @@ public final class Service {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_UserTaskRunList_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_ListTaskRunRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_ListTaskRunRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_TaskRunList_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_TaskRunList_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -630,112 +640,116 @@ public final class Service {
       "\025start_to_complete_avg\030\t \001(\003\"+\n\026ListUser" +
       "TaskRunRequest\022\021\n\twf_run_id\030\001 \001(\t\"<\n\017Use" +
       "rTaskRunList\022)\n\007results\030\001 \003(\0132\030.littleho" +
-      "rse.UserTaskRun*W\n\016LHHealthResult\022\025\n\021LH_" +
-      "HEALTH_RUNNING\020\000\022\031\n\025LH_HEALTH_REBALANCIN" +
-      "G\020\001\022\023\n\017LH_HEALTH_ERROR\020\0022\256\037\n\013LHPublicApi" +
-      "\022D\n\nPutTaskDef\022\036.littlehorse.PutTaskDefR" +
-      "equest\032\024.littlehorse.TaskDef\"\000\022<\n\nGetTas" +
-      "kDef\022\026.littlehorse.TaskDefId\032\024.littlehor" +
-      "se.TaskDef\"\000\022_\n\023PutExternalEventDef\022\'.li" +
-      "ttlehorse.PutExternalEventDefRequest\032\035.l" +
-      "ittlehorse.ExternalEventDef\"\000\022W\n\023GetExte" +
-      "rnalEventDef\022\037.littlehorse.ExternalEvent" +
-      "DefId\032\035.littlehorse.ExternalEventDef\"\000\022A" +
-      "\n\tPutWfSpec\022\035.littlehorse.PutWfSpecReque" +
-      "st\032\023.littlehorse.WfSpec\"\000\0229\n\tGetWfSpec\022\025" +
-      ".littlehorse.WfSpecId\032\023.littlehorse.WfSp" +
-      "ec\"\000\022M\n\017GetLatestWfSpec\022#.littlehorse.Ge" +
-      "tLatestWfSpecRequest\032\023.littlehorse.WfSpe" +
-      "c\"\000\022P\n\016PutUserTaskDef\022\".littlehorse.PutU" +
-      "serTaskDefRequest\032\030.littlehorse.UserTask" +
-      "Def\"\000\022H\n\016GetUserTaskDef\022\032.littlehorse.Us" +
-      "erTaskDefId\032\030.littlehorse.UserTaskDef\"\000\022" +
-      "\\\n\024GetLatestUserTaskDef\022(.littlehorse.Ge" +
-      "tLatestUserTaskDefRequest\032\030.littlehorse." +
-      "UserTaskDef\"\000\0228\n\005RunWf\022\031.littlehorse.Run" +
-      "WfRequest\032\022.littlehorse.WfRun\"\000\0226\n\010GetWf" +
-      "Run\022\024.littlehorse.WfRunId\032\022.littlehorse." +
-      "WfRun\"\000\022H\n\016GetUserTaskRun\022\032.littlehorse." +
-      "UserTaskRunId\032\030.littlehorse.UserTaskRun\"" +
-      "\000\022T\n\021AssignUserTaskRun\022%.littlehorse.Ass" +
-      "ignUserTaskRunRequest\032\026.google.protobuf." +
-      "Empty\"\000\022X\n\023CompleteUserTaskRun\022\'.littleh" +
-      "orse.CompleteUserTaskRunRequest\032\026.google" +
-      ".protobuf.Empty\"\000\022T\n\021CancelUserTaskRun\022%" +
-      ".littlehorse.CancelUserTaskRunRequest\032\026." +
-      "google.protobuf.Empty\"\000\022W\n\020ListUserTaskR" +
-      "uns\022#.littlehorse.ListUserTaskRunRequest" +
-      "\032\034.littlehorse.UserTaskRunList\"\000\022<\n\nGetN" +
-      "odeRun\022\026.littlehorse.NodeRunId\032\024.littleh" +
-      "orse.NodeRun\"\000\022L\n\014ListNodeRuns\022 .littleh" +
-      "orse.ListNodeRunsRequest\032\030.littlehorse.N" +
-      "odeRunList\"\000\022<\n\nGetTaskRun\022\026.littlehorse" +
-      ".TaskRunId\032\024.littlehorse.TaskRun\"\000\022?\n\013Ge" +
-      "tVariable\022\027.littlehorse.VariableId\032\025.lit" +
-      "tlehorse.Variable\"\000\022O\n\rListVariables\022!.l" +
-      "ittlehorse.ListVariablesRequest\032\031.little" +
-      "horse.VariableList\"\000\022V\n\020PutExternalEvent" +
-      "\022$.littlehorse.PutExternalEventRequest\032\032" +
-      ".littlehorse.ExternalEvent\"\000\022N\n\020GetExter" +
-      "nalEvent\022\034.littlehorse.ExternalEventId\032\032" +
-      ".littlehorse.ExternalEvent\"\000\022^\n\022ListExte" +
-      "rnalEvents\022&.littlehorse.ListExternalEve" +
-      "ntsRequest\032\036.littlehorse.ExternalEventLi" +
-      "st\"\000\022J\n\013SearchWfRun\022\037.littlehorse.Search" +
-      "WfRunRequest\032\030.littlehorse.WfRunIdList\"\000" +
-      "\022P\n\rSearchNodeRun\022!.littlehorse.SearchNo" +
-      "deRunRequest\032\032.littlehorse.NodeRunIdList" +
-      "\"\000\022P\n\rSearchTaskRun\022!.littlehorse.Search" +
-      "TaskRunRequest\032\032.littlehorse.TaskRunIdLi" +
-      "st\"\000\022\\\n\021SearchUserTaskRun\022%.littlehorse." +
-      "SearchUserTaskRunRequest\032\036.littlehorse.U" +
-      "serTaskRunIdList\"\000\022S\n\016SearchVariable\022\".l" +
-      "ittlehorse.SearchVariableRequest\032\033.littl" +
-      "ehorse.VariableIdList\"\000\022b\n\023SearchExterna" +
-      "lEvent\022\'.littlehorse.SearchExternalEvent" +
-      "Request\032 .littlehorse.ExternalEventIdLis" +
-      "t\"\000\022P\n\rSearchTaskDef\022!.littlehorse.Searc" +
-      "hTaskDefRequest\032\032.littlehorse.TaskDefIdL" +
-      "ist\"\000\022\\\n\021SearchUserTaskDef\022%.littlehorse" +
-      ".SearchUserTaskDefRequest\032\036.littlehorse." +
-      "UserTaskDefIdList\"\000\022M\n\014SearchWfSpec\022 .li" +
-      "ttlehorse.SearchWfSpecRequest\032\031.littleho" +
-      "rse.WfSpecIdList\"\000\022k\n\026SearchExternalEven" +
-      "tDef\022*.littlehorse.SearchExternalEventDe" +
-      "fRequest\032#.littlehorse.ExternalEventDefI" +
-      "dList\"\000\022g\n\022RegisterTaskWorker\022&.littleho" +
-      "rse.RegisterTaskWorkerRequest\032\'.littleho" +
-      "rse.RegisterTaskWorkerResponse\"\000\022M\n\010Poll" +
-      "Task\022\034.littlehorse.PollTaskRequest\032\035.lit" +
-      "tlehorse.PollTaskResponse\"\000(\0010\001\022B\n\nRepor" +
-      "tTask\022\032.littlehorse.ReportTaskRun\032\026.goog" +
-      "le.protobuf.Empty\"\000\022D\n\tStopWfRun\022\035.littl" +
-      "ehorse.StopWfRunRequest\032\026.google.protobu" +
-      "f.Empty\"\000\022H\n\013ResumeWfRun\022\037.littlehorse.R" +
-      "esumeWfRunRequest\032\026.google.protobuf.Empt" +
-      "y\"\000\022H\n\013DeleteWfRun\022\037.littlehorse.DeleteW" +
-      "fRunRequest\032\026.google.protobuf.Empty\"\000\022L\n" +
-      "\rDeleteTaskDef\022!.littlehorse.DeleteTaskD" +
-      "efRequest\032\026.google.protobuf.Empty\"\000\022J\n\014D" +
-      "eleteWfSpec\022 .littlehorse.DeleteWfSpecRe" +
-      "quest\032\026.google.protobuf.Empty\"\000\022T\n\021Delet" +
-      "eUserTaskDef\022%.littlehorse.DeleteUserTas" +
-      "kDefRequest\032\026.google.protobuf.Empty\"\000\022^\n" +
-      "\026DeleteExternalEventDef\022*.littlehorse.De" +
-      "leteExternalEventDefRequest\032\026.google.pro" +
-      "tobuf.Empty\"\000\022a\n\027GetTaskDefMetricsWindow" +
-      "\022\'.littlehorse.TaskDefMetricsQueryReques" +
-      "t\032\033.littlehorse.TaskDefMetrics\"\000\022^\n\026GetW" +
-      "fSpecMetricsWindow\022&.littlehorse.WfSpecM" +
-      "etricsQueryRequest\032\032.littlehorse.WfSpecM" +
-      "etrics\"\000\022a\n\022ListTaskDefMetrics\022#.littleh" +
-      "orse.ListTaskMetricsRequest\032$.littlehors" +
-      "e.ListTaskMetricsResponse\"\000\022\\\n\021ListWfSpe" +
-      "cMetrics\022!.littlehorse.ListWfMetricsRequ" +
-      "est\032\".littlehorse.ListWfMetricsResponse\"" +
-      "\000BG\n\037io.littlehorse.sdk.common.protoP\001Z\007" +
-      ".;model\252\002\030LittleHorse.Common.Protob\006prot" +
-      "o3"
+      "rse.UserTaskRun\"\'\n\022ListTaskRunRequest\022\021\n" +
+      "\twf_run_id\030\001 \001(\t\"4\n\013TaskRunList\022%\n\007resul" +
+      "ts\030\001 \003(\0132\024.littlehorse.TaskRun*W\n\016LHHeal" +
+      "thResult\022\025\n\021LH_HEALTH_RUNNING\020\000\022\031\n\025LH_HE" +
+      "ALTH_REBALANCING\020\001\022\023\n\017LH_HEALTH_ERROR\020\0022" +
+      "\372\037\n\013LHPublicApi\022D\n\nPutTaskDef\022\036.littleho" +
+      "rse.PutTaskDefRequest\032\024.littlehorse.Task" +
+      "Def\"\000\022<\n\nGetTaskDef\022\026.littlehorse.TaskDe" +
+      "fId\032\024.littlehorse.TaskDef\"\000\022_\n\023PutExtern" +
+      "alEventDef\022\'.littlehorse.PutExternalEven" +
+      "tDefRequest\032\035.littlehorse.ExternalEventD" +
+      "ef\"\000\022W\n\023GetExternalEventDef\022\037.littlehors" +
+      "e.ExternalEventDefId\032\035.littlehorse.Exter" +
+      "nalEventDef\"\000\022A\n\tPutWfSpec\022\035.littlehorse" +
+      ".PutWfSpecRequest\032\023.littlehorse.WfSpec\"\000" +
+      "\0229\n\tGetWfSpec\022\025.littlehorse.WfSpecId\032\023.l" +
+      "ittlehorse.WfSpec\"\000\022M\n\017GetLatestWfSpec\022#" +
+      ".littlehorse.GetLatestWfSpecRequest\032\023.li" +
+      "ttlehorse.WfSpec\"\000\022P\n\016PutUserTaskDef\022\".l" +
+      "ittlehorse.PutUserTaskDefRequest\032\030.littl" +
+      "ehorse.UserTaskDef\"\000\022H\n\016GetUserTaskDef\022\032" +
+      ".littlehorse.UserTaskDefId\032\030.littlehorse" +
+      ".UserTaskDef\"\000\022\\\n\024GetLatestUserTaskDef\022(" +
+      ".littlehorse.GetLatestUserTaskDefRequest" +
+      "\032\030.littlehorse.UserTaskDef\"\000\0228\n\005RunWf\022\031." +
+      "littlehorse.RunWfRequest\032\022.littlehorse.W" +
+      "fRun\"\000\0226\n\010GetWfRun\022\024.littlehorse.WfRunId" +
+      "\032\022.littlehorse.WfRun\"\000\022H\n\016GetUserTaskRun" +
+      "\022\032.littlehorse.UserTaskRunId\032\030.littlehor" +
+      "se.UserTaskRun\"\000\022T\n\021AssignUserTaskRun\022%." +
+      "littlehorse.AssignUserTaskRunRequest\032\026.g" +
+      "oogle.protobuf.Empty\"\000\022X\n\023CompleteUserTa" +
+      "skRun\022\'.littlehorse.CompleteUserTaskRunR" +
+      "equest\032\026.google.protobuf.Empty\"\000\022T\n\021Canc" +
+      "elUserTaskRun\022%.littlehorse.CancelUserTa" +
+      "skRunRequest\032\026.google.protobuf.Empty\"\000\022W" +
+      "\n\020ListUserTaskRuns\022#.littlehorse.ListUse" +
+      "rTaskRunRequest\032\034.littlehorse.UserTaskRu" +
+      "nList\"\000\022<\n\nGetNodeRun\022\026.littlehorse.Node" +
+      "RunId\032\024.littlehorse.NodeRun\"\000\022L\n\014ListNod" +
+      "eRuns\022 .littlehorse.ListNodeRunsRequest\032" +
+      "\030.littlehorse.NodeRunList\"\000\022<\n\nGetTaskRu" +
+      "n\022\026.littlehorse.TaskRunId\032\024.littlehorse." +
+      "TaskRun\"\000\022J\n\013ListTaskRun\022\037.littlehorse.L" +
+      "istTaskRunRequest\032\030.littlehorse.TaskRunL" +
+      "ist\"\000\022?\n\013GetVariable\022\027.littlehorse.Varia" +
+      "bleId\032\025.littlehorse.Variable\"\000\022O\n\rListVa" +
+      "riables\022!.littlehorse.ListVariablesReque" +
+      "st\032\031.littlehorse.VariableList\"\000\022V\n\020PutEx" +
+      "ternalEvent\022$.littlehorse.PutExternalEve" +
+      "ntRequest\032\032.littlehorse.ExternalEvent\"\000\022" +
+      "N\n\020GetExternalEvent\022\034.littlehorse.Extern" +
+      "alEventId\032\032.littlehorse.ExternalEvent\"\000\022" +
+      "^\n\022ListExternalEvents\022&.littlehorse.List" +
+      "ExternalEventsRequest\032\036.littlehorse.Exte" +
+      "rnalEventList\"\000\022J\n\013SearchWfRun\022\037.littleh" +
+      "orse.SearchWfRunRequest\032\030.littlehorse.Wf" +
+      "RunIdList\"\000\022P\n\rSearchNodeRun\022!.littlehor" +
+      "se.SearchNodeRunRequest\032\032.littlehorse.No" +
+      "deRunIdList\"\000\022P\n\rSearchTaskRun\022!.littleh" +
+      "orse.SearchTaskRunRequest\032\032.littlehorse." +
+      "TaskRunIdList\"\000\022\\\n\021SearchUserTaskRun\022%.l" +
+      "ittlehorse.SearchUserTaskRunRequest\032\036.li" +
+      "ttlehorse.UserTaskRunIdList\"\000\022S\n\016SearchV" +
+      "ariable\022\".littlehorse.SearchVariableRequ" +
+      "est\032\033.littlehorse.VariableIdList\"\000\022b\n\023Se" +
+      "archExternalEvent\022\'.littlehorse.SearchEx" +
+      "ternalEventRequest\032 .littlehorse.Externa" +
+      "lEventIdList\"\000\022P\n\rSearchTaskDef\022!.little" +
+      "horse.SearchTaskDefRequest\032\032.littlehorse" +
+      ".TaskDefIdList\"\000\022\\\n\021SearchUserTaskDef\022%." +
+      "littlehorse.SearchUserTaskDefRequest\032\036.l" +
+      "ittlehorse.UserTaskDefIdList\"\000\022M\n\014Search" +
+      "WfSpec\022 .littlehorse.SearchWfSpecRequest" +
+      "\032\031.littlehorse.WfSpecIdList\"\000\022k\n\026SearchE" +
+      "xternalEventDef\022*.littlehorse.SearchExte" +
+      "rnalEventDefRequest\032#.littlehorse.Extern" +
+      "alEventDefIdList\"\000\022g\n\022RegisterTaskWorker" +
+      "\022&.littlehorse.RegisterTaskWorkerRequest" +
+      "\032\'.littlehorse.RegisterTaskWorkerRespons" +
+      "e\"\000\022M\n\010PollTask\022\034.littlehorse.PollTaskRe" +
+      "quest\032\035.littlehorse.PollTaskResponse\"\000(\001" +
+      "0\001\022B\n\nReportTask\022\032.littlehorse.ReportTas" +
+      "kRun\032\026.google.protobuf.Empty\"\000\022D\n\tStopWf" +
+      "Run\022\035.littlehorse.StopWfRunRequest\032\026.goo" +
+      "gle.protobuf.Empty\"\000\022H\n\013ResumeWfRun\022\037.li" +
+      "ttlehorse.ResumeWfRunRequest\032\026.google.pr" +
+      "otobuf.Empty\"\000\022H\n\013DeleteWfRun\022\037.littleho" +
+      "rse.DeleteWfRunRequest\032\026.google.protobuf" +
+      ".Empty\"\000\022L\n\rDeleteTaskDef\022!.littlehorse." +
+      "DeleteTaskDefRequest\032\026.google.protobuf.E" +
+      "mpty\"\000\022J\n\014DeleteWfSpec\022 .littlehorse.Del" +
+      "eteWfSpecRequest\032\026.google.protobuf.Empty" +
+      "\"\000\022T\n\021DeleteUserTaskDef\022%.littlehorse.De" +
+      "leteUserTaskDefRequest\032\026.google.protobuf" +
+      ".Empty\"\000\022^\n\026DeleteExternalEventDef\022*.lit" +
+      "tlehorse.DeleteExternalEventDefRequest\032\026" +
+      ".google.protobuf.Empty\"\000\022a\n\027GetTaskDefMe" +
+      "tricsWindow\022\'.littlehorse.TaskDefMetrics" +
+      "QueryRequest\032\033.littlehorse.TaskDefMetric" +
+      "s\"\000\022^\n\026GetWfSpecMetricsWindow\022&.littleho" +
+      "rse.WfSpecMetricsQueryRequest\032\032.littleho" +
+      "rse.WfSpecMetrics\"\000\022a\n\022ListTaskDefMetric" +
+      "s\022#.littlehorse.ListTaskMetricsRequest\032$" +
+      ".littlehorse.ListTaskMetricsResponse\"\000\022\\" +
+      "\n\021ListWfSpecMetrics\022!.littlehorse.ListWf" +
+      "MetricsRequest\032\".littlehorse.ListWfMetri" +
+      "csResponse\"\000BG\n\037io.littlehorse.sdk.commo" +
+      "n.protoP\001Z\007.;model\252\002\030LittleHorse.Common." +
+      "Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1179,6 +1193,18 @@ public final class Service {
     internal_static_littlehorse_UserTaskRunList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UserTaskRunList_descriptor,
+        new java.lang.String[] { "Results", });
+    internal_static_littlehorse_ListTaskRunRequest_descriptor =
+      getDescriptor().getMessageTypes().get(61);
+    internal_static_littlehorse_ListTaskRunRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_ListTaskRunRequest_descriptor,
+        new java.lang.String[] { "WfRunId", });
+    internal_static_littlehorse_TaskRunList_descriptor =
+      getDescriptor().getMessageTypes().get(62);
+    internal_static_littlehorse_TaskRunList_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_TaskRunList_descriptor,
         new java.lang.String[] { "Results", });
     com.google.protobuf.TimestampProto.getDescriptor();
     com.google.protobuf.EmptyProto.getDescriptor();
