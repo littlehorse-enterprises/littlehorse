@@ -21,9 +21,7 @@ public class ServerListener implements Closeable {
             ServerListenerConfig config, Executor executor, BindableService service, MeterRegistry meter) {
         this.config = config;
         this.server = Grpc.newServerBuilderForPort(config.getPort(), config.getCredentials())
-                .keepAliveTime(10, TimeUnit.SECONDS)
-                .keepAliveTimeout(3, TimeUnit.SECONDS)
-                .permitKeepAliveTime(10, TimeUnit.SECONDS)
+                .permitKeepAliveTime(15, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
                 .addService(service)
                 .intercept(new MetricCollectingServerInterceptor(meter))
