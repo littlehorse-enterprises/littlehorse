@@ -119,9 +119,33 @@ Choose one of the following option groups:
 	},
 }
 
+var listTaskRunCmd = &cobra.Command{
+	Use:   "taskRun <wfRunId>",
+	Short: "List all TaskRun's for a given WfRun Id.",
+	Long: `
+Lists all TaskRun's for a given WfRun Id.
+`,
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) != 1 {
+			log.Fatal("Must provide one arg: the WfRun ID!")
+		}
+		wfRunId := args[0]
+
+		req := &model.ListTaskRunsRequest{
+			WfRunId: wfRunId,
+		}
+
+		common.PrintResp(getGlobalClient(cmd).ListTaskRuns(
+			context.Background(),
+			req,
+		))
+	},
+}
+
 func init() {
 	getCmd.AddCommand(getTaskRunCmd)
 	searchCmd.AddCommand(searchTaskRunCmd)
+	listCmd.AddCommand(listTaskRunCmd)
 
 	searchTaskRunCmd.Flags().String("status", "", "Status of TaskRun's to search for.")
 	searchTaskRunCmd.Flags().String("taskDefName", "", "TaskDef ID of TaskRun's to search for.")
