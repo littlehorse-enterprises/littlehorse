@@ -29,6 +29,7 @@ import io.littlehorse.test.internal.step.VerifyWfRunStep;
 import io.littlehorse.test.internal.step.WaitForStatusStep;
 import java.time.Duration;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -63,6 +64,10 @@ public class WfRunVerifier extends AbstractVerifier {
             expectedOutput.accept(actualOutput);
         };
         steps.add(new VerifyTaskExecution(threadRunNumber, nodeRunNumber, taskRunConsumer, steps.size() + 1));
+        return this;
+    }
+
+    public WfRunVerifier thenVerifyAllTaskRuns(int threadRunNumber, Consumer<List<TaskRun>> verifier) {
         return this;
     }
 

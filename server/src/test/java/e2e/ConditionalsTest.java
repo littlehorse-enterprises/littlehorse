@@ -49,6 +49,9 @@ public class ConditionalsTest {
     @LHWorkflow("test-conditionals-not-in-workflow")
     private Workflow workflowNotIn;
 
+    @LHWorkflow("nested-if")
+    private Workflow workflowNestedIf;
+
     private WorkflowVerifier workflowVerifier;
 
     @Nested
@@ -318,6 +321,57 @@ public class ConditionalsTest {
         }
     }
 
+    // TODO: After ListTaskRunRequest is available, add NestedIf tests.
+
+    @Nested
+    class NestedIf {
+        @ParameterizedTest
+        @MethodSource("provideSuccessArguments")
+        void shouldCompleteNotInWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
+            workflowVerifier
+                    .prepareRun(workflowNotIn, Arg.of("input", inputObject))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(true))
+                    .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(expectedOutput))
+                    .start();
+        }
+
+        private static Stream<Arguments> provideSuccessArguments() {
+            return Stream.of(Arguments.of(1, 1, 2, 3), Arguments.of(11, 1, 3), Arguments.of(16, 3));
+        }
+    }
+
+    @LHWorkflow("nested-if-test")
+    public Workflow getNestedIfWorkflowImpl() {
+        return new WorkflowImpl("nested-if-test", wf -> {
+            // Use an input JSON blob with two fields, LHS and RHS.
+            // This allows us to test with various types on the left and the
+            // right, since right now the JSON_OBJ var type does not have a
+            // schema.
+            WfRunVariable input = wf.addVariable("input", VariableType.INT);
+
+            /*
+            if (input < 15) {
+                if (input < 10) {
+                    execute(1);
+                }
+                execute(2);
+            }
+            execute(3);
+             */
+            wf.doIf(wf.condition(input, Comparator.LESS_THAN, 15), ifBlock -> {
+                wf.doIf(wf.condition(input, Comparator.LESS_THAN, 10), ifBlock2 -> {
+                    ifBlock2.execute("echo", 1);
+                });
+                ifBlock.execute("echo", 2);
+            });
+
+            wf.execute("echo", 3);
+        });
+    }
+
     @LHWorkflow("test-conditionals-equals-workflow")
     public Workflow getEqualsWorkflowImpl() {
         return new WorkflowImpl("test-conditionals-equals-workflow", thread -> {
@@ -518,6 +572,11 @@ public class ConditionalsTest {
     @LHTaskMethod("ag-two")
     public boolean two() {
         return false;
+    }
+
+    @LHTaskMethod("echo")
+    public int echo(int input) {
+        return input;
     }
 
     static class InputObj {
