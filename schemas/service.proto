@@ -455,7 +455,7 @@ message UserTaskRunList {
   repeated UserTaskRun results = 1;
 }
 
-message ListTaskRunRequest {
+message ListTaskRunsRequest {
   string wf_run_id = 1;
 }
 
@@ -491,7 +491,7 @@ service LHPublicApi {
   rpc ListNodeRuns(ListNodeRunsRequest) returns (NodeRunList) {}
 
   rpc GetTaskRun(TaskRunId) returns (TaskRun) {}
-  rpc ListTaskRun(ListTaskRunRequest) returns (TaskRunList) {}
+  rpc ListTaskRuns(ListTaskRunsRequest) returns (TaskRunList) {}
 
   rpc GetVariable(VariableId) returns (Variable) {}
   rpc ListVariables(ListVariablesRequest) returns (VariableList) {}

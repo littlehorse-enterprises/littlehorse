@@ -635,35 +635,35 @@ public final class LHPublicApiGrpc {
     return getGetTaskRunMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskRunRequest,
-      io.littlehorse.sdk.common.proto.TaskRunList> getListTaskRunMethod;
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskRunsRequest,
+      io.littlehorse.sdk.common.proto.TaskRunList> getListTaskRunsMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "ListTaskRun",
-      requestType = io.littlehorse.sdk.common.proto.ListTaskRunRequest.class,
+      fullMethodName = SERVICE_NAME + '/' + "ListTaskRuns",
+      requestType = io.littlehorse.sdk.common.proto.ListTaskRunsRequest.class,
       responseType = io.littlehorse.sdk.common.proto.TaskRunList.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskRunRequest,
-      io.littlehorse.sdk.common.proto.TaskRunList> getListTaskRunMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskRunRequest, io.littlehorse.sdk.common.proto.TaskRunList> getListTaskRunMethod;
-    if ((getListTaskRunMethod = LHPublicApiGrpc.getListTaskRunMethod) == null) {
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskRunsRequest,
+      io.littlehorse.sdk.common.proto.TaskRunList> getListTaskRunsMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskRunsRequest, io.littlehorse.sdk.common.proto.TaskRunList> getListTaskRunsMethod;
+    if ((getListTaskRunsMethod = LHPublicApiGrpc.getListTaskRunsMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
-        if ((getListTaskRunMethod = LHPublicApiGrpc.getListTaskRunMethod) == null) {
-          LHPublicApiGrpc.getListTaskRunMethod = getListTaskRunMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListTaskRunRequest, io.littlehorse.sdk.common.proto.TaskRunList>newBuilder()
+        if ((getListTaskRunsMethod = LHPublicApiGrpc.getListTaskRunsMethod) == null) {
+          LHPublicApiGrpc.getListTaskRunsMethod = getListTaskRunsMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListTaskRunsRequest, io.littlehorse.sdk.common.proto.TaskRunList>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListTaskRun"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListTaskRuns"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ListTaskRunRequest.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.ListTaskRunsRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.TaskRunList.getDefaultInstance()))
-              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("ListTaskRun"))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("ListTaskRuns"))
               .build();
         }
       }
     }
-    return getListTaskRunMethod;
+    return getListTaskRunsMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.VariableId,
@@ -1755,9 +1755,9 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    default void listTaskRun(io.littlehorse.sdk.common.proto.ListTaskRunRequest request,
+    default void listTaskRuns(io.littlehorse.sdk.common.proto.ListTaskRunsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskRunList> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListTaskRunMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListTaskRunsMethod(), responseObserver);
     }
 
     /**
@@ -2153,10 +2153,10 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public void listTaskRun(io.littlehorse.sdk.common.proto.ListTaskRunRequest request,
+    public void listTaskRuns(io.littlehorse.sdk.common.proto.ListTaskRunsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskRunList> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getListTaskRunMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getListTaskRunsMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -2550,9 +2550,9 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public io.littlehorse.sdk.common.proto.TaskRunList listTaskRun(io.littlehorse.sdk.common.proto.ListTaskRunRequest request) {
+    public io.littlehorse.sdk.common.proto.TaskRunList listTaskRuns(io.littlehorse.sdk.common.proto.ListTaskRunsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getListTaskRunMethod(), getCallOptions(), request);
+          getChannel(), getListTaskRunsMethod(), getCallOptions(), request);
     }
 
     /**
@@ -2930,10 +2930,10 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TaskRunList> listTaskRun(
-        io.littlehorse.sdk.common.proto.ListTaskRunRequest request) {
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TaskRunList> listTaskRuns(
+        io.littlehorse.sdk.common.proto.ListTaskRunsRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getListTaskRunMethod(), getCallOptions()), request);
+          getChannel().newCall(getListTaskRunsMethod(), getCallOptions()), request);
     }
 
     /**
@@ -3181,7 +3181,7 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_GET_NODE_RUN = 17;
   private static final int METHODID_LIST_NODE_RUNS = 18;
   private static final int METHODID_GET_TASK_RUN = 19;
-  private static final int METHODID_LIST_TASK_RUN = 20;
+  private static final int METHODID_LIST_TASK_RUNS = 20;
   private static final int METHODID_GET_VARIABLE = 21;
   private static final int METHODID_LIST_VARIABLES = 22;
   private static final int METHODID_PUT_EXTERNAL_EVENT = 23;
@@ -3309,8 +3309,8 @@ public final class LHPublicApiGrpc {
           serviceImpl.getTaskRun((io.littlehorse.sdk.common.proto.TaskRunId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskRun>) responseObserver);
           break;
-        case METHODID_LIST_TASK_RUN:
-          serviceImpl.listTaskRun((io.littlehorse.sdk.common.proto.ListTaskRunRequest) request,
+        case METHODID_LIST_TASK_RUNS:
+          serviceImpl.listTaskRuns((io.littlehorse.sdk.common.proto.ListTaskRunsRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskRunList>) responseObserver);
           break;
         case METHODID_GET_VARIABLE:
@@ -3587,12 +3587,12 @@ public final class LHPublicApiGrpc {
               io.littlehorse.sdk.common.proto.TaskRun>(
                 service, METHODID_GET_TASK_RUN)))
         .addMethod(
-          getListTaskRunMethod(),
+          getListTaskRunsMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.ListTaskRunRequest,
+              io.littlehorse.sdk.common.proto.ListTaskRunsRequest,
               io.littlehorse.sdk.common.proto.TaskRunList>(
-                service, METHODID_LIST_TASK_RUN)))
+                service, METHODID_LIST_TASK_RUNS)))
         .addMethod(
           getGetVariableMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -3864,7 +3864,7 @@ public final class LHPublicApiGrpc {
               .addMethod(getGetNodeRunMethod())
               .addMethod(getListNodeRunsMethod())
               .addMethod(getGetTaskRunMethod())
-              .addMethod(getListTaskRunMethod())
+              .addMethod(getListTaskRunsMethod())
               .addMethod(getGetVariableMethod())
               .addMethod(getListVariablesMethod())
               .addMethod(getPutExternalEventMethod())

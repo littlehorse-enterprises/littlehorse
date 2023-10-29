@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface ListTaskRunRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.ListTaskRunRequest)
+public interface ListTaskRunsRequestOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.ListTaskRunsRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**

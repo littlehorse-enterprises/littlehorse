@@ -4,18 +4,18 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.ListTaskRunRequest}
+ * Protobuf type {@code littlehorse.ListTaskRunsRequest}
  */
-public final class ListTaskRunRequest extends
+public final class ListTaskRunsRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.ListTaskRunRequest)
-    ListTaskRunRequestOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.ListTaskRunsRequest)
+    ListTaskRunsRequestOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use ListTaskRunRequest.newBuilder() to construct.
-  private ListTaskRunRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use ListTaskRunsRequest.newBuilder() to construct.
+  private ListTaskRunsRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private ListTaskRunRequest() {
+  private ListTaskRunsRequest() {
     wfRunId_ = "";
   }
 
@@ -23,20 +23,20 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new ListTaskRunRequest();
+    return new ListTaskRunsRequest();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListTaskRunRequest_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListTaskRunsRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListTaskRunRequest_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListTaskRunsRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.ListTaskRunRequest.class, io.littlehorse.sdk.common.proto.ListTaskRunRequest.Builder.class);
+            io.littlehorse.sdk.common.proto.ListTaskRunsRequest.class, io.littlehorse.sdk.common.proto.ListTaskRunsRequest.Builder.class);
   }
 
   public static final int WF_RUN_ID_FIELD_NUMBER = 1;
@@ -117,10 +117,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.ListTaskRunRequest)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.ListTaskRunsRequest)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.ListTaskRunRequest other = (io.littlehorse.sdk.common.proto.ListTaskRunRequest) obj;
+    io.littlehorse.sdk.common.proto.ListTaskRunsRequest other = (io.littlehorse.sdk.common.proto.ListTaskRunsRequest) obj;
 
     if (!getWfRunId()
         .equals(other.getWfRunId())) return false;
@@ -142,44 +142,44 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.ListTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListTaskRunsRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ListTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListTaskRunsRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ListTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListTaskRunsRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ListTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListTaskRunsRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ListTaskRunRequest parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.ListTaskRunsRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ListTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListTaskRunsRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ListTaskRunRequest parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.ListTaskRunsRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.ListTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListTaskRunsRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -187,26 +187,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.ListTaskRunRequest parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.ListTaskRunsRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.ListTaskRunRequest parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.ListTaskRunsRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ListTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListTaskRunsRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.ListTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListTaskRunsRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -219,7 +219,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.ListTaskRunRequest prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.ListTaskRunsRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -235,26 +235,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.ListTaskRunRequest}
+   * Protobuf type {@code littlehorse.ListTaskRunsRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.ListTaskRunRequest)
-      io.littlehorse.sdk.common.proto.ListTaskRunRequestOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.ListTaskRunsRequest)
+      io.littlehorse.sdk.common.proto.ListTaskRunsRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListTaskRunRequest_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListTaskRunsRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListTaskRunRequest_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListTaskRunsRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.ListTaskRunRequest.class, io.littlehorse.sdk.common.proto.ListTaskRunRequest.Builder.class);
+              io.littlehorse.sdk.common.proto.ListTaskRunsRequest.class, io.littlehorse.sdk.common.proto.ListTaskRunsRequest.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.ListTaskRunRequest.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.ListTaskRunsRequest.newBuilder()
     private Builder() {
 
     }
@@ -275,17 +275,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListTaskRunRequest_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListTaskRunsRequest_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ListTaskRunRequest getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.ListTaskRunRequest.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.ListTaskRunsRequest getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.ListTaskRunsRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ListTaskRunRequest build() {
-      io.littlehorse.sdk.common.proto.ListTaskRunRequest result = buildPartial();
+    public io.littlehorse.sdk.common.proto.ListTaskRunsRequest build() {
+      io.littlehorse.sdk.common.proto.ListTaskRunsRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -293,14 +293,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ListTaskRunRequest buildPartial() {
-      io.littlehorse.sdk.common.proto.ListTaskRunRequest result = new io.littlehorse.sdk.common.proto.ListTaskRunRequest(this);
+    public io.littlehorse.sdk.common.proto.ListTaskRunsRequest buildPartial() {
+      io.littlehorse.sdk.common.proto.ListTaskRunsRequest result = new io.littlehorse.sdk.common.proto.ListTaskRunsRequest(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.ListTaskRunRequest result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.ListTaskRunsRequest result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.wfRunId_ = wfRunId_;
@@ -341,16 +341,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.ListTaskRunRequest) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.ListTaskRunRequest)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.ListTaskRunsRequest) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.ListTaskRunsRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.ListTaskRunRequest other) {
-      if (other == io.littlehorse.sdk.common.proto.ListTaskRunRequest.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.ListTaskRunsRequest other) {
+      if (other == io.littlehorse.sdk.common.proto.ListTaskRunsRequest.getDefaultInstance()) return this;
       if (!other.getWfRunId().isEmpty()) {
         wfRunId_ = other.wfRunId_;
         bitField0_ |= 0x00000001;
@@ -488,23 +488,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.ListTaskRunRequest)
+    // @@protoc_insertion_point(builder_scope:littlehorse.ListTaskRunsRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.ListTaskRunRequest)
-  private static final io.littlehorse.sdk.common.proto.ListTaskRunRequest DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.ListTaskRunsRequest)
+  private static final io.littlehorse.sdk.common.proto.ListTaskRunsRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.ListTaskRunRequest();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.ListTaskRunsRequest();
   }
 
-  public static io.littlehorse.sdk.common.proto.ListTaskRunRequest getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.ListTaskRunsRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<ListTaskRunRequest>
-      PARSER = new com.google.protobuf.AbstractParser<ListTaskRunRequest>() {
+  private static final com.google.protobuf.Parser<ListTaskRunsRequest>
+      PARSER = new com.google.protobuf.AbstractParser<ListTaskRunsRequest>() {
     @java.lang.Override
-    public ListTaskRunRequest parsePartialFrom(
+    public ListTaskRunsRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -523,17 +523,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<ListTaskRunRequest> parser() {
+  public static com.google.protobuf.Parser<ListTaskRunsRequest> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<ListTaskRunRequest> getParserForType() {
+  public com.google.protobuf.Parser<ListTaskRunsRequest> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ListTaskRunRequest getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.ListTaskRunsRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 
