@@ -33,14 +33,13 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
             ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
         String token = extractAccessToken(headers);
-
         try {
             validateToken(token);
         } catch (Exception e) {
             log.error("Error authorizing request", e);
             call.close(getStatusByException(e), headers);
         }
-
+        headers.put(CLIENT_ID, tokenCache.getIfPresent(token).getClientId());
         return next.startCall(call, headers);
     }
 
