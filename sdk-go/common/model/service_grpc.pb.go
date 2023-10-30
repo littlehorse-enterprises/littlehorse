@@ -40,6 +40,7 @@ const (
 	LHPublicApi_GetNodeRun_FullMethodName              = "/littlehorse.LHPublicApi/GetNodeRun"
 	LHPublicApi_ListNodeRuns_FullMethodName            = "/littlehorse.LHPublicApi/ListNodeRuns"
 	LHPublicApi_GetTaskRun_FullMethodName              = "/littlehorse.LHPublicApi/GetTaskRun"
+	LHPublicApi_ListTaskRuns_FullMethodName            = "/littlehorse.LHPublicApi/ListTaskRuns"
 	LHPublicApi_GetVariable_FullMethodName             = "/littlehorse.LHPublicApi/GetVariable"
 	LHPublicApi_ListVariables_FullMethodName           = "/littlehorse.LHPublicApi/ListVariables"
 	LHPublicApi_PutExternalEvent_FullMethodName        = "/littlehorse.LHPublicApi/PutExternalEvent"
@@ -95,6 +96,7 @@ type LHPublicApiClient interface {
 	GetNodeRun(ctx context.Context, in *NodeRunId, opts ...grpc.CallOption) (*NodeRun, error)
 	ListNodeRuns(ctx context.Context, in *ListNodeRunsRequest, opts ...grpc.CallOption) (*NodeRunList, error)
 	GetTaskRun(ctx context.Context, in *TaskRunId, opts ...grpc.CallOption) (*TaskRun, error)
+	ListTaskRuns(ctx context.Context, in *ListTaskRunsRequest, opts ...grpc.CallOption) (*TaskRunList, error)
 	GetVariable(ctx context.Context, in *VariableId, opts ...grpc.CallOption) (*Variable, error)
 	ListVariables(ctx context.Context, in *ListVariablesRequest, opts ...grpc.CallOption) (*VariableList, error)
 	PutExternalEvent(ctx context.Context, in *PutExternalEventRequest, opts ...grpc.CallOption) (*ExternalEvent, error)
@@ -308,6 +310,15 @@ func (c *lHPublicApiClient) ListNodeRuns(ctx context.Context, in *ListNodeRunsRe
 func (c *lHPublicApiClient) GetTaskRun(ctx context.Context, in *TaskRunId, opts ...grpc.CallOption) (*TaskRun, error) {
 	out := new(TaskRun)
 	err := c.cc.Invoke(ctx, LHPublicApi_GetTaskRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *lHPublicApiClient) ListTaskRuns(ctx context.Context, in *ListTaskRunsRequest, opts ...grpc.CallOption) (*TaskRunList, error) {
+	out := new(TaskRunList)
+	err := c.cc.Invoke(ctx, LHPublicApi_ListTaskRuns_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -621,6 +632,7 @@ type LHPublicApiServer interface {
 	GetNodeRun(context.Context, *NodeRunId) (*NodeRun, error)
 	ListNodeRuns(context.Context, *ListNodeRunsRequest) (*NodeRunList, error)
 	GetTaskRun(context.Context, *TaskRunId) (*TaskRun, error)
+	ListTaskRuns(context.Context, *ListTaskRunsRequest) (*TaskRunList, error)
 	GetVariable(context.Context, *VariableId) (*Variable, error)
 	ListVariables(context.Context, *ListVariablesRequest) (*VariableList, error)
 	PutExternalEvent(context.Context, *PutExternalEventRequest) (*ExternalEvent, error)
@@ -716,6 +728,9 @@ func (UnimplementedLHPublicApiServer) ListNodeRuns(context.Context, *ListNodeRun
 }
 func (UnimplementedLHPublicApiServer) GetTaskRun(context.Context, *TaskRunId) (*TaskRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTaskRun not implemented")
+}
+func (UnimplementedLHPublicApiServer) ListTaskRuns(context.Context, *ListTaskRunsRequest) (*TaskRunList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListTaskRuns not implemented")
 }
 func (UnimplementedLHPublicApiServer) GetVariable(context.Context, *VariableId) (*Variable, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetVariable not implemented")
@@ -1173,6 +1188,24 @@ func _LHPublicApi_GetTaskRun_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LHPublicApiServer).GetTaskRun(ctx, req.(*TaskRunId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LHPublicApi_ListTaskRuns_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListTaskRunsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LHPublicApiServer).ListTaskRuns(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LHPublicApi_ListTaskRuns_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LHPublicApiServer).ListTaskRuns(ctx, req.(*ListTaskRunsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1793,6 +1826,10 @@ var LHPublicApi_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTaskRun",
 			Handler:    _LHPublicApi_GetTaskRun_Handler,
+		},
+		{
+			MethodName: "ListTaskRuns",
+			Handler:    _LHPublicApi_ListTaskRuns_Handler,
 		},
 		{
 			MethodName: "GetVariable",

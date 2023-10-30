@@ -124,6 +124,11 @@ class LHPublicApiStub(object):
                 request_serializer=object__id__pb2.TaskRunId.SerializeToString,
                 response_deserializer=task__run__pb2.TaskRun.FromString,
                 )
+        self.ListTaskRuns = channel.unary_unary(
+                '/littlehorse.LHPublicApi/ListTaskRuns',
+                request_serializer=service__pb2.ListTaskRunsRequest.SerializeToString,
+                response_deserializer=service__pb2.TaskRunList.FromString,
+                )
         self.GetVariable = channel.unary_unary(
                 '/littlehorse.LHPublicApi/GetVariable',
                 request_serializer=object__id__pb2.VariableId.SerializeToString,
@@ -389,6 +394,12 @@ class LHPublicApiServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def GetTaskRun(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListTaskRuns(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -670,6 +681,11 @@ def add_LHPublicApiServicer_to_server(servicer, server):
                     servicer.GetTaskRun,
                     request_deserializer=object__id__pb2.TaskRunId.FromString,
                     response_serializer=task__run__pb2.TaskRun.SerializeToString,
+            ),
+            'ListTaskRuns': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListTaskRuns,
+                    request_deserializer=service__pb2.ListTaskRunsRequest.FromString,
+                    response_serializer=service__pb2.TaskRunList.SerializeToString,
             ),
             'GetVariable': grpc.unary_unary_rpc_method_handler(
                     servicer.GetVariable,
@@ -1163,6 +1179,23 @@ class LHPublicApi(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/GetTaskRun',
             object__id__pb2.TaskRunId.SerializeToString,
             task__run__pb2.TaskRun.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ListTaskRuns(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ListTaskRuns',
+            service__pb2.ListTaskRunsRequest.SerializeToString,
+            service__pb2.TaskRunList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
