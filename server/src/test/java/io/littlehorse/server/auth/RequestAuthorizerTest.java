@@ -138,6 +138,9 @@ public class RequestAuthorizerTest {
 
         @Test
         public void supportRequiredAclValidation() {
+            MethodDescriptor<Object, Object> mockMethod = mock();
+            when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
+            when(mockMethod.getBareMethodName()).thenReturn("PutTaskDef");
             when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("limited-principal");
             startCall();
             Mockito.verify(mockCall).close(eq(Status.PERMISSION_DENIED), eq(mockMetadata));
