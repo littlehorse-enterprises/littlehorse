@@ -15,6 +15,7 @@ import "task_run.proto";
 import "user_tasks.proto";
 import "wf_spec.proto";
 import "task_def.proto";
+import "acls.proto";
 
 option go_package = ".;model";
 option java_multiple_files = true;
@@ -529,4 +530,6 @@ service LHPublicApi {
   rpc GetWfSpecMetricsWindow(WfSpecMetricsQueryRequest) returns (WfSpecMetrics) {}
   rpc ListTaskDefMetrics(ListTaskMetricsRequest) returns (ListTaskMetricsResponse) {}
   rpc ListWfSpecMetrics(ListWfMetricsRequest) returns (ListWfMetricsResponse) {}
+
+  rpc PutTenant(PutTenantRequest) returns (PutTenantResponse) {}
 }

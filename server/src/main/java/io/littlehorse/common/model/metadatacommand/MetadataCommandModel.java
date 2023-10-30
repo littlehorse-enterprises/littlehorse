@@ -98,6 +98,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
             case DELETE_USER_TASK_DEF:
                 out.setDeleteUserTaskDef(deleteUserTaskDef.toProto());
                 break;
+            case PUT_TENANT:
+                out.setPutTenant(putTenant.toProto());
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }
@@ -141,6 +144,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
             case DELETE_USER_TASK_DEF:
                 deleteUserTaskDef =
                         LHSerializable.fromProto(p.getDeleteUserTaskDef(), DeleteUserTaskDefRequestModel.class);
+                break;
+            case PUT_TENANT:
+                putTenant = LHSerializable.fromProto(p.getPutTenant(), PutTenantRequestModel.class);
                 break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");

@@ -2,6 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
+import littlehorse.model.acls_pb2 as acls__pb2
 import littlehorse.model.external_event_pb2 as external__event__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 import littlehorse.model.node_run_pb2 as node__run__pb2
@@ -273,6 +274,11 @@ class LHPublicApiStub(object):
                 '/littlehorse.LHPublicApi/ListWfSpecMetrics',
                 request_serializer=service__pb2.ListWfMetricsRequest.SerializeToString,
                 response_deserializer=service__pb2.ListWfMetricsResponse.FromString,
+                )
+        self.PutTenant = channel.unary_unary(
+                '/littlehorse.LHPublicApi/PutTenant',
+                request_serializer=acls__pb2.PutTenantRequest.SerializeToString,
+                response_deserializer=acls__pb2.PutTenantResponse.FromString,
                 )
 
 
@@ -579,6 +585,12 @@ class LHPublicApiServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def PutTenant(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_LHPublicApiServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -831,6 +843,11 @@ def add_LHPublicApiServicer_to_server(servicer, server):
                     servicer.ListWfSpecMetrics,
                     request_deserializer=service__pb2.ListWfMetricsRequest.FromString,
                     response_serializer=service__pb2.ListWfMetricsResponse.SerializeToString,
+            ),
+            'PutTenant': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutTenant,
+                    request_deserializer=acls__pb2.PutTenantRequest.FromString,
+                    response_serializer=acls__pb2.PutTenantResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1689,5 +1706,22 @@ class LHPublicApi(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/ListWfSpecMetrics',
             service__pb2.ListWfMetricsRequest.SerializeToString,
             service__pb2.ListWfMetricsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def PutTenant(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutTenant',
+            acls__pb2.PutTenantRequest.SerializeToString,
+            acls__pb2.PutTenantResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
