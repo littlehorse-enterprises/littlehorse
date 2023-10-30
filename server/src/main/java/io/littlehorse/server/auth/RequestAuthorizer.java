@@ -42,16 +42,16 @@ public class RequestAuthorizer implements ServerAuthorizer {
             ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
         String clientId = headers.get(CLIENT_ID);
         String tenantId = headers.get(TENANT_ID);
-        Context current = Context.current();
+        Context context = Context.current();
 
         try {
             PrincipalModel resolvedPrincipal = resolvePrincipal(clientId, tenantId);
             validateAcl(call.getMethodDescriptor(), resolvedPrincipal);
-            current = current.withValue(PRINCIPAL, resolvedPrincipal);
+            context = context.withValue(PRINCIPAL, resolvedPrincipal);
         } catch (PermissionDeniedException ex) {
             call.close(Status.PERMISSION_DENIED.withDescription(ex.getMessage()), headers);
         }
-        return Contexts.interceptCall(current, call, headers, next);
+        return Contexts.interceptCall(context, call, headers, next);
     }
 
     private PrincipalModel resolvePrincipal(String clientId, String tenantId) {
