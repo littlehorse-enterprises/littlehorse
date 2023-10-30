@@ -44,11 +44,14 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefR
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.InternalScanResponse;
+import io.littlehorse.common.proto.PutTenantRequest;
+import io.littlehorse.common.proto.PutTenantResponse;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
@@ -392,6 +395,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             log.error("Error handling request", exn);
             ctx.onError(exn);
         }
+    }
+
+    @Override
+    public void putTenant(PutTenantRequest req, StreamObserver<PutTenantResponse> ctx) {
+        PutTenantRequestModel reqModel = LHSerializable.fromProto(req, PutTenantRequestModel.class);
+        processCommand(new MetadataCommandModel(reqModel), ctx, PutTenantResponse.class, true);
     }
 
     @Override

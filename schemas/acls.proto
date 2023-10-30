@@ -73,4 +73,8 @@ message PutTenantRequest {
     string id = 1;
 }
 
+message PutTenantResponse {
+    string id = 1;
+}
+
 // DeleteTenant not yet supported.

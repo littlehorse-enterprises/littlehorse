@@ -69,6 +69,7 @@ const (
 	LHPublicApi_GetWfSpecMetricsWindow_FullMethodName  = "/littlehorse.LHPublicApi/GetWfSpecMetricsWindow"
 	LHPublicApi_ListTaskDefMetrics_FullMethodName      = "/littlehorse.LHPublicApi/ListTaskDefMetrics"
 	LHPublicApi_ListWfSpecMetrics_FullMethodName       = "/littlehorse.LHPublicApi/ListWfSpecMetrics"
+	LHPublicApi_PutTenant_FullMethodName               = "/littlehorse.LHPublicApi/PutTenant"
 )
 
 // LHPublicApiClient is the client API for LHPublicApi service.
@@ -124,6 +125,7 @@ type LHPublicApiClient interface {
 	GetWfSpecMetricsWindow(ctx context.Context, in *WfSpecMetricsQueryRequest, opts ...grpc.CallOption) (*WfSpecMetrics, error)
 	ListTaskDefMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*ListTaskMetricsResponse, error)
 	ListWfSpecMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*ListWfMetricsResponse, error)
+	PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*PutTenantResponse, error)
 }
 
 type lHPublicApiClient struct {
@@ -597,6 +599,15 @@ func (c *lHPublicApiClient) ListWfSpecMetrics(ctx context.Context, in *ListWfMet
 	return out, nil
 }
 
+func (c *lHPublicApiClient) PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*PutTenantResponse, error) {
+	out := new(PutTenantResponse)
+	err := c.cc.Invoke(ctx, LHPublicApi_PutTenant_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LHPublicApiServer is the server API for LHPublicApi service.
 // All implementations must embed UnimplementedLHPublicApiServer
 // for forward compatibility
@@ -650,6 +661,7 @@ type LHPublicApiServer interface {
 	GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error)
 	ListTaskDefMetrics(context.Context, *ListTaskMetricsRequest) (*ListTaskMetricsResponse, error)
 	ListWfSpecMetrics(context.Context, *ListWfMetricsRequest) (*ListWfMetricsResponse, error)
+	PutTenant(context.Context, *PutTenantRequest) (*PutTenantResponse, error)
 	mustEmbedUnimplementedLHPublicApiServer()
 }
 
@@ -803,6 +815,9 @@ func (UnimplementedLHPublicApiServer) ListTaskDefMetrics(context.Context, *ListT
 }
 func (UnimplementedLHPublicApiServer) ListWfSpecMetrics(context.Context, *ListWfMetricsRequest) (*ListWfMetricsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListWfSpecMetrics not implemented")
+}
+func (UnimplementedLHPublicApiServer) PutTenant(context.Context, *PutTenantRequest) (*PutTenantResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutTenant not implemented")
 }
 func (UnimplementedLHPublicApiServer) mustEmbedUnimplementedLHPublicApiServer() {}
 
@@ -1707,6 +1722,24 @@ func _LHPublicApi_ListWfSpecMetrics_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LHPublicApi_PutTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutTenantRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LHPublicApiServer).PutTenant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LHPublicApi_PutTenant_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LHPublicApiServer).PutTenant(ctx, req.(*PutTenantRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LHPublicApi_ServiceDesc is the grpc.ServiceDesc for LHPublicApi service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1905,6 +1938,10 @@ var LHPublicApi_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListWfSpecMetrics",
 			Handler:    _LHPublicApi_ListWfSpecMetrics_Handler,
+		},
+		{
+			MethodName: "PutTenant",
+			Handler:    _LHPublicApi_PutTenant_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
