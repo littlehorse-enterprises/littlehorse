@@ -11,7 +11,6 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
@@ -29,8 +28,6 @@ public class InputVarsTest {
 
     @LHWorkflow("json-input-vars-wf")
     private Workflow jsonWorkflow;
-
-    private WorkerContext context;
 
     @Test
     public void simpleIntegerVarInput() {

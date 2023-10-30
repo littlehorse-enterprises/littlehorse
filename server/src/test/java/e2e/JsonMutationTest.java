@@ -33,6 +33,7 @@ public class JsonMutationTest {
         Arg workflowInputVariable = Arg.of("my-obj", Map.of("foo", "bar", "baz", 2));
         Consumer<VariableValue> verifyVariableDoesNotContainFooKey = variableValue -> {
             try {
+                @SuppressWarnings("unchecked")
                 Map<String, String> jsonMap = LHLibUtil.deserializeFromjson(variableValue.getJsonObj(), Map.class);
                 assertThat(jsonMap).doesNotContainKey("foo");
             } catch (JsonProcessingException e) {
@@ -51,6 +52,7 @@ public class JsonMutationTest {
         Arg workflowInputVariable = Arg.of("my-obj", Map.of("baz", 2));
         Consumer<VariableValue> verifyVariableOnlyContainsBazJsonKey = variableValue -> {
             try {
+                @SuppressWarnings("unchecked")
                 Map<String, String> jsonMap = LHLibUtil.deserializeFromjson(variableValue.getJsonObj(), Map.class);
                 assertThat(jsonMap).containsOnlyKeys("baz");
             } catch (JsonProcessingException e) {

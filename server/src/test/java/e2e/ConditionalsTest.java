@@ -14,6 +14,7 @@ import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
@@ -48,6 +49,9 @@ public class ConditionalsTest {
 
     @LHWorkflow("test-conditionals-not-in-workflow")
     private Workflow workflowNotIn;
+
+    @LHWorkflow("test-nested-if")
+    private Workflow workflowNestedIf;
 
     private WorkflowVerifier workflowVerifier;
 
@@ -318,6 +322,62 @@ public class ConditionalsTest {
         }
     }
 
+    @Test
+    void testThatWholeIfBlockIsSkipped() {
+        workflowVerifier
+                .prepareRun(workflowNestedIf, Arg.of("input", 16))
+                .waitForStatus(LHStatus.COMPLETED)
+                .verifyAllTaskRunOutputs(List.of(3))
+                .start();
+    }
+
+    @Test
+    void testThatInnerIfBlockIsSkipped() {
+        workflowVerifier
+                .prepareRun(workflowNestedIf, Arg.of("input", 11))
+                .waitForStatus(LHStatus.COMPLETED)
+                .verifyAllTaskRunOutputs(List.of(2, 3))
+                .start();
+    }
+
+    @Test
+    void testThatBothIfBlocksFire() {
+        workflowVerifier
+                .prepareRun(workflowNestedIf, Arg.of("input", 1))
+                .waitForStatus(LHStatus.COMPLETED)
+                .verifyAllTaskRunOutputs(List.of(1, 2, 3))
+                .start();
+    }
+
+    @LHWorkflow("test-nested-if")
+    public Workflow getNestedIfWorkflowImpl() {
+        return new WorkflowImpl("test-nested-if", wf -> {
+            // Use an input JSON blob with two fields, LHS and RHS.
+            // This allows us to test with various types on the left and the
+            // right, since right now the JSON_OBJ var type does not have a
+            // schema.
+            WfRunVariable input = wf.addVariable("input", VariableType.INT);
+
+            /*
+            if (input < 15) {
+                if (input < 10) {
+                    execute(1);
+                }
+                execute(2);
+            }
+            execute(3);
+             */
+            wf.doIf(wf.condition(input, Comparator.LESS_THAN, 15), ifBlock -> {
+                wf.doIf(wf.condition(input, Comparator.LESS_THAN, 10), ifBlock2 -> {
+                    ifBlock2.execute("echo", 1);
+                });
+                ifBlock.execute("echo", 2);
+            });
+
+            wf.execute("echo", 3);
+        });
+    }
+
     @LHWorkflow("test-conditionals-equals-workflow")
     public Workflow getEqualsWorkflowImpl() {
         return new WorkflowImpl("test-conditionals-equals-workflow", thread -> {
@@ -416,7 +476,7 @@ public class ConditionalsTest {
 
     @LHWorkflow("test-conditionals-greater-than-workflow")
     public Workflow getGreaterThanWorkflow() {
-        return new WorkflowImpl("test-conditionals-greater-than-equals-workflow", thread -> {
+        return new WorkflowImpl("test-conditionals-greater-than-workflow", thread -> {
             // Use an input JSON blob with two fields, LHS and RHS.
             // This allows us to test with various types on the left and the
             // right, since right now the JSON_OBJ var type does not have a
@@ -518,6 +578,11 @@ public class ConditionalsTest {
     @LHTaskMethod("ag-two")
     public boolean two() {
         return false;
+    }
+
+    @LHTaskMethod("echo")
+    public int echo(int input) {
+        return input;
     }
 
     static class InputObj {
