@@ -34,7 +34,6 @@ import lombok.Setter;
 public class CommandModel extends AbstractCommand<Command> {
 
     public String commandId;
-    private String tenantId;
     public Date time;
 
     public CommandCase type;

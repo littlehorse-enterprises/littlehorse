@@ -42,7 +42,6 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private DeleteExternalEventDefRequestModel deleteExternalEventDef;
     private PutUserTaskDefRequestModel putUserTaskDefRequest;
     private DeleteUserTaskDefRequestModel deleteUserTaskDef;
-    private String tenantId;
     private PutPrincipalRequestModel putPrincipal;
     private DeletePrincipalRequestModel deletePrincipal;
     private PutTenantRequestModel putTenant;

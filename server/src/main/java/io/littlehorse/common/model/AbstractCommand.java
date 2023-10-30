@@ -17,6 +17,7 @@ public abstract class AbstractCommand<T extends Message> extends LHSerializable<
     }
 
     private String commandId;
+    protected String tenantId;
 
     public abstract LHStoreType getStore();
 
@@ -25,9 +26,13 @@ public abstract class AbstractCommand<T extends Message> extends LHSerializable<
     // Metadata commands will return a dummy value
     public abstract String getPartitionKey();
 
-    public abstract void setTenantId(String tenantId);
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
 
-    public abstract String getTenantId();
+    public String getTenantId() {
+        return tenantId;
+    }
 
     public abstract SubCommand<? extends Message> getSubCommand();
 }
