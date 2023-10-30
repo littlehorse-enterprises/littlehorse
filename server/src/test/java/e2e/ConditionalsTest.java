@@ -14,6 +14,7 @@ import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
@@ -49,7 +50,7 @@ public class ConditionalsTest {
     @LHWorkflow("test-conditionals-not-in-workflow")
     private Workflow workflowNotIn;
 
-    @LHWorkflow("nested-if")
+    @LHWorkflow("test-nested-if")
     private Workflow workflowNestedIf;
 
     private WorkflowVerifier workflowVerifier;
@@ -321,31 +322,36 @@ public class ConditionalsTest {
         }
     }
 
-    // TODO: After ListTaskRunRequest is available, add NestedIf tests.
-
-    @Nested
-    class NestedIf {
-        @ParameterizedTest
-        @MethodSource("provideSuccessArguments")
-        void shouldCompleteNotInWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
-            workflowVerifier
-                    .prepareRun(workflowNotIn, Arg.of("input", inputObject))
-                    .waitForStatus(LHStatus.COMPLETED)
-                    .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getBool())
-                            .isEqualTo(true))
-                    .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getBool())
-                            .isEqualTo(expectedOutput))
-                    .start();
-        }
-
-        private static Stream<Arguments> provideSuccessArguments() {
-            return Stream.of(Arguments.of(1, 1, 2, 3), Arguments.of(11, 1, 3), Arguments.of(16, 3));
-        }
+    @Test
+    void testThatWholeIfBlockIsSkipped() {
+        workflowVerifier
+                .prepareRun(workflowNestedIf, Arg.of("input", 16))
+                .waitForStatus(LHStatus.COMPLETED)
+                .verifyAllTaskRunOutputs(List.of(3))
+                .start();
     }
 
-    @LHWorkflow("nested-if-test")
+    @Test
+    void testThatInnerIfBlockIsSkipped() {
+        workflowVerifier
+                .prepareRun(workflowNestedIf, Arg.of("input", 11))
+                .waitForStatus(LHStatus.COMPLETED)
+                .verifyAllTaskRunOutputs(List.of(2, 3))
+                .start();
+    }
+
+    @Test
+    void testThatBothIfBlocksFire() {
+        workflowVerifier
+                .prepareRun(workflowNestedIf, Arg.of("input", 1))
+                .waitForStatus(LHStatus.COMPLETED)
+                .verifyAllTaskRunOutputs(List.of(1, 2, 3))
+                .start();
+    }
+
+    @LHWorkflow("test-nested-if")
     public Workflow getNestedIfWorkflowImpl() {
-        return new WorkflowImpl("nested-if-test", wf -> {
+        return new WorkflowImpl("test-nested-if", wf -> {
             // Use an input JSON blob with two fields, LHS and RHS.
             // This allows us to test with various types on the left and the
             // right, since right now the JSON_OBJ var type does not have a
