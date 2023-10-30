@@ -56,6 +56,7 @@ public class OAuthClient {
             return TokenStatus.builder()
                     .clientId(clientId)
                     .token(token)
+                    .userName(successResponse.getUsername())
                     .expiration(expiration)
                     .build();
         } catch (ParseException | IOException e) {

@@ -39,7 +39,7 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
             log.error("Error authorizing request", e);
             call.close(getStatusByException(e), headers);
         }
-        headers.put(CLIENT_ID, tokenCache.getIfPresent(token).getClientId());
+        headers.put(CLIENT_ID, tokenCache.getIfPresent(token).getUserName());
         return next.startCall(call, headers);
     }
 

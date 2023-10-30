@@ -15,8 +15,9 @@ public class TokenStatus {
     private String token;
     private Instant expiration;
     private String clientId;
+    private String userName;
 
-    public TokenStatus(@NonNull String token, Instant expiration, String clientId) {
+    public TokenStatus(@NonNull String token, Instant expiration, String clientId, String userName) {
         this.token = token;
 
         if (expiration == null) {
@@ -24,6 +25,7 @@ public class TokenStatus {
         }
         this.expiration = expiration.truncatedTo(ChronoUnit.SECONDS);
         this.clientId = clientId;
+        this.userName = userName;
     }
 
     public boolean isValid() {
