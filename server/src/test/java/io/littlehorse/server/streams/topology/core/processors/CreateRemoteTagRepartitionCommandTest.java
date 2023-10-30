@@ -32,8 +32,6 @@ public class CreateRemoteTagRepartitionCommandTest {
 
     private final Tag tagToStore = TestUtil.tag();
     private final String commandId = UUID.randomUUID().toString();
-    private final RepartitionCommand commandToProcess =
-            new RepartitionCommand(new CreateRemoteTag(tagToStore), new Date(), commandId);
 
     @Mock
     private LHServerConfig config;
@@ -69,7 +67,8 @@ public class CreateRemoteTagRepartitionCommandTest {
     @ParameterizedTest
     @ValueSource(strings = {TENANT_ID_A, TENANT_ID_B, DEFAULT_TENANT})
     void shouldStoreRemoteTagWithTenantIsolation(final String tenantId) {
-        commandToProcess.setTenantId(tenantId);
+        RepartitionCommand commandToProcess =
+                new RepartitionCommand(new CreateRemoteTag(tagToStore), new Date(), commandId, tenantId);
         commandProcessor.init(mockProcessorContext);
         commandProcessor.process(new Record<>(commandId, commandToProcess, 0L));
         assertThat(mockProcessorContext.scheduledPunctuators()).hasSize(1);
