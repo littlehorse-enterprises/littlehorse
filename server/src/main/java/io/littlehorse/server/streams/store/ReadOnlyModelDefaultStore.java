@@ -35,6 +35,9 @@ public class ReadOnlyModelDefaultStore implements ReadOnlyModelStore {
         return serdeModelStore.prefixScan(Storeable.getFullStoreKey(cls, fullKey), cls);
     }
 
+    /**
+     * Make sure to `.close()` the result!
+     */
     public <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(String prefix, Class<T> cls) {
         String start = Storeable.getFullStoreKey(cls, prefix);
         // The Streams ReadOnlyKeyValueStore doesn't have a reverse prefix scan.
@@ -51,6 +54,7 @@ public class ReadOnlyModelDefaultStore implements ReadOnlyModelStore {
      * Does a range scan over the provided object id's (note: these are NOT full
      * store keys.)
      *
+     * Make sure to `.close()` the result!
      * @param <T>   type of object
      * @param start start object id
      * @param end   end object id
