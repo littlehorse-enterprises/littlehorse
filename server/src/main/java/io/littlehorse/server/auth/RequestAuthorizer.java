@@ -12,7 +12,9 @@ import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.dao.ServerDAOFactory;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
@@ -39,21 +41,28 @@ public class RequestAuthorizer implements ServerAuthorizer {
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
             ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
         String clientId = headers.get(CLIENT_ID);
+        String tenantId = headers.get(TENANT_ID);
         Context current = Context.current();
 
-        PrincipalModel resolvedPrincipal = resolvePrincipal(clientId);
         try {
+            PrincipalModel resolvedPrincipal = resolvePrincipal(clientId, tenantId);
             validateAcl(call.getMethodDescriptor(), resolvedPrincipal);
             current = current.withValue(PRINCIPAL, resolvedPrincipal);
         } catch (PermissionDeniedException ex) {
-            call.close(Status.PERMISSION_DENIED, headers);
+            call.close(Status.PERMISSION_DENIED.withDescription(ex.getMessage()), headers);
         }
         return Contexts.interceptCall(current, call, headers, next);
     }
 
-    private PrincipalModel resolvePrincipal(String clientId) {
-        if (clientId == null) {
+    private PrincipalModel resolvePrincipal(String clientId, String tenantId) {
+        if (clientId == null && tenantId == null) {
             return PrincipalModel.anonymous();
+        } else if (tenantId != null) {
+            TenantModel tenant = readOnlyDao().get(new TenantIdModel(tenantId));
+            if (tenant == null) {
+                throw new PermissionDeniedException("Requested %s tenant does not exist".formatted(tenantId));
+            }
+            return PrincipalModel.anonymousFor(tenant);
         } else {
             PrincipalModel principal = readOnlyDao().get(new PrincipalIdModel(clientId));
             return principal != null ? principal : PrincipalModel.anonymous();
@@ -116,7 +125,8 @@ public class RequestAuthorizer implements ServerAuthorizer {
             }
             if (!(clientAllowedActions.containsAll(authMetadata.requiredActions())
                     && clientAllowedResources.containsAll(authMetadata.requiredResources()))) {
-                throw new PermissionDeniedException("");
+                throw new PermissionDeniedException("Missing permissions %s over resources %s"
+                        .formatted(authMetadata.requiredActions(), authMetadata.requiredResources()));
             }
         }
 
