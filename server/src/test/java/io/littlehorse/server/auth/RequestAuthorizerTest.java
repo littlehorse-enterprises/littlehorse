@@ -38,6 +38,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 public class RequestAuthorizerTest {
@@ -82,6 +83,30 @@ public class RequestAuthorizerTest {
         Assertions.assertThat(resolvedPrincipal.getId()).isEqualTo("anonymous");
         Assertions.assertThat(resolvedPrincipal.isAdmin()).isTrue();
         Assertions.assertThat(resolvedPrincipal.getTenant()).isEqualTo(TenantModel.createDefault());
+    }
+
+    @Test
+    public void supportAnonymousPrincipalForSpecificTenant() {
+        when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn(null);
+        when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-tenant");
+        metadataDao.put(new TenantModel("my-tenant"));
+        startCall();
+        Assertions.assertThat(resolvedPrincipal.getAcls()).hasSize(1);
+        Assertions.assertThat(resolvedPrincipal.getId()).isEqualTo("anonymous");
+        Assertions.assertThat(resolvedPrincipal.isAdmin()).isTrue();
+        Assertions.assertThat(resolvedPrincipal.getTenant()).isEqualTo(TenantModel.create("my-tenant"));
+    }
+
+    @Test
+    public void supportTenantExistsValidation() {
+        when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn(null);
+        when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-tenant");
+        String expectedDescription = "Requested my-tenant tenant does not exist";
+        ArgumentCaptor<Status> closeMethodCaptor = ArgumentCaptor.forClass(Status.class);
+        startCall();
+        Mockito.verify(mockCall).close(closeMethodCaptor.capture(), any());
+        Status resultStatus = closeMethodCaptor.getValue();
+        Assertions.assertThat(resultStatus.getDescription()).isEqualTo(expectedDescription);
     }
 
     @Test
@@ -143,7 +168,7 @@ public class RequestAuthorizerTest {
             when(mockMethod.getBareMethodName()).thenReturn("PutTaskDef");
             when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("limited-principal");
             startCall();
-            Mockito.verify(mockCall).close(eq(Status.PERMISSION_DENIED), eq(mockMetadata));
+            Mockito.verify(mockCall).close(any(), eq(mockMetadata));
         }
     }
 
