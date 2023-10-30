@@ -65,8 +65,8 @@ public class TagStorageManager {
 
     private void sendRepartitionCommandForRemoveRemoteTag(String tagStoreKey, String tagAttributeString) {
         RemoveRemoteTag command = new RemoveRemoteTag(tagStoreKey, tagAttributeString);
-        RepartitionCommand repartitionCommand = new RepartitionCommand(command, new Date(), tagStoreKey);
-        repartitionCommand.setTenantId(dao.context().tenantId());
+        RepartitionCommand repartitionCommand = new RepartitionCommand(
+                command, new Date(), tagStoreKey, dao.context().tenantId());
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.partitionKey = tagAttributeString;
         cpo.topic = this.lhConfig.getRepartitionTopicName();
@@ -81,8 +81,8 @@ public class TagStorageManager {
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.setPartitionKey(partitionKey);
         cpo.setTopic(this.lhConfig.getRepartitionTopicName());
-        RepartitionCommand repartitionCommand = new RepartitionCommand(command, new Date(), partitionKey);
-        repartitionCommand.setTenantId(dao.context().tenantId());
+        RepartitionCommand repartitionCommand = new RepartitionCommand(
+                command, new Date(), partitionKey, dao.context().tenantId());
         cpo.setPayload(repartitionCommand);
         Record<String, CommandProcessorOutput> out = new Record<>(partitionKey, cpo, System.currentTimeMillis());
         this.context.forward(out);

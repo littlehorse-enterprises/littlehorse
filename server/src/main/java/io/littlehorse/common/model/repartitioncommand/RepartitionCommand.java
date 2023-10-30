@@ -36,10 +36,11 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
 
     public RepartitionCommand() {}
 
-    public RepartitionCommand(RepartitionSubCommand command, Date time, String commandId) {
+    public RepartitionCommand(RepartitionSubCommand command, Date time, String commandId, String tenantId) {
         setSubCommand(command);
         this.time = time;
         this.commandId = commandId;
+        this.tenantId = tenantId;
     }
 
     public void setSubCommand(RepartitionSubCommand subCommand) {
