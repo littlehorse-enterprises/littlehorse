@@ -43,6 +43,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefReque
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
@@ -182,8 +183,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
-    public void putPrincipal(PutPrincipalRequest request, StreamObserver<PutPrincipalResponse> responseObserver) {
-        super.putPrincipal(request, responseObserver);
+    public void putPrincipal(PutPrincipalRequest req, StreamObserver<PutPrincipalResponse> ctx) {
+        PutPrincipalRequestModel reqModel = LHSerializable.fromProto(req, PutPrincipalRequestModel.class);
+        processCommand(new MetadataCommandModel(reqModel), ctx, PutPrincipalResponse.class, true);
     }
 
     @Override
@@ -470,6 +472,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void searchWfSpec(SearchWfSpecRequest req, StreamObserver<WfSpecIdList> ctx) {
         handleScan(SearchWfSpecRequestModel.fromProto(req), ctx, SearchWfSpecReply.class);
     }

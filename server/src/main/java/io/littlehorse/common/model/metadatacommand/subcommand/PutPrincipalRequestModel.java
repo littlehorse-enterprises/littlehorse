@@ -12,8 +12,8 @@ import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
-import io.littlehorse.common.proto.Principal;
 import io.littlehorse.common.proto.PutPrincipalRequest;
+import io.littlehorse.common.proto.PutPrincipalResponse;
 import io.littlehorse.common.proto.ServerACL;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
     }
 
     @Override
-    public Principal process(MetadataProcessorDAO dao, LHServerConfig config) {
+    public PutPrincipalResponse process(MetadataProcessorDAO dao, LHServerConfig config) {
         PrincipalModel existingPrincipal = dao.get(new PrincipalIdModel(id));
         PrincipalModel toSave;
         if (existingPrincipal == null) {
@@ -89,7 +89,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
         }
         toSave.setTenant(TenantModel.create(principalTenantId));
         dao.put(toSave);
-        return toSave.toProto().build();
+        return PutPrincipalResponse.newBuilder().setId(toSave.getId()).build();
     }
 
     @Override

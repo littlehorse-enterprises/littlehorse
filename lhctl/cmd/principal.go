@@ -17,18 +17,18 @@ var createPrincipalCmd = &cobra.Command{
 		id := args[0]
 		serverAcls := []*model.ServerACL{}
 		for resource, actions := range parseAcl(acl){
-			allowedResources := make([]model.ACLResource, resource)
+			allowedResources := []model.ACLResource{resource}
 			serverAcl := model.ServerACL{
 				Resources: allowedResources,
 				AllowedActions: actions,
 			}
 			serverAcls = append(serverAcls, &serverAcl)
 		}
+
 		putRequest := model.PutPrincipalRequest{
 			Id: id,
 			Acls: serverAcls,
 		}
-		print("hmmm")
 		common.PrintResp(getGlobalClient(cmd).PutPrincipal(
 			context.Background(),
 			&putRequest,
