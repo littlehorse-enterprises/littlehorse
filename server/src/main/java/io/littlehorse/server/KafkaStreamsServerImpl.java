@@ -162,8 +162,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         this.listenerManager = new ListenersManager(
                 config, this, networkThreadpool, healthService.getMeterRegistry(), serverDAOFactory);
 
-        this.internalComms =
-                new BackendInternalComms(config, coreStreams, timerStreams, networkThreadpool, metadataCache);
+        this.internalComms = new BackendInternalComms(
+                config, coreStreams, timerStreams, networkThreadpool, metadataCache, serverDAOFactory);
     }
 
     public String getInstanceId() {

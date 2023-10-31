@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"log"
 	"strconv"
 	"strings"
@@ -52,7 +51,7 @@ var getNodeRunCmd = &cobra.Command{
 		}
 
 		common.PrintResp(getGlobalClient(cmd).GetNodeRun(
-			context.Background(),
+			requestContext(),
 			&model.NodeRunId{
 				WfRunId:         args[0],
 				ThreadRunNumber: int32(trn),
@@ -82,7 +81,7 @@ Lists all NodeRun's for a given WfRun Id.
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListNodeRuns(
-			context.Background(),
+			requestContext(),
 			req,
 		))
 	},
@@ -129,7 +128,7 @@ Choose one of the following option groups:
 		search.Bookmark = bookmark
 		search.Limit = &limit
 
-		common.PrintResp(getGlobalClient(cmd).SearchNodeRun(context.Background(), search))
+		common.PrintResp(getGlobalClient(cmd).SearchNodeRun(requestContext(), search))
 
 	},
 }

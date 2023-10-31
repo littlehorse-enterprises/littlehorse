@@ -24,6 +24,8 @@ const (
 	API_PROTOCOL_KEY = "LHC_API_PROTOCOL"
 	CLIENT_ID_KEY    = "LHC_CLIENT_ID"
 
+	TENANT_ID = "LHC_TENANT_ID"
+
 	CERT_FILE_KEY    = "LHC_CLIENT_CERT"
 	KEY_FILE_KEY     = "LHC_CLIENT_KEY"
 	CA_CERT_FILE_KEY = "LHC_CA_CERT"
@@ -54,6 +56,7 @@ type LHConfig struct {
 	CertFile    *string
 	KeyFile     *string
 	CaCert      *string
+	TenantId    *string
 
 	NumWorkerThreads      int32
 	TaskWorkerVersion     string
@@ -134,6 +137,7 @@ func NewConfigFromEnv() *LHConfig {
 		CertFile: stringPtr(os.Getenv(CERT_FILE_KEY)),
 		KeyFile:  stringPtr(os.Getenv(KEY_FILE_KEY)),
 		CaCert:   stringPtr(os.Getenv(CA_CERT_FILE_KEY)),
+		TenantId: stringPtr(os.Getenv(TENANT_ID)),
 
 		NumWorkerThreads:      int32FromEnv(NUM_WORKER_THREADS_KEY, 8),
 		TaskWorkerVersion:     os.Getenv(TASK_WORKER_VERSION_KEY),
@@ -168,6 +172,7 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 		CertFile: stringPtr(p.GetString(CERT_FILE_KEY, "")),
 		KeyFile:  stringPtr(p.GetString(KEY_FILE_KEY, "")),
 		CaCert:   stringPtr(p.GetString(CA_CERT_FILE_KEY, "")),
+		TenantId: stringPtr(p.GetString(TENANT_ID, "")),
 
 		NumWorkerThreads:      int32FromProp(p, NUM_WORKER_THREADS_KEY, 8),
 		TaskWorkerVersion:     p.GetString(TASK_WORKER_VERSION_KEY, ""),

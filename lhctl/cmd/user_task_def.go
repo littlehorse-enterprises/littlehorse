@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"log"
 	"os"
 	"strconv"
@@ -49,7 +48,7 @@ var getUserTaskDefCmd = &cobra.Command{
 		if !hasVersion {
 			common.PrintResp(
 				getGlobalClient(cmd).GetLatestUserTaskDef(
-					context.Background(),
+					requestContext(),
 					&model.GetLatestUserTaskDefRequest{
 						Name: name,
 					},
@@ -58,7 +57,7 @@ var getUserTaskDefCmd = &cobra.Command{
 		} else {
 			common.PrintResp(
 				getGlobalClient(cmd).GetUserTaskDef(
-					context.Background(),
+					requestContext(),
 					&model.UserTaskDefId{
 						Name:    name,
 						Version: version,
@@ -97,7 +96,7 @@ var deployUserTaskDefCmd = &cobra.Command{
 			log.Fatal("Failed reading deploy file: " + err.Error())
 		}
 
-		common.PrintResp(getGlobalClient(cmd).PutUserTaskDef(context.Background(), pws))
+		common.PrintResp(getGlobalClient(cmd).PutUserTaskDef(requestContext(), pws))
 	},
 }
 
@@ -135,7 +134,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get userTaskDef'.
 		}
 
 		common.PrintResp(
-			getGlobalClient(cmd).SearchUserTaskDef(context.Background(), search),
+			getGlobalClient(cmd).SearchUserTaskDef(requestContext(), search),
 		)
 	},
 }
@@ -161,7 +160,7 @@ UserTaskDef to delete.
 
 		common.PrintResp(
 			getGlobalClient(cmd).DeleteUserTaskDef(
-				context.Background(),
+				requestContext(),
 				&model.DeleteUserTaskDefRequest{
 					Id: &model.UserTaskDefId{
 						Name:    name,

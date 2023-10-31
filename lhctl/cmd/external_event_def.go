@@ -4,7 +4,6 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
@@ -49,7 +48,7 @@ var deployExternalEventDefCmd = &cobra.Command{
 
 		}
 
-		common.PrintResp(getGlobalClient(cmd).PutExternalEventDef(context.Background(), peed))
+		common.PrintResp(getGlobalClient(cmd).PutExternalEventDef(requestContext(), peed))
 	},
 }
 
@@ -65,7 +64,7 @@ var getExternalEventDefCmd = &cobra.Command{
 
 		common.PrintResp(
 			getGlobalClient(cmd).GetExternalEventDef(
-				context.Background(),
+				requestContext(),
 				&model.ExternalEventDefId{
 					Name: args[0],
 				},
@@ -89,7 +88,7 @@ searches for all ExternalEventDefs.
 
 		common.PrintResp(
 			getGlobalClient(cmd).SearchExternalEventDef(
-				context.Background(),
+				requestContext(),
 				&model.SearchExternalEventDefRequest{
 					Bookmark: bookmark,
 					Limit:    &limit,
@@ -115,7 +114,7 @@ ExternalEventDef to delete.
 
 		common.PrintResp(
 			getGlobalClient(cmd).DeleteExternalEventDef(
-				context.Background(),
+				requestContext(),
 				&model.DeleteExternalEventDefRequest{
 					Id: &model.ExternalEventDefId{
 						Name: name,

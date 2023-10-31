@@ -4,9 +4,11 @@ import (
 	"log"
 	"os"
 
+	"context"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc/metadata"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -73,4 +75,13 @@ func getGlobalClient(cmd *cobra.Command) model.LHPublicApiClient {
 	}
 
 	return *globalClient
+}
+
+func requestContext() context.Context {
+	if globalConfig.TenantId != nil {
+		tenantId := *globalConfig.TenantId
+		md := metadata.Pairs("tenantId", tenantId)
+		return metadata.NewOutgoingContext(context.Background(), md)
+	}
+	return context.Background()
 }

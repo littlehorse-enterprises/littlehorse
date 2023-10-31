@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"strings"
 	"github.com/spf13/cobra"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
@@ -30,7 +29,7 @@ var createPrincipalCmd = &cobra.Command{
 			Acls: serverAcls,
 		}
 		common.PrintResp(getGlobalClient(cmd).PutPrincipal(
-			context.Background(),
+			requestContext(),
 			&putRequest,
 		))
 	},

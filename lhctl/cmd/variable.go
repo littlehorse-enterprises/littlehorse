@@ -4,7 +4,6 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"context"
 	"log"
 	"strconv"
 	"strings"
@@ -49,7 +48,7 @@ var getVariableCmd = &cobra.Command{
 
 		common.PrintResp(
 			getGlobalClient(cmd).GetVariable(
-				context.Background(),
+				requestContext(),
 				&model.VariableId{
 					WfRunId:         args[0],
 					ThreadRunNumber: int32(threadRunNumber),
@@ -135,7 +134,7 @@ Choose one of the following option groups:
 		search.Limit = &limit
 
 		common.PrintResp(
-			getGlobalClient(cmd).SearchVariable(context.Background(), &search),
+			getGlobalClient(cmd).SearchVariable(requestContext(), &search),
 		)
 	},
 }
@@ -160,7 +159,7 @@ Lists all Variable's for a given WfRun Id.
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListVariables(
-			context.Background(),
+			requestContext(),
 			req,
 		))
 	},

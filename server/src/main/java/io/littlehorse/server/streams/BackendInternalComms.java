@@ -17,12 +17,14 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
+import io.littlehorse.common.dao.ServerDAOFactory;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.proto.*;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
@@ -33,6 +35,7 @@ import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
+import io.littlehorse.server.auth.ServerAuthorizer;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.streams.lhinternalscan.InternalScan;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
@@ -92,17 +95,20 @@ public class BackendInternalComms implements Closeable {
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
     private MetadataCache metadataCache;
+    private final ServerDAOFactory daoFactory;
 
     public BackendInternalComms(
             LHServerConfig config,
             KafkaStreams coreStreams,
             KafkaStreams timerStreams,
             Executor executor,
-            MetadataCache metadataCache) {
+            MetadataCache metadataCache,
+            ServerDAOFactory daoFactory) {
         this.config = config;
         this.coreStreams = coreStreams;
         this.metadataCache = metadataCache;
         this.channels = new HashMap<>();
+        this.daoFactory = daoFactory;
         otherHosts = new ConcurrentHashMap<>();
 
         ServerBuilder<?> builder;
@@ -306,7 +312,8 @@ public class BackendInternalComms implements Closeable {
 
     private ReadOnlyModelStore getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, enableStaleStores, storeName);
-        return ModelStore.defaultStore(rawStore);
+        PrincipalModel principal = ServerAuthorizer.PRINCIPAL.get();
+        return ModelStore.instanceFor(rawStore, principal.getTenant().getId());
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host) {

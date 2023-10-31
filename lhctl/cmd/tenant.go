@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"log"
 	"github.com/spf13/cobra"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
@@ -16,7 +15,7 @@ var putTenant = &cobra.Command{
 			log.Fatal("You must provide one argument")
 		}
 		common.PrintResp(getGlobalClient(cmd).PutTenant(
-			context.Background(),
+			requestContext(),
 			&model.PutTenantRequest{
 				Id: args[0],
 			},

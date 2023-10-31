@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bufio"
-	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -60,7 +59,7 @@ Lists all UserTaskRun's for a given WfRun Id.
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListUserTaskRuns(
-			context.Background(),
+			requestContext(),
 			req,
 		))
 	},
@@ -110,7 +109,7 @@ The following option groups are supported:
 		}
 
 		common.PrintResp(getGlobalClient(cmd).AssignUserTaskRun(
-			context.Background(),
+			requestContext(),
 			reassign,
 		))
 	},
@@ -145,7 +144,7 @@ var getUserTaskRunCmd = &cobra.Command{
 		wfRunId, userTaskGuid := args[0], args[1]
 
 		common.PrintResp(getGlobalClient(cmd).GetUserTaskRun(
-			context.Background(),
+			requestContext(),
 			&model.UserTaskRunId{
 				WfRunId:      wfRunId,
 				UserTaskGuid: userTaskGuid,
@@ -217,7 +216,7 @@ Choose one of the following option groups:
 		search.Bookmark = bookmark
 		search.Limit = &limit
 
-		common.PrintResp(getGlobalClient(cmd).SearchUserTaskRun(context.Background(), search))
+		common.PrintResp(getGlobalClient(cmd).SearchUserTaskRun(requestContext(), search))
 
 	},
 }
@@ -275,7 +274,7 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LHPublic
 	fmt.Println("completing userTaskRun!")
 	// Post the result
 	common.PrintResp(
-		(*client).CompleteUserTaskRun(context.Background(), completeUserTask),
+		(*client).CompleteUserTaskRun(requestContext(), completeUserTask),
 	)
 }
 
@@ -286,7 +285,7 @@ func cancelUserTask(wfRunId string, userTaskGuid string, client *model.LHPublicA
 			UserTaskGuid: userTaskGuid,
 		},
 	}
-	(*client).CancelUserTaskRun(context.Background(), cancelUserTask)
+	(*client).CancelUserTaskRun(requestContext(), cancelUserTask)
 }
 
 func promptFor(prompt string, varType model.VariableType) (*model.VariableValue, error) {
@@ -301,11 +300,11 @@ func promptFor(prompt string, varType model.VariableType) (*model.VariableValue,
 }
 
 func getUserTaskDef(userTaskRun *model.UserTaskRun, client *model.LHPublicApiClient) (*model.UserTaskDef, error) {
-	return (*client).GetUserTaskDef(context.Background(), userTaskRun.UserTaskDefId)
+	return (*client).GetUserTaskDef(requestContext(), userTaskRun.UserTaskDefId)
 }
 
 func getUserTaskRun(wfRunId, userTaskGuid string, client *model.LHPublicApiClient) (*model.UserTaskRun, error) {
-	resp, err := (*client).GetUserTaskRun(context.Background(), &model.UserTaskRunId{
+	resp, err := (*client).GetUserTaskRun(requestContext(), &model.UserTaskRunId{
 		WfRunId:      wfRunId,
 		UserTaskGuid: userTaskGuid,
 	})

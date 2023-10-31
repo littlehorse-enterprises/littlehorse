@@ -4,7 +4,6 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
@@ -49,7 +48,7 @@ var deployTaskDefCmd = &cobra.Command{
 
 		}
 
-		common.PrintResp(getGlobalClient(cmd).PutTaskDef(context.Background(), ptd))
+		common.PrintResp(getGlobalClient(cmd).PutTaskDef(requestContext(), ptd))
 	},
 }
 
@@ -66,7 +65,7 @@ var getTaskDefCmd = &cobra.Command{
 		name := args[0]
 		common.PrintResp(
 			getGlobalClient(cmd).GetTaskDef(
-				context.Background(),
+				requestContext(),
 				&model.TaskDefId{
 					Name: name,
 				},
@@ -90,7 +89,7 @@ for all TaskDefs.
 
 		common.PrintResp(
 			getGlobalClient(cmd).SearchTaskDef(
-				context.Background(),
+				requestContext(),
 				&model.SearchTaskDefRequest{
 					Bookmark: bookmark,
 					Limit:    &limit,
@@ -115,7 +114,7 @@ var deleteTaskDefCmd = &cobra.Command{
 
 		common.PrintResp(
 			getGlobalClient(cmd).DeleteTaskDef(
-				context.Background(),
+				requestContext(),
 				&model.DeleteTaskDefRequest{
 					Id: &model.TaskDefId{
 						Name: name,

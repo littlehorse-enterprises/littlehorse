@@ -4,7 +4,6 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"context"
 	"log"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
@@ -71,7 +70,7 @@ lhctl postEvent <wfRunId> <externalEventName> NULL
 
 		common.PrintResp(
 			getGlobalClient(cmd).PutExternalEvent(
-				context.Background(),
+				requestContext(),
 				&req,
 			),
 		)

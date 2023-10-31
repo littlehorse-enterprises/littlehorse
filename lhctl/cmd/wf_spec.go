@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"log"
 	"os"
 	"strconv"
@@ -49,7 +48,7 @@ var getWfSpecCmd = &cobra.Command{
 		if !hasVersion {
 			common.PrintResp(
 				getGlobalClient(cmd).GetLatestWfSpec(
-					context.Background(),
+					requestContext(),
 					&model.GetLatestWfSpecRequest{
 						Name: name,
 					},
@@ -58,7 +57,7 @@ var getWfSpecCmd = &cobra.Command{
 		} else {
 			common.PrintResp(
 				getGlobalClient(cmd).GetWfSpec(
-					context.Background(),
+					requestContext(),
 					&model.WfSpecId{
 						Name:    name,
 						Version: version,
@@ -97,7 +96,7 @@ var deployWfSpecCmd = &cobra.Command{
 			log.Fatal("Failed reading deploy file: " + err.Error())
 		}
 
-		common.PrintResp(getGlobalClient(cmd).PutWfSpec(context.Background(), pws))
+		common.PrintResp(getGlobalClient(cmd).PutWfSpec(requestContext(), pws))
 	},
 }
 
@@ -142,7 +141,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfSpec'.
 		// interprets that as "just give me all the WfSpec's".
 
 		common.PrintResp(
-			getGlobalClient(cmd).SearchWfSpec(context.Background(), search),
+			getGlobalClient(cmd).SearchWfSpec(requestContext(), search),
 		)
 	},
 }
@@ -168,7 +167,7 @@ WfSpec to delete.
 
 		common.PrintResp(
 			getGlobalClient(cmd).DeleteWfSpec(
-				context.Background(),
+				requestContext(),
 				&model.DeleteWfSpecRequest{
 					Id: &model.WfSpecId{
 						Name:    name,

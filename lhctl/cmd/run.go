@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"log"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
@@ -64,12 +63,12 @@ odd total number of args. See 'lhctl run --help' for details.`)
 
 			if wfSpecVersion == nil {
 				wfSpec, err = getGlobalClient(cmd).GetLatestWfSpec(
-					context.Background(),
+					requestContext(),
 					&model.GetLatestWfSpecRequest{Name: args[0]},
 				)
 			} else {
 				wfSpec, err = getGlobalClient(cmd).GetWfSpec(
-					context.Background(),
+					requestContext(),
 					&model.WfSpecId{
 						Name:    args[0],
 						Version: *wfSpecVersion,
@@ -103,7 +102,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 		}
 
 		// At this point, we've loaded everything up, time to fire away.
-		common.PrintResp(getGlobalClient(cmd).RunWf(context.Background(), runReq))
+		common.PrintResp(getGlobalClient(cmd).RunWf(requestContext(), runReq))
 	},
 }
 
