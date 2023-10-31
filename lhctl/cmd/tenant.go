@@ -8,9 +8,9 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 )
 
-var deployTenant = &cobra.Command{
+var putTenant = &cobra.Command{
 	Use:   "tenant",
-	Short: "Deploy a wfSpec from a JSON or Protobuf file.",
+	Short: "Deploy a tenant.",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
 			log.Fatal("You must provide one argument")
@@ -23,7 +23,6 @@ var deployTenant = &cobra.Command{
 		))
 	},
 }
-
 func init() {
-	createCmd.AddCommand(deployTenant)
+	putCmd.AddCommand(putTenant)
 }

@@ -50,6 +50,8 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestMo
 import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.InternalScanResponse;
+import io.littlehorse.common.proto.PutPrincipalRequest;
+import io.littlehorse.common.proto.PutPrincipalResponse;
 import io.littlehorse.common.proto.PutTenantRequest;
 import io.littlehorse.common.proto.PutTenantResponse;
 import io.littlehorse.common.proto.WaitForCommandResponse;
@@ -168,7 +170,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WF_SPEC, actions = ACLAction.READ)
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getWfSpec(WfSpecId req, StreamObserver<WfSpec> ctx) {
         WfSpecModel wfSpec = metadataDao().getWfSpec(req.getName(), req.getVersion());
         if (wfSpec == null) {
@@ -177,6 +179,11 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             ctx.onNext(wfSpec.toProto().build());
             ctx.onCompleted();
         }
+    }
+
+    @Override
+    public void putPrincipal(PutPrincipalRequest request, StreamObserver<PutPrincipalResponse> responseObserver) {
+        super.putPrincipal(request, responseObserver);
     }
 
     @Override

@@ -13,9 +13,9 @@ public enum ACLAction
    */
   READ(0),
   /**
-   * <code>EXECUTE = 1;</code>
+   * <code>RUN = 1;</code>
    */
-  EXECUTE(1),
+  RUN(1),
   /**
    * <code>WRITE_METADATA = 2;</code>
    */
@@ -32,9 +32,9 @@ public enum ACLAction
    */
   public static final int READ_VALUE = 0;
   /**
-   * <code>EXECUTE = 1;</code>
+   * <code>RUN = 1;</code>
    */
-  public static final int EXECUTE_VALUE = 1;
+  public static final int RUN_VALUE = 1;
   /**
    * <code>WRITE_METADATA = 2;</code>
    */
@@ -70,7 +70,7 @@ public enum ACLAction
   public static ACLAction forNumber(int value) {
     switch (value) {
       case 0: return READ;
-      case 1: return EXECUTE;
+      case 1: return RUN;
       case 2: return WRITE_METADATA;
       case 3: return ALL_ACTIONS;
       default: return null;
@@ -128,4 +128,3 @@ public enum ACLAction
 
   // @@protoc_insertion_point(enum_scope:littlehorse.ACLAction)
 }
-

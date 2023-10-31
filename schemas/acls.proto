@@ -40,20 +40,18 @@ message ServerACL {
 }
 
 enum ACLResource {
-    ACL_WF_SPEC = 0;
-    ACL_TASK_DEF = 1;
-    ACL_EXTERNAL_EVENT_DEF = 2;
-    ACL_USER_TASK_DEF = 3;
+    ACL_WORKFLOW = 0;
+    ACL_TASK = 1;
+    ACL_EXTERNAL_EVENT = 2;
+    ACL_USER_TASK = 3;
     ACL_PRINCIPAL = 4;
     ACL_TENANT = 5;
-    ACL_ALL_RESOURCE_TYPES = 6;
-
-    // Will use 5 for TENANT
+    ALL = 6;
 }
 
 enum ACLAction {
     READ = 0;
-    EXECUTE = 1;
+    RUN = 1;
     WRITE_METADATA = 2;
     ALL_ACTIONS = 3;
 }
@@ -63,6 +61,10 @@ message PutPrincipalRequest {
     repeated ServerACL acls = 2;
     optional string tenant_id = 3;
     bool overwrite = 5;
+}
+
+message PutPrincipalResponse {
+    string id = 1;
 }
 
 message DeletePrincipalRequest {

@@ -532,4 +532,5 @@ service LHPublicApi {
   rpc ListWfSpecMetrics(ListWfMetricsRequest) returns (ListWfMetricsResponse) {}
 
   rpc PutTenant(PutTenantRequest) returns (PutTenantResponse) {}
+  rpc PutPrincipal(PutPrincipalRequest) returns (PutPrincipalResponse) {}
 }

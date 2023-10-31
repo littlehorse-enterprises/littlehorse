@@ -44,7 +44,7 @@ public class PrincipalModel extends GlobalGetable<Principal> {
 
     public static PrincipalModel anonymous() {
         List<ACLAction> allActions = List.of(ACLAction.ALL_ACTIONS);
-        List<ACLResource> allResources = List.of(ACLResource.ACL_ALL_RESOURCE_TYPES);
+        List<ACLResource> allResources = List.of(ACLResource.ALL);
         List<ServerACLModel> adminAcls = List.of(new ServerACLModel(allResources, allActions));
         return new PrincipalModel("anonymous", adminAcls, TenantModel.createDefault());
     }
@@ -54,7 +54,7 @@ public class PrincipalModel extends GlobalGetable<Principal> {
             throw new LHApiException(Status.FAILED_PRECONDITION, "Tenant is required");
         }
         List<ACLAction> allActions = List.of(ACLAction.ALL_ACTIONS);
-        List<ACLResource> allResources = List.of(ACLResource.ACL_ALL_RESOURCE_TYPES);
+        List<ACLResource> allResources = List.of(ACLResource.ALL);
         List<ServerACLModel> adminAcls = List.of(new ServerACLModel(allResources, allActions));
         return new PrincipalModel("anonymous", adminAcls, tenant);
     }

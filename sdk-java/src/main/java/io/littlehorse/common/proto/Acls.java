@@ -35,6 +35,11 @@ public final class Acls {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_PutPrincipalRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_PutPrincipalResponse_descriptor;
+  static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_PutPrincipalResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_DeletePrincipalRequest_descriptor;
   static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -68,17 +73,17 @@ public final class Acls {
       "rce_filter\"\200\001\n\023PutPrincipalRequest\022\n\n\002id" +
       "\030\001 \001(\t\022$\n\004acls\030\002 \003(\0132\026.littlehorse.Serve" +
       "rACL\022\026\n\ttenant_id\030\003 \001(\tH\000\210\001\001\022\021\n\toverwrit" +
-      "e\030\005 \001(\010B\014\n\n_tenant_id\"$\n\026DeletePrincipal" +
-      "Request\022\n\n\002id\030\001 \001(\t\"\036\n\020PutTenantRequest\022" +
-      "\n\n\002id\030\001 \001(\t\"\037\n\021PutTenantResponse\022\n\n\002id\030\001" +
-      " \001(\t*\242\001\n\013ACLResource\022\017\n\013ACL_WF_SPEC\020\000\022\020\n" +
-      "\014ACL_TASK_DEF\020\001\022\032\n\026ACL_EXTERNAL_EVENT_DE" +
-      "F\020\002\022\025\n\021ACL_USER_TASK_DEF\020\003\022\021\n\rACL_PRINCI" +
-      "PAL\020\004\022\016\n\nACL_TENANT\020\005\022\032\n\026ACL_ALL_RESOURC" +
-      "E_TYPES\020\006*G\n\tACLAction\022\010\n\004READ\020\000\022\013\n\007EXEC" +
-      "UTE\020\001\022\022\n\016WRITE_METADATA\020\002\022\017\n\013ALL_ACTIONS" +
-      "\020\003B(\n\033io.littlehorse.common.protoP\001Z\007.;m" +
-      "odelb\006proto3"
+      "e\030\005 \001(\010B\014\n\n_tenant_id\"\"\n\024PutPrincipalRes" +
+      "ponse\022\n\n\002id\030\001 \001(\t\"$\n\026DeletePrincipalRequ" +
+      "est\022\n\n\002id\030\001 \001(\t\"\036\n\020PutTenantRequest\022\n\n\002i" +
+      "d\030\001 \001(\t\"\037\n\021PutTenantResponse\022\n\n\002id\030\001 \001(\t" +
+      "*\204\001\n\013ACLResource\022\020\n\014ACL_WORKFLOW\020\000\022\014\n\010AC" +
+      "L_TASK\020\001\022\026\n\022ACL_EXTERNAL_EVENT\020\002\022\021\n\rACL_" +
+      "USER_TASK\020\003\022\021\n\rACL_PRINCIPAL\020\004\022\016\n\nACL_TE" +
+      "NANT\020\005\022\007\n\003ALL\020\006*C\n\tACLAction\022\010\n\004READ\020\000\022\007" +
+      "\n\003RUN\020\001\022\022\n\016WRITE_METADATA\020\002\022\017\n\013ALL_ACTIO" +
+      "NS\020\003B(\n\033io.littlehorse.common.protoP\001Z\007." +
+      ";modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -108,20 +113,26 @@ public final class Acls {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_PutPrincipalRequest_descriptor,
         new java.lang.String[] { "Id", "Acls", "TenantId", "Overwrite", "TenantId", });
-    internal_static_littlehorse_DeletePrincipalRequest_descriptor =
+    internal_static_littlehorse_PutPrincipalResponse_descriptor =
       getDescriptor().getMessageTypes().get(4);
+    internal_static_littlehorse_PutPrincipalResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_PutPrincipalResponse_descriptor,
+        new java.lang.String[] { "Id", });
+    internal_static_littlehorse_DeletePrincipalRequest_descriptor =
+      getDescriptor().getMessageTypes().get(5);
     internal_static_littlehorse_DeletePrincipalRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_DeletePrincipalRequest_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_littlehorse_PutTenantRequest_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_littlehorse_PutTenantRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_PutTenantRequest_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_littlehorse_PutTenantResponse_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_littlehorse_PutTenantResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_PutTenantResponse_descriptor,

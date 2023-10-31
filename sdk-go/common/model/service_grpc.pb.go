@@ -71,6 +71,7 @@ const (
 	LHPublicApi_ListTaskDefMetrics_FullMethodName      = "/littlehorse.LHPublicApi/ListTaskDefMetrics"
 	LHPublicApi_ListWfSpecMetrics_FullMethodName       = "/littlehorse.LHPublicApi/ListWfSpecMetrics"
 	LHPublicApi_PutTenant_FullMethodName               = "/littlehorse.LHPublicApi/PutTenant"
+	LHPublicApi_PutPrincipal_FullMethodName            = "/littlehorse.LHPublicApi/PutPrincipal"
 )
 
 // LHPublicApiClient is the client API for LHPublicApi service.
@@ -128,6 +129,7 @@ type LHPublicApiClient interface {
 	ListTaskDefMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*ListTaskMetricsResponse, error)
 	ListWfSpecMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*ListWfMetricsResponse, error)
 	PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*PutTenantResponse, error)
+	PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*PutPrincipalResponse, error)
 }
 
 type lHPublicApiClient struct {
@@ -619,6 +621,15 @@ func (c *lHPublicApiClient) PutTenant(ctx context.Context, in *PutTenantRequest,
 	return out, nil
 }
 
+func (c *lHPublicApiClient) PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*PutPrincipalResponse, error) {
+	out := new(PutPrincipalResponse)
+	err := c.cc.Invoke(ctx, LHPublicApi_PutPrincipal_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LHPublicApiServer is the server API for LHPublicApi service.
 // All implementations must embed UnimplementedLHPublicApiServer
 // for forward compatibility
@@ -674,6 +685,7 @@ type LHPublicApiServer interface {
 	ListTaskDefMetrics(context.Context, *ListTaskMetricsRequest) (*ListTaskMetricsResponse, error)
 	ListWfSpecMetrics(context.Context, *ListWfMetricsRequest) (*ListWfMetricsResponse, error)
 	PutTenant(context.Context, *PutTenantRequest) (*PutTenantResponse, error)
+	PutPrincipal(context.Context, *PutPrincipalRequest) (*PutPrincipalResponse, error)
 	mustEmbedUnimplementedLHPublicApiServer()
 }
 
@@ -833,6 +845,9 @@ func (UnimplementedLHPublicApiServer) ListWfSpecMetrics(context.Context, *ListWf
 }
 func (UnimplementedLHPublicApiServer) PutTenant(context.Context, *PutTenantRequest) (*PutTenantResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutTenant not implemented")
+}
+func (UnimplementedLHPublicApiServer) PutPrincipal(context.Context, *PutPrincipalRequest) (*PutPrincipalResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutPrincipal not implemented")
 }
 func (UnimplementedLHPublicApiServer) mustEmbedUnimplementedLHPublicApiServer() {}
 
@@ -1773,6 +1788,24 @@ func _LHPublicApi_PutTenant_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LHPublicApi_PutPrincipal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutPrincipalRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LHPublicApiServer).PutPrincipal(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LHPublicApi_PutPrincipal_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LHPublicApiServer).PutPrincipal(ctx, req.(*PutPrincipalRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LHPublicApi_ServiceDesc is the grpc.ServiceDesc for LHPublicApi service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1979,6 +2012,10 @@ var LHPublicApi_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PutTenant",
 			Handler:    _LHPublicApi_PutTenant_Handler,
+		},
+		{
+			MethodName: "PutPrincipal",
+			Handler:    _LHPublicApi_PutPrincipal_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

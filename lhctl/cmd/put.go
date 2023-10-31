@@ -5,11 +5,11 @@ import (
 )
 
 // executeCmd represents the run command
-var createCmd = &cobra.Command{
-	Use:   "create",
+var putCmd = &cobra.Command{
+	Use:   "put",
 	Short: "Create an object",
 }
 
 func init() {
-	rootCmd.AddCommand(createCmd)
+	rootCmd.AddCommand(putCmd)
 }

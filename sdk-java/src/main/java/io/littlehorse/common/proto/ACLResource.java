@@ -9,21 +9,21 @@ package io.littlehorse.common.proto;
 public enum ACLResource
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>ACL_WF_SPEC = 0;</code>
+   * <code>ACL_WORKFLOW = 0;</code>
    */
-  ACL_WF_SPEC(0),
+  ACL_WORKFLOW(0),
   /**
-   * <code>ACL_TASK_DEF = 1;</code>
+   * <code>ACL_TASK = 1;</code>
    */
-  ACL_TASK_DEF(1),
+  ACL_TASK(1),
   /**
-   * <code>ACL_EXTERNAL_EVENT_DEF = 2;</code>
+   * <code>ACL_EXTERNAL_EVENT = 2;</code>
    */
-  ACL_EXTERNAL_EVENT_DEF(2),
+  ACL_EXTERNAL_EVENT(2),
   /**
-   * <code>ACL_USER_TASK_DEF = 3;</code>
+   * <code>ACL_USER_TASK = 3;</code>
    */
-  ACL_USER_TASK_DEF(3),
+  ACL_USER_TASK(3),
   /**
    * <code>ACL_PRINCIPAL = 4;</code>
    */
@@ -33,28 +33,28 @@ public enum ACLResource
    */
   ACL_TENANT(5),
   /**
-   * <code>ACL_ALL_RESOURCE_TYPES = 6;</code>
+   * <code>ALL = 6;</code>
    */
-  ACL_ALL_RESOURCE_TYPES(6),
+  ALL(6),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>ACL_WF_SPEC = 0;</code>
+   * <code>ACL_WORKFLOW = 0;</code>
    */
-  public static final int ACL_WF_SPEC_VALUE = 0;
+  public static final int ACL_WORKFLOW_VALUE = 0;
   /**
-   * <code>ACL_TASK_DEF = 1;</code>
+   * <code>ACL_TASK = 1;</code>
    */
-  public static final int ACL_TASK_DEF_VALUE = 1;
+  public static final int ACL_TASK_VALUE = 1;
   /**
-   * <code>ACL_EXTERNAL_EVENT_DEF = 2;</code>
+   * <code>ACL_EXTERNAL_EVENT = 2;</code>
    */
-  public static final int ACL_EXTERNAL_EVENT_DEF_VALUE = 2;
+  public static final int ACL_EXTERNAL_EVENT_VALUE = 2;
   /**
-   * <code>ACL_USER_TASK_DEF = 3;</code>
+   * <code>ACL_USER_TASK = 3;</code>
    */
-  public static final int ACL_USER_TASK_DEF_VALUE = 3;
+  public static final int ACL_USER_TASK_VALUE = 3;
   /**
    * <code>ACL_PRINCIPAL = 4;</code>
    */
@@ -64,9 +64,9 @@ public enum ACLResource
    */
   public static final int ACL_TENANT_VALUE = 5;
   /**
-   * <code>ACL_ALL_RESOURCE_TYPES = 6;</code>
+   * <code>ALL = 6;</code>
    */
-  public static final int ACL_ALL_RESOURCE_TYPES_VALUE = 6;
+  public static final int ALL_VALUE = 6;
 
 
   public final int getNumber() {
@@ -93,13 +93,13 @@ public enum ACLResource
    */
   public static ACLResource forNumber(int value) {
     switch (value) {
-      case 0: return ACL_WF_SPEC;
-      case 1: return ACL_TASK_DEF;
-      case 2: return ACL_EXTERNAL_EVENT_DEF;
-      case 3: return ACL_USER_TASK_DEF;
+      case 0: return ACL_WORKFLOW;
+      case 1: return ACL_TASK;
+      case 2: return ACL_EXTERNAL_EVENT;
+      case 3: return ACL_USER_TASK;
       case 4: return ACL_PRINCIPAL;
       case 5: return ACL_TENANT;
-      case 6: return ACL_ALL_RESOURCE_TYPES;
+      case 6: return ALL;
       default: return null;
     }
   }
@@ -155,4 +155,3 @@ public enum ACLResource
 
   // @@protoc_insertion_point(enum_scope:littlehorse.ACLResource)
 }
-

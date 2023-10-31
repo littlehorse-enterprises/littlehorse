@@ -8,29 +8,29 @@ DESCRIPTOR: _descriptor.FileDescriptor
 
 class ACLResource(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
-    ACL_WF_SPEC: _ClassVar[ACLResource]
-    ACL_TASK_DEF: _ClassVar[ACLResource]
-    ACL_EXTERNAL_EVENT_DEF: _ClassVar[ACLResource]
-    ACL_USER_TASK_DEF: _ClassVar[ACLResource]
+    ACL_WORKFLOW: _ClassVar[ACLResource]
+    ACL_TASK: _ClassVar[ACLResource]
+    ACL_EXTERNAL_EVENT: _ClassVar[ACLResource]
+    ACL_USER_TASK: _ClassVar[ACLResource]
     ACL_PRINCIPAL: _ClassVar[ACLResource]
     ACL_TENANT: _ClassVar[ACLResource]
-    ACL_ALL_RESOURCE_TYPES: _ClassVar[ACLResource]
+    ALL: _ClassVar[ACLResource]
 
 class ACLAction(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
     READ: _ClassVar[ACLAction]
-    EXECUTE: _ClassVar[ACLAction]
+    RUN: _ClassVar[ACLAction]
     WRITE_METADATA: _ClassVar[ACLAction]
     ALL_ACTIONS: _ClassVar[ACLAction]
-ACL_WF_SPEC: ACLResource
-ACL_TASK_DEF: ACLResource
-ACL_EXTERNAL_EVENT_DEF: ACLResource
-ACL_USER_TASK_DEF: ACLResource
+ACL_WORKFLOW: ACLResource
+ACL_TASK: ACLResource
+ACL_EXTERNAL_EVENT: ACLResource
+ACL_USER_TASK: ACLResource
 ACL_PRINCIPAL: ACLResource
 ACL_TENANT: ACLResource
-ACL_ALL_RESOURCE_TYPES: ACLResource
+ALL: ACLResource
 READ: ACLAction
-EXECUTE: ACLAction
+RUN: ACLAction
 WRITE_METADATA: ACLAction
 ALL_ACTIONS: ACLAction
 
@@ -73,6 +73,12 @@ class PutPrincipalRequest(_message.Message):
     tenant_id: str
     overwrite: bool
     def __init__(self, id: _Optional[str] = ..., acls: _Optional[_Iterable[_Union[ServerACL, _Mapping]]] = ..., tenant_id: _Optional[str] = ..., overwrite: bool = ...) -> None: ...
+
+class PutPrincipalResponse(_message.Message):
+    __slots__ = ["id"]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: str
+    def __init__(self, id: _Optional[str] = ...) -> None: ...
 
 class DeletePrincipalRequest(_message.Message):
     __slots__ = ["id"]

@@ -83,7 +83,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
 
         private final Map<String, AuthMetadata> methodMetadata = new HashMap<>();
         private final List<ACLAction> adminActions = List.of(ACLAction.ALL_ACTIONS);
-        private final List<ACLResource> adminResources = List.of(ACLResource.ACL_ALL_RESOURCE_TYPES);
+        private final List<ACLResource> adminResources = List.of(ACLResource.ALL);
 
         {
             for (MethodDescriptor<?, ?> method :
