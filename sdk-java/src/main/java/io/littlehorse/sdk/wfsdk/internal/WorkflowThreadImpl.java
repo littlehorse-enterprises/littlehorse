@@ -83,7 +83,10 @@ final class WorkflowThreadImpl implements WorkflowThread {
         func.threadFunction(this);
 
         // Now add an exit node.
-        addNode("exit", NodeCase.EXIT, ExitNode.newBuilder().build());
+        Node node = spec.getNodesOrThrow(lastNodeName);
+        if (node.getNodeCase() != NodeCase.EXIT) {
+            addNode("exit", NodeCase.EXIT, ExitNode.newBuilder().build());
+        }
         isActive = false;
     }
 
@@ -691,7 +694,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         checkIfIsActive();
         String nextNodeName = getNodeName(name, type);
         if (lastNodeName == null) {
-            throw new RuntimeException("Not possible to have null last node here");
+            throw new IllegalStateException("Not possible to have null last node here");
         }
 
         Node.Builder feederNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
