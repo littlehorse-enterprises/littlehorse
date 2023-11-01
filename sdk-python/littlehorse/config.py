@@ -234,7 +234,7 @@ class LHConfig:
         Returns:
             int: The keepalive interval for grpc.
         """
-        return int(self.get_or_set_default(GRPC_KEEPALIVE_TIME_MS, 45000))
+        return int(self.get_or_set_default(GRPC_KEEPALIVE_TIME_MS, '45000'))
 
     @property
     def grpc_keepalive_timeout_ms(self) -> int:
@@ -244,7 +244,7 @@ class LHConfig:
         Returns:
             int: The keepalive timeout for grpc.
         """
-        return int(self.get_or_set_default(GRPC_KEEPALIVE_TIMEOUT_MS, 5000))
+        return int(self.get_or_set_default(GRPC_KEEPALIVE_TIMEOUT_MS, '5000'))
 
     @property
     def num_worker_threads(self) -> int:
