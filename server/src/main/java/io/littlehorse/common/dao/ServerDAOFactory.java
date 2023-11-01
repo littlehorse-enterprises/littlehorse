@@ -28,6 +28,10 @@ public class ServerDAOFactory {
 
     public ReadOnlyMetadataProcessorDAO getMetadataDao() {
         final String tenantId = PRINCIPAL.get().getTenant().getId();
+        return getMetadataDao(tenantId);
+    }
+
+    public ReadOnlyMetadataProcessorDAO getMetadataDao(String tenantId) {
         ReadOnlyKeyValueStore<String, Bytes> allPartitionNativeStore =
                 readOnlyStore(null, ServerTopology.METADATA_STORE);
         return new ReadOnlyMetadataProcessorDAOImpl(

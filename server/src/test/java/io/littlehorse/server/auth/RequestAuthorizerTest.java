@@ -101,7 +101,7 @@ public class RequestAuthorizerTest {
     public void supportTenantExistsValidation() {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn(null);
         when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-tenant");
-        String expectedDescription = "Requested my-tenant tenant does not exist";
+        String expectedDescription = "Tenant my-tenant is not supported";
         ArgumentCaptor<Status> closeMethodCaptor = ArgumentCaptor.forClass(Status.class);
         startCall();
         Mockito.verify(mockCall).close(closeMethodCaptor.capture(), any());
@@ -121,13 +121,39 @@ public class RequestAuthorizerTest {
     @Test
     public void supportPrincipalForSpecificTenant() {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
+        when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-tenant");
         TenantModel tenant = new TenantModel("my-tenant");
         List<ServerACLModel> acls = List.of(TestUtil.adminAcl());
         metadataDao.put(tenant);
-        metadataDao.put(new PrincipalModel("principal-id", acls, tenant));
+        metadataDaoFor("my-tenant").put(new PrincipalModel("principal-id", acls, tenant));
         startCall();
         Assertions.assertThat(resolvedPrincipal.getId()).isEqualTo("principal-id");
         Assertions.assertThat(resolvedPrincipal.getAcls()).isEqualTo(acls);
+    }
+
+    @Test
+    public void supportAnonymousWhenPrincipalIsNotFound() {
+        when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
+        when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-tenant");
+        TenantModel tenant = new TenantModel("my-tenant");
+        metadataDao.put(tenant);
+        startCall();
+        Assertions.assertThat(resolvedPrincipal.getId()).isEqualTo("anonymous");
+        Assertions.assertThat(resolvedPrincipal.getTenant().getId()).isEqualTo("my-tenant");
+    }
+
+    @Test
+    public void shouldSupportPrincipalsAndRequestTenantMismatchValidation() {
+        when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
+        when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-other-tenant");
+        TenantModel tenant = new TenantModel("my-tenant");
+        TenantModel otherTenant = new TenantModel("my-other-tenant");
+        List<ServerACLModel> acls = List.of(TestUtil.adminAcl());
+        metadataDao.put(tenant);
+        metadataDao.put(otherTenant);
+        metadataDaoFor("my-other-tenant").put(new PrincipalModel("principal-id", acls, tenant));
+        startCall();
+        Mockito.verify(mockCall).close(any(), eq(mockMetadata));
     }
 
     @Test
@@ -170,6 +196,11 @@ public class RequestAuthorizerTest {
             startCall();
             Mockito.verify(mockCall).close(any(), eq(mockMetadata));
         }
+    }
+
+    private MetadataProcessorDAO metadataDaoFor(String tenantId) {
+        ModelStore store = ModelStore.instanceFor(nativeMetadataStore, tenantId);
+        return new MetadataProcessorDAOImpl(store, metadataCache, context);
     }
 
     private ServerServiceDefinition buildTestServiceDefinition() {

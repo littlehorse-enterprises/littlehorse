@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.NonNull;
 
 public class RequestAuthorizer implements ServerAuthorizer {
 
@@ -55,18 +56,37 @@ public class RequestAuthorizer implements ServerAuthorizer {
     }
 
     private PrincipalModel resolvePrincipal(String clientId, String tenantId) {
-        if (clientId == null && tenantId == null) {
-            return PrincipalModel.anonymous();
-        } else if (tenantId != null) {
-            TenantModel tenant = readOnlyDao().get(new TenantIdModel(tenantId));
-            if (tenant == null) {
-                throw new PermissionDeniedException("Requested %s tenant does not exist".formatted(tenantId));
+        ReadOnlyMetadataProcessorDAO dao = readOnlyDao(tenantId);
+        if (clientId != null && tenantId != null) {
+            TenantModel tenant = getTenant(tenantId);
+            PrincipalModel storedPrincipal = dao.get(new PrincipalIdModel(clientId));
+            if (storedPrincipal == null) {
+                return PrincipalModel.anonymousFor(tenant);
             }
+            if (!storedPrincipal.getTenant().getId().equals(tenantId)) {
+                throw new PermissionDeniedException("Tenant %s is not supported".formatted(tenantId));
+            }
+            return storedPrincipal;
+        } else if (clientId != null) {
+            PrincipalModel storedPrincipal = dao.get(new PrincipalIdModel(clientId));
+            if (storedPrincipal == null) {
+                return PrincipalModel.anonymous();
+            }
+            return storedPrincipal;
+        } else if (tenantId != null) {
+            TenantModel tenant = getTenant(tenantId);
             return PrincipalModel.anonymousFor(tenant);
         } else {
-            PrincipalModel principal = readOnlyDao().get(new PrincipalIdModel(clientId));
-            return principal != null ? principal : PrincipalModel.anonymous();
+            return PrincipalModel.anonymous();
         }
+    }
+
+    private TenantModel getTenant(@NonNull String tenantId) {
+        TenantModel tenant = factory.getDefaultMetadataDao().get(new TenantIdModel(tenantId));
+        if (tenant == null) {
+            throw new PermissionDeniedException("Tenant %s is not supported".formatted(tenantId));
+        }
+        return tenant;
     }
 
     private void validateAcl(MethodDescriptor<?, ?> method, PrincipalModel principalToValidate) {
@@ -75,8 +95,12 @@ public class RequestAuthorizer implements ServerAuthorizer {
         }
     }
 
-    private ReadOnlyMetadataProcessorDAO readOnlyDao() {
-        return factory.getDefaultMetadataDao();
+    private ReadOnlyMetadataProcessorDAO readOnlyDao(String tenantId) {
+        if (tenantId == null) {
+            return factory.getDefaultMetadataDao();
+        } else {
+            return factory.getMetadataDao(tenantId);
+        }
     }
 
     private static class AclVerifier {
