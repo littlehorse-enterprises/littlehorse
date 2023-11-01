@@ -607,6 +607,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    @Authorize(
+            resources = {},
+            actions = {})
     public void whoami(Empty request, StreamObserver<Principal> responseObserver) {
         responseObserver.onNext(ServerAuthorizer.PRINCIPAL.get().toProto().build());
         responseObserver.onCompleted();

@@ -1,5 +1,6 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
+import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
@@ -76,7 +77,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
             throw new LHApiException(Status.FAILED_PRECONDITION, "Trying to overwrite existing principal");
         }
         final String contextTenantId = dao.context().tenantId();
-        final String principalTenantId = tenantId == null ? contextTenantId : tenantId;
+        final String principalTenantId = Strings.emptyToNull(tenantId) == null ? contextTenantId : tenantId;
 
         if (!toSave.isAdmin()) {
             List<String> adminPrincipalIds = dao.adminPrincipalIdsFor(principalTenantId).stream()
