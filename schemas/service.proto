@@ -533,4 +533,5 @@ service LHPublicApi {
 
   rpc PutTenant(PutTenantRequest) returns (PutTenantResponse) {}
   rpc PutPrincipal(PutPrincipalRequest) returns (PutPrincipalResponse) {}
+  rpc Whoami(google.protobuf.Empty) returns (Principal) {}
 }

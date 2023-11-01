@@ -6,7 +6,6 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.ServerSubCommand;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
@@ -24,7 +23,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalRequest> implements ServerSubCommand {
+public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalRequest> {
 
     private String id;
     private String tenantId;

@@ -285,6 +285,11 @@ class LHPublicApiStub(object):
                 request_serializer=acls__pb2.PutPrincipalRequest.SerializeToString,
                 response_deserializer=acls__pb2.PutPrincipalResponse.FromString,
                 )
+        self.Whoami = channel.unary_unary(
+                '/littlehorse.LHPublicApi/Whoami',
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                response_deserializer=acls__pb2.Principal.FromString,
+                )
 
 
 class LHPublicApiServicer(object):
@@ -602,6 +607,12 @@ class LHPublicApiServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Whoami(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_LHPublicApiServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -864,6 +875,11 @@ def add_LHPublicApiServicer_to_server(servicer, server):
                     servicer.PutPrincipal,
                     request_deserializer=acls__pb2.PutPrincipalRequest.FromString,
                     response_serializer=acls__pb2.PutPrincipalResponse.SerializeToString,
+            ),
+            'Whoami': grpc.unary_unary_rpc_method_handler(
+                    servicer.Whoami,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    response_serializer=acls__pb2.Principal.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1756,5 +1772,22 @@ class LHPublicApi(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutPrincipal',
             acls__pb2.PutPrincipalRequest.SerializeToString,
             acls__pb2.PutPrincipalResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Whoami(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/Whoami',
+            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            acls__pb2.Principal.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

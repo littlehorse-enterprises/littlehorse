@@ -14,6 +14,7 @@ import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
@@ -108,7 +109,8 @@ public class ReadOnlyMetadataProcessorDAOImpl implements ReadOnlyMetadataProcess
 
     @Override
     public List<String> adminPrincipalIdsFor(String tenantId) {
-        String startKey = "%s/__isAdmin_true__tenantId_%s".formatted(GetableClassEnum.PRINCIPAL.getNumber(), tenantId);
+        String startKey = "%s/%s/__isAdmin_true__tenantId_%s"
+                .formatted(StoreableType.TAG.getNumber(), GetableClassEnum.PRINCIPAL.getNumber(), tenantId);
         String endKey = startKey + "~";
         LHKeyValueIterator<Tag> result = lhStore.range(startKey, endKey, Tag.class);
         List<String> adminPrincipalIds = new ArrayList<>();

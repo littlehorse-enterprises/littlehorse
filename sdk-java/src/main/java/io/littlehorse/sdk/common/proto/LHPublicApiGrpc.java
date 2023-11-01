@@ -1627,6 +1627,37 @@ public final class LHPublicApiGrpc {
     return getPutPrincipalMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      io.littlehorse.common.proto.Principal> getWhoamiMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "Whoami",
+      requestType = com.google.protobuf.Empty.class,
+      responseType = io.littlehorse.common.proto.Principal.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      io.littlehorse.common.proto.Principal> getWhoamiMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, io.littlehorse.common.proto.Principal> getWhoamiMethod;
+    if ((getWhoamiMethod = LHPublicApiGrpc.getWhoamiMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getWhoamiMethod = LHPublicApiGrpc.getWhoamiMethod) == null) {
+          LHPublicApiGrpc.getWhoamiMethod = getWhoamiMethod =
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, io.littlehorse.common.proto.Principal>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "Whoami"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.Principal.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("Whoami"))
+              .build();
+        }
+      }
+    }
+    return getWhoamiMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -2037,6 +2068,13 @@ public final class LHPublicApiGrpc {
     default void putPrincipal(io.littlehorse.common.proto.PutPrincipalRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.PutPrincipalResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutPrincipalMethod(), responseObserver);
+    }
+
+    /**
+     */
+    default void whoami(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Principal> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getWhoamiMethod(), responseObserver);
     }
   }
 
@@ -2482,6 +2520,14 @@ public final class LHPublicApiGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getPutPrincipalMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void whoami(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Principal> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getWhoamiMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -2855,6 +2901,13 @@ public final class LHPublicApiGrpc {
     public io.littlehorse.common.proto.PutPrincipalResponse putPrincipal(io.littlehorse.common.proto.PutPrincipalRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getPutPrincipalMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.Principal whoami(com.google.protobuf.Empty request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getWhoamiMethod(), getCallOptions(), request);
     }
   }
 
@@ -3281,6 +3334,14 @@ public final class LHPublicApiGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getPutPrincipalMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.Principal> whoami(
+        com.google.protobuf.Empty request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getWhoamiMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_PUT_TASK_DEF = 0;
@@ -3334,7 +3395,8 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_LIST_WF_SPEC_METRICS = 48;
   private static final int METHODID_PUT_TENANT = 49;
   private static final int METHODID_PUT_PRINCIPAL = 50;
-  private static final int METHODID_POLL_TASK = 51;
+  private static final int METHODID_WHOAMI = 51;
+  private static final int METHODID_POLL_TASK = 52;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -3556,6 +3618,10 @@ public final class LHPublicApiGrpc {
         case METHODID_PUT_PRINCIPAL:
           serviceImpl.putPrincipal((io.littlehorse.common.proto.PutPrincipalRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.PutPrincipalResponse>) responseObserver);
+          break;
+        case METHODID_WHOAMI:
+          serviceImpl.whoami((com.google.protobuf.Empty) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.Principal>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -3942,6 +4008,13 @@ public final class LHPublicApiGrpc {
               io.littlehorse.common.proto.PutPrincipalRequest,
               io.littlehorse.common.proto.PutPrincipalResponse>(
                 service, METHODID_PUT_PRINCIPAL)))
+        .addMethod(
+          getWhoamiMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              com.google.protobuf.Empty,
+              io.littlehorse.common.proto.Principal>(
+                service, METHODID_WHOAMI)))
         .build();
   }
 
@@ -4042,6 +4115,7 @@ public final class LHPublicApiGrpc {
               .addMethod(getListWfSpecMetricsMethod())
               .addMethod(getPutTenantMethod())
               .addMethod(getPutPrincipalMethod())
+              .addMethod(getWhoamiMethod())
               .build();
         }
       }

@@ -3,6 +3,7 @@ package io.littlehorse.server;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
+import io.grpc.Context;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
@@ -32,6 +33,7 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -51,6 +53,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestMo
 import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.InternalScanResponse;
+import io.littlehorse.common.proto.Principal;
 import io.littlehorse.common.proto.PutPrincipalRequest;
 import io.littlehorse.common.proto.PutPrincipalResponse;
 import io.littlehorse.common.proto.PutTenantRequest;
@@ -101,6 +104,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUs
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
+import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -602,6 +606,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         processCommand(new MetadataCommandModel(deedr), ctx, Empty.class, true);
     }
 
+    @Override
+    public void whoami(Empty request, StreamObserver<Principal> responseObserver) {
+        responseObserver.onNext(ServerAuthorizer.PRINCIPAL.get().toProto().build());
+        responseObserver.onCompleted();
+    }
+
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
         TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
         processCommand(new CommandModel(claimEvent), client.getResponseObserver(), PollTaskResponse.class, false);
@@ -630,7 +640,19 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command);
 
         command.setCommandId(LHUtil.generateGuid());
-        command.setTenantId("default");
+        PrincipalModel currentPrincipal = ServerAuthorizer.PRINCIPAL.get(Context.current());
+        String tenant;
+
+        // TODO: TaskQueueManager multitenancy
+        // The only reason for this validation is that
+        // TaskQueueManager does not support multi-tenancy yet.
+        // In the future this will change
+        if (currentPrincipal != null) {
+            tenant = currentPrincipal.getTenant().getId();
+        } else {
+            tenant = ModelStore.DEFAULT_TENANT;
+        }
+        command.setTenantId(tenant);
         internalComms.getProducer().send(command.getPartitionKey(), command, command.getTopic(config), callback);
     }
 
