@@ -28,6 +28,8 @@ OAUTH_TOKEN_ENDPOINT_URL = "LHC_OAUTH_ACCESS_TOKEN_URL"
 NUM_WORKER_THREADS = "LHW_NUM_WORKER_THREADS"
 SERVER_CONNECT_LISTENER = "LHW_SERVER_CONNECT_LISTENER"
 TASK_WORKER_VERSION = "LHW_TASK_WORKER_VERSION"
+GRPC_KEEPALIVE_TIME_MS = "LHC_GRPC_KEEPALIVE_TIME_MS"
+GRPC_KEEPALIVE_TIMEOUT_MS = "LHC_GRPC_KEEPALIVE_TIMEOUT_MS"
 
 
 class ChannelId:
@@ -225,6 +227,26 @@ class LHConfig:
         return self.get(OAUTH_TOKEN_ENDPOINT_URL)
 
     @property
+    def grpc_keepalive_time_ms(self) -> int:
+        """Returns the keepalive ping interval for the internal grpc
+        client in milliseconds.
+
+        Returns:
+            int: The keepalive interval for grpc.
+        """
+        return int(self.get_or_set_default(GRPC_KEEPALIVE_TIME_MS, 45000))
+
+    @property
+    def grpc_keepalive_timeout_ms(self) -> int:
+        """Returns the keepalive ping timeout for the internal grpc
+        client in milliseconds.
+
+        Returns:
+            int: The keepalive timeout for grpc.
+        """
+        return int(self.get_or_set_default(GRPC_KEEPALIVE_TIMEOUT_MS, 5000))
+
+    @property
     def num_worker_threads(self) -> int:
         """Returns the number of worker threads to run.
 
@@ -270,6 +292,12 @@ class LHConfig:
         secure_channel = grpc.secure_channel
         insecure_channel = grpc.insecure_channel
 
+        channel_args = [
+            ('grpc.keepalive_time_ms', self.grpc_keepalive_time_ms),
+            ('grpc.keepalive_timeout_ms', self.grpc_keepalive_timeout_ms),
+            ('grpc.keepalive_permit_without_calls', True),
+        ]
+
         if async_channel:
             self._log.debug("Establishing an async channel")
             secure_channel = grpc.aio.secure_channel
@@ -299,6 +327,7 @@ class LHConfig:
                     get_ssl_config(),
                     get_oauth_config(),
                 ),
+                options=channel_args,
             )
 
         if self.is_secure():
@@ -306,12 +335,13 @@ class LHConfig:
             return secure_channel(
                 server,
                 get_ssl_config(),
+                options=channel_args,
             )
 
         if not self.is_secure():
             self._log.warning("Establishing insecure channel at %s", server)
 
-        return insecure_channel(server)
+        return insecure_channel(server, options=channel_args)
 
     def stub(
         self,

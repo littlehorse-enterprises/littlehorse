@@ -59,6 +59,12 @@ public class LHConfig extends ConfigBase {
     /** Listener to connect to. */
     public static final String SERVER_CONNECT_LISTENER_KEY = "LHW_SERVER_CONNECT_LISTENER";
 
+    /** GRPC Connection Keepalive Interval */
+    public static final String GRPC_KEEPALIVE_TIME_MS_KEY = "LHC_GRPC_KEEPALIVE_TIME_MS";
+
+    /** GRPC Connection Keepalive Interval */
+    public static final String GRPC_KEEPALIVE_TIMEOUT_MS_KEY = "LHC_GRPC_KEEPALIVE_TIMEOUT_MS";
+
     public static final String TASK_WORKER_VERSION_KEY = "LHW_TASK_WORKER_VERSION";
     public static final String DEFAULT_PUBLIC_LISTENER = "PLAIN";
     public static final String DEFAULT_PROTOCOL = "PLAINTEXT";
@@ -253,11 +259,21 @@ public class LHConfig extends ConfigBase {
 
             builder = Grpc.newChannelBuilderForAddress(host, port, tlsBuilder.build());
         }
-        builder = builder.keepAliveTime(45, TimeUnit.SECONDS).keepAliveWithoutCalls(true);
+        builder = builder.keepAliveTime(getKeepaliveTimeMs(), TimeUnit.MILLISECONDS)
+                .keepAliveTimeout(getKeepaliveTimeoutMs(), TimeUnit.MILLISECONDS)
+                .keepAliveWithoutCalls(true);
 
         Channel out = builder.build();
         createdChannels.put(hostKey, out);
         return out;
+    }
+
+    public long getKeepaliveTimeMs() {
+        return Long.valueOf(getOrSetDefault(GRPC_KEEPALIVE_TIME_MS_KEY, "45000"));
+    }
+
+    public long getKeepaliveTimeoutMs() {
+        return Long.valueOf(getOrSetDefault(GRPC_KEEPALIVE_TIMEOUT_MS_KEY, "5000"));
     }
 
     public String getApiBootstrapHost() {
