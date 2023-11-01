@@ -3,6 +3,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
@@ -40,6 +41,26 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testEarlyReturn() {
+        WorkflowImpl workflow = new WorkflowImpl("asdf", wf -> {
+            wf.execute("some-task");
+            wf.fail("some-exception", "some error message");
+        });
+
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+
+        System.out.println(LHLibUtil.protoToJson(wfSpec));
+        List<Map.Entry<String, Node>> exitNodes =
+                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesMap().entrySet().stream()
+                        .filter(nodePair -> {
+                            return (nodePair.getValue().getNodeCase() == NodeCase.EXIT);
+                        })
+                        .collect(Collectors.toList());
+
+        assertEquals(exitNodes.size(), 1);
+    }
+
+    @Test
+    void testEarlyReturnInIfStatement() {
         WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
             WfRunVariable var = thread.addVariable("my-var", VariableType.INT);
             thread.doIf(thread.condition(var, Comparator.LESS_THAN, 10), ifBody -> {
