@@ -11,6 +11,8 @@
     - [`LHC_OAUTH_CLIENT_ID`](#lhc_oauth_client_id)
     - [`LHC_OAUTH_CLIENT_SECRET`](#lhc_oauth_client_secret)
     - [`LHC_OAUTH_ACCESS_TOKEN_URL`](#lhc_oauth_access_token_url)
+    - [`LHC_GRPC_KEEPALIVE_TIME_MS`](#lhc_grpc_keepalive_time_ms)
+    - [`LHC_GRPC_KEEPALIVE_TIMEOUT_MS`](#lhc_grpc_keepalive_timeout_ms)
   - [LHCTL](#lhctl)
     - [`LHC_OAUTH_SERVER_URL`](#lhc_oauth_server_url)
   - [Worker](#worker)
@@ -119,6 +121,23 @@ It is mandatory if `LHC_OAUTH_CLIENT_ID` and `LHC_OAUTH_CLIENT_SECRET` are provi
 - **Type:** url
 - **Default:** null
 - **Importance:** low
+
+### `LHC_GRPC_KEEPALIVE_TIME_MS`
+
+Time in milliseconds to configure keepalive pings on the grpc client.
+
+- **Type:** int64
+- **Default:** 45000 (45 seconds)
+- **Importance:** low
+
+### `LHC_GRPC_KEEPALIVE_TIMEOUT_MS`
+
+Time in milliseconds to configure the timeout for the keepalive pings on the grpc client.
+
+- **Type:** int64
+- **Default:** 5000 (5 seconds)
+- **Importance:** low
+
 
 ## LHCTL
 

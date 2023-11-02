@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 /** This class is used to configure the LHClient class. */
@@ -57,6 +58,12 @@ public class LHConfig extends ConfigBase {
 
     /** Listener to connect to. */
     public static final String SERVER_CONNECT_LISTENER_KEY = "LHW_SERVER_CONNECT_LISTENER";
+
+    /** GRPC Connection Keepalive Interval */
+    public static final String GRPC_KEEPALIVE_TIME_MS_KEY = "LHC_GRPC_KEEPALIVE_TIME_MS";
+
+    /** GRPC Connection Keepalive Interval */
+    public static final String GRPC_KEEPALIVE_TIMEOUT_MS_KEY = "LHC_GRPC_KEEPALIVE_TIMEOUT_MS";
 
     public static final String TASK_WORKER_VERSION_KEY = "LHW_TASK_WORKER_VERSION";
     public static final String DEFAULT_PUBLIC_LISTENER = "PLAIN";
@@ -228,7 +235,7 @@ public class LHConfig extends ConfigBase {
             return createdChannels.get(hostKey);
         }
 
-        Channel out;
+        ManagedChannelBuilder<?> builder;
 
         String caCertFile = getOrSetDefault(CA_CERT_KEY, null);
         String clientCertFile = getOrSetDefault(CLIENT_CERT_KEY, null);
@@ -236,7 +243,7 @@ public class LHConfig extends ConfigBase {
 
         if (DEFAULT_PROTOCOL.equals(getApiProtocol())) {
             log.warn("Using insecure channel!");
-            out = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
+            builder = ManagedChannelBuilder.forAddress(host, port).usePlaintext();
         } else {
             log.info("Using secure connection!");
             TlsChannelCredentials.Builder tlsBuilder = TlsChannelCredentials.newBuilder();
@@ -250,12 +257,23 @@ public class LHConfig extends ConfigBase {
                 tlsBuilder.keyManager(new File(clientCertFile), new File(clientKeyFile));
             }
 
-            out = Grpc.newChannelBuilderForAddress(host, port, tlsBuilder.build())
-                    .build();
+            builder = Grpc.newChannelBuilderForAddress(host, port, tlsBuilder.build());
         }
+        builder = builder.keepAliveTime(getKeepaliveTimeMs(), TimeUnit.MILLISECONDS)
+                .keepAliveTimeout(getKeepaliveTimeoutMs(), TimeUnit.MILLISECONDS)
+                .keepAliveWithoutCalls(true);
 
+        Channel out = builder.build();
         createdChannels.put(hostKey, out);
         return out;
+    }
+
+    public long getKeepaliveTimeMs() {
+        return Long.valueOf(getOrSetDefault(GRPC_KEEPALIVE_TIME_MS_KEY, "45000"));
+    }
+
+    public long getKeepaliveTimeoutMs() {
+        return Long.valueOf(getOrSetDefault(GRPC_KEEPALIVE_TIMEOUT_MS_KEY, "5000"));
     }
 
     public String getApiBootstrapHost() {
