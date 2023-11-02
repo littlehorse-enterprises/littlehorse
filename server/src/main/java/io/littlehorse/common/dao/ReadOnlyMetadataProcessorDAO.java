@@ -24,5 +24,5 @@ public interface ReadOnlyMetadataProcessorDAO {
 
     ServerContext context();
 
-    List<String> adminPrincipalIdsFor(String tenantId);
+    List<String> adminPrincipalIds();
 }

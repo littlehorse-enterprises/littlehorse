@@ -22,7 +22,8 @@ private static final long serialVersionUID = 0L;
   private Principal() {
     id_ = "";
     acls_ = java.util.Collections.emptyList();
-    tenantId_ = "";
+    tenantId_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
   }
 
   @java.lang.Override
@@ -64,7 +65,7 @@ private static final long serialVersionUID = 0L;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
-      com.google.protobuf.ByteString bs =
+      com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
       id_ = s;
@@ -86,7 +87,7 @@ private static final long serialVersionUID = 0L;
       getIdBytes() {
     java.lang.Object ref = id_;
     if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b =
+      com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
       id_ = b;
@@ -110,7 +111,7 @@ private static final long serialVersionUID = 0L;
    * <code>repeated .littlehorse.ServerACL acls = 2;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder>
+  public java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder> 
       getAclsOrBuilderList() {
     return acls_;
   }
@@ -139,7 +140,8 @@ private static final long serialVersionUID = 0L;
 
   public static final int TENANT_ID_FIELD_NUMBER = 3;
   @SuppressWarnings("serial")
-  private volatile java.lang.Object tenantId_ = "";
+  private com.google.protobuf.LazyStringArrayList tenantId_ =
+      com.google.protobuf.LazyStringArrayList.emptyList();
   /**
    * <pre>
    * Used for multi-tenancy of the LittleHorse Server.
@@ -148,21 +150,12 @@ private static final long serialVersionUID = 0L;
    * way multi-tenancy works is that the
    * </pre>
    *
-   * <code>string tenant_id = 3;</code>
-   * @return The tenantId.
+   * <code>repeated string tenant_id = 3;</code>
+   * @return A list containing the tenantId.
    */
-  @java.lang.Override
-  public java.lang.String getTenantId() {
-    java.lang.Object ref = tenantId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs =
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      tenantId_ = s;
-      return s;
-    }
+  public com.google.protobuf.ProtocolStringList
+      getTenantIdList() {
+    return tenantId_;
   }
   /**
    * <pre>
@@ -172,22 +165,42 @@ private static final long serialVersionUID = 0L;
    * way multi-tenancy works is that the
    * </pre>
    *
-   * <code>string tenant_id = 3;</code>
-   * @return The bytes for tenantId.
+   * <code>repeated string tenant_id = 3;</code>
+   * @return The count of tenantId.
    */
-  @java.lang.Override
+  public int getTenantIdCount() {
+    return tenantId_.size();
+  }
+  /**
+   * <pre>
+   * Used for multi-tenancy of the LittleHorse Server.
+   *
+   * NOTE: the principal id (field 1) MUST be unique across all tenants. The
+   * way multi-tenancy works is that the
+   * </pre>
+   *
+   * <code>repeated string tenant_id = 3;</code>
+   * @param index The index of the element to return.
+   * @return The tenantId at the given index.
+   */
+  public java.lang.String getTenantId(int index) {
+    return tenantId_.get(index);
+  }
+  /**
+   * <pre>
+   * Used for multi-tenancy of the LittleHorse Server.
+   *
+   * NOTE: the principal id (field 1) MUST be unique across all tenants. The
+   * way multi-tenancy works is that the
+   * </pre>
+   *
+   * <code>repeated string tenant_id = 3;</code>
+   * @param index The index of the value to return.
+   * @return The bytes of the tenantId at the given index.
+   */
   public com.google.protobuf.ByteString
-      getTenantIdBytes() {
-    java.lang.Object ref = tenantId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b =
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      tenantId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+      getTenantIdBytes(int index) {
+    return tenantId_.getByteString(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -210,8 +223,8 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < acls_.size(); i++) {
       output.writeMessage(2, acls_.get(i));
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tenantId_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, tenantId_);
+    for (int i = 0; i < tenantId_.size(); i++) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, tenantId_.getRaw(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -229,8 +242,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, acls_.get(i));
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tenantId_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, tenantId_);
+    {
+      int dataSize = 0;
+      for (int i = 0; i < tenantId_.size(); i++) {
+        dataSize += computeStringSizeNoTag(tenantId_.getRaw(i));
+      }
+      size += dataSize;
+      size += 1 * getTenantIdList().size();
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -251,8 +269,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getId())) return false;
     if (!getAclsList()
         .equals(other.getAclsList())) return false;
-    if (!getTenantId()
-        .equals(other.getTenantId())) return false;
+    if (!getTenantIdList()
+        .equals(other.getTenantIdList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -270,8 +288,10 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + ACLS_FIELD_NUMBER;
       hash = (53 * hash) + getAclsList().hashCode();
     }
-    hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getTenantId().hashCode();
+    if (getTenantIdCount() > 0) {
+      hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getTenantIdList().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -415,7 +435,8 @@ private static final long serialVersionUID = 0L;
         aclsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000002);
-      tenantId_ = "";
+      tenantId_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
       return this;
     }
 
@@ -466,6 +487,7 @@ private static final long serialVersionUID = 0L;
         result.id_ = id_;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
+        tenantId_.makeImmutable();
         result.tenantId_ = tenantId_;
       }
     }
@@ -537,7 +559,7 @@ private static final long serialVersionUID = 0L;
             aclsBuilder_ = null;
             acls_ = other.acls_;
             bitField0_ = (bitField0_ & ~0x00000002);
-            aclsBuilder_ =
+            aclsBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getAclsFieldBuilder() : null;
           } else {
@@ -545,9 +567,14 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
-      if (!other.getTenantId().isEmpty()) {
-        tenantId_ = other.tenantId_;
-        bitField0_ |= 0x00000004;
+      if (!other.tenantId_.isEmpty()) {
+        if (tenantId_.isEmpty()) {
+          tenantId_ = other.tenantId_;
+          bitField0_ |= 0x00000004;
+        } else {
+          ensureTenantIdIsMutable();
+          tenantId_.addAll(other.tenantId_);
+        }
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -595,8 +622,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 18
             case 26: {
-              tenantId_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000004;
+              java.lang.String s = input.readStringRequireUtf8();
+              ensureTenantIdIsMutable();
+              tenantId_.add(s);
               break;
             } // case 26
             default: {
@@ -653,7 +681,7 @@ private static final long serialVersionUID = 0L;
         getIdBytes() {
       java.lang.Object ref = id_;
       if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
+        com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         id_ = b;
@@ -913,7 +941,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>repeated .littlehorse.ServerACL acls = 2;</code>
      */
-    public java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder>
+    public java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder> 
          getAclsOrBuilderList() {
       if (aclsBuilder_ != null) {
         return aclsBuilder_.getMessageOrBuilderList();
@@ -939,12 +967,12 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>repeated .littlehorse.ServerACL acls = 2;</code>
      */
-    public java.util.List<io.littlehorse.common.proto.ServerACL.Builder>
+    public java.util.List<io.littlehorse.common.proto.ServerACL.Builder> 
          getAclsBuilderList() {
       return getAclsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.ServerACL, io.littlehorse.common.proto.ServerACL.Builder, io.littlehorse.common.proto.ServerACLOrBuilder>
+        io.littlehorse.common.proto.ServerACL, io.littlehorse.common.proto.ServerACL.Builder, io.littlehorse.common.proto.ServerACLOrBuilder> 
         getAclsFieldBuilder() {
       if (aclsBuilder_ == null) {
         aclsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
@@ -958,29 +986,13 @@ private static final long serialVersionUID = 0L;
       return aclsBuilder_;
     }
 
-    private java.lang.Object tenantId_ = "";
-    /**
-     * <pre>
-     * Used for multi-tenancy of the LittleHorse Server.
-     *
-     * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-     * way multi-tenancy works is that the
-     * </pre>
-     *
-     * <code>string tenant_id = 3;</code>
-     * @return The tenantId.
-     */
-    public java.lang.String getTenantId() {
-      java.lang.Object ref = tenantId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        tenantId_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
+    private com.google.protobuf.LazyStringArrayList tenantId_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    private void ensureTenantIdIsMutable() {
+      if (!tenantId_.isModifiable()) {
+        tenantId_ = new com.google.protobuf.LazyStringArrayList(tenantId_);
       }
+      bitField0_ |= 0x00000004;
     }
     /**
      * <pre>
@@ -990,21 +1002,58 @@ private static final long serialVersionUID = 0L;
      * way multi-tenancy works is that the
      * </pre>
      *
-     * <code>string tenant_id = 3;</code>
-     * @return The bytes for tenantId.
+     * <code>repeated string tenant_id = 3;</code>
+     * @return A list containing the tenantId.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getTenantIdList() {
+      tenantId_.makeImmutable();
+      return tenantId_;
+    }
+    /**
+     * <pre>
+     * Used for multi-tenancy of the LittleHorse Server.
+     *
+     * NOTE: the principal id (field 1) MUST be unique across all tenants. The
+     * way multi-tenancy works is that the
+     * </pre>
+     *
+     * <code>repeated string tenant_id = 3;</code>
+     * @return The count of tenantId.
+     */
+    public int getTenantIdCount() {
+      return tenantId_.size();
+    }
+    /**
+     * <pre>
+     * Used for multi-tenancy of the LittleHorse Server.
+     *
+     * NOTE: the principal id (field 1) MUST be unique across all tenants. The
+     * way multi-tenancy works is that the
+     * </pre>
+     *
+     * <code>repeated string tenant_id = 3;</code>
+     * @param index The index of the element to return.
+     * @return The tenantId at the given index.
+     */
+    public java.lang.String getTenantId(int index) {
+      return tenantId_.get(index);
+    }
+    /**
+     * <pre>
+     * Used for multi-tenancy of the LittleHorse Server.
+     *
+     * NOTE: the principal id (field 1) MUST be unique across all tenants. The
+     * way multi-tenancy works is that the
+     * </pre>
+     *
+     * <code>repeated string tenant_id = 3;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the tenantId at the given index.
      */
     public com.google.protobuf.ByteString
-        getTenantIdBytes() {
-      java.lang.Object ref = tenantId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        tenantId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+        getTenantIdBytes(int index) {
+      return tenantId_.getByteString(index);
     }
     /**
      * <pre>
@@ -1014,14 +1063,16 @@ private static final long serialVersionUID = 0L;
      * way multi-tenancy works is that the
      * </pre>
      *
-     * <code>string tenant_id = 3;</code>
+     * <code>repeated string tenant_id = 3;</code>
+     * @param index The index to set the value at.
      * @param value The tenantId to set.
      * @return This builder for chaining.
      */
     public Builder setTenantId(
-        java.lang.String value) {
+        int index, java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      tenantId_ = value;
+      ensureTenantIdIsMutable();
+      tenantId_.set(index, value);
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
@@ -1034,12 +1085,16 @@ private static final long serialVersionUID = 0L;
      * way multi-tenancy works is that the
      * </pre>
      *
-     * <code>string tenant_id = 3;</code>
+     * <code>repeated string tenant_id = 3;</code>
+     * @param value The tenantId to add.
      * @return This builder for chaining.
      */
-    public Builder clearTenantId() {
-      tenantId_ = getDefaultInstance().getTenantId();
-      bitField0_ = (bitField0_ & ~0x00000004);
+    public Builder addTenantId(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      ensureTenantIdIsMutable();
+      tenantId_.add(value);
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -1051,15 +1106,55 @@ private static final long serialVersionUID = 0L;
      * way multi-tenancy works is that the
      * </pre>
      *
-     * <code>string tenant_id = 3;</code>
-     * @param value The bytes for tenantId to set.
+     * <code>repeated string tenant_id = 3;</code>
+     * @param values The tenantId to add.
      * @return This builder for chaining.
      */
-    public Builder setTenantIdBytes(
+    public Builder addAllTenantId(
+        java.lang.Iterable<java.lang.String> values) {
+      ensureTenantIdIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, tenantId_);
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Used for multi-tenancy of the LittleHorse Server.
+     *
+     * NOTE: the principal id (field 1) MUST be unique across all tenants. The
+     * way multi-tenancy works is that the
+     * </pre>
+     *
+     * <code>repeated string tenant_id = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTenantId() {
+      tenantId_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+      bitField0_ = (bitField0_ & ~0x00000004);;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Used for multi-tenancy of the LittleHorse Server.
+     *
+     * NOTE: the principal id (field 1) MUST be unique across all tenants. The
+     * way multi-tenancy works is that the
+     * </pre>
+     *
+     * <code>repeated string tenant_id = 3;</code>
+     * @param value The bytes of the tenantId to add.
+     * @return This builder for chaining.
+     */
+    public Builder addTenantIdBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      tenantId_ = value;
+      ensureTenantIdIsMutable();
+      tenantId_.add(value);
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
@@ -1127,3 +1222,4 @@ private static final long serialVersionUID = 0L;
   }
 
 }
+

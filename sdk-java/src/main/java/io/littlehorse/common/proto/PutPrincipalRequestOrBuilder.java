@@ -22,7 +22,7 @@ public interface PutPrincipalRequestOrBuilder extends
   /**
    * <code>repeated .littlehorse.ServerACL acls = 2;</code>
    */
-  java.util.List<io.littlehorse.common.proto.ServerACL>
+  java.util.List<io.littlehorse.common.proto.ServerACL> 
       getAclsList();
   /**
    * <code>repeated .littlehorse.ServerACL acls = 2;</code>
@@ -35,7 +35,7 @@ public interface PutPrincipalRequestOrBuilder extends
   /**
    * <code>repeated .littlehorse.ServerACL acls = 2;</code>
    */
-  java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder>
+  java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder> 
       getAclsOrBuilderList();
   /**
    * <code>repeated .littlehorse.ServerACL acls = 2;</code>
@@ -44,21 +44,29 @@ public interface PutPrincipalRequestOrBuilder extends
       int index);
 
   /**
-   * <code>optional string tenant_id = 3;</code>
-   * @return Whether the tenantId field is set.
+   * <code>repeated string tenant_id = 3;</code>
+   * @return A list containing the tenantId.
    */
-  boolean hasTenantId();
+  java.util.List<java.lang.String>
+      getTenantIdList();
   /**
-   * <code>optional string tenant_id = 3;</code>
-   * @return The tenantId.
+   * <code>repeated string tenant_id = 3;</code>
+   * @return The count of tenantId.
    */
-  java.lang.String getTenantId();
+  int getTenantIdCount();
   /**
-   * <code>optional string tenant_id = 3;</code>
-   * @return The bytes for tenantId.
+   * <code>repeated string tenant_id = 3;</code>
+   * @param index The index of the element to return.
+   * @return The tenantId at the given index.
+   */
+  java.lang.String getTenantId(int index);
+  /**
+   * <code>repeated string tenant_id = 3;</code>
+   * @param index The index of the value to return.
+   * @return The bytes of the tenantId at the given index.
    */
   com.google.protobuf.ByteString
-      getTenantIdBytes();
+      getTenantIdBytes(int index);
 
   /**
    * <code>bool overwrite = 5;</code>

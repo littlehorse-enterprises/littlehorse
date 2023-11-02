@@ -20,6 +20,8 @@ import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.MetadataCache;
+
+import java.util.List;
 import java.util.Optional;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -71,7 +73,7 @@ public class PrincipalAdministrationTest {
     @Test
     public void supportStorePrincipal() {
         String newPrincipalTenantId = "my-tenant";
-        putPrincipalRequest.setTenantId(newPrincipalTenantId);
+        putPrincipalRequest.setTenantIds(List.of(newPrincipalTenantId));
         putPrincipalRequest.getAcls().clear();
         putPrincipalRequest.getAcls().add(TestUtil.adminAcl());
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
@@ -79,18 +81,18 @@ public class PrincipalAdministrationTest {
         metadataProcessor.init(mockProcessorContext);
         metadataProcessor.process(new Record<>(principalId, command, 0L));
 
-        assertThat(storedPrincipal(tenantId).getTenant().getId()).isEqualTo(newPrincipalTenantId);
+        assertThat(storedPrincipal().getTenantIds()).containsExactly(newPrincipalTenantId);
     }
 
     @Test
     public void supportPrincipalInitializationFromCommandMetadata() {
-        putPrincipalRequest.setTenantId(null);
+        putPrincipalRequest.setTenantIds(List.of());
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
         command.setTenantId(tenantId);
         metadataProcessor.init(mockProcessorContext);
         metadataProcessor.process(new Record<>(principalId, command, 0L));
 
-        assertThat(storedPrincipal(tenantId).getTenant().getId()).isEqualTo(tenantId);
+        assertThat(storedPrincipal().getTenantIds()).containsExactly(tenantId);
     }
 
     @Test
@@ -106,7 +108,7 @@ public class PrincipalAdministrationTest {
         acl.setName(Optional.of("acl-after-overwrite"));
         putPrincipalRequest.setOverwrite(true);
         metadataProcessor.process(new Record<>(principalId, command, 0L));
-        assertThat(storedPrincipal(tenantId).getAcls()).containsExactly(acl);
+        assertThat(storedPrincipal().getAcls()).containsExactly(acl);
     }
 
     @Test
@@ -127,7 +129,7 @@ public class PrincipalAdministrationTest {
     @Test
     public void supportPrincipalDowngrade() {
         String newPrincipalTenantId = "my-tenant";
-        putPrincipalRequest.setTenantId(newPrincipalTenantId);
+        putPrincipalRequest.setTenantIds(List.of(newPrincipalTenantId));
         putPrincipalRequest.getAcls().clear();
         putPrincipalRequest.getAcls().add(TestUtil.adminAcl());
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
@@ -141,13 +143,13 @@ public class PrincipalAdministrationTest {
         putPrincipalRequest.getAcls().add(TestUtil.acl());
         putPrincipalRequest.setOverwrite(true);
         metadataProcessor.process(new Record<>(principalId, command, 0L));
-        assertThat(storedPrincipal(newPrincipalTenantId).getAcls()).containsExactly(TestUtil.acl());
+        assertThat(storedPrincipal().getAcls()).containsExactly(TestUtil.acl());
     }
 
     @Test
     public void shouldPreventTenantLockOut() {
         String newPrincipalTenantId = "my-tenant";
-        putPrincipalRequest.setTenantId(newPrincipalTenantId);
+        putPrincipalRequest.setTenantIds(List.of(newPrincipalTenantId));
         putPrincipalRequest.getAcls().clear();
         putPrincipalRequest.getAcls().add(TestUtil.adminAcl());
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
@@ -166,7 +168,7 @@ public class PrincipalAdministrationTest {
     @Test
     public void supportPrincipalDeletion() {
         String newPrincipalTenantId = "my-tenant";
-        putPrincipalRequest.setTenantId(newPrincipalTenantId);
+        putPrincipalRequest.setTenantIds(List.of(newPrincipalTenantId));
         putPrincipalRequest.getAcls().clear();
         putPrincipalRequest.getAcls().add(TestUtil.adminAcl());
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
@@ -174,7 +176,7 @@ public class PrincipalAdministrationTest {
         metadataProcessor.init(mockProcessorContext);
         metadataProcessor.process(new Record<>(principalId, command, 0L));
 
-        assertThat(storedPrincipal(tenantId)).isNotNull();
+        assertThat(storedPrincipal()).isNotNull();
         MetadataCommandModel deleteCommand = new MetadataCommandModel(deletePrincipalRequest);
         command.setTenantId(tenantId);
         metadataProcessor.process(new Record<>(principalId, deleteCommand, 0L));
@@ -199,10 +201,4 @@ public class PrincipalAdministrationTest {
         return storedPrincipal.getStoredObject();
     }
 
-    private PrincipalModel storedPrincipal(String tenantId) {
-        ModelStore tenantStore = ModelStore.instanceFor(nativeMetadataStore, tenantId);
-        StoredGetable<Principal, PrincipalModel> storedPrincipal = tenantStore.get(new PrincipalIdModel(principalId));
-        assertThat(storedPrincipal).isNotNull();
-        return storedPrincipal.getStoredObject();
-    }
 }

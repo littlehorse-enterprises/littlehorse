@@ -63,7 +63,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
             if (storedPrincipal == null) {
                 return PrincipalModel.anonymousFor(tenant);
             }
-            if (!storedPrincipal.getTenant().getId().equals(tenantId)) {
+            if (!storedPrincipal.getTenantIds().contains(tenantId)) {
                 throw new PermissionDeniedException("Tenant %s is not supported".formatted(tenantId));
             }
             return storedPrincipal;

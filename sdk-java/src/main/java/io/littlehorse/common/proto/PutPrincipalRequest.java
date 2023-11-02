@@ -18,7 +18,8 @@ private static final long serialVersionUID = 0L;
   private PutPrincipalRequest() {
     id_ = "";
     acls_ = java.util.Collections.emptyList();
-    tenantId_ = "";
+    tenantId_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
   }
 
   @java.lang.Override
@@ -41,7 +42,6 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.PutPrincipalRequest.class, io.littlehorse.common.proto.PutPrincipalRequest.Builder.class);
   }
 
-  private int bitField0_;
   public static final int ID_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
   private volatile java.lang.Object id_ = "";
@@ -55,7 +55,7 @@ private static final long serialVersionUID = 0L;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
-      com.google.protobuf.ByteString bs =
+      com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
       id_ = s;
@@ -71,7 +71,7 @@ private static final long serialVersionUID = 0L;
       getIdBytes() {
     java.lang.Object ref = id_;
     if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b =
+      com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
       id_ = b;
@@ -95,7 +95,7 @@ private static final long serialVersionUID = 0L;
    * <code>repeated .littlehorse.ServerACL acls = 2;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder>
+  public java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder> 
       getAclsOrBuilderList() {
     return acls_;
   }
@@ -124,49 +124,39 @@ private static final long serialVersionUID = 0L;
 
   public static final int TENANT_ID_FIELD_NUMBER = 3;
   @SuppressWarnings("serial")
-  private volatile java.lang.Object tenantId_ = "";
+  private com.google.protobuf.LazyStringArrayList tenantId_ =
+      com.google.protobuf.LazyStringArrayList.emptyList();
   /**
-   * <code>optional string tenant_id = 3;</code>
-   * @return Whether the tenantId field is set.
+   * <code>repeated string tenant_id = 3;</code>
+   * @return A list containing the tenantId.
    */
-  @java.lang.Override
-  public boolean hasTenantId() {
-    return ((bitField0_ & 0x00000001) != 0);
+  public com.google.protobuf.ProtocolStringList
+      getTenantIdList() {
+    return tenantId_;
   }
   /**
-   * <code>optional string tenant_id = 3;</code>
-   * @return The tenantId.
+   * <code>repeated string tenant_id = 3;</code>
+   * @return The count of tenantId.
    */
-  @java.lang.Override
-  public java.lang.String getTenantId() {
-    java.lang.Object ref = tenantId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs =
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      tenantId_ = s;
-      return s;
-    }
+  public int getTenantIdCount() {
+    return tenantId_.size();
   }
   /**
-   * <code>optional string tenant_id = 3;</code>
-   * @return The bytes for tenantId.
+   * <code>repeated string tenant_id = 3;</code>
+   * @param index The index of the element to return.
+   * @return The tenantId at the given index.
    */
-  @java.lang.Override
+  public java.lang.String getTenantId(int index) {
+    return tenantId_.get(index);
+  }
+  /**
+   * <code>repeated string tenant_id = 3;</code>
+   * @param index The index of the value to return.
+   * @return The bytes of the tenantId at the given index.
+   */
   public com.google.protobuf.ByteString
-      getTenantIdBytes() {
-    java.lang.Object ref = tenantId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b =
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      tenantId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+      getTenantIdBytes(int index) {
+    return tenantId_.getByteString(index);
   }
 
   public static final int OVERWRITE_FIELD_NUMBER = 5;
@@ -200,8 +190,8 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < acls_.size(); i++) {
       output.writeMessage(2, acls_.get(i));
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, tenantId_);
+    for (int i = 0; i < tenantId_.size(); i++) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, tenantId_.getRaw(i));
     }
     if (overwrite_ != false) {
       output.writeBool(5, overwrite_);
@@ -222,8 +212,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, acls_.get(i));
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, tenantId_);
+    {
+      int dataSize = 0;
+      for (int i = 0; i < tenantId_.size(); i++) {
+        dataSize += computeStringSizeNoTag(tenantId_.getRaw(i));
+      }
+      size += dataSize;
+      size += 1 * getTenantIdList().size();
     }
     if (overwrite_ != false) {
       size += com.google.protobuf.CodedOutputStream
@@ -248,11 +243,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getId())) return false;
     if (!getAclsList()
         .equals(other.getAclsList())) return false;
-    if (hasTenantId() != other.hasTenantId()) return false;
-    if (hasTenantId()) {
-      if (!getTenantId()
-          .equals(other.getTenantId())) return false;
-    }
+    if (!getTenantIdList()
+        .equals(other.getTenantIdList())) return false;
     if (getOverwrite()
         != other.getOverwrite()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -272,9 +264,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + ACLS_FIELD_NUMBER;
       hash = (53 * hash) + getAclsList().hashCode();
     }
-    if (hasTenantId()) {
+    if (getTenantIdCount() > 0) {
       hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getTenantId().hashCode();
+      hash = (53 * hash) + getTenantIdList().hashCode();
     }
     hash = (37 * hash) + OVERWRITE_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
@@ -418,7 +410,8 @@ private static final long serialVersionUID = 0L;
         aclsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000002);
-      tenantId_ = "";
+      tenantId_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
       overwrite_ = false;
       return this;
     }
@@ -469,15 +462,13 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.id_ = id_;
       }
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000004) != 0)) {
+        tenantId_.makeImmutable();
         result.tenantId_ = tenantId_;
-        to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.overwrite_ = overwrite_;
       }
-      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -547,7 +538,7 @@ private static final long serialVersionUID = 0L;
             aclsBuilder_ = null;
             acls_ = other.acls_;
             bitField0_ = (bitField0_ & ~0x00000002);
-            aclsBuilder_ =
+            aclsBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getAclsFieldBuilder() : null;
           } else {
@@ -555,9 +546,14 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
-      if (other.hasTenantId()) {
-        tenantId_ = other.tenantId_;
-        bitField0_ |= 0x00000004;
+      if (!other.tenantId_.isEmpty()) {
+        if (tenantId_.isEmpty()) {
+          tenantId_ = other.tenantId_;
+          bitField0_ |= 0x00000004;
+        } else {
+          ensureTenantIdIsMutable();
+          tenantId_.addAll(other.tenantId_);
+        }
         onChanged();
       }
       if (other.getOverwrite() != false) {
@@ -608,8 +604,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 18
             case 26: {
-              tenantId_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000004;
+              java.lang.String s = input.readStringRequireUtf8();
+              ensureTenantIdIsMutable();
+              tenantId_.add(s);
               break;
             } // case 26
             case 40: {
@@ -659,7 +656,7 @@ private static final long serialVersionUID = 0L;
         getIdBytes() {
       java.lang.Object ref = id_;
       if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
+        com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         id_ = b;
@@ -901,7 +898,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>repeated .littlehorse.ServerACL acls = 2;</code>
      */
-    public java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder>
+    public java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder> 
          getAclsOrBuilderList() {
       if (aclsBuilder_ != null) {
         return aclsBuilder_.getMessageOrBuilderList();
@@ -927,12 +924,12 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>repeated .littlehorse.ServerACL acls = 2;</code>
      */
-    public java.util.List<io.littlehorse.common.proto.ServerACL.Builder>
+    public java.util.List<io.littlehorse.common.proto.ServerACL.Builder> 
          getAclsBuilderList() {
       return getAclsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.ServerACL, io.littlehorse.common.proto.ServerACL.Builder, io.littlehorse.common.proto.ServerACLOrBuilder>
+        io.littlehorse.common.proto.ServerACL, io.littlehorse.common.proto.ServerACL.Builder, io.littlehorse.common.proto.ServerACLOrBuilder> 
         getAclsFieldBuilder() {
       if (aclsBuilder_ == null) {
         aclsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
@@ -946,80 +943,112 @@ private static final long serialVersionUID = 0L;
       return aclsBuilder_;
     }
 
-    private java.lang.Object tenantId_ = "";
-    /**
-     * <code>optional string tenant_id = 3;</code>
-     * @return Whether the tenantId field is set.
-     */
-    public boolean hasTenantId() {
-      return ((bitField0_ & 0x00000004) != 0);
-    }
-    /**
-     * <code>optional string tenant_id = 3;</code>
-     * @return The tenantId.
-     */
-    public java.lang.String getTenantId() {
-      java.lang.Object ref = tenantId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        tenantId_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
+    private com.google.protobuf.LazyStringArrayList tenantId_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    private void ensureTenantIdIsMutable() {
+      if (!tenantId_.isModifiable()) {
+        tenantId_ = new com.google.protobuf.LazyStringArrayList(tenantId_);
       }
+      bitField0_ |= 0x00000004;
     }
     /**
-     * <code>optional string tenant_id = 3;</code>
-     * @return The bytes for tenantId.
+     * <code>repeated string tenant_id = 3;</code>
+     * @return A list containing the tenantId.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getTenantIdList() {
+      tenantId_.makeImmutable();
+      return tenantId_;
+    }
+    /**
+     * <code>repeated string tenant_id = 3;</code>
+     * @return The count of tenantId.
+     */
+    public int getTenantIdCount() {
+      return tenantId_.size();
+    }
+    /**
+     * <code>repeated string tenant_id = 3;</code>
+     * @param index The index of the element to return.
+     * @return The tenantId at the given index.
+     */
+    public java.lang.String getTenantId(int index) {
+      return tenantId_.get(index);
+    }
+    /**
+     * <code>repeated string tenant_id = 3;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the tenantId at the given index.
      */
     public com.google.protobuf.ByteString
-        getTenantIdBytes() {
-      java.lang.Object ref = tenantId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        tenantId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+        getTenantIdBytes(int index) {
+      return tenantId_.getByteString(index);
     }
     /**
-     * <code>optional string tenant_id = 3;</code>
+     * <code>repeated string tenant_id = 3;</code>
+     * @param index The index to set the value at.
      * @param value The tenantId to set.
      * @return This builder for chaining.
      */
     public Builder setTenantId(
-        java.lang.String value) {
+        int index, java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      tenantId_ = value;
+      ensureTenantIdIsMutable();
+      tenantId_.set(index, value);
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string tenant_id = 3;</code>
+     * <code>repeated string tenant_id = 3;</code>
+     * @param value The tenantId to add.
      * @return This builder for chaining.
      */
-    public Builder clearTenantId() {
-      tenantId_ = getDefaultInstance().getTenantId();
-      bitField0_ = (bitField0_ & ~0x00000004);
+    public Builder addTenantId(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      ensureTenantIdIsMutable();
+      tenantId_.add(value);
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string tenant_id = 3;</code>
-     * @param value The bytes for tenantId to set.
+     * <code>repeated string tenant_id = 3;</code>
+     * @param values The tenantId to add.
      * @return This builder for chaining.
      */
-    public Builder setTenantIdBytes(
+    public Builder addAllTenantId(
+        java.lang.Iterable<java.lang.String> values) {
+      ensureTenantIdIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, tenantId_);
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string tenant_id = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTenantId() {
+      tenantId_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+      bitField0_ = (bitField0_ & ~0x00000004);;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string tenant_id = 3;</code>
+     * @param value The bytes of the tenantId to add.
+     * @return This builder for chaining.
+     */
+    public Builder addTenantIdBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      tenantId_ = value;
+      ensureTenantIdIsMutable();
+      tenantId_.add(value);
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
@@ -1119,3 +1148,4 @@ private static final long serialVersionUID = 0L;
   }
 
 }
+

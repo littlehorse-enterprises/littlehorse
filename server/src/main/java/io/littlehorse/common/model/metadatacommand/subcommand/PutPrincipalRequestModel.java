@@ -1,15 +1,14 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
-import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.ServerSubCommand;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
-import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.proto.PutPrincipalRequest;
@@ -24,10 +23,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalRequest> {
+public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalRequest> implements ServerSubCommand {
 
     private String id;
-    private String tenantId;
+    private List<String> tenantIds;
 
     private final List<ServerACLModel> acls = new ArrayList<>();
     private boolean overwrite;
@@ -36,7 +35,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
     public void initFrom(Message proto) throws LHSerdeError {
         PutPrincipalRequest putPrincipalCommand = (PutPrincipalRequest) proto;
         this.id = putPrincipalCommand.getId();
-        this.tenantId = putPrincipalCommand.getTenantId();
+        this.tenantIds = putPrincipalCommand.getTenantIdList();
         for (ServerACL serverACL : putPrincipalCommand.getAclsList()) {
             acls.add(LHSerializable.fromProto(serverACL, ServerACLModel.class));
         }
@@ -47,7 +46,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
     public PutPrincipalRequest.Builder toProto() {
         PutPrincipalRequest.Builder out = PutPrincipalRequest.newBuilder();
         out.setId(this.id);
-        out.setTenantId(tenantId);
+        out.addAllTenantId(this.tenantIds);
         out.addAllAcls(this.acls.stream()
                 .map(ServerACLModel::toProto)
                 .map(ServerACL.Builder::build)
@@ -77,18 +76,18 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
             throw new LHApiException(Status.FAILED_PRECONDITION, "Trying to overwrite existing principal");
         }
         final String contextTenantId = dao.context().tenantId();
-        final String principalTenantId = Strings.emptyToNull(tenantId) == null ? contextTenantId : tenantId;
+        final List<String> newPrincipalTenantIds = tenantIds.isEmpty() ? List.of(contextTenantId) : tenantIds;
 
         if (!toSave.isAdmin()) {
-            List<String> adminPrincipalIds = dao.adminPrincipalIdsFor(principalTenantId).stream()
+            List<String> adminPrincipalIds = dao.adminPrincipalIds().stream()
                     .filter(adminPrincipalId -> !Objects.equals(adminPrincipalId, id))
                     .toList();
             if (adminPrincipalIds.isEmpty()) {
                 throw new LHApiException(Status.FAILED_PRECONDITION, "At least one admin level principal is required");
             }
         }
-        toSave.setTenant(TenantModel.create(principalTenantId));
         dao.put(toSave);
+        toSave.setTenantIds(newPrincipalTenantIds);
         return PutPrincipalResponse.newBuilder().setId(toSave.getId()).build();
     }
 

@@ -34,7 +34,7 @@ public interface PrincipalOrBuilder extends
   /**
    * <code>repeated .littlehorse.ServerACL acls = 2;</code>
    */
-  java.util.List<io.littlehorse.common.proto.ServerACL>
+  java.util.List<io.littlehorse.common.proto.ServerACL> 
       getAclsList();
   /**
    * <code>repeated .littlehorse.ServerACL acls = 2;</code>
@@ -47,7 +47,7 @@ public interface PrincipalOrBuilder extends
   /**
    * <code>repeated .littlehorse.ServerACL acls = 2;</code>
    */
-  java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder>
+  java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder> 
       getAclsOrBuilderList();
   /**
    * <code>repeated .littlehorse.ServerACL acls = 2;</code>
@@ -63,10 +63,11 @@ public interface PrincipalOrBuilder extends
    * way multi-tenancy works is that the
    * </pre>
    *
-   * <code>string tenant_id = 3;</code>
-   * @return The tenantId.
+   * <code>repeated string tenant_id = 3;</code>
+   * @return A list containing the tenantId.
    */
-  java.lang.String getTenantId();
+  java.util.List<java.lang.String>
+      getTenantIdList();
   /**
    * <pre>
    * Used for multi-tenancy of the LittleHorse Server.
@@ -75,9 +76,35 @@ public interface PrincipalOrBuilder extends
    * way multi-tenancy works is that the
    * </pre>
    *
-   * <code>string tenant_id = 3;</code>
-   * @return The bytes for tenantId.
+   * <code>repeated string tenant_id = 3;</code>
+   * @return The count of tenantId.
+   */
+  int getTenantIdCount();
+  /**
+   * <pre>
+   * Used for multi-tenancy of the LittleHorse Server.
+   *
+   * NOTE: the principal id (field 1) MUST be unique across all tenants. The
+   * way multi-tenancy works is that the
+   * </pre>
+   *
+   * <code>repeated string tenant_id = 3;</code>
+   * @param index The index of the element to return.
+   * @return The tenantId at the given index.
+   */
+  java.lang.String getTenantId(int index);
+  /**
+   * <pre>
+   * Used for multi-tenancy of the LittleHorse Server.
+   *
+   * NOTE: the principal id (field 1) MUST be unique across all tenants. The
+   * way multi-tenancy works is that the
+   * </pre>
+   *
+   * <code>repeated string tenant_id = 3;</code>
+   * @param index The index of the value to return.
+   * @return The bytes of the tenantId at the given index.
    */
   com.google.protobuf.ByteString
-      getTenantIdBytes();
+      getTenantIdBytes(int index);
 }

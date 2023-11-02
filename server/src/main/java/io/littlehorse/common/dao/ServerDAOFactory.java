@@ -27,7 +27,7 @@ public class ServerDAOFactory {
     }
 
     public ReadOnlyMetadataProcessorDAO getMetadataDao() {
-        final String tenantId = PRINCIPAL.get().getTenant().getId();
+        final String tenantId = PRINCIPAL.get().getId(); // TODO
         return getMetadataDao(tenantId);
     }
 

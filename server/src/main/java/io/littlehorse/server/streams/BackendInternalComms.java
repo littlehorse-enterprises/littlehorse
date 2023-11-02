@@ -313,7 +313,7 @@ public class BackendInternalComms implements Closeable {
     private ReadOnlyModelStore getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, enableStaleStores, storeName);
         PrincipalModel principal = ServerAuthorizer.PRINCIPAL.get();
-        return ModelStore.instanceFor(rawStore, principal.getTenant().getId());
+        return ModelStore.instanceFor(rawStore, principal.getId()); // TODO
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host) {

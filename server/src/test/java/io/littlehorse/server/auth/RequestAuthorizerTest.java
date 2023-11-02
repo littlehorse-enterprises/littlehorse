@@ -82,7 +82,7 @@ public class RequestAuthorizerTest {
         Assertions.assertThat(resolvedPrincipal.getAcls()).hasSize(1);
         Assertions.assertThat(resolvedPrincipal.getId()).isEqualTo("anonymous");
         Assertions.assertThat(resolvedPrincipal.isAdmin()).isTrue();
-        Assertions.assertThat(resolvedPrincipal.getTenant()).isEqualTo(TenantModel.createDefault());
+        Assertions.assertThat(resolvedPrincipal.getTenantIds()).containsExactly(ModelStore.DEFAULT_TENANT);
     }
 
     @Test
@@ -94,7 +94,7 @@ public class RequestAuthorizerTest {
         Assertions.assertThat(resolvedPrincipal.getAcls()).hasSize(1);
         Assertions.assertThat(resolvedPrincipal.getId()).isEqualTo("anonymous");
         Assertions.assertThat(resolvedPrincipal.isAdmin()).isTrue();
-        Assertions.assertThat(resolvedPrincipal.getTenant()).isEqualTo(TenantModel.create("my-tenant"));
+        Assertions.assertThat(resolvedPrincipal.getTenantIds()).containsExactly("my-tenant");
     }
 
     @Test
@@ -115,7 +115,7 @@ public class RequestAuthorizerTest {
         startCall();
         Assertions.assertThat(resolvedPrincipal.getId()).isEqualTo("anonymous");
         Assertions.assertThat(resolvedPrincipal.isAdmin()).isTrue();
-        Assertions.assertThat(resolvedPrincipal.getTenant()).isEqualTo(TenantModel.createDefault());
+        Assertions.assertThat(resolvedPrincipal.getTenantIds()).containsExactly(ModelStore.DEFAULT_TENANT);
     }
 
     @Test
@@ -125,7 +125,7 @@ public class RequestAuthorizerTest {
         TenantModel tenant = new TenantModel("my-tenant");
         List<ServerACLModel> acls = List.of(TestUtil.adminAcl());
         metadataDao.put(tenant);
-        metadataDaoFor("my-tenant").put(new PrincipalModel("principal-id", acls, tenant));
+        metadataDaoFor("my-tenant").put(new PrincipalModel("principal-id", acls, List.of("my-tenant")));
         startCall();
         Assertions.assertThat(resolvedPrincipal.getId()).isEqualTo("principal-id");
         Assertions.assertThat(resolvedPrincipal.getAcls()).isEqualTo(acls);
@@ -139,7 +139,7 @@ public class RequestAuthorizerTest {
         metadataDao.put(tenant);
         startCall();
         Assertions.assertThat(resolvedPrincipal.getId()).isEqualTo("anonymous");
-        Assertions.assertThat(resolvedPrincipal.getTenant().getId()).isEqualTo("my-tenant");
+        Assertions.assertThat(resolvedPrincipal.getTenantIds()).containsExactly("my-tenant");
     }
 
     @Test
@@ -151,7 +151,7 @@ public class RequestAuthorizerTest {
         List<ServerACLModel> acls = List.of(TestUtil.adminAcl());
         metadataDao.put(tenant);
         metadataDao.put(otherTenant);
-        metadataDaoFor("my-other-tenant").put(new PrincipalModel("principal-id", acls, tenant));
+        metadataDaoFor("my-other-tenant").put(new PrincipalModel("principal-id", acls, List.of("my-tenant")));
         startCall();
         Mockito.verify(mockCall).close(any(), eq(mockMetadata));
     }
@@ -172,9 +172,9 @@ public class RequestAuthorizerTest {
         public void setup() {
             TenantModel customTenant = new TenantModel("my-tenant");
             PrincipalModel adminPrincipal =
-                    new PrincipalModel("admin-principal", List.of(TestUtil.adminAcl()), customTenant);
+                    new PrincipalModel("admin-principal", List.of(TestUtil.adminAcl()), List.of("my-tenant"));
             PrincipalModel limitedPrincipal =
-                    new PrincipalModel("limited-principal", List.of(TestUtil.acl()), customTenant);
+                    new PrincipalModel("limited-principal", List.of(TestUtil.acl()), List.of("my-tenant"));
             metadataDao.put(customTenant);
             metadataDao.put(adminPrincipal);
             metadataDao.put(limitedPrincipal);

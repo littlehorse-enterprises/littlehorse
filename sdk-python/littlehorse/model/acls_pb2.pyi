@@ -41,8 +41,8 @@ class Principal(_message.Message):
     TENANT_ID_FIELD_NUMBER: _ClassVar[int]
     id: str
     acls: _containers.RepeatedCompositeFieldContainer[ServerACL]
-    tenant_id: str
-    def __init__(self, id: _Optional[str] = ..., acls: _Optional[_Iterable[_Union[ServerACL, _Mapping]]] = ..., tenant_id: _Optional[str] = ...) -> None: ...
+    tenant_id: _containers.RepeatedScalarFieldContainer[str]
+    def __init__(self, id: _Optional[str] = ..., acls: _Optional[_Iterable[_Union[ServerACL, _Mapping]]] = ..., tenant_id: _Optional[_Iterable[str]] = ...) -> None: ...
 
 class Tenant(_message.Message):
     __slots__ = ["id"]
@@ -70,9 +70,9 @@ class PutPrincipalRequest(_message.Message):
     OVERWRITE_FIELD_NUMBER: _ClassVar[int]
     id: str
     acls: _containers.RepeatedCompositeFieldContainer[ServerACL]
-    tenant_id: str
+    tenant_id: _containers.RepeatedScalarFieldContainer[str]
     overwrite: bool
-    def __init__(self, id: _Optional[str] = ..., acls: _Optional[_Iterable[_Union[ServerACL, _Mapping]]] = ..., tenant_id: _Optional[str] = ..., overwrite: bool = ...) -> None: ...
+    def __init__(self, id: _Optional[str] = ..., acls: _Optional[_Iterable[_Union[ServerACL, _Mapping]]] = ..., tenant_id: _Optional[_Iterable[str]] = ..., overwrite: bool = ...) -> None: ...
 
 class PutPrincipalResponse(_message.Message):
     __slots__ = ["id"]
