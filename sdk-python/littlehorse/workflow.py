@@ -1378,21 +1378,18 @@ ThreadInitializer = Callable[[WorkflowThread], None]
 
 class Workflow:
     def __init__(
-        self, name: str, entrypoint: ThreadInitializer, retention_hours: int = -1
+        self, name: str, entrypoint: ThreadInitializer
     ) -> None:
         """Workflow.
 
         Args:
             name (str): Name of WfSpec.
             entrypoint (ThreadInitializer):Is the entrypoint thread function.
-            retention_hours (int, optional): Add the hours of life that the
-            workflow will have in the system. Defaults to -1.
         """
         if name is None:
             raise ValueError("Name cannot be None")
 
         self.name = name
-        self.retention_hours = retention_hours
         self._entrypoint = entrypoint
         self._thread_initializers: list[tuple[str, ThreadInitializer]] = []
         self._builders: list[WorkflowThread] = []
@@ -1450,7 +1447,6 @@ class Workflow:
             name=self.name,
             entrypoint_thread_name=ENTRYPOINT,
             thread_specs=thread_specs,
-            retention_hours=None if self.retention_hours <= 0 else self.retention_hours,
         )
 
 
