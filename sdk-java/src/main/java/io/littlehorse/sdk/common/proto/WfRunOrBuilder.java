@@ -149,4 +149,15 @@ public interface WfRunOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder getPendingFailuresOrBuilder(
       int index);
+
+  /**
+   * <pre>
+   * Introduced now since with ThreadRun-level retention, we can't rely upon
+   * thread_runs.size() to determine the number of ThreadRuns.
+   * </pre>
+   *
+   * <code>int32 greatest_threadrun_number = 11;</code>
+   * @return The greatestThreadrunNumber.
+   */
+  int getGreatestThreadrunNumber();
 }

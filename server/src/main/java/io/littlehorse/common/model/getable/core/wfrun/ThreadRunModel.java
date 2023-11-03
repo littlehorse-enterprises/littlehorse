@@ -316,7 +316,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         childHaltReason.parentHalted.parentThreadId = number;
 
         for (int childId : childThreadIds) {
-            ThreadRunModel child = wfRun.threadRunModels.get(childId);
+            ThreadRunModel child = wfRun.getThreadRun(childId);
 
             // In almost all cases, we want to stop all children.
             // However, if the child is an interrupt thread, and the parent got
@@ -395,7 +395,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         if (getCurrentNodeRun().canBeInterrupted()) return true;
 
         for (int childId : childThreadIds) {
-            if (wfRun.threadRunModels.get(childId).isRunning()) {
+            if (wfRun.getThreadRun(childId).isRunning()) {
                 return false;
             }
         }
@@ -516,7 +516,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         this.endTime = time;
 
         for (int childId : childThreadIds) {
-            ThreadRunModel child = wfRun.threadRunModels.get(childId);
+            ThreadRunModel child = wfRun.getThreadRun(childId);
             ThreadHaltReasonModel hr = new ThreadHaltReasonModel();
             hr.type = ReasonCase.PARENT_HALTED;
             hr.parentHalted = new ParentHaltedModel();
@@ -666,7 +666,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public ThreadRunModel getParent() {
         if (parentThreadId == null) return null;
-        return wfRun.threadRunModels.get(parentThreadId);
+        return wfRun.getThreadRun(parentThreadId);
     }
 
     public List<VarNameAndValModel> assignVarsForNode(TaskNodeModel node) throws LHVarSubError {

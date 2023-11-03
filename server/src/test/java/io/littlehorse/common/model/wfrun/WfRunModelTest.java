@@ -12,7 +12,7 @@ public class WfRunModelTest {
     void getThreadRunReturnsNullForInvalidThreadRunNumber() {
         WfRunModel wfRunModel = new WfRunModel();
         ThreadRunModel thread = new ThreadRunModel();
-        wfRunModel.threadRunModels.add(thread);
+        wfRunModel.threadRuns.add(thread);
         assertThat(wfRunModel.getThreadRun(0) == thread);
         assertThat(wfRunModel.getThreadRun(-1) == null);
         assertThat(wfRunModel.getThreadRun(1) == null);
