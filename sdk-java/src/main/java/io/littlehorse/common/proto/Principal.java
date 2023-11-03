@@ -21,9 +21,6 @@ private static final long serialVersionUID = 0L;
   }
   private Principal() {
     id_ = "";
-    acls_ = java.util.Collections.emptyList();
-    tenantId_ =
-        com.google.protobuf.LazyStringArrayList.emptyList();
   }
 
   @java.lang.Override
@@ -38,6 +35,18 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.Acls.internal_static_littlehorse_Principal_descriptor;
   }
 
+  @SuppressWarnings({"rawtypes"})
+  @java.lang.Override
+  protected com.google.protobuf.MapField internalGetMapField(
+      int number) {
+    switch (number) {
+      case 2:
+        return internalGetTenantAclMap();
+      default:
+        throw new RuntimeException(
+            "Invalid map field number: " + number);
+    }
+  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -97,110 +106,141 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int ACLS_FIELD_NUMBER = 2;
+  public static final int TENANT_ACL_MAP_FIELD_NUMBER = 2;
+  private static final class TenantAclMapDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, io.littlehorse.common.proto.ServerACL> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, io.littlehorse.common.proto.ServerACL>newDefaultInstance(
+                io.littlehorse.common.proto.Acls.internal_static_littlehorse_Principal_TenantAclMapEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                io.littlehorse.common.proto.ServerACL.getDefaultInstance());
+  }
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.common.proto.ServerACL> acls_;
-  /**
-   * <code>repeated .littlehorse.ServerACL acls = 2;</code>
-   */
-  @java.lang.Override
-  public java.util.List<io.littlehorse.common.proto.ServerACL> getAclsList() {
-    return acls_;
+  private com.google.protobuf.MapField<
+      java.lang.String, io.littlehorse.common.proto.ServerACL> tenantAclMap_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.ServerACL>
+  internalGetTenantAclMap() {
+    if (tenantAclMap_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          TenantAclMapDefaultEntryHolder.defaultEntry);
+    }
+    return tenantAclMap_;
+  }
+  public int getTenantAclMapCount() {
+    return internalGetTenantAclMap().getMap().size();
   }
   /**
-   * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+   * <pre>
+   * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+   * execute *within that Tenant*
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder> 
-      getAclsOrBuilderList() {
-    return acls_;
+  public boolean containsTenantAclMap(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    return internalGetTenantAclMap().getMap().containsKey(key);
   }
   /**
-   * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+   * Use {@link #getTenantAclMapMap()} instead.
    */
   @java.lang.Override
-  public int getAclsCount() {
-    return acls_.size();
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> getTenantAclMap() {
+    return getTenantAclMapMap();
   }
   /**
-   * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+   * <pre>
+   * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+   * execute *within that Tenant*
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.ServerACL getAcls(int index) {
-    return acls_.get(index);
+  public java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> getTenantAclMapMap() {
+    return internalGetTenantAclMap().getMap();
   }
   /**
-   * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+   * <pre>
+   * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+   * execute *within that Tenant*
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.ServerACLOrBuilder getAclsOrBuilder(
-      int index) {
-    return acls_.get(index);
+  public /* nullable */
+io.littlehorse.common.proto.ServerACL getTenantAclMapOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.common.proto.ServerACL defaultValue) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> map =
+        internalGetTenantAclMap().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <pre>
+   * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+   * execute *within that Tenant*
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ServerACL getTenantAclMapOrThrow(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> map =
+        internalGetTenantAclMap().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
   }
 
-  public static final int TENANT_ID_FIELD_NUMBER = 3;
-  @SuppressWarnings("serial")
-  private com.google.protobuf.LazyStringArrayList tenantId_ =
-      com.google.protobuf.LazyStringArrayList.emptyList();
+  public static final int GLOBAL_ACLS_FIELD_NUMBER = 3;
+  private io.littlehorse.common.proto.ServerACLs globalAcls_;
   /**
    * <pre>
-   * Used for multi-tenancy of the LittleHorse Server.
-   *
-   * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-   * way multi-tenancy works is that the
+   * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
    * </pre>
    *
-   * <code>repeated string tenant_id = 3;</code>
-   * @return A list containing the tenantId.
+   * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+   * @return Whether the globalAcls field is set.
    */
-  public com.google.protobuf.ProtocolStringList
-      getTenantIdList() {
-    return tenantId_;
+  @java.lang.Override
+  public boolean hasGlobalAcls() {
+    return globalAcls_ != null;
   }
   /**
    * <pre>
-   * Used for multi-tenancy of the LittleHorse Server.
-   *
-   * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-   * way multi-tenancy works is that the
+   * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
    * </pre>
    *
-   * <code>repeated string tenant_id = 3;</code>
-   * @return The count of tenantId.
+   * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+   * @return The globalAcls.
    */
-  public int getTenantIdCount() {
-    return tenantId_.size();
+  @java.lang.Override
+  public io.littlehorse.common.proto.ServerACLs getGlobalAcls() {
+    return globalAcls_ == null ? io.littlehorse.common.proto.ServerACLs.getDefaultInstance() : globalAcls_;
   }
   /**
    * <pre>
-   * Used for multi-tenancy of the LittleHorse Server.
-   *
-   * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-   * way multi-tenancy works is that the
+   * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
    * </pre>
    *
-   * <code>repeated string tenant_id = 3;</code>
-   * @param index The index of the element to return.
-   * @return The tenantId at the given index.
+   * <code>.littlehorse.ServerACLs global_acls = 3;</code>
    */
-  public java.lang.String getTenantId(int index) {
-    return tenantId_.get(index);
-  }
-  /**
-   * <pre>
-   * Used for multi-tenancy of the LittleHorse Server.
-   *
-   * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-   * way multi-tenancy works is that the
-   * </pre>
-   *
-   * <code>repeated string tenant_id = 3;</code>
-   * @param index The index of the value to return.
-   * @return The bytes of the tenantId at the given index.
-   */
-  public com.google.protobuf.ByteString
-      getTenantIdBytes(int index) {
-    return tenantId_.getByteString(index);
+  @java.lang.Override
+  public io.littlehorse.common.proto.ServerACLsOrBuilder getGlobalAclsOrBuilder() {
+    return globalAcls_ == null ? io.littlehorse.common.proto.ServerACLs.getDefaultInstance() : globalAcls_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -220,11 +260,14 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
     }
-    for (int i = 0; i < acls_.size(); i++) {
-      output.writeMessage(2, acls_.get(i));
-    }
-    for (int i = 0; i < tenantId_.size(); i++) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, tenantId_.getRaw(i));
+    com.google.protobuf.GeneratedMessageV3
+      .serializeStringMapTo(
+        output,
+        internalGetTenantAclMap(),
+        TenantAclMapDefaultEntryHolder.defaultEntry,
+        2);
+    if (globalAcls_ != null) {
+      output.writeMessage(3, getGlobalAcls());
     }
     getUnknownFields().writeTo(output);
   }
@@ -238,17 +281,19 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
     }
-    for (int i = 0; i < acls_.size(); i++) {
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.common.proto.ServerACL> entry
+         : internalGetTenantAclMap().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.ServerACL>
+      tenantAclMap__ = TenantAclMapDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, acls_.get(i));
+          .computeMessageSize(2, tenantAclMap__);
     }
-    {
-      int dataSize = 0;
-      for (int i = 0; i < tenantId_.size(); i++) {
-        dataSize += computeStringSizeNoTag(tenantId_.getRaw(i));
-      }
-      size += dataSize;
-      size += 1 * getTenantIdList().size();
+    if (globalAcls_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getGlobalAcls());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -267,10 +312,13 @@ private static final long serialVersionUID = 0L;
 
     if (!getId()
         .equals(other.getId())) return false;
-    if (!getAclsList()
-        .equals(other.getAclsList())) return false;
-    if (!getTenantIdList()
-        .equals(other.getTenantIdList())) return false;
+    if (!internalGetTenantAclMap().equals(
+        other.internalGetTenantAclMap())) return false;
+    if (hasGlobalAcls() != other.hasGlobalAcls()) return false;
+    if (hasGlobalAcls()) {
+      if (!getGlobalAcls()
+          .equals(other.getGlobalAcls())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -284,13 +332,13 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + ID_FIELD_NUMBER;
     hash = (53 * hash) + getId().hashCode();
-    if (getAclsCount() > 0) {
-      hash = (37 * hash) + ACLS_FIELD_NUMBER;
-      hash = (53 * hash) + getAclsList().hashCode();
+    if (!internalGetTenantAclMap().getMap().isEmpty()) {
+      hash = (37 * hash) + TENANT_ACL_MAP_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetTenantAclMap().hashCode();
     }
-    if (getTenantIdCount() > 0) {
-      hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getTenantIdList().hashCode();
+    if (hasGlobalAcls()) {
+      hash = (37 * hash) + GLOBAL_ACLS_FIELD_NUMBER;
+      hash = (53 * hash) + getGlobalAcls().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -405,6 +453,28 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.common.proto.Acls.internal_static_littlehorse_Principal_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetTenantAclMap();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetMutableTenantAclMap();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -428,15 +498,12 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       id_ = "";
-      if (aclsBuilder_ == null) {
-        acls_ = java.util.Collections.emptyList();
-      } else {
-        acls_ = null;
-        aclsBuilder_.clear();
+      internalGetMutableTenantAclMap().clear();
+      globalAcls_ = null;
+      if (globalAclsBuilder_ != null) {
+        globalAclsBuilder_.dispose();
+        globalAclsBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000002);
-      tenantId_ =
-          com.google.protobuf.LazyStringArrayList.emptyList();
       return this;
     }
 
@@ -463,22 +530,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.Principal buildPartial() {
       io.littlehorse.common.proto.Principal result = new io.littlehorse.common.proto.Principal(this);
-      buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
-    }
-
-    private void buildPartialRepeatedFields(io.littlehorse.common.proto.Principal result) {
-      if (aclsBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0)) {
-          acls_ = java.util.Collections.unmodifiableList(acls_);
-          bitField0_ = (bitField0_ & ~0x00000002);
-        }
-        result.acls_ = acls_;
-      } else {
-        result.acls_ = aclsBuilder_.build();
-      }
     }
 
     private void buildPartial0(io.littlehorse.common.proto.Principal result) {
@@ -486,9 +540,14 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.id_ = id_;
       }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.tenantAclMap_ = internalGetTenantAclMap();
+        result.tenantAclMap_.makeImmutable();
+      }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        tenantId_.makeImmutable();
-        result.tenantId_ = tenantId_;
+        result.globalAcls_ = globalAclsBuilder_ == null
+            ? globalAcls_
+            : globalAclsBuilder_.build();
       }
     }
 
@@ -541,41 +600,11 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (aclsBuilder_ == null) {
-        if (!other.acls_.isEmpty()) {
-          if (acls_.isEmpty()) {
-            acls_ = other.acls_;
-            bitField0_ = (bitField0_ & ~0x00000002);
-          } else {
-            ensureAclsIsMutable();
-            acls_.addAll(other.acls_);
-          }
-          onChanged();
-        }
-      } else {
-        if (!other.acls_.isEmpty()) {
-          if (aclsBuilder_.isEmpty()) {
-            aclsBuilder_.dispose();
-            aclsBuilder_ = null;
-            acls_ = other.acls_;
-            bitField0_ = (bitField0_ & ~0x00000002);
-            aclsBuilder_ = 
-              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getAclsFieldBuilder() : null;
-          } else {
-            aclsBuilder_.addAllMessages(other.acls_);
-          }
-        }
-      }
-      if (!other.tenantId_.isEmpty()) {
-        if (tenantId_.isEmpty()) {
-          tenantId_ = other.tenantId_;
-          bitField0_ |= 0x00000004;
-        } else {
-          ensureTenantIdIsMutable();
-          tenantId_.addAll(other.tenantId_);
-        }
-        onChanged();
+      internalGetMutableTenantAclMap().mergeFrom(
+          other.internalGetTenantAclMap());
+      bitField0_ |= 0x00000002;
+      if (other.hasGlobalAcls()) {
+        mergeGlobalAcls(other.getGlobalAcls());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -609,22 +638,19 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 18: {
-              io.littlehorse.common.proto.ServerACL m =
-                  input.readMessage(
-                      io.littlehorse.common.proto.ServerACL.parser(),
-                      extensionRegistry);
-              if (aclsBuilder_ == null) {
-                ensureAclsIsMutable();
-                acls_.add(m);
-              } else {
-                aclsBuilder_.addMessage(m);
-              }
+              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.ServerACL>
+              tenantAclMap__ = input.readMessage(
+                  TenantAclMapDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              internalGetMutableTenantAclMap().getMutableMap().put(
+                  tenantAclMap__.getKey(), tenantAclMap__.getValue());
+              bitField0_ |= 0x00000002;
               break;
             } // case 18
             case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
-              ensureTenantIdIsMutable();
-              tenantId_.add(s);
+              input.readMessage(
+                  getGlobalAclsFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000004;
               break;
             } // case 26
             default: {
@@ -746,418 +772,321 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.util.List<io.littlehorse.common.proto.ServerACL> acls_ =
-      java.util.Collections.emptyList();
-    private void ensureAclsIsMutable() {
-      if (!((bitField0_ & 0x00000002) != 0)) {
-        acls_ = new java.util.ArrayList<io.littlehorse.common.proto.ServerACL>(acls_);
-        bitField0_ |= 0x00000002;
-       }
+    private com.google.protobuf.MapField<
+        java.lang.String, io.littlehorse.common.proto.ServerACL> tenantAclMap_;
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.ServerACL>
+        internalGetTenantAclMap() {
+      if (tenantAclMap_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            TenantAclMapDefaultEntryHolder.defaultEntry);
+      }
+      return tenantAclMap_;
+    }
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.ServerACL>
+        internalGetMutableTenantAclMap() {
+      if (tenantAclMap_ == null) {
+        tenantAclMap_ = com.google.protobuf.MapField.newMapField(
+            TenantAclMapDefaultEntryHolder.defaultEntry);
+      }
+      if (!tenantAclMap_.isMutable()) {
+        tenantAclMap_ = tenantAclMap_.copy();
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return tenantAclMap_;
+    }
+    public int getTenantAclMapCount() {
+      return internalGetTenantAclMap().getMap().size();
+    }
+    /**
+     * <pre>
+     * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+     * execute *within that Tenant*
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+     */
+    @java.lang.Override
+    public boolean containsTenantAclMap(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetTenantAclMap().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getTenantAclMapMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> getTenantAclMap() {
+      return getTenantAclMapMap();
+    }
+    /**
+     * <pre>
+     * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+     * execute *within that Tenant*
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> getTenantAclMapMap() {
+      return internalGetTenantAclMap().getMap();
+    }
+    /**
+     * <pre>
+     * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+     * execute *within that Tenant*
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+     */
+    @java.lang.Override
+    public /* nullable */
+io.littlehorse.common.proto.ServerACL getTenantAclMapOrDefault(
+        java.lang.String key,
+        /* nullable */
+io.littlehorse.common.proto.ServerACL defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> map =
+          internalGetTenantAclMap().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <pre>
+     * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+     * execute *within that Tenant*
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.ServerACL getTenantAclMapOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> map =
+          internalGetTenantAclMap().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+    public Builder clearTenantAclMap() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      internalGetMutableTenantAclMap().getMutableMap()
+          .clear();
+      return this;
+    }
+    /**
+     * <pre>
+     * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+     * execute *within that Tenant*
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+     */
+    public Builder removeTenantAclMap(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      internalGetMutableTenantAclMap().getMutableMap()
+          .remove(key);
+      return this;
+    }
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL>
+        getMutableTenantAclMap() {
+      bitField0_ |= 0x00000002;
+      return internalGetMutableTenantAclMap().getMutableMap();
+    }
+    /**
+     * <pre>
+     * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+     * execute *within that Tenant*
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+     */
+    public Builder putTenantAclMap(
+        java.lang.String key,
+        io.littlehorse.common.proto.ServerACL value) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      if (value == null) { throw new NullPointerException("map value"); }
+      internalGetMutableTenantAclMap().getMutableMap()
+          .put(key, value);
+      bitField0_ |= 0x00000002;
+      return this;
+    }
+    /**
+     * <pre>
+     * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+     * execute *within that Tenant*
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+     */
+    public Builder putAllTenantAclMap(
+        java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> values) {
+      internalGetMutableTenantAclMap().getMutableMap()
+          .putAll(values);
+      bitField0_ |= 0x00000002;
+      return this;
     }
 
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.ServerACL, io.littlehorse.common.proto.ServerACL.Builder, io.littlehorse.common.proto.ServerACLOrBuilder> aclsBuilder_;
-
+    private io.littlehorse.common.proto.ServerACLs globalAcls_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ServerACLs, io.littlehorse.common.proto.ServerACLs.Builder, io.littlehorse.common.proto.ServerACLsOrBuilder> globalAclsBuilder_;
     /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+     * <pre>
+     * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
+     * </pre>
+     *
+     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+     * @return Whether the globalAcls field is set.
      */
-    public java.util.List<io.littlehorse.common.proto.ServerACL> getAclsList() {
-      if (aclsBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(acls_);
+    public boolean hasGlobalAcls() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <pre>
+     * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
+     * </pre>
+     *
+     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+     * @return The globalAcls.
+     */
+    public io.littlehorse.common.proto.ServerACLs getGlobalAcls() {
+      if (globalAclsBuilder_ == null) {
+        return globalAcls_ == null ? io.littlehorse.common.proto.ServerACLs.getDefaultInstance() : globalAcls_;
       } else {
-        return aclsBuilder_.getMessageList();
+        return globalAclsBuilder_.getMessage();
       }
     }
     /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+     * <pre>
+     * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
+     * </pre>
+     *
+     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
      */
-    public int getAclsCount() {
-      if (aclsBuilder_ == null) {
-        return acls_.size();
-      } else {
-        return aclsBuilder_.getCount();
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
-     */
-    public io.littlehorse.common.proto.ServerACL getAcls(int index) {
-      if (aclsBuilder_ == null) {
-        return acls_.get(index);
-      } else {
-        return aclsBuilder_.getMessage(index);
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
-     */
-    public Builder setAcls(
-        int index, io.littlehorse.common.proto.ServerACL value) {
-      if (aclsBuilder_ == null) {
+    public Builder setGlobalAcls(io.littlehorse.common.proto.ServerACLs value) {
+      if (globalAclsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureAclsIsMutable();
-        acls_.set(index, value);
-        onChanged();
+        globalAcls_ = value;
       } else {
-        aclsBuilder_.setMessage(index, value);
+        globalAclsBuilder_.setMessage(value);
       }
+      bitField0_ |= 0x00000004;
+      onChanged();
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+     * <pre>
+     * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
+     * </pre>
+     *
+     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
      */
-    public Builder setAcls(
-        int index, io.littlehorse.common.proto.ServerACL.Builder builderForValue) {
-      if (aclsBuilder_ == null) {
-        ensureAclsIsMutable();
-        acls_.set(index, builderForValue.build());
-        onChanged();
+    public Builder setGlobalAcls(
+        io.littlehorse.common.proto.ServerACLs.Builder builderForValue) {
+      if (globalAclsBuilder_ == null) {
+        globalAcls_ = builderForValue.build();
       } else {
-        aclsBuilder_.setMessage(index, builderForValue.build());
+        globalAclsBuilder_.setMessage(builderForValue.build());
       }
+      bitField0_ |= 0x00000004;
+      onChanged();
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+     * <pre>
+     * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
+     * </pre>
+     *
+     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
      */
-    public Builder addAcls(io.littlehorse.common.proto.ServerACL value) {
-      if (aclsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
+    public Builder mergeGlobalAcls(io.littlehorse.common.proto.ServerACLs value) {
+      if (globalAclsBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+          globalAcls_ != null &&
+          globalAcls_ != io.littlehorse.common.proto.ServerACLs.getDefaultInstance()) {
+          getGlobalAclsBuilder().mergeFrom(value);
+        } else {
+          globalAcls_ = value;
         }
-        ensureAclsIsMutable();
-        acls_.add(value);
-        onChanged();
       } else {
-        aclsBuilder_.addMessage(value);
+        globalAclsBuilder_.mergeFrom(value);
       }
+      bitField0_ |= 0x00000004;
+      onChanged();
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+     * <pre>
+     * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
+     * </pre>
+     *
+     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
      */
-    public Builder addAcls(
-        int index, io.littlehorse.common.proto.ServerACL value) {
-      if (aclsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureAclsIsMutable();
-        acls_.add(index, value);
-        onChanged();
-      } else {
-        aclsBuilder_.addMessage(index, value);
+    public Builder clearGlobalAcls() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      globalAcls_ = null;
+      if (globalAclsBuilder_ != null) {
+        globalAclsBuilder_.dispose();
+        globalAclsBuilder_ = null;
       }
+      onChanged();
       return this;
     }
     /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+     * <pre>
+     * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
+     * </pre>
+     *
+     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
      */
-    public Builder addAcls(
-        io.littlehorse.common.proto.ServerACL.Builder builderForValue) {
-      if (aclsBuilder_ == null) {
-        ensureAclsIsMutable();
-        acls_.add(builderForValue.build());
-        onChanged();
+    public io.littlehorse.common.proto.ServerACLs.Builder getGlobalAclsBuilder() {
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return getGlobalAclsFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
+     * </pre>
+     *
+     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+     */
+    public io.littlehorse.common.proto.ServerACLsOrBuilder getGlobalAclsOrBuilder() {
+      if (globalAclsBuilder_ != null) {
+        return globalAclsBuilder_.getMessageOrBuilder();
       } else {
-        aclsBuilder_.addMessage(builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
-     */
-    public Builder addAcls(
-        int index, io.littlehorse.common.proto.ServerACL.Builder builderForValue) {
-      if (aclsBuilder_ == null) {
-        ensureAclsIsMutable();
-        acls_.add(index, builderForValue.build());
-        onChanged();
-      } else {
-        aclsBuilder_.addMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
-     */
-    public Builder addAllAcls(
-        java.lang.Iterable<? extends io.littlehorse.common.proto.ServerACL> values) {
-      if (aclsBuilder_ == null) {
-        ensureAclsIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, acls_);
-        onChanged();
-      } else {
-        aclsBuilder_.addAllMessages(values);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
-     */
-    public Builder clearAcls() {
-      if (aclsBuilder_ == null) {
-        acls_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-      } else {
-        aclsBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
-     */
-    public Builder removeAcls(int index) {
-      if (aclsBuilder_ == null) {
-        ensureAclsIsMutable();
-        acls_.remove(index);
-        onChanged();
-      } else {
-        aclsBuilder_.remove(index);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
-     */
-    public io.littlehorse.common.proto.ServerACL.Builder getAclsBuilder(
-        int index) {
-      return getAclsFieldBuilder().getBuilder(index);
-    }
-    /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
-     */
-    public io.littlehorse.common.proto.ServerACLOrBuilder getAclsOrBuilder(
-        int index) {
-      if (aclsBuilder_ == null) {
-        return acls_.get(index);  } else {
-        return aclsBuilder_.getMessageOrBuilder(index);
+        return globalAcls_ == null ?
+            io.littlehorse.common.proto.ServerACLs.getDefaultInstance() : globalAcls_;
       }
     }
     /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+     * <pre>
+     * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
+     * </pre>
+     *
+     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
      */
-    public java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder> 
-         getAclsOrBuilderList() {
-      if (aclsBuilder_ != null) {
-        return aclsBuilder_.getMessageOrBuilderList();
-      } else {
-        return java.util.Collections.unmodifiableList(acls_);
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
-     */
-    public io.littlehorse.common.proto.ServerACL.Builder addAclsBuilder() {
-      return getAclsFieldBuilder().addBuilder(
-          io.littlehorse.common.proto.ServerACL.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
-     */
-    public io.littlehorse.common.proto.ServerACL.Builder addAclsBuilder(
-        int index) {
-      return getAclsFieldBuilder().addBuilder(
-          index, io.littlehorse.common.proto.ServerACL.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .littlehorse.ServerACL acls = 2;</code>
-     */
-    public java.util.List<io.littlehorse.common.proto.ServerACL.Builder> 
-         getAclsBuilderList() {
-      return getAclsFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.ServerACL, io.littlehorse.common.proto.ServerACL.Builder, io.littlehorse.common.proto.ServerACLOrBuilder> 
-        getAclsFieldBuilder() {
-      if (aclsBuilder_ == null) {
-        aclsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.common.proto.ServerACL, io.littlehorse.common.proto.ServerACL.Builder, io.littlehorse.common.proto.ServerACLOrBuilder>(
-                acls_,
-                ((bitField0_ & 0x00000002) != 0),
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ServerACLs, io.littlehorse.common.proto.ServerACLs.Builder, io.littlehorse.common.proto.ServerACLsOrBuilder> 
+        getGlobalAclsFieldBuilder() {
+      if (globalAclsBuilder_ == null) {
+        globalAclsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.ServerACLs, io.littlehorse.common.proto.ServerACLs.Builder, io.littlehorse.common.proto.ServerACLsOrBuilder>(
+                getGlobalAcls(),
                 getParentForChildren(),
                 isClean());
-        acls_ = null;
+        globalAcls_ = null;
       }
-      return aclsBuilder_;
-    }
-
-    private com.google.protobuf.LazyStringArrayList tenantId_ =
-        com.google.protobuf.LazyStringArrayList.emptyList();
-    private void ensureTenantIdIsMutable() {
-      if (!tenantId_.isModifiable()) {
-        tenantId_ = new com.google.protobuf.LazyStringArrayList(tenantId_);
-      }
-      bitField0_ |= 0x00000004;
-    }
-    /**
-     * <pre>
-     * Used for multi-tenancy of the LittleHorse Server.
-     *
-     * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-     * way multi-tenancy works is that the
-     * </pre>
-     *
-     * <code>repeated string tenant_id = 3;</code>
-     * @return A list containing the tenantId.
-     */
-    public com.google.protobuf.ProtocolStringList
-        getTenantIdList() {
-      tenantId_.makeImmutable();
-      return tenantId_;
-    }
-    /**
-     * <pre>
-     * Used for multi-tenancy of the LittleHorse Server.
-     *
-     * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-     * way multi-tenancy works is that the
-     * </pre>
-     *
-     * <code>repeated string tenant_id = 3;</code>
-     * @return The count of tenantId.
-     */
-    public int getTenantIdCount() {
-      return tenantId_.size();
-    }
-    /**
-     * <pre>
-     * Used for multi-tenancy of the LittleHorse Server.
-     *
-     * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-     * way multi-tenancy works is that the
-     * </pre>
-     *
-     * <code>repeated string tenant_id = 3;</code>
-     * @param index The index of the element to return.
-     * @return The tenantId at the given index.
-     */
-    public java.lang.String getTenantId(int index) {
-      return tenantId_.get(index);
-    }
-    /**
-     * <pre>
-     * Used for multi-tenancy of the LittleHorse Server.
-     *
-     * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-     * way multi-tenancy works is that the
-     * </pre>
-     *
-     * <code>repeated string tenant_id = 3;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the tenantId at the given index.
-     */
-    public com.google.protobuf.ByteString
-        getTenantIdBytes(int index) {
-      return tenantId_.getByteString(index);
-    }
-    /**
-     * <pre>
-     * Used for multi-tenancy of the LittleHorse Server.
-     *
-     * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-     * way multi-tenancy works is that the
-     * </pre>
-     *
-     * <code>repeated string tenant_id = 3;</code>
-     * @param index The index to set the value at.
-     * @param value The tenantId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTenantId(
-        int index, java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      ensureTenantIdIsMutable();
-      tenantId_.set(index, value);
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Used for multi-tenancy of the LittleHorse Server.
-     *
-     * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-     * way multi-tenancy works is that the
-     * </pre>
-     *
-     * <code>repeated string tenant_id = 3;</code>
-     * @param value The tenantId to add.
-     * @return This builder for chaining.
-     */
-    public Builder addTenantId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      ensureTenantIdIsMutable();
-      tenantId_.add(value);
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Used for multi-tenancy of the LittleHorse Server.
-     *
-     * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-     * way multi-tenancy works is that the
-     * </pre>
-     *
-     * <code>repeated string tenant_id = 3;</code>
-     * @param values The tenantId to add.
-     * @return This builder for chaining.
-     */
-    public Builder addAllTenantId(
-        java.lang.Iterable<java.lang.String> values) {
-      ensureTenantIdIsMutable();
-      com.google.protobuf.AbstractMessageLite.Builder.addAll(
-          values, tenantId_);
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Used for multi-tenancy of the LittleHorse Server.
-     *
-     * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-     * way multi-tenancy works is that the
-     * </pre>
-     *
-     * <code>repeated string tenant_id = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearTenantId() {
-      tenantId_ =
-        com.google.protobuf.LazyStringArrayList.emptyList();
-      bitField0_ = (bitField0_ & ~0x00000004);;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Used for multi-tenancy of the LittleHorse Server.
-     *
-     * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-     * way multi-tenancy works is that the
-     * </pre>
-     *
-     * <code>repeated string tenant_id = 3;</code>
-     * @param value The bytes of the tenantId to add.
-     * @return This builder for chaining.
-     */
-    public Builder addTenantIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      ensureTenantIdIsMutable();
-      tenantId_.add(value);
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
+      return globalAclsBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

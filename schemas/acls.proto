@@ -12,27 +12,29 @@ message Principal {
     // id is retrived by looking at the Subject Name of the client certificate.
     string id = 1;
 
-    repeated ServerACL acls = 2;
+    // Maps a Tenant ID to a list of ACL's that the Principal has permission to
+    // execute *within that Tenant*
+    map<string, ServerACL> tenant_acl_map = 2;
 
-    // Used for multi-tenancy of the LittleHorse Server.
-    //
-    // NOTE: the principal id (field 1) MUST be unique across all tenants. The
-    // way multi-tenancy works is that the
-    repeated string tenant_id = 3;
+    // Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
+    ServerACLs global_acls = 3;
 
     // Future versions will include quotas.
 }
 
-// This is a GlobalGetable.
+// This is a GlobalGetable
 message Tenant {
     string id = 1;
     // Future versions will include quotas on a per-Tenant basis.
 }
 
+message ServerACLs {
+    repeated ServerACL acls = 1;
+}
+
 message ServerACL {
     repeated ACLResource resources = 1;
     repeated ACLAction allowed_actions = 2;
-    string tenant_id = ?;
 
     oneof resource_filter {
         string name = 3;
@@ -59,13 +61,9 @@ enum ACLAction {
 
 message PutPrincipalRequest {
     string id = 1;
-    repeated ServerACL acls = 2;
-    repeated string tenant_id = 3;
+    map<string, ServerACLs> tenant_acl_map = 2;
+    ServerACLs global_acls = 3;
     bool overwrite = 5;
-}
-
-message PutPrincipalResponse {
-    string id = 1;
 }
 
 message DeletePrincipalRequest {
@@ -73,10 +71,6 @@ message DeletePrincipalRequest {
 }
 
 message PutTenantRequest {
-    string id = 1;
-}
-
-message PutTenantResponse {
     string id = 1;
 }
 

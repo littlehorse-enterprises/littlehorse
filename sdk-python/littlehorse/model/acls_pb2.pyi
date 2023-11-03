@@ -35,20 +35,33 @@ WRITE_METADATA: ACLAction
 ALL_ACTIONS: ACLAction
 
 class Principal(_message.Message):
-    __slots__ = ["id", "acls", "tenant_id"]
+    __slots__ = ["id", "tenant_acl_map", "global_acls"]
+    class TenantAclMapEntry(_message.Message):
+        __slots__ = ["key", "value"]
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: ServerACL
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[ServerACL, _Mapping]] = ...) -> None: ...
     ID_FIELD_NUMBER: _ClassVar[int]
-    ACLS_FIELD_NUMBER: _ClassVar[int]
-    TENANT_ID_FIELD_NUMBER: _ClassVar[int]
+    TENANT_ACL_MAP_FIELD_NUMBER: _ClassVar[int]
+    GLOBAL_ACLS_FIELD_NUMBER: _ClassVar[int]
     id: str
-    acls: _containers.RepeatedCompositeFieldContainer[ServerACL]
-    tenant_id: _containers.RepeatedScalarFieldContainer[str]
-    def __init__(self, id: _Optional[str] = ..., acls: _Optional[_Iterable[_Union[ServerACL, _Mapping]]] = ..., tenant_id: _Optional[_Iterable[str]] = ...) -> None: ...
+    tenant_acl_map: _containers.MessageMap[str, ServerACL]
+    global_acls: ServerACLs
+    def __init__(self, id: _Optional[str] = ..., tenant_acl_map: _Optional[_Mapping[str, ServerACL]] = ..., global_acls: _Optional[_Union[ServerACLs, _Mapping]] = ...) -> None: ...
 
 class Tenant(_message.Message):
     __slots__ = ["id"]
     ID_FIELD_NUMBER: _ClassVar[int]
     id: str
     def __init__(self, id: _Optional[str] = ...) -> None: ...
+
+class ServerACLs(_message.Message):
+    __slots__ = ["acls"]
+    ACLS_FIELD_NUMBER: _ClassVar[int]
+    acls: _containers.RepeatedCompositeFieldContainer[ServerACL]
+    def __init__(self, acls: _Optional[_Iterable[_Union[ServerACL, _Mapping]]] = ...) -> None: ...
 
 class ServerACL(_message.Message):
     __slots__ = ["resources", "allowed_actions", "name", "prefix"]
@@ -63,22 +76,23 @@ class ServerACL(_message.Message):
     def __init__(self, resources: _Optional[_Iterable[_Union[ACLResource, str]]] = ..., allowed_actions: _Optional[_Iterable[_Union[ACLAction, str]]] = ..., name: _Optional[str] = ..., prefix: _Optional[str] = ...) -> None: ...
 
 class PutPrincipalRequest(_message.Message):
-    __slots__ = ["id", "acls", "tenant_id", "overwrite"]
+    __slots__ = ["id", "tenant_acl_map", "global_acls", "overwrite"]
+    class TenantAclMapEntry(_message.Message):
+        __slots__ = ["key", "value"]
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: ServerACLs
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[ServerACLs, _Mapping]] = ...) -> None: ...
     ID_FIELD_NUMBER: _ClassVar[int]
-    ACLS_FIELD_NUMBER: _ClassVar[int]
-    TENANT_ID_FIELD_NUMBER: _ClassVar[int]
+    TENANT_ACL_MAP_FIELD_NUMBER: _ClassVar[int]
+    GLOBAL_ACLS_FIELD_NUMBER: _ClassVar[int]
     OVERWRITE_FIELD_NUMBER: _ClassVar[int]
     id: str
-    acls: _containers.RepeatedCompositeFieldContainer[ServerACL]
-    tenant_id: _containers.RepeatedScalarFieldContainer[str]
+    tenant_acl_map: _containers.MessageMap[str, ServerACLs]
+    global_acls: ServerACLs
     overwrite: bool
-    def __init__(self, id: _Optional[str] = ..., acls: _Optional[_Iterable[_Union[ServerACL, _Mapping]]] = ..., tenant_id: _Optional[_Iterable[str]] = ..., overwrite: bool = ...) -> None: ...
-
-class PutPrincipalResponse(_message.Message):
-    __slots__ = ["id"]
-    ID_FIELD_NUMBER: _ClassVar[int]
-    id: str
-    def __init__(self, id: _Optional[str] = ...) -> None: ...
+    def __init__(self, id: _Optional[str] = ..., tenant_acl_map: _Optional[_Mapping[str, ServerACLs]] = ..., global_acls: _Optional[_Union[ServerACLs, _Mapping]] = ..., overwrite: bool = ...) -> None: ...
 
 class DeletePrincipalRequest(_message.Message):
     __slots__ = ["id"]
@@ -87,12 +101,6 @@ class DeletePrincipalRequest(_message.Message):
     def __init__(self, id: _Optional[str] = ...) -> None: ...
 
 class PutTenantRequest(_message.Message):
-    __slots__ = ["id"]
-    ID_FIELD_NUMBER: _ClassVar[int]
-    id: str
-    def __init__(self, id: _Optional[str] = ...) -> None: ...
-
-class PutTenantResponse(_message.Message):
     __slots__ = ["id"]
     ID_FIELD_NUMBER: _ClassVar[int]
     id: str

@@ -129,8 +129,8 @@ type LHPublicApiClient interface {
 	GetWfSpecMetricsWindow(ctx context.Context, in *WfSpecMetricsQueryRequest, opts ...grpc.CallOption) (*WfSpecMetrics, error)
 	ListTaskDefMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*ListTaskMetricsResponse, error)
 	ListWfSpecMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*ListWfMetricsResponse, error)
-	PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*PutTenantResponse, error)
-	PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*PutPrincipalResponse, error)
+	PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*Tenant, error)
+	PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*Principal, error)
 	Whoami(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Principal, error)
 }
 
@@ -614,8 +614,8 @@ func (c *lHPublicApiClient) ListWfSpecMetrics(ctx context.Context, in *ListWfMet
 	return out, nil
 }
 
-func (c *lHPublicApiClient) PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*PutTenantResponse, error) {
-	out := new(PutTenantResponse)
+func (c *lHPublicApiClient) PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*Tenant, error) {
+	out := new(Tenant)
 	err := c.cc.Invoke(ctx, LHPublicApi_PutTenant_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -623,8 +623,8 @@ func (c *lHPublicApiClient) PutTenant(ctx context.Context, in *PutTenantRequest,
 	return out, nil
 }
 
-func (c *lHPublicApiClient) PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*PutPrincipalResponse, error) {
-	out := new(PutPrincipalResponse)
+func (c *lHPublicApiClient) PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*Principal, error) {
+	out := new(Principal)
 	err := c.cc.Invoke(ctx, LHPublicApi_PutPrincipal_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -695,8 +695,8 @@ type LHPublicApiServer interface {
 	GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error)
 	ListTaskDefMetrics(context.Context, *ListTaskMetricsRequest) (*ListTaskMetricsResponse, error)
 	ListWfSpecMetrics(context.Context, *ListWfMetricsRequest) (*ListWfMetricsResponse, error)
-	PutTenant(context.Context, *PutTenantRequest) (*PutTenantResponse, error)
-	PutPrincipal(context.Context, *PutPrincipalRequest) (*PutPrincipalResponse, error)
+	PutTenant(context.Context, *PutTenantRequest) (*Tenant, error)
+	PutPrincipal(context.Context, *PutPrincipalRequest) (*Principal, error)
 	Whoami(context.Context, *emptypb.Empty) (*Principal, error)
 	mustEmbedUnimplementedLHPublicApiServer()
 }
@@ -855,10 +855,10 @@ func (UnimplementedLHPublicApiServer) ListTaskDefMetrics(context.Context, *ListT
 func (UnimplementedLHPublicApiServer) ListWfSpecMetrics(context.Context, *ListWfMetricsRequest) (*ListWfMetricsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListWfSpecMetrics not implemented")
 }
-func (UnimplementedLHPublicApiServer) PutTenant(context.Context, *PutTenantRequest) (*PutTenantResponse, error) {
+func (UnimplementedLHPublicApiServer) PutTenant(context.Context, *PutTenantRequest) (*Tenant, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutTenant not implemented")
 }
-func (UnimplementedLHPublicApiServer) PutPrincipal(context.Context, *PutPrincipalRequest) (*PutPrincipalResponse, error) {
+func (UnimplementedLHPublicApiServer) PutPrincipal(context.Context, *PutPrincipalRequest) (*Principal, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutPrincipal not implemented")
 }
 func (UnimplementedLHPublicApiServer) Whoami(context.Context, *emptypb.Empty) (*Principal, error) {

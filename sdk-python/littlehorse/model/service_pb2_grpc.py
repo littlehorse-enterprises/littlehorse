@@ -278,12 +278,12 @@ class LHPublicApiStub(object):
         self.PutTenant = channel.unary_unary(
                 '/littlehorse.LHPublicApi/PutTenant',
                 request_serializer=acls__pb2.PutTenantRequest.SerializeToString,
-                response_deserializer=acls__pb2.PutTenantResponse.FromString,
+                response_deserializer=acls__pb2.Tenant.FromString,
                 )
         self.PutPrincipal = channel.unary_unary(
                 '/littlehorse.LHPublicApi/PutPrincipal',
                 request_serializer=acls__pb2.PutPrincipalRequest.SerializeToString,
-                response_deserializer=acls__pb2.PutPrincipalResponse.FromString,
+                response_deserializer=acls__pb2.Principal.FromString,
                 )
         self.Whoami = channel.unary_unary(
                 '/littlehorse.LHPublicApi/Whoami',
@@ -869,12 +869,12 @@ def add_LHPublicApiServicer_to_server(servicer, server):
             'PutTenant': grpc.unary_unary_rpc_method_handler(
                     servicer.PutTenant,
                     request_deserializer=acls__pb2.PutTenantRequest.FromString,
-                    response_serializer=acls__pb2.PutTenantResponse.SerializeToString,
+                    response_serializer=acls__pb2.Tenant.SerializeToString,
             ),
             'PutPrincipal': grpc.unary_unary_rpc_method_handler(
                     servicer.PutPrincipal,
                     request_deserializer=acls__pb2.PutPrincipalRequest.FromString,
-                    response_serializer=acls__pb2.PutPrincipalResponse.SerializeToString,
+                    response_serializer=acls__pb2.Principal.SerializeToString,
             ),
             'Whoami': grpc.unary_unary_rpc_method_handler(
                     servicer.Whoami,
@@ -1754,7 +1754,7 @@ class LHPublicApi(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutTenant',
             acls__pb2.PutTenantRequest.SerializeToString,
-            acls__pb2.PutTenantResponse.FromString,
+            acls__pb2.Tenant.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1771,7 +1771,7 @@ class LHPublicApi(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LHPublicApi/PutPrincipal',
             acls__pb2.PutPrincipalRequest.SerializeToString,
-            acls__pb2.PutPrincipalResponse.FromString,
+            acls__pb2.Principal.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

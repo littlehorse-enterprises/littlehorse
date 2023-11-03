@@ -20,53 +20,53 @@ public interface PutPrincipalRequestOrBuilder extends
       getIdBytes();
 
   /**
-   * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; tenant_acl_map = 2;</code>
    */
-  java.util.List<io.littlehorse.common.proto.ServerACL> 
-      getAclsList();
+  int getTenantAclMapCount();
   /**
-   * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; tenant_acl_map = 2;</code>
    */
-  io.littlehorse.common.proto.ServerACL getAcls(int index);
+  boolean containsTenantAclMap(
+      java.lang.String key);
   /**
-   * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+   * Use {@link #getTenantAclMapMap()} instead.
    */
-  int getAclsCount();
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs>
+  getTenantAclMap();
   /**
-   * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; tenant_acl_map = 2;</code>
    */
-  java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder> 
-      getAclsOrBuilderList();
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs>
+  getTenantAclMapMap();
   /**
-   * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; tenant_acl_map = 2;</code>
    */
-  io.littlehorse.common.proto.ServerACLOrBuilder getAclsOrBuilder(
-      int index);
+  /* nullable */
+io.littlehorse.common.proto.ServerACLs getTenantAclMapOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.common.proto.ServerACLs defaultValue);
+  /**
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; tenant_acl_map = 2;</code>
+   */
+  io.littlehorse.common.proto.ServerACLs getTenantAclMapOrThrow(
+      java.lang.String key);
 
   /**
-   * <code>repeated string tenant_id = 3;</code>
-   * @return A list containing the tenantId.
+   * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+   * @return Whether the globalAcls field is set.
    */
-  java.util.List<java.lang.String>
-      getTenantIdList();
+  boolean hasGlobalAcls();
   /**
-   * <code>repeated string tenant_id = 3;</code>
-   * @return The count of tenantId.
+   * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+   * @return The globalAcls.
    */
-  int getTenantIdCount();
+  io.littlehorse.common.proto.ServerACLs getGlobalAcls();
   /**
-   * <code>repeated string tenant_id = 3;</code>
-   * @param index The index of the element to return.
-   * @return The tenantId at the given index.
+   * <code>.littlehorse.ServerACLs global_acls = 3;</code>
    */
-  java.lang.String getTenantId(int index);
-  /**
-   * <code>repeated string tenant_id = 3;</code>
-   * @param index The index of the value to return.
-   * @return The bytes of the tenantId at the given index.
-   */
-  com.google.protobuf.ByteString
-      getTenantIdBytes(int index);
+  io.littlehorse.common.proto.ServerACLsOrBuilder getGlobalAclsOrBuilder();
 
   /**
    * <code>bool overwrite = 5;</code>

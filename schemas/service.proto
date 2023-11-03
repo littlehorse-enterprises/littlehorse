@@ -531,7 +531,7 @@ service LHPublicApi {
   rpc ListTaskDefMetrics(ListTaskMetricsRequest) returns (ListTaskMetricsResponse) {}
   rpc ListWfSpecMetrics(ListWfMetricsRequest) returns (ListWfMetricsResponse) {}
 
-  rpc PutTenant(PutTenantRequest) returns (PutTenantResponse) {}
-  rpc PutPrincipal(PutPrincipalRequest) returns (PutPrincipalResponse) {}
+  rpc PutTenant(PutTenantRequest) returns (Tenant) {}
+  rpc PutPrincipal(PutPrincipalRequest) returns (Principal) {}
   rpc Whoami(google.protobuf.Empty) returns (Principal) {}
 }

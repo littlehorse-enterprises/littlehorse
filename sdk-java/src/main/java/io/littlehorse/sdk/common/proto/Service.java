@@ -645,7 +645,7 @@ public final class Service {
       "List\022%\n\007results\030\001 \003(\0132\024.littlehorse.Task" +
       "Run*W\n\016LHHealthResult\022\025\n\021LH_HEALTH_RUNNI" +
       "NG\020\000\022\031\n\025LH_HEALTH_REBALANCING\020\001\022\023\n\017LH_HE" +
-      "ALTH_ERROR\020\0022\335!\n\013LHPublicApi\022D\n\nPutTaskD" +
+      "ALTH_ERROR\020\0022\307!\n\013LHPublicApi\022D\n\nPutTaskD" +
       "ef\022\036.littlehorse.PutTaskDefRequest\032\024.lit" +
       "tlehorse.TaskDef\"\000\022<\n\nGetTaskDef\022\026.littl" +
       "ehorse.TaskDefId\032\024.littlehorse.TaskDef\"\000" +
@@ -747,15 +747,14 @@ public final class Service {
       "etricsRequest\032$.littlehorse.ListTaskMetr" +
       "icsResponse\"\000\022\\\n\021ListWfSpecMetrics\022!.lit" +
       "tlehorse.ListWfMetricsRequest\032\".littleho" +
-      "rse.ListWfMetricsResponse\"\000\022L\n\tPutTenant" +
-      "\022\035.littlehorse.PutTenantRequest\032\036.little" +
-      "horse.PutTenantResponse\"\000\022U\n\014PutPrincipa" +
-      "l\022 .littlehorse.PutPrincipalRequest\032!.li" +
-      "ttlehorse.PutPrincipalResponse\"\000\022:\n\006Whoa" +
-      "mi\022\026.google.protobuf.Empty\032\026.littlehorse" +
-      ".Principal\"\000BG\n\037io.littlehorse.sdk.commo" +
-      "n.protoP\001Z\007.;model\252\002\030LittleHorse.Common." +
-      "Protob\006proto3"
+      "rse.ListWfMetricsResponse\"\000\022A\n\tPutTenant" +
+      "\022\035.littlehorse.PutTenantRequest\032\023.little" +
+      "horse.Tenant\"\000\022J\n\014PutPrincipal\022 .littleh" +
+      "orse.PutPrincipalRequest\032\026.littlehorse.P" +
+      "rincipal\"\000\022:\n\006Whoami\022\026.google.protobuf.E" +
+      "mpty\032\026.littlehorse.Principal\"\000BG\n\037io.lit" +
+      "tlehorse.sdk.common.protoP\001Z\007.;model\252\002\030L" +
+      "ittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

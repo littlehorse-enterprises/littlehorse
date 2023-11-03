@@ -5,7 +5,7 @@ package io.littlehorse.common.proto;
 
 /**
  * <pre>
- * This is a GlobalGetable.
+ * This is a GlobalGetable
  * </pre>
  *
  * Protobuf type {@code littlehorse.Tenant}
@@ -248,7 +248,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * This is a GlobalGetable.
+   * This is a GlobalGetable
    * </pre>
    *
    * Protobuf type {@code littlehorse.Tenant}
