@@ -3,15 +3,19 @@ package io.littlehorse.sdk.wfsdk.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
+import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
+import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.wfsdk.Workflow;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -48,7 +52,6 @@ public class WorkflowThreadImplTest {
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
 
-        System.out.println(LHLibUtil.protoToJson(wfSpec));
         List<Map.Entry<String, Node>> exitNodes =
                 wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesMap().entrySet().stream()
                         .filter(nodePair -> {
@@ -188,5 +191,87 @@ public class WorkflowThreadImplTest {
         Node overridenNode =
                 wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("2-asdf-TASK");
         assertThat(overridenNode.getTask().getTimeoutSeconds()).isEqualTo(42);
+    }
+
+    @Test
+    void ensureNoWfSpecGcByDefault() {
+        WorkflowImpl wf = new WorkflowImpl("some-wf", thread -> {
+            thread.execute("some-task");
+        });
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+        assertThat(wfSpec.hasRetentionPolicy()).isFalse();
+
+        assertThat(wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName())
+                        .hasRetentionPolicy())
+                .isFalse();
+    }
+
+    @Test
+    void testWfRetentionPolicy() {
+        Workflow wf = new WorkflowImpl("some-wf", thread -> {
+                    thread.execute("some-task");
+                })
+                .withRetentionPolicy(WorkflowRetentionPolicy.newBuilder()
+                        .setSecondsAfterWfTermination(Duration.ofDays(30).toSeconds())
+                        .build());
+
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+
+        assertThat(wfSpec.hasRetentionPolicy()).isTrue();
+
+        assertThat(wfSpec.getRetentionPolicy().getSecondsAfterWfTermination() == (24 * 30 * 3600));
+
+        assertThat(wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName())
+                        .hasRetentionPolicy())
+                .isFalse();
+    }
+
+    @Test
+    void testDefaultThreadRetentionPolicy() {
+        Workflow wf = new WorkflowImpl("some-wf", thread -> {
+                    thread.execute("some-task");
+                })
+                .withDefaultThreadRetentionPolicy(ThreadRetentionPolicy.newBuilder()
+                        .setSecondsAfterThreadTermination(30)
+                        .build());
+
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+        assertThat(wfSpec.hasRetentionPolicy()).isFalse();
+
+        ThreadSpec thread = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        assertThat(thread.hasRetentionPolicy()).isTrue();
+        assertThat(thread.getRetentionPolicy().getSecondsAfterThreadTermination())
+                .isEqualTo(30);
+    }
+
+    @Test
+    void testOverrideThreadRetentionPolicy() {
+        Workflow wf = new WorkflowImpl("some-wf", thread -> {
+                    thread.execute("some-task");
+                    thread.spawnThread(
+                            child -> {
+                                child.withRetentionPolicy(ThreadRetentionPolicy.newBuilder()
+                                        .setSecondsAfterThreadTermination(50)
+                                        .build());
+                                child.execute("another-task");
+                            },
+                            "child-thread",
+                            null);
+                })
+                .withDefaultThreadRetentionPolicy(ThreadRetentionPolicy.newBuilder()
+                        .setSecondsAfterThreadTermination(30)
+                        .build());
+
+        PutWfSpecRequest wfSpec = wf.compileWorkflow();
+        assertThat(wfSpec.hasRetentionPolicy()).isFalse();
+
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        assertThat(entrypoint.hasRetentionPolicy()).isTrue();
+        assertThat(entrypoint.getRetentionPolicy().getSecondsAfterThreadTermination())
+                .isEqualTo(30);
+
+        ThreadSpec child = wfSpec.getThreadSpecsOrThrow("child-thread");
+        assertThat(child.getRetentionPolicy().getSecondsAfterThreadTermination())
+                .isEqualTo(50);
     }
 }

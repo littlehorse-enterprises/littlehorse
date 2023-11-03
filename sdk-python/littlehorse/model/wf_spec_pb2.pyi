@@ -10,7 +10,7 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class WfSpec(_message.Message):
-    __slots__ = ["name", "version", "created_at", "status", "thread_specs", "entrypoint_thread_name", "retention_hours"]
+    __slots__ = ["name", "version", "created_at", "status", "thread_specs", "entrypoint_thread_name", "retention_policy"]
     class ThreadSpecsEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -24,18 +24,24 @@ class WfSpec(_message.Message):
     STATUS_FIELD_NUMBER: _ClassVar[int]
     THREAD_SPECS_FIELD_NUMBER: _ClassVar[int]
     ENTRYPOINT_THREAD_NAME_FIELD_NUMBER: _ClassVar[int]
-    RETENTION_HOURS_FIELD_NUMBER: _ClassVar[int]
+    RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
     name: str
     version: int
     created_at: _timestamp_pb2.Timestamp
     status: _common_enums_pb2.LHStatus
     thread_specs: _containers.MessageMap[str, ThreadSpec]
     entrypoint_thread_name: str
-    retention_hours: int
-    def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_specs: _Optional[_Mapping[str, ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_hours: _Optional[int] = ...) -> None: ...
+    retention_policy: WorkflowRetentionPolicy
+    def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_specs: _Optional[_Mapping[str, ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[WorkflowRetentionPolicy, _Mapping]] = ...) -> None: ...
+
+class WorkflowRetentionPolicy(_message.Message):
+    __slots__ = ["seconds_after_wf_termination"]
+    SECONDS_AFTER_WF_TERMINATION_FIELD_NUMBER: _ClassVar[int]
+    seconds_after_wf_termination: int
+    def __init__(self, seconds_after_wf_termination: _Optional[int] = ...) -> None: ...
 
 class ThreadSpec(_message.Message):
-    __slots__ = ["nodes", "variable_defs", "interrupt_defs"]
+    __slots__ = ["nodes", "variable_defs", "interrupt_defs", "retention_policy"]
     class NodesEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -46,10 +52,18 @@ class ThreadSpec(_message.Message):
     NODES_FIELD_NUMBER: _ClassVar[int]
     VARIABLE_DEFS_FIELD_NUMBER: _ClassVar[int]
     INTERRUPT_DEFS_FIELD_NUMBER: _ClassVar[int]
+    RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
     nodes: _containers.MessageMap[str, Node]
     variable_defs: _containers.RepeatedCompositeFieldContainer[_common_wfspec_pb2.VariableDef]
     interrupt_defs: _containers.RepeatedCompositeFieldContainer[InterruptDef]
-    def __init__(self, nodes: _Optional[_Mapping[str, Node]] = ..., variable_defs: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., interrupt_defs: _Optional[_Iterable[_Union[InterruptDef, _Mapping]]] = ...) -> None: ...
+    retention_policy: ThreadRetentionPolicy
+    def __init__(self, nodes: _Optional[_Mapping[str, Node]] = ..., variable_defs: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., interrupt_defs: _Optional[_Iterable[_Union[InterruptDef, _Mapping]]] = ..., retention_policy: _Optional[_Union[ThreadRetentionPolicy, _Mapping]] = ...) -> None: ...
+
+class ThreadRetentionPolicy(_message.Message):
+    __slots__ = ["seconds_after_thread_termination"]
+    SECONDS_AFTER_THREAD_TERMINATION_FIELD_NUMBER: _ClassVar[int]
+    seconds_after_thread_termination: int
+    def __init__(self, seconds_after_thread_termination: _Optional[int] = ...) -> None: ...
 
 class InterruptDef(_message.Message):
     __slots__ = ["external_event_def_name", "handler_spec_name"]
@@ -151,10 +165,11 @@ class FailureDef(_message.Message):
     def __init__(self, failure_name: _Optional[str] = ..., message: _Optional[str] = ..., content: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class Node(_message.Message):
-    __slots__ = ["outgoing_edges", "variable_mutations", "failure_handlers", "entrypoint", "exit", "task", "external_event", "start_thread", "wait_for_threads", "nop", "sleep", "user_task", "start_multiple_threads"]
+    __slots__ = ["outgoing_edges", "variable_mutations", "failure_handlers", "gc_policy", "entrypoint", "exit", "task", "external_event", "start_thread", "wait_for_threads", "nop", "sleep", "user_task", "start_multiple_threads"]
     OUTGOING_EDGES_FIELD_NUMBER: _ClassVar[int]
     VARIABLE_MUTATIONS_FIELD_NUMBER: _ClassVar[int]
     FAILURE_HANDLERS_FIELD_NUMBER: _ClassVar[int]
+    GC_POLICY_FIELD_NUMBER: _ClassVar[int]
     ENTRYPOINT_FIELD_NUMBER: _ClassVar[int]
     EXIT_FIELD_NUMBER: _ClassVar[int]
     TASK_FIELD_NUMBER: _ClassVar[int]
@@ -168,6 +183,7 @@ class Node(_message.Message):
     outgoing_edges: _containers.RepeatedCompositeFieldContainer[Edge]
     variable_mutations: _containers.RepeatedCompositeFieldContainer[_common_wfspec_pb2.VariableMutation]
     failure_handlers: _containers.RepeatedCompositeFieldContainer[FailureHandlerDef]
+    gc_policy: NodeGcPolicy
     entrypoint: EntrypointNode
     exit: ExitNode
     task: _common_wfspec_pb2.TaskNode
@@ -178,7 +194,13 @@ class Node(_message.Message):
     sleep: SleepNode
     user_task: UserTaskNode
     start_multiple_threads: StartMultipleThreadsNode
-    def __init__(self, outgoing_edges: _Optional[_Iterable[_Union[Edge, _Mapping]]] = ..., variable_mutations: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableMutation, _Mapping]]] = ..., failure_handlers: _Optional[_Iterable[_Union[FailureHandlerDef, _Mapping]]] = ..., entrypoint: _Optional[_Union[EntrypointNode, _Mapping]] = ..., exit: _Optional[_Union[ExitNode, _Mapping]] = ..., task: _Optional[_Union[_common_wfspec_pb2.TaskNode, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventNode, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadNode, _Mapping]] = ..., wait_for_threads: _Optional[_Union[WaitForThreadsNode, _Mapping]] = ..., nop: _Optional[_Union[NopNode, _Mapping]] = ..., sleep: _Optional[_Union[SleepNode, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNode, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsNode, _Mapping]] = ...) -> None: ...
+    def __init__(self, outgoing_edges: _Optional[_Iterable[_Union[Edge, _Mapping]]] = ..., variable_mutations: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableMutation, _Mapping]]] = ..., failure_handlers: _Optional[_Iterable[_Union[FailureHandlerDef, _Mapping]]] = ..., gc_policy: _Optional[_Union[NodeGcPolicy, _Mapping]] = ..., entrypoint: _Optional[_Union[EntrypointNode, _Mapping]] = ..., exit: _Optional[_Union[ExitNode, _Mapping]] = ..., task: _Optional[_Union[_common_wfspec_pb2.TaskNode, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventNode, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadNode, _Mapping]] = ..., wait_for_threads: _Optional[_Union[WaitForThreadsNode, _Mapping]] = ..., nop: _Optional[_Union[NopNode, _Mapping]] = ..., sleep: _Optional[_Union[SleepNode, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNode, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsNode, _Mapping]] = ...) -> None: ...
+
+class NodeGcPolicy(_message.Message):
+    __slots__ = ["delay_ms"]
+    DELAY_MS_FIELD_NUMBER: _ClassVar[int]
+    delay_ms: int
+    def __init__(self, delay_ms: _Optional[int] = ...) -> None: ...
 
 class UserTaskNode(_message.Message):
     __slots__ = ["user_task_def_name", "user_group", "user_id", "actions", "user_task_def_version", "notes"]

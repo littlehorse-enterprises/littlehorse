@@ -21,6 +21,7 @@ import io.littlehorse.sdk.common.proto.SleepNode;
 import io.littlehorse.sdk.common.proto.StartMultipleThreadsNode;
 import io.littlehorse.sdk.common.proto.StartThreadNode;
 import io.littlehorse.sdk.common.proto.TaskNode;
+import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
@@ -65,6 +66,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     public String name;
     private EdgeCondition lastNodeCondition;
     private boolean isActive;
+    private ThreadRetentionPolicy retentionPolicy;
 
     public WorkflowThreadImpl(String name, WorkflowImpl parent, ThreadFunc func) {
         this.parent = parent;
@@ -88,6 +90,10 @@ final class WorkflowThreadImpl implements WorkflowThread {
             addNode("exit", NodeCase.EXIT, ExitNode.newBuilder().build());
         }
         isActive = false;
+
+        if (getRetentionPolicy() != null) {
+            spec.setRetentionPolicy(getRetentionPolicy());
+        }
     }
 
     public ThreadSpec.Builder getSpec() {
@@ -96,6 +102,17 @@ final class WorkflowThreadImpl implements WorkflowThread {
             spec.addVariableDefs(wfRunVariable.getSpec());
         }
         return spec;
+    }
+
+    @Override
+    public void withRetentionPolicy(ThreadRetentionPolicy policy) {
+        this.retentionPolicy = policy;
+    }
+
+    private ThreadRetentionPolicy getRetentionPolicy() {
+        if (retentionPolicy != null) return retentionPolicy;
+
+        return getParent().getDefaultThreadRetentionPolicy();
     }
 
     @Override

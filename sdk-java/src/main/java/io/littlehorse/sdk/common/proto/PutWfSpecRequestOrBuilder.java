@@ -66,13 +66,17 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue);
       getEntrypointThreadNameBytes();
 
   /**
-   * <code>optional int32 retention_hours = 7;</code>
-   * @return Whether the retentionHours field is set.
+   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+   * @return Whether the retentionPolicy field is set.
    */
-  boolean hasRetentionHours();
+  boolean hasRetentionPolicy();
   /**
-   * <code>optional int32 retention_hours = 7;</code>
-   * @return The retentionHours.
+   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+   * @return The retentionPolicy.
    */
-  int getRetentionHours();
+  io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy getRetentionPolicy();
+  /**
+   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+   */
+  io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder getRetentionPolicyOrBuilder();
 }

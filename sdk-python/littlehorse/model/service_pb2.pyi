@@ -35,7 +35,7 @@ class GetLatestUserTaskDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ...) -> None: ...
 
 class PutWfSpecRequest(_message.Message):
-    __slots__ = ["name", "thread_specs", "entrypoint_thread_name", "retention_hours"]
+    __slots__ = ["name", "thread_specs", "entrypoint_thread_name", "retention_policy"]
     class ThreadSpecsEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -46,12 +46,12 @@ class PutWfSpecRequest(_message.Message):
     NAME_FIELD_NUMBER: _ClassVar[int]
     THREAD_SPECS_FIELD_NUMBER: _ClassVar[int]
     ENTRYPOINT_THREAD_NAME_FIELD_NUMBER: _ClassVar[int]
-    RETENTION_HOURS_FIELD_NUMBER: _ClassVar[int]
+    RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
     name: str
     thread_specs: _containers.MessageMap[str, _wf_spec_pb2.ThreadSpec]
     entrypoint_thread_name: str
-    retention_hours: int
-    def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_hours: _Optional[int] = ...) -> None: ...
+    retention_policy: _wf_spec_pb2.WorkflowRetentionPolicy
+    def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ...) -> None: ...
 
 class PutTaskDefRequest(_message.Message):
     __slots__ = ["name", "input_vars"]

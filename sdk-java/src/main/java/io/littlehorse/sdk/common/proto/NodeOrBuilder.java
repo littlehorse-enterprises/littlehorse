@@ -80,6 +80,21 @@ public interface NodeOrBuilder extends
       int index);
 
   /**
+   * <code>optional .littlehorse.NodeGcPolicy gc_policy = 16;</code>
+   * @return Whether the gcPolicy field is set.
+   */
+  boolean hasGcPolicy();
+  /**
+   * <code>optional .littlehorse.NodeGcPolicy gc_policy = 16;</code>
+   * @return The gcPolicy.
+   */
+  io.littlehorse.sdk.common.proto.NodeGcPolicy getGcPolicy();
+  /**
+   * <code>optional .littlehorse.NodeGcPolicy gc_policy = 16;</code>
+   */
+  io.littlehorse.sdk.common.proto.NodeGcPolicyOrBuilder getGcPolicyOrBuilder();
+
+  /**
    * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
    * @return Whether the entrypoint field is set.
    */

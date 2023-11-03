@@ -1,7 +1,7 @@
 package io.littlehorse.sdk.wfsdk;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
@@ -9,7 +9,9 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpecId;
+import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +34,8 @@ public abstract class Workflow {
     protected Queue<Pair<String, ThreadFunc>> threadFuncs;
     protected Integer defaultTaskTimeout;
     protected int defaultTaskRetries;
+    protected WorkflowRetentionPolicy wfRetentionPolicy;
+    protected ThreadRetentionPolicy defaultThreadRetentionPolicy;
 
     /**
      * Internal constructor used by WorkflowImpl.
@@ -89,15 +93,26 @@ public abstract class Workflow {
     }
 
     /**
-     * Add the hours of life that the workflow will have in the system
-     *
-     * @param retentionHours are the hours in which the workflow will live in the system
+     * Sets the retention policy for all WfRun's created by this WfSpec.
+     * @param policy is the Workflow Retention Policy.
+     * @return this Workflow.
      */
-    public void withRetentionHours(int retentionHours) {
-        if (retentionHours < 1) {
-            throw new IllegalArgumentException("You must set a value at least 1 or greater");
-        }
-        this.spec.setRetentionHours(retentionHours);
+    public Workflow withRetentionPolicy(WorkflowRetentionPolicy policy) {
+        this.wfRetentionPolicy = policy;
+        return this;
+    }
+
+    /**
+     * Sets the retention policy for all ThreadRun's belong to this WfSpec.
+     *
+     * Note that each Thread can override the configured Retention Policy by
+     * using WorkflowThread#withRetentionPolicy.
+     * @param policy is the Workflow Retention Policy.
+     * @return this Workflow.
+     */
+    public Workflow withDefaultThreadRetentionPolicy(ThreadRetentionPolicy policy) {
+        this.defaultThreadRetentionPolicy = policy;
+        return this;
     }
 
     /**
@@ -213,7 +228,7 @@ public abstract class Workflow {
         saveProtoToFile(directory, wfFileName, wf);
     }
 
-    private static void saveProtoToFile(String directory, String fileName, MessageOrBuilder content) {
+    private static void saveProtoToFile(String directory, String fileName, Message content) {
         Path path = Paths.get(directory, fileName);
         try {
             File file = new File(path.toString());

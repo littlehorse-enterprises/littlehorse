@@ -396,13 +396,14 @@ public final class Service {
       "\032\016node_run.proto\032\016task_run.proto\032\020user_t" +
       "asks.proto\032\rwf_spec.proto\032\016task_def.prot" +
       "o\"+\n\033GetLatestUserTaskDefRequest\022\014\n\004name" +
-      "\030\001 \001(\t\"\227\002\n\020PutWfSpecRequest\022\014\n\004name\030\001 \001(" +
+      "\030\001 \001(\t\"\277\002\n\020PutWfSpecRequest\022\014\n\004name\030\001 \001(" +
       "\t\022D\n\014thread_specs\030\005 \003(\0132..littlehorse.Pu" +
       "tWfSpecRequest.ThreadSpecsEntry\022\036\n\026entry" +
-      "point_thread_name\030\006 \001(\t\022\034\n\017retention_hou" +
-      "rs\030\007 \001(\005H\000\210\001\001\032K\n\020ThreadSpecsEntry\022\013\n\003key" +
-      "\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.littlehorse.Thre" +
-      "adSpec:\0028\001B\022\n\020_retention_hoursJ\004\010\002\020\003J\004\010\003" +
+      "point_thread_name\030\006 \001(\t\022C\n\020retention_pol" +
+      "icy\030\010 \001(\0132$.littlehorse.WorkflowRetentio" +
+      "nPolicyH\000\210\001\001\032K\n\020ThreadSpecsEntry\022\013\n\003key\030" +
+      "\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.littlehorse.Threa" +
+      "dSpec:\0028\001B\023\n\021_retention_policyJ\004\010\002\020\003J\004\010\003" +
       "\020\004J\004\010\004\020\005\"O\n\021PutTaskDefRequest\022\014\n\004name\030\001 " +
       "\001(\t\022,\n\ninput_vars\030\002 \003(\0132\030.littlehorse.Va" +
       "riableDef\"{\n\025PutUserTaskDefRequest\022\014\n\004na" +
@@ -779,7 +780,7 @@ public final class Service {
     internal_static_littlehorse_PutWfSpecRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_PutWfSpecRequest_descriptor,
-        new java.lang.String[] { "Name", "ThreadSpecs", "EntrypointThreadName", "RetentionHours", "RetentionHours", });
+        new java.lang.String[] { "Name", "ThreadSpecs", "EntrypointThreadName", "RetentionPolicy", "RetentionPolicy", });
     internal_static_littlehorse_PutWfSpecRequest_ThreadSpecsEntry_descriptor =
       internal_static_littlehorse_PutWfSpecRequest_descriptor.getNestedTypes().get(0);
     internal_static_littlehorse_PutWfSpecRequest_ThreadSpecsEntry_fieldAccessorTable = new

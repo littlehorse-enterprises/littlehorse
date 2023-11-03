@@ -41,6 +41,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.Node.class, io.littlehorse.sdk.common.proto.Node.Builder.class);
   }
 
+  private int bitField0_;
   private int nodeCase_ = 0;
   @SuppressWarnings("serial")
   private java.lang.Object node_;
@@ -220,6 +221,32 @@ private static final long serialVersionUID = 0L;
   public io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder getFailureHandlersOrBuilder(
       int index) {
     return failureHandlers_.get(index);
+  }
+
+  public static final int GC_POLICY_FIELD_NUMBER = 16;
+  private io.littlehorse.sdk.common.proto.NodeGcPolicy gcPolicy_;
+  /**
+   * <code>optional .littlehorse.NodeGcPolicy gc_policy = 16;</code>
+   * @return Whether the gcPolicy field is set.
+   */
+  @java.lang.Override
+  public boolean hasGcPolicy() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional .littlehorse.NodeGcPolicy gc_policy = 16;</code>
+   * @return The gcPolicy.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.NodeGcPolicy getGcPolicy() {
+    return gcPolicy_ == null ? io.littlehorse.sdk.common.proto.NodeGcPolicy.getDefaultInstance() : gcPolicy_;
+  }
+  /**
+   * <code>optional .littlehorse.NodeGcPolicy gc_policy = 16;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.NodeGcPolicyOrBuilder getGcPolicyOrBuilder() {
+    return gcPolicy_ == null ? io.littlehorse.sdk.common.proto.NodeGcPolicy.getDefaultInstance() : gcPolicy_;
   }
 
   public static final int ENTRYPOINT_FIELD_NUMBER = 5;
@@ -585,6 +612,9 @@ private static final long serialVersionUID = 0L;
     if (nodeCase_ == 15) {
       output.writeMessage(15, (io.littlehorse.sdk.common.proto.StartMultipleThreadsNode) node_);
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(16, getGcPolicy());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -646,6 +676,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(15, (io.littlehorse.sdk.common.proto.StartMultipleThreadsNode) node_);
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(16, getGcPolicy());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -667,6 +701,11 @@ private static final long serialVersionUID = 0L;
         .equals(other.getVariableMutationsList())) return false;
     if (!getFailureHandlersList()
         .equals(other.getFailureHandlersList())) return false;
+    if (hasGcPolicy() != other.hasGcPolicy()) return false;
+    if (hasGcPolicy()) {
+      if (!getGcPolicy()
+          .equals(other.getGcPolicy())) return false;
+    }
     if (!getNodeCase().equals(other.getNodeCase())) return false;
     switch (nodeCase_) {
       case 5:
@@ -734,6 +773,10 @@ private static final long serialVersionUID = 0L;
     if (getFailureHandlersCount() > 0) {
       hash = (37 * hash) + FAILURE_HANDLERS_FIELD_NUMBER;
       hash = (53 * hash) + getFailureHandlersList().hashCode();
+    }
+    if (hasGcPolicy()) {
+      hash = (37 * hash) + GC_POLICY_FIELD_NUMBER;
+      hash = (53 * hash) + getGcPolicy().hashCode();
     }
     switch (nodeCase_) {
       case 5:
@@ -898,13 +941,22 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.Node.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getOutgoingEdgesFieldBuilder();
+        getVariableMutationsFieldBuilder();
+        getFailureHandlersFieldBuilder();
+        getGcPolicyFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -931,6 +983,11 @@ private static final long serialVersionUID = 0L;
         failureHandlersBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000004);
+      gcPolicy_ = null;
+      if (gcPolicyBuilder_ != null) {
+        gcPolicyBuilder_.dispose();
+        gcPolicyBuilder_ = null;
+      }
       if (entrypointBuilder_ != null) {
         entrypointBuilder_.clear();
       }
@@ -1028,6 +1085,14 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.Node result) {
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.gcPolicy_ = gcPolicyBuilder_ == null
+            ? gcPolicy_
+            : gcPolicyBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.Node result) {
@@ -1196,6 +1261,9 @@ private static final long serialVersionUID = 0L;
             failureHandlersBuilder_.addAllMessages(other.failureHandlers_);
           }
         }
+      }
+      if (other.hasGcPolicy()) {
+        mergeGcPolicy(other.getGcPolicy());
       }
       switch (other.getNodeCase()) {
         case ENTRYPOINT: {
@@ -1377,6 +1445,13 @@ private static final long serialVersionUID = 0L;
               nodeCase_ = 15;
               break;
             } // case 122
+            case 130: {
+              input.readMessage(
+                  getGcPolicyFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 130
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2127,6 +2202,125 @@ private static final long serialVersionUID = 0L;
         failureHandlers_ = null;
       }
       return failureHandlersBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.NodeGcPolicy gcPolicy_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.NodeGcPolicy, io.littlehorse.sdk.common.proto.NodeGcPolicy.Builder, io.littlehorse.sdk.common.proto.NodeGcPolicyOrBuilder> gcPolicyBuilder_;
+    /**
+     * <code>optional .littlehorse.NodeGcPolicy gc_policy = 16;</code>
+     * @return Whether the gcPolicy field is set.
+     */
+    public boolean hasGcPolicy() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional .littlehorse.NodeGcPolicy gc_policy = 16;</code>
+     * @return The gcPolicy.
+     */
+    public io.littlehorse.sdk.common.proto.NodeGcPolicy getGcPolicy() {
+      if (gcPolicyBuilder_ == null) {
+        return gcPolicy_ == null ? io.littlehorse.sdk.common.proto.NodeGcPolicy.getDefaultInstance() : gcPolicy_;
+      } else {
+        return gcPolicyBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .littlehorse.NodeGcPolicy gc_policy = 16;</code>
+     */
+    public Builder setGcPolicy(io.littlehorse.sdk.common.proto.NodeGcPolicy value) {
+      if (gcPolicyBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        gcPolicy_ = value;
+      } else {
+        gcPolicyBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.NodeGcPolicy gc_policy = 16;</code>
+     */
+    public Builder setGcPolicy(
+        io.littlehorse.sdk.common.proto.NodeGcPolicy.Builder builderForValue) {
+      if (gcPolicyBuilder_ == null) {
+        gcPolicy_ = builderForValue.build();
+      } else {
+        gcPolicyBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.NodeGcPolicy gc_policy = 16;</code>
+     */
+    public Builder mergeGcPolicy(io.littlehorse.sdk.common.proto.NodeGcPolicy value) {
+      if (gcPolicyBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0) &&
+          gcPolicy_ != null &&
+          gcPolicy_ != io.littlehorse.sdk.common.proto.NodeGcPolicy.getDefaultInstance()) {
+          getGcPolicyBuilder().mergeFrom(value);
+        } else {
+          gcPolicy_ = value;
+        }
+      } else {
+        gcPolicyBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.NodeGcPolicy gc_policy = 16;</code>
+     */
+    public Builder clearGcPolicy() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      gcPolicy_ = null;
+      if (gcPolicyBuilder_ != null) {
+        gcPolicyBuilder_.dispose();
+        gcPolicyBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.NodeGcPolicy gc_policy = 16;</code>
+     */
+    public io.littlehorse.sdk.common.proto.NodeGcPolicy.Builder getGcPolicyBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return getGcPolicyFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .littlehorse.NodeGcPolicy gc_policy = 16;</code>
+     */
+    public io.littlehorse.sdk.common.proto.NodeGcPolicyOrBuilder getGcPolicyOrBuilder() {
+      if (gcPolicyBuilder_ != null) {
+        return gcPolicyBuilder_.getMessageOrBuilder();
+      } else {
+        return gcPolicy_ == null ?
+            io.littlehorse.sdk.common.proto.NodeGcPolicy.getDefaultInstance() : gcPolicy_;
+      }
+    }
+    /**
+     * <code>optional .littlehorse.NodeGcPolicy gc_policy = 16;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.NodeGcPolicy, io.littlehorse.sdk.common.proto.NodeGcPolicy.Builder, io.littlehorse.sdk.common.proto.NodeGcPolicyOrBuilder> 
+        getGcPolicyFieldBuilder() {
+      if (gcPolicyBuilder_ == null) {
+        gcPolicyBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.NodeGcPolicy, io.littlehorse.sdk.common.proto.NodeGcPolicy.Builder, io.littlehorse.sdk.common.proto.NodeGcPolicyOrBuilder>(
+                getGcPolicy(),
+                getParentForChildren(),
+                isClean());
+        gcPolicy_ = null;
+      }
+      return gcPolicyBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
