@@ -327,6 +327,22 @@ private static final long serialVersionUID = 0L;
     return pendingFailures_.get(index);
   }
 
+  public static final int GREATEST_THREADRUN_NUMBER_FIELD_NUMBER = 11;
+  private int greatestThreadrunNumber_ = 0;
+  /**
+   * <pre>
+   * Introduced now since with ThreadRun-level retention, we can't rely upon
+   * thread_runs.size() to determine the number of ThreadRuns.
+   * </pre>
+   *
+   * <code>int32 greatest_threadrun_number = 11;</code>
+   * @return The greatestThreadrunNumber.
+   */
+  @java.lang.Override
+  public int getGreatestThreadrunNumber() {
+    return greatestThreadrunNumber_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -367,6 +383,9 @@ private static final long serialVersionUID = 0L;
     }
     for (int i = 0; i < pendingFailures_.size(); i++) {
       output.writeMessage(10, pendingFailures_.get(i));
+    }
+    if (greatestThreadrunNumber_ != 0) {
+      output.writeInt32(11, greatestThreadrunNumber_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -411,6 +430,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, pendingFailures_.get(i));
     }
+    if (greatestThreadrunNumber_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(11, greatestThreadrunNumber_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -449,6 +472,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getPendingInterruptsList())) return false;
     if (!getPendingFailuresList()
         .equals(other.getPendingFailuresList())) return false;
+    if (getGreatestThreadrunNumber()
+        != other.getGreatestThreadrunNumber()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -488,6 +513,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + PENDING_FAILURES_FIELD_NUMBER;
       hash = (53 * hash) + getPendingFailuresList().hashCode();
     }
+    hash = (37 * hash) + GREATEST_THREADRUN_NUMBER_FIELD_NUMBER;
+    hash = (53 * hash) + getGreatestThreadrunNumber();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -664,6 +691,7 @@ private static final long serialVersionUID = 0L;
         pendingFailuresBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000100);
+      greatestThreadrunNumber_ = 0;
       return this;
     }
 
@@ -751,6 +779,9 @@ private static final long serialVersionUID = 0L;
             ? endTime_
             : endTimeBuilder_.build();
         to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000200) != 0)) {
+        result.greatestThreadrunNumber_ = greatestThreadrunNumber_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -899,6 +930,9 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
+      if (other.getGreatestThreadrunNumber() != 0) {
+        setGreatestThreadrunNumber(other.getGreatestThreadrunNumber());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -998,6 +1032,11 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 82
+            case 88: {
+              greatestThreadrunNumber_ = input.readInt32();
+              bitField0_ |= 0x00000200;
+              break;
+            } // case 88
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2200,6 +2239,53 @@ private static final long serialVersionUID = 0L;
         pendingFailures_ = null;
       }
       return pendingFailuresBuilder_;
+    }
+
+    private int greatestThreadrunNumber_ ;
+    /**
+     * <pre>
+     * Introduced now since with ThreadRun-level retention, we can't rely upon
+     * thread_runs.size() to determine the number of ThreadRuns.
+     * </pre>
+     *
+     * <code>int32 greatest_threadrun_number = 11;</code>
+     * @return The greatestThreadrunNumber.
+     */
+    @java.lang.Override
+    public int getGreatestThreadrunNumber() {
+      return greatestThreadrunNumber_;
+    }
+    /**
+     * <pre>
+     * Introduced now since with ThreadRun-level retention, we can't rely upon
+     * thread_runs.size() to determine the number of ThreadRuns.
+     * </pre>
+     *
+     * <code>int32 greatest_threadrun_number = 11;</code>
+     * @param value The greatestThreadrunNumber to set.
+     * @return This builder for chaining.
+     */
+    public Builder setGreatestThreadrunNumber(int value) {
+
+      greatestThreadrunNumber_ = value;
+      bitField0_ |= 0x00000200;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Introduced now since with ThreadRun-level retention, we can't rely upon
+     * thread_runs.size() to determine the number of ThreadRuns.
+     * </pre>
+     *
+     * <code>int32 greatest_threadrun_number = 11;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearGreatestThreadrunNumber() {
+      bitField0_ = (bitField0_ & ~0x00000200);
+      greatestThreadrunNumber_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

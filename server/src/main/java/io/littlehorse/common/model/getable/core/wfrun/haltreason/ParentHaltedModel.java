@@ -16,7 +16,7 @@ public class ParentHaltedModel extends LHSerializable<ParentHalted> implements S
     public int parentThreadId;
 
     public boolean isResolved(WfRunModel wfRunModel) {
-        ThreadRunModel parent = wfRunModel.threadRunModels.get(parentThreadId);
+        ThreadRunModel parent = wfRunModel.getThreadRun(parentThreadId);
         if (parent.status == LHStatus.COMPLETED) {
             throw new RuntimeException("Not possible.");
         }

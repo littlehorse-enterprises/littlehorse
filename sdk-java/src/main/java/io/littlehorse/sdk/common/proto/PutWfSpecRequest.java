@@ -210,23 +210,30 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
   }
 
-  public static final int RETENTION_HOURS_FIELD_NUMBER = 7;
-  private int retentionHours_ = 0;
+  public static final int RETENTION_POLICY_FIELD_NUMBER = 8;
+  private io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy retentionPolicy_;
   /**
-   * <code>optional int32 retention_hours = 7;</code>
-   * @return Whether the retentionHours field is set.
+   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+   * @return Whether the retentionPolicy field is set.
    */
   @java.lang.Override
-  public boolean hasRetentionHours() {
+  public boolean hasRetentionPolicy() {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>optional int32 retention_hours = 7;</code>
-   * @return The retentionHours.
+   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+   * @return The retentionPolicy.
    */
   @java.lang.Override
-  public int getRetentionHours() {
-    return retentionHours_;
+  public io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy getRetentionPolicy() {
+    return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.getDefaultInstance() : retentionPolicy_;
+  }
+  /**
+   * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder getRetentionPolicyOrBuilder() {
+    return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.getDefaultInstance() : retentionPolicy_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -256,7 +263,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 6, entrypointThreadName_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeInt32(7, retentionHours_);
+      output.writeMessage(8, getRetentionPolicy());
     }
     getUnknownFields().writeTo(output);
   }
@@ -285,7 +292,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(7, retentionHours_);
+        .computeMessageSize(8, getRetentionPolicy());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -308,10 +315,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         other.internalGetThreadSpecs())) return false;
     if (!getEntrypointThreadName()
         .equals(other.getEntrypointThreadName())) return false;
-    if (hasRetentionHours() != other.hasRetentionHours()) return false;
-    if (hasRetentionHours()) {
-      if (getRetentionHours()
-          != other.getRetentionHours()) return false;
+    if (hasRetentionPolicy() != other.hasRetentionPolicy()) return false;
+    if (hasRetentionPolicy()) {
+      if (!getRetentionPolicy()
+          .equals(other.getRetentionPolicy())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -332,9 +339,9 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
     hash = (37 * hash) + ENTRYPOINT_THREAD_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getEntrypointThreadName().hashCode();
-    if (hasRetentionHours()) {
-      hash = (37 * hash) + RETENTION_HOURS_FIELD_NUMBER;
-      hash = (53 * hash) + getRetentionHours();
+    if (hasRetentionPolicy()) {
+      hash = (37 * hash) + RETENTION_POLICY_FIELD_NUMBER;
+      hash = (53 * hash) + getRetentionPolicy().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -477,13 +484,19 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
 
     // Construct using io.littlehorse.sdk.common.proto.PutWfSpecRequest.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getRetentionPolicyFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -492,7 +505,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       name_ = "";
       internalGetMutableThreadSpecs().clear();
       entrypointThreadName_ = "";
-      retentionHours_ = 0;
+      retentionPolicy_ = null;
+      if (retentionPolicyBuilder_ != null) {
+        retentionPolicyBuilder_.dispose();
+        retentionPolicyBuilder_ = null;
+      }
       return this;
     }
 
@@ -538,7 +555,9 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.retentionHours_ = retentionHours_;
+        result.retentionPolicy_ = retentionPolicyBuilder_ == null
+            ? retentionPolicy_
+            : retentionPolicyBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
       result.bitField0_ |= to_bitField0_;
@@ -601,8 +620,8 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         bitField0_ |= 0x00000004;
         onChanged();
       }
-      if (other.hasRetentionHours()) {
-        setRetentionHours(other.getRetentionHours());
+      if (other.hasRetentionPolicy()) {
+        mergeRetentionPolicy(other.getRetentionPolicy());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -649,11 +668,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
               bitField0_ |= 0x00000004;
               break;
             } // case 50
-            case 56: {
-              retentionHours_ = input.readInt32();
+            case 66: {
+              input.readMessage(
+                  getRetentionPolicyFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000008;
               break;
-            } // case 56
+            } // case 66
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -942,44 +963,123 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
 
-    private int retentionHours_ ;
+    private io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy retentionPolicy_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy, io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.Builder, io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder> retentionPolicyBuilder_;
     /**
-     * <code>optional int32 retention_hours = 7;</code>
-     * @return Whether the retentionHours field is set.
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     * @return Whether the retentionPolicy field is set.
      */
-    @java.lang.Override
-    public boolean hasRetentionHours() {
+    public boolean hasRetentionPolicy() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>optional int32 retention_hours = 7;</code>
-     * @return The retentionHours.
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     * @return The retentionPolicy.
      */
-    @java.lang.Override
-    public int getRetentionHours() {
-      return retentionHours_;
+    public io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy getRetentionPolicy() {
+      if (retentionPolicyBuilder_ == null) {
+        return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.getDefaultInstance() : retentionPolicy_;
+      } else {
+        return retentionPolicyBuilder_.getMessage();
+      }
     }
     /**
-     * <code>optional int32 retention_hours = 7;</code>
-     * @param value The retentionHours to set.
-     * @return This builder for chaining.
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
      */
-    public Builder setRetentionHours(int value) {
-
-      retentionHours_ = value;
+    public Builder setRetentionPolicy(io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy value) {
+      if (retentionPolicyBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        retentionPolicy_ = value;
+      } else {
+        retentionPolicyBuilder_.setMessage(value);
+      }
       bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>optional int32 retention_hours = 7;</code>
-     * @return This builder for chaining.
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
      */
-    public Builder clearRetentionHours() {
-      bitField0_ = (bitField0_ & ~0x00000008);
-      retentionHours_ = 0;
+    public Builder setRetentionPolicy(
+        io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.Builder builderForValue) {
+      if (retentionPolicyBuilder_ == null) {
+        retentionPolicy_ = builderForValue.build();
+      } else {
+        retentionPolicyBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
+    }
+    /**
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     */
+    public Builder mergeRetentionPolicy(io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy value) {
+      if (retentionPolicyBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0) &&
+          retentionPolicy_ != null &&
+          retentionPolicy_ != io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.getDefaultInstance()) {
+          getRetentionPolicyBuilder().mergeFrom(value);
+        } else {
+          retentionPolicy_ = value;
+        }
+      } else {
+        retentionPolicyBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     */
+    public Builder clearRetentionPolicy() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      retentionPolicy_ = null;
+      if (retentionPolicyBuilder_ != null) {
+        retentionPolicyBuilder_.dispose();
+        retentionPolicyBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.Builder getRetentionPolicyBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return getRetentionPolicyFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder getRetentionPolicyOrBuilder() {
+      if (retentionPolicyBuilder_ != null) {
+        return retentionPolicyBuilder_.getMessageOrBuilder();
+      } else {
+        return retentionPolicy_ == null ?
+            io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.getDefaultInstance() : retentionPolicy_;
+      }
+    }
+    /**
+     * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 8;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy, io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.Builder, io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder> 
+        getRetentionPolicyFieldBuilder() {
+      if (retentionPolicyBuilder_ == null) {
+        retentionPolicyBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy, io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.Builder, io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder>(
+                getRetentionPolicy(),
+                getParentForChildren(),
+                isClean());
+        retentionPolicy_ = null;
+      }
+      return retentionPolicyBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

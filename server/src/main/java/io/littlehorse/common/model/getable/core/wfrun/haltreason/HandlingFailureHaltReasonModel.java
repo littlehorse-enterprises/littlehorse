@@ -18,14 +18,14 @@ public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailu
     public int handlerThreadId;
 
     public boolean isResolved(WfRunModel wfRunModel) {
-        ThreadRunModel handlerThread = wfRunModel.threadRunModels.get(handlerThreadId);
+        ThreadRunModel handlerThread = wfRunModel.getThreadRun(handlerThreadId);
         log.debug(
                 "HandlingFailureHaltReason for failed thread {}: handler thread " + "status is {}",
                 handlerThread.getFailureBeingHandled().getThreadRunNumber(),
                 handlerThread.getStatus());
 
         ThreadRunModel originalThatFailed =
-                wfRunModel.threadRunModels.get(handlerThread.failureBeingHandled.getThreadRunNumber());
+                wfRunModel.getThreadRun(handlerThread.failureBeingHandled.getThreadRunNumber());
         NodeRunModel handledNode =
                 originalThatFailed.getNodeRun(handlerThread.failureBeingHandled.getNodeRunPosition());
 

@@ -41,6 +41,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     public List<VariableDefModel> variableDefs;
     public List<InterruptDefModel> interruptDefs;
 
+    private ThreadRetentionPolicyModel retentionPolicy;
+
     public ThreadSpecModel() {
         nodes = new HashMap<>();
         variableDefs = new ArrayList<>();
@@ -64,6 +66,10 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         }
         for (InterruptDefModel idef : interruptDefs) {
             out.addInterruptDefs(idef.toProto());
+        }
+
+        if (retentionPolicy != null) {
+            out.setRetentionPolicy(retentionPolicy.toProto());
         }
         return out;
     }
@@ -92,6 +98,10 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             InterruptDefModel idef = InterruptDefModel.fromProto(idefpb);
             idef.ownerThreadSpecModel = this;
             interruptDefs.add(idef);
+        }
+
+        if (proto.hasRetentionPolicy()) {
+            retentionPolicy = LHSerializable.fromProto(proto.getRetentionPolicy(), ThreadRetentionPolicyModel.class);
         }
     }
 

@@ -96,7 +96,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public ThreadRunModel getThreadRun() {
         if (threadRunModelDoNotUseMe == null) {
             WfRunModel wfRunModel = getDao().getWfRun(wfRunId);
-            threadRunModelDoNotUseMe = wfRunModel.getThreadRunModels().get(threadRunNumber);
+            threadRunModelDoNotUseMe = wfRunModel.getThreadRuns().get(threadRunNumber);
         }
         return threadRunModelDoNotUseMe;
     }
@@ -339,8 +339,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                     return false;
                 }
                 for (int handlerId : failureHandlerIds) {
-                    ThreadRunModel handler =
-                            getThreadRun().wfRun.threadRunModels.get(handlerId);
+                    ThreadRunModel handler = getThreadRun().wfRun.getThreadRun(handlerId);
                     if (handler.status != LHStatus.COMPLETED) {
                         return false;
                     }

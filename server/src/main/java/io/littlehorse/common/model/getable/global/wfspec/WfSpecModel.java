@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.global.wfspec;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.ReadOnlyMetadataStore;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -44,13 +45,14 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
     public int version;
     public Date createdAt;
     public long lastOffset;
-    public int retentionHours;
+    private WorkflowRetentionPolicyModel retentionPolicy;
 
     public Map<String, ThreadSpecModel> threadSpecs;
 
     public String entrypointThreadName;
     public LHStatus status;
 
+    // Internal, not related to Proto.
     private Map<String, String> varToThreadSpec;
 
     private boolean initializedVarToThreadSpec;
@@ -111,13 +113,16 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
                 .setCreatedAt(LHUtil.fromDate(createdAt))
                 .setEntrypointThreadName(entrypointThreadName)
                 .setStatus(status)
-                .setRetentionHours(retentionHours)
                 .setName(name);
 
         if (threadSpecs != null) {
             for (Map.Entry<String, ThreadSpecModel> p : threadSpecs.entrySet()) {
                 out.putThreadSpecs(p.getKey(), p.getValue().toProto().build());
             }
+        }
+
+        if (retentionPolicy != null) {
+            out.setRetentionPolicy(retentionPolicy.toProto());
         }
 
         return out;
@@ -129,7 +134,6 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
         version = proto.getVersion();
         entrypointThreadName = proto.getEntrypointThreadName();
         status = proto.getStatus();
-        retentionHours = proto.getRetentionHours();
         name = proto.getName();
 
         for (Map.Entry<String, ThreadSpec> e : proto.getThreadSpecsMap().entrySet()) {
@@ -138,6 +142,10 @@ public class WfSpecModel extends GlobalGetable<WfSpec> {
             ts.name = e.getKey();
             ts.initFrom(e.getValue());
             threadSpecs.put(e.getKey(), ts);
+        }
+
+        if (proto.hasRetentionPolicy()) {
+            retentionPolicy = LHSerializable.fromProto(proto.getRetentionPolicy(), WorkflowRetentionPolicyModel.class);
         }
     }
 

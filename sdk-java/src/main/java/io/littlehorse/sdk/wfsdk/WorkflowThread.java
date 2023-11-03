@@ -2,6 +2,7 @@ package io.littlehorse.sdk.wfsdk;
 
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHErrorType;
+import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import java.util.Map;
 
@@ -12,6 +13,15 @@ public interface WorkflowThread {
      * Handler or Exception Handler thread.
      */
     public static final String HANDLER_INPUT_VAR = "INPUT";
+
+    /**
+     * Overrides the retention policy for all ThreadRun's of this ThreadSpec in the
+     * WfRun.
+     *
+     *
+     * @param policy is the Thread Retention Policy.
+     */
+    public void withRetentionPolicy(ThreadRetentionPolicy policy);
 
     /**
      * Adds a TASK node to the ThreadSpec.
