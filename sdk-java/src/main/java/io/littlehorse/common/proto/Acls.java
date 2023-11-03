@@ -93,8 +93,9 @@ public final class Acls {
       "USER_TASK\020\003\022\021\n\rACL_PRINCIPAL\020\004\022\016\n\nACL_TE" +
       "NANT\020\005\022\007\n\003ALL\020\006*C\n\tACLAction\022\010\n\004READ\020\000\022\007" +
       "\n\003RUN\020\001\022\022\n\016WRITE_METADATA\020\002\022\017\n\013ALL_ACTIO" +
-      "NS\020\003B(\n\033io.littlehorse.common.protoP\001Z\007." +
-      ";modelb\006proto3"
+      "NS\020\003BC\n\033io.littlehorse.common.protoP\001Z\007." +
+      ";model\252\002\030LittleHorse.Common.Protob\006proto" +
+      "3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
