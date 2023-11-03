@@ -32,62 +32,77 @@ public interface PrincipalOrBuilder extends
       getIdBytes();
 
   /**
-   * <pre>
-   * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-   * execute *within that Tenant*
-   * </pre>
-   *
-   * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * @return Whether the createdAt field is set.
    */
-  int getTenantAclMapCount();
+  boolean hasCreatedAt();
+  /**
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * @return The createdAt.
+   */
+  com.google.protobuf.Timestamp getCreatedAt();
+  /**
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
+
   /**
    * <pre>
    * Maps a Tenant ID to a list of ACL's that the Principal has permission to
    * execute *within that Tenant*
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
    */
-  boolean containsTenantAclMap(
+  int getPerTenantAclsCount();
+  /**
+   * <pre>
+   * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+   * execute *within that Tenant*
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
+   */
+  boolean containsPerTenantAcls(
       java.lang.String key);
   /**
-   * Use {@link #getTenantAclMapMap()} instead.
+   * Use {@link #getPerTenantAclsMap()} instead.
    */
   @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL>
-  getTenantAclMap();
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs>
+  getPerTenantAcls();
   /**
    * <pre>
    * Maps a Tenant ID to a list of ACL's that the Principal has permission to
    * execute *within that Tenant*
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
    */
-  java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL>
-  getTenantAclMapMap();
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs>
+  getPerTenantAclsMap();
   /**
    * <pre>
    * Maps a Tenant ID to a list of ACL's that the Principal has permission to
    * execute *within that Tenant*
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
    */
   /* nullable */
-io.littlehorse.common.proto.ServerACL getTenantAclMapOrDefault(
+io.littlehorse.common.proto.ServerACLs getPerTenantAclsOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.common.proto.ServerACL defaultValue);
+io.littlehorse.common.proto.ServerACLs defaultValue);
   /**
    * <pre>
    * Maps a Tenant ID to a list of ACL's that the Principal has permission to
    * execute *within that Tenant*
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
    */
-  io.littlehorse.common.proto.ServerACL getTenantAclMapOrThrow(
+  io.littlehorse.common.proto.ServerACLs getPerTenantAclsOrThrow(
       java.lang.String key);
 
   /**
@@ -95,7 +110,7 @@ io.littlehorse.common.proto.ServerACL defaultValue);
    * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
    * </pre>
    *
-   * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+   * <code>.littlehorse.ServerACLs global_acls = 4;</code>
    * @return Whether the globalAcls field is set.
    */
   boolean hasGlobalAcls();
@@ -104,7 +119,7 @@ io.littlehorse.common.proto.ServerACL defaultValue);
    * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
    * </pre>
    *
-   * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+   * <code>.littlehorse.ServerACLs global_acls = 4;</code>
    * @return The globalAcls.
    */
   io.littlehorse.common.proto.ServerACLs getGlobalAcls();
@@ -113,7 +128,7 @@ io.littlehorse.common.proto.ServerACL defaultValue);
    * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
    * </pre>
    *
-   * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+   * <code>.littlehorse.ServerACLs global_acls = 4;</code>
    */
   io.littlehorse.common.proto.ServerACLsOrBuilder getGlobalAclsOrBuilder();
 }

@@ -109,8 +109,8 @@ public class ReadOnlyMetadataProcessorDAOImpl implements ReadOnlyMetadataProcess
 
     @Override
     public List<String> adminPrincipalIds() {
-        String startKey = "%s/%s/__isAdmin_true"
-                .formatted(StoreableType.TAG.getNumber(), GetableClassEnum.PRINCIPAL.getNumber());
+        String startKey =
+                "%s/%s/__isAdmin_true".formatted(StoreableType.TAG.getNumber(), GetableClassEnum.PRINCIPAL.getNumber());
         String endKey = startKey + "~";
         LHKeyValueIterator<Tag> result = lhStore.range(startKey, endKey, Tag.class);
         List<String> adminPrincipalIds = new ArrayList<>();

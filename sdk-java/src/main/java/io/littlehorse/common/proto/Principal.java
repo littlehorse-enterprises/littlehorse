@@ -40,8 +40,8 @@ private static final long serialVersionUID = 0L;
   protected com.google.protobuf.MapField internalGetMapField(
       int number) {
     switch (number) {
-      case 2:
-        return internalGetTenantAclMap();
+      case 3:
+        return internalGetPerTenantAcls();
       default:
         throw new RuntimeException(
             "Invalid map field number: " + number);
@@ -106,31 +106,57 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int TENANT_ACL_MAP_FIELD_NUMBER = 2;
-  private static final class TenantAclMapDefaultEntryHolder {
+  public static final int CREATED_AT_FIELD_NUMBER = 2;
+  private com.google.protobuf.Timestamp createdAt_;
+  /**
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * @return Whether the createdAt field is set.
+   */
+  @java.lang.Override
+  public boolean hasCreatedAt() {
+    return createdAt_ != null;
+  }
+  /**
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * @return The createdAt.
+   */
+  @java.lang.Override
+  public com.google.protobuf.Timestamp getCreatedAt() {
+    return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+  }
+  /**
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
+    return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+  }
+
+  public static final int PER_TENANT_ACLS_FIELD_NUMBER = 3;
+  private static final class PerTenantAclsDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
-        java.lang.String, io.littlehorse.common.proto.ServerACL> defaultEntry =
+        java.lang.String, io.littlehorse.common.proto.ServerACLs> defaultEntry =
             com.google.protobuf.MapEntry
-            .<java.lang.String, io.littlehorse.common.proto.ServerACL>newDefaultInstance(
-                io.littlehorse.common.proto.Acls.internal_static_littlehorse_Principal_TenantAclMapEntry_descriptor, 
+            .<java.lang.String, io.littlehorse.common.proto.ServerACLs>newDefaultInstance(
+                io.littlehorse.common.proto.Acls.internal_static_littlehorse_Principal_PerTenantAclsEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                io.littlehorse.common.proto.ServerACL.getDefaultInstance());
+                io.littlehorse.common.proto.ServerACLs.getDefaultInstance());
   }
   @SuppressWarnings("serial")
   private com.google.protobuf.MapField<
-      java.lang.String, io.littlehorse.common.proto.ServerACL> tenantAclMap_;
-  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.ServerACL>
-  internalGetTenantAclMap() {
-    if (tenantAclMap_ == null) {
+      java.lang.String, io.littlehorse.common.proto.ServerACLs> perTenantAcls_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.ServerACLs>
+  internalGetPerTenantAcls() {
+    if (perTenantAcls_ == null) {
       return com.google.protobuf.MapField.emptyMapField(
-          TenantAclMapDefaultEntryHolder.defaultEntry);
+          PerTenantAclsDefaultEntryHolder.defaultEntry);
     }
-    return tenantAclMap_;
+    return perTenantAcls_;
   }
-  public int getTenantAclMapCount() {
-    return internalGetTenantAclMap().getMap().size();
+  public int getPerTenantAclsCount() {
+    return internalGetPerTenantAcls().getMap().size();
   }
   /**
    * <pre>
@@ -138,21 +164,21 @@ private static final long serialVersionUID = 0L;
    * execute *within that Tenant*
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
    */
   @java.lang.Override
-  public boolean containsTenantAclMap(
+  public boolean containsPerTenantAcls(
       java.lang.String key) {
     if (key == null) { throw new NullPointerException("map key"); }
-    return internalGetTenantAclMap().getMap().containsKey(key);
+    return internalGetPerTenantAcls().getMap().containsKey(key);
   }
   /**
-   * Use {@link #getTenantAclMapMap()} instead.
+   * Use {@link #getPerTenantAclsMap()} instead.
    */
   @java.lang.Override
   @java.lang.Deprecated
-  public java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> getTenantAclMap() {
-    return getTenantAclMapMap();
+  public java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs> getPerTenantAcls() {
+    return getPerTenantAclsMap();
   }
   /**
    * <pre>
@@ -160,11 +186,11 @@ private static final long serialVersionUID = 0L;
    * execute *within that Tenant*
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
    */
   @java.lang.Override
-  public java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> getTenantAclMapMap() {
-    return internalGetTenantAclMap().getMap();
+  public java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs> getPerTenantAclsMap() {
+    return internalGetPerTenantAcls().getMap();
   }
   /**
    * <pre>
@@ -172,17 +198,17 @@ private static final long serialVersionUID = 0L;
    * execute *within that Tenant*
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
    */
   @java.lang.Override
   public /* nullable */
-io.littlehorse.common.proto.ServerACL getTenantAclMapOrDefault(
+io.littlehorse.common.proto.ServerACLs getPerTenantAclsOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.common.proto.ServerACL defaultValue) {
+io.littlehorse.common.proto.ServerACLs defaultValue) {
     if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> map =
-        internalGetTenantAclMap().getMap();
+    java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs> map =
+        internalGetPerTenantAcls().getMap();
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
@@ -191,28 +217,28 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
    * execute *within that Tenant*
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.ServerACL getTenantAclMapOrThrow(
+  public io.littlehorse.common.proto.ServerACLs getPerTenantAclsOrThrow(
       java.lang.String key) {
     if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> map =
-        internalGetTenantAclMap().getMap();
+    java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs> map =
+        internalGetPerTenantAcls().getMap();
     if (!map.containsKey(key)) {
       throw new java.lang.IllegalArgumentException();
     }
     return map.get(key);
   }
 
-  public static final int GLOBAL_ACLS_FIELD_NUMBER = 3;
+  public static final int GLOBAL_ACLS_FIELD_NUMBER = 4;
   private io.littlehorse.common.proto.ServerACLs globalAcls_;
   /**
    * <pre>
    * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
    * </pre>
    *
-   * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+   * <code>.littlehorse.ServerACLs global_acls = 4;</code>
    * @return Whether the globalAcls field is set.
    */
   @java.lang.Override
@@ -224,7 +250,7 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
    * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
    * </pre>
    *
-   * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+   * <code>.littlehorse.ServerACLs global_acls = 4;</code>
    * @return The globalAcls.
    */
   @java.lang.Override
@@ -236,7 +262,7 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
    * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
    * </pre>
    *
-   * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+   * <code>.littlehorse.ServerACLs global_acls = 4;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.ServerACLsOrBuilder getGlobalAclsOrBuilder() {
@@ -260,14 +286,17 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
     }
+    if (createdAt_ != null) {
+      output.writeMessage(2, getCreatedAt());
+    }
     com.google.protobuf.GeneratedMessageV3
       .serializeStringMapTo(
         output,
-        internalGetTenantAclMap(),
-        TenantAclMapDefaultEntryHolder.defaultEntry,
-        2);
+        internalGetPerTenantAcls(),
+        PerTenantAclsDefaultEntryHolder.defaultEntry,
+        3);
     if (globalAcls_ != null) {
-      output.writeMessage(3, getGlobalAcls());
+      output.writeMessage(4, getGlobalAcls());
     }
     getUnknownFields().writeTo(output);
   }
@@ -281,19 +310,23 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
     }
-    for (java.util.Map.Entry<java.lang.String, io.littlehorse.common.proto.ServerACL> entry
-         : internalGetTenantAclMap().getMap().entrySet()) {
-      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.ServerACL>
-      tenantAclMap__ = TenantAclMapDefaultEntryHolder.defaultEntry.newBuilderForType()
+    if (createdAt_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, getCreatedAt());
+    }
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.common.proto.ServerACLs> entry
+         : internalGetPerTenantAcls().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.ServerACLs>
+      perTenantAcls__ = PerTenantAclsDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
       size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, tenantAclMap__);
+          .computeMessageSize(3, perTenantAcls__);
     }
     if (globalAcls_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getGlobalAcls());
+        .computeMessageSize(4, getGlobalAcls());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -312,8 +345,13 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
 
     if (!getId()
         .equals(other.getId())) return false;
-    if (!internalGetTenantAclMap().equals(
-        other.internalGetTenantAclMap())) return false;
+    if (hasCreatedAt() != other.hasCreatedAt()) return false;
+    if (hasCreatedAt()) {
+      if (!getCreatedAt()
+          .equals(other.getCreatedAt())) return false;
+    }
+    if (!internalGetPerTenantAcls().equals(
+        other.internalGetPerTenantAcls())) return false;
     if (hasGlobalAcls() != other.hasGlobalAcls()) return false;
     if (hasGlobalAcls()) {
       if (!getGlobalAcls()
@@ -332,9 +370,13 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + ID_FIELD_NUMBER;
     hash = (53 * hash) + getId().hashCode();
-    if (!internalGetTenantAclMap().getMap().isEmpty()) {
-      hash = (37 * hash) + TENANT_ACL_MAP_FIELD_NUMBER;
-      hash = (53 * hash) + internalGetTenantAclMap().hashCode();
+    if (hasCreatedAt()) {
+      hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
+      hash = (53 * hash) + getCreatedAt().hashCode();
+    }
+    if (!internalGetPerTenantAcls().getMap().isEmpty()) {
+      hash = (37 * hash) + PER_TENANT_ACLS_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetPerTenantAcls().hashCode();
     }
     if (hasGlobalAcls()) {
       hash = (37 * hash) + GLOBAL_ACLS_FIELD_NUMBER;
@@ -457,8 +499,8 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
     protected com.google.protobuf.MapField internalGetMapField(
         int number) {
       switch (number) {
-        case 2:
-          return internalGetTenantAclMap();
+        case 3:
+          return internalGetPerTenantAcls();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -468,8 +510,8 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
     protected com.google.protobuf.MapField internalGetMutableMapField(
         int number) {
       switch (number) {
-        case 2:
-          return internalGetMutableTenantAclMap();
+        case 3:
+          return internalGetMutablePerTenantAcls();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -498,7 +540,12 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
       super.clear();
       bitField0_ = 0;
       id_ = "";
-      internalGetMutableTenantAclMap().clear();
+      createdAt_ = null;
+      if (createdAtBuilder_ != null) {
+        createdAtBuilder_.dispose();
+        createdAtBuilder_ = null;
+      }
+      internalGetMutablePerTenantAcls().clear();
       globalAcls_ = null;
       if (globalAclsBuilder_ != null) {
         globalAclsBuilder_.dispose();
@@ -541,10 +588,15 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
         result.id_ = id_;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.tenantAclMap_ = internalGetTenantAclMap();
-        result.tenantAclMap_.makeImmutable();
+        result.createdAt_ = createdAtBuilder_ == null
+            ? createdAt_
+            : createdAtBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.perTenantAcls_ = internalGetPerTenantAcls();
+        result.perTenantAcls_.makeImmutable();
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.globalAcls_ = globalAclsBuilder_ == null
             ? globalAcls_
             : globalAclsBuilder_.build();
@@ -600,9 +652,12 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      internalGetMutableTenantAclMap().mergeFrom(
-          other.internalGetTenantAclMap());
-      bitField0_ |= 0x00000002;
+      if (other.hasCreatedAt()) {
+        mergeCreatedAt(other.getCreatedAt());
+      }
+      internalGetMutablePerTenantAcls().mergeFrom(
+          other.internalGetPerTenantAcls());
+      bitField0_ |= 0x00000004;
       if (other.hasGlobalAcls()) {
         mergeGlobalAcls(other.getGlobalAcls());
       }
@@ -638,21 +693,28 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
               break;
             } // case 10
             case 18: {
-              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.ServerACL>
-              tenantAclMap__ = input.readMessage(
-                  TenantAclMapDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              internalGetMutableTenantAclMap().getMutableMap().put(
-                  tenantAclMap__.getKey(), tenantAclMap__.getValue());
+              input.readMessage(
+                  getCreatedAtFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000002;
               break;
             } // case 18
             case 26: {
-              input.readMessage(
-                  getGlobalAclsFieldBuilder().getBuilder(),
-                  extensionRegistry);
+              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.ServerACLs>
+              perTenantAcls__ = input.readMessage(
+                  PerTenantAclsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              internalGetMutablePerTenantAcls().getMutableMap().put(
+                  perTenantAcls__.getKey(), perTenantAcls__.getValue());
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  getGlobalAclsFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -772,31 +834,150 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
       return this;
     }
 
-    private com.google.protobuf.MapField<
-        java.lang.String, io.littlehorse.common.proto.ServerACL> tenantAclMap_;
-    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.ServerACL>
-        internalGetTenantAclMap() {
-      if (tenantAclMap_ == null) {
-        return com.google.protobuf.MapField.emptyMapField(
-            TenantAclMapDefaultEntryHolder.defaultEntry);
-      }
-      return tenantAclMap_;
+    private com.google.protobuf.Timestamp createdAt_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
+    /**
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     * @return Whether the createdAt field is set.
+     */
+    public boolean hasCreatedAt() {
+      return ((bitField0_ & 0x00000002) != 0);
     }
-    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.ServerACL>
-        internalGetMutableTenantAclMap() {
-      if (tenantAclMap_ == null) {
-        tenantAclMap_ = com.google.protobuf.MapField.newMapField(
-            TenantAclMapDefaultEntryHolder.defaultEntry);
+    /**
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     * @return The createdAt.
+     */
+    public com.google.protobuf.Timestamp getCreatedAt() {
+      if (createdAtBuilder_ == null) {
+        return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+      } else {
+        return createdAtBuilder_.getMessage();
       }
-      if (!tenantAclMap_.isMutable()) {
-        tenantAclMap_ = tenantAclMap_.copy();
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     */
+    public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
+      if (createdAtBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        createdAt_ = value;
+      } else {
+        createdAtBuilder_.setMessage(value);
       }
       bitField0_ |= 0x00000002;
       onChanged();
-      return tenantAclMap_;
+      return this;
     }
-    public int getTenantAclMapCount() {
-      return internalGetTenantAclMap().getMap().size();
+    /**
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     */
+    public Builder setCreatedAt(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      if (createdAtBuilder_ == null) {
+        createdAt_ = builderForValue.build();
+      } else {
+        createdAtBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     */
+    public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
+      if (createdAtBuilder_ == null) {
+        if (((bitField0_ & 0x00000002) != 0) &&
+          createdAt_ != null &&
+          createdAt_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          getCreatedAtBuilder().mergeFrom(value);
+        } else {
+          createdAt_ = value;
+        }
+      } else {
+        createdAtBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     */
+    public Builder clearCreatedAt() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      createdAt_ = null;
+      if (createdAtBuilder_ != null) {
+        createdAtBuilder_.dispose();
+        createdAtBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     */
+    public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return getCreatedAtFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     */
+    public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
+      if (createdAtBuilder_ != null) {
+        return createdAtBuilder_.getMessageOrBuilder();
+      } else {
+        return createdAt_ == null ?
+            com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+      }
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+        getCreatedAtFieldBuilder() {
+      if (createdAtBuilder_ == null) {
+        createdAtBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                getCreatedAt(),
+                getParentForChildren(),
+                isClean());
+        createdAt_ = null;
+      }
+      return createdAtBuilder_;
+    }
+
+    private com.google.protobuf.MapField<
+        java.lang.String, io.littlehorse.common.proto.ServerACLs> perTenantAcls_;
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.ServerACLs>
+        internalGetPerTenantAcls() {
+      if (perTenantAcls_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            PerTenantAclsDefaultEntryHolder.defaultEntry);
+      }
+      return perTenantAcls_;
+    }
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.ServerACLs>
+        internalGetMutablePerTenantAcls() {
+      if (perTenantAcls_ == null) {
+        perTenantAcls_ = com.google.protobuf.MapField.newMapField(
+            PerTenantAclsDefaultEntryHolder.defaultEntry);
+      }
+      if (!perTenantAcls_.isMutable()) {
+        perTenantAcls_ = perTenantAcls_.copy();
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return perTenantAcls_;
+    }
+    public int getPerTenantAclsCount() {
+      return internalGetPerTenantAcls().getMap().size();
     }
     /**
      * <pre>
@@ -804,21 +985,21 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * execute *within that Tenant*
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+     * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
      */
     @java.lang.Override
-    public boolean containsTenantAclMap(
+    public boolean containsPerTenantAcls(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
-      return internalGetTenantAclMap().getMap().containsKey(key);
+      return internalGetPerTenantAcls().getMap().containsKey(key);
     }
     /**
-     * Use {@link #getTenantAclMapMap()} instead.
+     * Use {@link #getPerTenantAclsMap()} instead.
      */
     @java.lang.Override
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> getTenantAclMap() {
-      return getTenantAclMapMap();
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs> getPerTenantAcls() {
+      return getPerTenantAclsMap();
     }
     /**
      * <pre>
@@ -826,11 +1007,11 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * execute *within that Tenant*
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+     * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
      */
     @java.lang.Override
-    public java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> getTenantAclMapMap() {
-      return internalGetTenantAclMap().getMap();
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs> getPerTenantAclsMap() {
+      return internalGetPerTenantAcls().getMap();
     }
     /**
      * <pre>
@@ -838,17 +1019,17 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * execute *within that Tenant*
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+     * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
      */
     @java.lang.Override
     public /* nullable */
-io.littlehorse.common.proto.ServerACL getTenantAclMapOrDefault(
+io.littlehorse.common.proto.ServerACLs getPerTenantAclsOrDefault(
         java.lang.String key,
         /* nullable */
-io.littlehorse.common.proto.ServerACL defaultValue) {
+io.littlehorse.common.proto.ServerACLs defaultValue) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> map =
-          internalGetTenantAclMap().getMap();
+      java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs> map =
+          internalGetPerTenantAcls().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
@@ -857,22 +1038,22 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * execute *within that Tenant*
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+     * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.ServerACL getTenantAclMapOrThrow(
+    public io.littlehorse.common.proto.ServerACLs getPerTenantAclsOrThrow(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> map =
-          internalGetTenantAclMap().getMap();
+      java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs> map =
+          internalGetPerTenantAcls().getMap();
       if (!map.containsKey(key)) {
         throw new java.lang.IllegalArgumentException();
       }
       return map.get(key);
     }
-    public Builder clearTenantAclMap() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      internalGetMutableTenantAclMap().getMutableMap()
+    public Builder clearPerTenantAcls() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      internalGetMutablePerTenantAcls().getMutableMap()
           .clear();
       return this;
     }
@@ -882,12 +1063,12 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * execute *within that Tenant*
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+     * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
      */
-    public Builder removeTenantAclMap(
+    public Builder removePerTenantAcls(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
-      internalGetMutableTenantAclMap().getMutableMap()
+      internalGetMutablePerTenantAcls().getMutableMap()
           .remove(key);
       return this;
     }
@@ -895,10 +1076,10 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * Use alternate mutation accessors instead.
      */
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL>
-        getMutableTenantAclMap() {
-      bitField0_ |= 0x00000002;
-      return internalGetMutableTenantAclMap().getMutableMap();
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs>
+        getMutablePerTenantAcls() {
+      bitField0_ |= 0x00000004;
+      return internalGetMutablePerTenantAcls().getMutableMap();
     }
     /**
      * <pre>
@@ -906,16 +1087,16 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * execute *within that Tenant*
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+     * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
      */
-    public Builder putTenantAclMap(
+    public Builder putPerTenantAcls(
         java.lang.String key,
-        io.littlehorse.common.proto.ServerACL value) {
+        io.littlehorse.common.proto.ServerACLs value) {
       if (key == null) { throw new NullPointerException("map key"); }
       if (value == null) { throw new NullPointerException("map value"); }
-      internalGetMutableTenantAclMap().getMutableMap()
+      internalGetMutablePerTenantAcls().getMutableMap()
           .put(key, value);
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       return this;
     }
     /**
@@ -924,13 +1105,13 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * execute *within that Tenant*
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.ServerACL&gt; tenant_acl_map = 2;</code>
+     * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
      */
-    public Builder putAllTenantAclMap(
-        java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACL> values) {
-      internalGetMutableTenantAclMap().getMutableMap()
+    public Builder putAllPerTenantAcls(
+        java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs> values) {
+      internalGetMutablePerTenantAcls().getMutableMap()
           .putAll(values);
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       return this;
     }
 
@@ -942,18 +1123,18 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
      * </pre>
      *
-     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+     * <code>.littlehorse.ServerACLs global_acls = 4;</code>
      * @return Whether the globalAcls field is set.
      */
     public boolean hasGlobalAcls() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <pre>
      * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
      * </pre>
      *
-     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+     * <code>.littlehorse.ServerACLs global_acls = 4;</code>
      * @return The globalAcls.
      */
     public io.littlehorse.common.proto.ServerACLs getGlobalAcls() {
@@ -968,7 +1149,7 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
      * </pre>
      *
-     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+     * <code>.littlehorse.ServerACLs global_acls = 4;</code>
      */
     public Builder setGlobalAcls(io.littlehorse.common.proto.ServerACLs value) {
       if (globalAclsBuilder_ == null) {
@@ -979,7 +1160,7 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
       } else {
         globalAclsBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -988,7 +1169,7 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
      * </pre>
      *
-     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+     * <code>.littlehorse.ServerACLs global_acls = 4;</code>
      */
     public Builder setGlobalAcls(
         io.littlehorse.common.proto.ServerACLs.Builder builderForValue) {
@@ -997,7 +1178,7 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
       } else {
         globalAclsBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1006,11 +1187,11 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
      * </pre>
      *
-     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+     * <code>.littlehorse.ServerACLs global_acls = 4;</code>
      */
     public Builder mergeGlobalAcls(io.littlehorse.common.proto.ServerACLs value) {
       if (globalAclsBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
+        if (((bitField0_ & 0x00000008) != 0) &&
           globalAcls_ != null &&
           globalAcls_ != io.littlehorse.common.proto.ServerACLs.getDefaultInstance()) {
           getGlobalAclsBuilder().mergeFrom(value);
@@ -1020,7 +1201,7 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
       } else {
         globalAclsBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1029,10 +1210,10 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
      * </pre>
      *
-     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+     * <code>.littlehorse.ServerACLs global_acls = 4;</code>
      */
     public Builder clearGlobalAcls() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000008);
       globalAcls_ = null;
       if (globalAclsBuilder_ != null) {
         globalAclsBuilder_.dispose();
@@ -1046,10 +1227,10 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
      * </pre>
      *
-     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+     * <code>.littlehorse.ServerACLs global_acls = 4;</code>
      */
     public io.littlehorse.common.proto.ServerACLs.Builder getGlobalAclsBuilder() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return getGlobalAclsFieldBuilder().getBuilder();
     }
@@ -1058,7 +1239,7 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
      * </pre>
      *
-     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+     * <code>.littlehorse.ServerACLs global_acls = 4;</code>
      */
     public io.littlehorse.common.proto.ServerACLsOrBuilder getGlobalAclsOrBuilder() {
       if (globalAclsBuilder_ != null) {
@@ -1073,7 +1254,7 @@ io.littlehorse.common.proto.ServerACL defaultValue) {
      * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
      * </pre>
      *
-     * <code>.littlehorse.ServerACLs global_acls = 3;</code>
+     * <code>.littlehorse.ServerACLs global_acls = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.ServerACLs, io.littlehorse.common.proto.ServerACLs.Builder, io.littlehorse.common.proto.ServerACLsOrBuilder> 

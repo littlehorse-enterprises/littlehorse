@@ -10,7 +10,7 @@ import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.proto.PutTenantRequest;
-import io.littlehorse.common.proto.PutTenantResponse;
+import io.littlehorse.common.proto.Tenant;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 
 public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> implements ServerSubCommand {
@@ -39,13 +39,14 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
     }
 
     @Override
-    public PutTenantResponse process(MetadataProcessorDAO dao, LHServerConfig config) {
+    public Tenant process(MetadataProcessorDAO dao, LHServerConfig config) {
         if (dao.get(new TenantIdModel(id)) == null) {
             TenantModel toSave = new TenantModel(id);
+            toSave.setCreatedAt(dao.getCommand().getTime());
             dao.put(toSave);
-            return PutTenantResponse.newBuilder().setId(toSave.getId()).build();
+            return toSave.toProto().build();
         } else {
-            throw new LHApiException(Status.FAILED_PRECONDITION, "Tenant %s already exists".formatted(id));
+            throw new LHApiException(Status.ALREADY_EXISTS, "Tenant %s already exists".formatted(id));
         }
     }
 }

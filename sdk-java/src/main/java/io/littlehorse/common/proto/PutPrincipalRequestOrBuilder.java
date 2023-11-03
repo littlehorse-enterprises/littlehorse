@@ -20,37 +20,37 @@ public interface PutPrincipalRequestOrBuilder extends
       getIdBytes();
 
   /**
-   * <code>map&lt;string, .littlehorse.ServerACLs&gt; tenant_acl_map = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
    */
-  int getTenantAclMapCount();
+  int getPerTenantAclsCount();
   /**
-   * <code>map&lt;string, .littlehorse.ServerACLs&gt; tenant_acl_map = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
    */
-  boolean containsTenantAclMap(
+  boolean containsPerTenantAcls(
       java.lang.String key);
   /**
-   * Use {@link #getTenantAclMapMap()} instead.
+   * Use {@link #getPerTenantAclsMap()} instead.
    */
   @java.lang.Deprecated
   java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs>
-  getTenantAclMap();
+  getPerTenantAcls();
   /**
-   * <code>map&lt;string, .littlehorse.ServerACLs&gt; tenant_acl_map = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs>
-  getTenantAclMapMap();
+  getPerTenantAclsMap();
   /**
-   * <code>map&lt;string, .littlehorse.ServerACLs&gt; tenant_acl_map = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
    */
   /* nullable */
-io.littlehorse.common.proto.ServerACLs getTenantAclMapOrDefault(
+io.littlehorse.common.proto.ServerACLs getPerTenantAclsOrDefault(
       java.lang.String key,
       /* nullable */
 io.littlehorse.common.proto.ServerACLs defaultValue);
   /**
-   * <code>map&lt;string, .littlehorse.ServerACLs&gt; tenant_acl_map = 2;</code>
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
    */
-  io.littlehorse.common.proto.ServerACLs getTenantAclMapOrThrow(
+  io.littlehorse.common.proto.ServerACLs getPerTenantAclsOrThrow(
       java.lang.String key);
 
   /**

@@ -205,7 +205,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getLatestUserTaskDef(GetLatestUserTaskDefRequest req, StreamObserver<UserTaskDef> ctx) {
-        String tenantId = ServerAuthorizer.PRINCIPAL.get().getTenantIds().stream().findFirst().get(); // TODO
+        String tenantId = ServerAuthorizer.PRINCIPAL.get().getTenantIds().stream()
+                .findFirst()
+                .get(); // TODO
         UserTaskDefModel utd = metadataDao().getUserTaskDef(req.getName(), null);
         if (utd == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskDef"));

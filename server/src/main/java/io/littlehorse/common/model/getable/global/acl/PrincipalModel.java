@@ -1,85 +1,93 @@
 package io.littlehorse.common.model.getable.global.acl;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
-import io.littlehorse.common.proto.ACLAction;
-import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.Principal;
-import io.littlehorse.common.proto.ServerACL;
+import io.littlehorse.common.proto.ServerACLs;
 import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.PrincipalId;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
+@Slf4j
 public class PrincipalModel extends GlobalGetable<Principal> {
 
     private String id;
-    private final List<ServerACLModel> acls = new ArrayList<>();
-
-    private List<String> tenantIds;
+    private Map<String, ServerACLsModel> perTenantAcls = new HashMap<>();
+    private ServerACLsModel globalAcls;
+    private Date createdAt;
 
     public PrincipalModel() {}
 
-    public PrincipalModel(final String id, final List<ServerACLModel> acls, final List<String> tenantIds) {
-        this.id = id;
-        this.acls.addAll(acls);
-        this.tenantIds = tenantIds;
-    }
+    // public PrincipalModel(final String id, final List<ServerACLModel> acls, final List<String> tenantIds) {
+    //     this.id = id;
+    //     this.acls.addAll(acls);
+    //     this.tenantIds = tenantIds;
+    // }
 
-    public static PrincipalModel anonymous() {
-        List<ACLAction> allActions = List.of(ACLAction.ALL_ACTIONS);
-        List<ACLResource> allResources = List.of(ACLResource.ALL);
-        List<ServerACLModel> adminAcls = List.of(new ServerACLModel(allResources, allActions));
-        return new PrincipalModel("anonymous", adminAcls, null);
-    }
+    // @Deprecated(forRemoval = true)
+    // public static PrincipalModel anonymous() {
+    //     List<ACLAction> allActions = List.of(ACLAction.ALL_ACTIONS);
+    //     List<ACLResource> allResources = List.of(ACLResource.ALL);
+    //     List<ServerACLModel> adminAcls = List.of(new ServerACLModel(allResources, allActions));
+    //     return new PrincipalModel("anonymous", adminAcls, null);
+    // }
 
-    public static PrincipalModel anonymousFor(TenantModel tenant) {
-        if (tenant == null) {
-            throw new LHApiException(Status.FAILED_PRECONDITION, "Tenant is required");
-        }
-        List<ACLAction> allActions = List.of(ACLAction.ALL_ACTIONS);
-        List<ACLResource> allResources = List.of(ACLResource.ALL);
-        List<ServerACLModel> adminAcls = List.of(new ServerACLModel(allResources, allActions));
-        return new PrincipalModel("anonymous", adminAcls, null);
-    }
+    // @Deprecated(forRemoval = true)
+    // public static PrincipalModel anonymousFor(TenantModel tenant) {
+    //     if (tenant == null) {
+    //         throw new LHApiException(Status.FAILED_PRECONDITION, "Tenant is required");
+    //     }
+    //     List<ACLAction> allActions = List.of(ACLAction.ALL_ACTIONS);
+    //     List<ACLResource> allResources = List.of(ACLResource.ALL);
+    //     List<ServerACLModel> adminAcls = List.of(new ServerACLModel(allResources, allActions));
+    //     return new PrincipalModel("anonymous", adminAcls, null);
+    // }
 
     @Override
     public void initFrom(Message proto) throws LHSerdeError {
         Principal principal = (Principal) proto;
         this.id = principal.getId();
-        for (ServerACL serverACL : principal.getAclsList()) {
-            acls.add(LHSerializable.fromProto(serverACL, ServerACLModel.class));
+        this.globalAcls = LHSerializable.fromProto(principal.getGlobalAcls(), ServerACLsModel.class);
+        this.createdAt = LHUtil.fromProtoTs(principal.getCreatedAt());
+
+        for (Map.Entry<String, ServerACLs> tenantAcls :
+                principal.getPerTenantAclsMap().entrySet()) {
+            perTenantAcls.put(
+                    tenantAcls.getKey(), LHSerializable.fromProto(tenantAcls.getValue(), ServerACLsModel.class));
         }
-        this.id = principal.getId();
-        this.tenantIds = principal.getTenantIdList();
     }
 
     @Override
     public Principal.Builder toProto() {
-        Principal.Builder out = Principal.newBuilder();
-        out.setId(this.id);
-        out.addAllAcls(acls.stream()
-                .map(ServerACLModel::toProto)
-                .map(ServerACL.Builder::build)
-                .toList());
-        out.addAllTenantId(this.tenantIds);
+        Principal.Builder out = Principal.newBuilder()
+                .setId(this.id)
+                .setGlobalAcls(globalAcls.toProto())
+                .setCreatedAt(LHUtil.fromDate(getCreatedAt()));
+
+        for (Map.Entry<String, ServerACLsModel> perTenantACL : perTenantAcls.entrySet()) {
+            String tenantId = perTenantACL.getKey();
+            ServerACLs acls = perTenantACL.getValue().toProto().build();
+            out.putPerTenantAcls(tenantId, acls);
+        }
+
         return out;
     }
 
@@ -90,7 +98,10 @@ public class PrincipalModel extends GlobalGetable<Principal> {
 
     @Override
     public Date getCreatedAt() {
-        return new Date();
+        if (createdAt == null) {
+            createdAt = new Date();
+        }
+        return createdAt;
     }
 
     @Override
@@ -112,16 +123,19 @@ public class PrincipalModel extends GlobalGetable<Principal> {
         if (key.equals("isAdmin")) {
             return List.of(new IndexedField(key, this.isAdmin(), TagStorageType.LOCAL));
         } else if (key.equals("tenantId")) {
-            List<IndexedField> result = new ArrayList<>();
-            for (String tenantId : tenantIds) {
-                result.add(new IndexedField(key, tenantId, TagStorageType.LOCAL));
-            }
-            return result;
+            return perTenantAcls.keySet().stream()
+                    .map(tenantId -> new IndexedField(key, tenantId, TagStorageType.LOCAL))
+                    .toList();
         }
+
+        log.warn("Unrecognized index key for PrincipalModel: {}", key);
         return List.of();
     }
 
     public boolean isAdmin() {
-        return acls.stream().anyMatch(ServerACLModel::isAdmin);
+        // to be admin, you need:
+        // - a global ACL with ALL_ACTIONS over ACL_ALL
+
+        return globalAcls.getAcls().stream().anyMatch(serverAcl -> serverAcl.isAdmin());
     }
 }

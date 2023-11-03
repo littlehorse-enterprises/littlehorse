@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -25,4 +26,6 @@ public interface ReadOnlyMetadataProcessorDAO {
     ServerContext context();
 
     List<String> adminPrincipalIds();
+
+    TenantModel getTenant(String tenantId);
 }
