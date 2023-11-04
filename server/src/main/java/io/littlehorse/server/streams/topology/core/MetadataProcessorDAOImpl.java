@@ -5,6 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
@@ -48,20 +49,14 @@ public class MetadataProcessorDAOImpl extends ReadOnlyMetadataProcessorDAOImpl i
         return command;
     }
 
-    // Note that as of now, modifying a GlobalGetable is not supported. That may
-    // change when we introduce the `Principal` and `Tenant` GlobalGetable's. At
-    // that time, we will extend this method.
+    // TODO: we should re-use some of the infrastrucutre in the CoreProcessorDAO for putting
+    // and deleting Tags.
     public <U extends Message, T extends GlobalGetable<U>> void put(T getable) {
 
         // The cast is necessary to tell the store that the ObjectId belongs to a
         // GlobalGetable.
         @SuppressWarnings("unchecked")
-        /*AbstractGetable<?> old = get((ObjectIdModel<?, U, T>) getable.getObjectId());
-
-        if (old != null) {
-            throw new IllegalStateException(
-                    "As of now, metadata processor does not support editing values. Coming in future.");
-        }*/
+        AbstractGetable<?> old = get((ObjectIdModel<?, U, T>) getable.getObjectId());
 
         StoredGetable<U, T> toStore = new StoredGetable<U, T>(getable);
         lhStore.put(toStore);

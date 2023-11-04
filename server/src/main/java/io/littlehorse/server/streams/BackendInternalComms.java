@@ -95,7 +95,6 @@ public class BackendInternalComms implements Closeable {
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
     private MetadataCache metadataCache;
-    private final ServerDAOFactory daoFactory;
 
     public BackendInternalComms(
             LHServerConfig config,
@@ -108,7 +107,6 @@ public class BackendInternalComms implements Closeable {
         this.coreStreams = coreStreams;
         this.metadataCache = metadataCache;
         this.channels = new HashMap<>();
-        this.daoFactory = daoFactory;
         otherHosts = new ConcurrentHashMap<>();
 
         ServerBuilder<?> builder;

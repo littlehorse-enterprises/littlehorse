@@ -5,16 +5,19 @@ import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.StoreableType;
+import io.littlehorse.common.proto.Tenant;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
@@ -64,6 +67,18 @@ public class ReadOnlyMetadataProcessorDAOImpl implements ReadOnlyMetadataProcess
             return storedResult == null ? null : storedResult.getStoredObject();
         };
         return metadataCache.getOrCache(name, version, findWfSpec);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public TenantModel getTenant(String name) {
+        TenantIdModel id = new TenantIdModel(name);
+        Supplier<TenantModel> findTenant = () -> {
+            StoredGetable<Tenant, TenantModel> storedResult = lhStore.get(id.getStoreableKey(), StoredGetable.class);
+            return storedResult.getStoredObject();
+        };
+
+        return (TenantModel) metadataCache.getOrCache(id, findTenant::get);
     }
 
     @SuppressWarnings("unchecked")
