@@ -144,6 +144,6 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
     }
 
     private void forwardMetricsUpdates(long timestamp) {
-        // TODO: batch and send metrics to the repartition processor
+        dao.getRegistry().forwardAndClearMetricsUpdatesUntil();
     }
 }

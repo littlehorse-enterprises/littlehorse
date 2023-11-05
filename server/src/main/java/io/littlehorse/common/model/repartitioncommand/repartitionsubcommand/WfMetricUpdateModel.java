@@ -12,8 +12,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.StoredGetable;
 import java.util.Date;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 public class WfMetricUpdateModel extends Storeable<WfMetricUpdate> implements RepartitionSubCommand {
@@ -117,17 +117,14 @@ public class WfMetricUpdateModel extends Storeable<WfMetricUpdate> implements Re
 
     @Override
     public void process(RocksDBWrapper store, ProcessorContext<Void, Void> ctx) {
-        throw new NotImplementedException("Need to re-enable workflow metrics");
-        /*
-         * // Update workflow-level metrics
-         * WfMetricUpdate previousUpdate = store.get(getStoreKey(), getClass());
-         * if (previousUpdate != null) {
-         * merge(previousUpdate);
-         * }
-         * store.put(this);
-         * store.put(toResponse());
-         * log.debug("Put WfMetric object for key {}", toResponse().getStoreKey());
-         */
+        WfMetricUpdateModel previousUpdate = store.get(getStoreKey(), getClass());
+        if (previousUpdate != null) {
+            merge(previousUpdate);
+        }
+        store.put(this);
+
+        // This is really hacky
+        store.put(new StoredGetable<>(toResponse()));
     }
 
     @Override

@@ -72,7 +72,7 @@ public abstract class CoreProcessorDAO extends ReadOnlyMetadataStore {
         return getCommand().time;
     }
 
-    public abstract AnalyticsRegistry getRegistry();
+    public abstract TemporaryAnalyticsRegistry getRegistry();
 
     public abstract LHHostInfo getAdvertisedHost(HostModel host, String listenerName);
 

@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.topology.core;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.AnalyticsRegistry;
+import io.littlehorse.common.dao.TemporaryAnalyticsRegistry;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.CoreGetable;
@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 
@@ -55,6 +54,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private LHServerConfig config;
     private boolean partitionIsClaimed;
+    private TemporaryAnalyticsRegistry temporaryRegistry;
 
     private GetableStorageManager storageManager;
 
@@ -71,6 +71,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
         this.ctx = ctx;
         this.config = config;
         this.rocksdb = localStore;
+        this.temporaryRegistry = new TemporaryAnalyticsRegistry(config, ctx, rocksdb);
 
         // At the start, we haven't claimed the partition until the claim event comes
         this.partitionIsClaimed = false;
@@ -83,6 +84,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     public void initCommand(CommandModel command) {
         scheduledTaskPuts.clear();
         timersToSchedule.clear();
+        temporaryRegistry.initCommand();
         this.command = command;
         this.storageManager = new GetableStorageManager(rocksdb, ctx, config, command, this);
     }
@@ -95,6 +97,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     @Override
     public void commit() {
         storageManager.commit();
+        temporaryRegistry.commitCommand();
         for (LHTimer timer : timersToSchedule) {
             forwardTimer(timer);
         }
@@ -187,32 +190,6 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
         return scheduledTask;
     }
 
-    // // This method should only be called if we have a serious unknown bug in
-    // // LittleHorse that causes an unexpected exception to occur while executing
-    // // CommandProcessor#process().
-    // @Override
-    // public void abortChangesAndMarkWfRunFailed(Throwable failure, String wfRunId)
-    // {
-    // // if the wfRun exists: we want to mark it as failed with a message.
-    // // Else, do nothing.
-    // WfRunModel wfRunModel = storageManager.get(wfRunId, WfRunModel.class);
-    // if (wfRunModel != null) {
-    // log.warn("Marking wfRun {} as failed due to internal LH exception", wfRunId);
-    // ThreadRunModel entrypoint = wfRunModel.getThreadRun(0);
-    // entrypoint.setStatus(LHStatus.ERROR);
-
-    // String message = "Had an internal LH failur processing command of type "
-    // + command.getType()
-    // + ": "
-    // + failure.getMessage();
-    // entrypoint.setErrorMessage(message);
-    // storageManager.abortAndUpdate(wfRunModel);
-    // } else {
-    // log.warn("Caught internal LH error but found no WfRun with id {}", wfRunId);
-    // }
-    // clearThingsToWrite();
-    // }
-
     @Override
     public String getCoreCmdTopic() {
         return config.getCoreCmdTopicName();
@@ -270,7 +247,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     }
 
     @Override
-    public AnalyticsRegistry getRegistry() {
-        throw new NotImplementedException("TODO: Re-enable metrics/analytics");
+    public TemporaryAnalyticsRegistry getRegistry() {
+        return temporaryRegistry;
     }
 }

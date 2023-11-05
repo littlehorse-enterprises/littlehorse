@@ -12,8 +12,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.StoredGetable;
 import java.util.Date;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implements RepartitionSubCommand {
@@ -130,16 +130,14 @@ public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implement
     }
 
     public void process(RocksDBWrapper store, ProcessorContext<Void, Void> ctx) {
-        throw new NotImplementedException("Need to re-implement metrics");
-        /*
-         * // Update TaskDef-Level Metrics
-         * TaskMetricUpdate previousUpdate = store.get(getStoreKey(), getClass());
-         * if (previousUpdate != null) {
-         * merge(previousUpdate);
-         * }
-         * store.put(this);
-         * store.put(toResponse());
-         */
+        TaskMetricUpdateModel previousUpdate = store.get(getStoreKey(), getClass());
+        if (previousUpdate != null) {
+            merge(previousUpdate);
+        }
+        store.put(this);
+
+        // This is really hacky
+        store.put(new StoredGetable<>(toResponse()));
     }
 
     public String getPartitionKey() {

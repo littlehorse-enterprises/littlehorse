@@ -106,7 +106,8 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
 
         switch (type) {
             case TASK_METRIC_UPDATE:
-                taskMetricPartitionWindow = LHSerializable.fromProto(p.getTaskMetricUpdate(), TaskMetricUpdateModel.class);
+                taskMetricPartitionWindow =
+                        LHSerializable.fromProto(p.getTaskMetricUpdate(), TaskMetricUpdateModel.class);
                 break;
             case WF_METRIC_UPDATE:
                 wfMetricPartitionWindow = LHSerializable.fromProto(p.getWfMetricUpdate(), WfMetricUpdateModel.class);
