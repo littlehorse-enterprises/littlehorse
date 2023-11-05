@@ -8,24 +8,18 @@ import io.grpc.MethodDescriptor;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.Status;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.dao.ServerDAOFactory;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
-import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
-import io.littlehorse.common.model.getable.global.acl.TenantModel;
-import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
 import io.littlehorse.server.Authorize;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import lombok.NonNull;
 
 public class RequestAuthorizer implements ServerAuthorizer {
 
@@ -45,9 +39,14 @@ public class RequestAuthorizer implements ServerAuthorizer {
         String tenantId = headers.get(TENANT_ID);
         Context context = Context.current();
 
+        if (tenantId == null) {
+            tenantId = LHConstants.DEFAULT_TENANT;
+        }
+
+        ReadOnlyMetadataDAO dao = factory.getDefaultMetadataDao();
         try {
-            PrincipalModel resolvedPrincipal = resolvePrincipal(clientId);
-            validateAcl(call.getMethodDescriptor(), resolvedPrincipal, tenantId);
+            PrincipalModel resolvedPrincipal = dao.getPrincipal(clientId);
+            aclVerifier.verify(tenantId, call.getMethodDescriptor(), resolvedPrincipal);
             context = context.withValue(PRINCIPAL, resolvedPrincipal);
         } catch (PermissionDeniedException ex) {
             call.close(Status.PERMISSION_DENIED.withDescription(ex.getMessage()), headers);
@@ -55,49 +54,27 @@ public class RequestAuthorizer implements ServerAuthorizer {
         return Contexts.interceptCall(context, call, headers, next);
     }
 
-    private PrincipalModel resolvePrincipal(String clientId) {
-        ReadOnlyMetadataDAO dao = readOnlyDao(null);
-        if (clientId != null) {
-            TenantModel tenant = getTenant(tenantId);
-            PrincipalModel storedPrincipal = dao.get(new PrincipalIdModel(clientId));
+    // private TenantModel getTenant(@NonNull String tenantId) {
+    //     TenantModel tenant = factory.getDefaultMetadataDao().get(new TenantIdModel(tenantId));
+    //     if (tenant == null) {
+    //         throw new PermissionDeniedException("Tenant %s is not supported".formatted(tenantId));
+    //     }
+    //     return tenant;
+    // }
 
-            if (!storedPrincipal.getTenantIds().contains(tenantId)) {
-                throw new PermissionDeniedException("Tenant %s is not supported".formatted(tenantId));
-            }
-            return storedPrincipal;
-        } else if (clientId != null) {
-            PrincipalModel storedPrincipal = dao.get(new PrincipalIdModel(clientId));
+    // private void validateAcl(MethodDescriptor<?, ?> method, PrincipalModel principalToValidate) {
+    //     if (!principalToValidate.isAdmin()) {
+    //         aclVerifier.verify(method, principalToValidate);
+    //     }
+    // }
 
-            return storedPrincipal;
-        } else if (tenantId != null) {
-            TenantModel tenant = getTenant(tenantId);
-            return PrincipalModel.anonymousFor(tenant);
-        } else {
-            return PrincipalModel.anonymous();
-        }
-    }
-
-    private TenantModel getTenant(@NonNull String tenantId) {
-        TenantModel tenant = factory.getDefaultMetadataDao().get(new TenantIdModel(tenantId));
-        if (tenant == null) {
-            throw new PermissionDeniedException("Tenant %s is not supported".formatted(tenantId));
-        }
-        return tenant;
-    }
-
-    private void validateAcl(MethodDescriptor<?, ?> method, PrincipalModel principalToValidate) {
-        if (!principalToValidate.isAdmin()) {
-            aclVerifier.verify(method, principalToValidate);
-        }
-    }
-
-    private ReadOnlyMetadataDAO readOnlyDao(String tenantId) {
-        if (tenantId == null) {
-            return factory.getDefaultMetadataDao();
-        } else {
-            return factory.getMetadataDao(tenantId);
-        }
-    }
+    // private ReadOnlyMetadataDAO readOnlyDao(String tenantId) {
+    //     if (tenantId == null) {
+    //         return factory.getDefaultMetadataDao();
+    //     } else {
+    //         return factory.getMetadataDao(tenantId);
+    //     }
+    // }
 
     private static class AclVerifier {
 
@@ -134,17 +111,11 @@ public class RequestAuthorizer implements ServerAuthorizer {
             }
         }
 
-        private void verify(MethodDescriptor<?, ?> serviceMethod, PrincipalModel client) {
+        private void verify(String tenantId, MethodDescriptor<?, ?> serviceMethod, PrincipalModel client) {
             String methodName = serviceMethod.getBareMethodName();
             AuthMetadata authMetadata = methodMetadata.get(methodName);
-            Set<ACLAction> clientAllowedActions = new HashSet<>();
-            Set<ACLResource> clientAllowedResources = new HashSet<>();
-            for (ServerACLModel clientAcl : client.getAcls()) {
-                clientAllowedActions.addAll(clientAcl.getAllowedActions());
-                clientAllowedResources.addAll(clientAcl.getResources());
-            }
-            if (!(clientAllowedActions.containsAll(authMetadata.requiredActions())
-                    && clientAllowedResources.containsAll(authMetadata.requiredResources()))) {
+
+            if (!client.hasPermissions(methodName, authMetadata.requiredResources(), authMetadata.requiredActions())) {
                 throw new PermissionDeniedException("Missing permissions %s over resources %s"
                         .formatted(authMetadata.requiredActions(), authMetadata.requiredResources()));
             }

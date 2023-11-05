@@ -5,9 +5,9 @@ package io.littlehorse.common.model;
  * - PutTenantRequest
  * - PutPrincipalRequest
  * - DeletePrincipalRequest
- * 
+ *
  * The above commands operate at the cluster level, not at the Tenant level.
- * 
+ *
  * If a SubCommand does not implement the ClusterLevelCommand, then it is
  * considered "namespaced to a Tenant".
  */

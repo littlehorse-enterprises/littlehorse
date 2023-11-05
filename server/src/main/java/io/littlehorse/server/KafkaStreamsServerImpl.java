@@ -55,9 +55,7 @@ import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.proto.Principal;
 import io.littlehorse.common.proto.PutPrincipalRequest;
-import io.littlehorse.common.proto.PutPrincipalResponse;
 import io.littlehorse.common.proto.PutTenantRequest;
-import io.littlehorse.common.proto.PutTenantResponse;
 import io.littlehorse.common.proto.Tenant;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
@@ -219,7 +217,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public void getUserTaskDef(UserTaskDefId req, StreamObserver<UserTaskDef> ctx) {
         UserTaskDefModel utd = metadataDao().getUserTaskDef(req.getName(), req.getVersion());
         if (utd == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskDef %s versoin %d".formatted(req.getName(), req.getVersion())));
+            ctx.onError(new LHApiException(
+                    Status.NOT_FOUND,
+                    "Couldn't find UserTaskDef %s versoin %d".formatted(req.getName(), req.getVersion())));
         } else {
             ctx.onNext(utd.toProto().build());
             ctx.onCompleted();
@@ -241,7 +241,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public void getExternalEventDef(ExternalEventDefId req, StreamObserver<ExternalEventDef> ctx) {
         ExternalEventDefModel eed = metadataDao().getExternalEventDef(req.getName());
         if (eed == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find ExternalEventDef %s".formatted(req.getName())));
+            ctx.onError(
+                    new LHApiException(Status.NOT_FOUND, "Couldn't find ExternalEventDef %s".formatted(req.getName())));
         } else {
             ctx.onNext(eed.toProto().build());
             ctx.onCompleted();

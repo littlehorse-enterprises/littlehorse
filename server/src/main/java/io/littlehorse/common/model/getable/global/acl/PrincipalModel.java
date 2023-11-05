@@ -6,6 +6,8 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.proto.ACLAction;
+import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.Principal;
 import io.littlehorse.common.proto.ServerACLs;
 import io.littlehorse.common.proto.TagStorageType;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -40,14 +43,6 @@ public class PrincipalModel extends GlobalGetable<Principal> {
     //     this.id = id;
     //     this.acls.addAll(acls);
     //     this.tenantIds = tenantIds;
-    // }
-
-    // @Deprecated(forRemoval = true)
-    // public static PrincipalModel anonymous() {
-    //     List<ACLAction> allActions = List.of(ACLAction.ALL_ACTIONS);
-    //     List<ACLResource> allResources = List.of(ACLResource.ALL);
-    //     List<ServerACLModel> adminAcls = List.of(new ServerACLModel(allResources, allActions));
-    //     return new PrincipalModel("anonymous", adminAcls, null);
     // }
 
     // @Deprecated(forRemoval = true)
@@ -130,6 +125,19 @@ public class PrincipalModel extends GlobalGetable<Principal> {
 
         log.warn("Unrecognized index key for PrincipalModel: {}", key);
         return List.of();
+    }
+
+    /**
+     * Given a tenant Id, a resource, and an action: return whether this Principal
+     * has permissions to execute that action.
+     * @param tenantId is the tenant id.
+     * @param resource are the resource types needed by this request.
+     * @param action are the actions needed by this request.
+     * @return whether this principal has the required permissions to take the
+     * specified action.
+     */
+    public boolean hasPermissions(@NonNull String tenantId, List<ACLResource> resource, List<ACLAction> action) {
+        // TODO
     }
 
     public boolean isAdmin() {

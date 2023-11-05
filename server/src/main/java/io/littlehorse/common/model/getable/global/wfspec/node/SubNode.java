@@ -14,8 +14,7 @@ public abstract class SubNode<T extends Message> extends LHSerializable<T> {
 
     public abstract SubNodeRun<?> createSubNodeRun(Date time);
 
-    public abstract void validate(ReadOnlyMetadataDAO metadataDao, LHServerConfig config)
-            throws LHApiException;
+    public abstract void validate(ReadOnlyMetadataDAO metadataDao, LHServerConfig config) throws LHApiException;
 
     protected NodeModel node;
 

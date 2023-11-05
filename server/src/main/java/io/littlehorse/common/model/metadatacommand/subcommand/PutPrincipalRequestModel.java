@@ -10,7 +10,6 @@ import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
-import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.proto.Principal;
 import io.littlehorse.common.proto.PutPrincipalRequest;
@@ -65,7 +64,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
 
     @Override
     public Principal process(MetadataProcessorDAO dao, LHServerConfig config) {
-        PrincipalModel oldPrincipal = dao.get(new PrincipalIdModel(id));
+        PrincipalModel oldPrincipal = dao.getPrincipal(id);
 
         PrincipalModel toSave = new PrincipalModel();
         if (oldPrincipal != null) {

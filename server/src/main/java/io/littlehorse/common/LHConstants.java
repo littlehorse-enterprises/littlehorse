@@ -50,5 +50,6 @@ public class LHConstants {
     public static final int INFINITE_RETENTION = -1;
 
     public static final String DEFAULT_TENANT = "default";
+    public static final String ANONYMOUS_PRINCIPAL = "anonymous";
 }
 // NOTE: Use m6a.4xlarge
