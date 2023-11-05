@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.lhinternalscan;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
+import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -46,7 +46,7 @@ public abstract class PublicScanRequest<
         return limit;
     }
 
-    public InternalScan getInternalSearch(ReadOnlyMetadataProcessorDAO readOnlyDao) throws LHApiException {
+    public InternalScan getInternalSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException {
         SearchScanBoundaryStrategy searchScanBoundaryStrategy = getScanBoundary(getSearchAttributeString());
         getableSearch = new GetableSearchImpl(getObjectType(), searchScanBoundaryStrategy);
         InternalScan out = getableSearch.buildInternalScan(readOnlyDao, indexTypeForSearch(readOnlyDao));
@@ -98,7 +98,7 @@ public abstract class PublicScanRequest<
      * @return The storage type or null if not specified in the configuration.
      * @throws LHApiException if there are validation errors in the input.
      */
-    public abstract TagStorageType indexTypeForSearch(ReadOnlyMetadataProcessorDAO readOnlyDao) throws LHApiException;
+    public abstract TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) throws LHApiException;
 
     public abstract SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException;
 }

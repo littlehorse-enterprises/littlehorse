@@ -3,7 +3,7 @@ package io.littlehorse.common.model.getable.global.wfspec.node;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
+import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import java.util.Date;
@@ -14,7 +14,7 @@ public abstract class SubNode<T extends Message> extends LHSerializable<T> {
 
     public abstract SubNodeRun<?> createSubNodeRun(Date time);
 
-    public abstract void validate(ReadOnlyMetadataProcessorDAO metadataDao, LHServerConfig config)
+    public abstract void validate(ReadOnlyMetadataDAO metadataDao, LHServerConfig config)
             throws LHApiException;
 
     protected NodeModel node;

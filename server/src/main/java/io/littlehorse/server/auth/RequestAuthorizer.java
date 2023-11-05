@@ -8,7 +8,7 @@ import io.grpc.MethodDescriptor;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.Status;
-import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
+import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
 import io.littlehorse.common.dao.ServerDAOFactory;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
@@ -46,8 +46,8 @@ public class RequestAuthorizer implements ServerAuthorizer {
         Context context = Context.current();
 
         try {
-            PrincipalModel resolvedPrincipal = resolvePrincipal(clientId, tenantId);
-            validateAcl(call.getMethodDescriptor(), resolvedPrincipal);
+            PrincipalModel resolvedPrincipal = resolvePrincipal(clientId);
+            validateAcl(call.getMethodDescriptor(), resolvedPrincipal, tenantId);
             context = context.withValue(PRINCIPAL, resolvedPrincipal);
         } catch (PermissionDeniedException ex) {
             call.close(Status.PERMISSION_DENIED.withDescription(ex.getMessage()), headers);
@@ -55,23 +55,19 @@ public class RequestAuthorizer implements ServerAuthorizer {
         return Contexts.interceptCall(context, call, headers, next);
     }
 
-    private PrincipalModel resolvePrincipal(String clientId, String tenantId) {
-        ReadOnlyMetadataProcessorDAO dao = readOnlyDao(tenantId);
-        if (clientId != null && tenantId != null) {
+    private PrincipalModel resolvePrincipal(String clientId) {
+        ReadOnlyMetadataDAO dao = readOnlyDao(null);
+        if (clientId != null) {
             TenantModel tenant = getTenant(tenantId);
             PrincipalModel storedPrincipal = dao.get(new PrincipalIdModel(clientId));
-            if (storedPrincipal == null) {
-                return PrincipalModel.anonymousFor(tenant);
-            }
+
             if (!storedPrincipal.getTenantIds().contains(tenantId)) {
                 throw new PermissionDeniedException("Tenant %s is not supported".formatted(tenantId));
             }
             return storedPrincipal;
         } else if (clientId != null) {
             PrincipalModel storedPrincipal = dao.get(new PrincipalIdModel(clientId));
-            if (storedPrincipal == null) {
-                return PrincipalModel.anonymous();
-            }
+
             return storedPrincipal;
         } else if (tenantId != null) {
             TenantModel tenant = getTenant(tenantId);
@@ -95,7 +91,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
         }
     }
 
-    private ReadOnlyMetadataProcessorDAO readOnlyDao(String tenantId) {
+    private ReadOnlyMetadataDAO readOnlyDao(String tenantId) {
         if (tenantId == null) {
             return factory.getDefaultMetadataDao();
         } else {
