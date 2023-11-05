@@ -7,6 +7,9 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
+/**
+ * TODO: Eduwer, what is this used for?
+ */
 public class ReadOnlyModelDefaultStore implements ReadOnlyModelStore {
 
     private final SerdeReadOnlyModelStore serdeModelStore;
@@ -21,6 +24,7 @@ public class ReadOnlyModelDefaultStore implements ReadOnlyModelStore {
         return serdeModelStore.get(fullKey, cls);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <U extends Message, T extends AbstractGetable<U>> StoredGetable<U, T> get(ObjectIdModel<?, U, T> id) {
         String key = id.getType().getNumber() + "/";

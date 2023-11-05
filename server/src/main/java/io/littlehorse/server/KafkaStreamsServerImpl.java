@@ -55,9 +55,8 @@ import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.proto.Principal;
 import io.littlehorse.common.proto.PutPrincipalRequest;
-import io.littlehorse.common.proto.PutPrincipalResponse;
 import io.littlehorse.common.proto.PutTenantRequest;
-import io.littlehorse.common.proto.PutTenantResponse;
+import io.littlehorse.common.proto.Tenant;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
@@ -187,9 +186,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
-    public void putPrincipal(PutPrincipalRequest req, StreamObserver<PutPrincipalResponse> ctx) {
+    public void putPrincipal(PutPrincipalRequest req, StreamObserver<Principal> ctx) {
         PutPrincipalRequestModel reqModel = LHSerializable.fromProto(req, PutPrincipalRequestModel.class);
-        processCommand(new MetadataCommandModel(reqModel), ctx, PutPrincipalResponse.class, true);
+        processCommand(new MetadataCommandModel(reqModel), ctx, Principal.class, true);
     }
 
     @Override
@@ -205,10 +204,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getLatestUserTaskDef(GetLatestUserTaskDefRequest req, StreamObserver<UserTaskDef> ctx) {
-        String tenantId = ServerAuthorizer.PRINCIPAL.get().getTenantIds().stream().findFirst().get(); // TODO
         UserTaskDefModel utd = metadataDao().getUserTaskDef(req.getName(), null);
         if (utd == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskDef"));
+            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskDef %s".formatted(req.getName())));
         } else {
             ctx.onNext(utd.toProto().build());
             ctx.onCompleted();
@@ -219,7 +217,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public void getUserTaskDef(UserTaskDefId req, StreamObserver<UserTaskDef> ctx) {
         UserTaskDefModel utd = metadataDao().getUserTaskDef(req.getName(), req.getVersion());
         if (utd == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskDef"));
+            ctx.onError(new LHApiException(
+                    Status.NOT_FOUND,
+                    "Couldn't find UserTaskDef %s versoin %d".formatted(req.getName(), req.getVersion())));
         } else {
             ctx.onNext(utd.toProto().build());
             ctx.onCompleted();
@@ -230,7 +230,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public void getTaskDef(TaskDefId req, StreamObserver<TaskDef> ctx) {
         TaskDefModel td = metadataDao().getTaskDef(req.getName());
         if (td == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified TaskDef"));
+            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find TaskDef %s".formatted(req.getName())));
         } else {
             ctx.onNext(td.toProto().build());
             ctx.onCompleted();
@@ -241,7 +241,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public void getExternalEventDef(ExternalEventDefId req, StreamObserver<ExternalEventDef> ctx) {
         ExternalEventDefModel eed = metadataDao().getExternalEventDef(req.getName());
         if (eed == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified ExternalEventDef"));
+            ctx.onError(
+                    new LHApiException(Status.NOT_FOUND, "Couldn't find ExternalEventDef %s".formatted(req.getName())));
         } else {
             ctx.onNext(eed.toProto().build());
             ctx.onCompleted();
@@ -426,9 +427,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
-    public void putTenant(PutTenantRequest req, StreamObserver<PutTenantResponse> ctx) {
+    public void putTenant(PutTenantRequest req, StreamObserver<Tenant> ctx) {
         PutTenantRequestModel reqModel = LHSerializable.fromProto(req, PutTenantRequestModel.class);
-        processCommand(new MetadataCommandModel(reqModel), ctx, PutTenantResponse.class, true);
+        processCommand(new MetadataCommandModel(reqModel), ctx, Tenant.class, true);
     }
 
     @Override

@@ -13,6 +13,7 @@ import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.util.MetadataCache;
+import lombok.extern.slf4j.Slf4j;
 
 /*
  * Note that this class is a MUCH SIMPLER version of the CoreProcessorDAO. This class
@@ -26,16 +27,19 @@ import io.littlehorse.server.streams.util.MetadataCache;
  * Therefore, we just do everything manually in this class. It's much simpler that
  * way.
  */
+@Slf4j
 public class MetadataProcessorDAOImpl extends ReadOnlyMetadataProcessorDAOImpl implements MetadataProcessorDAO {
 
     private MetadataCommandModel command;
     private final ModelStore lhStore;
-    private final MetadataCache metadataCache;
 
+    /*
+     * TODO Eduwer/Mateo: Why was the metadataCache not used?
+     */
     public MetadataProcessorDAOImpl(ModelStore lhStore, MetadataCache metadataCache, ServerContext context) {
         super(lhStore, metadataCache, context);
         this.lhStore = lhStore;
-        this.metadataCache = metadataCache;
+        // this.metadataCache = metadataCache;
     }
 
     @Override
@@ -48,20 +52,20 @@ public class MetadataProcessorDAOImpl extends ReadOnlyMetadataProcessorDAOImpl i
         return command;
     }
 
-    // Note that as of now, modifying a GlobalGetable is not supported. That may
-    // change when we introduce the `Principal` and `Tenant` GlobalGetable's. At
-    // that time, we will extend this method.
+    // TODO: we should re-use some of the infrastrucutre in the CoreProcessorDAO for putting
+    // and deleting Tags.
     public <U extends Message, T extends GlobalGetable<U>> void put(T getable) {
 
         // The cast is necessary to tell the store that the ObjectId belongs to a
         // GlobalGetable.
         @SuppressWarnings("unchecked")
-        /*AbstractGetable<?> old = get((ObjectIdModel<?, U, T>) getable.getObjectId());
-
+        StoredGetable<?, ?> old = lhStore.get((ObjectIdModel<?, U, T>) getable.getObjectId());
         if (old != null) {
-            throw new IllegalStateException(
-                    "As of now, metadata processor does not support editing values. Coming in future.");
-        }*/
+            log.trace("removing tags for metadata getable {}", getable.getObjectId());
+            for (String tagId : old.getIndexCache().getTagIds()) {
+                lhStore.delete(tagId, StoreableType.TAG);
+            }
+        }
 
         StoredGetable<U, T> toStore = new StoredGetable<U, T>(getable);
         lhStore.put(toStore);

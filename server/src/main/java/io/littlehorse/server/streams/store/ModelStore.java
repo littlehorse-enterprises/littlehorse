@@ -1,5 +1,6 @@
 package io.littlehorse.server.streams.store;
 
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.proto.StoreableType;
 import java.util.Objects;
@@ -30,7 +31,7 @@ public interface ModelStore extends ReadOnlyModelStore {
     }
 
     static ModelStore instanceFor(KeyValueStore<String, Bytes> nativeStore, String tenantId) {
-        if (Objects.equals(tenantId, "default")) {
+        if (Objects.equals(tenantId, LHConstants.DEFAULT_TENANT)) {
             return ModelStore.defaultStore(nativeStore);
         } else {
             return new TenantModelStore(nativeStore, tenantId);
@@ -38,7 +39,7 @@ public interface ModelStore extends ReadOnlyModelStore {
     }
 
     static ReadOnlyModelStore instanceFor(ReadOnlyKeyValueStore<String, Bytes> nativeStore, String tenantId) {
-        if (Objects.equals(tenantId, "default")) {
+        if (Objects.equals(tenantId, LHConstants.DEFAULT_TENANT)) {
             return ModelStore.defaultStore(nativeStore);
         } else {
             return new ReadOnlyTenantStore(nativeStore, tenantId);

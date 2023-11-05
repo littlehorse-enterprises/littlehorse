@@ -6,7 +6,7 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 
 /**
- *
+ * TODO: Eduwer, what is this used for?
  */
 public interface ReadOnlyModelStore {
 
@@ -14,6 +14,7 @@ public interface ReadOnlyModelStore {
 
     <U extends Message, T extends Storeable<U>> T get(String storeableKey, Class<T> cls);
 
+    @SuppressWarnings("unchecked")
     default <U extends Message, T extends AbstractGetable<U>> StoredGetable<U, T> get(ObjectIdModel<?, U, T> id) {
         String key = id.getType().getNumber() + "/";
         key += id.toString();

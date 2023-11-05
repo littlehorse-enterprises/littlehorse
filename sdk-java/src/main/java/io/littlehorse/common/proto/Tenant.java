@@ -5,7 +5,7 @@ package io.littlehorse.common.proto;
 
 /**
  * <pre>
- * This is a GlobalGetable.
+ * This is a GlobalGetable
  * </pre>
  *
  * Protobuf type {@code littlehorse.Tenant}
@@ -47,10 +47,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object id_ = "";
   /**
-   * <pre>
-   * Future versions will include quotas on a per-Tenant basis.
-   * </pre>
-   *
    * <code>string id = 1;</code>
    * @return The id.
    */
@@ -68,10 +64,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * Future versions will include quotas on a per-Tenant basis.
-   * </pre>
-   *
    * <code>string id = 1;</code>
    * @return The bytes for id.
    */
@@ -88,6 +80,44 @@ private static final long serialVersionUID = 0L;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
+  }
+
+  public static final int CREATED_AT_FIELD_NUMBER = 2;
+  private com.google.protobuf.Timestamp createdAt_;
+  /**
+   * <pre>
+   * Future versions will include quotas on a per-Tenant basis.
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * @return Whether the createdAt field is set.
+   */
+  @java.lang.Override
+  public boolean hasCreatedAt() {
+    return createdAt_ != null;
+  }
+  /**
+   * <pre>
+   * Future versions will include quotas on a per-Tenant basis.
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * @return The createdAt.
+   */
+  @java.lang.Override
+  public com.google.protobuf.Timestamp getCreatedAt() {
+    return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+  }
+  /**
+   * <pre>
+   * Future versions will include quotas on a per-Tenant basis.
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
+    return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -107,6 +137,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
     }
+    if (createdAt_ != null) {
+      output.writeMessage(2, getCreatedAt());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -118,6 +151,10 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
+    }
+    if (createdAt_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, getCreatedAt());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -136,6 +173,11 @@ private static final long serialVersionUID = 0L;
 
     if (!getId()
         .equals(other.getId())) return false;
+    if (hasCreatedAt() != other.hasCreatedAt()) return false;
+    if (hasCreatedAt()) {
+      if (!getCreatedAt()
+          .equals(other.getCreatedAt())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -149,6 +191,10 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + ID_FIELD_NUMBER;
     hash = (53 * hash) + getId().hashCode();
+    if (hasCreatedAt()) {
+      hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
+      hash = (53 * hash) + getCreatedAt().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -248,7 +294,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * This is a GlobalGetable.
+   * This is a GlobalGetable
    * </pre>
    *
    * Protobuf type {@code littlehorse.Tenant}
@@ -285,6 +331,11 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       id_ = "";
+      createdAt_ = null;
+      if (createdAtBuilder_ != null) {
+        createdAtBuilder_.dispose();
+        createdAtBuilder_ = null;
+      }
       return this;
     }
 
@@ -320,6 +371,11 @@ private static final long serialVersionUID = 0L;
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.id_ = id_;
+      }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.createdAt_ = createdAtBuilder_ == null
+            ? createdAt_
+            : createdAtBuilder_.build();
       }
     }
 
@@ -372,6 +428,9 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
+      if (other.hasCreatedAt()) {
+        mergeCreatedAt(other.getCreatedAt());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -403,6 +462,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
+            case 18: {
+              input.readMessage(
+                  getCreatedAtFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -422,10 +488,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object id_ = "";
     /**
-     * <pre>
-     * Future versions will include quotas on a per-Tenant basis.
-     * </pre>
-     *
      * <code>string id = 1;</code>
      * @return The id.
      */
@@ -442,10 +504,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Future versions will include quotas on a per-Tenant basis.
-     * </pre>
-     *
      * <code>string id = 1;</code>
      * @return The bytes for id.
      */
@@ -463,10 +521,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Future versions will include quotas on a per-Tenant basis.
-     * </pre>
-     *
      * <code>string id = 1;</code>
      * @param value The id to set.
      * @return This builder for chaining.
@@ -480,10 +534,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Future versions will include quotas on a per-Tenant basis.
-     * </pre>
-     *
      * <code>string id = 1;</code>
      * @return This builder for chaining.
      */
@@ -494,10 +544,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Future versions will include quotas on a per-Tenant basis.
-     * </pre>
-     *
      * <code>string id = 1;</code>
      * @param value The bytes for id to set.
      * @return This builder for chaining.
@@ -510,6 +556,161 @@ private static final long serialVersionUID = 0L;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
+    }
+
+    private com.google.protobuf.Timestamp createdAt_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
+    /**
+     * <pre>
+     * Future versions will include quotas on a per-Tenant basis.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     * @return Whether the createdAt field is set.
+     */
+    public boolean hasCreatedAt() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <pre>
+     * Future versions will include quotas on a per-Tenant basis.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     * @return The createdAt.
+     */
+    public com.google.protobuf.Timestamp getCreatedAt() {
+      if (createdAtBuilder_ == null) {
+        return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+      } else {
+        return createdAtBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Future versions will include quotas on a per-Tenant basis.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     */
+    public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
+      if (createdAtBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        createdAt_ = value;
+      } else {
+        createdAtBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Future versions will include quotas on a per-Tenant basis.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     */
+    public Builder setCreatedAt(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      if (createdAtBuilder_ == null) {
+        createdAt_ = builderForValue.build();
+      } else {
+        createdAtBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Future versions will include quotas on a per-Tenant basis.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     */
+    public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
+      if (createdAtBuilder_ == null) {
+        if (((bitField0_ & 0x00000002) != 0) &&
+          createdAt_ != null &&
+          createdAt_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          getCreatedAtBuilder().mergeFrom(value);
+        } else {
+          createdAt_ = value;
+        }
+      } else {
+        createdAtBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Future versions will include quotas on a per-Tenant basis.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     */
+    public Builder clearCreatedAt() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      createdAt_ = null;
+      if (createdAtBuilder_ != null) {
+        createdAtBuilder_.dispose();
+        createdAtBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Future versions will include quotas on a per-Tenant basis.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     */
+    public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return getCreatedAtFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Future versions will include quotas on a per-Tenant basis.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     */
+    public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
+      if (createdAtBuilder_ != null) {
+        return createdAtBuilder_.getMessageOrBuilder();
+      } else {
+        return createdAt_ == null ?
+            com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+      }
+    }
+    /**
+     * <pre>
+     * Future versions will include quotas on a per-Tenant basis.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+        getCreatedAtFieldBuilder() {
+      if (createdAtBuilder_ == null) {
+        createdAtBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                getCreatedAt(),
+                getParentForChildren(),
+                isClean());
+        createdAt_ = null;
+      }
+      return createdAtBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

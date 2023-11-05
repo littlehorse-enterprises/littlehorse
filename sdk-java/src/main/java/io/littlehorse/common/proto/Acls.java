@@ -20,10 +20,20 @@ public final class Acls {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_Principal_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_Principal_PerTenantAclsEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_Principal_PerTenantAclsEntry_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_Tenant_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_Tenant_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_ServerACLs_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_ServerACLs_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_ServerACL_descriptor;
   static final 
@@ -35,10 +45,10 @@ public final class Acls {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_PutPrincipalRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_PutPrincipalResponse_descriptor;
+    internal_static_littlehorse_PutPrincipalRequest_PerTenantAclsEntry_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_PutPrincipalResponse_fieldAccessorTable;
+      internal_static_littlehorse_PutPrincipalRequest_PerTenantAclsEntry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_DeletePrincipalRequest_descriptor;
   static final 
@@ -49,11 +59,6 @@ public final class Acls {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_PutTenantRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_PutTenantResponse_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_PutTenantResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -63,61 +68,85 @@ public final class Acls {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\nacls.proto\022\013littlehorse\"P\n\tPrincipal\022\n" +
-      "\n\002id\030\001 \001(\t\022$\n\004acls\030\002 \003(\0132\026.littlehorse.S" +
-      "erverACL\022\021\n\ttenant_id\030\003 \003(\t\"\024\n\006Tenant\022\n\n" +
-      "\002id\030\001 \001(\t\"\236\001\n\tServerACL\022+\n\tresources\030\001 \003" +
-      "(\0162\030.littlehorse.ACLResource\022/\n\017allowed_" +
-      "actions\030\002 \003(\0162\026.littlehorse.ACLAction\022\016\n" +
-      "\004name\030\003 \001(\tH\000\022\020\n\006prefix\030\004 \001(\tH\000B\021\n\017resou" +
-      "rce_filter\"m\n\023PutPrincipalRequest\022\n\n\002id\030" +
-      "\001 \001(\t\022$\n\004acls\030\002 \003(\0132\026.littlehorse.Server" +
-      "ACL\022\021\n\ttenant_id\030\003 \003(\t\022\021\n\toverwrite\030\005 \001(" +
-      "\010\"\"\n\024PutPrincipalResponse\022\n\n\002id\030\001 \001(\t\"$\n" +
-      "\026DeletePrincipalRequest\022\n\n\002id\030\001 \001(\t\"\036\n\020P" +
-      "utTenantRequest\022\n\n\002id\030\001 \001(\t\"\037\n\021PutTenant" +
-      "Response\022\n\n\002id\030\001 \001(\t*\204\001\n\013ACLResource\022\020\n\014" +
-      "ACL_WORKFLOW\020\000\022\014\n\010ACL_TASK\020\001\022\026\n\022ACL_EXTE" +
-      "RNAL_EVENT\020\002\022\021\n\rACL_USER_TASK\020\003\022\021\n\rACL_P" +
-      "RINCIPAL\020\004\022\016\n\nACL_TENANT\020\005\022\007\n\003ALL\020\006*C\n\tA" +
-      "CLAction\022\010\n\004READ\020\000\022\007\n\003RUN\020\001\022\022\n\016WRITE_MET" +
-      "ADATA\020\002\022\017\n\013ALL_ACTIONS\020\003B(\n\033io.littlehor" +
-      "se.common.protoP\001Z\007.;modelb\006proto3"
+      "\n\nacls.proto\022\013littlehorse\032\037google/protob" +
+      "uf/timestamp.proto\"\210\002\n\tPrincipal\022\n\n\002id\030\001" +
+      " \001(\t\022.\n\ncreated_at\030\002 \001(\0132\032.google.protob" +
+      "uf.Timestamp\022B\n\017per_tenant_acls\030\003 \003(\0132)." +
+      "littlehorse.Principal.PerTenantAclsEntry" +
+      "\022,\n\013global_acls\030\004 \001(\0132\027.littlehorse.Serv" +
+      "erACLs\032M\n\022PerTenantAclsEntry\022\013\n\003key\030\001 \001(" +
+      "\t\022&\n\005value\030\002 \001(\0132\027.littlehorse.ServerACL" +
+      "s:\0028\001\"D\n\006Tenant\022\n\n\002id\030\001 \001(\t\022.\n\ncreated_a" +
+      "t\030\002 \001(\0132\032.google.protobuf.Timestamp\"2\n\nS" +
+      "erverACLs\022$\n\004acls\030\001 \003(\0132\026.littlehorse.Se" +
+      "rverACL\"\236\001\n\tServerACL\022+\n\tresources\030\001 \003(\016" +
+      "2\030.littlehorse.ACLResource\022/\n\017allowed_ac" +
+      "tions\030\002 \003(\0162\026.littlehorse.ACLAction\022\016\n\004n" +
+      "ame\030\003 \001(\tH\000\022\020\n\006prefix\030\004 \001(\tH\000B\021\n\017resourc" +
+      "e_filter\"\377\001\n\023PutPrincipalRequest\022\n\n\002id\030\001" +
+      " \001(\t\022L\n\017per_tenant_acls\030\002 \003(\01323.littleho" +
+      "rse.PutPrincipalRequest.PerTenantAclsEnt" +
+      "ry\022,\n\013global_acls\030\003 \001(\0132\027.littlehorse.Se" +
+      "rverACLs\022\021\n\toverwrite\030\005 \001(\010\032M\n\022PerTenant" +
+      "AclsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027." +
+      "littlehorse.ServerACLs:\0028\001\"$\n\026DeletePrin" +
+      "cipalRequest\022\n\n\002id\030\001 \001(\t\"\036\n\020PutTenantReq" +
+      "uest\022\n\n\002id\030\001 \001(\t*\204\001\n\013ACLResource\022\020\n\014ACL_" +
+      "WORKFLOW\020\000\022\014\n\010ACL_TASK\020\001\022\026\n\022ACL_EXTERNAL" +
+      "_EVENT\020\002\022\021\n\rACL_USER_TASK\020\003\022\021\n\rACL_PRINC" +
+      "IPAL\020\004\022\016\n\nACL_TENANT\020\005\022\007\n\003ALL\020\006*C\n\tACLAc" +
+      "tion\022\010\n\004READ\020\000\022\007\n\003RUN\020\001\022\022\n\016WRITE_METADAT" +
+      "A\020\002\022\017\n\013ALL_ACTIONS\020\003BC\n\033io.littlehorse.c" +
+      "ommon.protoP\001Z\007.;model\252\002\030LittleHorse.Com" +
+      "mon.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          com.google.protobuf.TimestampProto.getDescriptor(),
         });
     internal_static_littlehorse_Principal_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_littlehorse_Principal_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_Principal_descriptor,
-        new java.lang.String[] { "Id", "Acls", "TenantId", });
+        new java.lang.String[] { "Id", "CreatedAt", "PerTenantAcls", "GlobalAcls", });
+    internal_static_littlehorse_Principal_PerTenantAclsEntry_descriptor =
+      internal_static_littlehorse_Principal_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_Principal_PerTenantAclsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_Principal_PerTenantAclsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_Tenant_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_Tenant_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_Tenant_descriptor,
-        new java.lang.String[] { "Id", });
-    internal_static_littlehorse_ServerACL_descriptor =
+        new java.lang.String[] { "Id", "CreatedAt", });
+    internal_static_littlehorse_ServerACLs_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_littlehorse_ServerACLs_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_ServerACLs_descriptor,
+        new java.lang.String[] { "Acls", });
+    internal_static_littlehorse_ServerACL_descriptor =
+      getDescriptor().getMessageTypes().get(3);
     internal_static_littlehorse_ServerACL_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ServerACL_descriptor,
         new java.lang.String[] { "Resources", "AllowedActions", "Name", "Prefix", "ResourceFilter", });
     internal_static_littlehorse_PutPrincipalRequest_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_littlehorse_PutPrincipalRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_PutPrincipalRequest_descriptor,
-        new java.lang.String[] { "Id", "Acls", "TenantId", "Overwrite", });
-    internal_static_littlehorse_PutPrincipalResponse_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_littlehorse_PutPrincipalResponse_fieldAccessorTable = new
+        new java.lang.String[] { "Id", "PerTenantAcls", "GlobalAcls", "Overwrite", });
+    internal_static_littlehorse_PutPrincipalRequest_PerTenantAclsEntry_descriptor =
+      internal_static_littlehorse_PutPrincipalRequest_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_PutPrincipalRequest_PerTenantAclsEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_PutPrincipalResponse_descriptor,
-        new java.lang.String[] { "Id", });
+        internal_static_littlehorse_PutPrincipalRequest_PerTenantAclsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_DeletePrincipalRequest_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_littlehorse_DeletePrincipalRequest_fieldAccessorTable = new
@@ -130,12 +159,7 @@ public final class Acls {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_PutTenantRequest_descriptor,
         new java.lang.String[] { "Id", });
-    internal_static_littlehorse_PutTenantResponse_descriptor =
-      getDescriptor().getMessageTypes().get(7);
-    internal_static_littlehorse_PutTenantResponse_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_PutTenantResponse_descriptor,
-        new java.lang.String[] { "Id", });
+    com.google.protobuf.TimestampProto.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

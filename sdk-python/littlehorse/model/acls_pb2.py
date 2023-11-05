@@ -11,9 +11,10 @@ from google.protobuf.internal import builder as _builder
 _sym_db = _symbol_database.Default()
 
 
+from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nacls.proto\x12\x0blittlehorse\"P\n\tPrincipal\x12\n\n\x02id\x18\x01 \x01(\t\x12$\n\x04\x61\x63ls\x18\x02 \x03(\x0b\x32\x16.littlehorse.ServerACL\x12\x11\n\ttenant_id\x18\x03 \x03(\t\"\x14\n\x06Tenant\x12\n\n\x02id\x18\x01 \x01(\t\"\x9e\x01\n\tServerACL\x12+\n\tresources\x18\x01 \x03(\x0e\x32\x18.littlehorse.ACLResource\x12/\n\x0f\x61llowed_actions\x18\x02 \x03(\x0e\x32\x16.littlehorse.ACLAction\x12\x0e\n\x04name\x18\x03 \x01(\tH\x00\x12\x10\n\x06prefix\x18\x04 \x01(\tH\x00\x42\x11\n\x0fresource_filter\"m\n\x13PutPrincipalRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12$\n\x04\x61\x63ls\x18\x02 \x03(\x0b\x32\x16.littlehorse.ServerACL\x12\x11\n\ttenant_id\x18\x03 \x03(\t\x12\x11\n\toverwrite\x18\x05 \x01(\x08\"\"\n\x14PutPrincipalResponse\x12\n\n\x02id\x18\x01 \x01(\t\"$\n\x16\x44\x65letePrincipalRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\x1e\n\x10PutTenantRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\x1f\n\x11PutTenantResponse\x12\n\n\x02id\x18\x01 \x01(\t*\x84\x01\n\x0b\x41\x43LResource\x12\x10\n\x0c\x41\x43L_WORKFLOW\x10\x00\x12\x0c\n\x08\x41\x43L_TASK\x10\x01\x12\x16\n\x12\x41\x43L_EXTERNAL_EVENT\x10\x02\x12\x11\n\rACL_USER_TASK\x10\x03\x12\x11\n\rACL_PRINCIPAL\x10\x04\x12\x0e\n\nACL_TENANT\x10\x05\x12\x07\n\x03\x41LL\x10\x06*C\n\tACLAction\x12\x08\n\x04READ\x10\x00\x12\x07\n\x03RUN\x10\x01\x12\x12\n\x0eWRITE_METADATA\x10\x02\x12\x0f\n\x0b\x41LL_ACTIONS\x10\x03\x42(\n\x1bio.littlehorse.common.protoP\x01Z\x07.;modelb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nacls.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\"\x88\x02\n\tPrincipal\x12\n\n\x02id\x18\x01 \x01(\t\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x42\n\x0fper_tenant_acls\x18\x03 \x03(\x0b\x32).littlehorse.Principal.PerTenantAclsEntry\x12,\n\x0bglobal_acls\x18\x04 \x01(\x0b\x32\x17.littlehorse.ServerACLs\x1aM\n\x12PerTenantAclsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12&\n\x05value\x18\x02 \x01(\x0b\x32\x17.littlehorse.ServerACLs:\x02\x38\x01\"D\n\x06Tenant\x12\n\n\x02id\x18\x01 \x01(\t\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"2\n\nServerACLs\x12$\n\x04\x61\x63ls\x18\x01 \x03(\x0b\x32\x16.littlehorse.ServerACL\"\x9e\x01\n\tServerACL\x12+\n\tresources\x18\x01 \x03(\x0e\x32\x18.littlehorse.ACLResource\x12/\n\x0f\x61llowed_actions\x18\x02 \x03(\x0e\x32\x16.littlehorse.ACLAction\x12\x0e\n\x04name\x18\x03 \x01(\tH\x00\x12\x10\n\x06prefix\x18\x04 \x01(\tH\x00\x42\x11\n\x0fresource_filter\"\xff\x01\n\x13PutPrincipalRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12L\n\x0fper_tenant_acls\x18\x02 \x03(\x0b\x32\x33.littlehorse.PutPrincipalRequest.PerTenantAclsEntry\x12,\n\x0bglobal_acls\x18\x03 \x01(\x0b\x32\x17.littlehorse.ServerACLs\x12\x11\n\toverwrite\x18\x05 \x01(\x08\x1aM\n\x12PerTenantAclsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12&\n\x05value\x18\x02 \x01(\x0b\x32\x17.littlehorse.ServerACLs:\x02\x38\x01\"$\n\x16\x44\x65letePrincipalRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\x1e\n\x10PutTenantRequest\x12\n\n\x02id\x18\x01 \x01(\t*\x84\x01\n\x0b\x41\x43LResource\x12\x10\n\x0c\x41\x43L_WORKFLOW\x10\x00\x12\x0c\n\x08\x41\x43L_TASK\x10\x01\x12\x16\n\x12\x41\x43L_EXTERNAL_EVENT\x10\x02\x12\x11\n\rACL_USER_TASK\x10\x03\x12\x11\n\rACL_PRINCIPAL\x10\x04\x12\x0e\n\nACL_TENANT\x10\x05\x12\x07\n\x03\x41LL\x10\x06*C\n\tACLAction\x12\x08\n\x04READ\x10\x00\x12\x07\n\x03RUN\x10\x01\x12\x12\n\x0eWRITE_METADATA\x10\x02\x12\x0f\n\x0b\x41LL_ACTIONS\x10\x03\x42\x43\n\x1bio.littlehorse.common.protoP\x01Z\x07.;model\xaa\x02\x18LittleHorse.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -21,25 +22,31 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'acls_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  DESCRIPTOR._serialized_options = b'\n\033io.littlehorse.common.protoP\001Z\007.;model'
-  _globals['_ACLRESOURCE']._serialized_start=543
-  _globals['_ACLRESOURCE']._serialized_end=675
-  _globals['_ACLACTION']._serialized_start=677
-  _globals['_ACLACTION']._serialized_end=744
-  _globals['_PRINCIPAL']._serialized_start=27
-  _globals['_PRINCIPAL']._serialized_end=107
-  _globals['_TENANT']._serialized_start=109
-  _globals['_TENANT']._serialized_end=129
-  _globals['_SERVERACL']._serialized_start=132
-  _globals['_SERVERACL']._serialized_end=290
-  _globals['_PUTPRINCIPALREQUEST']._serialized_start=292
-  _globals['_PUTPRINCIPALREQUEST']._serialized_end=401
-  _globals['_PUTPRINCIPALRESPONSE']._serialized_start=403
-  _globals['_PUTPRINCIPALRESPONSE']._serialized_end=437
-  _globals['_DELETEPRINCIPALREQUEST']._serialized_start=439
-  _globals['_DELETEPRINCIPALREQUEST']._serialized_end=475
-  _globals['_PUTTENANTREQUEST']._serialized_start=477
-  _globals['_PUTTENANTREQUEST']._serialized_end=507
-  _globals['_PUTTENANTRESPONSE']._serialized_start=509
-  _globals['_PUTTENANTRESPONSE']._serialized_end=540
+  DESCRIPTOR._serialized_options = b'\n\033io.littlehorse.common.protoP\001Z\007.;model\252\002\030LittleHorse.Common.Proto'
+  _PRINCIPAL_PERTENANTACLSENTRY._options = None
+  _PRINCIPAL_PERTENANTACLSENTRY._serialized_options = b'8\001'
+  _PUTPRINCIPALREQUEST_PERTENANTACLSENTRY._options = None
+  _PUTPRINCIPALREQUEST_PERTENANTACLSENTRY._serialized_options = b'8\001'
+  _globals['_ACLRESOURCE']._serialized_start=939
+  _globals['_ACLRESOURCE']._serialized_end=1071
+  _globals['_ACLACTION']._serialized_start=1073
+  _globals['_ACLACTION']._serialized_end=1140
+  _globals['_PRINCIPAL']._serialized_start=61
+  _globals['_PRINCIPAL']._serialized_end=325
+  _globals['_PRINCIPAL_PERTENANTACLSENTRY']._serialized_start=248
+  _globals['_PRINCIPAL_PERTENANTACLSENTRY']._serialized_end=325
+  _globals['_TENANT']._serialized_start=327
+  _globals['_TENANT']._serialized_end=395
+  _globals['_SERVERACLS']._serialized_start=397
+  _globals['_SERVERACLS']._serialized_end=447
+  _globals['_SERVERACL']._serialized_start=450
+  _globals['_SERVERACL']._serialized_end=608
+  _globals['_PUTPRINCIPALREQUEST']._serialized_start=611
+  _globals['_PUTPRINCIPALREQUEST']._serialized_end=866
+  _globals['_PUTPRINCIPALREQUEST_PERTENANTACLSENTRY']._serialized_start=248
+  _globals['_PUTPRINCIPALREQUEST_PERTENANTACLSENTRY']._serialized_end=325
+  _globals['_DELETEPRINCIPALREQUEST']._serialized_start=868
+  _globals['_DELETEPRINCIPALREQUEST']._serialized_end=904
+  _globals['_PUTTENANTREQUEST']._serialized_start=906
+  _globals['_PUTTENANTREQUEST']._serialized_end=936
 # @@protoc_insertion_point(module_scope)

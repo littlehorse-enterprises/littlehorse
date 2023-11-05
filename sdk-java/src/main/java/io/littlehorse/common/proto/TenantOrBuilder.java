@@ -8,22 +8,41 @@ public interface TenantOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * Future versions will include quotas on a per-Tenant basis.
-   * </pre>
-   *
    * <code>string id = 1;</code>
    * @return The id.
    */
   java.lang.String getId();
   /**
-   * <pre>
-   * Future versions will include quotas on a per-Tenant basis.
-   * </pre>
-   *
    * <code>string id = 1;</code>
    * @return The bytes for id.
    */
   com.google.protobuf.ByteString
       getIdBytes();
+
+  /**
+   * <pre>
+   * Future versions will include quotas on a per-Tenant basis.
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * @return Whether the createdAt field is set.
+   */
+  boolean hasCreatedAt();
+  /**
+   * <pre>
+   * Future versions will include quotas on a per-Tenant basis.
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * @return The createdAt.
+   */
+  com.google.protobuf.Timestamp getCreatedAt();
+  /**
+   * <pre>
+   * Future versions will include quotas on a per-Tenant basis.
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 }

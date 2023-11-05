@@ -103,6 +103,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
             case PUT_PRINCIPAL:
                 out.setPutPrincipal(putPrincipal.toProto());
                 break;
+            case DELETE_PRINCIPAL:
+                out.setDeletePrincipal(deletePrincipal.toProto());
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }
@@ -152,6 +155,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 break;
             case PUT_PRINCIPAL:
                 putPrincipal = LHSerializable.fromProto(p.getPutPrincipal(), PutPrincipalRequestModel.class);
+                break;
+            case DELETE_PRINCIPAL:
+                deletePrincipal = LHSerializable.fromProto(p.getDeletePrincipal(), DeletePrincipalRequestModel.class);
                 break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");

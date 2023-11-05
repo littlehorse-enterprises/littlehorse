@@ -193,32 +193,6 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
         return scheduledTask;
     }
 
-    // // This method should only be called if we have a serious unknown bug in
-    // // LittleHorse that causes an unexpected exception to occur while executing
-    // // CommandProcessor#process().
-    // @Override
-    // public void abortChangesAndMarkWfRunFailed(Throwable failure, String wfRunId)
-    // {
-    // // if the wfRun exists: we want to mark it as failed with a message.
-    // // Else, do nothing.
-    // WfRunModel wfRunModel = storageManager.get(wfRunId, WfRunModel.class);
-    // if (wfRunModel != null) {
-    // log.warn("Marking wfRun {} as failed due to internal LH exception", wfRunId);
-    // ThreadRunModel entrypoint = wfRunModel.getThreadRun(0);
-    // entrypoint.setStatus(LHStatus.ERROR);
-
-    // String message = "Had an internal LH failur processing command of type "
-    // + command.getType()
-    // + ": "
-    // + failure.getMessage();
-    // entrypoint.setErrorMessage(message);
-    // storageManager.abortAndUpdate(wfRunModel);
-    // } else {
-    // log.warn("Caught internal LH error but found no WfRun with id {}", wfRunId);
-    // }
-    // clearThingsToWrite();
-    // }
-
     @Override
     public String getCoreCmdTopic() {
         return config.getCoreCmdTopicName();

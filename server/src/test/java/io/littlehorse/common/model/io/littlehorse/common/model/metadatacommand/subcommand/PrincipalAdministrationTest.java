@@ -20,7 +20,6 @@ import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.MetadataCache;
-
 import java.util.List;
 import java.util.Optional;
 import org.apache.kafka.common.serialization.Serdes;
@@ -200,5 +199,4 @@ public class PrincipalAdministrationTest {
         assertThat(storedPrincipal).isNotNull();
         return storedPrincipal.getStoredObject();
     }
-
 }

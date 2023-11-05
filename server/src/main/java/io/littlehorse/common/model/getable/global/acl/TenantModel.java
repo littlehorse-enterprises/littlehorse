@@ -6,6 +6,7 @@ import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.proto.Tenant;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
@@ -15,12 +16,15 @@ import java.util.List;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class TenantModel extends GlobalGetable<Tenant> {
 
     private String id;
+    private Date createdAt;
 
     public TenantModel() {}
 
@@ -38,13 +42,14 @@ public class TenantModel extends GlobalGetable<Tenant> {
 
     @Override
     public Tenant.Builder toProto() {
-        return Tenant.newBuilder().setId(id);
+        return Tenant.newBuilder().setId(id).setCreatedAt(LHUtil.fromDate(createdAt));
     }
 
     @Override
     public void initFrom(Message proto) throws LHSerdeError {
         Tenant tenant = (Tenant) proto;
         this.id = tenant.getId();
+        this.createdAt = LHUtil.fromProtoTs(tenant.getCreatedAt());
     }
 
     @Override
@@ -54,7 +59,8 @@ public class TenantModel extends GlobalGetable<Tenant> {
 
     @Override
     public Date getCreatedAt() {
-        return new Date();
+        if (createdAt == null) createdAt = new Date();
+        return createdAt;
     }
 
     @Override

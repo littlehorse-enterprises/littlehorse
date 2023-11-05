@@ -32,79 +32,103 @@ public interface PrincipalOrBuilder extends
       getIdBytes();
 
   /**
-   * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * @return Whether the createdAt field is set.
    */
-  java.util.List<io.littlehorse.common.proto.ServerACL> 
-      getAclsList();
+  boolean hasCreatedAt();
   /**
-   * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * @return The createdAt.
    */
-  io.littlehorse.common.proto.ServerACL getAcls(int index);
+  com.google.protobuf.Timestamp getCreatedAt();
   /**
-   * <code>repeated .littlehorse.ServerACL acls = 2;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
-  int getAclsCount();
-  /**
-   * <code>repeated .littlehorse.ServerACL acls = 2;</code>
-   */
-  java.util.List<? extends io.littlehorse.common.proto.ServerACLOrBuilder> 
-      getAclsOrBuilderList();
-  /**
-   * <code>repeated .littlehorse.ServerACL acls = 2;</code>
-   */
-  io.littlehorse.common.proto.ServerACLOrBuilder getAclsOrBuilder(
-      int index);
+  com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
    * <pre>
-   * Used for multi-tenancy of the LittleHorse Server.
-   *
-   * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-   * way multi-tenancy works is that the
+   * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+   * execute *within that Tenant*
    * </pre>
    *
-   * <code>repeated string tenant_id = 3;</code>
-   * @return A list containing the tenantId.
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
    */
-  java.util.List<java.lang.String>
-      getTenantIdList();
+  int getPerTenantAclsCount();
   /**
    * <pre>
-   * Used for multi-tenancy of the LittleHorse Server.
-   *
-   * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-   * way multi-tenancy works is that the
+   * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+   * execute *within that Tenant*
    * </pre>
    *
-   * <code>repeated string tenant_id = 3;</code>
-   * @return The count of tenantId.
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
    */
-  int getTenantIdCount();
+  boolean containsPerTenantAcls(
+      java.lang.String key);
+  /**
+   * Use {@link #getPerTenantAclsMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs>
+  getPerTenantAcls();
   /**
    * <pre>
-   * Used for multi-tenancy of the LittleHorse Server.
-   *
-   * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-   * way multi-tenancy works is that the
+   * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+   * execute *within that Tenant*
    * </pre>
    *
-   * <code>repeated string tenant_id = 3;</code>
-   * @param index The index of the element to return.
-   * @return The tenantId at the given index.
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
    */
-  java.lang.String getTenantId(int index);
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.ServerACLs>
+  getPerTenantAclsMap();
   /**
    * <pre>
-   * Used for multi-tenancy of the LittleHorse Server.
-   *
-   * NOTE: the principal id (field 1) MUST be unique across all tenants. The
-   * way multi-tenancy works is that the
+   * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+   * execute *within that Tenant*
    * </pre>
    *
-   * <code>repeated string tenant_id = 3;</code>
-   * @param index The index of the value to return.
-   * @return The bytes of the tenantId at the given index.
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
    */
-  com.google.protobuf.ByteString
-      getTenantIdBytes(int index);
+  /* nullable */
+io.littlehorse.common.proto.ServerACLs getPerTenantAclsOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.common.proto.ServerACLs defaultValue);
+  /**
+   * <pre>
+   * Maps a Tenant ID to a list of ACL's that the Principal has permission to
+   * execute *within that Tenant*
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
+   */
+  io.littlehorse.common.proto.ServerACLs getPerTenantAclsOrThrow(
+      java.lang.String key);
+
+  /**
+   * <pre>
+   * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
+   * </pre>
+   *
+   * <code>.littlehorse.ServerACLs global_acls = 4;</code>
+   * @return Whether the globalAcls field is set.
+   */
+  boolean hasGlobalAcls();
+  /**
+   * <pre>
+   * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
+   * </pre>
+   *
+   * <code>.littlehorse.ServerACLs global_acls = 4;</code>
+   * @return The globalAcls.
+   */
+  io.littlehorse.common.proto.ServerACLs getGlobalAcls();
+  /**
+   * <pre>
+   * Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
+   * </pre>
+   *
+   * <code>.littlehorse.ServerACLs global_acls = 4;</code>
+   */
+  io.littlehorse.common.proto.ServerACLsOrBuilder getGlobalAclsOrBuilder();
 }

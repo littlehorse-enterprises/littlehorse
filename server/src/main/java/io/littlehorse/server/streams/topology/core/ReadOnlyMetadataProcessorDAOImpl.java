@@ -1,20 +1,31 @@
 package io.littlehorse.server.streams.topology.core;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
+import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
+import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.proto.ACLAction;
+import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.Principal;
 import io.littlehorse.common.proto.StoreableType;
+import io.littlehorse.common.proto.Tenant;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
@@ -68,6 +79,18 @@ public class ReadOnlyMetadataProcessorDAOImpl implements ReadOnlyMetadataProcess
 
     @SuppressWarnings("unchecked")
     @Override
+    public TenantModel getTenant(String name) {
+        TenantIdModel id = new TenantIdModel(name);
+        Supplier<TenantModel> findTenant = () -> {
+            StoredGetable<Tenant, TenantModel> storedResult = lhStore.get(id.getStoreableKey(), StoredGetable.class);
+            return storedResult.getStoredObject();
+        };
+
+        return (TenantModel) metadataCache.getOrCache(id, findTenant::get);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
     public TaskDefModel getTaskDef(String name) {
         TaskDefIdModel id = new TaskDefIdModel(name);
         Supplier<TaskDefModel> findTaskDef = () -> {
@@ -109,8 +132,8 @@ public class ReadOnlyMetadataProcessorDAOImpl implements ReadOnlyMetadataProcess
 
     @Override
     public List<String> adminPrincipalIds() {
-        String startKey = "%s/%s/__isAdmin_true"
-                .formatted(StoreableType.TAG.getNumber(), GetableClassEnum.PRINCIPAL.getNumber());
+        String startKey =
+                "%s/%s/__isAdmin_true".formatted(StoreableType.TAG.getNumber(), GetableClassEnum.PRINCIPAL.getNumber());
         String endKey = startKey + "~";
         LHKeyValueIterator<Tag> result = lhStore.range(startKey, endKey, Tag.class);
         List<String> adminPrincipalIds = new ArrayList<>();
@@ -118,5 +141,53 @@ public class ReadOnlyMetadataProcessorDAOImpl implements ReadOnlyMetadataProcess
             adminPrincipalIds.add(tagLHIterKeyValue.getValue().getDescribedObjectId());
         });
         return adminPrincipalIds;
+    }
+
+    /**
+     * NOTE for Eduwer--- after thinking about it a bit, I am not sure if it was a good idea for me to add
+     * this method here. Because:
+     * - Principal is NOT scoped to a Tenant (in the implementation of this commit)
+     * - WfSpec/TaskDef/ExternalEventDef are INDEED scoped to a Tenant
+     *
+     * Which basically means that I think there should be two different DAO's:
+     * - TenantScopedMetadataDAO (WfSpec, TaskDef, etc)
+     * - ClusterScopedMetadataDAO (all the rest)
+     *
+     * Because depending on how this MetadataDAO is instantiated, we may either have a DefaultModelStore
+     * or a TenantModelStore.
+     *
+     * I think the Default or Tenant ones should have separate DAO's. What do you think?
+     */
+    @Override
+    public PrincipalModel getPrincipal(String id) {
+        if (id == null) {
+            id = LHConstants.ANONYMOUS_PRINCIPAL;
+        }
+
+        @SuppressWarnings("unchecked")
+        StoredGetable<Principal, PrincipalModel> storedResult = (StoredGetable<Principal, PrincipalModel>)
+                lhStore.get(new PrincipalIdModel(id).getStoreableKey(), StoredGetable.class);
+
+        if (storedResult == null && id.equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
+            // This means that all of the following are true:
+            // - The `anonymous` Principal has not yet been modified by the customer.
+            // - We just implicitly create it.
+            return createAnonymousPrincipal();
+        }
+
+        return storedResult == null ? null : storedResult.getStoredObject();
+    }
+
+    private static PrincipalModel createAnonymousPrincipal() {
+        List<ACLAction> allActions = List.of(ACLAction.ALL_ACTIONS);
+        List<ACLResource> allResources = List.of(ACLResource.ALL);
+
+        ServerACLsModel acls = new ServerACLsModel();
+        acls.getAcls().add(new ServerACLModel(allResources, allActions));
+
+        PrincipalModel out = new PrincipalModel();
+        out.setId(LHConstants.ANONYMOUS_PRINCIPAL);
+        out.setGlobalAcls(acls);
+        return out;
     }
 }

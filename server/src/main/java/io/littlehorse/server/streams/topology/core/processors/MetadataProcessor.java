@@ -5,7 +5,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.ServerContextImpl;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
-import io.littlehorse.common.model.ServerSubCommand;
+import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
@@ -95,10 +95,10 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
 
     private final class MetadataDAOFactory {
 
-        private final KeyValueStore<String, Bytes> nativeMetadataStore;
+        private final KeyValueStore<String, Bytes> kafkaStreamsStore;
 
         MetadataDAOFactory() {
-            nativeMetadataStore = ctx.getStateStore(ServerTopology.METADATA_STORE);
+            kafkaStreamsStore = ctx.getStateStore(ServerTopology.METADATA_STORE);
         }
 
         MetadataProcessorDAO getDao(MetadataCommandModel command) {
@@ -110,10 +110,10 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
 
         private ModelStore storeFor(MetadataCommandModel command) {
             ModelStore store;
-            if (command.getSubCommand() instanceof ServerSubCommand) {
-                store = ModelStore.defaultStore(nativeMetadataStore);
+            if (command.getSubCommand() instanceof ClusterLevelCommand) {
+                store = ModelStore.defaultStore(kafkaStreamsStore);
             } else {
-                store = ModelStore.instanceFor(nativeMetadataStore, command.getTenantId());
+                store = ModelStore.instanceFor(kafkaStreamsStore, command.getTenantId());
             }
             return store;
         }

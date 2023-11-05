@@ -38,7 +38,6 @@ public class SearchVariableRequestModel
     public VariableCriteriaCase type;
     public NameAndValueRequest value;
     public String wfRunId;
-    private ReadOnlyMetadataProcessorDAO readOnlyDao;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.VARIABLE;
@@ -93,11 +92,9 @@ public class SearchVariableRequestModel
         return out;
     }
 
-    public static SearchVariableRequestModel fromProto(
-            SearchVariableRequest proto, ReadOnlyMetadataProcessorDAO readOnlyDao) {
+    public static SearchVariableRequestModel fromProto(SearchVariableRequest proto, ReadOnlyMetadataProcessorDAO readOnlyDao) {
         SearchVariableRequestModel out = new SearchVariableRequestModel();
         out.initFrom(proto);
-        out.setReadOnlyDao(readOnlyDao);
         return out;
     }
 
@@ -195,10 +192,6 @@ public class SearchVariableRequestModel
             return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
         }
         return null;
-    }
-
-    public void setReadOnlyDao(ReadOnlyMetadataProcessorDAO readOnlyDao) {
-        this.readOnlyDao = readOnlyDao;
     }
 
     private String getVariableValue(VariableValue value) throws LHApiException {

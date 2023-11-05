@@ -2,11 +2,9 @@ package io.littlehorse.server.streams.store;
 
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.proto.StoreableType;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-@Slf4j
 class DefaultModelStore extends ReadOnlyModelDefaultStore implements ModelStore {
 
     private final SerdeModelStore serdeModelStore;
