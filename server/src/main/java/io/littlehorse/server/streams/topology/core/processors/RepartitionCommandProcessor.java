@@ -2,8 +2,8 @@ package io.littlehorse.server.streams.topology.core.processors;
 
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
+import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.TaskMetricUpdateModel;
+import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.WfMetricUpdateModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
@@ -49,8 +49,8 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
     }
 
     private void cleanOldTaskMetrics(Date daysAgo) {
-        try (LHKeyValueIterator<TaskMetricUpdate> iter =
-                store.range("", LHUtil.toLhDbFormat(daysAgo), TaskMetricUpdate.class)) {
+        try (LHKeyValueIterator<TaskMetricUpdateModel> iter =
+                store.range("", LHUtil.toLhDbFormat(daysAgo), TaskMetricUpdateModel.class)) {
             while (iter.hasNext()) {
                 log.trace("Skipping the cleaning of old metrics as they are currently not implemented.");
                 /*
@@ -67,8 +67,8 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
     }
 
     private void cleanOldWfMetrics(Date daysAgo) {
-        try (LHKeyValueIterator<WfMetricUpdate> iter =
-                store.range("", LHUtil.toLhDbFormat(daysAgo), WfMetricUpdate.class)) {
+        try (LHKeyValueIterator<WfMetricUpdateModel> iter =
+                store.range("", LHUtil.toLhDbFormat(daysAgo), WfMetricUpdateModel.class)) {
             while (iter.hasNext()) {
                 log.trace("Skipping the cleaning of old metrics as they are currently not implemented.");
                 /*
