@@ -26,19 +26,19 @@ public class ServerDAOFactory {
         this.metadataCache = metadataCache;
     }
 
-    public ReadOnlyMetadataDAO getMetadataDao() {
+    public ReadOnlyMetadataProcessorDAO getMetadataDao() {
         final String tenantId = PRINCIPAL.get().getId(); // TODO
         return getMetadataDao(tenantId);
     }
 
-    public ReadOnlyMetadataDAO getMetadataDao(String tenantId) {
+    public ReadOnlyMetadataProcessorDAO getMetadataDao(String tenantId) {
         ReadOnlyKeyValueStore<String, Bytes> allPartitionNativeStore =
                 readOnlyStore(null, ServerTopology.METADATA_STORE);
         return new ReadOnlyMetadataProcessorDAOImpl(
                 ModelStore.instanceFor(allPartitionNativeStore, tenantId), metadataCache, contextFor(tenantId));
     }
 
-    public ReadOnlyMetadataDAO getDefaultMetadataDao() {
+    public ReadOnlyMetadataProcessorDAO getDefaultMetadataDao() {
         ReadOnlyKeyValueStore<String, Bytes> allPartitionNativeStore =
                 readOnlyStore(null, ServerTopology.METADATA_STORE);
         return new ReadOnlyMetadataProcessorDAOImpl(

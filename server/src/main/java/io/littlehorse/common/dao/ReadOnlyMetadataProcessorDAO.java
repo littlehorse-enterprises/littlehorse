@@ -12,7 +12,7 @@ import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import java.util.List;
 
-public interface ReadOnlyMetadataDAO {
+public interface ReadOnlyMetadataProcessorDAO {
 
     UserTaskDefModel getUserTaskDef(String name, Integer version);
 

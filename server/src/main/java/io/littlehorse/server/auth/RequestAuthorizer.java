@@ -9,7 +9,7 @@ import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
+import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.dao.ServerDAOFactory;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.proto.ACLAction;
@@ -43,7 +43,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
             tenantId = LHConstants.DEFAULT_TENANT;
         }
 
-        ReadOnlyMetadataDAO dao = factory.getDefaultMetadataDao();
+        ReadOnlyMetadataProcessorDAO dao = factory.getDefaultMetadataDao();
         try {
             PrincipalModel resolvedPrincipal = dao.getPrincipal(clientId);
             aclVerifier.verify(tenantId, call.getMethodDescriptor(), resolvedPrincipal);

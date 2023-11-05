@@ -5,7 +5,7 @@ import io.littlehorse.common.model.GlobalGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 
-public interface MetadataProcessorDAO extends ReadOnlyMetadataDAO {
+public interface MetadataProcessorDAO extends ReadOnlyMetadataProcessorDAO {
 
     void initCommand(MetadataCommandModel command);
 

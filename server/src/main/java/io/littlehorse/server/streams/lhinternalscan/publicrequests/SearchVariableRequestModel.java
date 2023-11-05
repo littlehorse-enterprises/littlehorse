@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHStore;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
+import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -92,7 +92,7 @@ public class SearchVariableRequestModel
         return out;
     }
 
-    public static SearchVariableRequestModel fromProto(SearchVariableRequest proto, ReadOnlyMetadataDAO readOnlyDao) {
+    public static SearchVariableRequestModel fromProto(SearchVariableRequest proto, ReadOnlyMetadataProcessorDAO readOnlyDao) {
         SearchVariableRequestModel out = new SearchVariableRequestModel();
         out.initFrom(proto);
         return out;
@@ -110,7 +110,7 @@ public class SearchVariableRequestModel
                         .findFirst();
     }
 
-    private TagStorageType indexTypeForSearchFromWfSpec(ReadOnlyMetadataDAO readOnlyDao) {
+    private TagStorageType indexTypeForSearchFromWfSpec(ReadOnlyMetadataProcessorDAO readOnlyDao) {
         boolean isPersistentVariableQuery = !value.hasWfSpecVersion();
 
         // If we're doing a query on a persistent variable, the latest WfSpec is guaranteed to have
@@ -164,7 +164,7 @@ public class SearchVariableRequestModel
     }
 
     @Override
-    public TagStorageType indexTypeForSearch(ReadOnlyMetadataDAO readOnlyDao) {
+    public TagStorageType indexTypeForSearch(ReadOnlyMetadataProcessorDAO readOnlyDao) {
         return getStorageTypeFromVariableIndexConfiguration().orElseGet(() -> {
             TagStorageType result = indexTypeForSearchFromWfSpec(readOnlyDao);
             log.trace("Doing a {} search", result);

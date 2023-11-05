@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.topology.core;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.ServerContext;
-import io.littlehorse.common.dao.ReadOnlyMetadataDAO;
+import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ReadOnlyMetadataProcessorDAOImpl implements ReadOnlyMetadataDAO {
+public class ReadOnlyMetadataProcessorDAOImpl implements ReadOnlyMetadataProcessorDAO {
 
     private final ReadOnlyModelStore lhStore;
     private final MetadataCache metadataCache;
