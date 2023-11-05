@@ -7,7 +7,7 @@ import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.ServerContextImpl;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.AbstractCommand;
-import io.littlehorse.common.model.ServerSubCommand;
+import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
@@ -174,7 +174,7 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
 
         private ModelStore storeFor(CommandModel command, KeyValueStore<String, Bytes> nativeStore) {
             ModelStore store;
-            if (command.getSubCommand() instanceof ServerSubCommand) {
+            if (command.getSubCommand() instanceof ClusterLevelCommand) {
                 store = ModelStore.defaultStore(nativeStore);
             } else {
                 store = ModelStore.instanceFor(nativeStore, command.getTenantId());

@@ -22,14 +22,11 @@ import org.apache.kafka.streams.state.KeyValueStore;
 @Slf4j
 public class RepartitionCommandProcessor implements Processor<String, RepartitionCommand, Void, Void> {
 
-    private LHServerConfig config;
     private ProcessorContext<Void, Void> ctx;
 
     private KeyValueStore<String, Bytes> nativeStore;
 
-    public RepartitionCommandProcessor(LHServerConfig config) {
-        this.config = config;
-    }
+    public RepartitionCommandProcessor(LHServerConfig config) {}
 
     public void init(final ProcessorContext<Void, Void> ctx) {
         this.ctx = ctx;

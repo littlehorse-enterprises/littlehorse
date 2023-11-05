@@ -5,7 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.ServerSubCommand;
+import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
@@ -13,7 +13,7 @@ import io.littlehorse.common.proto.PutTenantRequest;
 import io.littlehorse.common.proto.Tenant;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 
-public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> implements ServerSubCommand {
+public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> implements ClusterLevelCommand {
 
     private String id;
 

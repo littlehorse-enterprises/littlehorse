@@ -3,7 +3,6 @@ package io.littlehorse.server.streams.store;
 import com.google.protobuf.Message;
 import io.littlehorse.common.Storeable;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
@@ -15,18 +14,20 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * with different value types using Kafka Streams' standard API.
  *
  * However, the problem with multiple stores is that each store gets its own
- * changelog topic with many partitions, and additionally each changelog topic
- * causes another Consumer Group to be created among standby tasks. Those two
- * facts mean that more stores --> much longer consumer rebalance times when
- * you have a lot of input partitions. The performance and stability benefits
+ * changelog topic with many partitions, and each partition means there is another
+ * RocksDB instance opened up. Those two facts mean that more stores -->
+ * - More load on the Kafka brokers due to additional partitions.
+ * - Slower startup time because more RocksDB's must be opened.
+ * - More TopicPartition's involved in each Transaction, which hurts performance
+ *   slightly.
+ * The performance and stability benefits
  * of consolidating into one state store far outweigh the extra code written
  * in this directory.
  *
- * Lastly, having a single point of entry for all reads/puts to RocksDB make the
+ * Lastly, having a single point of entry for all reads/puts to RocksDB makes the
  * implementation of Multi-Tenancy much easier: just put a prefix on all keys
  * for a given namespace.
  */
-@Slf4j
 public class ReadOnlyTenantStore implements ReadOnlyModelStore {
 
     @Getter
