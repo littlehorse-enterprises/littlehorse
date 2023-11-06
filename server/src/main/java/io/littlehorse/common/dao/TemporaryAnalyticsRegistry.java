@@ -1,13 +1,5 @@
 package io.littlehorse.common.dao;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.kafka.streams.processor.api.ProcessorContext;
-import org.apache.kafka.streams.processor.api.Record;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
@@ -20,7 +12,14 @@ import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
 
 /**
  * TEMPORARY class. Will be re-thought and maybe deleted.
@@ -34,7 +33,8 @@ public class TemporaryAnalyticsRegistry {
     private LHServerConfig config;
     private ProcessorContext<String, CommandProcessorOutput> ctx;
 
-    public TemporaryAnalyticsRegistry(LHServerConfig config, ProcessorContext<String, CommandProcessorOutput> ctx, RocksDBWrapper rocksdb) {
+    public TemporaryAnalyticsRegistry(
+            LHServerConfig config, ProcessorContext<String, CommandProcessorOutput> ctx, RocksDBWrapper rocksdb) {
         this.rocksdb = rocksdb;
         this.config = config;
         this.ctx = ctx;

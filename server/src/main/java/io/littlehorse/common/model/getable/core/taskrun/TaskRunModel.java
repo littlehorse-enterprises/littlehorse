@@ -223,7 +223,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         attempt.setStatus(TaskStatus.TASK_RUNNING);
     }
 
-    public void updateTaskResult(ReportTaskRunModel ce) {        
+    public void updateTaskResult(ReportTaskRunModel ce) {
         if (ce.getAttemptNumber() >= attempts.size()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified Task Attempt does not exist!");
         }
