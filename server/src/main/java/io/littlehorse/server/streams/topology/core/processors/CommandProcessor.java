@@ -144,6 +144,7 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
     }
 
     private void forwardMetricsUpdates(long timestamp) {
+        log.warn("Forwarding metrics!");
         dao.getRegistry().forwardAndClearMetricsUpdatesUntil();
     }
 }

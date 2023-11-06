@@ -22,6 +22,9 @@ import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * TEMPORARY class. Will be re-thought and maybe deleted.
+ */
 @Slf4j
 public class TemporaryAnalyticsRegistry {
 
@@ -44,6 +47,9 @@ public class TemporaryAnalyticsRegistry {
         out.add(getWmUpdate(time, MetricsWindowLength.MINUTES_5, wfSpecName, wfSpecVersion));
         out.add(getWmUpdate(time, MetricsWindowLength.HOURS_2, wfSpecName, wfSpecVersion));
         out.add(getWmUpdate(time, MetricsWindowLength.DAYS_1, wfSpecName, wfSpecVersion));
+        out.add(getWmUpdate(time, MetricsWindowLength.MINUTES_5, LHConstants.CLUSTER_LEVEL_METRIC, 0));
+        out.add(getWmUpdate(time, MetricsWindowLength.HOURS_2, LHConstants.CLUSTER_LEVEL_METRIC, 0));
+        out.add(getWmUpdate(time, MetricsWindowLength.DAYS_1, LHConstants.CLUSTER_LEVEL_METRIC, 0));
         return out;
     }
 
@@ -73,6 +79,9 @@ public class TemporaryAnalyticsRegistry {
         out.add(getTmUpdate(time, MetricsWindowLength.MINUTES_5, taskDefName));
         out.add(getTmUpdate(time, MetricsWindowLength.HOURS_2, taskDefName));
         out.add(getTmUpdate(time, MetricsWindowLength.DAYS_1, taskDefName));
+        out.add(getTmUpdate(time, MetricsWindowLength.MINUTES_5, LHConstants.CLUSTER_LEVEL_METRIC));
+        out.add(getTmUpdate(time, MetricsWindowLength.HOURS_2, LHConstants.CLUSTER_LEVEL_METRIC));
+        out.add(getTmUpdate(time, MetricsWindowLength.DAYS_1, LHConstants.CLUSTER_LEVEL_METRIC));
         return out;
     }
 
@@ -194,5 +203,55 @@ public class TemporaryAnalyticsRegistry {
         Record<String, CommandProcessorOutput> out =
                 new Record<>(wmu.getPartitionKey(), cpo, System.currentTimeMillis());
         ctx.forward(out);
+    }
+
+    public void onWfStart(String wfSpecName, int wfSpecVersion) {
+        for (WfMetricUpdateModel wmu : getWfMetricWindows(wfSpecName, wfSpecVersion, new Date())) {
+            wmu.numEntries++;
+            wmu.totalStarted++;
+        }
+    }
+
+    public void onTaskScheduled(String taskDefName) {
+        for (TaskMetricUpdateModel tmu : getTaskMetricWindows(taskDefName, new Date())) {
+            tmu.numEntries++;
+            tmu.totalScheduled++;
+        }
+    }
+
+    public void onTaskStarted(String taskDefName, Date scheduledTime) {
+        for (TaskMetricUpdateModel tmu : getTaskMetricWindows(taskDefName, new Date())) {
+            tmu.numEntries++;
+            tmu.totalStarted++;
+            long scheduleToStart = System.currentTimeMillis() - scheduledTime.getTime();
+            tmu.scheduleToStartTotal += scheduleToStart;
+            if (scheduleToStart > tmu.scheduleToStartMax) {
+                tmu.scheduleToStartMax = scheduleToStart;
+            }
+        }
+    }
+
+    public void onTaskCompleted(String taskDefName, Date startedTime) {
+        for (TaskMetricUpdateModel tmu : getTaskMetricWindows(taskDefName, new Date())) {
+            tmu.numEntries++;
+            tmu.totalStarted++;
+            long startToComplete = System.currentTimeMillis() - startedTime.getTime();
+            tmu.startToCompleteTotal += startToComplete;
+            if (startToComplete > tmu.startToCompleteMax) {
+                tmu.startToCompleteMax = startToComplete;
+            }
+        }
+    }
+
+    public void onWfCompleted(String wfSpecName, int wfSpecVersion, Date startedTime) {
+        for (WfMetricUpdateModel wmu : getWfMetricWindows(wfSpecName, wfSpecVersion, new Date())) {
+            wmu.numEntries++;
+            wmu.totalCompleted++;
+            long startToComplete = System.currentTimeMillis() - startedTime.getTime();
+            wmu.startToCompleteTotal += startToComplete;
+            if (startToComplete > wmu.startToCompleteMax) {
+                wmu.startToCompleteMax = startToComplete;
+            }
+        }
     }
 }

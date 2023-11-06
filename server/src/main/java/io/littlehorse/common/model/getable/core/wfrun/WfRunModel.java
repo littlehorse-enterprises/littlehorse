@@ -215,6 +215,12 @@ public class WfRunModel extends CoreGetable<WfRun> {
             throw new RuntimeException("Invalid thread name, should be impossible");
         }
 
+        // HACK
+        if (parentThreadId == null) {
+            // then it's a new WfRun.
+            getDao().getRegistry().onWfStart(wfSpecName, wfSpecVersion);
+        }
+
         ThreadRunModel thread = new ThreadRunModel();
         thread.number = threadRuns.size();
         thread.parentThreadId = parentThreadId;
@@ -562,10 +568,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
         // WfRun Status is determined by the Entrypoint Thread
         if (threadRunNumber == 0) {
             // TODO: In the future, there may be some other lifecycle hooks here, such as
-            // forcibly
-            // killing (or waiting for) any child threads. To be determined based on
-            // threading
-            // design.
+            // forcibly killing (or waiting for) any child threads. To be determined based on
+            // threading design.
             if (newStatus == LHStatus.COMPLETED) {
                 endTime = time;
                 setStatus(LHStatus.COMPLETED);
@@ -577,6 +581,9 @@ public class WfRunModel extends CoreGetable<WfRun> {
                 endTime = time;
                 setStatus(LHStatus.EXCEPTION);
             }
+
+            // This is also a hack: ignore failed workflows:
+            getDao().getRegistry().onWfCompleted(wfSpecName, threadRunNumber, startTime);
         }
 
         // ThreadRuns depend on each other, for example Exception Handler Threads or

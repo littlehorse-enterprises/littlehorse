@@ -181,6 +181,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     }
 
     public void scheduleAttempt() {
+        // This is a HACK
+        getDao().getRegistry().onTaskScheduled(taskDefName);
+
         ScheduledTaskModel scheduledTask = new ScheduledTaskModel();
         scheduledTask.setVariables(inputVariables);
         scheduledTask.setAttemptNumber(attempts.size());
@@ -198,6 +201,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
 
     public void processStart(TaskClaimEvent se) {
         this.status = TaskStatus.TASK_RUNNING;
+
+        // this is a HACK
+        getDao().getRegistry().onTaskStarted(taskDefName, scheduledAt);
 
         // create a timer to mark the task is timeout if it does not finish
         ReportTaskRunModel taskResult = new ReportTaskRunModel();
@@ -217,12 +223,15 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         attempt.setStatus(TaskStatus.TASK_RUNNING);
     }
 
-    public void updateTaskResult(ReportTaskRunModel ce) {
+    public void updateTaskResult(ReportTaskRunModel ce) {        
         if (ce.getAttemptNumber() >= attempts.size()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified Task Attempt does not exist!");
         }
 
         TaskAttemptModel attempt = attempts.get(ce.getAttemptNumber());
+
+        // This is a hack: we ignore error/exception tasks.
+        getDao().getRegistry().onTaskCompleted(taskDefName, attempt.getStartTime());
 
         if (attempt.getStatus() != TaskStatus.TASK_RUNNING) {
             // The task result has already been processed, so ignore this event.

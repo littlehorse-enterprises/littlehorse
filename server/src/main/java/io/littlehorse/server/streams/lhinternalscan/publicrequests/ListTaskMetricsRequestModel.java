@@ -58,6 +58,8 @@ public class ListTaskMetricsRequestModel
         windowLength = p.getWindowLength();
         taskDefName = p.getTaskDefName();
         limit = numWindows;
+
+        System.out.println("numWindows: " + numWindows);
     }
 
     public GetableClassEnum getObjectType() {

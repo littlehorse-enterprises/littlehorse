@@ -13,9 +13,12 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
 import io.littlehorse.server.streams.store.StoredGetable;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Date;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
+@Slf4j
 public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implements RepartitionSubCommand {
 
     public Date windowStart;
@@ -130,6 +133,7 @@ public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implement
     }
 
     public void process(RocksDBWrapper store, ProcessorContext<Void, Void> ctx) {
+        log.warn("Processing task metric update");
         TaskMetricUpdateModel previousUpdate = store.get(getStoreKey(), getClass());
         if (previousUpdate != null) {
             merge(previousUpdate);
@@ -138,6 +142,8 @@ public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implement
 
         // This is really hacky
         store.put(new StoredGetable<>(toResponse()));
+
+        System.out.println(toResponse().getObjectId());
     }
 
     public String getPartitionKey() {
