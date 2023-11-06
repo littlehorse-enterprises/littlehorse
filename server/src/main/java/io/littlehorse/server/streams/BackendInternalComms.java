@@ -490,6 +490,7 @@ public class BackendInternalComms implements Closeable {
         int partition = meta.partition();
 
         ReadOnlyRocksDBWrapper store = getStore(partition, false, req.storeName);
+        System.out.println(req.storeName);
         PartitionBookmarkPb partBookmark = reqBookmark.getInProgressPartitionsOrDefault(partition, null);
 
         String endKey = req.boundedObjectIdScan.getEndObjectId() + "~";
@@ -501,6 +502,8 @@ public class BackendInternalComms implements Closeable {
         }
         String bookmarkKey = null;
         boolean brokenBecauseOutOfData = true;
+
+        log.warn("Start: {}\nEnd: {}", startKey, endKey);
 
         try (LHKeyValueIterator<?> iter = store.range(
                 StoredGetable.getRocksDBKey(startKey, req.getObjectType()),

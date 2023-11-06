@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto;
 
-public interface WfMetricUpdatePbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.WfMetricUpdatePb)
+public interface WfMetricUpdateOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.WfMetricUpdate)
     com.google.protobuf.MessageOrBuilder {
 
   /**

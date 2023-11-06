@@ -7,16 +7,16 @@ import io.littlehorse.common.model.getable.objectId.WfSpecMetricsIdModel;
 import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.common.proto.WfMetricUpdatePb;
+import io.littlehorse.common.proto.WfMetricUpdate;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streams.store.RocksDBWrapper;
+import io.littlehorse.server.streams.store.StoredGetable;
 import java.util.Date;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
-public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements RepartitionSubCommand {
+public class WfMetricUpdateModel extends Storeable<WfMetricUpdate> implements RepartitionSubCommand {
 
     public Date windowStart;
     public MetricsWindowLength type;
@@ -30,21 +30,21 @@ public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements Repar
     public String wfSpecName;
     public int wfSpecVersion;
 
-    public WfMetricUpdate() {}
+    public WfMetricUpdateModel() {}
 
-    public WfMetricUpdate(Date windowStart, MetricsWindowLength type, String wfSpecName, int wfSpecVersion) {
+    public WfMetricUpdateModel(Date windowStart, MetricsWindowLength type, String wfSpecName, int wfSpecVersion) {
         this.windowStart = windowStart;
         this.type = type;
         this.wfSpecName = wfSpecName;
         this.wfSpecVersion = wfSpecVersion;
     }
 
-    public Class<WfMetricUpdatePb> getProtoBaseClass() {
-        return WfMetricUpdatePb.class;
+    public Class<WfMetricUpdate> getProtoBaseClass() {
+        return WfMetricUpdate.class;
     }
 
-    public WfMetricUpdatePb.Builder toProto() {
-        WfMetricUpdatePb.Builder out = WfMetricUpdatePb.newBuilder()
+    public WfMetricUpdate.Builder toProto() {
+        WfMetricUpdate.Builder out = WfMetricUpdate.newBuilder()
                 .setWindowStart(LHLibUtil.fromDate(windowStart))
                 .setType(type)
                 .setWfSpecName(wfSpecName)
@@ -60,7 +60,7 @@ public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements Repar
     }
 
     public void initFrom(Message proto) {
-        WfMetricUpdatePb p = (WfMetricUpdatePb) proto;
+        WfMetricUpdate p = (WfMetricUpdate) proto;
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
         type = p.getType();
         wfSpecName = p.getWfSpecName();
@@ -73,7 +73,7 @@ public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements Repar
         numEntries = p.getNumEntries();
     }
 
-    public void merge(WfMetricUpdate o) {
+    public void merge(WfMetricUpdateModel o) {
         if (!o.windowStart.equals(windowStart)) {
             throw new RuntimeException("Merging non-matched windows!");
         }
@@ -117,17 +117,14 @@ public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> implements Repar
 
     @Override
     public void process(RocksDBWrapper store, ProcessorContext<Void, Void> ctx) {
-        throw new NotImplementedException("Need to re-enable workflow metrics");
-        /*
-         * // Update workflow-level metrics
-         * WfMetricUpdate previousUpdate = store.get(getStoreKey(), getClass());
-         * if (previousUpdate != null) {
-         * merge(previousUpdate);
-         * }
-         * store.put(this);
-         * store.put(toResponse());
-         * log.debug("Put WfMetric object for key {}", toResponse().getStoreKey());
-         */
+        WfMetricUpdateModel previousUpdate = store.get(getStoreKey(), getClass());
+        if (previousUpdate != null) {
+            merge(previousUpdate);
+        }
+        store.put(this);
+
+        // This is really hacky
+        store.put(new StoredGetable<>(toResponse()));
     }
 
     @Override

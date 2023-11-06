@@ -44,9 +44,9 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.TAG;
             case "ScheduledTaskModel":
                 return StoreableType.SCHEDULED_TASK;
-            case "WfMetricUpdate":
+            case "WfMetricUpdateModel":
                 return StoreableType.WF_METRIC_UPDATE;
-            case "TaskMetricUpdate":
+            case "TaskMetricUpdateModel":
                 return StoreableType.TASK_METRIC_UPDATE;
         }
         throw new IllegalArgumentException("Unrecognized Storeable class: " + cls);

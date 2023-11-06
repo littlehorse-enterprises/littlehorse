@@ -4,40 +4,40 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.WfMetricUpdatePb}
+ * Protobuf type {@code littlehorse.TaskMetricUpdate}
  */
-public final class WfMetricUpdatePb extends
+public final class TaskMetricUpdate extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.WfMetricUpdatePb)
-    WfMetricUpdatePbOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.TaskMetricUpdate)
+    TaskMetricUpdateOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use WfMetricUpdatePb.newBuilder() to construct.
-  private WfMetricUpdatePb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use TaskMetricUpdate.newBuilder() to construct.
+  private TaskMetricUpdate(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private WfMetricUpdatePb() {
+  private TaskMetricUpdate() {
     type_ = 0;
-    wfSpecName_ = "";
+    taskDefName_ = "";
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new WfMetricUpdatePb();
+    return new TaskMetricUpdate();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_WfMetricUpdatePb_descriptor;
+    return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_TaskMetricUpdate_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_WfMetricUpdatePb_fieldAccessorTable
+    return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_TaskMetricUpdate_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.WfMetricUpdatePb.class, io.littlehorse.common.proto.WfMetricUpdatePb.Builder.class);
+            io.littlehorse.common.proto.TaskMetricUpdate.class, io.littlehorse.common.proto.TaskMetricUpdate.Builder.class);
   }
 
   public static final int WINDOW_START_FIELD_NUMBER = 1;
@@ -95,6 +95,28 @@ private static final long serialVersionUID = 0L;
     return numEntries_;
   }
 
+  public static final int SCHEDULE_TO_START_MAX_FIELD_NUMBER = 4;
+  private long scheduleToStartMax_ = 0L;
+  /**
+   * <code>int64 schedule_to_start_max = 4;</code>
+   * @return The scheduleToStartMax.
+   */
+  @java.lang.Override
+  public long getScheduleToStartMax() {
+    return scheduleToStartMax_;
+  }
+
+  public static final int SCHEDULE_TO_START_TOTAL_FIELD_NUMBER = 5;
+  private long scheduleToStartTotal_ = 0L;
+  /**
+   * <code>int64 schedule_to_start_total = 5;</code>
+   * @return The scheduleToStartTotal.
+   */
+  @java.lang.Override
+  public long getScheduleToStartTotal() {
+    return scheduleToStartTotal_;
+  }
+
   public static final int START_TO_COMPLETE_MAX_FIELD_NUMBER = 6;
   private long startToCompleteMax_ = 0L;
   /**
@@ -150,54 +172,54 @@ private static final long serialVersionUID = 0L;
     return totalStarted_;
   }
 
-  public static final int WF_SPEC_NAME_FIELD_NUMBER = 11;
+  public static final int TASK_DEF_NAME_FIELD_NUMBER = 11;
   @SuppressWarnings("serial")
-  private volatile java.lang.Object wfSpecName_ = "";
+  private volatile java.lang.Object taskDefName_ = "";
   /**
-   * <code>string wf_spec_name = 11;</code>
-   * @return The wfSpecName.
+   * <code>string task_def_name = 11;</code>
+   * @return The taskDefName.
    */
   @java.lang.Override
-  public java.lang.String getWfSpecName() {
-    java.lang.Object ref = wfSpecName_;
+  public java.lang.String getTaskDefName() {
+    java.lang.Object ref = taskDefName_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      wfSpecName_ = s;
+      taskDefName_ = s;
       return s;
     }
   }
   /**
-   * <code>string wf_spec_name = 11;</code>
-   * @return The bytes for wfSpecName.
+   * <code>string task_def_name = 11;</code>
+   * @return The bytes for taskDefName.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getWfSpecNameBytes() {
-    java.lang.Object ref = wfSpecName_;
+      getTaskDefNameBytes() {
+    java.lang.Object ref = taskDefName_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      wfSpecName_ = b;
+      taskDefName_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
   }
 
-  public static final int WF_SPEC_VERSION_FIELD_NUMBER = 12;
-  private int wfSpecVersion_ = 0;
+  public static final int TOTAL_SCHEDULED_FIELD_NUMBER = 12;
+  private long totalScheduled_ = 0L;
   /**
-   * <code>int32 wf_spec_version = 12;</code>
-   * @return The wfSpecVersion.
+   * <code>int64 total_scheduled = 12;</code>
+   * @return The totalScheduled.
    */
   @java.lang.Override
-  public int getWfSpecVersion() {
-    return wfSpecVersion_;
+  public long getTotalScheduled() {
+    return totalScheduled_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -223,6 +245,12 @@ private static final long serialVersionUID = 0L;
     if (numEntries_ != 0L) {
       output.writeInt64(3, numEntries_);
     }
+    if (scheduleToStartMax_ != 0L) {
+      output.writeInt64(4, scheduleToStartMax_);
+    }
+    if (scheduleToStartTotal_ != 0L) {
+      output.writeInt64(5, scheduleToStartTotal_);
+    }
     if (startToCompleteMax_ != 0L) {
       output.writeInt64(6, startToCompleteMax_);
     }
@@ -238,11 +266,11 @@ private static final long serialVersionUID = 0L;
     if (totalStarted_ != 0L) {
       output.writeInt64(10, totalStarted_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 11, wfSpecName_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 11, taskDefName_);
     }
-    if (wfSpecVersion_ != 0) {
-      output.writeInt32(12, wfSpecVersion_);
+    if (totalScheduled_ != 0L) {
+      output.writeInt64(12, totalScheduled_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -265,6 +293,14 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(3, numEntries_);
     }
+    if (scheduleToStartMax_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(4, scheduleToStartMax_);
+    }
+    if (scheduleToStartTotal_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(5, scheduleToStartTotal_);
+    }
     if (startToCompleteMax_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(6, startToCompleteMax_);
@@ -285,12 +321,12 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(10, totalStarted_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecName_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, wfSpecName_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, taskDefName_);
     }
-    if (wfSpecVersion_ != 0) {
+    if (totalScheduled_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(12, wfSpecVersion_);
+        .computeInt64Size(12, totalScheduled_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -302,10 +338,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.WfMetricUpdatePb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.TaskMetricUpdate)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.WfMetricUpdatePb other = (io.littlehorse.common.proto.WfMetricUpdatePb) obj;
+    io.littlehorse.common.proto.TaskMetricUpdate other = (io.littlehorse.common.proto.TaskMetricUpdate) obj;
 
     if (hasWindowStart() != other.hasWindowStart()) return false;
     if (hasWindowStart()) {
@@ -315,6 +351,10 @@ private static final long serialVersionUID = 0L;
     if (type_ != other.type_) return false;
     if (getNumEntries()
         != other.getNumEntries()) return false;
+    if (getScheduleToStartMax()
+        != other.getScheduleToStartMax()) return false;
+    if (getScheduleToStartTotal()
+        != other.getScheduleToStartTotal()) return false;
     if (getStartToCompleteMax()
         != other.getStartToCompleteMax()) return false;
     if (getStartToCompleteTotal()
@@ -325,10 +365,10 @@ private static final long serialVersionUID = 0L;
         != other.getTotalErrored()) return false;
     if (getTotalStarted()
         != other.getTotalStarted()) return false;
-    if (!getWfSpecName()
-        .equals(other.getWfSpecName())) return false;
-    if (getWfSpecVersion()
-        != other.getWfSpecVersion()) return false;
+    if (!getTaskDefName()
+        .equals(other.getTaskDefName())) return false;
+    if (getTotalScheduled()
+        != other.getTotalScheduled()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -349,6 +389,12 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + NUM_ENTRIES_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getNumEntries());
+    hash = (37 * hash) + SCHEDULE_TO_START_MAX_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getScheduleToStartMax());
+    hash = (37 * hash) + SCHEDULE_TO_START_TOTAL_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getScheduleToStartTotal());
     hash = (37 * hash) + START_TO_COMPLETE_MAX_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getStartToCompleteMax());
@@ -364,53 +410,54 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + TOTAL_STARTED_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getTotalStarted());
-    hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getWfSpecName().hashCode();
-    hash = (37 * hash) + WF_SPEC_VERSION_FIELD_NUMBER;
-    hash = (53 * hash) + getWfSpecVersion();
+    hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getTaskDefName().hashCode();
+    hash = (37 * hash) + TOTAL_SCHEDULED_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getTotalScheduled());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.WfMetricUpdatePb parseFrom(
+  public static io.littlehorse.common.proto.TaskMetricUpdate parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.WfMetricUpdatePb parseFrom(
+  public static io.littlehorse.common.proto.TaskMetricUpdate parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.WfMetricUpdatePb parseFrom(
+  public static io.littlehorse.common.proto.TaskMetricUpdate parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.WfMetricUpdatePb parseFrom(
+  public static io.littlehorse.common.proto.TaskMetricUpdate parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.WfMetricUpdatePb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.TaskMetricUpdate parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.WfMetricUpdatePb parseFrom(
+  public static io.littlehorse.common.proto.TaskMetricUpdate parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.WfMetricUpdatePb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.TaskMetricUpdate parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.WfMetricUpdatePb parseFrom(
+  public static io.littlehorse.common.proto.TaskMetricUpdate parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -418,26 +465,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.common.proto.WfMetricUpdatePb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.TaskMetricUpdate parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.common.proto.WfMetricUpdatePb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.TaskMetricUpdate parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.WfMetricUpdatePb parseFrom(
+  public static io.littlehorse.common.proto.TaskMetricUpdate parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.WfMetricUpdatePb parseFrom(
+  public static io.littlehorse.common.proto.TaskMetricUpdate parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -450,7 +497,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.WfMetricUpdatePb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.TaskMetricUpdate prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -466,26 +513,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.WfMetricUpdatePb}
+   * Protobuf type {@code littlehorse.TaskMetricUpdate}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.WfMetricUpdatePb)
-      io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.TaskMetricUpdate)
+      io.littlehorse.common.proto.TaskMetricUpdateOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_WfMetricUpdatePb_descriptor;
+      return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_TaskMetricUpdate_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_WfMetricUpdatePb_fieldAccessorTable
+      return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_TaskMetricUpdate_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.WfMetricUpdatePb.class, io.littlehorse.common.proto.WfMetricUpdatePb.Builder.class);
+              io.littlehorse.common.proto.TaskMetricUpdate.class, io.littlehorse.common.proto.TaskMetricUpdate.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.WfMetricUpdatePb.newBuilder()
+    // Construct using io.littlehorse.common.proto.TaskMetricUpdate.newBuilder()
     private Builder() {
 
     }
@@ -506,30 +553,32 @@ private static final long serialVersionUID = 0L;
       }
       type_ = 0;
       numEntries_ = 0L;
+      scheduleToStartMax_ = 0L;
+      scheduleToStartTotal_ = 0L;
       startToCompleteMax_ = 0L;
       startToCompleteTotal_ = 0L;
       totalCompleted_ = 0L;
       totalErrored_ = 0L;
       totalStarted_ = 0L;
-      wfSpecName_ = "";
-      wfSpecVersion_ = 0;
+      taskDefName_ = "";
+      totalScheduled_ = 0L;
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_WfMetricUpdatePb_descriptor;
+      return io.littlehorse.common.proto.CommandOuterClass.internal_static_littlehorse_TaskMetricUpdate_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.WfMetricUpdatePb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance();
+    public io.littlehorse.common.proto.TaskMetricUpdate getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.TaskMetricUpdate.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.WfMetricUpdatePb build() {
-      io.littlehorse.common.proto.WfMetricUpdatePb result = buildPartial();
+    public io.littlehorse.common.proto.TaskMetricUpdate build() {
+      io.littlehorse.common.proto.TaskMetricUpdate result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -537,14 +586,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.WfMetricUpdatePb buildPartial() {
-      io.littlehorse.common.proto.WfMetricUpdatePb result = new io.littlehorse.common.proto.WfMetricUpdatePb(this);
+    public io.littlehorse.common.proto.TaskMetricUpdate buildPartial() {
+      io.littlehorse.common.proto.TaskMetricUpdate result = new io.littlehorse.common.proto.TaskMetricUpdate(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.common.proto.WfMetricUpdatePb result) {
+    private void buildPartial0(io.littlehorse.common.proto.TaskMetricUpdate result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.windowStart_ = windowStartBuilder_ == null
@@ -558,25 +607,31 @@ private static final long serialVersionUID = 0L;
         result.numEntries_ = numEntries_;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.startToCompleteMax_ = startToCompleteMax_;
+        result.scheduleToStartMax_ = scheduleToStartMax_;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.startToCompleteTotal_ = startToCompleteTotal_;
+        result.scheduleToStartTotal_ = scheduleToStartTotal_;
       }
       if (((from_bitField0_ & 0x00000020) != 0)) {
-        result.totalCompleted_ = totalCompleted_;
+        result.startToCompleteMax_ = startToCompleteMax_;
       }
       if (((from_bitField0_ & 0x00000040) != 0)) {
-        result.totalErrored_ = totalErrored_;
+        result.startToCompleteTotal_ = startToCompleteTotal_;
       }
       if (((from_bitField0_ & 0x00000080) != 0)) {
-        result.totalStarted_ = totalStarted_;
+        result.totalCompleted_ = totalCompleted_;
       }
       if (((from_bitField0_ & 0x00000100) != 0)) {
-        result.wfSpecName_ = wfSpecName_;
+        result.totalErrored_ = totalErrored_;
       }
       if (((from_bitField0_ & 0x00000200) != 0)) {
-        result.wfSpecVersion_ = wfSpecVersion_;
+        result.totalStarted_ = totalStarted_;
+      }
+      if (((from_bitField0_ & 0x00000400) != 0)) {
+        result.taskDefName_ = taskDefName_;
+      }
+      if (((from_bitField0_ & 0x00000800) != 0)) {
+        result.totalScheduled_ = totalScheduled_;
       }
     }
 
@@ -614,16 +669,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.WfMetricUpdatePb) {
-        return mergeFrom((io.littlehorse.common.proto.WfMetricUpdatePb)other);
+      if (other instanceof io.littlehorse.common.proto.TaskMetricUpdate) {
+        return mergeFrom((io.littlehorse.common.proto.TaskMetricUpdate)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.WfMetricUpdatePb other) {
-      if (other == io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.common.proto.TaskMetricUpdate other) {
+      if (other == io.littlehorse.common.proto.TaskMetricUpdate.getDefaultInstance()) return this;
       if (other.hasWindowStart()) {
         mergeWindowStart(other.getWindowStart());
       }
@@ -632,6 +687,12 @@ private static final long serialVersionUID = 0L;
       }
       if (other.getNumEntries() != 0L) {
         setNumEntries(other.getNumEntries());
+      }
+      if (other.getScheduleToStartMax() != 0L) {
+        setScheduleToStartMax(other.getScheduleToStartMax());
+      }
+      if (other.getScheduleToStartTotal() != 0L) {
+        setScheduleToStartTotal(other.getScheduleToStartTotal());
       }
       if (other.getStartToCompleteMax() != 0L) {
         setStartToCompleteMax(other.getStartToCompleteMax());
@@ -648,13 +709,13 @@ private static final long serialVersionUID = 0L;
       if (other.getTotalStarted() != 0L) {
         setTotalStarted(other.getTotalStarted());
       }
-      if (!other.getWfSpecName().isEmpty()) {
-        wfSpecName_ = other.wfSpecName_;
-        bitField0_ |= 0x00000100;
+      if (!other.getTaskDefName().isEmpty()) {
+        taskDefName_ = other.taskDefName_;
+        bitField0_ |= 0x00000400;
         onChanged();
       }
-      if (other.getWfSpecVersion() != 0) {
-        setWfSpecVersion(other.getWfSpecVersion());
+      if (other.getTotalScheduled() != 0L) {
+        setTotalScheduled(other.getTotalScheduled());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -699,39 +760,49 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 24
+            case 32: {
+              scheduleToStartMax_ = input.readInt64();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
+            case 40: {
+              scheduleToStartTotal_ = input.readInt64();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
             case 48: {
               startToCompleteMax_ = input.readInt64();
-              bitField0_ |= 0x00000008;
+              bitField0_ |= 0x00000020;
               break;
             } // case 48
             case 56: {
               startToCompleteTotal_ = input.readInt64();
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000040;
               break;
             } // case 56
             case 64: {
               totalCompleted_ = input.readInt64();
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000080;
               break;
             } // case 64
             case 72: {
               totalErrored_ = input.readInt64();
-              bitField0_ |= 0x00000040;
+              bitField0_ |= 0x00000100;
               break;
             } // case 72
             case 80: {
               totalStarted_ = input.readInt64();
-              bitField0_ |= 0x00000080;
+              bitField0_ |= 0x00000200;
               break;
             } // case 80
             case 90: {
-              wfSpecName_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000100;
+              taskDefName_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000400;
               break;
             } // case 90
             case 96: {
-              wfSpecVersion_ = input.readInt32();
-              bitField0_ |= 0x00000200;
+              totalScheduled_ = input.readInt64();
+              bitField0_ |= 0x00000800;
               break;
             } // case 96
             default: {
@@ -955,6 +1026,70 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private long scheduleToStartMax_ ;
+    /**
+     * <code>int64 schedule_to_start_max = 4;</code>
+     * @return The scheduleToStartMax.
+     */
+    @java.lang.Override
+    public long getScheduleToStartMax() {
+      return scheduleToStartMax_;
+    }
+    /**
+     * <code>int64 schedule_to_start_max = 4;</code>
+     * @param value The scheduleToStartMax to set.
+     * @return This builder for chaining.
+     */
+    public Builder setScheduleToStartMax(long value) {
+
+      scheduleToStartMax_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 schedule_to_start_max = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearScheduleToStartMax() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      scheduleToStartMax_ = 0L;
+      onChanged();
+      return this;
+    }
+
+    private long scheduleToStartTotal_ ;
+    /**
+     * <code>int64 schedule_to_start_total = 5;</code>
+     * @return The scheduleToStartTotal.
+     */
+    @java.lang.Override
+    public long getScheduleToStartTotal() {
+      return scheduleToStartTotal_;
+    }
+    /**
+     * <code>int64 schedule_to_start_total = 5;</code>
+     * @param value The scheduleToStartTotal to set.
+     * @return This builder for chaining.
+     */
+    public Builder setScheduleToStartTotal(long value) {
+
+      scheduleToStartTotal_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 schedule_to_start_total = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearScheduleToStartTotal() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      scheduleToStartTotal_ = 0L;
+      onChanged();
+      return this;
+    }
+
     private long startToCompleteMax_ ;
     /**
      * <code>int64 start_to_complete_max = 6;</code>
@@ -972,7 +1107,7 @@ private static final long serialVersionUID = 0L;
     public Builder setStartToCompleteMax(long value) {
 
       startToCompleteMax_ = value;
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -981,7 +1116,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearStartToCompleteMax() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000020);
       startToCompleteMax_ = 0L;
       onChanged();
       return this;
@@ -1004,7 +1139,7 @@ private static final long serialVersionUID = 0L;
     public Builder setStartToCompleteTotal(long value) {
 
       startToCompleteTotal_ = value;
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -1013,7 +1148,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearStartToCompleteTotal() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000040);
       startToCompleteTotal_ = 0L;
       onChanged();
       return this;
@@ -1036,7 +1171,7 @@ private static final long serialVersionUID = 0L;
     public Builder setTotalCompleted(long value) {
 
       totalCompleted_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -1045,7 +1180,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearTotalCompleted() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000080);
       totalCompleted_ = 0L;
       onChanged();
       return this;
@@ -1068,7 +1203,7 @@ private static final long serialVersionUID = 0L;
     public Builder setTotalErrored(long value) {
 
       totalErrored_ = value;
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000100;
       onChanged();
       return this;
     }
@@ -1077,7 +1212,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearTotalErrored() {
-      bitField0_ = (bitField0_ & ~0x00000040);
+      bitField0_ = (bitField0_ & ~0x00000100);
       totalErrored_ = 0L;
       onChanged();
       return this;
@@ -1100,7 +1235,7 @@ private static final long serialVersionUID = 0L;
     public Builder setTotalStarted(long value) {
 
       totalStarted_ = value;
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000200;
       onChanged();
       return this;
     }
@@ -1109,112 +1244,112 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearTotalStarted() {
-      bitField0_ = (bitField0_ & ~0x00000080);
+      bitField0_ = (bitField0_ & ~0x00000200);
       totalStarted_ = 0L;
       onChanged();
       return this;
     }
 
-    private java.lang.Object wfSpecName_ = "";
+    private java.lang.Object taskDefName_ = "";
     /**
-     * <code>string wf_spec_name = 11;</code>
-     * @return The wfSpecName.
+     * <code>string task_def_name = 11;</code>
+     * @return The taskDefName.
      */
-    public java.lang.String getWfSpecName() {
-      java.lang.Object ref = wfSpecName_;
+    public java.lang.String getTaskDefName() {
+      java.lang.Object ref = taskDefName_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        wfSpecName_ = s;
+        taskDefName_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string wf_spec_name = 11;</code>
-     * @return The bytes for wfSpecName.
+     * <code>string task_def_name = 11;</code>
+     * @return The bytes for taskDefName.
      */
     public com.google.protobuf.ByteString
-        getWfSpecNameBytes() {
-      java.lang.Object ref = wfSpecName_;
+        getTaskDefNameBytes() {
+      java.lang.Object ref = taskDefName_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        wfSpecName_ = b;
+        taskDefName_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string wf_spec_name = 11;</code>
-     * @param value The wfSpecName to set.
+     * <code>string task_def_name = 11;</code>
+     * @param value The taskDefName to set.
      * @return This builder for chaining.
      */
-    public Builder setWfSpecName(
+    public Builder setTaskDefName(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      wfSpecName_ = value;
-      bitField0_ |= 0x00000100;
+      taskDefName_ = value;
+      bitField0_ |= 0x00000400;
       onChanged();
       return this;
     }
     /**
-     * <code>string wf_spec_name = 11;</code>
+     * <code>string task_def_name = 11;</code>
      * @return This builder for chaining.
      */
-    public Builder clearWfSpecName() {
-      wfSpecName_ = getDefaultInstance().getWfSpecName();
-      bitField0_ = (bitField0_ & ~0x00000100);
+    public Builder clearTaskDefName() {
+      taskDefName_ = getDefaultInstance().getTaskDefName();
+      bitField0_ = (bitField0_ & ~0x00000400);
       onChanged();
       return this;
     }
     /**
-     * <code>string wf_spec_name = 11;</code>
-     * @param value The bytes for wfSpecName to set.
+     * <code>string task_def_name = 11;</code>
+     * @param value The bytes for taskDefName to set.
      * @return This builder for chaining.
      */
-    public Builder setWfSpecNameBytes(
+    public Builder setTaskDefNameBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      wfSpecName_ = value;
-      bitField0_ |= 0x00000100;
+      taskDefName_ = value;
+      bitField0_ |= 0x00000400;
       onChanged();
       return this;
     }
 
-    private int wfSpecVersion_ ;
+    private long totalScheduled_ ;
     /**
-     * <code>int32 wf_spec_version = 12;</code>
-     * @return The wfSpecVersion.
+     * <code>int64 total_scheduled = 12;</code>
+     * @return The totalScheduled.
      */
     @java.lang.Override
-    public int getWfSpecVersion() {
-      return wfSpecVersion_;
+    public long getTotalScheduled() {
+      return totalScheduled_;
     }
     /**
-     * <code>int32 wf_spec_version = 12;</code>
-     * @param value The wfSpecVersion to set.
+     * <code>int64 total_scheduled = 12;</code>
+     * @param value The totalScheduled to set.
      * @return This builder for chaining.
      */
-    public Builder setWfSpecVersion(int value) {
+    public Builder setTotalScheduled(long value) {
 
-      wfSpecVersion_ = value;
-      bitField0_ |= 0x00000200;
+      totalScheduled_ = value;
+      bitField0_ |= 0x00000800;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 wf_spec_version = 12;</code>
+     * <code>int64 total_scheduled = 12;</code>
      * @return This builder for chaining.
      */
-    public Builder clearWfSpecVersion() {
-      bitField0_ = (bitField0_ & ~0x00000200);
-      wfSpecVersion_ = 0;
+    public Builder clearTotalScheduled() {
+      bitField0_ = (bitField0_ & ~0x00000800);
+      totalScheduled_ = 0L;
       onChanged();
       return this;
     }
@@ -1231,23 +1366,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.WfMetricUpdatePb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.TaskMetricUpdate)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.WfMetricUpdatePb)
-  private static final io.littlehorse.common.proto.WfMetricUpdatePb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.TaskMetricUpdate)
+  private static final io.littlehorse.common.proto.TaskMetricUpdate DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.WfMetricUpdatePb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.TaskMetricUpdate();
   }
 
-  public static io.littlehorse.common.proto.WfMetricUpdatePb getDefaultInstance() {
+  public static io.littlehorse.common.proto.TaskMetricUpdate getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<WfMetricUpdatePb>
-      PARSER = new com.google.protobuf.AbstractParser<WfMetricUpdatePb>() {
+  private static final com.google.protobuf.Parser<TaskMetricUpdate>
+      PARSER = new com.google.protobuf.AbstractParser<TaskMetricUpdate>() {
     @java.lang.Override
-    public WfMetricUpdatePb parsePartialFrom(
+    public TaskMetricUpdate parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1266,17 +1401,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<WfMetricUpdatePb> parser() {
+  public static com.google.protobuf.Parser<TaskMetricUpdate> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<WfMetricUpdatePb> getParserForType() {
+  public com.google.protobuf.Parser<TaskMetricUpdate> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.WfMetricUpdatePb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.TaskMetricUpdate getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

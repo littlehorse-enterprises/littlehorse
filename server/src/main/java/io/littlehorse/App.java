@@ -12,7 +12,7 @@ import org.apache.kafka.clients.admin.NewTopic;
 public class App {
 
     public static void doIdempotentSetup(LHServerConfig config) throws InterruptedException, ExecutionException {
-        log.info("Creating topics!!");
+        log.info("Creating topics for the LH Server.");
 
         boolean createdATopic = false;
         for (NewTopic topic : config.getAllTopics()) {

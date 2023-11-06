@@ -70,14 +70,14 @@ message RepartitionCommandPb {
     google.protobuf.Timestamp time = 1;
     optional string command_id = 2;
     oneof repartition_command {
-        TaskMetricUpdatePb task_metric_update = 3;
-        WfMetricUpdatePb wf_metric_update = 4;
+        TaskMetricUpdate task_metric_update = 3;
+        WfMetricUpdate wf_metric_update = 4;
         CreateRemoteTagPb create_remote_tag = 5;
         RemoveRemoteTagPb remove_remote_tag = 6;
     }
 }
 
-message TaskMetricUpdatePb {
+message TaskMetricUpdate {
     google.protobuf.Timestamp window_start = 1;
     MetricsWindowLength type = 2;
     int64 num_entries = 3;
@@ -93,7 +93,7 @@ message TaskMetricUpdatePb {
     int64 total_scheduled = 12;
 }
 
-message WfMetricUpdatePb {
+message WfMetricUpdate {
     google.protobuf.Timestamp window_start = 1;
     MetricsWindowLength type = 2;
     int64 num_entries = 3;

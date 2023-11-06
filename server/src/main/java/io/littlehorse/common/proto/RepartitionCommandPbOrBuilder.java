@@ -40,34 +40,34 @@ public interface RepartitionCommandPbOrBuilder extends
       getCommandIdBytes();
 
   /**
-   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
+   * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
    * @return Whether the taskMetricUpdate field is set.
    */
   boolean hasTaskMetricUpdate();
   /**
-   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
+   * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
    * @return The taskMetricUpdate.
    */
-  io.littlehorse.common.proto.TaskMetricUpdatePb getTaskMetricUpdate();
+  io.littlehorse.common.proto.TaskMetricUpdate getTaskMetricUpdate();
   /**
-   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
+   * <code>.littlehorse.TaskMetricUpdate task_metric_update = 3;</code>
    */
-  io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder getTaskMetricUpdateOrBuilder();
+  io.littlehorse.common.proto.TaskMetricUpdateOrBuilder getTaskMetricUpdateOrBuilder();
 
   /**
-   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
+   * <code>.littlehorse.WfMetricUpdate wf_metric_update = 4;</code>
    * @return Whether the wfMetricUpdate field is set.
    */
   boolean hasWfMetricUpdate();
   /**
-   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
+   * <code>.littlehorse.WfMetricUpdate wf_metric_update = 4;</code>
    * @return The wfMetricUpdate.
    */
-  io.littlehorse.common.proto.WfMetricUpdatePb getWfMetricUpdate();
+  io.littlehorse.common.proto.WfMetricUpdate getWfMetricUpdate();
   /**
-   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
+   * <code>.littlehorse.WfMetricUpdate wf_metric_update = 4;</code>
    */
-  io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder getWfMetricUpdateOrBuilder();
+  io.littlehorse.common.proto.WfMetricUpdateOrBuilder getWfMetricUpdateOrBuilder();
 
   /**
    * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>

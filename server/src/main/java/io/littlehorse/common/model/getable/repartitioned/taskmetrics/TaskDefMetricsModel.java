@@ -87,6 +87,6 @@ public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
     }
 
     public static String getObjectId(MetricsWindowLength windowType, Date time, String taskDefName) {
-        return new TaskDefMetricsIdModel(time, windowType, taskDefName).getStoreableKey();
+        return new TaskDefMetricsIdModel(time, windowType, taskDefName).toString();
     }
 }
