@@ -1,5 +1,5 @@
 /* eslint-disable */
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 import {
   LHStatus,
   lHStatusFromJSON,
@@ -363,17 +363,17 @@ export const NodeRun = {
 
   fromJSON(object: any): NodeRun {
     return {
-      wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : "",
-      threadRunNumber: isSet(object.threadRunNumber) ? Number(object.threadRunNumber) : 0,
-      position: isSet(object.position) ? Number(object.position) : 0,
+      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
+      threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : 0,
+      position: isSet(object.position) ? globalThis.Number(object.position) : 0,
       status: isSet(object.status) ? lHStatusFromJSON(object.status) : LHStatus.STARTING,
-      arrivalTime: isSet(object.arrivalTime) ? String(object.arrivalTime) : undefined,
-      endTime: isSet(object.endTime) ? String(object.endTime) : undefined,
+      arrivalTime: isSet(object.arrivalTime) ? globalThis.String(object.arrivalTime) : undefined,
+      endTime: isSet(object.endTime) ? globalThis.String(object.endTime) : undefined,
       wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
-      threadSpecName: isSet(object.threadSpecName) ? String(object.threadSpecName) : "",
-      nodeName: isSet(object.nodeName) ? String(object.nodeName) : "",
-      errorMessage: isSet(object.errorMessage) ? String(object.errorMessage) : undefined,
-      failures: Array.isArray(object?.failures) ? object.failures.map((e: any) => Failure.fromJSON(e)) : [],
+      threadSpecName: isSet(object.threadSpecName) ? globalThis.String(object.threadSpecName) : "",
+      nodeName: isSet(object.nodeName) ? globalThis.String(object.nodeName) : "",
+      errorMessage: isSet(object.errorMessage) ? globalThis.String(object.errorMessage) : undefined,
+      failures: globalThis.Array.isArray(object?.failures) ? object.failures.map((e: any) => Failure.fromJSON(e)) : [],
       task: isSet(object.task) ? TaskNodeRun.fromJSON(object.task) : undefined,
       externalEvent: isSet(object.externalEvent) ? ExternalEventRun.fromJSON(object.externalEvent) : undefined,
       entrypoint: isSet(object.entrypoint) ? EntrypointRun.fromJSON(object.entrypoint) : undefined,
@@ -385,8 +385,8 @@ export const NodeRun = {
       startMultipleThreads: isSet(object.startMultipleThreads)
         ? StartMultipleThreadsRun.fromJSON(object.startMultipleThreads)
         : undefined,
-      failureHandlerIds: Array.isArray(object?.failureHandlerIds)
-        ? object.failureHandlerIds.map((e: any) => Number(e))
+      failureHandlerIds: globalThis.Array.isArray(object?.failureHandlerIds)
+        ? object.failureHandlerIds.map((e: any) => globalThis.Number(e))
         : [],
     };
   },
@@ -758,8 +758,8 @@ export const StartThreadRun = {
 
   fromJSON(object: any): StartThreadRun {
     return {
-      childThreadId: isSet(object.childThreadId) ? Number(object.childThreadId) : undefined,
-      threadSpecName: isSet(object.threadSpecName) ? String(object.threadSpecName) : "",
+      childThreadId: isSet(object.childThreadId) ? globalThis.Number(object.childThreadId) : undefined,
+      threadSpecName: isSet(object.threadSpecName) ? globalThis.String(object.threadSpecName) : "",
     };
   },
 
@@ -821,7 +821,7 @@ export const StartMultipleThreadsRun = {
   },
 
   fromJSON(object: any): StartMultipleThreadsRun {
-    return { threadSpecName: isSet(object.threadSpecName) ? String(object.threadSpecName) : "" };
+    return { threadSpecName: isSet(object.threadSpecName) ? globalThis.String(object.threadSpecName) : "" };
   },
 
   toJSON(message: StartMultipleThreadsRun): unknown {
@@ -889,7 +889,7 @@ export const WaitForThreadsRun = {
 
   fromJSON(object: any): WaitForThreadsRun {
     return {
-      threads: Array.isArray(object?.threads)
+      threads: globalThis.Array.isArray(object?.threads)
         ? object.threads.map((e: any) => WaitForThreadsRun_WaitForThread.fromJSON(e))
         : [],
       policy: isSet(object.policy) ? waitForThreadsPolicyFromJSON(object.policy) : WaitForThreadsPolicy.STOP_ON_FAILURE,
@@ -985,10 +985,10 @@ export const WaitForThreadsRun_WaitForThread = {
 
   fromJSON(object: any): WaitForThreadsRun_WaitForThread {
     return {
-      threadEndTime: isSet(object.threadEndTime) ? String(object.threadEndTime) : undefined,
+      threadEndTime: isSet(object.threadEndTime) ? globalThis.String(object.threadEndTime) : undefined,
       threadStatus: isSet(object.threadStatus) ? lHStatusFromJSON(object.threadStatus) : LHStatus.STARTING,
-      threadRunNumber: isSet(object.threadRunNumber) ? Number(object.threadRunNumber) : 0,
-      alreadyHandled: isSet(object.alreadyHandled) ? Boolean(object.alreadyHandled) : false,
+      threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : 0,
+      alreadyHandled: isSet(object.alreadyHandled) ? globalThis.Boolean(object.alreadyHandled) : false,
     };
   },
 
@@ -1081,8 +1081,8 @@ export const ExternalEventRun = {
 
   fromJSON(object: any): ExternalEventRun {
     return {
-      externalEventDefName: isSet(object.externalEventDefName) ? String(object.externalEventDefName) : "",
-      eventTime: isSet(object.eventTime) ? String(object.eventTime) : undefined,
+      externalEventDefName: isSet(object.externalEventDefName) ? globalThis.String(object.externalEventDefName) : "",
+      eventTime: isSet(object.eventTime) ? globalThis.String(object.eventTime) : undefined,
       externalEventId: isSet(object.externalEventId) ? ExternalEventId.fromJSON(object.externalEventId) : undefined,
     };
   },
@@ -1151,7 +1151,7 @@ export const SleepNodeRun = {
   },
 
   fromJSON(object: any): SleepNodeRun {
-    return { maturationTime: isSet(object.maturationTime) ? String(object.maturationTime) : undefined };
+    return { maturationTime: isSet(object.maturationTime) ? globalThis.String(object.maturationTime) : undefined };
   },
 
   toJSON(message: SleepNodeRun): unknown {
@@ -1239,10 +1239,10 @@ export const Failure = {
 
   fromJSON(object: any): Failure {
     return {
-      failureName: isSet(object.failureName) ? String(object.failureName) : "",
-      message: isSet(object.message) ? String(object.message) : "",
+      failureName: isSet(object.failureName) ? globalThis.String(object.failureName) : "",
+      message: isSet(object.message) ? globalThis.String(object.message) : "",
       content: isSet(object.content) ? VariableValue.fromJSON(object.content) : undefined,
-      wasProperlyHandled: isSet(object.wasProperlyHandled) ? Boolean(object.wasProperlyHandled) : false,
+      wasProperlyHandled: isSet(object.wasProperlyHandled) ? globalThis.Boolean(object.wasProperlyHandled) : false,
     };
   },
 
@@ -1281,7 +1281,8 @@ export const Failure = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -1290,7 +1291,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function toTimestamp(dateStr: string): Timestamp {
-  const date = new Date(dateStr);
+  const date = new globalThis.Date(dateStr);
   const seconds = date.getTime() / 1_000;
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
@@ -1299,7 +1300,7 @@ function toTimestamp(dateStr: string): Timestamp {
 function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
-  return new Date(millis).toISOString();
+  return new globalThis.Date(millis).toISOString();
 }
 
 function isSet(value: any): boolean {

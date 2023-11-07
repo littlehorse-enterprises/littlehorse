@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react";
-import { YearSelector } from "./YearSelector";
-import moment from "moment";
+import { useState, useEffect } from 'react'
+import moment from 'moment'
+import { YearSelector } from './YearSelector'
 
-export const Content = ({
+export function Content({
   init,
   nextMonth,
   prevMonth,
@@ -30,17 +30,17 @@ export const Content = ({
   selected: any;
   endSelected: any;
   type: any;
-}) => {
-  const [weeks, setWeeks] = useState<any[]>([]);
-  const [busy, setBusy] = useState(true);
+}) {
+  const [ weeks, setWeeks ] = useState<any[]>([])
+  const [ busy, setBusy ] = useState(true)
   const fillDays = (firstDay: moment.Moment, lastDay: moment.Moment) => {
-    var dates: any = [];
-    const month = moment(init).month();
+    const dates: any = []
+    const month = moment(init).month()
     while (firstDay < lastDay) {
       dates.push({
-        day: firstDay.format("DD"),
-        selected: selected,
-        endSelected: endSelected,
+        day: firstDay.format('DD'),
+        selected,
+        endSelected,
         date: firstDay.toDate(),
         otherMonth: firstDay.month() != month,
         inRange:
@@ -50,60 +50,60 @@ export const Content = ({
           firstDay < endSelected,
         startRange:
           selected &&
-          firstDay.format("YMMDD") === moment(selected).format("YMMDD"),
+          firstDay.format('YMMDD') === moment(selected).format('YMMDD'),
         endsRange:
           (selected &&
             !endSelected &&
-            firstDay.format("YMMDD") === moment(selected).format("YMMDD")) ||
+            firstDay.format('YMMDD') === moment(selected).format('YMMDD')) ||
           (endSelected &&
-            firstDay.format("YMMDD") === moment(endSelected).format("YMMDD")),
+            firstDay.format('YMMDD') === moment(endSelected).format('YMMDD')),
         today:
           firstDay.date() === moment().date() &&
           firstDay.month() === moment().month(),
-        afterPresent: firstDay.format("YMMDD") > moment().format("YMMDD")
-      });
-      firstDay.add(1, "day");
+        afterPresent: firstDay.format('YMMDD') > moment().format('YMMDD')
+      })
+      firstDay.add(1, 'day')
     }
-    return dates;
-  };
-  var enumerateWeeks = function () {
-    const date = moment(init).startOf("month");
-    let firstWeek = moment(init).startOf("month").week();
-    const endWeek = moment(init).endOf("month").week();
-    var dates: any = [];
+    return dates
+  }
+  const enumerateWeeks = function () {
+    const date = moment(init).startOf('month')
+    let firstWeek = moment(init).startOf('month').week()
+    const endWeek = moment(init).endOf('month').week()
+    const dates: any = []
     while (firstWeek <= endWeek) {
-      let firstDay = date.clone().startOf("week");
-      let lastDay = date.clone().endOf("week");
-      dates.push(fillDays(firstDay, lastDay));
-      date.add(1, "week");
-      firstWeek++;
+      const firstDay = date.clone().startOf('week')
+      const lastDay = date.clone().endOf('week')
+      dates.push(fillDays(firstDay, lastDay))
+      date.add(1, 'week')
+      firstWeek++
     }
-    return dates;
-  };
+    return dates
+  }
   const selectDayHandler = (day: any) => {
-    if (day.afterPresent) return false;
-    selectDay(day.date);
-  };
+    if (day.afterPresent) return false
+    selectDay(day.date)
+  }
   useEffect(() => {
-    setWeeks(enumerateWeeks());
-  }, [init, selected, endSelected]);
+    setWeeks(enumerateWeeks())
+  }, [ init, selected, endSelected ])
 
   return (
     <div
-      style={{
-        padding: "10px",
-        backgroundColor: "#394150",
-        borderRadius: "8px"
-      }}
       className="flex"
+      style={{
+        padding: '10px',
+        backgroundColor: '#394150',
+        borderRadius: '8px'
+      }}
     >
       <div
         style={{
-          width: "287px",
-          display: "block"
+          width: '287px',
+          display: 'block'
         }}
       >
-        <YearSelector prevMonth={prevMonth} nextMonth={nextMonth} date={init} />
+        <YearSelector date={init} nextMonth={nextMonth} prevMonth={prevMonth} />
         <div className="flex flex-1 weeks">
           <div className="flex items-center justify-center flex-1 w-10 h-10 align-middle">
             S
@@ -131,49 +131,49 @@ export const Content = ({
           <div className="flex flex-1" key={ix}>
             {week.map((day: any) => (
               <div
-                onClick={() => selectDayHandler(day)}
-                style={{
-                  fontSize: "14px",
-                  lineHeight: "150%",
-                  fontWeight: "700"
-                }}
                 className={`flex  flex-1 w-10 h-10 align-middle day 
-            ${day.otherMonth ? "otherMonth" : ""}
-            ${day.today ? "currentDay" : ""}
-            ${day.endsRange ? "endsRange" : ""}
-            ${day.startRange ? "startRange" : ""}
-            ${day.inRange ? "inRange" : ""}
-            ${day.afterPresent ? "afterPresent" : ""}
+            ${day.otherMonth ? 'otherMonth' : ''}
+            ${day.today ? 'currentDay' : ''}
+            ${day.endsRange ? 'endsRange' : ''}
+            ${day.startRange ? 'startRange' : ''}
+            ${day.inRange ? 'inRange' : ''}
+            ${day.afterPresent ? 'afterPresent' : ''}
             `}
                 key={day.day}
+                onClick={() => selectDayHandler(day)}
+                style={{
+                  fontSize: '14px',
+                  lineHeight: '150%',
+                  fontWeight: '700'
+                }}
               >
                 <div className="items-center justify-center">
-                  {day.day} {day.today && <div className="dot"></div>}
+                  {day.day} {day.today ? <div className="dot" /> : null}
                 </div>
               </div>
             ))}
           </div>
         ))}
-        {type === "DAYS_1" && (
-          <div onClick={onApply} className="applyButton mt10">
+        {type === 'DAYS_1' && (
+          <div className="applyButton mt10" onClick={onApply}>
             Apply range
           </div>
         )}
       </div>
 
-      {type != "DAYS_1" && (
+      {type != 'DAYS_1' && (
         <div className="timePickerCanvas">
           <div className="block">
             <div className="label">From</div>
             <div className="monthAndYear">
-              <span className="day">{moment(selected).format("DD")}</span>
-              <span className="month">{moment(selected).format("MMMM")}</span>
-              <span className="year">{moment(selected).format("Y")}</span>
+              <span className="day">{moment(selected).format('DD')}</span>
+              <span className="month">{moment(selected).format('MMMM')}</span>
+              <span className="year">{moment(selected).format('Y')}</span>
             </div>
             <div className="pickers">
               <select
-                value={moment(selected).format("HH")}
                 onChange={(e) => updateSelectedH(e.target.value)}
+                value={moment(selected).format('HH')}
               >
                 <option>00</option>
                 <option>01</option>
@@ -202,11 +202,11 @@ export const Content = ({
               <div className="dots">:</div>
               <select
                 className="bg-slate-700"
-                disabled={type === "HOURS_2"}
-                value={
-                  type === "HOURS_2" ? "00" : moment(selected).format("mm")
-                }
+                disabled={type === 'HOURS_2'}
                 onChange={(e) => updateSelectedM(e.target.value)}
+                value={
+                  type === 'HOURS_2' ? '00' : moment(selected).format('mm')
+                }
               >
                 <option>00</option>
                 <option>05</option>
@@ -228,28 +228,28 @@ export const Content = ({
             <div className="monthAndYear">
               <span className="day">
                 {endSelected
-                  ? moment(endSelected).format("DD")
-                  : moment(selected).format("DD")}
+                  ? moment(endSelected).format('DD')
+                  : moment(selected).format('DD')}
               </span>
               <span className="month">
                 {endSelected
-                  ? moment(endSelected).format("MMMM")
-                  : moment(selected).format("MMMM")}
+                  ? moment(endSelected).format('MMMM')
+                  : moment(selected).format('MMMM')}
               </span>
               <span className="year">
                 {endSelected
-                  ? moment(endSelected).format("Y")
-                  : moment(selected).format("Y")}
+                  ? moment(endSelected).format('Y')
+                  : moment(selected).format('Y')}
               </span>
             </div>
             <div className="pickers">
               <select
+                onChange={(e) => updateEndSelectedH(e.target.value)}
                 value={
                   endSelected
-                    ? moment(endSelected).format("HH")
-                    : moment(selected).format("HH")
+                    ? moment(endSelected).format('HH')
+                    : moment(selected).format('HH')
                 }
-                onChange={(e) => updateEndSelectedH(e.target.value)}
               >
                 <option>00</option>
                 <option>01</option>
@@ -278,15 +278,15 @@ export const Content = ({
               <div className="dots">:</div>
               <select
                 className="bg-slate-700"
-                disabled={type === "HOURS_2"}
-                value={
-                  type === "HOURS_2"
-                    ? "00"
-                    : endSelected
-                    ? moment(endSelected).format("mm")
-                    : moment(selected).format("mm")
-                }
+                disabled={type === 'HOURS_2'}
                 onChange={(e) => updateEndSelectedM(e.target.value)}
+                value={
+                  type === 'HOURS_2'
+                    ? '00'
+                    : endSelected
+                      ? moment(endSelected).format('mm')
+                      : moment(selected).format('mm')
+                }
               >
                 <option>00</option>
                 <option>05</option>
@@ -309,5 +309,5 @@ export const Content = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}

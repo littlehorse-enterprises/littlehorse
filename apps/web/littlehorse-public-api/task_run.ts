@@ -1,5 +1,5 @@
 /* eslint-disable */
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 import {
   LHErrorType,
   lHErrorTypeFromJSON,
@@ -195,16 +195,18 @@ export const TaskRun = {
   fromJSON(object: any): TaskRun {
     return {
       id: isSet(object.id) ? TaskRunId.fromJSON(object.id) : undefined,
-      attempts: Array.isArray(object?.attempts) ? object.attempts.map((e: any) => TaskAttempt.fromJSON(e)) : [],
-      maxAttempts: isSet(object.maxAttempts) ? Number(object.maxAttempts) : 0,
-      taskDefName: isSet(object.taskDefName) ? String(object.taskDefName) : "",
-      inputVariables: Array.isArray(object?.inputVariables)
+      attempts: globalThis.Array.isArray(object?.attempts)
+        ? object.attempts.map((e: any) => TaskAttempt.fromJSON(e))
+        : [],
+      maxAttempts: isSet(object.maxAttempts) ? globalThis.Number(object.maxAttempts) : 0,
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      inputVariables: globalThis.Array.isArray(object?.inputVariables)
         ? object.inputVariables.map((e: any) => VarNameAndVal.fromJSON(e))
         : [],
       source: isSet(object.source) ? TaskRunSource.fromJSON(object.source) : undefined,
-      scheduledAt: isSet(object.scheduledAt) ? String(object.scheduledAt) : undefined,
+      scheduledAt: isSet(object.scheduledAt) ? globalThis.String(object.scheduledAt) : undefined,
       status: isSet(object.status) ? taskStatusFromJSON(object.status) : TaskStatus.TASK_SCHEDULED,
-      timeoutSeconds: isSet(object.timeoutSeconds) ? Number(object.timeoutSeconds) : 0,
+      timeoutSeconds: isSet(object.timeoutSeconds) ? globalThis.Number(object.timeoutSeconds) : 0,
     };
   },
 
@@ -307,7 +309,7 @@ export const VarNameAndVal = {
 
   fromJSON(object: any): VarNameAndVal {
     return {
-      varName: isSet(object.varName) ? String(object.varName) : "",
+      varName: isSet(object.varName) ? globalThis.String(object.varName) : "",
       value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
     };
   },
@@ -475,11 +477,11 @@ export const TaskAttempt = {
   fromJSON(object: any): TaskAttempt {
     return {
       logOutput: isSet(object.logOutput) ? VariableValue.fromJSON(object.logOutput) : undefined,
-      scheduleTime: isSet(object.scheduleTime) ? String(object.scheduleTime) : undefined,
-      startTime: isSet(object.startTime) ? String(object.startTime) : undefined,
-      endTime: isSet(object.endTime) ? String(object.endTime) : undefined,
-      taskWorkerId: isSet(object.taskWorkerId) ? String(object.taskWorkerId) : "",
-      taskWorkerVersion: isSet(object.taskWorkerVersion) ? String(object.taskWorkerVersion) : undefined,
+      scheduleTime: isSet(object.scheduleTime) ? globalThis.String(object.scheduleTime) : undefined,
+      startTime: isSet(object.startTime) ? globalThis.String(object.startTime) : undefined,
+      endTime: isSet(object.endTime) ? globalThis.String(object.endTime) : undefined,
+      taskWorkerId: isSet(object.taskWorkerId) ? globalThis.String(object.taskWorkerId) : "",
+      taskWorkerVersion: isSet(object.taskWorkerVersion) ? globalThis.String(object.taskWorkerVersion) : undefined,
       status: isSet(object.status) ? taskStatusFromJSON(object.status) : TaskStatus.TASK_SCHEDULED,
       output: isSet(object.output) ? VariableValue.fromJSON(object.output) : undefined,
       error: isSet(object.error) ? LHTaskError.fromJSON(object.error) : undefined,
@@ -755,7 +757,7 @@ export const LHTaskError = {
   fromJSON(object: any): LHTaskError {
     return {
       type: isSet(object.type) ? lHErrorTypeFromJSON(object.type) : LHErrorType.CHILD_FAILURE,
-      message: isSet(object.message) ? String(object.message) : "",
+      message: isSet(object.message) ? globalThis.String(object.message) : "",
     };
   },
 
@@ -828,8 +830,8 @@ export const LHTaskException = {
 
   fromJSON(object: any): LHTaskException {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
-      message: isSet(object.message) ? String(object.message) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      message: isSet(object.message) ? globalThis.String(object.message) : "",
     };
   },
 
@@ -858,7 +860,8 @@ export const LHTaskException = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -867,7 +870,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function toTimestamp(dateStr: string): Timestamp {
-  const date = new Date(dateStr);
+  const date = new globalThis.Date(dateStr);
   const seconds = date.getTime() / 1_000;
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
@@ -876,7 +879,7 @@ function toTimestamp(dateStr: string): Timestamp {
 function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
-  return new Date(millis).toISOString();
+  return new globalThis.Date(millis).toISOString();
 }
 
 function isSet(value: any): boolean {

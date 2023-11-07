@@ -1,27 +1,28 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { createChannel, createClient } from 'nice-grpc';
-import { LHPublicApiDefinition } from "../../../littlehorse-public-api/service";
+import type { NextApiRequest, NextApiResponse } from 'next'
+import type { Client } from 'nice-grpc/src/client/Client'
+import type { LHPublicApiDefinition } from '../../../littlehorse-public-api/service'
+import LHClient from '../LHClient'
+import type { Variable } from '../../../littlehorse-public-api/variable'
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === "POST") {
-    const body = JSON.parse(req.body);
+  if (req.method === 'POST') {
+    const body = JSON.parse(req.body)
 
     try {
-      const channel = createChannel(process.env.API_URL!!);
-      const client = createClient(LHPublicApiDefinition, channel);
+      const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
 
-      const response = await client.getVariable(body);
-      return res.json({ code: 'OK', data: { result: response } });
+      const response: Variable = await client.getVariable(body)
+      res.json({ code: 'OK', data: { result: response } }) 
 
 
     } catch (error) {
-      console.log("Error during GRPC call:", error);
-      return res.send({
-        error: "Something went wrong." + error,
-      })
+      console.log('Error during GRPC call:', error)
+      res.send({
+        error: `Something went wrong.${error}`,
+      }) 
     }
   }
 }

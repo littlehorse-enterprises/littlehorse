@@ -1,189 +1,140 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { WfSpecVisualizerChart } from './WfSpecVisualizerChart'
-import { Drawer } from '../../../../../../components/Drawer/Drawer'
-import {
-	getMainDrawerData,
-	nodeTypes
-} from '../../../../../../components/Drawer/internals/drawerInternals'
-import WFRunInformationSideBar from '../../../../../../components/WFRunInformationSideBar'
 import { Loader } from 'ui'
+import { Drawer } from '../../../../../../components/Drawer/Drawer'
+import { getMainDrawerData, nodeTypes } from '../../../../../../components/Drawer/internals/drawerInternals'
+import WFRunInformationSideBar from '../../../../../../components/WFRunInformationSideBar'
 import { WfSpecDrawerComponent } from '../../../../../../components/Drawer/WfSpecDrawerComponent'
+import { WfSpecGraph } from './WfSpecGraph'
 
-interface mapnode {}
-export const WfSpecVisualizer = ({
-	id,
-	version
-}: {
-	id: string
-	version: number
-}) => {
-	const [rawdata, setRawData] = useState<any[]>([])
-	const [data, setData] = useState<any[]>([])
-	const [drawerData, setDrawerData] = useState<any>()
-	const [selectedNodeName, setSelectedNodeName] = useState<any>()
-	const [nodeType, setNodeType] = useState<string | undefined>()
-	const [loading, setLoading] = useState(true);
+interface WfSpecVisualizerProps {
+    id: string
+    version: number
+}
 
-	const [language, setLanguage] = useState<any>();
-	const [showError, setShowError] = useState(false)
-	const [toggleSideBar, setToggleSideBar] = useState(false)
-	const [sideBarData, setSideBarData] = useState('')
+interface mapnode {
 
-	const rec = (mappedData, i, offset, open=false) => {
-		
-		let graphNode = mappedData[i]
+}
 
-		// console.log(el.name,offset, +el.position)
-		graphNode.level= +graphNode.position + offset
+export function WfSpecVisualizer({ id, version }: WfSpecVisualizerProps) {
 
-		if (!graphNode.childs.length) {
-			return mappedData //if not childs close the REC function
-		}
-		
-		if (graphNode.type === 'WAIT_FOR_THREAD') {
-			let wft = graphNode.node.waitForThread.threadRunNumber.variableName
-			let thread = mappedData.find(m => m.name === wft)
-			graphNode.wlevel = thread.level
-		}
-		
-		let addo = 0
-		if(graphNode.type === 'NOP' ){
-			if(open){
-				graphNode.closer = true
-				open = false
-			}else{
-				open = true
-				addo = 1
-			}
-		}
-		
-		mappedData = mappedData.map(m => {
-			if (graphNode.childs.includes(m.name)) {
-				// m.level = graphNode.level + 1 // each child heritate parent level + 1
+  const [ rawdata, setRawData ] = useState<any[]>([])
+  const [ wfSpec, setWfSpec ] = useState<any[]>([])
+  const [ drawerData, setDrawerData ] = useState<any>()
+  const [ selectedNodeName, setSelectedNodeName ] = useState<any>()
+  const [ nodeType, setNodeType ] = useState<string | undefined>()
+  const [ loading, setLoading ] = useState(true)
 
-				// CHECK IF NOP IS WHILE
-				if(graphNode.type === 'NOP' && m.type==='NOP'){
-					const econd =  graphNode.node.outgoingEdges.find(e => e.sinkNodeName != m.name)?.condition || {}
-					const mcond = m.node.outgoingEdges.find(e => e.sinkNodeName === graphNode.name)?.condition || {}
-					if(JSON.stringify(econd) === JSON.stringify(mcond)){
-						graphNode.while = true
-						m.while = true
-					}
-				}
+  const [ language, setLanguage ] = useState<any>()
+  const [ showError, setShowError ] = useState(false)
+  const [ toggleSideBar, setToggleSideBar ] = useState(false)
+  const [ sideBarData, setSideBarData ] = useState('')
+  const [ threadSpec, setThreadSpec ] = useState('')
+  const [ graphLayout, setGraphLayout ] = useState()
 
-				if(m.type === 'NOP' ){
-					m.px = 'center'
-				}else{
-					m.px = graphNode.px
-				}
+  const setGraphWithNodeRunPosition = (graph) => {
+    setGraphLayout({ ...graph })
+  }
 
-				if (graphNode.childs.length > 1 && (m.type != 'NOP') ) {
-					// m.level = el.level + 2
-					m.px = m.name === graphNode.childs[0] ? 'left' : 'right'
-				}
-				// if(m.type === 'NOP' && m.childs.length === 1){
-	
-				if(m.type === 'NOP' && open){
-					graphNode.cNOP = m.name
-				}
-				if(!open){
-					m.px = 'center'
-				}
+  const mapData = (data: any, thread?: string) => {
+    const threads = Object.keys(data?.threadSpecs)
+    const print_thread = thread || threads[0]
+    const entries = Object.entries(data?.threadSpecs?.[print_thread]?.nodes)
+    const mappedData: any = entries.map((e: mapnode) => ({
+      name: e[0],
+      type: e[0].split('-').pop(),
+      position: e[0].split('-').shift(),
+      node: e[1],
+      childs: e[1].outgoingEdges.map(e => e.sinkNodeName),
+      level: 0,
+      closer: false,
+      while: false,
+      px: 'center'
+    }))
 
-			}
-			return m
-		})
-		// console.log(addo)
-		return rec(mappedData, ++i, offset+addo, open)
-	}
-	const mapData = (data: any, thread?: string) => {
-		const threads = Object.keys(data?.threadSpecs)
-		const print_thread = thread || threads[0]
-		const entries = Object.entries(data?.threadSpecs?.[print_thread]?.nodes)
-		const mappedData: any = entries.map((e: mapnode) => ({
-			name: e[0],
-			type: e[0].split('-').pop(),
-			position: e[0].split("-").shift(),
-			node: e[1],
-			childs: e[1]['outgoingEdges'].map(e => e.sinkNodeName),
-			level: 0,
-			closer:false,
-			while:false,
-			px: 'center'
-		}))
+    setLoading(false)
 
-		const dataSortedByName = mappedData.sort((a,b) => a.name > b.name ? 1 : -1)
+    return mappedData
+  }
+  const getWfSpec = async () => {
+    const res = await fetch('/api/visualization/wfSpec', {
+      method: 'POST',
+      body: JSON.stringify({
+        id,
+        version
+      })
+    })
+    if (res.ok) {
+      const wfSpec = await res.json()
+      setRawData(wfSpec)
+      setWfSpec(mapData(wfSpec))
+    }
+  }
+  const setThread = (thread: string) => {
+    setSelectedNodeName(undefined)
+    setWfSpec(mapData(rawdata, thread))
+    setThreadSpec(thread)
+  }
 
-		setLoading(false);
+  useEffect(() => {
+    if (drawerData === undefined) getMainDrawerData(id, setDrawerData)
 
-		// Hardcoded value for the fraud-detection-form example
-		mappedData[5].position = 3
-		return rec(dataSortedByName, 0, 0)
-	}
-	const getData = async () => {
-		const res = await fetch('/api/visualization/wfSpec', {
-			method: 'POST',
-			body: JSON.stringify({
-				id,
-				version
-			})
-		})
-		if (res.ok) {
-			const content = await res.json()
-			setRawData(content)
-			setData(mapData(content))
-		}
-	}
-	const setThread = (thread:string) => {
-		setSelectedNodeName(undefined)
-		setData(mapData(rawdata,thread))
-	}
+    if (selectedNodeName) {
+      const nodePostFix = selectedNodeName.split('-').reverse()[0]
 
-	useEffect(() => {
-		if (drawerData === undefined) getMainDrawerData(id, setDrawerData)
+      setNodeType(nodeTypes[nodePostFix as keyof typeof nodeTypes])
+    }
+  }, [ drawerData, selectedNodeName ])
 
-		if (selectedNodeName) {
-			const nodePostFix = selectedNodeName.split('-').reverse()[0]
+  useEffect(() => {
+    getWfSpec()
+  }, [])
 
-			setNodeType(nodeTypes[nodePostFix as keyof typeof nodeTypes])
-		}
-	}, [drawerData, selectedNodeName])
+  return (
 
-	const drawerInternal = (
-		<WfSpecDrawerComponent
-			internalComponent={nodeType}
-			datao={data}
-			data={drawerData}
-			nodeName={selectedNodeName}
-			wfSpecId={id}
-			setToggleSideBar={setToggleSideBar}
-			setCode={setSideBarData}
-			setLanguage={setLanguage}
-			setError={setShowError}
-			setThread={setThread}
-		/>
-	)
+    <div className='visualizer'>
+      <div
+        className={`canvas scrollbar ${wfSpec.length === 0 ? 'flex items-center justify-items-center justify-center' : ''}`}>
 
-	useEffect(() => {
-		getData()
-	}, [])
-	return (
-		<div className='visualizer'>
-			<div
-				className={`canvas scrollbar ${data.length === 0 ? 'flex items-center justify-items-center justify-center': ''}`}
-			>
-				{ loading ? <Loader /> : <WfSpecVisualizerChart data={data} onClick={setSelectedNodeName} />}
-			</div>
+        {loading ? (
+          <Loader/>
+        ) : (
 
-			<Drawer title={'WfSpec Properties'}>{drawerInternal}</Drawer>
-			<WFRunInformationSideBar
-				toggleSideBar={toggleSideBar}
-				setToggleSideBar={setToggleSideBar}
-				output={sideBarData}
-				errorLog={showError}
-				language={language}
-			/>
-		</div>
-	)
+          <WfSpecGraph isWfSpecVisualization
+            setGraphWithNodeRunPosition={setGraphWithNodeRunPosition}
+            setSelectedNodeName={setSelectedNodeName}
+            threadRunNumber={null}
+            threadSpec={threadSpec}
+            wfRunId={null}
+            wfSpecName={id}
+            wfSpecVersion={version}
+          />
+        )
+        }
+      </div>
+
+      <Drawer title="WfSpec Properties">
+        <WfSpecDrawerComponent
+          data={drawerData}
+          graphLayout={graphLayout}
+          internalComponent={nodeType}
+          nodeName={selectedNodeName}
+          setCode={setSideBarData}
+          setError={setShowError}
+          setLanguage={setLanguage}
+          setThread={setThread}
+          setToggleSideBar={setToggleSideBar}
+          wfSpecId={id}
+        />
+      </Drawer>
+
+      <WFRunInformationSideBar
+        errorLog={showError}
+        language={language}
+        output={sideBarData}
+        setToggleSideBar={setToggleSideBar}
+        toggleSideBar={toggleSideBar}
+      />
+    </div>
+  )
 }

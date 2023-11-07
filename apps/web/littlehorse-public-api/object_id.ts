@@ -1,5 +1,5 @@
 /* eslint-disable */
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 import {
   MetricsWindowLength,
   metricsWindowLengthFromJSON,
@@ -128,8 +128,8 @@ export const WfSpecId = {
 
   fromJSON(object: any): WfSpecId {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
-      version: isSet(object.version) ? Number(object.version) : 0,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      version: isSet(object.version) ? globalThis.Number(object.version) : 0,
     };
   },
 
@@ -191,7 +191,7 @@ export const TaskDefId = {
   },
 
   fromJSON(object: any): TaskDefId {
-    return { name: isSet(object.name) ? String(object.name) : "" };
+    return { name: isSet(object.name) ? globalThis.String(object.name) : "" };
   },
 
   toJSON(message: TaskDefId): unknown {
@@ -248,7 +248,7 @@ export const ExternalEventDefId = {
   },
 
   fromJSON(object: any): ExternalEventDefId {
-    return { name: isSet(object.name) ? String(object.name) : "" };
+    return { name: isSet(object.name) ? globalThis.String(object.name) : "" };
   },
 
   toJSON(message: ExternalEventDefId): unknown {
@@ -305,7 +305,7 @@ export const GetLatestWfSpecRequest = {
   },
 
   fromJSON(object: any): GetLatestWfSpecRequest {
-    return { name: isSet(object.name) ? String(object.name) : "" };
+    return { name: isSet(object.name) ? globalThis.String(object.name) : "" };
   },
 
   toJSON(message: GetLatestWfSpecRequest): unknown {
@@ -373,8 +373,8 @@ export const UserTaskDefId = {
 
   fromJSON(object: any): UserTaskDefId {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
-      version: isSet(object.version) ? Number(object.version) : 0,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      version: isSet(object.version) ? globalThis.Number(object.version) : 0,
     };
   },
 
@@ -436,7 +436,7 @@ export const TaskWorkerGroupId = {
   },
 
   fromJSON(object: any): TaskWorkerGroupId {
-    return { taskDefName: isSet(object.taskDefName) ? String(object.taskDefName) : "" };
+    return { taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "" };
   },
 
   toJSON(message: TaskWorkerGroupId): unknown {
@@ -514,9 +514,9 @@ export const VariableId = {
 
   fromJSON(object: any): VariableId {
     return {
-      wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : "",
-      threadRunNumber: isSet(object.threadRunNumber) ? Number(object.threadRunNumber) : 0,
-      name: isSet(object.name) ? String(object.name) : "",
+      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
+      threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : 0,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
     };
   },
 
@@ -603,9 +603,9 @@ export const ExternalEventId = {
 
   fromJSON(object: any): ExternalEventId {
     return {
-      wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : "",
-      externalEventDefName: isSet(object.externalEventDefName) ? String(object.externalEventDefName) : "",
-      guid: isSet(object.guid) ? String(object.guid) : "",
+      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
+      externalEventDefName: isSet(object.externalEventDefName) ? globalThis.String(object.externalEventDefName) : "",
+      guid: isSet(object.guid) ? globalThis.String(object.guid) : "",
     };
   },
 
@@ -671,7 +671,7 @@ export const WfRunId = {
   },
 
   fromJSON(object: any): WfRunId {
-    return { id: isSet(object.id) ? String(object.id) : "" };
+    return { id: isSet(object.id) ? globalThis.String(object.id) : "" };
   },
 
   toJSON(message: WfRunId): unknown {
@@ -749,9 +749,9 @@ export const NodeRunId = {
 
   fromJSON(object: any): NodeRunId {
     return {
-      wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : "",
-      threadRunNumber: isSet(object.threadRunNumber) ? Number(object.threadRunNumber) : 0,
-      position: isSet(object.position) ? Number(object.position) : 0,
+      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
+      threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : 0,
+      position: isSet(object.position) ? globalThis.Number(object.position) : 0,
     };
   },
 
@@ -828,8 +828,8 @@ export const TaskRunId = {
 
   fromJSON(object: any): TaskRunId {
     return {
-      wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : "",
-      taskGuid: isSet(object.taskGuid) ? String(object.taskGuid) : "",
+      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
+      taskGuid: isSet(object.taskGuid) ? globalThis.String(object.taskGuid) : "",
     };
   },
 
@@ -902,8 +902,8 @@ export const UserTaskRunId = {
 
   fromJSON(object: any): UserTaskRunId {
     return {
-      wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : "",
-      userTaskGuid: isSet(object.userTaskGuid) ? String(object.userTaskGuid) : "",
+      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
+      userTaskGuid: isSet(object.userTaskGuid) ? globalThis.String(object.userTaskGuid) : "",
     };
   },
 
@@ -986,11 +986,11 @@ export const TaskDefMetricsId = {
 
   fromJSON(object: any): TaskDefMetricsId {
     return {
-      windowStart: isSet(object.windowStart) ? String(object.windowStart) : undefined,
+      windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
       windowType: isSet(object.windowType)
         ? metricsWindowLengthFromJSON(object.windowType)
         : MetricsWindowLength.MINUTES_5,
-      taskDefName: isSet(object.taskDefName) ? String(object.taskDefName) : "",
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
     };
   },
 
@@ -1087,12 +1087,12 @@ export const WfSpecMetricsId = {
 
   fromJSON(object: any): WfSpecMetricsId {
     return {
-      windowStart: isSet(object.windowStart) ? String(object.windowStart) : undefined,
+      windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
       windowType: isSet(object.windowType)
         ? metricsWindowLengthFromJSON(object.windowType)
         : MetricsWindowLength.MINUTES_5,
-      wfSpecName: isSet(object.wfSpecName) ? String(object.wfSpecName) : "",
-      wfSpecVersion: isSet(object.wfSpecVersion) ? Number(object.wfSpecVersion) : 0,
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      wfSpecVersion: isSet(object.wfSpecVersion) ? globalThis.Number(object.wfSpecVersion) : 0,
     };
   },
 
@@ -1129,7 +1129,8 @@ export const WfSpecMetricsId = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -1138,7 +1139,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function toTimestamp(dateStr: string): Timestamp {
-  const date = new Date(dateStr);
+  const date = new globalThis.Date(dateStr);
   const seconds = date.getTime() / 1_000;
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
@@ -1147,7 +1148,7 @@ function toTimestamp(dateStr: string): Timestamp {
 function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
-  return new Date(millis).toISOString();
+  return new globalThis.Date(millis).toISOString();
 }
 
 function isSet(value: any): boolean {

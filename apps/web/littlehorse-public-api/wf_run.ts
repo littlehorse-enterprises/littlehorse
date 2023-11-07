@@ -1,5 +1,5 @@
 /* eslint-disable */
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 import { LHStatus, lHStatusFromJSON, lHStatusToJSON, lHStatusToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { ExternalEventId } from "./object_id";
@@ -274,17 +274,19 @@ export const WfRun = {
 
   fromJSON(object: any): WfRun {
     return {
-      id: isSet(object.id) ? String(object.id) : "",
-      wfSpecName: isSet(object.wfSpecName) ? String(object.wfSpecName) : "",
-      wfSpecVersion: isSet(object.wfSpecVersion) ? Number(object.wfSpecVersion) : 0,
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      wfSpecVersion: isSet(object.wfSpecVersion) ? globalThis.Number(object.wfSpecVersion) : 0,
       status: isSet(object.status) ? lHStatusFromJSON(object.status) : LHStatus.STARTING,
-      startTime: isSet(object.startTime) ? String(object.startTime) : undefined,
-      endTime: isSet(object.endTime) ? String(object.endTime) : undefined,
-      threadRuns: Array.isArray(object?.threadRuns) ? object.threadRuns.map((e: any) => ThreadRun.fromJSON(e)) : [],
-      pendingInterrupts: Array.isArray(object?.pendingInterrupts)
+      startTime: isSet(object.startTime) ? globalThis.String(object.startTime) : undefined,
+      endTime: isSet(object.endTime) ? globalThis.String(object.endTime) : undefined,
+      threadRuns: globalThis.Array.isArray(object?.threadRuns)
+        ? object.threadRuns.map((e: any) => ThreadRun.fromJSON(e))
+        : [],
+      pendingInterrupts: globalThis.Array.isArray(object?.pendingInterrupts)
         ? object.pendingInterrupts.map((e: any) => PendingInterrupt.fromJSON(e))
         : [],
-      pendingFailures: Array.isArray(object?.pendingFailures)
+      pendingFailures: globalThis.Array.isArray(object?.pendingFailures)
         ? object.pendingFailures.map((e: any) => PendingFailureHandler.fromJSON(e))
         : [],
     };
@@ -546,15 +548,17 @@ export const ThreadRun = {
 
   fromJSON(object: any): ThreadRun {
     return {
-      number: isSet(object.number) ? Number(object.number) : 0,
+      number: isSet(object.number) ? globalThis.Number(object.number) : 0,
       status: isSet(object.status) ? lHStatusFromJSON(object.status) : LHStatus.STARTING,
-      threadSpecName: isSet(object.threadSpecName) ? String(object.threadSpecName) : "",
-      startTime: isSet(object.startTime) ? String(object.startTime) : undefined,
-      endTime: isSet(object.endTime) ? String(object.endTime) : undefined,
-      errorMessage: isSet(object.errorMessage) ? String(object.errorMessage) : undefined,
-      childThreadIds: Array.isArray(object?.childThreadIds) ? object.childThreadIds.map((e: any) => Number(e)) : [],
-      parentThreadId: isSet(object.parentThreadId) ? Number(object.parentThreadId) : undefined,
-      haltReasons: Array.isArray(object?.haltReasons)
+      threadSpecName: isSet(object.threadSpecName) ? globalThis.String(object.threadSpecName) : "",
+      startTime: isSet(object.startTime) ? globalThis.String(object.startTime) : undefined,
+      endTime: isSet(object.endTime) ? globalThis.String(object.endTime) : undefined,
+      errorMessage: isSet(object.errorMessage) ? globalThis.String(object.errorMessage) : undefined,
+      childThreadIds: globalThis.Array.isArray(object?.childThreadIds)
+        ? object.childThreadIds.map((e: any) => globalThis.Number(e))
+        : [],
+      parentThreadId: isSet(object.parentThreadId) ? globalThis.Number(object.parentThreadId) : undefined,
+      haltReasons: globalThis.Array.isArray(object?.haltReasons)
         ? object.haltReasons.map((e: any) => ThreadHaltReason.fromJSON(e))
         : [],
       interruptTriggerId: isSet(object.interruptTriggerId)
@@ -563,9 +567,9 @@ export const ThreadRun = {
       failureBeingHandled: isSet(object.failureBeingHandled)
         ? FailureBeingHandled.fromJSON(object.failureBeingHandled)
         : undefined,
-      currentNodePosition: isSet(object.currentNodePosition) ? Number(object.currentNodePosition) : 0,
-      handledFailedChildren: Array.isArray(object?.handledFailedChildren)
-        ? object.handledFailedChildren.map((e: any) => Number(e))
+      currentNodePosition: isSet(object.currentNodePosition) ? globalThis.Number(object.currentNodePosition) : 0,
+      handledFailedChildren: globalThis.Array.isArray(object?.handledFailedChildren)
+        ? object.handledFailedChildren.map((e: any) => globalThis.Number(e))
         : [],
       type: isSet(object.type) ? threadTypeFromJSON(object.type) : ThreadType.ENTRYPOINT,
     };
@@ -702,9 +706,9 @@ export const FailureBeingHandled = {
 
   fromJSON(object: any): FailureBeingHandled {
     return {
-      threadRunNumber: isSet(object.threadRunNumber) ? Number(object.threadRunNumber) : 0,
-      nodeRunPosition: isSet(object.nodeRunPosition) ? Number(object.nodeRunPosition) : 0,
-      failureNumber: isSet(object.failureNumber) ? Number(object.failureNumber) : 0,
+      threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : 0,
+      nodeRunPosition: isSet(object.nodeRunPosition) ? globalThis.Number(object.nodeRunPosition) : 0,
+      failureNumber: isSet(object.failureNumber) ? globalThis.Number(object.failureNumber) : 0,
     };
   },
 
@@ -792,8 +796,8 @@ export const PendingInterrupt = {
   fromJSON(object: any): PendingInterrupt {
     return {
       externalEventId: isSet(object.externalEventId) ? ExternalEventId.fromJSON(object.externalEventId) : undefined,
-      handlerSpecName: isSet(object.handlerSpecName) ? String(object.handlerSpecName) : "",
-      interruptedThreadId: isSet(object.interruptedThreadId) ? Number(object.interruptedThreadId) : 0,
+      handlerSpecName: isSet(object.handlerSpecName) ? globalThis.String(object.handlerSpecName) : "",
+      interruptedThreadId: isSet(object.interruptedThreadId) ? globalThis.Number(object.interruptedThreadId) : 0,
     };
   },
 
@@ -872,8 +876,8 @@ export const PendingFailureHandler = {
 
   fromJSON(object: any): PendingFailureHandler {
     return {
-      failedThreadRun: isSet(object.failedThreadRun) ? Number(object.failedThreadRun) : 0,
-      handlerSpecName: isSet(object.handlerSpecName) ? String(object.handlerSpecName) : "",
+      failedThreadRun: isSet(object.failedThreadRun) ? globalThis.Number(object.failedThreadRun) : 0,
+      handlerSpecName: isSet(object.handlerSpecName) ? globalThis.String(object.handlerSpecName) : "",
     };
   },
 
@@ -996,7 +1000,7 @@ export const PendingFailureHandlerHaltReason = {
   },
 
   fromJSON(object: any): PendingFailureHandlerHaltReason {
-    return { nodeRunPosition: isSet(object.nodeRunPosition) ? Number(object.nodeRunPosition) : 0 };
+    return { nodeRunPosition: isSet(object.nodeRunPosition) ? globalThis.Number(object.nodeRunPosition) : 0 };
   },
 
   toJSON(message: PendingFailureHandlerHaltReason): unknown {
@@ -1055,7 +1059,7 @@ export const HandlingFailureHaltReason = {
   },
 
   fromJSON(object: any): HandlingFailureHaltReason {
-    return { handlerThreadId: isSet(object.handlerThreadId) ? Number(object.handlerThreadId) : 0 };
+    return { handlerThreadId: isSet(object.handlerThreadId) ? globalThis.Number(object.handlerThreadId) : 0 };
   },
 
   toJSON(message: HandlingFailureHaltReason): unknown {
@@ -1112,7 +1116,7 @@ export const ParentHalted = {
   },
 
   fromJSON(object: any): ParentHalted {
-    return { parentThreadId: isSet(object.parentThreadId) ? Number(object.parentThreadId) : 0 };
+    return { parentThreadId: isSet(object.parentThreadId) ? globalThis.Number(object.parentThreadId) : 0 };
   },
 
   toJSON(message: ParentHalted): unknown {
@@ -1169,7 +1173,7 @@ export const Interrupted = {
   },
 
   fromJSON(object: any): Interrupted {
-    return { interruptThreadId: isSet(object.interruptThreadId) ? Number(object.interruptThreadId) : 0 };
+    return { interruptThreadId: isSet(object.interruptThreadId) ? globalThis.Number(object.interruptThreadId) : 0 };
   },
 
   toJSON(message: Interrupted): unknown {
@@ -1226,7 +1230,7 @@ export const ManualHalt = {
   },
 
   fromJSON(object: any): ManualHalt {
-    return { meaningOfLife: isSet(object.meaningOfLife) ? Boolean(object.meaningOfLife) : false };
+    return { meaningOfLife: isSet(object.meaningOfLife) ? globalThis.Boolean(object.meaningOfLife) : false };
   },
 
   toJSON(message: ManualHalt): unknown {
@@ -1409,7 +1413,8 @@ export const ThreadHaltReason = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -1418,7 +1423,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function toTimestamp(dateStr: string): Timestamp {
-  const date = new Date(dateStr);
+  const date = new globalThis.Date(dateStr);
   const seconds = date.getTime() / 1_000;
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
@@ -1427,7 +1432,7 @@ function toTimestamp(dateStr: string): Timestamp {
 function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
-  return new Date(millis).toISOString();
+  return new globalThis.Date(millis).toISOString();
 }
 
 function isSet(value: any): boolean {

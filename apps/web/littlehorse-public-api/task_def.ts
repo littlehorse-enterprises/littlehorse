@@ -1,5 +1,5 @@
 /* eslint-disable */
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 import { VariableDef } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
 
@@ -68,9 +68,11 @@ export const TaskDef = {
 
   fromJSON(object: any): TaskDef {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
-      inputVars: Array.isArray(object?.inputVars) ? object.inputVars.map((e: any) => VariableDef.fromJSON(e)) : [],
-      createdAt: isSet(object.createdAt) ? String(object.createdAt) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      inputVars: globalThis.Array.isArray(object?.inputVars)
+        ? object.inputVars.map((e: any) => VariableDef.fromJSON(e))
+        : [],
+      createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
     };
   },
 
@@ -103,7 +105,8 @@ export const TaskDef = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -112,7 +115,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function toTimestamp(dateStr: string): Timestamp {
-  const date = new Date(dateStr);
+  const date = new globalThis.Date(dateStr);
   const seconds = date.getTime() / 1_000;
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
@@ -121,7 +124,7 @@ function toTimestamp(dateStr: string): Timestamp {
 function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
-  return new Date(millis).toISOString();
+  return new globalThis.Date(millis).toISOString();
 }
 
 function isSet(value: any): boolean {

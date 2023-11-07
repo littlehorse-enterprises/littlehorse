@@ -1,10 +1,10 @@
-import "../global.scss"
-import "ui/styles.scss"
-import 'material-icons/iconfont/material-icons.css';
-import { Providers } from "../providers";
-import { Container } from "ui";
-import { signOut } from "next-auth/react";
-import { HeaderBar } from "./(main)/components/HeaderBar";
+import '../global.scss'
+import 'ui/styles.scss'
+import 'material-icons/iconfont/material-icons.css'
+import { Container } from 'ui'
+import { signOut } from 'next-auth/react'
+import { Providers } from '../providers'
+import { HeaderBar } from './(main)/components/HeaderBar'
 
 
 export const metadata = {
@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-      <link rel="icon" type="image/x-icon" href="/littlehorse.svg" />
+        <link href="/littlehorse.svg" rel="icon" type="image/x-icon" />
       </head>
       <body>
         <Providers >
@@ -31,5 +31,5 @@ export default function RootLayout({
         </Providers>
       </body>
     </html>
-  );
+  )
 }

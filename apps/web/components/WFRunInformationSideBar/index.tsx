@@ -1,3 +1,3 @@
-import WFRunInformationSideBar from "./WFRunInformationSideBar";
+import WFRunInformationSideBar from './WFRunInformationSideBar'
 
-export default WFRunInformationSideBar;
+export default WFRunInformationSideBar

@@ -1,17 +1,17 @@
-import { Button, Label } from "ui"
-import { WfSpecVisualizer } from "../components/visualizer/WfSpecVisualizer"
-import { VersionChanger } from "../components/VersionChanger"
+import { Button, Label } from 'ui'
+import { WfSpecVisualizer } from '../components/visualizer/WfSpecVisualizer'
+import { VersionChanger } from '../components/VersionChanger'
 
-export const WfSpecVisualization = ({id, version}:any) => {
+export function WfSpecVisualization({ id, version }:any) {
 
 
-    return     <section>
-         <div className="between">
-            <h2>WfSpec visualization</h2>
-            <VersionChanger version={version} id={id} />
-         </div>
+  return     <section>
+    <div className="between">
+      <h2>WfSpec visualization</h2>
+      <VersionChanger id={id} version={version} />
+    </div>
        
 
-       <WfSpecVisualizer id={id} version={version} />
-    </section>
+    <WfSpecVisualizer id={id} version={version} />
+  </section>
 }

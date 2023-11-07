@@ -1,5 +1,5 @@
-import { MetadataSearch } from "./(main)/sections/MetadataSearch";
-import { Metrics } from "./(main)/sections/Metrics";
+import { MetadataSearch } from './(main)/sections/MetadataSearch'
+import { Metrics } from './(main)/sections/Metrics'
 
 export default function Page() {
   
@@ -10,5 +10,5 @@ export default function Page() {
       <Metrics />
       <MetadataSearch />
     </>
-  );
+  )
 }

@@ -1,134 +1,134 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from 'react'
 
-export const NewScrollBar = ({width=1000, windows=3, onChange=() => {}}:{
+export function NewScrollBar({ width=1000, windows=3, onChange=() => {} }:{
     width:number,
     windows:number,
     onChange?:(win:number) => void
-}) => {
+}) {
 
-    const scrollTrackRef = useRef<HTMLDivElement>(null);
-    const scrollThumbRef = useRef<HTMLDivElement>(null);
-    const [thumbWidth, setThumbWidth] = useState(0);
-    const [thumbLeftP, setThumbLeftP] = useState(0);
-    const [initialThumbLeft, setInitialThumbLeft] = useState(0);
-    const [win, setWin] = useState(0);
-    const [scrollStartPosition, setScrollStartPosition] = useState<number | null>(
-        null
-    );
-    const [isDragging, setIsDragging] = useState(false);
-    const [percent, setPercent] = useState(0);
+  const scrollTrackRef = useRef<HTMLDivElement>(null)
+  const scrollThumbRef = useRef<HTMLDivElement>(null)
+  const [ thumbWidth, setThumbWidth ] = useState(0)
+  const [ thumbLeftP, setThumbLeftP ] = useState(0)
+  const [ initialThumbLeft, setInitialThumbLeft ] = useState(0)
+  const [ win, setWin ] = useState(0)
+  const [ scrollStartPosition, setScrollStartPosition ] = useState<number | null>(
+    null
+  )
+  const [ isDragging, setIsDragging ] = useState(false)
+  const [ percent, setPercent ] = useState(0)
     
-    useEffect( () => {
-        let factor = thumbLeftP/(width-thumbWidth)
-        let percent = Math.ceil((thumbLeftP*100)/(width-thumbWidth))
-        setPercent(percent)
-        let win = Math.floor(windows*(factor))+1
-        setWin(win > windows ? windows : win)
-    },[thumbLeftP])
+  useEffect( () => {
+    const factor = thumbLeftP/(width-thumbWidth)
+    const percent = Math.ceil((thumbLeftP*100)/(width-thumbWidth))
+    setPercent(percent)
+    const win = Math.floor(windows*(factor))+1
+    setWin(win > windows ? windows : win)
+  },[ thumbLeftP ])
 
-    useEffect( () => {
-        onChange(win || 1)
-    },[win])
-    useEffect( () => {
-        let tW = width/windows
-        tW = tW < 30 ? 30 : tW
-        setThumbWidth(tW)
-        let max = width-tW
-        setThumbLeftP(max)
-    },[width,windows])
+  useEffect( () => {
+    onChange(win || 1)
+  },[ win ])
+  useEffect( () => {
+    let tW = width/windows
+    tW = tW < 30 ? 30 : tW
+    setThumbWidth(tW)
+    const max = width-tW
+    setThumbLeftP(max)
+  },[ width,windows ])
 
-    const handleTrackClick = useCallback(
+  const handleTrackClick = useCallback(
     (e:any) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const { current: trackCurrent } = scrollTrackRef;
-        if (trackCurrent) {
-        const { clientX } = e;
-        const rect = trackCurrent.getBoundingClientRect();
-        const thumbOffset = -(thumbWidth / 2);
+      e.preventDefault()
+      e.stopPropagation()
+      const { current: trackCurrent } = scrollTrackRef
+      if (trackCurrent) {
+        const { clientX } = e
+        const rect = trackCurrent.getBoundingClientRect()
+        const thumbOffset = -(thumbWidth / 2)
         const newPositionL = clientX-rect.x+thumbOffset
         setThumbLeftP(limit(newPositionL))
-        }
+      }
     },
-    [thumbWidth]
-    );
+    [ thumbWidth ]
+  )
 
-    const limit = (value:number) => {
+  const limit = (value:number) => {
 
-        let max = width-thumbWidth
-        let val = value > max ? max :value
-        return val < 0 ? 0 : val
-    }
+    const max = width-thumbWidth
+    const val = value > max ? max :value
+    return val < 0 ? 0 : val
+  }
 
-    const handleThumbMousedown = useCallback((e:any) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setScrollStartPosition(e.clientX);
-        if (scrollThumbRef.current) setInitialThumbLeft(parseInt(scrollThumbRef.current?.style.left || '0px', 10));
-        setIsDragging(true);
-      }, []);
+  const handleThumbMousedown = useCallback((e:any) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setScrollStartPosition(e.clientX)
+    if (scrollThumbRef.current) setInitialThumbLeft(parseInt(scrollThumbRef.current?.style.left || '0px', 10))
+    setIsDragging(true)
+  }, [])
     
-      const handleThumbMouseup = useCallback(
-        (e:any) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (isDragging) {
-            setIsDragging(false);
-          }
-        },
-        [isDragging]
-      );
-      const handleThumbMousemove = useCallback(
-        (e:any) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (isDragging) {
-            if(scrollStartPosition){
-                const deltaY = (initialThumbLeft) + (e.clientX - scrollStartPosition);
-                setThumbLeftP(limit(deltaY))
-            }
-          }
-        },
-        [isDragging, scrollStartPosition, thumbWidth]
-      );
+  const handleThumbMouseup = useCallback(
+    (e:any) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (isDragging) {
+        setIsDragging(false)
+      }
+    },
+    [ isDragging ]
+  )
+  const handleThumbMousemove = useCallback(
+    (e:any) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (isDragging) {
+        if(scrollStartPosition){
+          const deltaY = (initialThumbLeft) + (e.clientX - scrollStartPosition)
+          setThumbLeftP(limit(deltaY))
+        }
+      }
+    },
+    [ isDragging, scrollStartPosition, thumbWidth ]
+  )
 
-    // Listen for mouse events to handle scrolling by dragging the thumb
-    useEffect(() => {
-        document.addEventListener('mousemove', handleThumbMousemove);
-        document.addEventListener('mouseup', handleThumbMouseup);
-        document.addEventListener('mouseleave', handleThumbMouseup);
-        return () => {
-        document.removeEventListener('mousemove', handleThumbMousemove);
-        document.removeEventListener('mouseup', handleThumbMouseup);
-        document.removeEventListener('mouseleave', handleThumbMouseup);
-        };
-    }, [handleThumbMousemove, handleThumbMouseup]);
+  // Listen for mouse events to handle scrolling by dragging the thumb
+  useEffect(() => {
+    document.addEventListener('mousemove', handleThumbMousemove)
+    document.addEventListener('mouseup', handleThumbMouseup)
+    document.addEventListener('mouseleave', handleThumbMouseup)
+    return () => {
+      document.removeEventListener('mousemove', handleThumbMousemove)
+      document.removeEventListener('mouseup', handleThumbMouseup)
+      document.removeEventListener('mouseleave', handleThumbMouseup)
+    }
+  }, [ handleThumbMousemove, handleThumbMouseup ])
 
-    return <div className="scrollBar">
+  return <div className="scrollBar">
     
     <div className="scrollBar__Canvas" style={{
-        width:`${width}px`,
+      width:`${width}px`,
     }}>
-        <div
-            className="scrollBar__Track"
-            ref={scrollTrackRef}
-            onClick={handleTrackClick}
-            style={{ 
-                cursor: isDragging ? 'grabbing' : 'pointer'
-             }}
-          ></div>
-        <div 
-        ref={scrollThumbRef}
-        onMouseDown={handleThumbMousedown}
+      <div
+        className="scrollBar__Track"
+        onClick={handleTrackClick}
+        ref={scrollTrackRef}
+        style={{ 
+          cursor: isDragging ? 'grabbing' : 'pointer'
+        }}
+      />
+      <div 
         className="scrollBar__Thumb"
+        onMouseDown={handleThumbMousedown}
+        ref={scrollThumbRef}
         style={{
-            transition: isDragging ? 'none' : 'all .2s ease-out',
-            left:`${thumbLeftP}px`,
-            width: `${thumbWidth}px`,
-            cursor: isDragging ? 'grabbing' : 'grab',
+          transition: isDragging ? 'none' : 'all .2s ease-out',
+          left:`${thumbLeftP}px`,
+          width: `${thumbWidth}px`,
+          cursor: isDragging ? 'grabbing' : 'grab',
         }}>
-            {/* {percent}% window:{win} */}
-        </div>
+        {/* {percent}% window:{win} */}
+      </div>
     </div>
-    </div>
+  </div>
 }

@@ -1,44 +1,45 @@
-import React, { useEffect, useState } from "react";
-import { NOPInformation } from "./internals/NOPInformation";
-import { ExternalEventInformation } from "./internals/ExternalEventInformation";
-import { SpawnChildInformation } from "./internals/SpawnChildInformation";
-import { SleepNodeInformation } from "./internals/SleepNodeInformation";
-import { UserTaskNodeInformation } from "./internals/UserTaskNodeInformation";
-import { WaitForThreadsInformation } from "./internals/WaitForThreadsInformation";
-import { TaskInformation } from "./internals/TaskInformation";
+import React, { useEffect, useState } from 'react'
+import type { Node } from 'reactflow'
+import { NOPInformation } from './internals/NOPInformation'
+import { ExternalEventInformation } from './internals/ExternalEventInformation'
+import { SpawnChildInformation } from './internals/SpawnChildInformation'
+import { SleepNodeInformation } from './internals/SleepNodeInformation'
+import { UserTaskNodeInformation } from './internals/UserTaskNodeInformation'
+import { WaitForThreadsInformation } from './internals/WaitForThreadsInformation'
+import { TaskInformation } from './internals/TaskInformation'
 
 interface DrawerComponentProps {
-  internalComponent?: string | undefined;
-  data: any;
-  datao: any;
-  nodeName?: string;
-  wfSpecId?: string;
-  setToggleSideBar: (value: boolean) => void;
-  setCode: (code: string) => void;
-  setLanguage: (language: string) => void;
-  setError: (value: boolean) => void;
-  setThread: (value: string) => void;
+    internalComponent?: string | undefined;
+    data: any;
+    graphLayout: any;
+    nodeName?: string;
+    wfSpecId?: string;
+    setToggleSideBar: (value: boolean) => void;
+    setCode: (code: string) => void;
+    setLanguage: (language: string) => void;
+    setError: (value: boolean) => void;
+    setThread: (value: string) => void;
 }
 
-export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
+export function WfSpecDrawerComponent(props: DrawerComponentProps) {
 
-  const [type, setType] = useState('');
-  const [rawData, setRawData] = useState<any>();
-  const [wfRunRawData, setWfRunRawData] = useState<any>();
-  const [selectedNodeData, setSelectedNodeData] = useState<any>();
-  const [mainData, setMainData] =
-    useState<{ name: string; type: string; value?: string }[]>();
-  const [selectedNode, setSelectedNode] = useState<any>();
-  const [wfRunData, setWfRunData] = useState<any>();
-  const [errorData, setErrorData] = useState<any>([]);
-  const [lastSelectedNode, setLastSelectedNode] = useState<any>();
-  const [threadName, setThreadName] = useState<string>();
+  const [ type, setType ] = useState('')
+  const [ rawData, setRawData ] = useState<any>()
+  const [ wfRunRawData, setWfRunRawData ] = useState<any>()
+  const [ selectedNodeData, setSelectedNodeData ] = useState<any>()
+  const [ threadSpecVariableDefs, setThreadSpecVariableDefs ] =
+        useState<{ name: string; type: string; value?: string }[]>()
+  const [ selectedNode, setSelectedNode ] = useState<any>()
+  const [ wfRunData, setWfRunData ] = useState<any>()
+  const [ errorData, setErrorData ] = useState<any>([])
+  const [ lastSelectedNode, setLastSelectedNode ] = useState<any>()
+  const [ threadName, setThreadName ] = useState<string>()
 
   const setThreadHandler = (thread: string) => {
-    setThreadName(thread);
-    props.setThread(thread);
+    setThreadName(thread)
+    props.setThread(thread)
     setType('')
-  };
+  }
 
   const getData: any = async (
     url: string,
@@ -46,106 +47,102 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
     handler: (data: any) => void,
     dataPath: string
   ) => {
-    const response = await fetch(url + name);
+    const response = await fetch(url + name)
 
     if (response.ok) {
-      const content = await response.json();
+      const content = await response.json()
 
-      handler(content.data[dataPath]);
-    } else console.warn("INVALID RESPONSE FROM API");
-  };
+      handler(content.data[dataPath])
+    } else console.warn('INVALID RESPONSE FROM API')
+  }
 
 
   useEffect(() => {
 
 
     if (props.data) {
-      if (mainData === undefined || threadName) {
-        let selectedThread;
+      if (threadSpecVariableDefs === undefined || threadName) {
+        let selectedThread
 
         if (threadName === undefined) {
-          selectedThread = props.data.entrypointThreadName;
-          selectedThread;
+          selectedThread = props.data.entrypointThreadName
+          selectedThread
         }
 
-        setMainData(
+        setThreadSpecVariableDefs(
           props.data.threadSpecs[selectedThread || threadName].variableDefs
-        );
+        )
       }
 
       if (props.nodeName && props.nodeName !== lastSelectedNode) {
-        setLastSelectedNode(props.nodeName);
-        setSelectedNodeData(undefined);
-        setWfRunData(undefined);
+        setLastSelectedNode(props.nodeName)
+        setSelectedNodeData(undefined)
+        setWfRunData(undefined)
         setSelectedNode(
-          props.data.threadSpecs[threadName || "entrypoint"].nodes[
+          props.data.threadSpecs[threadName || 'entrypoint'].nodes[
             props.nodeName
           ]
-        );
+        )
 
       }
 
       const processComplexData = {
         task: () => {
-          console.log("selectedNode", selectedNode);
-          if (rawData === undefined)
+          if (rawData === undefined) {
             getData(
-              "../../api/drawer/taskDef/",
+              '../../api/drawer/taskDef/',
               selectedNode?.task.taskDefName,
               setRawData,
-              "result"
-            );
-          else {
+              'result'
+            )
+          } else {
             const processedData = rawData.inputVars.map(
               (
                 element: { name: string; type: string; _: any },
                 index: number
               ) => {
-                const currentVariable = selectedNode?.task.variables[index];
+                const currentVariable = selectedNode?.task.variables[index]
 
-                let variableName = currentVariable?.variableName;
+                const variableName = currentVariable?.variableName
 
-                const jsonPath = currentVariable?.jsonPath?.replace("$", "");
+                const jsonPath = currentVariable?.jsonPath?.replace('$', '')
 
-                if (jsonPath) variableName?.concat(jsonPath);
+                if (jsonPath) variableName?.concat(jsonPath)
 
                 return {
                   name: element.name,
                   type: element.type,
-                  variableName: variableName,
-                };
+                  variableName,
+                }
               }
-            );
+            )
 
 
-
-            setSelectedNodeData(processedData);
+            setSelectedNodeData(processedData)
           }
         },
         externalEvent: () => {
-
-          console.log(selectedNode?.variableMutations)
           const processedData = selectedNode?.variableMutations.map(
             (element: {
-              lhsName: string;
-              operation: string;
-              nodeOutput: any;
-            }) => {
+                            lhsName: string;
+                            operation: string;
+                            nodeOutput: any;
+                        }) => {
               let literalValue =
-                selectedNode.externalEvent.externalEventDefName;
+                                selectedNode.externalEvent.externalEventDefName
 
-              if (element.nodeOutput?.hasOwnProperty("jsonpath"))
-                console.warn("Missing fix of property: jsonpath");
+              if (element.nodeOutput?.hasOwnProperty('jsonpath')) {console.warn('Missing fix of property: jsonpath')}
 
-              if (element.nodeOutput?.hasOwnProperty("jsonPath"))
+              if (element.nodeOutput?.hasOwnProperty('jsonPath')) {
                 console.warn(
-                  "Property fixed: jsonPath; NEED TO SUBSTITUTE ON CODE"
-                );
+                  'Property fixed: jsonPath; NEED TO SUBSTITUTE ON CODE'
+                )
+              }
 
               //TODO: verify that the jsonPath property is right spelled
-              const jsonPath = element.nodeOutput?.jsonpath?.replace("$", "");
+              const jsonPath = element.nodeOutput?.jsonpath?.replace('$', '')
 
-              if (jsonPath) literalValue = literalValue + jsonPath;
+              if (jsonPath) literalValue = literalValue + jsonPath
 
               // FIXME: why is the concat not working?
               //literalValue.concat(jsonPath)
@@ -153,28 +150,28 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
               return {
                 mutatedVariable: element.lhsName,
                 mutatedType: element.operation,
-                literalValue: literalValue,
-              };
+                literalValue,
+              }
             }
-          );
+          )
 
-          setSelectedNodeData(processedData);
+          setSelectedNodeData(processedData)
         },
         nop_def: () => {
-          setSelectedNodeData(selectedNode?.outgoingEdges);
+          setSelectedNodeData(selectedNode?.outgoingEdges)
         },
         startThread: () => {
 
         },
-      };
+      }
 
       if (props.internalComponent) {
         const complexData =
-          processComplexData[
-            props.internalComponent as keyof typeof processComplexData
-          ];
+                    processComplexData[
+                        props.internalComponent as keyof typeof processComplexData
+                    ]
 
-        if (complexData instanceof Function) complexData();
+        if (complexData instanceof Function) complexData()
       }
     }
   }, [
@@ -185,12 +182,12 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
     props.nodeName,
     props.internalComponent,
     threadName,
-  ]);
+  ])
 
-  useEffect( () => {
-    if(!props?.nodeName) return 
+  useEffect(() => {
+    if (!props?.nodeName) return
     setType(props.nodeName.split('-').reverse()[0])
-  },[props.nodeName])
+  }, [ props.nodeName ])
 
   const setToggleSideBar = (
     value: boolean,
@@ -198,66 +195,73 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
     code: string,
     language?: string
   ) => {
-    props.setToggleSideBar(value);
+    props.setToggleSideBar(value)
     if (
       language === undefined ||
-      language === "jsonObj" ||
-      language === "jsonArr"
+            language === 'jsonObj' ||
+            language === 'jsonArr'
     ) {
-      props.setCode(JSON.parse(code));
-      return;
+      props.setCode(JSON.parse(code))
+      return
     }
-    props.setCode(code);
-    props.setLanguage(language);
-    props.setError(isError);
-  };
+    props.setCode(code)
+    props.setLanguage(language)
+    props.setError(isError)
+  }
+
+  const findNodeByProvidedNodeName = () => {
+    return props.graphLayout.nodes.find((node: Node) => node.id === props.nodeName)
+  }
 
   return (
     <div className="drawer-component">
-      <>
-        <div className="drawer__threadSelector">
-          <p className="drawer__threadSelector__header">THREADSPEC NAME</p>
-          <div className="drawer__threadSelector__container">
-            <select
-              className="drawer__threadSelector__container__select"
-              value={threadName}
-              onChange={(event) => setThreadHandler(event.target.value)}
-            >
-              {props.data &&
-                Object.keys(props.data.threadSpecs).map((name, index) => {
-                  return (
-                    <option key={index} value={name}>
-                      {name}
-                    </option>
-                  );
-                })}
-            </select>
-          </div>
-        </div>
-        <div className="drawer__mainTable">
-          <div className="drawer__mainTable__header">
-            ThreadSpec Variables
-          </div>
-          <div
-            className={`drawer__mainTable__header__subheaders `}
+      <div className="drawer__threadSelector">
+        <p className="drawer__threadSelector__header">THREADSPEC NAME</p>
+        <div className="drawer__threadSelector__container">
+          <select
+            className="drawer__threadSelector__container__select"
+            onChange={(event) => { setThreadHandler(event.target.value) }}
+            value={threadName}
           >
-            <p className="center ">NAME</p>
-            <p className="center">TYPE</p>
-          </div>
-          {mainData &&
-            mainData.map(({ name, type }, index) => {
+            {props.data ? Object.keys(props.data.threadSpecs).map((name, index) => {
               return (
-                <div key={index}>
-                  <div key={index} className={`grid-2 `}>
-                    <p className="center">{name}</p>
-                    <p className="center">{type}</p>
-                  </div>
-                </div>
-              );
-            })}
+                <option key={index} value={name}>
+                  {name}
+                </option>
+              )
+            }) : null}
+          </select>
         </div>
+      </div>
+      <div className="drawer__mainTable">
+        <div className="drawer__mainTable__header">
+                        ThreadSpec Variables
+        </div>
+        <div
+          className={`drawer__mainTable__header__subheaders `}
+        >
+          <p className="center ">NAME</p>
+          <p className="center">TYPE</p>
+        </div>
+        {(threadSpecVariableDefs !== undefined && threadSpecVariableDefs.length > 0) ?
+          threadSpecVariableDefs.map(({ name, type }, index) => {
+            return (
+              <div key={index}>
+                <div className={`grid-2 `} key={index}>
+                  <p className="center">{name}</p>
+                  <p className="center">{type}</p>
+                </div>
+              </div>
+            )
+          }) : (
+            <div className="grid-2 center">
+                                    No Variables were found
+            </div>
+          )
+        }
+      </div>
 
-        {/* {props.internalComponent === "task" && (
+      {/* {props.internalComponent === "task" && (
           <TaskDefInformation
             {...{
               linkedThread: setThreadHandler,
@@ -268,63 +272,77 @@ export const WfSpecDrawerComponent = (props: DrawerComponentProps) => {
               setToggleSideBar: setToggleSideBar,
             }}
           />
-        )} */}
-        {props.internalComponent === "nop_def" && (
+        )} */
+      }
+      {
+        props.internalComponent === 'nop_def' && (
           <NOPInformation
             {...{
               data: selectedNodeData,
               nodeName: props.nodeName || '',
-              errorData: errorData,
-              setToggleSideBar: setToggleSideBar,
+              errorData,
+              setToggleSideBar,
             }}
           />
-        )}
+        )
+      }
 
-        {props.internalComponent === "startThread" && (
+      {
+        props.internalComponent === 'startThread' && (
           <SpawnChildInformation
             {...{
               linkedThread: setThreadHandler,
               nodeName: props.nodeName,
-              errorData: errorData,
-              wfRunData: wfRunData,
-              setToggleSideBar: setToggleSideBar,
+              errorData,
+              wfRunData,
+              setToggleSideBar,
             }}
           />
-        )}
+        )
+      }
 
-        {type === 'TASK' ? 
-        <TaskInformation  isWFRun={false} 
-          setToggleSideBar={props.setToggleSideBar}
+      {
+        type === 'TASK' ?
+          <TaskInformation data={findNodeByProvidedNodeName()}
+            isWFRun={false}
+            setCode={props.setCode}
+            setToggleSideBar={props.setToggleSideBar}
+          /> : ''
+      }
+
+      {
+        type === 'WAIT_FOR_THREADS' ?
+          <WaitForThreadsInformation
+            {...{
+              isWFRun: false,
+              linkedThread: setThreadHandler,
+              data: findNodeByProvidedNodeName(),
+              errorData,
+              setToggleSideBar
+            }}
+          /> : ''
+      }
+      {
+        type === 'EXTERNAL_EVENT' ?
+          <ExternalEventInformation
+            {...{
+              isWFRun: false,
+              data: findNodeByProvidedNodeName(),
+              errorData,
+              setToggleSideBar,
+            }}
+          /> : ''
+      }
+      {
+        type === 'SLEEP' ? <SleepNodeInformation data={findNodeByProvidedNodeName()} isWFRun={false}/> : ''
+      }
+      {
+        type === 'USER_TASK' ? <UserTaskNodeInformation data={findNodeByProvidedNodeName()}
+          isWFRun={false}
           setCode={props.setCode}
-          data={props.datao.find((d : any) => d.name === props.nodeName)}
-        /> : ''}
-
-        {type === 'WAIT_FOR_THREADS' ? 
-        <WaitForThreadsInformation
-          {...{
-            isWFRun : false,
-            linkedThread: setThreadHandler,
-            data: props.datao.find((d : any) => d.name === props.nodeName),
-            errorData: errorData,
-            setToggleSideBar: setToggleSideBar,
-          }}
-        /> : ''}
-        {type === 'EXTERNAL_EVENT' ? 
-        <ExternalEventInformation
-          {...{
-            isWFRun : false,
-            data: props.datao.find((d : any) => d.name === props.nodeName),
-            errorData: errorData,
-            setToggleSideBar: setToggleSideBar,
-          }}
-        /> : ''}
-        {type === 'SLEEP' ? <SleepNodeInformation isWFRun={false} data={props.datao.find((d : any) => d.name === props.nodeName)} /> : ''}
-        {type === 'USER_TASK' ? <UserTaskNodeInformation isWFRun={false} 
-          setToggleSideBar={props.setToggleSideBar}
-          setCode={props.setCode}
-          data={props.datao.find((d : any) => d.name === props.nodeName)} /> : ''}
-
-      </>
+          setToggleSideBar={props.setToggleSideBar}/> : ''
+      }
     </div>
-  );
-};
+  )
+        
+}

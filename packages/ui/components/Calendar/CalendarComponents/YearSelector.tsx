@@ -1,28 +1,32 @@
-import * as React from "react";
-import moment from "moment";
+import * as React from 'react'
+import moment from 'moment'
+/*
+ eslint-disable-next-line import/no-unresolved
+ */
+import 'material-icons/iconfont/material-icons.css'
 
 export interface YearSelectorProps {
   prevMonth: () => void;
   nextMonth: () => void;
   date: string;
 }
-export const YearSelector = ({
+export function YearSelector({
   prevMonth,
   nextMonth,
   date
-}: YearSelectorProps) => {
+}: YearSelectorProps) {
   return (
     <div className="header">
-      <div onClick={prevMonth} className="lfBtn">
+      <div className="lfBtn" onClick={prevMonth}>
         <span className="material-icons">chevron_left</span>
       </div>
       <div className="yearSelector">
-        <div className="calMonth">{moment.utc(date).format("MMMM")}</div>
-        <div className="calYear">{moment.utc(date).format("Y")}</div>
+        <div className="calMonth">{moment.utc(date).format('MMMM')}</div>
+        <div className="calYear">{moment.utc(date).format('Y')}</div>
       </div>
-      <div onClick={nextMonth} className="lfBtn">
+      <div className="lfBtn" onClick={nextMonth}>
         <span className="material-icons">chevron_right</span>
       </div>
     </div>
-  );
-};
+  )
+}

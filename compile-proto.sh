@@ -37,4 +37,7 @@ $docker_run protoc \
     -I=/lh-dashboard/littlehorse/schemas \
     $PUBLIC_PROTOS
 
+echo "Fixing imports for protobuff JS for more information see the README file"
+find $WORK_DIR/apps/web/littlehorse-public-api/ -type f -readable -writable -exec sed -i "s/import _m0/import * as _m0/g" {} \;
+
 echo "The Force will be with you. Always."

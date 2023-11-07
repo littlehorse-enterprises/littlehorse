@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import type { CallContext, CallOptions } from "nice-grpc-common";
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 import {
   LHStatus,
   lHStatusFromJSON,
@@ -561,7 +561,7 @@ export const GetLatestUserTaskDefRequest = {
   },
 
   fromJSON(object: any): GetLatestUserTaskDefRequest {
-    return { name: isSet(object.name) ? String(object.name) : "" };
+    return { name: isSet(object.name) ? globalThis.String(object.name) : "" };
   },
 
   toJSON(message: GetLatestUserTaskDefRequest): unknown {
@@ -652,15 +652,15 @@ export const PutWfSpecRequest = {
 
   fromJSON(object: any): PutWfSpecRequest {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
       threadSpecs: isObject(object.threadSpecs)
         ? Object.entries(object.threadSpecs).reduce<{ [key: string]: ThreadSpec }>((acc, [key, value]) => {
           acc[key] = ThreadSpec.fromJSON(value);
           return acc;
         }, {})
         : {},
-      entrypointThreadName: isSet(object.entrypointThreadName) ? String(object.entrypointThreadName) : "",
-      retentionHours: isSet(object.retentionHours) ? Number(object.retentionHours) : undefined,
+      entrypointThreadName: isSet(object.entrypointThreadName) ? globalThis.String(object.entrypointThreadName) : "",
+      retentionHours: isSet(object.retentionHours) ? globalThis.Number(object.retentionHours) : undefined,
     };
   },
 
@@ -755,7 +755,7 @@ export const PutWfSpecRequest_ThreadSpecsEntry = {
 
   fromJSON(object: any): PutWfSpecRequest_ThreadSpecsEntry {
     return {
-      key: isSet(object.key) ? String(object.key) : "",
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
       value: isSet(object.value) ? ThreadSpec.fromJSON(object.value) : undefined,
     };
   },
@@ -835,8 +835,10 @@ export const PutTaskDefRequest = {
 
   fromJSON(object: any): PutTaskDefRequest {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
-      inputVars: Array.isArray(object?.inputVars) ? object.inputVars.map((e: any) => VariableDef.fromJSON(e)) : [],
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      inputVars: globalThis.Array.isArray(object?.inputVars)
+        ? object.inputVars.map((e: any) => VariableDef.fromJSON(e))
+        : [],
     };
   },
 
@@ -919,9 +921,9 @@ export const PutUserTaskDefRequest = {
 
   fromJSON(object: any): PutUserTaskDefRequest {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
-      fields: Array.isArray(object?.fields) ? object.fields.map((e: any) => UserTaskField.fromJSON(e)) : [],
-      description: isSet(object.description) ? String(object.description) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      fields: globalThis.Array.isArray(object?.fields) ? object.fields.map((e: any) => UserTaskField.fromJSON(e)) : [],
+      description: isSet(object.description) ? globalThis.String(object.description) : undefined,
     };
   },
 
@@ -998,8 +1000,8 @@ export const PutExternalEventDefRequest = {
 
   fromJSON(object: any): PutExternalEventDefRequest {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
-      retentionHours: isSet(object.retentionHours) ? Number(object.retentionHours) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      retentionHours: isSet(object.retentionHours) ? globalThis.Number(object.retentionHours) : undefined,
     };
   },
 
@@ -1119,12 +1121,12 @@ export const PutExternalEventRequest = {
 
   fromJSON(object: any): PutExternalEventRequest {
     return {
-      wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : "",
-      externalEventDefName: isSet(object.externalEventDefName) ? String(object.externalEventDefName) : "",
-      guid: isSet(object.guid) ? String(object.guid) : undefined,
+      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
+      externalEventDefName: isSet(object.externalEventDefName) ? globalThis.String(object.externalEventDefName) : "",
+      guid: isSet(object.guid) ? globalThis.String(object.guid) : undefined,
       content: isSet(object.content) ? VariableValue.fromJSON(object.content) : undefined,
-      threadRunNumber: isSet(object.threadRunNumber) ? Number(object.threadRunNumber) : undefined,
-      nodeRunPosition: isSet(object.nodeRunPosition) ? Number(object.nodeRunPosition) : undefined,
+      threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : undefined,
+      nodeRunPosition: isSet(object.nodeRunPosition) ? globalThis.Number(object.nodeRunPosition) : undefined,
     };
   },
 
@@ -1584,15 +1586,15 @@ export const RunWfRequest = {
 
   fromJSON(object: any): RunWfRequest {
     return {
-      wfSpecName: isSet(object.wfSpecName) ? String(object.wfSpecName) : "",
-      wfSpecVersion: isSet(object.wfSpecVersion) ? Number(object.wfSpecVersion) : undefined,
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      wfSpecVersion: isSet(object.wfSpecVersion) ? globalThis.Number(object.wfSpecVersion) : undefined,
       variables: isObject(object.variables)
         ? Object.entries(object.variables).reduce<{ [key: string]: VariableValue }>((acc, [key, value]) => {
           acc[key] = VariableValue.fromJSON(value);
           return acc;
         }, {})
         : {},
-      id: isSet(object.id) ? String(object.id) : undefined,
+      id: isSet(object.id) ? globalThis.String(object.id) : undefined,
     };
   },
 
@@ -1687,7 +1689,7 @@ export const RunWfRequest_VariablesEntry = {
 
   fromJSON(object: any): RunWfRequest_VariablesEntry {
     return {
-      key: isSet(object.key) ? String(object.key) : "",
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
       value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
     };
   },
@@ -1794,7 +1796,7 @@ export const SearchWfRunRequest = {
   fromJSON(object: any): SearchWfRunRequest {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
-      limit: isSet(object.limit) ? Number(object.limit) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
       statusAndSpec: isSet(object.statusAndSpec)
         ? SearchWfRunRequest_StatusAndSpecRequest.fromJSON(object.statusAndSpec)
         : undefined,
@@ -1928,11 +1930,11 @@ export const SearchWfRunRequest_StatusAndSpecRequest = {
 
   fromJSON(object: any): SearchWfRunRequest_StatusAndSpecRequest {
     return {
-      wfSpecName: isSet(object.wfSpecName) ? String(object.wfSpecName) : "",
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
       status: isSet(object.status) ? lHStatusFromJSON(object.status) : LHStatus.STARTING,
-      wfSpecVersion: isSet(object.wfSpecVersion) ? Number(object.wfSpecVersion) : 0,
-      earliestStart: isSet(object.earliestStart) ? String(object.earliestStart) : undefined,
-      latestStart: isSet(object.latestStart) ? String(object.latestStart) : undefined,
+      wfSpecVersion: isSet(object.wfSpecVersion) ? globalThis.Number(object.wfSpecVersion) : 0,
+      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
+      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
     };
   },
 
@@ -2031,9 +2033,9 @@ export const SearchWfRunRequest_NameRequest = {
 
   fromJSON(object: any): SearchWfRunRequest_NameRequest {
     return {
-      wfSpecName: isSet(object.wfSpecName) ? String(object.wfSpecName) : "",
-      earliestStart: isSet(object.earliestStart) ? String(object.earliestStart) : undefined,
-      latestStart: isSet(object.latestStart) ? String(object.latestStart) : undefined,
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
+      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
     };
   },
 
@@ -2132,10 +2134,10 @@ export const SearchWfRunRequest_StatusAndNameRequest = {
 
   fromJSON(object: any): SearchWfRunRequest_StatusAndNameRequest {
     return {
-      wfSpecName: isSet(object.wfSpecName) ? String(object.wfSpecName) : "",
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
       status: isSet(object.status) ? lHStatusFromJSON(object.status) : LHStatus.STARTING,
-      earliestStart: isSet(object.earliestStart) ? String(object.earliestStart) : undefined,
-      latestStart: isSet(object.latestStart) ? String(object.latestStart) : undefined,
+      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
+      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
     };
   },
 
@@ -2220,7 +2222,7 @@ export const WfRunIdList = {
 
   fromJSON(object: any): WfRunIdList {
     return {
-      results: Array.isArray(object?.results) ? object.results.map((e: any) => WfRunId.fromJSON(e)) : [],
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => WfRunId.fromJSON(e)) : [],
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
     };
   },
@@ -2315,7 +2317,7 @@ export const SearchTaskRunRequest = {
   fromJSON(object: any): SearchTaskRunRequest {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
-      limit: isSet(object.limit) ? Number(object.limit) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
       statusAndTaskDef: isSet(object.statusAndTaskDef)
         ? SearchTaskRunRequest_StatusAndTaskDefRequest.fromJSON(object.statusAndTaskDef)
         : undefined,
@@ -2425,9 +2427,9 @@ export const SearchTaskRunRequest_StatusAndTaskDefRequest = {
   fromJSON(object: any): SearchTaskRunRequest_StatusAndTaskDefRequest {
     return {
       status: isSet(object.status) ? taskStatusFromJSON(object.status) : TaskStatus.TASK_SCHEDULED,
-      taskDefName: isSet(object.taskDefName) ? String(object.taskDefName) : "",
-      earliestStart: isSet(object.earliestStart) ? String(object.earliestStart) : undefined,
-      latestStart: isSet(object.latestStart) ? String(object.latestStart) : undefined,
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
+      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
     };
   },
 
@@ -2522,9 +2524,9 @@ export const SearchTaskRunRequest_ByTaskDefRequest = {
 
   fromJSON(object: any): SearchTaskRunRequest_ByTaskDefRequest {
     return {
-      taskDefName: isSet(object.taskDefName) ? String(object.taskDefName) : "",
-      earliestStart: isSet(object.earliestStart) ? String(object.earliestStart) : undefined,
-      latestStart: isSet(object.latestStart) ? String(object.latestStart) : undefined,
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
+      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
     };
   },
 
@@ -2605,7 +2607,7 @@ export const TaskRunIdList = {
 
   fromJSON(object: any): TaskRunIdList {
     return {
-      results: Array.isArray(object?.results) ? object.results.map((e: any) => TaskRunId.fromJSON(e)) : [],
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => TaskRunId.fromJSON(e)) : [],
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
     };
   },
@@ -2690,8 +2692,8 @@ export const SearchNodeRunRequest = {
   fromJSON(object: any): SearchNodeRunRequest {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
-      limit: isSet(object.limit) ? Number(object.limit) : undefined,
-      wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : undefined,
     };
   },
 
@@ -2768,7 +2770,7 @@ export const NodeRunIdList = {
 
   fromJSON(object: any): NodeRunIdList {
     return {
-      results: Array.isArray(object?.results) ? object.results.map((e: any) => NodeRunId.fromJSON(e)) : [],
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => NodeRunId.fromJSON(e)) : [],
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
     };
   },
@@ -2912,13 +2914,13 @@ export const SearchUserTaskRunRequest = {
   fromJSON(object: any): SearchUserTaskRunRequest {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
-      limit: isSet(object.limit) ? Number(object.limit) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
       status: isSet(object.status) ? userTaskRunStatusFromJSON(object.status) : undefined,
-      userTaskDefName: isSet(object.userTaskDefName) ? String(object.userTaskDefName) : undefined,
-      userId: isSet(object.userId) ? String(object.userId) : undefined,
-      userGroup: isSet(object.userGroup) ? String(object.userGroup) : undefined,
-      earliestStart: isSet(object.earliestStart) ? String(object.earliestStart) : undefined,
-      latestStart: isSet(object.latestStart) ? String(object.latestStart) : undefined,
+      userTaskDefName: isSet(object.userTaskDefName) ? globalThis.String(object.userTaskDefName) : undefined,
+      userId: isSet(object.userId) ? globalThis.String(object.userId) : undefined,
+      userGroup: isSet(object.userGroup) ? globalThis.String(object.userGroup) : undefined,
+      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
+      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
     };
   },
 
@@ -3015,7 +3017,9 @@ export const UserTaskRunIdList = {
 
   fromJSON(object: any): UserTaskRunIdList {
     return {
-      results: Array.isArray(object?.results) ? object.results.map((e: any) => UserTaskRunId.fromJSON(e)) : [],
+      results: globalThis.Array.isArray(object?.results)
+        ? object.results.map((e: any) => UserTaskRunId.fromJSON(e))
+        : [],
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
     };
   },
@@ -3110,8 +3114,8 @@ export const SearchVariableRequest = {
   fromJSON(object: any): SearchVariableRequest {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
-      limit: isSet(object.limit) ? Number(object.limit) : undefined,
-      wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : undefined,
       value: isSet(object.value) ? SearchVariableRequest_NameAndValueRequest.fromJSON(object.value) : undefined,
     };
   },
@@ -3216,9 +3220,9 @@ export const SearchVariableRequest_NameAndValueRequest = {
   fromJSON(object: any): SearchVariableRequest_NameAndValueRequest {
     return {
       value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
-      wfSpecVersion: isSet(object.wfSpecVersion) ? Number(object.wfSpecVersion) : undefined,
-      varName: isSet(object.varName) ? String(object.varName) : "",
-      wfSpecName: isSet(object.wfSpecName) ? String(object.wfSpecName) : "",
+      wfSpecVersion: isSet(object.wfSpecVersion) ? globalThis.Number(object.wfSpecVersion) : undefined,
+      varName: isSet(object.varName) ? globalThis.String(object.varName) : "",
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
     };
   },
 
@@ -3305,7 +3309,7 @@ export const VariableIdList = {
 
   fromJSON(object: any): VariableIdList {
     return {
-      results: Array.isArray(object?.results) ? object.results.map((e: any) => VariableId.fromJSON(e)) : [],
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => VariableId.fromJSON(e)) : [],
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
     };
   },
@@ -3390,8 +3394,8 @@ export const SearchTaskDefRequest = {
   fromJSON(object: any): SearchTaskDefRequest {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
-      limit: isSet(object.limit) ? Number(object.limit) : undefined,
-      prefix: isSet(object.prefix) ? String(object.prefix) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+      prefix: isSet(object.prefix) ? globalThis.String(object.prefix) : undefined,
     };
   },
 
@@ -3468,7 +3472,7 @@ export const TaskDefIdList = {
 
   fromJSON(object: any): TaskDefIdList {
     return {
-      results: Array.isArray(object?.results) ? object.results.map((e: any) => TaskDefId.fromJSON(e)) : [],
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => TaskDefId.fromJSON(e)) : [],
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
     };
   },
@@ -3563,9 +3567,9 @@ export const SearchUserTaskDefRequest = {
   fromJSON(object: any): SearchUserTaskDefRequest {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
-      limit: isSet(object.limit) ? Number(object.limit) : undefined,
-      prefix: isSet(object.prefix) ? String(object.prefix) : undefined,
-      name: isSet(object.name) ? String(object.name) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+      prefix: isSet(object.prefix) ? globalThis.String(object.prefix) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
     };
   },
 
@@ -3646,7 +3650,9 @@ export const UserTaskDefIdList = {
 
   fromJSON(object: any): UserTaskDefIdList {
     return {
-      results: Array.isArray(object?.results) ? object.results.map((e: any) => UserTaskDefId.fromJSON(e)) : [],
+      results: globalThis.Array.isArray(object?.results)
+        ? object.results.map((e: any) => UserTaskDefId.fromJSON(e))
+        : [],
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
     };
   },
@@ -3751,10 +3757,10 @@ export const SearchWfSpecRequest = {
   fromJSON(object: any): SearchWfSpecRequest {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
-      limit: isSet(object.limit) ? Number(object.limit) : undefined,
-      name: isSet(object.name) ? String(object.name) : undefined,
-      prefix: isSet(object.prefix) ? String(object.prefix) : undefined,
-      taskDefName: isSet(object.taskDefName) ? String(object.taskDefName) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
+      prefix: isSet(object.prefix) ? globalThis.String(object.prefix) : undefined,
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : undefined,
     };
   },
 
@@ -3839,7 +3845,7 @@ export const WfSpecIdList = {
 
   fromJSON(object: any): WfSpecIdList {
     return {
-      results: Array.isArray(object?.results) ? object.results.map((e: any) => WfSpecId.fromJSON(e)) : [],
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => WfSpecId.fromJSON(e)) : [],
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
     };
   },
@@ -3924,8 +3930,8 @@ export const SearchExternalEventDefRequest = {
   fromJSON(object: any): SearchExternalEventDefRequest {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
-      limit: isSet(object.limit) ? Number(object.limit) : undefined,
-      prefix: isSet(object.prefix) ? String(object.prefix) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+      prefix: isSet(object.prefix) ? globalThis.String(object.prefix) : undefined,
     };
   },
 
@@ -4004,7 +4010,9 @@ export const ExternalEventDefIdList = {
 
   fromJSON(object: any): ExternalEventDefIdList {
     return {
-      results: Array.isArray(object?.results) ? object.results.map((e: any) => ExternalEventDefId.fromJSON(e)) : [],
+      results: globalThis.Array.isArray(object?.results)
+        ? object.results.map((e: any) => ExternalEventDefId.fromJSON(e))
+        : [],
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
     };
   },
@@ -4105,8 +4113,8 @@ export const SearchExternalEventRequest = {
   fromJSON(object: any): SearchExternalEventRequest {
     return {
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
-      limit: isSet(object.limit) ? Number(object.limit) : undefined,
-      wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : undefined,
       externalEventDefNameAndStatus: isSet(object.externalEventDefNameAndStatus)
         ? SearchExternalEventRequest_ByExtEvtDefNameAndStatusRequest.fromJSON(object.externalEventDefNameAndStatus)
         : undefined,
@@ -4198,8 +4206,8 @@ export const SearchExternalEventRequest_ByExtEvtDefNameAndStatusRequest = {
 
   fromJSON(object: any): SearchExternalEventRequest_ByExtEvtDefNameAndStatusRequest {
     return {
-      externalEventDefName: isSet(object.externalEventDefName) ? String(object.externalEventDefName) : "",
-      isClaimed: isSet(object.isClaimed) ? Boolean(object.isClaimed) : undefined,
+      externalEventDefName: isSet(object.externalEventDefName) ? globalThis.String(object.externalEventDefName) : "",
+      isClaimed: isSet(object.isClaimed) ? globalThis.Boolean(object.isClaimed) : undefined,
     };
   },
 
@@ -4276,7 +4284,9 @@ export const ExternalEventIdList = {
 
   fromJSON(object: any): ExternalEventIdList {
     return {
-      results: Array.isArray(object?.results) ? object.results.map((e: any) => ExternalEventId.fromJSON(e)) : [],
+      results: globalThis.Array.isArray(object?.results)
+        ? object.results.map((e: any) => ExternalEventId.fromJSON(e))
+        : [],
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
     };
   },
@@ -4339,7 +4349,7 @@ export const ListNodeRunsRequest = {
   },
 
   fromJSON(object: any): ListNodeRunsRequest {
-    return { wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : "" };
+    return { wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "" };
   },
 
   toJSON(message: ListNodeRunsRequest): unknown {
@@ -4396,7 +4406,9 @@ export const NodeRunList = {
   },
 
   fromJSON(object: any): NodeRunList {
-    return { results: Array.isArray(object?.results) ? object.results.map((e: any) => NodeRun.fromJSON(e)) : [] };
+    return {
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => NodeRun.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: NodeRunList): unknown {
@@ -4453,7 +4465,7 @@ export const ListVariablesRequest = {
   },
 
   fromJSON(object: any): ListVariablesRequest {
-    return { wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : "" };
+    return { wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "" };
   },
 
   toJSON(message: ListVariablesRequest): unknown {
@@ -4510,7 +4522,9 @@ export const VariableList = {
   },
 
   fromJSON(object: any): VariableList {
-    return { results: Array.isArray(object?.results) ? object.results.map((e: any) => Variable.fromJSON(e)) : [] };
+    return {
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => Variable.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: VariableList): unknown {
@@ -4567,7 +4581,7 @@ export const ListExternalEventsRequest = {
   },
 
   fromJSON(object: any): ListExternalEventsRequest {
-    return { wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : "" };
+    return { wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "" };
   },
 
   toJSON(message: ListExternalEventsRequest): unknown {
@@ -4624,7 +4638,11 @@ export const ExternalEventList = {
   },
 
   fromJSON(object: any): ExternalEventList {
-    return { results: Array.isArray(object?.results) ? object.results.map((e: any) => ExternalEvent.fromJSON(e)) : [] };
+    return {
+      results: globalThis.Array.isArray(object?.results)
+        ? object.results.map((e: any) => ExternalEvent.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: ExternalEventList): unknown {
@@ -4702,9 +4720,9 @@ export const RegisterTaskWorkerRequest = {
 
   fromJSON(object: any): RegisterTaskWorkerRequest {
     return {
-      clientId: isSet(object.clientId) ? String(object.clientId) : "",
-      taskDefName: isSet(object.taskDefName) ? String(object.taskDefName) : "",
-      listenerName: isSet(object.listenerName) ? String(object.listenerName) : "",
+      clientId: isSet(object.clientId) ? globalThis.String(object.clientId) : "",
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      listenerName: isSet(object.listenerName) ? globalThis.String(object.listenerName) : "",
     };
   },
 
@@ -4791,9 +4809,9 @@ export const TaskWorkerHeartBeatRequest = {
 
   fromJSON(object: any): TaskWorkerHeartBeatRequest {
     return {
-      clientId: isSet(object.clientId) ? String(object.clientId) : "",
-      taskDefName: isSet(object.taskDefName) ? String(object.taskDefName) : "",
-      listenerName: isSet(object.listenerName) ? String(object.listenerName) : "",
+      clientId: isSet(object.clientId) ? globalThis.String(object.clientId) : "",
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      listenerName: isSet(object.listenerName) ? globalThis.String(object.listenerName) : "",
     };
   },
 
@@ -4860,7 +4878,9 @@ export const RegisterTaskWorkerResponse = {
 
   fromJSON(object: any): RegisterTaskWorkerResponse {
     return {
-      yourHosts: Array.isArray(object?.yourHosts) ? object.yourHosts.map((e: any) => LHHostInfo.fromJSON(e)) : [],
+      yourHosts: globalThis.Array.isArray(object?.yourHosts)
+        ? object.yourHosts.map((e: any) => LHHostInfo.fromJSON(e))
+        : [],
     };
   },
 
@@ -4928,7 +4948,10 @@ export const LHHostInfo = {
   },
 
   fromJSON(object: any): LHHostInfo {
-    return { host: isSet(object.host) ? String(object.host) : "", port: isSet(object.port) ? Number(object.port) : 0 };
+    return {
+      host: isSet(object.host) ? globalThis.String(object.host) : "",
+      port: isSet(object.port) ? globalThis.Number(object.port) : 0,
+    };
   },
 
   toJSON(message: LHHostInfo): unknown {
@@ -5010,9 +5033,9 @@ export const TaskWorkerMetadata = {
 
   fromJSON(object: any): TaskWorkerMetadata {
     return {
-      clientId: isSet(object.clientId) ? String(object.clientId) : "",
-      latestHeartbeat: isSet(object.latestHeartbeat) ? String(object.latestHeartbeat) : undefined,
-      hosts: Array.isArray(object?.hosts) ? object.hosts.map((e: any) => LHHostInfo.fromJSON(e)) : [],
+      clientId: isSet(object.clientId) ? globalThis.String(object.clientId) : "",
+      latestHeartbeat: isSet(object.latestHeartbeat) ? globalThis.String(object.latestHeartbeat) : undefined,
+      hosts: globalThis.Array.isArray(object?.hosts) ? object.hosts.map((e: any) => LHHostInfo.fromJSON(e)) : [],
     };
   },
 
@@ -5102,8 +5125,8 @@ export const TaskWorkerGroup = {
 
   fromJSON(object: any): TaskWorkerGroup {
     return {
-      taskDefName: isSet(object.taskDefName) ? String(object.taskDefName) : "",
-      createdAt: isSet(object.createdAt) ? String(object.createdAt) : undefined,
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
       taskWorkers: isObject(object.taskWorkers)
         ? Object.entries(object.taskWorkers).reduce<{ [key: string]: TaskWorkerMetadata }>((acc, [key, value]) => {
           acc[key] = TaskWorkerMetadata.fromJSON(value);
@@ -5200,7 +5223,7 @@ export const TaskWorkerGroup_TaskWorkersEntry = {
 
   fromJSON(object: any): TaskWorkerGroup_TaskWorkersEntry {
     return {
-      key: isSet(object.key) ? String(object.key) : "",
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
       value: isSet(object.value) ? TaskWorkerMetadata.fromJSON(object.value) : undefined,
     };
   },
@@ -5290,9 +5313,9 @@ export const PollTaskRequest = {
 
   fromJSON(object: any): PollTaskRequest {
     return {
-      taskDefName: isSet(object.taskDefName) ? String(object.taskDefName) : "",
-      clientId: isSet(object.clientId) ? String(object.clientId) : "",
-      taskWorkerVersion: isSet(object.taskWorkerVersion) ? String(object.taskWorkerVersion) : undefined,
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      clientId: isSet(object.clientId) ? globalThis.String(object.clientId) : "",
+      taskWorkerVersion: isSet(object.taskWorkerVersion) ? globalThis.String(object.taskWorkerVersion) : undefined,
     };
   },
 
@@ -5418,9 +5441,11 @@ export const ScheduledTask = {
     return {
       taskRunId: isSet(object.taskRunId) ? TaskRunId.fromJSON(object.taskRunId) : undefined,
       taskDefId: isSet(object.taskDefId) ? TaskDefId.fromJSON(object.taskDefId) : undefined,
-      attemptNumber: isSet(object.attemptNumber) ? Number(object.attemptNumber) : 0,
-      variables: Array.isArray(object?.variables) ? object.variables.map((e: any) => VarNameAndVal.fromJSON(e)) : [],
-      createdAt: isSet(object.createdAt) ? String(object.createdAt) : undefined,
+      attemptNumber: isSet(object.attemptNumber) ? globalThis.Number(object.attemptNumber) : 0,
+      variables: globalThis.Array.isArray(object?.variables)
+        ? object.variables.map((e: any) => VarNameAndVal.fromJSON(e))
+        : [],
+      createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
       source: isSet(object.source) ? TaskRunSource.fromJSON(object.source) : undefined,
     };
   },
@@ -5645,10 +5670,10 @@ export const ReportTaskRun = {
   fromJSON(object: any): ReportTaskRun {
     return {
       taskRunId: isSet(object.taskRunId) ? TaskRunId.fromJSON(object.taskRunId) : undefined,
-      time: isSet(object.time) ? String(object.time) : undefined,
+      time: isSet(object.time) ? globalThis.String(object.time) : undefined,
       status: isSet(object.status) ? taskStatusFromJSON(object.status) : TaskStatus.TASK_SCHEDULED,
       logOutput: isSet(object.logOutput) ? VariableValue.fromJSON(object.logOutput) : undefined,
-      attemptNumber: isSet(object.attemptNumber) ? Number(object.attemptNumber) : 0,
+      attemptNumber: isSet(object.attemptNumber) ? globalThis.Number(object.attemptNumber) : 0,
       output: isSet(object.output) ? VariableValue.fromJSON(object.output) : undefined,
       error: isSet(object.error) ? LHTaskError.fromJSON(object.error) : undefined,
       exception: isSet(object.exception) ? LHTaskException.fromJSON(object.exception) : undefined,
@@ -5758,8 +5783,8 @@ export const StopWfRunRequest = {
 
   fromJSON(object: any): StopWfRunRequest {
     return {
-      wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : "",
-      threadRunNumber: isSet(object.threadRunNumber) ? Number(object.threadRunNumber) : 0,
+      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
+      threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : 0,
     };
   },
 
@@ -5832,8 +5857,8 @@ export const ResumeWfRunRequest = {
 
   fromJSON(object: any): ResumeWfRunRequest {
     return {
-      wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : "",
-      threadRunNumber: isSet(object.threadRunNumber) ? Number(object.threadRunNumber) : 0,
+      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
+      threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : 0,
     };
   },
 
@@ -5916,11 +5941,11 @@ export const TaskDefMetricsQueryRequest = {
 
   fromJSON(object: any): TaskDefMetricsQueryRequest {
     return {
-      windowStart: isSet(object.windowStart) ? String(object.windowStart) : undefined,
+      windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
       windowType: isSet(object.windowType)
         ? metricsWindowLengthFromJSON(object.windowType)
         : MetricsWindowLength.MINUTES_5,
-      taskDefName: isSet(object.taskDefName) ? String(object.taskDefName) : undefined,
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : undefined,
     };
   },
 
@@ -6017,9 +6042,9 @@ export const ListTaskMetricsRequest = {
 
   fromJSON(object: any): ListTaskMetricsRequest {
     return {
-      lastWindowStart: isSet(object.lastWindowStart) ? String(object.lastWindowStart) : undefined,
-      numWindows: isSet(object.numWindows) ? Number(object.numWindows) : 0,
-      taskDefName: isSet(object.taskDefName) ? String(object.taskDefName) : "",
+      lastWindowStart: isSet(object.lastWindowStart) ? globalThis.String(object.lastWindowStart) : undefined,
+      numWindows: isSet(object.numWindows) ? globalThis.Number(object.numWindows) : 0,
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
       windowLength: isSet(object.windowLength)
         ? metricsWindowLengthFromJSON(object.windowLength)
         : MetricsWindowLength.MINUTES_5,
@@ -6093,7 +6118,9 @@ export const ListTaskMetricsResponse = {
 
   fromJSON(object: any): ListTaskMetricsResponse {
     return {
-      results: Array.isArray(object?.results) ? object.results.map((e: any) => TaskDefMetrics.fromJSON(e)) : [],
+      results: globalThis.Array.isArray(object?.results)
+        ? object.results.map((e: any) => TaskDefMetrics.fromJSON(e))
+        : [],
     };
   },
 
@@ -6182,12 +6209,12 @@ export const WfSpecMetricsQueryRequest = {
 
   fromJSON(object: any): WfSpecMetricsQueryRequest {
     return {
-      windowStart: isSet(object.windowStart) ? String(object.windowStart) : undefined,
+      windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
       windowType: isSet(object.windowType)
         ? metricsWindowLengthFromJSON(object.windowType)
         : MetricsWindowLength.MINUTES_5,
-      wfSpecName: isSet(object.wfSpecName) ? String(object.wfSpecName) : "",
-      wfSpecVersion: isSet(object.wfSpecVersion) ? Number(object.wfSpecVersion) : 0,
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      wfSpecVersion: isSet(object.wfSpecVersion) ? globalThis.Number(object.wfSpecVersion) : 0,
     };
   },
 
@@ -6304,10 +6331,10 @@ export const ListWfMetricsRequest = {
 
   fromJSON(object: any): ListWfMetricsRequest {
     return {
-      lastWindowStart: isSet(object.lastWindowStart) ? String(object.lastWindowStart) : undefined,
-      numWindows: isSet(object.numWindows) ? Number(object.numWindows) : 0,
-      wfSpecName: isSet(object.wfSpecName) ? String(object.wfSpecName) : "",
-      wfSpecVersion: isSet(object.wfSpecVersion) ? Number(object.wfSpecVersion) : 0,
+      lastWindowStart: isSet(object.lastWindowStart) ? globalThis.String(object.lastWindowStart) : undefined,
+      numWindows: isSet(object.numWindows) ? globalThis.Number(object.numWindows) : 0,
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      wfSpecVersion: isSet(object.wfSpecVersion) ? globalThis.Number(object.wfSpecVersion) : 0,
       windowLength: isSet(object.windowLength)
         ? metricsWindowLengthFromJSON(object.windowLength)
         : MetricsWindowLength.MINUTES_5,
@@ -6384,7 +6411,11 @@ export const ListWfMetricsResponse = {
   },
 
   fromJSON(object: any): ListWfMetricsResponse {
-    return { results: Array.isArray(object?.results) ? object.results.map((e: any) => WfSpecMetrics.fromJSON(e)) : [] };
+    return {
+      results: globalThis.Array.isArray(object?.results)
+        ? object.results.map((e: any) => WfSpecMetrics.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: ListWfMetricsResponse): unknown {
@@ -6554,17 +6585,17 @@ export const TaskDefMetrics = {
 
   fromJSON(object: any): TaskDefMetrics {
     return {
-      windowStart: isSet(object.windowStart) ? String(object.windowStart) : undefined,
+      windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
       type: isSet(object.type) ? metricsWindowLengthFromJSON(object.type) : MetricsWindowLength.MINUTES_5,
-      taskDefName: isSet(object.taskDefName) ? String(object.taskDefName) : "",
-      scheduleToStartMax: isSet(object.scheduleToStartMax) ? Number(object.scheduleToStartMax) : 0,
-      scheduleToStartAvg: isSet(object.scheduleToStartAvg) ? Number(object.scheduleToStartAvg) : 0,
-      startToCompleteMax: isSet(object.startToCompleteMax) ? Number(object.startToCompleteMax) : 0,
-      startToCompleteAvg: isSet(object.startToCompleteAvg) ? Number(object.startToCompleteAvg) : 0,
-      totalCompleted: isSet(object.totalCompleted) ? Number(object.totalCompleted) : 0,
-      totalErrored: isSet(object.totalErrored) ? Number(object.totalErrored) : 0,
-      totalStarted: isSet(object.totalStarted) ? Number(object.totalStarted) : 0,
-      totalScheduled: isSet(object.totalScheduled) ? Number(object.totalScheduled) : 0,
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      scheduleToStartMax: isSet(object.scheduleToStartMax) ? globalThis.Number(object.scheduleToStartMax) : 0,
+      scheduleToStartAvg: isSet(object.scheduleToStartAvg) ? globalThis.Number(object.scheduleToStartAvg) : 0,
+      startToCompleteMax: isSet(object.startToCompleteMax) ? globalThis.Number(object.startToCompleteMax) : 0,
+      startToCompleteAvg: isSet(object.startToCompleteAvg) ? globalThis.Number(object.startToCompleteAvg) : 0,
+      totalCompleted: isSet(object.totalCompleted) ? globalThis.Number(object.totalCompleted) : 0,
+      totalErrored: isSet(object.totalErrored) ? globalThis.Number(object.totalErrored) : 0,
+      totalStarted: isSet(object.totalStarted) ? globalThis.Number(object.totalStarted) : 0,
+      totalScheduled: isSet(object.totalScheduled) ? globalThis.Number(object.totalScheduled) : 0,
     };
   },
 
@@ -6753,15 +6784,15 @@ export const WfSpecMetrics = {
 
   fromJSON(object: any): WfSpecMetrics {
     return {
-      windowStart: isSet(object.windowStart) ? String(object.windowStart) : undefined,
+      windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
       type: isSet(object.type) ? metricsWindowLengthFromJSON(object.type) : MetricsWindowLength.MINUTES_5,
-      wfSpecName: isSet(object.wfSpecName) ? String(object.wfSpecName) : "",
-      wfSpecVersion: isSet(object.wfSpecVersion) ? Number(object.wfSpecVersion) : 0,
-      totalStarted: isSet(object.totalStarted) ? Number(object.totalStarted) : 0,
-      totalCompleted: isSet(object.totalCompleted) ? Number(object.totalCompleted) : 0,
-      totalErrored: isSet(object.totalErrored) ? Number(object.totalErrored) : 0,
-      startToCompleteMax: isSet(object.startToCompleteMax) ? Number(object.startToCompleteMax) : 0,
-      startToCompleteAvg: isSet(object.startToCompleteAvg) ? Number(object.startToCompleteAvg) : 0,
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      wfSpecVersion: isSet(object.wfSpecVersion) ? globalThis.Number(object.wfSpecVersion) : 0,
+      totalStarted: isSet(object.totalStarted) ? globalThis.Number(object.totalStarted) : 0,
+      totalCompleted: isSet(object.totalCompleted) ? globalThis.Number(object.totalCompleted) : 0,
+      totalErrored: isSet(object.totalErrored) ? globalThis.Number(object.totalErrored) : 0,
+      startToCompleteMax: isSet(object.startToCompleteMax) ? globalThis.Number(object.startToCompleteMax) : 0,
+      startToCompleteAvg: isSet(object.startToCompleteAvg) ? globalThis.Number(object.startToCompleteAvg) : 0,
     };
   },
 
@@ -6851,7 +6882,7 @@ export const ListUserTaskRunRequest = {
   },
 
   fromJSON(object: any): ListUserTaskRunRequest {
-    return { wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : "" };
+    return { wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "" };
   },
 
   toJSON(message: ListUserTaskRunRequest): unknown {
@@ -6908,7 +6939,9 @@ export const UserTaskRunList = {
   },
 
   fromJSON(object: any): UserTaskRunList {
-    return { results: Array.isArray(object?.results) ? object.results.map((e: any) => UserTaskRun.fromJSON(e)) : [] };
+    return {
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => UserTaskRun.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: UserTaskRunList): unknown {
@@ -7607,30 +7640,11 @@ export interface LHPublicApiClient<CallOptionsExt = {}> {
   ): Promise<ListWfMetricsResponse>;
 }
 
-declare const self: any | undefined;
-declare const window: any | undefined;
-declare const global: any | undefined;
-const tsProtoGlobalThis: any = (() => {
-  if (typeof globalThis !== "undefined") {
-    return globalThis;
-  }
-  if (typeof self !== "undefined") {
-    return self;
-  }
-  if (typeof window !== "undefined") {
-    return window;
-  }
-  if (typeof global !== "undefined") {
-    return global;
-  }
-  throw "Unable to locate global object";
-})();
-
 function bytesFromBase64(b64: string): Uint8Array {
-  if (tsProtoGlobalThis.Buffer) {
-    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  if (globalThis.Buffer) {
+    return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
   } else {
-    const bin = tsProtoGlobalThis.atob(b64);
+    const bin = globalThis.atob(b64);
     const arr = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; ++i) {
       arr[i] = bin.charCodeAt(i);
@@ -7640,21 +7654,22 @@ function bytesFromBase64(b64: string): Uint8Array {
 }
 
 function base64FromBytes(arr: Uint8Array): string {
-  if (tsProtoGlobalThis.Buffer) {
-    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  if (globalThis.Buffer) {
+    return globalThis.Buffer.from(arr).toString("base64");
   } else {
     const bin: string[] = [];
     arr.forEach((byte) => {
-      bin.push(String.fromCharCode(byte));
+      bin.push(globalThis.String.fromCharCode(byte));
     });
-    return tsProtoGlobalThis.btoa(bin.join(""));
+    return globalThis.btoa(bin.join(""));
   }
 }
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -7663,7 +7678,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function toTimestamp(dateStr: string): Timestamp {
-  const date = new Date(dateStr);
+  const date = new globalThis.Date(dateStr);
   const seconds = date.getTime() / 1_000;
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
@@ -7672,12 +7687,12 @@ function toTimestamp(dateStr: string): Timestamp {
 function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
-  return new Date(millis).toISOString();
+  return new globalThis.Date(millis).toISOString();
 }
 
 function longToNumber(long: Long): number {
-  if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new tsProtoGlobalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  if (long.gt(globalThis.Number.MAX_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
   }
   return long.toNumber();
 }

@@ -1,24 +1,25 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { createChannel, createClient } from 'nice-grpc';
-import { LHPublicApiDefinition } from "../../../littlehorse-public-api/service";
+import type { NextApiRequest, NextApiResponse } from 'next'
+import type { Client } from 'nice-grpc/src/client/Client'
+import type { LHPublicApiDefinition } from '../../../littlehorse-public-api/service'
+import LHClient from '../LHClient'
+import { WfRunId } from '../../../littlehorse-public-api/object_id'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === 'POST') {
     try {
-      const channel = createChannel(process.env.API_URL!!);
-      const client = createClient(LHPublicApiDefinition, channel);
+      const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
 
       const parsedRequestBody = JSON.parse(req.body)
-      
-      const response = await client.getWfRun(parsedRequestBody);
-      
-      return res.send(response)
+
+      const response = await client.getWfRun({ id: parsedRequestBody.wfRunId } as any)
+
+      res.send(response) 
     } catch (error) {
-      console.log("Error during GRPC call:", error);
-      return res.send({
-        error: "Something went wrong." + error,
-      })
+      console.log('Error during GRPC call:', error)
+      res.send({
+        error: `Something went wrong.${error}`,
+      }) 
     }
   }
 }

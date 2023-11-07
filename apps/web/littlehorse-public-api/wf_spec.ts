@@ -1,5 +1,5 @@
 /* eslint-disable */
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 import {
   LHStatus,
   lHStatusFromJSON,
@@ -329,9 +329,9 @@ export const WfSpec = {
 
   fromJSON(object: any): WfSpec {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
-      version: isSet(object.version) ? Number(object.version) : 0,
-      createdAt: isSet(object.createdAt) ? String(object.createdAt) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      version: isSet(object.version) ? globalThis.Number(object.version) : 0,
+      createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
       status: isSet(object.status) ? lHStatusFromJSON(object.status) : LHStatus.STARTING,
       threadSpecs: isObject(object.threadSpecs)
         ? Object.entries(object.threadSpecs).reduce<{ [key: string]: ThreadSpec }>((acc, [key, value]) => {
@@ -339,8 +339,8 @@ export const WfSpec = {
           return acc;
         }, {})
         : {},
-      entrypointThreadName: isSet(object.entrypointThreadName) ? String(object.entrypointThreadName) : "",
-      retentionHours: isSet(object.retentionHours) ? Number(object.retentionHours) : 0,
+      entrypointThreadName: isSet(object.entrypointThreadName) ? globalThis.String(object.entrypointThreadName) : "",
+      retentionHours: isSet(object.retentionHours) ? globalThis.Number(object.retentionHours) : 0,
     };
   },
 
@@ -447,7 +447,7 @@ export const WfSpec_ThreadSpecsEntry = {
 
   fromJSON(object: any): WfSpec_ThreadSpecsEntry {
     return {
-      key: isSet(object.key) ? String(object.key) : "",
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
       value: isSet(object.value) ? ThreadSpec.fromJSON(object.value) : undefined,
     };
   },
@@ -542,10 +542,10 @@ export const ThreadSpec = {
           return acc;
         }, {})
         : {},
-      variableDefs: Array.isArray(object?.variableDefs)
+      variableDefs: globalThis.Array.isArray(object?.variableDefs)
         ? object.variableDefs.map((e: any) => VariableDef.fromJSON(e))
         : [],
-      interruptDefs: Array.isArray(object?.interruptDefs)
+      interruptDefs: globalThis.Array.isArray(object?.interruptDefs)
         ? object.interruptDefs.map((e: any) => InterruptDef.fromJSON(e))
         : [],
     };
@@ -635,7 +635,7 @@ export const ThreadSpec_NodesEntry = {
 
   fromJSON(object: any): ThreadSpec_NodesEntry {
     return {
-      key: isSet(object.key) ? String(object.key) : "",
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
       value: isSet(object.value) ? Node.fromJSON(object.value) : undefined,
     };
   },
@@ -709,8 +709,8 @@ export const InterruptDef = {
 
   fromJSON(object: any): InterruptDef {
     return {
-      externalEventDefName: isSet(object.externalEventDefName) ? String(object.externalEventDefName) : "",
-      handlerSpecName: isSet(object.handlerSpecName) ? String(object.handlerSpecName) : "",
+      externalEventDefName: isSet(object.externalEventDefName) ? globalThis.String(object.externalEventDefName) : "",
+      handlerSpecName: isSet(object.handlerSpecName) ? globalThis.String(object.handlerSpecName) : "",
     };
   },
 
@@ -786,7 +786,7 @@ export const StartThreadNode = {
 
   fromJSON(object: any): StartThreadNode {
     return {
-      threadSpecName: isSet(object.threadSpecName) ? String(object.threadSpecName) : "",
+      threadSpecName: isSet(object.threadSpecName) ? globalThis.String(object.threadSpecName) : "",
       variables: isObject(object.variables)
         ? Object.entries(object.variables).reduce<{ [key: string]: VariableAssignment }>((acc, [key, value]) => {
           acc[key] = VariableAssignment.fromJSON(value);
@@ -879,7 +879,7 @@ export const StartThreadNode_VariablesEntry = {
 
   fromJSON(object: any): StartThreadNode_VariablesEntry {
     return {
-      key: isSet(object.key) ? String(object.key) : "",
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
       value: isSet(object.value) ? VariableAssignment.fromJSON(object.value) : undefined,
     };
   },
@@ -970,7 +970,7 @@ export const StartMultipleThreadsNode = {
 
   fromJSON(object: any): StartMultipleThreadsNode {
     return {
-      threadSpecName: isSet(object.threadSpecName) ? String(object.threadSpecName) : "",
+      threadSpecName: isSet(object.threadSpecName) ? globalThis.String(object.threadSpecName) : "",
       variables: isObject(object.variables)
         ? Object.entries(object.variables).reduce<{ [key: string]: VariableAssignment }>((acc, [key, value]) => {
           acc[key] = VariableAssignment.fromJSON(value);
@@ -1070,7 +1070,7 @@ export const StartMultipleThreadsNode_VariablesEntry = {
 
   fromJSON(object: any): StartMultipleThreadsNode_VariablesEntry {
     return {
-      key: isSet(object.key) ? String(object.key) : "",
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
       value: isSet(object.value) ? VariableAssignment.fromJSON(object.value) : undefined,
     };
   },
@@ -1160,8 +1160,8 @@ export const FailureHandlerDef = {
 
   fromJSON(object: any): FailureHandlerDef {
     return {
-      handlerSpecName: isSet(object.handlerSpecName) ? String(object.handlerSpecName) : "",
-      specificFailure: isSet(object.specificFailure) ? String(object.specificFailure) : undefined,
+      handlerSpecName: isSet(object.handlerSpecName) ? globalThis.String(object.handlerSpecName) : "",
+      specificFailure: isSet(object.specificFailure) ? globalThis.String(object.specificFailure) : undefined,
       anyFailureOfType: isSet(object.anyFailureOfType)
         ? failureHandlerDef_LHFailureTypeFromJSON(object.anyFailureOfType)
         : undefined,
@@ -1251,7 +1251,7 @@ export const WaitForThreadsNode = {
 
   fromJSON(object: any): WaitForThreadsNode {
     return {
-      threads: Array.isArray(object?.threads)
+      threads: globalThis.Array.isArray(object?.threads)
         ? object.threads.map((e: any) => WaitForThreadsNode_ThreadToWaitFor.fromJSON(e))
         : [],
       threadList: isSet(object.threadList) ? VariableAssignment.fromJSON(object.threadList) : undefined,
@@ -1399,7 +1399,7 @@ export const ExternalEventNode = {
 
   fromJSON(object: any): ExternalEventNode {
     return {
-      externalEventDefName: isSet(object.externalEventDefName) ? String(object.externalEventDefName) : "",
+      externalEventDefName: isSet(object.externalEventDefName) ? globalThis.String(object.externalEventDefName) : "",
       timeoutSeconds: isSet(object.timeoutSeconds) ? VariableAssignment.fromJSON(object.timeoutSeconds) : undefined,
     };
   },
@@ -1587,8 +1587,8 @@ export const FailureDef = {
 
   fromJSON(object: any): FailureDef {
     return {
-      failureName: isSet(object.failureName) ? String(object.failureName) : "",
-      message: isSet(object.message) ? String(object.message) : "",
+      failureName: isSet(object.failureName) ? globalThis.String(object.failureName) : "",
+      message: isSet(object.message) ? globalThis.String(object.message) : "",
       content: isSet(object.content) ? VariableAssignment.fromJSON(object.content) : undefined,
     };
   },
@@ -1792,11 +1792,13 @@ export const Node = {
 
   fromJSON(object: any): Node {
     return {
-      outgoingEdges: Array.isArray(object?.outgoingEdges) ? object.outgoingEdges.map((e: any) => Edge.fromJSON(e)) : [],
-      variableMutations: Array.isArray(object?.variableMutations)
+      outgoingEdges: globalThis.Array.isArray(object?.outgoingEdges)
+        ? object.outgoingEdges.map((e: any) => Edge.fromJSON(e))
+        : [],
+      variableMutations: globalThis.Array.isArray(object?.variableMutations)
         ? object.variableMutations.map((e: any) => VariableMutation.fromJSON(e))
         : [],
-      failureHandlers: Array.isArray(object?.failureHandlers)
+      failureHandlers: globalThis.Array.isArray(object?.failureHandlers)
         ? object.failureHandlers.map((e: any) => FailureHandlerDef.fromJSON(e))
         : [],
       entrypoint: isSet(object.entrypoint) ? EntrypointNode.fromJSON(object.entrypoint) : undefined,
@@ -1988,11 +1990,13 @@ export const UserTaskNode = {
 
   fromJSON(object: any): UserTaskNode {
     return {
-      userTaskDefName: isSet(object.userTaskDefName) ? String(object.userTaskDefName) : "",
+      userTaskDefName: isSet(object.userTaskDefName) ? globalThis.String(object.userTaskDefName) : "",
       userGroup: isSet(object.userGroup) ? VariableAssignment.fromJSON(object.userGroup) : undefined,
       userId: isSet(object.userId) ? VariableAssignment.fromJSON(object.userId) : undefined,
-      actions: Array.isArray(object?.actions) ? object.actions.map((e: any) => UTActionTrigger.fromJSON(e)) : [],
-      userTaskDefVersion: isSet(object.userTaskDefVersion) ? Number(object.userTaskDefVersion) : undefined,
+      actions: globalThis.Array.isArray(object?.actions)
+        ? object.actions.map((e: any) => UTActionTrigger.fromJSON(e))
+        : [],
+      userTaskDefVersion: isSet(object.userTaskDefVersion) ? globalThis.Number(object.userTaskDefVersion) : undefined,
       notes: isSet(object.notes) ? VariableAssignment.fromJSON(object.notes) : undefined,
     };
   },
@@ -2181,7 +2185,7 @@ export const Edge = {
 
   fromJSON(object: any): Edge {
     return {
-      sinkNodeName: isSet(object.sinkNodeName) ? String(object.sinkNodeName) : "",
+      sinkNodeName: isSet(object.sinkNodeName) ? globalThis.String(object.sinkNodeName) : "",
       condition: isSet(object.condition) ? EdgeCondition.fromJSON(object.condition) : undefined,
     };
   },
@@ -2351,7 +2355,8 @@ export const SleepNode = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -2360,7 +2365,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function toTimestamp(dateStr: string): Timestamp {
-  const date = new Date(dateStr);
+  const date = new globalThis.Date(dateStr);
   const seconds = date.getTime() / 1_000;
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
@@ -2369,7 +2374,7 @@ function toTimestamp(dateStr: string): Timestamp {
 function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
-  return new Date(millis).toISOString();
+  return new globalThis.Date(millis).toISOString();
 }
 
 function isObject(value: any): boolean {

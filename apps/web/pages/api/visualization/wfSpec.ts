@@ -1,24 +1,27 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { createChannel, createClient } from 'nice-grpc';
-import { LHPublicApiDefinition } from "../../../littlehorse-public-api/service";
+import type { NextApiRequest, NextApiResponse } from 'next'
+import type { Client } from 'nice-grpc/src/client/Client'
+import type { LHPublicApiDefinition } from '../../../littlehorse-public-api/service'
+import LHClient from '../LHClient'
+import type { WfSpec } from '../../../littlehorse-public-api/wf_spec'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === 'POST') {
     //TODO: Insecure channel needs to be changed by a secure one
-    const channel = createChannel(process.env.API_URL!!);
-
-    const client = createClient(LHPublicApiDefinition, channel);
+    const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
 
     try {
       const parsedRequestBody = JSON.parse(req.body)
-      const response = await client.getWfSpec({name: parsedRequestBody.id, version: parsedRequestBody.version} as any);
-      return res.send(response)
+      const response: WfSpec = await client.getWfSpec({
+        name: parsedRequestBody.id,
+        version: parsedRequestBody.version
+      } as any)
+      res.send(response) 
     } catch (error) {
-      console.log("Error during GRPC call:", error);
-      return res.send({
-        error: "Something went wrong." + error,
-      })
+      console.log('WfSpec - Error during GRPC call:', error)
+      res.send({
+        error: `Something went wrong.${error}`,
+      }) 
     }
   }
 }

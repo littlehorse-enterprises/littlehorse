@@ -1,5 +1,5 @@
 /* eslint-disable */
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRunId, TaskRunId, UserTaskDefId, UserTaskRunId, WfSpecId } from "./object_id";
@@ -251,11 +251,11 @@ export const UserTaskDef = {
 
   fromJSON(object: any): UserTaskDef {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
-      version: isSet(object.version) ? Number(object.version) : 0,
-      description: isSet(object.description) ? String(object.description) : undefined,
-      fields: Array.isArray(object?.fields) ? object.fields.map((e: any) => UserTaskField.fromJSON(e)) : [],
-      createdAt: isSet(object.createdAt) ? String(object.createdAt) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      version: isSet(object.version) ? globalThis.Number(object.version) : 0,
+      description: isSet(object.description) ? globalThis.String(object.description) : undefined,
+      fields: globalThis.Array.isArray(object?.fields) ? object.fields.map((e: any) => UserTaskField.fromJSON(e)) : [],
+      createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
     };
   },
 
@@ -370,11 +370,11 @@ export const UserTaskField = {
 
   fromJSON(object: any): UserTaskField {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
       type: isSet(object.type) ? variableTypeFromJSON(object.type) : VariableType.JSON_OBJ,
-      description: isSet(object.description) ? String(object.description) : undefined,
-      displayName: isSet(object.displayName) ? String(object.displayName) : "",
-      required: isSet(object.required) ? Boolean(object.required) : false,
+      description: isSet(object.description) ? globalThis.String(object.description) : undefined,
+      displayName: isSet(object.displayName) ? globalThis.String(object.displayName) : "",
+      required: isSet(object.required) ? globalThis.Boolean(object.required) : false,
     };
   },
 
@@ -555,8 +555,8 @@ export const UserTaskRun = {
     return {
       id: isSet(object.id) ? UserTaskRunId.fromJSON(object.id) : undefined,
       userTaskDefId: isSet(object.userTaskDefId) ? UserTaskDefId.fromJSON(object.userTaskDefId) : undefined,
-      userGroup: isSet(object.userGroup) ? String(object.userGroup) : undefined,
-      userId: isSet(object.userId) ? String(object.userId) : undefined,
+      userGroup: isSet(object.userGroup) ? globalThis.String(object.userGroup) : undefined,
+      userId: isSet(object.userId) ? globalThis.String(object.userId) : undefined,
       results: isObject(object.results)
         ? Object.entries(object.results).reduce<{ [key: string]: VariableValue }>((acc, [key, value]) => {
           acc[key] = VariableValue.fromJSON(value);
@@ -564,9 +564,9 @@ export const UserTaskRun = {
         }, {})
         : {},
       status: isSet(object.status) ? userTaskRunStatusFromJSON(object.status) : UserTaskRunStatus.UNASSIGNED,
-      events: Array.isArray(object?.events) ? object.events.map((e: any) => UserTaskEvent.fromJSON(e)) : [],
-      notes: isSet(object.notes) ? String(object.notes) : undefined,
-      scheduledTime: isSet(object.scheduledTime) ? String(object.scheduledTime) : undefined,
+      events: globalThis.Array.isArray(object?.events) ? object.events.map((e: any) => UserTaskEvent.fromJSON(e)) : [],
+      notes: isSet(object.notes) ? globalThis.String(object.notes) : undefined,
+      scheduledTime: isSet(object.scheduledTime) ? globalThis.String(object.scheduledTime) : undefined,
       nodeRunId: isSet(object.nodeRunId) ? NodeRunId.fromJSON(object.nodeRunId) : undefined,
     };
   },
@@ -690,7 +690,7 @@ export const UserTaskRun_ResultsEntry = {
 
   fromJSON(object: any): UserTaskRun_ResultsEntry {
     return {
-      key: isSet(object.key) ? String(object.key) : "",
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
       value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
     };
   },
@@ -787,9 +787,9 @@ export const AssignUserTaskRunRequest = {
   fromJSON(object: any): AssignUserTaskRunRequest {
     return {
       userTaskRunId: isSet(object.userTaskRunId) ? UserTaskRunId.fromJSON(object.userTaskRunId) : undefined,
-      overrideClaim: isSet(object.overrideClaim) ? Boolean(object.overrideClaim) : false,
-      userGroup: isSet(object.userGroup) ? String(object.userGroup) : undefined,
-      userId: isSet(object.userId) ? String(object.userId) : undefined,
+      overrideClaim: isSet(object.overrideClaim) ? globalThis.Boolean(object.overrideClaim) : false,
+      userGroup: isSet(object.userGroup) ? globalThis.String(object.userGroup) : undefined,
+      userId: isSet(object.userId) ? globalThis.String(object.userId) : undefined,
     };
   },
 
@@ -892,7 +892,7 @@ export const CompleteUserTaskRunRequest = {
           return acc;
         }, {})
         : {},
-      userId: isSet(object.userId) ? String(object.userId) : "",
+      userId: isSet(object.userId) ? globalThis.String(object.userId) : "",
     };
   },
 
@@ -985,7 +985,7 @@ export const CompleteUserTaskRunRequest_ResultsEntry = {
 
   fromJSON(object: any): CompleteUserTaskRunRequest_ResultsEntry {
     return {
-      key: isSet(object.key) ? String(object.key) : "",
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
       value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
     };
   },
@@ -1155,10 +1155,10 @@ export const UserTaskTriggerReference = {
   fromJSON(object: any): UserTaskTriggerReference {
     return {
       nodeRunId: isSet(object.nodeRunId) ? NodeRunId.fromJSON(object.nodeRunId) : undefined,
-      userTaskEventNumber: isSet(object.userTaskEventNumber) ? Number(object.userTaskEventNumber) : 0,
+      userTaskEventNumber: isSet(object.userTaskEventNumber) ? globalThis.Number(object.userTaskEventNumber) : 0,
       wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
-      userId: isSet(object.userId) ? String(object.userId) : undefined,
-      userGroup: isSet(object.userGroup) ? String(object.userGroup) : undefined,
+      userId: isSet(object.userId) ? globalThis.String(object.userId) : undefined,
+      userGroup: isSet(object.userGroup) ? globalThis.String(object.userGroup) : undefined,
     };
   },
 
@@ -1267,7 +1267,7 @@ export const UserTaskEvent = {
 
   fromJSON(object: any): UserTaskEvent {
     return {
-      time: isSet(object.time) ? String(object.time) : undefined,
+      time: isSet(object.time) ? globalThis.String(object.time) : undefined,
       taskExecuted: isSet(object.taskExecuted)
         ? UserTaskEvent_UTETaskExecuted.fromJSON(object.taskExecuted)
         : undefined,
@@ -1483,10 +1483,10 @@ export const UserTaskEvent_UTEAssigned = {
 
   fromJSON(object: any): UserTaskEvent_UTEAssigned {
     return {
-      oldUserId: isSet(object.oldUserId) ? String(object.oldUserId) : undefined,
-      oldUserGroup: isSet(object.oldUserGroup) ? String(object.oldUserGroup) : undefined,
-      newUserId: isSet(object.newUserId) ? String(object.newUserId) : undefined,
-      newUserGroup: isSet(object.newUserGroup) ? String(object.newUserGroup) : undefined,
+      oldUserId: isSet(object.oldUserId) ? globalThis.String(object.oldUserId) : undefined,
+      oldUserGroup: isSet(object.oldUserGroup) ? globalThis.String(object.oldUserGroup) : undefined,
+      newUserId: isSet(object.newUserId) ? globalThis.String(object.newUserId) : undefined,
+      newUserGroup: isSet(object.newUserGroup) ? globalThis.String(object.newUserGroup) : undefined,
     };
   },
 
@@ -1523,7 +1523,8 @@ export const UserTaskEvent_UTEAssigned = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -1532,7 +1533,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function toTimestamp(dateStr: string): Timestamp {
-  const date = new Date(dateStr);
+  const date = new globalThis.Date(dateStr);
   const seconds = date.getTime() / 1_000;
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
@@ -1541,7 +1542,7 @@ function toTimestamp(dateStr: string): Timestamp {
 function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
-  return new Date(millis).toISOString();
+  return new globalThis.Date(millis).toISOString();
 }
 
 function isObject(value: any): boolean {

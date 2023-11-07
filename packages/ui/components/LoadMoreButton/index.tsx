@@ -1,1 +1,1 @@
-export { default as LoadMoreButton } from './LoadMoreButton';
+export { default as LoadMoreButton } from './LoadMoreButton'

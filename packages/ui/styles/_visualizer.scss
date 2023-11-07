@@ -21,19 +21,19 @@
 
   .viznode-canvas {
     // background: #1d1e26;
+    // width: 200px;
     // border: 1px solid #3D4149;
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    padding: 16px;
     flex: 1;
     .ring {
       background: #1d1e26;
-      padding: 10px;
+      padding: 5px;
       padding-top: 0px;
     }
     .opacity50{
-      opacity: .5;
+      opacity: .35;
     }
     .node {
       cursor: pointer;
@@ -65,26 +65,57 @@
         box-shadow: 0px 0px 10px 0px rgba(118, 118, 118, 0.5),
           0px 0px 20px 0px rgba(255, 255, 255, 0.25);
       }
-      // .tTASK{
 
-      // }
-      &.tNOP {
-        flex-direction: column;
-        gap: 0px;
-      }
+      // START: If you change the values here, the values on _visualizer.scss should be adjusted as well.
       &.tENTRYPOINT {
         border-radius: 64px;
-        padding: 16px;
-        padding: 16px;
         border: 1px solid var(--color-information, #007aff);
         background: rgba(0, 122, 255, 0.2);
       }
+
+      &.tTASK{
+        width: 250px;
+      }
+      
       &.tEXIT {
-        padding: 16px;
+        width: 57px;
         border-radius: 64px;
         border: 1px solid var(--color-success, #34c759);
         background: rgba(52, 199, 89, 0.2);
       }
+      
+      &.tNOP {
+        width: 200px;
+        flex-direction: column;
+        gap: 0px;
+      }
+      
+      &.tSTART_THREAD {
+        width: 200px;
+      }
+      
+      &.tWAIT_FOR_THREADS {
+        width: 84px;
+      }
+      
+      &.tEXTERNAL_EVENT {
+        width: 200px;
+      }
+      
+      &.tSLEEP {
+        width: 200px;
+      }
+      
+      &.tSTART_MULTIPLE_THREADS {
+        width: 200px;
+      }
+      
+      &.tUSER_TASK {
+        width: 250px;
+      }
+
+      // END
+
     }
   }
 }

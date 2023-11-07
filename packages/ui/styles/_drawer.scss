@@ -268,6 +268,7 @@
       }
     }
 
+
     &__wfrun-outputs {
       display: flex;
       flex-direction: column;
@@ -295,6 +296,10 @@
         &__one-column {
           grid-template-columns: repeat(1, minmax(0, 1fr));
         }
+      }
+
+      &__log-message {
+        word-break: break-all;
       }
     }
 
@@ -621,6 +626,7 @@
   }
 
   .center {
+    word-break: break-all;
     text-align: center;
     padding: 0.75rem;
     display: flex;
@@ -671,9 +677,12 @@
       display: flex;
       select{
         height: 32px;
-        background: transparent;
         flex: auto;
         text-align: left;
+        background: #4b5058
+          url("data:image/svg+xml;utf8,<svg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M6 7.6998L0 1.6998L1.4 0.299805L6 4.8998L10.6 0.299805L12 1.6998L6 7.6998Z' fill='white'/></svg>")
+          no-repeat;
+        background-position: right 5px top 50%;
       }
       img{
         position: absolute;

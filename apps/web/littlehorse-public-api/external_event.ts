@@ -1,5 +1,5 @@
 /* eslint-disable */
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { VariableValue } from "./variable";
 
@@ -139,14 +139,14 @@ export const ExternalEvent = {
 
   fromJSON(object: any): ExternalEvent {
     return {
-      wfRunId: isSet(object.wfRunId) ? String(object.wfRunId) : "",
-      externalEventDefName: isSet(object.externalEventDefName) ? String(object.externalEventDefName) : "",
-      guid: isSet(object.guid) ? String(object.guid) : "",
-      createdAt: isSet(object.createdAt) ? String(object.createdAt) : undefined,
+      wfRunId: isSet(object.wfRunId) ? globalThis.String(object.wfRunId) : "",
+      externalEventDefName: isSet(object.externalEventDefName) ? globalThis.String(object.externalEventDefName) : "",
+      guid: isSet(object.guid) ? globalThis.String(object.guid) : "",
+      createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
       content: isSet(object.content) ? VariableValue.fromJSON(object.content) : undefined,
-      threadRunNumber: isSet(object.threadRunNumber) ? Number(object.threadRunNumber) : undefined,
-      nodeRunPosition: isSet(object.nodeRunPosition) ? Number(object.nodeRunPosition) : undefined,
-      claimed: isSet(object.claimed) ? Boolean(object.claimed) : false,
+      threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : undefined,
+      nodeRunPosition: isSet(object.nodeRunPosition) ? globalThis.Number(object.nodeRunPosition) : undefined,
+      claimed: isSet(object.claimed) ? globalThis.Boolean(object.claimed) : false,
     };
   },
 
@@ -255,9 +255,9 @@ export const ExternalEventDef = {
 
   fromJSON(object: any): ExternalEventDef {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
-      createdAt: isSet(object.createdAt) ? String(object.createdAt) : undefined,
-      retentionHours: isSet(object.retentionHours) ? Number(object.retentionHours) : 0,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
+      retentionHours: isSet(object.retentionHours) ? globalThis.Number(object.retentionHours) : 0,
     };
   },
 
@@ -290,7 +290,8 @@ export const ExternalEventDef = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -299,7 +300,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function toTimestamp(dateStr: string): Timestamp {
-  const date = new Date(dateStr);
+  const date = new globalThis.Date(dateStr);
   const seconds = date.getTime() / 1_000;
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
@@ -308,7 +309,7 @@ function toTimestamp(dateStr: string): Timestamp {
 function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
-  return new Date(millis).toISOString();
+  return new globalThis.Date(millis).toISOString();
 }
 
 function isSet(value: any): boolean {

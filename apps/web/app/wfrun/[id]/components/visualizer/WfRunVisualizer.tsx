@@ -1,277 +1,161 @@
-"use client";
-import { useEffect, useState } from "react";
-import WFRunInformationSideBar from "../../../../../components/WFRunInformationSideBar";
-import { DrawerComponent } from "../../../../../components/Drawer/DrawerComponent";
-import { Drawer } from "../../../../../components/Drawer/Drawer";
-import {
-  getMainDrawerData,
-  nodeTypes,
-} from "../../../../../components/Drawer/internals/drawerInternals";
-import { WfRunVisualizerChart } from "./WfRunVisualizerChart";
-import { Loader } from "ui";
-import { nodename } from "../../../../../helpers/nodename";
+'use client'
+import React, { useEffect, useState } from 'react'
+import { Loader } from 'ui'
+import WFRunInformationSideBar from '../../../../../components/WFRunInformationSideBar'
+import type { ThreadRunNameWithRunNumber } from '../../../../../components/Drawer/DrawerComponent'
+import { DrawerComponent } from '../../../../../components/Drawer/DrawerComponent'
+import { Drawer } from '../../../../../components/Drawer/Drawer'
+import { nodeTypes, } from '../../../../../components/Drawer/internals/drawerInternals'
+import { WfSpecGraph } from '../../../../wfspec/[id]/[version]/components/visualizer/WfSpecGraph'
+import type { ReactFlowGraph } from '../../../../wfspec/[id]/[version]/components/visualizer/mappers/GraphLayouter'
 
-interface mapnode {}
-export const WfRunVisualizer = ({
-  id
+export function WfRunVisualizer({
+  wfRunId
 }: {
-  id: string;
-}) => {
-  const [rawdata, setRawData] = useState<any[]>([])
-  const [data, setData] = useState<any[]>([]);
-  const [drawerData, setDrawerData] = useState<any>();
-  const [selectedNodeName, setSelectedNodeName] = useState<any>();
-  const [nodeType, setNodeType] = useState<string | undefined>();
-  const [loading, setLoading] = useState(true);
+    wfRunId: string;
+}) {
+  const [ wfSpec, setWfSpec ] = useState<any[]>([])
+  const [ drawerData, setDrawerData ] = useState<any>()
+  const [ selectedNodeName, setSelectedNodeName ] = useState<any>()
+  const [ nodeType, setNodeType ] = useState<string | undefined>()
+  const [ loading, setLoading ] = useState(true)
 
-  const [language, setLanguage] = useState<any>();
-  const [showError, setShowError] = useState(false);
-  const [toggleSideBar, setToggleSideBar] = useState(false);
-  const [sideBarData, setSideBarData] = useState("");
+  const [ language, setLanguage ] = useState<any>()
+  const [ showError, setShowError ] = useState(false)
+  const [ toggleSideBar, setToggleSideBar ] = useState(false)
+  const [ sideBarData, setSideBarData ] = useState('')
+  const [ wfSpecVersion, setWfSpecVersion ] = useState(0)
+  const [ wfSpecName, setWfSpecName ] = useState()
+  const [ graphLayout, setGraphLayout ] = useState()
+  const [ threadRunSpecWithNumber, setThreadRunSpecWithNumber ]
+        = useState<ThreadRunNameWithRunNumber>({ threadSpecName: 'entrypoint', threadRunNumber: 0 })
 
+  const setGraphWithNodeRunPosition = (graph) => {
+    setGraphLayout({ ...graph })
+  }
   const getLoops = async (taskDefName, wfRunId) => {
-    const res = await fetch("/api/loops/taskRun", {
-      method: "POST",
+    const res = await fetch('/api/loops/taskRun', {
+      method: 'POST',
       body: JSON.stringify({
         taskDefName,
         wfRunId
       }),
-    });
+    })
     if (res.ok) {
       const results = await res.json()
-      console.log('RESS',results.length)
+      console.log('RESS', results.length)
 
       return results.length > 1
-    //  setLoops(results)
+      //  setLoops(results)
     }
   }
-  
 
-  const rec = (mappedData, i, offset, open=false) => {
-    let el = mappedData[i];
-
-    el.level=+el.position+offset
-    if (!el.childs.length) return mappedData; //if not childs close the REC function
-    if (el.type === "WAIT_FOR_THREAD") {
-      let wft = el.node.waitForThread.threadRunNumber.variableName;
-      let thread = mappedData.find((m) => m.name === wft);
-      el.wlevel = thread.level;
-    }
-
-    let addo = 0
-		if(el.type === 'NOP' ){
-			if(open){
-				el.closer = true
-				open = false
-			}else{
-				open = true
-				addo = 1
-			}
-		}
-
-    mappedData = mappedData.map( (m) => {
-      if (el.childs.includes(m.name)) {
-        // m.level = el.level + 1; // each child heritate parent level + 1
-
-        // CHECK IF NOP IS WHILE
-				if(el.type === 'NOP' && m.type==='NOP'){
-					const econd =  el.node.outgoingEdges.find(e => e.sinkNodeName != m.name)?.condition || {}
-					const mcond = m.node.outgoingEdges.find(e => e.sinkNodeName === el.name)?.condition || {}
-					if(JSON.stringify(econd) === JSON.stringify(mcond)){
-						el.while = true
-						m.while = true
-					}
-				}
-
-        if (m.type === "NOP") {
-          m.px = "center";
-        } else {
-          m.px = el.px;
-        }
-
-        if (el.childs.length > 1 && (m.type != 'NOP') ) {
-					// m.level = el.level + 2
-					m.px = m.name === el.childs[0] ? 'left' : 'right'
-				}
-				// if(m.type === 'NOP' && m.childs.length === 1){
-	
-				if(open && ['TASK', 'USER_TASK', 'EXTERNAL_EVENT'].includes(el.type)){
-					console.log('CHECK IF LOOP', el.type)
-
-          el.loop = getLoops(nodename(el.name),id)
-          // taskDefName: nodename(d.name),
-          // wfRunId:run.wfRunId
-          // if('TASK') 
-          // - TASK_SCHEDULED
-          // - TASK_RUNNING
-          // - TASK_SUCCESS
-          // - TASK_FAILED
-          // - TASK_TIMEOUT
-          // - TASK_OUTPUT_SERIALIZING_ERROR
-          // - TASK_INPUT_VAR_SUB_ERROR
-
-          // if('USER_TASK') 
-          // - UNASSIGNED
-          // - ASSIGNED
-          // - DONE
-          // - CANCELLED
-
-          // if('EXTERNAL_EVENT') 
-				}
-				if(m.type === 'NOP' && open){
-					el.cNOP = m.name
-				}
-				if(!open){
-					m.px = 'center'
-				}
-        // if (el.childs.length > 1) {
-        //   m.level = el.level + 2;
-        //   m.px = m.name === el.childs[0] ? "left" : "right";
-        // }
-        // if (m.type === "NOP" && m.childs.length === 1) {
-        //   el.cNOP = m.name;
-        // }
-      }
-      return m;
-    });
-
-    return rec(mappedData, ++i, offset+addo, open)
-  };
-
-  const [run, setRun] = useState();
-  const [runs, setRuns] = useState<any[]>([]);
+  const [ run, setRun ] = useState<any>()
+  const [ runs, setRuns ] = useState<any[]>([])
   const setThreads = (data: any) => {
-      // getWfSpec(data.wfSpecName, data.wfSpecVersion); // cambiar por id
-      getWfSpec(id, data.wfSpecVersion); // cambiar por id TODO: NEW-ALGO
-      setRun(data.threadRuns[0]);
-      setRuns(data.threadRuns);
-  };
+    getWfSpec(data.wfSpecName, data.wfSpecVersion)
+    setWfSpecVersion(data.wfSpecVersion)
+    setRun(data.threadRuns[0])
+    setRuns(data.threadRuns)
+    setWfSpecName(data.wfSpecName)
+  }
 
-  const mapData = (data: any, thread?: string) => {
-    const threads = Object.keys(data?.threadSpecs)
-		const print_thread = thread || threads[0]
-    const entries = Object.entries(data?.threadSpecs?.[print_thread]?.nodes);
-    const mappedData: any = entries.map((e: mapnode) => ({
-      name: e[0],
-      type: e[0].split("-").pop(),
-      position: e[1].newPosition, // TODO: NEW-ALGO
-      node: e[1],
-      childs: e[1]["outgoingEdges"].map((e) => e.sinkNodeName),
-      level: 0,
-      closer:false,
-      loop:false,
-      while:false,
-      px: "center",
-    }));
-    
-    setLoading(false);
-    return rec(mappedData, 0, 0)
-  };
-
-  const getWfSpec = async (id: string, version: number) => {
-    const res = await fetch("/api/visualization/wfSpecExecutedNodes", {
-      method: "POST",
+  const getWfSpec = async (wfSpecName: string, version: number) => {
+    const wfSpec = await fetch('/api/visualization/wfSpec', {
+      method: 'POST',
       body: JSON.stringify({
-        id,
+        id: wfSpecName,
         version,
       }),
-    }); // // TODO: NEW-ALGO
-    
-    // const res = await fetch("/api/visualization/wfSpec", {
-    //   method: "POST",
-    //   body: JSON.stringify({
-    //     id,
-    //     version,
-    //   }),
-    // }); // TODO- NEW ALGO
-    
-    if (res.ok) {
-      const content = await res.json();
-      
-      if(content){
-        setRawData(content)
-        setData(mapData(content))
+    })
+
+    if (wfSpec.ok) {
+      const content = await wfSpec.json()
+
+      if (content) {
+        setWfSpec(content)
       }
     }
-  };
+  }
   const getData = async () => {
-    const res = await fetch("/api/visualization/wfRun", {  // TODO; new ALGO
-      method: "POST",
+    const res = await fetch('/api/visualization/wfRun', {  // TODO; new ALGO
+      method: 'POST',
       body: JSON.stringify({
-        id,
+        wfRunId,
       }),
-    });
+    })
     if (res.ok) {
-      const response = await res.json();
-      setThreads(response);
+      const response = await res.json()
+      setThreads(response)
     }
-  };
+  }
 
-  const setThread = (thread:string) => {
-		setData(mapData(rawdata,thread))
-	}
-
-  useEffect(() => {
-    getData();
-  }, []);
+  const updateSelectedThreadRun = (threadRunNameWithRunNumber: ThreadRunNameWithRunNumber) => {
+    setThreadRunSpecWithNumber({ ...threadRunNameWithRunNumber })
+    setSelectedNodeName(undefined)
+  }
 
   useEffect(() => {
-    // if (drawerData === undefined) getMainDrawerData(run?.wfSpecName || '', setDrawerData);
-    
+    getData()
+    setLoading(false)
+  }, [])
+
+  useEffect(() => {
     if (selectedNodeName) {
-      const nodeType = selectedNodeName.split("-").reverse()[0];
+      const nodeType = selectedNodeName.split('-').reverse()[0]
 
-      setNodeType(nodeTypes[nodeType as keyof typeof nodeTypes]);
+      setNodeType(nodeTypes[nodeType as keyof typeof nodeTypes])
     }
-  }, [drawerData, selectedNodeName]);
-
-  const drawerInternal = (
-    <DrawerComponent
-      isWFRun={true}
-      internalComponent={nodeType}
-      datao={data}
-      data={rawdata}
-      nodeName={selectedNodeName}
-      wfRunId={id}
-      setToggleSideBar={setToggleSideBar}
-      setCode={setSideBarData}
-      setLanguage={setLanguage}
-      setError={setShowError}
-      setThread={setThread}
-      run={run}
-      runs={runs}
-    />
-  );
+  }, [ drawerData, selectedNodeName ])
 
   return (
     <div className="visualizer">
       <div
         className={`canvas scrollbar ${
-          data.length === 0
-            ? "flex items-center justify-items-center justify-center"
-            : ""
-        }`}
-      >
+          graphLayout === undefined || (graphLayout as ReactFlowGraph).nodes.length === 0
+            ? 'flex items-center justify-items-center justify-center'
+            : ''
+        }`}>
         {loading ? (
-          <Loader />
+          <Loader/>
         ) : (
-          <WfRunVisualizerChart
-            data={data}
-            onClick={setSelectedNodeName}
-            run={run}
+          <WfSpecGraph isWfSpecVisualization={false}
+            setGraphWithNodeRunPosition={setGraphWithNodeRunPosition}
+            setSelectedNodeName={setSelectedNodeName}
+            threadRunNumber={threadRunSpecWithNumber.threadRunNumber}
+            threadSpec={threadRunSpecWithNumber.threadSpecName}
+            wfRunId={wfRunId}
+            wfSpecName={wfSpecName}
+            wfSpecVersion={wfSpecVersion}
           />
         )}
-         
+
       </div>
 
-      <Drawer title={"WfSpec Properties"}>{drawerInternal}</Drawer>
+      <Drawer title="WfSpec Properties">
+        <DrawerComponent
+          data={wfSpec}
+          graphLayout={graphLayout}
+          internalComponent={nodeType}
+          isWFRun
+          nodeName={selectedNodeName}
+          run={run}
+          runs={runs}
+          setCode={setSideBarData}
+          setError={setShowError}
+          setLanguage={setLanguage}
+          setThread={updateSelectedThreadRun}
+          setToggleSideBar={setToggleSideBar}
+          wfRunId={wfRunId}
+        />
+      </Drawer>
       <WFRunInformationSideBar
-        toggleSideBar={toggleSideBar}
-        setToggleSideBar={setToggleSideBar}
-        output={sideBarData}
         errorLog={showError}
         language={language}
+        output={sideBarData}
+        setToggleSideBar={setToggleSideBar}
+        toggleSideBar={toggleSideBar}
       />
     </div>
-  );
-};
+  )
+}

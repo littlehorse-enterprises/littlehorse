@@ -1,18 +1,22 @@
-import { getProviders } from "next-auth/react"
-import { ProviderSigInBtn } from "./ProviderSigInBtn";
+import type { ClientSafeProvider } from 'next-auth/react'
+import { getProviders } from 'next-auth/react'
+import { useEffect, useState } from 'react'
+import { ProviderSigInBtn } from './ProviderSigInBtn'
 
-async function getData() {
-    const providers = await getProviders();
-    return providers
-}
-export async function LoginButtons() {
+export function LoginButtons() {
+  const [ vProviders, setVProviders ] = useState<ClientSafeProvider[]>([])
 
-    const providers = await getData()
-    const vproviders = Object.values(providers || {})
+  useEffect(() => {
+    getProviders().then(providers => {
+      setVProviders(Object.values(providers || []))
+    }, rejectedReason => {
+      console.error('Not able to get Auth providers', rejectedReason)
+    })
+  }, [])
 
   return (
     <>
-    {vproviders.map((provider) => <ProviderSigInBtn key={provider.id} provider={provider} num={vproviders.length} />)}
+      {vProviders.map((provider) => <ProviderSigInBtn key={provider.id} num={vProviders.length} provider={provider} />)}
     </>
   )
 }

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
 import { VariableValue } from "./variable";
 
@@ -440,8 +440,8 @@ export const VariableAssignment = {
 
   fromJSON(object: any): VariableAssignment {
     return {
-      jsonPath: isSet(object.jsonPath) ? String(object.jsonPath) : undefined,
-      variableName: isSet(object.variableName) ? String(object.variableName) : undefined,
+      jsonPath: isSet(object.jsonPath) ? globalThis.String(object.jsonPath) : undefined,
+      variableName: isSet(object.variableName) ? globalThis.String(object.variableName) : undefined,
       literalValue: isSet(object.literalValue) ? VariableValue.fromJSON(object.literalValue) : undefined,
       formatString: isSet(object.formatString)
         ? VariableAssignment_FormatString.fromJSON(object.formatString)
@@ -531,7 +531,7 @@ export const VariableAssignment_FormatString = {
   fromJSON(object: any): VariableAssignment_FormatString {
     return {
       format: isSet(object.format) ? VariableAssignment.fromJSON(object.format) : undefined,
-      args: Array.isArray(object?.args) ? object.args.map((e: any) => VariableAssignment.fromJSON(e)) : [],
+      args: globalThis.Array.isArray(object?.args) ? object.args.map((e: any) => VariableAssignment.fromJSON(e)) : [],
     };
   },
 
@@ -655,8 +655,8 @@ export const VariableMutation = {
 
   fromJSON(object: any): VariableMutation {
     return {
-      lhsName: isSet(object.lhsName) ? String(object.lhsName) : "",
-      lhsJsonPath: isSet(object.lhsJsonPath) ? String(object.lhsJsonPath) : undefined,
+      lhsName: isSet(object.lhsName) ? globalThis.String(object.lhsName) : "",
+      lhsJsonPath: isSet(object.lhsJsonPath) ? globalThis.String(object.lhsJsonPath) : undefined,
       operation: isSet(object.operation) ? variableMutationTypeFromJSON(object.operation) : VariableMutationType.ASSIGN,
       sourceVariable: isSet(object.sourceVariable) ? VariableAssignment.fromJSON(object.sourceVariable) : undefined,
       literalValue: isSet(object.literalValue) ? VariableValue.fromJSON(object.literalValue) : undefined,
@@ -744,7 +744,7 @@ export const VariableMutation_NodeOutputSource = {
   },
 
   fromJSON(object: any): VariableMutation_NodeOutputSource {
-    return { jsonpath: isSet(object.jsonpath) ? String(object.jsonpath) : undefined };
+    return { jsonpath: isSet(object.jsonpath) ? globalThis.String(object.jsonpath) : undefined };
   },
 
   toJSON(message: VariableMutation_NodeOutputSource): unknown {
@@ -864,11 +864,13 @@ export const VariableDef = {
   fromJSON(object: any): VariableDef {
     return {
       type: isSet(object.type) ? variableTypeFromJSON(object.type) : VariableType.JSON_OBJ,
-      name: isSet(object.name) ? String(object.name) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
       indexType: isSet(object.indexType) ? indexTypeFromJSON(object.indexType) : undefined,
-      jsonIndexes: Array.isArray(object?.jsonIndexes) ? object.jsonIndexes.map((e: any) => JsonIndex.fromJSON(e)) : [],
+      jsonIndexes: globalThis.Array.isArray(object?.jsonIndexes)
+        ? object.jsonIndexes.map((e: any) => JsonIndex.fromJSON(e))
+        : [],
       defaultValue: isSet(object.defaultValue) ? VariableValue.fromJSON(object.defaultValue) : undefined,
-      persistent: isSet(object.persistent) ? Boolean(object.persistent) : false,
+      persistent: isSet(object.persistent) ? globalThis.Boolean(object.persistent) : false,
     };
   },
 
@@ -959,7 +961,7 @@ export const JsonIndex = {
 
   fromJSON(object: any): JsonIndex {
     return {
-      path: isSet(object.path) ? String(object.path) : "",
+      path: isSet(object.path) ? globalThis.String(object.path) : "",
       indexType: isSet(object.indexType) ? indexTypeFromJSON(object.indexType) : IndexType.LOCAL_INDEX,
     };
   },
@@ -1210,7 +1212,9 @@ export const UTActionTrigger_UTATask = {
   fromJSON(object: any): UTActionTrigger_UTATask {
     return {
       task: isSet(object.task) ? TaskNode.fromJSON(object.task) : undefined,
-      mutations: Array.isArray(object?.mutations) ? object.mutations.map((e: any) => VariableMutation.fromJSON(e)) : [],
+      mutations: globalThis.Array.isArray(object?.mutations)
+        ? object.mutations.map((e: any) => VariableMutation.fromJSON(e))
+        : [],
     };
   },
 
@@ -1381,10 +1385,10 @@ export const TaskNode = {
 
   fromJSON(object: any): TaskNode {
     return {
-      taskDefName: isSet(object.taskDefName) ? String(object.taskDefName) : "",
-      timeoutSeconds: isSet(object.timeoutSeconds) ? Number(object.timeoutSeconds) : 0,
-      retries: isSet(object.retries) ? Number(object.retries) : 0,
-      variables: Array.isArray(object?.variables)
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      timeoutSeconds: isSet(object.timeoutSeconds) ? globalThis.Number(object.timeoutSeconds) : 0,
+      retries: isSet(object.retries) ? globalThis.Number(object.retries) : 0,
+      variables: globalThis.Array.isArray(object?.variables)
         ? object.variables.map((e: any) => VariableAssignment.fromJSON(e))
         : [],
     };
@@ -1423,7 +1427,8 @@ export const TaskNode = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

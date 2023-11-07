@@ -1,25 +1,25 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { createClient } from "nice-grpc/lib/client/ClientFactory";
-import { createChannel } from "nice-grpc/lib/client/channel";
-import { LHPublicApiDefinition, SearchUserTaskRunRequest } from "../../../littlehorse-public-api/service";
+import type { NextApiRequest, NextApiResponse } from 'next'
+import type { Client } from 'nice-grpc/src/client/Client'
+import type { LHPublicApiDefinition } from '../../../littlehorse-public-api/service'
+import { SearchUserTaskRunRequest } from '../../../littlehorse-public-api/service'
+import LHClient from '../LHClient'
 
 export default async function handler(
-    req: NextApiRequest,
-    res: NextApiResponse
+  req: NextApiRequest,
+  res: NextApiResponse
 ) {
-    if (req.method === "POST") {
-        try {
-            const channel = createChannel(process.env.API_URL!!);
-            const client = createClient(LHPublicApiDefinition, channel);
-            
-            const response = await client.searchUserTaskRun(SearchUserTaskRunRequest.fromJSON(JSON.parse(req.body)) as any);
-            
-            return res.send(response);
-        } catch (error) {
-            console.log("Error during GRPC call:", error);
-            return res.send({
-                error: "Something went wrong." + error,
-            })
-        }
+  if (req.method === 'POST') {
+    try {
+      const client: Client<LHPublicApiDefinition> = LHClient.getInstance()
+
+      const response = await client.searchUserTaskRun(SearchUserTaskRunRequest.fromJSON(JSON.parse(req.body)) as any)
+
+      res.send(response) 
+    } catch (error) {
+      console.log('Error during GRPC call:', error)
+      res.send({
+        error: `Something went wrong.${error}`,
+      }) 
     }
+  }
 }
