@@ -510,7 +510,6 @@ public class WfRunModel extends CoreGetable<WfRun> {
                 CommandModel deleteWfRunCmd = new CommandModel();
                 deleteWfRunCmd.setSubCommand(deleteWfRun);
                 deleteWfRunCmd.time = timer.maturationTime;
-                deleteWfRunCmd.setTenantId(this.getDao().context().tenantId());
                 timer.payload = deleteWfRunCmd.toProto().build().toByteArray();
                 this.getDao().scheduleTimer(timer);
             }

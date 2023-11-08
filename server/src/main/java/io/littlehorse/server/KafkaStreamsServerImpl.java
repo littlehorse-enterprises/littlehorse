@@ -3,10 +3,11 @@ package io.littlehorse.server;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
-import io.grpc.Context;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
+import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
@@ -33,7 +34,6 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
-import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -107,6 +107,7 @@ import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import io.littlehorse.server.streams.util.POSTStreamObserver;
 import java.io.IOException;
@@ -118,6 +119,7 @@ import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KafkaStreams;
 
 @Slf4j
@@ -160,7 +162,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 config.getStreamsConfig("timer", false));
         this.healthService = new HealthService(config, coreStreams, timerStreams);
         this.serverDAOFactory = new ServerDAOFactory(coreStreams, metadataCache);
-
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
         this.listenerManager = new ListenersManager(
                 config, this, networkThreadpool, healthService.getMeterRegistry(), serverDAOFactory);
@@ -612,7 +613,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             resources = {},
             actions = {})
     public void whoami(Empty request, StreamObserver<Principal> responseObserver) {
-        responseObserver.onNext(ServerAuthorizer.PRINCIPAL.get().toProto().build());
+        responseObserver.onNext(null); // TODO
         responseObserver.onCompleted();
     }
 
@@ -644,20 +645,29 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command);
 
         command.setCommandId(LHUtil.generateGuid());
-        PrincipalModel currentPrincipal = ServerAuthorizer.PRINCIPAL.get(Context.current());
+        AuthorizationContext authContext = ServerAuthorizer.AUTH_CONTEXT.get();
         String tenant;
+        String principalId;
 
         // TODO: TaskQueueManager multitenancy
         // The only reason for this validation is that
         // TaskQueueManager does not support multi-tenancy yet.
         // In the future this will change
-        if (currentPrincipal != null) {
-            tenant = currentPrincipal.getTenantIds().stream().findFirst().get();
+        Headers commandMetadata;
+        if (authContext != null) {
+            commandMetadata = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
         } else {
-            tenant = ModelStore.DEFAULT_TENANT;
+            commandMetadata =
+                    HeadersUtil.metadataHeadersFor(ModelStore.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL);
         }
-        command.setTenantId(tenant);
-        internalComms.getProducer().send(command.getPartitionKey(), command, command.getTopic(config), callback);
+        internalComms
+                .getProducer()
+                .send(
+                        command.getPartitionKey(),
+                        command,
+                        command.getTopic(config),
+                        callback,
+                        commandMetadata.toArray());
     }
 
     private void productionCallback(

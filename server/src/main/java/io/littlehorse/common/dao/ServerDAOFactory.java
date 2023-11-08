@@ -1,13 +1,14 @@
 package io.littlehorse.common.dao;
 
-import static io.littlehorse.server.auth.ServerAuthorizer.PRINCIPAL;
+import static io.littlehorse.server.auth.ServerAuthorizer.AUTH_CONTEXT;
 
-import io.littlehorse.common.ServerContext;
-import io.littlehorse.common.ServerContextImpl;
+import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.topology.core.ReadOnlyMetadataProcessorDAOImpl;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.List;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StoreQueryParameters;
@@ -27,7 +28,7 @@ public class ServerDAOFactory {
     }
 
     public ReadOnlyMetadataProcessorDAO getMetadataDao() {
-        final String tenantId = PRINCIPAL.get().getId(); // TODO
+        final String tenantId = AUTH_CONTEXT.get().tenantId();
         return getMetadataDao(tenantId);
     }
 
@@ -45,8 +46,8 @@ public class ServerDAOFactory {
                 ModelStore.defaultStore(allPartitionNativeStore), metadataCache, contextFor(ModelStore.DEFAULT_TENANT));
     }
 
-    private ServerContext contextFor(String tenantId) {
-        return new ServerContextImpl(tenantId, ServerContext.Scope.READ);
+    private AuthorizationContext contextFor(String tenantId) {
+        return new AuthorizationContextImpl(null, tenantId, AuthorizationContext.Scope.READ, List.of());
     }
 
     private ReadOnlyKeyValueStore<String, Bytes> readOnlyStore(Integer specificPartition, String storeName) {

@@ -40,18 +40,6 @@ public interface RepartitionCommandPbOrBuilder extends
       getCommandIdBytes();
 
   /**
-   * <code>string tenant_id = 7;</code>
-   * @return The tenantId.
-   */
-  java.lang.String getTenantId();
-  /**
-   * <code>string tenant_id = 7;</code>
-   * @return The bytes for tenantId.
-   */
-  com.google.protobuf.ByteString
-      getTenantIdBytes();
-
-  /**
    * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
    * @return Whether the taskMetricUpdate field is set.
    */

@@ -2,8 +2,8 @@ package io.littlehorse.server.streams.topology.core;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.dao.AnalyticsRegistry;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -32,6 +32,7 @@ import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.ReadOnlyModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.InternalHosts;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
@@ -70,7 +72,7 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
             final MetadataCache metadataCache,
             final ReadOnlyModelStore metadataStore,
             final ModelStore coreStore,
-            final ServerContext context) {
+            final AuthorizationContext context) {
         super(metadataStore, metadataCache, context);
         this.coreStore = coreStore;
         this.server = server;
@@ -85,12 +87,11 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
     }
 
     @Override
-    public void initCommand(CommandModel command, KeyValueStore<String, Bytes> nativeStore) {
+    public void initCommand(CommandModel command, KeyValueStore<String, Bytes> nativeStore, Headers metadataHeaders) {
         scheduledTaskPuts.clear();
         timersToSchedule.clear();
         this.command = command;
-        this.storageManager = new GetableStorageManager(
-                ModelStore.instanceFor(nativeStore, command.getTenantId()), ctx, config, command, this);
+        this.storageManager = new GetableStorageManager(this.coreStore, ctx, config, command, this);
     }
 
     @Override
@@ -223,8 +224,9 @@ public class CoreProcessorDAOImpl extends CoreProcessorDAO {
 
     private void forwardTimer(LHTimer timer) {
         CommandProcessorOutput output = new CommandProcessorOutput(config.getTimerTopic(), timer, timer.key);
-
-        ctx.forward(new Record<>(timer.key, output, System.currentTimeMillis()));
+        Headers headers =
+                HeadersUtil.metadataHeadersFor(context().tenantId(), context().principalId());
+        ctx.forward(new Record<>(timer.key, output, System.currentTimeMillis(), headers));
     }
 
     private void clearThingsToWrite() {

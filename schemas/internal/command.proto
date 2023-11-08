@@ -19,8 +19,6 @@ message Command {
     google.protobuf.Timestamp time = 1;
     optional string command_id = 2;
 
-    string tenant_id = 3;
-
     oneof command {
         ReportTaskRun report_task_run = 4;
         TaskClaimEventPb task_claim_event = 5;
@@ -46,7 +44,6 @@ message Command {
 message MetadataCommand {
     google.protobuf.Timestamp time = 1;
     optional string command_id = 2;
-    string tenant_id = 3;
 
     oneof metadata_command {
         PutWfSpecRequest put_wf_spec = 4;
@@ -69,7 +66,6 @@ message MetadataCommand {
 message RepartitionCommandPb {
     google.protobuf.Timestamp time = 1;
     optional string command_id = 2;
-    string tenant_id = 7;
 
     oneof repartition_command {
         TaskMetricUpdatePb task_metric_update = 3;

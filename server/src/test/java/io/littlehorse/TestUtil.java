@@ -14,6 +14,7 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.TaskNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
+import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
@@ -27,6 +28,7 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.ACLAction;
 import io.littlehorse.common.proto.ACLResource;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.ServerACLs;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.server.streams.store.StoredGetable;
@@ -213,12 +215,27 @@ public class TestUtil {
         return acl;
     }
 
+    public static ServerACLsModel singleAcl() {
+        return ServerACLsModel.fromProto(
+                ServerACLs.newBuilder().addAcls(acl().toProto()).build(), ServerACLsModel.class);
+    }
+
     public static ServerACLModel adminAcl() {
+        return adminAcl("name");
+    }
+
+    public static ServerACLModel adminAcl(String name) {
         ServerACLModel acl = new ServerACLModel();
-        acl.setName(Optional.of("name"));
+        acl.setName(Optional.of(name));
         acl.setPrefix(Optional.empty());
         acl.setResources(List.of(ACLResource.ALL));
         acl.setAllowedActions(List.of(ACLAction.ALL_ACTIONS));
         return acl;
+    }
+
+    public static ServerACLsModel singleAdminAcl(String aclNAme) {
+        ServerACLs acls =
+                ServerACLs.newBuilder().addAcls(adminAcl(aclNAme).toProto()).build();
+        return ServerACLsModel.fromProto(acls, ServerACLsModel.class);
     }
 }

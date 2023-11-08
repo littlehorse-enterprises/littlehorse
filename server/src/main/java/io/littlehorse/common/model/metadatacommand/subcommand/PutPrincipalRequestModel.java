@@ -8,6 +8,7 @@ import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
+import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
@@ -67,6 +68,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
         PrincipalModel oldPrincipal = dao.getPrincipal(id);
 
         PrincipalModel toSave = new PrincipalModel();
+        toSave.setId(id);
         if (oldPrincipal != null) {
             if (!overwrite) {
                 throw new LHApiException(
@@ -111,7 +113,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
             return;
         }
 
-        if (globalAcls.getAcls().stream().anyMatch(acl -> acl.isAdmin())) {
+        if (globalAcls.getAcls().stream().anyMatch(ServerACLModel::isAdmin)) {
             // then the resulting principal after this request is Admin, so we don't
             // need to worry about losing the Last Admin.
             return;

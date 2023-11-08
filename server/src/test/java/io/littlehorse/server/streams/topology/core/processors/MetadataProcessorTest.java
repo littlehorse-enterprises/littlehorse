@@ -3,12 +3,15 @@ package io.littlehorse.server.streams.topology.core.processors;
 import static org.mockito.Mockito.*;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.UUID;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -42,6 +45,9 @@ public class MetadataProcessorTest {
 
     private final MockProcessorContext<String, Bytes> mockProcessorContext = new MockProcessorContext<>();
 
+    private final Headers metadata =
+            HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL);
+
     @BeforeEach
     public void setup() {
         nativeInMemoryStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryStore);
@@ -57,7 +63,7 @@ public class MetadataProcessorTest {
         when(genericMetadataCommand.getCommandId()).thenReturn(commandId);
         when(genericMetadataCommand.process(any(), any())).thenReturn(genericResponse);
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(commandId, genericMetadataCommand, 0L));
+        metadataProcessor.process(new Record<>(commandId, genericMetadataCommand, 0L, metadata));
         verify(server).onResponseReceived(eq(commandId), any());
     }
 }

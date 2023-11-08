@@ -5,9 +5,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import io.littlehorse.TestUtil;
+import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.ServerContext;
-import io.littlehorse.common.ServerContextImpl;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
@@ -71,7 +71,8 @@ public class GetableStorageManagerTest {
     @Mock
     private CoreProcessorDAO mockCoreDao;
 
-    private ServerContext testContext = new ServerContextImpl(tenantId, ServerContext.Scope.PROCESSOR);
+    private AuthorizationContext testContext =
+            new AuthorizationContextImpl(null, tenantId, AuthorizationContext.Scope.PROCESSOR, List.of());
 
     @BeforeEach
     void setup() {

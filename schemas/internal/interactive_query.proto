@@ -12,7 +12,6 @@ message GetObjectRequest {
     GetableClassEnum object_type = 1;
     string object_id = 2;
     int32 partition = 3;
-    string tenant_id = 4;
 }
 
 message GetObjectResponse {

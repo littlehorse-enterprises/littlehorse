@@ -74,7 +74,6 @@ public class CommandModel extends AbstractCommand<Command> {
     public Command.Builder toProto() {
         Command.Builder out = Command.newBuilder();
         out.setTime(LHUtil.fromDate(time));
-        out.setTenantId(tenantId);
         if (commandId != null) {
             out.setCommandId(commandId);
         }
@@ -144,7 +143,6 @@ public class CommandModel extends AbstractCommand<Command> {
         }
 
         type = p.getCommandCase();
-        tenantId = p.getTenantId();
         switch (type) {
             case REPORT_TASK_RUN:
                 reportTaskRun = ReportTaskRunModel.fromProto(p.getReportTaskRun());

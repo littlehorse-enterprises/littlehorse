@@ -35,16 +35,4 @@ public interface GetObjectRequestOrBuilder extends
    * @return The partition.
    */
   int getPartition();
-
-  /**
-   * <code>string tenant_id = 4;</code>
-   * @return The tenantId.
-   */
-  java.lang.String getTenantId();
-  /**
-   * <code>string tenant_id = 4;</code>
-   * @return The bytes for tenantId.
-   */
-  com.google.protobuf.ByteString
-      getTenantIdBytes();
 }

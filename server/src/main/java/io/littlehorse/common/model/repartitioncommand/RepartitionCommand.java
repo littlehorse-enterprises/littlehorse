@@ -83,7 +83,6 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
     public RepartitionCommandPb.Builder toProto() {
         RepartitionCommandPb.Builder out = RepartitionCommandPb.newBuilder();
         out.setTime(LHUtil.fromDate(time));
-        out.setTenantId(tenantId);
         if (commandId != null) out.setCommandId(commandId);
 
         switch (type) {
@@ -109,7 +108,6 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
         RepartitionCommandPb p = (RepartitionCommandPb) proto;
 
         type = p.getRepartitionCommandCase();
-        tenantId = p.getTenantId();
         if (p.hasCommandId()) commandId = p.getCommandId();
         time = LHUtil.fromProtoTs(p.getTime());
 

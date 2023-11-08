@@ -13,6 +13,7 @@ import io.grpc.ServerCredentials;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
+import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
@@ -24,7 +25,6 @@ import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
-import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.proto.*;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
@@ -310,8 +310,8 @@ public class BackendInternalComms implements Closeable {
 
     private ReadOnlyModelStore getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, enableStaleStores, storeName);
-        PrincipalModel principal = ServerAuthorizer.PRINCIPAL.get();
-        return ModelStore.instanceFor(rawStore, principal.getId()); // TODO
+        AuthorizationContext authContext = ServerAuthorizer.AUTH_CONTEXT.get();
+        return ModelStore.instanceFor(rawStore, authContext.tenantId());
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host) {

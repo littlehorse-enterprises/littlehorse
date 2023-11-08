@@ -13,8 +13,10 @@ var createPrincipalCmd = &cobra.Command{
 	Short: "Create principal.",
 	Run: func(cmd *cobra.Command, args []string) {
 		acl, _ := cmd.Flags().GetString("acl")
+		tenantId, _ := cmd.Flags().GetString("tenantId")
 		id := args[0]
 		serverAcls := []*model.ServerACL{}
+		per_tenant_acls := make(map[string]*model.ServerACLs)
 		for resource, actions := range parseAcl(acl){
 			allowedResources := []model.ACLResource{resource}
 			serverAcl := model.ServerACL{
@@ -24,9 +26,13 @@ var createPrincipalCmd = &cobra.Command{
 			serverAcls = append(serverAcls, &serverAcl)
 		}
 
+		per_tenant_acls[tenantId] = &model.ServerACLs{
+			Acls: serverAcls,
+		}
+
 		putRequest := model.PutPrincipalRequest{
 			Id: id,
-			Acls: serverAcls,
+			PerTenantAcls: per_tenant_acls,
 		}
 		common.PrintResp(getGlobalClient(cmd).PutPrincipal(
 			requestContext(),

@@ -92,7 +92,8 @@ public class SearchVariableRequestModel
         return out;
     }
 
-    public static SearchVariableRequestModel fromProto(SearchVariableRequest proto, ReadOnlyMetadataProcessorDAO readOnlyDao) {
+    public static SearchVariableRequestModel fromProto(
+            SearchVariableRequest proto, ReadOnlyMetadataProcessorDAO readOnlyDao) {
         SearchVariableRequestModel out = new SearchVariableRequestModel();
         out.initFrom(proto);
         return out;

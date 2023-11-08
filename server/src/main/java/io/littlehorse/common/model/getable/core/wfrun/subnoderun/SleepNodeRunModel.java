@@ -63,7 +63,6 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
             snm.nodeRunPosition = nodeRunModel.position;
 
             cmd.setSubCommand(snm);
-            cmd.setTenantId(getDao().context().tenantId());
 
             LHTimer timer = new LHTimer();
             timer.maturationTime = maturationTime;

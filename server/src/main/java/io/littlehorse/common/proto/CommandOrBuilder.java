@@ -40,18 +40,6 @@ public interface CommandOrBuilder extends
       getCommandIdBytes();
 
   /**
-   * <code>string tenant_id = 3;</code>
-   * @return The tenantId.
-   */
-  java.lang.String getTenantId();
-  /**
-   * <code>string tenant_id = 3;</code>
-   * @return The bytes for tenantId.
-   */
-  com.google.protobuf.ByteString
-      getTenantIdBytes();
-
-  /**
    * <code>.littlehorse.ReportTaskRun report_task_run = 4;</code>
    * @return Whether the reportTaskRun field is set.
    */

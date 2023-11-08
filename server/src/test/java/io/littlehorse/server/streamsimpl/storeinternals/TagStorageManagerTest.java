@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
+import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.ServerContext;
-import io.littlehorse.common.ServerContextImpl;
 import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.proto.TagStorageType;
@@ -71,7 +71,8 @@ public class TagStorageManagerTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private CoreProcessorDAO processorDAO;
 
-    private ServerContext serverContext = new ServerContextImpl(tenantId, ServerContext.Scope.PROCESSOR);
+    private AuthorizationContext authorizationContext =
+            new AuthorizationContextImpl(null, tenantId, AuthorizationContext.Scope.PROCESSOR, List.of());
 
     private Attribute wfSpecNameAttribute = new Attribute("wfSpecName", "test-name");
     private Attribute statusAttribute = new Attribute("status", "running");
@@ -113,7 +114,7 @@ public class TagStorageManagerTest {
 
     @Test
     void sendRepartitionCommandForCreateRemoteTagSubCommand() {
-        when(processorDAO.context()).thenReturn(serverContext);
+        when(processorDAO.context()).thenReturn(authorizationContext);
         String expectedPartitionKey = "3/__wfSpecName_test-name";
         tag1.setTagType(TagStorageType.REMOTE);
         tags = List.of(tag1, tag2);

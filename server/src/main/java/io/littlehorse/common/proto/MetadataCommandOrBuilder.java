@@ -40,18 +40,6 @@ public interface MetadataCommandOrBuilder extends
       getCommandIdBytes();
 
   /**
-   * <code>string tenant_id = 3;</code>
-   * @return The tenantId.
-   */
-  java.lang.String getTenantId();
-  /**
-   * <code>string tenant_id = 3;</code>
-   * @return The bytes for tenantId.
-   */
-  com.google.protobuf.ByteString
-      getTenantIdBytes();
-
-  /**
    * <code>.littlehorse.PutWfSpecRequest put_wf_spec = 4;</code>
    * @return Whether the putWfSpec field is set.
    */

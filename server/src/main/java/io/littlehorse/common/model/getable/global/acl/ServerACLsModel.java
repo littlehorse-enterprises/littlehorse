@@ -6,9 +6,11 @@ import io.littlehorse.common.proto.ServerACL;
 import io.littlehorse.common.proto.ServerACLs;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode
 public class ServerACLsModel extends LHSerializable<ServerACLs> {
 
     private List<ServerACLModel> acls = new ArrayList<>();

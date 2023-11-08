@@ -8,7 +8,6 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.proto.Tenant;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import java.util.Date;
@@ -32,17 +31,9 @@ public class TenantModel extends GlobalGetable<Tenant> {
         this.id = id;
     }
 
-    public static TenantModel createDefault() {
-        return create(ModelStore.DEFAULT_TENANT);
-    }
-
-    public static TenantModel create(String tenantId) {
-        return new TenantModel(tenantId);
-    }
-
     @Override
     public Tenant.Builder toProto() {
-        return Tenant.newBuilder().setId(id).setCreatedAt(LHUtil.fromDate(createdAt));
+        return Tenant.newBuilder().setId(id).setCreatedAt(LHUtil.fromDate(getCreatedAt()));
     }
 
     @Override

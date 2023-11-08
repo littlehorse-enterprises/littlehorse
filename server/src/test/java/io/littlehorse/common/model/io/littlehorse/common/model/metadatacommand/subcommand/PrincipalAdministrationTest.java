@@ -6,7 +6,8 @@ import static org.mockito.Mockito.*;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
-import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
+import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
@@ -14,14 +15,16 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalReques
 import io.littlehorse.common.proto.DeletePrincipalRequest;
 import io.littlehorse.common.proto.Principal;
 import io.littlehorse.common.proto.PutPrincipalRequest;
+import io.littlehorse.common.proto.ServerACLs;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
-import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -67,118 +70,101 @@ public class PrincipalAdministrationTest {
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
         metadataProcessor = new MetadataProcessor(config, server, metadataCache);
+        defaultStore.put(new StoredGetable<>(new TenantModel(tenantId)));
     }
 
     @Test
     public void supportStorePrincipal() {
         String newPrincipalTenantId = "my-tenant";
-        putPrincipalRequest.setTenantIds(List.of(newPrincipalTenantId));
-        putPrincipalRequest.getAcls().clear();
-        putPrincipalRequest.getAcls().add(TestUtil.adminAcl());
+        defaultStore.put(new StoredGetable<>(new TenantModel(newPrincipalTenantId)));
+        putPrincipalRequest.getPerTenantAcls().clear();
+        putPrincipalRequest.setPerTenantAcls(Map.of(newPrincipalTenantId, TestUtil.singleAcl()));
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
-        command.setTenantId(tenantId);
+        Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(principalId, command, 0L));
+        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
 
-        assertThat(storedPrincipal().getTenantIds()).containsExactly(newPrincipalTenantId);
+        assertThat(storedPrincipal().getPerTenantAcls().keySet()).containsExactly(newPrincipalTenantId);
+        assertThat(storedPrincipal().getGlobalAcls().getAcls()).isEmpty();
     }
 
     @Test
-    public void supportPrincipalInitializationFromCommandMetadata() {
-        putPrincipalRequest.setTenantIds(List.of());
-        MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
-        command.setTenantId(tenantId);
-        metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(principalId, command, 0L));
+    public void supportStorePrincipalWithGlobalAcls() {
+        String newPrincipalTenantId = "my-tenant";
+        defaultStore.put(new StoredGetable<>(new TenantModel(newPrincipalTenantId)));
+        putPrincipalRequest.getPerTenantAcls().clear();
+        putPrincipalRequest.setPerTenantAcls(Map.of(newPrincipalTenantId, TestUtil.singleAcl()));
 
-        assertThat(storedPrincipal().getTenantIds()).containsExactly(tenantId);
+        putPrincipalRequest.setGlobalAcls(TestUtil.singleAcl());
+        MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
+        Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
+        metadataProcessor.init(mockProcessorContext);
+        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
+
+        assertThat(storedPrincipal().getPerTenantAcls().keySet()).isNotEmpty();
+        assertThat(storedPrincipal().getGlobalAcls().getAcls()).containsExactly(TestUtil.acl());
     }
 
     @Test
     public void supportPrincipalOverwrite() {
-        ServerACLModel acl = TestUtil.adminAcl();
-        acl.setName(Optional.of("acl-before-overwrite"));
-        putPrincipalRequest.getAcls().clear();
-        putPrincipalRequest.getAcls().add(acl);
+        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("acl-before-overwrite")));
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
-        command.setTenantId(tenantId);
+        Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(principalId, command, 0L));
-        acl.setName(Optional.of("acl-after-overwrite"));
+
+        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
+
+        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("acl-after-overwrite")));
         putPrincipalRequest.setOverwrite(true);
-        metadataProcessor.process(new Record<>(principalId, command, 0L));
-        assertThat(storedPrincipal().getAcls()).containsExactly(acl);
+
+        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
+
+        assertThat(storedPrincipal().getPerTenantAcls()).containsOnlyKeys(tenantId);
+        ServerACLsModel aclsModel = storedPrincipal().getPerTenantAcls().get(tenantId);
+        assertThat(aclsModel.getAcls()).containsExactly(TestUtil.adminAcl("acl-after-overwrite"));
     }
 
     @Test
     public void shouldPreventPrincipalOverwriteIfItIsNotMarkedToOverwrite() {
-        ServerACLModel acl = TestUtil.acl();
-        acl.setName(Optional.of("acl-before-overwrite"));
-        putPrincipalRequest.getAcls().add(acl);
+        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("acl-before-overwrite")));
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
-        command.setTenantId(tenantId);
+        Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(principalId, command, 0L));
-        acl.setName(Optional.of("acl-after-overwrite"));
+        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
+        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("acl-after-overwrite")));
         putPrincipalRequest.setOverwrite(false);
-        metadataProcessor.process(new Record<>(principalId, command, 0L));
+        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
         verify(server).sendErrorToClient(eq(command.getCommandId()), any());
     }
 
     @Test
     public void supportPrincipalDowngrade() {
         String newPrincipalTenantId = "my-tenant";
-        putPrincipalRequest.setTenantIds(List.of(newPrincipalTenantId));
-        putPrincipalRequest.getAcls().clear();
-        putPrincipalRequest.getAcls().add(TestUtil.adminAcl());
+        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("acl-before-overwrite")));
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
-        command.setTenantId(newPrincipalTenantId);
+        Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(principalId, command, 0L));
+        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
         putPrincipalRequest.setId("other-principal");
-        metadataProcessor.process(new Record<>(principalId, command, 0L));
+        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
         putPrincipalRequest.setId(principalId);
-        putPrincipalRequest.getAcls().clear();
-        putPrincipalRequest.getAcls().add(TestUtil.acl());
+        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAcl()));
         putPrincipalRequest.setOverwrite(true);
-        metadataProcessor.process(new Record<>(principalId, command, 0L));
-        assertThat(storedPrincipal().getAcls()).containsExactly(TestUtil.acl());
-    }
-
-    @Test
-    public void shouldPreventTenantLockOut() {
-        String newPrincipalTenantId = "my-tenant";
-        putPrincipalRequest.setTenantIds(List.of(newPrincipalTenantId));
-        putPrincipalRequest.getAcls().clear();
-        putPrincipalRequest.getAcls().add(TestUtil.adminAcl());
-        MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
-        command.setTenantId(tenantId);
-        metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(principalId, command, 0L));
-
-        putPrincipalRequest.getAcls().clear();
-        putPrincipalRequest.getAcls().add(TestUtil.acl());
-        putPrincipalRequest.setOverwrite(true);
-        metadataProcessor.process(new Record<>(principalId, command, 0L));
-
-        verify(server).sendErrorToClient(eq(command.getCommandId()), any());
+        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
+        assertThat(storedPrincipal().getPerTenantAcls().values()).containsExactly(TestUtil.singleAcl());
     }
 
     @Test
     public void supportPrincipalDeletion() {
-        String newPrincipalTenantId = "my-tenant";
-        putPrincipalRequest.setTenantIds(List.of(newPrincipalTenantId));
-        putPrincipalRequest.getAcls().clear();
-        putPrincipalRequest.getAcls().add(TestUtil.adminAcl());
+        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("name")));
         MetadataCommandModel command = new MetadataCommandModel(putPrincipalRequest);
-        command.setTenantId(tenantId);
+        Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(principalId, command, 0L));
+        metadataProcessor.process(new Record<>(principalId, command, 0L, metadata));
 
         assertThat(storedPrincipal()).isNotNull();
         MetadataCommandModel deleteCommand = new MetadataCommandModel(deletePrincipalRequest);
-        command.setTenantId(tenantId);
-        metadataProcessor.process(new Record<>(principalId, deleteCommand, 0L));
+        metadataProcessor.process(new Record<>(principalId, deleteCommand, 0L, metadata));
         assertThat(defaultStore.get(new PrincipalIdModel(principalId))).isNull();
     }
 
@@ -186,7 +172,11 @@ public class PrincipalAdministrationTest {
         return PutPrincipalRequest.newBuilder()
                 .setId(principalId)
                 .setOverwrite(false)
-                .addAcls(TestUtil.adminAcl().toProto().build())
+                .putPerTenantAcls(
+                        tenantId,
+                        ServerACLs.newBuilder()
+                                .addAcls(TestUtil.acl().toProto())
+                                .build())
                 .build();
     }
 

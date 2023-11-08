@@ -1,8 +1,8 @@
 package io.littlehorse.server.streams.topology.core;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.ServerContext;
 import io.littlehorse.common.dao.ReadOnlyMetadataProcessorDAO;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
@@ -43,10 +43,10 @@ public class ReadOnlyMetadataProcessorDAOImpl implements ReadOnlyMetadataProcess
 
     private final ReadOnlyModelStore lhStore;
     private final MetadataCache metadataCache;
-    private final ServerContext context;
+    private final AuthorizationContext context;
 
     public ReadOnlyMetadataProcessorDAOImpl(
-            final ReadOnlyModelStore lhStore, final MetadataCache metadataCache, final ServerContext context) {
+            final ReadOnlyModelStore lhStore, final MetadataCache metadataCache, final AuthorizationContext context) {
         this.lhStore = lhStore;
         this.metadataCache = metadataCache;
         this.context = context;
@@ -126,7 +126,7 @@ public class ReadOnlyMetadataProcessorDAOImpl implements ReadOnlyMetadataProcess
     }
 
     @Override
-    public ServerContext context() {
+    public AuthorizationContext context() {
         return context;
     }
 

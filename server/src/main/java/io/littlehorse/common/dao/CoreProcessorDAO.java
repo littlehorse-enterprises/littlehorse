@@ -1,6 +1,6 @@
 package io.littlehorse.common.dao;
 
-import io.littlehorse.common.ServerContext;
+import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
@@ -17,12 +17,13 @@ import io.littlehorse.server.streams.topology.core.ReadOnlyMetadataProcessorDAOI
 import io.littlehorse.server.streams.util.InternalHosts;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 public abstract class CoreProcessorDAO extends ReadOnlyMetadataProcessorDAOImpl {
 
-    public CoreProcessorDAO(ReadOnlyModelStore rocksdb, MetadataCache metadataCache, ServerContext context) {
+    public CoreProcessorDAO(ReadOnlyModelStore rocksdb, MetadataCache metadataCache, AuthorizationContext context) {
         super(rocksdb, metadataCache, context);
     }
 
@@ -30,7 +31,8 @@ public abstract class CoreProcessorDAO extends ReadOnlyMetadataProcessorDAOImpl 
      * Lifecycle for processing a Command
      */
 
-    public abstract void initCommand(CommandModel command, KeyValueStore<String, Bytes> nativeStore);
+    public abstract void initCommand(
+            CommandModel command, KeyValueStore<String, Bytes> nativeStore, Headers metadataHeaders);
 
     public abstract CommandModel getCommand();
 

@@ -205,7 +205,6 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         taskResult.setTime(new Date(System.currentTimeMillis() + (1000 * timeoutSeconds)));
         taskResult.setStatus(TaskStatus.TASK_TIMEOUT);
         CommandModel timerCommand = new CommandModel(taskResult, taskResult.getTime());
-        timerCommand.setTenantId(getDao().context().tenantId());
         LHTimer timer = new LHTimer(timerCommand, getDao());
         getDao().scheduleTimer(timer);
 

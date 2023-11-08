@@ -3,6 +3,7 @@ package io.littlehorse.common.model.io.littlehorse.common.model.metadatacommand.
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
@@ -15,8 +16,10 @@ import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorDAOImpl;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.UUID;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -54,6 +57,8 @@ public class TenantAdministrationTest {
 
     private MetadataProcessorDAO metadataDao;
 
+    private Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, LHConstants.ANONYMOUS_PRINCIPAL);
+
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
@@ -65,7 +70,7 @@ public class TenantAdministrationTest {
     public void supportStoringNewTenant() {
         MetadataCommandModel command = new MetadataCommandModel(putTenantRequest);
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(UUID.randomUUID().toString(), command, 0L));
+        metadataProcessor.process(new Record<>(UUID.randomUUID().toString(), command, 0L, metadata));
         assertThat(storedTenant()).isNotNull();
         assertThat(storedTenant().getObjectId()).isNotNull();
     }
@@ -74,8 +79,8 @@ public class TenantAdministrationTest {
     public void shouldValidateExistingTenant() {
         MetadataCommandModel command = new MetadataCommandModel(putTenantRequest);
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(UUID.randomUUID().toString(), command, 0L));
-        metadataProcessor.process(new Record<>(UUID.randomUUID().toString(), command, 0L));
+        metadataProcessor.process(new Record<>(UUID.randomUUID().toString(), command, 0L, metadata));
+        metadataProcessor.process(new Record<>(UUID.randomUUID().toString(), command, 0L, metadata));
         verify(server, times(1)).sendErrorToClient(any(), any());
         assertThat(storedTenant()).isNotNull();
     }

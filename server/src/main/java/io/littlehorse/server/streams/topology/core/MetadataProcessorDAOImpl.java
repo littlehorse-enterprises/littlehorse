@@ -2,7 +2,7 @@ package io.littlehorse.server.streams.topology.core;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
-import io.littlehorse.common.ServerContext;
+import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.GlobalGetable;
@@ -36,7 +36,7 @@ public class MetadataProcessorDAOImpl extends ReadOnlyMetadataProcessorDAOImpl i
     /*
      * TODO Eduwer/Mateo: Why was the metadataCache not used?
      */
-    public MetadataProcessorDAOImpl(ModelStore lhStore, MetadataCache metadataCache, ServerContext context) {
+    public MetadataProcessorDAOImpl(ModelStore lhStore, MetadataCache metadataCache, AuthorizationContext context) {
         super(lhStore, metadataCache, context);
         this.lhStore = lhStore;
         // this.metadataCache = metadataCache;

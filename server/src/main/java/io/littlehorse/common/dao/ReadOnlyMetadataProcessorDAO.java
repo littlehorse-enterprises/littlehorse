@@ -1,7 +1,7 @@
 package io.littlehorse.common.dao;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.ServerContext;
+import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
@@ -24,7 +24,7 @@ public interface ReadOnlyMetadataProcessorDAO {
 
     <U extends Message, T extends AbstractGetable<U>> T get(ObjectIdModel<?, U, T> id);
 
-    ServerContext context();
+    AuthorizationContext context();
 
     List<String> adminPrincipalIds();
 

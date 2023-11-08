@@ -14,9 +14,11 @@ import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Objects;
 import java.util.UUID;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -70,14 +72,14 @@ public class PutWfSpecRequestModelTest {
     @ValueSource(strings = {TENANT_ID_A, TENANT_ID_B, DEFAULT_TENANT_ID})
     void supportStoringWfSpecWithTenantIsolation(final String tenantId) {
         TaskDefModel greet = TestUtil.taskDef("greet");
-        wfSpecToProcess.setTenantId(tenantId);
+        Headers recordMetadata = HeadersUtil.metadataHeadersFor(tenantId, "my-principal-id");
         String specName = wfSpecToProcess.getPutWfSpecRequest().getName();
         tenantAStore.put(new StoredGetable<>(greet));
         tenantBStore.put(new StoredGetable<>(greet));
         defaultStore.put(new StoredGetable<>(greet));
         String commandId = UUID.randomUUID().toString();
         metadataProcessor.init(mockProcessorContext);
-        metadataProcessor.process(new Record<>(commandId, wfSpecToProcess, 0L));
+        metadataProcessor.process(new Record<>(commandId, wfSpecToProcess, 0L, recordMetadata));
         WfSpecIdModel wfSpecToSearch = new WfSpecIdModel(specName, 0);
         if (Objects.equals(tenantId, TENANT_ID_A)) {
             ensureTenantIsolation(wfSpecToSearch, tenantAStore, tenantBStore, defaultStore);
