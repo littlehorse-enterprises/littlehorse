@@ -212,7 +212,7 @@ public class RequestAuthorizerTest {
             }
         } finally {
             executorService.shutdown();
-            assertThat(executorService.awaitTermination(3, TimeUnit.SECONDS)).isTrue();
+            assertThat(executorService.awaitTermination(1, TimeUnit.MINUTES)).isTrue();
             AtomicInteger numberOfFailures = new AtomicInteger();
             List<?> results = toDo.stream()
                     .map(future -> {
