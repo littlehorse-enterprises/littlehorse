@@ -71,8 +71,7 @@ public class GetableStorageManagerTest {
     @Mock
     private CoreProcessorDAO mockCoreDao;
 
-    private AuthorizationContext testContext =
-            new AuthorizationContextImpl(null, tenantId, AuthorizationContext.Scope.PROCESSOR, List.of());
+    private AuthorizationContext testContext = new AuthorizationContextImpl(null, tenantId, List.of());
 
     @BeforeEach
     void setup() {

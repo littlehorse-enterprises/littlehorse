@@ -8,24 +8,14 @@ public final class AuthorizationContextImpl implements AuthorizationContext {
 
     private final String authorizedTenant;
 
-    private final AuthorizationContext.Scope scope;
     private final String authorizedPrincipalId;
     private final List<ServerACLModel> acls;
 
     public AuthorizationContextImpl(
-            final String authorizedPrincipalId,
-            final String authorizedTenant,
-            final AuthorizationContext.Scope scope,
-            final List<ServerACLModel> acls) {
+            final String authorizedPrincipalId, final String authorizedTenant, final List<ServerACLModel> acls) {
         this.authorizedTenant = authorizedTenant;
-        this.scope = scope;
         this.authorizedPrincipalId = authorizedPrincipalId;
         this.acls = acls;
-    }
-
-    @Override
-    public Scope scope() {
-        return scope;
     }
 
     @Override

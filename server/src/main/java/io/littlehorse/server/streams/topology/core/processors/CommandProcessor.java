@@ -200,13 +200,11 @@ public class CommandProcessor implements Processor<String, CommandModel, String,
             // TODO: for fine-grained acl verification we will need to find list of ACLS for the principalId and
             // tenantId
             List<ServerACLModel> currentAcls = List.of();
-            return new AuthorizationContextImpl(
-                    principalId, tenantId, AuthorizationContext.Scope.PROCESSOR, currentAcls);
+            return new AuthorizationContextImpl(principalId, tenantId, currentAcls);
         }
 
         private AuthorizationContext defaultContext(String principalId) {
-            return new AuthorizationContextImpl(
-                    principalId, ModelStore.DEFAULT_TENANT, AuthorizationContext.Scope.PROCESSOR, List.of());
+            return new AuthorizationContextImpl(principalId, ModelStore.DEFAULT_TENANT, List.of());
         }
     }
 }

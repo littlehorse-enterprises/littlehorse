@@ -104,8 +104,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
         } else {
             currentAcls = resolvedPrincipal.getGlobalAcls().getAcls();
         }
-        return new AuthorizationContextImpl(
-                resolvedPrincipal.getId(), tenantId, AuthorizationContext.Scope.READ, currentAcls);
+        return new AuthorizationContextImpl(resolvedPrincipal.getId(), tenantId, currentAcls);
     }
 
     private ReadOnlyMetadataProcessorDAO dao() {

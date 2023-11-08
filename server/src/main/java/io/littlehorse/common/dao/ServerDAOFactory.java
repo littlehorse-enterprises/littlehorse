@@ -47,7 +47,7 @@ public class ServerDAOFactory {
     }
 
     private AuthorizationContext contextFor(String tenantId) {
-        return new AuthorizationContextImpl(null, tenantId, AuthorizationContext.Scope.READ, List.of());
+        return new AuthorizationContextImpl(null, tenantId, List.of());
     }
 
     private ReadOnlyKeyValueStore<String, Bytes> readOnlyStore(Integer specificPartition, String storeName) {

@@ -1,7 +1,6 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.dao.MetadataProcessorDAO;
@@ -109,11 +108,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommandModel
             return new MetadataProcessorDAOImpl(
                     storeFor(command, tenantId),
                     metadataCache,
-                    new AuthorizationContextImpl(
-                            HeadersUtil.principalIdFromMetadata(metadata),
-                            tenantId,
-                            AuthorizationContext.Scope.PROCESSOR,
-                            List.of()));
+                    new AuthorizationContextImpl(HeadersUtil.principalIdFromMetadata(metadata), tenantId, List.of()));
         }
 
         private ModelStore storeFor(MetadataCommandModel command, String tenantId) {

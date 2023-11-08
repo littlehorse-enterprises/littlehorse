@@ -71,8 +71,7 @@ public class TagStorageManagerTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private CoreProcessorDAO processorDAO;
 
-    private AuthorizationContext authorizationContext =
-            new AuthorizationContextImpl(null, tenantId, AuthorizationContext.Scope.PROCESSOR, List.of());
+    private AuthorizationContext authorizationContext = new AuthorizationContextImpl(null, tenantId, List.of());
 
     private Attribute wfSpecNameAttribute = new Attribute("wfSpecName", "test-name");
     private Attribute statusAttribute = new Attribute("status", "running");

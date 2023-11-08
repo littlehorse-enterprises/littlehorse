@@ -56,7 +56,7 @@ public class RequestAuthorizerTest {
     private final KafkaStreams kafkaStreams = mock();
     private final MetadataCache metadataCache = new MetadataCache();
     private final AuthorizationContext context =
-            new AuthorizationContextImpl(null, ModelStore.DEFAULT_TENANT, AuthorizationContext.Scope.READ, List.of());
+            new AuthorizationContextImpl(null, ModelStore.DEFAULT_TENANT, List.of());
     private final KeyValueStore<String, Bytes> nativeMetadataStore = Stores.keyValueStoreBuilder(
                     Stores.inMemoryKeyValueStore(ServerTopology.GLOBAL_METADATA_STORE), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
