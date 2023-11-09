@@ -3,6 +3,7 @@ package io.littlehorse.common;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 public final class AuthorizationContextImpl implements AuthorizationContext {
 
@@ -13,9 +14,9 @@ public final class AuthorizationContextImpl implements AuthorizationContext {
 
     public AuthorizationContextImpl(
             final String authorizedPrincipalId, final String authorizedTenant, final List<ServerACLModel> acls) {
-        this.authorizedTenant = authorizedTenant;
-        this.authorizedPrincipalId = authorizedPrincipalId;
-        this.acls = acls;
+        this.authorizedTenant = Objects.requireNonNull(authorizedTenant);
+        this.authorizedPrincipalId = Objects.requireNonNull(authorizedPrincipalId);
+        this.acls = Objects.requireNonNull(acls);
     }
 
     @Override

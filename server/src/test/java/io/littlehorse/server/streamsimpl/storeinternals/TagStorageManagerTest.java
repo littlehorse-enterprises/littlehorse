@@ -71,7 +71,8 @@ public class TagStorageManagerTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private CoreProcessorDAO processorDAO;
 
-    private AuthorizationContext authorizationContext = new AuthorizationContextImpl(null, tenantId, List.of());
+    private AuthorizationContext authorizationContext =
+            new AuthorizationContextImpl("my-principal-id", tenantId, List.of());
 
     private Attribute wfSpecNameAttribute = new Attribute("wfSpecName", "test-name");
     private Attribute statusAttribute = new Attribute("status", "running");
@@ -80,6 +81,7 @@ public class TagStorageManagerTest {
     void setup() {
         store.init(mockProcessorContext.getStateStoreContext(), store);
         globalMetadaataStore.init(mockProcessorContext.getStateStoreContext(), globalMetadaataStore);
+        when(processorDAO.context()).thenReturn(authorizationContext);
         tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, lhConfig, processorDAO);
         tag1.setAttributes(List.of(wfSpecNameAttribute));
         tag2.setAttributes(List.of(wfSpecNameAttribute, statusAttribute));

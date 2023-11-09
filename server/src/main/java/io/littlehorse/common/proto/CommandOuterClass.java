@@ -190,11 +190,13 @@ public final class CommandOuterClass {
       "nmentH\000\210\001\001\022<\n\016new_user_group\030\002 \001(\0132\037.lit" +
       "tlehorse.VariableAssignmentH\001\210\001\001\022-\n\tuser" +
       "_task\030\004 \001(\0132\032.littlehorse.UserTaskRunIdB" +
-      "\016\n\014_new_user_idB\021\n\017_new_user_group\"m\n\tLH" +
-      "TimerPb\0223\n\017maturation_time\030\001 \001(\0132\032.googl" +
-      "e.protobuf.Timestamp\022\013\n\003key\030\002 \001(\t\022\r\n\005top" +
-      "ic\030\003 \001(\t\022\017\n\007payload\030\004 \001(\014B\037\n\033io.littleho" +
-      "rse.common.protoP\001b\006proto3"
+      "\016\n\014_new_user_idB\021\n\017_new_user_group\"\277\001\n\tL" +
+      "HTimerPb\0223\n\017maturation_time\030\001 \001(\0132\032.goog" +
+      "le.protobuf.Timestamp\022\013\n\003key\030\002 \001(\t\022\r\n\005to" +
+      "pic\030\003 \001(\t\022\017\n\007payload\030\004 \001(\014\022\026\n\ttenant_id\030" +
+      "\005 \001(\tH\000\210\001\001\022\031\n\014principal_id\030\006 \001(\tH\001\210\001\001B\014\n" +
+      "\n_tenant_idB\017\n\r_principal_idB\037\n\033io.littl" +
+      "ehorse.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -285,7 +287,7 @@ public final class CommandOuterClass {
     internal_static_littlehorse_LHTimerPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_LHTimerPb_descriptor,
-        new java.lang.String[] { "MaturationTime", "Key", "Topic", "Payload", });
+        new java.lang.String[] { "MaturationTime", "Key", "Topic", "Payload", "TenantId", "PrincipalId", "TenantId", "PrincipalId", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.Service.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();

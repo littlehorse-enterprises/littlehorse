@@ -10,10 +10,12 @@ import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -68,9 +70,10 @@ public class CreateRemoteTagRepartitionCommandTest {
     @ValueSource(strings = {TENANT_ID_A, TENANT_ID_B, DEFAULT_TENANT})
     void shouldStoreRemoteTagWithTenantIsolation(final String tenantId) {
         RepartitionCommand commandToProcess =
-                new RepartitionCommand(new CreateRemoteTag(tagToStore), new Date(), commandId, tenantId);
+                new RepartitionCommand(new CreateRemoteTag(tagToStore), new Date(), commandId);
+        Headers metadata = HeadersUtil.metadataHeadersFor(tenantId, "my-principal-id");
         commandProcessor.init(mockProcessorContext);
-        commandProcessor.process(new Record<>(commandId, commandToProcess, 0L));
+        commandProcessor.process(new Record<>(commandId, commandToProcess, 0L, metadata));
         assertThat(mockProcessorContext.scheduledPunctuators()).hasSize(1);
         if (Objects.equals(tenantId, TENANT_ID_A)) {
             ensureTenantIsolation(tagToStore.getStoreKey(), tenantAStore, tenantBStore, defaultStore);

@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -63,14 +64,16 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
             snm.nodeRunPosition = nodeRunModel.position;
 
             cmd.setSubCommand(snm);
-
+            CoreProcessorDAO dao = nodeRunModel.getThreadRun().getWfRun().getDao();
             LHTimer timer = new LHTimer();
             timer.maturationTime = maturationTime;
             timer.key = nodeRunModel.wfRunId;
             timer.topic = nodeRunModel.getThreadRun().getWfRun().getDao().getCoreCmdTopic();
             timer.payload = cmd.toProto().build().toByteArray();
+            timer.setTenantId(dao.context().tenantId());
+            timer.setPrincipalId(dao.context().principalId());
 
-            nodeRunModel.getThreadRun().getWfRun().getDao().scheduleTimer(timer);
+            dao.scheduleTimer(timer);
         } catch (LHVarSubError exn) {
             FailureModel failure = new FailureModel(
                     "Failed calculating maturation for timer: " + exn.getMessage(), LHConstants.VAR_SUB_ERROR);

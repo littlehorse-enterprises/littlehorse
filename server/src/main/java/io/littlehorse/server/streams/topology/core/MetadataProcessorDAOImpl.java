@@ -77,6 +77,7 @@ public class MetadataProcessorDAOImpl extends ReadOnlyMetadataProcessorDAOImpl i
     public <U extends Message, T extends GlobalGetable<U>> void delete(ObjectIdModel<?, U, T> id) {
         @SuppressWarnings("unchecked")
         StoredGetable<U, T> storeResult = lhStore.get(id.getStoreableKey(), StoredGetable.class);
+        log.trace("trying to delete " + id.getStoreableKey());
 
         if (storeResult == null) {
             throw new LHApiException(

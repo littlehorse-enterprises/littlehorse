@@ -28,19 +28,16 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
     private CreateRemoteTag createRemoteTag;
     private RemoveRemoteTag removeRemoteTag;
 
-    private String tenantId;
-
     public Class<RepartitionCommandPb> getProtoBaseClass() {
         return RepartitionCommandPb.class;
     }
 
     public RepartitionCommand() {}
 
-    public RepartitionCommand(RepartitionSubCommand command, Date time, String commandId, String tenantId) {
+    public RepartitionCommand(RepartitionSubCommand command, Date time, String commandId) {
         setSubCommand(command);
         this.time = time;
         this.commandId = commandId;
-        this.tenantId = tenantId;
     }
 
     public void setSubCommand(RepartitionSubCommand subCommand) {

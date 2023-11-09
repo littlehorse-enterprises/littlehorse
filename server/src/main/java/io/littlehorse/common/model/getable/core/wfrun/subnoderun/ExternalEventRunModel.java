@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.dao.CoreProcessorDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -122,8 +123,10 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
                     throw new LHVarSubError(
                             null, "Resulting TimeoutSeconds was of type " + timeoutSeconds.type + " not INT!");
                 }
+                CoreProcessorDAO dao = nodeRunModel.getThreadRun().wfRun.getDao();
 
                 LHTimer timer = new LHTimer();
+                timer.setTenantId(dao.context().tenantId());
                 timer.topic = nodeRunModel.getThreadRun().wfRun.getDao().getCoreCmdTopic();
                 timer.key = nodeRunModel.wfRunId;
                 timer.maturationTime = new Date(new Date().getTime() + (timeoutSeconds.intVal * 1000));
@@ -138,7 +141,7 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
                 cmd.time = timeoutEvt.time;
 
                 timer.payload = cmd.toProto().build().toByteArray();
-                nodeRunModel.getThreadRun().wfRun.getDao().scheduleTimer(timer);
+                dao.scheduleTimer(timer);
                 log.info("Scheduled timer!");
             } catch (LHVarSubError exn) {
                 nodeRunModel.fail(

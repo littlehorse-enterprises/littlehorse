@@ -4,7 +4,9 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.processor.Cancellable;
 import org.apache.kafka.streams.processor.PunctuationType;
@@ -46,10 +48,10 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
                 KeyValue<String, LHTimer> entry = iter.next();
                 LHTimer timer = entry.value;
                 if (!entry.key.equals(timer.getStoreKey())) throw new RuntimeException("WTF?");
-
+                Headers metadata = HeadersUtil.metadataHeadersFor(timer.getTenantId(), timer.getPrincipalId());
                 // Now we gotta forward the timer.
                 Record<String, LHTimer> record =
-                        new Record<String, LHTimer>(timer.key, timer, timer.maturationTime.getTime());
+                        new Record<String, LHTimer>(timer.key, timer, timer.maturationTime.getTime(), metadata);
                 context.forward(record);
                 timerStore.delete(entry.key);
             }

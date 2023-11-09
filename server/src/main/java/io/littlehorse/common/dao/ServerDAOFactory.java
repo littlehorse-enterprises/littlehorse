@@ -4,6 +4,7 @@ import static io.littlehorse.server.auth.ServerAuthorizer.AUTH_CONTEXT;
 
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.ModelStore;
 import io.littlehorse.server.streams.topology.core.ReadOnlyMetadataProcessorDAOImpl;
@@ -36,18 +37,22 @@ public class ServerDAOFactory {
         ReadOnlyKeyValueStore<String, Bytes> allPartitionNativeStore =
                 readOnlyStore(null, ServerTopology.METADATA_STORE);
         return new ReadOnlyMetadataProcessorDAOImpl(
-                ModelStore.instanceFor(allPartitionNativeStore, tenantId), metadataCache, contextFor(tenantId));
+                ModelStore.instanceFor(allPartitionNativeStore, tenantId),
+                metadataCache,
+                contextFor(LHConstants.DEFAULT_TENANT, tenantId));
     }
 
     public ReadOnlyMetadataProcessorDAO getDefaultMetadataDao() {
         ReadOnlyKeyValueStore<String, Bytes> allPartitionNativeStore =
                 readOnlyStore(null, ServerTopology.METADATA_STORE);
         return new ReadOnlyMetadataProcessorDAOImpl(
-                ModelStore.defaultStore(allPartitionNativeStore), metadataCache, contextFor(ModelStore.DEFAULT_TENANT));
+                ModelStore.defaultStore(allPartitionNativeStore),
+                metadataCache,
+                contextFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL));
     }
 
-    private AuthorizationContext contextFor(String tenantId) {
-        return new AuthorizationContextImpl(null, tenantId, List.of());
+    private AuthorizationContext contextFor(String tenantId, String principalId) {
+        return new AuthorizationContextImpl(principalId, tenantId, List.of());
     }
 
     private ReadOnlyKeyValueStore<String, Bytes> readOnlyStore(Integer specificPartition, String storeName) {

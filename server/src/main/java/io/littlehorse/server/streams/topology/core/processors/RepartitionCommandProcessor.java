@@ -8,6 +8,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.ModelStore;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import java.time.Duration;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +38,8 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
     public void process(final Record<String, RepartitionCommand> record) {
         if (record.value() != null) {
             log.debug("Received a metric update!");
-            RepartitionCommand command = record.value();
-            record.value().process(ModelStore.instanceFor(nativeStore, command.getTenantId()), ctx);
+            String tenantId = HeadersUtil.tenantIdFromMetadata(record.headers());
+            record.value().process(ModelStore.instanceFor(nativeStore, tenantId), ctx);
         }
     }
 

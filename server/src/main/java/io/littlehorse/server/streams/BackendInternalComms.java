@@ -33,6 +33,7 @@ import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsStub;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.auth.ServerAuthorizer;
@@ -636,7 +637,7 @@ public class BackendInternalComms implements Closeable {
 
     private HostInfo getHostForPartition(int partition) {
         if (partition >= config.getClusterPartitions()) {
-            throw new RuntimeException("Unrecognized partition");
+            throw new LHMisconfigurationException("Unrecognized partition");
         }
 
         Collection<StreamsMetadata> all = coreStreams.metadataForAllStreamsClients();
@@ -648,7 +649,8 @@ public class BackendInternalComms implements Closeable {
                 }
             }
         }
-        return null;
+        throw new LHApiException(
+                Status.UNAVAILABLE, "Streams application is in %s state".formatted(coreStreams.state()));
     }
 
     private HostInfo getHostForKey(String storeName, String partitionKey) {

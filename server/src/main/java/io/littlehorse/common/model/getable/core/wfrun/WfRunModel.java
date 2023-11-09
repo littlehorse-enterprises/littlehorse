@@ -500,6 +500,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
         if (status.equals(LHStatus.COMPLETED) || status.equals(LHStatus.ERROR)) {
             if (wfSpec.getRetentionHours() != LHConstants.INFINITE_RETENTION) {
                 LHTimer timer = new LHTimer();
+                timer.setPrincipalId(this.getDao().context().principalId());
+                timer.setTenantId(this.getDao().context().tenantId());
                 timer.topic = this.getDao().getCoreCmdTopic();
                 timer.key = id;
                 Date now = new Date();
